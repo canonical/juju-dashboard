@@ -1,0 +1,31 @@
+{
+  "name": "jaas-dashboard",
+  "description": "A dashboard for JAAS (Juju as a service)",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/canonical-web-and-design/jaas-dashboard.git"
+  },
+  "keywords": [
+    "juju",
+    "jaas",
+    "canonical",
+    "ubuntu"
+  ],
+  "author": "Jeff Pihach (https://fromanegg.com)",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
+  },
+  "homepage": "https://github.com/canonical-web-and-design/jaas-dashboard#readme",
+  "scripts": {
+    "build": "",
+    "clean": "rm -rf node_modules",
+    "serve": "",
+    "test": "",
+    "watch": ""
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
