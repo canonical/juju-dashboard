@@ -1,0 +1,7 @@
+node_modules/
+build/
+
+.docker-project
+.yarn.canonical-webteam-jaas-dashboard*
+
+yarn-error.log
