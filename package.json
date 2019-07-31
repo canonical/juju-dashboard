@@ -20,12 +20,32 @@
   },
   "homepage": "https://github.com/canonical-web-and-design/jaas-dashboard#readme",
   "scripts": {
-    "build": "",
-    "clean": "rm -rf node_modules",
-    "serve": "",
-    "test": "",
+    "build": "react-scripts build",
+    "clean": "./scripts/clean-files",
+    "serve": "yarn run start",
+    "start": "react-scripts start",
+    "test": "react-scripts test",
     "watch": ""
   },
-  "dependencies": {},
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1"
+  },
   "devDependencies": {}
 }
