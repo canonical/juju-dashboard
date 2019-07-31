@@ -1,5 +1,9 @@
 {
-  "extends": [
-    "config:base"
+  "extends": ["config:base", "schedule:monthly", "group:all"],
+  "packageRules": [
+    {
+      "depTypeList": ["devDependencies"],
+      "extends": [":automergeMinor"]
+    }
   ]
 }
