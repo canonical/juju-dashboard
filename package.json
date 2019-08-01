@@ -25,6 +25,7 @@
     "serve": "yarn run start",
     "start": "react-scripts start",
     "test": "react-scripts test",
+    "prettier-check": "prettier --check 'src/**/*'",
     "watch": ""
   },
   "browserslist": {
@@ -50,5 +51,7 @@
     "react-scripts": "3.0.1",
     "vanilla-framework": "2.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "prettier": "1.18.2"
+  }
 }
