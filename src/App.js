@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import Nav from "./components/Nav/Nav";
 
+import "./scss/_layout.scss";
+
 // All following components are placeholders and will be replaced with imports.
 function Models() {
   return <h2>Models</h2>;
