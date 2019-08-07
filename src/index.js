@@ -9,6 +9,10 @@ import App from './App';
 import rootReducer from './reducers/root';
 import * as serviceWorker from './serviceWorker';
 
+import {loginWithBakery} from './juju';
+
+loginWithBakery();
+
 const store = createStore(rootReducer);
 const rootElement = document.getElementById('root');
 
