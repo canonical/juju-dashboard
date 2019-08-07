@@ -11,7 +11,7 @@ function Nav() {
               <img
                 className="p-navigation__image"
                 src="https://assets.ubuntu.com/v1/a9e0ed4a-jaas-logo1.svg"
-                alt=""
+                alt="JAAS logo"
                 width="95"
               />
             </a>
