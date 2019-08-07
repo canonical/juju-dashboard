@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 
 import Nav from './components/Nav/Nav';
 
@@ -34,12 +34,38 @@ function App() {
       <Nav />
       <div className="p-strip">
         <div className="row">
-          <Route path="/" exact component={Models} />
-          <Route path="/clouds" exact component={Clouds} />
-          <Route path="/kubernetes" exact component={Kubernetes} />
-          <Route path="/controllers" exact component={Controllers} />
-          <Route path="/usage" exact component={Usage} />
-          <Route path="/logs" exact component={Logs} />
+          <div className="col-3">
+            <div className="p-card">
+              <ul className="p-list">
+                <li className="p-list__item">
+                  <Link to="/">Models</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/clouds">Clouds</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/kubernetes">Kubernetes</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/controllers">Controllers</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/usage">Usage</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/logs">Logs</Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="col-9">
+            <Route path="/" exact component={Models} />
+            <Route path="/clouds" exact component={Clouds} />
+            <Route path="/kubernetes" exact component={Kubernetes} />
+            <Route path="/controllers" exact component={Controllers} />
+            <Route path="/usage" exact component={Usage} />
+            <Route path="/logs" exact component={Logs} />
+          </div>
         </div>
       </div>
     </Router>
