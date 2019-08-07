@@ -1,5 +1,5 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 function Nav() {
   return (
@@ -16,7 +16,11 @@ function Nav() {
               />
             </a>
           </div>
-          <a href="#navigation" className="p-navigation__toggle--open" title="menu">
+          <a
+            href="#navigation"
+            className="p-navigation__toggle--open"
+            title="menu"
+          >
             Menu
           </a>
           <a
@@ -38,7 +42,10 @@ function Nav() {
               </a>
             </li>
             <li className="p-navigation__link" role="menuitem">
-              <a className="p-link--external" href="https://discourse.jujucharms.com/">
+              <a
+                className="p-link--external"
+                href="https://discourse.jujucharms.com/"
+              >
                 Discourse
               </a>
             </li>
