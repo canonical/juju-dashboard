@@ -33,16 +33,24 @@ function Nav() {
           </span>
           <ul className="p-navigation__links" role="menu">
             <li className="p-navigation__link is-selected" role="menuitem">
-              <Link to="/">About</Link>
+              <a className="p-link--external" href="https://jaas.ai/jaas">
+                About
+              </a>
             </li>
             <li className="p-navigation__link" role="menuitem">
-              <a href="https://discourse.jujucharms.com/">Discourse</a>
+              <a className="p-link--external" href="https://discourse.jujucharms.com/">
+                Discourse
+              </a>
             </li>
             <li className="p-navigation__link" role="menuitem">
-              <a href="https://jaas.ai/docs">Docs</a>
+              <a className="p-link--external" href="https://jaas.ai/docs">
+                Docs
+              </a>
             </li>
             <li className="p-navigation__link" role="menuitem">
-              <Link to="/">Charmhub</Link>
+              <a className="p-link--external" href="#_">
+                Charmhub
+              </a>
             </li>
             <li className="p-navigation__link" role="menuitem">
               <Link to="/">Settings</Link>
