@@ -59,12 +59,14 @@ function App() {
             </div>
           </div>
           <div className="col-9">
-            <Route path="/" exact component={Models} />
-            <Route path="/clouds" exact component={Clouds} />
-            <Route path="/kubernetes" exact component={Kubernetes} />
-            <Route path="/controllers" exact component={Controllers} />
-            <Route path="/usage" exact component={Usage} />
-            <Route path="/logs" exact component={Logs} />
+            <main id="main-content">
+              <Route path="/" exact component={Models} />
+              <Route path="/clouds" exact component={Clouds} />
+              <Route path="/kubernetes" exact component={Kubernetes} />
+              <Route path="/controllers" exact component={Controllers} />
+              <Route path="/usage" exact component={Usage} />
+              <Route path="/logs" exact component={Logs} />
+            </main>
           </div>
         </div>
       </div>
