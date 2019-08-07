@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 
-import Nav from './Nav';
+import Nav from './components/Nav/Nav';
 
 // All following components are placeholders and will be replaced with imports.
 function Models() {
@@ -31,17 +31,47 @@ function Logs() {
 function App() {
   return (
     <Router>
-      <div>
-        <Nav/>
+      <Nav />
+      <div className="p-strip">
+        <div className="row">
+          <div className="col-3">
+            <div className="p-card">
+              <ul className="p-list">
+                <li className="p-list__item">
+                  <Link to="/">Models</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/clouds">Clouds</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/kubernetes">Kubernetes</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/controllers">Controllers</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/usage">Usage</Link>
+                </li>
+                <li className="p-list__item">
+                  <Link to="/logs">Logs</Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="col-9">
+            <main id="main-content">
+              <Route path="/" exact component={Models} />
+              <Route path="/clouds" exact component={Clouds} />
+              <Route path="/kubernetes" exact component={Kubernetes} />
+              <Route path="/controllers" exact component={Controllers} />
+              <Route path="/usage" exact component={Usage} />
+              <Route path="/logs" exact component={Logs} />
+            </main>
+          </div>
+        </div>
       </div>
-      <Route path="/" exact component={Models} />
-      <Route path="/clouds" exact component={Clouds} />
-      <Route path="/kubernetes" exact component={Kubernetes} />
-      <Route path="/controllers" exact component={Controllers} />
-      <Route path="/usage" exact component={Usage} />
-      <Route path="/logs" exact component={Logs} />
     </Router>
-  )
+  );
 }
 
 export default App;

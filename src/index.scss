@@ -1,4 +1,11 @@
+// Import Vanilla Framework
 @import 'node_modules/vanilla-framework/scss/vanilla';
 
+// Settings
+$color-navigation-background: $color-brand;
+
 @include vf-base;
+@include vf-p-grid;
 @include vf-b-typography;
+@include vf-p-navigation;
+@include vf-u-off-screen;
