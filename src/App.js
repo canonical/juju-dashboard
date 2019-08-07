@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Nav from './Nav';
 
@@ -31,17 +31,19 @@ function Logs() {
 function App() {
   return (
     <Router>
-      <div>
-        <Nav/>
+      <Nav />
+      <div className="p-strip">
+        <div className="row">
+          <Route path="/" exact component={Models} />
+          <Route path="/clouds" exact component={Clouds} />
+          <Route path="/kubernetes" exact component={Kubernetes} />
+          <Route path="/controllers" exact component={Controllers} />
+          <Route path="/usage" exact component={Usage} />
+          <Route path="/logs" exact component={Logs} />
+        </div>
       </div>
-      <Route path="/" exact component={Models} />
-      <Route path="/clouds" exact component={Clouds} />
-      <Route path="/kubernetes" exact component={Kubernetes} />
-      <Route path="/controllers" exact component={Controllers} />
-      <Route path="/usage" exact component={Usage} />
-      <Route path="/logs" exact component={Logs} />
     </Router>
-  )
+  );
 }
 
 export default App;
