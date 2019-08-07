@@ -1,7 +1,7 @@
-import React from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import React from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-import Nav from './components/Nav/Nav';
+import Nav from "./components/Nav/Nav";
 
 // All following components are placeholders and will be replaced with imports.
 function Models() {
