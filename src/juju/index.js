@@ -16,7 +16,7 @@ const options = {
   })
 };
 
-const controllerURL = 'wss://jimm.jujucharms.com/api';
+const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
 
 async function loginWithBakery() {
   try {
