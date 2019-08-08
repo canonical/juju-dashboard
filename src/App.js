@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import Nav from "./components/Nav/Nav";
 
+import "./scss/_layout.scss";
+
 // All following components are placeholders and will be replaced with imports.
 function Models() {
   return <h2>Models</h2>;
@@ -32,9 +34,9 @@ function App() {
   return (
     <Router>
       <Nav />
-      <div className="p-strip">
-        <div className="row">
-          <div className="col-3">
+
+        <div className="l-container">
+          <div className="l-side">
             <div className="p-card">
               <ul className="p-list">
                 <li className="p-list__item">
@@ -58,7 +60,7 @@ function App() {
               </ul>
             </div>
           </div>
-          <div className="col-9">
+        <div className="l-main">
             <main id="main-content">
               <Route path="/" exact component={Models} />
               <Route path="/clouds" exact component={Clouds} />
@@ -69,7 +71,7 @@ function App() {
             </main>
           </div>
         </div>
-      </div>
+
     </Router>
   );
 }

@@ -6,6 +6,8 @@ $color-navigation-background: $color-brand;
 
 @include vf-base;
 @include vf-p-grid;
+@include vf-p-lists;
 @include vf-b-typography;
 @include vf-p-navigation;
 @include vf-u-off-screen;
+@include vf-p-strip;
