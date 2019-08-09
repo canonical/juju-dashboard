@@ -24,9 +24,9 @@ export default class ErrorBoundary extends Component {
         <div className="p-notification--negative">
           <p className="p-notification__response">
             <span className="p-notification__status">Error: </span>Something has
-            went wrong. If this issue persists,{" "}
-            <a href="https://github.com/canonical-web-and-design/jaas-dashboard/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc">
-              please raise an issue on Github.
+            gone wrong. If this issue persists,{" "}
+            <a href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new?assignees=&labels=&template=bug_report.md&title=">
+              please raise an issue on GitHub.
             </a>
           </p>
         </div>

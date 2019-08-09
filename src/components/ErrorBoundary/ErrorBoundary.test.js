@@ -9,9 +9,8 @@ describe("Error Boundary", () => {
     wrapper.setState({
       hasError: true
     });
-    console.log(wrapper.text());
     expect(wrapper.text()).toEqual(
-      "Error: Something has went wrong. If this issue persists, please raise an issue on Github."
+      "Error: Something has gone wrong. If this issue persists, please raise an issue on GitHub."
     );
   });
 });
