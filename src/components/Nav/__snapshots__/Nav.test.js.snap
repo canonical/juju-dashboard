@@ -1,0 +1,148 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Nav renders without crashing and matches snapshot 1`] = `
+<BrowserRouter>
+  <Router
+    history={
+      Object {
+        "action": "POP",
+        "block": [Function],
+        "createHref": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <Nav>
+      <div>
+        <header
+          className="p-navigation"
+          id="navigation"
+        >
+          <div
+            className="p-navigation__banner"
+          >
+            <div
+              className="p-navigation__logo"
+            >
+              <a
+                className="p-navigation__link"
+                href="/"
+              >
+                <img
+                  alt="JAAS logo"
+                  className="p-navigation__image"
+                  src="https://assets.ubuntu.com/v1/a9e0ed4a-jaas-logo1.svg"
+                  width="95"
+                />
+              </a>
+            </div>
+            <a
+              className="p-navigation__toggle--open"
+              href="#navigation"
+              title="menu"
+            >
+              Menu
+            </a>
+            <a
+              className="p-navigation__toggle--close"
+              href="#navigation-closed"
+              title="close menu"
+            >
+              Close menu
+            </a>
+          </div>
+          <nav
+            className="p-navigation__nav"
+          >
+            <span
+              className="u-off-screen"
+            >
+              <a
+                href="#main-content"
+              >
+                Jump to main content
+              </a>
+            </span>
+            <ul
+              className="p-navigation__links"
+              role="menu"
+            >
+              <li
+                className="p-navigation__link is-selected"
+                role="menuitem"
+              >
+                <a
+                  className="p-link--external"
+                  href="https://jaas.ai/jaas"
+                >
+                  About
+                </a>
+              </li>
+              <li
+                className="p-navigation__link"
+                role="menuitem"
+              >
+                <a
+                  className="p-link--external"
+                  href="https://discourse.jujucharms.com/"
+                >
+                  Discourse
+                </a>
+              </li>
+              <li
+                className="p-navigation__link"
+                role="menuitem"
+              >
+                <a
+                  className="p-link--external"
+                  href="https://jaas.ai/docs"
+                >
+                  Docs
+                </a>
+              </li>
+              <li
+                className="p-navigation__link"
+                role="menuitem"
+              >
+                <a
+                  className="p-link--external"
+                  href="#_"
+                >
+                  Charmhub
+                </a>
+              </li>
+              <li
+                className="p-navigation__link"
+                role="menuitem"
+              >
+                <Link
+                  to="/"
+                >
+                  <a
+                    href="/"
+                    onClick={[Function]}
+                  >
+                    Settings
+                  </a>
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </header>
+      </div>
+    </Nav>
+  </Router>
+</BrowserRouter>
+`;
