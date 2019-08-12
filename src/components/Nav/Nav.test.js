@@ -5,12 +5,12 @@ import { mount } from "enzyme";
 import Nav from "./Nav";
 
 describe("Nav", () => {
-  const wrapper = mount(
-    <Router>
-      <Nav />
-    </Router>
-  );
   it("renders without crashing and matches snapshot", () => {
+    const wrapper = mount(
+      <Router>
+        <Nav />
+      </Router>
+    );
     expect(wrapper).toMatchSnapshot();
   });
 });
