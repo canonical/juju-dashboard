@@ -1,3 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Error Boundary renders without crashing and matches snapshot 1`] = `ShallowWrapper {}`;
+exports[`Error Boundary renders without crashing and matches snapshot 1`] = `
+<div
+  className="p-notification--negative"
+>
+  <p
+    className="p-notification__response"
+  >
+    <span
+      className="p-notification__status"
+    >
+      Error: 
+    </span>
+    Something has gone wrong. If this issue persists,
+     
+    <a
+      href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new?assignees=&labels=&template=bug_report.md&title="
+    >
+      please raise an issue on GitHub.
+    </a>
+  </p>
+</div>
+`;
