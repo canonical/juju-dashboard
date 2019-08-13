@@ -1,16 +1,21 @@
 import React from "react";
+import { mount } from "enzyme";
+
 import ErrorBoundary from "./ErrorBoundary";
 
-import { shallow } from "enzyme";
+function ChildComponent() {
+  return null;
+}
 
 describe("Error Boundary", () => {
-  it("generates a error message when an error is caught", () => {
-    const wrapper = shallow(<ErrorBoundary />);
-    wrapper.setState({
-      hasError: true
-    });
-    expect(wrapper.text()).toEqual(
-      "Error: Something has gone wrong. If this issue persists, please raise an issue on GitHub."
+  it("renders without crashing and matches snapshot", () => {
+    const wrapper = mount(
+      <ErrorBoundary>
+        <ChildComponent />
+      </ErrorBoundary>
     );
+    const error = new Error("Oh noes!");
+    wrapper.find(ChildComponent).simulateError(error);
+    expect(wrapper).toMatchSnapshot();
   });
 });
