@@ -1,24 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Error Boundary renders without crashing and matches snapshot 1`] = `
-<div
-  className="p-notification--negative"
->
-  <p
-    className="p-notification__response"
+<ErrorBoundary>
+  <div
+    className="p-notification--negative"
   >
-    <span
-      className="p-notification__status"
+    <p
+      className="p-notification__response"
     >
-      Error: 
-    </span>
-    Something has gone wrong. If this issue persists,
-     
-    <a
-      href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new?assignees=&labels=&template=bug_report.md&title="
-    >
-      please raise an issue on GitHub.
-    </a>
-  </p>
-</div>
+      <span
+        className="p-notification__status"
+      >
+        Error: 
+      </span>
+      Something has gone wrong. If this issue persists,
+       
+      <a
+        href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new?assignees=&labels=&template=bug_report.md&title="
+      >
+        please raise an issue on GitHub.
+      </a>
+    </p>
+  </div>
+</ErrorBoundary>
 `;
