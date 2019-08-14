@@ -25,94 +25,110 @@ exports[`Secondary Nav renders without crashing and matches snapshot 1`] = `
     }
   >
     <SecondaryNav>
-      <ul
-        className="p-list"
+      <nav
+        className="p-secondary-nav"
       >
-        <li
-          className="p-list__item"
+        <ul
+          className="p-list"
         >
-          <Link
-            to="/"
+          <li
+            className="p-list__item is-selected"
           >
-            <a
-              href="/"
-              onClick={[Function]}
+            <Link
+              className="p-list__link"
+              to="/"
             >
-              Models
-            </a>
-          </Link>
-        </li>
-        <li
-          className="p-list__item"
-        >
-          <Link
-            to="/clouds"
+              <a
+                className="p-list__link"
+                href="/"
+                onClick={[Function]}
+              >
+                Models
+              </a>
+            </Link>
+          </li>
+          <li
+            className="p-list__item"
           >
-            <a
-              href="/clouds"
-              onClick={[Function]}
+            <Link
+              className="p-list__link"
+              to="/clouds"
             >
-              Clouds
-            </a>
-          </Link>
-        </li>
-        <li
-          className="p-list__item"
-        >
-          <Link
-            to="/kubernetes"
+              <a
+                className="p-list__link"
+                href="/clouds"
+                onClick={[Function]}
+              >
+                Clouds
+              </a>
+            </Link>
+          </li>
+          <li
+            className="p-list__item"
           >
-            <a
-              href="/kubernetes"
-              onClick={[Function]}
+            <Link
+              className="p-list__link"
+              to="/kubernetes"
             >
-              Kubernetes
-            </a>
-          </Link>
-        </li>
-        <li
-          className="p-list__item"
-        >
-          <Link
-            to="/controllers"
+              <a
+                className="p-list__link"
+                href="/kubernetes"
+                onClick={[Function]}
+              >
+                Kubernetes
+              </a>
+            </Link>
+          </li>
+          <li
+            className="p-list__item"
           >
-            <a
-              href="/controllers"
-              onClick={[Function]}
+            <Link
+              className="p-list__link"
+              to="/controllers"
             >
-              Controllers
-            </a>
-          </Link>
-        </li>
-        <li
-          className="p-list__item"
-        >
-          <Link
-            to="/usage"
+              <a
+                className="p-list__link"
+                href="/controllers"
+                onClick={[Function]}
+              >
+                Controllers
+              </a>
+            </Link>
+          </li>
+          <li
+            className="p-list__item"
           >
-            <a
-              href="/usage"
-              onClick={[Function]}
+            <Link
+              className="p-list__link"
+              to="/usage"
             >
-              Usage
-            </a>
-          </Link>
-        </li>
-        <li
-          className="p-list__item"
-        >
-          <Link
-            to="/logs"
+              <a
+                className="p-list__link"
+                href="/usage"
+                onClick={[Function]}
+              >
+                Usage
+              </a>
+            </Link>
+          </li>
+          <li
+            className="p-list__item"
           >
-            <a
-              href="/logs"
-              onClick={[Function]}
+            <Link
+              className="p-list__link"
+              to="/logs"
             >
-              Logs
-            </a>
-          </Link>
-        </li>
-      </ul>
+              <a
+                className="p-list__link"
+                href="/logs"
+                onClick={[Function]}
+              >
+                Logs
+              </a>
+            </Link>
+          </li>
+        </ul>
+      </nav>
     </SecondaryNav>
   </Router>
 </BrowserRouter>

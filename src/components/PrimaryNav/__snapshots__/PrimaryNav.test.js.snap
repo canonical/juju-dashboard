@@ -80,7 +80,7 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
               role="menu"
             >
               <li
-                className="p-navigation__link is-selected"
+                className="p-navigation__link"
                 role="menuitem"
               >
                 <a
