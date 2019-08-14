@@ -5,11 +5,18 @@ import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import PrimaryNav from "./components/PrimaryNav/PrimaryNav";
 import SecondaryNav from "./components/SecondaryNav/SecondaryNav";
 
+import TableSet from "./components/TableSet/TableSet";
+
 import "./scss/_layout.scss";
 
 // All following components are placeholders and will be replaced with imports.
 function Models() {
-  return <h2>Models</h2>;
+  return (
+    <>
+      <h2>Models</h2>
+      <TableSet />
+    </>
+  );
 }
 
 function Clouds() {
