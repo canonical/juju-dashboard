@@ -36,7 +36,7 @@ function PrimaryNav() {
             <a href="#main-content">Jump to main content</a>
           </span>
           <ul className="p-navigation__links" role="menu">
-            <li className="p-navigation__link is-selected" role="menuitem">
+            <li className="p-navigation__link" role="menuitem">
               <a className="p-link--external" href="https://jaas.ai/jaas">
                 About
               </a>
