@@ -1,8 +1,9 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import Nav from "./components/Nav/Nav";
+import SecondaryNav from "./components/SecondaryNav/SecondaryNav";
 
 import "./scss/_layout.scss";
 
@@ -37,28 +38,7 @@ function App() {
       <Nav />
       <div className="l-container">
         <div className="l-side">
-          <div className="p-card">
-            <ul className="p-list">
-              <li className="p-list__item">
-                <Link to="/">Models</Link>
-              </li>
-              <li className="p-list__item">
-                <Link to="/clouds">Clouds</Link>
-              </li>
-              <li className="p-list__item">
-                <Link to="/kubernetes">Kubernetes</Link>
-              </li>
-              <li className="p-list__item">
-                <Link to="/controllers">Controllers</Link>
-              </li>
-              <li className="p-list__item">
-                <Link to="/usage">Usage</Link>
-              </li>
-              <li className="p-list__item">
-                <Link to="/logs">Logs</Link>
-              </li>
-            </ul>
-          </div>
+          <SecondaryNav />
         </div>
         <div className="l-main">
           <main id="main-content">

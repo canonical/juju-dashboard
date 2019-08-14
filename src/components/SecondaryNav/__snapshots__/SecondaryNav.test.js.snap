@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Secondary Nav renders without crashing and matches snapshot 1`] = `
+<BrowserRouter>
+  <Router
+    history={
+      Object {
+        "action": "POP",
+        "block": [Function],
+        "createHref": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <SecondaryNav>
+      <ul
+        className="p-list"
+      >
+        <li
+          className="p-list__item"
+        >
+          <Link
+            to="/"
+          >
+            <a
+              href="/"
+              onClick={[Function]}
+            >
+              Models
+            </a>
+          </Link>
+        </li>
+        <li
+          className="p-list__item"
+        >
+          <Link
+            to="/clouds"
+          >
+            <a
+              href="/clouds"
+              onClick={[Function]}
+            >
+              Clouds
+            </a>
+          </Link>
+        </li>
+        <li
+          className="p-list__item"
+        >
+          <Link
+            to="/kubernetes"
+          >
+            <a
+              href="/kubernetes"
+              onClick={[Function]}
+            >
+              Kubernetes
+            </a>
+          </Link>
+        </li>
+        <li
+          className="p-list__item"
+        >
+          <Link
+            to="/controllers"
+          >
+            <a
+              href="/controllers"
+              onClick={[Function]}
+            >
+              Controllers
+            </a>
+          </Link>
+        </li>
+        <li
+          className="p-list__item"
+        >
+          <Link
+            to="/usage"
+          >
+            <a
+              href="/usage"
+              onClick={[Function]}
+            >
+              Usage
+            </a>
+          </Link>
+        </li>
+        <li
+          className="p-list__item"
+        >
+          <Link
+            to="/logs"
+          >
+            <a
+              href="/logs"
+              onClick={[Function]}
+            >
+              Logs
+            </a>
+          </Link>
+        </li>
+      </ul>
+    </SecondaryNav>
+  </Router>
+</BrowserRouter>
+`;
