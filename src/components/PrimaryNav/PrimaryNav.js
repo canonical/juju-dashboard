@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Nav() {
+function PrimaryNav() {
   return (
     <div>
       <header id="navigation" className="p-navigation">
@@ -69,4 +69,4 @@ function Nav() {
   );
 }
 
-export default Nav;
+export default PrimaryNav;

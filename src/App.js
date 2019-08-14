@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
-import Nav from "./components/Nav/Nav";
+import PrimaryNav from "./components/PrimaryNav/PrimaryNav";
 import SecondaryNav from "./components/SecondaryNav/SecondaryNav";
 
 import "./scss/_layout.scss";
@@ -35,7 +35,7 @@ function Logs() {
 function App() {
   return (
     <Router>
-      <Nav />
+      <PrimaryNav />
       <div className="l-container">
         <div className="l-side">
           <SecondaryNav />

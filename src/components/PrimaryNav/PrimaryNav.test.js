@@ -2,13 +2,13 @@ import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { mount } from "enzyme";
 
-import Nav from "./Nav";
+import PrimaryNav from "./PrimaryNav";
 
-describe("Nav", () => {
+describe("Primary Nav", () => {
   it("renders without crashing and matches snapshot", () => {
     const wrapper = mount(
       <Router>
-        <Nav />
+        <PrimaryNav />
       </Router>
     );
     expect(wrapper).toMatchSnapshot();
