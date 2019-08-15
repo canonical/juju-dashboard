@@ -12,3 +12,9 @@ $color-navigation-background: $color-brand;
 @include vf-p-navigation;
 @include vf-u-off-screen;
 @include vf-p-strip;
+
+// Fix consecutive table bug
+// https://github.com/canonical-web-and-design/vanilla-framework/issues/2491
+table + table {
+  margin-top: 1.5rem;
+}
