@@ -64,7 +64,8 @@
     "react-scripts": "3.0.1",
     "react-test-renderer": "^16.9.0",
     "redux": "4.0.4",
-    "vanilla-framework": "2.3.0"
+    "vanilla-framework": "2.3.0",
+    "redux-devtools-extension": "^2.13.8"
   },
   "devDependencies": {
     "eslint-config-airbnb": "^18.0.1",
