@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Nav renders without crashing and matches snapshot 1`] = `
+exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
 <BrowserRouter>
   <Router
     history={
@@ -24,7 +24,7 @@ exports[`Nav renders without crashing and matches snapshot 1`] = `
       }
     }
   >
-    <Nav>
+    <PrimaryNav>
       <div>
         <header
           className="p-navigation"
@@ -80,7 +80,7 @@ exports[`Nav renders without crashing and matches snapshot 1`] = `
               role="menu"
             >
               <li
-                className="p-navigation__link is-selected"
+                className="p-navigation__link"
                 role="menuitem"
               >
                 <a
@@ -142,7 +142,7 @@ exports[`Nav renders without crashing and matches snapshot 1`] = `
           </nav>
         </header>
       </div>
-    </Nav>
+    </PrimaryNav>
   </Router>
 </BrowserRouter>
 `;

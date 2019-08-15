@@ -1,0 +1,15 @@
+.p-secondary-nav {
+  .p-list__link {
+    color: #111;
+  }
+
+  .p-list__item {
+    padding-left: 1rem;
+
+    &.is-selected {
+      font-weight: 400;
+      border-left: 3px solid #335280;
+      padding-left: calc(1rem - 3px);
+    }
+  }
+}
