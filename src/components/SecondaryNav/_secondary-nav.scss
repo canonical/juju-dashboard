@@ -1,6 +1,8 @@
+@import "vanilla-framework/scss/settings_colors";
+
 .p-secondary-nav {
   .p-list__link {
-    color: #111;
+    color: $color-dark;
   }
 
   .p-list__item {
@@ -8,7 +10,7 @@
 
     &.is-selected {
       font-weight: 400;
-      border-left: 3px solid #335280;
+      border-left: 3px solid $color-information;
       padding-left: calc(1rem - 3px);
     }
   }

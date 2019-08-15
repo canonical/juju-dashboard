@@ -62,7 +62,7 @@
     "react-scripts": "3.0.1",
     "react-test-renderer": "^16.9.0",
     "redux": "4.0.4",
-    "vanilla-framework": "2.1.0"
+    "vanilla-framework": "2.3.0"
   },
   "devDependencies": {
     "prettier": "1.18.2",
