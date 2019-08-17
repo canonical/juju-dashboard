@@ -2,6 +2,8 @@ import jujulib from "@canonical/jujulib";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import { Bakery } from "@canonical/macaroon-bakery";
 
+import * as actions from "./actions";
+
 const options = {
   debug: true,
   facades: [modelManager],
@@ -27,14 +29,16 @@ async function loginWithBakery() {
 }
 
 /**
-  Fetches the model list from the supplied Juju controller connection.
+  Fetches the model list from the supplied Juju controller.
   @param {Object} conn The controller connection instance.
   @returns {Object} models The list of model objects under the key `userModels`.
  */
-async function fetchModelList(conn) {
-  const modelManager = conn.facades.modelManager;
-  const models = await modelManager.listModels({ tag: conn.info.identity });
-  return models;
+function fetchModelList(conn) {
+  return async function(dispatch) {
+    const modelManager = conn.facades.modelManager;
+    const models = await modelManager.listModels({ tag: conn.info.identity });
+    dispatch(actions.updateModelList(models.userModels));
+  };
 }
 
 export { fetchModelList, loginWithBakery };
