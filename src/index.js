@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
 
 import "./scss/index.scss";
 
@@ -10,13 +12,20 @@ import rootReducer from "./reducers/root";
 import * as serviceWorker from "./serviceWorker";
 
 import { fetchModelList, loginWithBakery } from "./juju";
+import jujuReducers from "./juju/reducers";
 
-async function connectAndListModels() {
+const reduxStore = createStore(
+  combineReducers({
+    root: rootReducer,
+    juju: jujuReducers
+  }),
+  composeWithDevTools(applyMiddleware(thunk))
+);
+
+async function connectAndListModels(reduxStore) {
   try {
     const conn = await loginWithBakery();
-    const modelList = await fetchModelList(conn);
-    // Store models in the redux store.
-    console.log(modelList.userModels);
+    reduxStore.dispatch(fetchModelList(conn));
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry.
@@ -25,13 +34,12 @@ async function connectAndListModels() {
   }
 }
 
-connectAndListModels();
+connectAndListModels(reduxStore);
 
-const store = createStore(rootReducer);
 const rootElement = document.getElementById("root");
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={reduxStore}>
     <React.StrictMode>
       <App />
     </React.StrictMode>
