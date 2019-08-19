@@ -19,7 +19,7 @@ async function loginWithBakery() {
   try {
     const juju = await jujulib.connect(controllerURL, options);
     const conn = await juju.login({});
-    const { modelManager } = conn.facades;   // eslint-disable-line no-shadow
+    const { modelManager } = conn.facades; // eslint-disable-line no-shadow
     const models = await modelManager.listModels({ tag: conn.info.identity });
     console.log("models", models); // eslint-disable-line no-console
   } catch (error) {
