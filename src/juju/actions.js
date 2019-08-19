@@ -7,6 +7,6 @@ export const actionsList = {
 export function updateModelList(models) {
   return {
     type: actionsList.updateModelList,
-    models
+    payload: models
   };
 }
