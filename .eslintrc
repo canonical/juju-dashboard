@@ -8,7 +8,6 @@
   ],
   "plugins": ["prettier"],
   "rules": {
-    "prefer-default-export": 0,
     "react/prop-types": 0,
     "react/jsx-filename-extension": [
       1,
@@ -16,6 +15,7 @@
         "extensions": [".js"]
       }
     ],
+    "import/prefer-default-export": 0,
     "import/imports-first": ["error", "absolute-first"],
     "import/newline-after-import": "error",
     "jest/prefer-expect-assertions": 0,
