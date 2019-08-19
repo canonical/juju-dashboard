@@ -37,7 +37,7 @@ function fetchModelList(conn) {
   return async function(dispatch) {
     const modelManager = conn.facades.modelManager;
     const models = await modelManager.listModels({ tag: conn.info.identity });
-    dispatch(actions.updateModelList(models.userModels));
+    dispatch(actions.updateModelList(models));
   };
 }
 

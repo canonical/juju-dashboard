@@ -8,7 +8,7 @@ export default function jujuReducers(state = {}, action) {
   return produce(state, draftState => {
     switch (action.type) {
       case actionsList.updateModelList:
-        const modelList = action.models.map(model => {
+        const modelList = action.payload.userModels.map(model => {
           return {
             lastConnection: model.lastConnection,
             name: model.model.name,
@@ -17,7 +17,7 @@ export default function jujuReducers(state = {}, action) {
             uuid: model.model.uuid
           };
         });
-        draftState.models = modelList;
+        draftState.models = { items: modelList };
         break;
     }
   });
