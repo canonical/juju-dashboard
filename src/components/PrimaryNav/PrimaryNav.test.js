@@ -11,6 +11,6 @@ describe("Primary Nav", () => {
         <PrimaryNav />
       </Router>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper).toMatchInlineSnapshot();
   });
 });

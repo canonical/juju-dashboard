@@ -19,13 +19,12 @@ async function loginWithBakery() {
   try {
     const juju = await jujulib.connect(controllerURL, options);
     const conn = await juju.login({});
-    const modelManager = conn.facades.modelManager;
+    const { modelManager } = conn.facades;
     const models = await modelManager.listModels({ tag: conn.info.identity });
     console.log("models", models);
   } catch (error) {
     // XXX Surface error to UI.
     console.log("unable to connect:", error);
-    return;
   }
 }
 

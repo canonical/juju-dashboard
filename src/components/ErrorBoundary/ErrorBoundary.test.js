@@ -7,7 +7,7 @@ function ChildComponent() {
   return null;
 }
 
-describe("Error Boundary", () => {
+describe("error Boundary", () => {
   it("renders without crashing and matches snapshot", () => {
     const wrapper = mount(
       <ErrorBoundary>
@@ -16,6 +16,6 @@ describe("Error Boundary", () => {
     );
     const error = new Error("Oh noes!");
     wrapper.find(ChildComponent).simulateError(error);
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper).toMatchInlineSnapshot();
   });
 });

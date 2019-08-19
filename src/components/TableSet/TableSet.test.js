@@ -3,9 +3,9 @@ import { mount } from "enzyme";
 
 import TableSet from "./TableSet";
 
-describe("TableSet", () => {
+describe("tableSet", () => {
   it("renders without crashing and matches snapshot", () => {
     const wrapper = mount(<TableSet />);
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper).toMatchInlineSnapshot();
   });
 });
