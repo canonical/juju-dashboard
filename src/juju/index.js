@@ -8,7 +8,7 @@ const options = {
   bakery: new Bakery({
     visitPage: resp => {
       // XXX Surface message to UI.
-      console.log("visit this URL to login:", resp.Info.VisitURL);
+      console.log("visit this URL to login:", resp.Info.VisitURL); // eslint-disable-line no-console
     }
   })
 };
@@ -21,10 +21,10 @@ async function loginWithBakery() {
     const conn = await juju.login({});
     const { modelManager } = conn.facades;
     const models = await modelManager.listModels({ tag: conn.info.identity });
-    console.log("models", models);
+    console.log("models", models); // eslint-disable-line no-console
   } catch (error) {
     // XXX Surface error to UI.
-    console.log("unable to connect:", error);
+    console.log("unable to connect:", error); // eslint-disable-line no-console
   }
 }
 
