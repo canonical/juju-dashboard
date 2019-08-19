@@ -43,3 +43,4 @@ workflows:
     jobs:
       - run-tests
       - check-prettier
+      - check-eslint
