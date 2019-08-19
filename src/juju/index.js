@@ -1,5 +1,5 @@
 import jujulib from "@canonical/jujulib";
-import modelManager from "@canonical/jujulib/api/facades/model-manager-v5.js";
+import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import { Bakery } from "@canonical/macaroon-bakery";
 
 const options = {
