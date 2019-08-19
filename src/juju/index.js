@@ -20,7 +20,9 @@ async function loginWithBakery() {
     const juju = await jujulib.connect(controllerURL, options);
     const conn = await juju.login({});
     const modelManagerFacades = conn.facades.modelManager;
-    const models = await modelManagerFacades.listModels({ tag: conn.info.identity });
+    const models = await modelManagerFacades.listModels({
+      tag: conn.info.identity
+    });
     console.log("models", models); // eslint-disable-line no-console
   } catch (error) {
     // XXX Surface error to UI.
@@ -28,4 +30,4 @@ async function loginWithBakery() {
   }
 }
 
-export default loginWithBakery;
+export { loginWithBakery };
