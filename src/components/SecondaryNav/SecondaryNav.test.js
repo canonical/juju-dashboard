@@ -4,13 +4,13 @@ import { mount } from "enzyme";
 
 import SecondaryNav from "./SecondaryNav";
 
-describe("secondary Nav", () => {
+describe("Secondary Nav", () => {
   it("renders without crashing and matches snapshot", () => {
     const wrapper = mount(
       <Router>
         <SecondaryNav />
       </Router>
     );
-    expect(wrapper).toMatchInlineSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 });
