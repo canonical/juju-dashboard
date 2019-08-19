@@ -15,11 +15,13 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, info) {
     // Log to Sentry when enabled
-    console.log(error, info);
+    console.log(error, info); // eslint-disable-line no-console
   }
 
   render() {
-    if (this.state.hasError) {
+    const { hasError } = this.state;
+    const { children } = this.props;
+    if (hasError) {
       // Render error notification
       return (
         <div className="p-notification--negative">
@@ -34,6 +36,6 @@ export default class ErrorBoundary extends Component {
       );
     }
 
-    return this.props.children;
+    return children;
   }
 }
