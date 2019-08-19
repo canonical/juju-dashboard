@@ -28,4 +28,4 @@ async function loginWithBakery() {
   }
 }
 
-export { loginWithBakery };
+export default loginWithBakery;
