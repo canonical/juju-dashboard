@@ -27,6 +27,16 @@ jobs:
       - run:
           name: Run tests
           command: yarn prettier --check 'src/**/*'
+  check-eslint:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: yarn
+      - run:
+          name: Run linter
+          command: yarn run eslint-check
 workflows:
   version: 2
   build:
