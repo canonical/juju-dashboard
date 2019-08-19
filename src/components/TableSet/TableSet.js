@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React from "react";
 
 const tableSet = {
@@ -89,8 +90,15 @@ const tableSet = {
 
 const returnTableHeader = table => {
   const header = Object.keys(table[0]);
-  return header.map((key, index) => {
-    return <th key={index}>{key.toUpperCase()}</th>;
+  return header.map((key, i) => {
+    return <th key={i}>{key.toUpperCase()}</th>;
+  });
+};
+
+const returnTableBodyData = row => {
+  const td = Object.values(row);
+  return td.map((value, i) => {
+    return <td key={i}>{value}</td>;
   });
 };
 
@@ -100,21 +108,14 @@ const returnTableBodyRows = table => {
   });
 };
 
-const returnTableBodyData = row => {
-  const td = Object.values(row);
-  return td.map((value, index) => {
-    return <td key={index}>{value}</td>;
-  });
-};
-
-const renderTables = tableSet => {
-  const tables = Object.keys(tableSet);
-  return tables.map(key => (
-    <table key={key}>
+const renderTables = tablesObj => {
+  const tables = Object.keys(tablesObj);
+  return tables.map((key, i) => (
+    <table key={i}>
       <thead>
-        <tr>{returnTableHeader(tableSet[key])}</tr>
+        <tr>{returnTableHeader(tablesObj[key])}</tr>
       </thead>
-      <tbody>{returnTableBodyRows(tableSet[key])}</tbody>
+      <tbody>{returnTableBodyRows(tablesObj[key])}</tbody>
     </table>
   ));
 };
