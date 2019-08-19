@@ -1,0 +1,30 @@
+{
+  "extends": [
+    "react-app",
+    "airbnb",
+    "prettier",
+    "prettier/react",
+    "plugin:jest/all"
+  ],
+  "plugins": ["prettier"],
+  "rules": {
+    "react/prop-types": 0,
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js"]
+      }
+    ],
+    "import/prefer-default-export": 0,
+    "import/imports-first": ["error", "absolute-first"],
+    "import/newline-after-import": "error",
+    "jest/prefer-expect-assertions": 0,
+    "jest/prefer-inline-snapshots": 0,
+    "jest/lowercase-name": 0
+  },
+  "globals": {
+    "window": true,
+    "document": true,
+    "localStorage": true
+  }
+}

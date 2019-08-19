@@ -1,5 +1,5 @@
 import jujulib from "@canonical/jujulib";
-import modelManager from "@canonical/jujulib/api/facades/model-manager-v5.js";
+import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import { Bakery } from "@canonical/macaroon-bakery";
 
 const options = {
@@ -8,7 +8,7 @@ const options = {
   bakery: new Bakery({
     visitPage: resp => {
       // XXX Surface message to UI.
-      console.log("visit this URL to login:", resp.Info.VisitURL);
+      console.log("visit this URL to login:", resp.Info.VisitURL); // eslint-disable-line no-console
     }
   })
 };
@@ -19,13 +19,14 @@ async function loginWithBakery() {
   try {
     const juju = await jujulib.connect(controllerURL, options);
     const conn = await juju.login({});
-    const modelManager = conn.facades.modelManager;
-    const models = await modelManager.listModels({ tag: conn.info.identity });
-    console.log("models", models);
+    const modelManagerFacades = conn.facades.modelManager;
+    const models = await modelManagerFacades.listModels({
+      tag: conn.info.identity
+    });
+    console.log("models", models); // eslint-disable-line no-console
   } catch (error) {
     // XXX Surface error to UI.
-    console.log("unable to connect:", error);
-    return;
+    console.log("unable to connect:", error); // eslint-disable-line no-console
   }
 }
 

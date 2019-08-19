@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TableSet renders without crashing and matches snapshot 1`] = `
+exports[`Table Set renders without crashing and matches snapshot 1`] = `
 <TableSet>
   <table
-    key="blocked"
+    key="0"
   >
     <thead>
       <tr>
@@ -229,7 +229,7 @@ exports[`TableSet renders without crashing and matches snapshot 1`] = `
     </tbody>
   </table>
   <table
-    key="deploying"
+    key="1"
   >
     <thead>
       <tr>

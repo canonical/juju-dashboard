@@ -3,7 +3,7 @@ import { mount } from "enzyme";
 
 import TableSet from "./TableSet";
 
-describe("TableSet", () => {
+describe("Table Set", () => {
   it("renders without crashing and matches snapshot", () => {
     const wrapper = mount(<TableSet />);
     expect(wrapper).toMatchSnapshot();
