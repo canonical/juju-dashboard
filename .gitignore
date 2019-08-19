@@ -5,3 +5,4 @@ build/
 .yarn.canonical-webteam-jaas-dashboard*
 
 yarn-error.log
+/package-lock.json
