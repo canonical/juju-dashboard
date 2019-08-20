@@ -11,8 +11,10 @@ import App from "./App";
 import rootReducer from "./reducers/root";
 import * as serviceWorker from "./serviceWorker";
 
-import { fetchModelList, loginWithBakery } from "./juju";
+import { loginWithBakery } from "./juju";
 import jujuReducers from "./juju/reducers";
+import { fetchModelList } from "./juju/actions";
+import { actionsList } from "./reducers/actions";
 
 const reduxStore = createStore(
   combineReducers({
@@ -25,7 +27,11 @@ const reduxStore = createStore(
 async function connectAndListModels(reduxStore) {
   try {
     const conn = await loginWithBakery();
-    reduxStore.dispatch(fetchModelList(conn));
+    reduxStore.dispatch({
+      type: actionsList.updateControllerConnection,
+      payload: conn
+    });
+    reduxStore.dispatch(fetchModelList());
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry.
