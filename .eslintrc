@@ -20,7 +20,11 @@
     "import/newline-after-import": "error",
     "jest/prefer-expect-assertions": 0,
     "jest/prefer-inline-snapshots": 0,
-    "jest/lowercase-name": 0
+    "jest/lowercase-name": 0,
+    "default-case": 0,
+    "no-param-reassign": 0,
+    "no-case-declarations": 0,
+    "prefer-destructuring": 0
   },
   "globals": {
     "window": true,

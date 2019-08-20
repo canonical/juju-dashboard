@@ -15,19 +15,15 @@ const options = {
 
 const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
 
+/**
+  Connects to the controller at the url defined in the REACT_APP_CONTROLLER_URL
+  environment variable.
+  @returns {Object} conn The controller connection instance.
+*/
 async function loginWithBakery() {
-  try {
-    const juju = await jujulib.connect(controllerURL, options);
-    const conn = await juju.login({});
-    const modelManagerFacades = conn.facades.modelManager;
-    const models = await modelManagerFacades.listModels({
-      tag: conn.info.identity
-    });
-    console.log("models", models); // eslint-disable-line no-console
-  } catch (error) {
-    // XXX Surface error to UI.
-    console.log("unable to connect:", error); // eslint-disable-line no-console
-  }
+  const juju = await jujulib.connect(controllerURL, options);
+  const conn = await juju.login({});
+  return conn;
 }
 
 export { loginWithBakery };
