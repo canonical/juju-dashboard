@@ -1,5 +1,3 @@
-/* eslint-disable default-case */
-// immer handles the default case so one isn't needed.
 import produce from "immer";
 
 import { actionsList } from "./actions";

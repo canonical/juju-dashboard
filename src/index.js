@@ -24,6 +24,7 @@ const reduxStore = createStore(
   composeWithDevTools(applyMiddleware(thunk))
 );
 
+// eslint-disable-next-line no-shadow
 async function connectAndListModels(reduxStore) {
   try {
     const conn = await loginWithBakery();
@@ -35,8 +36,8 @@ async function connectAndListModels(reduxStore) {
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry.
+    // eslint-disable-next-line no-console
     console.log("Something went wrong: ", error);
-    return;
   }
 }
 

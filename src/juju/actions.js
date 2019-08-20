@@ -20,7 +20,7 @@ export function updateModelList(models) {
   @returns {Object} models The list of model objects under the key `userModels`.
 */
 export function fetchModelList() {
-  return async function(dispatch, getState) {
+  return async function thunk(dispatch, getState) {
     const conn = getState().root.controllerConnection;
     const modelManager = conn.facades.modelManager;
     const models = await modelManager.listModels({ tag: conn.info.identity });
