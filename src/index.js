@@ -5,7 +5,7 @@ import { createStore } from "redux";
 
 import "./scss/index.scss";
 
-import App from "./App";
+import App from "./components/App/App";
 import rootReducer from "./reducers/root";
 import * as serviceWorker from "./serviceWorker";
 

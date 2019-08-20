@@ -1,13 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
-import PrimaryNav from "./components/PrimaryNav/PrimaryNav";
-import SecondaryNav from "./components/SecondaryNav/SecondaryNav";
+import ErrorBoundary from "../ErrorBoundary/ErrorBoundary";
+import PrimaryNav from "../PrimaryNav/PrimaryNav";
+import SecondaryNav from "../SecondaryNav/SecondaryNav";
+import TableSet from "../TableSet/TableSet";
 
-import TableSet from "./components/TableSet/TableSet";
-
-import "./scss/_layout.scss";
+import "../../scss/_layout.scss";
 
 // All following components are placeholders and will be replaced with imports.
 function Models() {
