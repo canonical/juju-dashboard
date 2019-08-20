@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import React from "react";
 
 const tableSet = {
@@ -90,28 +89,28 @@ const tableSet = {
 
 const returnTableHeader = table => {
   const header = Object.keys(table[0]);
-  return header.map((key, i) => {
-    return <th key={i}>{key.toUpperCase()}</th>;
+  return header.map(key => {
+    return <th key={key.toString()}>{key.toUpperCase()}</th>;
   });
 };
 
 const returnTableBodyData = row => {
   const td = Object.values(row);
-  return td.map((value, i) => {
-    return <td key={i}>{value}</td>;
+  return td.map(value => {
+    return <td key={value.toString()}>{value}</td>;
   });
 };
 
 const returnTableBodyRows = table => {
-  return table.map((row, i) => {
-    return <tr key={i}>{returnTableBodyData(row)}</tr>;
+  return table.map(row => {
+    return <tr key={row.model}>{returnTableBodyData(row)}</tr>;
   });
 };
 
 const renderTables = tablesObj => {
   const tables = Object.keys(tablesObj);
   return tables.map((key, i) => (
-    <table key={i}>
+    <table key={tables[i]}>
       <thead>
         <tr>{returnTableHeader(tablesObj[key])}</tr>
       </thead>
