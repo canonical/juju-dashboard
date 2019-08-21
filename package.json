@@ -1,35 +1,29 @@
 {
   "name": "jaas-dashboard",
-  "description": "A dashboard for JAAS (Juju as a service)",
   "version": "0.0.1",
-  "main": "index.js",
+  "description": "A dashboard for JAAS (Juju as a service)",
+  "homepage": "https://github.com/canonical-web-and-design/jaas-dashboard#readme",
+  "bugs": {
+    "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/canonical-web-and-design/jaas-dashboard.git"
   },
-  "keywords": [
-    "juju",
-    "jaas",
-    "canonical",
-    "ubuntu"
-  ],
-  "author": {
-    "email": "webteam@canonical.com",
-    "name": "Canonical Webteam"
-  },
   "license": "LGPL-3.0",
-  "bugs": {
-    "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
+  "author": {
+    "name": "Canonical Webteam",
+    "email": "webteam@canonical.com"
   },
-  "homepage": "https://github.com/canonical-web-and-design/jaas-dashboard#readme",
+  "main": "index.js",
   "scripts": {
     "build": "react-scripts build",
     "clean": "./scripts/clean-files",
     "eslint-check": "eslint src/",
+    "prettier-check": "prettier --check 'src/**/*'",
     "serve": "yarn run start",
     "start": "react-scripts start",
-    "test": "react-scripts test",
-    "prettier-check": "prettier --check 'src/**/*'"
+    "test": "react-scripts test"
   },
   "browserslist": {
     "production": [
@@ -63,9 +57,9 @@
     "react-scripts": "3.0.1",
     "react-test-renderer": "16.9.0",
     "redux": "4.0.4",
-    "vanilla-framework": "2.3.0",
     "redux-devtools-extension": "2.13.8",
-    "redux-thunk": "2.3.0"
+    "redux-thunk": "2.3.0",
+    "vanilla-framework": "2.3.0"
   },
   "devDependencies": {
     "eslint-config-airbnb": "18.0.1",
