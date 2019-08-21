@@ -1,33 +1,29 @@
 {
   "name": "jaas-dashboard",
-  "description": "A dashboard for JAAS (Juju as a service)",
   "version": "0.0.1",
-  "main": "index.js",
+  "description": "A dashboard for JAAS (Juju as a service)",
+  "homepage": "https://github.com/canonical-web-and-design/jaas-dashboard#readme",
+  "bugs": {
+    "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/canonical-web-and-design/jaas-dashboard.git"
   },
-  "keywords": [
-    "juju",
-    "jaas",
-    "canonical",
-    "ubuntu"
-  ],
-  "author": "Jeff Pihach (https://fromanegg.com)",
   "license": "LGPL-3.0",
-  "bugs": {
-    "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
+  "author": {
+    "name": "Canonical Webteam",
+    "email": "webteam@canonical.com"
   },
-  "homepage": "https://github.com/canonical-web-and-design/jaas-dashboard#readme",
+  "main": "index.js",
   "scripts": {
     "build": "react-scripts build",
     "clean": "./scripts/clean-files",
     "eslint-check": "eslint src/",
+    "prettier-check": "prettier --check 'src/**/*'",
     "serve": "yarn run start",
     "start": "react-scripts start",
-    "test": "react-scripts test",
-    "prettier-check": "prettier --check 'src/**/*'",
-    "watch": ""
+    "test": "react-scripts test"
   },
   "browserslist": {
     "production": [
@@ -41,43 +37,40 @@
       "last 1 safari version"
     ]
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "jest": {
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ]
   },
   "dependencies": {
-    "@canonical/jujulib": "^1.3.0",
-    "@canonical/macaroon-bakery": "^0.3.0",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
-    "enzyme-to-json": "^3.4.0",
-    "immer": "^3.2.0",
+    "@canonical/jujulib": "1.3.0",
+    "@canonical/macaroon-bakery": "0.3.0",
+    "enzyme": "3.10.0",
+    "enzyme-adapter-react-16": "1.14.0",
+    "enzyme-to-json": "3.4.0",
+    "immer": "3.2.0",
     "node-sass": "4.12.0",
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "react-redux": "7.1.0",
-    "react-router-dom": "^5.0.1",
+    "react-router-dom": "5.0.1",
     "react-scripts": "3.0.1",
-    "react-test-renderer": "^16.9.0",
+    "react-test-renderer": "16.9.0",
     "redux": "4.0.4",
-    "redux-devtools-extension": "^2.13.8",
-    "redux-thunk": "^2.3.0",
+    "redux-devtools-extension": "2.13.8",
+    "redux-thunk": "2.3.0",
     "vanilla-framework": "2.3.0"
   },
   "devDependencies": {
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^22.15.1",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-react": "^7.14.3",
-    "eslint-plugin-react-hooks": "^1.7.0",
-    "prettier": "^1.18.2",
+    "eslint-config-airbnb": "18.0.1",
+    "eslint-config-prettier": "6.0.0",
+    "eslint-plugin-import": "2.18.2",
+    "eslint-plugin-jest": "22.15.1",
+    "eslint-plugin-jsx-a11y": "6.2.3",
+    "eslint-plugin-prettier": "3.1.0",
+    "eslint-plugin-react": "7.14.3",
+    "eslint-plugin-react-hooks": "1.7.0",
+    "prettier": "1.18.2",
     "redux-devtools": "3.5.0"
   }
 }
