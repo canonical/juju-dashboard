@@ -13,7 +13,10 @@
     "canonical",
     "ubuntu"
   ],
-  "author": "Jeff Pihach (https://fromanegg.com)",
+  "author": {
+    "email": "webteam@canonical.com",
+    "name": "Canonical Webteam"
+  },
   "license": "LGPL-3.0",
   "bugs": {
     "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
