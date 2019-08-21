@@ -26,8 +26,7 @@
     "serve": "yarn run start",
     "start": "react-scripts start",
     "test": "react-scripts test",
-    "prettier-check": "prettier --check 'src/**/*'",
-    "watch": ""
+    "prettier-check": "prettier --check 'src/**/*'"
   },
   "browserslist": {
     "production": [
