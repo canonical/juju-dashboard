@@ -40,9 +40,6 @@
       "last 1 safari version"
     ]
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "jest": {
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
