@@ -6,7 +6,7 @@
     "prettier/react",
     "plugin:jest/all"
   ],
-  "plugins": ["prettier"],
+  "plugins": ["prettier", "react-hooks"],
   "rules": {
     "react/prop-types": 0,
     "react/jsx-filename-extension": [
@@ -24,7 +24,9 @@
     "default-case": 0,
     "no-param-reassign": 0,
     "no-case-declarations": 0,
-    "prefer-destructuring": 0
+    "prefer-destructuring": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "globals": {
     "window": true,
