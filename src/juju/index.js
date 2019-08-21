@@ -1,16 +1,19 @@
 import jujulib from "@canonical/jujulib";
+import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import { Bakery } from "@canonical/macaroon-bakery";
 
+const bakery = new Bakery({
+  visitPage: resp => {
+    // XXX Surface message to UI.
+    console.log("visit this URL to login:", resp.Info.VisitURL); // eslint-disable-line no-console
+  }
+});
+
 const options = {
   debug: true,
-  facades: [modelManager],
-  bakery: new Bakery({
-    visitPage: resp => {
-      // XXX Surface message to UI.
-      console.log("visit this URL to login:", resp.Info.VisitURL); // eslint-disable-line no-console
-    }
-  })
+  facades: [client, modelManager],
+  bakery
 };
 
 const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
@@ -26,4 +29,11 @@ async function loginWithBakery() {
   return conn;
 }
 
-export { loginWithBakery };
+async function connectAndFetchModelStatus(modelUUID) {
+  const modelURL = controllerURL.replace("/api", `/model/${modelUUID}/api`);
+  const juju = await jujulib.connectAndLogin(modelURL, {}, options);
+  const status = juju.conn.facades.client.fullStatus();
+  return status;
+}
+
+export { loginWithBakery, connectAndFetchModelStatus };
