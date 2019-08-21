@@ -11,7 +11,7 @@ import App from "./components/App/App";
 import rootReducer from "./reducers/root";
 import * as serviceWorker from "./serviceWorker";
 
-import { loginWithBakery } from "./juju";
+import { connectAndFetchModelStatus, loginWithBakery } from "./juju";
 import jujuReducers from "./juju/reducers";
 import { fetchModelList } from "./juju/actions";
 import { actionsList } from "./reducers/actions";
@@ -27,12 +27,27 @@ const reduxStore = createStore(
 // eslint-disable-next-line no-shadow
 async function connectAndListModels(reduxStore) {
   try {
+    // eslint-disable-next-line no-console
+    console.log("Logging into the Juju controller.");
     const conn = await loginWithBakery();
     reduxStore.dispatch({
       type: actionsList.updateControllerConnection,
       payload: conn
     });
-    reduxStore.dispatch(fetchModelList());
+    // eslint-disable-next-line no-console
+    console.log("Fetching model list.");
+    await reduxStore.dispatch(fetchModelList());
+    // This will only loop through once and fetch the status. A windowed poller
+    // needs to be setup instead, it will also need to periodically poll
+    // listModels to update the model lists.
+    const modelList = reduxStore.getState().juju.models.items;
+    // eslint-disable-next-line no-console
+    console.log("Fetching model statuses");
+    modelList.forEach(model => {
+      connectAndFetchModelStatus(model.uuid).then(status => {
+        console.log(status);
+      });
+    });
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry.
