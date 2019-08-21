@@ -13,7 +13,7 @@ import * as serviceWorker from "./serviceWorker";
 
 import { connectAndFetchModelStatus, loginWithBakery } from "./juju";
 import jujuReducers from "./juju/reducers";
-import { fetchModelList } from "./juju/actions";
+import { actionsList as jujuActionsList, fetchModelList } from "./juju/actions";
 import { actionsList } from "./reducers/actions";
 
 const reduxStore = createStore(
@@ -43,11 +43,24 @@ async function connectAndListModels(reduxStore) {
     const modelList = reduxStore.getState().juju.models.items;
     // eslint-disable-next-line no-console
     console.log("Fetching model statuses");
-    modelList.forEach(model => {
-      connectAndFetchModelStatus(model.uuid).then(status => {
-        console.log(status);
+
+    // Using a for loop here for performance reasons for users with many models.
+    // eslint-disable-next-line no-restricted-syntax
+    for (const modelUUID in modelList) {
+      if (!Object.prototype.hasOwnProperty.call(modelList, modelUUID)) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      connectAndFetchModelStatus(modelUUID).then(status => {
+        reduxStore.dispatch({
+          type: jujuActionsList.updateModelStatus,
+          payload: {
+            modelUUID,
+            status
+          }
+        });
       });
-    });
+    }
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry.
