@@ -114,7 +114,7 @@ const returnTableBodyRows = table => {
 const renderTables = tablesObj => {
   const tables = Object.keys(tablesObj);
   return tables.map((key, i) => (
-    <Table key={tables[i]}>
+    <Table key={tables[i]} sortable>
       <thead>
         <TableRow>{returnTableHeader(tablesObj[key])}</TableRow>
       </thead>
