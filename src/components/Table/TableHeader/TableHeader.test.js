@@ -7,7 +7,7 @@ describe("TableHeader", () => {
   it("renders", () => {
     const wrapper = shallow(
       <TableHeader>
-        <tr></tr>
+        <tr />
       </TableHeader>
     );
     expect(wrapper).toMatchSnapshot();
@@ -15,6 +15,6 @@ describe("TableHeader", () => {
 
   it("can set a sort", () => {
     const wrapper = shallow(<TableHeader sort="ascending" />);
-    expect(wrapper.prop("aria-sort")).toEqual("ascending");
+    expect(wrapper.prop("aria-sort")).toStrictEqual("ascending");
   });
 });

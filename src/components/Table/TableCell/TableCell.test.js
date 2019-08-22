@@ -11,27 +11,27 @@ describe("TableCell", () => {
 
   it("can set a role", () => {
     const wrapper = shallow(<TableCell role="rowheader" />);
-    expect(wrapper.prop("role")).toEqual("rowheader");
+    expect(wrapper.prop("role")).toStrictEqual("rowheader");
   });
 
   it("can be hidden", () => {
-    const wrapper = shallow(<TableCell hidden={true} />);
+    const wrapper = shallow(<TableCell hidden />);
     expect(wrapper.prop("aria-hidden")).toBe(true);
   });
 
   it("can add be expanding", () => {
-    const wrapper = shallow(<TableCell expanding={true} />);
-    expect(wrapper.prop("className").includes("p-table-expanding__panel")).toBe(
-      true
+    const wrapper = shallow(<TableCell expanding />);
+    expect(wrapper.prop("className")).toContain(
+      "p-table-expanding__panel"
     );
   });
 
   it("can add additional classes", () => {
     const wrapper = shallow(
-      <TableCell expanding={true} className="extra-class" />
+      <TableCell expanding className="extra-class" />
     );
     const className = wrapper.prop("className");
-    expect(className.includes("p-table-expanding__panel")).toBe(true);
-    expect(className.includes("extra-class")).toBe(true);
+    expect(className).toContain("p-table-expanding__panel");
+    expect(className).toContain("extra-class");
   });
 });

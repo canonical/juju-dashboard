@@ -7,33 +7,33 @@ describe("Table", () => {
   it("renders", () => {
     const wrapper = shallow(
       <Table>
-        <thead></thead>
+        <thead />
       </Table>
     );
     expect(wrapper).toMatchSnapshot();
   });
 
   it("can be sortable", () => {
-    const wrapper = shallow(<Table sortable={true} />);
-    expect(wrapper.prop("className").includes("p-table--sortable")).toBe(true);
+    const wrapper = shallow(<Table sortable />);
+    expect(wrapper.prop("className")).toContain("p-table--sortable");
   });
 
   it("can be expanding", () => {
-    const wrapper = shallow(<Table expanding={true} />);
-    expect(wrapper.prop("className").includes("p-table-expanding")).toBe(true);
+    const wrapper = shallow(<Table expanding />);
+    expect(wrapper.prop("className")).toContain("p-table-expanding");
   });
 
   it("can be responsive", () => {
-    const wrapper = shallow(<Table responsive={true} />);
-    expect(wrapper.prop("className").includes("p-table--mobile-card")).toBe(
-      true
+    const wrapper = shallow(<Table responsive />);
+    expect(wrapper.prop("className")).toContain(
+      "p-table--mobile-card"
     );
   });
 
   it("can pass additional classes", () => {
-    const wrapper = shallow(<Table sortable={true} className="extra-class" />);
+    const wrapper = shallow(<Table sortable className="extra-class" />);
     const className = wrapper.prop("className");
-    expect(className.includes("p-table--sortable")).toBe(true);
-    expect(className.includes("extra-class")).toBe(true);
+    expect(className).toContain("p-table--sortable");
+    expect(className).toContain("extra-class");
   });
 });

@@ -7,7 +7,7 @@ describe("TableRow", () => {
   it("renders", () => {
     const wrapper = shallow(
       <TableRow>
-        <td></td>
+        <td />
       </TableRow>
     );
     expect(wrapper).toMatchSnapshot();
