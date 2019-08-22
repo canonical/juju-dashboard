@@ -12,6 +12,10 @@ $color-navigation-background: $color-brand;
 @include vf-p-navigation;
 @include vf-u-off-screen;
 @include vf-p-strip;
+@include vf-p-table-expanding;
+@include vf-p-table-of-contents;
+@include vf-p-table-mobile-card;
+@include vf-p-table-sortable;
 
 // Fix consecutive table bug
 // https://github.com/canonical-web-and-design/vanilla-framework/issues/2491
