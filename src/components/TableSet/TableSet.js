@@ -1,4 +1,8 @@
 import React from "react";
+import Table from "../Table/Table";
+import TableHeader from "../Table/TableHeader/TableHeader";
+import TableRow from "../Table/TableRow/TableRow";
+import TableCell from "../Table/TableCell/TableCell";
 
 const tableSet = {
   blocked: [
@@ -90,32 +94,32 @@ const tableSet = {
 const returnTableHeader = table => {
   const header = Object.keys(table[0]);
   return header.map(key => {
-    return <th key={key.toString()}>{key.toUpperCase()}</th>;
+    return <TableHeader key={key.toString()}>{key.toUpperCase()}</TableHeader>;
   });
 };
 
 const returnTableBodyData = row => {
   const td = Object.values(row);
   return td.map(value => {
-    return <td key={value.toString()}>{value}</td>;
+    return <TableCell key={value.toString()}>{value}</TableCell>;
   });
 };
 
 const returnTableBodyRows = table => {
   return table.map(row => {
-    return <tr key={row.model}>{returnTableBodyData(row)}</tr>;
+    return <TableRow key={row.model}>{returnTableBodyData(row)}</TableRow>;
   });
 };
 
 const renderTables = tablesObj => {
   const tables = Object.keys(tablesObj);
   return tables.map((key, i) => (
-    <table key={tables[i]}>
+    <Table key={tables[i]}>
       <thead>
-        <tr>{returnTableHeader(tablesObj[key])}</tr>
+        <TableRow>{returnTableHeader(tablesObj[key])}</TableRow>
       </thead>
       <tbody>{returnTableBodyRows(tablesObj[key])}</tbody>
-    </table>
+    </Table>
   ));
 };
 
