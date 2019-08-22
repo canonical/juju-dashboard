@@ -25,9 +25,7 @@ describe("Table", () => {
 
   it("can be responsive", () => {
     const wrapper = shallow(<Table responsive />);
-    expect(wrapper.prop("className")).toContain(
-      "p-table--mobile-card"
-    );
+    expect(wrapper.prop("className")).toContain("p-table--mobile-card");
   });
 
   it("can pass additional classes", () => {

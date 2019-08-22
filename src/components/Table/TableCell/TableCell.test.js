@@ -21,15 +21,11 @@ describe("TableCell", () => {
 
   it("can add be expanding", () => {
     const wrapper = shallow(<TableCell expanding />);
-    expect(wrapper.prop("className")).toContain(
-      "p-table-expanding__panel"
-    );
+    expect(wrapper.prop("className")).toContain("p-table-expanding__panel");
   });
 
   it("can add additional classes", () => {
-    const wrapper = shallow(
-      <TableCell expanding className="extra-class" />
-    );
+    const wrapper = shallow(<TableCell expanding className="extra-class" />);
     const className = wrapper.prop("className");
     expect(className).toContain("p-table-expanding__panel");
     expect(className).toContain("extra-class");
