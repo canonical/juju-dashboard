@@ -1,6 +1,7 @@
 // Action labels
 export const actionsList = {
   fetchModelList: "FETCH_MODEL_LIST",
+  updateModelStatus: "UPDATE_MODEL_STATUS",
   updateModelList: "UPDATE_MODEL_LIST"
 };
 
