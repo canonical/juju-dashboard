@@ -1,11 +1,5 @@
 {
-  "extends": [
-    "react-app",
-    "airbnb",
-    "prettier",
-    "prettier/react",
-    "plugin:jest/all"
-  ],
+  "extends": ["react-app", "prettier", "prettier/react", "plugin:jest/all"],
   "plugins": ["prettier"],
   "rules": {
     "react/prop-types": 0,
