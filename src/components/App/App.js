@@ -4,16 +4,49 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import ErrorBoundary from "../ErrorBoundary/ErrorBoundary";
 import PrimaryNav from "../PrimaryNav/PrimaryNav";
 import SecondaryNav from "../SecondaryNav/SecondaryNav";
-import TableSet from "../TableSet/TableSet";
+import MainTable from "../MainTable/MainTable";
 
 import "../../scss/_layout.scss";
+
+const MainTableHeaders = [
+  { content: null },
+  { content: "Foundation Cloud" },
+  { content: "Foundation Cloud Plus" }
+];
+
+const MainTableRows = [
+  {
+    columns: [
+      {
+        content: "Expert delivery of an Ubuntu OpenStack cloud",
+        role: "rowheader"
+      },
+      { content: "Reference architecture" },
+      { content: "Custom architecture" }
+    ]
+  },
+  {
+    columns: [
+      { content: "Workshop and training", role: "rowheader" },
+      { content: "2-days" },
+      { content: "4-days" }
+    ]
+  },
+  {
+    columns: [
+      { content: "One-time price", role: "rowheader" },
+      { content: "$75,000" },
+      { content: "$150,000" }
+    ]
+  }
+];
 
 // All following components are placeholders and will be replaced with imports.
 function Models() {
   return (
     <>
       <h2>Models</h2>
-      <TableSet />
+      <MainTable headers={MainTableHeaders} rows={MainTableRows} />
     </>
   );
 }
