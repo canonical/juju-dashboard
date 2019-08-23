@@ -9,35 +9,54 @@ import MainTable from "../MainTable/MainTable";
 import "../../scss/_layout.scss";
 
 const MainTableHeaders = [
-  { content: null },
-  { content: "Foundation Cloud" },
-  { content: "Foundation Cloud Plus" }
+  { content: "Status", sortKey: "status" },
+  { content: "Cores", sortKey: "cores", className: "u-align--right" },
+  { content: "RAM", sortKey: "ram", className: "u-align--right" },
+  { content: "Disks", sortKey: "disks", className: "u-align--right" }
 ];
 
 const MainTableRows = [
   {
     columns: [
-      {
-        content: "Expert delivery of an Ubuntu OpenStack cloud",
-        role: "rowheader"
-      },
-      { content: "Reference architecture" },
-      { content: "Custom architecture" }
-    ]
+      { content: "Ready", role: "rowheader" },
+      { content: 1, className: "u-align--right" },
+      { content: "1 GiB", className: "u-align--right" },
+      { content: 2, className: "u-align--right" }
+    ],
+    sortData: {
+      status: "ready",
+      cores: 2,
+      ram: 1,
+      disks: 2
+    }
   },
   {
     columns: [
-      { content: "Workshop and training", role: "rowheader" },
-      { content: "2-days" },
-      { content: "4-days" }
-    ]
+      { content: "Idle", role: "rowheader" },
+      { content: 1, className: "u-align--right" },
+      { content: "1 GiB", className: "u-align--right" },
+      { content: 2, className: "u-align--right" }
+    ],
+    sortData: {
+      status: "idle",
+      cores: 1,
+      ram: 1,
+      disks: 2
+    }
   },
   {
     columns: [
-      { content: "One-time price", role: "rowheader" },
-      { content: "$75,000" },
-      { content: "$150,000" }
-    ]
+      { content: "Waiting", role: "rowheader" },
+      { content: 8, className: "u-align--right" },
+      { content: "3.9 GiB", className: "u-align--right" },
+      { content: 3, className: "u-align--right" }
+    ],
+    sortData: {
+      status: "waiting",
+      cores: 8,
+      ram: 3.9,
+      disks: 3
+    }
   }
 ];
 
@@ -46,7 +65,7 @@ function Models() {
   return (
     <>
       <h2>Models</h2>
-      <MainTable headers={MainTableHeaders} rows={MainTableRows} />
+      <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
     </>
   );
 }

@@ -121,7 +121,6 @@ describe("MainTable", () => {
     const headers = setupHeaders();
     const rows = setupRows();
     const sortedTable = setupSortableTable();
-    console.log(sortedTable);
     it("can be sortable", () => {
       const wrapper = shallow(
         <MainTable
@@ -177,7 +176,6 @@ describe("MainTable", () => {
     });
 
     it("can sort when clicking on a header", () => {
-      console.log(headers);
       const wrapper = shallow(
         <MainTable
           headers={sortedTable.headers}
@@ -185,7 +183,6 @@ describe("MainTable", () => {
           sortable={true}
         />
       );
-      console.log(wrapper);
       let rowItems = wrapper.find("tbody TableRow");
       // Check the initial status order.
       expect(
