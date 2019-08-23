@@ -1,2 +1,3 @@
 node_modules
 *.snap
+.DS_Store
