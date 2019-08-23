@@ -4,9 +4,6 @@ import { actionsList } from "./actions";
 
 export default produce(
   (draftState, action) => {
-    // The below is required because CRA ignores the eslint configuration file
-    // during development and adds warnings in the dev console.
-    // eslint-disable-next-line default-case
     switch (action.type) {
       case actionsList.updateModelList:
         const modelList = {};

@@ -24,7 +24,6 @@ const reduxStore = createStore(
   composeWithDevTools(applyMiddleware(thunk))
 );
 
-// eslint-disable-next-line no-shadow
 async function connectAndListModels(reduxStore) {
   try {
     // eslint-disable-next-line no-console
@@ -45,10 +44,8 @@ async function connectAndListModels(reduxStore) {
     console.log("Fetching model statuses");
 
     // Using a for loop here for performance reasons for users with many models.
-    // eslint-disable-next-line no-restricted-syntax
     for (const modelUUID in modelList) {
       if (!Object.prototype.hasOwnProperty.call(modelList, modelUUID)) {
-        // eslint-disable-next-line no-continue
         continue;
       }
       connectAndFetchModelStatus(modelUUID).then(status => {
