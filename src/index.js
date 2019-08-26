@@ -11,7 +11,7 @@ import App from "./components/App/App";
 import rootReducer from "./reducers/root";
 import * as serviceWorker from "./serviceWorker";
 
-import { connectAndFetchModelStatus, loginWithBakery } from "./juju";
+import { fetchAllModelStatuses, loginWithBakery } from "./juju";
 import jujuReducers from "./juju/reducers";
 import { actionsList as jujuActionsList, fetchModelList } from "./juju/actions";
 import { actionsList } from "./reducers/actions";
@@ -42,20 +42,16 @@ async function connectAndListModels(reduxStore) {
     const modelList = reduxStore.getState().juju.models.items;
     // eslint-disable-next-line no-console
     console.log("Fetching model statuses");
-
-    // Using a for loop here for performance reasons for users with many models.
-    for (const modelUUID in modelList) {
-      if (!Object.prototype.hasOwnProperty.call(modelList, modelUUID)) {
-        continue;
-      }
-      connectAndFetchModelStatus(modelUUID).then(status => {
-        reduxStore.dispatch({
-          type: jujuActionsList.updateModelStatus,
-          payload: {
-            modelUUID,
-            status
-          }
-        });
+    // when is this done so we can restart timer?
+    let continuePolling = true;
+    while (continuePolling) {
+      await fetchAllModelStatuses(modelList, reduxStore.dispatch);
+      // Wait 30s then start again.
+      continuePolling = await new Promise(resolve => {
+        setTimeout(() => {
+          // XXX Add ability to toggle true to false to pause polling.
+          resolve(true);
+        }, 30000);
       });
     }
   } catch (error) {
