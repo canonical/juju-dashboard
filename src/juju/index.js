@@ -1,7 +1,10 @@
+import Limiter from "async-limiter";
 import jujulib from "@canonical/jujulib";
 import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import { Bakery } from "@canonical/macaroon-bakery";
+
+import { actionsList } from "./actions";
 
 const bakery = new Bakery({
   visitPage: resp => {
@@ -10,12 +13,14 @@ const bakery = new Bakery({
   }
 });
 
+// The options used when connecting to a Juju controller or model.
 const options = {
   debug: true,
   facades: [client, modelManager],
   bakery
 };
 
+// Full URL path to the controller.
 const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
 
 /**
@@ -29,11 +34,52 @@ async function loginWithBakery() {
   return conn;
 }
 
-async function connectAndFetchModelStatus(modelUUID) {
+/**
+  Connects to the model url by doing a replacement on the controller url and
+  fetches it's full status then logs out of the model and closes the connection.
+  @param {String} modelUUID The UUID of the model to connect to. Must be on the
+    same controller as provided by the controllerURL`.
+  @returns {Object} The full model status.
+*/
+async function fetchModelStatus(modelUUID) {
   const modelURL = controllerURL.replace("/api", `/model/${modelUUID}/api`);
-  const juju = await jujulib.connectAndLogin(modelURL, {}, options);
-  const status = juju.conn.facades.client.fullStatus();
+  const { conn, logout } = await jujulib.connectAndLogin(modelURL, {}, options);
+  const status = await conn.facades.client.fullStatus();
+  logout();
   return status;
 }
 
-export { loginWithBakery, connectAndFetchModelStatus };
+/**
+  Loops through each model UUID to fetch the status. Uppon receiving the status
+  dispatches to store that status data.
+  @param {Object} modelList The list of models where the key is the model's
+    UUID and the body is the models info.
+  @param {Function} dispatch The function to call with the action to store the
+    model status.
+  @returns {Promise} Resolves when the queue fetching the model statuses has
+    completed. Does not reject.
+*/
+async function fetchAllModelStatuses(modelList, dispatch) {
+  const queue = new Limiter({ concurrency: 5 });
+  const modelUUIDs = Object.keys(modelList);
+  modelUUIDs.forEach(modelUUID => {
+    queue.push(async done => {
+      const status = await fetchModelStatus(modelUUID);
+      dispatch({
+        type: actionsList.updateModelStatus,
+        payload: {
+          modelUUID: modelUUID,
+          status
+        }
+      });
+      done();
+    });
+  });
+  return new Promise(resolve => {
+    queue.onDone(() => {
+      resolve();
+    });
+  });
+}
+
+export { loginWithBakery, fetchAllModelStatuses };
