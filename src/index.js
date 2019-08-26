@@ -13,7 +13,7 @@ import * as serviceWorker from "./serviceWorker";
 
 import { fetchAllModelStatuses, loginWithBakery } from "./juju";
 import jujuReducers from "./juju/reducers";
-import { actionsList as jujuActionsList, fetchModelList } from "./juju/actions";
+import { fetchModelList } from "./juju/actions";
 import { actionsList } from "./reducers/actions";
 
 const reduxStore = createStore(
@@ -36,16 +36,15 @@ async function connectAndListModels(reduxStore) {
     // eslint-disable-next-line no-console
     console.log("Fetching model list.");
     await reduxStore.dispatch(fetchModelList());
-    // This will only loop through once and fetch the status. A windowed poller
-    // needs to be setup instead, it will also need to periodically poll
-    // listModels to update the model lists.
-    const modelList = reduxStore.getState().juju.models.items;
     // eslint-disable-next-line no-console
     console.log("Fetching model statuses");
-    // when is this done so we can restart timer?
+
     let continuePolling = true;
     while (continuePolling) {
-      await fetchAllModelStatuses(modelList, reduxStore.dispatch);
+      await fetchAllModelStatuses(
+        reduxStore.getState().juju.models,
+        reduxStore.dispatch
+      );
       // Wait 30s then start again.
       continuePolling = await new Promise(resolve => {
         setTimeout(() => {
@@ -53,6 +52,8 @@ async function connectAndListModels(reduxStore) {
           resolve(true);
         }, 30000);
       });
+      // Fetch the model list again as it may have changed.
+      await reduxStore.dispatch(fetchModelList());
     }
   } catch (error) {
     // XXX Surface error to UI.
