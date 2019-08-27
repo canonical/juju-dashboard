@@ -7,6 +7,7 @@ import TableList from "../TableList/TableList";
 import PrimaryNav from "../PrimaryNav/PrimaryNav";
 import SecondaryNav from "../SecondaryNav/SecondaryNav";
 import MainTable from "../MainTable/MainTable";
+import Shell from "../Shell/Shell";
 
 import "../../scss/_layout.scss";
 
@@ -36,6 +37,7 @@ function ModelsExample(props) {
     <Layout>
       <h2>{props.match.params.id}</h2>
       <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
+      <Shell />
     </Layout>
   );
 }
