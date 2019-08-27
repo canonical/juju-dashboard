@@ -16,14 +16,15 @@ export default produce(
             uuid: model.model.uuid
           };
         });
-        draftState.models.items = modelList;
+        draftState.models = modelList;
         break;
       case actionsList.updateModelStatus:
         const payload = action.payload;
-        draftState.models.items[payload.modelUUID].status = payload.status;
+        draftState.modelStatuses[payload.modelUUID] = payload.status;
     }
   },
   {
-    models: { items: {} }
+    models: {},
+    modelStatuses: {}
   }
 );

@@ -11,9 +11,9 @@ import App from "./components/App/App";
 import rootReducer from "./reducers/root";
 import * as serviceWorker from "./serviceWorker";
 
-import { connectAndFetchModelStatus, loginWithBakery } from "./juju";
+import { fetchAllModelStatuses, loginWithBakery } from "./juju";
 import jujuReducers from "./juju/reducers";
-import { actionsList as jujuActionsList, fetchModelList } from "./juju/actions";
+import { fetchModelList } from "./juju/actions";
 import { actionsList } from "./reducers/actions";
 
 const reduxStore = createStore(
@@ -36,27 +36,24 @@ async function connectAndListModels(reduxStore) {
     // eslint-disable-next-line no-console
     console.log("Fetching model list.");
     await reduxStore.dispatch(fetchModelList());
-    // This will only loop through once and fetch the status. A windowed poller
-    // needs to be setup instead, it will also need to periodically poll
-    // listModels to update the model lists.
-    const modelList = reduxStore.getState().juju.models.items;
     // eslint-disable-next-line no-console
     console.log("Fetching model statuses");
 
-    // Using a for loop here for performance reasons for users with many models.
-    for (const modelUUID in modelList) {
-      if (!Object.prototype.hasOwnProperty.call(modelList, modelUUID)) {
-        continue;
-      }
-      connectAndFetchModelStatus(modelUUID).then(status => {
-        reduxStore.dispatch({
-          type: jujuActionsList.updateModelStatus,
-          payload: {
-            modelUUID,
-            status
-          }
-        });
+    let continuePolling = true;
+    while (continuePolling) {
+      await fetchAllModelStatuses(
+        reduxStore.getState().juju.models,
+        reduxStore.dispatch
+      );
+      // Wait 30s then start again.
+      continuePolling = await new Promise(resolve => {
+        setTimeout(() => {
+          // XXX Add ability to toggle true to false to pause polling.
+          resolve(true);
+        }, 30000);
       });
+      // Fetch the model list again as it may have changed.
+      await reduxStore.dispatch(fetchModelList());
     }
   } catch (error) {
     // XXX Surface error to UI.
