@@ -1,10 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
+import Layout from "../Layout/Layout";
 import ErrorBoundary from "../ErrorBoundary/ErrorBoundary";
 import TableList from "../TableList/TableList";
 import PrimaryNav from "../PrimaryNav/PrimaryNav";
 import SecondaryNav from "../SecondaryNav/SecondaryNav";
+import MainTable from "../MainTable/MainTable";
 
 import "../../scss/_layout.scss";
 
@@ -22,10 +24,19 @@ const modelTableHeaders = [
 // All following components are placeholders and will be replaced with imports.
 function Models() {
   return (
-    <>
+    <Layout sidebar>
       <h2>Models</h2>
-      <TableList tableHeaders={modelTableHeaders} />
-    </>
+      <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
+    </Layout>
+  );
+}
+
+function ModelsExample(props) {
+  return (
+    <Layout>
+      <h2>{props.match.params.id}</h2>
+      <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
+    </Layout>
   );
 }
 
@@ -52,24 +63,15 @@ function Logs() {
 function App() {
   return (
     <Router>
-      <PrimaryNav />
-      <div className="l-container">
-        <div className="l-side">
-          <SecondaryNav />
-        </div>
-        <div className="l-main">
-          <main id="main-content">
-            <ErrorBoundary>
-              <Route path="/" exact component={Models} />
-              <Route path="/clouds" exact component={Clouds} />
-              <Route path="/kubernetes" exact component={Kubernetes} />
-              <Route path="/controllers" exact component={Controllers} />
-              <Route path="/usage" exact component={Usage} />
-              <Route path="/logs" exact component={Logs} />
-            </ErrorBoundary>
-          </main>
-        </div>
-      </div>
+      <ErrorBoundary>
+        <Route path="/" exact component={Models} />
+        <Route path="/models/:id" exact component={ModelsExample} />
+        <Route path="/clouds" exact component={Clouds} />
+        <Route path="/kubernetes" exact component={Kubernetes} />
+        <Route path="/controllers" exact component={Controllers} />
+        <Route path="/usage" exact component={Usage} />
+        <Route path="/logs" exact component={Logs} />
+      </ErrorBoundary>
     </Router>
   );
 }
