@@ -3,7 +3,7 @@ import Button from "../Button/Button";
 
 import "./_filter.scss";
 
-const Filter = props => {
+const Filter = ({label, filter}) => {
   const { label, filters } = props;
   const filterButtons = filters.map(filter => (
     <span key={filter} className="p-filter__item">
