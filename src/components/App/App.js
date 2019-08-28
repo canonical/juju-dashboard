@@ -22,8 +22,10 @@ const modelTableHeaders = [
 function Models() {
   return (
     <Layout sidebar>
-      <h2>Models</h2>
-      <MainTable headers={modelTableHeaders} sortable />
+      <div className="row" style={{ paddingTop: "1rem" }}>
+        <h2>Models</h2>
+        <MainTable headers={modelTableHeaders} sortable />
+      </div>
     </Layout>
   );
 }
