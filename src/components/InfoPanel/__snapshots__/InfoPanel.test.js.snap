@@ -73,5 +73,9 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
       </p>
     </div>
   </div>
+  <img
+    alt=""
+    src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+  />
 </div>
 `;

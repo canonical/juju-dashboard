@@ -35,6 +35,10 @@ export default class InfoPanel extends Component {
     return (
       <div className="info-panel">
         <div className="info-panel__grid">{gridItems}</div>
+        <img
+          src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+          alt=""
+        />
       </div>
     );
   }
