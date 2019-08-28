@@ -52,6 +52,21 @@ jobs:
           key: yarn-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+  check-stylelint:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-{{ checksum "yarn.lock" }}
+      - run: yarn
+      - run:
+          name: Run linter
+          command: yarn run stylelint-check
+      - save_cache:
+          key: yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
 workflows:
   version: 2
   build:
@@ -59,3 +74,4 @@ workflows:
       - run-tests
       - check-prettier
       - check-eslint
+      - check-stylelint

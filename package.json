@@ -23,6 +23,7 @@
     "prettier-check": "prettier --check 'src/**/*'",
     "serve": "yarn run start",
     "start": "react-scripts start",
+    "stylelint-check": "stylelint 'src/**/*.scss'",
     "test": "react-scripts test"
   },
   "browserslist": {
@@ -74,6 +75,9 @@
     "eslint-plugin-prettier": "3.1.0",
     "eslint-plugin-react": "7.14.3",
     "prettier": "1.18.2",
-    "redux-devtools": "3.5.0"
+    "redux-devtools": "3.5.0",
+    "stylelint": "^10.1.0",
+    "stylelint-config-standard": "^18.3.0",
+    "stylelint-order": "^3.0.1"
   }
 }
