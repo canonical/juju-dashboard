@@ -1,19 +1,21 @@
 import React, { Component } from "react";
 import Button from "../Button/Button";
 
+import "./_filter.scss";
+
 export default class Filter extends Component {
   render() {
     const { label, filters } = this.props;
     const filterButtons = filters.map(filter => (
-      <li key={filter} className="p-inline-list__item">
+      <span key={filter} className="p-filter__item">
         <Button>{filter}</Button>
-      </li>
+      </span>
     ));
     return (
-      <ul className="p-inline-list">
-        <li className="p-inline-list__item">{label}</li>
+      <div className="p-filter">
+        <span className="p-filter__label">{label}</span>
         {filterButtons}
-      </ul>
+      </div>
     );
   }
 }
