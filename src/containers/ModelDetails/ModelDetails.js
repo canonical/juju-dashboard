@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 import Shell from "../../components/Shell/Shell";
 import Filter from "../../components/Filter/Filter";
@@ -79,22 +79,22 @@ const MainTableRows = [
   }
 ];
 
-export default class ModelDetails extends Component {
-  render() {
-    const viewFilters = ["all", "apps", "units", "machines", "relations"];
-    const statusFilters = ["all", "maintenance", "blocked"];
-    return (
-      <div className="model-details">
-        <InfoPanel />
-        <div className="model-details__main">
-          <div className="model-details__filters">
-            <Filter label="View" filters={viewFilters} />
-            <Filter label="Status" filters={statusFilters} />
-          </div>
-          <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
+const ModelDetails = () => {
+  const viewFilters = ["all", "apps", "units", "machines", "relations"];
+  const statusFilters = ["all", "maintenance", "blocked"];
+  return (
+    <div className="model-details">
+      <InfoPanel />
+      <div className="model-details__main">
+        <div className="model-details__filters">
+          <Filter label="View" filters={viewFilters} />
+          <Filter label="Status" filters={statusFilters} />
         </div>
-        <Shell />
+        <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
       </div>
-    );
-  }
-}
+      <Shell />
+    </div>
+  );
+};
+
+export default ModelDetails;
