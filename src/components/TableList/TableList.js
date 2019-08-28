@@ -11,20 +11,22 @@ import MainTable from "../MainTable/MainTable";
 */
 function generateModelTableData(state) {
   const models = state.juju.models;
+  const modelInfo = state.juju.modelInfo;
   return Object.keys(models).map(modelUUID => {
-    const info = models[modelUUID];
+    const modelListData = models[modelUUID];
+    const modelInfoData = modelInfo[modelUUID];
     const modelStatus = state.juju.modelStatuses[modelUUID];
     return {
       columns: [
-        { content: info.name },
-        { content: info.ownerTag.split("@")[0].replace("user-", "") },
+        { content: modelListData.name },
+        { content: modelListData.ownerTag.split("@")[0].replace("user-", "") },
         { content: getStatusValue(modelStatus, "summary") },
         { content: getStatusValue(modelStatus, "cloudTag") },
         { content: getStatusValue(modelStatus, "region") },
-        // Fetch the credential name from somewhere.
-        { content: "unavailable" },
-        // Fetch the controller name from somewhere.
-        { content: "unavailable" },
+        { content: getStatusValue(modelInfoData, "cloudCredentialTag") },
+        // We're not currently able to get the controller name from the API.
+        // so display the controller UUID instead.
+        { content: getStatusValue(modelInfoData, "controllerUuid") },
         // We're not currently able to get a last-accessed or updated from JAAS.
         { content: "unavailable" }
       ]
@@ -66,6 +68,12 @@ function getStatusValue(status, key) {
         break;
       case "region":
         returnValue = status.model.region;
+        break;
+      case "cloudCredentialTag":
+        returnValue = status.cloudCredentialTag.split("cloudcred-")[1];
+        break;
+      case "controllerUuid":
+        returnValue = status.controllerUuid;
         break;
       default:
         console.log(`unsupported status value key: ${key}`);
