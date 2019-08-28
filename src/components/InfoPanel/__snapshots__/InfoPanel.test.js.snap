@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`InfoPanel renders without crashing and matches snapshot 1`] = `
+exports[`Info Panel renders without crashing and matches snapshot 1`] = `
 <div
   className="info-panel"
 >
@@ -9,6 +9,7 @@ exports[`InfoPanel renders without crashing and matches snapshot 1`] = `
   >
     <div
       className="info-panel__grid-item"
+      key="Model"
     >
       <h4
         className="p-muted-heading"
@@ -21,6 +22,7 @@ exports[`InfoPanel renders without crashing and matches snapshot 1`] = `
     </div>
     <div
       className="info-panel__grid-item"
+      key="Region"
     >
       <h4
         className="p-muted-heading"
@@ -33,6 +35,7 @@ exports[`InfoPanel renders without crashing and matches snapshot 1`] = `
     </div>
     <div
       className="info-panel__grid-item"
+      key="Controller"
     >
       <h4
         className="p-muted-heading"
@@ -45,18 +48,7 @@ exports[`InfoPanel renders without crashing and matches snapshot 1`] = `
     </div>
     <div
       className="info-panel__grid-item"
-    >
-      <h4
-        className="p-muted-heading"
-      >
-        Version
-      </h4>
-      <p>
-        2.3.7
-      </p>
-    </div>
-    <div
-      className="info-panel__grid-item"
+      key="Cloud"
     >
       <h4
         className="p-muted-heading"
@@ -69,6 +61,7 @@ exports[`InfoPanel renders without crashing and matches snapshot 1`] = `
     </div>
     <div
       className="info-panel__grid-item"
+      key="SLA"
     >
       <h4
         className="p-muted-heading"

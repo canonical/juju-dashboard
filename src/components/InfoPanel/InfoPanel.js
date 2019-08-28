@@ -4,34 +4,37 @@ import "./_info-panel.scss";
 
 export default class InfoPanel extends Component {
   render() {
+    const gridData = [
+      {
+        label: "Model",
+        value: "cdk-default"
+      },
+      {
+        label: "Region",
+        value: "us-east-1"
+      },
+      {
+        label: "Controller",
+        value: "aws-controller"
+      },
+      {
+        label: "Cloud",
+        value: "aws"
+      },
+      {
+        label: "SLA",
+        value: "Unsupported"
+      }
+    ];
+    const gridItems = gridData.map(item => (
+      <div key={item.label} className="info-panel__grid-item">
+        <h4 className="p-muted-heading">{item.label}</h4>
+        <p>{item.value}</p>
+      </div>
+    ));
     return (
       <div className="info-panel">
-        <div className="info-panel__grid">
-          <div className="info-panel__grid-item">
-            <h4 className="p-muted-heading">Model</h4>
-            <p>cdk-default</p>
-          </div>
-          <div className="info-panel__grid-item">
-            <h4 className="p-muted-heading">Region</h4>
-            <p>us-east-1</p>
-          </div>
-          <div className="info-panel__grid-item">
-            <h4 className="p-muted-heading">Controller</h4>
-            <p>aws-controller</p>
-          </div>
-          <div className="info-panel__grid-item">
-            <h4 className="p-muted-heading">Version</h4>
-            <p>2.3.7</p>
-          </div>
-          <div className="info-panel__grid-item">
-            <h4 className="p-muted-heading">Cloud</h4>
-            <p>aws</p>
-          </div>
-          <div className="info-panel__grid-item">
-            <h4 className="p-muted-heading">SLA</h4>
-            <p>Unsupported</p>
-          </div>
-        </div>
+        <div className="info-panel__grid">{gridItems}</div>
       </div>
     );
   }
