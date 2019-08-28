@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Layout from "../Layout/Layout";
 import ErrorBoundary from "../ErrorBoundary/ErrorBoundary";
-import MainTable from "../MainTable/MainTable";
+import TableList from "../TableList/TableList";
 
 import ModelDetails from "../../containers/ModelDetails/ModelDetails";
 
@@ -24,7 +24,7 @@ function Models() {
     <Layout sidebar>
       <div className="row" style={{ paddingTop: "1rem" }}>
         <h2>Models</h2>
-        <MainTable headers={modelTableHeaders} sortable />
+        <TableList tableHeaders={modelTableHeaders} />
       </div>
     </Layout>
   );
