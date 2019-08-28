@@ -1,6 +1,8 @@
 // Import Vanilla Framework
 @import "node_modules/vanilla-framework/scss/vanilla";
 
+$grid-max-width: 100%;
+
 // Settings
 $color-navigation-background: $color-brand;
 
@@ -10,6 +12,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-lists;
 @include vf-b-typography;
 @include vf-p-navigation;
+@include vf-p-muted-heading;
 @include vf-u-off-screen;
 @include vf-p-strip;
 @include vf-p-table-expanding;
