@@ -1,0 +1,202 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModelDetail Container renders without crashing and matches snapshot 1`] = `
+<div
+  className="model-details"
+>
+  <InfoPanel />
+  <div
+    className="model-details__main"
+  >
+    <div
+      className="model-details__filters"
+    >
+      <Filter
+        filters={
+          Array [
+            "all",
+            "apps",
+            "units",
+            "machines",
+            "relations",
+          ]
+        }
+        label="View"
+      />
+      <Filter
+        filters={
+          Array [
+            "all",
+            "maintenance",
+            "blocked",
+          ]
+        }
+        label="Status"
+      />
+    </div>
+    <MainTable
+      headers={
+        Array [
+          Object {
+            "content": "App",
+            "sortKey": "app",
+          },
+          Object {
+            "content": "Status",
+            "sortKey": "status",
+          },
+          Object {
+            "content": "Version",
+            "sortKey": "version",
+          },
+          Object {
+            "className": "u-align--right",
+            "content": "Scale",
+            "sortKey": "scale",
+          },
+          Object {
+            "content": "Store",
+            "sortKey": "store",
+          },
+          Object {
+            "className": "u-align--right",
+            "content": "Rev",
+            "sortKey": "rev",
+          },
+          Object {
+            "content": "OS",
+            "sortKey": "os",
+          },
+          Object {
+            "content": "Notes",
+            "sortKey": "notes",
+          },
+        ]
+      }
+      rows={
+        Array [
+          Object {
+            "columns": Array [
+              Object {
+                "content": "Ready",
+                "role": "rowheader",
+              },
+              Object {
+                "content": 1,
+              },
+              Object {
+                "content": "1 GiB",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 2,
+              },
+              Object {
+                "content": "Ready",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 1,
+              },
+              Object {
+                "content": "1 GiB",
+              },
+              Object {
+                "content": 2,
+              },
+            ],
+            "sortData": Object {
+              "app": "ready",
+              "notes": 2,
+              "os": 1,
+              "rev": 2,
+              "scale": 2,
+              "status": 2,
+              "store": "ready",
+              "version": 1,
+            },
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "Idle",
+                "role": "rowheader",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 1,
+              },
+              Object {
+                "className": "u-align--right",
+                "content": "1 GiB",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 2,
+              },
+              Object {
+                "content": "Ready",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 1,
+              },
+              Object {
+                "content": "1 GiB",
+              },
+              Object {
+                "content": 2,
+              },
+            ],
+            "sortData": Object {
+              "cores": 1,
+              "disks": 2,
+              "ram": 1,
+              "status": "idle",
+            },
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "Waiting",
+                "role": "rowheader",
+              },
+              Object {
+                "content": 8,
+              },
+              Object {
+                "content": "3.9 GiB",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 3,
+              },
+              Object {
+                "content": "Ready",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 1,
+              },
+              Object {
+                "content": "1 GiB",
+              },
+              Object {
+                "content": 2,
+              },
+            ],
+            "sortData": Object {
+              "cores": 8,
+              "disks": 3,
+              "ram": 3.9,
+              "status": "waiting",
+            },
+          },
+        ]
+      }
+      sortable={true}
+    />
+  </div>
+  <Shell />
+</div>
+`;
