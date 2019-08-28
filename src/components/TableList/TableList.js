@@ -67,6 +67,9 @@ function getStatusValue(status, key) {
       case "region":
         returnValue = status.model.region;
         break;
+      default:
+        console.log(`unsupported status value key: ${key}`);
+        break;
     }
   }
   return returnValue;
