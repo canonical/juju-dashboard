@@ -1,27 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import PropTypes from "prop-types";
 
 import MainTable from "../MainTable/MainTable";
-
-function generateTableHeaders() {
-  return [
-    { content: "Name", sortKey: "name" },
-    { content: "Owner", sortKey: "owner" },
-    { content: "Summary", sortKey: "summary" },
-    { content: "Cloud", sortKey: "cloud" },
-    { content: "Region", sortKey: "region" },
-    { content: "Credential", sortKey: "credential" },
-    { content: "Controller", sortKey: "controller" },
-    { content: "Last Updated", sortKey: "last-updated" }
-  ];
-}
-
-function TableList() {
-  const modelData = useSelector(generateModelTableData);
-  return (
-    <MainTable headers={generateTableHeaders()} rows={modelData} sortable />
-  );
-}
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -90,5 +71,14 @@ function getStatusValue(status, key) {
   }
   return returnValue;
 }
+
+function TableList({ tableHeaders }) {
+  const modelData = useSelector(generateModelTableData);
+  return <MainTable headers={tableHeaders} rows={modelData} sortable />;
+}
+
+TableList.propTypes = {
+  tableHeaders: PropTypes.array.isRequired
+};
 
 export default TableList;

@@ -8,12 +8,23 @@ import SecondaryNav from "../SecondaryNav/SecondaryNav";
 
 import "../../scss/_layout.scss";
 
+const modelTableHeaders = [
+  { content: "Name", sortKey: "name" },
+  { content: "Owner", sortKey: "owner" },
+  { content: "Summary", sortKey: "summary" },
+  { content: "Cloud", sortKey: "cloud" },
+  { content: "Region", sortKey: "region" },
+  { content: "Credential", sortKey: "credential" },
+  { content: "Controller", sortKey: "controller" },
+  { content: "Last Updated", sortKey: "last-updated" }
+];
+
 // All following components are placeholders and will be replaced with imports.
 function Models() {
   return (
     <>
       <h2>Models</h2>
-      <TableList />
+      <TableList tableHeaders={modelTableHeaders} />
     </>
   );
 }
