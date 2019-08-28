@@ -3,14 +3,9 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Layout from "../Layout/Layout";
 import ErrorBoundary from "../ErrorBoundary/ErrorBoundary";
-import TableList from "../TableList/TableList";
-import PrimaryNav from "../PrimaryNav/PrimaryNav";
-import SecondaryNav from "../SecondaryNav/SecondaryNav";
 import MainTable from "../MainTable/MainTable";
 
 import ModelDetails from "../../containers/ModelDetails/ModelDetails";
-
-import "../../scss/_layout.scss";
 
 const modelTableHeaders = [
   { content: "Name", sortKey: "name" },
@@ -28,7 +23,7 @@ function Models() {
   return (
     <Layout sidebar>
       <h2>Models</h2>
-      <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
+      <MainTable headers={modelTableHeaders} sortable />
     </Layout>
   );
 }
