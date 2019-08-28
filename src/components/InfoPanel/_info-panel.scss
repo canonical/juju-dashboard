@@ -1,0 +1,16 @@
+@import "vanilla-framework/scss/settings_colors";
+
+.info-panel {
+  padding: 1rem;
+  border-right: 2px solid $color-mid-light;
+  margin-right: 1rem;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .p-muted-heading {
+    margin-bottom: 0.25rem;
+  }
+}
