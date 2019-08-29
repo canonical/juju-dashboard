@@ -5,8 +5,7 @@ import SecondaryNav from "../SecondaryNav/SecondaryNav";
 
 import "./_layout.scss";
 
-const Layout = props => {
-  const { sidebar, children } = props;
+const Layout = ({ sidebar, children }) => {
   return (
     <>
       <PrimaryNav />
