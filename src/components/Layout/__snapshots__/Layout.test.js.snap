@@ -1,27 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Layout renders without a sidebar if sidebar prop is passed 1`] = `
-<Fragment>
-  <PrimaryNav />
-  <div
-    className="l-container--sidebar"
-  >
-    <div
-      className="l-side"
-    >
-      <SecondaryNav />
-    </div>
-    <div
-      className="l-main"
-    >
-      <main
-        id="main-content"
-      />
-    </div>
-  </div>
-</Fragment>
-`;
-
 exports[`Layout renders without crashing and matches snapshot 1`] = `
 <Fragment>
   <PrimaryNav />

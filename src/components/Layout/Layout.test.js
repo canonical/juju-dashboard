@@ -18,4 +18,11 @@ describe("Layout", () => {
     const wrapper = shallow(<Layout sidebar />);
     expect(wrapper.find(".l-side")).toHaveLength(1);
   });
+
+  it("should display the children", () => {
+    const wrapper = shallow(<Layout>content</Layout>);
+    expect(wrapper.find("#main-content").html()).toStrictEqual(
+      `<main id="main-content">content</main>`
+    );
+  });
 });
