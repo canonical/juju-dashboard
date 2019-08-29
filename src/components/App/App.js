@@ -31,7 +31,7 @@ function Models() {
   );
 }
 
-function ModelsExample() {
+function ModelsDetailsView() {
   return (
     <Layout>
       <ModelDetails />
@@ -64,7 +64,7 @@ function App() {
     <Router>
       <ErrorBoundary>
         <Route path="/" exact component={Models} />
-        <Route path="/models/:id" exact component={ModelsExample} />
+        <Route path="/models/:id" exact component={ModelsDetailsView} />
         <Route path="/clouds" exact component={Clouds} />
         <Route path="/kubernetes" exact component={Kubernetes} />
         <Route path="/controllers" exact component={Controllers} />
