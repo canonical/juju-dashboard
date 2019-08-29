@@ -22,6 +22,7 @@ const modelTableHeaders = [
 function Models() {
   return (
     <Layout sidebar>
+      {/* Inline styles is a temporary fix until this view gets it's own styling container. */}
       <div className="row" style={{ paddingTop: "1rem" }}>
         <h2>Models</h2>
         <TableList tableHeaders={modelTableHeaders} />
