@@ -9,9 +9,8 @@ describe("Button", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("should display the children of button", () => {
+  it("should display button text", () => {
     const wrapper = shallow(<Button>Button text</Button>);
-    console.log(wrapper.find("button").text());
     expect(wrapper.find("button").text()).toStrictEqual("Button text");
   });
 });
