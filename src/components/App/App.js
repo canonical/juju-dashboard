@@ -1,12 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
+import Layout from "../Layout/Layout";
 import ErrorBoundary from "../ErrorBoundary/ErrorBoundary";
 import TableList from "../TableList/TableList";
-import PrimaryNav from "../PrimaryNav/PrimaryNav";
-import SecondaryNav from "../SecondaryNav/SecondaryNav";
 
-import "../../scss/_layout.scss";
+import ModelDetails from "../../containers/ModelDetails/ModelDetails";
 
 const modelTableHeaders = [
   { content: "Name", sortKey: "name" },
@@ -22,10 +21,21 @@ const modelTableHeaders = [
 // All following components are placeholders and will be replaced with imports.
 function Models() {
   return (
-    <>
-      <h2>Models</h2>
-      <TableList tableHeaders={modelTableHeaders} />
-    </>
+    <Layout sidebar>
+      {/* Inline styles is a temporary fix until this view gets it's own styling container. */}
+      <div className="row" style={{ paddingTop: "1rem" }}>
+        <h2>Models</h2>
+        <TableList tableHeaders={modelTableHeaders} />
+      </div>
+    </Layout>
+  );
+}
+
+function ModelsDetailsView() {
+  return (
+    <Layout>
+      <ModelDetails />
+    </Layout>
   );
 }
 
@@ -52,24 +62,15 @@ function Logs() {
 function App() {
   return (
     <Router>
-      <PrimaryNav />
-      <div className="l-container">
-        <div className="l-side">
-          <SecondaryNav />
-        </div>
-        <div className="l-main">
-          <main id="main-content">
-            <ErrorBoundary>
-              <Route path="/" exact component={Models} />
-              <Route path="/clouds" exact component={Clouds} />
-              <Route path="/kubernetes" exact component={Kubernetes} />
-              <Route path="/controllers" exact component={Controllers} />
-              <Route path="/usage" exact component={Usage} />
-              <Route path="/logs" exact component={Logs} />
-            </ErrorBoundary>
-          </main>
-        </div>
-      </div>
+      <ErrorBoundary>
+        <Route path="/" exact component={Models} />
+        <Route path="/models/:id" exact component={ModelsDetailsView} />
+        <Route path="/clouds" exact component={Clouds} />
+        <Route path="/kubernetes" exact component={Kubernetes} />
+        <Route path="/controllers" exact component={Controllers} />
+        <Route path="/usage" exact component={Usage} />
+        <Route path="/logs" exact component={Logs} />
+      </ErrorBoundary>
     </Router>
   );
 }

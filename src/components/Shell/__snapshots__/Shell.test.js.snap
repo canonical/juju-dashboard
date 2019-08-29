@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Shell renders without crashing and matches snapshot 1`] = `
+<div
+  className="shell"
+>
+  <p>
+    Welcome to the Juju shell - see the docs at https://jaas.ai/docs
+  </p>
+  <p>
+    shell:-$
+  </p>
+</div>
+`;

@@ -1,0 +1,12 @@
+@import "vanilla-framework/scss/settings_colors";
+
+.shell {
+  background: $color-brand;
+  border-top: 1rem solid $color-x-dark;
+  color: $color-x-light;
+  padding: 0.25rem 1rem 0;
+  padding: 0 1rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}

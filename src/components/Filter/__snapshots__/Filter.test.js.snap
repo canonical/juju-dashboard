@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Filter renders without crashing and matches snapshot 1`] = `
+<div
+  className="p-filter"
+>
+  <span
+    className="p-filter__label"
+  >
+    Filter:
+  </span>
+  <span
+    className="p-filter__item"
+    key="foo"
+  >
+    <Button>
+      foo
+    </Button>
+  </span>
+  <span
+    className="p-filter__item"
+    key="bar"
+  >
+    <Button>
+      bar
+    </Button>
+  </span>
+  <span
+    className="p-filter__item"
+    key="baz"
+  >
+    <Button>
+      baz
+    </Button>
+  </span>
+  <span
+    className="p-filter__item"
+    key="foobar"
+  >
+    <Button>
+      foobar
+    </Button>
+  </span>
+</div>
+`;

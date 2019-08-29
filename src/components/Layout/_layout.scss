@@ -2,16 +2,16 @@
 
 .l-container {
   display: grid;
-  grid-template-columns: 150px 1fr;
   min-height: calc(100vh - 48px);
+}
+
+.l-container--sidebar {
+  @extend .l-container;
+  grid-template-columns: 150px 1fr;
 }
 
 .l-side {
   background: $color-light;
   padding: 0.5rem;
   padding-left: 0;
-}
-
-.l-main {
-  padding: 1rem;
 }

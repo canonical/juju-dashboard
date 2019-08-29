@@ -1,0 +1,14 @@
+.model-details {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  min-height: 100vh;
+
+  &__filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &__main {
+    padding-top: 1rem;
+  }
+}
