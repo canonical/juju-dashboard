@@ -50,8 +50,24 @@ async function fetchModelStatus(modelUUID) {
 }
 
 /**
+  Requests the model information for the supplied UUID from the supplied
+  controller connection.
+  @param {Object} conn The active controller connection.
+  @param {String} modelUUID The UUID of the model to connect to. Must be on the
+    same controller as provided by the controllerURL`.
+  @returns {Object} The full modelInfo.
+*/
+async function fetchModelInfo(conn, modelUUID) {
+  const modelInfo = await conn.facades.modelManager.modelInfo({
+    entities: [{ tag: `model-${modelUUID}` }]
+  });
+  return modelInfo;
+}
+
+/**
   Loops through each model UUID to fetch the status. Uppon receiving the status
   dispatches to store that status data.
+  @param {Object} conn The connection to the controller.
   @param {Object} modelList The list of models where the key is the model's
     UUID and the body is the models info.
   @param {Function} dispatch The function to call with the action to store the
@@ -59,7 +75,7 @@ async function fetchModelStatus(modelUUID) {
   @returns {Promise} Resolves when the queue fetching the model statuses has
     completed. Does not reject.
 */
-async function fetchAllModelStatuses(modelList, dispatch) {
+async function fetchAllModelStatuses(conn, modelList, dispatch) {
   const queue = new Limiter({ concurrency: 5 });
   const modelUUIDs = Object.keys(modelList);
   modelUUIDs.forEach(modelUUID => {
@@ -71,6 +87,11 @@ async function fetchAllModelStatuses(modelList, dispatch) {
           modelUUID: modelUUID,
           status
         }
+      });
+      const modelInfo = await fetchModelInfo(conn, modelUUID);
+      dispatch({
+        type: actionsList.updateModelInfo,
+        payload: modelInfo
       });
       done();
     });

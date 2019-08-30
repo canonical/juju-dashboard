@@ -42,6 +42,7 @@ async function connectAndListModels(reduxStore) {
     let continuePolling = true;
     while (continuePolling) {
       await fetchAllModelStatuses(
+        conn,
         reduxStore.getState().juju.models,
         reduxStore.dispatch
       );
