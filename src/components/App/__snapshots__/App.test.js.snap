@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders without crashing and matches snapshot 1`] = `
+exports[`Button renders without crashing and matches snapshot 1`] = `
 <BrowserRouter>
   <ErrorBoundary>
     <Route
