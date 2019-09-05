@@ -1618,9 +1618,9 @@ export default {
               version: '',
               life: ''
             },
-            dnsName: '104.196.135.3',
+            dnsName: '100.192.135.3',
             ipAddresses: [
-              '104.196.135.3',
+              '100.192.135.3',
               '10.142.0.3'
             ],
             instanceId: 'juju-905e60-1',
@@ -1840,7 +1840,7 @@ export default {
                 openedPorts: [
                   '80/tcp'
                 ],
-                publicAddress: '104.196.135.3',
+                publicAddress: '100.192.135.3',
                 charm: '',
                 subordinates: {},
                 leader: true
