@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`by default, renders with all table headers and no data 1`] = `
+exports[`TableList by default, renders with all table headers and no data 1`] = `
 Array [
   <th
     aria-sort="none"
@@ -61,9 +61,9 @@ Array [
 ]
 `;
 
-exports[`by default, renders with all table headers and no data 2`] = `<tbody />`;
+exports[`TableList by default, renders with all table headers and no data 2`] = `<tbody />`;
 
-exports[`displays all data from redux store 1`] = `
+exports[`TableList displays all data from redux store 1`] = `
 <Provider
   store={
     Object {
