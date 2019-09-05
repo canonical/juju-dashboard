@@ -1,3 +1,4 @@
 node_modules
 *.snap
 .DS_Store
+complete-redux-store-dump.js

@@ -9,30 +9,32 @@ import dataDump from "../../testing/complete-redux-store-dump";
 
 const mockStore = configureStore([]);
 
-test("by default, renders with all table headers and no data", () => {
-  const store = mockStore({
-    juju: {
-      models: {},
-      modelInfo: {},
-      modelStatuses: {}
-    }
+describe("TableList", () => {
+  it("by default, renders with all table headers and no data", () => {
+    const store = mockStore({
+      juju: {
+        models: {},
+        modelInfo: {},
+        modelStatuses: {}
+      }
+    });
+    const wrapper = mount(
+      <Provider store={store}>
+        <TableList />
+      </Provider>
+    );
+    expect(wrapper.find("th")).toMatchSnapshot();
+    // Should be empty
+    expect(wrapper.find("tbody")).toMatchSnapshot();
   });
-  const wrapper = mount(
-    <Provider store={store}>
-      <TableList />
-    </Provider>
-  );
-  expect(wrapper.find("th")).toMatchSnapshot();
-  // Should be empty
-  expect(wrapper.find("tbody")).toMatchSnapshot();
-});
 
-test("displays all data from redux store", () => {
-  const store = mockStore(dataDump);
-  const wrapper = mount(
-    <Provider store={store}>
-      <TableList />
-    </Provider>
-  );
-  expect(wrapper).toMatchSnapshot();
+  it("displays all data from redux store", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <TableList />
+      </Provider>
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
 });
