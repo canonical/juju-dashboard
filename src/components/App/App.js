@@ -7,17 +7,6 @@ import TableList from "../TableList/TableList";
 
 import ModelDetails from "../../containers/ModelDetails/ModelDetails";
 
-const modelTableHeaders = [
-  { content: "Name", sortKey: "name" },
-  { content: "Owner", sortKey: "owner" },
-  { content: "Summary", sortKey: "summary" },
-  { content: "Cloud", sortKey: "cloud" },
-  { content: "Region", sortKey: "region" },
-  { content: "Credential", sortKey: "credential" },
-  { content: "Controller", sortKey: "controller" },
-  { content: "Last Updated", sortKey: "last-updated" }
-];
-
 // All following components are placeholders and will be replaced with imports.
 function Models() {
   return (
@@ -25,7 +14,7 @@ function Models() {
       {/* Inline styles is a temporary fix until this view gets it's own styling container. */}
       <div className="row" style={{ paddingTop: "1rem" }}>
         <h2>Models</h2>
-        <TableList tableHeaders={modelTableHeaders} />
+        <TableList />
       </div>
     </Layout>
   );
