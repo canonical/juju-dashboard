@@ -29,6 +29,6 @@ const Layout = ({ sidebar, children }) => {
 
 Layout.defaultProps = {
   sidebar: true
-}
+};
 
 export default Layout;

@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Layout from "components/Layout/Layout";
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
@@ -80,14 +80,16 @@ function App() {
   return (
     <Router>
       <ErrorBoundary>
-        <Route path="/" exact component={Models} />
-        <Route path="/models/:id" exact component={ModelsDetailsView} />
-        <Route path="/clouds" exact component={Clouds} />
-        <Route path="/kubernetes" exact component={Kubernetes} />
-        <Route path="/controllers" exact component={Controllers} />
-        <Route path="/usage" exact component={Usage} />
-        <Route path="/logs" exact component={Logs} />
-        <Route component={Notfound} />
+        <Switch>
+          <Route path="/" exact component={Models} />
+          <Route path="/models/:id" exact component={ModelsDetailsView} />
+          <Route path="/clouds" exact component={Clouds} />
+          <Route path="/kubernetes" exact component={Kubernetes} />
+          <Route path="/controllers" exact component={Controllers} />
+          <Route path="/usage" exact component={Usage} />
+          <Route path="/logs" exact component={Logs} />
+          <Route component={Notfound} />
+        </Switch>
       </ErrorBoundary>
     </Router>
   );
