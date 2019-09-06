@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import Layout from "../Layout/Layout";
-import ErrorBoundary from "../ErrorBoundary/ErrorBoundary";
-import TableList from "../TableList/TableList";
+import Layout from "components/Layout/Layout";
+import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
+import TableList from "components/TableList/TableList";
 
-import ModelDetails from "../../containers/ModelDetails/ModelDetails";
+import ModelDetails from "containers/ModelDetails/ModelDetails";
 
 // All following components are placeholders and will be replaced with imports.
 function Models() {

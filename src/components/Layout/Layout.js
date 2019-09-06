@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
-import PrimaryNav from "../PrimaryNav/PrimaryNav";
-import SecondaryNav from "../SecondaryNav/SecondaryNav";
+import PrimaryNav from "components/PrimaryNav/PrimaryNav";
+import SecondaryNav from "components/SecondaryNav/SecondaryNav";
 
 import "./_layout.scss";
 

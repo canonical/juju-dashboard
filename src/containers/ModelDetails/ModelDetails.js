@@ -1,9 +1,9 @@
 import React from "react";
 
-import Shell from "../../components/Shell/Shell";
-import Filter from "../../components/Filter/Filter";
-import InfoPanel from "../../components/InfoPanel/InfoPanel";
-import MainTable from "../../components/MainTable/MainTable";
+import Shell from "components/Shell/Shell";
+import Filter from "components/Filter/Filter";
+import InfoPanel from "components/InfoPanel/InfoPanel";
+import MainTable from "components/MainTable/MainTable";
 
 import "./_model-details.scss";
 
