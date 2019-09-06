@@ -38,6 +38,9 @@ exports[`Button renders without crashing and matches snapshot 1`] = `
       exact={true}
       path="/logs"
     />
+    <Route
+      component={[Function]}
+    />
   </ErrorBoundary>
 </BrowserRouter>
 `;

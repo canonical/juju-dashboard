@@ -29,23 +29,51 @@ function ModelsDetailsView() {
 }
 
 function Clouds() {
-  return <h2>Clouds</h2>;
+  return (
+    <Layout sidebar>
+      <h2>Clouds</h2>
+    </Layout>
+  );
 }
 
 function Kubernetes() {
-  return <h2>Kubernetes</h2>;
+  return (
+    <Layout sidebar>
+      <h2>Kubernetes</h2>
+    </Layout>
+  );
 }
 
 function Controllers() {
-  return <h2>Controllers</h2>;
+  return (
+    <Layout sidebar>
+      <h2>Controllers</h2>
+    </Layout>
+  );
 }
 
 function Usage() {
-  return <h2>Usage</h2>;
+  return (
+    <Layout sidebar>
+      <h2>Usage</h2>
+    </Layout>
+  );
 }
 
 function Logs() {
-  return <h2>Logs</h2>;
+  return (
+    <Layout sidebar>
+      <h2>Logs</h2>
+    </Layout>
+  );
+}
+
+function Notfound() {
+  return (
+    <Layout sidebar>
+      <h2>Not found ¯\_(ツ)_/¯</h2>
+    </Layout>
+  );
 }
 
 function App() {
@@ -59,6 +87,7 @@ function App() {
         <Route path="/controllers" exact component={Controllers} />
         <Route path="/usage" exact component={Usage} />
         <Route path="/logs" exact component={Logs} />
+        <Route component={Notfound} />
       </ErrorBoundary>
     </Router>
   );
