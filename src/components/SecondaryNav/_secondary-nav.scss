@@ -9,8 +9,8 @@
     padding-left: 1rem;
 
     &.is-selected {
-      font-weight: 400;
       border-left: 3px solid $color-information;
+      font-weight: 400;
       padding-left: calc(1rem - 3px);
     }
   }
