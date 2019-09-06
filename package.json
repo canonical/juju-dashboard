@@ -76,8 +76,8 @@
     "eslint-plugin-react": "7.14.3",
     "prettier": "1.18.2",
     "redux-devtools": "3.5.0",
-    "stylelint": "^10.1.0",
-    "stylelint-config-standard": "^18.3.0",
-    "stylelint-order": "^3.0.1"
+    "stylelint": "10.1.0",
+    "stylelint-config-standard": "18.3.0",
+    "stylelint-order": "3.0.1"
   }
 }
