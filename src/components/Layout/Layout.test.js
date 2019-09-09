@@ -9,14 +9,14 @@ describe("Layout", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it("renders with a sidebar", () => {
+    const wrapper = shallow(<Layout />);
+    expect(wrapper.find(".l-side")).toHaveLength(1);
+  });
+
   it("renders without a sidebar if false bool is passed", () => {
     const wrapper = shallow(<Layout sidebar={false} />);
     expect(wrapper.find(".l-side")).toHaveLength(0);
-  });
-
-  it("renders with a sidebar if sidebar prop is passed", () => {
-    const wrapper = shallow(<Layout />);
-    expect(wrapper.find(".l-side")).toHaveLength(1);
   });
 
   it("should display the children", () => {
