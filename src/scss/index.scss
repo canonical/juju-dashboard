@@ -7,6 +7,7 @@ $grid-max-width: 100%;
 $color-navigation-background: $color-brand;
 
 @include vf-base;
+@include vf-p-buttons;
 @include vf-p-grid;
 @include vf-p-links;
 @include vf-p-lists;

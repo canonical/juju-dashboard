@@ -4,8 +4,13 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
 <Fragment>
   <PrimaryNav />
   <div
-    className=""
+    className="l-container--sidebar"
   >
+    <div
+      className="l-side"
+    >
+      <SecondaryNav />
+    </div>
     <div
       className="l-main"
     >
