@@ -13,4 +13,21 @@ describe("Secondary Nav", () => {
     );
     expect(wrapper).toMatchSnapshot();
   });
+
+  it("applies is-selected state correctly", () => {
+    delete global.window.location;
+    global.window = Object.create(window);
+    global.window.location = {
+      pathname: "/logs"
+    };
+    const wrapper = mount(
+      <Router>
+        <SecondaryNav />
+      </Router>
+    );
+    console.log(wrapper.find(".p-list__item:last-child").debug());
+    expect(
+      wrapper.find(".p-list__item:last-child").hasClass("is-selected")
+    ).toStrictEqual(true);
+  });
 });

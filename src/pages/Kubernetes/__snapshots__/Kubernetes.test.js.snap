@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Kubernetes page renders without crashing and matches snapshot 1`] = `
+<Layout
+  sidebar={true}
+>
+  <div
+    className="p-strip"
+  >
+    <div
+      className="row"
+    >
+      <h2>
+        Kubernetes
+      </h2>
+    </div>
+  </div>
+</Layout>
+`;
