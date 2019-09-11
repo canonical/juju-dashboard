@@ -15,6 +15,7 @@ describe("Secondary Nav", () => {
   });
 
   it("applies is-selected state correctly", () => {
+    const windowLocation = global.window.location;
     delete global.window.location;
     global.window = Object.create(window);
     global.window.location = {
@@ -28,5 +29,6 @@ describe("Secondary Nav", () => {
     expect(
       wrapper.find(".p-list__item:last-child").hasClass("is-selected")
     ).toStrictEqual(true);
+    global.window.location = windowLocation;
   });
 });

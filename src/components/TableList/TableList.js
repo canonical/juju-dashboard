@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import MainTable from "../MainTable/MainTable";
@@ -15,9 +16,13 @@ function generateModelTableData(state) {
     const modelListData = models[modelUUID];
     const modelInfoData = modelInfo[modelUUID];
     const modelStatus = state.juju.modelStatuses[modelUUID];
+    const modelDetailsPath = `/models/${modelListData.name}`;
+    const modelDetailsLink = (
+      <Link to={modelDetailsPath}>{modelListData.name}</Link>
+    );
     return {
       columns: [
-        { content: modelListData.name },
+        { content: modelDetailsLink },
         { content: modelListData.ownerTag.split("@")[0].replace("user-", "") },
         { content: getStatusValue(modelStatus, "summary") },
         { content: getStatusValue(modelStatus, "cloudTag") },

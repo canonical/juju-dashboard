@@ -1,4 +1,6 @@
 import React from "react";
+import { Router } from "react-router-dom";
+import { createBrowserHistory } from "history";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -6,6 +8,8 @@ import configureStore from "redux-mock-store";
 import TableList from "./TableList";
 
 import dataDump from "../../testing/complete-redux-store-dump";
+
+const newHistory = createBrowserHistory();
 
 const mockStore = configureStore([]);
 
@@ -31,9 +35,11 @@ describe("TableList", () => {
   it("displays all data from redux store", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
-      <Provider store={store}>
-        <TableList />
-      </Provider>
+      <Router history={newHistory}>
+        <Provider store={store}>
+          <TableList />
+        </Provider>
+      </Router>
     );
     expect(wrapper).toMatchSnapshot();
   });

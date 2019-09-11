@@ -64,1114 +64,1241 @@ Array [
 exports[`TableList by default, renders with all table headers and no data 2`] = `<tbody />`;
 
 exports[`TableList displays all data from redux store 1`] = `
-<Provider
-  store={
+<Router
+  history={
     Object {
-      "clearActions": [Function],
-      "dispatch": [Function],
-      "getActions": [Function],
-      "getState": [Function],
-      "replaceReducer": [Function],
-      "subscribe": [Function],
+      "action": "POP",
+      "block": [Function],
+      "createHref": [Function],
+      "go": [Function],
+      "goBack": [Function],
+      "goForward": [Function],
+      "length": 1,
+      "listen": [Function],
+      "location": Object {
+        "hash": "",
+        "pathname": "/",
+        "search": "",
+        "state": undefined,
+      },
+      "push": [Function],
+      "replace": [Function],
     }
   }
 >
-  <TableList>
-    <MainTable
-      headers={
-        Array [
-          Object {
-            "content": "Name",
-            "sortKey": "name",
-          },
-          Object {
-            "content": "Owner",
-            "sortKey": "owner",
-          },
-          Object {
-            "content": "Summary",
-            "sortKey": "summary",
-          },
-          Object {
-            "content": "Cloud",
-            "sortKey": "cloud",
-          },
-          Object {
-            "content": "Region",
-            "sortKey": "region",
-          },
-          Object {
-            "content": "Credential",
-            "sortKey": "credential",
-          },
-          Object {
-            "content": "Controller",
-            "sortKey": "controller",
-          },
-          Object {
-            "content": "Last Updated",
-            "sortKey": "last-updated",
-          },
-        ]
+  <Provider
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
       }
-      rows={
-        Array [
-          Object {
-            "columns": Array [
-              Object {
-                "content": "group-test",
-              },
-              Object {
-                "content": "mrdata",
-              },
-              Object {
-                "content": "9 applications, 0 machines, 0 units",
-              },
-              Object {
-                "content": "google",
-              },
-              Object {
-                "content": "us-central1",
-              },
-              Object {
-                "content": "google_mrdata@external_admin",
-              },
-              Object {
-                "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
-              },
-              Object {
-                "content": "unavailable",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "test1",
-              },
-              Object {
-                "content": "mrdata",
-              },
-              Object {
-                "content": "0 applications, 0 machines, 0 units",
-              },
-              Object {
-                "content": "google",
-              },
-              Object {
-                "content": "us-east1",
-              },
-              Object {
-                "content": "google_mrdata@external_juju",
-              },
-              Object {
-                "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
-              },
-              Object {
-                "content": "unavailable",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "test2",
-              },
-              Object {
-                "content": "mrdata",
-              },
-              Object {
-                "content": "0 applications, 0 machines, 0 units",
-              },
-              Object {
-                "content": "google",
-              },
-              Object {
-                "content": "us-east1",
-              },
-              Object {
-                "content": "google_mrdata@external_juju",
-              },
-              Object {
-                "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
-              },
-              Object {
-                "content": "unavailable",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "test3",
-              },
-              Object {
-                "content": "mrdata",
-              },
-              Object {
-                "content": "0 applications, 0 machines, 0 units",
-              },
-              Object {
-                "content": "google",
-              },
-              Object {
-                "content": "us-east1",
-              },
-              Object {
-                "content": "google_mrdata@external_juju",
-              },
-              Object {
-                "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
-              },
-              Object {
-                "content": "unavailable",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "juju-all-the-things",
-              },
-              Object {
-                "content": "otheruser",
-              },
-              Object {
-                "content": "3 applications, 3 machines, 3 units",
-              },
-              Object {
-                "content": "google",
-              },
-              Object {
-                "content": "us-east1",
-              },
-              Object {
-                "content": "google_otheruser@external_google-bigbot",
-              },
-              Object {
-                "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
-              },
-              Object {
-                "content": "unavailable",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "frontend-ci",
-              },
-              Object {
-                "content": "space-man",
-              },
-              Object {
-                "content": "1 applications, 1 machines, 1 units",
-              },
-              Object {
-                "content": "google",
-              },
-              Object {
-                "content": "us-east1",
-              },
-              Object {
-                "content": "google_space-man@external_gce",
-              },
-              Object {
-                "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
-              },
-              Object {
-                "content": "unavailable",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "backend-ci",
-              },
-              Object {
-                "content": "space-man",
-              },
-              Object {
-                "content": "3 applications, 3 machines, 3 units",
-              },
-              Object {
-                "content": "google",
-              },
-              Object {
-                "content": "us-east1",
-              },
-              Object {
-                "content": "google_space-man@external_gce",
-              },
-              Object {
-                "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
-              },
-              Object {
-                "content": "unavailable",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "data-aggregator",
-              },
-              Object {
-                "content": "space-man",
-              },
-              Object {
-                "content": "2 applications, 2 machines, 2 units",
-              },
-              Object {
-                "content": "google",
-              },
-              Object {
-                "content": "us-east1",
-              },
-              Object {
-                "content": "google_space-man@external_gce",
-              },
-              Object {
-                "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
-              },
-              Object {
-                "content": "unavailable",
-              },
-            ],
-          },
-        ]
-      }
-      sortable={true}
-    >
-      <Table
-        sortable={true}
-      >
-        <table
-          className="p-table--sortable"
-          role="grid"
-        >
-          <thead>
-            <TableRow>
-              <tr
-                role="row"
-              >
-                <TableHeader
-                  key="0"
-                  onClick={[Function]}
-                  sort="none"
-                >
-                  <th
-                    aria-sort="none"
-                    onClick={[Function]}
-                    role="columnheader"
-                  >
-                    Name
-                  </th>
-                </TableHeader>
-                <TableHeader
-                  key="1"
-                  onClick={[Function]}
-                  sort="none"
-                >
-                  <th
-                    aria-sort="none"
-                    onClick={[Function]}
-                    role="columnheader"
-                  >
-                    Owner
-                  </th>
-                </TableHeader>
-                <TableHeader
-                  key="2"
-                  onClick={[Function]}
-                  sort="none"
-                >
-                  <th
-                    aria-sort="none"
-                    onClick={[Function]}
-                    role="columnheader"
-                  >
-                    Summary
-                  </th>
-                </TableHeader>
-                <TableHeader
-                  key="3"
-                  onClick={[Function]}
-                  sort="none"
-                >
-                  <th
-                    aria-sort="none"
-                    onClick={[Function]}
-                    role="columnheader"
-                  >
-                    Cloud
-                  </th>
-                </TableHeader>
-                <TableHeader
-                  key="4"
-                  onClick={[Function]}
-                  sort="none"
-                >
-                  <th
-                    aria-sort="none"
-                    onClick={[Function]}
-                    role="columnheader"
-                  >
-                    Region
-                  </th>
-                </TableHeader>
-                <TableHeader
-                  key="5"
-                  onClick={[Function]}
-                  sort="none"
-                >
-                  <th
-                    aria-sort="none"
-                    onClick={[Function]}
-                    role="columnheader"
-                  >
-                    Credential
-                  </th>
-                </TableHeader>
-                <TableHeader
-                  key="6"
-                  onClick={[Function]}
-                  sort="none"
-                >
-                  <th
-                    aria-sort="none"
-                    onClick={[Function]}
-                    role="columnheader"
-                  >
-                    Controller
-                  </th>
-                </TableHeader>
-                <TableHeader
-                  key="7"
-                  onClick={[Function]}
-                  sort="none"
-                >
-                  <th
-                    aria-sort="none"
-                    onClick={[Function]}
-                    role="columnheader"
-                  >
-                    Last Updated
-                  </th>
-                </TableHeader>
-              </tr>
-            </TableRow>
-          </thead>
-          <tbody>
-            <TableRow
-              key="0"
-            >
-              <tr
-                role="row"
-              >
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
+    }
+  >
+    <TableList>
+      <MainTable
+        headers={
+          Array [
+            Object {
+              "content": "Name",
+              "sortKey": "name",
+            },
+            Object {
+              "content": "Owner",
+              "sortKey": "owner",
+            },
+            Object {
+              "content": "Summary",
+              "sortKey": "summary",
+            },
+            Object {
+              "content": "Cloud",
+              "sortKey": "cloud",
+            },
+            Object {
+              "content": "Region",
+              "sortKey": "region",
+            },
+            Object {
+              "content": "Credential",
+              "sortKey": "credential",
+            },
+            Object {
+              "content": "Controller",
+              "sortKey": "controller",
+            },
+            Object {
+              "content": "Last Updated",
+              "sortKey": "last-updated",
+            },
+          ]
+        }
+        rows={
+          Array [
+            Object {
+              "columns": Array [
+                Object {
+                  "content": <Link
+                    to="/models/group-test"
                   >
                     group-test
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    mrdata
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    9 applications, 0 machines, 0 units
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    us-central1
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="5"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google_mrdata@external_admin
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="6"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    a030329a-941f-4760-8fcd-3063b41a04e7
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    unavailable
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="1"
-            >
-              <tr
-                role="row"
-              >
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
+                  </Link>,
+                },
+                Object {
+                  "content": "mrdata",
+                },
+                Object {
+                  "content": "9 applications, 0 machines, 0 units",
+                },
+                Object {
+                  "content": "google",
+                },
+                Object {
+                  "content": "us-central1",
+                },
+                Object {
+                  "content": "google_mrdata@external_admin",
+                },
+                Object {
+                  "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
+                },
+                Object {
+                  "content": "unavailable",
+                },
+              ],
+            },
+            Object {
+              "columns": Array [
+                Object {
+                  "content": <Link
+                    to="/models/test1"
                   >
                     test1
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    mrdata
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    0 applications, 0 machines, 0 units
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    us-east1
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="5"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google_mrdata@external_juju
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="6"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    a030329a-941f-4760-8fcd-3063b41a04e7
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    unavailable
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="2"
-            >
-              <tr
-                role="row"
-              >
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
+                  </Link>,
+                },
+                Object {
+                  "content": "mrdata",
+                },
+                Object {
+                  "content": "0 applications, 0 machines, 0 units",
+                },
+                Object {
+                  "content": "google",
+                },
+                Object {
+                  "content": "us-east1",
+                },
+                Object {
+                  "content": "google_mrdata@external_juju",
+                },
+                Object {
+                  "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
+                },
+                Object {
+                  "content": "unavailable",
+                },
+              ],
+            },
+            Object {
+              "columns": Array [
+                Object {
+                  "content": <Link
+                    to="/models/test2"
                   >
                     test2
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    mrdata
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    0 applications, 0 machines, 0 units
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    us-east1
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="5"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google_mrdata@external_juju
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="6"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    a030329a-941f-4760-8fcd-3063b41a04e7
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    unavailable
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="3"
-            >
-              <tr
-                role="row"
-              >
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
+                  </Link>,
+                },
+                Object {
+                  "content": "mrdata",
+                },
+                Object {
+                  "content": "0 applications, 0 machines, 0 units",
+                },
+                Object {
+                  "content": "google",
+                },
+                Object {
+                  "content": "us-east1",
+                },
+                Object {
+                  "content": "google_mrdata@external_juju",
+                },
+                Object {
+                  "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
+                },
+                Object {
+                  "content": "unavailable",
+                },
+              ],
+            },
+            Object {
+              "columns": Array [
+                Object {
+                  "content": <Link
+                    to="/models/test3"
                   >
                     test3
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    mrdata
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    0 applications, 0 machines, 0 units
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    us-east1
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="5"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google_mrdata@external_juju
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="6"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    a030329a-941f-4760-8fcd-3063b41a04e7
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    unavailable
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="4"
-            >
-              <tr
-                role="row"
-              >
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
+                  </Link>,
+                },
+                Object {
+                  "content": "mrdata",
+                },
+                Object {
+                  "content": "0 applications, 0 machines, 0 units",
+                },
+                Object {
+                  "content": "google",
+                },
+                Object {
+                  "content": "us-east1",
+                },
+                Object {
+                  "content": "google_mrdata@external_juju",
+                },
+                Object {
+                  "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
+                },
+                Object {
+                  "content": "unavailable",
+                },
+              ],
+            },
+            Object {
+              "columns": Array [
+                Object {
+                  "content": <Link
+                    to="/models/juju-all-the-things"
                   >
                     juju-all-the-things
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    otheruser
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    3 applications, 3 machines, 3 units
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    us-east1
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="5"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google_otheruser@external_google-bigbot
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="6"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    a030329a-941f-4760-8fcd-3063b41a04e7
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    unavailable
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="5"
-            >
-              <tr
-                role="row"
-              >
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
+                  </Link>,
+                },
+                Object {
+                  "content": "otheruser",
+                },
+                Object {
+                  "content": "3 applications, 3 machines, 3 units",
+                },
+                Object {
+                  "content": "google",
+                },
+                Object {
+                  "content": "us-east1",
+                },
+                Object {
+                  "content": "google_otheruser@external_google-bigbot",
+                },
+                Object {
+                  "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
+                },
+                Object {
+                  "content": "unavailable",
+                },
+              ],
+            },
+            Object {
+              "columns": Array [
+                Object {
+                  "content": <Link
+                    to="/models/frontend-ci"
                   >
                     frontend-ci
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    space-man
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    1 applications, 1 machines, 1 units
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    us-east1
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="5"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google_space-man@external_gce
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="6"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    a030329a-941f-4760-8fcd-3063b41a04e7
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    unavailable
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="6"
-            >
-              <tr
-                role="row"
-              >
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
+                  </Link>,
+                },
+                Object {
+                  "content": "space-man",
+                },
+                Object {
+                  "content": "1 applications, 1 machines, 1 units",
+                },
+                Object {
+                  "content": "google",
+                },
+                Object {
+                  "content": "us-east1",
+                },
+                Object {
+                  "content": "google_space-man@external_gce",
+                },
+                Object {
+                  "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
+                },
+                Object {
+                  "content": "unavailable",
+                },
+              ],
+            },
+            Object {
+              "columns": Array [
+                Object {
+                  "content": <Link
+                    to="/models/backend-ci"
                   >
                     backend-ci
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    space-man
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    3 applications, 3 machines, 3 units
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    us-east1
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="5"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    google_space-man@external_gce
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="6"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    a030329a-941f-4760-8fcd-3063b41a04e7
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    unavailable
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="7"
-            >
-              <tr
-                role="row"
-              >
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
+                  </Link>,
+                },
+                Object {
+                  "content": "space-man",
+                },
+                Object {
+                  "content": "3 applications, 3 machines, 3 units",
+                },
+                Object {
+                  "content": "google",
+                },
+                Object {
+                  "content": "us-east1",
+                },
+                Object {
+                  "content": "google_space-man@external_gce",
+                },
+                Object {
+                  "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
+                },
+                Object {
+                  "content": "unavailable",
+                },
+              ],
+            },
+            Object {
+              "columns": Array [
+                Object {
+                  "content": <Link
+                    to="/models/data-aggregator"
                   >
                     data-aggregator
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
+                  </Link>,
+                },
+                Object {
+                  "content": "space-man",
+                },
+                Object {
+                  "content": "2 applications, 2 machines, 2 units",
+                },
+                Object {
+                  "content": "google",
+                },
+                Object {
+                  "content": "us-east1",
+                },
+                Object {
+                  "content": "google_space-man@external_gce",
+                },
+                Object {
+                  "content": "a030329a-941f-4760-8fcd-3063b41a04e7",
+                },
+                Object {
+                  "content": "unavailable",
+                },
+              ],
+            },
+          ]
+        }
+        sortable={true}
+      >
+        <Table
+          sortable={true}
+        >
+          <table
+            className="p-table--sortable"
+            role="grid"
+          >
+            <thead>
+              <TableRow>
+                <tr
+                  role="row"
                 >
-                  <td
-                    className=""
-                    role="gridcell"
+                  <TableHeader
+                    key="0"
+                    onClick={[Function]}
+                    sort="none"
                   >
-                    space-man
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
+                    <th
+                      aria-sort="none"
+                      onClick={[Function]}
+                      role="columnheader"
+                    >
+                      Name
+                    </th>
+                  </TableHeader>
+                  <TableHeader
+                    key="1"
+                    onClick={[Function]}
+                    sort="none"
+                  >
+                    <th
+                      aria-sort="none"
+                      onClick={[Function]}
+                      role="columnheader"
+                    >
+                      Owner
+                    </th>
+                  </TableHeader>
+                  <TableHeader
+                    key="2"
+                    onClick={[Function]}
+                    sort="none"
+                  >
+                    <th
+                      aria-sort="none"
+                      onClick={[Function]}
+                      role="columnheader"
+                    >
+                      Summary
+                    </th>
+                  </TableHeader>
+                  <TableHeader
+                    key="3"
+                    onClick={[Function]}
+                    sort="none"
+                  >
+                    <th
+                      aria-sort="none"
+                      onClick={[Function]}
+                      role="columnheader"
+                    >
+                      Cloud
+                    </th>
+                  </TableHeader>
+                  <TableHeader
+                    key="4"
+                    onClick={[Function]}
+                    sort="none"
+                  >
+                    <th
+                      aria-sort="none"
+                      onClick={[Function]}
+                      role="columnheader"
+                    >
+                      Region
+                    </th>
+                  </TableHeader>
+                  <TableHeader
+                    key="5"
+                    onClick={[Function]}
+                    sort="none"
+                  >
+                    <th
+                      aria-sort="none"
+                      onClick={[Function]}
+                      role="columnheader"
+                    >
+                      Credential
+                    </th>
+                  </TableHeader>
+                  <TableHeader
+                    key="6"
+                    onClick={[Function]}
+                    sort="none"
+                  >
+                    <th
+                      aria-sort="none"
+                      onClick={[Function]}
+                      role="columnheader"
+                    >
+                      Controller
+                    </th>
+                  </TableHeader>
+                  <TableHeader
+                    key="7"
+                    onClick={[Function]}
+                    sort="none"
+                  >
+                    <th
+                      aria-sort="none"
+                      onClick={[Function]}
+                      role="columnheader"
+                    >
+                      Last Updated
+                    </th>
+                  </TableHeader>
+                </tr>
+              </TableRow>
+            </thead>
+            <tbody>
+              <TableRow
+                key="0"
+              >
+                <tr
+                  role="row"
                 >
-                  <td
-                    className=""
-                    role="gridcell"
+                  <TableCell
+                    key="0"
                   >
-                    2 applications, 2 machines, 2 units
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      <Link
+                        to="/models/group-test"
+                      >
+                        <a
+                          href="/models/group-test"
+                          onClick={[Function]}
+                        >
+                          group-test
+                        </a>
+                      </Link>
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="1"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      mrdata
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="2"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      9 applications, 0 machines, 0 units
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="3"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="4"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      us-central1
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="5"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google_mrdata@external_admin
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="6"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      a030329a-941f-4760-8fcd-3063b41a04e7
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="7"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      unavailable
+                    </td>
+                  </TableCell>
+                </tr>
+              </TableRow>
+              <TableRow
+                key="1"
+              >
+                <tr
+                  role="row"
                 >
-                  <td
-                    className=""
-                    role="gridcell"
+                  <TableCell
+                    key="0"
                   >
-                    google
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      <Link
+                        to="/models/test1"
+                      >
+                        <a
+                          href="/models/test1"
+                          onClick={[Function]}
+                        >
+                          test1
+                        </a>
+                      </Link>
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="1"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      mrdata
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="2"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      0 applications, 0 machines, 0 units
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="3"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="4"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      us-east1
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="5"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google_mrdata@external_juju
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="6"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      a030329a-941f-4760-8fcd-3063b41a04e7
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="7"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      unavailable
+                    </td>
+                  </TableCell>
+                </tr>
+              </TableRow>
+              <TableRow
+                key="2"
+              >
+                <tr
+                  role="row"
                 >
-                  <td
-                    className=""
-                    role="gridcell"
+                  <TableCell
+                    key="0"
                   >
-                    us-east1
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="5"
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      <Link
+                        to="/models/test2"
+                      >
+                        <a
+                          href="/models/test2"
+                          onClick={[Function]}
+                        >
+                          test2
+                        </a>
+                      </Link>
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="1"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      mrdata
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="2"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      0 applications, 0 machines, 0 units
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="3"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="4"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      us-east1
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="5"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google_mrdata@external_juju
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="6"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      a030329a-941f-4760-8fcd-3063b41a04e7
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="7"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      unavailable
+                    </td>
+                  </TableCell>
+                </tr>
+              </TableRow>
+              <TableRow
+                key="3"
+              >
+                <tr
+                  role="row"
                 >
-                  <td
-                    className=""
-                    role="gridcell"
+                  <TableCell
+                    key="0"
                   >
-                    google_space-man@external_gce
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="6"
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      <Link
+                        to="/models/test3"
+                      >
+                        <a
+                          href="/models/test3"
+                          onClick={[Function]}
+                        >
+                          test3
+                        </a>
+                      </Link>
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="1"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      mrdata
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="2"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      0 applications, 0 machines, 0 units
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="3"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="4"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      us-east1
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="5"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google_mrdata@external_juju
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="6"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      a030329a-941f-4760-8fcd-3063b41a04e7
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="7"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      unavailable
+                    </td>
+                  </TableCell>
+                </tr>
+              </TableRow>
+              <TableRow
+                key="4"
+              >
+                <tr
+                  role="row"
                 >
-                  <td
-                    className=""
-                    role="gridcell"
+                  <TableCell
+                    key="0"
                   >
-                    a030329a-941f-4760-8fcd-3063b41a04e7
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      <Link
+                        to="/models/juju-all-the-things"
+                      >
+                        <a
+                          href="/models/juju-all-the-things"
+                          onClick={[Function]}
+                        >
+                          juju-all-the-things
+                        </a>
+                      </Link>
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="1"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      otheruser
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="2"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      3 applications, 3 machines, 3 units
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="3"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="4"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      us-east1
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="5"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google_otheruser@external_google-bigbot
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="6"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      a030329a-941f-4760-8fcd-3063b41a04e7
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="7"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      unavailable
+                    </td>
+                  </TableCell>
+                </tr>
+              </TableRow>
+              <TableRow
+                key="5"
+              >
+                <tr
+                  role="row"
                 >
-                  <td
-                    className=""
-                    role="gridcell"
+                  <TableCell
+                    key="0"
                   >
-                    unavailable
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-          </tbody>
-        </table>
-      </Table>
-    </MainTable>
-  </TableList>
-</Provider>
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      <Link
+                        to="/models/frontend-ci"
+                      >
+                        <a
+                          href="/models/frontend-ci"
+                          onClick={[Function]}
+                        >
+                          frontend-ci
+                        </a>
+                      </Link>
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="1"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      space-man
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="2"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      1 applications, 1 machines, 1 units
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="3"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="4"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      us-east1
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="5"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google_space-man@external_gce
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="6"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      a030329a-941f-4760-8fcd-3063b41a04e7
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="7"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      unavailable
+                    </td>
+                  </TableCell>
+                </tr>
+              </TableRow>
+              <TableRow
+                key="6"
+              >
+                <tr
+                  role="row"
+                >
+                  <TableCell
+                    key="0"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      <Link
+                        to="/models/backend-ci"
+                      >
+                        <a
+                          href="/models/backend-ci"
+                          onClick={[Function]}
+                        >
+                          backend-ci
+                        </a>
+                      </Link>
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="1"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      space-man
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="2"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      3 applications, 3 machines, 3 units
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="3"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="4"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      us-east1
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="5"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google_space-man@external_gce
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="6"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      a030329a-941f-4760-8fcd-3063b41a04e7
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="7"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      unavailable
+                    </td>
+                  </TableCell>
+                </tr>
+              </TableRow>
+              <TableRow
+                key="7"
+              >
+                <tr
+                  role="row"
+                >
+                  <TableCell
+                    key="0"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      <Link
+                        to="/models/data-aggregator"
+                      >
+                        <a
+                          href="/models/data-aggregator"
+                          onClick={[Function]}
+                        >
+                          data-aggregator
+                        </a>
+                      </Link>
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="1"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      space-man
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="2"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      2 applications, 2 machines, 2 units
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="3"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="4"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      us-east1
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="5"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      google_space-man@external_gce
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="6"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      a030329a-941f-4760-8fcd-3063b41a04e7
+                    </td>
+                  </TableCell>
+                  <TableCell
+                    key="7"
+                  >
+                    <td
+                      className=""
+                      role="gridcell"
+                    >
+                      unavailable
+                    </td>
+                  </TableCell>
+                </tr>
+              </TableRow>
+            </tbody>
+          </table>
+        </Table>
+      </MainTable>
+    </TableList>
+  </Provider>
+</Router>
 `;
