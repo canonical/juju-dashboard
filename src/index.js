@@ -8,13 +8,13 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import "./scss/index.scss";
 
 import App from "./components/App/App";
-import rootReducer from "./reducers/root";
+import rootReducer from "./app/root";
 import * as serviceWorker from "./serviceWorker";
 
 import { fetchAllModelStatuses, loginWithBakery } from "./juju";
 import jujuReducers from "./juju/reducers";
 import { fetchModelList } from "./juju/actions";
-import { storeBakery, updateControllerConnection } from "./reducers/actions";
+import { storeBakery, updateControllerConnection } from "./app/actions";
 
 const reduxStore = createStore(
   combineReducers({
