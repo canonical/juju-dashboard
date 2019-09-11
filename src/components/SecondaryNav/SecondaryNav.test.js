@@ -25,7 +25,6 @@ describe("Secondary Nav", () => {
         <SecondaryNav />
       </Router>
     );
-    console.log(wrapper.find(".p-list__item:last-child").debug());
     expect(
       wrapper.find(".p-list__item:last-child").hasClass("is-selected")
     ).toStrictEqual(true);
