@@ -33,6 +33,7 @@ exports[`Secondary Nav renders without crashing and matches snapshot 1`] = `
         >
           <li
             className="p-list__item is-selected"
+            key="/"
           >
             <Link
               className="p-list__link"
@@ -49,6 +50,7 @@ exports[`Secondary Nav renders without crashing and matches snapshot 1`] = `
           </li>
           <li
             className="p-list__item"
+            key="/clouds"
           >
             <Link
               className="p-list__link"
@@ -65,6 +67,7 @@ exports[`Secondary Nav renders without crashing and matches snapshot 1`] = `
           </li>
           <li
             className="p-list__item"
+            key="/kubernetes"
           >
             <Link
               className="p-list__link"
@@ -81,6 +84,7 @@ exports[`Secondary Nav renders without crashing and matches snapshot 1`] = `
           </li>
           <li
             className="p-list__item"
+            key="/controllers"
           >
             <Link
               className="p-list__link"
@@ -97,6 +101,7 @@ exports[`Secondary Nav renders without crashing and matches snapshot 1`] = `
           </li>
           <li
             className="p-list__item"
+            key="/usage"
           >
             <Link
               className="p-list__link"
@@ -113,6 +118,7 @@ exports[`Secondary Nav renders without crashing and matches snapshot 1`] = `
           </li>
           <li
             className="p-list__item"
+            key="/logs"
           >
             <Link
               className="p-list__link"
