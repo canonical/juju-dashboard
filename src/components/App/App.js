@@ -10,7 +10,7 @@ import Controllers from "pages/Controllers/Controllers";
 import Kubernetes from "pages/Kubernetes/Kubernetes";
 import Logs from "pages/Logs/Logs";
 import Models from "pages/Models/Models";
-import ModelDetails from "pages/Models/ModelDetails/ModelDetails";
+import ModelDetails from "pages/Models/Details/ModelDetails";
 import NotFound from "pages/NotFound/NotFound";
 import Usage from "pages/Usage/Usage";
 
