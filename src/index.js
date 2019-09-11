@@ -14,7 +14,7 @@ import * as serviceWorker from "./serviceWorker";
 import { fetchAllModelStatuses, loginWithBakery } from "./juju";
 import jujuReducers from "./juju/reducers";
 import { fetchModelList } from "./juju/actions";
-import { actionsList } from "./reducers/actions";
+import { storeBakery, updateControllerConnection } from "./reducers/actions";
 
 const reduxStore = createStore(
   combineReducers({
@@ -28,11 +28,9 @@ async function connectAndListModels(reduxStore) {
   try {
     // eslint-disable-next-line no-console
     console.log("Logging into the Juju controller.");
-    const conn = await loginWithBakery();
-    reduxStore.dispatch({
-      type: actionsList.updateControllerConnection,
-      payload: conn
-    });
+    const { bakery, conn } = await loginWithBakery();
+    reduxStore.dispatch(storeBakery(bakery));
+    reduxStore.dispatch(updateControllerConnection(conn));
     // eslint-disable-next-line no-console
     console.log("Fetching model list.");
     await reduxStore.dispatch(fetchModelList());
