@@ -7,7 +7,7 @@ import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import MainTable from "components/MainTable/MainTable";
 
-import { isLoggedIn, getUserCredentials } from "reducers/selectors";
+import { isLoggedIn, getUserCredentials } from "app/selectors";
 
 import "./_model-details.scss";
 
