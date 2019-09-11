@@ -1,9 +1,13 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
-import Shell from "components/Shell/Shell";
+import { Terminal } from "@canonical/juju-react-components";
+
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import MainTable from "components/MainTable/MainTable";
+
+import { isLoggedIn, getUserCredentials } from "reducers/selectors";
 
 import "./_model-details.scss";
 
@@ -80,8 +84,16 @@ const MainTableRows = [
 ];
 
 const ModelDetails = () => {
+  const credentials = useSelector(getUserCredentials);
+  const isUserLoggedIn = useSelector(isLoggedIn);
+
+  if (!isUserLoggedIn) {
+    return <div>Please log in</div>;
+  }
+
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
   const statusFilters = ["all", "maintenance", "blocked"];
+
   return (
     <div className="model-details">
       <InfoPanel />
@@ -92,7 +104,13 @@ const ModelDetails = () => {
         </div>
         <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
       </div>
-      <Shell />
+      <Terminal
+        address="wss://shell.jujugui.org:443/ws/"
+        addNotification={() => {}}
+        close={() => {}}
+        creds={credentials}
+        WebSocket={WebSocket}
+      />
     </div>
   );
 };
