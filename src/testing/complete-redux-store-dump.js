@@ -4,6 +4,19 @@
 
 export default {
   root: {
+    bakery: {
+      storage: {
+        _store: {
+          _items: {
+            'https://api.jujucharms.com/identity': 'eyJub3QiOiJhIHZhbGlkIG1hY2Fyb29uIn0=',
+            identity: 'eyJub3QiOiJhIHZhbGlkIG1hY2Fyb29uIn0='
+          }
+        },
+        _services: {},
+        _charmstoreCookieSetter: null
+      },
+      _dischargeDisabled: false
+    },
     controllerConnection: {
       transport: {
         _ws: {},

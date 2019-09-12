@@ -8,6 +8,9 @@ function rootReducer(state = {}, action) {
       case actionsList.updateControllerConnection:
         draftState.controllerConnection = action.payload;
         break;
+      case actionsList.storeBakery:
+        draftState.bakery = action.payload;
+        break;
       default:
         // no default value, fall through.
         break;

@@ -31,7 +31,7 @@ const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
 async function loginWithBakery() {
   const juju = await jujulib.connect(controllerURL, options);
   const conn = await juju.login({});
-  return conn;
+  return { bakery, conn };
 }
 
 /**
