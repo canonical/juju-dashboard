@@ -2,6 +2,7 @@ import React from "react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
+import { MemoryRouter } from "react-router";
 import dataDump from "testing/complete-redux-store-dump";
 
 import ModelDetail from "./ModelDetails";
@@ -26,7 +27,9 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <ModelDetail />
+        <MemoryRouter>
+          <ModelDetail />
+        </MemoryRouter>
       </Provider>
     );
     expect(wrapper.find(".model-details")).toMatchSnapshot();
