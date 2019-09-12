@@ -5,9 +5,9 @@ import { mount } from "enzyme";
 import SecondaryNav from "./SecondaryNav";
 
 describe("Secondary Nav", () => {
-  beforeAll(() => {
-    /* eslint-disable-next-line no-unused-vars */
-    var windowLocation = global.window.location;
+  let windowLocation = {};
+  beforeEach(() => {
+    windowLocation = global.window.location;
   });
 
   it("renders without crashing and matches snapshot", () => {
@@ -35,7 +35,7 @@ describe("Secondary Nav", () => {
     ).toStrictEqual(true);
   });
 
-  afterAll(() => {
+  afterEach(() => {
     global.window.location = windowLocation;
   });
 });
