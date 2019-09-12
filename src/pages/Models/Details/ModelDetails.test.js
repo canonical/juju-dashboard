@@ -1,8 +1,7 @@
+import React from "react";
+import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import configureStore from "redux-mock-store";
-import React from "react";
-
 import dataDump from "testing/complete-redux-store-dump";
 
 import ModelDetail from "./ModelDetails";
