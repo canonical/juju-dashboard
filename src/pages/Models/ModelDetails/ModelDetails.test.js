@@ -20,7 +20,7 @@ describe("ModelDetail Container", () => {
         <ModelDetail />
       </Provider>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find("div")).toMatchSnapshot();
   });
 
   it("renders the details pane when the user is logged in", () => {
@@ -30,6 +30,6 @@ describe("ModelDetail Container", () => {
         <ModelDetail />
       </Provider>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(".model-details")).toMatchSnapshot();
   });
 });

@@ -1,952 +1,922 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ModelDetail Container renders the details pane when the user is logged in 1`] = `
-<Provider
-  store={
-    Object {
-      "clearActions": [Function],
-      "dispatch": [Function],
-      "getActions": [Function],
-      "getState": [Function],
-      "replaceReducer": [Function],
-      "subscribe": [Function],
-    }
-  }
+<div
+  className="model-details"
 >
-  <ModelDetails>
+  <InfoPanel>
     <div
-      className="model-details"
+      className="info-panel"
     >
-      <InfoPanel>
-        <div
-          className="info-panel"
-        >
-          <div
-            className="info-panel__grid"
-          >
-            <div
-              className="info-panel__grid-item"
-              key="Model"
-            >
-              <h4
-                className="p-muted-heading"
-              >
-                Model
-              </h4>
-              <p>
-                cdk-default
-              </p>
-            </div>
-            <div
-              className="info-panel__grid-item"
-              key="Region"
-            >
-              <h4
-                className="p-muted-heading"
-              >
-                Region
-              </h4>
-              <p>
-                us-east-1
-              </p>
-            </div>
-            <div
-              className="info-panel__grid-item"
-              key="Controller"
-            >
-              <h4
-                className="p-muted-heading"
-              >
-                Controller
-              </h4>
-              <p>
-                aws-controller
-              </p>
-            </div>
-            <div
-              className="info-panel__grid-item"
-              key="Cloud"
-            >
-              <h4
-                className="p-muted-heading"
-              >
-                Cloud
-              </h4>
-              <p>
-                aws
-              </p>
-            </div>
-            <div
-              className="info-panel__grid-item"
-              key="SLA"
-            >
-              <h4
-                className="p-muted-heading"
-              >
-                SLA
-              </h4>
-              <p>
-                Unsupported
-              </p>
-            </div>
-          </div>
-          <img
-            alt=""
-            src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
-          />
-        </div>
-      </InfoPanel>
       <div
-        className="model-details__main"
+        className="info-panel__grid"
       >
         <div
-          className="model-details__filters"
+          className="info-panel__grid-item"
+          key="Model"
         >
-          <Filter
-            filters={
-              Array [
-                "all",
-                "apps",
-                "units",
-                "machines",
-                "relations",
-              ]
-            }
-            label="View"
+          <h4
+            className="p-muted-heading"
           >
-            <div
-              className="p-filter"
-            >
-              <span
-                className="p-filter__label"
-              >
-                View
-              </span>
-              <span
-                className="p-filter__item"
-                key="all"
-              >
-                <Button>
-                  <button
-                    className="p-button--filter"
-                  >
-                    all
-                  </button>
-                </Button>
-              </span>
-              <span
-                className="p-filter__item"
-                key="apps"
-              >
-                <Button>
-                  <button
-                    className="p-button--filter"
-                  >
-                    apps
-                  </button>
-                </Button>
-              </span>
-              <span
-                className="p-filter__item"
-                key="units"
-              >
-                <Button>
-                  <button
-                    className="p-button--filter"
-                  >
-                    units
-                  </button>
-                </Button>
-              </span>
-              <span
-                className="p-filter__item"
-                key="machines"
-              >
-                <Button>
-                  <button
-                    className="p-button--filter"
-                  >
-                    machines
-                  </button>
-                </Button>
-              </span>
-              <span
-                className="p-filter__item"
-                key="relations"
-              >
-                <Button>
-                  <button
-                    className="p-button--filter"
-                  >
-                    relations
-                  </button>
-                </Button>
-              </span>
-            </div>
-          </Filter>
-          <Filter
-            filters={
-              Array [
-                "all",
-                "maintenance",
-                "blocked",
-              ]
-            }
-            label="Status"
-          >
-            <div
-              className="p-filter"
-            >
-              <span
-                className="p-filter__label"
-              >
-                Status
-              </span>
-              <span
-                className="p-filter__item"
-                key="all"
-              >
-                <Button>
-                  <button
-                    className="p-button--filter"
-                  >
-                    all
-                  </button>
-                </Button>
-              </span>
-              <span
-                className="p-filter__item"
-                key="maintenance"
-              >
-                <Button>
-                  <button
-                    className="p-button--filter"
-                  >
-                    maintenance
-                  </button>
-                </Button>
-              </span>
-              <span
-                className="p-filter__item"
-                key="blocked"
-              >
-                <Button>
-                  <button
-                    className="p-button--filter"
-                  >
-                    blocked
-                  </button>
-                </Button>
-              </span>
-            </div>
-          </Filter>
+            Model
+          </h4>
+          <p>
+            cdk-default
+          </p>
         </div>
-        <MainTable
-          headers={
-            Array [
-              Object {
-                "content": "App",
-                "sortKey": "app",
-              },
-              Object {
-                "content": "Status",
-                "sortKey": "status",
-              },
-              Object {
-                "content": "Version",
-                "sortKey": "version",
-              },
-              Object {
-                "className": "u-align--right",
-                "content": "Scale",
-                "sortKey": "scale",
-              },
-              Object {
-                "content": "Store",
-                "sortKey": "store",
-              },
-              Object {
-                "className": "u-align--right",
-                "content": "Rev",
-                "sortKey": "rev",
-              },
-              Object {
-                "content": "OS",
-                "sortKey": "os",
-              },
-              Object {
-                "content": "Notes",
-                "sortKey": "notes",
-              },
-            ]
-          }
-          rows={
-            Array [
-              Object {
-                "columns": Array [
-                  Object {
-                    "content": "Ready",
-                    "role": "rowheader",
-                  },
-                  Object {
-                    "content": 1,
-                  },
-                  Object {
-                    "content": "1 GiB",
-                  },
-                  Object {
-                    "className": "u-align--right",
-                    "content": 2,
-                  },
-                  Object {
-                    "content": "Ready",
-                  },
-                  Object {
-                    "className": "u-align--right",
-                    "content": 1,
-                  },
-                  Object {
-                    "content": "1 GiB",
-                  },
-                  Object {
-                    "content": 2,
-                  },
-                ],
-                "sortData": Object {
-                  "app": "ready",
-                  "notes": 2,
-                  "os": 1,
-                  "rev": 2,
-                  "scale": 2,
-                  "status": 2,
-                  "store": "ready",
-                  "version": 1,
-                },
-              },
-              Object {
-                "columns": Array [
-                  Object {
-                    "content": "Idle",
-                    "role": "rowheader",
-                  },
-                  Object {
-                    "className": "u-align--right",
-                    "content": 1,
-                  },
-                  Object {
-                    "className": "u-align--right",
-                    "content": "1 GiB",
-                  },
-                  Object {
-                    "className": "u-align--right",
-                    "content": 2,
-                  },
-                  Object {
-                    "content": "Ready",
-                  },
-                  Object {
-                    "className": "u-align--right",
-                    "content": 1,
-                  },
-                  Object {
-                    "content": "1 GiB",
-                  },
-                  Object {
-                    "content": 2,
-                  },
-                ],
-                "sortData": Object {
-                  "cores": 1,
-                  "disks": 2,
-                  "ram": 1,
-                  "status": "idle",
-                },
-              },
-              Object {
-                "columns": Array [
-                  Object {
-                    "content": "Waiting",
-                    "role": "rowheader",
-                  },
-                  Object {
-                    "content": 8,
-                  },
-                  Object {
-                    "content": "3.9 GiB",
-                  },
-                  Object {
-                    "className": "u-align--right",
-                    "content": 3,
-                  },
-                  Object {
-                    "content": "Ready",
-                  },
-                  Object {
-                    "className": "u-align--right",
-                    "content": 1,
-                  },
-                  Object {
-                    "content": "1 GiB",
-                  },
-                  Object {
-                    "content": 2,
-                  },
-                ],
-                "sortData": Object {
-                  "cores": 8,
-                  "disks": 3,
-                  "ram": 3.9,
-                  "status": "waiting",
-                },
-              },
-            ]
-          }
-          sortable={true}
+        <div
+          className="info-panel__grid-item"
+          key="Region"
         >
-          <Table
-            sortable={true}
+          <h4
+            className="p-muted-heading"
           >
-            <table
-              className="p-table--sortable"
-              role="grid"
-            >
-              <thead>
-                <TableRow>
-                  <tr
-                    role="row"
-                  >
-                    <TableHeader
-                      key="0"
-                      onClick={[Function]}
-                      sort="none"
-                    >
-                      <th
-                        aria-sort="none"
-                        onClick={[Function]}
-                        role="columnheader"
-                      >
-                        App
-                      </th>
-                    </TableHeader>
-                    <TableHeader
-                      key="1"
-                      onClick={[Function]}
-                      sort="none"
-                    >
-                      <th
-                        aria-sort="none"
-                        onClick={[Function]}
-                        role="columnheader"
-                      >
-                        Status
-                      </th>
-                    </TableHeader>
-                    <TableHeader
-                      key="2"
-                      onClick={[Function]}
-                      sort="none"
-                    >
-                      <th
-                        aria-sort="none"
-                        onClick={[Function]}
-                        role="columnheader"
-                      >
-                        Version
-                      </th>
-                    </TableHeader>
-                    <TableHeader
-                      className="u-align--right"
-                      key="3"
-                      onClick={[Function]}
-                      sort="none"
-                    >
-                      <th
-                        aria-sort="none"
-                        className="u-align--right"
-                        onClick={[Function]}
-                        role="columnheader"
-                      >
-                        Scale
-                      </th>
-                    </TableHeader>
-                    <TableHeader
-                      key="4"
-                      onClick={[Function]}
-                      sort="none"
-                    >
-                      <th
-                        aria-sort="none"
-                        onClick={[Function]}
-                        role="columnheader"
-                      >
-                        Store
-                      </th>
-                    </TableHeader>
-                    <TableHeader
-                      className="u-align--right"
-                      key="5"
-                      onClick={[Function]}
-                      sort="none"
-                    >
-                      <th
-                        aria-sort="none"
-                        className="u-align--right"
-                        onClick={[Function]}
-                        role="columnheader"
-                      >
-                        Rev
-                      </th>
-                    </TableHeader>
-                    <TableHeader
-                      key="6"
-                      onClick={[Function]}
-                      sort="none"
-                    >
-                      <th
-                        aria-sort="none"
-                        onClick={[Function]}
-                        role="columnheader"
-                      >
-                        OS
-                      </th>
-                    </TableHeader>
-                    <TableHeader
-                      key="7"
-                      onClick={[Function]}
-                      sort="none"
-                    >
-                      <th
-                        aria-sort="none"
-                        onClick={[Function]}
-                        role="columnheader"
-                      >
-                        Notes
-                      </th>
-                    </TableHeader>
-                  </tr>
-                </TableRow>
-              </thead>
-              <tbody>
-                <TableRow
+            Region
+          </h4>
+          <p>
+            us-east-1
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+          key="Controller"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Controller
+          </h4>
+          <p>
+            aws-controller
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+          key="Cloud"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Cloud
+          </h4>
+          <p>
+            aws
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+          key="SLA"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            SLA
+          </h4>
+          <p>
+            Unsupported
+          </p>
+        </div>
+      </div>
+      <img
+        alt=""
+        src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+      />
+    </div>
+  </InfoPanel>
+  <div
+    className="model-details__main"
+  >
+    <div
+      className="model-details__filters"
+    >
+      <Filter
+        filters={
+          Array [
+            "all",
+            "apps",
+            "units",
+            "machines",
+            "relations",
+          ]
+        }
+        label="View"
+      >
+        <div
+          className="p-filter"
+        >
+          <span
+            className="p-filter__label"
+          >
+            View
+          </span>
+          <span
+            className="p-filter__item"
+            key="all"
+          >
+            <Button>
+              <button
+                className="p-button--filter"
+              >
+                all
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item"
+            key="apps"
+          >
+            <Button>
+              <button
+                className="p-button--filter"
+              >
+                apps
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item"
+            key="units"
+          >
+            <Button>
+              <button
+                className="p-button--filter"
+              >
+                units
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item"
+            key="machines"
+          >
+            <Button>
+              <button
+                className="p-button--filter"
+              >
+                machines
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item"
+            key="relations"
+          >
+            <Button>
+              <button
+                className="p-button--filter"
+              >
+                relations
+              </button>
+            </Button>
+          </span>
+        </div>
+      </Filter>
+      <Filter
+        filters={
+          Array [
+            "all",
+            "maintenance",
+            "blocked",
+          ]
+        }
+        label="Status"
+      >
+        <div
+          className="p-filter"
+        >
+          <span
+            className="p-filter__label"
+          >
+            Status
+          </span>
+          <span
+            className="p-filter__item"
+            key="all"
+          >
+            <Button>
+              <button
+                className="p-button--filter"
+              >
+                all
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item"
+            key="maintenance"
+          >
+            <Button>
+              <button
+                className="p-button--filter"
+              >
+                maintenance
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item"
+            key="blocked"
+          >
+            <Button>
+              <button
+                className="p-button--filter"
+              >
+                blocked
+              </button>
+            </Button>
+          </span>
+        </div>
+      </Filter>
+    </div>
+    <MainTable
+      headers={
+        Array [
+          Object {
+            "content": "App",
+            "sortKey": "app",
+          },
+          Object {
+            "content": "Status",
+            "sortKey": "status",
+          },
+          Object {
+            "content": "Version",
+            "sortKey": "version",
+          },
+          Object {
+            "className": "u-align--right",
+            "content": "Scale",
+            "sortKey": "scale",
+          },
+          Object {
+            "content": "Store",
+            "sortKey": "store",
+          },
+          Object {
+            "className": "u-align--right",
+            "content": "Rev",
+            "sortKey": "rev",
+          },
+          Object {
+            "content": "OS",
+            "sortKey": "os",
+          },
+          Object {
+            "content": "Notes",
+            "sortKey": "notes",
+          },
+        ]
+      }
+      rows={
+        Array [
+          Object {
+            "columns": Array [
+              Object {
+                "content": "Ready",
+                "role": "rowheader",
+              },
+              Object {
+                "content": 1,
+              },
+              Object {
+                "content": "1 GiB",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 2,
+              },
+              Object {
+                "content": "Ready",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 1,
+              },
+              Object {
+                "content": "1 GiB",
+              },
+              Object {
+                "content": 2,
+              },
+            ],
+            "sortData": Object {
+              "app": "ready",
+              "notes": 2,
+              "os": 1,
+              "rev": 2,
+              "scale": 2,
+              "status": 2,
+              "store": "ready",
+              "version": 1,
+            },
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "Idle",
+                "role": "rowheader",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 1,
+              },
+              Object {
+                "className": "u-align--right",
+                "content": "1 GiB",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 2,
+              },
+              Object {
+                "content": "Ready",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 1,
+              },
+              Object {
+                "content": "1 GiB",
+              },
+              Object {
+                "content": 2,
+              },
+            ],
+            "sortData": Object {
+              "cores": 1,
+              "disks": 2,
+              "ram": 1,
+              "status": "idle",
+            },
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "Waiting",
+                "role": "rowheader",
+              },
+              Object {
+                "content": 8,
+              },
+              Object {
+                "content": "3.9 GiB",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 3,
+              },
+              Object {
+                "content": "Ready",
+              },
+              Object {
+                "className": "u-align--right",
+                "content": 1,
+              },
+              Object {
+                "content": "1 GiB",
+              },
+              Object {
+                "content": 2,
+              },
+            ],
+            "sortData": Object {
+              "cores": 8,
+              "disks": 3,
+              "ram": 3.9,
+              "status": "waiting",
+            },
+          },
+        ]
+      }
+      sortable={true}
+    >
+      <Table
+        sortable={true}
+      >
+        <table
+          className="p-table--sortable"
+          role="grid"
+        >
+          <thead>
+            <TableRow>
+              <tr
+                role="row"
+              >
+                <TableHeader
                   key="0"
+                  onClick={[Function]}
+                  sort="none"
                 >
-                  <tr
-                    role="row"
+                  <th
+                    aria-sort="none"
+                    onClick={[Function]}
+                    role="columnheader"
                   >
-                    <TableCell
-                      key="0"
-                      role="rowheader"
-                    >
-                      <td
-                        className=""
-                        role="rowheader"
-                      >
-                        Ready
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="1"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        1
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="2"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        1 GiB
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      className="u-align--right"
-                      key="3"
-                    >
-                      <td
-                        className="u-align--right"
-                        role="gridcell"
-                      >
-                        2
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="4"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        Ready
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      className="u-align--right"
-                      key="5"
-                    >
-                      <td
-                        className="u-align--right"
-                        role="gridcell"
-                      >
-                        1
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="6"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        1 GiB
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="7"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        2
-                      </td>
-                    </TableCell>
-                  </tr>
-                </TableRow>
-                <TableRow
+                    App
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="1"
+                  onClick={[Function]}
+                  sort="none"
+                >
+                  <th
+                    aria-sort="none"
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    Status
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="2"
+                  onClick={[Function]}
+                  sort="none"
+                >
+                  <th
+                    aria-sort="none"
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    Version
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  className="u-align--right"
+                  key="3"
+                  onClick={[Function]}
+                  sort="none"
+                >
+                  <th
+                    aria-sort="none"
+                    className="u-align--right"
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    Scale
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="4"
+                  onClick={[Function]}
+                  sort="none"
+                >
+                  <th
+                    aria-sort="none"
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    Store
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  className="u-align--right"
+                  key="5"
+                  onClick={[Function]}
+                  sort="none"
+                >
+                  <th
+                    aria-sort="none"
+                    className="u-align--right"
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    Rev
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="6"
+                  onClick={[Function]}
+                  sort="none"
+                >
+                  <th
+                    aria-sort="none"
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    OS
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="7"
+                  onClick={[Function]}
+                  sort="none"
+                >
+                  <th
+                    aria-sort="none"
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    Notes
+                  </th>
+                </TableHeader>
+              </tr>
+            </TableRow>
+          </thead>
+          <tbody>
+            <TableRow
+              key="0"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                  role="rowheader"
+                >
+                  <td
+                    className=""
+                    role="rowheader"
+                  >
+                    Ready
+                  </td>
+                </TableCell>
+                <TableCell
                   key="1"
                 >
-                  <tr
-                    role="row"
+                  <td
+                    className=""
+                    role="gridcell"
                   >
-                    <TableCell
-                      key="0"
-                      role="rowheader"
-                    >
-                      <td
-                        className=""
-                        role="rowheader"
-                      >
-                        Idle
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      className="u-align--right"
-                      key="1"
-                    >
-                      <td
-                        className="u-align--right"
-                        role="gridcell"
-                      >
-                        1
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      className="u-align--right"
-                      key="2"
-                    >
-                      <td
-                        className="u-align--right"
-                        role="gridcell"
-                      >
-                        1 GiB
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      className="u-align--right"
-                      key="3"
-                    >
-                      <td
-                        className="u-align--right"
-                        role="gridcell"
-                      >
-                        2
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="4"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        Ready
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      className="u-align--right"
-                      key="5"
-                    >
-                      <td
-                        className="u-align--right"
-                        role="gridcell"
-                      >
-                        1
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="6"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        1 GiB
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="7"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        2
-                      </td>
-                    </TableCell>
-                  </tr>
-                </TableRow>
-                <TableRow
+                    1
+                  </td>
+                </TableCell>
+                <TableCell
                   key="2"
                 >
-                  <tr
-                    role="row"
+                  <td
+                    className=""
+                    role="gridcell"
                   >
-                    <TableCell
-                      key="0"
-                      role="rowheader"
-                    >
-                      <td
-                        className=""
-                        role="rowheader"
-                      >
-                        Waiting
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="1"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        8
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="2"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        3.9 GiB
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      className="u-align--right"
-                      key="3"
-                    >
-                      <td
-                        className="u-align--right"
-                        role="gridcell"
-                      >
-                        3
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="4"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        Ready
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      className="u-align--right"
-                      key="5"
-                    >
-                      <td
-                        className="u-align--right"
-                        role="gridcell"
-                      >
-                        1
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="6"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        1 GiB
-                      </td>
-                    </TableCell>
-                    <TableCell
-                      key="7"
-                    >
-                      <td
-                        className=""
-                        role="gridcell"
-                      >
-                        2
-                      </td>
-                    </TableCell>
-                  </tr>
-                </TableRow>
-              </tbody>
-            </table>
-          </Table>
-        </MainTable>
-      </div>
-      <Terminal
-        WebSocket={[Function]}
-        addNotification={[Function]}
-        address="wss://shell.jujugui.org:443/ws/"
-        close={[Function]}
-        creds={
-          Object {
-            "macaroons": Object {
-              "https://api.jujucharms.com/identity": Object {
-                "not": "a valid macaroon",
-              },
-              "identity": Object {
-                "not": "a valid macaroon",
-              },
-            },
-          }
-        }
+                    1 GiB
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-align--right"
+                  key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    2
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    Ready
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-align--right"
+                  key="5"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    1
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    1 GiB
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    2
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="1"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                  role="rowheader"
+                >
+                  <td
+                    className=""
+                    role="rowheader"
+                  >
+                    Idle
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-align--right"
+                  key="1"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    1
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-align--right"
+                  key="2"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    1 GiB
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-align--right"
+                  key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    2
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    Ready
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-align--right"
+                  key="5"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    1
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    1 GiB
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    2
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="2"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                  role="rowheader"
+                >
+                  <td
+                    className=""
+                    role="rowheader"
+                  >
+                    Waiting
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    8
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    3.9 GiB
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-align--right"
+                  key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    3
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    Ready
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-align--right"
+                  key="5"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    1
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    1 GiB
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    2
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+          </tbody>
+        </table>
+      </Table>
+    </MainTable>
+  </div>
+  <Terminal
+    WebSocket={[Function]}
+    addNotification={[Function]}
+    address="wss://shell.jujugui.org:443/ws/"
+    close={[Function]}
+    creds={
+      Object {
+        "macaroons": Object {
+          "https://api.jujucharms.com/identity": Object {
+            "not": "a valid macaroon",
+          },
+          "identity": Object {
+            "not": "a valid macaroon",
+          },
+        },
+      }
+    }
+  >
+    <div
+      className="juju-shell"
+    >
+      <div
+        className="juju-shell__header"
       >
-        <div
-          className="juju-shell"
+        <span
+          className="juju-shell__header-label"
         >
-          <div
-            className="juju-shell__header"
+          Juju Shell
+        </span>
+        <div
+          className="juju-shell__header-actions"
+        >
+          <span
+            onClick={[Function]}
+            role="button"
+            tabIndex="0"
           >
-            <span
-              className="juju-shell__header-label"
+            <SvgIcon
+              name="minimize-bar_16"
+              size="16"
             >
-              Juju Shell
-            </span>
-            <div
-              className="juju-shell__header-actions"
+              <svg
+                className="svg-icon"
+                style={
+                  Object {
+                    "height": "16px",
+                    "width": "16px",
+                  }
+                }
+                viewBox="0 0 16 16"
+                xlinkHref="http://www.w3.org/1999/xlink"
+              >
+                <use
+                  xlinkHref="#minimize-bar_16"
+                />
+              </svg>
+            </SvgIcon>
+          </span>
+          <span
+            onClick={[Function]}
+            role="button"
+            tabIndex="0"
+          >
+            <SvgIcon
+              name="maximize-bar_16"
+              size="16"
             >
-              <span
-                onClick={[Function]}
-                role="button"
-                tabIndex="0"
+              <svg
+                className="svg-icon"
+                style={
+                  Object {
+                    "height": "16px",
+                    "width": "16px",
+                  }
+                }
+                viewBox="0 0 16 16"
+                xlinkHref="http://www.w3.org/1999/xlink"
               >
-                <SvgIcon
-                  name="minimize-bar_16"
-                  size="16"
-                >
-                  <svg
-                    className="svg-icon"
-                    style={
-                      Object {
-                        "height": "16px",
-                        "width": "16px",
-                      }
-                    }
-                    viewBox="0 0 16 16"
-                    xlinkHref="http://www.w3.org/1999/xlink"
-                  >
-                    <use
-                      xlinkHref="#minimize-bar_16"
-                    />
-                  </svg>
-                </SvgIcon>
-              </span>
-              <span
-                onClick={[Function]}
-                role="button"
-                tabIndex="0"
+                <use
+                  xlinkHref="#maximize-bar_16"
+                />
+              </svg>
+            </SvgIcon>
+          </span>
+          <span
+            onClick={[Function]}
+            role="button"
+            tabIndex="0"
+          >
+            <SvgIcon
+              name="close_16"
+              size="16"
+            >
+              <svg
+                className="svg-icon"
+                style={
+                  Object {
+                    "height": "16px",
+                    "width": "16px",
+                  }
+                }
+                viewBox="0 0 16 16"
+                xlinkHref="http://www.w3.org/1999/xlink"
               >
-                <SvgIcon
-                  name="maximize-bar_16"
-                  size="16"
-                >
-                  <svg
-                    className="svg-icon"
-                    style={
-                      Object {
-                        "height": "16px",
-                        "width": "16px",
-                      }
-                    }
-                    viewBox="0 0 16 16"
-                    xlinkHref="http://www.w3.org/1999/xlink"
-                  >
-                    <use
-                      xlinkHref="#maximize-bar_16"
-                    />
-                  </svg>
-                </SvgIcon>
-              </span>
-              <span
-                onClick={[Function]}
-                role="button"
-                tabIndex="0"
-              >
-                <SvgIcon
-                  name="close_16"
-                  size="16"
-                >
-                  <svg
-                    className="svg-icon"
-                    style={
-                      Object {
-                        "height": "16px",
-                        "width": "16px",
-                      }
-                    }
-                    viewBox="0 0 16 16"
-                    xlinkHref="http://www.w3.org/1999/xlink"
-                  >
-                    <use
-                      xlinkHref="#close_16"
-                    />
-                  </svg>
-                </SvgIcon>
-              </span>
-            </div>
-          </div>
-          <div
-            className="juju-shell__terminal juju-shell__terminal--min"
-            style={Object {}}
-          />
+                <use
+                  xlinkHref="#close_16"
+                />
+              </svg>
+            </SvgIcon>
+          </span>
         </div>
-      </Terminal>
+      </div>
+      <div
+        className="juju-shell__terminal juju-shell__terminal--min"
+        style={Object {}}
+      />
     </div>
-  </ModelDetails>
-</Provider>
+  </Terminal>
+</div>
 `;
 
 exports[`ModelDetail Container renders with a login message when not logged in 1`] = `
-<Provider
-  store={
-    Object {
-      "clearActions": [Function],
-      "dispatch": [Function],
-      "getActions": [Function],
-      "getState": [Function],
-      "replaceReducer": [Function],
-      "subscribe": [Function],
-    }
-  }
->
-  <ModelDetails>
-    <div>
-      Please log in
-    </div>
-  </ModelDetails>
-</Provider>
+<div>
+  Please log in
+</div>
 `;
