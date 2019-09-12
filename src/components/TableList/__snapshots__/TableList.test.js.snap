@@ -75,7 +75,7 @@ exports[`TableList displays all data from redux store 1`] = `
         "entries": Array [
           Object {
             "hash": "",
-            "key": "mc2fht",
+            "key": "5170i2",
             "pathname": "/",
             "search": "",
             "state": undefined,
@@ -89,7 +89,7 @@ exports[`TableList displays all data from redux store 1`] = `
         "listen": [Function],
         "location": Object {
           "hash": "",
-          "key": "mc2fht",
+          "key": "5170i2",
           "pathname": "/",
           "search": "",
           "state": undefined,
