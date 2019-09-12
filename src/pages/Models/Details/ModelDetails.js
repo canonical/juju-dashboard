@@ -105,7 +105,6 @@ const ModelDetails = () => {
           </div>
           <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
         </div>
-        <Shell />
       </div>
       <Terminal
         address="wss://shell.jujugui.org:443/ws/"
