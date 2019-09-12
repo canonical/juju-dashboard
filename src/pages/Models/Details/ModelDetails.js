@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
-
 import { Terminal } from "@canonical/juju-react-components";
 
+import Layout from "components/Layout/Layout";
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import MainTable from "components/MainTable/MainTable";
@@ -95,14 +95,16 @@ const ModelDetails = () => {
   const statusFilters = ["all", "maintenance", "blocked"];
 
   return (
-    <div className="model-details">
-      <InfoPanel />
-      <div className="model-details__main">
-        <div className="model-details__filters">
-          <Filter label="View" filters={viewFilters} />
-          <Filter label="Status" filters={statusFilters} />
+    <Layout sidebar={false}>
+      <div className="model-details">
+        <InfoPanel />
+        <div className="model-details__main">
+          <div className="model-details__filters">
+            <Filter label="View" filters={viewFilters} />
+            <Filter label="Status" filters={statusFilters} />
+          </div>
+          <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
         </div>
-        <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
       </div>
       <Terminal
         address="wss://shell.jujugui.org:443/ws/"
@@ -111,7 +113,7 @@ const ModelDetails = () => {
         creds={credentials}
         WebSocket={WebSocket}
       />
-    </div>
+    </Layout>
   );
 };
 

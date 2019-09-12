@@ -5,6 +5,11 @@ import { mount } from "enzyme";
 import SecondaryNav from "./SecondaryNav";
 
 describe("Secondary Nav", () => {
+  let windowLocation = {};
+  beforeEach(() => {
+    windowLocation = global.window.location;
+  });
+
   it("renders without crashing and matches snapshot", () => {
     const wrapper = mount(
       <Router>
@@ -28,5 +33,9 @@ describe("Secondary Nav", () => {
     expect(
       wrapper.find(".p-list__item:last-child").hasClass("is-selected")
     ).toStrictEqual(true);
+  });
+
+  afterEach(() => {
+    global.window.location = windowLocation;
   });
 });

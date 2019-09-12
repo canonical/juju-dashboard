@@ -1,6 +1,6 @@
 {
-  "extends": ["react-app", "prettier", "prettier/react", "plugin:jest/all"],
-  "plugins": ["prettier"],
+  "extends": ["react-app", "prettier/react"],
+  "plugins": ["prettier", "jest"],
   "rules": {
     "react/prop-types": 0,
     "react/jsx-filename-extension": [
@@ -15,6 +15,7 @@
     "jest/prefer-expect-assertions": 0,
     "jest/prefer-inline-snapshots": 0,
     "jest/lowercase-name": 0,
+    "jest/no-hooks": 0,
     "default-case": 0,
     "no-param-reassign": 0,
     "no-case-declarations": 0,
@@ -23,6 +24,7 @@
   "globals": {
     "window": true,
     "document": true,
-    "localStorage": true
+    "localStorage": true,
+    "windowLocation": true
   }
 }

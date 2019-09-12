@@ -1,4 +1,5 @@
 import React from "react";
+import { MemoryRouter } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -31,10 +32,12 @@ describe("TableList", () => {
   it("displays all data from redux store", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
-      <Provider store={store}>
-        <TableList />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <TableList />
+        </Provider>
+      </MemoryRouter>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(TableList)).toMatchSnapshot();
   });
 });
