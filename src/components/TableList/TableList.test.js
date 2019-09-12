@@ -39,6 +39,6 @@ describe("TableList", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(TableList)).toMatchSnapshot();
   });
 });
