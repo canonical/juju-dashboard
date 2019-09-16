@@ -8,7 +8,6 @@ export default function Models() {
     <Layout sidebar>
       <div className="p-strip">
         <div className="row">
-          <h2>Models</h2>
           <TableList />
         </div>
       </div>

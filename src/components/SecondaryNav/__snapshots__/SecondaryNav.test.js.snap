@@ -50,40 +50,6 @@ exports[`Secondary Nav renders without crashing and matches snapshot 1`] = `
           </li>
           <li
             className="p-list__item"
-            key="/clouds"
-          >
-            <Link
-              className="p-list__link"
-              to="/clouds"
-            >
-              <a
-                className="p-list__link"
-                href="/clouds"
-                onClick={[Function]}
-              >
-                Clouds
-              </a>
-            </Link>
-          </li>
-          <li
-            className="p-list__item"
-            key="/kubernetes"
-          >
-            <Link
-              className="p-list__link"
-              to="/kubernetes"
-            >
-              <a
-                className="p-list__link"
-                href="/kubernetes"
-                onClick={[Function]}
-              >
-                Kubernetes
-              </a>
-            </Link>
-          </li>
-          <li
-            className="p-list__item"
             key="/controllers"
           >
             <Link

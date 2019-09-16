@@ -6,8 +6,6 @@ import "./_secondary-nav.scss";
 
 const pages = [
   { label: "Models", path: "/" },
-  { label: "Clouds", path: "/clouds" },
-  { label: "Kubernetes", path: "/kubernetes" },
   { label: "Controllers", path: "/controllers" },
   { label: "Usage", path: "/usage" },
   { label: "Logs", path: "/logs" }
