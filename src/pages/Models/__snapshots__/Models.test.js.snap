@@ -10,9 +10,6 @@ exports[`Models page renders without crashing and matches snapshot 1`] = `
     <div
       className="row"
     >
-      <h2>
-        Models
-      </h2>
       <TableList />
     </div>
   </div>
