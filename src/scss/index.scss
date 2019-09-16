@@ -5,6 +5,9 @@ $grid-max-width: 100%;
 
 // Settings
 $color-navigation-background: $color-brand;
+// XXX remove when updating from Vanilla 2.3.0
+// Table font sizing breakpoint is a touch too small for 15" laptop screens
+$increase-font-size-on-larger-screens: false;
 
 @include vf-base;
 @include vf-p-buttons;
@@ -20,6 +23,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-table-of-contents;
 @include vf-p-table-mobile-card;
 @include vf-p-table-sortable;
+@include vf-u-layout;
 
 // Fix consecutive table bug
 // https://github.com/canonical-web-and-design/vanilla-framework/issues/2491

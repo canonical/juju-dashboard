@@ -32,7 +32,7 @@ function generateModelTableData(state) {
         // so display the controller UUID instead.
         { content: getStatusValue(modelInfoData, "controllerUuid") },
         // We're not currently able to get a last-accessed or updated from JAAS.
-        { content: "unavailable" }
+        { content: getStatusValue(modelInfoData, "status.since") }
       ]
     };
   });
@@ -59,13 +59,7 @@ function getStatusValue(status, key) {
             prev + Object.keys(status.applications[key].units).length,
           0
         );
-        returnValue =
-          applicationCount +
-          " applications, " +
-          machineCount +
-          " machines, " +
-          unitCount +
-          " units";
+        returnValue = applicationCount + "/" + machineCount + "/" + unitCount;
         break;
       case "cloudTag":
         returnValue = status.model.cloudTag.replace("cloud-", "");
@@ -74,10 +68,16 @@ function getStatusValue(status, key) {
         returnValue = status.model.region;
         break;
       case "cloudCredentialTag":
-        returnValue = status.cloudCredentialTag.split("cloudcred-")[1];
+        returnValue = status.cloudCredentialTag
+          .split("cloudcred-")[1]
+          .split("@")[1]
+          .split("_")[1];
         break;
       case "controllerUuid":
-        returnValue = status.controllerUuid;
+        returnValue = status.controllerUuid.split("-")[0] + "...";
+        break;
+      case "status.since":
+        returnValue = status.status.since.split("T")[0];
         break;
       default:
         console.log(`unsupported status value key: ${key}`);
@@ -90,7 +90,7 @@ function getStatusValue(status, key) {
 const modelTableHeaders = [
   { content: "Name", sortKey: "name" },
   { content: "Owner", sortKey: "owner" },
-  { content: "Summary", sortKey: "summary" },
+  { content: "Apps/Machines/Units", sortKey: "summary" },
   { content: "Cloud", sortKey: "cloud" },
   { content: "Region", sortKey: "region" },
   { content: "Credential", sortKey: "credential" },
@@ -100,7 +100,13 @@ const modelTableHeaders = [
 
 function TableList() {
   const modelData = useSelector(generateModelTableData);
-  return <MainTable headers={modelTableHeaders} rows={modelData} sortable />;
+  return (
+    <MainTable
+      className={"u-table-layout--auto"}
+      headers={modelTableHeaders}
+      rows={modelData}
+    />
+  );
 }
 
 export default TableList;
