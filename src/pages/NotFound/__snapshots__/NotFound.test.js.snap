@@ -1,19 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`NotFound page renders without crashing and matches snapshot 1`] = `
-<Layout
-  sidebar={true}
+<div
+  className="p-strip"
 >
   <div
-    className="p-strip"
+    className="row"
   >
-    <div
-      className="row"
-    >
-      <h2>
-        ¯\\_(ツ)_/¯
-      </h2>
-    </div>
+    <h2>
+      ¯\\_(ツ)_/¯
+    </h2>
   </div>
-</Layout>
+</div>
 `;

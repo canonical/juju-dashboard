@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+import Layout from "components/Layout/Layout";
 import Loading from "components/Loading/Loading";
 
 // Pages
@@ -16,16 +17,18 @@ const Usage = React.lazy(() => import("pages/Usage/Usage"));
 function App() {
   return (
     <Router>
-      <Suspense fallback={<Loading />}>
-        <Switch>
-          <Route path="/" exact component={Models} />
-          <Route path="/models/:id" exact component={ModelDetails} />
-          <Route path="/controllers" exact component={Controllers} />
-          <Route path="/usage" exact component={Usage} />
-          <Route path="/logs" exact component={Logs} />
-          <Route component={NotFound} />
-        </Switch>
-      </Suspense>
+      <Layout>
+        <Suspense fallback={<Loading />}>
+          <Switch>
+            <Route path="/" exact component={Models} />
+            <Route path="/models/:id" exact component={ModelDetails} />
+            <Route path="/controllers" exact component={Controllers} />
+            <Route path="/usage" exact component={Usage} />
+            <Route path="/logs" exact component={Logs} />
+            <Route component={NotFound} />
+          </Switch>
+        </Suspense>
+      </Layout>
     </Router>
   );
 }

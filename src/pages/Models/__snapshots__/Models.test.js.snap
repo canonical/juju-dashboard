@@ -1,17 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Models page renders without crashing and matches snapshot 1`] = `
-<Layout
-  sidebar={true}
+<div
+  className="p-strip"
 >
   <div
-    className="p-strip"
+    className="row"
   >
-    <div
-      className="row"
-    >
-      <TableList />
-    </div>
+    <TableList />
   </div>
-</Layout>
+</div>
 `;

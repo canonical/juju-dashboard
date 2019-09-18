@@ -22,7 +22,7 @@ describe("Layout", () => {
   it("should display the children", () => {
     const wrapper = shallow(<Layout>content</Layout>);
     expect(wrapper.find("#main-content").html()).toStrictEqual(
-      `<main id="main-content">content</main>`
+      `<main class="main-content" id="main-content">content</main>`
     );
   });
 });

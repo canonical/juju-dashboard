@@ -2,81 +2,85 @@
 
 exports[`App renders without crashing and matches snapshot 1`] = `
 <BrowserRouter>
-  <Switch>
+  <Layout
+    sidebar={true}
+  >
     <Suspense
       fallback={<Loading />}
     >
-      <Route
-        component={
-          Object {
-            "$$typeof": Symbol(react.lazy),
-            "_ctor": [Function],
-            "_result": null,
-            "_status": -1,
+      <Switch>
+        <Route
+          component={
+            Object {
+              "$$typeof": Symbol(react.lazy),
+              "_ctor": [Function],
+              "_result": null,
+              "_status": -1,
+            }
           }
-        }
-        exact={true}
-        path="/"
-      />
-      <Route
-        component={
-          Object {
-            "$$typeof": Symbol(react.lazy),
-            "_ctor": [Function],
-            "_result": null,
-            "_status": -1,
+          exact={true}
+          path="/"
+        />
+        <Route
+          component={
+            Object {
+              "$$typeof": Symbol(react.lazy),
+              "_ctor": [Function],
+              "_result": null,
+              "_status": -1,
+            }
           }
-        }
-        exact={true}
-        path="/models/:id"
-      />
-      <Route
-        component={
-          Object {
-            "$$typeof": Symbol(react.lazy),
-            "_ctor": [Function],
-            "_result": null,
-            "_status": -1,
+          exact={true}
+          path="/models/:id"
+        />
+        <Route
+          component={
+            Object {
+              "$$typeof": Symbol(react.lazy),
+              "_ctor": [Function],
+              "_result": null,
+              "_status": -1,
+            }
           }
-        }
-        exact={true}
-        path="/controllers"
-      />
-      <Route
-        component={
-          Object {
-            "$$typeof": Symbol(react.lazy),
-            "_ctor": [Function],
-            "_result": null,
-            "_status": -1,
+          exact={true}
+          path="/controllers"
+        />
+        <Route
+          component={
+            Object {
+              "$$typeof": Symbol(react.lazy),
+              "_ctor": [Function],
+              "_result": null,
+              "_status": -1,
+            }
           }
-        }
-        exact={true}
-        path="/usage"
-      />
-      <Route
-        component={
-          Object {
-            "$$typeof": Symbol(react.lazy),
-            "_ctor": [Function],
-            "_result": null,
-            "_status": -1,
+          exact={true}
+          path="/usage"
+        />
+        <Route
+          component={
+            Object {
+              "$$typeof": Symbol(react.lazy),
+              "_ctor": [Function],
+              "_result": null,
+              "_status": -1,
+            }
           }
-        }
-        exact={true}
-        path="/logs"
-      />
-      <Route
-        component={
-          Object {
-            "$$typeof": Symbol(react.lazy),
-            "_ctor": [Function],
-            "_result": null,
-            "_status": -1,
+          exact={true}
+          path="/logs"
+        />
+        <Route
+          component={
+            Object {
+              "$$typeof": Symbol(react.lazy),
+              "_ctor": [Function],
+              "_result": null,
+              "_status": -1,
+            }
           }
-        }
-      />
+        />
+      </Switch>
     </Suspense>
-  </Switch>
+  </Layout>
 </BrowserRouter>
 `;

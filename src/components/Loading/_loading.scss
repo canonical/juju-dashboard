@@ -2,7 +2,7 @@
   align-content: center;
   display: grid;
   grid-template-columns: 1fr;
-  height: 100vh;
+  height: calc(100vh - 48px);
   width: 100vw;
 
   .p-icon--spinner {

@@ -26,7 +26,13 @@ const Layout = ({ sidebar, children }) => {
         )}
         <div className="l-main">
           <ErrorBoundary>
-            {isLoggedIn ? <main id="main-content">{children}</main> : <Login />}
+            {isLoggedIn ? (
+              <main className="main-content" id="main-content">
+                {children}
+              </main>
+            ) : (
+              <Login />
+            )}
           </ErrorBoundary>
         </div>
       </div>

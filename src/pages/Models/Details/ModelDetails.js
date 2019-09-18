@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Terminal } from "@canonical/juju-react-components";
 
-import Layout from "components/Layout/Layout";
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import MainTable from "components/MainTable/MainTable";
@@ -95,7 +94,7 @@ const ModelDetails = () => {
   const statusFilters = ["all", "maintenance", "blocked"];
 
   return (
-    <Layout sidebar={false}>
+    <>
       <div className="model-details">
         <InfoPanel />
         <div className="model-details__main">
@@ -113,7 +112,7 @@ const ModelDetails = () => {
         creds={credentials}
         WebSocket={WebSocket}
       />
-    </Layout>
+    </>
   );
 };
 

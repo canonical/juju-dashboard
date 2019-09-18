@@ -16,6 +16,7 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
     >
       <ErrorBoundary>
         <main
+          className="main-content"
           id="main-content"
         />
       </ErrorBoundary>
