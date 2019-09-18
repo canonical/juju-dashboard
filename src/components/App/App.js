@@ -16,16 +16,16 @@ const Usage = React.lazy(() => import("pages/Usage/Usage"));
 function App() {
   return (
     <Router>
-      <Switch>
-        <Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading />}>
+        <Switch>
           <Route path="/" exact component={Models} />
           <Route path="/models/:id" exact component={ModelDetails} />
           <Route path="/controllers" exact component={Controllers} />
           <Route path="/usage" exact component={Usage} />
           <Route path="/logs" exact component={Logs} />
           <Route component={NotFound} />
-        </Suspense>
-      </Switch>
+        </Switch>
+      </Suspense>
     </Router>
   );
 }
