@@ -1,11 +1,16 @@
 import React from "react";
 import classNames from "classnames";
+import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import SecondaryNav from "components/SecondaryNav/SecondaryNav";
+import Login from "components/Login/Login";
 
 import "./_layout.scss";
 
 const Layout = ({ sidebar, children }) => {
+  // Temp circumvent this step until login solution is implemented
+  const isLoggedIn = true;
+
   return (
     <>
       <PrimaryNav />
@@ -20,7 +25,9 @@ const Layout = ({ sidebar, children }) => {
           </div>
         )}
         <div className="l-main">
-          <main id="main-content">{children}</main>
+          <ErrorBoundary>
+            {isLoggedIn ? <main id="main-content">{children}</main> : <Login />}
+          </ErrorBoundary>
         </div>
       </div>
     </>

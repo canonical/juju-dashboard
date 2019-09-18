@@ -1,0 +1,9 @@
+.login {
+  align-content: center;
+  display: grid;
+  height: calc(100vh - 48px);
+
+  .p-button--positive {
+    margin: auto;
+  }
+}

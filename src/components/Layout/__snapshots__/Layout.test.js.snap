@@ -14,9 +14,11 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
     <div
       className="l-main"
     >
-      <main
-        id="main-content"
-      />
+      <ErrorBoundary>
+        <main
+          id="main-content"
+        />
+      </ErrorBoundary>
     </div>
   </div>
 </Fragment>

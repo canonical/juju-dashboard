@@ -1,13 +1,11 @@
 import React from "react";
 
-import Layout from "components/Layout/Layout";
+import "./_login.scss";
 
 export default function Login() {
   return (
-    <Layout sidebar={false}>
-      <h1>Login</h1>
-      <p>Please log in to view and manage your models.</p>
-      <button className="p-button--positive">Log in</button>
-    </Layout>
+    <div className="login">
+      <button className="p-button--positive">Log in to view your models</button>
+    </div>
   );
 }
