@@ -1,0 +1,14 @@
+.loading {
+  align-content: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  height: 100vh;
+  width: 100vw;
+
+  .p-icon--spinner {
+    height: 2rem;
+    margin: auto;
+    transform: rotate(360deg);
+    width: 2rem;
+  }
+}

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loading renders without crashing and matches snapshot 1`] = `
+<div
+  className="loading"
+>
+  <img
+    alt="Loading..."
+    className="loading__spinner"
+    src="https://assets.ubuntu.com/v1/60ddfec6-spinner.svg"
+  />
+</div>
+`;

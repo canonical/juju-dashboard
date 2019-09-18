@@ -12,6 +12,7 @@ $increase-font-size-on-larger-screens: false;
 @include vf-base;
 @include vf-p-buttons;
 @include vf-p-grid;
+@include vf-p-icons;
 @include vf-p-links;
 @include vf-p-lists;
 @include vf-b-typography;
@@ -24,6 +25,7 @@ $increase-font-size-on-larger-screens: false;
 @include vf-p-table-mobile-card;
 @include vf-p-table-sortable;
 @include vf-u-layout;
+@include vf-u-animations;
 
 // Fix consecutive table bug
 // https://github.com/canonical-web-and-design/vanilla-framework/issues/2491
