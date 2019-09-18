@@ -798,7 +798,157 @@ exports[`ModelDetail Container renders the details pane when the user is logged 
 `;
 
 exports[`ModelDetail Container renders with a login message when not logged in 1`] = `
-<div>
-  Please log in
-</div>
+Array [
+  <div
+    className="login"
+  >
+    <h1
+      className="login__heading"
+    >
+      <div
+        className="p-media-object"
+      >
+        <img
+          alt=""
+          className="p-media-object__image"
+          src="https://assets.ubuntu.com/v1/60d9b81e-picto-canonical.svg"
+          width="50"
+        />
+        <div
+          className="p-media-object__details"
+        >
+          <h3
+            className="p-media-object__title"
+          >
+            Canonical Candid
+          </h3>
+        </div>
+      </div>
+    </h1>
+    <div
+      className="p-card--highlighted"
+    >
+      <h3>
+        Login
+      </h3>
+      <div
+        className="p-media-object"
+      >
+        <img
+          alt=""
+          className="p-media-object__image"
+          src="https://assets.ubuntu.com/v1/c4f35e06-products-hero-ubuntu.svg"
+          width="50"
+        />
+        <div
+          className="p-media-object__details"
+        >
+          <h3
+            className="p-media-object__title"
+          >
+            Ubuntu SSO
+          </h3>
+        </div>
+      </div>
+      <p>
+        Will authenticate with Candid in order to log you in.
+      </p>
+      <button
+        className="p-button--positive"
+      >
+        Proceed
+      </button>
+    </div>
+  </div>,
+  <div
+    className="p-media-object"
+  >
+    <img
+      alt=""
+      className="p-media-object__image"
+      src="https://assets.ubuntu.com/v1/60d9b81e-picto-canonical.svg"
+      width="50"
+    />
+    <div
+      className="p-media-object__details"
+    >
+      <h3
+        className="p-media-object__title"
+      >
+        Canonical Candid
+      </h3>
+    </div>
+  </div>,
+  <div
+    className="p-media-object__details"
+  >
+    <h3
+      className="p-media-object__title"
+    >
+      Canonical Candid
+    </h3>
+  </div>,
+  <div
+    className="p-card--highlighted"
+  >
+    <h3>
+      Login
+    </h3>
+    <div
+      className="p-media-object"
+    >
+      <img
+        alt=""
+        className="p-media-object__image"
+        src="https://assets.ubuntu.com/v1/c4f35e06-products-hero-ubuntu.svg"
+        width="50"
+      />
+      <div
+        className="p-media-object__details"
+      >
+        <h3
+          className="p-media-object__title"
+        >
+          Ubuntu SSO
+        </h3>
+      </div>
+    </div>
+    <p>
+      Will authenticate with Candid in order to log you in.
+    </p>
+    <button
+      className="p-button--positive"
+    >
+      Proceed
+    </button>
+  </div>,
+  <div
+    className="p-media-object"
+  >
+    <img
+      alt=""
+      className="p-media-object__image"
+      src="https://assets.ubuntu.com/v1/c4f35e06-products-hero-ubuntu.svg"
+      width="50"
+    />
+    <div
+      className="p-media-object__details"
+    >
+      <h3
+        className="p-media-object__title"
+      >
+        Ubuntu SSO
+      </h3>
+    </div>
+  </div>,
+  <div
+    className="p-media-object__details"
+  >
+    <h3
+      className="p-media-object__title"
+    >
+      Ubuntu SSO
+    </h3>
+  </div>,
+]
 `;

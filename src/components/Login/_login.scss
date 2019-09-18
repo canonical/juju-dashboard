@@ -1,7 +1,18 @@
+@import "vanilla-framework/scss/settings_colors";
+
 .login {
   align-content: center;
+  background: $color-mid-light;
   display: grid;
   height: calc(100vh - 48px);
+
+  &__heading {
+    margin: 3rem auto;
+  }
+
+  .p-card--highlighted {
+    margin: auto;
+  }
 
   .p-button--positive {
     margin: auto;

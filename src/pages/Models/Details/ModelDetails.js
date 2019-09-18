@@ -5,6 +5,7 @@ import { Terminal } from "@canonical/juju-react-components";
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import MainTable from "components/MainTable/MainTable";
+import Login from "components/Login/Login";
 
 import { isLoggedIn, getUserCredentials } from "app/selectors";
 
@@ -87,7 +88,7 @@ const ModelDetails = () => {
   const isUserLoggedIn = useSelector(isLoggedIn);
 
   if (!isUserLoggedIn) {
-    return <div>Please log in</div>;
+    return <Login />;
   }
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
