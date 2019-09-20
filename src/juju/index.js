@@ -6,30 +6,54 @@ import { Bakery } from "@canonical/macaroon-bakery";
 
 import { actionsList } from "./actions";
 
-const bakery = new Bakery({
-  visitPage: resp => {
-    // XXX Surface message to UI.
-    console.log("visit this URL to login:", resp.Info.VisitURL); // eslint-disable-line no-console
-  }
-});
-
-// The options used when connecting to a Juju controller or model.
-const options = {
-  debug: true,
-  facades: [client, modelManager],
-  bakery
-};
+// Shared bakery instance.
+let bakery = null;
 
 // Full URL path to the controller.
 const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
+
+/**
+  Creates a new bakery instance
+  @param {Function} visitPage The function to call when the bakery returns with
+    a visit page URL.
+  @returns {Bakery} A new bakery instance.
+*/
+function createNewBakery(visitPage) {
+  const defaultVisitPage = resp => {
+    // eslint-disable-next-line no-console
+    console.log("visit this URL to login:", resp.Info.VisitURL);
+  };
+  return new Bakery({
+    visitPage: visitPage || defaultVisitPage
+  });
+}
+
+/**
+  Return a common connection option config.
+  @returns {Object} The configuration options.
+*/
+function generateConnectionOptions() {
+  // The options used when connecting to a Juju controller or model.
+  return {
+    debug: true,
+    facades: [client, modelManager],
+    bakery
+  };
+}
 
 /**
   Connects to the controller at the url defined in the REACT_APP_CONTROLLER_URL
   environment variable.
   @returns {Object} conn The controller connection instance.
 */
-async function loginWithBakery() {
-  const juju = await jujulib.connect(controllerURL, options);
+async function loginWithBakery(visitPage) {
+  if (bakery === null) {
+    bakery = createNewBakery(visitPage);
+  }
+  const juju = await jujulib.connect(
+    controllerURL,
+    generateConnectionOptions()
+  );
   const conn = await juju.login({});
   return { bakery, conn };
 }
@@ -43,7 +67,11 @@ async function loginWithBakery() {
 */
 async function fetchModelStatus(modelUUID) {
   const modelURL = controllerURL.replace("/api", `/model/${modelUUID}/api`);
-  const { conn, logout } = await jujulib.connectAndLogin(modelURL, {}, options);
+  const { conn, logout } = await jujulib.connectAndLogin(
+    modelURL,
+    {},
+    generateConnectionOptions()
+  );
   const status = await conn.facades.client.fullStatus();
   logout();
   return status;
