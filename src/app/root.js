@@ -11,6 +11,9 @@ function rootReducer(state = {}, action) {
       case actionsList.storeBakery:
         draftState.bakery = action.payload;
         break;
+      case actionsList.storeVisitURL:
+        draftState.visitURL = action.payload;
+        break;
       default:
         // no default value, fall through.
         break;

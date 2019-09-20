@@ -1,6 +1,7 @@
 // Action labels
 export const actionsList = {
   storeBakery: "STORE_BAKERY",
+  storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION"
 };
 
@@ -24,5 +25,16 @@ export function updateControllerConnection(conn) {
   return {
     type: actionsList.updateControllerConnection,
     payload: conn
+  };
+}
+
+/**
+  @param {String} visitURL The url the user needs to connect to to complete the
+    bakery login.
+*/
+export function storeVisitURL(visitURL) {
+  return {
+    type: actionsList.storeVisitURL,
+    payload: visitURL
   };
 }
