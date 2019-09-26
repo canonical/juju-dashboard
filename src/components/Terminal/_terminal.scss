@@ -1,0 +1,15 @@
+.terminal {
+  position: absolute;
+  bottom: 0;
+  background-color: black;
+  color: white;
+  width: 100%;
+
+  &-header {
+    height: 1.5rem;
+  }
+
+  &-shell {
+    height: 10rem;
+  }
+}
