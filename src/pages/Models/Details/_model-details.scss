@@ -1,7 +1,7 @@
 .model-details {
   display: grid;
   grid-template-columns: 350px 1fr;
-  min-height: 100vh;
+  min-height: calc(100vh - 48px); // hack to fix initial set of 100vh
 
   &__filters {
     display: grid;
