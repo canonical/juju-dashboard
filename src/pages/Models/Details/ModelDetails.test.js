@@ -7,6 +7,8 @@ import dataDump from "testing/complete-redux-store-dump";
 
 import ModelDetail from "./ModelDetails";
 
+jest.mock("components/Terminal/Terminal", () => () => "Terminal");
+
 const mockStore = configureStore([]);
 
 describe("ModelDetail Container", () => {
