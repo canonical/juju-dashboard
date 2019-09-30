@@ -28,7 +28,11 @@ export const getDecodedMacaroons = macaroons => {
   }
   let decodedMacaroons = {};
   Object.keys(macaroons).forEach(key => {
-    decodedMacaroons[key] = JSON.parse(atob(macaroons[key]));
+    try {
+      decodedMacaroons[key] = JSON.parse(atob(macaroons[key]));
+    } catch (err) {
+      console.error("Unable to decode macaroons", err);
+    }
   });
   return decodedMacaroons;
 };
