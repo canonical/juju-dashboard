@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import cleanUpTerminal from "./cleanup-terminal";
 import setupTerminal from "./setup-terminal";
 
-import "../../../node_modules/xterm/css/xterm.css";
 import "./_terminal.scss";
 
 const Terminal = ({ address, creds }) => {
