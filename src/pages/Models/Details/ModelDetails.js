@@ -1,13 +1,18 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Terminal } from "@canonical/juju-react-components";
+import { createSelector } from "reselect";
 
-import Layout from "components/Layout/Layout";
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
+import Layout from "components/Layout/Layout";
 import MainTable from "components/MainTable/MainTable";
+import Terminal from "components/Terminal/Terminal";
 
-import { isLoggedIn, getUserCredentials } from "app/selectors";
+import {
+  isLoggedIn,
+  getDecodedMacaroons,
+  getUserCredentials
+} from "app/selectors";
 
 import "./_model-details.scss";
 
@@ -84,7 +89,11 @@ const MainTableRows = [
 ];
 
 const ModelDetails = () => {
-  const credentials = useSelector(getUserCredentials);
+  const getMacaroons = createSelector(
+    getUserCredentials,
+    getDecodedMacaroons
+  );
+  const macaroons = useSelector(getMacaroons);
   const isUserLoggedIn = useSelector(isLoggedIn);
 
   if (!isUserLoggedIn) {
@@ -110,7 +119,7 @@ const ModelDetails = () => {
         address="wss://shell.jujugui.org:443/ws/"
         addNotification={() => {}}
         close={() => {}}
-        creds={credentials}
+        creds={{ macaroons }}
         WebSocket={WebSocket}
       />
     </Layout>

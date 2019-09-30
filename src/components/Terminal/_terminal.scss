@@ -1,0 +1,17 @@
+@import "xterm/css/xterm";
+
+.terminal {
+  background-color: black;
+  bottom: 0;
+  color: white;
+  position: absolute;
+  width: 100%;
+
+  &-header {
+    height: 1.5rem;
+  }
+
+  &-shell {
+    height: 10rem;
+  }
+}
