@@ -1,10 +1,10 @@
 @import "xterm/css/xterm";
 
 .terminal {
-  position: absolute;
-  bottom: 0;
   background-color: black;
+  bottom: 0;
   color: white;
+  position: absolute;
   width: 100%;
 
   &-header {
