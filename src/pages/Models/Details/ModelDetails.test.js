@@ -25,15 +25,17 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find("div")).toMatchSnapshot();
   });
 
-  it("renders the details pane when the user is logged in", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter>
-          <ModelDetail />
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".model-details")).toMatchSnapshot();
+  describe("When the user is logged in...", () => {
+    it("renders the details pane", () => {
+      const store = mockStore(dataDump);
+      const wrapper = mount(
+        <Provider store={store}>
+          <MemoryRouter>
+            <ModelDetail />
+          </MemoryRouter>
+        </Provider>
+      );
+      expect(wrapper.find(".model-details")).toMatchSnapshot();
+    });
   });
 });

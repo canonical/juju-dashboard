@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ModelDetail Container renders the details pane when the user is logged in 1`] = `
+exports[`ModelDetail Container When the user is logged in... renders the details pane 1`] = `
 <div
   className="model-details"
 >
