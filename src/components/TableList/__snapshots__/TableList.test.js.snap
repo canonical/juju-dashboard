@@ -92,11 +92,11 @@ exports[`TableList displays all data from redux store 1`] = `
         Object {
           "columns": Array [
             Object {
-              "content": <Link
+              "content": <ForwardRef
                 to="/models/group-test"
               >
                 group-test
-              </Link>,
+              </ForwardRef>,
             },
             Object {
               "content": "mrdata",
@@ -124,11 +124,11 @@ exports[`TableList displays all data from redux store 1`] = `
         Object {
           "columns": Array [
             Object {
-              "content": <Link
+              "content": <ForwardRef
                 to="/models/test1"
               >
                 test1
-              </Link>,
+              </ForwardRef>,
             },
             Object {
               "content": "mrdata",
@@ -156,11 +156,11 @@ exports[`TableList displays all data from redux store 1`] = `
         Object {
           "columns": Array [
             Object {
-              "content": <Link
+              "content": <ForwardRef
                 to="/models/test2"
               >
                 test2
-              </Link>,
+              </ForwardRef>,
             },
             Object {
               "content": "mrdata",
@@ -188,11 +188,11 @@ exports[`TableList displays all data from redux store 1`] = `
         Object {
           "columns": Array [
             Object {
-              "content": <Link
+              "content": <ForwardRef
                 to="/models/test3"
               >
                 test3
-              </Link>,
+              </ForwardRef>,
             },
             Object {
               "content": "mrdata",
@@ -220,11 +220,11 @@ exports[`TableList displays all data from redux store 1`] = `
         Object {
           "columns": Array [
             Object {
-              "content": <Link
+              "content": <ForwardRef
                 to="/models/juju-all-the-things"
               >
                 juju-all-the-things
-              </Link>,
+              </ForwardRef>,
             },
             Object {
               "content": "otheruser",
@@ -252,11 +252,11 @@ exports[`TableList displays all data from redux store 1`] = `
         Object {
           "columns": Array [
             Object {
-              "content": <Link
+              "content": <ForwardRef
                 to="/models/frontend-ci"
               >
                 frontend-ci
-              </Link>,
+              </ForwardRef>,
             },
             Object {
               "content": "space-man",
@@ -284,11 +284,11 @@ exports[`TableList displays all data from redux store 1`] = `
         Object {
           "columns": Array [
             Object {
-              "content": <Link
+              "content": <ForwardRef
                 to="/models/backend-ci"
               >
                 backend-ci
-              </Link>,
+              </ForwardRef>,
             },
             Object {
               "content": "space-man",
@@ -316,11 +316,11 @@ exports[`TableList displays all data from redux store 1`] = `
         Object {
           "columns": Array [
             Object {
-              "content": <Link
+              "content": <ForwardRef
                 to="/models/data-aggregator"
               >
                 data-aggregator
-              </Link>,
+              </ForwardRef>,
             },
             Object {
               "content": "space-man",
@@ -452,12 +452,17 @@ exports[`TableList displays all data from redux store 1`] = `
                   <Link
                     to="/models/group-test"
                   >
-                    <a
+                    <LinkAnchor
                       href="/models/group-test"
-                      onClick={[Function]}
+                      navigate={[Function]}
                     >
-                      group-test
-                    </a>
+                      <a
+                        href="/models/group-test"
+                        onClick={[Function]}
+                      >
+                        group-test
+                      </a>
+                    </LinkAnchor>
                   </Link>
                 </td>
               </TableCell>
@@ -549,12 +554,17 @@ exports[`TableList displays all data from redux store 1`] = `
                   <Link
                     to="/models/test1"
                   >
-                    <a
+                    <LinkAnchor
                       href="/models/test1"
-                      onClick={[Function]}
+                      navigate={[Function]}
                     >
-                      test1
-                    </a>
+                      <a
+                        href="/models/test1"
+                        onClick={[Function]}
+                      >
+                        test1
+                      </a>
+                    </LinkAnchor>
                   </Link>
                 </td>
               </TableCell>
@@ -646,12 +656,17 @@ exports[`TableList displays all data from redux store 1`] = `
                   <Link
                     to="/models/test2"
                   >
-                    <a
+                    <LinkAnchor
                       href="/models/test2"
-                      onClick={[Function]}
+                      navigate={[Function]}
                     >
-                      test2
-                    </a>
+                      <a
+                        href="/models/test2"
+                        onClick={[Function]}
+                      >
+                        test2
+                      </a>
+                    </LinkAnchor>
                   </Link>
                 </td>
               </TableCell>
@@ -743,12 +758,17 @@ exports[`TableList displays all data from redux store 1`] = `
                   <Link
                     to="/models/test3"
                   >
-                    <a
+                    <LinkAnchor
                       href="/models/test3"
-                      onClick={[Function]}
+                      navigate={[Function]}
                     >
-                      test3
-                    </a>
+                      <a
+                        href="/models/test3"
+                        onClick={[Function]}
+                      >
+                        test3
+                      </a>
+                    </LinkAnchor>
                   </Link>
                 </td>
               </TableCell>
@@ -840,12 +860,17 @@ exports[`TableList displays all data from redux store 1`] = `
                   <Link
                     to="/models/juju-all-the-things"
                   >
-                    <a
+                    <LinkAnchor
                       href="/models/juju-all-the-things"
-                      onClick={[Function]}
+                      navigate={[Function]}
                     >
-                      juju-all-the-things
-                    </a>
+                      <a
+                        href="/models/juju-all-the-things"
+                        onClick={[Function]}
+                      >
+                        juju-all-the-things
+                      </a>
+                    </LinkAnchor>
                   </Link>
                 </td>
               </TableCell>
@@ -937,12 +962,17 @@ exports[`TableList displays all data from redux store 1`] = `
                   <Link
                     to="/models/frontend-ci"
                   >
-                    <a
+                    <LinkAnchor
                       href="/models/frontend-ci"
-                      onClick={[Function]}
+                      navigate={[Function]}
                     >
-                      frontend-ci
-                    </a>
+                      <a
+                        href="/models/frontend-ci"
+                        onClick={[Function]}
+                      >
+                        frontend-ci
+                      </a>
+                    </LinkAnchor>
                   </Link>
                 </td>
               </TableCell>
@@ -1034,12 +1064,17 @@ exports[`TableList displays all data from redux store 1`] = `
                   <Link
                     to="/models/backend-ci"
                   >
-                    <a
+                    <LinkAnchor
                       href="/models/backend-ci"
-                      onClick={[Function]}
+                      navigate={[Function]}
                     >
-                      backend-ci
-                    </a>
+                      <a
+                        href="/models/backend-ci"
+                        onClick={[Function]}
+                      >
+                        backend-ci
+                      </a>
+                    </LinkAnchor>
                   </Link>
                 </td>
               </TableCell>
@@ -1131,12 +1166,17 @@ exports[`TableList displays all data from redux store 1`] = `
                   <Link
                     to="/models/data-aggregator"
                   >
-                    <a
+                    <LinkAnchor
                       href="/models/data-aggregator"
-                      onClick={[Function]}
+                      navigate={[Function]}
                     >
-                      data-aggregator
-                    </a>
+                      <a
+                        href="/models/data-aggregator"
+                        onClick={[Function]}
+                      >
+                        data-aggregator
+                      </a>
+                    </LinkAnchor>
                   </Link>
                 </td>
               </TableCell>

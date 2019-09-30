@@ -130,12 +130,17 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
                 <Link
                   to="/"
                 >
-                  <a
+                  <LinkAnchor
                     href="/"
-                    onClick={[Function]}
+                    navigate={[Function]}
                   >
-                    Settings
-                  </a>
+                    <a
+                      href="/"
+                      onClick={[Function]}
+                    >
+                      Settings
+                    </a>
+                  </LinkAnchor>
                 </Link>
               </li>
             </ul>
