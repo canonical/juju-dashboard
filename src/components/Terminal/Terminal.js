@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 import cleanUpTerminal from "./cleanup-terminal";
 import setupTerminal from "./setup-terminal";
@@ -6,7 +6,6 @@ import setupTerminal from "./setup-terminal";
 import "./_terminal.scss";
 
 const Terminal = ({ address, creds }) => {
-  const [state, setState] = useState();
   const terminalElement = useRef(null);
 
   useEffect(() => {

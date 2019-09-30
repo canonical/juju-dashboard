@@ -61,7 +61,7 @@ export default function setupTerminal(address, creds, terminalElement) {
     if (resp.code === CODE_ERR) {
       console.error(resp.message);
       terminalInstance.write(
-        "Error talking to the terminal server: " + resp.message
+        `Error talking to the terminal server: ${resp.message}`
       );
       return;
     }
