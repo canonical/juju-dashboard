@@ -20,6 +20,7 @@
     "build": "react-scripts build",
     "clean": "./scripts/clean-files",
     "eslint-check": "eslint src/",
+    "lint": "yarn run eslint-check && yarn run prettier-check && yarn run stylelint-check",
     "prettier-check": "prettier --check 'src/**/*'",
     "serve": "yarn run start",
     "start": "react-scripts start",
@@ -72,16 +73,16 @@
   },
   "devDependencies": {
     "eslint-config-airbnb": "18.0.1",
-    "eslint-config-prettier": "6.1.0",
+    "eslint-config-prettier": "6.3.0",
     "eslint-plugin-import": "2.18.2",
-    "eslint-plugin-jest": "22.16.0",
+    "eslint-plugin-jest": "22.17.0",
     "eslint-plugin-jsx-a11y": "6.2.3",
-    "eslint-plugin-prettier": "3.1.0",
+    "eslint-plugin-prettier": "3.1.1",
     "eslint-plugin-react": "7.14.3",
     "prettier": "1.18.2",
     "redux-devtools": "3.5.0",
-    "stylelint": "10.1.0",
-    "stylelint-config-standard": "18.3.0",
-    "stylelint-order": "3.0.1"
+    "stylelint": "11.0.0",
+    "stylelint-config-standard": "19.0.0",
+    "stylelint-order": "3.1.1"
   }
 }
