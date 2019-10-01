@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IsLoggedIn renders a login UI if the user is not logged in 1`] = `
+<Provider
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+>
+  <IsLoggedIn>
+    <div>
+      Please log in
+    </div>
+  </IsLoggedIn>
+</Provider>
+`;
+
+exports[`IsLoggedIn renders it's children if the user is logged in 1`] = `
+<Provider
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+>
+  <IsLoggedIn>
+    Hello world!
+  </IsLoggedIn>
+</Provider>
+`;
