@@ -15,7 +15,14 @@ exports[`IsLoggedIn renders a login UI if the user is not logged in 1`] = `
 >
   <IsLoggedIn>
     <div>
-      Please log in
+      Please
+       
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        log in
+      </a>
     </div>
   </IsLoggedIn>
 </Provider>
