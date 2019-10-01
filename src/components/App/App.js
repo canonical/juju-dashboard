@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 // Components
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
+import IsLoggedIn from "components/IsLoggedIn/IsLoggedIn";
 
 // Pages
 import Controllers from "pages/Controllers/Controllers";
@@ -18,7 +19,11 @@ function App() {
       <ErrorBoundary>
         <Switch>
           <Route path="/" exact component={Models} />
-          <Route path="/models/:id" exact component={ModelDetails} />
+          <Route path="/models/:name" exact>
+            <IsLoggedIn>
+              <ModelDetails />
+            </IsLoggedIn>
+          </Route>
           <Route path="/controllers" exact component={Controllers} />
           <Route path="/usage" exact component={Usage} />
           <Route path="/logs" exact component={Logs} />
