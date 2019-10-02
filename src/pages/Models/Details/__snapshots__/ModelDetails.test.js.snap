@@ -813,7 +813,7 @@ exports[`ModelDetail Container renders the terminal 1`] = `
       },
     }
   }
-  modelUUID="2446g278-7928-4c50-811b-563f79acd991"
+  modelName="test1"
 >
   <div
     className="terminal"
