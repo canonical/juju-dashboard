@@ -9,11 +9,39 @@ export const actionsList = {
 // Action creators
 /**
   @param {Array} models The list of models to store.
+  @returns {Object} An action for Redux.
 */
 export function updateModelList(models) {
   return {
     type: actionsList.updateModelList,
     payload: models
+  };
+}
+
+/**
+  @param {String} modelUUID The modelUUID of the model to store the
+    status under.
+  @param {Object} status The status data as returned from the API.
+  @returns {Object} An action for Redux.
+ */
+export function updateModelStatus(modelUUID, status) {
+  return {
+    type: actionsList.updateModelStatus,
+    payload: {
+      modelUUID,
+      status
+    }
+  };
+}
+
+/**
+  @param {Object} modelInfo The model info data as returned from the API.
+  @returns {Object} An action for Redux.
+ */
+export function updateModelInfo(modelInfo) {
+  return {
+    type: actionsList.updateModelInfo,
+    payload: modelInfo
   };
 }
 

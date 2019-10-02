@@ -4,7 +4,7 @@ import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import { Bakery } from "@canonical/macaroon-bakery";
 
-import { actionsList } from "./actions";
+import { updateModelInfo, updateModelStatus } from "./actions";
 
 // Shared bakery instance.
 let bakery = null;
@@ -78,6 +78,17 @@ async function fetchModelStatus(modelUUID) {
 }
 
 /**
+  Calls the fetchModelStatus method with the UUID and then dispatches the
+  action to store it in the redux store.
+  @param {String} modelUUID The model UUID to fetch the model status of.
+  @param {Function} dispatch The redux store hook method.
+ */
+async function fetchAndStoreModelStatus(modelUUID, dispatch) {
+  const status = await fetchModelStatus(modelUUID);
+  dispatch(updateModelStatus(modelUUID, status));
+}
+
+/**
   Requests the model information for the supplied UUID from the supplied
   controller connection.
   @param {Object} conn The active controller connection.
@@ -108,19 +119,9 @@ async function fetchAllModelStatuses(conn, modelList, dispatch) {
   const modelUUIDs = Object.keys(modelList);
   modelUUIDs.forEach(modelUUID => {
     queue.push(async done => {
-      const status = await fetchModelStatus(modelUUID);
-      dispatch({
-        type: actionsList.updateModelStatus,
-        payload: {
-          modelUUID: modelUUID,
-          status
-        }
-      });
+      await fetchAndStoreModelStatus(modelUUID, dispatch);
       const modelInfo = await fetchModelInfo(conn, modelUUID);
-      dispatch({
-        type: actionsList.updateModelInfo,
-        payload: modelInfo
-      });
+      dispatch(updateModelInfo(modelInfo));
       done();
     });
   });
@@ -131,4 +132,4 @@ async function fetchAllModelStatuses(conn, modelList, dispatch) {
   });
 }
 
-export { loginWithBakery, fetchAllModelStatuses };
+export { loginWithBakery, fetchAllModelStatuses, fetchAndStoreModelStatus };
