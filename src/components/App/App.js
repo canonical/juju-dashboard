@@ -18,7 +18,11 @@ function App() {
     <Router>
       <ErrorBoundary>
         <Switch>
-          <Route path="/" exact component={Models} />
+          <Route path="/" exact>
+            <IsLoggedIn>
+              <Models />
+            </IsLoggedIn>
+          </Route>
           <Route path="/models/:name" exact>
             <IsLoggedIn>
               <ModelDetails />
