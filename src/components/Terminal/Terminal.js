@@ -1,11 +1,10 @@
 import React, { useEffect, useRef } from "react";
-
 import cleanUpTerminal from "./cleanup-terminal";
 import setupTerminal from "./setup-terminal";
 
 import "./_terminal.scss";
 
-const Terminal = ({ address, creds }) => {
+const Terminal = ({ address, creds, modelUUID }) => {
   const terminalElement = useRef(null);
 
   useEffect(() => {

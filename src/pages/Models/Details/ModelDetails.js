@@ -1,6 +1,7 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
+import { useParams } from "react-router-dom";
 
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
@@ -9,10 +10,13 @@ import MainTable from "components/MainTable/MainTable";
 import Terminal from "components/Terminal/Terminal";
 
 import {
-  isLoggedIn,
   getDecodedMacaroons,
+  getModelUUIDByName,
+  getModelList,
   getUserCredentials
 } from "app/selectors";
+
+import { fetchAndStoreModelStatus } from "juju";
 
 import "./_model-details.scss";
 
@@ -88,17 +92,36 @@ const MainTableRows = [
   }
 ];
 
-const ModelDetails = () => {
-  const getMacaroons = createSelector(
-    getUserCredentials,
-    getDecodedMacaroons
-  );
-  const macaroons = useSelector(getMacaroons);
-  const isUserLoggedIn = useSelector(isLoggedIn);
+const getMacaroons = createSelector(
+  getUserCredentials,
+  getDecodedMacaroons
+);
 
-  if (!isUserLoggedIn) {
-    return <div>Please log in</div>;
+const getModelUUIDSelector = modelName => {
+  return createSelector(
+    getModelList,
+    modelInfo => getModelUUIDByName(modelName, modelInfo)
+  );
+};
+
+const ModelDetails = () => {
+  const macaroons = useSelector(getMacaroons);
+
+  const { name: modelName } = useParams();
+  const dispatch = useDispatch();
+
+  const getModelUUID = useMemo(getModelUUIDSelector.bind(null, modelName), [
+    modelName
+  ]);
+
+  const modelUUID = useSelector(getModelUUID);
+  if (modelUUID !== null) {
+    // This model may not be in the first batch of models that we request
+    // status from in the main loop so request for it now.
+    fetchAndStoreModelStatus(modelUUID, dispatch);
   }
+
+  // XXX Get the model status Data and generate the rows.
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
   const statusFilters = ["all", "maintenance", "blocked"];
@@ -117,8 +140,7 @@ const ModelDetails = () => {
       </div>
       <Terminal
         address="wss://shell.jujugui.org:443/ws/"
-        addNotification={() => {}}
-        close={() => {}}
+        modelUUID={modelUUID}
         creds={{ macaroons }}
         WebSocket={WebSocket}
       />
