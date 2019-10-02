@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ModelDetail Container When the user is logged in... renders the details pane 1`] = `
+exports[`ModelDetail Container renders the details pane 1`] = `
 <div
   className="model-details"
 >
@@ -797,8 +797,26 @@ exports[`ModelDetail Container When the user is logged in... renders the details
 </div>
 `;
 
-exports[`ModelDetail Container renders with a login message when not logged in 1`] = `
-<div>
-  Please log in
-</div>
+exports[`ModelDetail Container renders the terminal 1`] = `
+<Terminal
+  WebSocket={[Function]}
+  address="wss://shell.jujugui.org:443/ws/"
+  creds={
+    Object {
+      "macaroons": Object {
+        "https://api.jujucharms.com/identity": Object {
+          "not": "a valid macaroon",
+        },
+        "identity": Object {
+          "not": "a valid macaroon",
+        },
+      },
+    }
+  }
+  modelUUID="2446g278-7928-4c50-811b-563f79acd991"
+>
+  <div
+    className="terminal"
+  />
+</Terminal>
 `;
