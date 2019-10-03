@@ -23,7 +23,7 @@ function App() {
               <Models />
             </IsLoggedIn>
           </Route>
-          <Route path="/models/:name" exact>
+          <Route path="/models/*" exact>
             <IsLoggedIn>
               <ModelDetails />
             </IsLoggedIn>
