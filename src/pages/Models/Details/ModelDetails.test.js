@@ -33,7 +33,7 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/test1"]}>
-          <Route path="/models/:name">
+          <Route path="/models/*">
             <ModelDetails />
           </Route>
         </MemoryRouter>
