@@ -4,13 +4,18 @@ import setupTerminal from "./setup-terminal";
 
 import "./_terminal.scss";
 
-const Terminal = ({ address, creds, modelUUID }) => {
+const Terminal = ({ address, creds, modelName }) => {
   const terminalElement = useRef(null);
 
   useEffect(() => {
-    const terminalInstance = setupTerminal(address, creds, terminalElement);
+    const terminalInstance = setupTerminal(
+      address,
+      creds,
+      modelName,
+      terminalElement
+    );
     return cleanUpTerminal(terminalInstance);
-  }, [address, creds]);
+  }, [address, creds, modelName]);
 
   return (
     <div className="terminal">

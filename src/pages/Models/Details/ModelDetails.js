@@ -140,7 +140,7 @@ const ModelDetails = () => {
       </div>
       <Terminal
         address="wss://shell.jujugui.org:443/ws/"
-        modelUUID={modelUUID}
+        modelName={modelName}
         creds={{ macaroons }}
         WebSocket={WebSocket}
       />
