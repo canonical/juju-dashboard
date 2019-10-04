@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createSelector } from "reselect";
 import { useParams } from "react-router-dom";
 
 import Filter from "components/Filter/Filter";
@@ -9,12 +8,7 @@ import Layout from "components/Layout/Layout";
 import MainTable from "components/MainTable/MainTable";
 import Terminal from "components/Terminal/Terminal";
 
-import {
-  getDecodedMacaroons,
-  getModelUUIDByName,
-  getModelList,
-  getUserCredentials
-} from "app/selectors";
+import { getMacaroons, getModelUUID } from "app/selectors";
 
 import { fetchAndStoreModelStatus } from "juju";
 
@@ -92,29 +86,17 @@ const MainTableRows = [
   }
 ];
 
-const getMacaroons = createSelector(
-  getUserCredentials,
-  getDecodedMacaroons
-);
-
-const getModelUUIDSelector = modelName => {
-  return createSelector(
-    getModelList,
-    modelInfo => getModelUUIDByName(modelName, modelInfo)
-  );
-};
-
 const ModelDetails = () => {
   const macaroons = useSelector(getMacaroons);
 
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
 
-  const getModelUUID = useMemo(getModelUUIDSelector.bind(null, modelName), [
+  const getModelUUIDMemo = useMemo(getModelUUID.bind(null, modelName), [
     modelName
   ]);
 
-  const modelUUID = useSelector(getModelUUID);
+  const modelUUID = useSelector(getModelUUIDMemo);
   if (modelUUID !== null) {
     // This model may not be in the first batch of models that we request
     // status from in the main loop so request for it now.
