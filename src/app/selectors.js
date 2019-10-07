@@ -1,5 +1,32 @@
 import { createSelector } from "reselect";
 
+// ---- Selectors for top level keys
+/**
+  Fetches the model list from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The list of models or null if none found.
+*/
+const getModelList = state => {
+  if (state.juju && state.juju.models) {
+    return state.juju.models;
+  }
+  return null;
+};
+
+/**
+  Fetches the model statuses from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The list of model statuses or null if none found.
+*/
+const getModelStatuses = state => {
+  if (state.juju && state.juju.modelStatuses) {
+    return state.juju.modelStatuses;
+  }
+  return null;
+};
+
+// ---- Utility selectors
+
 /**
   Pull the users macaroon credentials from state.
   @param {Object} state The application state.
@@ -34,18 +61,6 @@ const getDecodedMacaroons = macaroons => {
 };
 
 /**
-  Fetches the model list from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The list of models or null if none found.
-*/
-const getModelList = state => {
-  if (state.juju && state.juju.models) {
-    return state.juju.models;
-  }
-  return null;
-};
-
-/**
   Gets the model UUID from the supplied name.
   @param {String} name The name of the model.
   @param {Object} modelInfo The list of models.
@@ -58,6 +73,19 @@ const getModelUUIDByName = (name, modelInfo) => {
         return uuid;
       }
     }
+  }
+  return null;
+};
+
+/**
+  Returns the modelStatus for the supplied modelUUID.
+  @param {String} modelUUID
+  @param {Object} modelStatuses
+  @returns {Object|Null} The model status or null if none found
+*/
+const getModelStatusByUUID = (modelUUID, modelStatuses) => {
+  if (modelStatuses && modelStatuses[modelUUID]) {
+    return modelStatuses[modelUUID];
   }
   return null;
 };
@@ -103,3 +131,13 @@ export const getMacaroons = createSelector(
 */
 export const isLoggedIn = state =>
   state.root.controllerConnection && state.root.bakery;
+
+/**
+
+*/
+export const getModelStatus = modelUUID => {
+  return createSelector(
+    getModelStatuses,
+    modelStatuses => getModelStatusByUUID(modelUUID, modelStatuses)
+  );
+};
