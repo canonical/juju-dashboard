@@ -1,16 +1,14 @@
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import MainTable from "components/MainTable/MainTable";
 import Terminal from "components/Terminal/Terminal";
 
-import { getMacaroons, getModelUUID } from "app/selectors";
-
-import { fetchAndStoreModelStatus } from "juju";
+import { getModelUUID, getModelStatus } from "app/selectors";
+import { fetchModelStatus } from "juju/actions";
 
 import "./_model-details.scss";
 
@@ -87,23 +85,22 @@ const MainTableRows = [
 ];
 
 const ModelDetails = () => {
-  const macaroons = useSelector(getMacaroons);
-
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
 
-  const getModelUUIDMemo = useMemo(getModelUUID.bind(null, modelName), [
-    modelName
-  ]);
-
+  const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
-  if (modelUUID !== null) {
+  const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
+    modelUUID
+  ]);
+  const modelStatusData = useSelector(getModelStatusMemo);
+
+  if (modelUUID !== null && modelStatusData === null) {
     // This model may not be in the first batch of models that we request
     // status from in the main loop so request for it now.
-    fetchAndStoreModelStatus(modelUUID, dispatch);
+    // XXX Debounce this
+    dispatch(fetchModelStatus(modelUUID));
   }
-
-  // XXX Get the model status Data and generate the rows.
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
   const statusFilters = ["all", "maintenance", "blocked"];
@@ -123,8 +120,6 @@ const ModelDetails = () => {
       <Terminal
         address="wss://shell.jujugui.org:443/ws/"
         modelName={modelName}
-        creds={{ macaroons }}
-        WebSocket={WebSocket}
       />
     </Layout>
   );
