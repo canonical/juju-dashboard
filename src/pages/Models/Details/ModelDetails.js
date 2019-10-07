@@ -1,6 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
@@ -95,12 +96,13 @@ const ModelDetails = () => {
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
 
-  if (modelUUID !== null && modelStatusData === null) {
-    // This model may not be in the first batch of models that we request
-    // status from in the main loop so request for it now.
-    // XXX Debounce this
-    dispatch(fetchModelStatus(modelUUID));
-  }
+  useEffect(() => {
+    if (modelUUID !== null && modelStatusData === null) {
+      // This model may not be in the first batch of models that we request
+      // status from in the main loop so request for it now.
+      dispatch(fetchModelStatus(modelUUID));
+    }
+  }, [dispatch, modelUUID, modelStatusData]);
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
   const statusFilters = ["all", "maintenance", "blocked"];
