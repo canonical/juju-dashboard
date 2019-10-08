@@ -13,18 +13,28 @@ import { fetchModelStatus } from "juju/actions";
 
 import "./_model-details.scss";
 
-const MainTableHeaders = [
-  { content: "App", sortKey: "app" },
-  { content: "Status", sortKey: "status" },
-  { content: "Version", sortKey: "version" },
-  { content: "Scale", sortKey: "scale", className: "u-align--right" },
-  { content: "Store", sortKey: "store" },
-  { content: "Rev", sortKey: "rev", className: "u-align--right" },
-  { content: "OS", sortKey: "os" },
-  { content: "Notes", sortKey: "notes" }
+const applicationTableHeaders = [
+  { content: "app" },
+  { content: "status" },
+  { content: "version" },
+  { content: "scale", className: "u-align--right" },
+  { content: "store" },
+  { content: "rev", className: "u-align--right" },
+  { content: "os" },
+  { content: "notes" }
 ];
 
-const generateRows = modelStatusData => {
+const unitTableHeaders = [
+  { content: "unit" },
+  { content: "workload" },
+  { content: "agent" },
+  { content: "machine" },
+  { content: "public address" },
+  { content: "port" },
+  { content: "message" }
+];
+
+const generateApplicationRows = modelStatusData => {
   if (!modelStatusData) {
     return [];
   }
@@ -44,6 +54,33 @@ const generateRows = modelStatusData => {
       ]
     };
   });
+};
+
+const generateUnitRows = modelStatusData => {
+  if (!modelStatusData) {
+    return [];
+  }
+
+  const applications = modelStatusData.applications;
+  const unitRows = [];
+  Object.keys(applications).forEach(applicationName => {
+    const units = applications[applicationName].units || [];
+    Object.keys(units).forEach(unitId => {
+      const unit = units[unitId];
+      unitRows.push({
+        columns: [
+          { content: unitId },
+          { content: unit.workloadStatus.status },
+          { content: unit.agentStatus.status },
+          { content: unit.machine },
+          { content: unit.publicAddress },
+          { content: unit.publicAddress.split(":")[-1] },
+          { content: unit.workloadStatus.info }
+        ]
+      });
+    });
+  });
+  return unitRows;
 };
 
 const ModelDetails = () => {
@@ -67,7 +104,11 @@ const ModelDetails = () => {
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
   const statusFilters = ["all", "maintenance", "blocked"];
-  const tableRows = useMemo(() => generateRows(modelStatusData), [
+  const applicationTableRows = useMemo(
+    () => generateApplicationRows(modelStatusData),
+    [modelStatusData]
+  );
+  const unitTableRows = useMemo(() => generateUnitRows(modelStatusData), [
     modelStatusData
   ]);
 
@@ -80,7 +121,12 @@ const ModelDetails = () => {
             <Filter label="View" filters={viewFilters} />
             <Filter label="Status" filters={statusFilters} />
           </div>
-          <MainTable headers={MainTableHeaders} rows={tableRows} sortable />
+          <MainTable
+            headers={applicationTableHeaders}
+            rows={applicationTableRows}
+            sortable
+          />
+          <MainTable headers={unitTableHeaders} rows={unitTableRows} sortable />
         </div>
       </div>
       <Terminal
