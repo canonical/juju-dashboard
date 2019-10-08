@@ -20,8 +20,10 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter>
-          <ModelDetails />
+        <MemoryRouter initialEntries={["/models/mrdata@external/group-test"]}>
+          <Route path="/models/*">
+            <ModelDetails />
+          </Route>
         </MemoryRouter>
       </Provider>
     );
