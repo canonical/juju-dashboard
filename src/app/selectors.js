@@ -67,7 +67,13 @@ const getDecodedMacaroons = macaroons => {
   @returns {Object|Null} The model UUID or null if none found.
 */
 const getModelUUIDByName = (name, modelInfo) => {
-  const [owner, modelName] = name.split("/");
+  let owner = null;
+  let modelName = null;
+  if (name.includes("/")) {
+    [owner, modelName] = name.split("/");
+  } else {
+    modelName = name;
+  }
   if (modelInfo) {
     for (let uuid in modelInfo) {
       const model = modelInfo[uuid];
