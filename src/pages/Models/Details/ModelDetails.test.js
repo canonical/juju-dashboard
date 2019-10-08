@@ -20,7 +20,23 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/mrdata@external/group-test"]}>
+        <MemoryRouter initialEntries={["/models/group-test"]}>
+          <Route path="/models/*">
+            <ModelDetails />
+          </Route>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".model-details")).toMatchSnapshot();
+  });
+
+  it("renders the details pane for models shared-with-me", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/models/space-man@external/frontend-ci"]}
+        >
           <Route path="/models/*">
             <ModelDetails />
           </Route>
