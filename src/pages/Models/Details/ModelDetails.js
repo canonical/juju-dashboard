@@ -24,66 +24,27 @@ const MainTableHeaders = [
   { content: "Notes", sortKey: "notes" }
 ];
 
-const MainTableRows = [
-  {
-    columns: [
-      { content: "Ready", role: "rowheader" },
-      { content: 1 },
-      { content: "1 GiB" },
-      { content: 2, className: "u-align--right" },
-      { content: "Ready" },
-      { content: 1, className: "u-align--right" },
-      { content: "1 GiB" },
-      { content: 2 }
-    ],
-    sortData: {
-      app: "ready",
-      status: 2,
-      version: 1,
-      scale: 2,
-      store: "ready",
-      rev: 2,
-      os: 1,
-      notes: 2
-    }
-  },
-  {
-    columns: [
-      { content: "Idle", role: "rowheader" },
-      { content: 1, className: "u-align--right" },
-      { content: "1 GiB", className: "u-align--right" },
-      { content: 2, className: "u-align--right" },
-      { content: "Ready" },
-      { content: 1, className: "u-align--right" },
-      { content: "1 GiB" },
-      { content: 2 }
-    ],
-    sortData: {
-      status: "idle",
-      cores: 1,
-      ram: 1,
-      disks: 2
-    }
-  },
-  {
-    columns: [
-      { content: "Waiting", role: "rowheader" },
-      { content: 8 },
-      { content: "3.9 GiB" },
-      { content: 3, className: "u-align--right" },
-      { content: "Ready" },
-      { content: 1, className: "u-align--right" },
-      { content: "1 GiB" },
-      { content: 2 }
-    ],
-    sortData: {
-      status: "waiting",
-      cores: 8,
-      ram: 3.9,
-      disks: 3
-    }
+const generateRows = modelStatusData => {
+  if (!modelStatusData) {
+    return [];
   }
-];
+
+  const applications = modelStatusData.applications;
+  return Object.keys(applications).map(key => {
+    const app = applications[key];
+    return {
+      columns: [
+        { content: key },
+        { content: app.status ? app.status.status : "-" },
+        { content: "-" },
+        { content: "CharmHub" },
+        { content: key.split("-")[-1] },
+        { content: "-" },
+        { content: "-" }
+      ]
+    };
+  });
+};
 
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
@@ -106,6 +67,9 @@ const ModelDetails = () => {
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
   const statusFilters = ["all", "maintenance", "blocked"];
+  const tableRows = useMemo(() => generateRows(modelStatusData), [
+    modelStatusData
+  ]);
 
   return (
     <Layout sidebar={false}>
@@ -116,7 +80,7 @@ const ModelDetails = () => {
             <Filter label="View" filters={viewFilters} />
             <Filter label="Status" filters={statusFilters} />
           </div>
-          <MainTable headers={MainTableHeaders} rows={MainTableRows} sortable />
+          <MainTable headers={MainTableHeaders} rows={tableRows} sortable />
         </div>
       </div>
       <Terminal
