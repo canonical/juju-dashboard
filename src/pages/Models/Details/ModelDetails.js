@@ -34,6 +34,14 @@ const unitTableHeaders = [
   { content: "message" }
 ];
 
+const relationTableHeaders = [
+  { content: "relation provider" },
+  { content: "requirer" },
+  { content: "interface" },
+  { content: "type" },
+  { content: "message" }
+];
+
 const generateApplicationRows = modelStatusData => {
   if (!modelStatusData) {
     return [];
@@ -83,6 +91,35 @@ const generateUnitRows = modelStatusData => {
   return unitRows;
 };
 
+const extractRelationEndpoints = relation => {
+  const endpoints = {};
+  relation.endpoints.forEach(endpoint => {
+    endpoints[endpoint.role] = endpoint.application + ":" + endpoint.name;
+  });
+  return endpoints;
+};
+
+const generateRelationRows = modelStatusData => {
+  if (!modelStatusData) {
+    return [];
+  }
+
+  const relations = modelStatusData.relations;
+  return Object.keys(relations).map(relationId => {
+    const relation = relations[relationId];
+    const { provider, requirer, peer } = extractRelationEndpoints(relation);
+    return {
+      columns: [
+        { content: provider || peer || "-" },
+        { content: requirer || "-" },
+        { content: relation.interface },
+        { content: relation.endpoints[0].role },
+        { content: relation.status.status }
+      ]
+    };
+  });
+};
+
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
@@ -112,6 +149,11 @@ const ModelDetails = () => {
     modelStatusData
   ]);
 
+  const relationTableRows = useMemo(
+    () => generateRelationRows(modelStatusData),
+    [modelStatusData]
+  );
+
   return (
     <Layout sidebar={false}>
       <div className="model-details">
@@ -127,6 +169,11 @@ const ModelDetails = () => {
             sortable
           />
           <MainTable headers={unitTableHeaders} rows={unitTableRows} sortable />
+          <MainTable
+            headers={relationTableHeaders}
+            rows={relationTableRows}
+            sortable
+          />
         </div>
       </div>
       <Terminal
