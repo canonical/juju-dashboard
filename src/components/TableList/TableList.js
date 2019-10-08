@@ -17,12 +17,22 @@ function generateModelTableData(state) {
     const modelInfoData = modelInfo[modelUUID];
     const modelStatus = state.juju.modelStatuses[modelUUID];
     const modelDetailsPath = `/models/${modelListData.name}`;
-    const modelDetailsLink = (
-      <Link to={modelDetailsPath}>{modelListData.name}</Link>
-    );
+    const generateModelDetailsLink = () => {
+      const owner = modelListData.ownerTag;
+      const user = state.root.controllerConnection.info.user.identity;
+      if (owner === user) {
+        return <Link to={modelDetailsPath}>{modelListData.name}</Link>;
+      }
+      // If the owner isn't the logged in user then we need to use the
+      // fully qualified path name.
+      const sharedModelDetailsPath = `/models/${owner.replace("user-", "")}/${
+        modelListData.name
+      }`;
+      return <Link to={sharedModelDetailsPath}>{modelListData.name}</Link>;
+    };
     return {
       columns: [
-        { content: modelDetailsLink },
+        { content: generateModelDetailsLink() },
         { content: modelListData.ownerTag.split("@")[0].replace("user-", "") },
         { content: getStatusValue(modelStatus, "summary") },
         { content: getStatusValue(modelStatus, "cloudTag") },

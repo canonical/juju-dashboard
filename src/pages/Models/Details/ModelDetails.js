@@ -107,7 +107,7 @@ const getModelUUIDSelector = modelName => {
 const ModelDetails = () => {
   const macaroons = useSelector(getMacaroons);
 
-  const { name: modelName } = useParams();
+  const { 0: modelName } = useParams();
   const dispatch = useDispatch();
 
   const getModelUUID = useMemo(getModelUUIDSelector.bind(null, modelName), [

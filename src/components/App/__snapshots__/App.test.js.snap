@@ -14,7 +14,7 @@ exports[`App renders without crashing and matches snapshot 1`] = `
       </Route>
       <Route
         exact={true}
-        path="/models/:name"
+        path="/models/*"
       >
         <IsLoggedIn>
           <ModelDetails />

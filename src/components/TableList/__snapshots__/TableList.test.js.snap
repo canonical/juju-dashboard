@@ -221,7 +221,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <ForwardRef
-                to="/models/juju-all-the-things"
+                to="/models/otheruser@external/juju-all-the-things"
               >
                 juju-all-the-things
               </ForwardRef>,
@@ -253,7 +253,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <ForwardRef
-                to="/models/frontend-ci"
+                to="/models/space-man@external/frontend-ci"
               >
                 frontend-ci
               </ForwardRef>,
@@ -285,7 +285,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <ForwardRef
-                to="/models/backend-ci"
+                to="/models/space-man@external/backend-ci"
               >
                 backend-ci
               </ForwardRef>,
@@ -317,7 +317,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <ForwardRef
-                to="/models/data-aggregator"
+                to="/models/space-man@external/data-aggregator"
               >
                 data-aggregator
               </ForwardRef>,
@@ -858,14 +858,14 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <Link
-                    to="/models/juju-all-the-things"
+                    to="/models/otheruser@external/juju-all-the-things"
                   >
                     <LinkAnchor
-                      href="/models/juju-all-the-things"
+                      href="/models/otheruser@external/juju-all-the-things"
                       navigate={[Function]}
                     >
                       <a
-                        href="/models/juju-all-the-things"
+                        href="/models/otheruser@external/juju-all-the-things"
                         onClick={[Function]}
                       >
                         juju-all-the-things
@@ -960,14 +960,14 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <Link
-                    to="/models/frontend-ci"
+                    to="/models/space-man@external/frontend-ci"
                   >
                     <LinkAnchor
-                      href="/models/frontend-ci"
+                      href="/models/space-man@external/frontend-ci"
                       navigate={[Function]}
                     >
                       <a
-                        href="/models/frontend-ci"
+                        href="/models/space-man@external/frontend-ci"
                         onClick={[Function]}
                       >
                         frontend-ci
@@ -1062,14 +1062,14 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <Link
-                    to="/models/backend-ci"
+                    to="/models/space-man@external/backend-ci"
                   >
                     <LinkAnchor
-                      href="/models/backend-ci"
+                      href="/models/space-man@external/backend-ci"
                       navigate={[Function]}
                     >
                       <a
-                        href="/models/backend-ci"
+                        href="/models/space-man@external/backend-ci"
                         onClick={[Function]}
                       >
                         backend-ci
@@ -1164,14 +1164,14 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <Link
-                    to="/models/data-aggregator"
+                    to="/models/space-man@external/data-aggregator"
                   >
                     <LinkAnchor
-                      href="/models/data-aggregator"
+                      href="/models/space-man@external/data-aggregator"
                       navigate={[Function]}
                     >
                       <a
-                        href="/models/data-aggregator"
+                        href="/models/space-man@external/data-aggregator"
                         onClick={[Function]}
                       >
                         data-aggregator
