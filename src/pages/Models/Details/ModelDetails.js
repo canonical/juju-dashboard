@@ -141,6 +141,7 @@ const ModelDetails = () => {
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
   const statusFilters = ["all", "maintenance", "blocked"];
+
   const applicationTableRows = useMemo(
     () => generateApplicationRows(modelStatusData),
     [modelStatusData]
@@ -148,7 +149,6 @@ const ModelDetails = () => {
   const unitTableRows = useMemo(() => generateUnitRows(modelStatusData), [
     modelStatusData
   ]);
-
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData),
     [modelStatusData]

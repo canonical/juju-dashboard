@@ -67,10 +67,19 @@ const getDecodedMacaroons = macaroons => {
   @returns {Object|Null} The model UUID or null if none found.
 */
 const getModelUUIDByName = (name, modelInfo) => {
+  const [owner, modelName] = name.split("/");
   if (modelInfo) {
     for (let uuid in modelInfo) {
-      if (modelInfo[uuid].name === name) {
-        return uuid;
+      const model = modelInfo[uuid];
+      if (model.name === modelName) {
+        if (owner) {
+          if (model.ownerTag === `user-${owner}`) {
+            // If this is a shared model then we'll also have an owner name
+            return uuid;
+          }
+        } else {
+          return uuid;
+        }
       }
     }
   }
