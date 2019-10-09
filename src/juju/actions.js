@@ -1,3 +1,5 @@
+import { fetchAndStoreModelStatus } from "juju";
+
 // Action labels
 export const actionsList = {
   fetchModelList: "FETCH_MODEL_LIST",
@@ -45,6 +47,8 @@ export function updateModelInfo(modelInfo) {
   };
 }
 
+// Thunks
+
 /**
   Fetches the model list from the supplied Juju controller.
   @returns {Object} models The list of model objects under the key `userModels`.
@@ -55,5 +59,17 @@ export function fetchModelList() {
     const modelManager = conn.facades.modelManager;
     const models = await modelManager.listModels({ tag: conn.info.identity });
     dispatch(updateModelList(models));
+  };
+}
+
+export function fetchModelStatus(modelUUID) {
+  return async function thunk(dispatch, getState) {
+    const jujuState = getState().juju;
+    if (jujuState.modelStatuses && jujuState.modelStatuses[modelUUID]) {
+      // It already exists, don't do anything as it'll be updated shortly
+      // by the polling loop.
+      return;
+    }
+    fetchAndStoreModelStatus(modelUUID, dispatch);
   };
 }
