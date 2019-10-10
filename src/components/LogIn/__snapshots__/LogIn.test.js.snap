@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LogIn renders a login UI if the user is not logged in 1`] = `
+<Provider
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+>
+  <LogIn>
+    <div
+      className="login"
+    >
+      <div
+        className="login__inner"
+      >
+        <img
+          alt="JAAS logo"
+          className="login__logo"
+          src="https://assets.ubuntu.com/v1/a559e2c5-jaas-black-orange-hz-hex.svg"
+        />
+        <a
+          className="p-button--positive"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Log in to view your models
+        </a>
+      </div>
+    </div>
+  </LogIn>
+</Provider>
+`;
+
+exports[`LogIn renders it's children if the user is logged in 1`] = `
+<Provider
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+>
+  <LogIn>
+    Hello world!
+  </LogIn>
+</Provider>
+`;

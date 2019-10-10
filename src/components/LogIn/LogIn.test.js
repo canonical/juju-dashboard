@@ -3,21 +3,23 @@ import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
 
-import IsLoggedIn from "./IsLoggedIn";
+import LogIn from "./LogIn";
 
 const mockStore = configureStore([]);
 
-describe("IsLoggedIn", () => {
+describe("LogIn", () => {
   it("renders a login UI if the user is not logged in", () => {
     const store = mockStore({
       root: {}
     });
     const wrapper = mount(
       <Provider store={store}>
-        <IsLoggedIn>I should not be rendered</IsLoggedIn>
+        <LogIn>I should not be rendered</LogIn>
       </Provider>
     );
-    expect(wrapper.find("IsLoggedIn").text()).toBe("Please log in");
+    expect(wrapper.find(".p-button--positive").text()).toBe(
+      "Log in to view your models"
+    );
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -30,10 +32,10 @@ describe("IsLoggedIn", () => {
     });
     const wrapper = mount(
       <Provider store={store}>
-        <IsLoggedIn>Hello world!</IsLoggedIn>
+        <LogIn>Hello world!</LogIn>
       </Provider>
     );
-    expect(wrapper.find("IsLoggedIn").text()).toBe("Hello world!");
+    expect(wrapper.find("LogIn").text()).toBe("Hello world!");
     expect(wrapper).toMatchSnapshot();
   });
 });
