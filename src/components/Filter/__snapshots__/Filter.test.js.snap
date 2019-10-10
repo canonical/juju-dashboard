@@ -10,34 +10,42 @@ exports[`Filter renders without crashing and matches snapshot 1`] = `
     Filter:
   </span>
   <span
-    className="p-filter__item"
+    className="p-filter__item 1"
     key="foo"
   >
-    <Button>
+    <Button
+      onClick={[Function]}
+    >
       foo
     </Button>
   </span>
   <span
-    className="p-filter__item"
+    className="p-filter__item 1"
     key="bar"
   >
-    <Button>
+    <Button
+      onClick={[Function]}
+    >
       bar
     </Button>
   </span>
   <span
-    className="p-filter__item"
+    className="p-filter__item 1"
     key="baz"
   >
-    <Button>
+    <Button
+      onClick={[Function]}
+    >
       baz
     </Button>
   </span>
   <span
-    className="p-filter__item"
+    className="p-filter__item 1"
     key="foobar"
   >
-    <Button>
+    <Button
+      onClick={[Function]}
+    >
       foobar
     </Button>
   </span>

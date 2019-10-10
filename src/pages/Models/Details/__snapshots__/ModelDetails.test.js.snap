@@ -110,60 +110,75 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             View
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="all"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 all
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="apps"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 apps
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="units"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 units
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="machines"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 machines
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="relations"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 relations
               </button>
@@ -190,36 +205,45 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             Status
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="all"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 all
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="maintenance"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 maintenance
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="blocked"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 blocked
               </button>
@@ -2781,60 +2805,75 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
             View
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="all"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 all
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="apps"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 apps
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="units"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 units
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="machines"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 machines
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="relations"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 relations
               </button>
@@ -2861,36 +2900,45 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
             Status
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="all"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 all
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="maintenance"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 maintenance
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="blocked"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 blocked
               </button>
