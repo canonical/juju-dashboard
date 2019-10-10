@@ -4,7 +4,823 @@ exports[`ModelDetail Container renders the details pane 1`] = `
 <div
   className="model-details"
 >
-  <InfoPanel>
+  <InfoPanel
+    modelStatus={
+      Object {
+        "applications": Object {
+          "easyrsa": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:~containers/easyrsa-68",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "client": "",
+            },
+            "exposed": false,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {
+              "client": Array [
+                "etcd",
+                "kubeapi-load-balancer",
+                "kubernetes-master",
+                "kubernetes-worker",
+              ],
+            },
+            "series": "xenial",
+            "status": Object {
+              "data": Object {},
+              "info": "waiting for machine",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:51.680343033Z",
+              "status": "waiting",
+              "version": "",
+            },
+            "subordinateTo": Array [],
+            "units": Object {},
+            "workloadVersion": "",
+          },
+          "elasticsearch": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:trusty/elasticsearch-15",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "client": "",
+              "data": "",
+              "logs": "",
+              "nrpe-external-master": "",
+              "peer": "",
+            },
+            "exposed": false,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {
+              "client": Array [
+                "kibana",
+              ],
+              "peer": Array [
+                "elasticsearch",
+              ],
+            },
+            "series": "trusty",
+            "status": Object {
+              "data": Object {},
+              "info": "waiting for machine",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T19:24:40.602296842Z",
+              "status": "waiting",
+              "version": "",
+            },
+            "subordinateTo": Array [],
+            "units": Object {},
+            "workloadVersion": "",
+          },
+          "etcd": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:~containers/etcd-126",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "certificates": "",
+              "cluster": "",
+              "db": "",
+              "nrpe-external-master": "",
+              "proxy": "",
+            },
+            "exposed": false,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {
+              "certificates": Array [
+                "easyrsa",
+              ],
+              "cluster": Array [
+                "etcd",
+              ],
+              "db": Array [
+                "flannel",
+                "kubernetes-master",
+              ],
+            },
+            "series": "xenial",
+            "status": Object {
+              "data": Object {},
+              "info": "waiting for machine",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:51.68483125Z",
+              "status": "waiting",
+              "version": "",
+            },
+            "subordinateTo": Array [],
+            "units": Object {},
+            "workloadVersion": "",
+          },
+          "flannel": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:~containers/flannel-81",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "cni": "",
+              "etcd": "",
+              "nrpe-external-master": "",
+            },
+            "exposed": false,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {
+              "cni": Array [
+                "kubernetes-master",
+                "kubernetes-worker",
+              ],
+              "etcd": Array [
+                "etcd",
+              ],
+            },
+            "series": "xenial",
+            "status": Object {
+              "data": Object {},
+              "info": "waiting for machine",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:51.680475374Z",
+              "status": "waiting",
+              "version": "",
+            },
+            "subordinateTo": Array [
+              "kubernetes-master",
+              "kubernetes-worker",
+            ],
+            "units": Object {},
+            "workloadVersion": "",
+          },
+          "kibana": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:trusty/kibana-14",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "rest": "",
+              "web": "",
+            },
+            "exposed": false,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {
+              "rest": Array [
+                "elasticsearch",
+              ],
+            },
+            "series": "trusty",
+            "status": Object {
+              "data": Object {},
+              "info": "waiting for machine",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T19:24:40.602193361Z",
+              "status": "waiting",
+              "version": "",
+            },
+            "subordinateTo": Array [],
+            "units": Object {},
+            "workloadVersion": "",
+          },
+          "kubeapi-load-balancer": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:~containers/kubeapi-load-balancer-88",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "apiserver": "",
+              "certificates": "",
+              "loadbalancer": "",
+              "nrpe-external-master": "",
+              "website": "",
+            },
+            "exposed": true,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {
+              "apiserver": Array [
+                "kubernetes-master",
+              ],
+              "certificates": Array [
+                "easyrsa",
+              ],
+              "loadbalancer": Array [
+                "kubernetes-master",
+              ],
+              "website": Array [
+                "kubernetes-worker",
+              ],
+            },
+            "series": "xenial",
+            "status": Object {
+              "data": Object {},
+              "info": "waiting for machine",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:51.08177152Z",
+              "status": "waiting",
+              "version": "",
+            },
+            "subordinateTo": Array [],
+            "units": Object {},
+            "workloadVersion": "",
+          },
+          "kubernetes-master": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:~containers/kubernetes-master-144",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "aws": "",
+              "ceph-storage": "",
+              "certificates": "",
+              "cluster-dns": "",
+              "cni": "",
+              "etcd": "",
+              "gcp": "",
+              "kube-api-endpoint": "",
+              "kube-control": "",
+              "loadbalancer": "",
+              "nrpe-external-master": "",
+              "openstack": "",
+              "vsphere": "",
+            },
+            "exposed": false,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {
+              "certificates": Array [
+                "easyrsa",
+              ],
+              "cni": Array [
+                "flannel",
+              ],
+              "etcd": Array [
+                "etcd",
+              ],
+              "kube-api-endpoint": Array [
+                "kubeapi-load-balancer",
+              ],
+              "kube-control": Array [
+                "kubernetes-worker",
+              ],
+              "loadbalancer": Array [
+                "kubeapi-load-balancer",
+              ],
+            },
+            "series": "xenial",
+            "status": Object {
+              "data": Object {},
+              "info": "waiting for machine",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:51.681160931Z",
+              "status": "waiting",
+              "version": "",
+            },
+            "subordinateTo": Array [],
+            "units": Object {},
+            "workloadVersion": "",
+          },
+          "kubernetes-worker": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:~containers/kubernetes-worker-163",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "aws": "",
+              "certificates": "",
+              "cni": "",
+              "dockerhost": "",
+              "gcp": "",
+              "kube-api-endpoint": "",
+              "kube-control": "",
+              "kube-dns": "",
+              "nfs": "",
+              "nrpe-external-master": "",
+              "openstack": "",
+              "sdn-plugin": "",
+              "vsphere": "",
+            },
+            "exposed": true,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {
+              "certificates": Array [
+                "easyrsa",
+              ],
+              "cni": Array [
+                "flannel",
+              ],
+              "kube-api-endpoint": Array [
+                "kubeapi-load-balancer",
+              ],
+              "kube-control": Array [
+                "kubernetes-master",
+              ],
+            },
+            "series": "xenial",
+            "status": Object {
+              "data": Object {},
+              "info": "waiting for machine",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:51.680988946Z",
+              "status": "waiting",
+              "version": "",
+            },
+            "subordinateTo": Array [],
+            "units": Object {},
+            "workloadVersion": "",
+          },
+          "rsyslog": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:trusty/rsyslog-10",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "aggregator": "",
+            },
+            "exposed": false,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {},
+            "series": "trusty",
+            "status": Object {
+              "data": Object {},
+              "info": "waiting for machine",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T19:24:40.602281437Z",
+              "status": "waiting",
+              "version": "",
+            },
+            "subordinateTo": Array [],
+            "units": Object {},
+            "workloadVersion": "",
+          },
+        },
+        "controllerTimestamp": "2019-08-29T19:46:25.706585464Z",
+        "machines": Object {},
+        "model": Object {
+          "availableVersion": "",
+          "cloudTag": "cloud-google",
+          "meterStatus": Object {
+            "color": "",
+            "message": "",
+          },
+          "modelStatus": Object {
+            "data": Object {},
+            "info": "",
+            "kind": "",
+            "life": "",
+            "since": "2019-08-22T17:10:51.413237648Z",
+            "status": "available",
+            "version": "",
+          },
+          "name": "group-test",
+          "region": "us-central1",
+          "sla": "unsupported",
+          "type": "iaas",
+          "version": "2.5.4",
+        },
+        "offers": Object {},
+        "relations": Array [
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "elasticsearch",
+                "name": "peer",
+                "role": "peer",
+                "subordinate": false,
+              },
+            ],
+            "id": 0,
+            "interface": "http",
+            "key": "elasticsearch:peer",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T19:24:40.60945185Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "kibana",
+                "name": "rest",
+                "role": "requirer",
+                "subordinate": false,
+              },
+              Object {
+                "application": "elasticsearch",
+                "name": "client",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 1,
+            "interface": "elasticsearch",
+            "key": "kibana:rest elasticsearch:client",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T19:24:41.453843444Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "etcd",
+                "name": "cluster",
+                "role": "peer",
+                "subordinate": false,
+              },
+            ],
+            "id": 2,
+            "interface": "etcd",
+            "key": "etcd:cluster",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:51.688991735Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "flannel",
+                "name": "etcd",
+                "role": "requirer",
+                "subordinate": false,
+              },
+              Object {
+                "application": "etcd",
+                "name": "db",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 4,
+            "interface": "etcd",
+            "key": "flannel:etcd etcd:db",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.48602489Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "etcd",
+                "name": "certificates",
+                "role": "requirer",
+                "subordinate": false,
+              },
+              Object {
+                "application": "easyrsa",
+                "name": "client",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 10,
+            "interface": "tls-certificates",
+            "key": "etcd:certificates easyrsa:client",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.487465097Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "kubernetes-master",
+                "name": "etcd",
+                "role": "requirer",
+                "subordinate": false,
+              },
+              Object {
+                "application": "etcd",
+                "name": "db",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 12,
+            "interface": "etcd",
+            "key": "kubernetes-master:etcd etcd:db",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.491449685Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "kubeapi-load-balancer",
+                "name": "certificates",
+                "role": "requirer",
+                "subordinate": false,
+              },
+              Object {
+                "application": "easyrsa",
+                "name": "client",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 3,
+            "interface": "tls-certificates",
+            "key": "kubeapi-load-balancer:certificates easyrsa:client",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.486288632Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "kubernetes-master",
+                "name": "loadbalancer",
+                "role": "requirer",
+                "subordinate": false,
+              },
+              Object {
+                "application": "kubeapi-load-balancer",
+                "name": "loadbalancer",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 6,
+            "interface": "public-address",
+            "key": "kubernetes-master:loadbalancer kubeapi-load-balancer:loadbalancer",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.48664444Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "kubernetes-master",
+                "name": "kube-api-endpoint",
+                "role": "provider",
+                "subordinate": false,
+              },
+              Object {
+                "application": "kubeapi-load-balancer",
+                "name": "apiserver",
+                "role": "requirer",
+                "subordinate": false,
+              },
+            ],
+            "id": 8,
+            "interface": "http",
+            "key": "kubeapi-load-balancer:apiserver kubernetes-master:kube-api-endpoint",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.488753789Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "kubernetes-worker",
+                "name": "kube-api-endpoint",
+                "role": "requirer",
+                "subordinate": false,
+              },
+              Object {
+                "application": "kubeapi-load-balancer",
+                "name": "website",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 13,
+            "interface": "http",
+            "key": "kubernetes-worker:kube-api-endpoint kubeapi-load-balancer:website",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.491605003Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "kubernetes-master",
+                "name": "certificates",
+                "role": "requirer",
+                "subordinate": false,
+              },
+              Object {
+                "application": "easyrsa",
+                "name": "client",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 5,
+            "interface": "tls-certificates",
+            "key": "kubernetes-master:certificates easyrsa:client",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.485851175Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "kubernetes-worker",
+                "name": "certificates",
+                "role": "requirer",
+                "subordinate": false,
+              },
+              Object {
+                "application": "easyrsa",
+                "name": "client",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 11,
+            "interface": "tls-certificates",
+            "key": "kubernetes-worker:certificates easyrsa:client",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.489944386Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "flannel",
+                "name": "cni",
+                "role": "requirer",
+                "subordinate": true,
+              },
+              Object {
+                "application": "kubernetes-master",
+                "name": "cni",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 9,
+            "interface": "kubernetes-cni",
+            "key": "flannel:cni kubernetes-master:cni",
+            "scope": "container",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.488806622Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "flannel",
+                "name": "cni",
+                "role": "requirer",
+                "subordinate": true,
+              },
+              Object {
+                "application": "kubernetes-worker",
+                "name": "cni",
+                "role": "provider",
+                "subordinate": false,
+              },
+            ],
+            "id": 14,
+            "interface": "kubernetes-cni",
+            "key": "flannel:cni kubernetes-worker:cni",
+            "scope": "container",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.488013866Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+          Object {
+            "endpoints": Array [
+              Object {
+                "application": "kubernetes-master",
+                "name": "kube-control",
+                "role": "provider",
+                "subordinate": false,
+              },
+              Object {
+                "application": "kubernetes-worker",
+                "name": "kube-control",
+                "role": "requirer",
+                "subordinate": false,
+              },
+            ],
+            "id": 7,
+            "interface": "kube-control",
+            "key": "kubernetes-worker:kube-control kubernetes-master:kube-control",
+            "scope": "global",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2018-09-04T21:13:52.4865962Z",
+              "status": "joining",
+              "version": "",
+            },
+          },
+        ],
+        "remoteApplications": Object {},
+      }
+    }
+  >
     <div
       className="info-panel"
     >
@@ -13,67 +829,72 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       >
         <div
           className="info-panel__grid-item"
-          key="Model"
         >
           <h4
             className="p-muted-heading"
           >
             Model
           </h4>
-          <p>
-            cdk-default
+          <p
+            data-name="name"
+          >
+            group-test
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Region"
         >
           <h4
             className="p-muted-heading"
           >
             Region
           </h4>
-          <p>
-            us-east-1
+          <p
+            data-name="region"
+          >
+            us-central1
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Controller"
         >
           <h4
             className="p-muted-heading"
           >
             Controller
           </h4>
-          <p>
-            aws-controller
+          <p
+            data-name="controller"
+          >
+            iaas
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Cloud"
         >
           <h4
             className="p-muted-heading"
           >
             Cloud
           </h4>
-          <p>
-            aws
+          <p
+            data-name="cloud"
+          >
+            cloud-google
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="SLA"
         >
           <h4
             className="p-muted-heading"
           >
             SLA
           </h4>
-          <p>
-            Unsupported
+          <p
+            data-name="sla"
+          >
+            unsupported
           </p>
         </div>
       </div>
@@ -2699,7 +3520,156 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
 <div
   className="model-details"
 >
-  <InfoPanel>
+  <InfoPanel
+    modelStatus={
+      Object {
+        "applications": Object {
+          "jenkins": Object {
+            "canUpgradeTo": "",
+            "charm": "cs:trusty/jenkins-6",
+            "charmVerion": "",
+            "endpointBindings": Object {
+              "extension": "",
+              "master": "",
+              "website": "",
+              "zuul": "",
+            },
+            "exposed": true,
+            "life": "",
+            "meterStatuses": Object {},
+            "publicAddress": "",
+            "relations": Object {},
+            "series": "trusty",
+            "status": Object {
+              "data": Object {},
+              "info": "",
+              "kind": "",
+              "life": "",
+              "since": "2016-12-12T18:48:33.18032085Z",
+              "status": "unknown",
+              "version": "",
+            },
+            "subordinateTo": Array [],
+            "units": Object {
+              "jenkins/2": Object {
+                "agentStatus": Object {
+                  "data": Object {},
+                  "info": "agent is not communicating with the server",
+                  "kind": "",
+                  "life": "",
+                  "since": "2019-03-15T05:39:24.628170925Z",
+                  "status": "lost",
+                  "version": "2.4.7",
+                },
+                "charm": "",
+                "machine": "2",
+                "openedPorts": Array [
+                  "8080/tcp",
+                ],
+                "publicAddress": "104.196.205.152",
+                "subordinates": Object {},
+                "workloadStatus": Object {
+                  "data": Object {},
+                  "info": "agent lost, see 'juju show-status-log jenkins/2'",
+                  "kind": "",
+                  "life": "",
+                  "since": "2016-12-12T18:48:33.18032085Z",
+                  "status": "unknown",
+                  "version": "",
+                },
+                "workloadVersion": "",
+              },
+            },
+            "workloadVersion": "",
+          },
+        },
+        "controllerTimestamp": "2019-08-29T19:46:27.54263706Z",
+        "machines": Object {
+          "2": Object {
+            "agentStatus": Object {
+              "data": Object {},
+              "info": "agent is not communicating with the server",
+              "kind": "",
+              "life": "",
+              "since": "2019-01-08T00:54:52.357321928Z",
+              "status": "down",
+              "version": "2.4.7",
+            },
+            "constraints": "arch=amd64 cores=2 mem=7500M root-disk=100000M",
+            "containers": Object {},
+            "dnsName": "104.196.205.152",
+            "hardware": "arch=amd64 cores=2 cpu-power=550 mem=7500M root-disk=100352M availability-zone=us-east1-b",
+            "hasVote": false,
+            "id": "2",
+            "instanceId": "juju-5467d7-2",
+            "instanceStatus": Object {
+              "data": Object {},
+              "info": "RUNNING",
+              "kind": "",
+              "life": "",
+              "since": "2016-12-12T17:36:03.774497893Z",
+              "status": "running",
+              "version": "",
+            },
+            "ipAddresses": Array [
+              "104.196.205.152",
+              "10.142.0.4",
+            ],
+            "jobs": Array [
+              "JobHostUnits",
+            ],
+            "lxdProfiles": Object {},
+            "networkInterfaces": Object {
+              "eth0": Object {
+                "dnsNameservers": Array [],
+                "gateway": "10.142.0.1",
+                "ipAddresses": Array [
+                  "10.142.0.4",
+                ],
+                "isUp": true,
+                "macAddress": "42:01:0a:8e:00:04",
+              },
+              "lxcbr0": Object {
+                "dnsNameservers": Array [],
+                "ipAddresses": Array [
+                  "10.0.3.1",
+                ],
+                "isUp": true,
+                "macAddress": "e6:85:69:27:5d:f6",
+              },
+            },
+            "series": "trusty",
+            "wantsVote": false,
+          },
+        },
+        "model": Object {
+          "availableVersion": "",
+          "cloudTag": "cloud-google",
+          "meterStatus": Object {
+            "color": "",
+            "message": "",
+          },
+          "modelStatus": Object {
+            "data": Object {},
+            "info": "suspended since cloud credential is not valid",
+            "kind": "",
+            "life": "",
+            "since": null,
+            "status": "suspended",
+            "version": "",
+          },
+          "name": "frontend-ci",
+          "region": "us-east1",
+          "sla": "unsupported",
+          "type": "iaas",
+          "version": "2.4.7",
+        },
+        "offers": Object {},
+        "relations": Array [],
+        "remoteApplications": Object {},
+      }
+    }
+  >
     <div
       className="info-panel"
     >
@@ -2708,67 +3678,72 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       >
         <div
           className="info-panel__grid-item"
-          key="Model"
         >
           <h4
             className="p-muted-heading"
           >
             Model
           </h4>
-          <p>
-            cdk-default
+          <p
+            data-name="name"
+          >
+            frontend-ci
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Region"
         >
           <h4
             className="p-muted-heading"
           >
             Region
           </h4>
-          <p>
-            us-east-1
+          <p
+            data-name="region"
+          >
+            us-east1
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Controller"
         >
           <h4
             className="p-muted-heading"
           >
             Controller
           </h4>
-          <p>
-            aws-controller
+          <p
+            data-name="controller"
+          >
+            iaas
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Cloud"
         >
           <h4
             className="p-muted-heading"
           >
             Cloud
           </h4>
-          <p>
-            aws
+          <p
+            data-name="cloud"
+          >
+            cloud-google
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="SLA"
         >
           <h4
             className="p-muted-heading"
           >
             SLA
           </h4>
-          <p>
-            Unsupported
+          <p
+            data-name="sla"
+          >
+            unsupported
           </p>
         </div>
       </div>

@@ -9,68 +9,63 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
   >
     <div
       className="info-panel__grid-item"
-      key="Model"
     >
       <h4
         className="p-muted-heading"
       >
         Model
       </h4>
-      <p>
-        cdk-default
-      </p>
+      <p
+        data-name="name"
+      />
     </div>
     <div
       className="info-panel__grid-item"
-      key="Region"
     >
       <h4
         className="p-muted-heading"
       >
         Region
       </h4>
-      <p>
-        us-east-1
-      </p>
+      <p
+        data-name="region"
+      />
     </div>
     <div
       className="info-panel__grid-item"
-      key="Controller"
     >
       <h4
         className="p-muted-heading"
       >
         Controller
       </h4>
-      <p>
-        aws-controller
-      </p>
+      <p
+        data-name="controller"
+      />
     </div>
     <div
       className="info-panel__grid-item"
-      key="Cloud"
     >
       <h4
         className="p-muted-heading"
       >
         Cloud
       </h4>
-      <p>
-        aws
-      </p>
+      <p
+        data-name="cloud"
+      />
     </div>
     <div
       className="info-panel__grid-item"
-      key="SLA"
     >
       <h4
         className="p-muted-heading"
       >
         SLA
       </h4>
-      <p>
-        Unsupported
-      </p>
+      <p
+        data-name="sla"
+      />
     </div>
   </div>
   <img
