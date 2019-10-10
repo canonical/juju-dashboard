@@ -10,7 +10,7 @@ const Filter = ({ label, filters }) => {
 
   const filterButtons = filters.map(filter => (
     <span key={filter} className="p-filter__item 1">
-      <Button onClick={() => _handleFilter()}>{filter}</Button>
+      <Button onClick={_handleFilter}>{filter}</Button>
     </span>
   ));
   return (
