@@ -2,7 +2,7 @@ import Limiter from "async-limiter";
 import jujulib from "@canonical/jujulib";
 import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
-import { Bakery } from "@canonical/macaroon-bakery";
+import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 
 import { updateModelInfo, updateModelStatus } from "./actions";
 
@@ -13,18 +13,42 @@ let bakery = null;
 const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
 
 /**
+  Localstorage store class for the bakery.
+  @param {Object} The options for this class:
+    localStorage: The local storage instance to use. Defaults to
+      window.localStorage for normal use or pass a stub for testing.
+*/
+class LocalMacaroonStore {
+  constructor({ localStorage } = {}) {
+    this.localStorage = localStorage || window.localStorage;
+  }
+  getItem(service) {
+    return this.localStorage.getItem(service);
+  }
+  setItem(service, macaroon) {
+    return this.localStorage.setItem(service, macaroon);
+  }
+  clear(service) {
+    return this.localStorage.removeItem(service);
+  }
+}
+
+/**
   Creates a new bakery instance
   @param {Function} visitPage The function to call when the bakery returns with
     a visit page URL.
+  @param {Object} macaroonStore Instance to handle the macaroon store. Defaults
+    to an in-memory store.
   @returns {Bakery} A new bakery instance.
 */
-function createNewBakery(visitPage) {
+function createNewBakery(visitPage, macaroonStore) {
   const defaultVisitPage = resp => {
     // eslint-disable-next-line no-console
     console.log("visit this URL to login:", resp.Info.VisitURL);
   };
   return new Bakery({
-    visitPage: visitPage || defaultVisitPage
+    visitPage: visitPage || defaultVisitPage,
+    storage: new BakeryStorage(macaroonStore, {})
   });
 }
 
@@ -44,11 +68,15 @@ function generateConnectionOptions() {
 /**
   Connects to the controller at the url defined in the REACT_APP_CONTROLLER_URL
   environment variable.
+  @param {Function} visitPage The function to call if the user must visit a
+    visitPage URL to log in.
+  @param {Object} macaroonStore Instance to handle the macaroon store. Defaults
+    to an in-memory store.
   @returns {Object} conn The controller connection instance.
 */
-async function loginWithBakery(visitPage) {
+async function loginWithBakery(visitPage, macaroonStore) {
   if (bakery === null) {
-    bakery = createNewBakery(visitPage);
+    bakery = createNewBakery(visitPage, macaroonStore);
   }
   const juju = await jujulib.connect(
     controllerURL,
@@ -132,4 +160,9 @@ async function fetchAllModelStatuses(conn, modelList, dispatch) {
   });
 }
 
-export { loginWithBakery, fetchAllModelStatuses, fetchAndStoreModelStatus };
+export {
+  fetchAllModelStatuses,
+  fetchAndStoreModelStatus,
+  LocalMacaroonStore,
+  loginWithBakery
+};
