@@ -1,0 +1,15 @@
+.login {
+  align-content: center;
+  display: grid;
+  height: 100vh;
+  width: 100vw;
+
+  &__inner {
+    margin: auto;
+  }
+
+  &__logo {
+    display: block;
+    margin: 0 auto 2rem;
+  }
+}
