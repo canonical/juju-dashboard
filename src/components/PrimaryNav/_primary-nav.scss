@@ -1,10 +1,13 @@
 @import "vanilla-framework/scss/settings_colors";
 
 .p-primary-nav {
-  &__logo {
-    display: block;
-    margin: 0 auto 1rem;
+  &__header {
+    display: grid;
+    margin-bottom: -1rem;
+    padding: 0.5rem;
+    grid-template-columns: 1fr 40px;
   }
+
   .p-list__link {
     color: $color-dark;
   }
@@ -16,6 +19,28 @@
       border-left: 3px solid $color-information;
       font-weight: 400;
       padding-left: calc(1rem - 3px);
+    }
+  }
+
+  &__toggle {
+    background: none;
+    border: 0;
+  }
+
+  .external {
+    margin-bottom: 0.25rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.7s linear;
+  }
+
+  &.ext-nav-open {
+    .external {
+      max-height: 200px;
+    }
+
+    .p-primary-nav__toggle {
+      transform: rotate(180deg);
     }
   }
 }
