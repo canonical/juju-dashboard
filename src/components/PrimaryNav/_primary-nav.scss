@@ -1,6 +1,10 @@
 @import "vanilla-framework/scss/settings_colors";
 
 .p-primary-nav {
+  &__logo {
+    display: block;
+    margin: 0 auto 1rem;
+  }
   .p-list__link {
     color: $color-dark;
   }

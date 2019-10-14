@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Layout renders without crashing and matches snapshot 1`] = `
-<Fragment>
+<div
+  className="l-container"
+>
   <div
     className="l-side"
   >
@@ -14,5 +16,5 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
       id="main-content"
     />
   </div>
-</Fragment>
+</div>
 `;

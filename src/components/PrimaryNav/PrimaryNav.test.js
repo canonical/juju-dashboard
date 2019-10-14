@@ -31,7 +31,7 @@ describe("Primary Nav", () => {
       </Router>
     );
     expect(
-      wrapper.find(".p-list__item:last-child").hasClass("is-selected")
+      wrapper.find(".internal .p-list__item:last-child").hasClass("is-selected")
     ).toStrictEqual(true);
   });
 

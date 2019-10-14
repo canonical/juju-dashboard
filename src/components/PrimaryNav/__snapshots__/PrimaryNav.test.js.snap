@@ -28,8 +28,78 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
       <nav
         className="p-primary-nav"
       >
+        <Link
+          to="/"
+        >
+          <LinkAnchor
+            href="/"
+            navigate={[Function]}
+          >
+            <a
+              href="/"
+              onClick={[Function]}
+            >
+              <img
+                alt="JAAS logo"
+                className="p-primary-nav__logo"
+                src="https://assets.ubuntu.com/v1/a559e2c5-jaas-black-orange-hz-hex.svg"
+              />
+            </a>
+          </LinkAnchor>
+        </Link>
         <ul
           className="p-list"
+        >
+          <li
+            className="p-list__item"
+          >
+            <a
+              href="https://jaas.ai/store"
+            >
+              Store
+            </a>
+          </li>
+          <li
+            className="p-list__item"
+          >
+            <a
+              href="https://jaas.ai/about"
+            >
+              About
+            </a>
+          </li>
+          <li
+            className="p-list__item"
+          >
+            <a
+              href="https://jaas.ai/how-it-works"
+            >
+              How it works
+            </a>
+          </li>
+          <li
+            className="p-list__item"
+          >
+            <a
+              className="p-link--external"
+              href="https://discourse.jujucharms.com/"
+            >
+              Discourse
+            </a>
+          </li>
+          <li
+            className="p-list__item"
+          >
+            <a
+              className="p-link--external"
+              href="https://jaas.ai/docs/"
+            >
+              Docs
+            </a>
+          </li>
+        </ul>
+        <ul
+          className="p-list internal"
         >
           <li
             className="p-list__item is-selected"
