@@ -25,128 +25,106 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
     }
   >
     <PrimaryNav>
-      <div>
-        <header
-          className="p-navigation"
-          id="navigation"
+      <nav
+        className="p-primary-nav"
+      >
+        <ul
+          className="p-list"
         >
-          <div
-            className="p-navigation__banner"
+          <li
+            className="p-list__item is-selected"
+            key="/"
           >
-            <div
-              className="p-navigation__logo"
+            <Link
+              className="p-list__link"
+              to="/"
             >
-              <a
-                className="p-navigation__link"
+              <LinkAnchor
+                className="p-list__link"
                 href="/"
+                navigate={[Function]}
               >
-                <img
-                  alt="JAAS logo"
-                  className="p-navigation__image"
-                  src="https://assets.ubuntu.com/v1/a9e0ed4a-jaas-logo1.svg"
-                  width="95"
-                />
-              </a>
-            </div>
-            <a
-              className="p-navigation__toggle--open"
-              href="#navigation"
-              title="menu"
-            >
-              Menu
-            </a>
-            <a
-              className="p-navigation__toggle--close"
-              href="#navigation-closed"
-              title="close menu"
-            >
-              Close menu
-            </a>
-          </div>
-          <nav
-            className="p-navigation__nav"
+                <a
+                  className="p-list__link"
+                  href="/"
+                  onClick={[Function]}
+                >
+                  Models
+                </a>
+              </LinkAnchor>
+            </Link>
+          </li>
+          <li
+            className="p-list__item"
+            key="/controllers"
           >
-            <span
-              className="u-off-screen"
+            <Link
+              className="p-list__link"
+              to="/controllers"
             >
-              <a
-                href="#main-content"
+              <LinkAnchor
+                className="p-list__link"
+                href="/controllers"
+                navigate={[Function]}
               >
-                Jump to main content
-              </a>
-            </span>
-            <ul
-              className="p-navigation__links"
-              role="menu"
+                <a
+                  className="p-list__link"
+                  href="/controllers"
+                  onClick={[Function]}
+                >
+                  Controllers
+                </a>
+              </LinkAnchor>
+            </Link>
+          </li>
+          <li
+            className="p-list__item"
+            key="/usage"
+          >
+            <Link
+              className="p-list__link"
+              to="/usage"
             >
-              <li
-                className="p-navigation__link"
-                role="menuitem"
+              <LinkAnchor
+                className="p-list__link"
+                href="/usage"
+                navigate={[Function]}
               >
                 <a
-                  className="p-link--external"
-                  href="https://jaas.ai/jaas"
+                  className="p-list__link"
+                  href="/usage"
+                  onClick={[Function]}
                 >
-                  About
+                  Usage
                 </a>
-              </li>
-              <li
-                className="p-navigation__link"
-                role="menuitem"
+              </LinkAnchor>
+            </Link>
+          </li>
+          <li
+            className="p-list__item"
+            key="/logs"
+          >
+            <Link
+              className="p-list__link"
+              to="/logs"
+            >
+              <LinkAnchor
+                className="p-list__link"
+                href="/logs"
+                navigate={[Function]}
               >
                 <a
-                  className="p-link--external"
-                  href="https://discourse.jujucharms.com/"
+                  className="p-list__link"
+                  href="/logs"
+                  onClick={[Function]}
                 >
-                  Discourse
+                  Logs
                 </a>
-              </li>
-              <li
-                className="p-navigation__link"
-                role="menuitem"
-              >
-                <a
-                  className="p-link--external"
-                  href="https://jaas.ai/docs"
-                >
-                  Docs
-                </a>
-              </li>
-              <li
-                className="p-navigation__link"
-                role="menuitem"
-              >
-                <a
-                  className="p-link--external"
-                  href="#_"
-                >
-                  Charmhub
-                </a>
-              </li>
-              <li
-                className="p-navigation__link"
-                role="menuitem"
-              >
-                <Link
-                  to="/"
-                >
-                  <LinkAnchor
-                    href="/"
-                    navigate={[Function]}
-                  >
-                    <a
-                      href="/"
-                      onClick={[Function]}
-                    >
-                      Settings
-                    </a>
-                  </LinkAnchor>
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </header>
-      </div>
+              </LinkAnchor>
+            </Link>
+          </li>
+        </ul>
+      </nav>
     </PrimaryNav>
   </Router>
 </BrowserRouter>
