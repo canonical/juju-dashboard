@@ -3,9 +3,19 @@
 .p-primary-nav {
   &__header {
     display: grid;
+    grid-template-columns: 1fr 40px;
     margin-bottom: -1rem;
     padding: 0.5rem;
-    grid-template-columns: 1fr 40px;
+  }
+
+  &__toggle {
+    background: none;
+    border: 0;
+    //transition: transform 0.25s ease-in-out;
+
+    &:hover {
+      background: 0;
+    }
   }
 
   .p-list__link {
@@ -22,16 +32,11 @@
     }
   }
 
-  &__toggle {
-    background: none;
-    border: 0;
-  }
-
   .external {
     margin-bottom: 0.25rem;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.7s linear;
+    //transition: max-height 0.25s ease-in-out;
   }
 
   &.ext-nav-open {
