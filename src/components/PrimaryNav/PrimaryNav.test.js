@@ -19,6 +19,22 @@ describe("Primary Nav", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it("toggles external nav menu", () => {
+    const wrapper = mount(
+      <Router>
+        <PrimaryNav />
+      </Router>
+    );
+    wrapper.find(".p-primary-nav__toggle").simulate("click");
+    expect(wrapper.find(".p-primary-nav").hasClass("ext-nav-open")).toEqual(
+      true
+    );
+    wrapper.find(".p-primary-nav__toggle").simulate("click");
+    expect(wrapper.find(".p-primary-nav").hasClass("ext-nav-open")).toEqual(
+      false
+    );
+  });
+
   it("applies is-selected state correctly", () => {
     delete global.window.location;
     global.window = Object.create(window);

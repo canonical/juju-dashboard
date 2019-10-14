@@ -1,5 +1,3 @@
-@import "vanilla-framework/scss/settings_colors";
-
 .l-container {
   display: grid;
   grid-template-columns: 200px 1fr;
@@ -7,7 +5,7 @@
 }
 
 .l-side {
-  background: $color-light;
+  background: #002835;
   padding: 0.5rem;
   padding-left: 0;
 }

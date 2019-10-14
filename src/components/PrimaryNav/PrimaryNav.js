@@ -22,7 +22,7 @@ const PrimaryNav = () => {
         <Link to="/">
           <img
             className="p-primary-nav__logo"
-            src="https://assets.ubuntu.com/v1/a559e2c5-jaas-black-orange-hz-hex.svg"
+            src="https://assets.ubuntu.com/v1/a9e0ed4a-jaas-logo1.svg"
             alt="JAAS logo"
           />
         </Link>
@@ -30,7 +30,7 @@ const PrimaryNav = () => {
           className="p-primary-nav__toggle"
           onClick={() => setExtNavOpen(!extNavOpen)}
         >
-          <i class="p-icon--contextual-menu"></i>
+          <i className="p-icon--contextual-menu"></i>
         </button>
       </div>
       <ul className="p-list external">

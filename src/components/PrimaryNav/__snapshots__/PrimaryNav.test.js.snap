@@ -28,27 +28,39 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
       <nav
         className="p-primary-nav"
       >
-        <Link
-          to="/"
+        <div
+          className="p-primary-nav__header"
         >
-          <LinkAnchor
-            href="/"
-            navigate={[Function]}
+          <Link
+            to="/"
           >
-            <a
+            <LinkAnchor
               href="/"
-              onClick={[Function]}
+              navigate={[Function]}
             >
-              <img
-                alt="JAAS logo"
-                className="p-primary-nav__logo"
-                src="https://assets.ubuntu.com/v1/a559e2c5-jaas-black-orange-hz-hex.svg"
-              />
-            </a>
-          </LinkAnchor>
-        </Link>
+              <a
+                href="/"
+                onClick={[Function]}
+              >
+                <img
+                  alt="JAAS logo"
+                  className="p-primary-nav__logo"
+                  src="https://assets.ubuntu.com/v1/a9e0ed4a-jaas-logo1.svg"
+                />
+              </a>
+            </LinkAnchor>
+          </Link>
+          <button
+            className="p-primary-nav__toggle"
+            onClick={[Function]}
+          >
+            <i
+              className="p-icon--contextual-menu"
+            />
+          </button>
+        </div>
         <ul
-          className="p-list"
+          className="p-list external"
         >
           <li
             className="p-list__item"

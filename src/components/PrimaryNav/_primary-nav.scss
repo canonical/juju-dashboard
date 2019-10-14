@@ -1,6 +1,11 @@
 @import "vanilla-framework/scss/settings_colors";
 
 .p-primary-nav {
+  a,
+  a:hover {
+    color: $color-light;
+  }
+
   &__header {
     display: grid;
     grid-template-columns: 1fr 40px;
@@ -11,7 +16,7 @@
   &__toggle {
     background: none;
     border: 0;
-    //transition: transform 0.25s ease-in-out;
+    transition: transform 0.25s ease-in-out;
 
     &:hover {
       background: 0;
@@ -19,16 +24,17 @@
   }
 
   .p-list__link {
-    color: $color-dark;
+    color: $color-light;
   }
 
   .p-list__item {
-    padding-left: 1rem;
+    padding-left: 2.5rem;
 
     &.is-selected {
-      border-left: 3px solid $color-information;
-      font-weight: 400;
-      padding-left: calc(1rem - 3px);
+      background-color: #044f66;
+      border-left: 3px solid #3fc8f2;
+      margin-right: -0.5rem;
+      padding-left: calc(2.5rem - 3px);
     }
   }
 
@@ -36,7 +42,7 @@
     margin-bottom: 0.25rem;
     max-height: 0;
     overflow: hidden;
-    //transition: max-height 0.25s ease-in-out;
+    transition: max-height 0.25s ease-in-out;
   }
 
   &.ext-nav-open {
