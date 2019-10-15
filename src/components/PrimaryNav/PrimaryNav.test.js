@@ -47,7 +47,9 @@ describe("Primary Nav", () => {
       </Router>
     );
     expect(
-      wrapper.find(".internal .p-list__item:last-child").hasClass("is-selected")
+      wrapper
+        .find(".is-internal .p-list__item:last-child")
+        .hasClass("is-selected")
     ).toStrictEqual(true);
   });
 

@@ -60,7 +60,7 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
           </button>
         </div>
         <ul
-          className="p-list external"
+          className="p-list is-external"
         >
           <li
             className="p-list__item"
@@ -111,7 +111,7 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
           </li>
         </ul>
         <ul
-          className="p-list internal"
+          className="p-list is-internal"
         >
           <li
             className="p-list__item is-selected"

@@ -33,7 +33,7 @@ const PrimaryNav = () => {
           <i className="p-icon--contextual-menu"></i>
         </button>
       </div>
-      <ul className="p-list external">
+      <ul className="p-list is-external">
         <li className="p-list__item">
           <a href="https://jaas.ai/store">Store</a>
         </li>
@@ -57,7 +57,7 @@ const PrimaryNav = () => {
           </a>
         </li>
       </ul>
-      <ul className="p-list internal">
+      <ul className="p-list is-internal">
         {Object.values(pages).map(navItem => (
           <li
             key={navItem.path}

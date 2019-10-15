@@ -38,7 +38,7 @@
     }
   }
 
-  .external {
+  .is-external {
     margin-bottom: 0.25rem;
     max-height: 0;
     overflow: hidden;
@@ -46,7 +46,7 @@
   }
 
   &.ext-nav-open {
-    .external {
+    .is-external {
       max-height: 200px;
     }
 
