@@ -46,11 +46,7 @@ describe("Primary Nav", () => {
         <PrimaryNav />
       </Router>
     );
-    expect(
-      wrapper
-        .find(".is-internal .p-list__item:last-child")
-        .hasClass("is-selected")
-    ).toStrictEqual(true);
+    expect(wrapper.find(".is-selected a").text()).toStrictEqual("Logs");
   });
 
   afterEach(() => {
