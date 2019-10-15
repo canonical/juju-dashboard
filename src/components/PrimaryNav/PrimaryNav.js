@@ -36,6 +36,7 @@ const PrimaryNav = () => {
       <ul className="p-list is-external">
         <li className="p-list__item">
           <a
+            className="p-list__link"
             href="https://jaas.ai/store"
             target="_blank"
             rel="noopener noreferrer"
@@ -45,6 +46,7 @@ const PrimaryNav = () => {
         </li>
         <li className="p-list__item">
           <a
+            className="p-list__link"
             href="https://jaas.ai/about"
             target="_blank"
             rel="noopener noreferrer"
@@ -54,6 +56,7 @@ const PrimaryNav = () => {
         </li>
         <li className="p-list__item">
           <a
+            className="p-list__link"
             href="https://jaas.ai/how-it-works"
             target="_blank"
             rel="noopener noreferrer"
@@ -63,7 +66,7 @@ const PrimaryNav = () => {
         </li>
         <li className="p-list__item">
           <a
-            className="p-link--external"
+            className="p-link--external p-list__link"
             href="https://discourse.jujucharms.com/"
             target="_blank"
             rel="noopener noreferrer"
@@ -72,7 +75,10 @@ const PrimaryNav = () => {
           </a>
         </li>
         <li className="p-list__item">
-          <a className="p-link--external" href="https://jaas.ai/docs/">
+          <a
+            className="p-link--external p-list__link"
+            href="https://jaas.ai/docs/"
+          >
             Docs
           </a>
         </li>

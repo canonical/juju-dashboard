@@ -28,12 +28,15 @@
   }
 
   .p-list__item {
-    padding-left: 2.5rem;
+    border-left: 3px solid transparent;
 
     &.is-selected {
       background-color: #044f66;
-      border-left: 3px solid #3fc8f2;
+      border-left-color: #3fc8f2;
       margin-right: -0.5rem;
+    }
+
+    .p-list__link {
       padding-left: calc(2.5rem - 3px);
     }
   }
