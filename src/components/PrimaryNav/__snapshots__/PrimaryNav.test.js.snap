@@ -118,6 +118,8 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
             <a
               className="p-link--external p-list__link"
               href="https://jaas.ai/docs/"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               Docs
             </a>
