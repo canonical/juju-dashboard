@@ -67,6 +67,8 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
           >
             <a
               href="https://jaas.ai/store"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               Store
             </a>
@@ -76,6 +78,8 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
           >
             <a
               href="https://jaas.ai/about"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               About
             </a>
@@ -85,6 +89,8 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
           >
             <a
               href="https://jaas.ai/how-it-works"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               How it works
             </a>
@@ -95,6 +101,8 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
             <a
               className="p-link--external"
               href="https://discourse.jujucharms.com/"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               Discourse
             </a>

@@ -35,18 +35,38 @@ const PrimaryNav = () => {
       </div>
       <ul className="p-list is-external">
         <li className="p-list__item">
-          <a href="https://jaas.ai/store">Store</a>
+          <a
+            href="https://jaas.ai/store"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Store
+          </a>
         </li>
         <li className="p-list__item">
-          <a href="https://jaas.ai/about">About</a>
+          <a
+            href="https://jaas.ai/about"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            About
+          </a>
         </li>
         <li className="p-list__item">
-          <a href="https://jaas.ai/how-it-works">How it works</a>
+          <a
+            href="https://jaas.ai/how-it-works"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            How it works
+          </a>
         </li>
         <li className="p-list__item">
           <a
             className="p-link--external"
             href="https://discourse.jujucharms.com/"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Discourse
           </a>
