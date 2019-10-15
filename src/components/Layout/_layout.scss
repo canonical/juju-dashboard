@@ -1,3 +1,5 @@
+$color-sidebar: #002835;
+
 .l-container {
   display: grid;
   grid-template-columns: 200px 1fr;
@@ -9,7 +11,7 @@
 }
 
 .l-side {
-  background: #002835;
+  background: $color-sidebar;
   padding: 0.5rem;
   padding-left: 0;
 }

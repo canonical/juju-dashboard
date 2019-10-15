@@ -1,9 +1,13 @@
 @import "vanilla-framework/scss/settings_colors";
 
+$color-navigation-highlight: #044f66;
+$color-navigation-accent: #3fc8f2;
+
 .p-primary-nav {
   a,
   a:hover {
     color: $color-light;
+    text-decoration: none;
   }
 
   &__header {
@@ -29,11 +33,15 @@
 
   .p-list__item {
     border-left: 3px solid transparent;
+    margin-right: -0.5rem;
+
+    &:hover {
+      background-color: $color-navigation-highlight;
+    }
 
     &.is-selected {
-      background-color: #044f66;
-      border-left-color: #3fc8f2;
-      margin-right: -0.5rem;
+      background-color: $color-navigation-highlight;
+      border-left-color: $color-navigation-accent;
     }
 
     .p-list__link {
