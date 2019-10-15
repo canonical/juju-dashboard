@@ -30,7 +30,7 @@ const PrimaryNav = () => {
           className="p-primary-nav__toggle"
           onClick={() => setExtNavOpen(!extNavOpen)}
         >
-          <i className="p-icon--contextual-menu"></i>
+          <i className="p-icon--contextual-menu">Toggle external navigation</i>
         </button>
       </div>
       <ul className="p-list is-external">
