@@ -78,6 +78,8 @@ const PrimaryNav = () => {
           <a
             className="p-link--external p-list__link"
             href="https://jaas.ai/docs/"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Docs
           </a>
