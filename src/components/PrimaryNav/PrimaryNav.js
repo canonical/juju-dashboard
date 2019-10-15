@@ -78,7 +78,7 @@ const PrimaryNav = () => {
         </li>
       </ul>
       <ul className="p-list is-internal">
-        {Object.values(pages).map(navItem => (
+        {pages.map(navItem => (
           <li
             key={navItem.path}
             className={classNames("p-list__item", {
