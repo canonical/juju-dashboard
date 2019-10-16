@@ -1,18 +1,17 @@
-@import "vanilla-framework/scss/settings_colors";
+$color-sidebar: #002835;
 
 .l-container {
   display: grid;
-  min-height: calc(100vh - 48px);
+  grid-template-columns: 200px 1fr;
+  min-height: 100vh;
 }
 
-.l-container--sidebar {
-  @extend .l-container;
-
-  grid-template-columns: 150px 1fr;
+.l-main {
+  position: relative;
 }
 
 .l-side {
-  background: $color-light;
+  background: $color-sidebar;
   padding: 0.5rem;
   padding-left: 0;
 }
