@@ -81,12 +81,13 @@ function determineModelStatus(modelStatus) {
   // Short circuit the loop. If something is in error then the model is in error.
   // Grab the first error message and display that.
   Object.values(modelStatus.applications).some(app => {
-    Object.values(app.units).some(unit => {
+    return Object.values(app.units).some(unit => {
       if (badStatuses.includes(unit.agentStatus.status)) {
         status = "blockedModelData";
         why = unit.agentStatus.info;
         return true;
       }
+      return false;
     });
   });
   return { status, why };
