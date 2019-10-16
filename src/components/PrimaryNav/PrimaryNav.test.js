@@ -25,14 +25,15 @@ describe("Primary Nav", () => {
         <PrimaryNav />
       </Router>
     );
-    wrapper.find(".p-primary-nav__toggle").simulate("click");
-    expect(wrapper.find(".p-primary-nav").hasClass("ext-nav-open")).toEqual(
-      true
-    );
-    wrapper.find(".p-primary-nav__toggle").simulate("click");
-    expect(wrapper.find(".p-primary-nav").hasClass("ext-nav-open")).toEqual(
-      false
-    );
+
+    const primaryNav = ".p-primary-nav";
+    const primaryNavToggle = ".p-primary-nav__toggle";
+
+    expect(wrapper.find(primaryNav).hasClass("ext-nav-open")).toEqual(false);
+    wrapper.find(primaryNavToggle).simulate("click");
+    expect(wrapper.find(primaryNav).hasClass("ext-nav-open")).toEqual(true);
+    wrapper.find(primaryNavToggle).simulate("click");
+    expect(wrapper.find(primaryNav).hasClass("ext-nav-open")).toEqual(false);
   });
 
   it("applies is-selected state correctly", () => {
