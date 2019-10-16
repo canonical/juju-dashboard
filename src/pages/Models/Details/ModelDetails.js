@@ -157,7 +157,7 @@ const ModelDetails = () => {
   return (
     <Layout sidebar={false}>
       <div className="model-details">
-        <InfoPanel modelStatus={modelStatusData} />
+        <InfoPanel />
         <div className="model-details__main">
           <div className="model-details__filters">
             <Filter label="View" filters={viewFilters} />
