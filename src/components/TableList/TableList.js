@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 
 import MainTable from "../MainTable/MainTable";
 
+import "./_table-list.scss";
 /**
   Returns the model info and statuses in the proper format for the table data.
   @param {Object} state The application state.
@@ -35,10 +36,19 @@ function generateModelTableData(state) {
       }`;
       return <Link to={sharedModelDetailsPath}>{modelListData.name}</Link>;
     };
+    const generateModelNameCell = why => {
+      const link = generateModelDetailsLink();
+      return (
+        <>
+          {link}
+          <div className="table-list_error-message">{why}</div>
+        </>
+      );
+    };
     const { status, why } = determineModelStatus(modelStatus);
     modelData[status].push({
       columns: [
-        { content: generateModelDetailsLink() },
+        { content: generateModelNameCell(why) },
         { content: modelListData.ownerTag.split("@")[0].replace("user-", "") },
         { content: getStatusValue(modelStatus, "summary") },
         { content: getStatusValue(modelStatus, "cloudTag") },
