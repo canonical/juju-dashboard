@@ -1,5 +1,8 @@
 FROM ubuntu:bionic
 
+# Set up environment
+ENV LANG C.UTF-8
+
 RUN apt-get update && apt-get install --yes nginx
 
 # Set git commit ID
