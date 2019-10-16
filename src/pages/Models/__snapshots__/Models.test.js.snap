@@ -5,7 +5,7 @@ exports[`Models page renders without crashing and matches snapshot 1`] = `
   sidebar={true}
 >
   <div
-    className="p-strip"
+    className="p-strip is-shallow"
   >
     <div
       className="row"

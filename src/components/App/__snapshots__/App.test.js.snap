@@ -4,31 +4,33 @@ exports[`App renders without crashing and matches snapshot 1`] = `
 <BrowserRouter>
   <ErrorBoundary>
     <Switch>
-      <Route
-        component={[Function]}
-        exact={true}
-        path="/"
-      />
-      <Route
-        component={[Function]}
-        exact={true}
-        path="/models/:id"
-      />
-      <Route
-        component={[Function]}
-        exact={true}
-        path="/controllers"
-      />
-      <Route
-        component={[Function]}
-        exact={true}
-        path="/usage"
-      />
-      <Route
-        component={[Function]}
-        exact={true}
-        path="/logs"
-      />
+      <LogIn>
+        <Route
+          component={[Function]}
+          exact={true}
+          path="/"
+        />
+        <Route
+          component={[Function]}
+          exact={true}
+          path="/models/*"
+        />
+        <Route
+          component={[Function]}
+          exact={true}
+          path="/controllers"
+        />
+        <Route
+          component={[Function]}
+          exact={true}
+          path="/usage"
+        />
+        <Route
+          component={[Function]}
+          exact={true}
+          path="/logs"
+        />
+      </LogIn>
       <Route
         component={[Function]}
       />

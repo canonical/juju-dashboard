@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ModelDetail Container When the user is logged in... renders the details pane 1`] = `
+exports[`ModelDetail Container renders the details pane 1`] = `
 <div
   className="model-details"
 >
@@ -110,60 +110,75 @@ exports[`ModelDetail Container When the user is logged in... renders the details
             View
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="all"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 all
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="apps"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 apps
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="units"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 units
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="machines"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 machines
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="relations"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 relations
               </button>
@@ -190,36 +205,45 @@ exports[`ModelDetail Container When the user is logged in... renders the details
             Status
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="all"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 all
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="maintenance"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 maintenance
               </button>
             </Button>
           </span>
           <span
-            className="p-filter__item"
+            className="p-filter__item 1"
             key="blocked"
           >
-            <Button>
+            <Button
+              onClick={[Function]}
+            >
               <button
                 className="p-button--filter"
+                onClick={[Function]}
               >
                 blocked
               </button>
@@ -232,38 +256,30 @@ exports[`ModelDetail Container When the user is logged in... renders the details
       headers={
         Array [
           Object {
-            "content": "App",
-            "sortKey": "app",
+            "content": "app",
           },
           Object {
-            "content": "Status",
-            "sortKey": "status",
+            "content": "status",
           },
           Object {
-            "content": "Version",
-            "sortKey": "version",
+            "content": "version",
           },
           Object {
             "className": "u-align--right",
-            "content": "Scale",
-            "sortKey": "scale",
+            "content": "scale",
           },
           Object {
-            "content": "Store",
-            "sortKey": "store",
+            "content": "store",
           },
           Object {
             "className": "u-align--right",
-            "content": "Rev",
-            "sortKey": "rev",
+            "content": "rev",
           },
           Object {
-            "content": "OS",
-            "sortKey": "os",
+            "content": "os",
           },
           Object {
-            "content": "Notes",
-            "sortKey": "notes",
+            "content": "notes",
           },
         ]
       }
@@ -272,119 +288,227 @@ exports[`ModelDetail Container When the user is logged in... renders the details
           Object {
             "columns": Array [
               Object {
-                "content": "Ready",
-                "role": "rowheader",
+                "content": "easyrsa",
               },
               Object {
-                "content": 1,
+                "content": "waiting",
               },
               Object {
-                "content": "1 GiB",
+                "content": "-",
               },
               Object {
-                "className": "u-align--right",
-                "content": 2,
+                "content": "CharmHub",
               },
               Object {
-                "content": "Ready",
+                "content": undefined,
               },
               Object {
-                "className": "u-align--right",
-                "content": 1,
+                "content": "-",
               },
               Object {
-                "content": "1 GiB",
-              },
-              Object {
-                "content": 2,
+                "content": "-",
               },
             ],
-            "sortData": Object {
-              "app": "ready",
-              "notes": 2,
-              "os": 1,
-              "rev": 2,
-              "scale": 2,
-              "status": 2,
-              "store": "ready",
-              "version": 1,
-            },
           },
           Object {
             "columns": Array [
               Object {
-                "content": "Idle",
-                "role": "rowheader",
+                "content": "elasticsearch",
               },
               Object {
-                "className": "u-align--right",
-                "content": 1,
+                "content": "waiting",
               },
               Object {
-                "className": "u-align--right",
-                "content": "1 GiB",
+                "content": "-",
               },
               Object {
-                "className": "u-align--right",
-                "content": 2,
+                "content": "CharmHub",
               },
               Object {
-                "content": "Ready",
+                "content": undefined,
               },
               Object {
-                "className": "u-align--right",
-                "content": 1,
+                "content": "-",
               },
               Object {
-                "content": "1 GiB",
-              },
-              Object {
-                "content": 2,
+                "content": "-",
               },
             ],
-            "sortData": Object {
-              "cores": 1,
-              "disks": 2,
-              "ram": 1,
-              "status": "idle",
-            },
           },
           Object {
             "columns": Array [
               Object {
-                "content": "Waiting",
-                "role": "rowheader",
+                "content": "etcd",
               },
               Object {
-                "content": 8,
+                "content": "waiting",
               },
               Object {
-                "content": "3.9 GiB",
+                "content": "-",
               },
               Object {
-                "className": "u-align--right",
-                "content": 3,
+                "content": "CharmHub",
               },
               Object {
-                "content": "Ready",
+                "content": undefined,
               },
               Object {
-                "className": "u-align--right",
-                "content": 1,
+                "content": "-",
               },
               Object {
-                "content": "1 GiB",
-              },
-              Object {
-                "content": 2,
+                "content": "-",
               },
             ],
-            "sortData": Object {
-              "cores": 8,
-              "disks": 3,
-              "ram": 3.9,
-              "status": "waiting",
-            },
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "flannel",
+              },
+              Object {
+                "content": "waiting",
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "CharmHub",
+              },
+              Object {
+                "content": undefined,
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "-",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kibana",
+              },
+              Object {
+                "content": "waiting",
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "CharmHub",
+              },
+              Object {
+                "content": undefined,
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "-",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubeapi-load-balancer",
+              },
+              Object {
+                "content": "waiting",
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "CharmHub",
+              },
+              Object {
+                "content": undefined,
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "-",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubernetes-master",
+              },
+              Object {
+                "content": "waiting",
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "CharmHub",
+              },
+              Object {
+                "content": undefined,
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "-",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubernetes-worker",
+              },
+              Object {
+                "content": "waiting",
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "CharmHub",
+              },
+              Object {
+                "content": undefined,
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "-",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "rsyslog",
+              },
+              Object {
+                "content": "waiting",
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "CharmHub",
+              },
+              Object {
+                "content": undefined,
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "-",
+              },
+            ],
           },
         ]
       }
@@ -405,109 +529,93 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                 <TableHeader
                   key="0"
                   onClick={[Function]}
-                  sort="none"
                 >
                   <th
-                    aria-sort="none"
                     onClick={[Function]}
                     role="columnheader"
                   >
-                    App
+                    app
                   </th>
                 </TableHeader>
                 <TableHeader
                   key="1"
                   onClick={[Function]}
-                  sort="none"
                 >
                   <th
-                    aria-sort="none"
                     onClick={[Function]}
                     role="columnheader"
                   >
-                    Status
+                    status
                   </th>
                 </TableHeader>
                 <TableHeader
                   key="2"
                   onClick={[Function]}
-                  sort="none"
                 >
                   <th
-                    aria-sort="none"
                     onClick={[Function]}
                     role="columnheader"
                   >
-                    Version
+                    version
                   </th>
                 </TableHeader>
                 <TableHeader
                   className="u-align--right"
                   key="3"
                   onClick={[Function]}
-                  sort="none"
                 >
                   <th
-                    aria-sort="none"
                     className="u-align--right"
                     onClick={[Function]}
                     role="columnheader"
                   >
-                    Scale
+                    scale
                   </th>
                 </TableHeader>
                 <TableHeader
                   key="4"
                   onClick={[Function]}
-                  sort="none"
                 >
                   <th
-                    aria-sort="none"
                     onClick={[Function]}
                     role="columnheader"
                   >
-                    Store
+                    store
                   </th>
                 </TableHeader>
                 <TableHeader
                   className="u-align--right"
                   key="5"
                   onClick={[Function]}
-                  sort="none"
                 >
                   <th
-                    aria-sort="none"
                     className="u-align--right"
                     onClick={[Function]}
                     role="columnheader"
                   >
-                    Rev
+                    rev
                   </th>
                 </TableHeader>
                 <TableHeader
                   key="6"
                   onClick={[Function]}
-                  sort="none"
                 >
                   <th
-                    aria-sort="none"
                     onClick={[Function]}
                     role="columnheader"
                   >
-                    OS
+                    os
                   </th>
                 </TableHeader>
                 <TableHeader
                   key="7"
                   onClick={[Function]}
-                  sort="none"
                 >
                   <th
-                    aria-sort="none"
                     onClick={[Function]}
                     role="columnheader"
                   >
-                    Notes
+                    notes
                   </th>
                 </TableHeader>
               </tr>
@@ -522,13 +630,12 @@ exports[`ModelDetail Container When the user is logged in... renders the details
               >
                 <TableCell
                   key="0"
-                  role="rowheader"
                 >
                   <td
                     className=""
-                    role="rowheader"
+                    role="gridcell"
                   >
-                    Ready
+                    easyrsa
                   </td>
                 </TableCell>
                 <TableCell
@@ -538,7 +645,7 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                     className=""
                     role="gridcell"
                   >
-                    1
+                    waiting
                   </td>
                 </TableCell>
                 <TableCell
@@ -548,18 +655,17 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                     className=""
                     role="gridcell"
                   >
-                    1 GiB
+                    -
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-align--right"
                   key="3"
                 >
                   <td
-                    className="u-align--right"
+                    className=""
                     role="gridcell"
                   >
-                    2
+                    CharmHub
                   </td>
                 </TableCell>
                 <TableCell
@@ -568,19 +674,16 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                   <td
                     className=""
                     role="gridcell"
-                  >
-                    Ready
-                  </td>
+                  />
                 </TableCell>
                 <TableCell
-                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className="u-align--right"
+                    className=""
                     role="gridcell"
                   >
-                    1
+                    -
                   </td>
                 </TableCell>
                 <TableCell
@@ -590,17 +693,7 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                     className=""
                     role="gridcell"
                   >
-                    1 GiB
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    2
+                    -
                   </td>
                 </TableCell>
               </tr>
@@ -613,46 +706,42 @@ exports[`ModelDetail Container When the user is logged in... renders the details
               >
                 <TableCell
                   key="0"
-                  role="rowheader"
                 >
                   <td
                     className=""
-                    role="rowheader"
+                    role="gridcell"
                   >
-                    Idle
+                    elasticsearch
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-align--right"
                   key="1"
                 >
                   <td
-                    className="u-align--right"
+                    className=""
                     role="gridcell"
                   >
-                    1
+                    waiting
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className="u-align--right"
+                    className=""
                     role="gridcell"
                   >
-                    1 GiB
+                    -
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-align--right"
                   key="3"
                 >
                   <td
-                    className="u-align--right"
+                    className=""
                     role="gridcell"
                   >
-                    2
+                    CharmHub
                   </td>
                 </TableCell>
                 <TableCell
@@ -661,19 +750,16 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                   <td
                     className=""
                     role="gridcell"
-                  >
-                    Ready
-                  </td>
+                  />
                 </TableCell>
                 <TableCell
-                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className="u-align--right"
+                    className=""
                     role="gridcell"
                   >
-                    1
+                    -
                   </td>
                 </TableCell>
                 <TableCell
@@ -683,17 +769,7 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                     className=""
                     role="gridcell"
                   >
-                    1 GiB
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    2
+                    -
                   </td>
                 </TableCell>
               </tr>
@@ -706,13 +782,12 @@ exports[`ModelDetail Container When the user is logged in... renders the details
               >
                 <TableCell
                   key="0"
-                  role="rowheader"
                 >
                   <td
                     className=""
-                    role="rowheader"
+                    role="gridcell"
                   >
-                    Waiting
+                    etcd
                   </td>
                 </TableCell>
                 <TableCell
@@ -722,7 +797,7 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                     className=""
                     role="gridcell"
                   >
-                    8
+                    waiting
                   </td>
                 </TableCell>
                 <TableCell
@@ -732,18 +807,17 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                     className=""
                     role="gridcell"
                   >
-                    3.9 GiB
+                    -
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-align--right"
                   key="3"
                 >
                   <td
-                    className="u-align--right"
+                    className=""
                     role="gridcell"
                   >
-                    3
+                    CharmHub
                   </td>
                 </TableCell>
                 <TableCell
@@ -752,19 +826,16 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                   <td
                     className=""
                     role="gridcell"
-                  >
-                    Ready
-                  </td>
+                  />
                 </TableCell>
                 <TableCell
-                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className="u-align--right"
+                    className=""
                     role="gridcell"
                   >
-                    1
+                    -
                   </td>
                 </TableCell>
                 <TableCell
@@ -774,17 +845,1844 @@ exports[`ModelDetail Container When the user is logged in... renders the details
                     className=""
                     role="gridcell"
                   >
-                    1 GiB
+                    -
                   </td>
                 </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="3"
+            >
+              <tr
+                role="row"
+              >
                 <TableCell
-                  key="7"
+                  key="0"
                 >
                   <td
                     className=""
                     role="gridcell"
                   >
-                    2
+                    flannel
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    waiting
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    CharmHub
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  />
+                </TableCell>
+                <TableCell
+                  key="5"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="4"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kibana
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    waiting
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    CharmHub
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  />
+                </TableCell>
+                <TableCell
+                  key="5"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="5"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubeapi-load-balancer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    waiting
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    CharmHub
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  />
+                </TableCell>
+                <TableCell
+                  key="5"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="6"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    waiting
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    CharmHub
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  />
+                </TableCell>
+                <TableCell
+                  key="5"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="7"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-worker
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    waiting
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    CharmHub
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  />
+                </TableCell>
+                <TableCell
+                  key="5"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="8"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    rsyslog
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    waiting
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    CharmHub
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  />
+                </TableCell>
+                <TableCell
+                  key="5"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+          </tbody>
+        </table>
+      </Table>
+    </MainTable>
+    <MainTable
+      headers={
+        Array [
+          Object {
+            "content": "unit",
+          },
+          Object {
+            "content": "workload",
+          },
+          Object {
+            "content": "agent",
+          },
+          Object {
+            "content": "machine",
+          },
+          Object {
+            "content": "public address",
+          },
+          Object {
+            "content": "port",
+          },
+          Object {
+            "content": "message",
+          },
+        ]
+      }
+      rows={Array []}
+      sortable={true}
+    >
+      <Table
+        sortable={true}
+      >
+        <table
+          className="p-table--sortable"
+          role="grid"
+        >
+          <thead>
+            <TableRow>
+              <tr
+                role="row"
+              >
+                <TableHeader
+                  key="0"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    unit
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="1"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    workload
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="2"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    agent
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="3"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    machine
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="4"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    public address
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="5"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    port
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="6"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    message
+                  </th>
+                </TableHeader>
+              </tr>
+            </TableRow>
+          </thead>
+          <tbody />
+        </table>
+      </Table>
+    </MainTable>
+    <MainTable
+      headers={
+        Array [
+          Object {
+            "content": "relation provider",
+          },
+          Object {
+            "content": "requirer",
+          },
+          Object {
+            "content": "interface",
+          },
+          Object {
+            "content": "type",
+          },
+          Object {
+            "content": "message",
+          },
+        ]
+      }
+      rows={
+        Array [
+          Object {
+            "columns": Array [
+              Object {
+                "content": "elasticsearch:peer",
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "http",
+              },
+              Object {
+                "content": "peer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "elasticsearch:client",
+              },
+              Object {
+                "content": "kibana:rest",
+              },
+              Object {
+                "content": "elasticsearch",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "etcd:cluster",
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "etcd",
+              },
+              Object {
+                "content": "peer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "etcd:db",
+              },
+              Object {
+                "content": "flannel:etcd",
+              },
+              Object {
+                "content": "etcd",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "easyrsa:client",
+              },
+              Object {
+                "content": "etcd:certificates",
+              },
+              Object {
+                "content": "tls-certificates",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "etcd:db",
+              },
+              Object {
+                "content": "kubernetes-master:etcd",
+              },
+              Object {
+                "content": "etcd",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "easyrsa:client",
+              },
+              Object {
+                "content": "kubeapi-load-balancer:certificates",
+              },
+              Object {
+                "content": "tls-certificates",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubeapi-load-balancer:loadbalancer",
+              },
+              Object {
+                "content": "kubernetes-master:loadbalancer",
+              },
+              Object {
+                "content": "public-address",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubernetes-master:kube-api-endpoint",
+              },
+              Object {
+                "content": "kubeapi-load-balancer:apiserver",
+              },
+              Object {
+                "content": "http",
+              },
+              Object {
+                "content": "provider",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubeapi-load-balancer:website",
+              },
+              Object {
+                "content": "kubernetes-worker:kube-api-endpoint",
+              },
+              Object {
+                "content": "http",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "easyrsa:client",
+              },
+              Object {
+                "content": "kubernetes-master:certificates",
+              },
+              Object {
+                "content": "tls-certificates",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "easyrsa:client",
+              },
+              Object {
+                "content": "kubernetes-worker:certificates",
+              },
+              Object {
+                "content": "tls-certificates",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubernetes-master:cni",
+              },
+              Object {
+                "content": "flannel:cni",
+              },
+              Object {
+                "content": "kubernetes-cni",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubernetes-worker:cni",
+              },
+              Object {
+                "content": "flannel:cni",
+              },
+              Object {
+                "content": "kubernetes-cni",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubernetes-master:kube-control",
+              },
+              Object {
+                "content": "kubernetes-worker:kube-control",
+              },
+              Object {
+                "content": "kube-control",
+              },
+              Object {
+                "content": "provider",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+        ]
+      }
+      sortable={true}
+    >
+      <Table
+        sortable={true}
+      >
+        <table
+          className="p-table--sortable"
+          role="grid"
+        >
+          <thead>
+            <TableRow>
+              <tr
+                role="row"
+              >
+                <TableHeader
+                  key="0"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    relation provider
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="1"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    requirer
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="2"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    interface
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="3"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    type
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="4"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    message
+                  </th>
+                </TableHeader>
+              </tr>
+            </TableRow>
+          </thead>
+          <tbody>
+            <TableRow
+              key="0"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    elasticsearch:peer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    http
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    peer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="1"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    elasticsearch:client
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kibana:rest
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    elasticsearch
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="2"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd:cluster
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    peer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="3"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd:db
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    flannel:etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="4"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    easyrsa:client
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd:certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    tls-certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="5"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd:db
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="6"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    easyrsa:client
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubeapi-load-balancer:certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    tls-certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="7"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubeapi-load-balancer:loadbalancer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:loadbalancer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    public-address
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="8"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:kube-api-endpoint
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubeapi-load-balancer:apiserver
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    http
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    provider
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="9"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubeapi-load-balancer:website
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-worker:kube-api-endpoint
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    http
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="10"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    easyrsa:client
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    tls-certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="11"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    easyrsa:client
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-worker:certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    tls-certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="12"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:cni
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    flannel:cni
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-cni
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="13"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-worker:cni
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    flannel:cni
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-cni
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="14"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:kube-control
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-worker:kube-control
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kube-control
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    provider
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
                   </td>
                 </TableCell>
               </tr>
@@ -797,8 +2695,846 @@ exports[`ModelDetail Container When the user is logged in... renders the details
 </div>
 `;
 
-exports[`ModelDetail Container renders with a login message when not logged in 1`] = `
-<div>
-  Please log in
+exports[`ModelDetail Container renders the details pane for models shared-with-me 1`] = `
+<div
+  className="model-details"
+>
+  <InfoPanel>
+    <div
+      className="info-panel"
+    >
+      <div
+        className="info-panel__grid"
+      >
+        <div
+          className="info-panel__grid-item"
+          key="Model"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Model
+          </h4>
+          <p>
+            cdk-default
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+          key="Region"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Region
+          </h4>
+          <p>
+            us-east-1
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+          key="Controller"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Controller
+          </h4>
+          <p>
+            aws-controller
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+          key="Cloud"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Cloud
+          </h4>
+          <p>
+            aws
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+          key="SLA"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            SLA
+          </h4>
+          <p>
+            Unsupported
+          </p>
+        </div>
+      </div>
+      <img
+        alt=""
+        src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+      />
+    </div>
+  </InfoPanel>
+  <div
+    className="model-details__main"
+  >
+    <div
+      className="model-details__filters"
+    >
+      <Filter
+        filters={
+          Array [
+            "all",
+            "apps",
+            "units",
+            "machines",
+            "relations",
+          ]
+        }
+        label="View"
+      >
+        <div
+          className="p-filter"
+        >
+          <span
+            className="p-filter__label"
+          >
+            View
+          </span>
+          <span
+            className="p-filter__item 1"
+            key="all"
+          >
+            <Button
+              onClick={[Function]}
+            >
+              <button
+                className="p-button--filter"
+                onClick={[Function]}
+              >
+                all
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item 1"
+            key="apps"
+          >
+            <Button
+              onClick={[Function]}
+            >
+              <button
+                className="p-button--filter"
+                onClick={[Function]}
+              >
+                apps
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item 1"
+            key="units"
+          >
+            <Button
+              onClick={[Function]}
+            >
+              <button
+                className="p-button--filter"
+                onClick={[Function]}
+              >
+                units
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item 1"
+            key="machines"
+          >
+            <Button
+              onClick={[Function]}
+            >
+              <button
+                className="p-button--filter"
+                onClick={[Function]}
+              >
+                machines
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item 1"
+            key="relations"
+          >
+            <Button
+              onClick={[Function]}
+            >
+              <button
+                className="p-button--filter"
+                onClick={[Function]}
+              >
+                relations
+              </button>
+            </Button>
+          </span>
+        </div>
+      </Filter>
+      <Filter
+        filters={
+          Array [
+            "all",
+            "maintenance",
+            "blocked",
+          ]
+        }
+        label="Status"
+      >
+        <div
+          className="p-filter"
+        >
+          <span
+            className="p-filter__label"
+          >
+            Status
+          </span>
+          <span
+            className="p-filter__item 1"
+            key="all"
+          >
+            <Button
+              onClick={[Function]}
+            >
+              <button
+                className="p-button--filter"
+                onClick={[Function]}
+              >
+                all
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item 1"
+            key="maintenance"
+          >
+            <Button
+              onClick={[Function]}
+            >
+              <button
+                className="p-button--filter"
+                onClick={[Function]}
+              >
+                maintenance
+              </button>
+            </Button>
+          </span>
+          <span
+            className="p-filter__item 1"
+            key="blocked"
+          >
+            <Button
+              onClick={[Function]}
+            >
+              <button
+                className="p-button--filter"
+                onClick={[Function]}
+              >
+                blocked
+              </button>
+            </Button>
+          </span>
+        </div>
+      </Filter>
+    </div>
+    <MainTable
+      headers={
+        Array [
+          Object {
+            "content": "app",
+          },
+          Object {
+            "content": "status",
+          },
+          Object {
+            "content": "version",
+          },
+          Object {
+            "className": "u-align--right",
+            "content": "scale",
+          },
+          Object {
+            "content": "store",
+          },
+          Object {
+            "className": "u-align--right",
+            "content": "rev",
+          },
+          Object {
+            "content": "os",
+          },
+          Object {
+            "content": "notes",
+          },
+        ]
+      }
+      rows={
+        Array [
+          Object {
+            "columns": Array [
+              Object {
+                "content": "jenkins",
+              },
+              Object {
+                "content": "unknown",
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "CharmHub",
+              },
+              Object {
+                "content": undefined,
+              },
+              Object {
+                "content": "-",
+              },
+              Object {
+                "content": "-",
+              },
+            ],
+          },
+        ]
+      }
+      sortable={true}
+    >
+      <Table
+        sortable={true}
+      >
+        <table
+          className="p-table--sortable"
+          role="grid"
+        >
+          <thead>
+            <TableRow>
+              <tr
+                role="row"
+              >
+                <TableHeader
+                  key="0"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    app
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="1"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    status
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="2"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    version
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  className="u-align--right"
+                  key="3"
+                  onClick={[Function]}
+                >
+                  <th
+                    className="u-align--right"
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    scale
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="4"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    store
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  className="u-align--right"
+                  key="5"
+                  onClick={[Function]}
+                >
+                  <th
+                    className="u-align--right"
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    rev
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="6"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    os
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="7"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    notes
+                  </th>
+                </TableHeader>
+              </tr>
+            </TableRow>
+          </thead>
+          <tbody>
+            <TableRow
+              key="0"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    jenkins
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    unknown
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    CharmHub
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  />
+                </TableCell>
+                <TableCell
+                  key="5"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+          </tbody>
+        </table>
+      </Table>
+    </MainTable>
+    <MainTable
+      headers={
+        Array [
+          Object {
+            "content": "unit",
+          },
+          Object {
+            "content": "workload",
+          },
+          Object {
+            "content": "agent",
+          },
+          Object {
+            "content": "machine",
+          },
+          Object {
+            "content": "public address",
+          },
+          Object {
+            "content": "port",
+          },
+          Object {
+            "content": "message",
+          },
+        ]
+      }
+      rows={
+        Array [
+          Object {
+            "columns": Array [
+              Object {
+                "content": "jenkins/2",
+              },
+              Object {
+                "content": "unknown",
+              },
+              Object {
+                "content": "lost",
+              },
+              Object {
+                "content": "2",
+              },
+              Object {
+                "content": "104.196.205.152",
+              },
+              Object {
+                "content": undefined,
+              },
+              Object {
+                "content": "agent lost, see 'juju show-status-log jenkins/2'",
+              },
+            ],
+          },
+        ]
+      }
+      sortable={true}
+    >
+      <Table
+        sortable={true}
+      >
+        <table
+          className="p-table--sortable"
+          role="grid"
+        >
+          <thead>
+            <TableRow>
+              <tr
+                role="row"
+              >
+                <TableHeader
+                  key="0"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    unit
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="1"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    workload
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="2"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    agent
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="3"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    machine
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="4"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    public address
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="5"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    port
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="6"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    message
+                  </th>
+                </TableHeader>
+              </tr>
+            </TableRow>
+          </thead>
+          <tbody>
+            <TableRow
+              key="0"
+            >
+              <tr
+                role="row"
+              >
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    jenkins/2
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    unknown
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    lost
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    2
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    104.196.205.152
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="5"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  />
+                </TableCell>
+                <TableCell
+                  key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    agent lost, see 'juju show-status-log jenkins/2'
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+          </tbody>
+        </table>
+      </Table>
+    </MainTable>
+    <MainTable
+      headers={
+        Array [
+          Object {
+            "content": "relation provider",
+          },
+          Object {
+            "content": "requirer",
+          },
+          Object {
+            "content": "interface",
+          },
+          Object {
+            "content": "type",
+          },
+          Object {
+            "content": "message",
+          },
+        ]
+      }
+      rows={Array []}
+      sortable={true}
+    >
+      <Table
+        sortable={true}
+      >
+        <table
+          className="p-table--sortable"
+          role="grid"
+        >
+          <thead>
+            <TableRow>
+              <tr
+                role="row"
+              >
+                <TableHeader
+                  key="0"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    relation provider
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="1"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    requirer
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="2"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    interface
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="3"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    type
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="4"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                    role="columnheader"
+                  >
+                    message
+                  </th>
+                </TableHeader>
+              </tr>
+            </TableRow>
+          </thead>
+          <tbody />
+        </table>
+      </Table>
+    </MainTable>
+  </div>
 </div>
+`;
+
+exports[`ModelDetail Container renders the terminal 1`] = `
+<Terminal
+  address="wss://shell.jujugui.org:443/ws/"
+  modelName="test1"
+>
+  <div
+    className="terminal"
+  />
+</Terminal>
 `;

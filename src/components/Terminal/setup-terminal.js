@@ -17,11 +17,18 @@ const UNEXPECTED_CLOSE =
   @param {String} address The address to connect the websocket to.
   @param {Object} creds The credentials format as extracted from the bakery
     including username, password, or the macaroons for the active user.
+  @param {String} modelName The model name to switch to uppon connection,
+    if any.
   @param {Object} terminalElement The element in the DOM to render the xterm
     instance into.
   @returns {XTerm} The new Xterm terminal instance.
 */
-export default function setupTerminal(address, creds, terminalElement) {
+export default function setupTerminal(
+  address,
+  creds,
+  modelName,
+  terminalElement
+) {
   let terminalInstance = new Xterm({
     theme: {
       background: "#111"
@@ -79,8 +86,7 @@ export default function setupTerminal(address, creds, terminalElement) {
         // Terminado sends a "setup" message after it's fully done setting
         // up on the server side and will be sending the first PS1 to the
         // client.
-        // XXX Allow the model to be switched to to be passed in
-        const cmd = "juju switch test3";
+        const cmd = `juju switch ${modelName}`;
         ws.send(JSON.stringify(["stdin", `${cmd}\n`]));
         break;
     }

@@ -1,17 +1,27 @@
 import React, { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import { getMacaroons } from "app/selectors";
 
 import cleanUpTerminal from "./cleanup-terminal";
 import setupTerminal from "./setup-terminal";
 
 import "./_terminal.scss";
 
-const Terminal = ({ address, creds }) => {
+const Terminal = ({ address, modelName }) => {
   const terminalElement = useRef(null);
+  const macaroons = useSelector(getMacaroons);
 
   useEffect(() => {
-    const terminalInstance = setupTerminal(address, creds, terminalElement);
+    const creds = { macaroons };
+    const terminalInstance = setupTerminal(
+      address,
+      creds,
+      modelName,
+      terminalElement
+    );
+
     return cleanUpTerminal(terminalInstance);
-  }, [address, creds]);
+  }, [address, macaroons, modelName]);
 
   return (
     <div className="terminal">

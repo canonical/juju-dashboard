@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 // Components
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
+import Login from "components/LogIn/LogIn";
 
 // Pages
 import Controllers from "pages/Controllers/Controllers";
@@ -17,11 +18,13 @@ function App() {
     <Router>
       <ErrorBoundary>
         <Switch>
-          <Route path="/" exact component={Models} />
-          <Route path="/models/:id" exact component={ModelDetails} />
-          <Route path="/controllers" exact component={Controllers} />
-          <Route path="/usage" exact component={Usage} />
-          <Route path="/logs" exact component={Logs} />
+          <Login>
+            <Route path="/" exact component={Models} />
+            <Route path="/models/*" exact component={ModelDetails} />
+            <Route path="/controllers" exact component={Controllers} />
+            <Route path="/usage" exact component={Usage} />
+            <Route path="/logs" exact component={Logs} />
+          </Login>
           <Route component={NotFound} />
         </Switch>
       </ErrorBoundary>
