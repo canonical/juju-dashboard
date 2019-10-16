@@ -35,7 +35,7 @@ const getModelStatuses = state => {
 const getUserCredentials = state => {
   let storedMacaroons = null;
   if (state.root && state.root.bakery) {
-    storedMacaroons = state.root.bakery.storage._store._items;
+    storedMacaroons = state.root.bakery.storage._store.localStorage;
   }
   return storedMacaroons;
 };
