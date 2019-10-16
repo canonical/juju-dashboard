@@ -13,67 +13,72 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       >
         <div
           className="info-panel__grid-item"
-          key="Model"
         >
           <h4
             className="p-muted-heading"
           >
             Model
           </h4>
-          <p>
-            cdk-default
+          <p
+            data-name="name"
+          >
+            group-test
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Region"
         >
           <h4
             className="p-muted-heading"
           >
             Region
           </h4>
-          <p>
-            us-east-1
+          <p
+            data-name="region"
+          >
+            us-central1
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Controller"
         >
           <h4
             className="p-muted-heading"
           >
             Controller
           </h4>
-          <p>
-            aws-controller
+          <p
+            data-name="controller"
+          >
+            iaas
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Cloud"
         >
           <h4
             className="p-muted-heading"
           >
             Cloud
           </h4>
-          <p>
-            aws
+          <p
+            data-name="cloud"
+          >
+            cloud-google
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="SLA"
         >
           <h4
             className="p-muted-heading"
           >
             SLA
           </h4>
-          <p>
-            Unsupported
+          <p
+            data-name="sla"
+          >
+            unsupported
           </p>
         </div>
       </div>
@@ -2708,67 +2713,72 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       >
         <div
           className="info-panel__grid-item"
-          key="Model"
         >
           <h4
             className="p-muted-heading"
           >
             Model
           </h4>
-          <p>
-            cdk-default
+          <p
+            data-name="name"
+          >
+            frontend-ci
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Region"
         >
           <h4
             className="p-muted-heading"
           >
             Region
           </h4>
-          <p>
-            us-east-1
+          <p
+            data-name="region"
+          >
+            us-east1
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Controller"
         >
           <h4
             className="p-muted-heading"
           >
             Controller
           </h4>
-          <p>
-            aws-controller
+          <p
+            data-name="controller"
+          >
+            iaas
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="Cloud"
         >
           <h4
             className="p-muted-heading"
           >
             Cloud
           </h4>
-          <p>
-            aws
+          <p
+            data-name="cloud"
+          >
+            cloud-google
           </p>
         </div>
         <div
           className="info-panel__grid-item"
-          key="SLA"
         >
           <h4
             className="p-muted-heading"
           >
             SLA
           </h4>
-          <p>
-            Unsupported
+          <p
+            data-name="sla"
+          >
+            unsupported
           </p>
         </div>
       </div>
