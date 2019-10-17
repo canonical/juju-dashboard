@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FilterTags renders without crashing and matches snapshot 1`] = `
+<div
+  className="p-filter-tags"
+>
+  <form
+    action=""
+  >
+    <input
+      className="p-filter-tags__input"
+      placeholder="Filter terms"
+      type="text"
+    />
+  </form>
+</div>
+`;
