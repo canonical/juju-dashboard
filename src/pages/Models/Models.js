@@ -5,7 +5,7 @@ import TableList from "components/TableList/TableList";
 
 export default function Models() {
   return (
-    <Layout sidebar>
+    <Layout>
       <div className="p-strip is-shallow">
         <div className="row">
           <TableList />
