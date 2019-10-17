@@ -1,4 +1,11 @@
-.table-list_error-message {
-  color: red;
-  font-size: 0.5rem;
+.table-list {
+  &_error-message {
+    color: red;
+    font-size: 0.5rem;
+  }
+
+  &_no-models-message {
+    margin: 1rem 0;
+    text-align: center;
+  }
 }
