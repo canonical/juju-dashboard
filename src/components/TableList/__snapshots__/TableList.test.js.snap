@@ -185,7 +185,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   frontend-ci
                 </ForwardRef>
                 <div
-                  className="table-list_error-message"
+                  className="table-list__error-message"
                 >
                   agent is not communicating with the server
                 </div>
@@ -224,7 +224,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   backend-ci
                 </ForwardRef>
                 <div
-                  className="table-list_error-message"
+                  className="table-list__error-message"
                 >
                   agent is not communicating with the server
                 </div>
@@ -373,7 +373,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </LinkAnchor>
                   </Link>
                   <div
-                    className="table-list_error-message"
+                    className="table-list__error-message"
                   >
                     agent is not communicating with the server
                   </div>
@@ -480,7 +480,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </LinkAnchor>
                   </Link>
                   <div
-                    className="table-list_error-message"
+                    className="table-list__error-message"
                   >
                     agent is not communicating with the server
                   </div>
@@ -694,7 +694,7 @@ exports[`TableList displays all data from redux store 1`] = `
     </Table>
   </MainTable>
   <div
-    className="table-list_no-models-message"
+    className="table-list__no-models-message"
   >
     No models currently in this status
   </div>
@@ -748,7 +748,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   group-test
                 </ForwardRef>
                 <div
-                  className="table-list_error-message"
+                  className="table-list__error-message"
                 >
                   
                 </div>
@@ -787,7 +787,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   test1
                 </ForwardRef>
                 <div
-                  className="table-list_error-message"
+                  className="table-list__error-message"
                 >
                   
                 </div>
@@ -826,7 +826,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   test2
                 </ForwardRef>
                 <div
-                  className="table-list_error-message"
+                  className="table-list__error-message"
                 >
                   
                 </div>
@@ -865,7 +865,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   test3
                 </ForwardRef>
                 <div
-                  className="table-list_error-message"
+                  className="table-list__error-message"
                 >
                   
                 </div>
@@ -904,7 +904,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   juju-all-the-things
                 </ForwardRef>
                 <div
-                  className="table-list_error-message"
+                  className="table-list__error-message"
                 >
                   
                 </div>
@@ -943,7 +943,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   data-aggregator
                 </ForwardRef>
                 <div
-                  className="table-list_error-message"
+                  className="table-list__error-message"
                 >
                   
                 </div>
@@ -1092,7 +1092,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </LinkAnchor>
                   </Link>
                   <div
-                    className="table-list_error-message"
+                    className="table-list__error-message"
                   />
                 </td>
               </TableCell>
@@ -1197,7 +1197,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </LinkAnchor>
                   </Link>
                   <div
-                    className="table-list_error-message"
+                    className="table-list__error-message"
                   />
                 </td>
               </TableCell>
@@ -1302,7 +1302,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </LinkAnchor>
                   </Link>
                   <div
-                    className="table-list_error-message"
+                    className="table-list__error-message"
                   />
                 </td>
               </TableCell>
@@ -1407,7 +1407,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </LinkAnchor>
                   </Link>
                   <div
-                    className="table-list_error-message"
+                    className="table-list__error-message"
                   />
                 </td>
               </TableCell>
@@ -1512,7 +1512,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </LinkAnchor>
                   </Link>
                   <div
-                    className="table-list_error-message"
+                    className="table-list__error-message"
                   />
                 </td>
               </TableCell>
@@ -1617,7 +1617,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </LinkAnchor>
                   </Link>
                   <div
-                    className="table-list_error-message"
+                    className="table-list__error-message"
                   />
                 </td>
               </TableCell>
