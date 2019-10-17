@@ -5,7 +5,7 @@ import "./_filter-tags.scss";
 const FilterTags = () => {
   return (
     <div className="p-filter-tags">
-      <form action="">
+      <form>
         <input
           type="text"
           placeholder="Filter terms"

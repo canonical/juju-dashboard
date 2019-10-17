@@ -14,7 +14,7 @@ exports[`Models page renders without crashing and matches snapshot 1`] = `
       <Button />
       <FilterTags />
       <i
-        class="p-icon--user"
+        className="p-icon--user"
       >
         Account icon
       </i>

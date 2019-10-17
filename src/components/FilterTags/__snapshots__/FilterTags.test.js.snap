@@ -4,9 +4,7 @@ exports[`FilterTags renders without crashing and matches snapshot 1`] = `
 <div
   className="p-filter-tags"
 >
-  <form
-    action=""
-  >
+  <form>
     <input
       className="p-filter-tags__input"
       placeholder="Filter terms"
