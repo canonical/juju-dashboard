@@ -11,7 +11,7 @@ exports[`Models page renders without crashing and matches snapshot 1`] = `
       >
         258 models: 4 blocked, 1 alert, 253 running
       </div>
-      <Button />
+      <ButtonToggle />
       <FilterTags />
       <i
         className="p-icon--user"
