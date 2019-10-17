@@ -155,7 +155,7 @@ const ModelDetails = () => {
   );
 
   return (
-    <Layout sidebar={false}>
+    <Layout>
       <div className="model-details">
         <InfoPanel />
         <div className="model-details__main">

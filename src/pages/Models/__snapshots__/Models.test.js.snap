@@ -1,9 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Models page renders without crashing and matches snapshot 1`] = `
-<Layout
-  sidebar={true}
->
+<Layout>
+  <Header>
+    <div
+      className="models__header"
+    >
+      <div
+        className="models__count"
+      >
+        258 models: 4 blocked, 1 alert, 253 running
+      </div>
+      <ButtonToggle />
+      <FilterTags />
+      <i
+        className="p-icon--user"
+      >
+        Account icon
+      </i>
+    </div>
+  </Header>
   <div
     className="p-strip is-shallow"
   >
