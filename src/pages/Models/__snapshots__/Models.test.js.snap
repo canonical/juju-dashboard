@@ -2,6 +2,24 @@
 
 exports[`Models page renders without crashing and matches snapshot 1`] = `
 <Layout>
+  <Header>
+    <div
+      className="models__header"
+    >
+      <div
+        className="models__count"
+      >
+        258 models: 4 blocked, 1 alert, 253 running
+      </div>
+      <Button />
+      <FilterTags />
+      <i
+        class="p-icon--user"
+      >
+        Account icon
+      </i>
+    </div>
+  </Header>
   <div
     className="p-strip is-shallow"
   >

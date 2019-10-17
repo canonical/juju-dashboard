@@ -1,0 +1,12 @@
+.models {
+  &__count {
+    font-size: 0.875rem;
+    padding: 0 1.5rem;
+  }
+
+  &__header {
+    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 3rem;
+  }
+}
