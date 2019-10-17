@@ -693,6 +693,11 @@ exports[`TableList displays all data from redux store 1`] = `
       </table>
     </Table>
   </MainTable>
+  <div
+    className="table-list_no-models-message"
+  >
+    No models currently in this status
+  </div>
   <MainTable
     className="u-table-layout--auto"
     headers={
