@@ -155,6 +155,17 @@ function generateTableHeaders(label) {
   ];
 }
 
+function renderNoDataMessage(modelData) {
+  if (modelData.length === 0) {
+    return (
+      <div className="table-list_no-models-message">
+        No models currently in this status
+      </div>
+    );
+  }
+  return null;
+}
+
 function TableList() {
   const {
     blockedModelData,
@@ -168,16 +179,19 @@ function TableList() {
         headers={generateTableHeaders("Blocked")}
         rows={blockedModelData}
       />
+      {renderNoDataMessage(blockedModelData)}
       <MainTable
         className={"u-table-layout--auto"}
         headers={generateTableHeaders("Attention")}
         rows={attentionModelData}
       />
+      {renderNoDataMessage(attentionModelData)}
       <MainTable
         className={"u-table-layout--auto"}
         headers={generateTableHeaders("Running")}
         rows={runningModelData}
       />
+      {renderNoDataMessage(runningModelData)}
     </>
   );
 }
