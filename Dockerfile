@@ -11,7 +11,7 @@ RUN test -n "${REVISION_ID}"
 
 # Copy over files
 WORKDIR /srv
-ADD _site .
+ADD build .
 ADD nginx.conf /etc/nginx/sites-enabled/default
 RUN sed -i "s/~REVISION_ID~/${REVISION_ID}/" /etc/nginx/sites-enabled/default
 
