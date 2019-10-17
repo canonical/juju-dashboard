@@ -2,7 +2,6 @@
   "name": "jaas-dashboard",
   "version": "0.0.1",
   "description": "A dashboard for JAAS (Juju as a service)",
-  "homepage": "https://github.com/canonical-web-and-design/jaas-dashboard#readme",
   "bugs": {
     "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
   },
