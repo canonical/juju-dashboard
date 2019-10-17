@@ -1,0 +1,39 @@
+@import "vanilla-framework/scss/settings_colors";
+
+.p-button-toggle {
+  align-items: center;
+  column-gap: 1rem;
+  display: grid;
+  font-size: 0.875rem;
+  grid-template-columns: 0.25fr 0.75fr;
+  padding: 0.25rem;
+
+  &__label {
+    display: inline-block;
+    text-align: right;
+  }
+
+  &__buttons {
+    border: 1px solid $color-mid-light;
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &__button {
+    border: none;
+    border-right: 1px solid $color-mid-light;
+    font-size: 0.875rem;
+    margin: 0 !important; // Required to override Vanilla button:not(:last-of-type):not(:only-of-type)
+    padding: 0 0.25rem;
+    text-align: center;
+
+    &.is-selected {
+      background: $color-mid-x-light;
+    }
+
+    &:last-child {
+      border: 0;
+    }
+  }
+}
