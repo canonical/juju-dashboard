@@ -41,7 +41,7 @@ function generateModelTableData(state) {
       return (
         <>
           {link}
-          <div className="table-list_error-message">{why}</div>
+          <div className="table-list__error-message">{why}</div>
         </>
       );
     };
@@ -158,7 +158,7 @@ function generateTableHeaders(label) {
 function renderNoDataMessage(modelData) {
   if (modelData.length === 0) {
     return (
-      <div className="table-list_no-models-message">
+      <div className="table-list__no-models-message">
         No models currently in this status
       </div>
     );
