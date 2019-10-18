@@ -14,6 +14,7 @@ WORKDIR /srv
 ADD build .
 ADD nginx.conf /etc/nginx/sites-enabled/default
 RUN sed -i "s/~REVISION_ID~/${REVISION_ID}/" /etc/nginx/sites-enabled/default
+RUN sed -i "s/8036/80/" /etc/nginx/sites-enabled/default
 
 STOPSIGNAL SIGTERM
 
