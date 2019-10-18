@@ -4,6 +4,9 @@ $color-navigation-highlight: #044f66;
 $color-navigation-accent: #3fc8f2;
 
 .p-primary-nav {
+  position: sticky;
+  top: 0;
+
   a,
   a:hover {
     color: $color-light;
@@ -33,7 +36,6 @@ $color-navigation-accent: #3fc8f2;
 
   .p-list__item {
     border-left: 3px solid transparent;
-    margin-right: -0.5rem;
 
     &:hover {
       background-color: $color-navigation-highlight;
