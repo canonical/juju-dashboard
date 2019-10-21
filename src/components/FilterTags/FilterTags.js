@@ -7,7 +7,7 @@ const FilterTags = () => {
   const [filterPanel, setFilterPanel] = useState(false);
   const node = useRef();
 
-  const handleClick = e => {
+  const mouseDown = e => {
     // Check if click is outside of filter panel
     if (!node.current.contains(e.target)) {
       // If so, close the panel
@@ -15,12 +15,22 @@ const FilterTags = () => {
     }
   };
 
+  const keyDown = e => {
+    if (e.keyCode === 27) {
+      // Close panel if Esc keydown detected
+      setFilterPanel(false);
+    }
+  };
+
   useEffect(() => {
     // Add listener on document to capture click events
-    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("mousedown", mouseDown);
+    // Add listener on document to capture keydown events
+    document.addEventListener("keydown", keyDown);
     // return function to be called when unmounted
     return () => {
-      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("mousedown", mouseDown);
+      document.removeEventListener("keydown", keyDown);
     };
   }, []);
 
