@@ -1,3 +1,5 @@
+@import "vanilla-framework/scss/settings_colors";
+
 .p-filter-tags {
   padding: 0.75rem;
 
@@ -5,5 +7,34 @@
     font-size: 0.875rem;
     margin: 0;
     padding: 0.25rem 0.5rem;
+  }
+}
+
+.p-filter-panel {
+  margin-top: 0.5rem;
+
+  &__heading {
+    border-bottom: 1px solid $color-mid-x-light;
+    color: $color-mid-dark;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  &__list {
+    margin-bottom: 0.5rem;
+  }
+
+  &__item {
+    border: 1px solid #999;
+    border-radius: 5px;
+    color: $color-mid-dark;
+    display: inline-block;
+    font-size: 0.875rem;
+    margin-right: 0.5rem;
+    padding: 0 0.5rem;
+
+    &.is-selected {
+      background-color: $color-mid-x-light;
+    }
   }
 }
