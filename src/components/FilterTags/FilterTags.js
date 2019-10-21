@@ -1,18 +1,44 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+import classNames from "classnames";
 
 import "./_filter-tags.scss";
 
 const FilterTags = () => {
+  const [filterPanel, setFilterPanel] = useState(false);
+  const node = useRef();
+
+  const handleClick = e => {
+    // Check if click is outside of filter panel
+    if (!node.current.contains(e.target)) {
+      // If so, close the panel
+      setFilterPanel(false);
+    }
+  };
+
+  useEffect(() => {
+    // Add listener on document to capture click events
+    document.addEventListener("mousedown", handleClick);
+    // return function to be called when unmounted
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, []);
+
   return (
-    <div className="p-filter-tags">
+    <div className="p-filter-tags" ref={node}>
       <form>
         <input
           type="text"
-          placeholder="Filter terms"
+          placeHolder="Filter terms"
           className="p-filter-tags__input"
+          onFocus={() => setFilterPanel(true)}
         />
       </form>
-      <div className="p-card--highlighted p-filter-panel">
+      <div
+        className={classNames("p-card--highlighted p-filter-panel", {
+          "is-visible": filterPanel
+        })}
+      >
         <div className="p-filter-panel__section">
           <h4 className="p-filter-panel__heading">Owner</h4>
           <ul className="p-list p-filter-panel__list">
