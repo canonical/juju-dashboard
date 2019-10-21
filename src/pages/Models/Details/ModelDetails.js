@@ -7,6 +7,7 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import MainTable from "components/MainTable/MainTable";
 import Terminal from "components/Terminal/Terminal";
+import Header from "components/Header/Header";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
@@ -156,13 +157,19 @@ const ModelDetails = () => {
 
   return (
     <Layout>
-      <div className="model-details">
-        <InfoPanel />
-        <div className="model-details__main">
+      <Header>
+        <div className="model-details__header">
+          <strong>{modelStatusData ? modelStatusData.model.name : ""}</strong>
           <div className="model-details__filters">
             <Filter label="View" filters={viewFilters} />
             <Filter label="Status" filters={statusFilters} />
           </div>
+          <i className="p-icon--user">Account icon</i>
+        </div>
+      </Header>
+      <div className="model-details">
+        <InfoPanel />
+        <div className="model-details__main">
           <MainTable
             headers={applicationTableHeaders}
             rows={applicationTableRows}

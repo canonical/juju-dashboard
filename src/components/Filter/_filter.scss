@@ -1,12 +1,19 @@
 @import "vanilla-framework/scss/settings_colors";
 
 .p-filter {
+  font-size: 0.875rem;
+
   &__label {
     color: $color-mid-dark;
+    margin-right: 1rem;
   }
 
   &__label,
   &__item {
-    margin-right: 0.5rem;
+    margin-right: 0.25rem;
+  }
+
+  & + & {
+    padding-left: 1rem;
   }
 }

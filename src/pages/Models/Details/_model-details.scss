@@ -3,12 +3,19 @@
   grid-template-columns: 350px 1fr;
   min-height: calc(100vh - 48px); // header is 48px high.
 
-  &__filters {
+  &__header {
+    align-items: center;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.5fr 3fr 3rem;
+    padding-left: 1rem;
   }
 
   &__main {
     padding-top: 1rem;
+  }
+
+  &__filters {
+    display: flex;
+    margin-left: auto;
   }
 }
