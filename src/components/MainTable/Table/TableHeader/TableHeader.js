@@ -3,7 +3,7 @@ import React from "react";
 
 const TableHeader = ({ children, sort, ...props }) => {
   return (
-    <th role="columnheader" aria-sort={sort} {...props}>
+    <th aria-sort={sort} {...props}>
       {children}
     </th>
   );
