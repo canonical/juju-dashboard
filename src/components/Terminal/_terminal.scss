@@ -1,17 +1,47 @@
+@import "vanilla-framework/scss/settings_colors";
 @import "xterm/css/xterm";
 
-.terminal {
-  background-color: black;
+$terminal-shell-height: 10rem;
+$terminal-header-height: 40px;
+
+.p-terminal {
+  background-color: $color-x-dark;
   bottom: 0;
-  color: white;
+  color: $color-x-light;
   position: absolute;
+  transform: translateY(160px);
+  transition: transform 0.25s ease-in-out;
   width: 100%;
 
-  &-header {
-    height: 1.5rem;
+  &.is-visible {
+    transform: translateY(0);
   }
 
-  &-shell {
-    height: 10rem;
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr 3rem;
+    height: 40px;
+    padding: 0.5rem;
+  }
+
+  &__toggle {
+    border: 0;
+    margin-right: 0.5rem;
+    transform: rotate(180deg);
+
+    .is-visible & {
+      transform: rotate(0);
+      transition: transform 0.25s ease-in-out;
+    }
+
+    &,
+    &:hover,
+    &:focus {
+      background: none;
+    }
+  }
+
+  &__shell {
+    height: $terminal-shell-height;
   }
 }
