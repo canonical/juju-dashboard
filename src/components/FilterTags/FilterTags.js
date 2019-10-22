@@ -4,21 +4,21 @@ import classNames from "classnames";
 import "./_filter-tags.scss";
 
 const FilterTags = () => {
-  const [filterPanel, setFilterPanel] = useState(false);
+  const [filterPanelVisibility, setfilterPanelVisibility] = useState(false);
   const node = useRef();
 
   const mouseDown = e => {
     // Check if click is outside of filter panel
     if (!node.current.contains(e.target)) {
       // If so, close the panel
-      setFilterPanel(false);
+      setfilterPanelVisibility(false);
     }
   };
 
   const keyDown = e => {
     if (e.keyCode === 27) {
       // Close panel if Esc keydown detected
-      setFilterPanel(false);
+      setfilterPanelVisibility(false);
     }
   };
 
@@ -41,12 +41,12 @@ const FilterTags = () => {
           type="text"
           placeHolder="Filter terms"
           className="p-filter-tags__input"
-          onFocus={() => setFilterPanel(true)}
+          onFocus={() => setfilterPanelVisibility(true)}
         />
       </form>
       <div
         className={classNames("p-card--highlighted p-filter-panel", {
-          "is-visible": filterPanel
+          "is-visible": filterPanelVisibility
         })}
       >
         <div className="p-filter-panel__section">
