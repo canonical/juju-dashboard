@@ -66,13 +66,13 @@ $color-navigation-accent: #3fc8f2;
     margin-bottom: 0.5rem;
     max-height: 0;
     overflow: hidden;
-    padding-bottom: 0.5rem;
     transition: max-height 0.25s ease-in-out;
   }
 
   &.ext-nav-open {
     .is-external {
       max-height: 200px;
+      padding-bottom: 0.5rem;
     }
 
     .p-primary-nav__toggle {
