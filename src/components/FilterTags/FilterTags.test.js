@@ -7,7 +7,6 @@ describe("FilterTags", () => {
   it("renders without crashing and matches snapshot", () => {
     const wrapper = shallow(<FilterTags />);
     expect(wrapper.find(".p-filter-tags")).toMatchSnapshot();
-    expect(wrapper.find(".p-filter-panel")).toMatchSnapshot();
   });
 
   it("displays the filter panel when input focused", () => {
