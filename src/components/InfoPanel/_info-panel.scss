@@ -5,12 +5,19 @@
   margin-right: 1rem;
   padding: 1rem;
 
+  &__pictogram {
+    background: $color-light;
+    border: solid 1px $color-mid-x-light;
+    margin-bottom: 1rem;
+  }
+
   &__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
 
   .p-muted-heading {
+    font-size: 0.75rem;
     margin-bottom: 0.25rem;
   }
 }
