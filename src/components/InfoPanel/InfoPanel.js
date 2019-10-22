@@ -20,12 +20,6 @@ const InfoPanel = () => {
     <div className="info-panel">
       <div className="info-panel__grid">
         <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Model</h4>
-          <p data-name="name">
-            {modelStatusData ? modelStatusData.model.name : ""}
-          </p>
-        </div>
-        <div className="info-panel__grid-item">
           <h4 className="p-muted-heading">Region</h4>
           <p data-name="region">
             {modelStatusData ? modelStatusData.model.region : ""}
