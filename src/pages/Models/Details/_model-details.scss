@@ -1,3 +1,5 @@
+@import "vanilla-framework/scss/settings_colors";
+
 .model-details {
   display: grid;
   grid-template-columns: 350px 1fr;
@@ -17,5 +19,17 @@
   &__filters {
     display: flex;
     margin-left: auto;
+  }
+
+  .p-table--sortable {
+    margin-bottom: 2rem;
+
+    &:last-child {
+      margin-bottom: 1rem;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid $color-mid-x-light;
+    }
   }
 }
