@@ -33,6 +33,13 @@
       margin-bottom: 1rem;
     }
 
+    td,
+    th {
+      &:first-child {
+        padding-left: 0.5rem;
+      }
+    }
+
     tbody tr {
       border-bottom: 1px solid $color-mid-x-light;
 
