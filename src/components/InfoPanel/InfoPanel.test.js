@@ -36,8 +36,8 @@ describe("Info Panel", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find('[data-name="name"]').text()).toStrictEqual(
-      "group-test"
+    expect(wrapper.find('[data-name="controller"]').text()).toStrictEqual(
+      "iaas"
     );
   });
 });

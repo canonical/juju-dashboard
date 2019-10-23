@@ -9,36 +9,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       className="info-panel"
     >
       <div
+        className="info-panel__pictogram"
+      >
+        <img
+          alt=""
+          src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+        />
+      </div>
+      <div
         className="info-panel__grid"
       >
-        <div
-          className="info-panel__grid-item"
-        >
-          <h4
-            className="p-muted-heading"
-          >
-            Model
-          </h4>
-          <p
-            data-name="name"
-          >
-            group-test
-          </p>
-        </div>
-        <div
-          className="info-panel__grid-item"
-        >
-          <h4
-            className="p-muted-heading"
-          >
-            Region
-          </h4>
-          <p
-            data-name="region"
-          >
-            us-central1
-          </p>
-        </div>
         <div
           className="info-panel__grid-item"
         >
@@ -59,12 +39,28 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           <h4
             className="p-muted-heading"
           >
-            Cloud
+            Cloud/Region
           </h4>
           <p
-            data-name="cloud"
+            data-name="cloud-region"
           >
-            cloud-google
+            google
+            /
+            us-central1
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Version
+          </h4>
+          <p
+            data-name="version"
+          >
+            2.5.4
           </p>
         </div>
         <div
@@ -82,10 +78,6 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           </p>
         </div>
       </div>
-      <img
-        alt=""
-        src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
-      />
     </div>
   </InfoPanel>
   <div
@@ -2469,36 +2461,16 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       className="info-panel"
     >
       <div
+        className="info-panel__pictogram"
+      >
+        <img
+          alt=""
+          src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+        />
+      </div>
+      <div
         className="info-panel__grid"
       >
-        <div
-          className="info-panel__grid-item"
-        >
-          <h4
-            className="p-muted-heading"
-          >
-            Model
-          </h4>
-          <p
-            data-name="name"
-          >
-            frontend-ci
-          </p>
-        </div>
-        <div
-          className="info-panel__grid-item"
-        >
-          <h4
-            className="p-muted-heading"
-          >
-            Region
-          </h4>
-          <p
-            data-name="region"
-          >
-            us-east1
-          </p>
-        </div>
         <div
           className="info-panel__grid-item"
         >
@@ -2519,12 +2491,28 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           <h4
             className="p-muted-heading"
           >
-            Cloud
+            Cloud/Region
           </h4>
           <p
-            data-name="cloud"
+            data-name="cloud-region"
           >
-            cloud-google
+            google
+            /
+            us-east1
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Version
+          </h4>
+          <p
+            data-name="version"
+          >
+            2.4.7
           </p>
         </div>
         <div
@@ -2542,10 +2530,6 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           </p>
         </div>
       </div>
-      <img
-        alt=""
-        src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
-      />
     </div>
   </InfoPanel>
   <div

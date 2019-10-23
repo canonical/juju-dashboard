@@ -5,36 +5,16 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
   className="info-panel"
 >
   <div
+    className="info-panel__pictogram"
+  >
+    <img
+      alt=""
+      src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+    />
+  </div>
+  <div
     className="info-panel__grid"
   >
-    <div
-      className="info-panel__grid-item"
-    >
-      <h4
-        className="p-muted-heading"
-      >
-        Model
-      </h4>
-      <p
-        data-name="name"
-      >
-        group-test
-      </p>
-    </div>
-    <div
-      className="info-panel__grid-item"
-    >
-      <h4
-        className="p-muted-heading"
-      >
-        Region
-      </h4>
-      <p
-        data-name="region"
-      >
-        us-central1
-      </p>
-    </div>
     <div
       className="info-panel__grid-item"
     >
@@ -55,12 +35,28 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
       <h4
         className="p-muted-heading"
       >
-        Cloud
+        Cloud/Region
       </h4>
       <p
-        data-name="cloud"
+        data-name="cloud-region"
       >
-        cloud-google
+        google
+        /
+        us-central1
+      </p>
+    </div>
+    <div
+      className="info-panel__grid-item"
+    >
+      <h4
+        className="p-muted-heading"
+      >
+        Version
+      </h4>
+      <p
+        data-name="version"
+      >
+        2.5.4
       </p>
     </div>
     <div
@@ -78,9 +74,5 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
       </p>
     </div>
   </div>
-  <img
-    alt=""
-    src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
-  />
 </div>
 `;
