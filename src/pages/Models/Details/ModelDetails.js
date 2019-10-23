@@ -56,7 +56,10 @@ const assignStatusIcon = status => {
     default:
       return <span className="model-details__status">{status}</span>;
   }
-};
+const assignStatusIcon = status => {
+  let statusClass = status ? `is-${status}` : "";
+  return <span className="model-details__status {statusClass}">{status}</span>;
+}
 
 // Temp function to add link to <td> values
 const wrapLink = (href, text) => {
