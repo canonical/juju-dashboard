@@ -146,6 +146,11 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
                   href="/"
                   onClick={[Function]}
                 >
+                  <img
+                    alt="Models icon"
+                    className="p-list__icon"
+                    src="https://assets.ubuntu.com/v1/51642f58-models.svg"
+                  />
                   Models
                 </a>
               </LinkAnchor>
@@ -169,6 +174,11 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
                   href="/controllers"
                   onClick={[Function]}
                 >
+                  <img
+                    alt="Controllers icon"
+                    className="p-list__icon"
+                    src="https://assets.ubuntu.com/v1/8414b187-controllers.svg"
+                  />
                   Controllers
                 </a>
               </LinkAnchor>
@@ -192,6 +202,11 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
                   href="/usage"
                   onClick={[Function]}
                 >
+                  <img
+                    alt="Usage icon"
+                    className="p-list__icon"
+                    src="https://assets.ubuntu.com/v1/1b1d07ae-usage.svg"
+                  />
                   Usage
                 </a>
               </LinkAnchor>
@@ -215,6 +230,11 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
                   href="/logs"
                   onClick={[Function]}
                 >
+                  <img
+                    alt="Logs icon"
+                    className="p-list__icon"
+                    src="https://assets.ubuntu.com/v1/741097ff-logs.svg"
+                  />
                   Logs
                 </a>
               </LinkAnchor>

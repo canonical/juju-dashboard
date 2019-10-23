@@ -1,25 +1,37 @@
 @import "vanilla-framework/scss/settings_colors";
 
-$color-navigation-highlight: #044f66;
+$color-navigation-dark: #002835;
+$color-navigation-highlight: #004e68;
 $color-navigation-accent: #3fc8f2;
 
 .p-primary-nav {
+  position: sticky;
+  top: 0;
+
   a,
   a:hover {
     color: $color-light;
     text-decoration: none;
   }
 
+  &__logo {
+    max-width: 110px;
+    padding: 0.5rem 0.5rem 0;
+    width: 100%;
+  }
+
   &__header {
+    background: $color-navigation-dark;
     display: grid;
     grid-template-columns: 1fr 40px;
-    margin-bottom: -1rem;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem 0;
   }
 
   &__toggle {
     background: none;
     border: 0;
+    margin: 0;
+    padding: 0;
     transition: transform 0.25s ease-in-out;
 
     &:hover {
@@ -33,7 +45,6 @@ $color-navigation-accent: #3fc8f2;
 
   .p-list__item {
     border-left: 3px solid transparent;
-    margin-right: -0.5rem;
 
     &:hover {
       background-color: $color-navigation-highlight;
@@ -46,12 +57,19 @@ $color-navigation-accent: #3fc8f2;
 
     .p-list__link {
       display: block;
-      padding-left: calc(2.5rem - 3px);
+      padding-left: calc(1.25rem - 3px);
+    }
+
+    .p-list__icon {
+      padding-right: 1.25rem;
+      position: relative;
+      top: 0.2rem;
     }
   }
 
   .is-external {
-    margin-bottom: 0.25rem;
+    background: $color-navigation-dark;
+    margin-bottom: 0.5rem;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.25s ease-in-out;
@@ -60,6 +78,7 @@ $color-navigation-accent: #3fc8f2;
   &.ext-nav-open {
     .is-external {
       max-height: 200px;
+      padding-bottom: 0.5rem;
     }
 
     .p-primary-nav__toggle {
