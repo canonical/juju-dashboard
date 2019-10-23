@@ -43,6 +43,10 @@ $terminal-header-height: 40px;
   }
 }
 
+.xterm-screen {
+  margin: 0.5rem;
+}
+
 .xterm-viewport::-webkit-scrollbar {
   background: $color-dark;
 }
