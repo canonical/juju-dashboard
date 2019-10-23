@@ -45,3 +45,7 @@ $terminal-header-height: 40px;
     height: $terminal-shell-height;
   }
 }
+
+.xterm-viewport::-webkit-scrollbar {
+  background: $color-dark;
+}
