@@ -43,18 +43,35 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
+const assignStatusIcon = status => {
+  switch (status) {
+    case "error":
+      return <span className="model-details__status is-error">{status}</span>;
+    case "active":
+      return <span className="model-details__status is-active">{status}</span>;
+    case "maintenance":
+      return (
+        <span className="model-details__status is-maintenance">{status}</span>
+      );
+    default:
+      return <span className="model-details__status">{status}</span>;
+  }
+};
+
 const generateApplicationRows = modelStatusData => {
   if (!modelStatusData) {
     return [];
   }
 
   const applications = modelStatusData.applications;
+
   return Object.keys(applications).map(key => {
     const app = applications[key];
+
     return {
       columns: [
         { content: key },
-        { content: app.status ? app.status.status : "-" },
+        { content: app.status ? assignStatusIcon(app.status.status) : "-" },
         { content: "-" },
         { content: "CharmHub" },
         { content: key.split("-")[-1] },
@@ -80,7 +97,7 @@ const generateUnitRows = modelStatusData => {
       unitRows.push({
         columns: [
           { content: unitId },
-          { content: unit.workloadStatus.status },
+          { content: assignStatusIcon(unit.workloadStatus.status) },
           { content: unit.agentStatus.status },
           { content: unit.machine },
           { content: unit.publicAddress },
