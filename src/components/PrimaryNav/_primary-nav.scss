@@ -73,6 +73,10 @@ $color-navigation-accent: #3fc8f2;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.25s ease-in-out;
+
+    .p-list__link {
+      padding-left: calc(3.5rem - 3px);
+    }
   }
 
   &.ext-nav-open {
