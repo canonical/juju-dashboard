@@ -1,5 +1,6 @@
 /**
- * This is a function.
+ * splitStr
+ * Split strings on a given character
  *
  * @param {string} str - A string param
  * @param {string} character on which to split string
