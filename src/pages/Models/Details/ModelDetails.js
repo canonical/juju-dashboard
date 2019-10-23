@@ -59,6 +59,7 @@ const generateApplicationRows = modelStatusData => {
         { content: "CharmHub" },
         { content: key.split("-")[-1] },
         { content: "-" },
+        { content: "-" },
         { content: "-" }
       ]
     };
