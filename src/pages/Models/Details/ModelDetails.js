@@ -58,6 +58,11 @@ const assignStatusIcon = status => {
   }
 };
 
+// Temp function to add link to <td> values
+const wrapLink = (href, text) => {
+  return <a href={href}>{text}</a>;
+};
+
 const generateApplicationRows = modelStatusData => {
   if (!modelStatusData) {
     return [];
@@ -70,7 +75,7 @@ const generateApplicationRows = modelStatusData => {
 
     return {
       columns: [
-        { content: key },
+        { content: wrapLink("#", key) },
         { content: app.status ? assignStatusIcon(app.status.status) : "-" },
         { content: "-" },
         { content: "CharmHub" },
@@ -96,7 +101,7 @@ const generateUnitRows = modelStatusData => {
       const unit = units[unitId];
       unitRows.push({
         columns: [
-          { content: unitId },
+          { content: wrapLink("#", unitId) },
           { content: assignStatusIcon(unit.workloadStatus.status) },
           { content: unit.agentStatus.status },
           { content: unit.machine },

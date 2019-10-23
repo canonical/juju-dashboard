@@ -119,7 +119,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "easyrsa",
+                "content": <a
+                  href="#"
+                >
+                  easyrsa
+                </a>,
               },
               Object {
                 "content": <span
@@ -151,7 +155,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "elasticsearch",
+                "content": <a
+                  href="#"
+                >
+                  elasticsearch
+                </a>,
               },
               Object {
                 "content": <span
@@ -183,7 +191,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "etcd",
+                "content": <a
+                  href="#"
+                >
+                  etcd
+                </a>,
               },
               Object {
                 "content": <span
@@ -215,7 +227,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "flannel",
+                "content": <a
+                  href="#"
+                >
+                  flannel
+                </a>,
               },
               Object {
                 "content": <span
@@ -247,7 +263,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kibana",
+                "content": <a
+                  href="#"
+                >
+                  kibana
+                </a>,
               },
               Object {
                 "content": <span
@@ -279,7 +299,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubeapi-load-balancer",
+                "content": <a
+                  href="#"
+                >
+                  kubeapi-load-balancer
+                </a>,
               },
               Object {
                 "content": <span
@@ -311,7 +335,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubernetes-master",
+                "content": <a
+                  href="#"
+                >
+                  kubernetes-master
+                </a>,
               },
               Object {
                 "content": <span
@@ -343,7 +371,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubernetes-worker",
+                "content": <a
+                  href="#"
+                >
+                  kubernetes-worker
+                </a>,
               },
               Object {
                 "content": <span
@@ -375,7 +407,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "rsyslog",
+                "content": <a
+                  href="#"
+                >
+                  rsyslog
+                </a>,
               },
               Object {
                 "content": <span
@@ -517,7 +553,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    easyrsa
+                    <a
+                      href="#"
+                    >
+                      easyrsa
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -605,7 +645,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    elasticsearch
+                    <a
+                      href="#"
+                    >
+                      elasticsearch
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -693,7 +737,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    etcd
+                    <a
+                      href="#"
+                    >
+                      etcd
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -781,7 +829,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    flannel
+                    <a
+                      href="#"
+                    >
+                      flannel
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -869,7 +921,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kibana
+                    <a
+                      href="#"
+                    >
+                      kibana
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -957,7 +1013,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubeapi-load-balancer
+                    <a
+                      href="#"
+                    >
+                      kubeapi-load-balancer
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1045,7 +1105,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubernetes-master
+                    <a
+                      href="#"
+                    >
+                      kubernetes-master
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1133,7 +1197,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubernetes-worker
+                    <a
+                      href="#"
+                    >
+                      kubernetes-worker
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1221,7 +1289,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    rsyslog
+                    <a
+                      href="#"
+                    >
+                      rsyslog
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -2760,7 +2832,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           Object {
             "columns": Array [
               Object {
-                "content": "jenkins",
+                "content": <a
+                  href="#"
+                >
+                  jenkins
+                </a>,
               },
               Object {
                 "content": <span
@@ -2902,7 +2978,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                     className=""
                     role="gridcell"
                   >
-                    jenkins
+                    <a
+                      href="#"
+                    >
+                      jenkins
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -3014,7 +3094,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           Object {
             "columns": Array [
               Object {
-                "content": "jenkins/2",
+                "content": <a
+                  href="#"
+                >
+                  jenkins/2
+                </a>,
               },
               Object {
                 "content": <span
@@ -3139,7 +3223,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                     className=""
                     role="gridcell"
                   >
-                    jenkins/2
+                    <a
+                      href="#"
+                    >
+                      jenkins/2
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
