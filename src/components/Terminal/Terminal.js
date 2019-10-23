@@ -32,14 +32,14 @@ const Terminal = ({ address, modelName }) => {
         "is-visible": terminalVisible
       })}
     >
-      <div className="p-terminal__header">
+      <div
+        className="p-terminal__header"
+        onClick={() => setTerminalVisible(!terminalVisible)}
+      >
         <span>Juju Terminal</span>
-        <button
-          className="p-terminal__toggle"
-          onClick={() => setTerminalVisible(!terminalVisible)}
-        >
+        <div className="p-terminal__toggle">
           <i className="p-icon--contextual-menu">Toggle Terminal visibility</i>
-        </button>
+        </div>
       </div>
       <div className="p-terminal__shell" ref={terminalElement}></div>
     </div>
