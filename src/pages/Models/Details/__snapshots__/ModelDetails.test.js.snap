@@ -139,6 +139,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": "-",
               },
+              Object {
+                "content": "-",
+              },
             ],
           },
           Object {
@@ -157,6 +160,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -189,6 +195,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": "-",
               },
+              Object {
+                "content": "-",
+              },
             ],
           },
           Object {
@@ -207,6 +216,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -239,6 +251,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": "-",
               },
+              Object {
+                "content": "-",
+              },
             ],
           },
           Object {
@@ -257,6 +272,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -289,6 +307,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": "-",
               },
+              Object {
+                "content": "-",
+              },
             ],
           },
           Object {
@@ -314,6 +335,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": "-",
               },
+              Object {
+                "content": "-",
+              },
             ],
           },
           Object {
@@ -332,6 +356,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -515,6 +542,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     -
                   </td>
                 </TableCell>
+                <TableCell
+                  key="7"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
               </tr>
             </TableRow>
             <TableRow
@@ -581,6 +618,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -663,6 +710,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     -
                   </td>
                 </TableCell>
+                <TableCell
+                  key="7"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
               </tr>
             </TableRow>
             <TableRow
@@ -729,6 +786,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -811,6 +878,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     -
                   </td>
                 </TableCell>
+                <TableCell
+                  key="7"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
               </tr>
             </TableRow>
             <TableRow
@@ -877,6 +954,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -959,6 +1046,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     -
                   </td>
                 </TableCell>
+                <TableCell
+                  key="7"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
               </tr>
             </TableRow>
             <TableRow
@@ -1033,6 +1130,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     -
                   </td>
                 </TableCell>
+                <TableCell
+                  key="7"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
               </tr>
             </TableRow>
             <TableRow
@@ -1099,6 +1206,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -2591,6 +2708,9 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
               Object {
                 "content": "-",
               },
+              Object {
+                "content": "-",
+              },
             ],
           },
         ]
@@ -2759,6 +2879,16 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
