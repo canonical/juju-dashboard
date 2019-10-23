@@ -105,6 +105,92 @@ const getModelStatusByUUID = (modelUUID, modelStatuses) => {
   return null;
 };
 
+// Highest status to the right
+const statusOrder = ["running", "alert", "blocked"];
+
+/**
+  Returns a grouped collection of model statuses.
+  @param {Object} modelStatuses
+  @returns {Function} The grouped model statuses.
+*/
+const groupModelStatuses = modelStatuses => {
+  const grouped = {
+    blocked: [],
+    alert: [],
+    running: []
+  };
+  if (!modelStatuses) {
+    return grouped;
+  }
+  for (let modelUUID in modelStatuses) {
+    const model = modelStatuses[modelUUID];
+    let highestStatus = "running";
+    Object.keys(model.applications).forEach(appName => {
+      const app = model.applications[appName];
+      const appStatus = getApplicationStatusGroup(app);
+      if (statusOrder.indexOf(appStatus) > statusOrder.indexOf(highestStatus)) {
+        highestStatus = appStatus;
+      }
+      if (highestStatus === statusOrder[-1]) {
+        // If it's the highest status then we don't need to continue looping
+        // applications or units.
+        return;
+      }
+      Object.keys(app.units).forEach(unitId => {
+        const unit = app.units[unitId];
+        const unitStatus = getUnitStatusGroup(unit);
+        if (unitStatus === "blocked") {
+          grouped.blocked.push(model);
+          return;
+        }
+      });
+    });
+    grouped[highestStatus].push(model);
+  }
+  return grouped;
+};
+
+/**
+  Returns the string status for the application.
+  @param {Object} application The application to check the status of.
+  @returns {String} The status of the application.
+*/
+const getApplicationStatusGroup = application => {
+  // Possible "blocked" or error states in application statuses.
+  const blocked = ["blocked"];
+  // Possible "alert" states in application statuses.
+  const alert = ["unknown"];
+  const status = application.status.status;
+  if (blocked.includes(status)) {
+    return "blocked";
+  }
+  if (alert.includes(status)) {
+    return "alert";
+  }
+  return "running";
+};
+
+/**
+  Returns the string status for the unit.
+  @param {Object} unit The unit to check the status of.
+  @returns {String} The status of the unit.
+*/
+const getUnitStatusGroup = unit => {};
+
+/**
+  Returns an object containing the grouped model status counts.
+  @param {Object} groupedModelStatuses
+  @returns {Function} The counts for each group of model statuses.
+*/
+const countModelStatusGroups = groupedModelStatuses => {
+  const counts = {
+    blocked: groupedModelStatuses.blocked.length,
+    alert: groupedModelStatuses.alert.length,
+    running: groupedModelStatuses.running.length
+  };
+  return counts;
+};
+
 // ----- Exported functions
 
 /**
@@ -148,7 +234,9 @@ export const isLoggedIn = state =>
   state.root.controllerConnection && state.root.bakery;
 
 /**
-
+  Returns a model status for the supplied modelUUID.
+  @param {String} modelUUID The model UUID to fetch the status for
+  @returns {Function} The memoized selector to return the model status.
 */
 export const getModelStatus = modelUUID => {
   return createSelector(
@@ -156,3 +244,21 @@ export const getModelStatus = modelUUID => {
     modelStatuses => getModelStatusByUUID(modelUUID, modelStatuses)
   );
 };
+
+/**
+  Returns the model statuses sorted by status.
+  @returns {Function} The memoized selector to return the sorted model statuses.
+*/
+export const getGroupedModelStatuses = createSelector(
+  getModelStatuses,
+  groupModelStatuses
+);
+
+/**
+  Returns the counts of the model statuses
+  @returns {Function} The memoized selector to return the model status counts.
+*/
+export const getGroupedModelStatusCounts = createSelector(
+  getGroupedModelStatuses,
+  countModelStatusGroups
+);
