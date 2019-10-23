@@ -161,8 +161,11 @@ const ModelDetails = () => {
         <div className="model-details__header">
           <strong>{modelStatusData ? modelStatusData.model.name : ""}</strong>
           <div className="model-details__filters">
-            <Filter label="View" filters={viewFilters} />
-            <Filter label="Status" filters={statusFilters} />
+            <Filter label="View:" filters={viewFilters} />
+            <Filter label="Status:" filters={statusFilters} />
+          </div>
+          <div className="model-details__user">
+            <i className="p-icon--user">Account icon</i>
           </div>
           <i className="p-icon--user">Account icon</i>
         </div>
