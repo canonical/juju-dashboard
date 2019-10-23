@@ -31,6 +31,10 @@
 
     tbody tr {
       border-bottom: 1px solid $color-mid-x-light;
+
+      &:hover {
+        background-color: #cef3ff;
+      }
     }
   }
 }
