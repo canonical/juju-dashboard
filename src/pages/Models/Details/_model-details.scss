@@ -4,6 +4,7 @@
   display: grid;
   grid-template-columns: 350px 1fr;
   min-height: calc(100vh - 48px); // header is 48px high.
+  padding-bottom: 2rem;
 
   &__header {
     align-items: center;
