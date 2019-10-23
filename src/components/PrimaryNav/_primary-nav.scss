@@ -57,7 +57,13 @@ $color-navigation-accent: #3fc8f2;
 
     .p-list__link {
       display: block;
-      padding-left: calc(2.5rem - 3px);
+      padding-left: calc(1.25rem - 3px);
+    }
+
+    .p-list__icon {
+      padding-right: 1.25rem;
+      position: relative;
+      top: 0.2rem;
     }
   }
 

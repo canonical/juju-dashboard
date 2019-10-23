@@ -5,10 +5,14 @@ import classNames from "classnames";
 import "./_primary-nav.scss";
 
 const pages = [
-  { label: "Models", path: "/" },
-  { label: "Controllers", path: "/controllers" },
-  { label: "Usage", path: "/usage" },
-  { label: "Logs", path: "/logs" }
+  { label: "Models", path: "/", icon: "51642f58-models.svg" },
+  {
+    label: "Controllers",
+    path: "/controllers",
+    icon: "8414b187-controllers.svg"
+  },
+  { label: "Usage", path: "/usage", icon: "1b1d07ae-usage.svg" },
+  { label: "Logs", path: "/logs", icon: "741097ff-logs.svg" }
 ];
 
 const PrimaryNav = () => {
@@ -94,6 +98,11 @@ const PrimaryNav = () => {
             })}
           >
             <Link className="p-list__link" to={navItem.path}>
+              <img
+                className="p-list__icon"
+                src={`https://assets.ubuntu.com/v1/${navItem.icon}`}
+                alt={`${navItem.label} icon`}
+              />
               {navItem.label}
             </Link>
           </li>
