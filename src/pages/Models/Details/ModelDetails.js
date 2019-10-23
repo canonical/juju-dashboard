@@ -168,7 +168,6 @@ const ModelDetails = () => {
           <div className="model-details__user">
             <i className="p-icon--user">Account icon</i>
           </div>
-          <i className="p-icon--user">Account icon</i>
         </div>
       </Header>
       <div className="model-details">
