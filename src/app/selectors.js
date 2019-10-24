@@ -25,6 +25,18 @@ const getModelStatuses = state => {
   return null;
 };
 
+/**
+  Fetches the model data from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The list of model data or null if none found.
+*/
+const getModelData = state => {
+  if (state.juju && state.juju.modelData) {
+    return state.juju.modelData;
+  }
+  return null;
+};
+
 // ---- Utility selectors
 
 /**
@@ -110,20 +122,20 @@ const statusOrder = ["running", "alert", "blocked"];
 
 /**
   Returns a grouped collection of model statuses.
-  @param {Object} modelStatuses
+  @param {Object} modelData
   @returns {Function} The grouped model statuses.
 */
-const groupModelStatuses = modelStatuses => {
+const groupModelsByStatus = modelData => {
   const grouped = {
     blocked: [],
     alert: [],
     running: []
   };
-  if (!modelStatuses) {
+  if (!modelData) {
     return grouped;
   }
-  for (let modelUUID in modelStatuses) {
-    const model = modelStatuses[modelUUID];
+  for (let modelUUID in modelData) {
+    const model = modelData[modelUUID];
     let highestStatus = "running";
     Object.keys(model.applications).forEach(appName => {
       const app = model.applications[appName];
@@ -249,9 +261,9 @@ export const getModelStatus = modelUUID => {
   Returns the model statuses sorted by status.
   @returns {Function} The memoized selector to return the sorted model statuses.
 */
-export const getGroupedModelStatuses = createSelector(
-  getModelStatuses,
-  groupModelStatuses
+export const getGroupedModelData = createSelector(
+  getModelData,
+  groupModelsByStatus
 );
 
 /**
@@ -259,6 +271,6 @@ export const getGroupedModelStatuses = createSelector(
   @returns {Function} The memoized selector to return the model status counts.
 */
 export const getGroupedModelStatusCounts = createSelector(
-  getGroupedModelStatuses,
+  getGroupedModelData,
   countModelStatusGroups
 );
