@@ -44,22 +44,11 @@ const relationTableHeaders = [
 ];
 
 const assignStatusIcon = status => {
-  switch (status) {
-    case "error":
-      return <span className="model-details__status is-error">{status}</span>;
-    case "active":
-      return <span className="model-details__status is-active">{status}</span>;
-    case "maintenance":
-      return (
-        <span className="model-details__status is-maintenance">{status}</span>
-      );
-    default:
-      return <span className="model-details__status">{status}</span>;
-  }
-const assignStatusIcon = status => {
   let statusClass = status ? `is-${status}` : "";
-  return <span className="model-details__status {statusClass}">{status}</span>;
-}
+  return (
+    <span className={"model-details__status " + statusClass}>{status}</span>
+  );
+};
 
 // Temp function to add link to <td> values
 const wrapLink = (href, text) => {
