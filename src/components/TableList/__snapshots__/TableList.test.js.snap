@@ -9,13 +9,10 @@ Array [
     Owner
   </th>,
   <th>
-    Apps/Machines/Units
+    Configuration
   </th>,
   <th>
-    Cloud
-  </th>,
-  <th>
-    Region
+    Cloud/Region
   </th>,
   <th>
     Credential
@@ -33,13 +30,10 @@ Array [
     Owner
   </th>,
   <th>
-    Apps/Machines/Units
+    Configuration
   </th>,
   <th>
-    Cloud
-  </th>,
-  <th>
-    Region
+    Cloud/Region
   </th>,
   <th>
     Credential
@@ -57,13 +51,10 @@ Array [
     Owner
   </th>,
   <th>
-    Apps/Machines/Units
+    Configuration
   </th>,
   <th>
-    Cloud
-  </th>,
-  <th>
-    Region
+    Cloud/Region
   </th>,
   <th>
     Credential
@@ -100,16 +91,12 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "owner",
         },
         Object {
-          "content": "Apps/Machines/Units",
+          "content": "Configuration",
           "sortKey": "summary",
         },
         Object {
-          "content": "Cloud",
+          "content": "Cloud/Region",
           "sortKey": "cloud",
-        },
-        Object {
-          "content": "Region",
-          "sortKey": "region",
         },
         Object {
           "content": "Credential",
@@ -150,10 +137,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "1/1/1",
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "gce",
@@ -189,10 +173,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "3/3/3",
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "gce",
@@ -236,39 +217,32 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="2"
               >
                 <th>
-                  Apps/Machines/Units
+                  Configuration
                 </th>
               </TableHeader>
               <TableHeader
                 key="3"
               >
                 <th>
-                  Cloud
+                  Cloud/Region
                 </th>
               </TableHeader>
               <TableHeader
                 key="4"
               >
                 <th>
-                  Region
+                  Credential
                 </th>
               </TableHeader>
               <TableHeader
                 key="5"
               >
                 <th>
-                  Credential
-                </th>
-              </TableHeader>
-              <TableHeader
-                key="6"
-              >
-                <th>
                   Controller
                 </th>
               </TableHeader>
               <TableHeader
-                key="7"
+                key="6"
               >
                 <th>
                   Last Updated
@@ -338,7 +312,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -348,7 +322,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  gce
                 </td>
               </TableCell>
               <TableCell
@@ -358,21 +332,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                key="6"
               >
                 <td
                   className=""
@@ -443,7 +407,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -453,7 +417,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  gce
                 </td>
               </TableCell>
               <TableCell
@@ -463,21 +427,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                key="6"
               >
                 <td
                   className=""
@@ -505,16 +459,12 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "owner",
         },
         Object {
-          "content": "Apps/Machines/Units",
+          "content": "Configuration",
           "sortKey": "summary",
         },
         Object {
-          "content": "Cloud",
+          "content": "Cloud/Region",
           "sortKey": "cloud",
-        },
-        Object {
-          "content": "Region",
-          "sortKey": "region",
         },
         Object {
           "content": "Credential",
@@ -560,39 +510,32 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="2"
               >
                 <th>
-                  Apps/Machines/Units
+                  Configuration
                 </th>
               </TableHeader>
               <TableHeader
                 key="3"
               >
                 <th>
-                  Cloud
+                  Cloud/Region
                 </th>
               </TableHeader>
               <TableHeader
                 key="4"
               >
                 <th>
-                  Region
+                  Credential
                 </th>
               </TableHeader>
               <TableHeader
                 key="5"
               >
                 <th>
-                  Credential
-                </th>
-              </TableHeader>
-              <TableHeader
-                key="6"
-              >
-                <th>
                   Controller
                 </th>
               </TableHeader>
               <TableHeader
-                key="7"
+                key="6"
               >
                 <th>
                   Last Updated
@@ -618,16 +561,12 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "owner",
         },
         Object {
-          "content": "Apps/Machines/Units",
+          "content": "Configuration",
           "sortKey": "summary",
         },
         Object {
-          "content": "Cloud",
+          "content": "Cloud/Region",
           "sortKey": "cloud",
-        },
-        Object {
-          "content": "Region",
-          "sortKey": "region",
         },
         Object {
           "content": "Credential",
@@ -668,10 +607,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "9/0/0",
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-central1",
+              "content": "google/us-central1",
             },
             Object {
               "content": "admin",
@@ -707,10 +643,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "0/0/0",
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "juju",
@@ -746,10 +679,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "0/0/0",
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "juju",
@@ -785,10 +715,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "0/0/0",
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "juju",
@@ -824,10 +751,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "3/3/3",
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "google-bigbot",
@@ -863,10 +787,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "2/2/2",
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "gce",
@@ -910,39 +831,32 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="2"
               >
                 <th>
-                  Apps/Machines/Units
+                  Configuration
                 </th>
               </TableHeader>
               <TableHeader
                 key="3"
               >
                 <th>
-                  Cloud
+                  Cloud/Region
                 </th>
               </TableHeader>
               <TableHeader
                 key="4"
               >
                 <th>
-                  Region
+                  Credential
                 </th>
               </TableHeader>
               <TableHeader
                 key="5"
               >
                 <th>
-                  Credential
-                </th>
-              </TableHeader>
-              <TableHeader
-                key="6"
-              >
-                <th>
                   Controller
                 </th>
               </TableHeader>
               <TableHeader
-                key="7"
+                key="6"
               >
                 <th>
                   Last Updated
@@ -1010,7 +924,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-central1
                 </td>
               </TableCell>
               <TableCell
@@ -1020,7 +934,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-central1
+                  admin
                 </td>
               </TableCell>
               <TableCell
@@ -1030,21 +944,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  admin
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                key="6"
               >
                 <td
                   className=""
@@ -1113,7 +1017,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1123,7 +1027,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  juju
                 </td>
               </TableCell>
               <TableCell
@@ -1133,21 +1037,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  juju
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                key="6"
               >
                 <td
                   className=""
@@ -1216,7 +1110,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1226,7 +1120,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  juju
                 </td>
               </TableCell>
               <TableCell
@@ -1236,21 +1130,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  juju
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                key="6"
               >
                 <td
                   className=""
@@ -1319,7 +1203,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1329,7 +1213,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  juju
                 </td>
               </TableCell>
               <TableCell
@@ -1339,21 +1223,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  juju
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                key="6"
               >
                 <td
                   className=""
@@ -1422,7 +1296,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1432,7 +1306,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  google-bigbot
                 </td>
               </TableCell>
               <TableCell
@@ -1442,21 +1316,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google-bigbot
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                key="6"
               >
                 <td
                   className=""
@@ -1525,7 +1389,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1535,7 +1399,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  gce
                 </td>
               </TableCell>
               <TableCell
@@ -1545,21 +1409,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                key="6"
               >
                 <td
                   className=""

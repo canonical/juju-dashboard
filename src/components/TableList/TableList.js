@@ -51,8 +51,12 @@ function generateModelTableData(state) {
         { content: generateModelNameCell(why) },
         { content: modelListData.ownerTag.split("@")[0].replace("user-", "") },
         { content: getStatusValue(modelStatus, "summary") },
-        { content: getStatusValue(modelStatus, "cloudTag") },
-        { content: getStatusValue(modelStatus, "region") },
+        {
+          content:
+            getStatusValue(modelStatus, "cloudTag") +
+            (modelStatus ? "/" : "") +
+            getStatusValue(modelStatus, "region")
+        },
         { content: getStatusValue(modelInfoData, "cloudCredentialTag") },
         // We're not currently able to get the controller name from the API.
         // so display the controller UUID instead.
@@ -146,9 +150,8 @@ function generateTableHeaders(label) {
   return [
     { content: label, sortKey: label.toLowerCase() },
     { content: "Owner", sortKey: "owner" },
-    { content: "Apps/Machines/Units", sortKey: "summary" },
-    { content: "Cloud", sortKey: "cloud" },
-    { content: "Region", sortKey: "region" },
+    { content: "Configuration", sortKey: "summary" },
+    { content: "Cloud/Region", sortKey: "cloud" },
     { content: "Credential", sortKey: "credential" },
     { content: "Controller", sortKey: "controller" },
     { content: "Last Updated", sortKey: "last-updated" }
