@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
-import { splitStr } from "utils";
 
 import "./_info-panel.scss";
 
@@ -17,10 +16,9 @@ const InfoPanel = () => {
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
 
-  const cloudProvider = splitStr(
-    modelStatusData ? modelStatusData.model.cloudTag : "",
-    "-"
-  );
+  const cloudProvider = modelStatusData
+    ? modelStatusData.model.cloudTag.replace("cloud-", "")
+    : "";
 
   return (
     <div className="info-panel">
