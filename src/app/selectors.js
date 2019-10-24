@@ -246,6 +246,15 @@ export const isLoggedIn = state =>
   state.root.controllerConnection && state.root.bakery;
 
 /**
+  Returns the users current controller logged in identity
+  @param {Object} state The application state.
+  @returns {String} The users userTag.
+*/
+export const getActiveUserTag = state =>
+  state.root.controllerConnection &&
+  state.root.controllerConnection.info.user.identity;
+
+/**
   Returns a model status for the supplied modelUUID.
   @param {String} modelUUID The model UUID to fetch the status for
   @returns {Function} The memoized selector to return the model status.
