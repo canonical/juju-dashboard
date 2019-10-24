@@ -2,95 +2,90 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+import { getActiveUserTag, getGroupedModelData } from "app/selectors";
 import MainTable from "../MainTable/MainTable";
 
 import "./_table-list.scss";
+
+const generateModelDetailsLink = (modelName, ownerTag, activeUser) => {
+  const modelDetailsPath = `/models/${modelName}`;
+  if (ownerTag === activeUser) {
+    return <Link to={modelDetailsPath}>{modelName}</Link>;
+  }
+  // Because we get some data at different times based on the multiple API calls
+  // we need to check for their existance and supply reasonable fallbacks if it
+  // isn't available. Once we have a single API call for all the data this check
+  // can be removed.
+  if (!ownerTag) {
+    // We will just return an unclickable name until we get an owner tag as
+    // without it we can't create a reliable link.
+    return modelName;
+  }
+  // If the owner isn't the logged in user then we need to use the
+  // fully qualified path name.
+  const sharedModelDetailsPath = `/models/${ownerTag.replace(
+    "user-",
+    ""
+  )}/${modelName}`;
+  return <Link to={sharedModelDetailsPath}>{modelName}</Link>;
+};
+
+const generateWarningMessage = model => {
+  // <div className="table-list_error-message">{why}</div>
+};
+
+const generateModelNameCell = (model, groupLabel, activeUser) => {
+  const link = generateModelDetailsLink(
+    model.model.name,
+    model.info && model.info.ownerTag,
+    activeUser
+  );
+  return (
+    <>
+      {link}
+      {groupLabel === "blocked" ? generateWarningMessage(model) : null}
+    </>
+  );
+};
+
 /**
   Returns the model info and statuses in the proper format for the table data.
-  @param {Object} state The application state.
+  @param {Object} groupedModels The models grouped by state
+  @param {String} activeUser The fully qualified user name tag
+    ex) user-foo@external
   @returns {Object} The formatted table data.
 */
-function generateModelTableData(state) {
-  const models = state.juju.models;
-  const modelInfo = state.juju.modelInfo;
+function generateModelTableData(groupedModels, activeUser) {
   const modelData = {
-    blockedModelData: [],
-    attentionModelData: [],
-    runningModelData: []
+    blockedRows: [],
+    alertRows: [],
+    runningRows: []
   };
-  Object.keys(models).forEach(modelUUID => {
-    const modelListData = models[modelUUID];
-    const modelInfoData = modelInfo[modelUUID];
-    const modelStatus = state.juju.modelStatuses[modelUUID];
-    const modelDetailsPath = `/models/${modelListData.name}`;
-    const generateModelDetailsLink = () => {
-      const owner = modelListData.ownerTag;
-      const user = state.root.controllerConnection.info.user.identity;
-      if (owner === user) {
-        return <Link to={modelDetailsPath}>{modelListData.name}</Link>;
-      }
-      // If the owner isn't the logged in user then we need to use the
-      // fully qualified path name.
-      const sharedModelDetailsPath = `/models/${owner.replace("user-", "")}/${
-        modelListData.name
-      }`;
-      return <Link to={sharedModelDetailsPath}>{modelListData.name}</Link>;
-    };
-    const generateModelNameCell = why => {
-      const link = generateModelDetailsLink();
-      return (
-        <>
-          {link}
-          <div className="table-list_error-message">{why}</div>
-        </>
-      );
-    };
-    const { status, why } = determineModelStatus(modelStatus);
-    modelData[status].push({
-      columns: [
-        { content: generateModelNameCell(why) },
-        { content: modelListData.ownerTag.split("@")[0].replace("user-", "") },
-        { content: getStatusValue(modelStatus, "summary") },
-        { content: getStatusValue(modelStatus, "cloudTag") },
-        { content: getStatusValue(modelStatus, "region") },
-        { content: getStatusValue(modelInfoData, "cloudCredentialTag") },
-        // We're not currently able to get the controller name from the API.
-        // so display the controller UUID instead.
-        { content: getStatusValue(modelInfoData, "controllerUuid") },
-        // We're not currently able to get a last-accessed or updated from JAAS.
-        { content: getStatusValue(modelInfoData, "status.since") }
-      ]
+  Object.keys(groupedModels).forEach(groupLabel => {
+    const models = groupedModels[groupLabel];
+    models.forEach(model => {
+      modelData[`${groupLabel}Rows`].push({
+        columns: [
+          { content: generateModelNameCell(model, groupLabel, activeUser) },
+          {
+            content:
+              model.info &&
+              model.info.ownerTag.split("@")[0].replace("user-", "")
+          },
+          { content: getStatusValue(model, "summary") },
+          { content: getStatusValue(model, "cloudTag") },
+          { content: getStatusValue(model, "region") },
+          { content: getStatusValue(model.info, "cloudCredentialTag") },
+          // We're not currently able to get the controller name from the API.
+          // so display the controller UUID instead.
+          { content: getStatusValue(model.info, "controllerUuid") },
+          // We're not currently able to get a last-accessed or updated from JAAS.
+          { content: getStatusValue(model.info, "status.since") }
+        ]
+      });
     });
   });
   return modelData;
-}
-
-/**
-  Uses the model status to determine what the status of the model is and then
-  returns the string value of the table it's to be displayed in.
-  @param {Object} modelStatus The model status.
-  @returns {String} The status table for it to be displayed in.
-*/
-function determineModelStatus(modelStatus) {
-  if (!modelStatus) {
-    return { status: "runningModelData", why: "" };
-  }
-  const badStatuses = ["lost"];
-  let status = "runningModelData";
-  let why = "";
-  // Short circuit the loop. If something is in error then the model is in error.
-  // Grab the first error message and display that.
-  Object.values(modelStatus.applications).some(app => {
-    return Object.values(app.units).some(unit => {
-      if (badStatuses.includes(unit.agentStatus.status)) {
-        status = "blockedModelData";
-        why = unit.agentStatus.info;
-        return true;
-      }
-      return false;
-    });
-  });
-  return { status, why };
 }
 
 /**
@@ -142,6 +137,11 @@ function getStatusValue(status, key) {
   return returnValue;
 }
 
+/**
+  Generates the table headers for the supplied table label.
+  @param {String} label The title of the table.
+  @returns {Array} The headers for the table.
+*/
 function generateTableHeaders(label) {
   return [
     { content: label, sortKey: label.toLowerCase() },
@@ -156,27 +156,29 @@ function generateTableHeaders(label) {
 }
 
 function TableList() {
-  const {
-    blockedModelData,
-    attentionModelData,
-    runningModelData
-  } = useSelector(generateModelTableData);
+  const activeUser = useSelector(getActiveUserTag);
+  const groupedModelData = useSelector(getGroupedModelData);
+  const { blockedRows, alertRows, runningRows } = generateModelTableData(
+    groupedModelData,
+    activeUser
+  );
+
   return (
     <>
       <MainTable
         className={"u-table-layout--auto"}
         headers={generateTableHeaders("Blocked")}
-        rows={blockedModelData}
+        rows={blockedRows}
       />
       <MainTable
         className={"u-table-layout--auto"}
-        headers={generateTableHeaders("Attention")}
-        rows={attentionModelData}
+        headers={generateTableHeaders("Alert")}
+        rows={alertRows}
       />
       <MainTable
         className={"u-table-layout--auto"}
         headers={generateTableHeaders("Running")}
-        rows={runningModelData}
+        rows={runningRows}
       />
     </>
   );
