@@ -44,7 +44,9 @@ const generateModelDetailsLink = (modelName, ownerTag, activeUser) => {
   @return {Object} The react component for the warning message.
 */
 const generateWarningMessage = model => {
-  // <div className="table-list_error-message">{why}</div>
+  return (
+    <div className="table-list_error-message">Click to view full details</div>
+  );
 };
 
 /**
