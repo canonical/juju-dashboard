@@ -9,36 +9,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       className="info-panel"
     >
       <div
+        className="info-panel__pictogram"
+      >
+        <img
+          alt=""
+          src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+        />
+      </div>
+      <div
         className="info-panel__grid"
       >
-        <div
-          className="info-panel__grid-item"
-        >
-          <h4
-            className="p-muted-heading"
-          >
-            Model
-          </h4>
-          <p
-            data-name="name"
-          >
-            group-test
-          </p>
-        </div>
-        <div
-          className="info-panel__grid-item"
-        >
-          <h4
-            className="p-muted-heading"
-          >
-            Region
-          </h4>
-          <p
-            data-name="region"
-          >
-            us-central1
-          </p>
-        </div>
         <div
           className="info-panel__grid-item"
         >
@@ -59,12 +39,28 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           <h4
             className="p-muted-heading"
           >
-            Cloud
+            Cloud/Region
           </h4>
           <p
-            data-name="cloud"
+            data-name="cloud-region"
           >
-            cloud-google
+            o
+            /
+            us-central1
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Version
+          </h4>
+          <p
+            data-name="version"
+          >
+            2.5.4
           </p>
         </div>
         <div
@@ -82,181 +78,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           </p>
         </div>
       </div>
-      <img
-        alt=""
-        src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
-      />
     </div>
   </InfoPanel>
   <div
     className="model-details__main"
   >
-    <div
-      className="model-details__filters"
-    >
-      <Filter
-        filters={
-          Array [
-            "all",
-            "apps",
-            "units",
-            "machines",
-            "relations",
-          ]
-        }
-        label="View"
-      >
-        <div
-          className="p-filter"
-        >
-          <span
-            className="p-filter__label"
-          >
-            View
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="all"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                all
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="apps"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                apps
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="units"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                units
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="machines"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                machines
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="relations"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                relations
-              </button>
-            </Button>
-          </span>
-        </div>
-      </Filter>
-      <Filter
-        filters={
-          Array [
-            "all",
-            "maintenance",
-            "blocked",
-          ]
-        }
-        label="Status"
-      >
-        <div
-          className="p-filter"
-        >
-          <span
-            className="p-filter__label"
-          >
-            Status
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="all"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                all
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="maintenance"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                maintenance
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="blocked"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                blocked
-              </button>
-            </Button>
-          </span>
-        </div>
-      </Filter>
-    </div>
     <MainTable
       headers={
         Array [
@@ -293,10 +119,18 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "easyrsa",
+                "content": <a
+                  href="#"
+                >
+                  easyrsa
+                </a>,
               },
               Object {
-                "content": "waiting",
+                "content": <span
+                  className="model-details__status is-waiting"
+                >
+                  waiting
+                </span>,
               },
               Object {
                 "content": "-",
@@ -306,6 +140,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -318,10 +155,18 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "elasticsearch",
+                "content": <a
+                  href="#"
+                >
+                  elasticsearch
+                </a>,
               },
               Object {
-                "content": "waiting",
+                "content": <span
+                  className="model-details__status is-waiting"
+                >
+                  waiting
+                </span>,
               },
               Object {
                 "content": "-",
@@ -331,6 +176,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -343,10 +191,18 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "etcd",
+                "content": <a
+                  href="#"
+                >
+                  etcd
+                </a>,
               },
               Object {
-                "content": "waiting",
+                "content": <span
+                  className="model-details__status is-waiting"
+                >
+                  waiting
+                </span>,
               },
               Object {
                 "content": "-",
@@ -356,6 +212,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -368,10 +227,18 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "flannel",
+                "content": <a
+                  href="#"
+                >
+                  flannel
+                </a>,
               },
               Object {
-                "content": "waiting",
+                "content": <span
+                  className="model-details__status is-waiting"
+                >
+                  waiting
+                </span>,
               },
               Object {
                 "content": "-",
@@ -381,6 +248,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -393,10 +263,18 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kibana",
+                "content": <a
+                  href="#"
+                >
+                  kibana
+                </a>,
               },
               Object {
-                "content": "waiting",
+                "content": <span
+                  className="model-details__status is-waiting"
+                >
+                  waiting
+                </span>,
               },
               Object {
                 "content": "-",
@@ -406,6 +284,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -418,10 +299,18 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubeapi-load-balancer",
+                "content": <a
+                  href="#"
+                >
+                  kubeapi-load-balancer
+                </a>,
               },
               Object {
-                "content": "waiting",
+                "content": <span
+                  className="model-details__status is-waiting"
+                >
+                  waiting
+                </span>,
               },
               Object {
                 "content": "-",
@@ -431,6 +320,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -443,10 +335,18 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubernetes-master",
+                "content": <a
+                  href="#"
+                >
+                  kubernetes-master
+                </a>,
               },
               Object {
-                "content": "waiting",
+                "content": <span
+                  className="model-details__status is-waiting"
+                >
+                  waiting
+                </span>,
               },
               Object {
                 "content": "-",
@@ -456,6 +356,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -468,10 +371,18 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubernetes-worker",
+                "content": <a
+                  href="#"
+                >
+                  kubernetes-worker
+                </a>,
               },
               Object {
-                "content": "waiting",
+                "content": <span
+                  className="model-details__status is-waiting"
+                >
+                  waiting
+                </span>,
               },
               Object {
                 "content": "-",
@@ -481,6 +392,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -493,10 +407,18 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "rsyslog",
+                "content": <a
+                  href="#"
+                >
+                  rsyslog
+                </a>,
               },
               Object {
-                "content": "waiting",
+                "content": <span
+                  className="model-details__status is-waiting"
+                >
+                  waiting
+                </span>,
               },
               Object {
                 "content": "-",
@@ -506,6 +428,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -628,7 +553,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    easyrsa
+                    <a
+                      href="#"
+                    >
+                      easyrsa
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -638,7 +567,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    waiting
+                    <span
+                      className="model-details__status is-waiting"
+                    >
+                      waiting
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -681,6 +614,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -702,7 +645,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    elasticsearch
+                    <a
+                      href="#"
+                    >
+                      elasticsearch
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -712,7 +659,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    waiting
+                    <span
+                      className="model-details__status is-waiting"
+                    >
+                      waiting
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -755,6 +706,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -776,7 +737,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    etcd
+                    <a
+                      href="#"
+                    >
+                      etcd
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -786,7 +751,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    waiting
+                    <span
+                      className="model-details__status is-waiting"
+                    >
+                      waiting
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -829,6 +798,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -850,7 +829,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    flannel
+                    <a
+                      href="#"
+                    >
+                      flannel
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -860,7 +843,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    waiting
+                    <span
+                      className="model-details__status is-waiting"
+                    >
+                      waiting
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -903,6 +890,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -924,7 +921,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kibana
+                    <a
+                      href="#"
+                    >
+                      kibana
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -934,7 +935,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    waiting
+                    <span
+                      className="model-details__status is-waiting"
+                    >
+                      waiting
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -977,6 +982,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -998,7 +1013,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubeapi-load-balancer
+                    <a
+                      href="#"
+                    >
+                      kubeapi-load-balancer
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1008,7 +1027,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    waiting
+                    <span
+                      className="model-details__status is-waiting"
+                    >
+                      waiting
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1051,6 +1074,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -1072,7 +1105,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubernetes-master
+                    <a
+                      href="#"
+                    >
+                      kubernetes-master
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1082,7 +1119,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    waiting
+                    <span
+                      className="model-details__status is-waiting"
+                    >
+                      waiting
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1125,6 +1166,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -1146,7 +1197,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubernetes-worker
+                    <a
+                      href="#"
+                    >
+                      kubernetes-worker
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1156,7 +1211,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    waiting
+                    <span
+                      className="model-details__status is-waiting"
+                    >
+                      waiting
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1199,6 +1258,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -1220,7 +1289,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    rsyslog
+                    <a
+                      href="#"
+                    >
+                      rsyslog
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1230,7 +1303,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    waiting
+                    <span
+                      className="model-details__status is-waiting"
+                    >
+                      waiting
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -1273,6 +1350,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </TableCell>
                 <TableCell
                   key="6"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="7"
                 >
                   <td
                     className=""
@@ -2635,36 +2722,16 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       className="info-panel"
     >
       <div
+        className="info-panel__pictogram"
+      >
+        <img
+          alt=""
+          src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+        />
+      </div>
+      <div
         className="info-panel__grid"
       >
-        <div
-          className="info-panel__grid-item"
-        >
-          <h4
-            className="p-muted-heading"
-          >
-            Model
-          </h4>
-          <p
-            data-name="name"
-          >
-            frontend-ci
-          </p>
-        </div>
-        <div
-          className="info-panel__grid-item"
-        >
-          <h4
-            className="p-muted-heading"
-          >
-            Region
-          </h4>
-          <p
-            data-name="region"
-          >
-            us-east1
-          </p>
-        </div>
         <div
           className="info-panel__grid-item"
         >
@@ -2685,12 +2752,28 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           <h4
             className="p-muted-heading"
           >
-            Cloud
+            Cloud/Region
           </h4>
           <p
-            data-name="cloud"
+            data-name="cloud-region"
           >
-            cloud-google
+            o
+            /
+            us-east1
+          </p>
+        </div>
+        <div
+          className="info-panel__grid-item"
+        >
+          <h4
+            className="p-muted-heading"
+          >
+            Version
+          </h4>
+          <p
+            data-name="version"
+          >
+            2.4.7
           </p>
         </div>
         <div
@@ -2708,181 +2791,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           </p>
         </div>
       </div>
-      <img
-        alt=""
-        src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
-      />
     </div>
   </InfoPanel>
   <div
     className="model-details__main"
   >
-    <div
-      className="model-details__filters"
-    >
-      <Filter
-        filters={
-          Array [
-            "all",
-            "apps",
-            "units",
-            "machines",
-            "relations",
-          ]
-        }
-        label="View"
-      >
-        <div
-          className="p-filter"
-        >
-          <span
-            className="p-filter__label"
-          >
-            View
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="all"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                all
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="apps"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                apps
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="units"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                units
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="machines"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                machines
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="relations"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                relations
-              </button>
-            </Button>
-          </span>
-        </div>
-      </Filter>
-      <Filter
-        filters={
-          Array [
-            "all",
-            "maintenance",
-            "blocked",
-          ]
-        }
-        label="Status"
-      >
-        <div
-          className="p-filter"
-        >
-          <span
-            className="p-filter__label"
-          >
-            Status
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="all"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                all
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="maintenance"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                maintenance
-              </button>
-            </Button>
-          </span>
-          <span
-            className="p-filter__item 1"
-            key="blocked"
-          >
-            <Button
-              onClick={[Function]}
-            >
-              <button
-                className="p-button--filter"
-                onClick={[Function]}
-              >
-                blocked
-              </button>
-            </Button>
-          </span>
-        </div>
-      </Filter>
-    </div>
     <MainTable
       headers={
         Array [
@@ -2919,10 +2832,18 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           Object {
             "columns": Array [
               Object {
-                "content": "jenkins",
+                "content": <a
+                  href="#"
+                >
+                  jenkins
+                </a>,
               },
               Object {
-                "content": "unknown",
+                "content": <span
+                  className="model-details__status is-unknown"
+                >
+                  unknown
+                </span>,
               },
               Object {
                 "content": "-",
@@ -2932,6 +2853,9 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
               },
               Object {
                 "content": undefined,
+              },
+              Object {
+                "content": "-",
               },
               Object {
                 "content": "-",
@@ -3054,7 +2978,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                     className=""
                     role="gridcell"
                   >
-                    jenkins
+                    <a
+                      href="#"
+                    >
+                      jenkins
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -3064,7 +2992,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                     className=""
                     role="gridcell"
                   >
-                    unknown
+                    <span
+                      className="model-details__status is-unknown"
+                    >
+                      unknown
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell
@@ -3115,6 +3047,16 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                     -
                   </td>
                 </TableCell>
+                <TableCell
+                  key="7"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
               </tr>
             </TableRow>
           </tbody>
@@ -3152,10 +3094,18 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           Object {
             "columns": Array [
               Object {
-                "content": "jenkins/2",
+                "content": <a
+                  href="#"
+                >
+                  jenkins/2
+                </a>,
               },
               Object {
-                "content": "unknown",
+                "content": <span
+                  className="model-details__status is-unknown"
+                >
+                  unknown
+                </span>,
               },
               Object {
                 "content": "lost",
@@ -3273,7 +3223,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                     className=""
                     role="gridcell"
                   >
-                    jenkins/2
+                    <a
+                      href="#"
+                    >
+                      jenkins/2
+                    </a>
                   </td>
                 </TableCell>
                 <TableCell
@@ -3283,7 +3237,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                     className=""
                     role="gridcell"
                   >
-                    unknown
+                    <span
+                      className="model-details__status is-unknown"
+                    >
+                      unknown
+                    </span>
                   </td>
                 </TableCell>
                 <TableCell

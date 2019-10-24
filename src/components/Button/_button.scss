@@ -1,7 +1,10 @@
 .p-button {
   &--filter {
-    border-radius: 1rem;
-    padding-bottom: 0.1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+    padding-bottom: 0;
     padding-top: 0;
   }
 }

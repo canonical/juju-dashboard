@@ -16,21 +16,19 @@ const InfoPanel = () => {
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
 
+  const cloudProvider = modelStatusData
+    ? modelStatusData.model.cloudTag.replace("cloud-", "")
+    : "";
+
   return (
     <div className="info-panel">
+      <div className="info-panel__pictogram">
+        <img
+          src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+          alt=""
+        />
+      </div>
       <div className="info-panel__grid">
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Model</h4>
-          <p data-name="name">
-            {modelStatusData ? modelStatusData.model.name : ""}
-          </p>
-        </div>
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Region</h4>
-          <p data-name="region">
-            {modelStatusData ? modelStatusData.model.region : ""}
-          </p>
-        </div>
         <div className="info-panel__grid-item">
           <h4 className="p-muted-heading">Controller</h4>
           <p data-name="controller">
@@ -38,9 +36,17 @@ const InfoPanel = () => {
           </p>
         </div>
         <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Cloud</h4>
-          <p data-name="cloud">
-            {modelStatusData ? modelStatusData.model.cloudTag : ""}
+          <h4 className="p-muted-heading">Cloud/Region</h4>
+          <p data-name="cloud-region">
+            {cloudProvider ? cloudProvider[1] : ""}
+            {modelStatusData ? "/" : ""}
+            {modelStatusData ? modelStatusData.model.region : ""}
+          </p>
+        </div>
+        <div className="info-panel__grid-item">
+          <h4 className="p-muted-heading">Version</h4>
+          <p data-name="version">
+            {modelStatusData ? modelStatusData.model.version : ""}
           </p>
         </div>
         <div className="info-panel__grid-item">
@@ -50,10 +56,6 @@ const InfoPanel = () => {
           </p>
         </div>
       </div>
-      <img
-        src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
-        alt=""
-      />
     </div>
   );
 };

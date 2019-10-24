@@ -44,7 +44,7 @@ const FilterTags = () => {
       <form>
         <input
           type="text"
-          placeHolder="Filter terms"
+          placeholder="Filter terms"
           className="p-filter-tags__input"
           onFocus={() => setfilterPanelVisibility(true)}
         />

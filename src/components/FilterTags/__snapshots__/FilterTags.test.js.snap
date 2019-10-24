@@ -8,7 +8,7 @@ exports[`FilterTags renders without crashing and matches snapshot 1`] = `
     <input
       className="p-filter-tags__input"
       onFocus={[Function]}
-      placeHolder="Filter terms"
+      placeholder="Filter terms"
       type="text"
     />
   </form>

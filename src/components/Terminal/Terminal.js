@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { getMacaroons } from "app/selectors";
+import classNames from "classnames";
 
 import cleanUpTerminal from "./cleanup-terminal";
 import setupTerminal from "./setup-terminal";
@@ -23,10 +24,24 @@ const Terminal = ({ address, modelName }) => {
     return cleanUpTerminal(terminalInstance);
   }, [address, macaroons, modelName]);
 
+  const [terminalVisible, setTerminalVisible] = useState(false);
+
   return (
-    <div className="terminal">
-      <div className="terminal-header">Juju Terminal</div>
-      <div className="terminal-shell" ref={terminalElement}></div>
+    <div
+      className={classNames("p-terminal", {
+        "is-visible": terminalVisible
+      })}
+    >
+      <div
+        className="p-terminal__header"
+        onClick={() => setTerminalVisible(!terminalVisible)}
+      >
+        <span>Juju Terminal</span>
+        <div className="p-terminal__toggle">
+          <i className="p-icon--contextual-menu">Toggle Terminal visibility</i>
+        </div>
+      </div>
+      <div className="p-terminal__shell" ref={terminalElement}></div>
     </div>
   );
 };

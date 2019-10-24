@@ -7,6 +7,7 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import MainTable from "components/MainTable/MainTable";
 import Terminal from "components/Terminal/Terminal";
+import Header from "components/Header/Header";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
@@ -42,21 +43,36 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
+const assignStatusIcon = status => {
+  let statusClass = status ? `is-${status}` : "";
+  return (
+    <span className={"model-details__status " + statusClass}>{status}</span>
+  );
+};
+
+// Temp function to add link to <td> values
+const wrapLink = (href, text) => {
+  return <a href={href}>{text}</a>;
+};
+
 const generateApplicationRows = modelStatusData => {
   if (!modelStatusData) {
     return [];
   }
 
   const applications = modelStatusData.applications;
+
   return Object.keys(applications).map(key => {
     const app = applications[key];
+
     return {
       columns: [
-        { content: key },
-        { content: app.status ? app.status.status : "-" },
+        { content: wrapLink("#", key) },
+        { content: app.status ? assignStatusIcon(app.status.status) : "-" },
         { content: "-" },
         { content: "CharmHub" },
         { content: key.split("-")[-1] },
+        { content: "-" },
         { content: "-" },
         { content: "-" }
       ]
@@ -77,8 +93,8 @@ const generateUnitRows = modelStatusData => {
       const unit = units[unitId];
       unitRows.push({
         columns: [
-          { content: unitId },
-          { content: unit.workloadStatus.status },
+          { content: wrapLink("#", unitId) },
+          { content: assignStatusIcon(unit.workloadStatus.status) },
           { content: unit.agentStatus.status },
           { content: unit.machine },
           { content: unit.publicAddress },
@@ -156,13 +172,21 @@ const ModelDetails = () => {
 
   return (
     <Layout>
+      <Header>
+        <div className="model-details__header">
+          <strong>{modelStatusData ? modelStatusData.model.name : ""}</strong>
+          <div className="model-details__filters">
+            <Filter label="View:" filters={viewFilters} />
+            <Filter label="Status:" filters={statusFilters} />
+          </div>
+          <div className="model-details__user">
+            <i className="p-icon--user">Account icon</i>
+          </div>
+        </div>
+      </Header>
       <div className="model-details">
         <InfoPanel />
         <div className="model-details__main">
-          <div className="model-details__filters">
-            <Filter label="View" filters={viewFilters} />
-            <Filter label="Status" filters={statusFilters} />
-          </div>
           <MainTable
             headers={applicationTableHeaders}
             rows={applicationTableRows}
