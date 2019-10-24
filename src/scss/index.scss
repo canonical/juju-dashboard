@@ -25,6 +25,7 @@ $increase-font-size-on-larger-screens: false;
 @include vf-p-table-of-contents;
 @include vf-p-table-mobile-card;
 @include vf-p-table-sortable;
+@include vf-u-align;
 @include vf-u-layout;
 
 // Fix consecutive table bug

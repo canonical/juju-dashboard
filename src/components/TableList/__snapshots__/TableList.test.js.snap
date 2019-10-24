@@ -20,7 +20,9 @@ Array [
   <th>
     Controller
   </th>,
-  <th>
+  <th
+    className="u-align--right"
+  >
     Last Updated
   </th>,
   <th>
@@ -41,7 +43,9 @@ Array [
   <th>
     Controller
   </th>,
-  <th>
+  <th
+    className="u-align--right"
+  >
     Last Updated
   </th>,
   <th>
@@ -62,7 +66,9 @@ Array [
   <th>
     Controller
   </th>,
-  <th>
+  <th
+    className="u-align--right"
+  >
     Last Updated
   </th>,
 ]
@@ -107,6 +113,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "controller",
         },
         Object {
+          "className": "u-align--right",
           "content": "Last Updated",
           "sortKey": "last-updated",
         },
@@ -146,6 +153,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-04-13",
             },
           ],
@@ -182,6 +190,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-04-13",
             },
           ],
@@ -242,9 +251,12 @@ exports[`TableList displays all data from redux store 1`] = `
                 </th>
               </TableHeader>
               <TableHeader
+                className="u-align--right"
                 key="6"
               >
-                <th>
+                <th
+                  className="u-align--right"
+                >
                   Last Updated
                 </th>
               </TableHeader>
@@ -336,10 +348,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-align--right"
                 key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-04-13
@@ -431,10 +444,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-align--right"
                 key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-04-13
@@ -475,6 +489,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "controller",
         },
         Object {
+          "className": "u-align--right",
           "content": "Last Updated",
           "sortKey": "last-updated",
         },
@@ -535,9 +550,12 @@ exports[`TableList displays all data from redux store 1`] = `
                 </th>
               </TableHeader>
               <TableHeader
+                className="u-align--right"
                 key="6"
               >
-                <th>
+                <th
+                  className="u-align--right"
+                >
                   Last Updated
                 </th>
               </TableHeader>
@@ -577,6 +595,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "controller",
         },
         Object {
+          "className": "u-align--right",
           "content": "Last Updated",
           "sortKey": "last-updated",
         },
@@ -616,6 +635,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-22",
             },
           ],
@@ -652,6 +672,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-26",
             },
           ],
@@ -688,6 +709,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-26",
             },
           ],
@@ -724,6 +746,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-26",
             },
           ],
@@ -760,6 +783,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-20",
             },
           ],
@@ -796,6 +820,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-04-13",
             },
           ],
@@ -856,9 +881,12 @@ exports[`TableList displays all data from redux store 1`] = `
                 </th>
               </TableHeader>
               <TableHeader
+                className="u-align--right"
                 key="6"
               >
-                <th>
+                <th
+                  className="u-align--right"
+                >
                   Last Updated
                 </th>
               </TableHeader>
@@ -948,10 +976,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-align--right"
                 key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-22
@@ -1041,10 +1070,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-align--right"
                 key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-26
@@ -1134,10 +1164,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-align--right"
                 key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-26
@@ -1227,10 +1258,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-align--right"
                 key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-26
@@ -1320,10 +1352,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-align--right"
                 key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-20
@@ -1413,10 +1446,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-align--right"
                 key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-04-13

@@ -62,7 +62,10 @@ function generateModelTableData(state) {
         // so display the controller UUID instead.
         { content: getStatusValue(modelInfoData, "controllerUuid") },
         // We're not currently able to get a last-accessed or updated from JAAS.
-        { content: getStatusValue(modelInfoData, "status.since") }
+        {
+          content: getStatusValue(modelInfoData, "status.since"),
+          className: "u-align--right"
+        }
       ]
     });
   });
@@ -154,7 +157,11 @@ function generateTableHeaders(label) {
     { content: "Cloud/Region", sortKey: "cloud" },
     { content: "Credential", sortKey: "credential" },
     { content: "Controller", sortKey: "controller" },
-    { content: "Last Updated", sortKey: "last-updated" }
+    {
+      content: "Last Updated",
+      sortKey: "last-updated",
+      className: "u-align--right"
+    }
   ];
 }
 
