@@ -7,6 +7,14 @@ import MainTable from "../MainTable/MainTable";
 
 import "./_table-list.scss";
 
+/**
+  Generates the model details link for the table cell. If no ownerTag can be
+  provided then it'll return raw text for the model name.
+  @param {String} modelName The name of the model.
+  @param {String} ownerTag The ownerTag of the model.
+  @param {String} activeUser The ownerTag of the active user.
+  @returns {Object} The React component for the link.
+*/
 const generateModelDetailsLink = (modelName, ownerTag, activeUser) => {
   const modelDetailsPath = `/models/${modelName}`;
   if (ownerTag === activeUser) {
@@ -30,10 +38,24 @@ const generateModelDetailsLink = (modelName, ownerTag, activeUser) => {
   return <Link to={sharedModelDetailsPath}>{modelName}</Link>;
 };
 
+/**
+  Generates the warning message for the model name cell.
+  @param {Object} model The full model data.
+  @return {Object} The react component for the warning message.
+*/
 const generateWarningMessage = model => {
   // <div className="table-list_error-message">{why}</div>
 };
 
+/**
+  Generates the model name cell.
+  @param {Object} model The model data.
+  @param {String} groupLabel The status group the model belongs in.
+    ex) blocked, alert, running
+  @param {String} activeUser The user tag for the active user.
+    ex) user-foo@external
+  @returns {Object} The React element for the model name cell.
+*/
 const generateModelNameCell = (model, groupLabel, activeUser) => {
   const link = generateModelDetailsLink(
     model.model.name,
@@ -156,6 +178,11 @@ function generateTableHeaders(label) {
 }
 
 function TableList() {
+  // Even though the activeUser tag is needed many functions deep, because
+  // hooks _must_ be called in the same order every time we have to get it here
+  // and pass it down through the `generateModelTableData` function as the order
+  // of the model data changes frequently and it's guaranteed to almost never be
+  // in the same order.
   const activeUser = useSelector(getActiveUserTag);
   const groupedModelData = useSelector(getGroupedModelData);
   const { blockedRows, alertRows, runningRows } = generateModelTableData(
