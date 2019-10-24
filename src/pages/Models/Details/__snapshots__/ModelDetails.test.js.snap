@@ -44,7 +44,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           <p
             data-name="cloud-region"
           >
-            google
+            o
             /
             us-central1
           </p>
@@ -127,7 +127,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-waiting"
                 >
                   waiting
                 </span>,
@@ -163,7 +163,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-waiting"
                 >
                   waiting
                 </span>,
@@ -199,7 +199,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-waiting"
                 >
                   waiting
                 </span>,
@@ -235,7 +235,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-waiting"
                 >
                   waiting
                 </span>,
@@ -271,7 +271,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-waiting"
                 >
                   waiting
                 </span>,
@@ -307,7 +307,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-waiting"
                 >
                   waiting
                 </span>,
@@ -343,7 +343,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-waiting"
                 >
                   waiting
                 </span>,
@@ -379,7 +379,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-waiting"
                 >
                   waiting
                 </span>,
@@ -415,7 +415,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-waiting"
                 >
                   waiting
                 </span>,
@@ -568,7 +568,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-waiting"
                     >
                       waiting
                     </span>
@@ -660,7 +660,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-waiting"
                     >
                       waiting
                     </span>
@@ -752,7 +752,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-waiting"
                     >
                       waiting
                     </span>
@@ -844,7 +844,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-waiting"
                     >
                       waiting
                     </span>
@@ -936,7 +936,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-waiting"
                     >
                       waiting
                     </span>
@@ -1028,7 +1028,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-waiting"
                     >
                       waiting
                     </span>
@@ -1120,7 +1120,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-waiting"
                     >
                       waiting
                     </span>
@@ -1212,7 +1212,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-waiting"
                     >
                       waiting
                     </span>
@@ -1304,7 +1304,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-waiting"
                     >
                       waiting
                     </span>
@@ -2757,7 +2757,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           <p
             data-name="cloud-region"
           >
-            google
+            o
             /
             us-east1
           </p>
@@ -2840,7 +2840,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-unknown"
                 >
                   unknown
                 </span>,
@@ -2993,7 +2993,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-unknown"
                     >
                       unknown
                     </span>
@@ -3102,7 +3102,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
               },
               Object {
                 "content": <span
-                  className="model-details__status"
+                  className="model-details__status is-unknown"
                 >
                   unknown
                 </span>,
@@ -3238,7 +3238,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                     role="gridcell"
                   >
                     <span
-                      className="model-details__status"
+                      className="model-details__status is-unknown"
                     >
                       unknown
                     </span>
