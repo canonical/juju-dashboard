@@ -30,6 +30,7 @@ export default function User(props) {
           "is-visible": userPanelVisibility
         })}
       >
+        <span className="user-icon__panel-arrow"></span>
         <ul className="p-list">
           <li className="p-list__item">
             <a href="#_">Profile</a>

@@ -13,6 +13,9 @@ exports[`User Icon renders without crashing and matches snapshot 1`] = `
   <div
     className="user-icon__panel p-card--highlighted"
   >
+    <span
+      className="user-icon__panel-arrow"
+    />
     <ul
       className="p-list"
     >

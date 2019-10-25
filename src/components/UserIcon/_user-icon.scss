@@ -1,3 +1,5 @@
+@import "vanilla-framework/scss/settings_colors";
+
 .user-icon {
   display: grid;
   position: relative;
@@ -6,6 +8,7 @@
   &__panel {
     min-width: 100px;
     opacity: 0;
+    overflow: visible;
     padding: 0.25rem;
     position: absolute;
     right: 0.5rem;
@@ -19,6 +22,18 @@
     &.is-visible {
       opacity: 1;
       z-index: 1;
+    }
+
+    &-arrow {
+      background: $color-x-light;
+      box-shadow: 3px 3px 6px -3px rgba(0, 0, 0, 0.2);
+      height: 1rem;
+      position: absolute;
+      right: 1.5rem;
+      top: -0.25rem;
+      transform: rotate(225deg);
+      width: 1rem;
+      z-index: 2;
     }
   }
 }
