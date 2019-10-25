@@ -6,6 +6,7 @@ import Header from "components/Header/Header";
 import TableList from "components/TableList/TableList";
 import ButtonToggle from "components/ButtonToggle/ButtonToggle";
 import FilterTags from "components/FilterTags/FilterTags";
+import UserIcon from "components/UserIcon/UserIcon";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
 
@@ -36,7 +37,7 @@ export default function Models() {
           </div>
           <ButtonToggle />
           <FilterTags />
-          <i className="p-icon--user">Account icon</i>
+          <UserIcon />
         </div>
       </Header>
       <div className="p-strip is-shallow">

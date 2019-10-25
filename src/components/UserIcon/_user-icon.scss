@@ -1,0 +1,24 @@
+.user-icon {
+  display: grid;
+  position: relative;
+  text-align: center;
+
+  &__panel {
+    min-width: 100px;
+    opacity: 0;
+    padding: 0.25rem;
+    position: absolute;
+    right: 0.5rem;
+    top: 2.5rem;
+    transition: opacity 0.25s ease-in-out;
+
+    .p-list {
+      margin-bottom: 0;
+    }
+
+    &.is-visible {
+      opacity: 1;
+      z-index: 1;
+    }
+  }
+}
