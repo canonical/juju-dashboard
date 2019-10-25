@@ -44,13 +44,6 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
-// const assignStatusIcon = status => {
-//   let statusClass = status ? `is-${status}` : "";
-//   return (
-//     <span className={"model-details__status " + statusClass}>{status}</span>
-//   );
-// };
-
 // Temp function to add link to <td> values
 const wrapLink = (href, text) => {
   return <a href={href}>{text}</a>;
