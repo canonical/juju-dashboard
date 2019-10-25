@@ -1,9 +1,11 @@
 // Import Vanilla Framework
 @import "node_modules/vanilla-framework/scss/vanilla";
 
-$grid-max-width: 100%;
+// Import custom patterns
+@import "status_icons";
 
 // Settings
+$grid-max-width: 100%;
 $color-navigation-background: $color-brand;
 // XXX remove when updating from Vanilla 2.3.0
 // Table font sizing breakpoint is a touch too small for 15" laptop screens

@@ -3,7 +3,11 @@
 exports[`TableList by default, renders with all table headers and no data 1`] = `
 Array [
   <th>
-    Blocked
+    <span
+      className="status-icon is-blocked"
+    >
+      Blocked
+    </span>
   </th>,
   <th>
     Owner
@@ -26,7 +30,11 @@ Array [
     Last Updated
   </th>,
   <th>
-    Attention
+    <span
+      className="status-icon is-attention"
+    >
+      Attention
+    </span>
   </th>,
   <th>
     Owner
@@ -49,7 +57,11 @@ Array [
     Last Updated
   </th>,
   <th>
-    Running
+    <span
+      className="status-icon is-running"
+    >
+      Running
+    </span>
   </th>,
   <th>
     Owner
@@ -89,7 +101,11 @@ exports[`TableList displays all data from redux store 1`] = `
     headers={
       Array [
         Object {
-          "content": "Blocked",
+          "content": <span
+            className="status-icon is-blocked"
+          >
+            Blocked
+          </span>,
           "sortKey": "blocked",
         },
         Object {
@@ -212,7 +228,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="0"
               >
                 <th>
-                  Blocked
+                  <span
+                    className="status-icon is-blocked"
+                  >
+                    Blocked
+                  </span>
                 </th>
               </TableHeader>
               <TableHeader
@@ -465,7 +485,11 @@ exports[`TableList displays all data from redux store 1`] = `
     headers={
       Array [
         Object {
-          "content": "Attention",
+          "content": <span
+            className="status-icon is-attention"
+          >
+            Attention
+          </span>,
           "sortKey": "attention",
         },
         Object {
@@ -511,7 +535,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="0"
               >
                 <th>
-                  Attention
+                  <span
+                    className="status-icon is-attention"
+                  >
+                    Attention
+                  </span>
                 </th>
               </TableHeader>
               <TableHeader
@@ -571,7 +599,11 @@ exports[`TableList displays all data from redux store 1`] = `
     headers={
       Array [
         Object {
-          "content": "Running",
+          "content": <span
+            className="status-icon is-running"
+          >
+            Running
+          </span>,
           "sortKey": "running",
         },
         Object {
@@ -842,7 +874,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="0"
               >
                 <th>
-                  Running
+                  <span
+                    className="status-icon is-running"
+                  >
+                    Running
+                  </span>
                 </th>
               </TableHeader>
               <TableHeader

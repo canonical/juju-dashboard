@@ -1,0 +1,35 @@
+.status-icon {
+  display: inline-block;
+  padding-left: 1.5rem;
+  position: relative;
+  text-transform: capitalize;
+
+  &::before {
+    content: "\00B7";
+    font-size: 6rem;
+    left: 0;
+    position: absolute;
+    top: -6px;
+  }
+
+  &.is-error,
+  &.is-blocked {
+    &::before {
+      color: $color-negative;
+    }
+  }
+
+  &.is-maintenance,
+  &.is-attention {
+    &::before {
+      color: $color-caution;
+    }
+  }
+
+  &.is-running,
+  &.is-active {
+    &::before {
+      color: $color-mid-light;
+    }
+  }
+}

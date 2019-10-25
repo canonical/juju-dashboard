@@ -11,6 +11,7 @@ import Header from "components/Header/Header";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
+import { assignStatusIcon } from "app/utils";
 
 import "./_model-details.scss";
 
@@ -43,12 +44,12 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
-const assignStatusIcon = status => {
-  let statusClass = status ? `is-${status}` : "";
-  return (
-    <span className={"model-details__status " + statusClass}>{status}</span>
-  );
-};
+// const assignStatusIcon = status => {
+//   let statusClass = status ? `is-${status}` : "";
+//   return (
+//     <span className={"model-details__status " + statusClass}>{status}</span>
+//   );
+// };
 
 // Temp function to add link to <td> values
 const wrapLink = (href, text) => {
