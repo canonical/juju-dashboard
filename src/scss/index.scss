@@ -5,9 +5,6 @@ $grid-max-width: 100%;
 
 // Settings
 $color-navigation-background: $color-brand;
-// XXX remove when updating from Vanilla 2.3.0
-// Table font sizing breakpoint is a touch too small for 15" laptop screens
-$increase-font-size-on-larger-screens: false;
 
 @include vf-base;
 @include vf-p-buttons;
