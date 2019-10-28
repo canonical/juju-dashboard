@@ -11,7 +11,7 @@ import Header from "components/Header/Header";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
-import { assignStatusIcon } from "app/utils";
+import { generateStatusIcon } from "app/utils";
 
 import "./_model-details.scss";
 
@@ -62,7 +62,7 @@ const generateApplicationRows = modelStatusData => {
     return {
       columns: [
         { content: wrapLink("#", key) },
-        { content: app.status ? assignStatusIcon(app.status.status) : "-" },
+        { content: app.status ? generateStatusIcon(app.status.status) : "-" },
         { content: "-" },
         { content: "CharmHub" },
         { content: key.split("-")[-1] },
@@ -88,7 +88,7 @@ const generateUnitRows = modelStatusData => {
       unitRows.push({
         columns: [
           { content: wrapLink("#", unitId) },
-          { content: assignStatusIcon(unit.workloadStatus.status) },
+          { content: generateStatusIcon(unit.workloadStatus.status) },
           { content: unit.agentStatus.status },
           { content: unit.machine },
           { content: unit.publicAddress },

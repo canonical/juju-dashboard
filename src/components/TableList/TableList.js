@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { assignStatusIcon } from "app/utils";
+import { generateStatusIcon } from "app/utils";
 
 import MainTable from "../MainTable/MainTable";
 
@@ -152,7 +152,7 @@ function getStatusValue(status, key) {
 
 function generateTableHeaders(label) {
   return [
-    { content: assignStatusIcon(label), sortKey: label.toLowerCase() },
+    { content: generateStatusIcon(label), sortKey: label.toLowerCase() },
     { content: "Owner", sortKey: "owner" },
     { content: "Configuration", sortKey: "summary" },
     { content: "Cloud/Region", sortKey: "cloud" },
