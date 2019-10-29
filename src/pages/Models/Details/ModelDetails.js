@@ -8,6 +8,7 @@ import Layout from "components/Layout/Layout";
 import MainTable from "components/MainTable/MainTable";
 import Terminal from "components/Terminal/Terminal";
 import Header from "components/Header/Header";
+import UserIcon from "components/UserIcon/UserIcon";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
@@ -173,9 +174,7 @@ const ModelDetails = () => {
             <Filter label="View:" filters={viewFilters} />
             <Filter label="Status:" filters={statusFilters} />
           </div>
-          <div className="model-details__user">
-            <i className="p-icon--user">Account icon</i>
-          </div>
+          <UserIcon />
         </div>
       </Header>
       <div className="model-details">
