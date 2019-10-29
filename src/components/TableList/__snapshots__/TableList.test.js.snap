@@ -157,7 +157,27 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "space-man",
             },
             Object {
-              "content": "1/1/1",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    1
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    1
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    1
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
               "content": "google/us-east1",
@@ -194,7 +214,27 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "space-man",
             },
             Object {
-              "content": "3/3/3",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    3
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
               "content": "google/us-east1",
@@ -334,7 +374,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  1/1/1
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      1
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -430,7 +488,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  3/3/3
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      3
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -655,7 +731,27 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "mrdata",
             },
             Object {
-              "content": "9/0/0",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    9
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    0
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
               "content": "google/us-central1",
@@ -692,7 +788,27 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "mrdata",
             },
             Object {
-              "content": "0/0/0",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    0
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
               "content": "google/us-east1",
@@ -729,7 +845,27 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "mrdata",
             },
             Object {
-              "content": "0/0/0",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    0
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
               "content": "google/us-east1",
@@ -766,7 +902,27 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "mrdata",
             },
             Object {
-              "content": "0/0/0",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    0
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
               "content": "google/us-east1",
@@ -803,7 +959,27 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "otheruser",
             },
             Object {
-              "content": "3/3/3",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    3
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
               "content": "google/us-east1",
@@ -840,7 +1016,27 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "space-man",
             },
             Object {
-              "content": "2/2/2",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    2
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    2
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    2
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
               "content": "google/us-east1",
@@ -978,7 +1174,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  9/0/0
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      9
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1072,7 +1286,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  0/0/0
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1166,7 +1398,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  0/0/0
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1260,7 +1510,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  0/0/0
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1354,7 +1622,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  3/3/3
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      3
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1448,7 +1734,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  2/2/2
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      2
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell

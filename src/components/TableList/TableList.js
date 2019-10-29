@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { generateStatusIcon } from "app/utils";
+import { generateStatusIcon, generateSpanClass } from "app/utils";
 
 import MainTable from "../MainTable/MainTable";
 
@@ -115,14 +115,31 @@ function getStatusValue(status, key) {
     switch (key) {
       case "summary":
         const applicationKeys = Object.keys(status.applications);
-        const applicationCount = applicationKeys.length;
-        const machineCount = Object.keys(status.machines).length;
-        const unitCount = applicationKeys.reduce(
-          (prev, key) =>
-            prev + Object.keys(status.applications[key].units).length,
-          0
+        const applicationCount = generateSpanClass(
+          "model-details__app-icon",
+          applicationKeys.length
         );
-        returnValue = applicationCount + "/" + machineCount + "/" + unitCount;
+        const machineCount = generateSpanClass(
+          "model-details__machine-icon",
+          Object.keys(status.machines).length
+        );
+        const unitCount = generateSpanClass(
+          "model-details__unit-icon",
+          applicationKeys.reduce(
+            (prev, key) =>
+              prev + Object.keys(status.applications[key].units).length,
+            0
+          )
+        );
+        returnValue = (
+          <Fragment>
+            <div className="model-details__config">
+              {applicationCount}
+              {machineCount}
+              {unitCount}
+            </div>
+          </Fragment>
+        );
         break;
       case "cloudTag":
         returnValue = status.model.cloudTag.replace("cloud-", "");
