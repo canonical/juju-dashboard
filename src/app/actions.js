@@ -44,7 +44,6 @@ export function storeVisitURL(visitURL) {
   Flush localStorage login keys
 */
 export function LogOut() {
-  console.log("logging ou");
   localStorage.removeItem("identity");
   localStorage.removeItem("https://api.jujucharms.com/identity");
   return {
