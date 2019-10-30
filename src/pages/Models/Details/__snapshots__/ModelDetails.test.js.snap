@@ -60,7 +60,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           <p
             data-name="version"
           >
-            2.5.4
+            2.6.8
           </p>
         </div>
         <div
@@ -1515,6 +1515,82 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "content": "kubernetes-master:kube-control",
+              },
+              Object {
+                "content": "kubernetes-worker:kube-control",
+              },
+              Object {
+                "content": "kube-control",
+              },
+              Object {
+                "content": "provider",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "easyrsa:client",
+              },
+              Object {
+                "content": "kubernetes-worker:certificates",
+              },
+              Object {
+                "content": "tls-certificates",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubeapi-load-balancer:website",
+              },
+              Object {
+                "content": "kubernetes-worker:kube-api-endpoint",
+              },
+              Object {
+                "content": "http",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "content": "kubernetes-worker:cni",
+              },
+              Object {
+                "content": "flannel:cni",
+              },
+              Object {
+                "content": "kubernetes-cni",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": "joining",
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
                 "content": "elasticsearch:peer",
               },
               Object {
@@ -1686,48 +1762,10 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubeapi-load-balancer:website",
-              },
-              Object {
-                "content": "kubernetes-worker:kube-api-endpoint",
-              },
-              Object {
-                "content": "http",
-              },
-              Object {
-                "content": "requirer",
-              },
-              Object {
-                "content": "joining",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
                 "content": "easyrsa:client",
               },
               Object {
                 "content": "kubernetes-master:certificates",
-              },
-              Object {
-                "content": "tls-certificates",
-              },
-              Object {
-                "content": "requirer",
-              },
-              Object {
-                "content": "joining",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "easyrsa:client",
-              },
-              Object {
-                "content": "kubernetes-worker:certificates",
               },
               Object {
                 "content": "tls-certificates",
@@ -1753,44 +1791,6 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               },
               Object {
                 "content": "requirer",
-              },
-              Object {
-                "content": "joining",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "kubernetes-worker:cni",
-              },
-              Object {
-                "content": "flannel:cni",
-              },
-              Object {
-                "content": "kubernetes-cni",
-              },
-              Object {
-                "content": "requirer",
-              },
-              Object {
-                "content": "joining",
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "kubernetes-master:kube-control",
-              },
-              Object {
-                "content": "kubernetes-worker:kube-control",
-              },
-              Object {
-                "content": "kube-control",
-              },
-              Object {
-                "content": "provider",
               },
               Object {
                 "content": "joining",
@@ -1876,7 +1876,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    elasticsearch:peer
+                    kubernetes-master:kube-control
                   </td>
                 </TableCell>
                 <TableCell
@@ -1886,7 +1886,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    kubernetes-worker:kube-control
                   </td>
                 </TableCell>
                 <TableCell
@@ -1896,455 +1896,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    http
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    peer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="1"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    elasticsearch:client
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kibana:rest
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    elasticsearch
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    requirer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="2"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    etcd:cluster
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    -
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    etcd
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    peer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="3"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    etcd:db
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    flannel:etcd
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    etcd
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    requirer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="4"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    easyrsa:client
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    etcd:certificates
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    tls-certificates
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    requirer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="5"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    etcd:db
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kubernetes-master:etcd
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    etcd
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    requirer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="6"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    easyrsa:client
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kubeapi-load-balancer:certificates
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    tls-certificates
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    requirer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="7"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kubeapi-load-balancer:loadbalancer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kubernetes-master:loadbalancer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    public-address
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    requirer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="8"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kubernetes-master:kube-api-endpoint
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kubeapi-load-balancer:apiserver
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    http
+                    kube-control
                   </td>
                 </TableCell>
                 <TableCell
@@ -2370,119 +1922,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               </tr>
             </TableRow>
             <TableRow
-              key="9"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kubeapi-load-balancer:website
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kubernetes-worker:kube-api-endpoint
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    http
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    requirer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="10"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    easyrsa:client
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    kubernetes-master:certificates
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    tls-certificates
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    requirer
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    joining
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-            <TableRow
-              key="11"
+              key="1"
             >
               <tr>
                 <TableCell
@@ -2538,7 +1978,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               </tr>
             </TableRow>
             <TableRow
-              key="12"
+              key="2"
             >
               <tr>
                 <TableCell
@@ -2548,7 +1988,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubernetes-master:cni
+                    kubeapi-load-balancer:website
                   </td>
                 </TableCell>
                 <TableCell
@@ -2558,7 +1998,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    flannel:cni
+                    kubernetes-worker:kube-api-endpoint
                   </td>
                 </TableCell>
                 <TableCell
@@ -2568,7 +2008,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubernetes-cni
+                    http
                   </td>
                 </TableCell>
                 <TableCell
@@ -2594,7 +2034,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               </tr>
             </TableRow>
             <TableRow
-              key="13"
+              key="3"
             >
               <tr>
                 <TableCell
@@ -2650,7 +2090,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               </tr>
             </TableRow>
             <TableRow
-              key="14"
+              key="4"
             >
               <tr>
                 <TableCell
@@ -2660,7 +2100,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubernetes-master:kube-control
+                    elasticsearch:peer
                   </td>
                 </TableCell>
                 <TableCell
@@ -2670,7 +2110,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kubernetes-worker:kube-control
+                    -
                   </td>
                 </TableCell>
                 <TableCell
@@ -2680,7 +2120,455 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    kube-control
+                    http
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    peer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="5"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    elasticsearch:client
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kibana:rest
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    elasticsearch
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="6"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd:cluster
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    peer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="7"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd:db
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    flannel:etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="8"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    easyrsa:client
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd:certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    tls-certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="9"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd:db
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    etcd
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="10"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    easyrsa:client
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubeapi-load-balancer:certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    tls-certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="11"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubeapi-load-balancer:loadbalancer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:loadbalancer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    public-address
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="12"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:kube-api-endpoint
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubeapi-load-balancer:apiserver
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    http
                   </td>
                 </TableCell>
                 <TableCell
@@ -2691,6 +2579,118 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     provider
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="13"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    easyrsa:client
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    tls-certificates
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    joining
+                  </td>
+                </TableCell>
+              </tr>
+            </TableRow>
+            <TableRow
+              key="14"
+            >
+              <tr>
+                <TableCell
+                  key="0"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-master:cni
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    flannel:cni
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="2"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    kubernetes-cni
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="3"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    requirer
                   </td>
                 </TableCell>
                 <TableCell
@@ -2742,9 +2742,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           </h4>
           <p
             data-name="controller"
-          >
-            iaas
-          </p>
+          />
         </div>
         <div
           className="info-panel__grid-item"
@@ -2756,11 +2754,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           </h4>
           <p
             data-name="cloud-region"
-          >
-            o
-            /
-            us-east1
-          </p>
+          />
         </div>
         <div
           className="info-panel__grid-item"
@@ -2772,9 +2766,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           </h4>
           <p
             data-name="version"
-          >
-            2.4.7
-          </p>
+          />
         </div>
         <div
           className="info-panel__grid-item"
@@ -2786,9 +2778,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           </h4>
           <p
             data-name="sla"
-          >
-            unsupported
-          </p>
+          />
         </div>
       </div>
     </div>
@@ -2827,46 +2817,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           },
         ]
       }
-      rows={
-        Array [
-          Object {
-            "columns": Array [
-              Object {
-                "content": <a
-                  href="#"
-                >
-                  jenkins
-                </a>,
-              },
-              Object {
-                "content": <span
-                  className="status-icon is-unknown"
-                >
-                  unknown
-                </span>,
-              },
-              Object {
-                "content": "-",
-              },
-              Object {
-                "content": "CharmHub",
-              },
-              Object {
-                "content": undefined,
-              },
-              Object {
-                "content": "-",
-              },
-              Object {
-                "content": "-",
-              },
-              Object {
-                "content": "-",
-              },
-            ],
-          },
-        ]
-      }
+      rows={Array []}
       sortable={true}
     >
       <Table
@@ -2966,100 +2917,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
               </tr>
             </TableRow>
           </thead>
-          <tbody>
-            <TableRow
-              key="0"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    <a
-                      href="#"
-                    >
-                      jenkins
-                    </a>
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    <span
-                      className="status-icon is-unknown"
-                    >
-                      unknown
-                    </span>
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    -
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    CharmHub
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
-                  key="5"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    -
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="6"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    -
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="7"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    -
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-          </tbody>
+          <tbody />
         </table>
       </Table>
     </MainTable>
@@ -3089,43 +2947,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
           },
         ]
       }
-      rows={
-        Array [
-          Object {
-            "columns": Array [
-              Object {
-                "content": <a
-                  href="#"
-                >
-                  jenkins/2
-                </a>,
-              },
-              Object {
-                "content": <span
-                  className="status-icon is-unknown"
-                >
-                  unknown
-                </span>,
-              },
-              Object {
-                "content": "lost",
-              },
-              Object {
-                "content": "2",
-              },
-              Object {
-                "content": "104.196.205.152",
-              },
-              Object {
-                "content": undefined,
-              },
-              Object {
-                "content": "agent lost, see 'juju show-status-log jenkins/2'",
-              },
-            ],
-          },
-        ]
-      }
+      rows={Array []}
       sortable={true}
     >
       <Table
@@ -3211,90 +3033,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
               </tr>
             </TableRow>
           </thead>
-          <tbody>
-            <TableRow
-              key="0"
-            >
-              <tr>
-                <TableCell
-                  key="0"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    <a
-                      href="#"
-                    >
-                      jenkins/2
-                    </a>
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="1"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    <span
-                      className="status-icon is-unknown"
-                    >
-                      unknown
-                    </span>
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="2"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    lost
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="3"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    2
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    104.196.205.152
-                  </td>
-                </TableCell>
-                <TableCell
-                  key="5"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
-                  key="6"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  >
-                    agent lost, see 'juju show-status-log jenkins/2'
-                  </td>
-                </TableCell>
-              </tr>
-            </TableRow>
-          </tbody>
+          <tbody />
         </table>
       </Table>
     </MainTable>

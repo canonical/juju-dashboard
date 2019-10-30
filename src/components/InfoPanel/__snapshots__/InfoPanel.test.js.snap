@@ -56,7 +56,7 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
       <p
         data-name="version"
       >
-        2.5.4
+        2.6.8
       </p>
     </div>
     <div
