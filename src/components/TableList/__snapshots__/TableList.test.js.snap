@@ -30,7 +30,11 @@ Array [
     Last Updated
   </th>,
   <th>
-    Alert
+    <span
+      className="status-icon is-alert"
+    >
+      Alert
+    </span>
   </th>,
   <th>
     Owner

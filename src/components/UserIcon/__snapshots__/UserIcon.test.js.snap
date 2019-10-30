@@ -41,7 +41,7 @@ exports[`User Icon renders without crashing and matches snapshot 1`] = `
         className="p-list__item"
       >
         <a
-          href="#_"
+          href="/"
           onClick={[Function]}
         >
           Log out
