@@ -1,4 +1,6 @@
+@import "vanilla-framework/scss/settings_colors";
+
 .table-list_error-message {
-  color: red;
-  font-size: 0.5rem;
+  color: $color-negative;
+  font-size: 0.875rem;
 }

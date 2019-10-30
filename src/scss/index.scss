@@ -1,9 +1,11 @@
 // Import Vanilla Framework
 @import "node_modules/vanilla-framework/scss/vanilla";
 
-$grid-max-width: 100%;
+// Import custom patterns
+@import "status_icons";
 
 // Settings
+$grid-max-width: 100%;
 $color-navigation-background: $color-brand;
 
 @include vf-base;
@@ -22,6 +24,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-table-of-contents;
 @include vf-p-table-mobile-card;
 @include vf-p-table-sortable;
+@include vf-u-align;
 @include vf-u-layout;
 
 // Fix consecutive table bug

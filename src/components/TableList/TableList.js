@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { generateStatusIcon, generateSpanClass } from "app/utils";
 
 import { getActiveUserTag, getGroupedModelData } from "app/selectors";
 import MainTable from "../MainTable/MainTable";
@@ -97,14 +98,23 @@ function generateModelTableData(groupedModels, activeUser) {
               model.info.ownerTag.split("@")[0].replace("user-", "")
           },
           { content: getStatusValue(model, "summary") },
-          { content: getStatusValue(model, "cloudTag") },
-          { content: getStatusValue(model, "region") },
+          {
+            content: (
+              <>
+                {getStatusValue(model, "region")}/
+                {getStatusValue(model, "cloudTag")}
+              </>
+            )
+          },
           { content: getStatusValue(model.info, "cloudCredentialTag") },
           // We're not currently able to get the controller name from the API.
           // so display the controller UUID instead.
           { content: getStatusValue(model.info, "controllerUuid") },
           // We're not currently able to get a last-accessed or updated from JAAS.
-          { content: getStatusValue(model.info, "status.since") }
+          {
+            content: getStatusValue(model.info, "status.since"),
+            className: "u-align--right"
+          }
         ]
       });
     });
@@ -126,14 +136,31 @@ function getStatusValue(status, key) {
     switch (key) {
       case "summary":
         const applicationKeys = Object.keys(status.applications);
-        const applicationCount = applicationKeys.length;
-        const machineCount = Object.keys(status.machines).length;
-        const unitCount = applicationKeys.reduce(
-          (prev, key) =>
-            prev + Object.keys(status.applications[key].units).length,
-          0
+        const applicationCount = generateSpanClass(
+          "model-details__app-icon",
+          applicationKeys.length
         );
-        returnValue = applicationCount + "/" + machineCount + "/" + unitCount;
+        const machineCount = generateSpanClass(
+          "model-details__machine-icon",
+          Object.keys(status.machines).length
+        );
+        const unitCount = generateSpanClass(
+          "model-details__unit-icon",
+          applicationKeys.reduce(
+            (prev, key) =>
+              prev + Object.keys(status.applications[key].units).length,
+            0
+          )
+        );
+        returnValue = (
+          <Fragment>
+            <div className="model-details__config">
+              {applicationCount}
+              {machineCount}
+              {unitCount}
+            </div>
+          </Fragment>
+        );
         break;
       case "cloudTag":
         returnValue = status.model.cloudTag.replace("cloud-", "");
@@ -168,14 +195,17 @@ function getStatusValue(status, key) {
 */
 function generateTableHeaders(label) {
   return [
-    { content: label, sortKey: label.toLowerCase() },
+    { content: generateStatusIcon(label), sortKey: label.toLowerCase() },
     { content: "Owner", sortKey: "owner" },
-    { content: "Apps/Machines/Units", sortKey: "summary" },
-    { content: "Cloud", sortKey: "cloud" },
-    { content: "Region", sortKey: "region" },
+    { content: "Configuration", sortKey: "summary" },
+    { content: "Cloud/Region", sortKey: "cloud" },
     { content: "Credential", sortKey: "credential" },
     { content: "Controller", sortKey: "controller" },
-    { content: "Last Updated", sortKey: "last-updated" }
+    {
+      content: "Last Updated",
+      sortKey: "last-updated",
+      className: "u-align--right"
+    }
   ];
 }
 

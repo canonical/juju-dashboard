@@ -26,33 +26,6 @@
     text-align: center;
   }
 
-  &__status {
-    display: inline-block;
-    padding-left: 1.5rem;
-    position: relative;
-    text-transform: capitalize;
-
-    &::before {
-      content: "\00B7";
-      font-size: 6rem;
-      left: 0;
-      position: absolute;
-      top: -6px;
-    }
-
-    &.is-error::before {
-      color: $color-negative;
-    }
-
-    &.is-active::before {
-      color: $color-mid-light;
-    }
-
-    &.is-maintenance::before {
-      color: $color-caution;
-    }
-  }
-
   .p-table--sortable {
     margin-bottom: 2rem;
 
@@ -75,5 +48,42 @@
         background-color: #cef3ff;
       }
     }
+  }
+
+  &__config {
+    display: grid;
+    gap: 0.25rem;
+    grid-template-columns: repeat(3, 1fr);
+    text-align: left;
+  }
+
+  &__app-icon,
+  &__machine-icon,
+  &__unit-icon {
+    padding-left: 1rem;
+    position: relative;
+
+    &::before {
+      background-repeat: no-repeat;
+      background-size: cover;
+      content: " ";
+      height: 0.75rem;
+      left: 0;
+      position: absolute;
+      top: 0.35rem;
+      width: 0.75rem;
+    }
+  }
+
+  &__app-icon::before {
+    background-image: url("https://assets.ubuntu.com/v1/51642f58-models.svg");
+  }
+
+  &__machine-icon::before {
+    background-image: url("https://assets.ubuntu.com/v1/b7522ca2-machines.svg");
+  }
+
+  &__unit-icon::before {
+    background-image: url("https://assets.ubuntu.com/v1/8414b187-controllers.svg");
   }
 }

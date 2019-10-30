@@ -2,7 +2,8 @@
 export const actionsList = {
   storeBakery: "STORE_BAKERY",
   storeVisitURL: "STORE_VISIT_URL",
-  updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION"
+  updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
+  logOut: "LOG_OUT"
 };
 
 // Action creators
@@ -36,5 +37,23 @@ export function storeVisitURL(visitURL) {
   return {
     type: actionsList.storeVisitURL,
     payload: visitURL
+  };
+}
+
+export function clearUserData() {
+  return {
+    type: actionsList.logOut
+  };
+}
+
+// Thunks
+/**
+  Flush localStorage login keys
+*/
+export function logOut() {
+  return async function thunk(dispatch) {
+    localStorage.removeItem("identity");
+    localStorage.removeItem("https://api.jujucharms.com/identity");
+    dispatch(clearUserData());
   };
 }

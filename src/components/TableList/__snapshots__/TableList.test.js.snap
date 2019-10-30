@@ -3,19 +3,20 @@
 exports[`TableList by default, renders with all table headers and no data 1`] = `
 Array [
   <th>
-    Blocked
+    <span
+      className="status-icon is-blocked"
+    >
+      Blocked
+    </span>
   </th>,
   <th>
     Owner
   </th>,
   <th>
-    Apps/Machines/Units
+    Configuration
   </th>,
   <th>
-    Cloud
-  </th>,
-  <th>
-    Region
+    Cloud/Region
   </th>,
   <th>
     Credential
@@ -23,23 +24,26 @@ Array [
   <th>
     Controller
   </th>,
-  <th>
+  <th
+    className="u-align--right"
+  >
     Last Updated
   </th>,
   <th>
-    Alert
+    <span
+      className="status-icon is-alert"
+    >
+      Alert
+    </span>
   </th>,
   <th>
     Owner
   </th>,
   <th>
-    Apps/Machines/Units
+    Configuration
   </th>,
   <th>
-    Cloud
-  </th>,
-  <th>
-    Region
+    Cloud/Region
   </th>,
   <th>
     Credential
@@ -47,23 +51,26 @@ Array [
   <th>
     Controller
   </th>,
-  <th>
+  <th
+    className="u-align--right"
+  >
     Last Updated
   </th>,
   <th>
-    Running
+    <span
+      className="status-icon is-running"
+    >
+      Running
+    </span>
   </th>,
   <th>
     Owner
   </th>,
   <th>
-    Apps/Machines/Units
+    Configuration
   </th>,
   <th>
-    Cloud
-  </th>,
-  <th>
-    Region
+    Cloud/Region
   </th>,
   <th>
     Credential
@@ -71,7 +78,9 @@ Array [
   <th>
     Controller
   </th>,
-  <th>
+  <th
+    className="u-align--right"
+  >
     Last Updated
   </th>,
 ]
@@ -92,7 +101,11 @@ exports[`TableList displays all data from redux store 1`] = `
     headers={
       Array [
         Object {
-          "content": "Blocked",
+          "content": <span
+            className="status-icon is-blocked"
+          >
+            Blocked
+          </span>,
           "sortKey": "blocked",
         },
         Object {
@@ -100,16 +113,12 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "owner",
         },
         Object {
-          "content": "Apps/Machines/Units",
+          "content": "Configuration",
           "sortKey": "summary",
         },
         Object {
-          "content": "Cloud",
+          "content": "Cloud/Region",
           "sortKey": "cloud",
-        },
-        Object {
-          "content": "Region",
-          "sortKey": "region",
         },
         Object {
           "content": "Credential",
@@ -120,6 +129,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "controller",
         },
         Object {
+          "className": "u-align--right",
           "content": "Last Updated",
           "sortKey": "last-updated",
         },
@@ -147,13 +157,30 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "space-man",
             },
             Object {
-              "content": "1/1/1",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    1
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    1
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    1
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "gce",
@@ -162,6 +189,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-04-13",
             },
           ],
@@ -186,13 +214,30 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "space-man",
             },
             Object {
-              "content": "3/3/3",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    3
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "gce",
@@ -201,6 +246,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-04-13",
             },
           ],
@@ -222,7 +268,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="0"
               >
                 <th>
-                  Blocked
+                  <span
+                    className="status-icon is-blocked"
+                  >
+                    Blocked
+                  </span>
                 </th>
               </TableHeader>
               <TableHeader
@@ -236,41 +286,37 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="2"
               >
                 <th>
-                  Apps/Machines/Units
+                  Configuration
                 </th>
               </TableHeader>
               <TableHeader
                 key="3"
               >
                 <th>
-                  Cloud
+                  Cloud/Region
                 </th>
               </TableHeader>
               <TableHeader
                 key="4"
               >
                 <th>
-                  Region
+                  Credential
                 </th>
               </TableHeader>
               <TableHeader
                 key="5"
               >
                 <th>
-                  Credential
-                </th>
-              </TableHeader>
-              <TableHeader
-                key="6"
-              >
-                <th>
                   Controller
                 </th>
               </TableHeader>
               <TableHeader
-                key="7"
+                className="u-align--right"
+                key="6"
               >
-                <th>
+                <th
+                  className="u-align--right"
+                >
                   Last Updated
                 </th>
               </TableHeader>
@@ -328,7 +374,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  1/1/1
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      1
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -338,7 +402,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -348,7 +412,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  gce
                 </td>
               </TableCell>
               <TableCell
@@ -358,24 +422,15 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                className="u-align--right"
+                key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-04-13
@@ -433,7 +488,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  3/3/3
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      3
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -443,7 +516,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -453,7 +526,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  gce
                 </td>
               </TableCell>
               <TableCell
@@ -463,24 +536,15 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                className="u-align--right"
+                key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-04-13
@@ -497,7 +561,11 @@ exports[`TableList displays all data from redux store 1`] = `
     headers={
       Array [
         Object {
-          "content": "Attention",
+          "content": <span
+            className="status-icon is-attention"
+          >
+            Attention
+          </span>,
           "sortKey": "attention",
         },
         Object {
@@ -505,16 +573,12 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "owner",
         },
         Object {
-          "content": "Apps/Machines/Units",
+          "content": "Configuration",
           "sortKey": "summary",
         },
         Object {
-          "content": "Cloud",
+          "content": "Cloud/Region",
           "sortKey": "cloud",
-        },
-        Object {
-          "content": "Region",
-          "sortKey": "region",
         },
         Object {
           "content": "Credential",
@@ -525,6 +589,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "controller",
         },
         Object {
+          "className": "u-align--right",
           "content": "Last Updated",
           "sortKey": "last-updated",
         },
@@ -546,7 +611,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="0"
               >
                 <th>
-                  Attention
+                  <span
+                    className="status-icon is-attention"
+                  >
+                    Attention
+                  </span>
                 </th>
               </TableHeader>
               <TableHeader
@@ -560,41 +629,37 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="2"
               >
                 <th>
-                  Apps/Machines/Units
+                  Configuration
                 </th>
               </TableHeader>
               <TableHeader
                 key="3"
               >
                 <th>
-                  Cloud
+                  Cloud/Region
                 </th>
               </TableHeader>
               <TableHeader
                 key="4"
               >
                 <th>
-                  Region
+                  Credential
                 </th>
               </TableHeader>
               <TableHeader
                 key="5"
               >
                 <th>
-                  Credential
-                </th>
-              </TableHeader>
-              <TableHeader
-                key="6"
-              >
-                <th>
                   Controller
                 </th>
               </TableHeader>
               <TableHeader
-                key="7"
+                className="u-align--right"
+                key="6"
               >
-                <th>
+                <th
+                  className="u-align--right"
+                >
                   Last Updated
                 </th>
               </TableHeader>
@@ -610,7 +675,11 @@ exports[`TableList displays all data from redux store 1`] = `
     headers={
       Array [
         Object {
-          "content": "Running",
+          "content": <span
+            className="status-icon is-running"
+          >
+            Running
+          </span>,
           "sortKey": "running",
         },
         Object {
@@ -618,16 +687,12 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "owner",
         },
         Object {
-          "content": "Apps/Machines/Units",
+          "content": "Configuration",
           "sortKey": "summary",
         },
         Object {
-          "content": "Cloud",
+          "content": "Cloud/Region",
           "sortKey": "cloud",
-        },
-        Object {
-          "content": "Region",
-          "sortKey": "region",
         },
         Object {
           "content": "Credential",
@@ -638,6 +703,7 @@ exports[`TableList displays all data from redux store 1`] = `
           "sortKey": "controller",
         },
         Object {
+          "className": "u-align--right",
           "content": "Last Updated",
           "sortKey": "last-updated",
         },
@@ -665,13 +731,30 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "mrdata",
             },
             Object {
-              "content": "9/0/0",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    9
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    0
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-central1",
+              "content": "google/us-central1",
             },
             Object {
               "content": "admin",
@@ -680,6 +763,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-22",
             },
           ],
@@ -704,13 +788,30 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "mrdata",
             },
             Object {
-              "content": "0/0/0",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    0
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "juju",
@@ -719,6 +820,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-26",
             },
           ],
@@ -743,13 +845,30 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "mrdata",
             },
             Object {
-              "content": "0/0/0",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    0
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "juju",
@@ -758,6 +877,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-26",
             },
           ],
@@ -782,13 +902,30 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "mrdata",
             },
             Object {
-              "content": "0/0/0",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    0
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    0
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "juju",
@@ -797,6 +934,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-26",
             },
           ],
@@ -821,13 +959,30 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "otheruser",
             },
             Object {
-              "content": "3/3/3",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    3
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "google-bigbot",
@@ -836,6 +991,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-08-20",
             },
           ],
@@ -860,13 +1016,30 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "space-man",
             },
             Object {
-              "content": "2/2/2",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    2
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    2
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    2
+                  </span>
+                </div>
+              </React.Fragment>,
             },
             Object {
-              "content": "google",
-            },
-            Object {
-              "content": "us-east1",
+              "content": "google/us-east1",
             },
             Object {
               "content": "gce",
@@ -875,6 +1048,7 @@ exports[`TableList displays all data from redux store 1`] = `
               "content": "a030329a...",
             },
             Object {
+              "className": "u-align--right",
               "content": "2019-04-13",
             },
           ],
@@ -896,7 +1070,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="0"
               >
                 <th>
-                  Running
+                  <span
+                    className="status-icon is-running"
+                  >
+                    Running
+                  </span>
                 </th>
               </TableHeader>
               <TableHeader
@@ -910,41 +1088,37 @@ exports[`TableList displays all data from redux store 1`] = `
                 key="2"
               >
                 <th>
-                  Apps/Machines/Units
+                  Configuration
                 </th>
               </TableHeader>
               <TableHeader
                 key="3"
               >
                 <th>
-                  Cloud
+                  Cloud/Region
                 </th>
               </TableHeader>
               <TableHeader
                 key="4"
               >
                 <th>
-                  Region
+                  Credential
                 </th>
               </TableHeader>
               <TableHeader
                 key="5"
               >
                 <th>
-                  Credential
-                </th>
-              </TableHeader>
-              <TableHeader
-                key="6"
-              >
-                <th>
                   Controller
                 </th>
               </TableHeader>
               <TableHeader
-                key="7"
+                className="u-align--right"
+                key="6"
               >
-                <th>
+                <th
+                  className="u-align--right"
+                >
                   Last Updated
                 </th>
               </TableHeader>
@@ -1000,7 +1174,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  9/0/0
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      9
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1010,7 +1202,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-central1
                 </td>
               </TableCell>
               <TableCell
@@ -1020,7 +1212,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-central1
+                  admin
                 </td>
               </TableCell>
               <TableCell
@@ -1030,24 +1222,15 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  admin
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                className="u-align--right"
+                key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-22
@@ -1103,7 +1286,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  0/0/0
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1113,7 +1314,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1123,7 +1324,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  juju
                 </td>
               </TableCell>
               <TableCell
@@ -1133,24 +1334,15 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  juju
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                className="u-align--right"
+                key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-26
@@ -1206,7 +1398,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  0/0/0
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1216,7 +1426,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1226,7 +1436,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  juju
                 </td>
               </TableCell>
               <TableCell
@@ -1236,24 +1446,15 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  juju
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                className="u-align--right"
+                key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-26
@@ -1309,7 +1510,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  0/0/0
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1319,7 +1538,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1329,7 +1548,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  juju
                 </td>
               </TableCell>
               <TableCell
@@ -1339,24 +1558,15 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  juju
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                className="u-align--right"
+                key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-26
@@ -1412,7 +1622,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  3/3/3
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      3
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1422,7 +1650,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1432,7 +1660,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  google-bigbot
                 </td>
               </TableCell>
               <TableCell
@@ -1442,24 +1670,15 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google-bigbot
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                className="u-align--right"
+                key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-08-20
@@ -1515,7 +1734,25 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  2/2/2
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      2
+                    </span>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1525,7 +1762,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google
+                  google/us-east1
                 </td>
               </TableCell>
               <TableCell
@@ -1535,7 +1772,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
+                  gce
                 </td>
               </TableCell>
               <TableCell
@@ -1545,24 +1782,15 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
-                </td>
-              </TableCell>
-              <TableCell
-                key="6"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
                   a030329a...
                 </td>
               </TableCell>
               <TableCell
-                key="7"
+                className="u-align--right"
+                key="6"
               >
                 <td
-                  className=""
+                  className="u-align--right"
                   role="gridcell"
                 >
                   2019-04-13
