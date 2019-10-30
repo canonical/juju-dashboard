@@ -59,7 +59,7 @@ function createNewBakery(visitPage, macaroonStore) {
 function generateConnectionOptions() {
   // The options used when connecting to a Juju controller or model.
   return {
-    debug: true,
+    debug: false,
     facades: [client, modelManager],
     bakery
   };
