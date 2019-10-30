@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 
+import { LogOut } from "app/actions";
+
 import "./_user-icon.scss";
 
 export default function User(props) {
   const [userPanelVisibility, setUserPanelVisibility] = useState(false);
-
-  const logOut = e => {
-    e.preventDefault();
-    localStorage.removeItem("identity");
-    localStorage.removeItem("https://api.jujucharms.com/identity");
-    // TODO: Use React Router to redirect correctly
-    window.location.href = "/";
-  };
 
   return (
     <div className="user-icon">
@@ -36,7 +30,7 @@ export default function User(props) {
             <a href="#_">Help</a>
           </li>
           <li className="p-list__item">
-            <a href="#_" onClick={e => logOut(e)}>
+            <a href="/" onClick={() => LogOut()}>
               Log out
             </a>
           </li>
