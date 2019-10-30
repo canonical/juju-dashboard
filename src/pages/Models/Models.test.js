@@ -23,9 +23,7 @@ describe("Models page", () => {
     expect(wrapper.find("TableList"));
   });
 
-  // XXX Skipped until the test data can be updated.
-  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/115
-  it.skip("has a header which shows the model counts", () => {
+  it("has a header which shows the model counts", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
@@ -35,7 +33,7 @@ describe("Models page", () => {
       </Provider>
     );
     expect(wrapper.find(".models__count").text()).toBe(
-      "8 models: 0 blocked, 2 alerts, 6 running"
+      "16 models: 2 blocked, 4 alerts, 10 running"
     );
   });
 });
