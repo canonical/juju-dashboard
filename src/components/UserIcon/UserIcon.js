@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 
-import { LogOut } from "app/actions";
+import { logOut } from "app/actions";
 
 import "./_user-icon.scss";
 
@@ -30,7 +30,7 @@ export default function User(props) {
             <a href="#_">Help</a>
           </li>
           <li className="p-list__item">
-            <a href="/" onClick={() => LogOut()}>
+            <a href="/" onClick={() => logOut()}>
               Log out
             </a>
           </li>

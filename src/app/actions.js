@@ -40,14 +40,20 @@ export function storeVisitURL(visitURL) {
   };
 }
 
+export function clearUserData() {
+  return {
+    type: actionsList.logOut
+  };
+}
+
+// Thunks
 /**
   Flush localStorage login keys
 */
-export function LogOut() {
-  localStorage.removeItem("identity");
-  localStorage.removeItem("https://api.jujucharms.com/identity");
-  return {
-    type: actionsList.LogOut,
-    payload: true
+export function logOut() {
+  return async function thunk(dispatch) {
+    localStorage.removeItem("identity");
+    localStorage.removeItem("https://api.jujucharms.com/identity");
+    dispatch(clearUserData());
   };
 }
