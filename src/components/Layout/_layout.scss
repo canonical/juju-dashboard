@@ -1,7 +1,5 @@
 @import "vanilla-framework/scss/settings_colors";
-
-$color-sidebar: #003b4e;
-$sidebar-collapsed: 48px;
+@import "../../scss/settings";
 
 .l-container {
   display: flex;
@@ -12,9 +10,9 @@ $sidebar-collapsed: 48px;
   background-color: $color-x-light;
   overflow: hidden;
   position: relative;
-  width: calc(100vw - 250px);
+  width: calc(100vw - #{$sidebar-full-width});
 
-  .is-collapsible & {
+  .has-collapsible-sidebar & {
     width: calc(100vw - #{$sidebar-collapsed});
   }
 }
@@ -22,10 +20,10 @@ $sidebar-collapsed: 48px;
 .l-side {
   background: $color-sidebar;
   padding: 0;
-  transition: 0.5s;
-  width: 250px;
+  transition: width 0.25s ease-in-out;
+  width: $sidebar-full-width;
 
-  .is-collapsible & {
+  .has-collapsible-sidebar & {
     width: $sidebar-collapsed;
   }
 }
