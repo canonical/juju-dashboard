@@ -12,6 +12,7 @@ import UserIcon from "components/UserIcon/UserIcon";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
+import { collapsibleSidebar } from "app/actions";
 import { generateStatusIcon } from "app/utils";
 
 import "./_model-details.scss";
@@ -167,6 +168,16 @@ const ModelDetails = () => {
     modelUUID
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
+
+  // Toggle collapsible sidebar when component mounts/unmounts
+  useEffect(() => {
+    // This gets called after every render
+    dispatch(collapsibleSidebar(true));
+    // Cleanup when unmounting
+    return () => {
+      dispatch(collapsibleSidebar(false));
+    };
+  });
 
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {

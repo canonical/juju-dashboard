@@ -17,6 +17,9 @@ function rootReducer(state = {}, action) {
       case actionsList.logOut:
         draftState.bakery = null;
         break;
+      case actionsList.collapsibleSidebar:
+        draftState.collapsibleSidebar = action.payload;
+        break;
       default:
         // no default value, fall through.
         break;
