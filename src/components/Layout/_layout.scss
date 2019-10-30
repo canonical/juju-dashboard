@@ -1,17 +1,31 @@
+@import "vanilla-framework/scss/settings_colors";
+
 $color-sidebar: #003b4e;
+$sidebar-collapsed: 48px;
 
 .l-container {
-  display: grid;
-  grid-template-columns: 250px 1fr;
+  display: flex;
   min-height: 100vh;
 }
 
 .l-main {
+  background-color: $color-x-light;
   overflow: hidden;
   position: relative;
+  width: calc(100vw - 250px);
+
+  .is-collapsible & {
+    width: calc(100vw - #{$sidebar-collapsed});
+  }
 }
 
 .l-side {
   background: $color-sidebar;
   padding: 0;
+  transition: 0.5s;
+  width: 250px;
+
+  .is-collapsible & {
+    width: $sidebar-collapsed;
+  }
 }
