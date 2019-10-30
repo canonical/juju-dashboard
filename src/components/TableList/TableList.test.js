@@ -31,9 +31,7 @@ describe("TableList", () => {
     expect(wrapper.find("tbody")).toMatchSnapshot();
   });
 
-  // XXX Skipped until the test data can be updated.
-  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/115
-  it.skip("displays all data from redux store", () => {
+  it("displays all data from redux store", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <MemoryRouter>

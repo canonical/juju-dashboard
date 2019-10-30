@@ -142,19 +142,19 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <React.Fragment>
                 <ForwardRef
-                  to="/models/space-man@external/frontend-ci"
+                  to="/models/spaceman@external/hadoopspark"
                 >
-                  frontend-ci
+                  hadoopspark
                 </ForwardRef>
                 <div
                   className="table-list_error-message"
                 >
-                  agent is not communicating with the server
+                  Click to view full details
                 </div>
               </React.Fragment>,
             },
             Object {
-              "content": "space-man",
+              "content": "spaceman",
             },
             Object {
               "content": <React.Fragment>
@@ -164,33 +164,37 @@ exports[`TableList displays all data from redux store 1`] = `
                   <span
                     className="model-details__app-icon"
                   >
-                    1
+                    11
                   </span>
                   <span
                     className="model-details__machine-icon"
                   >
-                    1
+                    6
                   </span>
                   <span
                     className="model-details__unit-icon"
                   >
-                    1
+                    10
                   </span>
                 </div>
               </React.Fragment>,
             },
             Object {
-              "content": "google/us-east1",
+              "content": <React.Fragment>
+                us-east1
+                /
+                google
+              </React.Fragment>,
             },
             Object {
-              "content": "gce",
+              "content": "Algebra-json",
             },
             Object {
-              "content": "a030329a...",
+              "content": "a030379a...",
             },
             Object {
               "className": "u-align--right",
-              "content": "2019-04-13",
+              "content": "2019-09-05",
             },
           ],
         },
@@ -199,19 +203,19 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <React.Fragment>
                 <ForwardRef
-                  to="/models/space-man@external/backend-ci"
+                  to="/models/that-guy@external/bionic-model"
                 >
-                  backend-ci
+                  bionic-model
                 </ForwardRef>
                 <div
                   className="table-list_error-message"
                 >
-                  agent is not communicating with the server
+                  Click to view full details
                 </div>
               </React.Fragment>,
             },
             Object {
-              "content": "space-man",
+              "content": "that-guy",
             },
             Object {
               "content": <React.Fragment>
@@ -221,33 +225,37 @@ exports[`TableList displays all data from redux store 1`] = `
                   <span
                     className="model-details__app-icon"
                   >
-                    3
+                    1
                   </span>
                   <span
                     className="model-details__machine-icon"
                   >
-                    3
+                    1
                   </span>
                   <span
                     className="model-details__unit-icon"
                   >
-                    3
+                    1
                   </span>
                 </div>
               </React.Fragment>,
             },
             Object {
-              "content": "google/us-east1",
+              "content": <React.Fragment>
+                eu-central-1
+                /
+                aws
+              </React.Fragment>,
             },
             Object {
-              "content": "gce",
+              "content": "personal",
             },
             Object {
-              "content": "a030329a...",
+              "content": "a030379a...",
             },
             Object {
               "className": "u-align--right",
-              "content": "2019-04-13",
+              "content": "2019-09-06",
             },
           ],
         },
@@ -336,24 +344,24 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <Link
-                    to="/models/space-man@external/frontend-ci"
+                    to="/models/spaceman@external/hadoopspark"
                   >
                     <LinkAnchor
-                      href="/models/space-man@external/frontend-ci"
+                      href="/models/spaceman@external/hadoopspark"
                       navigate={[Function]}
                     >
                       <a
-                        href="/models/space-man@external/frontend-ci"
+                        href="/models/spaceman@external/hadoopspark"
                         onClick={[Function]}
                       >
-                        frontend-ci
+                        hadoopspark
                       </a>
                     </LinkAnchor>
                   </Link>
                   <div
                     className="table-list_error-message"
                   >
-                    agent is not communicating with the server
+                    Click to view full details
                   </div>
                 </td>
               </TableCell>
@@ -364,7 +372,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  space-man
+                  spaceman
                 </td>
               </TableCell>
               <TableCell
@@ -380,17 +388,17 @@ exports[`TableList displays all data from redux store 1`] = `
                     <span
                       className="model-details__app-icon"
                     >
-                      1
+                      11
                     </span>
                     <span
                       className="model-details__machine-icon"
                     >
-                      1
+                      6
                     </span>
                     <span
                       className="model-details__unit-icon"
                     >
-                      1
+                      10
                     </span>
                   </div>
                 </td>
@@ -402,7 +410,9 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google/us-east1
+                  us-east1
+                  /
+                  google
                 </td>
               </TableCell>
               <TableCell
@@ -412,7 +422,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
+                  Algebra-json
                 </td>
               </TableCell>
               <TableCell
@@ -422,7 +432,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030329a...
+                  a030379a...
                 </td>
               </TableCell>
               <TableCell
@@ -433,7 +443,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className="u-align--right"
                   role="gridcell"
                 >
-                  2019-04-13
+                  2019-09-05
                 </td>
               </TableCell>
             </tr>
@@ -450,24 +460,24 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <Link
-                    to="/models/space-man@external/backend-ci"
+                    to="/models/that-guy@external/bionic-model"
                   >
                     <LinkAnchor
-                      href="/models/space-man@external/backend-ci"
+                      href="/models/that-guy@external/bionic-model"
                       navigate={[Function]}
                     >
                       <a
-                        href="/models/space-man@external/backend-ci"
+                        href="/models/that-guy@external/bionic-model"
                         onClick={[Function]}
                       >
-                        backend-ci
+                        bionic-model
                       </a>
                     </LinkAnchor>
                   </Link>
                   <div
                     className="table-list_error-message"
                   >
-                    agent is not communicating with the server
+                    Click to view full details
                   </div>
                 </td>
               </TableCell>
@@ -478,7 +488,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  space-man
+                  that-guy
                 </td>
               </TableCell>
               <TableCell
@@ -494,17 +504,17 @@ exports[`TableList displays all data from redux store 1`] = `
                     <span
                       className="model-details__app-icon"
                     >
-                      3
+                      1
                     </span>
                     <span
                       className="model-details__machine-icon"
                     >
-                      3
+                      1
                     </span>
                     <span
                       className="model-details__unit-icon"
                     >
-                      3
+                      1
                     </span>
                   </div>
                 </td>
@@ -516,7 +526,9 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google/us-east1
+                  eu-central-1
+                  /
+                  aws
                 </td>
               </TableCell>
               <TableCell
@@ -526,7 +538,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
+                  personal
                 </td>
               </TableCell>
               <TableCell
@@ -536,7 +548,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030329a...
+                  a030379a...
                 </td>
               </TableCell>
               <TableCell
@@ -547,7 +559,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className="u-align--right"
                   role="gridcell"
                 >
-                  2019-04-13
+                  2019-09-06
                 </td>
               </TableCell>
             </tr>
@@ -562,11 +574,11 @@ exports[`TableList displays all data from redux store 1`] = `
       Array [
         Object {
           "content": <span
-            className="status-icon is-attention"
+            className="status-icon is-alert"
           >
-            Attention
+            Alert
           </span>,
-          "sortKey": "attention",
+          "sortKey": "alert",
         },
         Object {
           "content": "Owner",
@@ -595,7 +607,234 @@ exports[`TableList displays all data from redux store 1`] = `
         },
       ]
     }
-    rows={Array []}
+    rows={
+      Array [
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <ForwardRef
+                  to="/models/spaceman@external/testing"
+                >
+                  testing
+                </ForwardRef>
+              </React.Fragment>,
+            },
+            Object {
+              "content": "spaceman",
+            },
+            Object {
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    2
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    4
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    2
+                  </span>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <React.Fragment>
+                europe-west1
+                /
+                google
+              </React.Fragment>,
+            },
+            Object {
+              "content": "clean-algebra-206308",
+            },
+            Object {
+              "content": "a030379a...",
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-09-05",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <ForwardRef
+                  to="/models/alto@external/all-kpi"
+                >
+                  all-kpi
+                </ForwardRef>
+              </React.Fragment>,
+            },
+            Object {
+              "content": "alto",
+            },
+            Object {
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    3
+                  </span>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <React.Fragment>
+                us-east1
+                /
+                google
+              </React.Fragment>,
+            },
+            Object {
+              "content": "google-rickbot",
+            },
+            Object {
+              "content": "a030379a...",
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-09-05",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <ForwardRef
+                  to="/models/uncle-phil@external/ci-website"
+                >
+                  ci-website
+                </ForwardRef>
+              </React.Fragment>,
+            },
+            Object {
+              "content": "uncle-phil",
+            },
+            Object {
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    1
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    1
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    1
+                  </span>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <React.Fragment>
+                us-east1
+                /
+                google
+              </React.Fragment>,
+            },
+            Object {
+              "content": "gce",
+            },
+            Object {
+              "content": "a030379a...",
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-04-13",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <ForwardRef
+                  to="/models/uncle-phil@external/ci-different"
+                >
+                  ci-different
+                </ForwardRef>
+              </React.Fragment>,
+            },
+            Object {
+              "content": "uncle-phil",
+            },
+            Object {
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    3
+                  </span>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <React.Fragment>
+                us-east1
+                /
+                google
+              </React.Fragment>,
+            },
+            Object {
+              "content": "gce",
+            },
+            Object {
+              "content": "a030379a...",
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-04-13",
+            },
+          ],
+        },
+      ]
+    }
   >
     <Table
       className="u-table-layout--auto"
@@ -612,9 +851,9 @@ exports[`TableList displays all data from redux store 1`] = `
               >
                 <th>
                   <span
-                    className="status-icon is-attention"
+                    className="status-icon is-alert"
                   >
-                    Attention
+                    Alert
                   </span>
                 </th>
               </TableHeader>
@@ -666,7 +905,452 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
         </thead>
-        <tbody />
+        <tbody>
+          <TableRow
+            key="0"
+          >
+            <tr>
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <Link
+                    to="/models/spaceman@external/testing"
+                  >
+                    <LinkAnchor
+                      href="/models/spaceman@external/testing"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/models/spaceman@external/testing"
+                        onClick={[Function]}
+                      >
+                        testing
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  spaceman
+                </td>
+              </TableCell>
+              <TableCell
+                key="2"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      4
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      2
+                    </span>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  europe-west1
+                  /
+                  google
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  clean-algebra-206308
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  a030379a...
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-09-05
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="1"
+          >
+            <tr>
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <Link
+                    to="/models/alto@external/all-kpi"
+                  >
+                    <LinkAnchor
+                      href="/models/alto@external/all-kpi"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/models/alto@external/all-kpi"
+                        onClick={[Function]}
+                      >
+                        all-kpi
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  alto
+                </td>
+              </TableCell>
+              <TableCell
+                key="2"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      3
+                    </span>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  us-east1
+                  /
+                  google
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  google-rickbot
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  a030379a...
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-09-05
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="2"
+          >
+            <tr>
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <Link
+                    to="/models/uncle-phil@external/ci-website"
+                  >
+                    <LinkAnchor
+                      href="/models/uncle-phil@external/ci-website"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/models/uncle-phil@external/ci-website"
+                        onClick={[Function]}
+                      >
+                        ci-website
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  uncle-phil
+                </td>
+              </TableCell>
+              <TableCell
+                key="2"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      1
+                    </span>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  us-east1
+                  /
+                  google
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  gce
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  a030379a...
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-04-13
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="3"
+          >
+            <tr>
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <Link
+                    to="/models/uncle-phil@external/ci-different"
+                  >
+                    <LinkAnchor
+                      href="/models/uncle-phil@external/ci-different"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/models/uncle-phil@external/ci-different"
+                        onClick={[Function]}
+                      >
+                        ci-different
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  uncle-phil
+                </td>
+              </TableCell>
+              <TableCell
+                key="2"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      3
+                    </span>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  us-east1
+                  /
+                  google
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  gce
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  a030379a...
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-04-13
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+        </tbody>
       </table>
     </Table>
   </MainTable>
@@ -716,19 +1400,182 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <React.Fragment>
                 <ForwardRef
-                  to="/models/group-test"
+                  to="/models/spaceman@external/canonical-kubernetes"
                 >
-                  group-test
+                  canonical-kubernetes
                 </ForwardRef>
+              </React.Fragment>,
+            },
+            Object {
+              "content": "spaceman",
+            },
+            Object {
+              "content": <React.Fragment>
                 <div
-                  className="table-list_error-message"
+                  className="model-details__config"
                 >
-                  
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    6
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    10
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    10
+                  </span>
                 </div>
               </React.Fragment>,
             },
             Object {
-              "content": "mrdata",
+              "content": <React.Fragment>
+                us-central1
+                /
+                google
+              </React.Fragment>,
+            },
+            Object {
+              "content": "clean-algebra-206308",
+            },
+            Object {
+              "content": "a030379a...",
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-09-20",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <ForwardRef
+                  to="/models/spaceman@external/mymodel"
+                >
+                  mymodel
+                </ForwardRef>
+              </React.Fragment>,
+            },
+            Object {
+              "content": "spaceman",
+            },
+            Object {
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    6
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    10
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    10
+                  </span>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <React.Fragment>
+                us-east1
+                /
+                google
+              </React.Fragment>,
+            },
+            Object {
+              "content": "clean-algebra-206308",
+            },
+            Object {
+              "content": "a030379a...",
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-09-05",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <ForwardRef
+                  to="/models/spaceman@external/mymodel4"
+                >
+                  mymodel4
+                </ForwardRef>
+              </React.Fragment>,
+            },
+            Object {
+              "content": "spaceman",
+            },
+            Object {
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    7
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    11
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    11
+                  </span>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <React.Fragment>
+                us-central1
+                /
+                google
+              </React.Fragment>,
+            },
+            Object {
+              "content": "clean-algebra-206308",
+            },
+            Object {
+              "content": "a030379a...",
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-09-05",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <ForwardRef
+                  to="/models/group-test"
+                >
+                  group-test
+                </ForwardRef>
+              </React.Fragment>,
+            },
+            Object {
+              "content": "activedev",
             },
             Object {
               "content": <React.Fragment>
@@ -754,17 +1601,77 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "google/us-central1",
+              "content": <React.Fragment>
+                us-central1
+                /
+                google
+              </React.Fragment>,
             },
             Object {
               "content": "admin",
             },
             Object {
-              "content": "a030329a...",
+              "content": "a030379a...",
             },
             Object {
               "className": "u-align--right",
-              "content": "2019-08-22",
+              "content": "2019-09-05",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <ForwardRef
+                  to="/models/new-search-aggregate"
+                >
+                  new-search-aggregate
+                </ForwardRef>
+              </React.Fragment>,
+            },
+            Object {
+              "content": "activedev",
+            },
+            Object {
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <span
+                    className="model-details__app-icon"
+                  >
+                    2
+                  </span>
+                  <span
+                    className="model-details__machine-icon"
+                  >
+                    1
+                  </span>
+                  <span
+                    className="model-details__unit-icon"
+                  >
+                    1
+                  </span>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <React.Fragment>
+                us-central1
+                /
+                google
+              </React.Fragment>,
+            },
+            Object {
+              "content": "jujuongce",
+            },
+            Object {
+              "content": "a030379a...",
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-10-03",
             },
           ],
         },
@@ -777,15 +1684,10 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   test1
                 </ForwardRef>
-                <div
-                  className="table-list_error-message"
-                >
-                  
-                </div>
               </React.Fragment>,
             },
             Object {
-              "content": "mrdata",
+              "content": "activedev",
             },
             Object {
               "content": <React.Fragment>
@@ -811,13 +1713,17 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "google/us-east1",
+              "content": <React.Fragment>
+                us-east1
+                /
+                google
+              </React.Fragment>,
             },
             Object {
               "content": "juju",
             },
             Object {
-              "content": "a030329a...",
+              "content": "a030379a...",
             },
             Object {
               "className": "u-align--right",
@@ -834,15 +1740,10 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   test2
                 </ForwardRef>
-                <div
-                  className="table-list_error-message"
-                >
-                  
-                </div>
               </React.Fragment>,
             },
             Object {
-              "content": "mrdata",
+              "content": "activedev",
             },
             Object {
               "content": <React.Fragment>
@@ -868,13 +1769,17 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "google/us-east1",
+              "content": <React.Fragment>
+                us-east1
+                /
+                google
+              </React.Fragment>,
             },
             Object {
               "content": "juju",
             },
             Object {
-              "content": "a030329a...",
+              "content": "a030379a...",
             },
             Object {
               "className": "u-align--right",
@@ -891,15 +1796,10 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   test3
                 </ForwardRef>
-                <div
-                  className="table-list_error-message"
-                >
-                  
-                </div>
               </React.Fragment>,
             },
             Object {
-              "content": "mrdata",
+              "content": "activedev",
             },
             Object {
               "content": <React.Fragment>
@@ -925,13 +1825,17 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "google/us-east1",
+              "content": <React.Fragment>
+                us-east1
+                /
+                google
+              </React.Fragment>,
             },
             Object {
               "content": "juju",
             },
             Object {
-              "content": "a030329a...",
+              "content": "a030379a...",
             },
             Object {
               "className": "u-align--right",
@@ -944,19 +1848,14 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <React.Fragment>
                 <ForwardRef
-                  to="/models/otheruser@external/juju-all-the-things"
+                  to="/models/uncle-phil@external/sales-dept"
                 >
-                  juju-all-the-things
+                  sales-dept
                 </ForwardRef>
-                <div
-                  className="table-list_error-message"
-                >
-                  
-                </div>
               </React.Fragment>,
             },
             Object {
-              "content": "otheruser",
+              "content": "uncle-phil",
             },
             Object {
               "content": <React.Fragment>
@@ -966,33 +1865,37 @@ exports[`TableList displays all data from redux store 1`] = `
                   <span
                     className="model-details__app-icon"
                   >
-                    3
+                    2
                   </span>
                   <span
                     className="model-details__machine-icon"
                   >
-                    3
+                    2
                   </span>
                   <span
                     className="model-details__unit-icon"
                   >
-                    3
+                    2
                   </span>
                 </div>
               </React.Fragment>,
             },
             Object {
-              "content": "google/us-east1",
+              "content": <React.Fragment>
+                us-east1
+                /
+                google
+              </React.Fragment>,
             },
             Object {
-              "content": "google-bigbot",
+              "content": "gce",
             },
             Object {
-              "content": "a030329a...",
+              "content": "a030379a...",
             },
             Object {
               "className": "u-align--right",
-              "content": "2019-08-20",
+              "content": "2019-04-13",
             },
           ],
         },
@@ -1001,19 +1904,14 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <React.Fragment>
                 <ForwardRef
-                  to="/models/space-man@external/data-aggregator"
+                  to="/models/that-guy@external/ants-wordpress"
                 >
-                  data-aggregator
+                  ants-wordpress
                 </ForwardRef>
-                <div
-                  className="table-list_error-message"
-                >
-                  
-                </div>
               </React.Fragment>,
             },
             Object {
-              "content": "space-man",
+              "content": "that-guy",
             },
             Object {
               "content": <React.Fragment>
@@ -1039,17 +1937,21 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "google/us-east1",
+              "content": <React.Fragment>
+                eu-central-1
+                /
+                aws
+              </React.Fragment>,
             },
             Object {
-              "content": "gce",
+              "content": "personal",
             },
             Object {
-              "content": "a030329a...",
+              "content": "a030379a...",
             },
             Object {
               "className": "u-align--right",
-              "content": "2019-04-13",
+              "content": "2019-10-02",
             },
           ],
         },
@@ -1138,6 +2040,339 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <Link
+                    to="/models/spaceman@external/canonical-kubernetes"
+                  >
+                    <LinkAnchor
+                      href="/models/spaceman@external/canonical-kubernetes"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/models/spaceman@external/canonical-kubernetes"
+                        onClick={[Function]}
+                      >
+                        canonical-kubernetes
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  spaceman
+                </td>
+              </TableCell>
+              <TableCell
+                key="2"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      6
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      10
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      10
+                    </span>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  us-central1
+                  /
+                  google
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  clean-algebra-206308
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  a030379a...
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-09-20
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="1"
+          >
+            <tr>
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <Link
+                    to="/models/spaceman@external/mymodel"
+                  >
+                    <LinkAnchor
+                      href="/models/spaceman@external/mymodel"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/models/spaceman@external/mymodel"
+                        onClick={[Function]}
+                      >
+                        mymodel
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  spaceman
+                </td>
+              </TableCell>
+              <TableCell
+                key="2"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      6
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      10
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      10
+                    </span>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  us-east1
+                  /
+                  google
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  clean-algebra-206308
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  a030379a...
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-09-05
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="2"
+          >
+            <tr>
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <Link
+                    to="/models/spaceman@external/mymodel4"
+                  >
+                    <LinkAnchor
+                      href="/models/spaceman@external/mymodel4"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/models/spaceman@external/mymodel4"
+                        onClick={[Function]}
+                      >
+                        mymodel4
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  spaceman
+                </td>
+              </TableCell>
+              <TableCell
+                key="2"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      7
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      11
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      11
+                    </span>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  us-central1
+                  /
+                  google
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  clean-algebra-206308
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  a030379a...
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-09-05
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="3"
+          >
+            <tr>
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <Link
                     to="/models/group-test"
                   >
                     <LinkAnchor
@@ -1152,9 +2387,6 @@ exports[`TableList displays all data from redux store 1`] = `
                       </a>
                     </LinkAnchor>
                   </Link>
-                  <div
-                    className="table-list_error-message"
-                  />
                 </td>
               </TableCell>
               <TableCell
@@ -1164,7 +2396,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  mrdata
+                  activedev
                 </td>
               </TableCell>
               <TableCell
@@ -1202,7 +2434,9 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google/us-central1
+                  us-central1
+                  /
+                  google
                 </td>
               </TableCell>
               <TableCell
@@ -1222,7 +2456,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030329a...
+                  a030379a...
                 </td>
               </TableCell>
               <TableCell
@@ -1233,13 +2467,124 @@ exports[`TableList displays all data from redux store 1`] = `
                   className="u-align--right"
                   role="gridcell"
                 >
-                  2019-08-22
+                  2019-09-05
                 </td>
               </TableCell>
             </tr>
           </TableRow>
           <TableRow
-            key="1"
+            key="4"
+          >
+            <tr>
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <Link
+                    to="/models/new-search-aggregate"
+                  >
+                    <LinkAnchor
+                      href="/models/new-search-aggregate"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/models/new-search-aggregate"
+                        onClick={[Function]}
+                      >
+                        new-search-aggregate
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  activedev
+                </td>
+              </TableCell>
+              <TableCell
+                key="2"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      1
+                    </span>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  us-central1
+                  /
+                  google
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  jujuongce
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  a030379a...
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-10-03
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="5"
           >
             <tr>
               <TableCell
@@ -1264,9 +2609,6 @@ exports[`TableList displays all data from redux store 1`] = `
                       </a>
                     </LinkAnchor>
                   </Link>
-                  <div
-                    className="table-list_error-message"
-                  />
                 </td>
               </TableCell>
               <TableCell
@@ -1276,7 +2618,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  mrdata
+                  activedev
                 </td>
               </TableCell>
               <TableCell
@@ -1314,7 +2656,9 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google/us-east1
+                  us-east1
+                  /
+                  google
                 </td>
               </TableCell>
               <TableCell
@@ -1334,7 +2678,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030329a...
+                  a030379a...
                 </td>
               </TableCell>
               <TableCell
@@ -1351,7 +2695,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="2"
+            key="6"
           >
             <tr>
               <TableCell
@@ -1376,9 +2720,6 @@ exports[`TableList displays all data from redux store 1`] = `
                       </a>
                     </LinkAnchor>
                   </Link>
-                  <div
-                    className="table-list_error-message"
-                  />
                 </td>
               </TableCell>
               <TableCell
@@ -1388,7 +2729,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  mrdata
+                  activedev
                 </td>
               </TableCell>
               <TableCell
@@ -1426,7 +2767,9 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google/us-east1
+                  us-east1
+                  /
+                  google
                 </td>
               </TableCell>
               <TableCell
@@ -1446,7 +2789,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030329a...
+                  a030379a...
                 </td>
               </TableCell>
               <TableCell
@@ -1463,7 +2806,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="3"
+            key="7"
           >
             <tr>
               <TableCell
@@ -1488,9 +2831,6 @@ exports[`TableList displays all data from redux store 1`] = `
                       </a>
                     </LinkAnchor>
                   </Link>
-                  <div
-                    className="table-list_error-message"
-                  />
                 </td>
               </TableCell>
               <TableCell
@@ -1500,7 +2840,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  mrdata
+                  activedev
                 </td>
               </TableCell>
               <TableCell
@@ -1538,7 +2878,9 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google/us-east1
+                  us-east1
+                  /
+                  google
                 </td>
               </TableCell>
               <TableCell
@@ -1558,7 +2900,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030329a...
+                  a030379a...
                 </td>
               </TableCell>
               <TableCell
@@ -1575,7 +2917,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="4"
+            key="8"
           >
             <tr>
               <TableCell
@@ -1586,23 +2928,20 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <Link
-                    to="/models/otheruser@external/juju-all-the-things"
+                    to="/models/uncle-phil@external/sales-dept"
                   >
                     <LinkAnchor
-                      href="/models/otheruser@external/juju-all-the-things"
+                      href="/models/uncle-phil@external/sales-dept"
                       navigate={[Function]}
                     >
                       <a
-                        href="/models/otheruser@external/juju-all-the-things"
+                        href="/models/uncle-phil@external/sales-dept"
                         onClick={[Function]}
                       >
-                        juju-all-the-things
+                        sales-dept
                       </a>
                     </LinkAnchor>
                   </Link>
-                  <div
-                    className="table-list_error-message"
-                  />
                 </td>
               </TableCell>
               <TableCell
@@ -1612,119 +2951,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  otheruser
-                </td>
-              </TableCell>
-              <TableCell
-                key="2"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <div
-                    className="model-details__config"
-                  >
-                    <span
-                      className="model-details__app-icon"
-                    >
-                      3
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
-                    >
-                      3
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
-                    >
-                      3
-                    </span>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="3"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  google/us-east1
-                </td>
-              </TableCell>
-              <TableCell
-                key="4"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  google-bigbot
-                </td>
-              </TableCell>
-              <TableCell
-                key="5"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  a030329a...
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-align--right"
-                key="6"
-              >
-                <td
-                  className="u-align--right"
-                  role="gridcell"
-                >
-                  2019-08-20
-                </td>
-              </TableCell>
-            </tr>
-          </TableRow>
-          <TableRow
-            key="5"
-          >
-            <tr>
-              <TableCell
-                key="0"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <Link
-                    to="/models/space-man@external/data-aggregator"
-                  >
-                    <LinkAnchor
-                      href="/models/space-man@external/data-aggregator"
-                      navigate={[Function]}
-                    >
-                      <a
-                        href="/models/space-man@external/data-aggregator"
-                        onClick={[Function]}
-                      >
-                        data-aggregator
-                      </a>
-                    </LinkAnchor>
-                  </Link>
-                  <div
-                    className="table-list_error-message"
-                  />
-                </td>
-              </TableCell>
-              <TableCell
-                key="1"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  space-man
+                  uncle-phil
                 </td>
               </TableCell>
               <TableCell
@@ -1762,7 +2989,9 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google/us-east1
+                  us-east1
+                  /
+                  google
                 </td>
               </TableCell>
               <TableCell
@@ -1782,7 +3011,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030329a...
+                  a030379a...
                 </td>
               </TableCell>
               <TableCell
@@ -1794,6 +3023,117 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   2019-04-13
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="9"
+          >
+            <tr>
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <Link
+                    to="/models/that-guy@external/ants-wordpress"
+                  >
+                    <LinkAnchor
+                      href="/models/that-guy@external/ants-wordpress"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/models/that-guy@external/ants-wordpress"
+                        onClick={[Function]}
+                      >
+                        ants-wordpress
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  that-guy
+                </td>
+              </TableCell>
+              <TableCell
+                key="2"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      2
+                    </span>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  eu-central-1
+                  /
+                  aws
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  personal
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  a030379a...
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-10-02
                 </td>
               </TableCell>
             </tr>
