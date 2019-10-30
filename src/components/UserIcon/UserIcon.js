@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import classNames from "classnames";
+import { Link } from "react-router-dom";
 
 import { logOut } from "app/actions";
 
@@ -30,9 +31,9 @@ export default function User(props) {
             <a href="#_">Help</a>
           </li>
           <li className="p-list__item">
-            <a href="/" onClick={() => logOut()}>
+            <Link to="/" onClick={() => logOut()}>
               Log out
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
