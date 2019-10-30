@@ -3,7 +3,7 @@ export const actionsList = {
   storeBakery: "STORE_BAKERY",
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
-  LogOut: "LOG_OUT"
+  logOut: "LOG_OUT"
 };
 
 // Action creators
