@@ -19,7 +19,8 @@
   }
 
   &.is-maintenance,
-  &.is-attention {
+  &.is-attention,
+  &.is-alert {
     &::before {
       color: $color-caution;
     }
