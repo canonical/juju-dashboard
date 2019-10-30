@@ -52,8 +52,8 @@
 
   &__config {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     gap: 0.25rem;
+    grid-template-columns: repeat(3, 1fr);
     text-align: left;
   }
 
