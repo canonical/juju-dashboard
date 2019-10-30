@@ -86,4 +86,10 @@
   &__unit-icon::before {
     background-image: url("https://assets.ubuntu.com/v1/8414b187-controllers.svg");
   }
+
+  .entity-icon {
+    margin-right: 0.5rem;
+    position: relative;
+    top: 0.25rem;
+  }
 }

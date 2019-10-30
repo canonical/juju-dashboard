@@ -45,9 +45,21 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
-// Temp function to add link to <td> values
-const wrapLink = (href, text) => {
-  return <a href={href}>{text}</a>;
+const generateEntityLink = (namespace, href, name) => {
+  return (
+    <>
+      {namespace && (
+        <img
+          alt=""
+          width="24"
+          height="24"
+          className="entity-icon"
+          src={`https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`}
+        />
+      )}
+      <a href={href}>{name}</a>
+    </>
+  );
 };
 
 const generateApplicationRows = modelStatusData => {
@@ -62,7 +74,13 @@ const generateApplicationRows = modelStatusData => {
 
     return {
       columns: [
-        { content: wrapLink("#", key) },
+        {
+          content: generateEntityLink(
+            app.charm ? app.charm.replace("cs:", "") : "",
+            "#",
+            key
+          )
+        },
         { content: app.status ? generateStatusIcon(app.status.status) : "-" },
         { content: "-" },
         { content: "CharmHub" },
@@ -88,7 +106,15 @@ const generateUnitRows = modelStatusData => {
       const unit = units[unitId];
       unitRows.push({
         columns: [
-          { content: wrapLink("#", unitId) },
+          {
+            content: generateEntityLink(
+              applications[applicationName].charm
+                ? applications[applicationName].charm.replace("cs:", "")
+                : "",
+              "#",
+              unitId
+            )
+          },
           { content: generateStatusIcon(unit.workloadStatus.status) },
           { content: unit.agentStatus.status },
           { content: unit.machine },

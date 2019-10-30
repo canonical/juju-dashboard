@@ -119,11 +119,20 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": <a
-                  href="#"
-                >
-                  easyrsa
-                </a>,
+                "content": <React.Fragment>
+                  <img
+                    alt=""
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                    width="24"
+                  />
+                  <a
+                    href="#"
+                  >
+                    easyrsa
+                  </a>
+                </React.Fragment>,
               },
               Object {
                 "content": <span
@@ -155,11 +164,20 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": <a
-                  href="#"
-                >
-                  elasticsearch
-                </a>,
+                "content": <React.Fragment>
+                  <img
+                    alt=""
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/trusty/elasticsearch-15/icon.svg"
+                    width="24"
+                  />
+                  <a
+                    href="#"
+                  >
+                    elasticsearch
+                  </a>
+                </React.Fragment>,
               },
               Object {
                 "content": <span
@@ -191,11 +209,20 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": <a
-                  href="#"
-                >
-                  etcd
-                </a>,
+                "content": <React.Fragment>
+                  <img
+                    alt=""
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                    width="24"
+                  />
+                  <a
+                    href="#"
+                  >
+                    etcd
+                  </a>
+                </React.Fragment>,
               },
               Object {
                 "content": <span
@@ -227,11 +254,20 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": <a
-                  href="#"
-                >
-                  flannel
-                </a>,
+                "content": <React.Fragment>
+                  <img
+                    alt=""
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
+                    width="24"
+                  />
+                  <a
+                    href="#"
+                  >
+                    flannel
+                  </a>
+                </React.Fragment>,
               },
               Object {
                 "content": <span
@@ -263,11 +299,20 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": <a
-                  href="#"
-                >
-                  kibana
-                </a>,
+                "content": <React.Fragment>
+                  <img
+                    alt=""
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/trusty/kibana-14/icon.svg"
+                    width="24"
+                  />
+                  <a
+                    href="#"
+                  >
+                    kibana
+                  </a>
+                </React.Fragment>,
               },
               Object {
                 "content": <span
@@ -299,11 +344,20 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": <a
-                  href="#"
-                >
-                  kubeapi-load-balancer
-                </a>,
+                "content": <React.Fragment>
+                  <img
+                    alt=""
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                    width="24"
+                  />
+                  <a
+                    href="#"
+                  >
+                    kubeapi-load-balancer
+                  </a>
+                </React.Fragment>,
               },
               Object {
                 "content": <span
@@ -335,11 +389,20 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": <a
-                  href="#"
-                >
-                  kubernetes-master
-                </a>,
+                "content": <React.Fragment>
+                  <img
+                    alt=""
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                    width="24"
+                  />
+                  <a
+                    href="#"
+                  >
+                    kubernetes-master
+                  </a>
+                </React.Fragment>,
               },
               Object {
                 "content": <span
@@ -371,11 +434,20 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": <a
-                  href="#"
-                >
-                  kubernetes-worker
-                </a>,
+                "content": <React.Fragment>
+                  <img
+                    alt=""
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                    width="24"
+                  />
+                  <a
+                    href="#"
+                  >
+                    kubernetes-worker
+                  </a>
+                </React.Fragment>,
               },
               Object {
                 "content": <span
@@ -407,11 +479,20 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": <a
-                  href="#"
-                >
-                  rsyslog
-                </a>,
+                "content": <React.Fragment>
+                  <img
+                    alt=""
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/trusty/rsyslog-10/icon.svg"
+                    width="24"
+                  />
+                  <a
+                    href="#"
+                  >
+                    rsyslog
+                  </a>
+                </React.Fragment>,
               },
               Object {
                 "content": <span
@@ -553,6 +634,13 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
+                    <img
+                      alt=""
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                      width="24"
+                    />
                     <a
                       href="#"
                     >
@@ -645,6 +733,13 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
+                    <img
+                      alt=""
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/trusty/elasticsearch-15/icon.svg"
+                      width="24"
+                    />
                     <a
                       href="#"
                     >
@@ -737,6 +832,13 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
+                    <img
+                      alt=""
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                      width="24"
+                    />
                     <a
                       href="#"
                     >
@@ -829,6 +931,13 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
+                    <img
+                      alt=""
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
+                      width="24"
+                    />
                     <a
                       href="#"
                     >
@@ -921,6 +1030,13 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
+                    <img
+                      alt=""
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/trusty/kibana-14/icon.svg"
+                      width="24"
+                    />
                     <a
                       href="#"
                     >
@@ -1013,6 +1129,13 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
+                    <img
+                      alt=""
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                      width="24"
+                    />
                     <a
                       href="#"
                     >
@@ -1105,6 +1228,13 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
+                    <img
+                      alt=""
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                      width="24"
+                    />
                     <a
                       href="#"
                     >
@@ -1197,6 +1327,13 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
+                    <img
+                      alt=""
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                      width="24"
+                    />
                     <a
                       href="#"
                     >
@@ -1289,6 +1426,13 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
+                    <img
+                      alt=""
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/trusty/rsyslog-10/icon.svg"
+                      width="24"
+                    />
                     <a
                       href="#"
                     >
