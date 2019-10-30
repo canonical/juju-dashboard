@@ -44,7 +44,18 @@ exports[`User Icon renders without crashing and matches snapshot 1`] = `
           onClick={[Function]}
           to="/"
         >
-          Log out
+          <LinkAnchor
+            href="/"
+            navigate={[Function]}
+            onClick={[Function]}
+          >
+            <a
+              href="/"
+              onClick={[Function]}
+            >
+              Log out
+            </a>
+          </LinkAnchor>
         </Link>
       </li>
     </ul>

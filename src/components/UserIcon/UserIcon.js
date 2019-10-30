@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import { logOut } from "app/actions";
 
 import "./_user-icon.scss";
 
-export default function User(props) {
+export default function User() {
   const [userPanelVisibility, setUserPanelVisibility] = useState(false);
-
+  const dispatch = useDispatch();
   return (
     <div className="user-icon">
       <i
@@ -31,7 +32,7 @@ export default function User(props) {
             <a href="#_">Help</a>
           </li>
           <li className="p-list__item">
-            <Link to="/" onClick={() => logOut()}>
+            <Link to="/" onClick={() => dispatch(logOut())}>
               Log out
             </Link>
           </li>
