@@ -3,8 +3,7 @@ export const actionsList = {
   storeBakery: "STORE_BAKERY",
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
-  logOut: "LOG_OUT"
-  LogOut: "LOG_OUT",
+  logOut: "LOG_OUT",
   collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR"
 };
 
