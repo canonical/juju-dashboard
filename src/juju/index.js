@@ -2,6 +2,7 @@ import Limiter from "async-limiter";
 import jujulib from "@canonical/jujulib";
 import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
+import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 
 import { updateModelInfo, updateModelStatus } from "./actions";
@@ -54,13 +55,19 @@ function createNewBakery(visitPage, macaroonStore) {
 
 /**
   Return a common connection option config.
+  @param {Boolean} usePinger If the connection will be long lived then use the
+    pinger. Defaults to false.
   @returns {Object} The configuration options.
 */
-function generateConnectionOptions() {
+function generateConnectionOptions(usePinger = false) {
   // The options used when connecting to a Juju controller or model.
+  const facades = [client, modelManager];
+  if (usePinger) {
+    facades.push(pinger);
+  }
   return {
     debug: false,
-    facades: [client, modelManager],
+    facades,
     bakery
   };
 }
@@ -80,9 +87,15 @@ async function loginWithBakery(visitPage, macaroonStore) {
   }
   const juju = await jujulib.connect(
     controllerURL,
-    generateConnectionOptions()
+    generateConnectionOptions(true)
   );
   const conn = await juju.login({});
+  // Ping to keep the connection alive.
+  conn.facades.pinger.pingForever(20000, err => {
+    if (err) {
+      console.log("unable to ping:", err);
+    }
+  });
   return { bakery, conn };
 }
 
