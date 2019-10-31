@@ -114,116 +114,187 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
           className="p-list is-internal"
         >
           <li
-            className="p-list__item is-selected"
+            className="p-list__item"
             key="/"
           >
-            <Link
+            <NavLink
+              activeClassName="is-selected"
               className="p-list__link"
+              exact={true}
               to="/"
             >
-              <LinkAnchor
-                className="p-list__link"
-                href="/"
-                navigate={[Function]}
+              <Link
+                aria-current="page"
+                className="p-list__link is-selected"
+                style={Object {}}
+                to={
+                  Object {
+                    "hash": "",
+                    "pathname": "/",
+                    "search": "",
+                    "state": null,
+                  }
+                }
               >
-                <a
-                  className="p-list__link"
+                <LinkAnchor
+                  aria-current="page"
+                  className="p-list__link is-selected"
                   href="/"
-                  onClick={[Function]}
+                  navigate={[Function]}
+                  style={Object {}}
                 >
-                  <img
-                    alt="Models icon"
-                    className="p-list__icon"
-                    src="https://assets.ubuntu.com/v1/51642f58-models.svg"
-                  />
-                  Models
-                </a>
-              </LinkAnchor>
-            </Link>
+                  <a
+                    aria-current="page"
+                    className="p-list__link is-selected"
+                    href="/"
+                    onClick={[Function]}
+                    style={Object {}}
+                  >
+                    <img
+                      alt="Models icon"
+                      className="p-list__icon"
+                      src="https://assets.ubuntu.com/v1/51642f58-models.svg"
+                    />
+                    Models
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </NavLink>
           </li>
           <li
             className="p-list__item"
             key="/controllers"
           >
-            <Link
+            <NavLink
+              activeClassName="is-selected"
               className="p-list__link"
+              exact={true}
               to="/controllers"
             >
-              <LinkAnchor
+              <Link
+                aria-current={null}
                 className="p-list__link"
-                href="/controllers"
-                navigate={[Function]}
+                to={
+                  Object {
+                    "hash": "",
+                    "pathname": "/controllers",
+                    "search": "",
+                    "state": null,
+                  }
+                }
               >
-                <a
+                <LinkAnchor
+                  aria-current={null}
                   className="p-list__link"
                   href="/controllers"
-                  onClick={[Function]}
+                  navigate={[Function]}
                 >
-                  <img
-                    alt="Controllers icon"
-                    className="p-list__icon"
-                    src="https://assets.ubuntu.com/v1/8414b187-controllers.svg"
-                  />
-                  Controllers
-                </a>
-              </LinkAnchor>
-            </Link>
+                  <a
+                    aria-current={null}
+                    className="p-list__link"
+                    href="/controllers"
+                    onClick={[Function]}
+                  >
+                    <img
+                      alt="Controllers icon"
+                      className="p-list__icon"
+                      src="https://assets.ubuntu.com/v1/8414b187-controllers.svg"
+                    />
+                    Controllers
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </NavLink>
           </li>
           <li
             className="p-list__item"
             key="/usage"
           >
-            <Link
+            <NavLink
+              activeClassName="is-selected"
               className="p-list__link"
+              exact={true}
               to="/usage"
             >
-              <LinkAnchor
+              <Link
+                aria-current={null}
                 className="p-list__link"
-                href="/usage"
-                navigate={[Function]}
+                to={
+                  Object {
+                    "hash": "",
+                    "pathname": "/usage",
+                    "search": "",
+                    "state": null,
+                  }
+                }
               >
-                <a
+                <LinkAnchor
+                  aria-current={null}
                   className="p-list__link"
                   href="/usage"
-                  onClick={[Function]}
+                  navigate={[Function]}
                 >
-                  <img
-                    alt="Usage icon"
-                    className="p-list__icon"
-                    src="https://assets.ubuntu.com/v1/1b1d07ae-usage.svg"
-                  />
-                  Usage
-                </a>
-              </LinkAnchor>
-            </Link>
+                  <a
+                    aria-current={null}
+                    className="p-list__link"
+                    href="/usage"
+                    onClick={[Function]}
+                  >
+                    <img
+                      alt="Usage icon"
+                      className="p-list__icon"
+                      src="https://assets.ubuntu.com/v1/1b1d07ae-usage.svg"
+                    />
+                    Usage
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </NavLink>
           </li>
           <li
             className="p-list__item"
             key="/logs"
           >
-            <Link
+            <NavLink
+              activeClassName="is-selected"
               className="p-list__link"
+              exact={true}
               to="/logs"
             >
-              <LinkAnchor
+              <Link
+                aria-current={null}
                 className="p-list__link"
-                href="/logs"
-                navigate={[Function]}
+                to={
+                  Object {
+                    "hash": "",
+                    "pathname": "/logs",
+                    "search": "",
+                    "state": null,
+                  }
+                }
               >
-                <a
+                <LinkAnchor
+                  aria-current={null}
                   className="p-list__link"
                   href="/logs"
-                  onClick={[Function]}
+                  navigate={[Function]}
                 >
-                  <img
-                    alt="Logs icon"
-                    className="p-list__icon"
-                    src="https://assets.ubuntu.com/v1/741097ff-logs.svg"
-                  />
-                  Logs
-                </a>
-              </LinkAnchor>
-            </Link>
+                  <a
+                    aria-current={null}
+                    className="p-list__link"
+                    href="/logs"
+                    onClick={[Function]}
+                  >
+                    <img
+                      alt="Logs icon"
+                      className="p-list__icon"
+                      src="https://assets.ubuntu.com/v1/741097ff-logs.svg"
+                    />
+                    Logs
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </NavLink>
           </li>
         </ul>
       </nav>
