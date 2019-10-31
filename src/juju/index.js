@@ -132,13 +132,17 @@ async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
 */
 async function fetchModelStatus(modelUUID) {
   const modelURL = controllerURL.replace("/api", `/model/${modelUUID}/api`);
-  const { conn, logout } = await jujulib.connectAndLogin(
-    modelURL,
-    {},
-    generateConnectionOptions()
-  );
-  const status = await conn.facades.client.fullStatus();
-  logout();
+  let status = null;
+  try {
+    const { conn, logout } = await connectAndLoginWithTimeout(
+      modelURL,
+      generateConnectionOptions()
+    );
+    status = await conn.facades.client.fullStatus();
+    logout();
+  } catch (e) {
+    console.error("timeout, unable to log into model:", modelUUID);
+  }
   return status;
 }
 
