@@ -154,6 +154,9 @@ async function fetchModelStatus(modelUUID) {
  */
 async function fetchAndStoreModelStatus(modelUUID, dispatch) {
   const status = await fetchModelStatus(modelUUID);
+  if (status === null) {
+    return;
+  }
   dispatch(updateModelStatus(modelUUID, status));
 }
 
