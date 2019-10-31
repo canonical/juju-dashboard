@@ -156,6 +156,11 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
                       src="https://assets.ubuntu.com/v1/51642f58-models.svg"
                     />
                     Models
+                    <span
+                      className="entity-count"
+                    >
+                      2
+                    </span>
                   </a>
                 </LinkAnchor>
               </Link>

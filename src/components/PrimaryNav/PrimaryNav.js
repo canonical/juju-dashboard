@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
 import classNames from "classnames";
+
+import { getGroupedModelStatusCounts } from "app/selectors";
 
 import "./_primary-nav.scss";
 
@@ -17,6 +20,7 @@ const pages = [
 
 const PrimaryNav = () => {
   const [extNavOpen, setExtNavOpen] = useState(false);
+  const { blocked } = useSelector(getGroupedModelStatusCounts);
   return (
     <nav
       className={classNames("p-primary-nav", { "ext-nav-open": extNavOpen })}
@@ -105,6 +109,11 @@ const PrimaryNav = () => {
                 alt={`${navItem.label} icon`}
               />
               {navItem.label}
+              {navItem.label === "Models" && blocked > 0 ? (
+                <span className="entity-count">{blocked}</span>
+              ) : (
+                ""
+              )}
             </NavLink>
           </li>
         ))}
