@@ -109,7 +109,7 @@ const PrimaryNav = () => {
                 alt={`${navItem.label} icon`}
               />
               {navItem.label}
-              {navItem.path === "/" && blocked > 0 ? (
+              {navItem.label === "Models" && blocked > 0 ? (
                 <span className="entity-count">{blocked}</span>
               ) : (
                 ""
