@@ -177,7 +177,7 @@ const ModelDetails = () => {
     return () => {
       dispatch(collapsibleSidebar(false));
     };
-  });
+  }, []);
 
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {
