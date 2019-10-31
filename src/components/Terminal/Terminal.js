@@ -32,7 +32,12 @@ const Terminal = ({ address, modelName }) => {
     );
 
     return cleanUpTerminal(terminalInstance);
-  }, [address, macaroons, modelName, history]);
+    // Because the user can switch the model details UI from within the
+    // component the `modelName` passed above will change as the UI
+    // updates. This causes the terminal to log in again which is
+    // undesirable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [terminalVisible, setTerminalVisible] = useState(false);
 
