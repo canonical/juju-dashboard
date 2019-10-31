@@ -13,17 +13,27 @@
   width: calc(100vw - #{$sidebar-full-width});
 
   .has-collapsible-sidebar & {
-    width: calc(100vw - #{$sidebar-collapsed});
+    padding-left: $sidebar-collapsed;
+    width: 100vw;
   }
 }
 
 .l-side {
   background: $color-sidebar;
+  height: 100vh;
+  left: 0;
+  overflow: hidden;
   padding: 0;
   transition: width 0.25s ease-in-out;
   width: $sidebar-full-width;
+  z-index: 1;
 
   .has-collapsible-sidebar & {
+    position: fixed;
+    top: 0;
+  }
+
+  &.is-collapsed {
     width: $sidebar-collapsed;
   }
 }

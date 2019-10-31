@@ -14,10 +14,15 @@ const Layout = ({ children }) => {
   return (
     <div
       className={classNames("l-container", {
-        "has-collapsible-sidebar": sidebarCollapsible && !isSidebarHovered
+        "has-collapsible-sidebar": sidebarCollapsible
       })}
     >
-      <div className="l-side" ref={sidebarRef}>
+      <div
+        className={classNames("l-side", {
+          "is-collapsed": sidebarCollapsible && !isSidebarHovered
+        })}
+        ref={sidebarRef}
+      >
         <PrimaryNav />
       </div>
       <div className="l-main">
