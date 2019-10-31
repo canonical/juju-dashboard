@@ -43,30 +43,6 @@ $color-navigation-accent: #3fc8f2;
     color: $color-light;
   }
 
-  .p-list__item {
-    border-left: 3px solid transparent;
-
-    &:hover {
-      background-color: $color-navigation-highlight;
-    }
-
-    &.is-selected {
-      background-color: $color-navigation-highlight;
-      border-left-color: $color-navigation-accent;
-    }
-
-    .p-list__link {
-      display: block;
-      padding-left: calc(1.25rem - 3px);
-    }
-
-    .p-list__icon {
-      padding-right: 1.25rem;
-      position: relative;
-      top: 0.2rem;
-    }
-  }
-
   .is-external {
     background: $color-navigation-dark;
     margin-bottom: 0.5rem;
@@ -76,6 +52,32 @@ $color-navigation-accent: #3fc8f2;
 
     .p-list__link {
       padding-left: calc(3.5rem - 3px);
+    }
+  }
+
+  .p-list__item {
+    padding: 0;
+
+    .p-list__link {
+      border-left: 3px solid transparent;
+      display: block;
+      padding: 0.25rem 0;
+      padding-left: calc(1.25rem - 3px);
+
+      &:hover {
+        background-color: $color-navigation-highlight;
+      }
+
+      &.is-selected {
+        background-color: $color-navigation-highlight;
+        border-left-color: $color-navigation-accent;
+      }
+    }
+
+    .p-list__icon {
+      padding-right: 1.25rem;
+      position: relative;
+      top: 0.2rem;
     }
   }
 
