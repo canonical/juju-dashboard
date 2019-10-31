@@ -1,24 +1,34 @@
 import React from "react";
 import { BrowserRouter as Router, MemoryRouter } from "react-router-dom";
 import { mount } from "enzyme";
+import configureStore from "redux-mock-store";
+import { Provider } from "react-redux";
+import dataDump from "testing/complete-redux-store-dump";
 
 import PrimaryNav from "./PrimaryNav";
 
+const mockStore = configureStore([]);
 describe("Primary Nav", () => {
   it("renders without crashing and matches snapshot", () => {
+    const store = mockStore(dataDump);
     const wrapper = mount(
-      <Router>
-        <PrimaryNav />
-      </Router>
+      <Provider store={store}>
+        <Router>
+          <PrimaryNav />
+        </Router>
+      </Provider>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(".p-primary-nav")).toMatchSnapshot();
   });
 
   it("toggles external nav menu", () => {
+    const store = mockStore(dataDump);
     const wrapper = mount(
-      <Router>
-        <PrimaryNav />
-      </Router>
+      <Provider store={store}>
+        <Router>
+          <PrimaryNav />
+        </Router>
+      </Provider>
     );
 
     const primaryNav = ".p-primary-nav";
@@ -32,11 +42,26 @@ describe("Primary Nav", () => {
   });
 
   it("applies is-selected state correctly", () => {
+    const store = mockStore(dataDump);
     const wrapper = mount(
-      <MemoryRouter initialEntries={["/logs"]}>
-        <PrimaryNav />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/logs"]}>
+          <PrimaryNav />
+        </MemoryRouter>
+      </Provider>
     );
     expect(wrapper.find("a.is-selected").text()).toStrictEqual("Logs");
+  });
+
+  it("displays correct number of blocked models", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <PrimaryNav />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".entity-count").text()).toStrictEqual("2");
   });
 });
