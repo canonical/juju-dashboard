@@ -37,10 +37,6 @@
     }
   }
 
-  .p-list__link {
-    color: $color-light;
-  }
-
   .is-external {
     background: $color-navigation-dark;
     margin-bottom: 0.5rem;
@@ -58,7 +54,8 @@
 
     .p-list__link {
       border-left: 3px solid transparent;
-      display: block;
+      color: $color-light;
+      display: flex;
       padding: 0.25rem 0;
       padding-left: calc(1.25rem - 3px);
 
@@ -73,6 +70,7 @@
     }
 
     .p-list__icon {
+      height: 16px;
       padding-right: 1.25rem;
       position: relative;
       top: 0.2rem;
@@ -88,5 +86,18 @@
     .p-primary-nav__toggle {
       transform: rotate(180deg);
     }
+  }
+
+  .entity-count {
+    background-color: $color-negative;
+    border-radius: 50%;
+    display: inline-block;
+    font-size: 0.875rem;
+    height: 1.5rem;
+    margin-left: auto;
+    margin-right: 1rem;
+    padding: 0 0.25rem;
+    text-align: center;
+    width: 1.5rem;
   }
 }
