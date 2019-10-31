@@ -1,15 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, MemoryRouter } from "react-router-dom";
 import { mount } from "enzyme";
 
 import PrimaryNav from "./PrimaryNav";
 
 describe("Primary Nav", () => {
-  let windowLocation = {};
-  beforeEach(() => {
-    windowLocation = global.window.location;
-  });
-
   it("renders without crashing and matches snapshot", () => {
     const wrapper = mount(
       <Router>
@@ -37,20 +32,11 @@ describe("Primary Nav", () => {
   });
 
   it("applies is-selected state correctly", () => {
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      pathname: "/logs"
-    };
     const wrapper = mount(
-      <Router>
+      <MemoryRouter initialEntries={["/logs"]}>
         <PrimaryNav />
-      </Router>
+      </MemoryRouter>
     );
-    expect(wrapper.find(".is-selected a").text()).toStrictEqual("Logs");
-  });
-
-  afterEach(() => {
-    global.window.location = windowLocation;
+    expect(wrapper.find("a.is-selected").text()).toStrictEqual("Logs");
   });
 });

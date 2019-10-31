@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import classNames from "classnames";
 
 import "./_primary-nav.scss";
@@ -16,7 +16,6 @@ const pages = [
 ];
 
 const PrimaryNav = () => {
-  const currentLocation = window.location.pathname;
   const [extNavOpen, setExtNavOpen] = useState(false);
   return (
     <nav
@@ -91,20 +90,20 @@ const PrimaryNav = () => {
       </ul>
       <ul className="p-list is-internal">
         {pages.map(navItem => (
-          <li
-            key={navItem.path}
-            className={classNames("p-list__item", {
-              "is-selected": currentLocation === navItem.path
-            })}
-          >
-            <Link className="p-list__link" to={navItem.path}>
+          <li key={navItem.path} className="p-list__item">
+            <NavLink
+              className="p-list__link"
+              exact
+              to={navItem.path}
+              activeClassName="is-selected"
+            >
               <img
                 className="p-list__icon"
                 src={`https://assets.ubuntu.com/v1/${navItem.icon}`}
                 alt={`${navItem.label} icon`}
               />
               {navItem.label}
-            </Link>
+            </NavLink>
           </li>
         ))}
       </ul>
