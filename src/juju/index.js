@@ -100,6 +100,30 @@ async function loginWithBakery(visitPage, macaroonStore) {
 }
 
 /**
+  Commects and logs in to the supplied modelURL. If the connection takes longer
+  than the allowed timeout it gives up.
+  @param {String} modelURL The fully qualified url of the model api.
+  @param {Object} options The options for the connection.
+  @param {Number} duration The timeout in ms for the connection. Defaults to 5s
+  @returns {Object} The full model status.
+*/
+async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
+  const timeout = new Promise((resolve, reject) => {
+    setTimeout(resolve, duration, "timeout");
+  });
+  const juju = jujulib.connectAndLogin(modelURL, {}, options);
+  return new Promise((resolve, reject) => {
+    Promise.race([timeout, juju]).then(resp => {
+      if (resp === "timeout") {
+        reject("timeout");
+        return;
+      }
+      resolve(resp);
+    });
+  });
+}
+
+/**
   Connects to the model url by doing a replacement on the controller url and
   fetches it's full status then logs out of the model and closes the connection.
   @param {String} modelUUID The UUID of the model to connect to. Must be on the
