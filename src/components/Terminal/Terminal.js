@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getMacaroons } from "app/selectors";
 import classNames from "classnames";
@@ -11,18 +12,27 @@ import "./_terminal.scss";
 const Terminal = ({ address, modelName }) => {
   const terminalElement = useRef(null);
   const macaroons = useSelector(getMacaroons);
+  const history = useHistory();
 
   useEffect(() => {
+    // If the model name is found after a juju switch then
+    // switch to that route.
+    const switchFound = model => {
+      if (modelName !== model) {
+        history.push(`/models/${model}`);
+      }
+    };
     const creds = { macaroons };
     const terminalInstance = setupTerminal(
       address,
       creds,
       modelName,
-      terminalElement
+      terminalElement,
+      switchFound
     );
 
     return cleanUpTerminal(terminalInstance);
-  }, [address, macaroons, modelName]);
+  }, [address, macaroons, modelName, history]);
 
   const [terminalVisible, setTerminalVisible] = useState(false);
 
