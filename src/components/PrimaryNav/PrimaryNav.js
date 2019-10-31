@@ -27,6 +27,8 @@ const PrimaryNav = () => {
             className="p-primary-nav__logo"
             src="https://assets.ubuntu.com/v1/a9e0ed4a-jaas-logo1.svg"
             alt="JAAS logo"
+            height="35"
+            width="110"
           />
         </Link>
         <button

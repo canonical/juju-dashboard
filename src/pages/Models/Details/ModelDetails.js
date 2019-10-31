@@ -12,6 +12,7 @@ import UserIcon from "components/UserIcon/UserIcon";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
+import { collapsibleSidebar } from "app/actions";
 import { generateStatusIcon } from "app/utils";
 
 import "./_model-details.scss";
@@ -167,6 +168,13 @@ const ModelDetails = () => {
     modelUUID
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
+
+  useEffect(() => {
+    dispatch(collapsibleSidebar(true));
+    return () => {
+      dispatch(collapsibleSidebar(false));
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {

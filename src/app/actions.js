@@ -3,7 +3,8 @@ export const actionsList = {
   storeBakery: "STORE_BAKERY",
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
-  logOut: "LOG_OUT"
+  logOut: "LOG_OUT",
+  collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR"
 };
 
 // Action creators
@@ -55,5 +56,15 @@ export function logOut() {
     localStorage.removeItem("identity");
     localStorage.removeItem("https://api.jujucharms.com/identity");
     dispatch(clearUserData());
+  };
+}
+
+/**
+  Toggle collapsible sidebar
+*/
+export function collapsibleSidebar(toggle) {
+  return {
+    type: actionsList.collapsibleSidebar,
+    payload: toggle
   };
 }

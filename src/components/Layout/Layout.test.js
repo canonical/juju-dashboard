@@ -1,21 +1,46 @@
 import React from "react";
-import { shallow } from "enzyme";
-
+import { BrowserRouter as Router } from "react-router-dom";
+import { mount } from "enzyme";
+import configureStore from "redux-mock-store";
+import { Provider } from "react-redux";
+import dataDump from "testing/complete-redux-store-dump";
 import Layout from "./Layout";
 
+const mockStore = configureStore([]);
 describe("Layout", () => {
   it("renders without crashing and matches snapshot", () => {
-    const wrapper = shallow(<Layout />);
-    expect(wrapper).toMatchSnapshot();
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router>
+          <Layout />
+        </Router>
+      </Provider>
+    );
+    expect(wrapper.find(".l-container")).toMatchSnapshot();
   });
 
   it("renders with a sidebar", () => {
-    const wrapper = shallow(<Layout />);
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router>
+          <Layout />
+        </Router>
+      </Provider>
+    );
     expect(wrapper.find(".l-side")).toHaveLength(1);
   });
 
   it("should display the children", () => {
-    const wrapper = shallow(<Layout>content</Layout>);
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router>
+          <Layout>content</Layout>
+        </Router>
+      </Provider>
+    );
     expect(wrapper.find("#main-content").html()).toStrictEqual(
       `<main id="main-content">content</main>`
     );

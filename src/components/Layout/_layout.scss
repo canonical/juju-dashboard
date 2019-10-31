@@ -1,17 +1,29 @@
-$color-sidebar: #003b4e;
+@import "vanilla-framework/scss/settings_colors";
+@import "../../scss/settings";
 
 .l-container {
-  display: grid;
-  grid-template-columns: 250px 1fr;
+  display: flex;
   min-height: 100vh;
 }
 
 .l-main {
+  background-color: $color-x-light;
   overflow: hidden;
   position: relative;
+  width: calc(100vw - #{$sidebar-full-width});
+
+  .has-collapsible-sidebar & {
+    width: calc(100vw - #{$sidebar-collapsed});
+  }
 }
 
 .l-side {
   background: $color-sidebar;
   padding: 0;
+  transition: width 0.25s ease-in-out;
+  width: $sidebar-full-width;
+
+  .has-collapsible-sidebar & {
+    width: $sidebar-collapsed;
+  }
 }

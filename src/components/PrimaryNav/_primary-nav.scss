@@ -1,12 +1,10 @@
 @import "vanilla-framework/scss/settings_colors";
-
-$color-navigation-dark: #002835;
-$color-navigation-highlight: #004e68;
-$color-navigation-accent: #3fc8f2;
+@import "../../scss/settings";
 
 .p-primary-nav {
   position: sticky;
   top: 0;
+  width: $sidebar-full-width;
 
   a,
   a:hover {

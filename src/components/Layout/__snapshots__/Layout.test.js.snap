@@ -7,7 +7,298 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
   <div
     className="l-side"
   >
-    <PrimaryNav />
+    <PrimaryNav>
+      <nav
+        className="p-primary-nav"
+      >
+        <div
+          className="p-primary-nav__header"
+        >
+          <Link
+            to="/"
+          >
+            <LinkAnchor
+              href="/"
+              navigate={[Function]}
+            >
+              <a
+                href="/"
+                onClick={[Function]}
+              >
+                <img
+                  alt="JAAS logo"
+                  className="p-primary-nav__logo"
+                  height="35"
+                  src="https://assets.ubuntu.com/v1/a9e0ed4a-jaas-logo1.svg"
+                  width="110"
+                />
+              </a>
+            </LinkAnchor>
+          </Link>
+          <button
+            className="p-primary-nav__toggle"
+            onClick={[Function]}
+          >
+            <i
+              className="p-icon--contextual-menu"
+            >
+              Toggle external navigation
+            </i>
+          </button>
+        </div>
+        <ul
+          className="p-list is-external"
+        >
+          <li
+            className="p-list__item"
+          >
+            <a
+              className="p-list__link"
+              href="https://jaas.ai/store"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Store
+            </a>
+          </li>
+          <li
+            className="p-list__item"
+          >
+            <a
+              className="p-list__link"
+              href="https://jaas.ai/about"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              About
+            </a>
+          </li>
+          <li
+            className="p-list__item"
+          >
+            <a
+              className="p-list__link"
+              href="https://jaas.ai/how-it-works"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              How it works
+            </a>
+          </li>
+          <li
+            className="p-list__item"
+          >
+            <a
+              className="p-link--external p-list__link"
+              href="https://discourse.jujucharms.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Discourse
+            </a>
+          </li>
+          <li
+            className="p-list__item"
+          >
+            <a
+              className="p-link--external p-list__link"
+              href="https://jaas.ai/docs/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Docs
+            </a>
+          </li>
+        </ul>
+        <ul
+          className="p-list is-internal"
+        >
+          <li
+            className="p-list__item"
+            key="/"
+          >
+            <NavLink
+              activeClassName="is-selected"
+              className="p-list__link"
+              exact={true}
+              to="/"
+            >
+              <Link
+                aria-current="page"
+                className="p-list__link is-selected"
+                style={Object {}}
+                to={
+                  Object {
+                    "hash": "",
+                    "pathname": "/",
+                    "search": "",
+                    "state": null,
+                  }
+                }
+              >
+                <LinkAnchor
+                  aria-current="page"
+                  className="p-list__link is-selected"
+                  href="/"
+                  navigate={[Function]}
+                  style={Object {}}
+                >
+                  <a
+                    aria-current="page"
+                    className="p-list__link is-selected"
+                    href="/"
+                    onClick={[Function]}
+                    style={Object {}}
+                  >
+                    <img
+                      alt="Models icon"
+                      className="p-list__icon"
+                      src="https://assets.ubuntu.com/v1/51642f58-models.svg"
+                    />
+                    Models
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </NavLink>
+          </li>
+          <li
+            className="p-list__item"
+            key="/controllers"
+          >
+            <NavLink
+              activeClassName="is-selected"
+              className="p-list__link"
+              exact={true}
+              to="/controllers"
+            >
+              <Link
+                aria-current={null}
+                className="p-list__link"
+                to={
+                  Object {
+                    "hash": "",
+                    "pathname": "/controllers",
+                    "search": "",
+                    "state": null,
+                  }
+                }
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="p-list__link"
+                  href="/controllers"
+                  navigate={[Function]}
+                >
+                  <a
+                    aria-current={null}
+                    className="p-list__link"
+                    href="/controllers"
+                    onClick={[Function]}
+                  >
+                    <img
+                      alt="Controllers icon"
+                      className="p-list__icon"
+                      src="https://assets.ubuntu.com/v1/8414b187-controllers.svg"
+                    />
+                    Controllers
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </NavLink>
+          </li>
+          <li
+            className="p-list__item"
+            key="/usage"
+          >
+            <NavLink
+              activeClassName="is-selected"
+              className="p-list__link"
+              exact={true}
+              to="/usage"
+            >
+              <Link
+                aria-current={null}
+                className="p-list__link"
+                to={
+                  Object {
+                    "hash": "",
+                    "pathname": "/usage",
+                    "search": "",
+                    "state": null,
+                  }
+                }
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="p-list__link"
+                  href="/usage"
+                  navigate={[Function]}
+                >
+                  <a
+                    aria-current={null}
+                    className="p-list__link"
+                    href="/usage"
+                    onClick={[Function]}
+                  >
+                    <img
+                      alt="Usage icon"
+                      className="p-list__icon"
+                      src="https://assets.ubuntu.com/v1/1b1d07ae-usage.svg"
+                    />
+                    Usage
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </NavLink>
+          </li>
+          <li
+            className="p-list__item"
+            key="/logs"
+          >
+            <NavLink
+              activeClassName="is-selected"
+              className="p-list__link"
+              exact={true}
+              to="/logs"
+            >
+              <Link
+                aria-current={null}
+                className="p-list__link"
+                to={
+                  Object {
+                    "hash": "",
+                    "pathname": "/logs",
+                    "search": "",
+                    "state": null,
+                  }
+                }
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="p-list__link"
+                  href="/logs"
+                  navigate={[Function]}
+                >
+                  <a
+                    aria-current={null}
+                    className="p-list__link"
+                    href="/logs"
+                    onClick={[Function]}
+                  >
+                    <img
+                      alt="Logs icon"
+                      className="p-list__icon"
+                      src="https://assets.ubuntu.com/v1/741097ff-logs.svg"
+                    />
+                    Logs
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </NavLink>
+          </li>
+        </ul>
+      </nav>
+    </PrimaryNav>
   </div>
   <div
     className="l-main"
