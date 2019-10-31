@@ -169,15 +169,12 @@ const ModelDetails = () => {
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
 
-  // Toggle collapsible sidebar when component mounts/unmounts
   useEffect(() => {
-    // This gets called after every render
     dispatch(collapsibleSidebar(true));
-    // Cleanup when unmounting
     return () => {
       dispatch(collapsibleSidebar(false));
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {
