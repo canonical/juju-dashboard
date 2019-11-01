@@ -27,5 +27,6 @@ $z-layers: (
   @if not map-has-key($z-layers, $layer) {
     @warn "No z-index found in $z-layers map for `#{$layer}`. Property omitted.";
   }
+
   @return map-get($z-layers, $layer);
 }
