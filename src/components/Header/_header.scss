@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
 
 .header {
   background-color: $color-x-light;
@@ -6,5 +7,5 @@
   display: grid;
   min-height: 3rem;
   width: 100%;
-  z-index: 1;
+  z-index: z("beta");
 }

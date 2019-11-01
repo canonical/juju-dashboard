@@ -1,5 +1,6 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
 
 .l-container {
   display: flex;
@@ -27,7 +28,7 @@
   overflow: hidden;
   padding: 0;
   width: $sidebar-full-width;
-  z-index: 1;
+  z-index: z("beta");
 
   .has-collapsible-sidebar & {
     position: fixed;
