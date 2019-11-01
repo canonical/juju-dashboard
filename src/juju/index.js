@@ -100,7 +100,7 @@ async function loginWithBakery(visitPage, macaroonStore) {
 }
 
 /**
-  Commects and logs in to the supplied modelURL. If the connection takes longer
+  Connects and logs in to the supplied modelURL. If the connection takes longer
   than the allowed timeout it gives up.
   @param {String} modelURL The fully qualified url of the model api.
   @param {Object} options The options for the connection.
