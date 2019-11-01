@@ -139,6 +139,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   className="status-icon is-waiting"
                 >
                   waiting
+                  
                 </span>,
               },
               Object {
@@ -184,6 +185,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   className="status-icon is-waiting"
                 >
                   waiting
+                  
                 </span>,
               },
               Object {
@@ -229,6 +231,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   className="status-icon is-waiting"
                 >
                   waiting
+                  
                 </span>,
               },
               Object {
@@ -274,6 +277,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   className="status-icon is-waiting"
                 >
                   waiting
+                  
                 </span>,
               },
               Object {
@@ -319,6 +323,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   className="status-icon is-waiting"
                 >
                   waiting
+                  
                 </span>,
               },
               Object {
@@ -364,6 +369,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   className="status-icon is-waiting"
                 >
                   waiting
+                  
                 </span>,
               },
               Object {
@@ -409,6 +415,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   className="status-icon is-waiting"
                 >
                   waiting
+                  
                 </span>,
               },
               Object {
@@ -454,6 +461,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   className="status-icon is-waiting"
                 >
                   waiting
+                  
                 </span>,
               },
               Object {
@@ -499,6 +507,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   className="status-icon is-waiting"
                 >
                   waiting
+                  
                 </span>,
               },
               Object {

@@ -7,6 +7,7 @@ Array [
       className="status-icon is-blocked"
     >
       Blocked
+       (0)
     </span>
   </th>,
   <th>
@@ -34,6 +35,7 @@ Array [
       className="status-icon is-alert"
     >
       Alert
+       (0)
     </span>
   </th>,
   <th>
@@ -61,6 +63,7 @@ Array [
       className="status-icon is-running"
     >
       Running
+       (0)
     </span>
   </th>,
   <th>
@@ -105,6 +108,7 @@ exports[`TableList displays all data from redux store 1`] = `
             className="status-icon is-blocked"
           >
             Blocked
+             (2)
           </span>,
           "sortKey": "blocked",
         },
@@ -280,6 +284,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     className="status-icon is-blocked"
                   >
                     Blocked
+                     (2)
                   </span>
                 </th>
               </TableHeader>
@@ -577,6 +582,7 @@ exports[`TableList displays all data from redux store 1`] = `
             className="status-icon is-alert"
           >
             Alert
+             (4)
           </span>,
           "sortKey": "alert",
         },
@@ -854,6 +860,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     className="status-icon is-alert"
                   >
                     Alert
+                     (4)
                   </span>
                 </th>
               </TableHeader>
@@ -1363,6 +1370,7 @@ exports[`TableList displays all data from redux store 1`] = `
             className="status-icon is-running"
           >
             Running
+             (10)
           </span>,
           "sortKey": "running",
         },
@@ -1976,6 +1984,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     className="status-icon is-running"
                   >
                     Running
+                     (10)
                   </span>
                 </th>
               </TableHeader>
