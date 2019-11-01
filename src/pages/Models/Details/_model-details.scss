@@ -41,8 +41,9 @@
     }
 
     tbody tr {
+      @include vf-animation(background, brisk, ease-in-out);
+
       border-bottom: 1px solid $color-mid-x-light;
-      transition: background 0.25s ease-in-out;
 
       &:hover {
         background-color: #cef3ff;

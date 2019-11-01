@@ -5,6 +5,11 @@ $terminal-shell-height: 10rem;
 $terminal-header-height: 40px;
 
 .p-terminal {
+  &,
+  &__toggle {
+    @include vf-animation(transform, brisk, ease-in-out);
+  }
+
   background-color: $color-x-dark;
   bottom: 0;
   color: $color-x-light;
@@ -12,7 +17,6 @@ $terminal-header-height: 40px;
   // Disable until connection issue fixed
   // https://github.com/canonical-web-and-design/jaas-dashboard/issues/107
   // transform: translateY(160px);
-  transition: transform 0.25s ease-in-out;
   width: 100%;
 
   &.is-visible {
@@ -36,7 +40,6 @@ $terminal-header-height: 40px;
 
     .is-visible & {
       transform: rotate(0);
-      transition: transform 0.25s ease-in-out;
     }
   }
 
