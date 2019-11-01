@@ -93,7 +93,7 @@ async function loginWithBakery(visitPage, macaroonStore) {
   // Ping to keep the connection alive.
   conn.facades.pinger.pingForever(20000, err => {
     if (err) {
-      console.log("unable to ping:", err);
+      console.error("unable to ping:", err);
     }
   });
   return { bakery, conn };
