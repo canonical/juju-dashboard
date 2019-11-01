@@ -12,6 +12,7 @@ const UNEXPECTED_CLOSE =
   "Terminal connection unexpectedly closed. " +
   "Close and re-open the terminal window to reconnect.";
 
+const JUJU_SWITCH_REGEX = RegExp(/ctrl:.*->\sctrl:(.*)/, "g");
 /**
   Setup the terminal instance.
   @param {String} address The address to connect the websocket to.
@@ -21,13 +22,16 @@ const UNEXPECTED_CLOSE =
     if any.
   @param {Object} terminalElement The element in the DOM to render the xterm
     instance into.
+  @param {Function} switchFound The function to call with the model name
+    if a juju switch command to a different model has been detected.
   @returns {XTerm} The new Xterm terminal instance.
 */
 export default function setupTerminal(
   address,
   creds,
   modelName,
-  terminalElement
+  terminalElement,
+  switchFound
 ) {
   let terminalInstance = new Xterm({
     theme: {
@@ -89,6 +93,11 @@ export default function setupTerminal(
         const cmd = `juju switch ${modelName}`;
         ws.send(JSON.stringify(["stdin", `${cmd}\n`]));
         break;
+      case "stdout":
+        const switchValue = JUJU_SWITCH_REGEX.exec(resp[1]);
+        if (switchValue !== null) {
+          switchFound(switchValue[1]);
+        }
     }
   };
 
