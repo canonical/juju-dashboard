@@ -1,5 +1,5 @@
-@import "vanilla-framework/scss/vanilla";
 @import "../../scss/settings";
+@import "vanilla-framework/scss/vanilla";
 
 .l-container {
   display: flex;
@@ -19,12 +19,13 @@
 }
 
 .l-side {
+  @include vf-animation(width, brisk, ease-in-out);
+
   background: $color-sidebar;
   height: 100vh;
   left: 0;
   overflow: hidden;
   padding: 0;
-  transition: width 0.25s ease-in-out;
   width: $sidebar-full-width;
   z-index: 1;
 

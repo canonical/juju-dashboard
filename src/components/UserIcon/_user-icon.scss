@@ -7,6 +7,8 @@
   text-align: center;
 
   &__panel {
+    @include vf-animation(opacity, brisk, ease-in-out);
+
     min-width: 100px;
     opacity: 0;
     overflow: visible;
@@ -14,7 +16,6 @@
     position: absolute;
     right: 0.5rem;
     top: 2.5rem;
-    transition: opacity 0.25s ease-in-out;
 
     .p-list {
       margin-bottom: 0;
