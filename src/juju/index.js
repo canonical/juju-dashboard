@@ -2,6 +2,7 @@ import Limiter from "async-limiter";
 import jujulib from "@canonical/jujulib";
 import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
+import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 
 import { updateModelInfo, updateModelStatus } from "./actions";
@@ -54,13 +55,19 @@ function createNewBakery(visitPage, macaroonStore) {
 
 /**
   Return a common connection option config.
+  @param {Boolean} usePinger If the connection will be long lived then use the
+    pinger. Defaults to false.
   @returns {Object} The configuration options.
 */
-function generateConnectionOptions() {
+function generateConnectionOptions(usePinger = false) {
   // The options used when connecting to a Juju controller or model.
+  const facades = [client, modelManager];
+  if (usePinger) {
+    facades.push(pinger);
+  }
   return {
     debug: false,
-    facades: [client, modelManager],
+    facades,
     bakery
   };
 }
@@ -80,10 +87,40 @@ async function loginWithBakery(visitPage, macaroonStore) {
   }
   const juju = await jujulib.connect(
     controllerURL,
-    generateConnectionOptions()
+    generateConnectionOptions(true)
   );
   const conn = await juju.login({});
+  // Ping to keep the connection alive.
+  conn.facades.pinger.pingForever(20000, err => {
+    if (err) {
+      console.error("unable to ping:", err);
+    }
+  });
   return { bakery, conn };
+}
+
+/**
+  Connects and logs in to the supplied modelURL. If the connection takes longer
+  than the allowed timeout it gives up.
+  @param {String} modelURL The fully qualified url of the model api.
+  @param {Object} options The options for the connection.
+  @param {Number} duration The timeout in ms for the connection. Defaults to 5s
+  @returns {Object} The full model status.
+*/
+async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
+  const timeout = new Promise((resolve, reject) => {
+    setTimeout(resolve, duration, "timeout");
+  });
+  const juju = jujulib.connectAndLogin(modelURL, {}, options);
+  return new Promise((resolve, reject) => {
+    Promise.race([timeout, juju]).then(resp => {
+      if (resp === "timeout") {
+        reject("timeout");
+        return;
+      }
+      resolve(resp);
+    });
+  });
 }
 
 /**
@@ -95,13 +132,17 @@ async function loginWithBakery(visitPage, macaroonStore) {
 */
 async function fetchModelStatus(modelUUID) {
   const modelURL = controllerURL.replace("/api", `/model/${modelUUID}/api`);
-  const { conn, logout } = await jujulib.connectAndLogin(
-    modelURL,
-    {},
-    generateConnectionOptions()
-  );
-  const status = await conn.facades.client.fullStatus();
-  logout();
+  let status = null;
+  try {
+    const { conn, logout } = await connectAndLoginWithTimeout(
+      modelURL,
+      generateConnectionOptions()
+    );
+    status = await conn.facades.client.fullStatus();
+    logout();
+  } catch (e) {
+    console.error("timeout, unable to log into model:", modelUUID);
+  }
   return status;
 }
 
@@ -113,6 +154,9 @@ async function fetchModelStatus(modelUUID) {
  */
 async function fetchAndStoreModelStatus(modelUUID, dispatch) {
   const status = await fetchModelStatus(modelUUID);
+  if (status === null) {
+    return;
+  }
   dispatch(updateModelStatus(modelUUID, status));
 }
 
