@@ -1,6 +1,12 @@
 // Import Vanilla Framework
 @import "node_modules/vanilla-framework/scss/vanilla";
 
+// Import settings
+@import "settings";
+
+// Import functions
+@import "functions/z-index";
+
 // Import custom patterns
 @import "custom/status_icons";
 
