@@ -1,8 +1,14 @@
 // Import Vanilla Framework
 @import "node_modules/vanilla-framework/scss/vanilla";
 
+// Import settings
+@import "settings";
+
+// Import functions
+@import "functions/z-index";
+
 // Import custom patterns
-@import "status_icons";
+@import "custom/status_icons";
 
 // Settings
 $grid-max-width: 100%;
