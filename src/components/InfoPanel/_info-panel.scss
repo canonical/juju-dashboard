@@ -12,7 +12,11 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+
+    @media (min-width: $breakpoint-x-large) {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   .p-muted-heading {
