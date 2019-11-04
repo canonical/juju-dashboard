@@ -13,9 +13,14 @@
   }
 
   &__logo {
-    max-width: 110px;
-    padding: 0.5rem 0.5rem 0;
-    width: 100%;
+    display: flex;
+    margin-bottom: 0.5rem;
+    margin-left: 2px;
+    padding-top: 3px;
+
+    &-text {
+      padding-left: 0.6rem;
+    }
   }
 
   &__header {
@@ -26,10 +31,16 @@
   }
 
   &__toggle {
+    align-items: center;
     background: none;
     border: 0;
+    display: grid;
     margin: 0;
     padding: 0;
+
+    .p-icon--contextual-menu {
+      margin: auto;
+    }
 
     &:hover,
     &:active {
@@ -49,7 +60,7 @@
       color: $color-light;
       display: flex;
       padding: 0.25rem 0;
-      padding-left: calc(1.25rem - 3px);
+      padding-left: calc(1rem - 3px);
 
       &:hover {
         background-color: $color-navigation-highlight;
@@ -73,13 +84,18 @@
     @include vf-animation(max-height, brisk, ease-in-out);
 
     background: $color-navigation-dark;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
     max-height: 0;
     overflow: hidden;
 
     .p-list__link {
       padding-left: calc(3.25rem);
     }
+  }
+
+  .p-primary-nav__toggle {
+    position: relative;
+    top: -3px;
   }
 
   &.ext-nav-open {
@@ -90,7 +106,7 @@
 
     .p-primary-nav__toggle {
       position: relative;
-      top: 3px;
+      top: -3px;
       transform: rotate(180deg);
     }
   }
