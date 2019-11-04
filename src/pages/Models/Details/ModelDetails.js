@@ -46,6 +46,15 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
+const machineTableHeaders = [
+  { content: "machine" },
+  { content: "ip" },
+  { content: "state" },
+  { content: "az" },
+  { content: "instance id" },
+  { content: "message" }
+];
+
 const generateEntityLink = (namespace, href, name) => {
   return (
     <>
@@ -158,6 +167,35 @@ const generateRelationRows = modelStatusData => {
   });
 };
 
+const splitParts = hardware =>
+  Object.fromEntries(
+    hardware.split(" ").map(item => {
+      const parts = item.split("=");
+      return [parts[0], parts[1]];
+    })
+  );
+
+const generateMachineRows = modelStatusData => {
+  if (!modelStatusData) {
+    return [];
+  }
+
+  const machines = modelStatusData.machines;
+  return Object.keys(machines).map(machineId => {
+    const machine = machines[machineId];
+    return {
+      columns: [
+        { content: machineId },
+        { content: machine.dnsName },
+        { content: machine.instanceStatus.status },
+        { content: splitParts(machine.hardware)["availability-zone"] },
+        { content: machine.instanceId },
+        { content: machine.instanceStatus.info }
+      ]
+    };
+  });
+};
+
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
@@ -198,6 +236,10 @@ const ModelDetails = () => {
     () => generateRelationRows(modelStatusData),
     [modelStatusData]
   );
+  const machinesTableRows = useMemo(
+    () => generateMachineRows(modelStatusData),
+    [modelStatusData]
+  );
 
   return (
     <Layout>
@@ -223,6 +265,11 @@ const ModelDetails = () => {
           <MainTable
             headers={relationTableHeaders}
             rows={relationTableRows}
+            sortable
+          />
+          <MainTable
+            headers={machineTableHeaders}
+            rows={machinesTableRows}
             sortable
           />
         </div>

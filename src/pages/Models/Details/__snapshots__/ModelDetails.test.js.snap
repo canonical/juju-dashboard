@@ -2853,6 +2853,109 @@ exports[`ModelDetail Container renders the details pane 1`] = `
         </table>
       </Table>
     </MainTable>
+    <MainTable
+      headers={
+        Array [
+          Object {
+            "content": "machine",
+          },
+          Object {
+            "content": "ip",
+          },
+          Object {
+            "content": "state",
+          },
+          Object {
+            "content": "az",
+          },
+          Object {
+            "content": "instance id",
+          },
+          Object {
+            "content": "message",
+          },
+        ]
+      }
+      rows={Array []}
+      sortable={true}
+    >
+      <Table
+        sortable={true}
+      >
+        <table
+          className="p-table--sortable"
+          role="grid"
+        >
+          <thead>
+            <TableRow>
+              <tr>
+                <TableHeader
+                  key="0"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    machine
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="1"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    ip
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="2"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    state
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="3"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    az
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="4"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    instance id
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="5"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    message
+                  </th>
+                </TableHeader>
+              </tr>
+            </TableRow>
+          </thead>
+          <tbody />
+        </table>
+      </Table>
+    </MainTable>
   </div>
 </div>
 `;
@@ -3256,6 +3359,109 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 </TableHeader>
                 <TableHeader
                   key="4"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    message
+                  </th>
+                </TableHeader>
+              </tr>
+            </TableRow>
+          </thead>
+          <tbody />
+        </table>
+      </Table>
+    </MainTable>
+    <MainTable
+      headers={
+        Array [
+          Object {
+            "content": "machine",
+          },
+          Object {
+            "content": "ip",
+          },
+          Object {
+            "content": "state",
+          },
+          Object {
+            "content": "az",
+          },
+          Object {
+            "content": "instance id",
+          },
+          Object {
+            "content": "message",
+          },
+        ]
+      }
+      rows={Array []}
+      sortable={true}
+    >
+      <Table
+        sortable={true}
+      >
+        <table
+          className="p-table--sortable"
+          role="grid"
+        >
+          <thead>
+            <TableRow>
+              <tr>
+                <TableHeader
+                  key="0"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    machine
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="1"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    ip
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="2"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    state
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="3"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    az
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="4"
+                  onClick={[Function]}
+                >
+                  <th
+                    onClick={[Function]}
+                  >
+                    instance id
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="5"
                   onClick={[Function]}
                 >
                   <th
