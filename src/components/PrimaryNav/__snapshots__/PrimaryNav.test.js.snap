@@ -8,22 +8,31 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
     className="p-primary-nav__header"
   >
     <Link
+      className="p-primary-nav__logo"
       to="/"
     >
       <LinkAnchor
+        className="p-primary-nav__logo"
         href="/"
         navigate={[Function]}
       >
         <a
+          className="p-primary-nav__logo"
           href="/"
           onClick={[Function]}
         >
           <img
             alt="JAAS logo"
-            className="p-primary-nav__logo"
-            height="35"
-            src="https://assets.ubuntu.com/v1/a9e0ed4a-jaas-logo1.svg"
-            width="110"
+            className="p-primary-nav__logo-icon"
+            height="30"
+            src="https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg"
+            width="30"
+          />
+          <img
+            alt=""
+            className="p-primary-nav__logo-text"
+            height="30"
+            src="https://assets.ubuntu.com/v1/2e04d794-logo-jaas.svg"
           />
         </a>
       </LinkAnchor>

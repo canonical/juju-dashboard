@@ -26,13 +26,19 @@ const PrimaryNav = () => {
       className={classNames("p-primary-nav", { "ext-nav-open": extNavOpen })}
     >
       <div className="p-primary-nav__header">
-        <Link to="/">
+        <Link to="/" className="p-primary-nav__logo">
           <img
-            className="p-primary-nav__logo"
-            src="https://assets.ubuntu.com/v1/a9e0ed4a-jaas-logo1.svg"
+            className="p-primary-nav__logo-icon"
+            src="https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg"
             alt="JAAS logo"
-            height="35"
-            width="110"
+            height="30"
+            width="30"
+          />
+          <img
+            className="p-primary-nav__logo-text"
+            src="https://assets.ubuntu.com/v1/2e04d794-logo-jaas.svg"
+            height="30"
+            alt=""
           />
         </Link>
         <button
