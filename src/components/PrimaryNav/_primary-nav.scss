@@ -1,5 +1,5 @@
-@import "vanilla-framework/scss/vanilla";
 @import "../../scss/settings";
+@import "vanilla-framework/scss/vanilla";
 
 .p-primary-nav {
   position: sticky;
@@ -26,11 +26,12 @@
   }
 
   &__toggle {
+    @include vf-animation(transform, brisk, ease-in-out);
+
     background: none;
     border: 0;
     margin: 0;
     padding: 0;
-    transition: transform 0.25s ease-in-out;
 
     &:hover {
       background: none;
@@ -38,11 +39,12 @@
   }
 
   .is-external {
+    @include vf-animation(max-height, brisk, ease-in-out);
+
     background: $color-navigation-dark;
     margin-bottom: 0.5rem;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.25s ease-in-out;
 
     .p-list__link {
       padding-left: calc(3.5rem - 3px);

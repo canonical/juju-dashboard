@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
 
 .user-icon {
   cursor: pointer;
@@ -7,6 +8,8 @@
   text-align: center;
 
   &__panel {
+    @include vf-animation(opacity, brisk, ease-in-out);
+
     min-width: 100px;
     opacity: 0;
     overflow: visible;
@@ -14,7 +17,6 @@
     position: absolute;
     right: 0.5rem;
     top: 2.5rem;
-    transition: opacity 0.25s ease-in-out;
 
     .p-list {
       margin-bottom: 0;
@@ -22,7 +24,7 @@
 
     &.is-visible {
       opacity: 1;
-      z-index: 1;
+      z-index: z("gamma");
     }
 
     &-arrow {
@@ -34,7 +36,7 @@
       top: -0.25rem;
       transform: rotate(225deg);
       width: 1rem;
-      z-index: 2;
+      z-index: z("gamma");
     }
   }
 

@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
 
 .p-filter-tags {
   padding: 0.5rem;
@@ -12,12 +13,14 @@
 }
 
 .p-filter-panel {
+  @include vf-animation(opacity, brisk, ease-in-out);
+
   margin-top: 0.5rem;
   opacity: 0;
   position: absolute;
   top: 2.75rem;
-  transition: opacity 0.25s ease-in-out;
   width: calc(100% - 1.5rem);
+  z-index: z("delta");
 
   &.is-visible {
     opacity: 1;
