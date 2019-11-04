@@ -191,11 +191,15 @@ function getStatusValue(status, key) {
 /**
   Generates the table headers for the supplied table label.
   @param {String} label The title of the table.
+  @param {Number} count The number of elements in the status.
   @returns {Array} The headers for the table.
 */
-function generateTableHeaders(label) {
+function generateTableHeaders(label, count) {
   return [
-    { content: generateStatusIcon(label), sortKey: label.toLowerCase() },
+    {
+      content: generateStatusIcon(label, count),
+      sortKey: label.toLowerCase()
+    },
     { content: "Owner", sortKey: "owner" },
     { content: "Configuration", sortKey: "summary" },
     { content: "Cloud/Region", sortKey: "cloud" },
@@ -226,17 +230,17 @@ function TableList() {
     <>
       <MainTable
         className={"u-table-layout--auto"}
-        headers={generateTableHeaders("Blocked")}
+        headers={generateTableHeaders("Blocked", blockedRows.length)}
         rows={blockedRows}
       />
       <MainTable
         className={"u-table-layout--auto"}
-        headers={generateTableHeaders("Alert")}
+        headers={generateTableHeaders("Alert", alertRows.length)}
         rows={alertRows}
       />
       <MainTable
         className={"u-table-layout--auto"}
-        headers={generateTableHeaders("Running")}
+        headers={generateTableHeaders("Running", runningRows.length)}
         rows={runningRows}
       />
     </>
