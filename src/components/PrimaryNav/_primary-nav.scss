@@ -26,28 +26,18 @@
   }
 
   &__toggle {
-    @include vf-animation(transform, brisk, ease-in-out);
-
     background: none;
     border: 0;
     margin: 0;
     padding: 0;
 
-    &:hover {
-      background: none;
+    &:hover,
+    &:active {
+      background: none !important;
     }
-  }
 
-  .is-external {
-    @include vf-animation(max-height, brisk, ease-in-out);
-
-    background: $color-navigation-dark;
-    margin-bottom: 0.5rem;
-    max-height: 0;
-    overflow: hidden;
-
-    .p-list__link {
-      padding-left: calc(3.5rem - 3px);
+    &:focus {
+      outline: 1px dotted $color-navigation-highlight;
     }
   }
 
@@ -79,6 +69,19 @@
     }
   }
 
+  .p-list.is-external {
+    @include vf-animation(max-height, brisk, ease-in-out);
+
+    background: $color-navigation-dark;
+    margin-bottom: 0.5rem;
+    max-height: 0;
+    overflow: hidden;
+
+    .p-list__link {
+      padding-left: calc(3.25rem);
+    }
+  }
+
   &.ext-nav-open {
     .is-external {
       max-height: 200px;
@@ -86,6 +89,8 @@
     }
 
     .p-primary-nav__toggle {
+      position: relative;
+      top: 3px;
       transform: rotate(180deg);
     }
   }
