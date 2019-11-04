@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
 
 .p-filter-tags {
   padding: 0.5rem;
@@ -19,6 +20,7 @@
   position: absolute;
   top: 2.75rem;
   width: calc(100% - 1.5rem);
+  z-index: z("delta");
 
   &.is-visible {
     opacity: 1;
