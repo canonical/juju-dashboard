@@ -30,10 +30,16 @@
   }
 
   &__toggle {
+    align-items: center;
     background: none;
     border: 0;
+    display: grid;
     margin: 0;
     padding: 0;
+
+    .p-icon--contextual-menu {
+      margin: auto;
+    }
 
     &:hover,
     &:active {
