@@ -263,13 +263,13 @@ const ModelDetails = () => {
           />
           <MainTable headers={unitTableHeaders} rows={unitTableRows} sortable />
           <MainTable
-            headers={relationTableHeaders}
-            rows={relationTableRows}
+            headers={machineTableHeaders}
+            rows={machinesTableRows}
             sortable
           />
           <MainTable
-            headers={machineTableHeaders}
-            rows={machinesTableRows}
+            headers={relationTableHeaders}
+            rows={relationTableRows}
             sortable
           />
         </div>
