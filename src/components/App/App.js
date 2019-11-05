@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect
+} from "react-router-dom";
 
 // Components
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
@@ -19,7 +24,10 @@ function App() {
       <ErrorBoundary>
         <Switch>
           <Login>
-            <Route path="/" exact component={Models} />
+            <Route exact path="/">
+              <Redirect to="/models" />
+            </Route>
+            <Route path="/models" exact component={Models} />
             <Route path="/models/*" exact component={ModelDetails} />
             <Route path="/controllers" exact component={Controllers} />
             <Route path="/usage" exact component={Usage} />
