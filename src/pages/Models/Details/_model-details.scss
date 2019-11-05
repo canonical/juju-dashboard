@@ -3,8 +3,7 @@
 .model-details {
   display: grid;
   grid-template-columns: 230px 1fr;
-  min-height: calc(100vh - 48px); // header is 48px high.
-  padding-bottom: 2rem;
+  padding-bottom: 14rem;
 
   @media (min-width: $breakpoint-x-large) {
     grid-template-columns: 350px 1fr;

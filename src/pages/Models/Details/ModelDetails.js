@@ -253,25 +253,31 @@ const ModelDetails = () => {
           <UserIcon />
         </div>
       </Header>
-      <div className="model-details">
-        <InfoPanel />
-        <div className="model-details__main">
-          <MainTable
-            headers={applicationTableHeaders}
-            rows={applicationTableRows}
-            sortable
-          />
-          <MainTable headers={unitTableHeaders} rows={unitTableRows} sortable />
-          <MainTable
-            headers={machineTableHeaders}
-            rows={machinesTableRows}
-            sortable
-          />
-          <MainTable
-            headers={relationTableHeaders}
-            rows={relationTableRows}
-            sortable
-          />
+      <div className="l-content">
+        <div className="model-details">
+          <InfoPanel />
+          <div className="model-details__main">
+            <MainTable
+              headers={applicationTableHeaders}
+              rows={applicationTableRows}
+              sortable
+            />
+            <MainTable
+              headers={unitTableHeaders}
+              rows={unitTableRows}
+              sortable
+            />
+            <MainTable
+              headers={machineTableHeaders}
+              rows={machinesTableRows}
+              sortable
+            />
+            <MainTable
+              headers={relationTableHeaders}
+              rows={relationTableRows}
+              sortable
+            />
+          </div>
         </div>
       </div>
       <Terminal

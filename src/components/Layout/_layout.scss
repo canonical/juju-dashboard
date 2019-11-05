@@ -5,18 +5,24 @@
 .l-container {
   display: flex;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .l-main {
   background-color: $color-x-light;
-  overflow: hidden;
+  padding-left: $sidebar-full-width;
   position: relative;
-  width: calc(100vw - #{$sidebar-full-width});
+  width: 100vw;
 
   .has-collapsible-sidebar & {
     padding-left: $sidebar-collapsed;
     width: 100vw;
   }
+}
+
+.has-collapsible-sidebar .is-collapsed + .l-main {
+  margin-top: 3rem;
+  width: 100vw;
 }
 
 .l-side {
@@ -27,15 +33,21 @@
   left: 0;
   overflow: hidden;
   padding: 0;
+  position: fixed;
+  top: 0;
   width: $sidebar-full-width;
-  z-index: z("beta");
-
-  .has-collapsible-sidebar & {
-    position: fixed;
-    top: 0;
-  }
+  z-index: z("kappa");
 
   &.is-collapsed {
     width: $sidebar-collapsed;
   }
+
+  .has-collapsible-sidebar & {
+    left: 0;
+    position: fixed;
+  }
+}
+
+.l-content {
+  margin: 0.5rem 1rem;
 }

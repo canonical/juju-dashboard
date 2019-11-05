@@ -1,3 +1,4 @@
+@import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
 
@@ -5,7 +6,17 @@
   background-color: $color-x-light;
   box-shadow: 0 1px 5px 1px rgba(51, 51, 51, 0.2);
   display: grid;
-  min-height: 3rem;
-  width: 100%;
+  height: 3rem;
+  position: fixed;
+  top: 0;
+  width: calc(100vw - #{$sidebar-full-width});
   z-index: z("beta");
+}
+
+.has-collapsible-sidebar .l-side + .l-main .header {
+  width: calc(100vw - #{$sidebar-collapsed});
+}
+
+.l-side:not(.is-collapsed) + .l-main {
+  padding-top: 3rem;
 }
