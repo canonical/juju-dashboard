@@ -3690,6 +3690,1056 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
 </div>
 `;
 
+exports[`ModelDetail Container renders the machine details section 1`] = `
+<MainTable
+  headers={
+    Array [
+      Object {
+        "content": "machine",
+      },
+      Object {
+        "content": "ip",
+      },
+      Object {
+        "content": "state",
+      },
+      Object {
+        "content": "az",
+      },
+      Object {
+        "content": "instance id",
+      },
+      Object {
+        "content": "message",
+      },
+    ]
+  }
+  rows={
+    Array [
+      Object {
+        "columns": Array [
+          Object {
+            "content": "0",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+      Object {
+        "columns": Array [
+          Object {
+            "content": "1",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+      Object {
+        "columns": Array [
+          Object {
+            "content": "2",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+      Object {
+        "columns": Array [
+          Object {
+            "content": "3",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+      Object {
+        "columns": Array [
+          Object {
+            "content": "4",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+      Object {
+        "columns": Array [
+          Object {
+            "content": "5",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+      Object {
+        "columns": Array [
+          Object {
+            "content": "6",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+      Object {
+        "columns": Array [
+          Object {
+            "content": "7",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+      Object {
+        "columns": Array [
+          Object {
+            "content": "8",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+      Object {
+        "columns": Array [
+          Object {
+            "content": "9",
+          },
+          Object {
+            "content": "",
+          },
+          Object {
+            "content": "provisioning error",
+          },
+          Object {
+            "content": undefined,
+          },
+          Object {
+            "content": "pending",
+          },
+          Object {
+            "className": "model-details__truncate-cell",
+            "content": <span
+              title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+            >
+              googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+            </span>,
+          },
+        ],
+      },
+    ]
+  }
+  sortable={true}
+>
+  <Table
+    sortable={true}
+  >
+    <table
+      className="p-table--sortable"
+      role="grid"
+    >
+      <thead>
+        <TableRow>
+          <tr>
+            <TableHeader
+              key="0"
+              onClick={[Function]}
+            >
+              <th
+                onClick={[Function]}
+              >
+                machine
+              </th>
+            </TableHeader>
+            <TableHeader
+              key="1"
+              onClick={[Function]}
+            >
+              <th
+                onClick={[Function]}
+              >
+                ip
+              </th>
+            </TableHeader>
+            <TableHeader
+              key="2"
+              onClick={[Function]}
+            >
+              <th
+                onClick={[Function]}
+              >
+                state
+              </th>
+            </TableHeader>
+            <TableHeader
+              key="3"
+              onClick={[Function]}
+            >
+              <th
+                onClick={[Function]}
+              >
+                az
+              </th>
+            </TableHeader>
+            <TableHeader
+              key="4"
+              onClick={[Function]}
+            >
+              <th
+                onClick={[Function]}
+              >
+                instance id
+              </th>
+            </TableHeader>
+            <TableHeader
+              key="5"
+              onClick={[Function]}
+            >
+              <th
+                onClick={[Function]}
+              >
+                message
+              </th>
+            </TableHeader>
+          </tr>
+        </TableRow>
+      </thead>
+      <tbody>
+        <TableRow
+          key="0"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                0
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+        <TableRow
+          key="1"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                1
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+        <TableRow
+          key="2"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                2
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+        <TableRow
+          key="3"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                3
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+        <TableRow
+          key="4"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                4
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+        <TableRow
+          key="5"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                5
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+        <TableRow
+          key="6"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                6
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+        <TableRow
+          key="7"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                7
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+        <TableRow
+          key="8"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                8
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+        <TableRow
+          key="9"
+        >
+          <tr>
+            <TableCell
+              key="0"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                9
+              </td>
+            </TableCell>
+            <TableCell
+              key="1"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="2"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                provisioning error
+              </td>
+            </TableCell>
+            <TableCell
+              key="3"
+            >
+              <td
+                className=""
+                role="gridcell"
+              />
+            </TableCell>
+            <TableCell
+              key="4"
+            >
+              <td
+                className=""
+                role="gridcell"
+              >
+                pending
+              </td>
+            </TableCell>
+            <TableCell
+              className="model-details__truncate-cell"
+              key="5"
+            >
+              <td
+                className="model-details__truncate-cell"
+                role="gridcell"
+              >
+                <span
+                  title="googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState"
+                >
+                  googleapi: Error 403: Project clean-algebra-206308 cannot accept requests to insert while in an inactive billing state.  Billing state may take several minutes to update., inactiveBillingState
+                </span>
+              </td>
+            </TableCell>
+          </tr>
+        </TableRow>
+      </tbody>
+    </table>
+  </Table>
+</MainTable>
+`;
+
 exports[`ModelDetail Container renders the terminal 1`] = `
 <Terminal
   address="wss://shell.jujugui.org:443/ws/"
