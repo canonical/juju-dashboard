@@ -53,6 +53,10 @@
     grid-template-columns: 30% 9% 11% 22.5% 27.5%;
   }
 
+  &__truncate-cell {
+    white-space: nowrap;
+  }
+
   .p-table--sortable {
     margin-bottom: 2rem;
 
