@@ -3692,13 +3692,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
 
 exports[`ModelDetail Container renders the machine details section 1`] = `
 <MainTable
+  className="model-details__machines"
   headers={
     Array [
       Object {
         "content": "machine",
-      },
-      Object {
-        "content": "ip",
       },
       Object {
         "content": "state",
@@ -3719,13 +3717,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "0",
+            "content": <React.Fragment>
+              <div>
+                0
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3746,13 +3755,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "1",
+            "content": <React.Fragment>
+              <div>
+                1
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3773,13 +3793,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "2",
+            "content": <React.Fragment>
+              <div>
+                2
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3800,13 +3831,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "3",
+            "content": <React.Fragment>
+              <div>
+                3
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3827,13 +3869,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "4",
+            "content": <React.Fragment>
+              <div>
+                4
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3854,13 +3907,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "5",
+            "content": <React.Fragment>
+              <div>
+                5
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3881,13 +3945,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "6",
+            "content": <React.Fragment>
+              <div>
+                6
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3908,13 +3983,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "7",
+            "content": <React.Fragment>
+              <div>
+                7
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3935,13 +4021,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "8",
+            "content": <React.Fragment>
+              <div>
+                8
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3962,13 +4059,24 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
       Object {
         "columns": Array [
           Object {
-            "content": "9",
+            "content": <React.Fragment>
+              <div>
+                9
+              </div>
+              <a
+                href="#_"
+              >
+                
+              </a>
+            </React.Fragment>,
           },
           Object {
-            "content": "",
-          },
-          Object {
-            "content": "provisioning error",
+            "content": <span
+              className="status-icon is-provisioning error"
+            >
+              provisioning error
+              
+            </span>,
           },
           Object {
             "content": undefined,
@@ -3991,10 +4099,11 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
   sortable={true}
 >
   <Table
+    className="model-details__machines"
     sortable={true}
   >
     <table
-      className="p-table--sortable"
+      className="model-details__machines p-table--sortable"
       role="grid"
     >
       <thead>
@@ -4017,7 +4126,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <th
                 onClick={[Function]}
               >
-                ip
+                state
               </th>
             </TableHeader>
             <TableHeader
@@ -4027,7 +4136,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <th
                 onClick={[Function]}
               >
-                state
+                az
               </th>
             </TableHeader>
             <TableHeader
@@ -4037,21 +4146,11 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <th
                 onClick={[Function]}
               >
-                az
-              </th>
-            </TableHeader>
-            <TableHeader
-              key="4"
-              onClick={[Function]}
-            >
-              <th
-                onClick={[Function]}
-              >
                 instance id
               </th>
             </TableHeader>
             <TableHeader
-              key="5"
+              key="4"
               onClick={[Function]}
             >
               <th
@@ -4075,7 +4174,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                0
+                <div>
+                  0
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4084,7 +4188,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4092,20 +4202,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4116,7 +4216,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
@@ -4142,7 +4242,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                1
+                <div>
+                  1
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4151,7 +4256,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4159,20 +4270,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4183,7 +4284,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
@@ -4209,7 +4310,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                2
+                <div>
+                  2
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4218,7 +4324,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4226,20 +4338,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4250,7 +4352,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
@@ -4276,7 +4378,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                3
+                <div>
+                  3
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4285,7 +4392,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4293,20 +4406,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4317,7 +4420,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
@@ -4343,7 +4446,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                4
+                <div>
+                  4
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4352,7 +4460,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4360,20 +4474,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4384,7 +4488,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
@@ -4410,7 +4514,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                5
+                <div>
+                  5
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4419,7 +4528,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4427,20 +4542,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4451,7 +4556,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
@@ -4477,7 +4582,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                6
+                <div>
+                  6
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4486,7 +4596,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4494,20 +4610,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4518,7 +4624,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
@@ -4544,7 +4650,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                7
+                <div>
+                  7
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4553,7 +4664,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4561,20 +4678,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4585,7 +4692,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
@@ -4611,7 +4718,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                8
+                <div>
+                  8
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4620,7 +4732,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4628,20 +4746,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4652,7 +4760,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
@@ -4678,7 +4786,12 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
                 className=""
                 role="gridcell"
               >
-                9
+                <div>
+                  9
+                </div>
+                <a
+                  href="#_"
+                />
               </td>
             </TableCell>
             <TableCell
@@ -4687,7 +4800,13 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              />
+              >
+                <span
+                  className="status-icon is-provisioning error"
+                >
+                  provisioning error
+                </span>
+              </td>
             </TableCell>
             <TableCell
               key="2"
@@ -4695,20 +4814,10 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
               <td
                 className=""
                 role="gridcell"
-              >
-                provisioning error
-              </td>
-            </TableCell>
-            <TableCell
-              key="3"
-            >
-              <td
-                className=""
-                role="gridcell"
               />
             </TableCell>
             <TableCell
-              key="4"
+              key="3"
             >
               <td
                 className=""
@@ -4719,7 +4828,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             </TableCell>
             <TableCell
               className="model-details__truncate-cell"
-              key="5"
+              key="4"
             >
               <td
                 className="model-details__truncate-cell"
