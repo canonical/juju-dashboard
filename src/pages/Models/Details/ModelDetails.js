@@ -90,7 +90,10 @@ const generateApplicationRows = modelStatusData => {
             key
           )
         },
-        { content: app.status ? generateStatusIcon(app.status.status) : "-" },
+        {
+          content: app.status ? generateStatusIcon(app.status.status) : "-",
+          className: "u-capitalise"
+        },
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
         { content: "CharmHub" },
@@ -124,7 +127,10 @@ const generateUnitRows = modelStatusData => {
               unitId
             )
           },
-          { content: generateStatusIcon(unit.workloadStatus.status) },
+          {
+            content: generateStatusIcon(unit.workloadStatus.status),
+            className: "u-capitalise"
+          },
           { content: unit.agentStatus.status },
           { content: unit.machine, className: "u-align--right" },
           { content: unit.publicAddress },
@@ -195,7 +201,10 @@ const generateMachineRows = modelStatusData => {
             </>
           )
         },
-        { content: generateStatusIcon(machine.instanceStatus.status) },
+        {
+          content: generateStatusIcon(machine.instanceStatus.status),
+          className: "u-capitalise"
+        },
         { content: splitParts(machine.hardware)["availability-zone"] },
         { content: machine.instanceId },
         {

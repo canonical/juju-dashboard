@@ -137,6 +137,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </React.Fragment>,
               },
               Object {
+                "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-waiting"
                 >
@@ -186,6 +187,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </React.Fragment>,
               },
               Object {
+                "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-waiting"
                 >
@@ -235,6 +237,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </React.Fragment>,
               },
               Object {
+                "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-waiting"
                 >
@@ -284,6 +287,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </React.Fragment>,
               },
               Object {
+                "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-waiting"
                 >
@@ -333,6 +337,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </React.Fragment>,
               },
               Object {
+                "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-waiting"
                 >
@@ -382,6 +387,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </React.Fragment>,
               },
               Object {
+                "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-waiting"
                 >
@@ -431,6 +437,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </React.Fragment>,
               },
               Object {
+                "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-waiting"
                 >
@@ -480,6 +487,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </React.Fragment>,
               },
               Object {
+                "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-waiting"
                 >
@@ -529,6 +537,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </React.Fragment>,
               },
               Object {
+                "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-waiting"
                 >
@@ -690,10 +699,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-capitalise"
                   key="1"
                 >
                   <td
-                    className=""
+                    className="u-capitalise"
                     role="gridcell"
                   >
                     <span
@@ -794,10 +804,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-capitalise"
                   key="1"
                 >
                   <td
-                    className=""
+                    className="u-capitalise"
                     role="gridcell"
                   >
                     <span
@@ -898,10 +909,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-capitalise"
                   key="1"
                 >
                   <td
-                    className=""
+                    className="u-capitalise"
                     role="gridcell"
                   >
                     <span
@@ -1002,10 +1014,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-capitalise"
                   key="1"
                 >
                   <td
-                    className=""
+                    className="u-capitalise"
                     role="gridcell"
                   >
                     <span
@@ -1106,10 +1119,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-capitalise"
                   key="1"
                 >
                   <td
-                    className=""
+                    className="u-capitalise"
                     role="gridcell"
                   >
                     <span
@@ -1210,10 +1224,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-capitalise"
                   key="1"
                 >
                   <td
-                    className=""
+                    className="u-capitalise"
                     role="gridcell"
                   >
                     <span
@@ -1314,10 +1329,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-capitalise"
                   key="1"
                 >
                   <td
-                    className=""
+                    className="u-capitalise"
                     role="gridcell"
                   >
                     <span
@@ -1418,10 +1434,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-capitalise"
                   key="1"
                 >
                   <td
-                    className=""
+                    className="u-capitalise"
                     role="gridcell"
                   >
                     <span
@@ -1522,10 +1539,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-capitalise"
                   key="1"
                 >
                   <td
-                    className=""
+                    className="u-capitalise"
                     role="gridcell"
                   >
                     <span
