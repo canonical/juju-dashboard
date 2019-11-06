@@ -40,7 +40,7 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
       <p
         data-name="cloud-region"
       >
-        o
+        google
         /
         us-central1
       </p>
