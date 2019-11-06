@@ -13,7 +13,7 @@ $terminal-header-height: 40px;
   background-color: $color-x-dark;
   bottom: 0;
   color: $color-x-light;
-  position: absolute;
+  position: fixed;
   // Disable until connection issue fixed
   // https://github.com/canonical-web-and-design/jaas-dashboard/issues/107
   // transform: translateY(160px);

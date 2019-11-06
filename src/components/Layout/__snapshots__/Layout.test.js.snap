@@ -314,12 +314,9 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
       </nav>
     </PrimaryNav>
   </div>
-  <div
+  <main
     className="l-main"
-  >
-    <main
-      id="main-content"
-    />
-  </div>
+    id="main-content"
+  />
 </div>
 `;

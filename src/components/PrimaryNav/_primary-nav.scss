@@ -1,9 +1,8 @@
 @import "../../scss/settings";
+@import "../../scss/functions/z-index";
 @import "vanilla-framework/scss/vanilla";
 
 .p-primary-nav {
-  position: sticky;
-  top: 0;
   width: $sidebar-full-width;
 
   a,
@@ -28,6 +27,7 @@
     display: grid;
     grid-template-columns: 1fr 40px;
     padding: 0.5rem 0.5rem 0;
+    position: relative;
   }
 
   &__toggle {

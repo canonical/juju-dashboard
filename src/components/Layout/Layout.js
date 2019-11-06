@@ -25,9 +25,9 @@ const Layout = ({ children }) => {
       >
         <PrimaryNav />
       </div>
-      <div className="l-main">
-        <main id="main-content">{children}</main>
-      </div>
+      <main className="l-main" id="main-content">
+        {children}
+      </main>
     </div>
   );
 };

@@ -42,7 +42,7 @@ describe("Layout", () => {
       </Provider>
     );
     expect(wrapper.find("#main-content").html()).toStrictEqual(
-      `<main id="main-content">content</main>`
+      `<main class="l-main" id="main-content">content</main>`
     );
   });
 });

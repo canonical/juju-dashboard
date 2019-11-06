@@ -40,10 +40,8 @@ export default function Models() {
           <UserIcon />
         </div>
       </Header>
-      <div className="p-strip is-shallow">
-        <div className="row">
-          <TableList />
-        </div>
+      <div className="l-content">
+        <TableList />
       </div>
     </Layout>
   );
