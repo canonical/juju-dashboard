@@ -1,3 +1,4 @@
+@import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 
 .info-panel {
@@ -14,7 +15,7 @@
     display: grid;
     grid-template-columns: 1fr;
 
-    @media (min-width: $breakpoint-x-large) {
+    @media (min-width: $breakpoint-m-large) {
       grid-template-columns: 1fr 1fr;
     }
   }
