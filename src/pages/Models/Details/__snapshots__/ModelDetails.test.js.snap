@@ -44,7 +44,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           <p
             data-name="cloud-region"
           >
-            o
+            google
             /
             us-central1
           </p>

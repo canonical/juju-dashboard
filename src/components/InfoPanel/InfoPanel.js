@@ -38,7 +38,7 @@ const InfoPanel = () => {
         <div className="info-panel__grid-item">
           <h4 className="p-muted-heading">Cloud/Region</h4>
           <p data-name="cloud-region">
-            {cloudProvider ? cloudProvider[1] : ""}
+            {cloudProvider}
             {modelStatusData ? "/" : ""}
             {modelStatusData ? modelStatusData.model.region : ""}
           </p>
