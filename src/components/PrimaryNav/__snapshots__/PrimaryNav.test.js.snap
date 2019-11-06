@@ -117,40 +117,37 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
   >
     <li
       className="p-list__item"
-      key="/"
+      key="/models"
     >
       <NavLink
         activeClassName="is-selected"
         className="p-list__link"
-        exact={true}
-        to="/"
+        isActive={[Function]}
+        to="/models"
       >
         <Link
-          aria-current="page"
-          className="p-list__link is-selected"
-          style={Object {}}
+          aria-current={null}
+          className="p-list__link"
           to={
             Object {
               "hash": "",
-              "pathname": "/",
+              "pathname": "/models",
               "search": "",
               "state": null,
             }
           }
         >
           <LinkAnchor
-            aria-current="page"
-            className="p-list__link is-selected"
-            href="/"
+            aria-current={null}
+            className="p-list__link"
+            href="/models"
             navigate={[Function]}
-            style={Object {}}
           >
             <a
-              aria-current="page"
-              className="p-list__link is-selected"
-              href="/"
+              aria-current={null}
+              className="p-list__link"
+              href="/models"
               onClick={[Function]}
-              style={Object {}}
             >
               <img
                 alt="Models icon"
@@ -175,7 +172,7 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
       <NavLink
         activeClassName="is-selected"
         className="p-list__link"
-        exact={true}
+        isActive={[Function]}
         to="/controllers"
       >
         <Link
@@ -220,7 +217,7 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
       <NavLink
         activeClassName="is-selected"
         className="p-list__link"
-        exact={true}
+        isActive={[Function]}
         to="/usage"
       >
         <Link
@@ -265,7 +262,7 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
       <NavLink
         activeClassName="is-selected"
         className="p-list__link"
-        exact={true}
+        isActive={[Function]}
         to="/logs"
       >
         <Link

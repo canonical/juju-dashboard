@@ -8,7 +8,7 @@ import { getGroupedModelStatusCounts } from "app/selectors";
 import "./_primary-nav.scss";
 
 const pages = [
-  { label: "Models", path: "/", icon: "51642f58-models.svg" },
+  { label: "Models", path: "/models", icon: "51642f58-models.svg" },
   {
     label: "Controllers",
     path: "/controllers",
@@ -105,7 +105,11 @@ const PrimaryNav = () => {
           <li key={navItem.path} className="p-list__item">
             <NavLink
               className="p-list__link"
-              exact
+              isActive={match => {
+                if (match && match.url.includes(navItem.path)) {
+                  return true;
+                }
+              }}
               to={navItem.path}
               activeClassName="is-selected"
             >
