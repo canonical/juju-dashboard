@@ -84,6 +84,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
     className="model-details__main"
   >
     <MainTable
+      className="model-details__apps"
       headers={
         Array [
           Object {
@@ -93,6 +94,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             "content": "status",
           },
           Object {
+            "className": "u-align--right",
             "content": "version",
           },
           Object {
@@ -121,7 +123,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": <React.Fragment>
                   <img
-                    alt=""
+                    alt="easyrsa icon"
                     className="entity-icon"
                     height="24"
                     src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
@@ -143,19 +145,22 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </span>,
               },
               Object {
+                "className": "u-align--right",
+                "content": "-",
+              },
+              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
                 "content": "CharmHub",
               },
               Object {
-                "content": undefined,
-              },
-              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
-                "content": "-",
+                "content": "Ubuntu",
               },
               Object {
                 "content": "-",
@@ -167,7 +172,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": <React.Fragment>
                   <img
-                    alt=""
+                    alt="elasticsearch icon"
                     className="entity-icon"
                     height="24"
                     src="https://api.jujucharms.com/charmstore/v5/trusty/elasticsearch-15/icon.svg"
@@ -189,19 +194,22 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </span>,
               },
               Object {
+                "className": "u-align--right",
+                "content": "-",
+              },
+              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
                 "content": "CharmHub",
               },
               Object {
-                "content": undefined,
-              },
-              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
-                "content": "-",
+                "content": "Ubuntu",
               },
               Object {
                 "content": "-",
@@ -213,7 +221,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": <React.Fragment>
                   <img
-                    alt=""
+                    alt="etcd icon"
                     className="entity-icon"
                     height="24"
                     src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
@@ -235,19 +243,22 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </span>,
               },
               Object {
+                "className": "u-align--right",
+                "content": "-",
+              },
+              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
                 "content": "CharmHub",
               },
               Object {
-                "content": undefined,
-              },
-              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
-                "content": "-",
+                "content": "Ubuntu",
               },
               Object {
                 "content": "-",
@@ -259,7 +270,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": <React.Fragment>
                   <img
-                    alt=""
+                    alt="flannel icon"
                     className="entity-icon"
                     height="24"
                     src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
@@ -281,19 +292,22 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </span>,
               },
               Object {
+                "className": "u-align--right",
+                "content": "-",
+              },
+              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
                 "content": "CharmHub",
               },
               Object {
-                "content": undefined,
-              },
-              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
-                "content": "-",
+                "content": "Ubuntu",
               },
               Object {
                 "content": "-",
@@ -305,7 +319,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": <React.Fragment>
                   <img
-                    alt=""
+                    alt="kibana icon"
                     className="entity-icon"
                     height="24"
                     src="https://api.jujucharms.com/charmstore/v5/trusty/kibana-14/icon.svg"
@@ -327,19 +341,22 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </span>,
               },
               Object {
+                "className": "u-align--right",
+                "content": "-",
+              },
+              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
                 "content": "CharmHub",
               },
               Object {
-                "content": undefined,
-              },
-              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
-                "content": "-",
+                "content": "Ubuntu",
               },
               Object {
                 "content": "-",
@@ -351,7 +368,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": <React.Fragment>
                   <img
-                    alt=""
+                    alt="kubeapi-load-balancer icon"
                     className="entity-icon"
                     height="24"
                     src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
@@ -373,19 +390,22 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </span>,
               },
               Object {
+                "className": "u-align--right",
+                "content": "-",
+              },
+              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
                 "content": "CharmHub",
               },
               Object {
-                "content": undefined,
-              },
-              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
-                "content": "-",
+                "content": "Ubuntu",
               },
               Object {
                 "content": "-",
@@ -397,7 +417,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": <React.Fragment>
                   <img
-                    alt=""
+                    alt="kubernetes-master icon"
                     className="entity-icon"
                     height="24"
                     src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
@@ -419,19 +439,22 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </span>,
               },
               Object {
+                "className": "u-align--right",
+                "content": "-",
+              },
+              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
                 "content": "CharmHub",
               },
               Object {
-                "content": undefined,
-              },
-              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
-                "content": "-",
+                "content": "Ubuntu",
               },
               Object {
                 "content": "-",
@@ -443,7 +466,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": <React.Fragment>
                   <img
-                    alt=""
+                    alt="kubernetes-worker icon"
                     className="entity-icon"
                     height="24"
                     src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
@@ -465,19 +488,22 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </span>,
               },
               Object {
+                "className": "u-align--right",
+                "content": "-",
+              },
+              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
                 "content": "CharmHub",
               },
               Object {
-                "content": undefined,
-              },
-              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
-                "content": "-",
+                "content": "Ubuntu",
               },
               Object {
                 "content": "-",
@@ -489,7 +515,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               Object {
                 "content": <React.Fragment>
                   <img
-                    alt=""
+                    alt="rsyslog icon"
                     className="entity-icon"
                     height="24"
                     src="https://api.jujucharms.com/charmstore/v5/trusty/rsyslog-10/icon.svg"
@@ -511,19 +537,22 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 </span>,
               },
               Object {
+                "className": "u-align--right",
+                "content": "-",
+              },
+              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
                 "content": "CharmHub",
               },
               Object {
-                "content": undefined,
-              },
-              Object {
+                "className": "u-align--right",
                 "content": "-",
               },
               Object {
-                "content": "-",
+                "content": "Ubuntu",
               },
               Object {
                 "content": "-",
@@ -535,10 +564,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       sortable={true}
     >
       <Table
+        className="model-details__apps"
         sortable={true}
       >
         <table
-          className="p-table--sortable"
+          className="model-details__apps p-table--sortable"
           role="grid"
         >
           <thead>
@@ -565,10 +595,12 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </th>
                 </TableHeader>
                 <TableHeader
+                  className="u-align--right"
                   key="2"
                   onClick={[Function]}
                 >
                   <th
+                    className="u-align--right"
                     onClick={[Function]}
                   >
                     version
@@ -644,7 +676,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <img
-                      alt=""
+                      alt="easyrsa icon"
                       className="entity-icon"
                       height="24"
                       src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
@@ -672,17 +704,29 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
                 >
                   <td
                     className=""
@@ -692,18 +736,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
+                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
@@ -716,7 +753,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    Ubuntu
                   </td>
                 </TableCell>
                 <TableCell
@@ -743,7 +780,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <img
-                      alt=""
+                      alt="elasticsearch icon"
                       className="entity-icon"
                       height="24"
                       src="https://api.jujucharms.com/charmstore/v5/trusty/elasticsearch-15/icon.svg"
@@ -771,17 +808,29 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
                 >
                   <td
                     className=""
@@ -791,18 +840,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
+                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
@@ -815,7 +857,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    Ubuntu
                   </td>
                 </TableCell>
                 <TableCell
@@ -842,7 +884,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <img
-                      alt=""
+                      alt="etcd icon"
                       className="entity-icon"
                       height="24"
                       src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
@@ -870,17 +912,29 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
                 >
                   <td
                     className=""
@@ -890,18 +944,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
+                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
@@ -914,7 +961,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    Ubuntu
                   </td>
                 </TableCell>
                 <TableCell
@@ -941,7 +988,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <img
-                      alt=""
+                      alt="flannel icon"
                       className="entity-icon"
                       height="24"
                       src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
@@ -969,17 +1016,29 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
                 >
                   <td
                     className=""
@@ -989,18 +1048,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
+                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
@@ -1013,7 +1065,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    Ubuntu
                   </td>
                 </TableCell>
                 <TableCell
@@ -1040,7 +1092,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <img
-                      alt=""
+                      alt="kibana icon"
                       className="entity-icon"
                       height="24"
                       src="https://api.jujucharms.com/charmstore/v5/trusty/kibana-14/icon.svg"
@@ -1068,17 +1120,29 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
                 >
                   <td
                     className=""
@@ -1088,18 +1152,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
+                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
@@ -1112,7 +1169,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    Ubuntu
                   </td>
                 </TableCell>
                 <TableCell
@@ -1139,7 +1196,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <img
-                      alt=""
+                      alt="kubeapi-load-balancer icon"
                       className="entity-icon"
                       height="24"
                       src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
@@ -1167,17 +1224,29 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
                 >
                   <td
                     className=""
@@ -1187,18 +1256,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
+                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
@@ -1211,7 +1273,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    Ubuntu
                   </td>
                 </TableCell>
                 <TableCell
@@ -1238,7 +1300,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <img
-                      alt=""
+                      alt="kubernetes-master icon"
                       className="entity-icon"
                       height="24"
                       src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
@@ -1266,17 +1328,29 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
                 >
                   <td
                     className=""
@@ -1286,18 +1360,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
+                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
@@ -1310,7 +1377,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    Ubuntu
                   </td>
                 </TableCell>
                 <TableCell
@@ -1337,7 +1404,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <img
-                      alt=""
+                      alt="kubernetes-worker icon"
                       className="entity-icon"
                       height="24"
                       src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
@@ -1365,17 +1432,29 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
                 >
                   <td
                     className=""
@@ -1385,18 +1464,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
+                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
@@ -1409,7 +1481,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    Ubuntu
                   </td>
                 </TableCell>
                 <TableCell
@@ -1436,7 +1508,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     role="gridcell"
                   >
                     <img
-                      alt=""
+                      alt="rsyslog icon"
                       className="entity-icon"
                       height="24"
                       src="https://api.jujucharms.com/charmstore/v5/trusty/rsyslog-10/icon.svg"
@@ -1464,17 +1536,29 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="2"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-align--right"
                   key="3"
+                >
+                  <td
+                    className="u-align--right"
+                    role="gridcell"
+                  >
+                    -
+                  </td>
+                </TableCell>
+                <TableCell
+                  key="4"
                 >
                   <td
                     className=""
@@ -1484,18 +1568,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
-                >
-                  <td
-                    className=""
-                    role="gridcell"
-                  />
-                </TableCell>
-                <TableCell
+                  className="u-align--right"
                   key="5"
                 >
                   <td
-                    className=""
+                    className="u-align--right"
                     role="gridcell"
                   >
                     -
@@ -1508,7 +1585,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    -
+                    Ubuntu
                   </td>
                 </TableCell>
                 <TableCell
@@ -1528,6 +1605,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       </Table>
     </MainTable>
     <MainTable
+      className="model-details__units"
       headers={
         Array [
           Object {
@@ -1540,12 +1618,14 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             "content": "agent",
           },
           Object {
+            "className": "u-align--right",
             "content": "machine",
           },
           Object {
             "content": "public address",
           },
           Object {
+            "className": "u-align--right",
             "content": "port",
           },
           Object {
@@ -1557,10 +1637,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       sortable={true}
     >
       <Table
+        className="model-details__units"
         sortable={true}
       >
         <table
-          className="p-table--sortable"
+          className="model-details__units p-table--sortable"
           role="grid"
         >
           <thead>
@@ -1597,10 +1678,12 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </th>
                 </TableHeader>
                 <TableHeader
+                  className="u-align--right"
                   key="3"
                   onClick={[Function]}
                 >
                   <th
+                    className="u-align--right"
                     onClick={[Function]}
                   >
                     machine
@@ -1617,10 +1700,12 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   </th>
                 </TableHeader>
                 <TableHeader
+                  className="u-align--right"
                   key="5"
                   onClick={[Function]}
                 >
                   <th
+                    className="u-align--right"
                     onClick={[Function]}
                   >
                     port
@@ -1644,13 +1729,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       </Table>
     </MainTable>
     <MainTable
+      className="model-details__machines"
       headers={
         Array [
           Object {
             "content": "machine",
-          },
-          Object {
-            "content": "ip",
           },
           Object {
             "content": "state",
@@ -1670,10 +1753,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       sortable={true}
     >
       <Table
+        className="model-details__machines"
         sortable={true}
       >
         <table
-          className="p-table--sortable"
+          className="model-details__machines p-table--sortable"
           role="grid"
         >
           <thead>
@@ -1696,7 +1780,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   <th
                     onClick={[Function]}
                   >
-                    ip
+                    state
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -1706,7 +1790,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   <th
                     onClick={[Function]}
                   >
-                    state
+                    az
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -1716,21 +1800,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   <th
                     onClick={[Function]}
                   >
-                    az
-                  </th>
-                </TableHeader>
-                <TableHeader
-                  key="4"
-                  onClick={[Function]}
-                >
-                  <th
-                    onClick={[Function]}
-                  >
                     instance id
                   </th>
                 </TableHeader>
                 <TableHeader
-                  key="5"
+                  key="4"
                   onClick={[Function]}
                 >
                   <th
@@ -1747,6 +1821,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       </Table>
     </MainTable>
     <MainTable
+      className="model-details__relations"
       headers={
         Array [
           Object {
@@ -1783,7 +1858,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "provider",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1802,7 +1881,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1821,7 +1904,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1840,7 +1927,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1859,7 +1950,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "peer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1878,7 +1973,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1897,7 +1996,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "peer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1916,7 +2019,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1935,7 +2042,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1954,7 +2065,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1973,7 +2088,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -1992,7 +2111,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -2011,7 +2134,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "provider",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -2030,7 +2157,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -2049,7 +2180,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 "content": "requirer",
               },
               Object {
-                "content": "joining",
+                "content": <span
+                  className="u-capitalise"
+                >
+                  joining
+                </span>,
               },
             ],
           },
@@ -2058,10 +2193,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       sortable={true}
     >
       <Table
+        className="model-details__relations"
         sortable={true}
       >
         <table
-          className="p-table--sortable"
+          className="model-details__relations p-table--sortable"
           role="grid"
         >
           <thead>
@@ -2172,7 +2308,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2228,7 +2368,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2284,7 +2428,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2340,7 +2488,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2396,7 +2548,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2452,7 +2608,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2508,7 +2668,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2564,7 +2728,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2620,7 +2788,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2676,7 +2848,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2732,7 +2908,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2788,7 +2968,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2844,7 +3028,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2900,7 +3088,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -2956,7 +3148,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                     className=""
                     role="gridcell"
                   >
-                    joining
+                    <span
+                      className="u-capitalise"
+                    >
+                      joining
+                    </span>
                   </td>
                 </TableCell>
               </tr>
@@ -3043,6 +3239,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
     className="model-details__main"
   >
     <MainTable
+      className="model-details__apps"
       headers={
         Array [
           Object {
@@ -3052,6 +3249,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
             "content": "status",
           },
           Object {
+            "className": "u-align--right",
             "content": "version",
           },
           Object {
@@ -3077,10 +3275,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       sortable={true}
     >
       <Table
+        className="model-details__apps"
         sortable={true}
       >
         <table
-          className="p-table--sortable"
+          className="model-details__apps p-table--sortable"
           role="grid"
         >
           <thead>
@@ -3107,10 +3306,12 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   </th>
                 </TableHeader>
                 <TableHeader
+                  className="u-align--right"
                   key="2"
                   onClick={[Function]}
                 >
                   <th
+                    className="u-align--right"
                     onClick={[Function]}
                   >
                     version
@@ -3178,6 +3379,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       </Table>
     </MainTable>
     <MainTable
+      className="model-details__units"
       headers={
         Array [
           Object {
@@ -3190,12 +3392,14 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
             "content": "agent",
           },
           Object {
+            "className": "u-align--right",
             "content": "machine",
           },
           Object {
             "content": "public address",
           },
           Object {
+            "className": "u-align--right",
             "content": "port",
           },
           Object {
@@ -3207,10 +3411,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       sortable={true}
     >
       <Table
+        className="model-details__units"
         sortable={true}
       >
         <table
-          className="p-table--sortable"
+          className="model-details__units p-table--sortable"
           role="grid"
         >
           <thead>
@@ -3247,10 +3452,12 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   </th>
                 </TableHeader>
                 <TableHeader
+                  className="u-align--right"
                   key="3"
                   onClick={[Function]}
                 >
                   <th
+                    className="u-align--right"
                     onClick={[Function]}
                   >
                     machine
@@ -3267,10 +3474,12 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   </th>
                 </TableHeader>
                 <TableHeader
+                  className="u-align--right"
                   key="5"
                   onClick={[Function]}
                 >
                   <th
+                    className="u-align--right"
                     onClick={[Function]}
                   >
                     port
@@ -3294,13 +3503,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       </Table>
     </MainTable>
     <MainTable
+      className="model-details__machines"
       headers={
         Array [
           Object {
             "content": "machine",
-          },
-          Object {
-            "content": "ip",
           },
           Object {
             "content": "state",
@@ -3320,10 +3527,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       sortable={true}
     >
       <Table
+        className="model-details__machines"
         sortable={true}
       >
         <table
-          className="p-table--sortable"
+          className="model-details__machines p-table--sortable"
           role="grid"
         >
           <thead>
@@ -3346,7 +3554,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   <th
                     onClick={[Function]}
                   >
-                    ip
+                    state
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -3356,7 +3564,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   <th
                     onClick={[Function]}
                   >
-                    state
+                    az
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -3366,21 +3574,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   <th
                     onClick={[Function]}
                   >
-                    az
-                  </th>
-                </TableHeader>
-                <TableHeader
-                  key="4"
-                  onClick={[Function]}
-                >
-                  <th
-                    onClick={[Function]}
-                  >
                     instance id
                   </th>
                 </TableHeader>
                 <TableHeader
-                  key="5"
+                  key="4"
                   onClick={[Function]}
                 >
                   <th
@@ -3397,6 +3595,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       </Table>
     </MainTable>
     <MainTable
+      className="model-details__relations"
       headers={
         Array [
           Object {
@@ -3420,10 +3619,11 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       sortable={true}
     >
       <Table
+        className="model-details__relations"
         sortable={true}
       >
         <table
-          className="p-table--sortable"
+          className="model-details__relations p-table--sortable"
           role="grid"
         >
           <thead>

@@ -9,4 +9,9 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr) 3rem;
   }
+
+  tr {
+    display: grid;
+    grid-template-columns: 1fr 0.6fr 0.75fr 1.15fr 1fr 0.5fr 0.65fr;
+  }
 }
