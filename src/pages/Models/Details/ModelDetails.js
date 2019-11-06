@@ -20,7 +20,7 @@ import "./_model-details.scss";
 const applicationTableHeaders = [
   { content: "app" },
   { content: "status" },
-  { content: "version" },
+  { content: "version", className: "u-align--right" },
   { content: "scale", className: "u-align--right" },
   { content: "store" },
   { content: "rev", className: "u-align--right" },
@@ -32,9 +32,17 @@ const unitTableHeaders = [
   { content: "unit" },
   { content: "workload" },
   { content: "agent" },
-  { content: "machine" },
+  { content: "machine", className: "u-align--right" },
   { content: "public address" },
-  { content: "port" },
+  { content: "port", className: "u-align--right" },
+  { content: "message" }
+];
+
+const machineTableHeaders = [
+  { content: "machine" },
+  { content: "state" },
+  { content: "az" },
+  { content: "instance id" },
   { content: "message" }
 ];
 
@@ -46,21 +54,12 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
-const machineTableHeaders = [
-  { content: "machine" },
-  { content: "ip" },
-  { content: "state" },
-  { content: "az" },
-  { content: "instance id" },
-  { content: "message" }
-];
-
 const generateEntityLink = (namespace, href, name) => {
   return (
     <>
       {namespace && (
         <img
-          alt=""
+          alt={name + " icon"}
           width="24"
           height="24"
           className="entity-icon"
@@ -92,11 +91,11 @@ const generateApplicationRows = modelStatusData => {
           )
         },
         { content: app.status ? generateStatusIcon(app.status.status) : "-" },
-        { content: "-" },
+        { content: "-", className: "u-align--right" },
+        { content: "-", className: "u-align--right" },
         { content: "CharmHub" },
-        { content: key.split("-")[-1] },
-        { content: "-" },
-        { content: "-" },
+        { content: key.split("-")[-1] || "-", className: "u-align--right" },
+        { content: "Ubuntu" },
         { content: "-" }
       ]
     };
@@ -127,9 +126,12 @@ const generateUnitRows = modelStatusData => {
           },
           { content: generateStatusIcon(unit.workloadStatus.status) },
           { content: unit.agentStatus.status },
-          { content: unit.machine },
+          { content: unit.machine, className: "u-align--right" },
           { content: unit.publicAddress },
-          { content: unit.publicAddress.split(":")[-1] },
+          {
+            content: unit.publicAddress.split(":")[-1] || "-",
+            className: "u-align--right"
+          },
           { content: unit.workloadStatus.info }
         ]
       });
@@ -185,9 +187,15 @@ const generateMachineRows = modelStatusData => {
     const machine = machines[machineId];
     return {
       columns: [
-        { content: machineId },
-        { content: machine.dnsName },
-        { content: machine.instanceStatus.status },
+        {
+          content: (
+            <>
+              <div>{machineId}</div>
+              <a href="#_">{machine.dnsName}</a>
+            </>
+          )
+        },
+        { content: generateStatusIcon(machine.instanceStatus.status) },
         { content: splitParts(machine.hardware)["availability-zone"] },
         { content: machine.instanceId },
         { content: machine.instanceStatus.info }
@@ -260,21 +268,25 @@ const ModelDetails = () => {
             <MainTable
               headers={applicationTableHeaders}
               rows={applicationTableRows}
+              className="model-details__apps"
               sortable
             />
             <MainTable
               headers={unitTableHeaders}
               rows={unitTableRows}
+              className="model-details__units"
               sortable
             />
             <MainTable
               headers={machineTableHeaders}
               rows={machinesTableRows}
+              className="model-details__machines"
               sortable
             />
             <MainTable
               headers={relationTableHeaders}
               rows={relationTableRows}
+              className="model-details__relations"
               sortable
             />
           </div>

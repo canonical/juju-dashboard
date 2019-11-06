@@ -41,7 +41,9 @@ export default function Models() {
         </div>
       </Header>
       <div className="l-content">
-        <TableList />
+        <div className="models">
+          <TableList />
+        </div>
       </div>
     </Layout>
   );

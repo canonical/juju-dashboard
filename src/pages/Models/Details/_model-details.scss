@@ -29,6 +29,29 @@
     text-align: center;
   }
 
+  tr {
+    display: grid;
+  }
+
+  td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: wrap;
+  }
+
+  .model-details__apps tr {
+    grid-template-columns: 15% 15% 9% 11% 17.5% 5% 10% 20%;
+  }
+
+  .model-details__units tr {
+    grid-template-columns: 15% 15% 9% 11% 17.5% 5% 30%;
+  }
+
+  .model-details__machines tr,
+  .model-details__relations tr {
+    grid-template-columns: 30% 9% 11% 22.5% 27.5%;
+  }
+
   .p-table--sortable {
     margin-bottom: 2rem;
 
@@ -58,6 +81,7 @@
     display: grid;
     gap: 0.25rem;
     grid-template-columns: repeat(3, 1fr);
+    padding-right: 0.75rem;
     text-align: left;
   }
 

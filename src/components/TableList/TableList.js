@@ -156,8 +156,8 @@ function getStatusValue(status, key) {
           <Fragment>
             <div className="model-details__config">
               {applicationCount}
-              {machineCount}
               {unitCount}
+              {machineCount}
             </div>
           </Fragment>
         );
