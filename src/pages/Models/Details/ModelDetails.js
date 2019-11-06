@@ -13,7 +13,7 @@ import UserIcon from "components/UserIcon/UserIcon";
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "app/actions";
-import { generateStatusIcon } from "app/utils";
+import { generateStatusIcon, generateSpanClass } from "app/utils";
 
 import "./_model-details.scss";
 
@@ -163,7 +163,7 @@ const generateRelationRows = modelStatusData => {
         { content: requirer || "-" },
         { content: relation.interface },
         { content: relation.endpoints[0].role },
-        { content: relation.status.status }
+        { content: generateSpanClass("u-capitalise", relation.status.status) }
       ]
     };
   });
@@ -198,7 +198,12 @@ const generateMachineRows = modelStatusData => {
         { content: generateStatusIcon(machine.instanceStatus.status) },
         { content: splitParts(machine.hardware)["availability-zone"] },
         { content: machine.instanceId },
-        { content: machine.instanceStatus.info }
+        {
+          content: generateSpanClass(
+            "u-capitalise",
+            machine.instanceStatus.info.toLowerCase()
+          )
+        }
       ]
     };
   });
