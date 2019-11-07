@@ -4,7 +4,7 @@
 .user-icon {
   cursor: pointer;
   display: grid;
-  margin-left: -0.75rem;
+  margin-left: -1rem;
   position: relative;
   text-align: center;
 
@@ -42,8 +42,6 @@
   }
 
   .p-icon--user {
-    height: 1.5rem;
     margin: auto;
-    width: 1.5rem;
   }
 }
