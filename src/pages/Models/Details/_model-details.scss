@@ -74,10 +74,6 @@
     tbody tr {
       @include vf-animation(background, brisk, ease-in-out);
 
-      &:last-child {
-        border-bottom: 1px solid $color-mid-light;
-      }
-
       &:hover {
         background-color: #cef3ff;
       }
