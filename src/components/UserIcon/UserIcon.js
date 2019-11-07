@@ -11,13 +11,11 @@ export default function User() {
   const [userPanelVisibility, setUserPanelVisibility] = useState(false);
   const dispatch = useDispatch();
   return (
-    <div className="user-icon">
-      <i
-        className="p-icon--user"
-        onClick={() => setUserPanelVisibility(!userPanelVisibility)}
-      >
-        Account icon
-      </i>
+    <div
+      className="user-icon"
+      onClick={() => setUserPanelVisibility(!userPanelVisibility)}
+    >
+      <i className="p-icon--user">Account icon</i>
       <div
         className={classNames("user-icon__panel p-card--highlighted", {
           "is-visible": userPanelVisibility
