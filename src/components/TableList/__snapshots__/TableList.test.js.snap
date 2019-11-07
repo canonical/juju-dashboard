@@ -158,7 +158,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "spaceman",
+              "content": <a
+                href="#_"
+              >
+                spaceman
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -184,17 +188,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-east1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "Algebra-json",
+              "content": <a
+                href="#_"
+              >
+                Algebra-json
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -219,7 +233,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "that-guy",
+              "content": <a
+                href="#_"
+              >
+                that-guy
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -245,17 +263,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 eu-central-1
                 /
                 aws
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "personal",
+              "content": <a
+                href="#_"
+              >
+                personal
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -377,7 +405,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  spaceman
+                  <a
+                    href="#_"
+                  >
+                    spaceman
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -415,9 +447,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -427,7 +463,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  Algebra-json
+                  <a
+                    href="#_"
+                  >
+                    Algebra-json
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -437,7 +477,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -493,7 +537,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  that-guy
+                  <a
+                    href="#_"
+                  >
+                    that-guy
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -531,9 +579,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  eu-central-1
-                  /
-                  aws
+                  <a
+                    href="#_"
+                  >
+                    eu-central-1
+                    /
+                    aws
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -543,7 +595,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  personal
+                  <a
+                    href="#_"
+                  >
+                    personal
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -553,7 +609,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -627,7 +687,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "spaceman",
+              "content": <a
+                href="#_"
+              >
+                spaceman
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -653,17 +717,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 europe-west1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "clean-algebra-206308",
+              "content": <a
+                href="#_"
+              >
+                clean-algebra-206308
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -683,7 +757,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "alto",
+              "content": <a
+                href="#_"
+              >
+                alto
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -709,17 +787,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-east1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "google-rickbot",
+              "content": <a
+                href="#_"
+              >
+                google-rickbot
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -739,7 +827,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "uncle-phil",
+              "content": <a
+                href="#_"
+              >
+                uncle-phil
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -765,17 +857,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-east1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "gce",
+              "content": <a
+                href="#_"
+              >
+                gce
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -795,7 +897,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "uncle-phil",
+              "content": <a
+                href="#_"
+              >
+                uncle-phil
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -821,17 +927,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-east1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "gce",
+              "content": <a
+                href="#_"
+              >
+                gce
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -948,7 +1064,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  spaceman
+                  <a
+                    href="#_"
+                  >
+                    spaceman
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -986,9 +1106,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  europe-west1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    europe-west1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -998,7 +1122,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  clean-algebra-206308
+                  <a
+                    href="#_"
+                  >
+                    clean-algebra-206308
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1008,7 +1136,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1059,7 +1191,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  alto
+                  <a
+                    href="#_"
+                  >
+                    alto
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1097,9 +1233,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1109,7 +1249,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  google-rickbot
+                  <a
+                    href="#_"
+                  >
+                    google-rickbot
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1119,7 +1263,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1170,7 +1318,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  uncle-phil
+                  <a
+                    href="#_"
+                  >
+                    uncle-phil
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1208,9 +1360,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1220,7 +1376,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
+                  <a
+                    href="#_"
+                  >
+                    gce
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1230,7 +1390,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1281,7 +1445,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  uncle-phil
+                  <a
+                    href="#_"
+                  >
+                    uncle-phil
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1319,9 +1487,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1331,7 +1503,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
+                  <a
+                    href="#_"
+                  >
+                    gce
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1341,7 +1517,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -1415,7 +1595,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "spaceman",
+              "content": <a
+                href="#_"
+              >
+                spaceman
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1441,17 +1625,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-central1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "clean-algebra-206308",
+              "content": <a
+                href="#_"
+              >
+                clean-algebra-206308
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -1471,7 +1665,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "spaceman",
+              "content": <a
+                href="#_"
+              >
+                spaceman
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1497,17 +1695,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-east1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "clean-algebra-206308",
+              "content": <a
+                href="#_"
+              >
+                clean-algebra-206308
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -1527,7 +1735,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "spaceman",
+              "content": <a
+                href="#_"
+              >
+                spaceman
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1553,17 +1765,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-central1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "clean-algebra-206308",
+              "content": <a
+                href="#_"
+              >
+                clean-algebra-206308
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -1583,7 +1805,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "activedev",
+              "content": <a
+                href="#_"
+              >
+                activedev
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1609,17 +1835,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-central1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "admin",
+              "content": <a
+                href="#_"
+              >
+                admin
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -1639,7 +1875,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "activedev",
+              "content": <a
+                href="#_"
+              >
+                activedev
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1665,17 +1905,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-central1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "jujuongce",
+              "content": <a
+                href="#_"
+              >
+                jujuongce
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -1695,7 +1945,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "activedev",
+              "content": <a
+                href="#_"
+              >
+                activedev
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1721,17 +1975,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-east1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "juju",
+              "content": <a
+                href="#_"
+              >
+                juju
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -1751,7 +2015,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "activedev",
+              "content": <a
+                href="#_"
+              >
+                activedev
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1777,17 +2045,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-east1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "juju",
+              "content": <a
+                href="#_"
+              >
+                juju
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -1807,7 +2085,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "activedev",
+              "content": <a
+                href="#_"
+              >
+                activedev
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1833,17 +2115,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-east1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "juju",
+              "content": <a
+                href="#_"
+              >
+                juju
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -1863,7 +2155,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "uncle-phil",
+              "content": <a
+                href="#_"
+              >
+                uncle-phil
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1889,17 +2185,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 us-east1
                 /
                 google
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "gce",
+              "content": <a
+                href="#_"
+              >
+                gce
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -1919,7 +2225,11 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": "that-guy",
+              "content": <a
+                href="#_"
+              >
+                that-guy
+              </a>,
             },
             Object {
               "content": <React.Fragment>
@@ -1945,17 +2255,27 @@ exports[`TableList displays all data from redux store 1`] = `
               </React.Fragment>,
             },
             Object {
-              "content": <React.Fragment>
+              "content": <a
+                href="#_"
+              >
                 eu-central-1
                 /
                 aws
-              </React.Fragment>,
+              </a>,
             },
             Object {
-              "content": "personal",
+              "content": <a
+                href="#_"
+              >
+                personal
+              </a>,
             },
             Object {
-              "content": "a030379a...",
+              "content": <a
+                href="#_"
+              >
+                a030379a...
+              </a>,
             },
             Object {
               "className": "u-align--right",
@@ -2072,7 +2392,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  spaceman
+                  <a
+                    href="#_"
+                  >
+                    spaceman
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2110,9 +2434,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-central1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-central1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2122,7 +2450,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  clean-algebra-206308
+                  <a
+                    href="#_"
+                  >
+                    clean-algebra-206308
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2132,7 +2464,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2183,7 +2519,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  spaceman
+                  <a
+                    href="#_"
+                  >
+                    spaceman
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2221,9 +2561,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2233,7 +2577,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  clean-algebra-206308
+                  <a
+                    href="#_"
+                  >
+                    clean-algebra-206308
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2243,7 +2591,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2294,7 +2646,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  spaceman
+                  <a
+                    href="#_"
+                  >
+                    spaceman
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2332,9 +2688,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-central1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-central1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2344,7 +2704,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  clean-algebra-206308
+                  <a
+                    href="#_"
+                  >
+                    clean-algebra-206308
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2354,7 +2718,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2405,7 +2773,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  activedev
+                  <a
+                    href="#_"
+                  >
+                    activedev
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2443,9 +2815,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-central1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-central1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2455,7 +2831,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  admin
+                  <a
+                    href="#_"
+                  >
+                    admin
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2465,7 +2845,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2516,7 +2900,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  activedev
+                  <a
+                    href="#_"
+                  >
+                    activedev
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2554,9 +2942,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-central1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-central1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2566,7 +2958,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  jujuongce
+                  <a
+                    href="#_"
+                  >
+                    jujuongce
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2576,7 +2972,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2627,7 +3027,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  activedev
+                  <a
+                    href="#_"
+                  >
+                    activedev
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2665,9 +3069,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2677,7 +3085,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  juju
+                  <a
+                    href="#_"
+                  >
+                    juju
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2687,7 +3099,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2738,7 +3154,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  activedev
+                  <a
+                    href="#_"
+                  >
+                    activedev
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2776,9 +3196,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2788,7 +3212,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  juju
+                  <a
+                    href="#_"
+                  >
+                    juju
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2798,7 +3226,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2849,7 +3281,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  activedev
+                  <a
+                    href="#_"
+                  >
+                    activedev
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2887,9 +3323,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2899,7 +3339,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  juju
+                  <a
+                    href="#_"
+                  >
+                    juju
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2909,7 +3353,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2960,7 +3408,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  uncle-phil
+                  <a
+                    href="#_"
+                  >
+                    uncle-phil
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -2998,9 +3450,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  us-east1
-                  /
-                  google
+                  <a
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -3010,7 +3466,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  gce
+                  <a
+                    href="#_"
+                  >
+                    gce
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -3020,7 +3480,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -3071,7 +3535,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  that-guy
+                  <a
+                    href="#_"
+                  >
+                    that-guy
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -3109,9 +3577,13 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  eu-central-1
-                  /
-                  aws
+                  <a
+                    href="#_"
+                  >
+                    eu-central-1
+                    /
+                    aws
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -3121,7 +3593,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  personal
+                  <a
+                    href="#_"
+                  >
+                    personal
+                  </a>
                 </td>
               </TableCell>
               <TableCell
@@ -3131,7 +3607,11 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  a030379a...
+                  <a
+                    href="#_"
+                  >
+                    a030379a...
+                  </a>
                 </td>
               </TableCell>
               <TableCell

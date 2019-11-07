@@ -93,23 +93,36 @@ function generateModelTableData(groupedModels, activeUser) {
         columns: [
           { content: generateModelNameCell(model, groupLabel, activeUser) },
           {
-            content:
-              model.info &&
-              model.info.ownerTag.split("@")[0].replace("user-", "")
+            content: (
+              <a href="#_">
+                {model.info &&
+                  model.info.ownerTag.split("@")[0].replace("user-", "")}
+              </a>
+            )
           },
           { content: getStatusValue(model, "summary") },
           {
             content: (
-              <>
+              <a href="#_">
                 {getStatusValue(model, "region")}/
                 {getStatusValue(model, "cloudTag")}
-              </>
+              </a>
             )
           },
-          { content: getStatusValue(model.info, "cloudCredentialTag") },
+          {
+            content: (
+              <a href="#_">
+                {getStatusValue(model.info, "cloudCredentialTag")}
+              </a>
+            )
+          },
           // We're not currently able to get the controller name from the API.
           // so display the controller UUID instead.
-          { content: getStatusValue(model.info, "controllerUuid") },
+          {
+            content: (
+              <a href="#_">{getStatusValue(model.info, "controllerUuid")}</a>
+            )
+          },
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
             content: getStatusValue(model.info, "status.since"),
