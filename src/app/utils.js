@@ -18,6 +18,50 @@ export const generateSpanClass = (className, value) => {
   return <span className={className}>{value}</span>;
 };
 
+// Highest status to the right
+const statusOrder = ["running", "alert", "blocked"];
+
+const setHighestStatus = (entityStatus, highestStatus) => {
+  if (statusOrder.indexOf(entityStatus) > statusOrder.indexOf(highestStatus)) {
+    return entityStatus;
+  }
+  return highestStatus;
+};
+
+// If it's the highest status then we don't need to continue looping
+// applications or units.
+const checkHighestStatus = highestStatus => {
+  return highestStatus === statusOrder[statusOrder.length - 1];
+};
+
+export const getModelStatusGroupData = model => {
+  let highestStatus = statusOrder[0]; // Set the highest status to the lowest.
+  let messages = [];
+  const applications = model.applications;
+  Object.keys(applications).forEach(appName => {
+    const app = applications[appName];
+    const { status: appStatus } = getApplicationStatusGroup(app);
+    highestStatus = setHighestStatus(appStatus, highestStatus);
+    if (checkHighestStatus(highestStatus)) {
+      // If it's the highest status then we want to store the message.
+      messages.push(app.status.info);
+      return;
+    }
+    Object.keys(app.units).forEach(unitId => {
+      const unit = app.units[unitId];
+      const { status: unitStatus } = getUnitStatusGroup(unit);
+      highestStatus = setHighestStatus(unitStatus, highestStatus);
+      if (checkHighestStatus(highestStatus)) {
+        return;
+      }
+    });
+  });
+  return {
+    highestStatus,
+    messages
+  };
+};
+
 /**
   Returns the status for the application.
   @param {Object} application The application to check the status of in the
