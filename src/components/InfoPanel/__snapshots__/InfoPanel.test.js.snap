@@ -9,7 +9,7 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
   >
     <img
       alt=""
-      src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+      src="/ghost-bundle.svg"
     />
   </div>
   <div
