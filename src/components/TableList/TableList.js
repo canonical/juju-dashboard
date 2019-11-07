@@ -50,7 +50,9 @@ const generateModelDetailsLink = (modelName, ownerTag, activeUser) => {
 */
 const generateWarningMessage = model => {
   const { messages } = getModelStatusGroupData(model);
-  return <div className="table-list_error-message">{messages.join("; ")}</div>;
+  return (
+    <span className="table-list_error-message">{messages.join("; ")}</span>
+  );
 };
 
 /**
@@ -70,7 +72,7 @@ const generateModelNameCell = (model, groupLabel, activeUser) => {
   );
   return (
     <>
-      {link}
+      <div>{link}</div>
       {groupLabel === "blocked" ? generateWarningMessage(model) : null}
     </>
   );

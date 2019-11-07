@@ -34,12 +34,6 @@
     display: grid;
   }
 
-  td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: wrap;
-  }
-
   .model-details__apps tr {
     grid-template-columns: 15% 15% 9% 11% 17.5% 5% 10% 20%;
   }

@@ -5,3 +5,7 @@ table tr th {
   margin-bottom: 0;
   padding-bottom: 0.5rem;
 }
+td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
