@@ -120,7 +120,10 @@ function generateModelTableData(groupedModels, activeUser) {
           // so display the controller UUID instead.
           {
             content: (
-              <a href="#_">{getStatusValue(model.info, "controllerUuid")}</a>
+              <a href="#_" title={getStatusValue(model.info, "controllerUuid")}>
+                {getStatusValue(model.info, "controllerUuid").split("-")[0] +
+                  "..."}
+              </a>
             )
           },
           // We're not currently able to get a last-accessed or updated from JAAS.
@@ -188,7 +191,7 @@ function getStatusValue(status, key) {
           .split("_")[1];
         break;
       case "controllerUuid":
-        returnValue = status.controllerUuid.split("-")[0] + "...";
+        returnValue = status.controllerUuid;
         break;
       case "status.since":
         returnValue = status.status.since.split("T")[0];
