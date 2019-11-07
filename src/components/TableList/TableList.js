@@ -171,9 +171,36 @@ function getStatusValue(status, key) {
         returnValue = (
           <Fragment>
             <div className="model-details__config">
-              {applicationCount}
-              {unitCount}
-              {machineCount}
+              <div className="p-tooltip--top-center" aria-describedby="tp-cntr">
+                {applicationCount}
+                <span
+                  className="p-tooltip__message"
+                  role="tooltip"
+                  id="tp-cntr"
+                >
+                  Applications
+                </span>
+              </div>
+              <div className="p-tooltip--top-center" aria-describedby="tp-cntr">
+                {unitCount}
+                <span
+                  className="p-tooltip__message"
+                  role="tooltip"
+                  id="tp-cntr"
+                >
+                  Units
+                </span>
+              </div>
+              <div className="p-tooltip--top-center" aria-describedby="tp-cntr">
+                {machineCount}
+                <span
+                  className="p-tooltip__message"
+                  role="tooltip"
+                  id="tp-cntr"
+                >
+                  Machines
+                </span>
+              </div>
             </div>
           </Fragment>
         );
