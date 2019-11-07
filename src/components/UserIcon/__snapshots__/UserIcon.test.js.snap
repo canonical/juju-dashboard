@@ -3,10 +3,10 @@
 exports[`User Icon renders without crashing and matches snapshot 1`] = `
 <div
   className="user-icon"
+  onClick={[Function]}
 >
   <i
     className="p-icon--user"
-    onClick={[Function]}
   >
     Account icon
   </i>
