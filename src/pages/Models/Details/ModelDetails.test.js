@@ -46,6 +46,20 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find(".model-details")).toMatchSnapshot();
   });
 
+  it("renders the machine details section", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/spaceman@external/mymodel"]}>
+          <Route path="/models/*">
+            <ModelDetails />
+          </Route>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find("MainTable").at(2)).toMatchSnapshot();
+  });
+
   it("renders the terminal", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
