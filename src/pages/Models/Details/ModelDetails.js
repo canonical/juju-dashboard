@@ -199,10 +199,12 @@ const generateMachineRows = modelStatusData => {
         { content: splitParts(machine.hardware)["availability-zone"] },
         { content: machine.instanceId },
         {
-          content: generateSpanClass(
-            "u-capitalise",
-            machine.instanceStatus.info.toLowerCase()
-          )
+          content: (
+            <span title={machine.instanceStatus.info}>
+              {machine.instanceStatus.info}
+            </span>
+          ),
+          className: "model-details__truncate-cell"
         }
       ]
     };
