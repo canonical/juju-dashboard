@@ -169,7 +169,12 @@ const generateRelationRows = modelStatusData => {
         { content: requirer || "-" },
         { content: relation.interface },
         { content: relation.endpoints[0].role },
-        { content: generateSpanClass("u-capitalise", relation.status.status) }
+        {
+          content: generateSpanClass(
+            "u-capitalise--first-letter",
+            relation.status.status
+          )
+        }
       ]
     };
   });
