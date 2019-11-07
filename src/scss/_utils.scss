@@ -1,4 +1,8 @@
 // Capitalise text
 .u-capitalise {
   text-transform: capitalize;
+
+  &--first-letter::first-letter {
+    text-transform: uppercase;
+  }
 }
