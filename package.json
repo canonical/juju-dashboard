@@ -50,6 +50,7 @@
     "@canonical/juju-react-components": "^0.5.1",
     "@canonical/jujulib": "1.3.0",
     "@canonical/macaroon-bakery": "0.3.0",
+    "@canonical/react-components": "0.2.1",
     "async-limiter": "^1.0.1",
     "classnames": "^2.2.6",
     "enzyme": "3.10.0",
