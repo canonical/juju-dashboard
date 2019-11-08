@@ -3,7 +3,7 @@ import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
 import { MemoryRouter } from "react-router";
-import { Route } from "react-router-dom";
+import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
 
 import ModelDetails from "./ModelDetails";
@@ -21,9 +21,9 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
-          <Route path="/models/*">
+          <TestRoute path="/models/*">
             <ModelDetails />
-          </Route>
+          </TestRoute>
         </MemoryRouter>
       </Provider>
     );
@@ -37,9 +37,9 @@ describe("ModelDetail Container", () => {
         <MemoryRouter
           initialEntries={["/models/space-man@external/frontend-ci"]}
         >
-          <Route path="/models/*">
+          <TestRoute path="/models/*">
             <ModelDetails />
-          </Route>
+          </TestRoute>
         </MemoryRouter>
       </Provider>
     );
@@ -51,9 +51,9 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/spaceman@external/mymodel"]}>
-          <Route path="/models/*">
+          <TestRoute path="/models/*">
             <ModelDetails />
-          </Route>
+          </TestRoute>
         </MemoryRouter>
       </Provider>
     );
@@ -65,9 +65,9 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/test1"]}>
-          <Route path="/models/*">
+          <TestRoute path="/models/*">
             <ModelDetails />
-          </Route>
+          </TestRoute>
         </MemoryRouter>
       </Provider>
     );
