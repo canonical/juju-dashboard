@@ -1,10 +1,14 @@
+@import "vanilla-framework/scss/vanilla";
+
 .p-button {
   &--filter {
-    border-radius: 0.5rem;
+    border: solid 1px $color-mid-light;
+    border-radius: 4px;
     font-size: 0.875rem;
     line-height: 1.5;
     margin: 0;
     padding-bottom: 0;
     padding-top: 0;
+    text-transform: capitalize;
   }
 }

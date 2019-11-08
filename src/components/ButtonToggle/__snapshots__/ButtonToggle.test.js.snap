@@ -4,29 +4,33 @@ exports[`Button toggle renders without crashing and matches snapshot 1`] = `
 <div
   className="p-button-toggle"
 >
-  <span
-    className="p-button-toggle__label"
-  >
-    Group by:
-  </span>
   <div
-    className="p-button-toggle__buttons"
+    className="p-button-toggle__inner"
   >
-    <button
-      className="p-button-toggle__button is-selected"
+    <span
+      className="p-button-toggle__label"
     >
-      Status
-    </button>
-    <button
-      className="p-button-toggle__button"
+      Group by:
+    </span>
+    <div
+      className="p-button-toggle__buttons"
     >
-      Cloud
-    </button>
-    <button
-      className="p-button-toggle__button"
-    >
-      Owner
-    </button>
+      <button
+        className="p-button-toggle__button is-selected"
+      >
+        Status
+      </button>
+      <button
+        className="p-button-toggle__button"
+      >
+        Cloud
+      </button>
+      <button
+        className="p-button-toggle__button"
+      >
+        Owner
+      </button>
+    </div>
   </div>
 </div>
 `;
