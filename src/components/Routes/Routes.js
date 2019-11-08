@@ -20,11 +20,13 @@ export function Routes() {
   return Object.entries(paths).map(path => {
     if (path[1].redirect) {
       return (
-        <Route path={path[0]} exact>
+        <Route key={path[0]} path={path[0]} exact>
           <Redirect to={path[1].redirect} />
         </Route>
       );
     }
-    return <Route path={path[0]} exact component={path[1].component} />;
+    return (
+      <Route key={path[0]} path={path[0]} exact component={path[1].component} />
+    );
   });
 }
