@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
+import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useSelector } from "react-redux";
 import { generateStatusIcon, generateSpanClass } from "app/utils";
 
 import { getActiveUserTag, getGroupedModelData } from "app/selectors";
-import MainTable from "../MainTable/MainTable";
 
 import "./_table-list.scss";
 
