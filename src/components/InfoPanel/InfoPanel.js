@@ -23,10 +23,7 @@ const InfoPanel = () => {
   return (
     <div className="info-panel">
       <div className="info-panel__pictogram">
-        <img
-          src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
-          alt=""
-        />
+        <img src="/ghost-bundle.svg" alt="" />
       </div>
       <div className="info-panel__grid">
         <div className="info-panel__grid-item">
