@@ -171,21 +171,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    11
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      11
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    10
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      10
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    6
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      6
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -208,6 +244,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -248,21 +285,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    1
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    1
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    1
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -285,6 +358,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -428,21 +502,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      11
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        11
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      10
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        10
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      6
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        6
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -485,6 +595,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -562,21 +673,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      1
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      1
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      1
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -619,6 +766,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -708,21 +856,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    2
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    2
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    4
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      4
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -745,6 +929,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -780,21 +965,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    3
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    3
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    3
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -817,6 +1038,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -852,21 +1074,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    1
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    1
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    1
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -889,6 +1147,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -924,21 +1183,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    3
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    3
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    3
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -961,6 +1256,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -1099,21 +1395,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      2
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      2
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      4
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        4
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -1156,6 +1488,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -1228,21 +1561,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      3
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        3
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      3
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        3
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      3
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        3
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -1285,6 +1654,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -1357,21 +1727,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      1
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      1
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      1
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -1414,6 +1820,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -1486,21 +1893,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      3
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        3
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      3
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        3
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      3
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        3
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -1543,6 +1986,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -1632,21 +2076,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    6
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      6
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    10
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      10
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    10
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      10
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -1669,6 +2149,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -1704,21 +2185,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    6
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      6
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    10
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      10
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    10
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      10
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -1741,6 +2258,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -1776,21 +2294,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    7
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      7
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    11
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      11
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    11
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      11
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -1813,6 +2367,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -1848,21 +2403,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    9
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      9
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -1885,6 +2476,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -1920,21 +2512,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    2
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    1
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    1
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -1957,6 +2585,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -1992,21 +2621,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -2029,6 +2694,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -2064,21 +2730,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -2101,6 +2803,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -2136,21 +2839,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    0
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      0
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -2173,6 +2912,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -2208,21 +2948,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    2
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    2
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    2
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -2245,6 +3021,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -2280,21 +3057,57 @@ exports[`TableList displays all data from redux store 1`] = `
                 <div
                   className="model-details__config"
                 >
-                  <span
-                    className="model-details__app-icon"
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    2
-                  </span>
-                  <span
-                    className="model-details__unit-icon"
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    2
-                  </span>
-                  <span
-                    className="model-details__machine-icon"
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
                   >
-                    2
-                  </span>
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
                 </div>
               </React.Fragment>,
             },
@@ -2317,6 +3130,7 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "content": <a
                 href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
                 a030379a...
               </a>,
@@ -2455,21 +3269,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      6
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        6
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      10
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        10
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      10
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        10
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -2512,6 +3362,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -2584,21 +3435,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      6
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        6
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      10
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        10
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      10
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        10
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -2641,6 +3528,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -2713,21 +3601,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      7
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        7
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      11
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        11
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      11
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        11
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -2770,6 +3694,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -2842,21 +3767,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      9
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        9
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -2899,6 +3860,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -2971,21 +3933,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      2
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      1
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      1
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -3028,6 +4026,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -3100,21 +4099,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -3157,6 +4192,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -3229,21 +4265,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -3286,6 +4358,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -3358,21 +4431,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      0
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        0
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -3415,6 +4524,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -3487,21 +4597,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      2
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      2
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      2
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -3544,6 +4690,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>
@@ -3616,21 +4763,57 @@ exports[`TableList displays all data from redux store 1`] = `
                   <div
                     className="model-details__config"
                   >
-                    <span
-                      className="model-details__app-icon"
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      2
-                    </span>
-                    <span
-                      className="model-details__unit-icon"
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      2
-                    </span>
-                    <span
-                      className="model-details__machine-icon"
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
                     >
-                      2
-                    </span>
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
                   </div>
                 </td>
               </TableCell>
@@ -3673,6 +4856,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <a
                     href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
                     a030379a...
                   </a>

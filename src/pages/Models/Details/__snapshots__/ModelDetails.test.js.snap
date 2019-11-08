@@ -13,7 +13,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
       >
         <img
           alt=""
-          src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+          src="/ghost-bundle.svg"
         />
       </div>
       <div
@@ -3196,7 +3196,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
       >
         <img
           alt=""
-          src="https://assets.ubuntu.com/v1/f3f75945-home-promo-bundle.svg"
+          src="/ghost-bundle.svg"
         />
       </div>
       <div
