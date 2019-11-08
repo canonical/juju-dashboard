@@ -3,8 +3,9 @@ import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
 import { MemoryRouter } from "react-router";
-import { Route } from "react-router-dom";
 import dataDump from "testing/complete-redux-store-dump";
+
+import TestRoute from "components/Routes/TestRoute";
 
 import InfoPanel from "./InfoPanel";
 
@@ -16,9 +17,9 @@ describe("Info Panel", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
-          <Route path="/models/*">
+          <TestRoute path="/models/*">
             <InfoPanel />
-          </Route>
+          </TestRoute>
         </MemoryRouter>
       </Provider>
     );
@@ -30,9 +31,9 @@ describe("Info Panel", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
-          <Route path="/models/*">
+          <TestRoute path="/models/*">
             <InfoPanel />
-          </Route>
+          </TestRoute>
         </MemoryRouter>
       </Provider>
     );
