@@ -2,7 +2,9 @@
 
 exports[`TableList by default, renders with all table headers and no data 1`] = `
 Array [
-  <th>
+  <th
+    role="columnheader"
+  >
     <span
       className="status-icon is-blocked"
     >
@@ -10,27 +12,40 @@ Array [
        (0)
     </span>
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Owner
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Configuration
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Cloud/Region
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Credential
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Controller
   </th>,
   <th
     className="u-align--right"
+    role="columnheader"
   >
     Last Updated
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     <span
       className="status-icon is-alert"
     >
@@ -38,27 +53,40 @@ Array [
        (0)
     </span>
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Owner
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Configuration
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Cloud/Region
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Credential
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Controller
   </th>,
   <th
     className="u-align--right"
+    role="columnheader"
   >
     Last Updated
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     <span
       className="status-icon is-running"
     >
@@ -66,23 +94,34 @@ Array [
        (0)
     </span>
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Owner
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Configuration
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Cloud/Region
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Credential
   </th>,
-  <th>
+  <th
+    role="columnheader"
+  >
     Controller
   </th>,
   <th
     className="u-align--right"
+    role="columnheader"
   >
     Last Updated
   </th>,
@@ -161,6 +200,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 spaceman
@@ -227,6 +267,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-east1
@@ -236,6 +277,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 Algebra-json
@@ -243,6 +285,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -275,6 +318,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 that-guy
@@ -341,6 +385,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 eu-central-1
@@ -350,6 +395,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 personal
@@ -357,6 +403,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -381,11 +428,15 @@ exports[`TableList displays all data from redux store 1`] = `
       >
         <thead>
           <TableRow>
-            <tr>
+            <tr
+              role="row"
+            >
               <TableHeader
                 key="0"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   <span
                     className="status-icon is-blocked"
                   >
@@ -397,35 +448,45 @@ exports[`TableList displays all data from redux store 1`] = `
               <TableHeader
                 key="1"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Owner
                 </th>
               </TableHeader>
               <TableHeader
                 key="2"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Configuration
                 </th>
               </TableHeader>
               <TableHeader
                 key="3"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Cloud/Region
                 </th>
               </TableHeader>
               <TableHeader
                 key="4"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Credential
                 </th>
               </TableHeader>
               <TableHeader
                 key="5"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Controller
                 </th>
               </TableHeader>
@@ -435,6 +496,7 @@ exports[`TableList displays all data from redux store 1`] = `
               >
                 <th
                   className="u-align--right"
+                  role="columnheader"
                 >
                   Last Updated
                 </th>
@@ -446,7 +508,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="0"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -486,6 +550,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     spaceman
@@ -564,6 +629,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-east1
@@ -580,6 +646,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     Algebra-json
@@ -594,6 +661,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -617,7 +685,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="1"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -657,6 +727,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     that-guy
@@ -735,6 +806,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     eu-central-1
@@ -751,6 +823,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     personal
@@ -765,6 +838,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -846,6 +920,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 spaceman
@@ -912,6 +987,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 europe-west1
@@ -921,6 +997,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 clean-algebra-206308
@@ -928,6 +1005,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -955,6 +1033,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 alto
@@ -1021,6 +1100,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-east1
@@ -1030,6 +1110,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 google-rickbot
@@ -1037,6 +1118,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -1064,6 +1146,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 uncle-phil
@@ -1130,6 +1213,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-east1
@@ -1139,6 +1223,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 gce
@@ -1146,6 +1231,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -1173,6 +1259,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 uncle-phil
@@ -1239,6 +1326,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-east1
@@ -1248,6 +1336,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 gce
@@ -1255,6 +1344,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -1279,11 +1369,15 @@ exports[`TableList displays all data from redux store 1`] = `
       >
         <thead>
           <TableRow>
-            <tr>
+            <tr
+              role="row"
+            >
               <TableHeader
                 key="0"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   <span
                     className="status-icon is-alert"
                   >
@@ -1295,35 +1389,45 @@ exports[`TableList displays all data from redux store 1`] = `
               <TableHeader
                 key="1"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Owner
                 </th>
               </TableHeader>
               <TableHeader
                 key="2"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Configuration
                 </th>
               </TableHeader>
               <TableHeader
                 key="3"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Cloud/Region
                 </th>
               </TableHeader>
               <TableHeader
                 key="4"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Credential
                 </th>
               </TableHeader>
               <TableHeader
                 key="5"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Controller
                 </th>
               </TableHeader>
@@ -1333,6 +1437,7 @@ exports[`TableList displays all data from redux store 1`] = `
               >
                 <th
                   className="u-align--right"
+                  role="columnheader"
                 >
                   Last Updated
                 </th>
@@ -1344,7 +1449,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="0"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -1379,6 +1486,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     spaceman
@@ -1457,6 +1565,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     europe-west1
@@ -1473,6 +1582,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     clean-algebra-206308
@@ -1487,6 +1597,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -1510,7 +1621,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="1"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -1545,6 +1658,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     alto
@@ -1623,6 +1737,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-east1
@@ -1639,6 +1754,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     google-rickbot
@@ -1653,6 +1769,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -1676,7 +1793,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="2"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -1711,6 +1830,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     uncle-phil
@@ -1789,6 +1909,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-east1
@@ -1805,6 +1926,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     gce
@@ -1819,6 +1941,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -1842,7 +1965,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="3"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -1877,6 +2002,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     uncle-phil
@@ -1955,6 +2081,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-east1
@@ -1971,6 +2098,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     gce
@@ -1985,6 +2113,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -2066,6 +2195,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 spaceman
@@ -2132,6 +2262,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-central1
@@ -2141,6 +2272,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 clean-algebra-206308
@@ -2148,6 +2280,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -2175,6 +2308,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 spaceman
@@ -2241,6 +2375,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-east1
@@ -2250,6 +2385,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 clean-algebra-206308
@@ -2257,6 +2393,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -2284,6 +2421,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 spaceman
@@ -2350,6 +2488,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-central1
@@ -2359,6 +2498,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 clean-algebra-206308
@@ -2366,6 +2506,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -2393,6 +2534,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 activedev
@@ -2459,6 +2601,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-central1
@@ -2468,6 +2611,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 admin
@@ -2475,6 +2619,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -2502,6 +2647,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 activedev
@@ -2568,6 +2714,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-central1
@@ -2577,6 +2724,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 jujuongce
@@ -2584,6 +2732,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -2611,6 +2760,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 activedev
@@ -2677,6 +2827,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-east1
@@ -2686,6 +2837,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 juju
@@ -2693,6 +2845,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -2720,6 +2873,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 activedev
@@ -2786,6 +2940,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-east1
@@ -2795,6 +2950,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 juju
@@ -2802,6 +2958,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -2829,6 +2986,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 activedev
@@ -2895,6 +3053,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-east1
@@ -2904,6 +3063,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 juju
@@ -2911,6 +3071,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -2938,6 +3099,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 uncle-phil
@@ -3004,6 +3166,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 us-east1
@@ -3013,6 +3176,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 gce
@@ -3020,6 +3184,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -3047,6 +3212,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 that-guy
@@ -3113,6 +3279,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 eu-central-1
@@ -3122,6 +3289,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
               >
                 personal
@@ -3129,6 +3297,7 @@ exports[`TableList displays all data from redux store 1`] = `
             },
             Object {
               "content": <a
+                className="p-link--soft"
                 href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
@@ -3153,11 +3322,15 @@ exports[`TableList displays all data from redux store 1`] = `
       >
         <thead>
           <TableRow>
-            <tr>
+            <tr
+              role="row"
+            >
               <TableHeader
                 key="0"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   <span
                     className="status-icon is-running"
                   >
@@ -3169,35 +3342,45 @@ exports[`TableList displays all data from redux store 1`] = `
               <TableHeader
                 key="1"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Owner
                 </th>
               </TableHeader>
               <TableHeader
                 key="2"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Configuration
                 </th>
               </TableHeader>
               <TableHeader
                 key="3"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Cloud/Region
                 </th>
               </TableHeader>
               <TableHeader
                 key="4"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Credential
                 </th>
               </TableHeader>
               <TableHeader
                 key="5"
               >
-                <th>
+                <th
+                  role="columnheader"
+                >
                   Controller
                 </th>
               </TableHeader>
@@ -3207,6 +3390,7 @@ exports[`TableList displays all data from redux store 1`] = `
               >
                 <th
                   className="u-align--right"
+                  role="columnheader"
                 >
                   Last Updated
                 </th>
@@ -3218,7 +3402,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="0"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -3253,6 +3439,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     spaceman
@@ -3331,6 +3518,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-central1
@@ -3347,6 +3535,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     clean-algebra-206308
@@ -3361,6 +3550,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -3384,7 +3574,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="1"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -3419,6 +3611,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     spaceman
@@ -3497,6 +3690,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-east1
@@ -3513,6 +3707,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     clean-algebra-206308
@@ -3527,6 +3722,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -3550,7 +3746,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="2"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -3585,6 +3783,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     spaceman
@@ -3663,6 +3862,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-central1
@@ -3679,6 +3879,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     clean-algebra-206308
@@ -3693,6 +3894,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -3716,7 +3918,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="3"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -3751,6 +3955,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     activedev
@@ -3829,6 +4034,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-central1
@@ -3845,6 +4051,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     admin
@@ -3859,6 +4066,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -3882,7 +4090,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="4"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -3917,6 +4127,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     activedev
@@ -3995,6 +4206,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-central1
@@ -4011,6 +4223,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     jujuongce
@@ -4025,6 +4238,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -4048,7 +4262,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="5"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -4083,6 +4299,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     activedev
@@ -4161,6 +4378,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-east1
@@ -4177,6 +4395,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     juju
@@ -4191,6 +4410,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -4214,7 +4434,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="6"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -4249,6 +4471,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     activedev
@@ -4327,6 +4550,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-east1
@@ -4343,6 +4567,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     juju
@@ -4357,6 +4582,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -4380,7 +4606,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="7"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -4415,6 +4643,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     activedev
@@ -4493,6 +4722,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-east1
@@ -4509,6 +4739,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     juju
@@ -4523,6 +4754,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -4546,7 +4778,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="8"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -4581,6 +4815,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     uncle-phil
@@ -4659,6 +4894,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     us-east1
@@ -4675,6 +4911,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     gce
@@ -4689,6 +4926,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
@@ -4712,7 +4950,9 @@ exports[`TableList displays all data from redux store 1`] = `
           <TableRow
             key="9"
           >
-            <tr>
+            <tr
+              role="row"
+            >
               <TableCell
                 key="0"
               >
@@ -4747,6 +4987,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     that-guy
@@ -4825,6 +5066,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     eu-central-1
@@ -4841,6 +5083,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                   >
                     personal
@@ -4855,6 +5098,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   role="gridcell"
                 >
                   <a
+                    className="p-link--soft"
                     href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >

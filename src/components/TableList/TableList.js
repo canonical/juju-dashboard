@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
+import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useSelector } from "react-redux";
 import {
   generateStatusIcon,
@@ -8,7 +9,6 @@ import {
 } from "app/utils";
 
 import { getActiveUserTag, getGroupedModelData } from "app/selectors";
-import MainTable from "../MainTable/MainTable";
 
 import "./_table-list.scss";
 
@@ -99,7 +99,7 @@ function generateModelTableData(groupedModels, activeUser) {
           { content: generateModelNameCell(model, groupLabel, activeUser) },
           {
             content: (
-              <a href="#_">
+              <a href="#_" className="p-link--soft">
                 {model.info &&
                   model.info.ownerTag.split("@")[0].replace("user-", "")}
               </a>
@@ -108,7 +108,7 @@ function generateModelTableData(groupedModels, activeUser) {
           { content: getStatusValue(model, "summary") },
           {
             content: (
-              <a href="#_">
+              <a href="#_" className="p-link--soft">
                 {getStatusValue(model, "region")}/
                 {getStatusValue(model, "cloudTag")}
               </a>
@@ -116,7 +116,7 @@ function generateModelTableData(groupedModels, activeUser) {
           },
           {
             content: (
-              <a href="#_">
+              <a href="#_" className="p-link--soft">
                 {getStatusValue(model.info, "cloudCredentialTag")}
               </a>
             )
@@ -125,7 +125,11 @@ function generateModelTableData(groupedModels, activeUser) {
           // so display the controller UUID instead.
           {
             content: (
-              <a href="#_" title={getStatusValue(model.info, "controllerUuid")}>
+              <a
+                href="#_"
+                className="p-link--soft"
+                title={getStatusValue(model.info, "controllerUuid")}
+              >
                 {getStatusValue(model.info, "controllerUuid").split("-")[0] +
                   "..."}
               </a>

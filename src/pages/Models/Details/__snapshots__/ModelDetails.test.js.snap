@@ -582,13 +582,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
         >
           <thead>
             <TableRow>
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableHeader
                   key="0"
                   onClick={[Function]}
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     app
                   </th>
@@ -599,6 +602,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     status
                   </th>
@@ -611,6 +615,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     version
                   </th>
@@ -623,6 +628,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     scale
                   </th>
@@ -633,6 +639,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     store
                   </th>
@@ -645,6 +652,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     rev
                   </th>
@@ -655,6 +663,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     os
                   </th>
@@ -665,6 +674,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     notes
                   </th>
@@ -676,7 +686,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="0"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -781,7 +793,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="1"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -886,7 +900,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="2"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -991,7 +1007,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="3"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -1096,7 +1114,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="4"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -1201,7 +1221,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="5"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -1306,7 +1328,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="6"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -1411,7 +1435,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="7"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -1516,7 +1542,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="8"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -1664,13 +1692,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
         >
           <thead>
             <TableRow>
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableHeader
                   key="0"
                   onClick={[Function]}
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     unit
                   </th>
@@ -1681,6 +1712,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     workload
                   </th>
@@ -1691,6 +1723,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     agent
                   </th>
@@ -1703,6 +1736,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     machine
                   </th>
@@ -1713,6 +1747,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     public address
                   </th>
@@ -1725,6 +1760,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     port
                   </th>
@@ -1735,6 +1771,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     message
                   </th>
@@ -1780,13 +1817,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
         >
           <thead>
             <TableRow>
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableHeader
                   key="0"
                   onClick={[Function]}
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     machine
                   </th>
@@ -1797,6 +1837,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     state
                   </th>
@@ -1807,6 +1848,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     az
                   </th>
@@ -1817,6 +1859,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     instance id
                   </th>
@@ -1827,6 +1870,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     message
                   </th>
@@ -2220,13 +2264,16 @@ exports[`ModelDetail Container renders the details pane 1`] = `
         >
           <thead>
             <TableRow>
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableHeader
                   key="0"
                   onClick={[Function]}
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     relation provider
                   </th>
@@ -2237,6 +2284,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     requirer
                   </th>
@@ -2247,6 +2295,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     interface
                   </th>
@@ -2257,6 +2306,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     type
                   </th>
@@ -2267,6 +2317,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     message
                   </th>
@@ -2278,7 +2329,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="0"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2338,7 +2391,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="1"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2398,7 +2453,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="2"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2458,7 +2515,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="3"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2518,7 +2577,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="4"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2578,7 +2639,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="5"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2638,7 +2701,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="6"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2698,7 +2763,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="7"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2758,7 +2825,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="8"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2818,7 +2887,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="9"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2878,7 +2949,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="10"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2938,7 +3011,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="11"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -2998,7 +3073,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="12"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -3058,7 +3135,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="13"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -3118,7 +3197,9 @@ exports[`ModelDetail Container renders the details pane 1`] = `
             <TableRow
               key="14"
             >
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableCell
                   key="0"
                 >
@@ -3302,13 +3383,16 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
         >
           <thead>
             <TableRow>
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableHeader
                   key="0"
                   onClick={[Function]}
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     app
                   </th>
@@ -3319,6 +3403,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     status
                   </th>
@@ -3331,6 +3416,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     version
                   </th>
@@ -3343,6 +3429,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     scale
                   </th>
@@ -3353,6 +3440,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     store
                   </th>
@@ -3365,6 +3453,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     rev
                   </th>
@@ -3375,6 +3464,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     os
                   </th>
@@ -3385,6 +3475,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     notes
                   </th>
@@ -3438,13 +3529,16 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
         >
           <thead>
             <TableRow>
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableHeader
                   key="0"
                   onClick={[Function]}
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     unit
                   </th>
@@ -3455,6 +3549,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     workload
                   </th>
@@ -3465,6 +3560,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     agent
                   </th>
@@ -3477,6 +3573,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     machine
                   </th>
@@ -3487,6 +3584,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     public address
                   </th>
@@ -3499,6 +3597,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                   <th
                     className="u-align--right"
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     port
                   </th>
@@ -3509,6 +3608,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     message
                   </th>
@@ -3554,13 +3654,16 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
         >
           <thead>
             <TableRow>
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableHeader
                   key="0"
                   onClick={[Function]}
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     machine
                   </th>
@@ -3571,6 +3674,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     state
                   </th>
@@ -3581,6 +3685,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     az
                   </th>
@@ -3591,6 +3696,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     instance id
                   </th>
@@ -3601,6 +3707,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     message
                   </th>
@@ -3646,13 +3753,16 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
         >
           <thead>
             <TableRow>
-              <tr>
+              <tr
+                role="row"
+              >
                 <TableHeader
                   key="0"
                   onClick={[Function]}
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     relation provider
                   </th>
@@ -3663,6 +3773,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     requirer
                   </th>
@@ -3673,6 +3784,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     interface
                   </th>
@@ -3683,6 +3795,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     type
                   </th>
@@ -3693,6 +3806,7 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
                 >
                   <th
                     onClick={[Function]}
+                    role="columnheader"
                   >
                     message
                   </th>
@@ -4136,13 +4250,16 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
     >
       <thead>
         <TableRow>
-          <tr>
+          <tr
+            role="row"
+          >
             <TableHeader
               key="0"
               onClick={[Function]}
             >
               <th
                 onClick={[Function]}
+                role="columnheader"
               >
                 machine
               </th>
@@ -4153,6 +4270,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             >
               <th
                 onClick={[Function]}
+                role="columnheader"
               >
                 state
               </th>
@@ -4163,6 +4281,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             >
               <th
                 onClick={[Function]}
+                role="columnheader"
               >
                 az
               </th>
@@ -4173,6 +4292,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             >
               <th
                 onClick={[Function]}
+                role="columnheader"
               >
                 instance id
               </th>
@@ -4183,6 +4303,7 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
             >
               <th
                 onClick={[Function]}
+                role="columnheader"
               >
                 message
               </th>
@@ -4194,7 +4315,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="0"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >
@@ -4263,7 +4386,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="1"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >
@@ -4332,7 +4457,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="2"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >
@@ -4401,7 +4528,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="3"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >
@@ -4470,7 +4599,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="4"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >
@@ -4539,7 +4670,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="5"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >
@@ -4608,7 +4741,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="6"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >
@@ -4677,7 +4812,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="7"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >
@@ -4746,7 +4883,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="8"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >
@@ -4815,7 +4954,9 @@ exports[`ModelDetail Container renders the machine details section 1`] = `
         <TableRow
           key="9"
         >
-          <tr>
+          <tr
+            role="row"
+          >
             <TableCell
               key="0"
             >

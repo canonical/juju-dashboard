@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo } from "react";
+import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
-import MainTable from "components/MainTable/MainTable";
 import Terminal from "components/Terminal/Terminal";
 import Header from "components/Header/Header";
 import UserIcon from "components/UserIcon/UserIcon";
