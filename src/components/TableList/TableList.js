@@ -2,7 +2,11 @@ import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useSelector } from "react-redux";
-import { generateStatusIcon, generateSpanClass } from "app/utils";
+import {
+  generateStatusIcon,
+  generateSpanClass,
+  getModelStatusGroupData
+} from "app/utils";
 
 import { getActiveUserTag, getGroupedModelData } from "app/selectors";
 
@@ -45,8 +49,9 @@ const generateModelDetailsLink = (modelName, ownerTag, activeUser) => {
   @return {Object} The react component for the warning message.
 */
 const generateWarningMessage = model => {
+  const { messages } = getModelStatusGroupData(model);
   return (
-    <div className="table-list_error-message">Click to view full details</div>
+    <span className="table-list_error-message">{messages.join("; ")}</span>
   );
 };
 
@@ -67,7 +72,7 @@ const generateModelNameCell = (model, groupLabel, activeUser) => {
   );
   return (
     <>
-      {link}
+      <div>{link}</div>
       {groupLabel === "blocked" ? generateWarningMessage(model) : null}
     </>
   );

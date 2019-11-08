@@ -1,5 +1,7 @@
 import { createSelector } from "reselect";
 
+import { getModelStatusGroupData } from "./utils";
+
 // ---- Selectors for top level keys
 /**
   Fetches the model list from state.
@@ -117,9 +119,6 @@ const getModelStatusByUUID = (modelUUID, modelStatuses) => {
   return null;
 };
 
-// Highest status to the right
-const statusOrder = ["running", "alert", "blocked"];
-
 /**
   Returns a grouped collection of model statuses.
   @param {Object} modelData
@@ -136,58 +135,11 @@ const groupModelsByStatus = modelData => {
   }
   for (let modelUUID in modelData) {
     const model = modelData[modelUUID];
-    let highestStatus = "running";
-    Object.keys(model.applications).forEach(appName => {
-      const app = model.applications[appName];
-      const appStatus = getApplicationStatusGroup(app);
-      if (statusOrder.indexOf(appStatus) > statusOrder.indexOf(highestStatus)) {
-        highestStatus = appStatus;
-      }
-      if (highestStatus === statusOrder[-1]) {
-        // If it's the highest status then we don't need to continue looping
-        // applications or units.
-        return;
-      }
-      Object.keys(app.units).forEach(unitId => {
-        const unit = app.units[unitId];
-        const unitStatus = getUnitStatusGroup(unit);
-        if (unitStatus === "blocked") {
-          grouped.blocked.push(model);
-          return;
-        }
-      });
-    });
+    const { highestStatus } = getModelStatusGroupData(model);
     grouped[highestStatus].push(model);
   }
   return grouped;
 };
-
-/**
-  Returns the string status for the application.
-  @param {Object} application The application to check the status of.
-  @returns {String} The status of the application.
-*/
-const getApplicationStatusGroup = application => {
-  // Possible "blocked" or error states in application statuses.
-  const blocked = ["blocked"];
-  // Possible "alert" states in application statuses.
-  const alert = ["unknown"];
-  const status = application.status.status;
-  if (blocked.includes(status)) {
-    return "blocked";
-  }
-  if (alert.includes(status)) {
-    return "alert";
-  }
-  return "running";
-};
-
-/**
-  Returns the string status for the unit.
-  @param {Object} unit The unit to check the status of.
-  @returns {String} The status of the unit.
-*/
-const getUnitStatusGroup = unit => {};
 
 /**
   Returns an object containing the grouped model status counts.

@@ -184,16 +184,18 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/spaceman@external/hadoopspark"
-                >
-                  hadoopspark
-                </ForwardRef>
-                <div
+                <div>
+                  <ForwardRef
+                    to="/models/spaceman@external/hadoopspark"
+                  >
+                    hadoopspark
+                  </ForwardRef>
+                </div>
+                <span
                   className="table-list_error-message"
                 >
-                  Click to view full details
-                </div>
+                  missing required namenode and/or resourcemanager relation; waiting for machine
+                </span>
               </React.Fragment>,
             },
             Object {
@@ -300,16 +302,18 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/that-guy@external/bionic-model"
-                >
-                  bionic-model
-                </ForwardRef>
-                <div
+                <div>
+                  <ForwardRef
+                    to="/models/that-guy@external/bionic-model"
+                  >
+                    bionic-model
+                  </ForwardRef>
+                </div>
+                <span
                   className="table-list_error-message"
                 >
-                  Click to view full details
-                </div>
+                  elasticsearch service not running
+                </span>
               </React.Fragment>,
             },
             Object {
@@ -514,26 +518,28 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/spaceman@external/hadoopspark"
-                  >
-                    <LinkAnchor
-                      href="/models/spaceman@external/hadoopspark"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/spaceman@external/hadoopspark"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/spaceman@external/hadoopspark"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        hadoopspark
-                      </a>
-                    </LinkAnchor>
-                  </Link>
-                  <div
+                        <a
+                          href="/models/spaceman@external/hadoopspark"
+                          onClick={[Function]}
+                        >
+                          hadoopspark
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
+                  <span
                     className="table-list_error-message"
                   >
-                    Click to view full details
-                  </div>
+                    missing required namenode and/or resourcemanager relation; waiting for machine
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -689,26 +695,28 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/that-guy@external/bionic-model"
-                  >
-                    <LinkAnchor
-                      href="/models/that-guy@external/bionic-model"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/that-guy@external/bionic-model"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/that-guy@external/bionic-model"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        bionic-model
-                      </a>
-                    </LinkAnchor>
-                  </Link>
-                  <div
+                        <a
+                          href="/models/that-guy@external/bionic-model"
+                          onClick={[Function]}
+                        >
+                          bionic-model
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
+                  <span
                     className="table-list_error-message"
                   >
-                    Click to view full details
-                  </div>
+                    elasticsearch service not running
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -901,11 +909,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/spaceman@external/testing"
-                >
-                  testing
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/spaceman@external/testing"
+                  >
+                    testing
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -1012,11 +1022,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/alto@external/all-kpi"
-                >
-                  all-kpi
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/alto@external/all-kpi"
+                  >
+                    all-kpi
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -1123,11 +1135,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/uncle-phil@external/ci-website"
-                >
-                  ci-website
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/uncle-phil@external/ci-website"
+                  >
+                    ci-website
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -1234,11 +1248,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/uncle-phil@external/ci-different"
-                >
-                  ci-different
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/uncle-phil@external/ci-different"
+                  >
+                    ci-different
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -1443,21 +1459,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/spaceman@external/testing"
-                  >
-                    <LinkAnchor
-                      href="/models/spaceman@external/testing"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/spaceman@external/testing"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/spaceman@external/testing"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        testing
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/spaceman@external/testing"
+                          onClick={[Function]}
+                        >
+                          testing
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1613,21 +1631,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/alto@external/all-kpi"
-                  >
-                    <LinkAnchor
-                      href="/models/alto@external/all-kpi"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/alto@external/all-kpi"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/alto@external/all-kpi"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        all-kpi
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/alto@external/all-kpi"
+                          onClick={[Function]}
+                        >
+                          all-kpi
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1783,21 +1803,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/uncle-phil@external/ci-website"
-                  >
-                    <LinkAnchor
-                      href="/models/uncle-phil@external/ci-website"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/uncle-phil@external/ci-website"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/uncle-phil@external/ci-website"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        ci-website
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/uncle-phil@external/ci-website"
+                          onClick={[Function]}
+                        >
+                          ci-website
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -1953,21 +1975,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/uncle-phil@external/ci-different"
-                  >
-                    <LinkAnchor
-                      href="/models/uncle-phil@external/ci-different"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/uncle-phil@external/ci-different"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/uncle-phil@external/ci-different"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        ci-different
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/uncle-phil@external/ci-different"
+                          onClick={[Function]}
+                        >
+                          ci-different
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -2160,11 +2184,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/spaceman@external/canonical-kubernetes"
-                >
-                  canonical-kubernetes
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/spaceman@external/canonical-kubernetes"
+                  >
+                    canonical-kubernetes
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -2271,11 +2297,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/spaceman@external/mymodel"
-                >
-                  mymodel
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/spaceman@external/mymodel"
+                  >
+                    mymodel
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -2382,11 +2410,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/spaceman@external/mymodel4"
-                >
-                  mymodel4
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/spaceman@external/mymodel4"
+                  >
+                    mymodel4
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -2493,11 +2523,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/group-test"
-                >
-                  group-test
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/group-test"
+                  >
+                    group-test
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -2604,11 +2636,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/new-search-aggregate"
-                >
-                  new-search-aggregate
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/new-search-aggregate"
+                  >
+                    new-search-aggregate
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -2715,11 +2749,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/test1"
-                >
-                  test1
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/test1"
+                  >
+                    test1
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -2826,11 +2862,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/test2"
-                >
-                  test2
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/test2"
+                  >
+                    test2
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -2937,11 +2975,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/test3"
-                >
-                  test3
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/test3"
+                  >
+                    test3
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -3048,11 +3088,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/uncle-phil@external/sales-dept"
-                >
-                  sales-dept
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/uncle-phil@external/sales-dept"
+                  >
+                    sales-dept
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -3159,11 +3201,13 @@ exports[`TableList displays all data from redux store 1`] = `
           "columns": Array [
             Object {
               "content": <React.Fragment>
-                <ForwardRef
-                  to="/models/that-guy@external/ants-wordpress"
-                >
-                  ants-wordpress
-                </ForwardRef>
+                <div>
+                  <ForwardRef
+                    to="/models/that-guy@external/ants-wordpress"
+                  >
+                    ants-wordpress
+                  </ForwardRef>
+                </div>
               </React.Fragment>,
             },
             Object {
@@ -3368,21 +3412,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/spaceman@external/canonical-kubernetes"
-                  >
-                    <LinkAnchor
-                      href="/models/spaceman@external/canonical-kubernetes"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/spaceman@external/canonical-kubernetes"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/spaceman@external/canonical-kubernetes"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        canonical-kubernetes
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/spaceman@external/canonical-kubernetes"
+                          onClick={[Function]}
+                        >
+                          canonical-kubernetes
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -3538,21 +3584,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/spaceman@external/mymodel"
-                  >
-                    <LinkAnchor
-                      href="/models/spaceman@external/mymodel"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/spaceman@external/mymodel"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/spaceman@external/mymodel"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        mymodel
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/spaceman@external/mymodel"
+                          onClick={[Function]}
+                        >
+                          mymodel
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -3708,21 +3756,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/spaceman@external/mymodel4"
-                  >
-                    <LinkAnchor
-                      href="/models/spaceman@external/mymodel4"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/spaceman@external/mymodel4"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/spaceman@external/mymodel4"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        mymodel4
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/spaceman@external/mymodel4"
+                          onClick={[Function]}
+                        >
+                          mymodel4
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -3878,21 +3928,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/group-test"
-                  >
-                    <LinkAnchor
-                      href="/models/group-test"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/group-test"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/group-test"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        group-test
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/group-test"
+                          onClick={[Function]}
+                        >
+                          group-test
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -4048,21 +4100,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/new-search-aggregate"
-                  >
-                    <LinkAnchor
-                      href="/models/new-search-aggregate"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/new-search-aggregate"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/new-search-aggregate"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        new-search-aggregate
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/new-search-aggregate"
+                          onClick={[Function]}
+                        >
+                          new-search-aggregate
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -4218,21 +4272,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/test1"
-                  >
-                    <LinkAnchor
-                      href="/models/test1"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/test1"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/test1"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        test1
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/test1"
+                          onClick={[Function]}
+                        >
+                          test1
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -4388,21 +4444,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/test2"
-                  >
-                    <LinkAnchor
-                      href="/models/test2"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/test2"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/test2"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        test2
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/test2"
+                          onClick={[Function]}
+                        >
+                          test2
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -4558,21 +4616,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/test3"
-                  >
-                    <LinkAnchor
-                      href="/models/test3"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/test3"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/test3"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        test3
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/test3"
+                          onClick={[Function]}
+                        >
+                          test3
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -4728,21 +4788,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/uncle-phil@external/sales-dept"
-                  >
-                    <LinkAnchor
-                      href="/models/uncle-phil@external/sales-dept"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/uncle-phil@external/sales-dept"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/uncle-phil@external/sales-dept"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        sales-dept
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/uncle-phil@external/sales-dept"
+                          onClick={[Function]}
+                        >
+                          sales-dept
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
@@ -4898,21 +4960,23 @@ exports[`TableList displays all data from redux store 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <Link
-                    to="/models/that-guy@external/ants-wordpress"
-                  >
-                    <LinkAnchor
-                      href="/models/that-guy@external/ants-wordpress"
-                      navigate={[Function]}
+                  <div>
+                    <Link
+                      to="/models/that-guy@external/ants-wordpress"
                     >
-                      <a
+                      <LinkAnchor
                         href="/models/that-guy@external/ants-wordpress"
-                        onClick={[Function]}
+                        navigate={[Function]}
                       >
-                        ants-wordpress
-                      </a>
-                    </LinkAnchor>
-                  </Link>
+                        <a
+                          href="/models/that-guy@external/ants-wordpress"
+                          onClick={[Function]}
+                        >
+                          ants-wordpress
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
                 </td>
               </TableCell>
               <TableCell
