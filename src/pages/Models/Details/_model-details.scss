@@ -119,3 +119,16 @@
     top: 0.25rem;
   }
 }
+
+.subordinate {
+  display: inline-block;
+  padding-left: 1.25rem;
+  position: relative;
+
+  &::before {
+    content: "↳";
+    left: 0;
+    position: absolute;
+    top: 0.15rem;
+  }
+}
