@@ -6,7 +6,7 @@
   grid-template-columns: 230px 1fr;
   padding-bottom: 14rem;
 
-  @media (min-width: $breakpoint-x-large) {
+  @media (min-width: $breakpoint-m-large) {
     grid-template-columns: 350px 1fr;
   }
 
