@@ -57,9 +57,7 @@ const relationTableHeaders = [
 const generateEntityLink = (namespace, href, name, subordinate) => {
   return (
     <>
-      {subordinate && (
-        <span className="subordinate"></span>
-      )}
+      {subordinate && <span className="subordinate"></span>}
       {namespace && (
         <img
           alt={name + " icon"}
@@ -149,7 +147,9 @@ const generateUnitRows = modelStatusData => {
           const subordinate = subordinates[key];
           unitRows.push({
             columns: [
-              { content: generateEntityLink(subordinate.charm, "#", key, true) },
+              {
+                content: generateEntityLink(subordinate.charm, "#", key, true)
+              },
               {
                 content: generateStatusIcon(
                   subordinate["workload-status"].status
