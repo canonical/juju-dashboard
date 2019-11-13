@@ -3,29 +3,6 @@ import { createSelector } from "reselect";
 import { getModelStatusGroupData } from "./utils";
 
 // ---- Selectors for top level keys
-/**
-  Fetches the model list from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The list of models or null if none found.
-*/
-const getModelList = state => {
-  if (state.juju && state.juju.models) {
-    return state.juju.models;
-  }
-  return null;
-};
-
-/**
-  Fetches the model statuses from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The list of model statuses or null if none found.
-*/
-const getModelStatuses = state => {
-  if (state.juju && state.juju.modelStatuses) {
-    return state.juju.modelStatuses;
-  }
-  return null;
-};
 
 /**
   Fetches the model data from state.
@@ -77,10 +54,10 @@ const getDecodedMacaroons = macaroons => {
 /**
   Gets the model UUID from the supplied name.
   @param {String} name The name of the model.
-  @param {Object} modelInfo The list of models.
+  @param {Object} modelData The list of models.
   @returns {Object|Null} The model UUID or null if none found.
 */
-const getModelUUIDByName = (name, modelInfo) => {
+const getModelUUIDByName = (name, modelData) => {
   let owner = null;
   let modelName = null;
   if (name.includes("/")) {
@@ -88,10 +65,10 @@ const getModelUUIDByName = (name, modelInfo) => {
   } else {
     modelName = name;
   }
-  if (modelInfo) {
-    for (let uuid in modelInfo) {
-      const model = modelInfo[uuid];
-      if (model.name === modelName) {
+  if (modelData) {
+    for (let uuid in modelData) {
+      const model = modelData[uuid].info;
+      if (model && model.name === modelName) {
         if (owner) {
           if (model.ownerTag === `user-${owner}`) {
             // If this is a shared model then we'll also have an owner name
@@ -109,12 +86,12 @@ const getModelUUIDByName = (name, modelInfo) => {
 /**
   Returns the modelStatus for the supplied modelUUID.
   @param {String} modelUUID
-  @param {Object} modelStatuses
+  @param {Object} modelData
   @returns {Object|Null} The model status or null if none found
 */
-const getModelStatusByUUID = (modelUUID, modelStatuses) => {
-  if (modelStatuses && modelStatuses[modelUUID]) {
-    return modelStatuses[modelUUID];
+const getModelDataByUUID = (modelUUID, modelData) => {
+  if (modelData && modelData[modelUUID]) {
+    return modelData[modelUUID];
   }
   return null;
 };
@@ -183,8 +160,8 @@ export const isSidebarCollapsible = state => {
 */
 export const getModelUUID = modelName => {
   return createSelector(
-    getModelList,
-    modelInfo => getModelUUIDByName(modelName, modelInfo)
+    getModelData,
+    modelData => getModelUUIDByName(modelName, modelData)
   );
 };
 
@@ -227,8 +204,8 @@ export const getActiveUserTag = state =>
 */
 export const getModelStatus = modelUUID => {
   return createSelector(
-    getModelStatuses,
-    modelStatuses => getModelStatusByUUID(modelUUID, modelStatuses)
+    getModelData,
+    modelData => getModelDataByUUID(modelUUID, modelData)
   );
 };
 
