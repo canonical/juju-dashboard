@@ -54,9 +54,12 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
-const generateEntityLink = (namespace, href, name) => {
+const generateEntityLink = (namespace, href, name, subordinate) => {
   return (
     <>
+      {subordinate && (
+        <span className="subordinate"></span>
+      )}
       {namespace && (
         <img
           alt={name + " icon"}
@@ -111,21 +114,8 @@ const generateUnitRows = modelStatusData => {
 
   const applications = modelStatusData.applications;
   const unitRows = [];
-  let subordinates = {};
 
-  // Check if applications have any subordinates and if so, store app key and
-  // array of subordinates
   Object.keys(applications).forEach(applicationName => {
-    // If an application has subordinates, add them to the subordinates obj
-    if (applications[applicationName].subordinateTo.length) {
-      // Pull out long keyname for comparison later
-      const subordinateObjKey = applications[applicationName].charm;
-      subordinates[subordinateObjKey] =
-        applications[applicationName].subordinateTo;
-    }
-
-    console.log(subordinates);
-
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach(unitId => {
       const unit = units[unitId];
@@ -152,35 +142,35 @@ const generateUnitRows = modelStatusData => {
         ]
       });
 
-      // Check for subordinates
-      for (let [key, value] of Object.entries(subordinates)) {
-        value.map(subName => {
-          if (unitId.includes(subName)) {
-            console.log(`${subName} is owned by ${key}`);
-            // Push extra row
-            unitRows.push({
-              expanded: true,
-              columns: [
-                { content: <span className="subordinate">{subName}</span> },
-                {
-                  content: generateStatusIcon(unit.workloadStatus.status),
-                  className: "u-capitalise"
-                },
-                { content: unit.agentStatus.status },
-                { content: unit.machine, className: "u-align--right" },
-                { content: unit.publicAddress },
-                {
-                  content: unit.publicAddress.split(":")[-1] || "-",
-                  className: "u-align--right"
-                },
-                { content: unit.workloadStatus.info }
-              ]
-            });
-          }
+      const subordinates = unit.subordinates;
+
+      if (subordinates) {
+        Object.keys(subordinates).forEach(key => {
+          const subordinate = subordinates[key];
+          unitRows.push({
+            columns: [
+              { content: generateEntityLink(subordinate.charm, "#", key, true) },
+              {
+                content: generateStatusIcon(
+                  subordinate["workload-status"].status
+                ),
+                className: "u-capitalise"
+              },
+              { content: subordinate["agent-status"].status },
+              { content: subordinate.machine, className: "u-align--right" },
+              { content: subordinate["public-address"] },
+              {
+                content: subordinate["public-address"].split(":")[-1] || "-",
+                className: "u-align--right"
+              },
+              { content: subordinate["workload-status"].info }
+            ]
+          });
         });
       }
     });
   });
+
   return unitRows;
 };
 
