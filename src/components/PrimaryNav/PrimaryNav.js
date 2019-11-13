@@ -7,20 +7,24 @@ import { getGroupedModelStatusCounts } from "app/selectors";
 
 // Image imports
 import logoMark from "static/images/logo/logo-mark.svg";
-import logoText from "static/images/logo/logo-mark.svg";
+import logoText from "static/images/logo/logo-text.svg";
+import modelsIcon from "static/images/icons/models-icon.svg";
+import controllersIcon from "static/images/icons/controllers-icon.svg";
+import usageIcon from "static/images/icons/usage-icon.svg";
+import logsIcon from "static/images/icons/logs-icon.svg";
 
 // Style imports
 import "./_primary-nav.scss";
 
 const pages = [
-  { label: "Models", path: "/models", icon: "51642f58-models.svg" },
+  { label: "Models", path: "/models", icon: modelsIcon },
   {
     label: "Controllers",
     path: "/controllers",
-    icon: "8414b187-controllers.svg"
+    icon: controllersIcon
   },
-  { label: "Usage", path: "/usage", icon: "1b1d07ae-usage.svg" },
-  { label: "Logs", path: "/logs", icon: "741097ff-logs.svg" }
+  { label: "Usage", path: "/usage", icon: usageIcon },
+  { label: "Logs", path: "/logs", icon: logsIcon }
 ];
 
 const PrimaryNav = () => {
@@ -41,7 +45,7 @@ const PrimaryNav = () => {
           />
           <img
             className="p-primary-nav__logo-text"
-            src="https://assets.ubuntu.com/v1/2e04d794-logo-jaas.svg"
+            src={logoText}
             height="30"
             alt=""
           />
@@ -120,7 +124,7 @@ const PrimaryNav = () => {
             >
               <img
                 className="p-list__icon"
-                src={`https://assets.ubuntu.com/v1/${navItem.icon}`}
+                src={navItem.icon}
                 alt={`${navItem.label} icon`}
               />
               {navItem.label}
