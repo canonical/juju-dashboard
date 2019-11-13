@@ -5,6 +5,11 @@ import classNames from "classnames";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
 
+// Image imports
+import logoMark from "static/images/logo/logo-mark.svg";
+import logoText from "static/images/logo/logo-mark.svg";
+
+// Style imports
 import "./_primary-nav.scss";
 
 const pages = [
@@ -29,7 +34,7 @@ const PrimaryNav = () => {
         <Link to="/" className="p-primary-nav__logo">
           <img
             className="p-primary-nav__logo-icon"
-            src="https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg"
+            src={logoMark}
             alt="JAAS logo"
             height="30"
             width="30"
