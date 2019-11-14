@@ -207,6 +207,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -325,6 +326,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -558,10 +560,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -735,10 +738,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -927,6 +931,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -1040,6 +1045,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -1153,6 +1159,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -1266,6 +1273,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -1494,10 +1502,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -1666,10 +1675,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -1838,10 +1848,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -2010,10 +2021,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -2202,6 +2214,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -2315,6 +2328,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -2428,6 +2442,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -2541,6 +2556,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -2654,6 +2670,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -2767,6 +2784,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -2880,6 +2898,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -2993,6 +3012,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -3106,6 +3126,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -3219,6 +3240,7 @@ exports[`TableList displays all data from redux store 1`] = `
               </a>,
             },
             Object {
+              "className": "u-overflow--visible",
               "content": <React.Fragment>
                 <div
                   className="model-details__config"
@@ -3447,10 +3469,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -3619,10 +3642,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -3791,10 +3815,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -3963,10 +3988,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -4135,10 +4161,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -4307,10 +4334,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -4479,10 +4507,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -4651,10 +4680,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -4823,10 +4853,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div
@@ -4995,10 +5026,11 @@ exports[`TableList displays all data from redux store 1`] = `
                 </td>
               </TableCell>
               <TableCell
+                className="u-overflow--visible"
                 key="2"
               >
                 <td
-                  className=""
+                  className="u-overflow--visible"
                   role="gridcell"
                 >
                   <div

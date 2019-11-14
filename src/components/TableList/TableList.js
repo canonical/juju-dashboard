@@ -105,7 +105,10 @@ function generateModelTableData(groupedModels, activeUser) {
               </a>
             )
           },
-          { content: getStatusValue(model, "summary") },
+          {
+            content: getStatusValue(model, "summary"),
+            className: "u-overflow--visible"
+          },
           {
             content: (
               <a href="#_" className="p-link--soft">
