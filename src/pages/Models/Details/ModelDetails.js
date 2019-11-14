@@ -117,13 +117,10 @@ const generateUnitRows = modelStatusData => {
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach(unitId => {
       const unit = units[unitId];
-      const appName = applications[applicationName].charm
-        ? applications[applicationName].charm.replace("cs:", "")
-        : "";
       unitRows.push({
         columns: [
           {
-            content: generateEntityLink(appName, "#", unitId)
+            content: generateEntityLink(applicationName, "#", unitId)
           },
           {
             content: generateStatusIcon(unit.workloadStatus.status),
