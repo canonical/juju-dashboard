@@ -140,7 +140,7 @@ const generateUnitRows = modelStatusData => {
       const subordinates = unit.subordinates;
 
       if (subordinates) {
-        Object.keys(subordinates).forEach(key => {
+        for (let [key] of Object.entries(subordinates)) {
           const subordinate = subordinates[key];
           unitRows.push({
             columns: [
@@ -163,7 +163,7 @@ const generateUnitRows = modelStatusData => {
               { content: subordinate["workload-status"].info }
             ]
           });
-        });
+        }
       }
     });
   });
