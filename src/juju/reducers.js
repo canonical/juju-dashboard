@@ -43,10 +43,6 @@ export default produce(
         // The status doesn't contain a top level uuid and when this data is
         // fetched it doesn't contain the UUID.
         draftState.modelData[modelUUID].uuid = modelUUID;
-
-        // XXX Remove the following line  when all selectors have switched to
-        // use the modelData key.
-        draftState.modelStatuses[payload.modelUUID] = payload.status;
         break;
       case actionsList.updateModelInfo:
         const modelInfo = payload.results[0].result;
@@ -60,9 +56,6 @@ export default produce(
         if (modelData) {
           draftState.modelData[modelInfo.uuid].info = modelInfo;
         }
-        // XXX Remove the following line  when all selectors have switched to
-        // use the modelData key.
-        draftState.modelInfo[modelInfo.uuid] = modelInfo;
         break;
       default:
         // No default value, fall through.
@@ -71,8 +64,6 @@ export default produce(
   },
   {
     models: {},
-    modelData: {},
-    modelInfo: {},
-    modelStatuses: {}
+    modelData: {}
   }
 );
