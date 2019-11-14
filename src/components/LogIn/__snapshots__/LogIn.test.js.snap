@@ -23,7 +23,7 @@ exports[`LogIn renders a login UI if the user is not logged in 1`] = `
         <img
           alt="JAAS logo"
           className="login__logo"
-          src="https://assets.ubuntu.com/v1/a559e2c5-jaas-black-orange-hz-hex.svg"
+          src="logo-black-on-white.svg"
         />
         <a
           className="p-button--positive"
