@@ -127,9 +127,9 @@
   width: 1.75rem;
 
   &::before {
-    content: "└";
-    left: 4px;
+    content: url("../../../static/images/unit-tree.svg");
+    left: 0.75rem;
     position: absolute;
-    top: -1.35rem;
+    top: -1.5rem;
   }
 }
