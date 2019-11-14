@@ -161,7 +161,8 @@ const generateUnitRows = modelStatusData => {
                 className: "u-align--right"
               },
               { content: subordinate["workload-status"].info }
-            ]
+            ],
+            className: "subordinate-row"
           });
         }
       }
