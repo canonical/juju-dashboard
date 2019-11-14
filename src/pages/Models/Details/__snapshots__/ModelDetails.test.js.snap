@@ -121,6 +121,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "className": "u-display--flex",
                 "content": <React.Fragment>
                   <img
                     alt="easyrsa icon"
@@ -171,6 +172,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "className": "u-display--flex",
                 "content": <React.Fragment>
                   <img
                     alt="elasticsearch icon"
@@ -221,6 +223,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "className": "u-display--flex",
                 "content": <React.Fragment>
                   <img
                     alt="etcd icon"
@@ -271,6 +274,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "className": "u-display--flex",
                 "content": <React.Fragment>
                   <img
                     alt="flannel icon"
@@ -321,6 +325,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "className": "u-display--flex",
                 "content": <React.Fragment>
                   <img
                     alt="kibana icon"
@@ -371,6 +376,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "className": "u-display--flex",
                 "content": <React.Fragment>
                   <img
                     alt="kubeapi-load-balancer icon"
@@ -421,6 +427,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "className": "u-display--flex",
                 "content": <React.Fragment>
                   <img
                     alt="kubernetes-master icon"
@@ -471,6 +478,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "className": "u-display--flex",
                 "content": <React.Fragment>
                   <img
                     alt="kubernetes-worker icon"
@@ -521,6 +529,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
+                "className": "u-display--flex",
                 "content": <React.Fragment>
                   <img
                     alt="rsyslog icon"
@@ -690,10 +699,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
                     <img
@@ -797,10 +807,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
                     <img
@@ -904,10 +915,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
                     <img
@@ -1011,10 +1023,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
                     <img
@@ -1118,10 +1131,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
                     <img
@@ -1225,10 +1239,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
                     <img
@@ -1332,10 +1347,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
                     <img
@@ -1439,10 +1455,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
                     <img
@@ -1546,10 +1563,11 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
                     <img

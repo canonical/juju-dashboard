@@ -10,3 +10,8 @@ td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+// this override is counter cross-browser inconsistencies with CSS Grid
+thead {
+  display: block;
+}

@@ -88,7 +88,8 @@ const generateApplicationRows = modelStatusData => {
             app.charm ? app.charm.replace("cs:", "") : "",
             "#",
             key
-          )
+          ),
+          className: "u-display--flex"
         },
         {
           content: app.status ? generateStatusIcon(app.status.status) : "-",
@@ -125,7 +126,8 @@ const generateUnitRows = modelStatusData => {
                 : "",
               "#",
               unitId
-            )
+            ),
+            className: "u-display--flex"
           },
           {
             content: generateStatusIcon(unit.workloadStatus.status),
