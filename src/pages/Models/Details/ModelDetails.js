@@ -120,7 +120,13 @@ const generateUnitRows = modelStatusData => {
       unitRows.push({
         columns: [
           {
-            content: generateEntityLink(applicationName, "#", unitId)
+            content: generateEntityLink(
+              applications[applicationName].charm
+                ? applications[applicationName].charm.replace("cs:", "")
+                : "",
+              "#",
+              unitId
+            )
           },
           {
             content: generateStatusIcon(unit.workloadStatus.status),
