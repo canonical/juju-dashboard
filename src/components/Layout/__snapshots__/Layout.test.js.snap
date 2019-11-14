@@ -32,14 +32,14 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
                   alt="JAAS logo"
                   className="p-primary-nav__logo-icon"
                   height="30"
-                  src="https://assets.ubuntu.com/v1/7144ec6d-logo-jaas-icon.svg"
+                  src="logo-mark.svg"
                   width="30"
                 />
                 <img
                   alt=""
                   className="p-primary-nav__logo-text"
                   height="30"
-                  src="https://assets.ubuntu.com/v1/2e04d794-logo-jaas.svg"
+                  src="logo-text.svg"
                 />
               </a>
             </LinkAnchor>
@@ -159,7 +159,7 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
                     <img
                       alt="Models icon"
                       className="p-list__icon"
-                      src="https://assets.ubuntu.com/v1/51642f58-models.svg"
+                      src="models-icon.svg"
                     />
                     Models
                     <span
@@ -209,7 +209,7 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
                     <img
                       alt="Controllers icon"
                       className="p-list__icon"
-                      src="https://assets.ubuntu.com/v1/8414b187-controllers.svg"
+                      src="controllers-icon.svg"
                     />
                     Controllers
                   </a>
@@ -254,7 +254,7 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
                     <img
                       alt="Usage icon"
                       className="p-list__icon"
-                      src="https://assets.ubuntu.com/v1/1b1d07ae-usage.svg"
+                      src="usage-icon.svg"
                     />
                     Usage
                   </a>
@@ -299,7 +299,7 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
                     <img
                       alt="Logs icon"
                       className="p-list__icon"
-                      src="https://assets.ubuntu.com/v1/741097ff-logs.svg"
+                      src="logs-icon.svg"
                     />
                     Logs
                   </a>
