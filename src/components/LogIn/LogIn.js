@@ -2,6 +2,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { isLoggedIn } from "app/selectors";
 
+import logo from "static/images/logo/logo-black-on-white.svg";
+
 import "./_login.scss";
 
 const LogIn = ({ children }) => {
@@ -19,11 +21,7 @@ const LogIn = ({ children }) => {
     return (
       <div className="login">
         <div className="login__inner">
-          <img
-            className="login__logo"
-            src="https://assets.ubuntu.com/v1/a559e2c5-jaas-black-orange-hz-hex.svg"
-            alt="JAAS logo"
-          ></img>
+          <img className="login__logo" src={logo} alt="JAAS logo"></img>
           <a
             className="p-button--positive"
             href={visitURL}

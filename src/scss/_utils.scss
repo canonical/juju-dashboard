@@ -1,14 +1,23 @@
-// Capitalise text
+// Capitalise every world of a string
 .u-capitalise {
   text-transform: capitalize;
 
+  // Capitalise only the first letter of a string
   &--first-letter::first-letter {
     text-transform: uppercase;
   }
 }
 
+// Overflow overrides
 .u-overflow {
   &--visible {
     overflow: visible;
+  }
+}
+
+// Display overrides
+.u-display {
+  &--flex {
+    display: flex;
   }
 }
