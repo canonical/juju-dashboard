@@ -193,6 +193,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 </div>
                 <span
                   className="table-list_error-message"
+                  title="missing required namenode and/or resourcemanager relation; waiting for machine"
                 >
                   missing required namenode and/or resourcemanager relation; waiting for machine
                 </span>
@@ -312,6 +313,7 @@ exports[`TableList displays all data from redux store 1`] = `
                 </div>
                 <span
                   className="table-list_error-message"
+                  title="elasticsearch service not running"
                 >
                   elasticsearch service not running
                 </span>
@@ -539,6 +541,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   </div>
                   <span
                     className="table-list_error-message"
+                    title="missing required namenode and/or resourcemanager relation; waiting for machine"
                   >
                     missing required namenode and/or resourcemanager relation; waiting for machine
                   </span>
@@ -717,6 +720,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   </div>
                   <span
                     className="table-list_error-message"
+                    title="elasticsearch service not running"
                   >
                     elasticsearch service not running
                   </span>
