@@ -29,8 +29,11 @@ class LocalMacaroonStore {
   setItem(service, macaroon) {
     return this.localStorage.setItem(service, macaroon);
   }
-  clear(service) {
+  removeItem(service) {
     return this.localStorage.removeItem(service);
+  }
+  clear() {
+    return this.localStorage.clear();
   }
 }
 
