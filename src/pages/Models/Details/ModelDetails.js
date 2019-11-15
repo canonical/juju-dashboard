@@ -151,7 +151,12 @@ const generateUnitRows = modelStatusData => {
           unitRows.push({
             columns: [
               {
-                content: generateEntityLink(subordinate.charm, "#", key, true)
+                content: generateEntityLink(
+                  subordinate.charm.replace("cs:", ""),
+                  "#",
+                  key,
+                  true
+                )
               },
               {
                 content: generateStatusIcon(
