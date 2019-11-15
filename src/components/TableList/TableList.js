@@ -50,8 +50,11 @@ const generateModelDetailsLink = (modelName, ownerTag, activeUser) => {
 */
 const generateWarningMessage = model => {
   const { messages } = getModelStatusGroupData(model);
+  const title = messages.join("; ");
   return (
-    <span className="table-list_error-message">{messages.join("; ")}</span>
+    <span className="table-list_error-message" title={title}>
+      {title}
+    </span>
   );
 };
 
