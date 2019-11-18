@@ -10,10 +10,7 @@
   z-index: z("lambda");
 
   &__inner {
-    align-content: center;
-    background-color: white;
     display: grid;
-    height: 150px;
     left: 50%;
     margin: auto;
     position: fixed;
@@ -21,13 +18,15 @@
     transform: translate(-50%, -50%);
     width: 280px;
 
-    .p-button--positive {
+    .p-button--positive,
+    .p-button--neutral {
       margin: 0 auto;
+      width: 100%;
     }
   }
 
   &__logo {
     display: block;
-    margin: 0 auto 2rem;
+    margin: 0 auto 1rem;
   }
 }
