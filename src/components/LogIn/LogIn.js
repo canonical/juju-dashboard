@@ -21,7 +21,7 @@ const generateButton = visitURL => {
   } else {
     return (
       <button className="p-button--neutral" disabled>
-        <i class="p-icon--spinner u-animation--spin"></i>Connecting...
+        <i className="p-icon--spinner u-animation--spin"></i>Connecting...
       </button>
     );
   }

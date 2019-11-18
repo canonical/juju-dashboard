@@ -35,7 +35,7 @@ describe("LogIn", () => {
       </Provider>
     );
     expect(wrapper.find(".p-button--positive").text()).toBe(
-      "Log in to view your models"
+      "Log in to the dashboard"
     );
     expect(wrapper.find("LogIn main").text()).toBe("App content");
     expect(wrapper).toMatchSnapshot();

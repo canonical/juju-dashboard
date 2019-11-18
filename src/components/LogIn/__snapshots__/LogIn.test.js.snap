@@ -29,6 +29,9 @@ exports[`LogIn renders a 'connecting' message while connecting 1`] = `
           className="p-button--neutral"
           disabled={true}
         >
+          <i
+            className="p-icon--spinner u-animation--spin"
+          />
           Connecting...
         </button>
       </div>
@@ -71,7 +74,7 @@ exports[`LogIn renders a login UI if the user is not logged in 1`] = `
           rel="noopener noreferrer"
           target="_blank"
         >
-          Log in to view your models
+          Log in to the dashboard
         </a>
       </div>
     </div>
