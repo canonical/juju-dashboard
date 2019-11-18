@@ -2163,7 +2163,7 @@ exports[`TableList displays all data from redux store 1`] = `
             className="status-icon is-running"
           >
             Running
-             (10)
+             (11)
           </span>,
           "sortKey": "running",
         },
@@ -2307,6 +2307,120 @@ exports[`TableList displays all data from redux store 1`] = `
             Object {
               "className": "u-align--right",
               "content": "2019-09-20",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <div>
+                  <ForwardRef
+                    to="/models/sub-test"
+                  >
+                    sub-test
+                  </ForwardRef>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                activedev
+              </a>,
+            },
+            Object {
+              "className": "u-overflow--visible",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      4
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                us-east1
+                /
+                google
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                juju
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
+              >
+                a030379a...
+              </a>,
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-11-12",
             },
           ],
         },
@@ -3361,7 +3475,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     className="status-icon is-running"
                   >
                     Running
-                     (10)
+                     (11)
                   </span>
                 </th>
               </TableHeader>
@@ -3613,6 +3727,179 @@ exports[`TableList displays all data from redux store 1`] = `
                 >
                   <div>
                     <Link
+                      to="/models/sub-test"
+                    >
+                      <LinkAnchor
+                        href="/models/sub-test"
+                        navigate={[Function]}
+                      >
+                        <a
+                          href="/models/sub-test"
+                          onClick={[Function]}
+                        >
+                          sub-test
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    activedev
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-overflow--visible"
+                key="2"
+              >
+                <td
+                  className="u-overflow--visible"
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        4
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    juju
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
+                  >
+                    a030379a...
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-11-12
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="2"
+          >
+            <tr
+              role="row"
+            >
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div>
+                    <Link
                       to="/models/spaceman@external/mymodel"
                     >
                       <LinkAnchor
@@ -3772,7 +4059,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="2"
+            key="3"
           >
             <tr
               role="row"
@@ -3945,7 +4232,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="3"
+            key="4"
           >
             <tr
               role="row"
@@ -4118,7 +4405,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="4"
+            key="5"
           >
             <tr
               role="row"
@@ -4291,7 +4578,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="5"
+            key="6"
           >
             <tr
               role="row"
@@ -4464,7 +4751,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="6"
+            key="7"
           >
             <tr
               role="row"
@@ -4637,7 +4924,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="7"
+            key="8"
           >
             <tr
               role="row"
@@ -4810,7 +5097,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="8"
+            key="9"
           >
             <tr
               role="row"
@@ -4983,7 +5270,7 @@ exports[`TableList displays all data from redux store 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="9"
+            key="10"
           >
             <tr
               role="row"

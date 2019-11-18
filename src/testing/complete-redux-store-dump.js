@@ -110,6 +110,13 @@ export default {
         type: 'iaas',
         uuid: 'e6782960-fb0b-460e-82a1-64ee03f9a39b'
       },
+      '84e872ff-9171-46be-829b-70f0f09cb18d': {
+        lastConnection: null,
+        name: 'sub-test',
+        ownerTag: 'user-activedev@external',
+        type: 'iaas',
+        uuid: '84e872ff-9171-46be-829b-70f0f09cb18d'
+      },
       '2446d278-7928-4c50-811b-563e79acd991': {
         lastConnection: null,
         name: 'test1',
@@ -1564,6 +1571,528 @@ export default {
             }
           ],
           agentVersion: '2.3.8'
+        }
+      },
+      '84e872ff-9171-46be-829b-70f0f09cb18d': {
+        applications: {
+          easyrsa: {
+            charm: 'cs:~containers/easyrsa-278',
+            series: 'bionic',
+            exposed: false,
+            life: '',
+            relations: {},
+            canUpgradeTo: '',
+            subordinateTo: [],
+            units: {
+              'easyrsa/0': {
+                agentStatus: {
+                  status: 'idle',
+                  info: '',
+                  data: {},
+                  since: '2019-11-14T16:38:42.074180277Z',
+                  kind: '',
+                  version: '2.6.10',
+                  life: ''
+                },
+                workloadStatus: {
+                  status: 'active',
+                  info: 'Certificate Authority ready.',
+                  data: {},
+                  since: '2019-11-14T16:38:37.241246008Z',
+                  kind: '',
+                  version: '',
+                  life: ''
+                },
+                workloadVersion: '3.0.1',
+                machine: '1',
+                openedPorts: [],
+                publicAddress: '35.229.83.62',
+                charm: '',
+                subordinates: {},
+                leader: true
+              }
+            },
+            meterStatuses: {},
+            status: {
+              status: 'active',
+              info: 'Certificate Authority ready.',
+              data: {},
+              since: '2019-11-14T16:38:37.241246008Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            workloadVersion: '3.0.1',
+            charmVerion: '7af705f',
+            endpointBindings: {
+              client: ''
+            },
+            publicAddress: ''
+          },
+          nrpe: {
+            charm: 'cs:nrpe-60',
+            series: 'bionic',
+            exposed: false,
+            life: '',
+            relations: {
+              'general-info': [
+                'ubuntu'
+              ]
+            },
+            canUpgradeTo: '',
+            subordinateTo: [
+              'ubuntu'
+            ],
+            units: {},
+            meterStatuses: {},
+            status: {
+              status: 'active',
+              info: 'ready',
+              data: {},
+              since: '2019-11-13T17:04:53.389764415Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            workloadVersion: '',
+            charmVerion: 'cs-nrpe-charmers-nrpe-27-62-g8cecde4',
+            endpointBindings: {
+              'general-info': '',
+              'local-monitors': '',
+              monitors: '',
+              nrpe: '',
+              'nrpe-external-master': ''
+            },
+            publicAddress: ''
+          },
+          telegraf: {
+            charm: 'cs:telegraf-29',
+            series: 'bionic',
+            exposed: false,
+            life: '',
+            relations: {
+              'juju-info': [
+                'ubuntu'
+              ]
+            },
+            canUpgradeTo: '',
+            subordinateTo: [
+              'ubuntu'
+            ],
+            units: {},
+            meterStatuses: {},
+            status: {
+              status: 'active',
+              info: 'Monitoring ubuntu/0',
+              data: {},
+              since: '2019-11-12T23:56:43.76306511Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            workloadVersion: '',
+            charmVerion: 'e58f7f4',
+            endpointBindings: {
+              amqp: '',
+              apache: '',
+              elasticsearch: '',
+              exec: '',
+              haproxy: '',
+              'influxdb-api': '',
+              'juju-info': '',
+              memcached: '',
+              mongodb: '',
+              mysql: '',
+              postgresql: '',
+              'prometheus-client': '',
+              'prometheus-rules': '',
+              redis: '',
+              sentry: ''
+            },
+            publicAddress: ''
+          },
+          ubuntu: {
+            charm: 'cs:ubuntu-12',
+            series: 'bionic',
+            exposed: false,
+            life: '',
+            relations: {
+              'juju-info': [
+                'nrpe',
+                'telegraf'
+              ]
+            },
+            canUpgradeTo: '',
+            subordinateTo: [],
+            units: {
+              'ubuntu/0': {
+                agentStatus: {
+                  status: 'idle',
+                  info: '',
+                  data: {},
+                  since: '2019-11-12T23:55:51.517470008Z',
+                  kind: '',
+                  version: '2.6.10',
+                  life: ''
+                },
+                workloadStatus: {
+                  status: 'active',
+                  info: 'ready',
+                  data: {},
+                  since: '2019-11-12T23:55:50.148650881Z',
+                  kind: '',
+                  version: '',
+                  life: ''
+                },
+                workloadVersion: '18.04',
+                machine: '0',
+                openedPorts: [],
+                publicAddress: '35.243.128.238',
+                charm: '',
+                subordinates: {
+                  'nrpe/0': {
+                    'agent-status': {
+                      status: 'idle',
+                      info: '',
+                      data: {},
+                      since: '2019-11-13T17:04:53.452289758Z',
+                      kind: '',
+                      version: '2.6.10',
+                      life: ''
+                    },
+                    'workload-status': {
+                      status: 'active',
+                      info: 'ready',
+                      data: {},
+                      since: '2019-11-13T17:04:53.389764415Z',
+                      kind: '',
+                      version: '',
+                      life: ''
+                    },
+                    'workload-version': '',
+                    machine: '',
+                    'opened-ports': [
+                      'icmp',
+                      '5666/tcp'
+                    ],
+                    'public-address': '35.243.128.238',
+                    charm: 'cs:nrpe-60',
+                    subordinates: null,
+                    leader: true
+                  },
+                  'telegraf/0': {
+                    'agent-status': {
+                      status: 'idle',
+                      info: '',
+                      data: {},
+                      since: '2019-11-12T23:56:52.679489445Z',
+                      kind: '',
+                      version: '2.6.10',
+                      life: ''
+                    },
+                    'workload-status': {
+                      status: 'active',
+                      info: 'Monitoring ubuntu/0',
+                      data: {},
+                      since: '2019-11-12T23:56:43.76306511Z',
+                      kind: '',
+                      version: '',
+                      life: ''
+                    },
+                    'workload-version': '',
+                    machine: '',
+                    'opened-ports': [
+                      '9103/tcp'
+                    ],
+                    'public-address': '35.243.128.238',
+                    charm: 'cs:telegraf-29',
+                    subordinates: null,
+                    leader: true
+                  }
+                },
+                leader: true
+              }
+            },
+            meterStatuses: {},
+            status: {
+              status: 'active',
+              info: 'ready',
+              data: {},
+              since: '2019-11-12T23:55:50.148650881Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            workloadVersion: '18.04',
+            charmVerion: '',
+            endpointBindings: {},
+            publicAddress: ''
+          }
+        },
+        machines: {
+          '0': {
+            agentStatus: {
+              status: 'started',
+              info: '',
+              data: {},
+              since: '2019-11-12T23:54:50.340907719Z',
+              kind: '',
+              version: '2.6.10',
+              life: ''
+            },
+            instanceStatus: {
+              status: 'running',
+              info: 'RUNNING',
+              data: {},
+              since: '2019-11-12T23:52:50.021261161Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            dnsName: '35.243.128.238',
+            ipAddresses: [
+              '35.243.128.238',
+              '10.142.0.17',
+              '252.1.16.1'
+            ],
+            instanceId: 'juju-9cb18d-0',
+            series: 'bionic',
+            id: '0',
+            networkInterfaces: {
+              ens4: {
+                ipAddresses: [
+                  '10.142.0.17'
+                ],
+                macAddress: '42:01:0a:8e:00:11',
+                gateway: '10.142.0.1',
+                dnsNameservers: [],
+                isUp: true
+              },
+              'fan-252': {
+                ipAddresses: [
+                  '252.1.16.1'
+                ],
+                macAddress: 'a2:a2:53:31:db:9a',
+                dnsNameservers: [],
+                isUp: true
+              }
+            },
+            containers: {},
+            constraints: '',
+            hardware: 'arch=amd64 cores=1 cpu-power=138 mem=1700M root-disk=10240M availability-zone=us-east1-b',
+            jobs: [
+              'JobHostUnits'
+            ],
+            hasVote: false,
+            wantsVote: false,
+            lxdProfiles: {}
+          },
+          '1': {
+            agentStatus: {
+              status: 'started',
+              info: '',
+              data: {},
+              since: '2019-11-14T16:37:22.404294662Z',
+              kind: '',
+              version: '2.6.10',
+              life: ''
+            },
+            instanceStatus: {
+              status: 'running',
+              info: 'RUNNING',
+              data: {},
+              since: '2019-11-14T16:36:04.680894233Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            dnsName: '35.229.83.62',
+            ipAddresses: [
+              '35.229.83.62',
+              '10.142.0.18',
+              '252.1.32.1'
+            ],
+            instanceId: 'juju-9cb18d-1',
+            series: 'bionic',
+            id: '1',
+            networkInterfaces: {
+              ens4: {
+                ipAddresses: [
+                  '10.142.0.18'
+                ],
+                macAddress: '42:01:0a:8e:00:12',
+                gateway: '10.142.0.1',
+                dnsNameservers: [],
+                isUp: true
+              },
+              'fan-252': {
+                ipAddresses: [
+                  '252.1.32.1'
+                ],
+                macAddress: 'ea:17:cc:17:52:fa',
+                dnsNameservers: [],
+                isUp: true
+              }
+            },
+            containers: {},
+            constraints: '',
+            hardware: 'arch=amd64 cores=1 cpu-power=138 mem=1700M root-disk=10240M availability-zone=us-east1-c',
+            jobs: [
+              'JobHostUnits'
+            ],
+            hasVote: false,
+            wantsVote: false,
+            lxdProfiles: {}
+          }
+        },
+        model: {
+          name: 'sub-test',
+          type: 'iaas',
+          cloudTag: 'cloud-google',
+          region: 'us-east1',
+          version: '2.6.10',
+          availableVersion: '',
+          modelStatus: {
+            status: 'available',
+            info: '',
+            data: {},
+            since: '2019-11-12T23:49:17.148832532Z',
+            kind: '',
+            version: '',
+            life: ''
+          },
+          meterStatus: {
+            color: '',
+            message: ''
+          },
+          sla: 'unsupported'
+        },
+        offers: {},
+        relations: [
+          {
+            id: 0,
+            key: 'telegraf:juju-info ubuntu:juju-info',
+            'interface': 'juju-info',
+            scope: 'container',
+            endpoints: [
+              {
+                application: 'ubuntu',
+                name: 'juju-info',
+                role: 'provider',
+                subordinate: false
+              },
+              {
+                application: 'telegraf',
+                name: 'juju-info',
+                role: 'requirer',
+                subordinate: true
+              }
+            ],
+            status: {
+              status: 'joined',
+              info: '',
+              data: {},
+              since: '2019-11-12T23:55:51.497768434Z',
+              kind: '',
+              version: '',
+              life: ''
+            }
+          },
+          {
+            id: 1,
+            key: 'nrpe:general-info ubuntu:juju-info',
+            'interface': 'juju-info',
+            scope: 'container',
+            endpoints: [
+              {
+                application: 'nrpe',
+                name: 'general-info',
+                role: 'requirer',
+                subordinate: true
+              },
+              {
+                application: 'ubuntu',
+                name: 'juju-info',
+                role: 'provider',
+                subordinate: false
+              }
+            ],
+            status: {
+              status: 'joined',
+              info: '',
+              data: {},
+              since: '2019-11-13T17:03:48.611651175Z',
+              kind: '',
+              version: '',
+              life: ''
+            }
+          }
+        ],
+        remoteApplications: {},
+        uuid: '84e872ff-9171-46be-829b-70f0f09cb18d',
+        info: {
+          name: 'sub-test',
+          type: 'iaas',
+          uuid: '84e872ff-9171-46be-829b-70f0f09cb18d',
+          controllerUuid: 'a030379a-940f-4760-8fcf-3062b41a04e7',
+          providerType: 'gce',
+          defaultSeries: 'bionic',
+          cloudTag: 'cloud-google',
+          cloudRegion: 'us-east1',
+          cloudCredentialTag: 'cloudcred-google_activedev@external_juju',
+          ownerTag: 'user-activedev@external',
+          life: 'alive',
+          status: {
+            status: 'available',
+            info: '',
+            data: {},
+            since: '2019-11-12T23:49:17.148Z'
+          },
+          users: [
+            {
+              user: 'user-activedev@external',
+              displayName: 'activedev',
+              lastConnection: '2019-11-15T18:31:36Z',
+              access: 'admin'
+            },
+            {
+              user: 'design-it@external',
+              displayName: '',
+              lastConnection: '2019-11-15T17:19:35Z',
+              access: 'read'
+            },
+          ],
+          machines: [
+            {
+              id: '0',
+              hardware: {
+                arch: 'amd64',
+                mem: 1700,
+                rootDisk: 10240,
+                cores: 1,
+                cpuPower: 138,
+                tags: [],
+                availabilityZone: 'us-east1-b'
+              },
+              instanceId: 'juju-9cb18d-0',
+              status: 'started'
+            },
+            {
+              id: '1',
+              hardware: {
+                arch: 'amd64',
+                mem: 1700,
+                rootDisk: 10240,
+                cores: 1,
+                cpuPower: 138,
+                tags: [],
+                availabilityZone: 'us-east1-c'
+              },
+              instanceId: 'juju-9cb18d-1',
+              status: 'started'
+            }
+          ],
+          agentVersion: '2.6.10'
         }
       },
       '2f995dee-392e-4459-8eb9-839c501590af': {
