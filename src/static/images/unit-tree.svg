@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="9px" height="9px" viewBox="0 0 9 9" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
-    <title>unit-tree</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Iteration-VII---2019.10.22" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="010---Dashboard---models-details-view-topoplogy-on-shell-open" transform="translate(-396.000000, -445.000000)" fill="#666666">
-            <g id="TABLE" transform="translate(368.000000, 295.000000)">
-                <g id="ROW" transform="translate(0.000000, 104.000000)">
-                    <g id="Tree" transform="translate(28.000000, 46.000000)">
-                        <path d="M0,9 L0,0 L1,0 L1,8 L9,8 L9,9 L0,9 Z" id="unit-tree"></path>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg width="9" height="9" xmlns="http://www.w3.org/2000/svg"><path d="M0 9V0h1v8h8v1H0z" fill="#666" fill-rule="evenodd"/></svg>
