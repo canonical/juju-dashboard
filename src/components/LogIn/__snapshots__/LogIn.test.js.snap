@@ -1,5 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`LogIn renders a 'connecting' message while connecting 1`] = `
+<Provider
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+>
+  <LogIn>
+    <div
+      className="login"
+    >
+      <div
+        className="login__inner"
+      >
+        <img
+          alt="JAAS logo"
+          className="login__logo"
+          src="logo-black-on-white.svg"
+        />
+        <a
+          className="p-button"
+          href="_#"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Connecting...
+        </a>
+      </div>
+    </div>
+    <main>
+      App content
+    </main>
+  </LogIn>
+</Provider>
+`;
+
 exports[`LogIn renders a login UI if the user is not logged in 1`] = `
 <Provider
   store={
@@ -27,6 +69,7 @@ exports[`LogIn renders a login UI if the user is not logged in 1`] = `
         />
         <a
           className="p-button--positive"
+          href="I am a url"
           rel="noopener noreferrer"
           target="_blank"
         >
@@ -34,25 +77,9 @@ exports[`LogIn renders a login UI if the user is not logged in 1`] = `
         </a>
       </div>
     </div>
-  </LogIn>
-</Provider>
-`;
-
-exports[`LogIn renders it's children if the user is logged in 1`] = `
-<Provider
-  store={
-    Object {
-      "clearActions": [Function],
-      "dispatch": [Function],
-      "getActions": [Function],
-      "getState": [Function],
-      "replaceReducer": [Function],
-      "subscribe": [Function],
-    }
-  }
->
-  <LogIn>
-    Hello world!
+    <main>
+      App content
+    </main>
   </LogIn>
 </Provider>
 `;
