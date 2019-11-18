@@ -54,9 +54,10 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
-const generateEntityLink = (namespace, href, name) => {
+const generateEntityLink = (namespace, href, name, subordinate) => {
   return (
     <>
+      {subordinate && <span className="subordinate"></span>}
       {namespace && (
         <img
           alt={name + " icon"}
@@ -80,7 +81,6 @@ const generateApplicationRows = modelStatusData => {
 
   return Object.keys(applications).map(key => {
     const app = applications[key];
-
     return {
       columns: [
         {
@@ -113,6 +113,7 @@ const generateUnitRows = modelStatusData => {
 
   const applications = modelStatusData.applications;
   const unitRows = [];
+
   Object.keys(applications).forEach(applicationName => {
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach(unitId => {
@@ -143,8 +144,44 @@ const generateUnitRows = modelStatusData => {
           { content: unit.workloadStatus.info }
         ]
       });
+
+      const subordinates = unit.subordinates;
+
+      if (subordinates) {
+        for (let [key] of Object.entries(subordinates)) {
+          const subordinate = subordinates[key];
+          unitRows.push({
+            columns: [
+              {
+                content: generateEntityLink(
+                  subordinate.charm.replace("cs:", ""),
+                  "#",
+                  key,
+                  true
+                )
+              },
+              {
+                content: generateStatusIcon(
+                  subordinate["workload-status"].status
+                ),
+                className: "u-capitalise"
+              },
+              { content: subordinate["agent-status"].status },
+              { content: subordinate.machine, className: "u-align--right" },
+              { content: subordinate["public-address"] },
+              {
+                content: subordinate["public-address"].split(":")[-1] || "-",
+                className: "u-align--right"
+              },
+              { content: subordinate["workload-status"].info }
+            ],
+            className: "subordinate-row"
+          });
+        }
+      }
     });
   });
+
   return unitRows;
 };
 

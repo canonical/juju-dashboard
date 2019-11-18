@@ -60,6 +60,21 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find("MainTable").at(2)).toMatchSnapshot();
   });
 
+  it("subordinate rows render correct amount", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/sub-test"]}>
+          <TestRoute path="/models/*">
+            <ModelDetails />
+          </TestRoute>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".subordinate")).toMatchSnapshot();
+    expect(wrapper.find(".subordinate").length).toEqual(2);
+  });
+
   it("renders the terminal", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(

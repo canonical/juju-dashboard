@@ -5056,3 +5056,14 @@ exports[`ModelDetail Container renders the terminal 1`] = `
   />
 </Terminal>
 `;
+
+exports[`ModelDetail Container subordinate rows render correct amount 1`] = `
+Array [
+  <span
+    className="subordinate"
+  />,
+  <span
+    className="subordinate"
+  />,
+]
+`;
