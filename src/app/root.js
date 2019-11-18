@@ -15,7 +15,7 @@ function rootReducer(state = {}, action) {
         draftState.visitURL = action.payload;
         break;
       case actionsList.logOut:
-        draftState.bakery = null;
+        delete draftState.bakery.storage._store.localStorage.identity;
         break;
       case actionsList.collapsibleSidebar:
         draftState.collapsibleSidebar = action.payload;
