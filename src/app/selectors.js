@@ -16,6 +16,18 @@ const getModelData = state => {
   return null;
 };
 
+/**
+  Fetches the bakery from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The bakery instance or null if none found.
+*/
+export const getBakery = state => {
+  if (state.root && state.root.bakery) {
+    return state.root.bakery;
+  }
+  return null;
+};
+
 // ---- Utility selectors
 
 /**
@@ -186,7 +198,9 @@ export const getMacaroons = createSelector(
   @returns {Boolean} If the user is logged in.
 */
 export const isLoggedIn = state =>
-  state.root.controllerConnection && state.root.bakery;
+  state.root.controllerConnection &&
+  state.root.bakery &&
+  state.root.bakery.storage._store.localStorage.identity;
 
 /**
   Returns the users current controller logged in identity

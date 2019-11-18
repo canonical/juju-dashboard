@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { logOut } from "app/actions";
+import { getBakery } from "app/selectors";
 
 import "./_user-icon.scss";
 
@@ -43,6 +44,8 @@ export default function User() {
     };
   }, []);
 
+  const bakery = useSelector(getBakery);
+
   return (
     <div
       className="user-icon"
@@ -64,7 +67,7 @@ export default function User() {
             <a href="#_">Help</a>
           </li>
           <li className="p-list__item">
-            <Link to="/" onClick={() => dispatch(logOut())}>
+            <Link to="/" onClick={() => dispatch(logOut(bakery))}>
               Log out
             </Link>
           </li>

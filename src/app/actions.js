@@ -41,7 +41,7 @@ export function storeVisitURL(visitURL) {
   };
 }
 
-export function clearUserData() {
+export function clearBakeryIdentity() {
   return {
     type: actionsList.logOut
   };
@@ -49,13 +49,13 @@ export function clearUserData() {
 
 // Thunks
 /**
-  Flush localStorage login keys
+  Flush bakery from redux store
 */
-export function logOut() {
+export function logOut(bakery) {
   return async function thunk(dispatch) {
-    localStorage.removeItem("identity");
-    localStorage.removeItem("https://api.jujucharms.com/identity");
-    dispatch(clearUserData());
+    bakery.storage._store.removeItem("identity");
+    bakery.storage._store.removeItem("https://api.jujucharms.com/identity");
+    dispatch(clearBakeryIdentity());
   };
 }
 

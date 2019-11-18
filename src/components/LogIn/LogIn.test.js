@@ -2,6 +2,7 @@ import React from "react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
+import dataDump from "testing/complete-redux-store-dump";
 
 import LogIn from "./LogIn";
 
@@ -25,10 +26,7 @@ describe("LogIn", () => {
 
   it("renders it's children if the user is logged in", () => {
     const store = mockStore({
-      root: {
-        controllerConnection: {},
-        bakery: {}
-      }
+      root: dataDump.root
     });
     const wrapper = mount(
       <Provider store={store}>
