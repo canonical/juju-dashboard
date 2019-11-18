@@ -44,7 +44,7 @@
       "enzyme-to-json/serializer"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(@canonical/juju-react-components)/)"
+      "node_modules/(?!(@canonical/react-components)/)"
     ]
   },
   "dependencies": {
