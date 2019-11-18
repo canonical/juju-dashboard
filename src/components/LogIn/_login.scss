@@ -1,25 +1,25 @@
 @import "../../scss/functions/z-index";
 
 .login {
-  position: fixed;
-  top: 0px;
-  left: 0px;
+  background-color: rgba(255, 255, 255, 0.5);
   height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
   width: 100vw;
   z-index: z("lambda");
-  background-color: rgba(255, 255, 255, 0.5);
 
   &__inner {
     align-content: center;
+    background-color: white;
     display: grid;
     height: 150px;
-    width: 280px;
-    background-color: white;
+    left: 50%;
+    margin: auto;
     position: fixed;
     top: 50%;
-    left: 50%;
     transform: translate(-50%, -50%);
-    margin: auto;
+    width: 280px;
 
     .p-button--positive {
       margin: 0 auto;
