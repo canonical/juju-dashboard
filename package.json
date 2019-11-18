@@ -48,7 +48,6 @@
     ]
   },
   "dependencies": {
-    "@canonical/juju-react-components": "^0.5.1",
     "@canonical/jujulib": "1.3.0",
     "@canonical/macaroon-bakery": "0.3.0",
     "@canonical/react-components": "0.2.1",
