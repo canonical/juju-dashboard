@@ -24,6 +24,7 @@
     "serve": "yarn run start",
     "start": "react-scripts start",
     "stylelint-check": "stylelint 'src/**/*.scss'",
+    "stylelint-fix": "stylelint --fix 'src/**/*.scss'",
     "test": "react-scripts test"
   },
   "browserslist": {
