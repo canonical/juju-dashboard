@@ -49,7 +49,7 @@ export function clearBakeryIdentity() {
 
 // Thunks
 /**
-  Flush localStorage login keys
+  Flush bakery from redux store
 */
 export function logOut(bakery) {
   return async function thunk(dispatch) {
