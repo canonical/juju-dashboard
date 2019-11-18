@@ -18,21 +18,19 @@ exports[`LogIn renders a 'connecting' message while connecting 1`] = `
       className="login"
     >
       <div
-        className="login__inner"
+        className="login__inner p-card--highlighted"
       >
         <img
           alt="JAAS logo"
           className="login__logo"
           src="logo-black-on-white.svg"
         />
-        <a
-          className="p-button"
-          href="_#"
-          rel="noopener noreferrer"
-          target="_blank"
+        <button
+          className="p-button--neutral"
+          disabled={true}
         >
           Connecting...
-        </a>
+        </button>
       </div>
     </div>
     <main>
@@ -60,7 +58,7 @@ exports[`LogIn renders a login UI if the user is not logged in 1`] = `
       className="login"
     >
       <div
-        className="login__inner"
+        className="login__inner p-card--highlighted"
       >
         <img
           alt="JAAS logo"
