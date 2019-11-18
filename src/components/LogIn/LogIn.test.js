@@ -2,7 +2,6 @@ import React from "react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import dataDump from "testing/complete-redux-store-dump";
 
 import LogIn from "./LogIn";
 

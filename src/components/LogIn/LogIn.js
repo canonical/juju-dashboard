@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { isLoggedIn, isConnecting } from "app/selectors";
+import Loader from "@canonical/react-components/dist/components/Loader";
 
 import logo from "static/images/logo/logo-black-on-white.svg";
 
@@ -21,7 +22,7 @@ const generateButton = visitURL => {
   } else {
     return (
       <button className="p-button--neutral" disabled>
-        <i className="p-icon--spinner u-animation--spin"></i>Connecting...
+        <Loader text="Connecting..." />
       </button>
     );
   }
