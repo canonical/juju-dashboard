@@ -15,13 +15,13 @@ const generateButton = visitURL => {
         rel="noopener noreferrer"
         target="_blank"
       >
-        Log in to view your models
+        Log in to the dashboard
       </a>
     );
   } else {
     return (
       <button className="p-button--neutral" disabled>
-        Connecting...
+        <i class="p-icon--spinner u-animation--spin"></i>Connecting...
       </button>
     );
   }

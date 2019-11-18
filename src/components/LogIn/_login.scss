@@ -1,7 +1,7 @@
 @import "../../scss/functions/z-index";
 
 .login {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.75);
   height: 100vh;
   left: 0;
   position: fixed;
@@ -23,10 +23,16 @@
       margin: 0 auto;
       width: 100%;
     }
+
+    .p-icon--spinner {
+      top: 4px;
+      margin-right: 8px;
+    }
   }
 
   &__logo {
     display: block;
     margin: 0 auto 1rem;
+    width: 110px;
   }
 }
