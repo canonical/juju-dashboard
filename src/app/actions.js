@@ -43,9 +43,22 @@ export function storeVisitURL(visitURL) {
   };
 }
 
+/**
+  Returns action for logging out.
+*/
 export function clearBakeryIdentity() {
   return {
     type: actionsList.logOut
+  };
+}
+
+/**
+  Toggle collapsible sidebar
+*/
+export function collapsibleSidebar(toggle) {
+  return {
+    type: actionsList.collapsibleSidebar,
+    payload: toggle
   };
 }
 
@@ -61,15 +74,5 @@ export function logOut(bakery) {
     // Clear the model data from the Juju store.
     dispatch(clearModelData());
     dispatch(clearModellist());
-  };
-}
-
-/**
-  Toggle collapsible sidebar
-*/
-export function collapsibleSidebar(toggle) {
-  return {
-    type: actionsList.collapsibleSidebar,
-    payload: toggle
   };
 }
