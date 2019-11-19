@@ -199,7 +199,7 @@ export const getMacaroons = createSelector(
 export const isLoggedIn = state =>
   state.root.controllerConnection &&
   state.root.bakery &&
-  state.root.bakery.storage._store.localStorage.identity;
+  state.root.bakery.storage._store.identity;
 
 export const isConnecting = state => !!state.root.visitURL;
 /**
