@@ -171,9 +171,8 @@ export const isSidebarCollapsible = state => {
   @returns {Function} The memoized selector to return a modelUUID.
 */
 export const getModelUUID = modelName => {
-  return createSelector(
-    getModelData,
-    modelData => getModelUUIDByName(modelName, modelData)
+  return createSelector(getModelData, modelData =>
+    getModelUUIDByName(modelName, modelData)
   );
 };
 
@@ -218,9 +217,8 @@ export const getActiveUserTag = state =>
   @returns {Function} The memoized selector to return the model status.
 */
 export const getModelStatus = modelUUID => {
-  return createSelector(
-    getModelData,
-    modelData => getModelDataByUUID(modelUUID, modelData)
+  return createSelector(getModelData, modelData =>
+    getModelDataByUUID(modelUUID, modelData)
   );
 };
 
