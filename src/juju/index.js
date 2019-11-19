@@ -5,6 +5,7 @@ import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 
+import { continueModelStatusPolling } from "app/selectors";
 import { updateModelInfo, updateModelStatus } from "./actions";
 
 // Shared bakery instance.
@@ -189,14 +190,24 @@ async function fetchModelInfo(conn, modelUUID) {
   @returns {Promise} Resolves when the queue fetching the model statuses has
     completed. Does not reject.
 */
-async function fetchAllModelStatuses(conn, modelList, dispatch) {
+async function fetchAllModelStatuses(conn, reduxStore) {
+  const modelList = reduxStore.getState().juju.models;
   const queue = new Limiter({ concurrency: 5 });
   const modelUUIDs = Object.keys(modelList);
   modelUUIDs.forEach(modelUUID => {
     queue.push(async done => {
-      await fetchAndStoreModelStatus(modelUUID, dispatch);
-      const modelInfo = await fetchModelInfo(conn, modelUUID);
-      dispatch(updateModelInfo(modelInfo));
+      // If we're not supposed to be polling then do not make the fetch requests.
+      if (continueModelStatusPolling(reduxStore.getState())) {
+        await fetchAndStoreModelStatus(modelUUID, reduxStore.dispatch);
+        const modelInfo = await fetchModelInfo(conn, modelUUID);
+        // We are checking this state again here because it's possible that the
+        // above fetch's got in before the polling was disabled but we don't
+        // want to store it if polling has been disabled as this could mean
+        // the user has logged out.
+        if (continueModelStatusPolling(reduxStore.getState())) {
+          reduxStore.dispatch(updateModelInfo(modelInfo));
+        }
+      }
       done();
     });
   });
