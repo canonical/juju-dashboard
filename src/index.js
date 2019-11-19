@@ -21,8 +21,10 @@ import { fetchModelList } from "./juju/actions";
 import {
   storeBakery,
   storeVisitURL,
-  updateControllerConnection
+  updateControllerConnection,
+  toggleModelStatusPolling
 } from "./app/actions";
+import { continueModelStatusPolling } from "./app/selectors";
 
 const reduxStore = createStore(
   combineReducers({
@@ -42,28 +44,22 @@ async function connectAndListModels(reduxStore) {
     reduxStore.dispatch(storeBakery(bakery));
     reduxStore.dispatch(updateControllerConnection(conn));
     // eslint-disable-next-line no-console
-    console.log("Fetching model list.");
-    await reduxStore.dispatch(fetchModelList());
-    // eslint-disable-next-line no-console
     console.log("Fetching model statuses");
-
-    let continuePolling = true;
-    while (continuePolling) {
-      await fetchAllModelStatuses(
-        conn,
-        reduxStore.getState().juju.models,
-        reduxStore.dispatch
-      );
+    // Enable continuous model status polling
+    reduxStore.dispatch(toggleModelStatusPolling(true));
+    do {
+      // Fetch the model list again as it may have changed.
+      // eslint-disable-next-line no-console
+      console.log("Fetching model list.");
+      await reduxStore.dispatch(fetchModelList());
+      await fetchAllModelStatuses(conn, reduxStore);
       // Wait 30s then start again.
-      continuePolling = await new Promise(resolve => {
+      await new Promise(resolve => {
         setTimeout(() => {
-          // XXX Add ability to toggle true to false to pause polling.
-          resolve(true);
+          resolve();
         }, 30000);
       });
-      // Fetch the model list again as it may have changed.
-      await reduxStore.dispatch(fetchModelList());
-    }
+    } while (continueModelStatusPolling(reduxStore.getState()));
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry.
