@@ -160,6 +160,13 @@ export const isSidebarCollapsible = state => {
   }
 };
 
+export const continueModelStatusPolling = state => {
+  if (state && state.root) {
+    return state.root.modelStatusPolling;
+  }
+  return null;
+};
+
 /**
   Gets the model UUID from the supplied name using a memoized selector
   Usage:
