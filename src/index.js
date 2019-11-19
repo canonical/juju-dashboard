@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
+import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 
 import "./scss/index.scss";
 
@@ -11,11 +12,7 @@ import App from "./components/App/App";
 import rootReducer from "./app/root";
 import * as serviceWorker from "./serviceWorker";
 
-import {
-  fetchAllModelStatuses,
-  loginWithBakery,
-  LocalMacaroonStore
-} from "./juju";
+import { fetchAllModelStatuses, loginWithBakery } from "./juju";
 import jujuReducers from "./juju/reducers";
 import { fetchModelList } from "./juju/actions";
 import {
@@ -32,14 +29,19 @@ const reduxStore = createStore(
   composeWithDevTools(applyMiddleware(thunk))
 );
 
-async function connectAndListModels(reduxStore) {
+const bakery = new Bakery({
+  visitPage: resp => {
+    reduxStore.dispatch(storeVisitURL(resp.Info.VisitURL));
+  },
+  storage: new BakeryStorage(localStorage, {})
+});
+reduxStore.dispatch(storeBakery(bakery));
+
+async function connectAndListModels(reduxStore, bakery) {
   try {
     // eslint-disable-next-line no-console
     console.log("Logging into the Juju controller.");
-    const { bakery, conn } = await loginWithBakery(resp => {
-      reduxStore.dispatch(storeVisitURL(resp.Info.VisitURL));
-    }, new LocalMacaroonStore());
-    reduxStore.dispatch(storeBakery(bakery));
+    const conn = await loginWithBakery(bakery);
     reduxStore.dispatch(updateControllerConnection(conn));
     // eslint-disable-next-line no-console
     console.log("Fetching model list.");
@@ -49,11 +51,7 @@ async function connectAndListModels(reduxStore) {
 
     let continuePolling = true;
     while (continuePolling) {
-      await fetchAllModelStatuses(
-        conn,
-        reduxStore.getState().juju.models,
-        reduxStore.dispatch
-      );
+      await fetchAllModelStatuses(conn, reduxStore);
       // Wait 30s then start again.
       continuePolling = await new Promise(resolve => {
         setTimeout(() => {
@@ -72,7 +70,7 @@ async function connectAndListModels(reduxStore) {
   }
 }
 
-connectAndListModels(reduxStore);
+connectAndListModels(reduxStore, bakery);
 
 const rootElement = document.getElementById("root");
 
