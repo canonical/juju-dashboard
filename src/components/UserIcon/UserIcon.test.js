@@ -31,7 +31,7 @@ describe("User Icon", () => {
       </Provider>
     );
 
-    const userIconPanel = ".user-icon__panel";
+    const userIconPanel = ".p-contextual-menu__dropdown";
     const userIconPanelToggle = ".p-icon--user";
 
     expect(wrapper.find(userIconPanel).hasClass("is-visible")).toEqual(false);
