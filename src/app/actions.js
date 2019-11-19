@@ -2,11 +2,12 @@ import { clearModelData, clearModellist } from "juju/actions";
 
 // Action labels
 export const actionsList = {
+  collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR",
+  logOut: "LOG_OUT",
+  modelStatusPolling: "MODEL_STATUS_POLLING",
   storeBakery: "STORE_BAKERY",
   storeVisitURL: "STORE_VISIT_URL",
-  updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
-  logOut: "LOG_OUT",
-  collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR"
+  updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION"
 };
 
 // Action creators
@@ -62,12 +63,24 @@ export function collapsibleSidebar(toggle) {
   };
 }
 
+/**
+  Toggles whether we should continue to poll the models or not.
+  @param {Boolean} enabled If it should continue to poll.
+*/
+export function toggleModelStatusPolling(enabled) {
+  return {
+    type: actionsList.modelStatusPolling,
+    payload: enabled
+  };
+}
+
 // Thunks
 /**
   Flush bakery from redux store
 */
 export function logOut(bakery) {
   return async function thunk(dispatch) {
+    dispatch(toggleModelStatusPolling(false));
     bakery.storage._store.removeItem("identity");
     bakery.storage._store.removeItem("https://api.jujucharms.com/identity");
     dispatch(clearBakeryIdentity());
