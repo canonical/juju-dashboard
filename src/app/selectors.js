@@ -202,6 +202,7 @@ export const isLoggedIn = state =>
   state.root.bakery &&
   state.root.bakery.storage._store.localStorage.identity;
 
+export const isConnecting = state => !!state.root.visitURL;
 /**
   Returns the users current controller logged in identity
   @param {Object} state The application state.

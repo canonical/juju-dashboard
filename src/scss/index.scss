@@ -18,6 +18,7 @@
 $grid-max-width: 100%;
 $color-navigation-background: $color-brand;
 
+@include vf-u-animations;
 @include vf-base;
 @include vf-p-buttons;
 @include vf-p-card;

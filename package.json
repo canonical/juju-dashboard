@@ -24,6 +24,7 @@
     "serve": "yarn run start",
     "start": "react-scripts start",
     "stylelint-check": "stylelint 'src/**/*.scss'",
+    "stylelint-fix": "stylelint --fix 'src/**/*.scss'",
     "test": "react-scripts test"
   },
   "browserslist": {
@@ -43,11 +44,10 @@
       "enzyme-to-json/serializer"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(@canonical/juju-react-components)/)"
+      "node_modules/(?!(@canonical/react-components)/)"
     ]
   },
   "dependencies": {
-    "@canonical/juju-react-components": "^0.5.1",
     "@canonical/jujulib": "1.3.0",
     "@canonical/macaroon-bakery": "0.3.0",
     "@canonical/react-components": "0.2.1",

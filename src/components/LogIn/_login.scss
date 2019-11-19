@@ -1,15 +1,37 @@
+@import "../../scss/functions/z-index";
+
 .login {
-  align-content: center;
-  display: grid;
+  background-color: rgba(255, 255, 255, 0.75);
   height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
   width: 100vw;
+  z-index: z("lambda");
 
   &__inner {
+    display: grid;
+    left: 50%;
     margin: auto;
+    position: fixed;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+
+    .p-button--positive,
+    .p-button--neutral {
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .p-icon--spinner {
+      top: -2px;
+    }
   }
 
   &__logo {
     display: block;
-    margin: 0 auto 2rem;
+    margin: 0 auto 1rem;
+    width: 110px;
   }
 }
