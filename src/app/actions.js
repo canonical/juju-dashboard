@@ -1,3 +1,5 @@
+import { clearModelData, clearModellist } from "juju/actions";
+
 // Action labels
 export const actionsList = {
   storeBakery: "STORE_BAKERY",
@@ -56,6 +58,9 @@ export function logOut(bakery) {
     bakery.storage._store.removeItem("identity");
     bakery.storage._store.removeItem("https://api.jujucharms.com/identity");
     dispatch(clearBakeryIdentity());
+    // Clear the model data from the Juju store.
+    dispatch(clearModelData());
+    dispatch(clearModellist());
   };
 }
 
