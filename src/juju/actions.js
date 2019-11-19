@@ -5,7 +5,9 @@ export const actionsList = {
   fetchModelList: "FETCH_MODEL_LIST",
   updateModelInfo: "UPDATE_MODEL_INFO",
   updateModelStatus: "UPDATE_MODEL_STATUS",
-  updateModelList: "UPDATE_MODEL_LIST"
+  updateModelList: "UPDATE_MODEL_LIST",
+  clearModelData: "CLEAR_MODEL_DATA",
+  clearModelList: "CLEAR_MODEL_LIST"
 };
 
 // Action creators
@@ -44,6 +46,24 @@ export function updateModelInfo(modelInfo) {
   return {
     type: actionsList.updateModelInfo,
     payload: modelInfo
+  };
+}
+
+/**
+  @returns {Object} An action for Redux.
+ */
+export function clearModelData() {
+  return {
+    type: actionsList.clearModelData
+  };
+}
+
+/**
+  @returns {Object} An action for Redux.
+ */
+export function clearModellist() {
+  return {
+    type: actionsList.clearModelList
   };
 }
 
