@@ -3,66 +3,21 @@ import jujulib from "@canonical/jujulib";
 import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
-import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 
+import { getBakery } from "app/selectors";
 import { updateModelInfo, updateModelStatus } from "./actions";
-
-// Shared bakery instance.
-let bakery = null;
 
 // Full URL path to the controller.
 const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
 
 /**
-  Localstorage store class for the bakery.
-  @param {Object} The options for this class:
-    localStorage: The local storage instance to use. Defaults to
-      window.localStorage for normal use or pass a stub for testing.
-*/
-class LocalMacaroonStore {
-  constructor({ localStorage } = {}) {
-    this.localStorage = localStorage || window.localStorage;
-  }
-  getItem(service) {
-    return this.localStorage.getItem(service);
-  }
-  setItem(service, macaroon) {
-    return this.localStorage.setItem(service, macaroon);
-  }
-  removeItem(service) {
-    return this.localStorage.removeItem(service);
-  }
-  clear() {
-    return this.localStorage.clear();
-  }
-}
-
-/**
-  Creates a new bakery instance
-  @param {Function} visitPage The function to call when the bakery returns with
-    a visit page URL.
-  @param {Object} macaroonStore Instance to handle the macaroon store. Defaults
-    to an in-memory store.
-  @returns {Bakery} A new bakery instance.
-*/
-function createNewBakery(visitPage, macaroonStore) {
-  const defaultVisitPage = resp => {
-    // eslint-disable-next-line no-console
-    console.log("visit this URL to login:", resp.Info.VisitURL);
-  };
-  return new Bakery({
-    visitPage: visitPage || defaultVisitPage,
-    storage: new BakeryStorage(macaroonStore, {})
-  });
-}
-
-/**
   Return a common connection option config.
   @param {Boolean} usePinger If the connection will be long lived then use the
     pinger. Defaults to false.
+  @param {Object} bakery A bakery instance.
   @returns {Object} The configuration options.
 */
-function generateConnectionOptions(usePinger = false) {
+function generateConnectionOptions(usePinger = false, bakery) {
   // The options used when connecting to a Juju controller or model.
   const facades = [client, modelManager];
   if (usePinger) {
@@ -78,19 +33,13 @@ function generateConnectionOptions(usePinger = false) {
 /**
   Connects to the controller at the url defined in the REACT_APP_CONTROLLER_URL
   environment variable.
-  @param {Function} visitPage The function to call if the user must visit a
-    visitPage URL to log in.
-  @param {Object} macaroonStore Instance to handle the macaroon store. Defaults
-    to an in-memory store.
+  @param {Object} bakery A bakery instance.
   @returns {Object} conn The controller connection instance.
 */
-async function loginWithBakery(visitPage, macaroonStore) {
-  if (bakery === null) {
-    bakery = createNewBakery(visitPage, macaroonStore);
-  }
+async function loginWithBakery(bakery) {
   const juju = await jujulib.connect(
     controllerURL,
-    generateConnectionOptions(true)
+    generateConnectionOptions(true, bakery)
   );
   const conn = await juju.login({});
   // Ping to keep the connection alive.
@@ -99,7 +48,7 @@ async function loginWithBakery(visitPage, macaroonStore) {
       console.error("unable to ping:", err);
     }
   });
-  return { bakery, conn };
+  return conn;
 }
 
 /**
@@ -131,15 +80,16 @@ async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
   fetches it's full status then logs out of the model and closes the connection.
   @param {String} modelUUID The UUID of the model to connect to. Must be on the
     same controller as provided by the controllerURL`.
+  @param {Object} bakery A bakery instance.
   @returns {Object} The full model status.
 */
-async function fetchModelStatus(modelUUID) {
+async function fetchModelStatus(modelUUID, bakery) {
   const modelURL = controllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status = null;
   try {
     const { conn, logout } = await connectAndLoginWithTimeout(
       modelURL,
-      generateConnectionOptions()
+      generateConnectionOptions(false, bakery)
     );
     status = await conn.facades.client.fullStatus();
     logout();
@@ -154,9 +104,10 @@ async function fetchModelStatus(modelUUID) {
   action to store it in the redux store.
   @param {String} modelUUID The model UUID to fetch the model status of.
   @param {Function} dispatch The redux store hook method.
+  @param {Object} bakery A bakery instance.
  */
-async function fetchAndStoreModelStatus(modelUUID, dispatch) {
-  const status = await fetchModelStatus(modelUUID);
+async function fetchAndStoreModelStatus(modelUUID, dispatch, bakery) {
+  const status = await fetchModelStatus(modelUUID, bakery);
   if (status === null) {
     return;
   }
@@ -182,19 +133,20 @@ async function fetchModelInfo(conn, modelUUID) {
   Loops through each model UUID to fetch the status. Uppon receiving the status
   dispatches to store that status data.
   @param {Object} conn The connection to the controller.
-  @param {Object} modelList The list of models where the key is the model's
-    UUID and the body is the models info.
-  @param {Function} dispatch The function to call with the action to store the
-    model status.
+  @param {Object} reduxStore The applications reduxStore.
   @returns {Promise} Resolves when the queue fetching the model statuses has
     completed. Does not reject.
 */
-async function fetchAllModelStatuses(conn, modelList, dispatch) {
+async function fetchAllModelStatuses(conn, reduxStore) {
+  const reduxState = reduxStore.getState();
+  const modelList = reduxState.juju.models;
+  const dispatch = reduxStore.dispatch;
+  const bakery = getBakery(reduxState);
   const queue = new Limiter({ concurrency: 5 });
   const modelUUIDs = Object.keys(modelList);
   modelUUIDs.forEach(modelUUID => {
     queue.push(async done => {
-      await fetchAndStoreModelStatus(modelUUID, dispatch);
+      await fetchAndStoreModelStatus(modelUUID, dispatch, bakery);
       const modelInfo = await fetchModelInfo(conn, modelUUID);
       dispatch(updateModelInfo(modelInfo));
       done();
@@ -207,9 +159,4 @@ async function fetchAllModelStatuses(conn, modelList, dispatch) {
   });
 }
 
-export {
-  fetchAllModelStatuses,
-  fetchAndStoreModelStatus,
-  LocalMacaroonStore,
-  loginWithBakery
-};
+export { fetchAllModelStatuses, fetchAndStoreModelStatus, loginWithBakery };
