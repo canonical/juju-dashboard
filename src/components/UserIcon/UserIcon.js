@@ -54,24 +54,25 @@ export default function User() {
     >
       <i className="p-icon--user">Account icon</i>
       <div
-        className={classNames("user-icon__panel p-card--highlighted", {
+        className={classNames("p-contextual-menu__dropdown", {
           "is-visible": userPanelVisibility
         })}
       >
-        <span className="user-icon__panel-arrow"></span>
-        <ul className="p-list">
-          <li className="p-list__item">
-            <a href="#_">Profile</a>
-          </li>
-          <li className="p-list__item">
-            <a href="#_">Help</a>
-          </li>
-          <li className="p-list__item">
-            <Link to="/" onClick={() => dispatch(logOut(bakery))}>
-              Log out
-            </Link>
-          </li>
-        </ul>
+        <span className="p-contextual-menu__group">
+          <a href="#_" className="p-contextual-menu__link">
+            Profile
+          </a>
+          <a href="#_" className="p-contextual-menu__link">
+            Help
+          </a>
+          <Link
+            className="p-contextual-menu__link"
+            to="/"
+            onClick={() => dispatch(logOut(bakery))}
+          >
+            Log out
+          </Link>
+        </span>
       </div>
     </div>
   );

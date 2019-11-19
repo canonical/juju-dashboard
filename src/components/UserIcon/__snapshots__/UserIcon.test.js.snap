@@ -11,54 +11,44 @@ exports[`User Icon renders without crashing and matches snapshot 1`] = `
     Account icon
   </i>
   <div
-    className="user-icon__panel p-card--highlighted"
+    className="p-contextual-menu__dropdown"
   >
     <span
-      className="user-icon__panel-arrow"
-    />
-    <ul
-      className="p-list"
+      className="p-contextual-menu__group"
     >
-      <li
-        className="p-list__item"
+      <a
+        className="p-contextual-menu__link"
+        href="#_"
       >
-        <a
-          href="#_"
-        >
-          Profile
-        </a>
-      </li>
-      <li
-        className="p-list__item"
+        Profile
+      </a>
+      <a
+        className="p-contextual-menu__link"
+        href="#_"
       >
-        <a
-          href="#_"
-        >
-          Help
-        </a>
-      </li>
-      <li
-        className="p-list__item"
+        Help
+      </a>
+      <Link
+        className="p-contextual-menu__link"
+        onClick={[Function]}
+        to="/"
       >
-        <Link
+        <LinkAnchor
+          className="p-contextual-menu__link"
+          href="/"
+          navigate={[Function]}
           onClick={[Function]}
-          to="/"
         >
-          <LinkAnchor
+          <a
+            className="p-contextual-menu__link"
             href="/"
-            navigate={[Function]}
             onClick={[Function]}
           >
-            <a
-              href="/"
-              onClick={[Function]}
-            >
-              Log out
-            </a>
-          </LinkAnchor>
-        </Link>
-      </li>
-    </ul>
+            Log out
+          </a>
+        </LinkAnchor>
+      </Link>
+    </span>
   </div>
 </div>
 `;

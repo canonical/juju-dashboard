@@ -6,37 +6,19 @@
   display: grid;
   margin-left: -1rem;
   position: relative;
-  text-align: center;
 
-  &__panel {
+  .p-contextual-menu__dropdown {
     @include vf-animation(opacity, brisk, ease-in-out);
 
-    min-width: 100px;
+    min-width: 6rem;
     opacity: 0;
-    overflow: visible;
-    padding: 0.25rem;
     position: absolute;
     right: 0.5rem;
     top: 2.5rem;
 
-    .p-list {
-      margin-bottom: 0;
-    }
-
     &.is-visible {
+      display: block;
       opacity: 1;
-      z-index: z("gamma");
-    }
-
-    &-arrow {
-      background: $color-x-light;
-      box-shadow: 3px 3px 6px -3px rgba(0, 0, 0, 0.2);
-      height: 1rem;
-      position: absolute;
-      right: 0.75rem;
-      top: -0.25rem;
-      transform: rotate(225deg);
-      width: 1rem;
       z-index: z("gamma");
     }
   }
