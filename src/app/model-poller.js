@@ -5,6 +5,7 @@ import {
   updateJujuAPIInstance,
   updatePingerIntervalId
 } from "app/actions";
+import { isLoggedIn } from "./selectors";
 
 export default async function connectAndListModels(reduxStore, bakery) {
   try {
@@ -14,25 +15,20 @@ export default async function connectAndListModels(reduxStore, bakery) {
     reduxStore.dispatch(updateControllerConnection(conn));
     reduxStore.dispatch(updateJujuAPIInstance(juju));
     reduxStore.dispatch(updatePingerIntervalId(intervalId));
-    // eslint-disable-next-line no-console
-    console.log("Fetching model list.");
-    await reduxStore.dispatch(fetchModelList());
-    // eslint-disable-next-line no-console
-    console.log("Fetching model statuses");
-
-    let continuePolling = true;
-    while (continuePolling) {
+    do {
+      // eslint-disable-next-line no-console
+      console.log("Fetching model list.");
+      await reduxStore.dispatch(fetchModelList());
+      // eslint-disable-next-line no-console
+      console.log("Fetching model statuses");
       await fetchAllModelStatuses(conn, reduxStore);
       // Wait 30s then start again.
-      continuePolling = await new Promise(resolve => {
+      await new Promise(resolve => {
         setTimeout(() => {
-          // XXX Add ability to toggle true to false to pause polling.
           resolve(true);
         }, 30000);
       });
-      // Fetch the model list again as it may have changed.
-      await reduxStore.dispatch(fetchModelList());
-    }
+    } while (isLoggedIn(reduxStore.getState()));
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry.
