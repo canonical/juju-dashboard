@@ -17,16 +17,17 @@ const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
   @param {Object} bakery A bakery instance.
   @returns {Object} The configuration options.
 */
-function generateConnectionOptions(usePinger = false, bakery) {
+function generateConnectionOptions(usePinger = false, bakery, onClose) {
   // The options used when connecting to a Juju controller or model.
   const facades = [client, modelManager];
   if (usePinger) {
     facades.push(pinger);
   }
   return {
+    bakery,
+    closeCallback: onClose,
     debug: false,
-    facades,
-    bakery
+    facades
   };
 }
 
@@ -34,21 +35,24 @@ function generateConnectionOptions(usePinger = false, bakery) {
   Connects to the controller at the url defined in the REACT_APP_CONTROLLER_URL
   environment variable.
   @param {Object} bakery A bakery instance.
-  @returns {Object} conn The controller connection instance.
+  @returns {Object}
+    conn The controller connection instance.
+    juju The juju api instance.
 */
 async function loginWithBakery(bakery) {
   const juju = await jujulib.connect(
     controllerURL,
-    generateConnectionOptions(true, bakery)
+    generateConnectionOptions(true, bakery, e =>
+      console.log("controller closed", e)
+    )
   );
   const conn = await juju.login({});
   // Ping to keep the connection alive.
-  conn.facades.pinger.pingForever(20000, err => {
-    if (err) {
-      console.error("unable to ping:", err);
-    }
-  });
-  return conn;
+  const intervalId = setInterval(() => {
+    conn.facades.pinger.ping();
+  }, 20000);
+
+  return { conn, juju, intervalId };
 }
 
 /**
