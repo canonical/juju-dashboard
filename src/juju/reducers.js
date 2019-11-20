@@ -2,8 +2,8 @@ import produce from "immer";
 
 import { actionsList } from "./actions";
 
-export default produce(
-  (draftState, action) => {
+export default function jujuReducer(state = {}, action) {
+  return produce(state, draftState => {
     const payload = action.payload;
     switch (action.type) {
       case actionsList.updateModelList:
@@ -21,6 +21,10 @@ export default produce(
         break;
       case actionsList.updateModelStatus:
         const modelUUID = payload.modelUUID;
+
+        if (!draftState.modelData) {
+          draftState.modelData = {};
+        }
 
         if (!draftState.modelData[modelUUID]) {
           draftState.modelData[modelUUID] = {};
@@ -46,6 +50,9 @@ export default produce(
         break;
       case actionsList.updateModelInfo:
         const modelInfo = payload.results[0].result;
+        if (!draftState.modelData) {
+          draftState.modelData = {};
+        }
         // There don't appear to be any irrelevent data in the modelInfo so
         // we overwrite the whole object every time it changes even though
         // mostly that'll just be status timestamps.
@@ -65,9 +72,5 @@ export default produce(
         // No default value, fall through.
         break;
     }
-  },
-  {
-    models: {},
-    modelData: {}
-  }
-);
+  });
+}
