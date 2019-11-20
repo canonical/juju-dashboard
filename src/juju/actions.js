@@ -11,43 +11,6 @@ export const actionsList = {
 };
 
 // Action creators
-/**
-  @param {Array} models The list of models to store.
-  @returns {Object} An action for Redux.
-*/
-export function updateModelList(models) {
-  return {
-    type: actionsList.updateModelList,
-    payload: models
-  };
-}
-
-/**
-  @param {String} modelUUID The modelUUID of the model to store the
-    status under.
-  @param {Object} status The status data as returned from the API.
-  @returns {Object} An action for Redux.
- */
-export function updateModelStatus(modelUUID, status) {
-  return {
-    type: actionsList.updateModelStatus,
-    payload: {
-      modelUUID,
-      status
-    }
-  };
-}
-
-/**
-  @param {Object} modelInfo The model info data as returned from the API.
-  @returns {Object} An action for Redux.
- */
-export function updateModelInfo(modelInfo) {
-  return {
-    type: actionsList.updateModelInfo,
-    payload: modelInfo
-  };
-}
 
 export function clearModelData() {
   return {
@@ -56,6 +19,53 @@ export function clearModelData() {
 }
 
 // Thunks
+
+/**
+  @param {Array} models The list of models to store.
+*/
+export function updateModelList(models) {
+  return function thunk(dispatch, getState) {
+    if (isLoggedIn(getState())) {
+      dispatch({
+        type: actionsList.updateModelList,
+        payload: models
+      });
+    }
+  };
+}
+
+/**
+  @param {String} modelUUID The modelUUID of the model to store the
+    status under.
+  @param {Object} status The status data as returned from the API.
+ */
+export function updateModelStatus(modelUUID, status) {
+  return function thunk(dispatch, getState) {
+    if (isLoggedIn(getState())) {
+      dispatch({
+        type: actionsList.updateModelStatus,
+        payload: {
+          modelUUID,
+          status
+        }
+      });
+    }
+  };
+}
+
+/**
+  @param {Object} modelInfo The model info data as returned from the API.
+ */
+export function updateModelInfo(modelInfo) {
+  return function thunk(dispatch, getState) {
+    if (isLoggedIn(getState())) {
+      dispatch({
+        type: actionsList.updateModelInfo,
+        payload: modelInfo
+      });
+    }
+  };
+}
 
 /**
   Fetches the model list from the supplied Juju controller. Requires that the
@@ -67,14 +77,10 @@ export function fetchModelList() {
     const state = getState();
     const conn = state.root.controllerConnection;
     const modelManager = conn.facades.modelManager;
-    const loggedIn = isLoggedIn(state);
-    let models = null;
     // Checks are made twice as it's possible that the user becomes logged out
     // after the request is made but before the data is returned.
-    if (loggedIn) {
-      models = await modelManager.listModels({ tag: conn.info.identity });
-    }
-    if (loggedIn) {
+    if (isLoggedIn(state)) {
+      const models = await modelManager.listModels({ tag: conn.info.identity });
       dispatch(updateModelList(models));
     }
   };
