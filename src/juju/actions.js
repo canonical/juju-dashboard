@@ -1,4 +1,5 @@
 import { fetchAndStoreModelStatus } from "juju";
+import { isLoggedIn } from "app/selectors";
 
 // Action labels
 export const actionsList = {
@@ -57,15 +58,25 @@ export function clearModelData() {
 // Thunks
 
 /**
-  Fetches the model list from the supplied Juju controller.
+  Fetches the model list from the supplied Juju controller. Requires that the
+  user is logged in to dispatch the retrieved data from listModels.
   @returns {Object} models The list of model objects under the key `userModels`.
 */
 export function fetchModelList() {
   return async function thunk(dispatch, getState) {
-    const conn = getState().root.controllerConnection;
+    const state = getState();
+    const conn = state.root.controllerConnection;
     const modelManager = conn.facades.modelManager;
-    const models = await modelManager.listModels({ tag: conn.info.identity });
-    dispatch(updateModelList(models));
+    const loggedIn = isLoggedIn(state);
+    let models = null;
+    // Checks are made twice as it's possible that the user becomes logged out
+    // after the request is made but before the data is returned.
+    if (loggedIn) {
+      models = await modelManager.listModels({ tag: conn.info.identity });
+    }
+    if (loggedIn) {
+      dispatch(updateModelList(models));
+    }
   };
 }
 
