@@ -28,6 +28,30 @@ export const getBakery = state => {
   return null;
 };
 
+/**
+  Fetches the juju api instance from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The juju api instance or null if none found.
+*/
+export const getJujuAPIInstance = state => {
+  if (state.root && state.root.juju) {
+    return state.root.juju;
+  }
+  return null;
+};
+
+/**
+  Fetches the pinger intervalId from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The pinger intervalId or null if none found.
+*/
+export const getPingerIntervalId = state => {
+  if (state.root && state.root.pingerIntervalId) {
+    return state.root.pingerIntervalId;
+  }
+  return null;
+};
+
 // ---- Utility selectors
 
 /**
@@ -38,7 +62,7 @@ export const getBakery = state => {
 const getUserCredentials = state => {
   let storedMacaroons = null;
   if (state.root && state.root.bakery) {
-    storedMacaroons = state.root.bakery.storage._store.localStorage;
+    storedMacaroons = state.root.bakery.storage._store;
   }
   return storedMacaroons;
 };
