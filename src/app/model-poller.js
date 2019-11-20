@@ -1,13 +1,19 @@
 import { fetchAllModelStatuses, loginWithBakery } from "juju";
 import { fetchModelList } from "juju/actions";
-import { updateControllerConnection } from "app/actions";
+import {
+  updateControllerConnection,
+  updateJujuAPIInstance,
+  updatePingerIntervalId
+} from "app/actions";
 
 export default async function connectAndListModels(reduxStore, bakery) {
   try {
     // eslint-disable-next-line no-console
     console.log("Logging into the Juju controller.");
-    const conn = await loginWithBakery(bakery);
+    const { conn, juju, intervalId } = await loginWithBakery(bakery);
     reduxStore.dispatch(updateControllerConnection(conn));
+    reduxStore.dispatch(updateJujuAPIInstance(juju));
+    reduxStore.dispatch(updatePingerIntervalId(intervalId));
     // eslint-disable-next-line no-console
     console.log("Fetching model list.");
     await reduxStore.dispatch(fetchModelList());

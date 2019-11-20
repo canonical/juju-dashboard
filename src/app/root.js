@@ -15,7 +15,13 @@ function rootReducer(state = {}, action) {
         draftState.visitURL = action.payload;
         break;
       case actionsList.logOut:
-        delete draftState.bakery.storage._store.localStorage.identity;
+        delete draftState.bakery.storage._store.identity;
+        break;
+      case actionsList.updateJujuAPIInstance:
+        draftState.juju = action.payload;
+        break;
+      case actionsList.updatePingerIntervalId:
+        draftState.pingerIntervalId = action.payload;
         break;
       case actionsList.collapsibleSidebar:
         draftState.collapsibleSidebar = action.payload;
