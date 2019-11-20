@@ -4,7 +4,7 @@ import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 
-import { getBakery } from "app/selectors";
+import { getBakery, isLoggedIn } from "app/selectors";
 import { updateModelInfo, updateModelStatus } from "./actions";
 
 // Full URL path to the controller.
@@ -39,7 +39,7 @@ function generateConnectionOptions(usePinger = false, bakery, onClose) {
     conn The controller connection instance.
     juju The juju api instance.
 */
-async function loginWithBakery(bakery) {
+export async function loginWithBakery(bakery) {
   const juju = await jujulib.connect(
     controllerURL,
     generateConnectionOptions(true, bakery, e =>
@@ -84,21 +84,28 @@ async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
   fetches it's full status then logs out of the model and closes the connection.
   @param {String} modelUUID The UUID of the model to connect to. Must be on the
     same controller as provided by the controllerURL`.
-  @param {Object} bakery A bakery instance.
+  @param {Object} getState A function that'll return the app redux state.
   @returns {Object} The full model status.
 */
-async function fetchModelStatus(modelUUID, bakery) {
+async function fetchModelStatus(modelUUID, getState) {
+  const bakery = getBakery(getState());
   const modelURL = controllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status = null;
-  try {
-    const { conn, logout } = await connectAndLoginWithTimeout(
-      modelURL,
-      generateConnectionOptions(false, bakery)
-    );
-    status = await conn.facades.client.fullStatus();
-    logout();
-  } catch (e) {
-    console.error("timeout, unable to log into model:", modelUUID);
+  // Logged in state is checked multiple times as the user may have logged out
+  // between requests.
+  if (isLoggedIn(getState())) {
+    try {
+      const { conn, logout } = await connectAndLoginWithTimeout(
+        modelURL,
+        generateConnectionOptions(false, bakery)
+      );
+      if (isLoggedIn(getState())) {
+        status = await conn.facades.client.fullStatus();
+      }
+      logout();
+    } catch (e) {
+      console.error("timeout, unable to log into model:", modelUUID);
+    }
   }
   return status;
 }
@@ -108,10 +115,10 @@ async function fetchModelStatus(modelUUID, bakery) {
   action to store it in the redux store.
   @param {String} modelUUID The model UUID to fetch the model status of.
   @param {Function} dispatch The redux store hook method.
-  @param {Object} bakery A bakery instance.
+  @param {Object} getState A function that'll return the app redux state.
  */
-async function fetchAndStoreModelStatus(modelUUID, dispatch, bakery) {
-  const status = await fetchModelStatus(modelUUID, bakery);
+export async function fetchAndStoreModelStatus(modelUUID, dispatch, getState) {
+  const status = await fetchModelStatus(modelUUID, getState);
   if (status === null) {
     return;
   }
@@ -141,18 +148,19 @@ async function fetchModelInfo(conn, modelUUID) {
   @returns {Promise} Resolves when the queue fetching the model statuses has
     completed. Does not reject.
 */
-async function fetchAllModelStatuses(conn, reduxStore) {
-  const reduxState = reduxStore.getState();
-  const modelList = reduxState.juju.models;
+export async function fetchAllModelStatuses(conn, reduxStore) {
+  const getState = reduxStore.getState;
+  const modelList = getState().juju.models;
   const dispatch = reduxStore.dispatch;
-  const bakery = getBakery(reduxState);
   const queue = new Limiter({ concurrency: 5 });
   const modelUUIDs = Object.keys(modelList);
   modelUUIDs.forEach(modelUUID => {
     queue.push(async done => {
-      await fetchAndStoreModelStatus(modelUUID, dispatch, bakery);
-      const modelInfo = await fetchModelInfo(conn, modelUUID);
-      dispatch(updateModelInfo(modelInfo));
+      await fetchAndStoreModelStatus(modelUUID, dispatch, getState);
+      if (isLoggedIn(getState())) {
+        const modelInfo = await fetchModelInfo(conn, modelUUID);
+        dispatch(updateModelInfo(modelInfo));
+      }
       done();
     });
   });
@@ -162,5 +170,3 @@ async function fetchAllModelStatuses(conn, reduxStore) {
     });
   });
 }
-
-export { fetchAllModelStatuses, fetchAndStoreModelStatus, loginWithBakery };

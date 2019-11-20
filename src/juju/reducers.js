@@ -1,5 +1,6 @@
 import produce from "immer";
 
+import { isLoggedIn } from "app/selectors";
 import { actionsList } from "./actions";
 
 export default function jujuReducer(state = {}, action) {
@@ -7,6 +8,9 @@ export default function jujuReducer(state = {}, action) {
     const payload = action.payload;
     switch (action.type) {
       case actionsList.updateModelList:
+        if (!isLoggedIn(state)) {
+          return;
+        }
         const modelList = {};
         action.payload.userModels.forEach(model => {
           modelList[model.model.uuid] = {
@@ -20,6 +24,9 @@ export default function jujuReducer(state = {}, action) {
         draftState.models = modelList;
         break;
       case actionsList.updateModelStatus:
+        if (!isLoggedIn(state)) {
+          return;
+        }
         const modelUUID = payload.modelUUID;
 
         if (!draftState.modelData) {
@@ -49,6 +56,9 @@ export default function jujuReducer(state = {}, action) {
         draftState.modelData[modelUUID].uuid = modelUUID;
         break;
       case actionsList.updateModelInfo:
+        if (!isLoggedIn(state)) {
+          return;
+        }
         const modelInfo = payload.results[0].result;
         if (!draftState.modelData) {
           draftState.modelData = {};

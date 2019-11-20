@@ -88,6 +88,6 @@ export function fetchModelStatus(modelUUID) {
       // by the polling loop.
       return;
     }
-    fetchAndStoreModelStatus(modelUUID, dispatch);
+    fetchAndStoreModelStatus(modelUUID, dispatch, getState);
   };
 }
