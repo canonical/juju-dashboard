@@ -158,6 +158,8 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
     queue.push(async done => {
       if (isLoggedIn(getState())) {
         await fetchAndStoreModelStatus(modelUUID, dispatch, getState);
+      }
+      if (isLoggedIn(getState())) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         dispatch(updateModelInfo(modelInfo));
       }
