@@ -156,8 +156,8 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
   const modelUUIDs = Object.keys(modelList);
   modelUUIDs.forEach(modelUUID => {
     queue.push(async done => {
-      await fetchAndStoreModelStatus(modelUUID, dispatch, getState);
       if (isLoggedIn(getState())) {
+        await fetchAndStoreModelStatus(modelUUID, dispatch, getState);
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         dispatch(updateModelInfo(modelInfo));
       }
