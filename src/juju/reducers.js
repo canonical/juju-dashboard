@@ -57,6 +57,10 @@ export default produce(
           draftState.modelData[modelInfo.uuid].info = modelInfo;
         }
         break;
+      case actionsList.clearModelData:
+        draftState.modelData = {};
+        draftState.models = {};
+        break;
       default:
         // No default value, fall through.
         break;

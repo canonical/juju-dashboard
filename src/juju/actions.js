@@ -2,6 +2,7 @@ import { fetchAndStoreModelStatus } from "juju";
 
 // Action labels
 export const actionsList = {
+  clearModelData: "CLEAR_MODEL_DATA",
   fetchModelList: "FETCH_MODEL_LIST",
   updateModelInfo: "UPDATE_MODEL_INFO",
   updateModelStatus: "UPDATE_MODEL_STATUS",
@@ -44,6 +45,12 @@ export function updateModelInfo(modelInfo) {
   return {
     type: actionsList.updateModelInfo,
     payload: modelInfo
+  };
+}
+
+export function clearModelData() {
+  return {
+    type: actionsList.clearModelData
   };
 }
 

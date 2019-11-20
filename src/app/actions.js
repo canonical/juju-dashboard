@@ -4,15 +4,17 @@ import {
   getPingerIntervalId
 } from "app/selectors";
 
+import { clearModelData } from "juju/actions";
+
 // Action labels
 export const actionsList = {
+  collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR",
+  logOut: "LOG_OUT",
   storeBakery: "STORE_BAKERY",
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
   updateJujuAPIInstance: "UPDATE_JUJU_API_INSTANCE",
-  updatePingerIntervalId: "UPDATE_PINGER_INTERVAL_ID",
-  logOut: "LOG_OUT",
-  collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR"
+  updatePingerIntervalId: "UPDATE_PINGER_INTERVAL_ID"
 };
 
 // Action creators
@@ -84,6 +86,7 @@ export function logOut(getState) {
     juju.logout();
     clearInterval(pingerIntervalId);
     dispatch(clearBakeryIdentity());
+    dispatch(clearModelData());
   };
 }
 
