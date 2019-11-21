@@ -201,11 +201,30 @@ const generateRelationRows = modelStatusData => {
   const relations = modelStatusData.relations;
   return Object.keys(relations).map(relationId => {
     const relation = relations[relationId];
+    const relationIconID =
+      relations[relationId].interface + "-" + relations[relationId].id;
     const { provider, requirer, peer } = extractRelationEndpoints(relation);
     return {
       columns: [
-        { content: provider || peer || "-" },
-        { content: requirer || "-" },
+        {
+          content: (
+            <>
+              <span>
+                <img
+                  src={`https://api.jujucharms.com/charmstore/v5/${relationIconID}/icon.svg`}
+                  width="25"
+                  height="25"
+                  alt=""
+                />
+              </span>
+              <span>{provider || peer || "-"}</span>
+            </>
+          )
+        },
+        {
+          content: requirer || "-",
+          title: requirer || "-"
+        },
         { content: relation.interface },
         { content: relation.endpoints[0].role },
         {
