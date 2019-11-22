@@ -98,7 +98,7 @@
     top: -3px;
   }
 
-  &.ext-nav-open {
+  .l-side:not(.is-collapsed) &.ext-nav-open {
     .is-external {
       max-height: 200px;
       padding-bottom: 0.5rem;
@@ -123,9 +123,4 @@
     text-align: center;
     width: 1.5rem;
   }
-}
-
-// Collapse external nav if user hovers off and sidebar collapses
-.is-collapsed .p-primary-nav ul.p-list.is-external {
-  max-height: 0;
 }
