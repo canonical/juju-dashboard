@@ -15,7 +15,7 @@ const actionWhitelist = [
   "TOGGLE_COLLAPSIBLE_SIDEBAR"
 ];
 
-const thunkWhitelist = [];
+const thunkWhitelist = ["logOut"];
 
 function error(name) {
   console.log("unable to perform action:", name, "user not authenticated");
