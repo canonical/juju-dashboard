@@ -1,5 +1,4 @@
 import { fetchAndStoreModelStatus } from "juju";
-import { isLoggedIn } from "app/selectors";
 
 // Action labels
 export const actionsList = {
@@ -25,12 +24,10 @@ export function clearModelData() {
 */
 export function updateModelList(models) {
   return function updateModelList(dispatch, getState) {
-    if (isLoggedIn(getState())) {
-      dispatch({
-        type: actionsList.updateModelList,
-        payload: models
-      });
-    }
+    dispatch({
+      type: actionsList.updateModelList,
+      payload: models
+    });
   };
 }
 
@@ -41,15 +38,13 @@ export function updateModelList(models) {
  */
 export function updateModelStatus(modelUUID, status) {
   return function updateModelStatus(dispatch, getState) {
-    if (isLoggedIn(getState())) {
-      dispatch({
-        type: actionsList.updateModelStatus,
-        payload: {
-          modelUUID,
-          status
-        }
-      });
-    }
+    dispatch({
+      type: actionsList.updateModelStatus,
+      payload: {
+        modelUUID,
+        status
+      }
+    });
   };
 }
 
@@ -58,12 +53,10 @@ export function updateModelStatus(modelUUID, status) {
  */
 export function updateModelInfo(modelInfo) {
   return function updateModelInfo(dispatch, getState) {
-    if (isLoggedIn(getState())) {
-      dispatch({
-        type: actionsList.updateModelInfo,
-        payload: modelInfo
-      });
-    }
+    dispatch({
+      type: actionsList.updateModelInfo,
+      payload: modelInfo
+    });
   };
 }
 
@@ -77,12 +70,8 @@ export function fetchModelList() {
     const state = getState();
     const conn = state.root.controllerConnection;
     const modelManager = conn.facades.modelManager;
-    // Checks are made twice as it's possible that the user becomes logged out
-    // after the request is made but before the data is returned.
-    if (isLoggedIn(state)) {
-      const models = await modelManager.listModels({ tag: conn.info.identity });
-      dispatch(updateModelList(models));
-    }
+    const models = await modelManager.listModels({ tag: conn.info.identity });
+    dispatch(updateModelList(models));
   };
 }
 
