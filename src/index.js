@@ -7,6 +7,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 
 import App from "components/App/App";
+import checkAuth from "app/check-auth";
 import rootReducer from "app/root";
 import { storeBakery, storeVisitURL } from "app/actions";
 import connectAndListModels from "app/model-poller";
@@ -22,7 +23,8 @@ const reduxStore = createStore(
     root: rootReducer,
     juju: jujuReducers
   }),
-  composeWithDevTools(applyMiddleware(thunk))
+  // Order of the middleware is important
+  composeWithDevTools(applyMiddleware(checkAuth, thunk))
 );
 
 const bakery = new Bakery({
