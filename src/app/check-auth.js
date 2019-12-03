@@ -4,7 +4,7 @@
 */
 import { isLoggedIn } from "app/selectors";
 
-const whitelist = [
+const actionWhitelist = [
   "STORE_BAKERY",
   "UPDATE_CONTROLLER_CONNECTION",
   "UPDATE_JUJU_API_INSTANCE",
@@ -15,18 +15,29 @@ const whitelist = [
   "TOGGLE_COLLAPSIBLE_SIDEBAR"
 ];
 
-export default ({ getState }) => next => action => {
-  if (whitelist.includes(action.type)) {
-    next(action);
-    return;
-  }
-  if (isLoggedIn(getState())) {
-    next(action);
+const thunkWhitelist = [];
+
+function error(name) {
+  console.log("unable to perform action:", name, "user not authenticated");
+}
+
+export default ({ getState }) => next => async action => {
+  const loggedIn = isLoggedIn(getState());
+  // If the action is a function then it's probably a thunk.
+  if (typeof action === "function") {
+    if (thunkWhitelist.includes(action.name) || loggedIn) {
+      // Await the next to support async thunks
+      await next(action);
+      return;
+    } else {
+      error(action.name);
+    }
   } else {
-    console.log(
-      "unable to perform action:",
-      action.type,
-      "user not authenticated"
-    );
+    if (actionWhitelist.includes(action.type) || loggedIn) {
+      next(action);
+      return;
+    } else {
+      error(action.type);
+    }
   }
 };
