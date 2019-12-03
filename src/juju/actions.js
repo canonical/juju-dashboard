@@ -24,7 +24,7 @@ export function clearModelData() {
   @param {Array} models The list of models to store.
 */
 export function updateModelList(models) {
-  return function thunk(dispatch, getState) {
+  return function updateModelList(dispatch, getState) {
     if (isLoggedIn(getState())) {
       dispatch({
         type: actionsList.updateModelList,
@@ -40,7 +40,7 @@ export function updateModelList(models) {
   @param {Object} status The status data as returned from the API.
  */
 export function updateModelStatus(modelUUID, status) {
-  return function thunk(dispatch, getState) {
+  return function updateModelStatus(dispatch, getState) {
     if (isLoggedIn(getState())) {
       dispatch({
         type: actionsList.updateModelStatus,
@@ -57,7 +57,7 @@ export function updateModelStatus(modelUUID, status) {
   @param {Object} modelInfo The model info data as returned from the API.
  */
 export function updateModelInfo(modelInfo) {
-  return function thunk(dispatch, getState) {
+  return function updateModelInfo(dispatch, getState) {
     if (isLoggedIn(getState())) {
       dispatch({
         type: actionsList.updateModelInfo,
@@ -73,7 +73,7 @@ export function updateModelInfo(modelInfo) {
   @returns {Object} models The list of model objects under the key `userModels`.
 */
 export function fetchModelList() {
-  return async function thunk(dispatch, getState) {
+  return async function fetchModelList(dispatch, getState) {
     const state = getState();
     const conn = state.root.controllerConnection;
     const modelManager = conn.facades.modelManager;
@@ -87,7 +87,7 @@ export function fetchModelList() {
 }
 
 export function fetchModelStatus(modelUUID) {
-  return async function thunk(dispatch, getState) {
+  return async function fetchModelStatus(dispatch, getState) {
     const jujuState = getState().juju;
     if (jujuState.modelStatuses && jujuState.modelStatuses[modelUUID]) {
       // It already exists, don't do anything as it'll be updated shortly

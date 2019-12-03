@@ -76,7 +76,7 @@ export function clearBakeryIdentity() {
   Flush bakery from redux store
 */
 export function logOut(getState) {
-  return async function thunk(dispatch) {
+  return async function logOut(dispatch) {
     const state = getState();
     const bakery = getBakery(state);
     const juju = getJujuAPIInstance(state);
