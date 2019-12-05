@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 
 import { logOut } from "app/actions";
-import { getBakery } from "app/selectors";
 
 import "./_user-icon.scss";
 
@@ -44,7 +43,7 @@ export default function User() {
     };
   }, []);
 
-  const bakery = useSelector(getBakery);
+  const getState = useStore().getState;
 
   return (
     <div
@@ -68,7 +67,7 @@ export default function User() {
           <Link
             className="p-contextual-menu__link"
             to="/"
-            onClick={() => dispatch(logOut(bakery))}
+            onClick={() => dispatch(logOut(getState))}
           >
             Log out
           </Link>

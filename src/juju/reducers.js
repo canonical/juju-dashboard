@@ -2,8 +2,13 @@ import produce from "immer";
 
 import { actionsList } from "./actions";
 
-export default produce(
-  (draftState, action) => {
+const defaultState = {
+  models: {},
+  modelData: {}
+};
+
+export default function jujuReducer(state = defaultState, action) {
+  return produce(state, draftState => {
     const payload = action.payload;
     switch (action.type) {
       case actionsList.updateModelList:
@@ -57,13 +62,13 @@ export default produce(
           draftState.modelData[modelInfo.uuid].info = modelInfo;
         }
         break;
+      case actionsList.clearModelData:
+        draftState.modelData = {};
+        draftState.models = {};
+        break;
       default:
         // No default value, fall through.
         break;
     }
-  },
-  {
-    models: {},
-    modelData: {}
-  }
-);
+  });
+}

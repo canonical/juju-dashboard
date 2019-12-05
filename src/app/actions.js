@@ -1,10 +1,20 @@
+import {
+  getBakery,
+  getJujuAPIInstance,
+  getPingerIntervalId
+} from "app/selectors";
+
+import { clearModelData } from "juju/actions";
+
 // Action labels
 export const actionsList = {
+  collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR",
+  logOut: "LOG_OUT",
   storeBakery: "STORE_BAKERY",
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
-  logOut: "LOG_OUT",
-  collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR"
+  updateJujuAPIInstance: "UPDATE_JUJU_API_INSTANCE",
+  updatePingerIntervalId: "UPDATE_PINGER_INTERVAL_ID"
 };
 
 // Action creators
@@ -30,6 +40,20 @@ export function updateControllerConnection(conn) {
   };
 }
 
+export function updateJujuAPIInstance(juju) {
+  return {
+    type: actionsList.updateJujuAPIInstance,
+    payload: juju
+  };
+}
+
+export function updatePingerIntervalId(intervalId) {
+  return {
+    type: actionsList.updatePingerIntervalId,
+    payload: intervalId
+  };
+}
+
 /**
   @param {String} visitURL The url the user needs to connect to to complete the
     bakery login.
@@ -51,11 +75,18 @@ export function clearBakeryIdentity() {
 /**
   Flush bakery from redux store
 */
-export function logOut(bakery) {
-  return async function thunk(dispatch) {
+export function logOut(getState) {
+  return async function logOut(dispatch) {
+    const state = getState();
+    const bakery = getBakery(state);
+    const juju = getJujuAPIInstance(state);
+    const pingerIntervalId = getPingerIntervalId(state);
     bakery.storage._store.removeItem("identity");
     bakery.storage._store.removeItem("https://api.jujucharms.com/identity");
+    juju.logout();
+    clearInterval(pingerIntervalId);
     dispatch(clearBakeryIdentity());
+    dispatch(clearModelData());
   };
 }
 
