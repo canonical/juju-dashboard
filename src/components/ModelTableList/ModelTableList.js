@@ -97,14 +97,17 @@ function generateModelTableData(groupedModels, activeUser) {
   Object.keys(groupedModels).forEach(groupLabel => {
     const models = groupedModels[groupLabel];
     models.forEach(model => {
+      let owner = "";
+      if (model.info) {
+        owner = model.info.ownerTag.split("@")[0].replace("user-", "");
+      }
       modelData[`${groupLabel}Rows`].push({
         columns: [
           { content: generateModelNameCell(model, groupLabel, activeUser) },
           {
             content: (
               <a href="#_" className="p-link--soft">
-                {model.info &&
-                  model.info.ownerTag.split("@")[0].replace("user-", "")}
+                {owner}
               </a>
             )
           },
