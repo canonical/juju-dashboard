@@ -215,28 +215,42 @@ const generateRelationRows = modelStatusData => {
   const relations = modelStatusData.relations;
   return Object.keys(relations).map(relationId => {
     const relation = relations[relationId];
-    const relationIconID =
-      relations[relationId].interface + "-" + relations[relationId].id;
-    const { provider, requirer, peer } = extractRelationEndpoints(relation);
+    const {
+      provider,
+      requirer,
+      peer,
+      providerApplicationName,
+      requirerApplicationName,
+      peerApplicationName
+    } = extractRelationEndpoints(relation);
+
     return {
       columns: [
         {
           content: (
             <>
               <span>
-                <img
-                  src={`https://api.jujucharms.com/charmstore/v5/${relationIconID}/icon.svg`}
-                  width="25"
-                  height="25"
-                  alt=""
-                />
+                {generateRelationIconImage(
+                  providerApplicationName || peerApplicationName,
+                  modelStatusData
+                )}
               </span>
               <span>{provider || peer || "-"}</span>
             </>
           )
         },
         {
-          content: requirer || "-",
+          content: (
+            <>
+              <span>
+                {generateRelationIconImage(
+                  requirerApplicationName,
+                  modelStatusData
+                )}
+              </span>
+              <span>{requirer || "-"}</span>
+            </>
+          ),
           title: requirer || "-"
         },
         { content: relation.interface },
