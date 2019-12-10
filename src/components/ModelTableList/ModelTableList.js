@@ -92,8 +92,10 @@ function generateModelTableData(groupedModels, activeUser) {
   const modelData = {
     blockedRows: [],
     alertRows: [],
-    runningRows: []
+    runningRows: [],
+    owners: []
   };
+
   Object.keys(groupedModels).forEach(groupLabel => {
     const models = groupedModels[groupLabel];
     models.forEach(model => {
@@ -101,6 +103,11 @@ function generateModelTableData(groupedModels, activeUser) {
       if (model.info) {
         owner = model.info.ownerTag.split("@")[0].replace("user-", "");
       }
+
+      if (!modelData.owners.includes(owner)) {
+        modelData.owners.push(owner);
+      }
+
       modelData[`${groupLabel}Rows`].push({
         columns: [
           { content: generateModelNameCell(model, groupLabel, activeUser) },
@@ -282,10 +289,12 @@ function ModelTableList({ groupedBy }) {
   // in the same order.
   const activeUser = useSelector(getActiveUserTag);
   const groupedModelData = useSelector(getGroupedModelData);
-  const { blockedRows, alertRows, runningRows } = generateModelTableData(
-    groupedModelData,
-    activeUser
-  );
+  const {
+    blockedRows,
+    alertRows,
+    runningRows,
+    owners
+  } = generateModelTableData(groupedModelData, activeUser);
 
   switch (groupedBy) {
     case "status":
@@ -309,15 +318,14 @@ function ModelTableList({ groupedBy }) {
         </>
       );
     case "owner":
-      return (
-        <>
-          <MainTable
-            className={"u-table-layout--auto"}
-            headers={generateTableHeaders("barry-mcgee", blockedRows.length)}
-            rows={blockedRows}
-          />
-        </>
-      );
+      return owners.map(owner => (
+        <MainTable
+          className={"u-table-layout--auto"}
+          headers={generateTableHeaders(owner, blockedRows.length)}
+          rows={blockedRows}
+          key={owner}
+        />
+      ));
     case "cloud":
       return (
         <>
