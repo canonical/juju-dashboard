@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import Layout from "components/Layout/Layout";
@@ -21,6 +21,7 @@ function pluralize(value, string) {
 
 export default function Models() {
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
+  const [groupedBy, setGroupedBy] = useState("status");
   const models = blocked + alert + running;
   return (
     <Layout>
@@ -35,14 +36,14 @@ export default function Models() {
               "alert"
             )}, ${running} running`}
           </div>
-          <ButtonToggle />
+          <ButtonToggle setGroupedBy={setGroupedBy} />
           <FilterTags />
           <UserIcon />
         </div>
       </Header>
       <div className="l-content">
         <div className="models">
-          <TableList />
+          <TableList groupedBy={groupedBy} />
         </div>
       </div>
     </Layout>
