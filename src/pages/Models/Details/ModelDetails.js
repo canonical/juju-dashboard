@@ -192,7 +192,9 @@ const generateUnitRows = modelStatusData => {
 const extractRelationEndpoints = relation => {
   const endpoints = {};
   relation.endpoints.forEach(endpoint => {
-    endpoints[endpoint.role] = endpoint.application + ":" + endpoint.name;
+    const role = endpoint.role;
+    endpoints[role] = endpoint.application + ":" + endpoint.name;
+    endpoints[`${role}ApplicationName`] = endpoint.application;
   });
   return endpoints;
 };
