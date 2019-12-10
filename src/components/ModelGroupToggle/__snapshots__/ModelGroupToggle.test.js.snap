@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Model group toggle renders without crashing and matches snapshot 1`] = `
+<div
+  className="p-model-group-toggle"
+>
+  <div
+    className="p-model-group-toggle__inner"
+  >
+    <span
+      className="p-model-group-toggle__label"
+    >
+      Group by:
+    </span>
+    <div
+      className="p-model-group-toggle__buttons"
+    >
+      <button
+        className="p-model-group-toggle__button is-selected"
+        onClick={[Function]}
+        value="status"
+      >
+        Status
+      </button>
+      <button
+        className="p-model-group-toggle__button"
+        onClick={[Function]}
+        value="cloud"
+      >
+        Cloud
+      </button>
+      <button
+        className="p-model-group-toggle__button"
+        onClick={[Function]}
+        value="owner"
+      >
+        Owner
+      </button>
+    </div>
+  </div>
+</div>
+`;
