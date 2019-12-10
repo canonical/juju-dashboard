@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
-import TableList from "components/TableList/TableList";
+import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonToggle from "components/ButtonToggle/ButtonToggle";
 import FilterTags from "components/FilterTags/FilterTags";
 import UserIcon from "components/UserIcon/UserIcon";
@@ -43,7 +43,7 @@ export default function Models() {
       </Header>
       <div className="l-content">
         <div className="models">
-          <TableList groupedBy={groupedBy} />
+          <ModelTableList groupedBy={groupedBy} />
         </div>
       </div>
     </Layout>

@@ -4,13 +4,13 @@ import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 
-import TableList from "./TableList";
+import ModelTableList from "./ModelTableList";
 
 import dataDump from "../../testing/complete-redux-store-dump";
 
 const mockStore = configureStore([]);
 
-describe("TableList", () => {
+describe("ModelTableList", () => {
   it("by default, renders with all table headers and no data", () => {
     const store = mockStore({
       root: {},
@@ -23,7 +23,7 @@ describe("TableList", () => {
     });
     const wrapper = mount(
       <Provider store={store}>
-        <TableList />
+        <ModelTableList />
       </Provider>
     );
     expect(wrapper.find("th")).toMatchSnapshot();
@@ -36,10 +36,10 @@ describe("TableList", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <TableList />
+          <ModelTableList />
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find(TableList)).toMatchSnapshot();
+    expect(wrapper.find(ModelTableList)).toMatchSnapshot();
   });
 });

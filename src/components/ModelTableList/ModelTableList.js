@@ -10,7 +10,7 @@ import {
 
 import { getActiveUserTag, getGroupedModelData } from "app/selectors";
 
-import "./_table-list.scss";
+import "./_model-table-list.scss";
 
 /**
   Generates the model details link for the table cell. If no ownerTag can be
@@ -52,7 +52,7 @@ const generateWarningMessage = model => {
   const { messages } = getModelStatusGroupData(model);
   const title = messages.join("; ");
   return (
-    <span className="table-list_error-message" title={title}>
+    <span className="model-table-list_error-message" title={title}>
       {title}
     </span>
   );
@@ -271,7 +271,7 @@ function generateTableHeaders(label, count) {
   ];
 }
 
-function TableList() {
+function ModelTableList() {
   // Even though the activeUser tag is needed many functions deep, because
   // hooks _must_ be called in the same order every time we have to get it here
   // and pass it down through the `generateModelTableData` function as the order
@@ -305,4 +305,4 @@ function TableList() {
   );
 }
 
-export default TableList;
+export default ModelTableList;

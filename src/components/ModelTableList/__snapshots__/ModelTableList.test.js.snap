@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TableList by default, renders with all table headers and no data 1`] = `
+exports[`ModelTableList by default, renders with all table headers and no data 1`] = `
 Array [
   <th
     role="columnheader"
@@ -128,7 +128,7 @@ Array [
 ]
 `;
 
-exports[`TableList by default, renders with all table headers and no data 2`] = `
+exports[`ModelTableList by default, renders with all table headers and no data 2`] = `
 Array [
   <tbody />,
   <tbody />,
@@ -136,8 +136,8 @@ Array [
 ]
 `;
 
-exports[`TableList displays all data from redux store 1`] = `
-<TableList>
+exports[`ModelTableList displays all data from redux store 1`] = `
+<ModelTableList>
   <MainTable
     className="u-table-layout--auto"
     headers={
@@ -192,7 +192,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   </ForwardRef>
                 </div>
                 <span
-                  className="table-list_error-message"
+                  className="model-table-list_error-message"
                   title="missing required namenode and/or resourcemanager relation; waiting for machine"
                 >
                   missing required namenode and/or resourcemanager relation; waiting for machine
@@ -312,7 +312,7 @@ exports[`TableList displays all data from redux store 1`] = `
                   </ForwardRef>
                 </div>
                 <span
-                  className="table-list_error-message"
+                  className="model-table-list_error-message"
                   title="elasticsearch service not running"
                 >
                   elasticsearch service not running
@@ -540,7 +540,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </Link>
                   </div>
                   <span
-                    className="table-list_error-message"
+                    className="model-table-list_error-message"
                     title="missing required namenode and/or resourcemanager relation; waiting for machine"
                   >
                     missing required namenode and/or resourcemanager relation; waiting for machine
@@ -719,7 +719,7 @@ exports[`TableList displays all data from redux store 1`] = `
                     </Link>
                   </div>
                   <span
-                    className="table-list_error-message"
+                    className="model-table-list_error-message"
                     title="elasticsearch service not running"
                   >
                     elasticsearch service not running
@@ -5446,5 +5446,5 @@ exports[`TableList displays all data from redux store 1`] = `
       </table>
     </Table>
   </MainTable>
-</TableList>
+</ModelTableList>
 `;
