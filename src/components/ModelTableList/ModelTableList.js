@@ -271,7 +271,7 @@ function generateTableHeaders(label, count) {
   ];
 }
 
-function ModelTableList() {
+function ModelTableList({ groupedBy }) {
   // Even though the activeUser tag is needed many functions deep, because
   // hooks _must_ be called in the same order every time we have to get it here
   // and pass it down through the `generateModelTableData` function as the order
@@ -284,25 +284,48 @@ function ModelTableList() {
     activeUser
   );
 
-  return (
-    <>
-      <MainTable
-        className={"u-table-layout--auto"}
-        headers={generateTableHeaders("Blocked", blockedRows.length)}
-        rows={blockedRows}
-      />
-      <MainTable
-        className={"u-table-layout--auto"}
-        headers={generateTableHeaders("Alert", alertRows.length)}
-        rows={alertRows}
-      />
-      <MainTable
-        className={"u-table-layout--auto"}
-        headers={generateTableHeaders("Running", runningRows.length)}
-        rows={runningRows}
-      />
-    </>
-  );
+  switch (groupedBy) {
+    case "status":
+      return (
+        <>
+          <MainTable
+            className={"u-table-layout--auto"}
+            headers={generateTableHeaders("Blocked", blockedRows.length)}
+            rows={blockedRows}
+          />
+          <MainTable
+            className={"u-table-layout--auto"}
+            headers={generateTableHeaders("Alert", alertRows.length)}
+            rows={alertRows}
+          />
+          <MainTable
+            className={"u-table-layout--auto"}
+            headers={generateTableHeaders("Running", runningRows.length)}
+            rows={runningRows}
+          />
+        </>
+      );
+    case "owner":
+      return (
+        <>
+          <MainTable
+            className={"u-table-layout--auto"}
+            headers={generateTableHeaders("barry-mcgee", blockedRows.length)}
+            rows={blockedRows}
+          />
+        </>
+      );
+    case "cloud":
+      return (
+        <>
+          <MainTable
+            className={"u-table-layout--auto"}
+            headers={generateTableHeaders("google", blockedRows.length)}
+            rows={blockedRows}
+          />
+        </>
+      );
+  }
 }
 
 export default ModelTableList;
