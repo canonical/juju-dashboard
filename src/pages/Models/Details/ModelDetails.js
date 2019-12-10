@@ -54,19 +54,23 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
+const generateIconImg = (name, namespace) => {
+  return (
+    <img
+      alt={name + " icon"}
+      width="24"
+      height="24"
+      className="entity-icon"
+      src={`https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`}
+    />
+  );
+};
+
 const generateEntityLink = (namespace, href, name, subordinate) => {
   return (
     <>
       {subordinate && <span className="subordinate"></span>}
-      {namespace && (
-        <img
-          alt={name + " icon"}
-          width="24"
-          height="24"
-          className="entity-icon"
-          src={`https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`}
-        />
-      )}
+      {namespace && generateIconImg(name, namespace)}
       <a href={href}>{name}</a>
     </>
   );
