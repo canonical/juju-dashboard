@@ -15,6 +15,8 @@ const actionWhitelist = [
   "TOGGLE_COLLAPSIBLE_SIDEBAR"
 ];
 
+// When updating this list be sure to update the mangle.reserved list in
+// craco.config.js so that the name doesn't get mangled by CRA.
 const thunkWhitelist = ["logOut"];
 
 function error(name) {
