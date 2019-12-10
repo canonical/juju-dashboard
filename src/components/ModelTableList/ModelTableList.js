@@ -26,7 +26,7 @@ const generateModelDetailsLink = (modelName, ownerTag, activeUser) => {
     return <Link to={modelDetailsPath}>{modelName}</Link>;
   }
   // Because we get some data at different times based on the multiple API calls
-  // we need to check for their existance and supply reasonable fallbacks if it
+  // we need to check for their existence and supply reasonable fallbacks if it
   // isn't available. Once we have a single API call for all the data this check
   // can be removed.
   if (!ownerTag) {
@@ -127,8 +127,8 @@ function generateModelTableData(groupedModels, activeUser) {
               </a>
             )
           },
-          // We're not currently able to get the controller name from the API.
-          // so display the controller UUID instead.
+          // We're not currently able to get the controller name from the API
+          // so, display the controller UUID instead.
           {
             content: (
               <a
