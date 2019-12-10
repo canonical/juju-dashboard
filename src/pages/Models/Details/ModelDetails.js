@@ -199,6 +199,14 @@ const extractRelationEndpoints = relation => {
   return endpoints;
 };
 
+const generateRelationIconImage = (applicationName, modelStatusData) => {
+  const application = modelStatusData.applications[applicationName];
+  if (!application || !applicationName) {
+    return;
+  }
+  return generateIconImg(applicationName, application.charm.replace("cs:", ""));
+};
+
 const generateRelationRows = modelStatusData => {
   if (!modelStatusData) {
     return [];
