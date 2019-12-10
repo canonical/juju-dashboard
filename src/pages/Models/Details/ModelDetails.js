@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -323,8 +323,6 @@ const ModelDetails = () => {
     modelUUID
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
-
-  const [groupBy, setGroupBy] = useState("status");
 
   useEffect(() => {
     dispatch(collapsibleSidebar(true));
