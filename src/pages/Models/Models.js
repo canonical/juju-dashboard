@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
-import ButtonToggle from "components/ModelGroupToggle/ModelGroupToggle";
+import ModelGroupToggle from "components/ModelGroupToggle/ModelGroupToggle";
 import FilterTags from "components/FilterTags/FilterTags";
 import UserIcon from "components/UserIcon/UserIcon";
 
@@ -36,7 +36,7 @@ export default function Models() {
               "alert"
             )}, ${running} running`}
           </div>
-          <ButtonToggle setGroupedBy={setGroupedBy} />
+          <ModelGroupToggle setGroupedBy={setGroupedBy} groupedBy={groupedBy} />
           <FilterTags />
           <UserIcon />
         </div>

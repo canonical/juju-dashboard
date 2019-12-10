@@ -16,7 +16,7 @@ exports[`Model group toggle renders without crashing and matches snapshot 1`] = 
       className="p-model-group-toggle__buttons"
     >
       <button
-        className="p-model-group-toggle__button is-selected"
+        className="p-model-group-toggle__button"
         onClick={[Function]}
         value="status"
       >
