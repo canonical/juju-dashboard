@@ -16,16 +16,16 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "react-scripts build",
+    "build": "craco build",
     "clean": "./scripts/clean-files",
     "eslint-check": "eslint src/",
     "lint": "yarn run eslint-check && yarn run prettier-check && yarn run stylelint-check",
     "prettier-check": "prettier --check 'src/**/*'",
     "serve": "yarn run start",
-    "start": "react-scripts start",
+    "start": "craco start",
     "stylelint-check": "stylelint 'src/**/*.scss'",
     "stylelint-fix": "stylelint --fix 'src/**/*.scss'",
-    "test": "react-scripts test"
+    "test": "craco test"
   },
   "browserslist": {
     "production": [
@@ -51,6 +51,7 @@
     "@canonical/jujulib": "1.3.0",
     "@canonical/macaroon-bakery": "0.3.0",
     "@canonical/react-components": "0.2.1",
+    "@craco/craco": "^5.6.2",
     "async-limiter": "^2.0.0",
     "classnames": "^2.2.6",
     "enzyme": "3.10.0",
