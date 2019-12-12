@@ -250,7 +250,7 @@ export const getModelStatus = modelUUID => {
   Returns the model statuses sorted by status.
   @returns {Function} The memoized selector to return the sorted model statuses.
 */
-export const getGroupedModelData = createSelector(
+export const getGroupedModelDataByStatus = createSelector(
   getModelData,
   groupModelsByStatus
 );
@@ -260,6 +260,6 @@ export const getGroupedModelData = createSelector(
   @returns {Function} The memoized selector to return the model status counts.
 */
 export const getGroupedModelStatusCounts = createSelector(
-  getGroupedModelData,
+  getGroupedModelDataByStatus,
   countModelStatusGroups
 );
