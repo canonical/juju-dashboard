@@ -429,6 +429,12 @@ function ModelTableList({ groupedBy }) {
           <p>@TODO: Group by cloud</p>
         </>
       );
+    default:
+      return (
+        <>
+          <p>Sorry, models can be displayed at this time.</p>
+        </>
+      );
   }
 }
 
