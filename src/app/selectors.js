@@ -1,6 +1,5 @@
 import { createSelector } from "reselect";
-
-import { getModelStatusGroupData } from "./utils";
+import { getModelStatusGroupData, stripOwnerTag } from "./utils";
 
 // ---- Selectors for top level keys
 
@@ -155,6 +154,24 @@ const groupModelsByStatus = modelData => {
 };
 
 /**
+  Returns a grouped collection of model statuses by owner.
+  @param {Object} modelData
+  @returns {Function} The grouped model statuses by owner.
+*/
+const groupModelsByOwner = modelData => {
+  const ownersGrouped = {};
+
+  Object.values(modelData).map(model => {
+    if (model.info) {
+      const owner = stripOwnerTag(model.info.ownerTag);
+      ownersGrouped[owner] = ownersGrouped[owner] || [];
+      ownersGrouped[owner].push(model);
+    }
+  });
+  return ownersGrouped;
+};
+
+/**
   Returns an object containing the grouped model status counts.
   @param {Object} groupedModelStatuses
   @returns {Function} The counts for each group of model statuses.
@@ -253,6 +270,15 @@ export const getModelStatus = modelUUID => {
 export const getGroupedModelDataByStatus = createSelector(
   getModelData,
   groupModelsByStatus
+);
+
+/**
+  Returns the model statuses sorted by status.
+  @returns {Function} The memoized selector to return the sorted model statuses.
+*/
+export const getGroupedModelDataByOwner = createSelector(
+  getModelData,
+  groupModelsByOwner
 );
 
 /**
