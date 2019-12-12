@@ -9,7 +9,11 @@ import {
   stripOwnerTag
 } from "app/utils";
 
-import { getActiveUserTag, getGroupedModelData } from "app/selectors";
+import {
+  getActiveUserTag,
+  getGroupedModelDataByStatus,
+  getGroupedModelDataByOwner
+} from "app/selectors";
 
 import "./_model-table-list.scss";
 
@@ -89,7 +93,7 @@ const generateModelNameCell = (model, groupLabel, activeUser) => {
     ex) user-foo@external
   @returns {Object} The formatted table data.
 */
-function generateModelTableData(groupedModels, activeUser) {
+function generateModelTableDataByStatus(groupedModels, activeUser) {
   const modelData = {
     blockedRows: [],
     alertRows: [],
@@ -104,11 +108,6 @@ function generateModelTableData(groupedModels, activeUser) {
       if (model.info) {
         owner = stripOwnerTag(model.info.ownerTag);
       }
-
-      if (!modelData.owners.includes(owner)) {
-        modelData.owners.push(owner);
-      }
-
       modelData[`${groupLabel}Rows`].push({
         columns: [
           { content: generateModelNameCell(model, groupLabel, activeUser) },
@@ -160,6 +159,21 @@ function generateModelTableData(groupedModels, activeUser) {
         ]
       });
     });
+  });
+
+  return modelData;
+}
+
+/**
+  Returns the model info and statuses in the proper format for the table data.
+  @param {Object} groupedModels The models grouped by state
+  @returns {Object} The formatted table data.
+*/
+function generateModelTableDataByOwner(groupedModels) {
+  const modelData = {};
+  Object.keys(groupedModels).forEach(owner => {
+    modelData[owner] = modelData[owner] || [];
+    modelData[owner].push(groupedModels[owner]);
   });
   return modelData;
 }
@@ -263,7 +277,7 @@ function getStatusValue(status, key) {
   @param {Number} count The number of elements in the status.
   @returns {Array} The headers for the table.
 */
-function generateTableHeaders(label, count) {
+function generateStatusTableHeaders(label, count) {
   return [
     {
       content: generateStatusIcon(label, count),
@@ -289,13 +303,14 @@ function ModelTableList({ groupedBy }) {
   // of the model data changes frequently and it's guaranteed to almost never be
   // in the same order.
   const activeUser = useSelector(getActiveUserTag);
-  const groupedModelData = useSelector(getGroupedModelData);
+  const groupedModelDataByStatus = useSelector(getGroupedModelDataByStatus);
+  const groupedModelDataByOwner = useSelector(getGroupedModelDataByOwner);
   const {
     blockedRows,
     alertRows,
-    runningRows,
-    owners
-  } = generateModelTableData(groupedModelData, activeUser);
+    runningRows
+  } = generateModelTableDataByStatus(groupedModelDataByStatus, activeUser);
+  const ownerRows = generateModelTableDataByOwner(groupedModelDataByOwner);
 
   switch (groupedBy) {
     case "status":
@@ -303,36 +318,95 @@ function ModelTableList({ groupedBy }) {
         <>
           <MainTable
             className={"u-table-layout--auto"}
-            headers={generateTableHeaders("Blocked", blockedRows.length)}
+            headers={generateStatusTableHeaders("Blocked", blockedRows.length)}
             rows={blockedRows}
           />
           <MainTable
             className={"u-table-layout--auto"}
-            headers={generateTableHeaders("Alert", alertRows.length)}
+            headers={generateStatusTableHeaders("Alert", alertRows.length)}
             rows={alertRows}
           />
           <MainTable
             className={"u-table-layout--auto"}
-            headers={generateTableHeaders("Running", runningRows.length)}
+            headers={generateStatusTableHeaders("Running", runningRows.length)}
             rows={runningRows}
           />
         </>
       );
     case "owner":
-      return owners.map(owner => (
-        <MainTable
-          className={"u-table-layout--auto"}
-          headers={generateTableHeaders(owner, blockedRows.length)}
-          rows={blockedRows}
-          key={owner}
-        />
-      ));
+      let ownerTables = [];
+      let ownerModels = {};
+      for (const owner in ownerRows) {
+        Object.values(ownerRows[owner]).map(modelGroup => {
+          ownerModels.count = modelGroup.length;
+          ownerModels.rows = ownerModels.rows || [];
+          modelGroup.map(model => {
+            console.log(model);
+            ownerModels.rows.push({
+              columns: [
+                { content: model.info.name },
+                { content: model.info.status.status },
+                {
+                  content: getStatusValue(model, "summary"),
+                  className: "u-overflow--visible"
+                },
+                {
+                  content: (
+                    <a href="#_" className="p-link--soft">
+                      {getStatusValue(model, "region")}/
+                      {getStatusValue(model, "cloudTag")}
+                    </a>
+                  )
+                },
+                {
+                  content: (
+                    <a href="#_" className="p-link--soft">
+                      {getStatusValue(model.info, "cloudCredentialTag")}
+                    </a>
+                  )
+                },
+                // We're not currently able to get the controller name from the API
+                // so, display the controller UUID instead.
+                {
+                  content: (
+                    <a
+                      href="#_"
+                      className="p-link--soft"
+                      title={getStatusValue(model.info, "controllerUuid")}
+                    >
+                      {getStatusValue(model.info, "controllerUuid").split(
+                        "-"
+                      )[0] + "..."}
+                    </a>
+                  )
+                },
+                // We're not currently able to get a last-accessed or updated from JAAS.
+                {
+                  content: getStatusValue(model.info, "status.since"),
+                  className: "u-align--right"
+                }
+              ]
+            });
+          });
+        });
+
+        ownerTables.push(
+          <MainTable
+            className={"u-table-layout--auto"}
+            key={owner}
+            headers={generateStatusTableHeaders(owner, ownerModels.count)}
+            rows={ownerModels.rows}
+          />
+        );
+      }
+      return ownerTables;
+
     case "cloud":
       return (
         <>
           <MainTable
             className={"u-table-layout--auto"}
-            headers={generateTableHeaders("google", blockedRows.length)}
+            headers={generateStatusTableHeaders("google", blockedRows.length)}
             rows={blockedRows}
           />
         </>
