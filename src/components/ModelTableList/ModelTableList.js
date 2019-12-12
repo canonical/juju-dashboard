@@ -296,6 +296,31 @@ function generateStatusTableHeaders(label, count) {
   ];
 }
 
+/**
+  Generates the table headers owner grouped table
+  @param {String} label The title of the table.
+  @param {Number} count The number of elements in the status.
+  @returns {Array} The headers for the table.
+*/
+function generateOwnerTableHeaders(owner, count) {
+  return [
+    {
+      content: generateStatusIcon(owner, count, false),
+      sortKey: owner.toLowerCase()
+    },
+    { content: "Status", sortKey: "statusˇ" },
+    { content: "Configuration", sortKey: "summary" },
+    { content: "Cloud/Region", sortKey: "cloud" },
+    { content: "Credential", sortKey: "credential" },
+    { content: "Controller", sortKey: "controller" },
+    {
+      content: "Last Updated",
+      sortKey: "last-updated",
+      className: "u-align--right"
+    }
+  ];
+}
+
 function ModelTableList({ groupedBy }) {
   // Even though the activeUser tag is needed many functions deep, because
   // hooks _must_ be called in the same order every time we have to get it here
@@ -394,7 +419,7 @@ function ModelTableList({ groupedBy }) {
           <MainTable
             className={"u-table-layout--auto"}
             key={owner}
-            headers={generateStatusTableHeaders(owner, ownerModels.count)}
+            headers={generateOwnerTableHeaders(owner, ownerModels.count)}
             rows={ownerModels.rows}
           />
         );
