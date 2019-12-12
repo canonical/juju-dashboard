@@ -363,7 +363,6 @@ function ModelTableList({ groupedBy }) {
       let ownerModels = {};
       for (const owner in ownerRows) {
         Object.values(ownerRows[owner]).map(modelGroup => {
-          ownerModels.count = modelGroup.length;
           ownerModels.rows = ownerModels.rows || [];
           modelGroup.map(model => {
             console.log(model);
@@ -419,7 +418,7 @@ function ModelTableList({ groupedBy }) {
           <MainTable
             className={"u-table-layout--auto"}
             key={owner}
-            headers={generateOwnerTableHeaders(owner, ownerModels.count)}
+            headers={generateOwnerTableHeaders(owner, ownerModels.rows.length)}
             rows={ownerModels.rows}
           />
         );
