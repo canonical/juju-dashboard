@@ -428,11 +428,7 @@ function ModelTableList({ groupedBy }) {
     case "cloud":
       return (
         <>
-          <MainTable
-            className={"u-table-layout--auto"}
-            headers={generateStatusTableHeaders("google", blockedRows.length)}
-            rows={blockedRows}
-          />
+          <p>@TODO: Group by cloud</p>
         </>
       );
   }
