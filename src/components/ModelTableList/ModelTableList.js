@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 import {
   generateStatusIcon,
   generateSpanClass,
-  getModelStatusGroupData
+  getModelStatusGroupData,
+  stripOwnerTag
 } from "app/utils";
 
 import { getActiveUserTag, getGroupedModelData } from "app/selectors";
@@ -101,7 +102,7 @@ function generateModelTableData(groupedModels, activeUser) {
     models.forEach(model => {
       let owner = "";
       if (model.info) {
-        owner = model.info.ownerTag.split("@")[0].replace("user-", "");
+        owner = stripOwnerTag(model.info.ownerTag);
       }
 
       if (!modelData.owners.includes(owner)) {
