@@ -365,7 +365,6 @@ function ModelTableList({ groupedBy }) {
         Object.values(ownerRows[owner]).map(modelGroup => {
           ownerModels.rows = ownerModels.rows || [];
           modelGroup.map(model => {
-            console.log(model);
             ownerModels.rows.push({
               columns: [
                 { content: model.info.name },
