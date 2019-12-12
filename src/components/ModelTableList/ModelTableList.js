@@ -97,8 +97,7 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
   const modelData = {
     blockedRows: [],
     alertRows: [],
-    runningRows: [],
-    owners: []
+    runningRows: []
   };
 
   Object.keys(groupedModels).forEach(groupLabel => {
@@ -363,12 +362,12 @@ function ModelTableList({ groupedBy }) {
       let ownerModels = {};
       for (const owner in ownerRows) {
         Object.values(ownerRows[owner]).map(modelGroup => {
-          ownerModels.rows = ownerModels.rows || [];
+          ownerModels.rows = [];
           modelGroup.map(model => {
             ownerModels.rows.push({
               columns: [
                 { content: model.info.name },
-                { content: model.info.status.status },
+                { content: owner },
                 {
                   content: getStatusValue(model, "summary"),
                   className: "u-overflow--visible"
