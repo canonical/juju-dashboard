@@ -367,7 +367,7 @@ function ModelTableList({ groupedBy }) {
             ownerModels.rows.push({
               columns: [
                 { content: model.info.name },
-                { content: owner },
+                { content: model.info.status.status },
                 {
                   content: getStatusValue(model, "summary"),
                   className: "u-overflow--visible"
