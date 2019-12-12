@@ -31,12 +31,12 @@ describe("ModelTableList", () => {
     expect(wrapper.find("tbody")).toMatchSnapshot();
   });
 
-  it("displays all data from redux store", () => {
+  it("displays all data from redux store when grouping by status", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <ModelTableList />
+          <ModelTableList groupedBy="status" />
         </Provider>
       </MemoryRouter>
     );
