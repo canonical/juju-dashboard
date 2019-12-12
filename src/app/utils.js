@@ -1,13 +1,14 @@
 import React from "react";
 
-export const generateStatusIcon = (status, count) => {
+export const generateStatusIcon = (status, count, useIcon = true) => {
   let statusClass = status ? `is-${status.toLowerCase()}` : "";
   let countValue = "";
   if (count !== undefined) {
     countValue = ` (${count})`;
   }
+  const className = useIcon ? "status-icon " + statusClass : "";
   return (
-    <span className={"status-icon " + statusClass}>
+    <span className={className}>
       {status}
       {countValue}
     </span>
