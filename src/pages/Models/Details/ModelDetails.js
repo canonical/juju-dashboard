@@ -162,7 +162,8 @@ const generateUnitRows = modelStatusData => {
                   "#",
                   key,
                   true
-                )
+                ),
+                className: "u-display--flex"
               },
               {
                 content: generateStatusIcon(
@@ -177,7 +178,10 @@ const generateUnitRows = modelStatusData => {
                 content: subordinate["public-address"].split(":")[-1] || "-",
                 className: "u-align--right"
               },
-              { content: subordinate["workload-status"].info }
+              {
+                content: subordinate["workload-status"].info,
+                className: "model-details__truncate-cell"
+              }
             ],
             className: "subordinate-row"
           });
