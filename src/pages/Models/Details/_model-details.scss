@@ -42,9 +42,14 @@
     grid-template-columns: 15% 15% 9% 11% 17.5% 5% 30%;
   }
 
-  .model-details__machines tr,
-  .model-details__relations tr {
+  .model-details__machines tr {
     grid-template-columns: 30% 9% 11% 22.5% 27.5%;
+  }
+
+  .model-details__relations {
+    tr {
+      grid-template-columns: 30% 30% 15% 9% 16%;
+    }
   }
 
   &__truncate-cell {

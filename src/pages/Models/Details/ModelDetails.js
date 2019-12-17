@@ -229,29 +229,27 @@ const generateRelationRows = modelStatusData => {
         {
           content: (
             <>
-              <span>
-                {generateRelationIconImage(
-                  providerApplicationName || peerApplicationName,
-                  modelStatusData
-                )}
-              </span>
-              <span>{provider || peer || "-"}</span>
+              {generateRelationIconImage(
+                providerApplicationName || peerApplicationName,
+                modelStatusData
+              )}
+              {provider || peer || "-"}
             </>
-          )
+          ),
+          className: "u-display--flex"
         },
         {
           content: (
             <>
-              <span>
-                {generateRelationIconImage(
-                  requirerApplicationName,
-                  modelStatusData
-                )}
-              </span>
-              <span>{requirer || "-"}</span>
+              {generateRelationIconImage(
+                requirerApplicationName,
+                modelStatusData
+              )}
+              {requirer || "-"}
             </>
           ),
-          title: requirer || "-"
+          title: requirer || "-",
+          className: "u-display--flex"
         },
         { content: relation.interface },
         { content: relation.endpoints[0].role },
