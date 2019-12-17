@@ -1926,10 +1926,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubernetes-master:kube-control",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-master icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-master:kube-control
+                </React.Fragment>,
               },
               Object {
-                "content": "kubernetes-worker:kube-control",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-worker icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-worker:kube-control
+                </React.Fragment>,
+                "title": "kubernetes-worker:kube-control",
               },
               Object {
                 "content": "kube-control",
@@ -1949,10 +1970,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "easyrsa:client",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="easyrsa icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                    width="24"
+                  />
+                  easyrsa:client
+                </React.Fragment>,
               },
               Object {
-                "content": "kubernetes-worker:certificates",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-worker icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-worker:certificates
+                </React.Fragment>,
+                "title": "kubernetes-worker:certificates",
               },
               Object {
                 "content": "tls-certificates",
@@ -1972,10 +2014,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubeapi-load-balancer:website",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubeapi-load-balancer icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                    width="24"
+                  />
+                  kubeapi-load-balancer:website
+                </React.Fragment>,
               },
               Object {
-                "content": "kubernetes-worker:kube-api-endpoint",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-worker icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-worker:kube-api-endpoint
+                </React.Fragment>,
+                "title": "kubernetes-worker:kube-api-endpoint",
               },
               Object {
                 "content": "http",
@@ -1995,10 +2058,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubernetes-worker:cni",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-worker icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-worker:cni
+                </React.Fragment>,
               },
               Object {
-                "content": "flannel:cni",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="flannel icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
+                    width="24"
+                  />
+                  flannel:cni
+                </React.Fragment>,
+                "title": "flannel:cni",
               },
               Object {
                 "content": "kubernetes-cni",
@@ -2018,10 +2102,24 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "elasticsearch:peer",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="elasticsearch icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/trusty/elasticsearch-15/icon.svg"
+                    width="24"
+                  />
+                  elasticsearch:peer
+                </React.Fragment>,
               },
               Object {
-                "content": "-",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  -
+                </React.Fragment>,
+                "title": "-",
               },
               Object {
                 "content": "http",
@@ -2041,10 +2139,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "elasticsearch:client",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="elasticsearch icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/trusty/elasticsearch-15/icon.svg"
+                    width="24"
+                  />
+                  elasticsearch:client
+                </React.Fragment>,
               },
               Object {
-                "content": "kibana:rest",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kibana icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/trusty/kibana-14/icon.svg"
+                    width="24"
+                  />
+                  kibana:rest
+                </React.Fragment>,
+                "title": "kibana:rest",
               },
               Object {
                 "content": "elasticsearch",
@@ -2064,10 +2183,24 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "etcd:cluster",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="etcd icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                    width="24"
+                  />
+                  etcd:cluster
+                </React.Fragment>,
               },
               Object {
-                "content": "-",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  -
+                </React.Fragment>,
+                "title": "-",
               },
               Object {
                 "content": "etcd",
@@ -2087,56 +2220,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "etcd:db",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="etcd icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                    width="24"
+                  />
+                  etcd:db
+                </React.Fragment>,
               },
               Object {
-                "content": "flannel:etcd",
-              },
-              Object {
-                "content": "etcd",
-              },
-              Object {
-                "content": "requirer",
-              },
-              Object {
-                "content": <span
-                  className="u-capitalise--first-letter"
-                >
-                  joining
-                </span>,
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "easyrsa:client",
-              },
-              Object {
-                "content": "etcd:certificates",
-              },
-              Object {
-                "content": "tls-certificates",
-              },
-              Object {
-                "content": "requirer",
-              },
-              Object {
-                "content": <span
-                  className="u-capitalise--first-letter"
-                >
-                  joining
-                </span>,
-              },
-            ],
-          },
-          Object {
-            "columns": Array [
-              Object {
-                "content": "etcd:db",
-              },
-              Object {
-                "content": "kubernetes-master:etcd",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="flannel icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
+                    width="24"
+                  />
+                  flannel:etcd
+                </React.Fragment>,
+                "title": "flannel:etcd",
               },
               Object {
                 "content": "etcd",
@@ -2156,10 +2264,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "easyrsa:client",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="easyrsa icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                    width="24"
+                  />
+                  easyrsa:client
+                </React.Fragment>,
               },
               Object {
-                "content": "kubeapi-load-balancer:certificates",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="etcd icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                    width="24"
+                  />
+                  etcd:certificates
+                </React.Fragment>,
+                "title": "etcd:certificates",
               },
               Object {
                 "content": "tls-certificates",
@@ -2179,10 +2308,119 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubeapi-load-balancer:loadbalancer",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="etcd icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                    width="24"
+                  />
+                  etcd:db
+                </React.Fragment>,
               },
               Object {
-                "content": "kubernetes-master:loadbalancer",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-master icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-master:etcd
+                </React.Fragment>,
+                "title": "kubernetes-master:etcd",
+              },
+              Object {
+                "content": "etcd",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": <span
+                  className="u-capitalise--first-letter"
+                >
+                  joining
+                </span>,
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="easyrsa icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                    width="24"
+                  />
+                  easyrsa:client
+                </React.Fragment>,
+              },
+              Object {
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubeapi-load-balancer icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                    width="24"
+                  />
+                  kubeapi-load-balancer:certificates
+                </React.Fragment>,
+                "title": "kubeapi-load-balancer:certificates",
+              },
+              Object {
+                "content": "tls-certificates",
+              },
+              Object {
+                "content": "requirer",
+              },
+              Object {
+                "content": <span
+                  className="u-capitalise--first-letter"
+                >
+                  joining
+                </span>,
+              },
+            ],
+          },
+          Object {
+            "columns": Array [
+              Object {
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubeapi-load-balancer icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                    width="24"
+                  />
+                  kubeapi-load-balancer:loadbalancer
+                </React.Fragment>,
+              },
+              Object {
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-master icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-master:loadbalancer
+                </React.Fragment>,
+                "title": "kubernetes-master:loadbalancer",
               },
               Object {
                 "content": "public-address",
@@ -2202,10 +2440,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubernetes-master:kube-api-endpoint",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-master icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-master:kube-api-endpoint
+                </React.Fragment>,
               },
               Object {
-                "content": "kubeapi-load-balancer:apiserver",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubeapi-load-balancer icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                    width="24"
+                  />
+                  kubeapi-load-balancer:apiserver
+                </React.Fragment>,
+                "title": "kubeapi-load-balancer:apiserver",
               },
               Object {
                 "content": "http",
@@ -2225,10 +2484,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "easyrsa:client",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="easyrsa icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                    width="24"
+                  />
+                  easyrsa:client
+                </React.Fragment>,
               },
               Object {
-                "content": "kubernetes-master:certificates",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-master icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-master:certificates
+                </React.Fragment>,
+                "title": "kubernetes-master:certificates",
               },
               Object {
                 "content": "tls-certificates",
@@ -2248,10 +2528,31 @@ exports[`ModelDetail Container renders the details pane 1`] = `
           Object {
             "columns": Array [
               Object {
-                "content": "kubernetes-master:cni",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="kubernetes-master icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                    width="24"
+                  />
+                  kubernetes-master:cni
+                </React.Fragment>,
               },
               Object {
-                "content": "flannel:cni",
+                "className": "u-display--flex",
+                "content": <React.Fragment>
+                  <img
+                    alt="flannel icon"
+                    className="entity-icon"
+                    height="24"
+                    src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
+                    width="24"
+                  />
+                  flannel:cni
+                </React.Fragment>,
+                "title": "flannel:cni",
               },
               Object {
                 "content": "kubernetes-cni",
@@ -2351,22 +2652,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="kubernetes-master icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                      width="24"
+                    />
                     kubernetes-master:kube-control
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="kubernetes-worker:kube-control"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="kubernetes-worker:kube-control"
                   >
+                    <img
+                      alt="kubernetes-worker icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                      width="24"
+                    />
                     kubernetes-worker:kube-control
                   </td>
                 </TableCell>
@@ -2413,22 +2732,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="easyrsa icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                      width="24"
+                    />
                     easyrsa:client
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="kubernetes-worker:certificates"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="kubernetes-worker:certificates"
                   >
+                    <img
+                      alt="kubernetes-worker icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                      width="24"
+                    />
                     kubernetes-worker:certificates
                   </td>
                 </TableCell>
@@ -2475,22 +2812,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="kubeapi-load-balancer icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                      width="24"
+                    />
                     kubeapi-load-balancer:website
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="kubernetes-worker:kube-api-endpoint"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="kubernetes-worker:kube-api-endpoint"
                   >
+                    <img
+                      alt="kubernetes-worker icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                      width="24"
+                    />
                     kubernetes-worker:kube-api-endpoint
                   </td>
                 </TableCell>
@@ -2537,22 +2892,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="kubernetes-worker icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-worker-163/icon.svg"
+                      width="24"
+                    />
                     kubernetes-worker:cni
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="flannel:cni"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="flannel:cni"
                   >
+                    <img
+                      alt="flannel icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
+                      width="24"
+                    />
                     flannel:cni
                   </td>
                 </TableCell>
@@ -2599,21 +2972,32 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="elasticsearch icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/trusty/elasticsearch-15/icon.svg"
+                      width="24"
+                    />
                     elasticsearch:peer
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="-"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="-"
                   >
                     -
                   </td>
@@ -2661,22 +3045,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="elasticsearch icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/trusty/elasticsearch-15/icon.svg"
+                      width="24"
+                    />
                     elasticsearch:client
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="kibana:rest"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="kibana:rest"
                   >
+                    <img
+                      alt="kibana icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/trusty/kibana-14/icon.svg"
+                      width="24"
+                    />
                     kibana:rest
                   </td>
                 </TableCell>
@@ -2723,21 +3125,32 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="etcd icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                      width="24"
+                    />
                     etcd:cluster
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="-"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="-"
                   >
                     -
                   </td>
@@ -2785,22 +3198,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="etcd icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                      width="24"
+                    />
                     etcd:db
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="flannel:etcd"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="flannel:etcd"
                   >
+                    <img
+                      alt="flannel icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
+                      width="24"
+                    />
                     flannel:etcd
                   </td>
                 </TableCell>
@@ -2847,22 +3278,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="easyrsa icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                      width="24"
+                    />
                     easyrsa:client
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="etcd:certificates"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="etcd:certificates"
                   >
+                    <img
+                      alt="etcd icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                      width="24"
+                    />
                     etcd:certificates
                   </td>
                 </TableCell>
@@ -2909,22 +3358,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="etcd icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/etcd-126/icon.svg"
+                      width="24"
+                    />
                     etcd:db
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="kubernetes-master:etcd"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="kubernetes-master:etcd"
                   >
+                    <img
+                      alt="kubernetes-master icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                      width="24"
+                    />
                     kubernetes-master:etcd
                   </td>
                 </TableCell>
@@ -2971,22 +3438,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="easyrsa icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                      width="24"
+                    />
                     easyrsa:client
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="kubeapi-load-balancer:certificates"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="kubeapi-load-balancer:certificates"
                   >
+                    <img
+                      alt="kubeapi-load-balancer icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                      width="24"
+                    />
                     kubeapi-load-balancer:certificates
                   </td>
                 </TableCell>
@@ -3033,22 +3518,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="kubeapi-load-balancer icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                      width="24"
+                    />
                     kubeapi-load-balancer:loadbalancer
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="kubernetes-master:loadbalancer"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="kubernetes-master:loadbalancer"
                   >
+                    <img
+                      alt="kubernetes-master icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                      width="24"
+                    />
                     kubernetes-master:loadbalancer
                   </td>
                 </TableCell>
@@ -3095,22 +3598,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="kubernetes-master icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                      width="24"
+                    />
                     kubernetes-master:kube-api-endpoint
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="kubeapi-load-balancer:apiserver"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="kubeapi-load-balancer:apiserver"
                   >
+                    <img
+                      alt="kubeapi-load-balancer icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubeapi-load-balancer-88/icon.svg"
+                      width="24"
+                    />
                     kubeapi-load-balancer:apiserver
                   </td>
                 </TableCell>
@@ -3157,22 +3678,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="easyrsa icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/easyrsa-68/icon.svg"
+                      width="24"
+                    />
                     easyrsa:client
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="kubernetes-master:certificates"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="kubernetes-master:certificates"
                   >
+                    <img
+                      alt="kubernetes-master icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                      width="24"
+                    />
                     kubernetes-master:certificates
                   </td>
                 </TableCell>
@@ -3219,22 +3758,40 @@ exports[`ModelDetail Container renders the details pane 1`] = `
                 role="row"
               >
                 <TableCell
+                  className="u-display--flex"
                   key="0"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
                   >
+                    <img
+                      alt="kubernetes-master icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/kubernetes-master-144/icon.svg"
+                      width="24"
+                    />
                     kubernetes-master:cni
                   </td>
                 </TableCell>
                 <TableCell
+                  className="u-display--flex"
                   key="1"
+                  title="flannel:cni"
                 >
                   <td
-                    className=""
+                    className="u-display--flex"
                     role="gridcell"
+                    title="flannel:cni"
                   >
+                    <img
+                      alt="flannel icon"
+                      className="entity-icon"
+                      height="24"
+                      src="https://api.jujucharms.com/charmstore/v5/~containers/flannel-81/icon.svg"
+                      width="24"
+                    />
                     flannel:cni
                   </td>
                 </TableCell>
