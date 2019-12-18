@@ -13,6 +13,7 @@ const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
         <div className="p-model-group-toggle__buttons">
           {buttons.map(label => (
             <button
+              key={label}
               className={classNames("p-model-group-toggle__button", {
                 "is-selected": groupedBy === label
               })}

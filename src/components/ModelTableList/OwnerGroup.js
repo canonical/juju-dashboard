@@ -50,9 +50,9 @@ export default function OwnerGroup() {
   let ownerTables = [];
   let ownerModels = {};
   for (const owner in ownerRows) {
-    Object.values(ownerRows[owner]).map(modelGroup => {
+    Object.values(ownerRows[owner]).forEach(modelGroup => {
       ownerModels.rows = [];
-      modelGroup.map(model => {
+      modelGroup.forEach(model => {
         ownerModels.rows.push({
           columns: [
             { content: model.info.name },
