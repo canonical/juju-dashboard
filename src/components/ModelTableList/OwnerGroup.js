@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { generateStatusElement } from "app/utils";
 import { getGroupedModelDataByOwner } from "app/selectors";
-import { getStatusValue } from "./shared";
+import { generateModelDetailsLink, getStatusValue } from "./shared";
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -44,7 +44,7 @@ function generateOwnerTableHeaders(owner, count) {
   ];
 }
 
-export default function OwnerGroup() {
+export default function OwnerGroup({ activeUser }) {
   const groupedModelDataByOwner = useSelector(getGroupedModelDataByOwner);
   const ownerRows = generateModelTableDataByOwner(groupedModelDataByOwner);
   let ownerTables = [];
@@ -55,7 +55,13 @@ export default function OwnerGroup() {
       modelGroup.forEach(model => {
         ownerModels.rows.push({
           columns: [
-            { content: model.info.name },
+            {
+              content: generateModelDetailsLink(
+                model.info.name,
+                model.info && model.info.ownerTag,
+                activeUser
+              )
+            },
             { content: model.info.status.status },
             {
               content: getStatusValue(model, "summary"),
