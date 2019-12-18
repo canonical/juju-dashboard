@@ -54,19 +54,23 @@ const relationTableHeaders = [
   { content: "message" }
 ];
 
+const generateIconImg = (name, namespace) => {
+  return (
+    <img
+      alt={name + " icon"}
+      width="24"
+      height="24"
+      className="entity-icon"
+      src={`https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`}
+    />
+  );
+};
+
 const generateEntityLink = (namespace, href, name, subordinate) => {
   return (
     <>
       {subordinate && <span className="subordinate"></span>}
-      {namespace && (
-        <img
-          alt={name + " icon"}
-          width="24"
-          height="24"
-          className="entity-icon"
-          src={`https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`}
-        />
-      )}
+      {namespace && generateIconImg(name, namespace)}
       <a href={href}>{name}</a>
     </>
   );
@@ -158,7 +162,8 @@ const generateUnitRows = modelStatusData => {
                   "#",
                   key,
                   true
-                )
+                ),
+                className: "u-display--flex"
               },
               {
                 content: generateStatusIcon(
@@ -173,7 +178,10 @@ const generateUnitRows = modelStatusData => {
                 content: subordinate["public-address"].split(":")[-1] || "-",
                 className: "u-align--right"
               },
-              { content: subordinate["workload-status"].info }
+              {
+                content: subordinate["workload-status"].info,
+                className: "model-details__truncate-cell"
+              }
             ],
             className: "subordinate-row"
           });
@@ -188,9 +196,19 @@ const generateUnitRows = modelStatusData => {
 const extractRelationEndpoints = relation => {
   const endpoints = {};
   relation.endpoints.forEach(endpoint => {
-    endpoints[endpoint.role] = endpoint.application + ":" + endpoint.name;
+    const role = endpoint.role;
+    endpoints[role] = endpoint.application + ":" + endpoint.name;
+    endpoints[`${role}ApplicationName`] = endpoint.application;
   });
   return endpoints;
+};
+
+const generateRelationIconImage = (applicationName, modelStatusData) => {
+  const application = modelStatusData.applications[applicationName];
+  if (!application || !applicationName) {
+    return;
+  }
+  return generateIconImg(applicationName, application.charm.replace("cs:", ""));
 };
 
 const generateRelationRows = modelStatusData => {
@@ -201,11 +219,42 @@ const generateRelationRows = modelStatusData => {
   const relations = modelStatusData.relations;
   return Object.keys(relations).map(relationId => {
     const relation = relations[relationId];
-    const { provider, requirer, peer } = extractRelationEndpoints(relation);
+    const {
+      provider,
+      requirer,
+      peer,
+      providerApplicationName,
+      requirerApplicationName,
+      peerApplicationName
+    } = extractRelationEndpoints(relation);
+
     return {
       columns: [
-        { content: provider || peer || "-" },
-        { content: requirer || "-" },
+        {
+          content: (
+            <>
+              {generateRelationIconImage(
+                providerApplicationName || peerApplicationName,
+                modelStatusData
+              )}
+              {provider || peer || "-"}
+            </>
+          ),
+          className: "u-display--flex"
+        },
+        {
+          content: (
+            <>
+              {generateRelationIconImage(
+                requirerApplicationName,
+                modelStatusData
+              )}
+              {requirer || "-"}
+            </>
+          ),
+          title: requirer || "-",
+          className: "u-display--flex"
+        },
         { content: relation.interface },
         { content: relation.endpoints[0].role },
         {

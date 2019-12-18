@@ -35,16 +35,21 @@
   }
 
   .model-details__apps tr {
-    grid-template-columns: 15% 15% 9% 11% 17.5% 5% 10% 20%;
+    grid-template-columns: 20% 13% 6% 11% 17.5% 5% 10% 20%;
   }
 
   .model-details__units tr {
-    grid-template-columns: 15% 15% 9% 11% 17.5% 5% 30%;
+    grid-template-columns: 20% 13% 9% 9% 16.5% 5% 30%;
   }
 
-  .model-details__machines tr,
-  .model-details__relations tr {
-    grid-template-columns: 30% 9% 11% 22.5% 27.5%;
+  .model-details__machines tr {
+    grid-template-columns: 20% 15% 11% 26.5% 27.5%;
+  }
+
+  .model-details__relations {
+    tr {
+      grid-template-columns: 30% 30% 15% 9% 16%;
+    }
   }
 
   &__truncate-cell {
@@ -133,6 +138,5 @@
     content: url("../../../static/images/unit-tree.svg");
     left: 0.75rem;
     position: absolute;
-    top: -1.5rem;
   }
 }
