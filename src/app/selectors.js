@@ -159,16 +159,21 @@ const groupModelsByStatus = modelData => {
   @returns {Function} The grouped model statuses by owner.
 */
 const groupModelsByOwner = modelData => {
-  const ownersGrouped = {};
-
-  Object.values(modelData).map(model => {
+  const grouped = {};
+  if (!modelData) {
+    return grouped;
+  }
+  for (let modelUUID in modelData) {
+    const model = modelData[modelUUID];
     if (model.info) {
       const owner = stripOwnerTag(model.info.ownerTag);
-      ownersGrouped[owner] = ownersGrouped[owner] || [];
-      ownersGrouped[owner].push(model);
+      if (!grouped[owner]) {
+        grouped[owner] = [];
+      }
+      grouped[owner].push(model);
     }
-  });
-  return ownersGrouped;
+  }
+  return grouped;
 };
 
 /**
