@@ -17,24 +17,27 @@ exports[`Model group toggle renders without crashing and matches snapshot 1`] = 
     >
       <button
         className="p-model-group-toggle__button"
+        key="status"
         onClick={[Function]}
         value="status"
       >
-        Status
+        status
       </button>
       <button
         className="p-model-group-toggle__button"
+        key="cloud"
         onClick={[Function]}
         value="cloud"
       >
-        Cloud
+        cloud
       </button>
       <button
         className="p-model-group-toggle__button"
+        key="owner"
         onClick={[Function]}
         value="owner"
       >
-        Owner
+        owner
       </button>
     </div>
   </div>
