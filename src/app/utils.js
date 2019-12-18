@@ -1,6 +1,6 @@
 import React from "react";
 
-export const generateStatusIcon = (status, count, useIcon = true) => {
+export const generateStatusElement = (status, count, useIcon = true) => {
   let statusClass = status ? `is-${status.toLowerCase()}` : "";
   let countValue = "";
   if (count !== undefined) {

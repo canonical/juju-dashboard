@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useSelector } from "react-redux";
 import {
-  generateStatusIcon,
+  generateStatusElement,
   generateSpanClass,
   getModelStatusGroupData,
   stripOwnerTag
@@ -279,7 +279,7 @@ function getStatusValue(status, key) {
 function generateStatusTableHeaders(label, count) {
   return [
     {
-      content: generateStatusIcon(label, count),
+      content: generateStatusElement(label, count),
       sortKey: label.toLowerCase()
     },
     { content: "Owner", sortKey: "owner" },
@@ -304,7 +304,7 @@ function generateStatusTableHeaders(label, count) {
 function generateOwnerTableHeaders(owner, count) {
   return [
     {
-      content: generateStatusIcon(owner, count, false),
+      content: generateStatusElement(owner, count, false),
       sortKey: owner.toLowerCase()
     },
     { content: "Status", sortKey: "statusˇ" },
