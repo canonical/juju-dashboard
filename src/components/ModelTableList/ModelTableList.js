@@ -12,12 +12,11 @@ export default function ModelTableList({ groupedBy }) {
   const activeUser = useSelector(getActiveUserTag);
   switch (groupedBy) {
     case "status":
+    default:
       return <StatusGroup activeUser={activeUser} />;
     case "owner":
       return <OwnerGroup activeUser={activeUser} />;
     case "cloud":
       return <p>@TODO: Group by cloud</p>;
-    default:
-      return <p>Unknown grouping: {groupedBy}</p>;
   }
 }
