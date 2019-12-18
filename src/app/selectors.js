@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { getModelStatusGroupData, stripOwnerTag } from "./utils";
+import { getModelStatusGroupData, extractOwnerName } from "./utils";
 
 // ---- Selectors for top level keys
 
@@ -166,7 +166,7 @@ const groupModelsByOwner = modelData => {
   for (let modelUUID in modelData) {
     const model = modelData[modelUUID];
     if (model.info) {
-      const owner = stripOwnerTag(model.info.ownerTag);
+      const owner = extractOwnerName(model.info.ownerTag);
       if (!grouped[owner]) {
         grouped[owner] = [];
       }

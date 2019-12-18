@@ -103,10 +103,10 @@ export const getUnitStatusGroup = unit => {
 };
 
 /**
-  Strips owner string from ownerTag
+  Returns owner string from ownerTag
   @param {string} ownerTag The ownerTag identifier returns from the API
   @returns {string} The simplified owner string
 */
-export const stripOwnerTag = tag => {
+export const extractOwnerName = tag => {
   return tag.split("@")[0].replace("user-", "");
 };

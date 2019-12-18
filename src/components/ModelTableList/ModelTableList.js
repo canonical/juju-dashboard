@@ -6,7 +6,7 @@ import {
   generateStatusElement,
   generateSpanClass,
   getModelStatusGroupData,
-  stripOwnerTag
+  extractOwnerName
 } from "app/utils";
 
 import {
@@ -105,7 +105,7 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
     models.forEach(model => {
       let owner = "";
       if (model.info) {
-        owner = stripOwnerTag(model.info.ownerTag);
+        owner = extractOwnerName(model.info.ownerTag);
       }
       modelData[`${groupLabel}Rows`].push({
         columns: [
