@@ -11,24 +11,19 @@ import dataDump from "../../testing/complete-redux-store-dump";
 const mockStore = configureStore([]);
 
 describe("ModelTableList", () => {
-  it("by default, renders with all table headers and no data", () => {
-    const store = mockStore({
-      root: {},
-      juju: {
-        models: {},
-        modelData: {},
-        modelInfo: {},
-        modelStatuses: {}
-      }
-    });
+  it("by default, renders the status table", () => {
+    const store = mockStore(dataDump);
     const wrapper = mount(
-      <Provider store={store}>
-        <ModelTableList />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <ModelTableList />
+        </Provider>
+      </MemoryRouter>
     );
-    expect(wrapper.find("th")).toMatchSnapshot();
-    // Should be empty
-    expect(wrapper.find("tbody")).toMatchSnapshot();
+    const statusGroup = wrapper.find("StatusGroup");
+    expect(statusGroup.length).toBe(1);
+    expect(statusGroup.prop("activeUser")).toBe("user-activedev@external");
+    expect(wrapper.find("OwnerGroup").length).toBe(0);
   });
 
   it("displays all data from redux store when grouping by status", () => {
@@ -40,6 +35,24 @@ describe("ModelTableList", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find(ModelTableList)).toMatchSnapshot();
+    const statusGroup = wrapper.find("StatusGroup");
+    expect(statusGroup.length).toBe(1);
+    expect(statusGroup.prop("activeUser")).toBe("user-activedev@external");
+    expect(wrapper.find("OwnerGroup").length).toBe(0);
+  });
+
+  it("displays all data from redux store when grouping by owner", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <ModelTableList groupedBy="owner" />
+        </Provider>
+      </MemoryRouter>
+    );
+    const ownerGroup = wrapper.find("OwnerGroup");
+    expect(ownerGroup.length).toBe(1);
+    expect(ownerGroup.prop("activeUser")).toBe("user-activedev@external");
+    expect(wrapper.find("StatusGroup").length).toBe(0);
   });
 });
