@@ -16,6 +16,7 @@ exports[`Model group toggle renders without crashing and matches snapshot 1`] = 
       className="p-model-group-toggle__buttons"
     >
       <button
+        aria-label="group by status"
         className="p-model-group-toggle__button"
         key="status"
         onClick={[Function]}
@@ -24,6 +25,7 @@ exports[`Model group toggle renders without crashing and matches snapshot 1`] = 
         status
       </button>
       <button
+        aria-label="group by cloud"
         className="p-model-group-toggle__button"
         key="cloud"
         onClick={[Function]}
@@ -32,6 +34,7 @@ exports[`Model group toggle renders without crashing and matches snapshot 1`] = 
         cloud
       </button>
       <button
+        aria-label="group by owner"
         className="p-model-group-toggle__button"
         key="owner"
         onClick={[Function]}
@@ -60,6 +63,7 @@ exports[`Model group toggle shows active grouping 1`] = `
       className="p-model-group-toggle__buttons"
     >
       <button
+        aria-label="group by status"
         className="p-model-group-toggle__button"
         key="status"
         onClick={[Function]}
@@ -68,6 +72,7 @@ exports[`Model group toggle shows active grouping 1`] = `
         status
       </button>
       <button
+        aria-label="group by cloud"
         className="p-model-group-toggle__button is-selected"
         key="cloud"
         onClick={[Function]}
@@ -76,6 +81,7 @@ exports[`Model group toggle shows active grouping 1`] = `
         cloud
       </button>
       <button
+        aria-label="group by owner"
         className="p-model-group-toggle__button"
         key="owner"
         onClick={[Function]}
