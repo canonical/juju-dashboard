@@ -1,13 +1,14 @@
 import React from "react";
 
-export const generateStatusIcon = (status, count) => {
+export const generateStatusElement = (status, count, useIcon = true) => {
   let statusClass = status ? `is-${status.toLowerCase()}` : "";
   let countValue = "";
   if (count !== undefined) {
     countValue = ` (${count})`;
   }
+  const className = useIcon ? "status-icon " + statusClass : "";
   return (
-    <span className={"status-icon " + statusClass}>
+    <span className={className}>
       {status}
       {countValue}
     </span>
@@ -99,4 +100,13 @@ export const getUnitStatusGroup = unit => {
     message: null
   };
   return response;
+};
+
+/**
+  Returns owner string from ownerTag
+  @param {string} ownerTag The ownerTag identifier returns from the API
+  @returns {string} The simplified owner string
+*/
+export const extractOwnerName = tag => {
+  return tag.split("@")[0].replace("user-", "");
 };

@@ -13,7 +13,7 @@ import UserIcon from "components/UserIcon/UserIcon";
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "app/actions";
-import { generateStatusIcon, generateSpanClass } from "app/utils";
+import { generateStatusElement, generateSpanClass } from "app/utils";
 
 import "./_model-details.scss";
 
@@ -96,7 +96,7 @@ const generateApplicationRows = modelStatusData => {
           className: "u-display--flex"
         },
         {
-          content: app.status ? generateStatusIcon(app.status.status) : "-",
+          content: app.status ? generateStatusElement(app.status.status) : "-",
           className: "u-capitalise"
         },
         { content: "-", className: "u-align--right" },
@@ -135,7 +135,7 @@ const generateUnitRows = modelStatusData => {
             className: "u-display--flex"
           },
           {
-            content: generateStatusIcon(unit.workloadStatus.status),
+            content: generateStatusElement(unit.workloadStatus.status),
             className: "u-capitalise"
           },
           { content: unit.agentStatus.status },
@@ -166,7 +166,7 @@ const generateUnitRows = modelStatusData => {
                 className: "u-display--flex"
               },
               {
-                content: generateStatusIcon(
+                content: generateStatusElement(
                   subordinate["workload-status"].status
                 ),
                 className: "u-capitalise"
@@ -295,7 +295,7 @@ const generateMachineRows = modelStatusData => {
           )
         },
         {
-          content: generateStatusIcon(machine.instanceStatus.status),
+          content: generateStatusElement(machine.instanceStatus.status),
           className: "u-capitalise"
         },
         { content: splitParts(machine.hardware)["availability-zone"] },

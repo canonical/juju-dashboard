@@ -1,6 +1,5 @@
 import { createSelector } from "reselect";
-
-import { getModelStatusGroupData } from "./utils";
+import { getModelStatusGroupData, extractOwnerName } from "./utils";
 
 // ---- Selectors for top level keys
 
@@ -155,6 +154,29 @@ const groupModelsByStatus = modelData => {
 };
 
 /**
+  Returns a grouped collection of model statuses by owner.
+  @param {Object} modelData
+  @returns {Function} The grouped model statuses by owner.
+*/
+const groupModelsByOwner = modelData => {
+  const grouped = {};
+  if (!modelData) {
+    return grouped;
+  }
+  for (let modelUUID in modelData) {
+    const model = modelData[modelUUID];
+    if (model.info) {
+      const owner = extractOwnerName(model.info.ownerTag);
+      if (!grouped[owner]) {
+        grouped[owner] = [];
+      }
+      grouped[owner].push(model);
+    }
+  }
+  return grouped;
+};
+
+/**
   Returns an object containing the grouped model status counts.
   @param {Object} groupedModelStatuses
   @returns {Function} The counts for each group of model statuses.
@@ -250,9 +272,19 @@ export const getModelStatus = modelUUID => {
   Returns the model statuses sorted by status.
   @returns {Function} The memoized selector to return the sorted model statuses.
 */
-export const getGroupedModelData = createSelector(
+export const getGroupedModelDataByStatus = createSelector(
   getModelData,
   groupModelsByStatus
+);
+
+/**
+  Returns the model statuses sorted by owner.
+  @returns {Function} The memoized selector to return the models
+    grouped by owner.
+*/
+export const getGroupedModelDataByOwner = createSelector(
+  getModelData,
+  groupModelsByOwner
 );
 
 /**
@@ -260,6 +292,6 @@ export const getGroupedModelData = createSelector(
   @returns {Function} The memoized selector to return the model status counts.
 */
 export const getGroupedModelStatusCounts = createSelector(
-  getGroupedModelData,
+  getGroupedModelDataByStatus,
   countModelStatusGroups
 );

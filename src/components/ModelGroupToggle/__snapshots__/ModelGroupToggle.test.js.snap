@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Model group toggle renders without crashing and matches snapshot 1`] = `
+<div
+  className="p-model-group-toggle"
+>
+  <div
+    className="p-model-group-toggle__inner"
+  >
+    <span
+      className="p-model-group-toggle__label"
+    >
+      Group by:
+    </span>
+    <div
+      className="p-model-group-toggle__buttons"
+    >
+      <button
+        aria-label="group by status"
+        className="p-model-group-toggle__button"
+        key="status"
+        onClick={[Function]}
+        value="status"
+      >
+        status
+      </button>
+      <button
+        aria-label="group by cloud"
+        className="p-model-group-toggle__button"
+        key="cloud"
+        onClick={[Function]}
+        value="cloud"
+      >
+        cloud
+      </button>
+      <button
+        aria-label="group by owner"
+        className="p-model-group-toggle__button"
+        key="owner"
+        onClick={[Function]}
+        value="owner"
+      >
+        owner
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Model group toggle shows active grouping 1`] = `
+<div
+  className="p-model-group-toggle"
+>
+  <div
+    className="p-model-group-toggle__inner"
+  >
+    <span
+      className="p-model-group-toggle__label"
+    >
+      Group by:
+    </span>
+    <div
+      className="p-model-group-toggle__buttons"
+    >
+      <button
+        aria-label="group by status"
+        className="p-model-group-toggle__button"
+        key="status"
+        onClick={[Function]}
+        value="status"
+      >
+        status
+      </button>
+      <button
+        aria-label="group by cloud"
+        className="p-model-group-toggle__button is-selected"
+        key="cloud"
+        onClick={[Function]}
+        value="cloud"
+      >
+        cloud
+      </button>
+      <button
+        aria-label="group by owner"
+        className="p-model-group-toggle__button"
+        key="owner"
+        onClick={[Function]}
+        value="owner"
+      >
+        owner
+      </button>
+    </div>
+  </div>
+</div>
+`;
