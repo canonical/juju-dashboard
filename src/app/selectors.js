@@ -278,8 +278,9 @@ export const getGroupedModelDataByStatus = createSelector(
 );
 
 /**
-  Returns the model statuses sorted by status.
-  @returns {Function} The memoized selector to return the sorted model statuses.
+  Returns the model statuses sorted by owner.
+  @returns {Function} The memoized selector to return the models
+    grouped by owner.
 */
 export const getGroupedModelDataByOwner = createSelector(
   getModelData,

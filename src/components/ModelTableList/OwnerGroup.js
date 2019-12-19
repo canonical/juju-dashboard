@@ -20,8 +20,8 @@ function generateModelTableDataByOwner(groupedModels) {
 }
 
 /**
-  Generates the table headers owner grouped table
-  @param {String} label The title of the table.
+  Generates the table headers for the owner grouped table
+  @param {String} owner The title of the table.
   @param {Number} count The number of elements in the status.
   @returns {Array} The headers for the table.
 */
