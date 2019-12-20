@@ -1,4 +1,8 @@
-import { fetchAllModelStatuses, loginWithBakery } from "juju";
+import {
+  fetchAllModelStatuses,
+  fetchControllerList,
+  loginWithBakery
+} from "juju";
 import { fetchModelList } from "juju/actions";
 import {
   updateControllerConnection,
@@ -13,6 +17,7 @@ export default async function connectAndListModels(reduxStore, bakery) {
     reduxStore.dispatch(updateControllerConnection(conn));
     reduxStore.dispatch(updateJujuAPIInstance(juju));
     reduxStore.dispatch(updatePingerIntervalId(intervalId));
+    fetchControllerList(reduxStore);
     do {
       await reduxStore.dispatch(fetchModelList());
       await fetchAllModelStatuses(conn, reduxStore);

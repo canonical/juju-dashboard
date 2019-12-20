@@ -66,6 +66,9 @@ export default function jujuReducer(state = defaultState, action) {
         draftState.modelData = {};
         draftState.models = {};
         break;
+      case actionsList.updateControllerList:
+        draftState.controllers = action.payload;
+        break;
       default:
         // No default value, fall through.
         break;

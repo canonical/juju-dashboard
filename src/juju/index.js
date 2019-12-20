@@ -7,11 +7,16 @@ import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 
 import { getBakery, isLoggedIn } from "app/selectors";
-import { updateModelInfo, updateModelStatus } from "./actions";
+import {
+  updateControllerList,
+  updateModelInfo,
+  updateModelStatus
+} from "./actions";
 
 // Full URL path to the controller.
-const controllerURL = process.env.REACT_APP_CONTROLLER_URL;
-
+const controllerBaseURL = process.env.REACT_APP_BASE_CONTROLLER_URL;
+const wsControllerURL = `wss://${controllerBaseURL}/api`;
+const httpControllerURL = `https://${controllerBaseURL}/v2`;
 /**
   Return a common connection option config.
   @param {Boolean} usePinger If the connection will be long lived then use the
@@ -43,7 +48,7 @@ function generateConnectionOptions(usePinger = false, bakery, onClose) {
 */
 export async function loginWithBakery(bakery) {
   const juju = await jujulib.connect(
-    controllerURL,
+    wsControllerURL,
     generateConnectionOptions(true, bakery, e =>
       console.log("controller closed", e)
     )
@@ -85,13 +90,13 @@ async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
   Connects to the model url by doing a replacement on the controller url and
   fetches it's full status then logs out of the model and closes the connection.
   @param {String} modelUUID The UUID of the model to connect to. Must be on the
-    same controller as provided by the controllerURL`.
+    same controller as provided by the wsControllerURL`.
   @param {Object} getState A function that'll return the app redux state.
   @returns {Object} The full model status.
 */
 async function fetchModelStatus(modelUUID, getState) {
   const bakery = getBakery(getState());
-  const modelURL = controllerURL.replace("/api", `/model/${modelUUID}/api`);
+  const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
@@ -132,7 +137,7 @@ export async function fetchAndStoreModelStatus(modelUUID, dispatch, getState) {
   controller connection.
   @param {Object} conn The active controller connection.
   @param {String} modelUUID The UUID of the model to connect to. Must be on the
-    same controller as provided by the controllerURL`.
+    same controller as provided by the wsControllerURL`.
   @returns {Object} The full modelInfo.
 */
 async function fetchModelInfo(conn, modelUUID) {
@@ -172,5 +177,31 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
     queue.onDone(() => {
       resolve();
     });
+  });
+}
+
+/**
+  Performs an HTTP request to the controller to fetch the controller list.
+  Will fail with a console error message if the user doesn't have access.
+  @param {Object} reduxStore The applications reduxStore.
+*/
+export async function fetchControllerList(reduxStore) {
+  const bakery = getBakery(reduxStore.getState());
+  function errorHandler(err, data) {
+    // XXX Surface to UI.
+    console.error("unable to fetch controller list", err);
+    return;
+  }
+  bakery.get(`${httpControllerURL}/controller`, null, (err, resp) => {
+    if (err !== null) {
+      errorHandler(err, resp);
+      return;
+    }
+    try {
+      const parsed = JSON.parse(resp.currentTarget.response);
+      reduxStore.dispatch(updateControllerList(parsed.controllers));
+    } catch (error) {
+      errorHandler(error, resp.currentTarget.response);
+    }
   });
 }
