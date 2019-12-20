@@ -180,6 +180,11 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
   });
 }
 
+/**
+  Performs an HTTP request to the controller to fetch the controller list.
+  Will fail with a console error message if the user doesn't have access.
+  @param {Object} reduxStore The applications reduxStore.
+*/
 export async function fetchControllerList(reduxStore) {
   const bakery = getBakery(reduxStore.getState());
   function errorHandler(err, data) {
