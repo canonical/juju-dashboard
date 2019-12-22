@@ -11064,6 +11064,56 @@ export default {
           agentVersion: '2.6.8'
         }
       }
-    }
+    },
+    controllers: [
+      {
+        path: "admins/eu-west-1-aws",
+        location: {
+          cloud: "aws",
+          region: "eu-west-1"
+        },
+        Public: true
+      },
+      {
+        path: "admins/us-central1-gce",
+        location: {
+          cloud: "google",
+          region: "us-central1"
+        },
+        Public: true
+      },
+      {
+        path: "admins/us-east-1-aws",
+        location: {
+          cloud: "aws",
+          region: "us-east-1"
+        },
+        Public: true
+      },
+      {
+        path: "admins/us-east1-gce",
+        location: {
+          cloud: "google",
+          region: "us-east1"
+        },
+        Public: true
+      },
+      {
+        path: "admins/westeurope-azure",
+        location: {
+          cloud: "azure",
+          region: "westeurope"
+        },
+        Public: true
+      },
+      {
+        path: "admins/westus-azure",
+        location: {
+          cloud: "azure",
+          region: "westus"
+        },
+        Public: true
+      }
+    ]
   }
 }
