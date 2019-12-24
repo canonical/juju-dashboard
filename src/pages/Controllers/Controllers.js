@@ -32,11 +32,11 @@ export default function Controllers() {
       columns: [
         { content: <a href="_#">{c.path}</a> },
         { content: `${c.location.cloud}/${c.location.region}` },
-        { content: 0, className: "u-align--right" },
-        { content: 0, className: "u-align--right" },
-        { content: 0, className: "u-align--right" },
-        { content: 0, className: "u-align--right" },
-        { content: 0, className: "u-align--right" },
+        { content: "-", className: "u-align--right" },
+        { content: "-", className: "u-align--right" },
+        { content: "-", className: "u-align--right" },
+        { content: "-", className: "u-align--right" },
+        { content: "-", className: "u-align--right" },
         { content: `${c.Public}`, className: "u-align--right" }
       ]
     }));
