@@ -16,6 +16,18 @@ const getModelData = state => {
 };
 
 /**
+  Fetches the controller data from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The list of controller data or null if none found.
+*/
+export const getControllerData = state => {
+  if (state.juju && state.juju.controllers) {
+    return state.juju.controllers;
+  }
+  return null;
+};
+
+/**
   Fetches the bakery from state.
   @param {Object} state The application state.
   @returns {Object|Null} The bakery instance or null if none found.
