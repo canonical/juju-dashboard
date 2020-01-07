@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
-import { generateStatusElement } from "app/utils";
+import { generateStatusElement, getModelStatusGroupData } from "app/utils";
 import { getGroupedModelDataByOwner } from "app/selectors";
 import { generateModelDetailsLink, getStatusValue } from "./shared";
 
@@ -53,6 +53,7 @@ export default function OwnerGroup({ activeUser }) {
     Object.values(ownerRows[owner]).forEach(modelGroup => {
       ownerModels.rows = [];
       modelGroup.forEach(model => {
+        const { highestStatus } = getModelStatusGroupData(model);
         ownerModels.rows.push({
           columns: [
             {
@@ -62,7 +63,10 @@ export default function OwnerGroup({ activeUser }) {
                 activeUser
               )
             },
-            { content: model.info.status.status },
+            {
+              content: generateStatusElement(highestStatus),
+              className: "u-capitalise"
+            },
             {
               content: getStatusValue(model, "summary"),
               className: "u-overflow--visible"
