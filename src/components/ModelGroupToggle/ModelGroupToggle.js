@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 
 import "./_model-group-toggle.scss";
@@ -6,6 +7,12 @@ import "./_model-group-toggle.scss";
 const buttons = ["status", "cloud", "owner"];
 
 const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
+  const history = useHistory();
+
+  useEffect(() => {
+    history.push(`/models?groupby=${groupedBy}`);
+  }, [history, groupedBy]);
+
   return (
     <div className="p-model-group-toggle">
       <div className="p-model-group-toggle__inner">
@@ -19,7 +26,7 @@ const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
                 "is-selected": groupedBy === label
               })}
               value={label}
-              onClick={e => setGroupedBy(e.target.value)}
+              onClick={e => setGroupedBy(e.currentTarget.value)}
             >
               {label}
             </button>
