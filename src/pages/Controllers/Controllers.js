@@ -4,12 +4,15 @@ import { useSelector } from "react-redux";
 import Layout from "components/Layout/Layout";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
-import { getControllerData } from "app/selectors";
+import { getControllerData, getModelCounts } from "app/selectors";
 
 import "./_controllers.scss";
 
 export default function Controllers() {
   const controllerData = useSelector(getControllerData);
+  const { machinesCount, applicationCount, unitCount } = useSelector(
+    getModelCounts
+  );
 
   const headers = [
     { content: "running", sortKey: "running" },
@@ -37,19 +40,34 @@ export default function Controllers() {
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
-        { content: `${c.Public}`, className: "u-align--right" }
+        { content: `${c.Public}`, className: "u-align--right u-capitalise" }
       ]
     }));
 
   return (
     <Layout>
       <div className="l-content">
+        <div className="overview">
+          <div className="row">
+            <div className="col-4 overview__machines">
+              <strong>{machinesCount} machines</strong>
+            </div>
+            <div className="col-4 overview__applications">
+              <strong>{applicationCount} applications</strong>
+            </div>
+            <div className="col-4 overview__units">
+              <strong>{unitCount} units</strong>
+            </div>
+          </div>
+        </div>
         <div className="controllers">
-          <MainTable
-            className={"u-table-layout--auto"}
-            headers={headers}
-            rows={rows}
-          />
+          <div className="l-controllers-table">
+            <MainTable
+              className={"u-table-layout--auto"}
+              headers={headers}
+              rows={rows}
+            />
+          </div>
         </div>
       </div>
     </Layout>
