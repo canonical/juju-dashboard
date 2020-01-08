@@ -1,23 +1,34 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
+import { MemoryRouter } from "react-router-dom";
 
 import ModelGroupToggle from "./ModelGroupToggle";
 
 describe("Model group toggle", () => {
   it("renders without crashing and matches snapshot", () => {
-    const wrapper = shallow(<ModelGroupToggle />);
+    const wrapper = mount(
+      <MemoryRouter>
+        <ModelGroupToggle />
+      </MemoryRouter>
+    );
     expect(wrapper.find(".p-model-group-toggle")).toMatchSnapshot();
   });
 
   it("shows active grouping", () => {
-    const wrapper = shallow(<ModelGroupToggle groupedBy="cloud" />);
+    const wrapper = mount(
+      <MemoryRouter>
+        <ModelGroupToggle groupedBy="cloud" />
+      </MemoryRouter>
+    );
     expect(wrapper.find(".p-model-group-toggle")).toMatchSnapshot();
   });
 
   it("calls to set group by on click", () => {
     const setGroupedBy = jest.fn();
-    const wrapper = shallow(
-      <ModelGroupToggle groupedBy="cloud" setGroupedBy={setGroupedBy} />
+    const wrapper = mount(
+      <MemoryRouter>
+        <ModelGroupToggle groupedBy="cloud" setGroupedBy={setGroupedBy} />
+      </MemoryRouter>
     );
     expect(
       wrapper.find(".p-model-group-toggle__button.is-selected").text()
