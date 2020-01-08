@@ -119,5 +119,5 @@ export default function OwnerGroup({ activeUser }) {
       />
     );
   }
-  return ownerTables;
+  return <div className="owners-group">{ownerTables}</div>;
 }
