@@ -10,7 +10,10 @@ const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
   const history = useHistory();
 
   useEffect(() => {
-    history.push(`/models?groupby=${groupedBy}`);
+    history.push({
+      pathname: "/models",
+      search: `?groupby=${groupedBy}`
+    });
   }, [history, groupedBy]);
 
   return (
