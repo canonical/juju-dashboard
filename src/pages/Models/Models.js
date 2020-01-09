@@ -31,9 +31,9 @@ export default function Models() {
   // Set variable as default state value
   const [groupedBy, setGroupedBy] = useState(groupFilterFromQueryString);
   // Listen for back button click and update groupedBy state accordingly
-  window.onpopstate = function() {
+  window.addEventListener("popstate", () => {
     setGroupedBy(groupFilterFromQueryString);
-  };
+  });
 
   const models = blocked + alert + running;
   return (
