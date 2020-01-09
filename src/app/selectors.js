@@ -1,5 +1,9 @@
 import { createSelector } from "reselect";
-import { getModelStatusGroupData, extractOwnerName } from "./utils";
+import {
+  getModelStatusGroupData,
+  extractOwnerName,
+  extractCloudName
+} from "./utils";
 
 // ---- Selectors for top level keys
 
@@ -146,7 +150,7 @@ const getModelDataByUUID = (modelUUID, modelData) => {
 /**
   Returns a grouped collection of model statuses.
   @param {Object} modelData
-  @returns {Function} The grouped model statuses.
+  @returns {Object} The grouped model statuses.
 */
 const groupModelsByStatus = modelData => {
   const grouped = {
@@ -168,7 +172,7 @@ const groupModelsByStatus = modelData => {
 /**
   Returns a grouped collection of model statuses by owner.
   @param {Object} modelData
-  @returns {Function} The grouped model statuses by owner.
+  @returns {Object} The grouped model statuses by owner.
 */
 const groupModelsByOwner = modelData => {
   const grouped = {};
@@ -214,9 +218,32 @@ const countModelData = modelData => {
 };
 
 /**
+  Returns a grouped collection of model statuses by cloud.
+  @param {Object} modelData
+  @returns {Object} The grouped model statuses by cloud.
+*/
+const groupModelsByCloud = modelData => {
+  const grouped = {};
+  if (!modelData) {
+    return grouped;
+  }
+  for (let modelUUID in modelData) {
+    const model = modelData[modelUUID];
+    if (model.info) {
+      const cloud = extractCloudName(model.info.cloudTag);
+      if (!grouped[cloud]) {
+        grouped[cloud] = [];
+      }
+      grouped[cloud].push(model);
+    }
+  }
+  return grouped;
+};
+
+/**
   Returns an object containing the grouped model status counts.
   @param {Object} groupedModelStatuses
-  @returns {Function} The counts for each group of model statuses.
+  @returns {Object} The counts for each group of model statuses.
 */
 const countModelStatusGroups = groupedModelStatuses => {
   const counts = {
@@ -325,11 +352,14 @@ export const getGroupedModelDataByOwner = createSelector(
 );
 
 /**
-  Returns the model data counts.
-  @returns {Function} The memoized selector to return the models data
-    count.
+  Returns the model statuses sorted by cloud.
+  @returns {Function} The memoized selector to return the models
+    grouped by cloud.
 */
-export const getModelCounts = createSelector(getModelData, countModelData);
+export const getGroupedModelDataByCloud = createSelector(
+  getModelData,
+  groupModelsByCloud
+);
 
 /**
   Returns the counts of the model statuses
