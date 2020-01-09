@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
@@ -23,17 +23,16 @@ function pluralize(value, string) {
 export default function Models() {
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
 
-  const location = useLocation();
   // Grab filter from 'groupby' query in URL and assign to variable
   // If it doesn't exist, fall back to grouping by status
-  const groupFilterFromQueryString =
-    location.search.split("groupby=")[1] || "status";
-  // Set variable as default state value
-  const [groupedBy, setGroupedBy] = useState(groupFilterFromQueryString);
-  // Listen for back button click and update groupedBy state accordingly
-  window.addEventListener("popstate", () => {
-    setGroupedBy(groupFilterFromQueryString);
-  });
+  const location = useLocation();
+  const getGroupedByFilter = location.search.split("groupby=")[1] || "status";
+  // Set initial state using filter from URL
+  const [groupedBy, setGroupedBy] = useState(getGroupedByFilter);
+  // Add as an effect so UI is updated on each component render (e.g. Back button)
+  useEffect(() => {
+    setGroupedBy(getGroupedByFilter);
+  }, [setGroupedBy, getGroupedByFilter]);
 
   const models = blocked + alert + running;
   return (
