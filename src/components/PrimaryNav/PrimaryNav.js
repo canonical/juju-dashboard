@@ -137,6 +137,20 @@ const PrimaryNav = () => {
           </li>
         ))}
       </ul>
+      <div className="p-primary-nav__bottom">
+        <ul className="p-list">
+          <li className="p-list__item">
+            <a
+              className="p-list__link"
+              href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Report a bug
+            </a>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 };

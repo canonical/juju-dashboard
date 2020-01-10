@@ -4,6 +4,9 @@
 
 .p-primary-nav {
   width: $sidebar-full-width;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
   a,
   a:hover {
@@ -108,6 +111,14 @@
       position: relative;
       top: -3px;
       transform: rotate(180deg);
+    }
+  }
+
+  .p-primary-nav__bottom {
+    margin-top: auto;
+
+    .p-list__link {
+      color: $color-mid-x-light;
     }
   }
 
