@@ -39,7 +39,7 @@ describe("Models page", () => {
   });
 
   it("displays correct grouping view", () => {
-    global.window = { location: { pathname: "/models?groupby=owner" } };
+    global.window = { location: { pathname: "/models?groupedby=owner" } };
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
@@ -58,7 +58,7 @@ describe("Models page", () => {
     expect(
       wrapper.find(".p-model-group-toggle__button.is-selected").text()
     ).toBe("owner");
-    expect(global.window.location.search).toEqual("?groupby=owner");
+    expect(global.window.location.search).toEqual("?groupedby=owner");
     expect(wrapper.find(".owners-group"));
   });
 });
