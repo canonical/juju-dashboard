@@ -2,9 +2,9 @@ import React from "react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import { MemoryRouter } from "react-router";
-import { BrowserRouter as Router } from "react-router-dom";
+import { MemoryRouter, Router } from "react-router";
 import dataDump from "testing/complete-redux-store-dump";
+import { createMemoryHistory } from "history";
 
 import Models from "./Models";
 
@@ -39,11 +39,11 @@ describe("Models page", () => {
   });
 
   it("displays correct grouping view", () => {
-    global.window = { location: { pathname: "/models?groupedby=owner" } };
+    const history = createMemoryHistory();
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <Router>
+        <Router history={history}>
           <Models />
         </Router>
       </Provider>
@@ -58,7 +58,8 @@ describe("Models page", () => {
     expect(
       wrapper.find(".p-model-group-toggle__button.is-selected").text()
     ).toBe("owner");
-    expect(global.window.location.search).toEqual("?groupedby=owner");
+    const searchParams = new URLSearchParams(history.location.search);
+    expect(searchParams.get("groupedby")).toEqual("owner");
     expect(wrapper.find(".owners-group"));
   });
 });
