@@ -9,7 +9,7 @@ const buttons = ["status", "cloud", "owner"];
 
 const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
   const history = useHistory();
-  const queryStrings = queryString.parse(window.location.search);
+  const queryStrings = queryString.parse(history.location.search);
   queryStrings.groupedby = groupedBy;
   const newQs = queryString.stringify(queryStrings);
   useEffect(() => {
