@@ -24,7 +24,7 @@ const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
       });
     }
     // Including queryStrings to the dependency array will trigger an infinite loop
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, groupedBy]);
 
   return (
