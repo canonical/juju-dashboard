@@ -1,24 +1,11 @@
-import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import React from "react";
 import classNames from "classnames";
-import queryString from "query-string";
 
 import "./_model-group-toggle.scss";
 
 const buttons = ["status", "cloud", "owner"];
 
 const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
-  const history = useHistory();
-  const queryStrings = queryString.parse(history.location.search);
-  queryStrings.groupedby = groupedBy;
-  const newQs = queryString.stringify(queryStrings);
-  useEffect(() => {
-    history.push({
-      pathname: "/models",
-      search: groupedBy === "status" ? null : newQs
-    });
-  }, [history, groupedBy, newQs]);
-
   return (
     <div className="p-model-group-toggle">
       <div className="p-model-group-toggle__inner">
