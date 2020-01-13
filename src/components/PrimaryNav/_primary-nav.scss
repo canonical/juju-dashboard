@@ -3,10 +3,10 @@
 @import "vanilla-framework/scss/vanilla";
 
 .p-primary-nav {
-  width: $sidebar-full-width;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  width: $sidebar-full-width;
 
   a,
   a:hover {
@@ -52,6 +52,14 @@
 
     &:focus {
       outline: 1px dotted $color-navigation-highlight;
+    }
+  }
+
+  .p-primary-nav__bottom {
+    margin-top: auto;
+
+    .p-list__link {
+      color: $color-mid-x-light;
     }
   }
 
@@ -111,14 +119,6 @@
       position: relative;
       top: -3px;
       transform: rotate(180deg);
-    }
-  }
-
-  .p-primary-nav__bottom {
-    margin-top: auto;
-
-    .p-list__link {
-      color: $color-mid-x-light;
     }
   }
 
