@@ -12,6 +12,7 @@ import modelsIcon from "static/images/icons/models-icon.svg";
 import controllersIcon from "static/images/icons/controllers-icon.svg";
 import usageIcon from "static/images/icons/usage-icon.svg";
 import logsIcon from "static/images/icons/logs-icon.svg";
+import bugIcon from "static/images/icons/bug-icon.svg";
 
 // Style imports
 import "./_primary-nav.scss";
@@ -146,6 +147,11 @@ const PrimaryNav = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
+              <img
+                className="p-list__icon"
+                src={bugIcon}
+                alt={`bug icon`}
+              />
               Report a bug
             </a>
           </li>
