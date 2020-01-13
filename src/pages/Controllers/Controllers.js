@@ -44,19 +44,31 @@ export default function Controllers() {
       ]
     }));
 
+  const plurals = {
+    machine: machinesCount > 1 ? "s" : "",
+    application: applicationCount > 1 ? "s" : "",
+    unit: unitCount > 1 ? "s" : ""
+  };
+
   return (
     <Layout>
       <div className="l-content">
         <div className="overview">
           <div className="row">
             <div className="col-4 overview__machines">
-              <strong>{machinesCount} machines</strong>
+              <strong data-test="machine-count">
+                {machinesCount} machine{plurals.machine}
+              </strong>
             </div>
             <div className="col-4 overview__applications">
-              <strong>{applicationCount} applications</strong>
+              <strong data-test="application-count">
+                {applicationCount} application{plurals.application}
+              </strong>
             </div>
             <div className="col-4 overview__units">
-              <strong>{unitCount} units</strong>
+              <strong data-test="unit-count">
+                {unitCount} unit{plurals.unit}
+              </strong>
             </div>
           </div>
         </div>

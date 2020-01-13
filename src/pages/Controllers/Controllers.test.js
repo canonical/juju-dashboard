@@ -48,7 +48,7 @@ describe("Controllers overview panel", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find(".overview__machines strong").text()).toBe(
+    expect(wrapper.find("[data-test='machine-count']").text()).toBe(
       "56 machines"
     );
   });
@@ -61,7 +61,7 @@ describe("Controllers overview panel", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find(".overview__applications strong").text()).toBe(
+    expect(wrapper.find("[data-test='application-count']").text()).toBe(
       "59 applications"
     );
   });
@@ -74,6 +74,6 @@ describe("Controllers overview panel", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find(".overview__units strong").text()).toBe("58 units");
+    expect(wrapper.find("[data-test='unit-count']").text()).toBe("58 units");
   });
 });
