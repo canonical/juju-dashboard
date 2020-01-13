@@ -323,6 +323,11 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
                 rel="noopener noreferrer"
                 target="_blank"
               >
+                <img
+                  alt="bug icon"
+                  className="p-list__icon"
+                  src="bug-icon.svg"
+                />
                 Report a bug
               </a>
             </li>

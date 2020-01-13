@@ -147,11 +147,7 @@ const PrimaryNav = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <img
-                className="p-list__icon"
-                src={bugIcon}
-                alt={`bug icon`}
-              />
+              <img className="p-list__icon" src={bugIcon} alt={`bug icon`} />
               Report a bug
             </a>
           </li>
