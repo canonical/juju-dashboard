@@ -28,14 +28,14 @@ export default function Models() {
   // If it doesn't exist, fall back to grouping by status
   const location = useLocation();
   const queryStrings = queryString.parse(location.search);
-  const getGroupedByFilter = queryStrings.groupedby || "status";
+  const groupedByFilter = queryStrings.groupedby || "status";
 
   // Set initial state using filter from URL
-  const [groupedBy, setGroupedBy] = useState(getGroupedByFilter);
+  const [groupedBy, setGroupedBy] = useState(groupedByFilter);
   // Add as an effect so UI is updated on each component render (e.g. Back button)
   useEffect(() => {
-    setGroupedBy(getGroupedByFilter);
-  }, [setGroupedBy, getGroupedByFilter]);
+    setGroupedBy(groupedByFilter);
+  }, [setGroupedBy, groupedByFilter]);
 
   const models = blocked + alert + running;
   return (
