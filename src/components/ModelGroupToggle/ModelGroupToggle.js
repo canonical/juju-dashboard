@@ -12,17 +12,11 @@ const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
   const queryStrings = queryString.parse(window.location.search);
   queryStrings.groupedby = groupedBy;
   useEffect(() => {
-    if (groupedBy === "status") {
-      history.push({
-        pathname: "/models",
-        search: null
-      });
-    } else {
-      history.push({
-        pathname: "/models",
-        search: queryString.stringify(queryStrings)
-      });
-    }
+    history.push({
+      pathname: "/models",
+      search:
+        groupedBy === "status" ? null : queryString.stringify(queryStrings)
+    });
     // Including queryStrings to the dependency array will trigger an infinite loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, groupedBy]);
