@@ -9,15 +9,9 @@ import FilterTags from "components/FilterTags/FilterTags";
 import UserIcon from "components/UserIcon/UserIcon";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
+import { pluralize } from "app/utils";
 
 import "./_models.scss";
-
-function pluralize(value, string) {
-  if (value && (value === 0 || value > 1)) {
-    return string + "s";
-  }
-  return string;
-}
 
 export default function Models() {
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);

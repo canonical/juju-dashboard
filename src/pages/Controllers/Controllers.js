@@ -5,6 +5,7 @@ import Layout from "components/Layout/Layout";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
 import { getControllerData, getModelCounts } from "app/selectors";
+import { pluralize } from "app/utils";
 
 import "./_controllers.scss";
 
@@ -44,12 +45,6 @@ export default function Controllers() {
       ]
     }));
 
-  const plurals = {
-    machine: machinesCount > 1 ? "s" : "",
-    application: applicationCount > 1 ? "s" : "",
-    unit: unitCount > 1 ? "s" : ""
-  };
-
   return (
     <Layout>
       <div className="l-content">
@@ -57,17 +52,17 @@ export default function Controllers() {
           <div className="row">
             <div className="col-4 overview__machines">
               <strong data-test="machine-count">
-                {machinesCount} machine{plurals.machine}
+                {machinesCount} {pluralize(machinesCount, "machine")}
               </strong>
             </div>
             <div className="col-4 overview__applications">
               <strong data-test="application-count">
-                {applicationCount} application{plurals.application}
+                {applicationCount} {pluralize(applicationCount, "application")}
               </strong>
             </div>
             <div className="col-4 overview__units">
               <strong data-test="unit-count">
-                {unitCount} unit{plurals.unit}
+                {unitCount} {pluralize(unitCount, "unit")}
               </strong>
             </div>
           </div>
