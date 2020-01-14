@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`App renders without crashing and matches snapshot 1`] = `
-<BrowserRouter>
+<BrowserRouter
+  basename="/"
+>
   <ErrorBoundary>
     <Switch>
       <LogIn>

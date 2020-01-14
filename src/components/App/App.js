@@ -9,9 +9,11 @@ import { Routes } from "components/Routes/Routes";
 // Pages
 import NotFound from "pages/NotFound/NotFound";
 
+const baseURL = process.env.REACT_APP_BASE_APP_URL;
+
 function App() {
   return (
-    <Router>
+    <Router basename={baseURL}>
       <ErrorBoundary>
         <Switch>
           <Login>
