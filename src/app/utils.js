@@ -110,3 +110,16 @@ export const getUnitStatusGroup = unit => {
 export const extractOwnerName = tag => {
   return tag.split("@")[0].replace("user-", "");
 };
+
+/**
+  Returns (s) string if the value is more then one
+  @param {string} value The integer to be checked
+  @param {string} string The item name to be pluralized
+  @returns {string} The item pluralized if required
+*/
+export const pluralize = (value, string) => {
+  if (value && (value === 0 || value > 1)) {
+    return string + "s";
+  }
+  return string;
+};
