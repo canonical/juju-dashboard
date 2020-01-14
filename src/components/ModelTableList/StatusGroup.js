@@ -161,7 +161,7 @@ export default function StatusGroup({ activeUser }) {
   } = generateModelTableDataByStatus(groupedModelDataByStatus, activeUser);
 
   return (
-    <>
+    <div className="status-group">
       <MainTable
         className={"u-table-layout--auto"}
         headers={generateStatusTableHeaders("Blocked", blockedRows.length)}
@@ -177,6 +177,6 @@ export default function StatusGroup({ activeUser }) {
         headers={generateStatusTableHeaders("Running", runningRows.length)}
         rows={runningRows}
       />
-    </>
+    </div>
   );
 }
