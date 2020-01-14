@@ -362,6 +362,13 @@ export const getGroupedModelDataByCloud = createSelector(
 );
 
 /**
+  Returns the model data counts.
+  @returns {Function} The memoized selector to return the models data
+    count.
+*/
+export const getModelCounts = createSelector(getModelData, countModelData);
+
+/**
   Returns the counts of the model statuses
   @returns {Function} The memoized selector to return the model status counts.
 */
