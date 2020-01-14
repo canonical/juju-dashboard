@@ -2,8 +2,9 @@ import React from "react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Router } from "react-router";
 import dataDump from "testing/complete-redux-store-dump";
+import { createMemoryHistory } from "history";
 
 import Models from "./Models";
 
@@ -35,5 +36,30 @@ describe("Models page", () => {
     expect(wrapper.find(".models__count").text()).toBe(
       "17 models: 2 blocked, 4 alerts, 11 running"
     );
+  });
+
+  it("displays correct grouping view", () => {
+    const history = createMemoryHistory();
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <Models />
+        </Router>
+      </Provider>
+    );
+    expect(
+      wrapper.find(".p-model-group-toggle__button.is-selected").text()
+    ).toBe("status");
+    wrapper.find("button[value='owner']").simulate("click", {
+      target: { value: "owner" }
+    });
+    wrapper.update();
+    expect(
+      wrapper.find(".p-model-group-toggle__button.is-selected").text()
+    ).toBe("owner");
+    const searchParams = new URLSearchParams(history.location.search);
+    expect(searchParams.get("groupedby")).toEqual("owner");
+    expect(wrapper.find(".owners-group"));
   });
 });

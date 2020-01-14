@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useHistory, useLocation } from "react-router-dom";
+import queryString from "query-string";
 
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
@@ -14,8 +16,27 @@ import { pluralize } from "app/utils";
 import "./_models.scss";
 
 export default function Models() {
+  // Grab filter from 'groupedby' query in URL and assign to variable
+  const history = useHistory();
+  const location = useLocation();
+  const queryStrings = queryString.parse(location.search);
+  // If it doesn't exist, fall back to grouping by status
+  const groupedByFilter = queryStrings.groupedby || "status";
+  // Set initial state using filter from URL
+  const [groupedBy, setGroupedBy] = useState(groupedByFilter);
+  // Assign updated filter back to queryStrings obj
+  queryStrings.groupedby = groupedBy;
+  // Stringify the obj again to push back to URL
+  const updatedQs = queryString.stringify(queryStrings);
+  // Add as an effect so UI is updated on each component render (e.g. Back button)
+  useEffect(() => {
+    history.push({
+      pathname: "/models",
+      search: groupedBy === "status" ? null : updatedQs
+    });
+  }, [history, groupedBy, updatedQs]);
+
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
-  const [groupedBy, setGroupedBy] = useState("status");
   const models = blocked + alert + running;
   return (
     <Layout>
