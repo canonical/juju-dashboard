@@ -19,16 +19,20 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
             "sortKey": "google",
           },
           Object {
+            "content": "Owner",
+            "sortKey": "owner",
+          },
+          Object {
             "content": "Status",
-            "sortKey": "statusˇ",
+            "sortKey": "status",
           },
           Object {
             "content": "Configuration",
             "sortKey": "summary",
           },
           Object {
-            "content": "Cloud/Region",
-            "sortKey": "cloud",
+            "content": "Region",
+            "sortKey": "region",
           },
           Object {
             "content": "Credential",
@@ -56,6 +60,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   canonical-kubernetes
                 </ForwardRef>,
+              },
+              Object {
+                "content": "spaceman",
               },
               Object {
                 "className": "u-capitalise",
@@ -132,8 +139,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-central1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -167,6 +172,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   sub-test
                 </ForwardRef>,
+              },
+              Object {
+                "content": "activedev",
               },
               Object {
                 "className": "u-capitalise",
@@ -243,8 +251,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -278,6 +284,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   hadoopspark
                 </ForwardRef>,
+              },
+              Object {
+                "content": "spaceman",
               },
               Object {
                 "className": "u-capitalise",
@@ -354,8 +363,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -389,6 +396,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   mymodel
                 </ForwardRef>,
+              },
+              Object {
+                "content": "spaceman",
               },
               Object {
                 "className": "u-capitalise",
@@ -465,8 +475,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -500,6 +508,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   mymodel4
                 </ForwardRef>,
+              },
+              Object {
+                "content": "spaceman",
               },
               Object {
                 "className": "u-capitalise",
@@ -576,8 +587,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-central1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -611,6 +620,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   testing
                 </ForwardRef>,
+              },
+              Object {
+                "content": "spaceman",
               },
               Object {
                 "className": "u-capitalise",
@@ -687,8 +699,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   europe-west1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -722,6 +732,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   group-test
                 </ForwardRef>,
+              },
+              Object {
+                "content": "activedev",
               },
               Object {
                 "className": "u-capitalise",
@@ -798,8 +811,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-central1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -833,6 +844,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   new-search-aggregate
                 </ForwardRef>,
+              },
+              Object {
+                "content": "activedev",
               },
               Object {
                 "className": "u-capitalise",
@@ -909,8 +923,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-central1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -946,6 +958,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </ForwardRef>,
               },
               Object {
+                "content": "activedev",
+              },
+              Object {
                 "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-running"
@@ -1020,8 +1035,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -1057,6 +1070,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </ForwardRef>,
               },
               Object {
+                "content": "activedev",
+              },
+              Object {
                 "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-running"
@@ -1131,8 +1147,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -1168,6 +1182,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </ForwardRef>,
               },
               Object {
+                "content": "activedev",
+              },
+              Object {
                 "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-running"
@@ -1242,8 +1259,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -1279,6 +1294,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </ForwardRef>,
               },
               Object {
+                "content": "alto",
+              },
+              Object {
                 "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-alert"
@@ -1353,8 +1371,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -1390,6 +1406,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </ForwardRef>,
               },
               Object {
+                "content": "uncle-phil",
+              },
+              Object {
                 "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-alert"
@@ -1464,8 +1483,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -1501,6 +1518,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </ForwardRef>,
               },
               Object {
+                "content": "uncle-phil",
+              },
+              Object {
                 "className": "u-capitalise",
                 "content": <span
                   className="status-icon is-alert"
@@ -1575,8 +1595,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -1610,6 +1628,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   sales-dept
                 </ForwardRef>,
+              },
+              Object {
+                "content": "uncle-phil",
               },
               Object {
                 "className": "u-capitalise",
@@ -1686,8 +1707,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   us-east1
-                  /
-                  google
                 </a>,
               },
               Object {
@@ -1748,7 +1767,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   <th
                     role="columnheader"
                   >
-                    Status
+                    Owner
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -1757,7 +1776,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   <th
                     role="columnheader"
                   >
-                    Configuration
+                    Status
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -1766,7 +1785,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   <th
                     role="columnheader"
                   >
-                    Cloud/Region
+                    Configuration
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -1775,11 +1794,20 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   <th
                     role="columnheader"
                   >
-                    Credential
+                    Region
                   </th>
                 </TableHeader>
                 <TableHeader
                   key="5"
+                >
+                  <th
+                    role="columnheader"
+                  >
+                    Credential
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="6"
                 >
                   <th
                     role="columnheader"
@@ -1789,7 +1817,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableHeader>
                 <TableHeader
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <th
                     className="u-align--right"
@@ -1833,8 +1861,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    spaceman
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -1849,7 +1887,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -1913,7 +1951,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -1924,13 +1962,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-central1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -1945,7 +1981,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -1962,7 +1998,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -2004,8 +2040,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    activedev
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -2020,7 +2066,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -2084,7 +2130,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -2095,13 +2141,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -2116,7 +2160,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -2133,7 +2177,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -2175,8 +2219,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    spaceman
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -2191,7 +2245,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -2255,7 +2309,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -2266,13 +2320,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -2287,7 +2339,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -2304,7 +2356,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -2346,8 +2398,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    spaceman
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -2362,7 +2424,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -2426,7 +2488,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -2437,13 +2499,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -2458,7 +2518,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -2475,7 +2535,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -2517,8 +2577,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    spaceman
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -2533,7 +2603,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -2597,7 +2667,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -2608,13 +2678,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-central1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -2629,7 +2697,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -2646,7 +2714,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -2688,8 +2756,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    spaceman
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -2704,7 +2782,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -2768,7 +2846,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -2779,13 +2857,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       europe-west1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -2800,7 +2876,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -2817,7 +2893,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -2859,8 +2935,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    activedev
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -2875,7 +2961,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -2939,7 +3025,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -2950,13 +3036,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-central1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -2971,7 +3055,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -2988,7 +3072,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -3030,8 +3114,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    activedev
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -3046,7 +3140,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -3110,7 +3204,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -3121,13 +3215,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-central1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -3142,7 +3234,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -3159,7 +3251,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -3201,8 +3293,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    activedev
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -3217,7 +3319,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -3281,7 +3383,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -3292,13 +3394,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -3313,7 +3413,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -3330,7 +3430,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -3372,8 +3472,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    activedev
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -3388,7 +3498,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -3452,7 +3562,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -3463,13 +3573,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -3484,7 +3592,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -3501,7 +3609,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -3543,8 +3651,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    activedev
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -3559,7 +3677,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -3623,7 +3741,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -3634,13 +3752,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -3655,7 +3771,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -3672,7 +3788,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -3714,8 +3830,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    alto
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -3730,7 +3856,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -3794,7 +3920,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -3805,13 +3931,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -3826,7 +3950,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -3843,7 +3967,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -3885,8 +4009,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    uncle-phil
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -3901,7 +4035,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -3965,7 +4099,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -3976,13 +4110,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -3997,7 +4129,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -4014,7 +4146,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -4056,8 +4188,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    uncle-phil
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -4072,7 +4214,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -4136,7 +4278,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -4147,13 +4289,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -4168,7 +4308,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -4185,7 +4325,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -4227,8 +4367,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    uncle-phil
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -4243,7 +4393,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -4307,7 +4457,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -4318,13 +4468,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       us-east1
-                      /
-                      google
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -4339,7 +4487,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -4356,7 +4504,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -4385,16 +4533,20 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
             "sortKey": "aws",
           },
           Object {
+            "content": "Owner",
+            "sortKey": "owner",
+          },
+          Object {
             "content": "Status",
-            "sortKey": "statusˇ",
+            "sortKey": "status",
           },
           Object {
             "content": "Configuration",
             "sortKey": "summary",
           },
           Object {
-            "content": "Cloud/Region",
-            "sortKey": "cloud",
+            "content": "Region",
+            "sortKey": "region",
           },
           Object {
             "content": "Credential",
@@ -4422,6 +4574,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   ants-wordpress
                 </ForwardRef>,
+              },
+              Object {
+                "content": "that-guy",
               },
               Object {
                 "className": "u-capitalise",
@@ -4498,8 +4653,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   eu-central-1
-                  /
-                  aws
                 </a>,
               },
               Object {
@@ -4533,6 +4686,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 >
                   bionic-model
                 </ForwardRef>,
+              },
+              Object {
+                "content": "that-guy",
               },
               Object {
                 "className": "u-capitalise",
@@ -4609,8 +4765,6 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   href="#_"
                 >
                   eu-central-1
-                  /
-                  aws
                 </a>,
               },
               Object {
@@ -4671,7 +4825,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   <th
                     role="columnheader"
                   >
-                    Status
+                    Owner
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -4680,7 +4834,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   <th
                     role="columnheader"
                   >
-                    Configuration
+                    Status
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -4689,7 +4843,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   <th
                     role="columnheader"
                   >
-                    Cloud/Region
+                    Configuration
                   </th>
                 </TableHeader>
                 <TableHeader
@@ -4698,11 +4852,20 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   <th
                     role="columnheader"
                   >
-                    Credential
+                    Region
                   </th>
                 </TableHeader>
                 <TableHeader
                   key="5"
+                >
+                  <th
+                    role="columnheader"
+                  >
+                    Credential
+                  </th>
+                </TableHeader>
+                <TableHeader
+                  key="6"
                 >
                   <th
                     role="columnheader"
@@ -4712,7 +4875,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableHeader>
                 <TableHeader
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <th
                     className="u-align--right"
@@ -4756,8 +4919,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    that-guy
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -4772,7 +4945,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -4836,7 +5009,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -4847,13 +5020,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       eu-central-1
-                      /
-                      aws
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -4868,7 +5039,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -4885,7 +5056,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"
@@ -4927,8 +5098,18 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  className="u-capitalise"
                   key="1"
+                >
+                  <td
+                    className=""
+                    role="gridcell"
+                  >
+                    that-guy
+                  </td>
+                </TableCell>
+                <TableCell
+                  className="u-capitalise"
+                  key="2"
                 >
                   <td
                     className="u-capitalise"
@@ -4943,7 +5124,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-overflow--visible"
-                  key="2"
+                  key="3"
                 >
                   <td
                     className="u-overflow--visible"
@@ -5007,7 +5188,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="3"
+                  key="4"
                 >
                   <td
                     className=""
@@ -5018,13 +5199,11 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                       href="#_"
                     >
                       eu-central-1
-                      /
-                      aws
                     </a>
                   </td>
                 </TableCell>
                 <TableCell
-                  key="4"
+                  key="5"
                 >
                   <td
                     className=""
@@ -5039,7 +5218,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   </td>
                 </TableCell>
                 <TableCell
-                  key="5"
+                  key="6"
                 >
                   <td
                     className=""
@@ -5056,7 +5235,7 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                 </TableCell>
                 <TableCell
                   className="u-align--right"
-                  key="6"
+                  key="7"
                 >
                   <td
                     className="u-align--right"

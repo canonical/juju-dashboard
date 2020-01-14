@@ -1,7 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
-import { generateStatusElement, getModelStatusGroupData } from "app/utils";
+import {
+  generateStatusElement,
+  getModelStatusGroupData,
+  extractOwnerName
+} from "app/utils";
 import { getGroupedModelDataByCloud } from "app/selectors";
 import { generateModelDetailsLink, getStatusValue } from "./shared";
 
@@ -31,9 +35,10 @@ function generateCloudTableHeaders(cloud, count) {
       content: generateStatusElement(cloud, count, false),
       sortKey: cloud.toLowerCase()
     },
-    { content: "Status", sortKey: "statusˇ" },
+    { content: "Owner", sortKey: "owner" },
+    { content: "Status", sortKey: "status" },
     { content: "Configuration", sortKey: "summary" },
-    { content: "Cloud/Region", sortKey: "cloud" },
+    { content: "Region", sortKey: "region" },
     { content: "Credential", sortKey: "credential" },
     { content: "Controller", sortKey: "controller" },
     {
@@ -64,6 +69,9 @@ export default function CloudGroup({ activeUser }) {
               )
             },
             {
+              content: extractOwnerName(model.info.ownerTag)
+            },
+            {
               content: generateStatusElement(highestStatus),
               className: "u-capitalise"
             },
@@ -74,8 +82,7 @@ export default function CloudGroup({ activeUser }) {
             {
               content: (
                 <a href="#_" className="p-link--soft">
-                  {getStatusValue(model, "region")}/
-                  {getStatusValue(model, "cloudTag")}
+                  {getStatusValue(model, "region")}
                 </a>
               )
             },
