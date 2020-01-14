@@ -19,7 +19,7 @@ const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
                 "is-selected": groupedBy === label
               })}
               value={label}
-              onClick={e => setGroupedBy(e.target.value)}
+              onClick={e => setGroupedBy(e.currentTarget.value)}
             >
               {label}
             </button>
