@@ -12,6 +12,7 @@ import modelsIcon from "static/images/icons/models-icon.svg";
 import controllersIcon from "static/images/icons/controllers-icon.svg";
 import usageIcon from "static/images/icons/usage-icon.svg";
 import logsIcon from "static/images/icons/logs-icon.svg";
+import bugIcon from "static/images/icons/bug-icon.svg";
 
 // Style imports
 import "./_primary-nav.scss";
@@ -137,6 +138,21 @@ const PrimaryNav = () => {
           </li>
         ))}
       </ul>
+      <div className="p-primary-nav__bottom">
+        <ul className="p-list">
+          <li className="p-list__item">
+            <a
+              className="p-list__link"
+              href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img className="p-list__icon" src={bugIcon} alt={`bug icon`} />
+              Report a bug
+            </a>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 };

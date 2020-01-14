@@ -308,6 +308,31 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
             </NavLink>
           </li>
         </ul>
+        <div
+          className="p-primary-nav__bottom"
+        >
+          <ul
+            className="p-list"
+          >
+            <li
+              className="p-list__item"
+            >
+              <a
+                className="p-list__link"
+                href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <img
+                  alt="bug icon"
+                  className="p-list__icon"
+                  src="bug-icon.svg"
+                />
+                Report a bug
+              </a>
+            </li>
+          </ul>
+        </div>
       </nav>
     </PrimaryNav>
   </div>

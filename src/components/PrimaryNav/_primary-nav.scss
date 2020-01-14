@@ -3,6 +3,9 @@
 @import "vanilla-framework/scss/vanilla";
 
 .p-primary-nav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: $sidebar-full-width;
 
   a,
@@ -49,6 +52,14 @@
 
     &:focus {
       outline: 1px dotted $color-navigation-highlight;
+    }
+  }
+
+  .p-primary-nav__bottom {
+    margin-top: auto;
+
+    .p-list__link {
+      color: $color-mid-x-light;
     }
   }
 
