@@ -14,7 +14,6 @@ const DonutChart = ({ chartData }) => {
     // append the svg object to the div called 'my_dataviz'
     const svg = d3
       .select(ref.current)
-      .append("svg")
       .attr("width", width)
       .attr("height", height)
       .append("g")
@@ -53,8 +52,8 @@ const DonutChart = ({ chartData }) => {
         return color(d.data.key);
       })
 
-  }, []);
-  return <div ref={ref} />;
+  }, [chartData]);
+  return <svg ref={ref} />;
 };
 
 export default DonutChart;
