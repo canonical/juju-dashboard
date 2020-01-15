@@ -20,7 +20,7 @@ describe("CloudGroup", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find(CloudGroup)).toMatchSnapshot();
+    expect(wrapper.find(".cloud-group")).toMatchSnapshot();
   });
 
   it("by default, renders no tables with no data", () => {

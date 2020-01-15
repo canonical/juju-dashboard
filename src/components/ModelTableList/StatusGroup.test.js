@@ -20,7 +20,7 @@ describe("StatusGroup", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find(StatusGroup)).toMatchSnapshot();
+    expect(wrapper.find(".status-group")).toMatchSnapshot();
   });
   it("by default, renders with all table headers and no data", () => {
     const store = mockStore({

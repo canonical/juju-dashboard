@@ -20,7 +20,7 @@ describe("OwnerGroup", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find(OwnerGroup)).toMatchSnapshot();
+    expect(wrapper.find(".owners-group")).toMatchSnapshot();
   });
 
   it("by default, renders no tables with no data", () => {
