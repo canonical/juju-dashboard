@@ -16,16 +16,16 @@ import { generateModelDetailsLink, getStatusValue } from "./shared";
 */
 function generateModelTableDataByCloud(groupedModels) {
   const modelData = {};
-  Object.keys(groupedModels).forEach(owner => {
-    modelData[owner] = modelData[owner] || [];
-    modelData[owner].push(groupedModels[owner]);
+  Object.keys(groupedModels).forEach(cloud => {
+    modelData[cloud] = modelData[cloud] || [];
+    modelData[cloud].push(groupedModels[cloud]);
   });
   return modelData;
 }
 
 /**
-  Generates the table headers for the owner grouped table
-  @param {String} owner The title of the table.
+  Generates the table headers for the cloud grouped table
+  @param {String} cloud The title of the table.
   @param {Number} count The number of elements in the status.
   @returns {Array} The headers for the table.
 */
@@ -53,13 +53,13 @@ export default function CloudGroup({ activeUser }) {
   const groupedModelDataByCloud = useSelector(getGroupedModelDataByCloud);
   const cloudRows = generateModelTableDataByCloud(groupedModelDataByCloud);
   let cloudTables = [];
-  let ownerModels = {};
-  for (const owner in cloudRows) {
-    Object.values(cloudRows[owner]).forEach(modelGroup => {
-      ownerModels.rows = [];
+  let cloudModels = {};
+  for (const cloud in cloudRows) {
+    Object.values(cloudRows[cloud]).forEach(modelGroup => {
+      cloudModels.rows = [];
       modelGroup.forEach(model => {
         const { highestStatus } = getModelStatusGroupData(model);
-        ownerModels.rows.push({
+        cloudModels.rows.push({
           columns: [
             {
               content: generateModelDetailsLink(
@@ -120,9 +120,9 @@ export default function CloudGroup({ activeUser }) {
     cloudTables.push(
       <MainTable
         className={"u-table-layout--auto"}
-        key={owner}
-        headers={generateCloudTableHeaders(owner, ownerModels.rows.length)}
-        rows={ownerModels.rows}
+        key={cloud}
+        headers={generateCloudTableHeaders(cloud, cloudModels.rows.length)}
+        rows={cloudModels.rows}
       />
     );
   }

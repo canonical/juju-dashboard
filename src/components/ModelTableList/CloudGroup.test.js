@@ -42,7 +42,7 @@ describe("CloudGroup", () => {
     expect(tables.length).toBe(0);
   });
 
-  it("displays model data grouped by owner from the redux store", () => {
+  it("displays model data grouped by cloud from the redux store", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <MemoryRouter>
