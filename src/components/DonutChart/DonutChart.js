@@ -21,7 +21,7 @@ const DonutChart = ({ chartData }) => {
       .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
     // Create dummy data
-    const data = {chartData};
+    const data = chartData;
     console.log(data);
 
     // set the color scale

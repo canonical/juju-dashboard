@@ -15,11 +15,6 @@ export default function Controllers() {
   const { machinesCount, applicationCount, unitCount } = useSelector(
     getModelCounts
   );
-  const {
-    machinesBlockedCount,
-    machinesAlertCount,
-    machinesRunningCount
-  } = useSelector(getModelCounts);
 
   const headers = [
     { content: "running", sortKey: "running" },
@@ -51,7 +46,7 @@ export default function Controllers() {
       ]
     }));
 
-  let machinesChartData = {machinesCount, applicationCount, unitCount};
+  let machinesChartData = {a:machinesCount, b:applicationCount, c:unitCount};
 
   return (
     <Layout>
