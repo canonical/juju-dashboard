@@ -123,3 +123,12 @@ export const pluralize = (value, string) => {
   }
   return string;
 };
+
+/**
+  Returns cloud string from cloudTag
+  @param {string} cloudTag The cloudTag identifier returns from the API
+  @returns {string} The simplified cloud string
+*/
+export const extractCloudName = tag => {
+  return tag.replace("cloud-", "");
+};

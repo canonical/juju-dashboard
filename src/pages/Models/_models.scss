@@ -15,6 +15,10 @@
     grid-template-columns: 1fr 0.6fr 0.75fr 1.15fr 1fr 0.5fr 0.65fr;
   }
 
+  .cloud-group tr {
+    grid-template-columns: 1.15fr 0.75fr 0.6fr 0.75fr 0.85fr 1fr 0.5fr 0.65fr;
+  }
+
   // Tooltips override
   .p-tooltip--top-center .p-tooltip__message {
     left: calc(50% - 0.875rem);
