@@ -29,7 +29,6 @@ const DonutChart = ({ chartData }) => {
     });
     const dataReady = pie(d3.entries(data));
 
-
     svg
       .selectAll("g")
       .data(dataReady)
@@ -46,10 +45,10 @@ const DonutChart = ({ chartData }) => {
         return color(d.data.key);
       });
 
-      return () => {
-        console.log('exit', svg)
-        svg.remove()
-      };
+    return () => {
+      console.log("exit", svg);
+      svg.remove();
+    };
   }, [chartData]);
   return <svg ref={ref} />;
 };

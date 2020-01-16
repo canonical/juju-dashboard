@@ -41,7 +41,7 @@ export default function ControllersOverview() {
   };
 
   return (
-    <div className="p-strip--light is-shallow controllers-overview">
+    <div className="p-strip is-shallow controllers-overview">
       <div className="row">
         <h5>Model status across controllers</h5>
       </div>

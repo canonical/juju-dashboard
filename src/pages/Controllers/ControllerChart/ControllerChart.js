@@ -6,11 +6,7 @@ import { pluralize } from "app/utils";
 
 import "./_controller-chart.scss";
 
-export default function ControllerChart({
-  chartData,
-  totalCount,
-  totalLabel
-}) {
+export default function ControllerChart({ chartData, totalCount, totalLabel }) {
   return (
     <div className="p-chart">
       <div className="p-chart__chart">
