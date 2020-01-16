@@ -89,16 +89,52 @@ export const getApplicationStatusGroup = application => {
 };
 
 /**
-  Returns the string status for the unit.
-  @param {Object} unit The unit to check the status of in the format stored
-    in the redux store.
-  @returns {Object} The status of the unit and any relevent messaging.
+  Returns the status for the machine.
+  @param {Object} machine The machine to check the status of in the
+    format stored in the redux store.
+  @returns {Object} The status of the machine and any relevent messaging.
 */
-export const getUnitStatusGroup = unit => {
+export const getMachineStatusGroup = machine => {
+  // Possible "blocked" or error states in machine statuses.
+  const blocked = ["down"];
+  // Possible "alert" states in machine statuses.
+  const alert = ["pending"];
+  const status = machine.agentStatus.status;
   const response = {
     status: "running",
     message: null
   };
+  if (blocked.includes(status)) {
+    response.status = "blocked";
+  }
+  if (alert.includes(status)) {
+    response.status = "alert";
+  }
+  return response;
+};
+
+/**
+  Returns the status for the units.
+  @param {Object} units The units to check the status of in the
+    format stored in the redux store.
+  @returns {Object} The status of the units and any relevent messaging.
+*/
+export const getUnitStatusGroup = units => {
+  // Possible "blocked" or error states in units statuses.
+  const blocked = ["lost"];
+  // Possible "alert" states in units statuses.
+  const alert = ["allocating"];
+  const status = units.agentStatus.status;
+  const response = {
+    status: "running",
+    message: null
+  };
+  if (blocked.includes(status)) {
+    response.status = "blocked";
+  }
+  if (alert.includes(status)) {
+    response.status = "alert";
+  }
   return response;
 };
 

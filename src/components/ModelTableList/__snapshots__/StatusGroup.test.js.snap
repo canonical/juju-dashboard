@@ -13,7 +13,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             className="status-icon is-blocked"
           >
             Blocked
-             (2)
+             (6)
           </span>,
           "sortKey": "blocked",
         },
@@ -172,6 +172,486 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
               "content": <React.Fragment>
                 <div>
                   <ForwardRef
+                    to="/models/spaceman@external/mymodel4"
+                  >
+                    mymodel4
+                  </ForwardRef>
+                </div>
+                <span
+                  className="model-table-list_error-message"
+                  title="Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running."
+                >
+                  Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running.
+                </span>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                spaceman
+              </a>,
+            },
+            Object {
+              "className": "u-overflow--visible",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      7
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      11
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      11
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                us-central1
+                /
+                google
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                clean-algebra-206308
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
+              >
+                a030379a...
+              </a>,
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-09-05",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <div>
+                  <ForwardRef
+                    to="/models/spaceman@external/testing"
+                  >
+                    testing
+                  </ForwardRef>
+                </div>
+                <span
+                  className="model-table-list_error-message"
+                  title=""
+                >
+                  
+                </span>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                spaceman
+              </a>,
+            },
+            Object {
+              "className": "u-overflow--visible",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      2
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      4
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                europe-west1
+                /
+                google
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                clean-algebra-206308
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
+              >
+                a030379a...
+              </a>,
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-09-05",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <div>
+                  <ForwardRef
+                    to="/models/uncle-phil@external/ci-website"
+                  >
+                    ci-website
+                  </ForwardRef>
+                </div>
+                <span
+                  className="model-table-list_error-message"
+                  title=""
+                >
+                  
+                </span>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                uncle-phil
+              </a>,
+            },
+            Object {
+              "className": "u-overflow--visible",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      1
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                us-east1
+                /
+                google
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                gce
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
+              >
+                a030379a...
+              </a>,
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-04-13",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <div>
+                  <ForwardRef
+                    to="/models/uncle-phil@external/ci-different"
+                  >
+                    ci-different
+                  </ForwardRef>
+                </div>
+                <span
+                  className="model-table-list_error-message"
+                  title="; jenkins-slave-4 is accepting work"
+                >
+                  ; jenkins-slave-4 is accepting work
+                </span>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                uncle-phil
+              </a>,
+            },
+            Object {
+              "className": "u-overflow--visible",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      3
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                us-east1
+                /
+                google
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                gce
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
+              >
+                a030379a...
+              </a>,
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-04-13",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <div>
+                  <ForwardRef
                     to="/models/that-guy@external/bionic-model"
                   >
                     bionic-model
@@ -311,7 +791,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="status-icon is-blocked"
                   >
                     Blocked
-                     (2)
+                     (6)
                   </span>
                 </th>
               </TableHeader>
@@ -569,6 +1049,718 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 >
                   <div>
                     <Link
+                      to="/models/spaceman@external/mymodel4"
+                    >
+                      <LinkAnchor
+                        href="/models/spaceman@external/mymodel4"
+                        navigate={[Function]}
+                      >
+                        <a
+                          href="/models/spaceman@external/mymodel4"
+                          onClick={[Function]}
+                        >
+                          mymodel4
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
+                  <span
+                    className="model-table-list_error-message"
+                    title="Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running."
+                  >
+                    Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running.
+                  </span>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    spaceman
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-overflow--visible"
+                key="2"
+              >
+                <td
+                  className="u-overflow--visible"
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        7
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        11
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        11
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    us-central1
+                    /
+                    google
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    clean-algebra-206308
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
+                  >
+                    a030379a...
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-09-05
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="2"
+          >
+            <tr
+              role="row"
+            >
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div>
+                    <Link
+                      to="/models/spaceman@external/testing"
+                    >
+                      <LinkAnchor
+                        href="/models/spaceman@external/testing"
+                        navigate={[Function]}
+                      >
+                        <a
+                          href="/models/spaceman@external/testing"
+                          onClick={[Function]}
+                        >
+                          testing
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
+                  <span
+                    className="model-table-list_error-message"
+                    title=""
+                  />
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    spaceman
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-overflow--visible"
+                key="2"
+              >
+                <td
+                  className="u-overflow--visible"
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        2
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        4
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    europe-west1
+                    /
+                    google
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    clean-algebra-206308
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
+                  >
+                    a030379a...
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-09-05
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="3"
+          >
+            <tr
+              role="row"
+            >
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div>
+                    <Link
+                      to="/models/uncle-phil@external/ci-website"
+                    >
+                      <LinkAnchor
+                        href="/models/uncle-phil@external/ci-website"
+                        navigate={[Function]}
+                      >
+                        <a
+                          href="/models/uncle-phil@external/ci-website"
+                          onClick={[Function]}
+                        >
+                          ci-website
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
+                  <span
+                    className="model-table-list_error-message"
+                    title=""
+                  />
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    uncle-phil
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-overflow--visible"
+                key="2"
+              >
+                <td
+                  className="u-overflow--visible"
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        1
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    gce
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
+                  >
+                    a030379a...
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-04-13
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="4"
+          >
+            <tr
+              role="row"
+            >
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div>
+                    <Link
+                      to="/models/uncle-phil@external/ci-different"
+                    >
+                      <LinkAnchor
+                        href="/models/uncle-phil@external/ci-different"
+                        navigate={[Function]}
+                      >
+                        <a
+                          href="/models/uncle-phil@external/ci-different"
+                          onClick={[Function]}
+                        >
+                          ci-different
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
+                  <span
+                    className="model-table-list_error-message"
+                    title="; jenkins-slave-4 is accepting work"
+                  >
+                    ; jenkins-slave-4 is accepting work
+                  </span>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    uncle-phil
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-overflow--visible"
+                key="2"
+              >
+                <td
+                  className="u-overflow--visible"
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        3
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        3
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        3
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    us-east1
+                    /
+                    google
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    gce
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
+                  >
+                    a030379a...
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-04-13
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="5"
+          >
+            <tr
+              role="row"
+            >
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div>
+                    <Link
                       to="/models/that-guy@external/bionic-model"
                     >
                       <LinkAnchor
@@ -785,9 +1977,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
               "content": <React.Fragment>
                 <div>
                   <ForwardRef
-                    to="/models/spaceman@external/testing"
+                    to="/models/spaceman@external/canonical-kubernetes"
                   >
-                    testing
+                    canonical-kubernetes
                   </ForwardRef>
                 </div>
               </React.Fragment>,
@@ -813,7 +2005,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     <span
                       className="model-details__app-icon"
                     >
-                      2
+                      6
                     </span>
                     <span
                       className="p-tooltip__message"
@@ -830,7 +2022,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     <span
                       className="model-details__unit-icon"
                     >
-                      2
+                      10
                     </span>
                     <span
                       className="p-tooltip__message"
@@ -847,7 +2039,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     <span
                       className="model-details__machine-icon"
                     >
-                      4
+                      10
                     </span>
                     <span
                       className="p-tooltip__message"
@@ -865,7 +2057,121 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                europe-west1
+                us-central1
+                /
+                google
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                clean-algebra-206308
+              </a>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+                title="a030379a-940f-4760-8fcf-3062b41a04e7"
+              >
+                a030379a...
+              </a>,
+            },
+            Object {
+              "className": "u-align--right",
+              "content": "2019-09-20",
+            },
+          ],
+        },
+        Object {
+          "columns": Array [
+            Object {
+              "content": <React.Fragment>
+                <div>
+                  <ForwardRef
+                    to="/models/spaceman@external/mymodel"
+                  >
+                    mymodel
+                  </ForwardRef>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                spaceman
+              </a>,
+            },
+            Object {
+              "className": "u-overflow--visible",
+              "content": <React.Fragment>
+                <div
+                  className="model-details__config"
+                >
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__app-icon"
+                    >
+                      6
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Applications
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__unit-icon"
+                    >
+                      10
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Units
+                    </span>
+                  </div>
+                  <div
+                    aria-describedby="tp-cntr"
+                    className="p-tooltip--top-center"
+                  >
+                    <span
+                      className="model-details__machine-icon"
+                    >
+                      10
+                    </span>
+                    <span
+                      className="p-tooltip__message"
+                      id="tp-cntr"
+                      role="tooltip"
+                    >
+                      Machines
+                    </span>
+                  </div>
+                </div>
+              </React.Fragment>,
+            },
+            Object {
+              "content": <a
+                className="p-link--soft"
+                href="#_"
+              >
+                us-east1
                 /
                 google
               </a>,
@@ -1013,9 +2319,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
               "content": <React.Fragment>
                 <div>
                   <ForwardRef
-                    to="/models/uncle-phil@external/ci-website"
+                    to="/models/that-guy@external/ants-wordpress"
                   >
-                    ci-website
+                    ants-wordpress
                   </ForwardRef>
                 </div>
               </React.Fragment>,
@@ -1025,7 +2331,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                uncle-phil
+                that-guy
               </a>,
             },
             Object {
@@ -1041,7 +2347,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     <span
                       className="model-details__app-icon"
                     >
-                      1
+                      2
                     </span>
                     <span
                       className="p-tooltip__message"
@@ -1058,7 +2364,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     <span
                       className="model-details__unit-icon"
                     >
-                      1
+                      2
                     </span>
                     <span
                       className="p-tooltip__message"
@@ -1075,7 +2381,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     <span
                       className="model-details__machine-icon"
                     >
-                      1
+                      2
                     </span>
                     <span
                       className="p-tooltip__message"
@@ -1093,9 +2399,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
+                eu-central-1
                 /
-                google
+                aws
               </a>,
             },
             Object {
@@ -1103,7 +2409,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                gce
+                personal
               </a>,
             },
             Object {
@@ -1117,121 +2423,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             },
             Object {
               "className": "u-align--right",
-              "content": "2019-04-13",
-            },
-          ],
-        },
-        Object {
-          "columns": Array [
-            Object {
-              "content": <React.Fragment>
-                <div>
-                  <ForwardRef
-                    to="/models/uncle-phil@external/ci-different"
-                  >
-                    ci-different
-                  </ForwardRef>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                uncle-phil
-              </a>,
-            },
-            Object {
-              "className": "u-overflow--visible",
-              "content": <React.Fragment>
-                <div
-                  className="model-details__config"
-                >
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__app-icon"
-                    >
-                      3
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Applications
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__unit-icon"
-                    >
-                      3
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Units
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__machine-icon"
-                    >
-                      3
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Machines
-                    </span>
-                  </div>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                us-east1
-                /
-                google
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                gce
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-                title="a030379a-940f-4760-8fcf-3062b41a04e7"
-              >
-                a030379a...
-              </a>,
-            },
-            Object {
-              "className": "u-align--right",
-              "content": "2019-04-13",
+              "content": "2019-10-02",
             },
           ],
         },
@@ -1339,17 +2531,17 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 >
                   <div>
                     <Link
-                      to="/models/spaceman@external/testing"
+                      to="/models/spaceman@external/canonical-kubernetes"
                     >
                       <LinkAnchor
-                        href="/models/spaceman@external/testing"
+                        href="/models/spaceman@external/canonical-kubernetes"
                         navigate={[Function]}
                       >
                         <a
-                          href="/models/spaceman@external/testing"
+                          href="/models/spaceman@external/canonical-kubernetes"
                           onClick={[Function]}
                         >
-                          testing
+                          canonical-kubernetes
                         </a>
                       </LinkAnchor>
                     </Link>
@@ -1389,7 +2581,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                       <span
                         className="model-details__app-icon"
                       >
-                        2
+                        6
                       </span>
                       <span
                         className="p-tooltip__message"
@@ -1406,7 +2598,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                       <span
                         className="model-details__unit-icon"
                       >
-                        2
+                        10
                       </span>
                       <span
                         className="p-tooltip__message"
@@ -1423,7 +2615,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                       <span
                         className="model-details__machine-icon"
                       >
-                        4
+                        10
                       </span>
                       <span
                         className="p-tooltip__message"
@@ -1447,7 +2639,180 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    europe-west1
+                    us-central1
+                    /
+                    google
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="4"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    clean-algebra-206308
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                key="5"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
+                  >
+                    a030379a...
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-align--right"
+                key="6"
+              >
+                <td
+                  className="u-align--right"
+                  role="gridcell"
+                >
+                  2019-09-20
+                </td>
+              </TableCell>
+            </tr>
+          </TableRow>
+          <TableRow
+            key="1"
+          >
+            <tr
+              role="row"
+            >
+              <TableCell
+                key="0"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <div>
+                    <Link
+                      to="/models/spaceman@external/mymodel"
+                    >
+                      <LinkAnchor
+                        href="/models/spaceman@external/mymodel"
+                        navigate={[Function]}
+                      >
+                        <a
+                          href="/models/spaceman@external/mymodel"
+                          onClick={[Function]}
+                        >
+                          mymodel
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="1"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    spaceman
+                  </a>
+                </td>
+              </TableCell>
+              <TableCell
+                className="u-overflow--visible"
+                key="2"
+              >
+                <td
+                  className="u-overflow--visible"
+                  role="gridcell"
+                >
+                  <div
+                    className="model-details__config"
+                  >
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__app-icon"
+                      >
+                        6
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Applications
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__unit-icon"
+                      >
+                        10
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Units
+                      </span>
+                    </div>
+                    <div
+                      aria-describedby="tp-cntr"
+                      className="p-tooltip--top-center"
+                    >
+                      <span
+                        className="model-details__machine-icon"
+                      >
+                        10
+                      </span>
+                      <span
+                        className="p-tooltip__message"
+                        id="tp-cntr"
+                        role="tooltip"
+                      >
+                        Machines
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </TableCell>
+              <TableCell
+                key="3"
+              >
+                <td
+                  className=""
+                  role="gridcell"
+                >
+                  <a
+                    className="p-link--soft"
+                    href="#_"
+                  >
+                    us-east1
                     /
                     google
                   </a>
@@ -1498,7 +2863,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="1"
+            key="2"
           >
             <tr
               role="row"
@@ -1671,179 +3036,6 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="2"
-          >
-            <tr
-              role="row"
-            >
-              <TableCell
-                key="0"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <div>
-                    <Link
-                      to="/models/uncle-phil@external/ci-website"
-                    >
-                      <LinkAnchor
-                        href="/models/uncle-phil@external/ci-website"
-                        navigate={[Function]}
-                      >
-                        <a
-                          href="/models/uncle-phil@external/ci-website"
-                          onClick={[Function]}
-                        >
-                          ci-website
-                        </a>
-                      </LinkAnchor>
-                    </Link>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="1"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    uncle-phil
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-overflow--visible"
-                key="2"
-              >
-                <td
-                  className="u-overflow--visible"
-                  role="gridcell"
-                >
-                  <div
-                    className="model-details__config"
-                  >
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__app-icon"
-                      >
-                        1
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Applications
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__unit-icon"
-                      >
-                        1
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Units
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__machine-icon"
-                      >
-                        1
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Machines
-                      </span>
-                    </div>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="3"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    us-east1
-                    /
-                    google
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="4"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    gce
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="5"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
-                  >
-                    a030379a...
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-align--right"
-                key="6"
-              >
-                <td
-                  className="u-align--right"
-                  role="gridcell"
-                >
-                  2019-04-13
-                </td>
-              </TableCell>
-            </tr>
-          </TableRow>
-          <TableRow
             key="3"
           >
             <tr
@@ -1858,17 +3050,17 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 >
                   <div>
                     <Link
-                      to="/models/uncle-phil@external/ci-different"
+                      to="/models/that-guy@external/ants-wordpress"
                     >
                       <LinkAnchor
-                        href="/models/uncle-phil@external/ci-different"
+                        href="/models/that-guy@external/ants-wordpress"
                         navigate={[Function]}
                       >
                         <a
-                          href="/models/uncle-phil@external/ci-different"
+                          href="/models/that-guy@external/ants-wordpress"
                           onClick={[Function]}
                         >
-                          ci-different
+                          ants-wordpress
                         </a>
                       </LinkAnchor>
                     </Link>
@@ -1886,7 +3078,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    uncle-phil
+                    that-guy
                   </a>
                 </td>
               </TableCell>
@@ -1908,7 +3100,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                       <span
                         className="model-details__app-icon"
                       >
-                        3
+                        2
                       </span>
                       <span
                         className="p-tooltip__message"
@@ -1925,7 +3117,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                       <span
                         className="model-details__unit-icon"
                       >
-                        3
+                        2
                       </span>
                       <span
                         className="p-tooltip__message"
@@ -1942,7 +3134,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                       <span
                         className="model-details__machine-icon"
                       >
-                        3
+                        2
                       </span>
                       <span
                         className="p-tooltip__message"
@@ -1966,9 +3158,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
+                    eu-central-1
                     /
-                    google
+                    aws
                   </a>
                 </td>
               </TableCell>
@@ -1983,7 +3175,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    gce
+                    personal
                   </a>
                 </td>
               </TableCell>
@@ -2011,7 +3203,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                   className="u-align--right"
                   role="gridcell"
                 >
-                  2019-04-13
+                  2019-10-02
                 </td>
               </TableCell>
             </tr>
@@ -2029,7 +3221,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             className="status-icon is-running"
           >
             Running
-             (11)
+             (7)
           </span>,
           "sortKey": "running",
         },
@@ -2062,120 +3254,6 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
     }
     rows={
       Array [
-        Object {
-          "columns": Array [
-            Object {
-              "content": <React.Fragment>
-                <div>
-                  <ForwardRef
-                    to="/models/spaceman@external/canonical-kubernetes"
-                  >
-                    canonical-kubernetes
-                  </ForwardRef>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                spaceman
-              </a>,
-            },
-            Object {
-              "className": "u-overflow--visible",
-              "content": <React.Fragment>
-                <div
-                  className="model-details__config"
-                >
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__app-icon"
-                    >
-                      6
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Applications
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__unit-icon"
-                    >
-                      10
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Units
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__machine-icon"
-                    >
-                      10
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Machines
-                    </span>
-                  </div>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                us-central1
-                /
-                google
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                clean-algebra-206308
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-                title="a030379a-940f-4760-8fcf-3062b41a04e7"
-              >
-                a030379a...
-              </a>,
-            },
-            Object {
-              "className": "u-align--right",
-              "content": "2019-09-20",
-            },
-          ],
-        },
         Object {
           "columns": Array [
             Object {
@@ -2287,234 +3365,6 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             Object {
               "className": "u-align--right",
               "content": "2019-11-12",
-            },
-          ],
-        },
-        Object {
-          "columns": Array [
-            Object {
-              "content": <React.Fragment>
-                <div>
-                  <ForwardRef
-                    to="/models/spaceman@external/mymodel"
-                  >
-                    mymodel
-                  </ForwardRef>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                spaceman
-              </a>,
-            },
-            Object {
-              "className": "u-overflow--visible",
-              "content": <React.Fragment>
-                <div
-                  className="model-details__config"
-                >
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__app-icon"
-                    >
-                      6
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Applications
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__unit-icon"
-                    >
-                      10
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Units
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__machine-icon"
-                    >
-                      10
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Machines
-                    </span>
-                  </div>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                us-east1
-                /
-                google
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                clean-algebra-206308
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-                title="a030379a-940f-4760-8fcf-3062b41a04e7"
-              >
-                a030379a...
-              </a>,
-            },
-            Object {
-              "className": "u-align--right",
-              "content": "2019-09-05",
-            },
-          ],
-        },
-        Object {
-          "columns": Array [
-            Object {
-              "content": <React.Fragment>
-                <div>
-                  <ForwardRef
-                    to="/models/spaceman@external/mymodel4"
-                  >
-                    mymodel4
-                  </ForwardRef>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                spaceman
-              </a>,
-            },
-            Object {
-              "className": "u-overflow--visible",
-              "content": <React.Fragment>
-                <div
-                  className="model-details__config"
-                >
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__app-icon"
-                    >
-                      7
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Applications
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__unit-icon"
-                    >
-                      11
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Units
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__machine-icon"
-                    >
-                      11
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Machines
-                    </span>
-                  </div>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                us-central1
-                /
-                google
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                clean-algebra-206308
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-                title="a030379a-940f-4760-8fcf-3062b41a04e7"
-              >
-                a030379a...
-              </a>,
-            },
-            Object {
-              "className": "u-align--right",
-              "content": "2019-09-05",
             },
           ],
         },
@@ -3202,120 +4052,6 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             },
           ],
         },
-        Object {
-          "columns": Array [
-            Object {
-              "content": <React.Fragment>
-                <div>
-                  <ForwardRef
-                    to="/models/that-guy@external/ants-wordpress"
-                  >
-                    ants-wordpress
-                  </ForwardRef>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                that-guy
-              </a>,
-            },
-            Object {
-              "className": "u-overflow--visible",
-              "content": <React.Fragment>
-                <div
-                  className="model-details__config"
-                >
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__app-icon"
-                    >
-                      2
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Applications
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__unit-icon"
-                    >
-                      2
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Units
-                    </span>
-                  </div>
-                  <div
-                    aria-describedby="tp-cntr"
-                    className="p-tooltip--top-center"
-                  >
-                    <span
-                      className="model-details__machine-icon"
-                    >
-                      2
-                    </span>
-                    <span
-                      className="p-tooltip__message"
-                      id="tp-cntr"
-                      role="tooltip"
-                    >
-                      Machines
-                    </span>
-                  </div>
-                </div>
-              </React.Fragment>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                eu-central-1
-                /
-                aws
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-              >
-                personal
-              </a>,
-            },
-            Object {
-              "content": <a
-                className="p-link--soft"
-                href="#_"
-                title="a030379a-940f-4760-8fcf-3062b41a04e7"
-              >
-                a030379a...
-              </a>,
-            },
-            Object {
-              "className": "u-align--right",
-              "content": "2019-10-02",
-            },
-          ],
-        },
       ]
     }
   >
@@ -3341,7 +4077,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="status-icon is-running"
                   >
                     Running
-                     (11)
+                     (7)
                   </span>
                 </th>
               </TableHeader>
@@ -3407,179 +4143,6 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
         <tbody>
           <TableRow
             key="0"
-          >
-            <tr
-              role="row"
-            >
-              <TableCell
-                key="0"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <div>
-                    <Link
-                      to="/models/spaceman@external/canonical-kubernetes"
-                    >
-                      <LinkAnchor
-                        href="/models/spaceman@external/canonical-kubernetes"
-                        navigate={[Function]}
-                      >
-                        <a
-                          href="/models/spaceman@external/canonical-kubernetes"
-                          onClick={[Function]}
-                        >
-                          canonical-kubernetes
-                        </a>
-                      </LinkAnchor>
-                    </Link>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="1"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    spaceman
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-overflow--visible"
-                key="2"
-              >
-                <td
-                  className="u-overflow--visible"
-                  role="gridcell"
-                >
-                  <div
-                    className="model-details__config"
-                  >
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__app-icon"
-                      >
-                        6
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Applications
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__unit-icon"
-                      >
-                        10
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Units
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__machine-icon"
-                      >
-                        10
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Machines
-                      </span>
-                    </div>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="3"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    us-central1
-                    /
-                    google
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="4"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    clean-algebra-206308
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="5"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
-                  >
-                    a030379a...
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-align--right"
-                key="6"
-              >
-                <td
-                  className="u-align--right"
-                  role="gridcell"
-                >
-                  2019-09-20
-                </td>
-              </TableCell>
-            </tr>
-          </TableRow>
-          <TableRow
-            key="1"
           >
             <tr
               role="row"
@@ -3752,353 +4315,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="2"
-          >
-            <tr
-              role="row"
-            >
-              <TableCell
-                key="0"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <div>
-                    <Link
-                      to="/models/spaceman@external/mymodel"
-                    >
-                      <LinkAnchor
-                        href="/models/spaceman@external/mymodel"
-                        navigate={[Function]}
-                      >
-                        <a
-                          href="/models/spaceman@external/mymodel"
-                          onClick={[Function]}
-                        >
-                          mymodel
-                        </a>
-                      </LinkAnchor>
-                    </Link>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="1"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    spaceman
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-overflow--visible"
-                key="2"
-              >
-                <td
-                  className="u-overflow--visible"
-                  role="gridcell"
-                >
-                  <div
-                    className="model-details__config"
-                  >
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__app-icon"
-                      >
-                        6
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Applications
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__unit-icon"
-                      >
-                        10
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Units
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__machine-icon"
-                      >
-                        10
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Machines
-                      </span>
-                    </div>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="3"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    us-east1
-                    /
-                    google
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="4"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    clean-algebra-206308
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="5"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
-                  >
-                    a030379a...
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-align--right"
-                key="6"
-              >
-                <td
-                  className="u-align--right"
-                  role="gridcell"
-                >
-                  2019-09-05
-                </td>
-              </TableCell>
-            </tr>
-          </TableRow>
-          <TableRow
-            key="3"
-          >
-            <tr
-              role="row"
-            >
-              <TableCell
-                key="0"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <div>
-                    <Link
-                      to="/models/spaceman@external/mymodel4"
-                    >
-                      <LinkAnchor
-                        href="/models/spaceman@external/mymodel4"
-                        navigate={[Function]}
-                      >
-                        <a
-                          href="/models/spaceman@external/mymodel4"
-                          onClick={[Function]}
-                        >
-                          mymodel4
-                        </a>
-                      </LinkAnchor>
-                    </Link>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="1"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    spaceman
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-overflow--visible"
-                key="2"
-              >
-                <td
-                  className="u-overflow--visible"
-                  role="gridcell"
-                >
-                  <div
-                    className="model-details__config"
-                  >
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__app-icon"
-                      >
-                        7
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Applications
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__unit-icon"
-                      >
-                        11
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Units
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__machine-icon"
-                      >
-                        11
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Machines
-                      </span>
-                    </div>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="3"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    us-central1
-                    /
-                    google
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="4"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    clean-algebra-206308
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="5"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
-                  >
-                    a030379a...
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-align--right"
-                key="6"
-              >
-                <td
-                  className="u-align--right"
-                  role="gridcell"
-                >
-                  2019-09-05
-                </td>
-              </TableCell>
-            </tr>
-          </TableRow>
-          <TableRow
-            key="4"
+            key="1"
           >
             <tr
               role="row"
@@ -4271,7 +4488,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="5"
+            key="2"
           >
             <tr
               role="row"
@@ -4444,7 +4661,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="6"
+            key="3"
           >
             <tr
               role="row"
@@ -4617,7 +4834,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="7"
+            key="4"
           >
             <tr
               role="row"
@@ -4790,7 +5007,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="8"
+            key="5"
           >
             <tr
               role="row"
@@ -4963,7 +5180,7 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
             </tr>
           </TableRow>
           <TableRow
-            key="9"
+            key="6"
           >
             <tr
               role="row"
@@ -5131,179 +5348,6 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                   role="gridcell"
                 >
                   2019-04-13
-                </td>
-              </TableCell>
-            </tr>
-          </TableRow>
-          <TableRow
-            key="10"
-          >
-            <tr
-              role="row"
-            >
-              <TableCell
-                key="0"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <div>
-                    <Link
-                      to="/models/that-guy@external/ants-wordpress"
-                    >
-                      <LinkAnchor
-                        href="/models/that-guy@external/ants-wordpress"
-                        navigate={[Function]}
-                      >
-                        <a
-                          href="/models/that-guy@external/ants-wordpress"
-                          onClick={[Function]}
-                        >
-                          ants-wordpress
-                        </a>
-                      </LinkAnchor>
-                    </Link>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="1"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    that-guy
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-overflow--visible"
-                key="2"
-              >
-                <td
-                  className="u-overflow--visible"
-                  role="gridcell"
-                >
-                  <div
-                    className="model-details__config"
-                  >
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__app-icon"
-                      >
-                        2
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Applications
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__unit-icon"
-                      >
-                        2
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Units
-                      </span>
-                    </div>
-                    <div
-                      aria-describedby="tp-cntr"
-                      className="p-tooltip--top-center"
-                    >
-                      <span
-                        className="model-details__machine-icon"
-                      >
-                        2
-                      </span>
-                      <span
-                        className="p-tooltip__message"
-                        id="tp-cntr"
-                        role="tooltip"
-                      >
-                        Machines
-                      </span>
-                    </div>
-                  </div>
-                </td>
-              </TableCell>
-              <TableCell
-                key="3"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    eu-central-1
-                    /
-                    aws
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="4"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                  >
-                    personal
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                key="5"
-              >
-                <td
-                  className=""
-                  role="gridcell"
-                >
-                  <a
-                    className="p-link--soft"
-                    href="#_"
-                    title="a030379a-940f-4760-8fcf-3062b41a04e7"
-                  >
-                    a030379a...
-                  </a>
-                </td>
-              </TableCell>
-              <TableCell
-                className="u-align--right"
-                key="6"
-              >
-                <td
-                  className="u-align--right"
-                  role="gridcell"
-                >
-                  2019-10-02
                 </td>
               </TableCell>
             </tr>

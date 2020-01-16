@@ -165,7 +165,7 @@ exports[`Layout renders without crashing and matches snapshot 1`] = `
                     <span
                       className="entity-count"
                     >
-                      2
+                      6
                     </span>
                   </a>
                 </LinkAnchor>

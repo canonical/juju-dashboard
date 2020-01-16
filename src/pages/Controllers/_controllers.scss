@@ -3,34 +3,4 @@
     display: grid;
     grid-template-columns: 37% 15% 8% 8% 8% 8% 8% 8%;
   }
-
-  .p-legend {
-    .p-legend__item {
-      padding-left: 1rem;
-      position: relative;
-
-      &::before {
-        position: absolute;
-        left: 0;
-        top: .65rem;
-        content: '';
-        display: inline-block;
-        width: .5rem;
-        height: .5rem;
-        border-radius: 50%;
-      }
-
-      &.is-blocked::before {
-        background-color: #c7162b;
-      }
-
-      &.is-alert::before {
-        background-color: #f99b11;
-      }
-
-      &.is-running::before {
-        background-color: #cdcdcd;
-      }
-    }
-  }
 }
