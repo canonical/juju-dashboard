@@ -22,16 +22,16 @@ const DonutChart = ({ chartData }) => {
     const color = d3
       .scaleOrdinal()
       .domain(data)
-      .range(["#c7162b", "#f99b11", "#cdcdcd"]);
+      .range(["is-blocked", "is-alert", "is-running"]);
 
     const pie = d3.pie().value(function(d) {
       return d.value;
     });
-    const data_ready = pie(d3.entries(data));
+    const dataReady = pie(d3.entries(data));
 
     svg
-      .selectAll("whatever")
-      .data(data_ready)
+      .selectAll("g")
+      .data(dataReady)
       .enter()
       .append("path")
       .attr(
@@ -41,7 +41,7 @@ const DonutChart = ({ chartData }) => {
           .innerRadius(100)
           .outerRadius(radius)
       )
-      .attr("fill", function(d) {
+      .attr("class", function(d) {
         return color(d.data.key);
       });
   }, [chartData]);

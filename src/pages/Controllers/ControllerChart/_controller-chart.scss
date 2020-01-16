@@ -1,52 +1,67 @@
 $breakpoint-medium: 772px;
+$color-blocked: #c7162b;
+$color-alert: #f99b11;
+$color-running: #cdcdcd;
 
 .p-chart {
-  @media (min-width: $breakpoint-medium) {
-    display: flex;
-    align-items: center;
+  .is-blocked {
+    fill: $color-blocked;
+  }
 
-    .p-chart__chart {
+  .is-alert {
+    fill: $color-alert;
+  }
+
+  .is-running {
+    fill: $color-running;
+  }
+
+  @media (min-width: $breakpoint-medium) {
+    align-items: center;
+    display: flex;
+
+    &__chart {
       flex: 1;
     }
 
-    .p-chart__legend {
+    &__legend {
       flex: 1;
     }
   }
 
   @media (max-width: $breakpoint-medium) {
-    .p-chart__chart {
+    &__chart {
       display: none;
     }
   }
 }
 
 .p-legend {
-  .p-legend__item {
+  &__item {
     padding-left: 1rem;
     position: relative;
 
     &::before {
-      position: absolute;
-      left: 0;
-      top: 0.65rem;
+      border-radius: 50%;
       content: "";
       display: inline-block;
-      width: 0.5rem;
       height: 0.5rem;
-      border-radius: 50%;
+      left: 0;
+      position: absolute;
+      top: 0.65rem;
+      width: 0.5rem;
     }
 
     &.is-blocked::before {
-      background-color: #c7162b;
+      background-color: $color-blocked;
     }
 
     &.is-alert::before {
-      background-color: #f99b11;
+      background-color: $color-alert;
     }
 
     &.is-running::before {
-      background-color: #cdcdcd;
+      background-color: $color-running;
     }
   }
 }

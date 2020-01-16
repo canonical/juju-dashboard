@@ -175,7 +175,7 @@ const groupModelsByStatus = modelData => {
 /**
   Returns a grouped collection of machine instances.
   @param {Object} modelData
-  @returns {Function} The grouped machine instances.
+  @returns {Object} The grouped machine instances.
 */
 const groupMachinesByStatus = modelData => {
   const grouped = {
@@ -226,7 +226,7 @@ const groupUnitsByStatus = modelData => {
 /**
   Returns a grouped collection of machine instances.
   @param {Object} modelData
-  @returns {Function} The grouped machine instances.
+  @returns {Object} The grouped machine instances.
 */
 const groupApplicationsByStatus = modelData => {
   const grouped = {
@@ -429,8 +429,8 @@ export const getGroupedMachinesDataByStatus = createSelector(
 );
 
 /**
-  Returns the machine instances sorted by status.
-  @returns {Function} The memoized selector to return the sorted machine instances.
+  Returns the unit instances sorted by status.
+  @returns {Function} The memoized selector to return the sorted unit instances.
 */
 export const getGroupedUnitsDataByStatus = createSelector(
   getModelData,
