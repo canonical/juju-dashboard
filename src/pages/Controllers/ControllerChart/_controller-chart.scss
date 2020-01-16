@@ -1,19 +1,16 @@
-$breakpoint-medium: 772px;
-$color-blocked: #c7162b;
-$color-alert: #f99b11;
-$color-running: #cdcdcd;
+@import "vanilla-framework/scss/vanilla";
 
 .p-chart {
   .is-blocked {
-    fill: $color-blocked;
+    fill: $color-negative;
   }
 
   .is-alert {
-    fill: $color-alert;
+    fill: $color-caution;
   }
 
   .is-running {
-    fill: $color-running;
+    fill: $color-mid-light;
   }
 
   @media (min-width: $breakpoint-medium) {
@@ -53,15 +50,15 @@ $color-running: #cdcdcd;
     }
 
     &.is-blocked::before {
-      background-color: $color-blocked;
+      background-color: $color-negative;
     }
 
     &.is-alert::before {
-      background-color: $color-alert;
+      background-color: $color-caution;
     }
 
     &.is-running::before {
-      background-color: $color-running;
+      background-color: $color-mid-light;
     }
   }
 }
