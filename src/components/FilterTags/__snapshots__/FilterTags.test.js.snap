@@ -54,6 +54,65 @@ exports[`FilterTags renders without crashing and matches snapshot 1`] = `
     </div>
     <div
       className="p-filter-panel__section"
+      key="region"
+    >
+      <h4
+        className="p-filter-panel__heading"
+      >
+        regions
+      </h4>
+      <ul
+        className="p-list p-filter-panel__list"
+        data-test="region"
+      >
+        <li
+          className="p-filter-panel__item"
+          key="us-central1"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            us-central1
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="us-east1"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            us-east1
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="europe-west1"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            europe-west1
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="eu-central-1"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            eu-central-1
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div
+      className="p-filter-panel__section"
       key="owner"
     >
       <h4
@@ -118,65 +177,6 @@ exports[`FilterTags renders without crashing and matches snapshot 1`] = `
             onClick={[Function]}
           >
             that-guy
-          </button>
-        </li>
-      </ul>
-    </div>
-    <div
-      className="p-filter-panel__section"
-      key="region"
-    >
-      <h4
-        className="p-filter-panel__heading"
-      >
-        regions
-      </h4>
-      <ul
-        className="p-list p-filter-panel__list"
-        data-test="region"
-      >
-        <li
-          className="p-filter-panel__item"
-          key="us-central1"
-        >
-          <button
-            className="p-filter-panel__button"
-            onClick={[Function]}
-          >
-            us-central1
-          </button>
-        </li>
-        <li
-          className="p-filter-panel__item"
-          key="us-east1"
-        >
-          <button
-            className="p-filter-panel__button"
-            onClick={[Function]}
-          >
-            us-east1
-          </button>
-        </li>
-        <li
-          className="p-filter-panel__item"
-          key="europe-west1"
-        >
-          <button
-            className="p-filter-panel__button"
-            onClick={[Function]}
-          >
-            europe-west1
-          </button>
-        </li>
-        <li
-          className="p-filter-panel__item"
-          key="eu-central-1"
-        >
-          <button
-            className="p-filter-panel__button"
-            onClick={[Function]}
-          >
-            eu-central-1
           </button>
         </li>
       </ul>

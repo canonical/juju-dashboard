@@ -15,15 +15,16 @@ const FilterTags = () => {
   const [filterPanelVisibility, setfilterPanelVisibility] = useState(false);
   const node = useRef();
 
-  const filters = {
-    cloud: [],
-    owner: [],
-    region: [],
-    credential: [],
-    controller: []
-  };
+  const filters = {};
 
   const modelData = useSelector(getModelData);
+
+  const addFilter = function(type, value) {
+    filters[type] = filters[type] || [];
+    if (!filters[type].includes(value)) {
+      filters[type].push(value);
+    }
+  };
 
   // Loop the model data and pull out the available filters
   Object.values(modelData).forEach(model => {
@@ -32,26 +33,21 @@ const FilterTags = () => {
     }
     // Extract cloud filters
     const cloudFilter = extractCloudName(model.info.cloudTag);
-    if (!filters.cloud.includes(cloudFilter)) {
-      filters.cloud.push(cloudFilter);
-    }
+    addFilter("cloud", cloudFilter);
+
     // Extract region filters
     const regionFilter = model.info.cloudRegion;
-    if (!filters.region.includes(regionFilter)) {
-      filters.region.push(regionFilter);
-    }
+    addFilter("region", regionFilter);
+
     // Extract owner filters
     const ownerFilter = extractOwnerName(model.info.ownerTag);
-    if (!filters.owner.includes(ownerFilter)) {
-      filters.owner.push(ownerFilter);
-    }
+    addFilter("owner", ownerFilter);
+
     // Extract credential filters
     const credentialFilter = extractCredentialName(
       model.info.cloudCredentialTag
     );
-    if (!filters.credential.includes(credentialFilter)) {
-      filters.credential.push(credentialFilter);
-    }
+    addFilter("credential", credentialFilter);
   });
 
   useEffect(() => {
