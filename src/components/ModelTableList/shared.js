@@ -1,6 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { generateSpanClass, extractCloudName } from "app/utils";
+import {
+  generateSpanClass,
+  extractCloudName,
+  extractCredentialName
+} from "app/utils";
 /**
   Generates the model details link for the table cell. If no ownerTag can be
   provided then it'll return raw text for the model name.
@@ -106,10 +110,7 @@ export function getStatusValue(status, key) {
         returnValue = status.model.region;
         break;
       case "cloudCredentialTag":
-        returnValue = status.cloudCredentialTag
-          .split("cloudcred-")[1]
-          .split("@")[1]
-          .split("_")[1];
+        returnValue = extractCredentialName(status.cloudCredentialTag);
         break;
       case "controllerUuid":
         returnValue = status.controllerUuid;

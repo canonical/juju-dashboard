@@ -10,7 +10,7 @@ import ModelGroupToggle from "components/ModelGroupToggle/ModelGroupToggle";
 import FilterTags from "components/FilterTags/FilterTags";
 import UserIcon from "components/UserIcon/UserIcon";
 
-import { getGroupedModelStatusCounts } from "app/selectors";
+import { getGroupedModelStatusCounts, getModelData } from "app/selectors";
 import { pluralize } from "app/utils";
 
 import "./_models.scss";
@@ -38,6 +38,9 @@ export default function Models() {
 
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
   const models = blocked + alert + running;
+
+  const modelData = useSelector(getModelData);
+
   return (
     <Layout>
       <Header>
@@ -52,7 +55,7 @@ export default function Models() {
             )}, ${running} running`}
           </div>
           <ModelGroupToggle setGroupedBy={setGroupedBy} groupedBy={groupedBy} />
-          <FilterTags />
+          <FilterTags modelData={modelData} />
           <UserIcon />
         </div>
       </Header>
