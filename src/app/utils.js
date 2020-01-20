@@ -53,6 +53,8 @@ export const getModelStatusGroupData = model => {
       const { status: unitStatus } = getUnitStatusGroup(unit);
       highestStatus = setHighestStatus(unitStatus, highestStatus);
       if (checkHighestStatus(highestStatus)) {
+        // If it's the highest status then we want to store the message.
+        messages.push(unit.agentStatus.info);
         return;
       }
     });

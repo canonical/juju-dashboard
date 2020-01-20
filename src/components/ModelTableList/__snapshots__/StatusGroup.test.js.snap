@@ -179,9 +179,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 </div>
                 <span
                   className="model-table-list_error-message"
-                  title="Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running."
+                  title="agent is not communicating with the server; Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running."
                 >
-                  Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running.
+                  agent is not communicating with the server; Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running.
                 </span>
               </React.Fragment>,
             },
@@ -299,9 +299,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 </div>
                 <span
                   className="model-table-list_error-message"
-                  title=""
+                  title="agent is not communicating with the server; "
                 >
-                  
+                  agent is not communicating with the server; 
                 </span>
               </React.Fragment>,
             },
@@ -419,9 +419,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 </div>
                 <span
                   className="model-table-list_error-message"
-                  title=""
+                  title="agent is not communicating with the server"
                 >
-                  
+                  agent is not communicating with the server
                 </span>
               </React.Fragment>,
             },
@@ -539,9 +539,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 </div>
                 <span
                   className="model-table-list_error-message"
-                  title="; jenkins-slave-4 is accepting work"
+                  title="agent is not communicating with the server; ; jenkins-slave-4 is accepting work"
                 >
-                  ; jenkins-slave-4 is accepting work
+                  agent is not communicating with the server; ; jenkins-slave-4 is accepting work
                 </span>
               </React.Fragment>,
             },
@@ -1066,9 +1066,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                   </div>
                   <span
                     className="model-table-list_error-message"
-                    title="Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running."
+                    title="agent is not communicating with the server; Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running."
                   >
-                    Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running.
+                    agent is not communicating with the server; Healthy with 3 known peers; waiting for machine; Flannel subnet 10.1.93.1/24; Loadbalancer ready.; Kubernetes master running.; Kubernetes worker running.
                   </span>
                 </td>
               </TableCell>
@@ -1245,8 +1245,10 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                   </div>
                   <span
                     className="model-table-list_error-message"
-                    title=""
-                  />
+                    title="agent is not communicating with the server; "
+                  >
+                    agent is not communicating with the server; 
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -1422,8 +1424,10 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                   </div>
                   <span
                     className="model-table-list_error-message"
-                    title=""
-                  />
+                    title="agent is not communicating with the server"
+                  >
+                    agent is not communicating with the server
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -1599,9 +1603,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                   </div>
                   <span
                     className="model-table-list_error-message"
-                    title="; jenkins-slave-4 is accepting work"
+                    title="agent is not communicating with the server; ; jenkins-slave-4 is accepting work"
                   >
-                    ; jenkins-slave-4 is accepting work
+                    agent is not communicating with the server; ; jenkins-slave-4 is accepting work
                   </span>
                 </td>
               </TableCell>
