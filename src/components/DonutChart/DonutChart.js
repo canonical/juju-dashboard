@@ -46,7 +46,6 @@ const DonutChart = ({ chartData }) => {
       });
 
     return () => {
-      console.log("exit", svg);
       svg.remove();
     };
   }, [chartData]);
