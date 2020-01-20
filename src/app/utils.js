@@ -154,7 +154,7 @@ export const extractOwnerName = tag => {
   @returns {string} The item pluralized if required
 */
 export const pluralize = (value, string) => {
-  if (value && (value === 0 || value > 1)) {
+  if (value === 0 || value > 1) {
     return string + "s";
   }
   return string;
