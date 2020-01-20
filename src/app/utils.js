@@ -89,7 +89,7 @@ export const getApplicationStatusGroup = application => {
 };
 
 /**
-  Returns the status for the machine.
+  Returns the status level for the machine.
   @param {Object} machine The machine to check the status of in the
     format stored in the redux store.
   @returns {Object} The status of the machine and any relevent messaging.
@@ -114,17 +114,17 @@ export const getMachineStatusGroup = machine => {
 };
 
 /**
-  Returns the status for the units.
-  @param {Object} units The units to check the status of in the
+  Returns the status level for the unit.
+  @param {Object} unit The unit to check the status of in the
     format stored in the redux store.
-  @returns {Object} The status of the units and any relevent messaging.
+  @returns {Object} The status of the unit and any relevent messaging.
 */
-export const getUnitStatusGroup = units => {
-  // Possible "blocked" or error states in units statuses.
+export const getUnitStatusGroup = unit => {
+  // Possible "blocked" or error states in the unit statuses.
   const blocked = ["lost"];
-  // Possible "alert" states in units statuses.
+  // Possible "alert" states in the unit statuses.
   const alert = ["allocating"];
-  const status = units.agentStatus.status;
+  const status = unit.agentStatus.status;
   const response = {
     status: "running",
     message: null
