@@ -271,31 +271,6 @@ const groupModelsByOwner = modelData => {
 };
 
 /**
-  Returns an object containing the number of models, applications and units.
-  @param {Object} countModelData
-  @returns {Object} The set of model data counts.
-*/
-const countModelData = modelData => {
-  let machinesCount = 0;
-  let applicationCount = 0;
-  let unitCount = 0;
-
-  for (const modelUUID in modelData) {
-    const applications = modelData[modelUUID].applications;
-    applicationCount += Object.keys(applications).length;
-    for (const applicationID in applications) {
-      unitCount += Object.keys(applications[applicationID].units).length;
-    }
-    machinesCount += Object.keys(modelData[modelUUID].machines).length;
-  }
-  return {
-    applicationCount,
-    machinesCount,
-    unitCount
-  };
-};
-
-/**
   Returns a grouped collection of model statuses by cloud.
   @param {Object} modelData
   @returns {Object} The grouped model statuses by cloud.
@@ -465,13 +440,6 @@ export const getGroupedModelDataByCloud = createSelector(
   getModelData,
   groupModelsByCloud
 );
-
-/**
-  Returns the model data counts.
-  @returns {Function} The memoized selector to return the models data
-    count.
-*/
-export const getModelCounts = createSelector(getModelData, countModelData);
 
 /**
   Returns the counts of the model statuses
