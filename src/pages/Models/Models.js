@@ -38,6 +38,7 @@ export default function Models() {
 
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
   const models = blocked + alert + running;
+
   return (
     <Layout>
       <Header>

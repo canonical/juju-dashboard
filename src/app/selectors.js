@@ -12,7 +12,7 @@ import {
   @param {Object} state The application state.
   @returns {Object|Null} The list of model data or null if none found.
 */
-const getModelData = state => {
+export const getModelData = state => {
   if (state.juju && state.juju.modelData) {
     return state.juju.modelData;
   }
