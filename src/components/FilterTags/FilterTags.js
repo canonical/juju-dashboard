@@ -1,11 +1,59 @@
 import React, { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
+import { useSelector } from "react-redux";
+import { getModelData } from "app/selectors";
+import {
+  extractCloudName,
+  extractOwnerName,
+  extractCredentialName,
+  pluralize
+} from "app/utils";
 
 import "./_filter-tags.scss";
 
 const FilterTags = () => {
   const [filterPanelVisibility, setfilterPanelVisibility] = useState(false);
   const node = useRef();
+
+  const filters = {};
+
+  const modelData = useSelector(getModelData);
+
+  /**
+  Check if filter exists and adds to array if not
+  @param {string} string The type of filter
+  @param {string} value The name of the filter
+*/
+  const addFilter = function(type, value) {
+    filters[type] = filters[type] || [];
+    if (!filters[type].includes(value)) {
+      filters[type].push(value);
+    }
+  };
+
+  // Loop the model data and pull out the available filters
+  Object.values(modelData).forEach(model => {
+    if (!model.info) {
+      return;
+    }
+    // Extract cloud filters
+    const cloudFilter = extractCloudName(model.info.cloudTag);
+    addFilter("cloud", cloudFilter);
+
+    // Extract region filters
+    const regionFilter = model.info.cloudRegion;
+    addFilter("region", regionFilter);
+
+    // Extract owner filters
+    const ownerFilter = extractOwnerName(model.info.ownerTag);
+    addFilter("owner", ownerFilter);
+
+    // Extract credential filters
+    const credentialFilter = extractCredentialName(
+      model.info.cloudCredentialTag
+    );
+    addFilter("credential", credentialFilter);
+  });
 
   useEffect(() => {
     const closePanel = () => {
@@ -39,12 +87,16 @@ const FilterTags = () => {
     };
   }, []);
 
+  const handleFilterClick = () => {
+    console.log("Filter clicked");
+  };
+
   return (
     <div className="p-filter-tags" ref={node}>
       <form>
         <input
           type="text"
-          placeholder="Filter terms"
+          placeholder="Filter models"
           className="p-filter-tags__input"
           onFocus={() => setfilterPanelVisibility(true)}
         />
@@ -54,42 +106,33 @@ const FilterTags = () => {
           "is-visible": filterPanelVisibility
         })}
       >
-        <div className="p-filter-panel__section">
-          <h4 className="p-filter-panel__heading">Owner</h4>
-          <ul className="p-list p-filter-panel__list">
-            <li className="p-filter-panel__item is-selected">is-team</li>
-            <li className="p-filter-panel__item">dev-team</li>
-            <li className="p-filter-panel__item">yellow-team</li>
-          </ul>
-        </div>
-        <div className="p-filter-panel__section">
-          <h4 className="p-filter-panel__heading">Cloud</h4>
-          <ul className="p-list p-filter-panel__list">
-            <li className="p-filter-panel__item">AWS</li>
-            <li className="p-filter-panel__item">Google</li>
-          </ul>
-        </div>
-        <div className="p-filter-panel__section">
-          <h4 className="p-filter-panel__heading">Region</h4>
-          <ul className="p-list p-filter-panel__list">
-            <li className="p-filter-panel__item">eu-west-1</li>
-            <li className="p-filter-panel__item">eu-west-2</li>
-          </ul>
-        </div>
-        <div className="p-filter-panel__section">
-          <h4 className="p-filter-panel__heading">Credential</h4>
-          <ul className="p-list p-filter-panel__list">
-            <li className="p-filter-panel__item">cred-1</li>
-            <li className="p-filter-panel__item">cred-2</li>
-          </ul>
-        </div>
-        <div className="p-filter-panel__section">
-          <h4 className="p-filter-panel__heading">Controller</h4>
-          <ul className="p-list p-filter-panel__list">
-            <li className="p-filter-panel__item">prodstack-1</li>
-            <li className="p-filter-panel__item">prodstack-2</li>
-          </ul>
-        </div>
+        {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
+        {Object.keys(filters).map(filterBy => {
+          return (
+            filters[filterBy].length > 0 && (
+              <div key={filterBy} className="p-filter-panel__section">
+                <h4 className="p-filter-panel__heading">
+                  {pluralize(filters[filterBy].length, filterBy)}
+                </h4>
+                <ul
+                  className="p-list p-filter-panel__list"
+                  data-test={filterBy}
+                >
+                  {filters[filterBy].map(filter => (
+                    <li key={filter} className="p-filter-panel__item">
+                      <button
+                        onClick={e => handleFilterClick(e)}
+                        className="p-filter-panel__button"
+                      >
+                        {filter}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          );
+        })}
       </div>
     </div>
   );

@@ -22,7 +22,7 @@
   opacity: 0;
   position: absolute;
   top: 2.75rem;
-  width: calc(100% - 1.5rem);
+  width: calc(100% - 1rem);
 
   &.is-visible {
     display: block;
@@ -42,16 +42,22 @@
   }
 
   &__item {
-    border: 1px solid #999;
-    border-radius: 5px;
-    color: $color-mid-dark;
     display: inline-block;
     font-size: 0.875rem;
-    margin-right: 0.5rem;
-    padding: 0 0.5rem;
+    padding: 0;
 
     &.is-selected {
       background-color: $color-mid-x-light;
     }
+  }
+
+  &__button {
+    border: 1px solid #999;
+    border-radius: 5px;
+    color: $color-mid-dark;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    margin-right: 0.5rem;
+    padding: 0 0.5rem;
   }
 }

@@ -8,7 +8,7 @@ exports[`FilterTags renders without crashing and matches snapshot 1`] = `
     <input
       className="p-filter-tags__input"
       onFocus={[Function]}
-      placeholder="Filter terms"
+      placeholder="Filter models"
       type="text"
     />
   </form>
@@ -17,121 +17,270 @@ exports[`FilterTags renders without crashing and matches snapshot 1`] = `
   >
     <div
       className="p-filter-panel__section"
+      key="cloud"
     >
       <h4
         className="p-filter-panel__heading"
       >
-        Owner
+        clouds
       </h4>
       <ul
         className="p-list p-filter-panel__list"
+        data-test="cloud"
       >
         <li
-          className="p-filter-panel__item is-selected"
+          className="p-filter-panel__item"
+          key="google"
         >
-          is-team
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            google
+          </button>
         </li>
         <li
           className="p-filter-panel__item"
+          key="aws"
         >
-          dev-team
-        </li>
-        <li
-          className="p-filter-panel__item"
-        >
-          yellow-team
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            aws
+          </button>
         </li>
       </ul>
     </div>
     <div
       className="p-filter-panel__section"
+      key="region"
     >
       <h4
         className="p-filter-panel__heading"
       >
-        Cloud
+        regions
       </h4>
       <ul
         className="p-list p-filter-panel__list"
+        data-test="region"
       >
         <li
           className="p-filter-panel__item"
+          key="us-central1"
         >
-          AWS
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            us-central1
+          </button>
         </li>
         <li
           className="p-filter-panel__item"
+          key="us-east1"
         >
-          Google
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            us-east1
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="europe-west1"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            europe-west1
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="eu-central-1"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            eu-central-1
+          </button>
         </li>
       </ul>
     </div>
     <div
       className="p-filter-panel__section"
+      key="owner"
     >
       <h4
         className="p-filter-panel__heading"
       >
-        Region
+        owners
       </h4>
       <ul
         className="p-list p-filter-panel__list"
+        data-test="owner"
       >
         <li
           className="p-filter-panel__item"
+          key="spaceman"
         >
-          eu-west-1
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            spaceman
+          </button>
         </li>
         <li
           className="p-filter-panel__item"
+          key="activedev"
         >
-          eu-west-2
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            activedev
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="alto"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            alto
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="uncle-phil"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            uncle-phil
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="that-guy"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            that-guy
+          </button>
         </li>
       </ul>
     </div>
     <div
       className="p-filter-panel__section"
+      key="credential"
     >
       <h4
         className="p-filter-panel__heading"
       >
-        Credential
+        credentials
       </h4>
       <ul
         className="p-list p-filter-panel__list"
+        data-test="credential"
       >
         <li
           className="p-filter-panel__item"
+          key="clean-algebra-206308"
         >
-          cred-1
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            clean-algebra-206308
+          </button>
         </li>
         <li
           className="p-filter-panel__item"
+          key="juju"
         >
-          cred-2
-        </li>
-      </ul>
-    </div>
-    <div
-      className="p-filter-panel__section"
-    >
-      <h4
-        className="p-filter-panel__heading"
-      >
-        Controller
-      </h4>
-      <ul
-        className="p-list p-filter-panel__list"
-      >
-        <li
-          className="p-filter-panel__item"
-        >
-          prodstack-1
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            juju
+          </button>
         </li>
         <li
           className="p-filter-panel__item"
+          key="Algebra-json"
         >
-          prodstack-2
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            Algebra-json
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="admin"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            admin
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="jujuongce"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            jujuongce
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="google-rickbot"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            google-rickbot
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="gce"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            gce
+          </button>
+        </li>
+        <li
+          className="p-filter-panel__item"
+          key="personal"
+        >
+          <button
+            className="p-filter-panel__button"
+            onClick={[Function]}
+          >
+            personal
+          </button>
         </li>
       </ul>
     </div>

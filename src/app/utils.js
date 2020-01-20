@@ -170,3 +170,15 @@ export const pluralize = (value, string) => {
 export const extractCloudName = tag => {
   return tag.replace("cloud-", "");
 };
+
+/**
+  Returns credential string from Tag
+  @param {string} cloudTag The cloudTag identifier returns from the API
+  @returns {string} The simplified cloud string
+*/
+export const extractCredentialName = tag => {
+  return tag
+    .split("cloudcred-")[1]
+    .split("@")[1]
+    .split("_")[1];
+};
