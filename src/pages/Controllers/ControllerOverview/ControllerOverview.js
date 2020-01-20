@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import {
-  getModelCounts,
   getGroupedMachinesDataByStatus,
   getGroupedApplicationsDataByStatus,
   getGroupedUnitsDataByStatus
@@ -19,10 +18,6 @@ export default function ControllersOverview() {
     getGroupedApplicationsDataByStatus
   );
   const groupedUnitsDataByStatus = useSelector(getGroupedUnitsDataByStatus);
-
-  const { machinesCount, applicationCount, unitCount } = useSelector(
-    getModelCounts
-  );
 
   let machinesChartData = {
     blocked: groupedMachinesDataByStatus.blocked.length,
@@ -49,21 +44,18 @@ export default function ControllersOverview() {
         <div className="col-4">
           <ControllerChart
             chartData={machinesChartData}
-            totalCount={machinesCount}
             totalLabel="machine"
           />
         </div>
         <div className="col-4">
           <ControllerChart
             chartData={applicationsChartData}
-            totalCount={applicationCount}
             totalLabel="application"
           />
         </div>
         <div className="col-4">
           <ControllerChart
             chartData={unitsChartData}
-            totalCount={unitCount}
             totalLabel="unit"
           />
         </div>
