@@ -96,7 +96,7 @@ const FilterTags = () => {
       <form>
         <input
           type="text"
-          placeholder="Filter terms"
+          placeholder="Filter models"
           className="p-filter-tags__input"
           onFocus={() => setfilterPanelVisibility(true)}
         />
@@ -106,6 +106,7 @@ const FilterTags = () => {
           "is-visible": filterPanelVisibility
         })}
       >
+        {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
         {Object.keys(filters).map(filterBy => {
           return (
             filters[filterBy].length > 0 && (
