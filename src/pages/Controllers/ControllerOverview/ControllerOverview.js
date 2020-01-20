@@ -42,10 +42,7 @@ export default function ControllersOverview() {
       </div>
       <div className="row controller-overview__container">
         <div className="col-4">
-          <ControllerChart
-            chartData={machinesChartData}
-            totalLabel="machine"
-          />
+          <ControllerChart chartData={machinesChartData} totalLabel="machine" />
         </div>
         <div className="col-4">
           <ControllerChart
@@ -54,10 +51,7 @@ export default function ControllersOverview() {
           />
         </div>
         <div className="col-4">
-          <ControllerChart
-            chartData={unitsChartData}
-            totalLabel="unit"
-          />
+          <ControllerChart chartData={unitsChartData} totalLabel="unit" />
         </div>
       </div>
     </div>
