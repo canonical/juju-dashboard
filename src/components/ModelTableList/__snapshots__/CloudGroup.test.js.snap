@@ -66,9 +66,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
             Object {
               "className": "u-capitalise",
               "content": <span
-                className="status-icon is-running"
+                className="status-icon is-alert"
               >
-                running
+                alert
                 
               </span>,
             },
@@ -402,9 +402,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
             Object {
               "className": "u-capitalise",
               "content": <span
-                className="status-icon is-running"
+                className="status-icon is-alert"
               >
-                running
+                alert
                 
               </span>,
             },
@@ -514,9 +514,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
             Object {
               "className": "u-capitalise",
               "content": <span
-                className="status-icon is-running"
+                className="status-icon is-blocked"
               >
-                running
+                blocked
                 
               </span>,
             },
@@ -626,9 +626,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
             Object {
               "className": "u-capitalise",
               "content": <span
-                className="status-icon is-alert"
+                className="status-icon is-blocked"
               >
-                alert
+                blocked
                 
               </span>,
             },
@@ -1410,9 +1410,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
             Object {
               "className": "u-capitalise",
               "content": <span
-                className="status-icon is-alert"
+                className="status-icon is-blocked"
               >
-                alert
+                blocked
                 
               </span>,
             },
@@ -1522,9 +1522,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
             Object {
               "className": "u-capitalise",
               "content": <span
-                className="status-icon is-alert"
+                className="status-icon is-blocked"
               >
-                alert
+                blocked
                 
               </span>,
             },
@@ -1878,9 +1878,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   role="gridcell"
                 >
                   <span
-                    className="status-icon is-running"
+                    className="status-icon is-alert"
                   >
-                    running
+                    alert
                   </span>
                 </td>
               </TableCell>
@@ -2415,9 +2415,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   role="gridcell"
                 >
                   <span
-                    className="status-icon is-running"
+                    className="status-icon is-alert"
                   >
-                    running
+                    alert
                   </span>
                 </td>
               </TableCell>
@@ -2594,9 +2594,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   role="gridcell"
                 >
                   <span
-                    className="status-icon is-running"
+                    className="status-icon is-blocked"
                   >
-                    running
+                    blocked
                   </span>
                 </td>
               </TableCell>
@@ -2773,9 +2773,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   role="gridcell"
                 >
                   <span
-                    className="status-icon is-alert"
+                    className="status-icon is-blocked"
                   >
-                    alert
+                    blocked
                   </span>
                 </td>
               </TableCell>
@@ -4026,9 +4026,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   role="gridcell"
                 >
                   <span
-                    className="status-icon is-alert"
+                    className="status-icon is-blocked"
                   >
-                    alert
+                    blocked
                   </span>
                 </td>
               </TableCell>
@@ -4205,9 +4205,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   role="gridcell"
                 >
                   <span
-                    className="status-icon is-alert"
+                    className="status-icon is-blocked"
                   >
-                    alert
+                    blocked
                   </span>
                 </td>
               </TableCell>
@@ -4580,9 +4580,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
             Object {
               "className": "u-capitalise",
               "content": <span
-                className="status-icon is-running"
+                className="status-icon is-alert"
               >
-                running
+                alert
                 
               </span>,
             },
@@ -4936,9 +4936,9 @@ exports[`CloudGroup renders without crashing and matches snapshot 1`] = `
                   role="gridcell"
                 >
                   <span
-                    className="status-icon is-running"
+                    className="status-icon is-alert"
                   >
-                    running
+                    alert
                   </span>
                 </td>
               </TableCell>

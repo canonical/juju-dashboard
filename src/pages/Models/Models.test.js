@@ -34,7 +34,7 @@ describe("Models page", () => {
       </Provider>
     );
     expect(wrapper.find(".models__count").text()).toBe(
-      "17 models: 2 blocked, 4 alerts, 11 running"
+      "17 models: 6 blocked, 4 alerts, 7 running"
     );
   });
 

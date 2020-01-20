@@ -2,7 +2,10 @@ import { createSelector } from "reselect";
 import {
   getModelStatusGroupData,
   extractOwnerName,
-  extractCloudName
+  extractCloudName,
+  getApplicationStatusGroup,
+  getMachineStatusGroup,
+  getUnitStatusGroup
 } from "./utils";
 
 // ---- Selectors for top level keys
@@ -170,6 +173,81 @@ const groupModelsByStatus = modelData => {
 };
 
 /**
+  Returns a grouped collection of machine instances.
+  @param {Object} modelData
+  @returns {Object} The grouped machine instances.
+*/
+const groupMachinesByStatus = modelData => {
+  const grouped = {
+    blocked: [],
+    alert: [],
+    running: []
+  };
+  if (!modelData) {
+    return grouped;
+  }
+  for (let modelUUID in modelData) {
+    const model = modelData[modelUUID];
+    for (let machineID in model.machines) {
+      const machine = model.machines[machineID];
+      grouped[getMachineStatusGroup(machine).status].push(machine);
+    }
+  }
+  return grouped;
+};
+
+/**
+  Returns a grouped collection of unit instances.
+  @param {Object} modelData
+  @returns {Function} The grouped unit instances.
+*/
+const groupUnitsByStatus = modelData => {
+  const grouped = {
+    blocked: [],
+    alert: [],
+    running: []
+  };
+  if (!modelData) {
+    return grouped;
+  }
+  for (let modelUUID in modelData) {
+    const model = modelData[modelUUID];
+    for (let applicationID in model.applications) {
+      const application = model.applications[applicationID];
+      for (let unitID in application.units) {
+        const unit = application.units[unitID];
+        grouped[getUnitStatusGroup(unit).status].push(unit);
+      }
+    }
+  }
+  return grouped;
+};
+
+/**
+  Returns a grouped collection of machine instances.
+  @param {Object} modelData
+  @returns {Object} The grouped machine instances.
+*/
+const groupApplicationsByStatus = modelData => {
+  const grouped = {
+    blocked: [],
+    alert: [],
+    running: []
+  };
+  if (!modelData) {
+    return grouped;
+  }
+  for (let modelUUID in modelData) {
+    const model = modelData[modelUUID];
+    for (let applicationID in model.applications) {
+      const application = model.applications[applicationID];
+      grouped[getApplicationStatusGroup(application).status].push(application);
+    }
+  }
+  return grouped;
+};
+
+/**
   Returns a grouped collection of model statuses by owner.
   @param {Object} modelData
   @returns {Object} The grouped model statuses by owner.
@@ -190,31 +268,6 @@ const groupModelsByOwner = modelData => {
     }
   }
   return grouped;
-};
-
-/**
-  Returns an object containing the number of models, applications and units.
-  @param {Object} countModelData
-  @returns {Object} The set of model data counts.
-*/
-const countModelData = modelData => {
-  let machinesCount = 0;
-  let applicationCount = 0;
-  let unitCount = 0;
-
-  for (const modelUUID in modelData) {
-    const applications = modelData[modelUUID].applications;
-    applicationCount += Object.keys(applications).length;
-    for (const applicationID in applications) {
-      unitCount += Object.keys(applications[applicationID].units).length;
-    }
-    machinesCount += Object.keys(modelData[modelUUID].machines).length;
-  }
-  return {
-    applicationCount,
-    machinesCount,
-    unitCount
-  };
 };
 
 /**
@@ -342,6 +395,33 @@ export const getGroupedModelDataByStatus = createSelector(
 );
 
 /**
+  Returns the machine instances sorted by status.
+  @returns {Function} The memoized selector to return the sorted machine instances.
+*/
+export const getGroupedMachinesDataByStatus = createSelector(
+  getModelData,
+  groupMachinesByStatus
+);
+
+/**
+  Returns the unit instances sorted by status.
+  @returns {Function} The memoized selector to return the sorted unit instances.
+*/
+export const getGroupedUnitsDataByStatus = createSelector(
+  getModelData,
+  groupUnitsByStatus
+);
+
+/**
+  Returns the application instances sorted by status.
+  @returns {Function} The memoized selector to return the sorted application instances.
+*/
+export const getGroupedApplicationsDataByStatus = createSelector(
+  getModelData,
+  groupApplicationsByStatus
+);
+
+/**
   Returns the model statuses sorted by owner.
   @returns {Function} The memoized selector to return the models
     grouped by owner.
@@ -360,13 +440,6 @@ export const getGroupedModelDataByCloud = createSelector(
   getModelData,
   groupModelsByCloud
 );
-
-/**
-  Returns the model data counts.
-  @returns {Function} The memoized selector to return the models data
-    count.
-*/
-export const getModelCounts = createSelector(getModelData, countModelData);
 
 /**
   Returns the counts of the model statuses

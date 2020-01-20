@@ -37,23 +37,3 @@ describe("Controllers table", () => {
     expect(wrapper.find("tbody tr").length).toBe(6);
   });
 });
-
-describe("Controllers overview panel", () => {
-  it("displays the controllers machine, application and unit counts", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <MemoryRouter>
-        <Provider store={store}>
-          <Controllers />
-        </Provider>
-      </MemoryRouter>
-    );
-    expect(wrapper.find("[data-test='machine-count']").text()).toBe(
-      "56 machines"
-    );
-    expect(wrapper.find("[data-test='application-count']").text()).toBe(
-      "59 applications"
-    );
-    expect(wrapper.find("[data-test='unit-count']").text()).toBe("58 units");
-  });
-});

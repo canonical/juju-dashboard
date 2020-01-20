@@ -53,6 +53,8 @@ export const getModelStatusGroupData = model => {
       const { status: unitStatus } = getUnitStatusGroup(unit);
       highestStatus = setHighestStatus(unitStatus, highestStatus);
       if (checkHighestStatus(highestStatus)) {
+        // If it's the highest status then we want to store the message.
+        messages.push(unit.agentStatus.info);
         return;
       }
     });
@@ -89,16 +91,52 @@ export const getApplicationStatusGroup = application => {
 };
 
 /**
-  Returns the string status for the unit.
-  @param {Object} unit The unit to check the status of in the format stored
-    in the redux store.
-  @returns {Object} The status of the unit and any relevent messaging.
+  Returns the status level for the machine.
+  @param {Object} machine The machine to check the status of in the
+    format stored in the redux store.
+  @returns {Object} The status of the machine and any relevent messaging.
 */
-export const getUnitStatusGroup = unit => {
+export const getMachineStatusGroup = machine => {
+  // Possible "blocked" or error states in machine statuses.
+  const blocked = ["down"];
+  // Possible "alert" states in machine statuses.
+  const alert = ["pending"];
+  const status = machine.agentStatus.status;
   const response = {
     status: "running",
     message: null
   };
+  if (blocked.includes(status)) {
+    response.status = "blocked";
+  }
+  if (alert.includes(status)) {
+    response.status = "alert";
+  }
+  return response;
+};
+
+/**
+  Returns the status level for the unit.
+  @param {Object} unit The unit to check the status of in the
+    format stored in the redux store.
+  @returns {Object} The status of the unit and any relevent messaging.
+*/
+export const getUnitStatusGroup = unit => {
+  // Possible "blocked" or error states in the unit statuses.
+  const blocked = ["lost"];
+  // Possible "alert" states in the unit statuses.
+  const alert = ["allocating"];
+  const status = unit.agentStatus.status;
+  const response = {
+    status: "running",
+    message: null
+  };
+  if (blocked.includes(status)) {
+    response.status = "blocked";
+  }
+  if (alert.includes(status)) {
+    response.status = "alert";
+  }
   return response;
 };
 
@@ -118,7 +156,7 @@ export const extractOwnerName = tag => {
   @returns {string} The item pluralized if required
 */
 export const pluralize = (value, string) => {
-  if (value && (value === 0 || value > 1)) {
+  if (value === 0 || value > 1) {
     return string + "s";
   }
   return string;

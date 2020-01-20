@@ -1,0 +1,64 @@
+@import "vanilla-framework/scss/vanilla";
+
+.p-chart {
+  .is-blocked {
+    fill: $color-negative;
+  }
+
+  .is-alert {
+    fill: $color-caution;
+  }
+
+  .is-running {
+    fill: $color-mid-light;
+  }
+
+  @media (min-width: $breakpoint-medium) {
+    align-items: center;
+    display: flex;
+
+    &__chart {
+      flex: 1;
+    }
+
+    &__legend {
+      flex: 1;
+    }
+  }
+
+  @media (max-width: $breakpoint-medium) {
+    &__chart {
+      display: none;
+    }
+  }
+}
+
+.p-legend {
+  &__item {
+    padding-left: 1rem;
+    position: relative;
+
+    &::before {
+      border-radius: 50%;
+      content: "";
+      display: inline-block;
+      height: 0.5rem;
+      left: 0;
+      position: absolute;
+      top: 0.65rem;
+      width: 0.5rem;
+    }
+
+    &.is-blocked::before {
+      background-color: $color-negative;
+    }
+
+    &.is-alert::before {
+      background-color: $color-caution;
+    }
+
+    &.is-running::before {
+      background-color: $color-mid-light;
+    }
+  }
+}

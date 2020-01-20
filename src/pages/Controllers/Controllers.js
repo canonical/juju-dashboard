@@ -4,16 +4,13 @@ import { useSelector } from "react-redux";
 import Layout from "components/Layout/Layout";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
-import { getControllerData, getModelCounts } from "app/selectors";
-import { pluralize } from "app/utils";
+import { getControllerData } from "app/selectors";
+import ControllersOverview from "./ControllerOverview/ControllerOverview";
 
 import "./_controllers.scss";
 
 export default function Controllers() {
   const controllerData = useSelector(getControllerData);
-  const { machinesCount, applicationCount, unitCount } = useSelector(
-    getModelCounts
-  );
 
   const headers = [
     { content: "running", sortKey: "running" },
@@ -47,28 +44,11 @@ export default function Controllers() {
 
   return (
     <Layout>
-      <div className="l-content">
-        <div className="overview">
-          <div className="row">
-            <div className="col-4 overview__machines">
-              <strong data-test="machine-count">
-                {machinesCount} {pluralize(machinesCount, "machine")}
-              </strong>
-            </div>
-            <div className="col-4 overview__applications">
-              <strong data-test="application-count">
-                {applicationCount} {pluralize(applicationCount, "application")}
-              </strong>
-            </div>
-            <div className="col-4 overview__units">
-              <strong data-test="unit-count">
-                {unitCount} {pluralize(unitCount, "unit")}
-              </strong>
-            </div>
-          </div>
-        </div>
-        <div className="controllers">
-          <div className="l-controllers-table">
+      <div className="l-content controllers">
+        <ControllersOverview />
+        <div className="p-strip">
+          <div className="row l-controllers-table">
+            <h5>Controller status</h5>
             <MainTable
               className={"u-table-layout--auto"}
               headers={headers}

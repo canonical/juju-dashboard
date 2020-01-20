@@ -62,6 +62,6 @@ describe("Primary Nav", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".entity-count").text()).toStrictEqual("2");
+    expect(wrapper.find(".entity-count").text()).toStrictEqual("6");
   });
 });
