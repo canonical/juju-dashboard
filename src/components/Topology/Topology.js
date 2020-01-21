@@ -17,13 +17,19 @@ export default ({ modelData, width, height }) => {
     [];
 
   useEffect(() => {
+    const zoom = d3.zoom();
+
     const topo = d3
       .select(ref.current)
       .attr("width", width)
       .attr("height", height)
-      .append("g");
+      .append("g")
+      .call(zoom)
+      // 2 lines below copied....why do they work?
+      .call(zoom.transform, d3.zoomIdentity.translate(100, 50).scale(0.5))
+      .attr("transform", "translate(100,50) scale(.5,.5)");
 
-    const appIcons = topo.selectAll("g .application").data(applications);
+    const appIcons = topo.selectAll(".application").data(applications);
 
     const appIcon = appIcons.enter().append("g");
 
@@ -46,6 +52,8 @@ export default ({ modelData, width, height }) => {
       .attr("transform", d =>
         isSubordinate(d) ? "translate(17, 17)" : "translate(47, 47)"
       );
+
+    // console.log(topo.selectAll(".application").nodes());
 
     appIcons.exit().remove();
 

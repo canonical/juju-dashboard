@@ -13,6 +13,11 @@ jest.mock("components/Terminal/Terminal", () => {
   return Terminal;
 });
 
+jest.mock("components/Topology/Topology", () => {
+  const Topology = () => <div className="topology"></div>;
+  return Topology;
+});
+
 const mockStore = configureStore([]);
 
 describe("ModelDetail Container", () => {
