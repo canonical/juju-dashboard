@@ -338,7 +338,7 @@ const ModelDetails = () => {
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {
       // This model may not be in the first batch of models that we request
-      // status from in the main loop so request for it now.
+      // status from in the main loop so update the status now.
       dispatch(fetchModelStatus(modelUUID));
     }
   }, [dispatch, modelUUID, modelStatusData]);

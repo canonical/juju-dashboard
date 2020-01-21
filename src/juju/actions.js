@@ -83,6 +83,11 @@ export function fetchModelList() {
   };
 }
 
+/**
+  Returns the model status that's stored in the database if it exists or makes
+  another call to request it if it doesn't.
+  @param {String} modelUUID The UUID of the model to request the status of.
+ */
 export function fetchModelStatus(modelUUID) {
   return async function fetchModelStatus(dispatch, getState) {
     const jujuState = getState().juju;

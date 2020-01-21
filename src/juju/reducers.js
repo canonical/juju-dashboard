@@ -34,6 +34,7 @@ export default function jujuReducer(state = defaultState, action) {
         // to often causing needless re-renders and is currently irrelevent
         // like controllerTimestamp so we have a whitelist for top level keys.
         const allowedKeys = [
+          "annotations",
           "applications",
           "machines",
           "model",
