@@ -46,14 +46,12 @@ export default ({ modelData, width, height }) => {
 
     appIcon
       .append("image")
-      .attr("xlink:href", d => generateIconPath(d.charm.replace("cs:", "")))
+      .attr("xlink:href", d => generateIconPath(d.charm))
       .attr("width", 96)
       .attr("height", 96)
       .attr("transform", d =>
         isSubordinate(d) ? "translate(17, 17)" : "translate(47, 47)"
       );
-
-    // console.log(topo.selectAll(".application").nodes());
 
     appIcons.exit().remove();
 

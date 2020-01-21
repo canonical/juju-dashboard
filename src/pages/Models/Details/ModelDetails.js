@@ -92,11 +92,7 @@ const generateApplicationRows = modelStatusData => {
     return {
       columns: [
         {
-          content: generateEntityLink(
-            app.charm ? app.charm.replace("cs:", "") : "",
-            "#",
-            key
-          ),
+          content: generateEntityLink(app.charm || "", "#", key),
           className: "u-display--flex"
         },
         {

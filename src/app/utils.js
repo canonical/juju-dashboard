@@ -185,8 +185,12 @@ export const extractCredentialName = tag => {
 
 /**
   Returns a link to the charm icon for the provided charm name.
-  @param {String} namespace The fully qualified charm name without the 'cs:' prefix.
+  @param {String} namespace The fully qualified charm name.
   @returns {String} The link to the charm icon.
 */
-export const generateIconPath = namespace =>
-  `https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`;
+export const generateIconPath = namespace => {
+  if (namespace.indexOf("cs:") === 0) {
+    namespace = namespace.replace("cs:", "");
+  }
+  return `https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`;
+};
