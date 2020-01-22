@@ -55,14 +55,6 @@
     }
   }
 
-  .p-primary-nav__bottom {
-    margin-top: auto;
-
-    .p-list__link {
-      color: $color-mid-x-light;
-    }
-  }
-
   .p-list__item {
     padding: 0;
 
@@ -88,6 +80,31 @@
       padding-right: 1.25rem;
       position: relative;
       top: 0.2rem;
+    }
+  }
+
+  .p-primary-nav__bottom {
+    margin-top: auto;
+
+    .p-list {
+      &__item {
+        display: flex;
+
+        span {
+          margin-left: auto;
+          margin-right: 1rem;
+          margin-top: 0.25rem;
+        }
+      }
+
+      &__link {
+        color: $color-mid-x-light;
+
+        &:hover {
+          background: none;
+          text-decoration: underline;
+        }
+      }
     }
   }
 

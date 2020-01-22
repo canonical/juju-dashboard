@@ -151,6 +151,7 @@ const PrimaryNav = () => {
               <img className="p-list__icon" src={bugIcon} alt={`bug icon`} />
               Report a bug
             </a>
+            <span class="p-label--new">Alpha</span>
           </li>
         </ul>
       </div>
