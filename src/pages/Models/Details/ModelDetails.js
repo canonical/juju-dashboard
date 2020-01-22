@@ -145,7 +145,14 @@ const generateUnitRows = modelStatusData => {
             content: unit.publicAddress.split(":")[-1] || "-",
             className: "u-align--right"
           },
-          { content: unit.workloadStatus.info }
+          {
+            content: (
+              <span title={unit.workloadStatus.info}>
+                {unit.workloadStatus.info}
+              </span>
+            ),
+            className: "model-details__truncate-cell"
+          }
         ]
       });
 
