@@ -18,7 +18,7 @@ exports[`User Icon renders without crashing and matches snapshot 1`] = `
     >
       <a
         className="p-contextual-menu__link p-link--external"
-        href="/docs"
+        href="https://jaas.ai/docs"
       >
         Docs
       </a>
