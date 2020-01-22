@@ -1,14 +1,15 @@
 import React from "react";
+import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 
 import Layout from "components/Layout/Layout";
 
 export default function Logs() {
   return (
     <Layout>
-      <div className="p-strip">
-        <div className="row">
-          <h2>Logs</h2>
-        </div>
+      <div className="row">
+        <Notification type="caution">
+          We're still working on this functionality - please check back soon!
+        </Notification>
       </div>
     </Layout>
   );
