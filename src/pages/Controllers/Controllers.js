@@ -32,7 +32,7 @@ export default function Controllers() {
     controllerData &&
     Object.values(controllerData).map(c => ({
       columns: [
-        { content: <a href="_#">{c.path}</a> },
+        { content: c.path },
         { content: `${c.location.cloud}/${c.location.region}` },
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
