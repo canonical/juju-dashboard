@@ -11,6 +11,11 @@ import InfoPanel from "./InfoPanel";
 
 const mockStore = configureStore([]);
 
+jest.mock("components/Topology/Topology", () => {
+  const Topology = () => <div className="topology"></div>;
+  return Topology;
+});
+
 describe("Info Panel", () => {
   it("renders without crashing and matches snapshot", () => {
     const store = mockStore(dataDump);

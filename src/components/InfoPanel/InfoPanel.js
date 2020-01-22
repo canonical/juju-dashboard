@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
+import Topology from "components/Topology/Topology";
+
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { extractCloudName } from "app/utils";
 
@@ -24,7 +26,7 @@ const InfoPanel = () => {
   return (
     <div className="info-panel">
       <div className="info-panel__pictogram">
-        <img src="/ghost-bundle.svg" alt="" />
+        <Topology width={270} height={250} modelData={modelStatusData} />
       </div>
       <div className="info-panel__grid">
         <div className="info-panel__grid-item">

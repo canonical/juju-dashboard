@@ -2,6 +2,7 @@ import Limiter from "async-limiter";
 import jujulib from "@canonical/jujulib";
 // When updating this list of juju facades be sure to update the
 // mangle.reserved list in craco.config.js.
+import annotations from "@canonical/jujulib/api/facades/annotations-v2";
 import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
@@ -26,7 +27,7 @@ const httpControllerURL = `https://${controllerBaseURL}/v2`;
 */
 function generateConnectionOptions(usePinger = false, bakery, onClose) {
   // The options used when connecting to a Juju controller or model.
-  const facades = [client, modelManager];
+  const facades = [annotations, client, modelManager];
   if (usePinger) {
     facades.push(pinger);
   }
@@ -108,6 +109,22 @@ async function fetchModelStatus(modelUUID, getState) {
       );
       if (isLoggedIn(getState())) {
         status = await conn.facades.client.fullStatus();
+      }
+      if (isLoggedIn(getState())) {
+        const entities = Object.keys(status.applications).map(name => ({
+          tag: `application-${name}`
+        }));
+        const response = await conn.facades.annotations.get({ entities });
+        // It will return an entry for every entity even if there are no
+        // annotations so we have to inspect them and strip out the empty.
+        const annotations = {};
+        response.results.forEach(item => {
+          if (Object.keys(item.annotations).length > 0) {
+            const appName = item.entity.replace("application-", "");
+            annotations[appName] = item.annotations;
+          }
+        });
+        status.annotations = annotations;
       }
       logout();
     } catch (e) {
