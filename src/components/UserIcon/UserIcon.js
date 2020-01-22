@@ -58,7 +58,7 @@ export default function User() {
         })}
       >
         <span className="p-contextual-menu__group">
-          <a href="/docs" className="p-contextual-menu__link p-link--external">
+          <a href="https://jaas.ai/docs" className="p-contextual-menu__link p-link--external">
             Docs
           </a>
           <Link
