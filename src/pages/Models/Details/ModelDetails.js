@@ -127,7 +127,7 @@ const generateUnitRows = modelStatusData => {
           {
             content: generateEntityLink(
               applications[applicationName].charm
-                ? applications[applicationName].charm.replace("cs:", "")
+                ? applications[applicationName].charm
                 : "",
               "#",
               unitId
@@ -157,12 +157,7 @@ const generateUnitRows = modelStatusData => {
           unitRows.push({
             columns: [
               {
-                content: generateEntityLink(
-                  subordinate.charm.replace("cs:", ""),
-                  "#",
-                  key,
-                  true
-                ),
+                content: generateEntityLink(subordinate.charm, "#", key, true),
                 className: "u-display--flex"
               },
               {
@@ -208,7 +203,7 @@ const generateRelationIconImage = (applicationName, modelStatusData) => {
   if (!application || !applicationName) {
     return;
   }
-  return generateIconImg(applicationName, application.charm.replace("cs:", ""));
+  return generateIconImg(applicationName, application.charm);
 };
 
 const generateRelationRows = modelStatusData => {
