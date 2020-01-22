@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import Layout from "components/Layout/Layout";
+import Header from "components/Header/Header";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
 import { getControllerData } from "app/selectors";
@@ -31,7 +32,7 @@ export default function Controllers() {
     controllerData &&
     Object.values(controllerData).map(c => ({
       columns: [
-        { content: <a href="_#">{c.path}</a> },
+        { content: c.path },
         { content: `${c.location.cloud}/${c.location.region}` },
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
@@ -44,17 +45,16 @@ export default function Controllers() {
 
   return (
     <Layout>
+      <Header></Header>
       <div className="l-content controllers">
         <ControllersOverview />
-        <div className="p-strip">
-          <div className="row l-controllers-table">
-            <h5>Controller status</h5>
-            <MainTable
-              className={"u-table-layout--auto"}
-              headers={headers}
-              rows={rows}
-            />
-          </div>
+        <div className="row l-controllers-table">
+          <h5>Controller status</h5>
+          <MainTable
+            className={"u-table-layout--auto"}
+            headers={headers}
+            rows={rows}
+          />
         </div>
       </div>
     </Layout>

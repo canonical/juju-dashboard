@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import classNames from "classnames";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
@@ -10,9 +10,10 @@ import logoMark from "static/images/logo/logo-mark.svg";
 import logoText from "static/images/logo/logo-text.svg";
 import modelsIcon from "static/images/icons/models-icon.svg";
 import controllersIcon from "static/images/icons/controllers-icon.svg";
-import usageIcon from "static/images/icons/usage-icon.svg";
-import logsIcon from "static/images/icons/logs-icon.svg";
 import bugIcon from "static/images/icons/bug-icon.svg";
+// Remove these nav links until these sections are active
+// import usageIcon from "static/images/icons/usage-icon.svg";
+// import logsIcon from "static/images/icons/logs-icon.svg";
 
 // Style imports
 import "./_primary-nav.scss";
@@ -23,9 +24,10 @@ const pages = [
     label: "Controllers",
     path: "/controllers",
     icon: controllersIcon
-  },
-  { label: "Usage", path: "/usage", icon: usageIcon },
-  { label: "Logs", path: "/logs", icon: logsIcon }
+  }
+  // Remove these nav links until these sections are active
+  // { label: "Usage", path: "/usage", icon: usageIcon },
+  // { label: "Logs", path: "/logs", icon: logsIcon }
 ];
 
 const PrimaryNav = () => {
@@ -36,7 +38,7 @@ const PrimaryNav = () => {
       className={classNames("p-primary-nav", { "ext-nav-open": extNavOpen })}
     >
       <div className="p-primary-nav__header">
-        <Link to="/" className="p-primary-nav__logo">
+        <a href="https://jaas.ai" className="p-primary-nav__logo">
           <img
             className="p-primary-nav__logo-icon"
             src={logoMark}
@@ -50,7 +52,7 @@ const PrimaryNav = () => {
             height="30"
             alt=""
           />
-        </Link>
+        </a>
         <button
           className="p-primary-nav__toggle"
           onClick={() => setExtNavOpen(!extNavOpen)}
@@ -72,7 +74,7 @@ const PrimaryNav = () => {
         <li className="p-list__item">
           <a
             className="p-list__link"
-            href="https://jaas.ai/about"
+            href="https://jaas.ai/jaas"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -150,6 +152,10 @@ const PrimaryNav = () => {
               <img className="p-list__icon" src={bugIcon} alt={`bug icon`} />
               Report a bug
             </a>
+          </li>
+          <li className="p-list__item">
+            <span className="version">Version 0.0.2</span>
+            <span className="p-label--new">Alpha</span>
           </li>
         </ul>
       </div>

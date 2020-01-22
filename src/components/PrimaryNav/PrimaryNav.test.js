@@ -45,12 +45,12 @@ describe("Primary Nav", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/logs"]}>
+        <MemoryRouter initialEntries={["/controllers"]}>
           <PrimaryNav />
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("a.is-selected").text()).toStrictEqual("Logs");
+    expect(wrapper.find("a.is-selected").text()).toStrictEqual("Controllers");
   });
 
   it("displays correct number of blocked models", () => {

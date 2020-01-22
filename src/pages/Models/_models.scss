@@ -1,13 +1,22 @@
 .models {
   &__count {
+    display: none;
     font-size: 0.875rem;
     padding: 0 1.5rem;
+
+    @media (min-width: 1200px) {
+      display: block;
+    }
   }
 
   &__header {
     align-items: center;
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 3rem;
+    grid-template-columns: 1fr 280px 3rem;
+
+    @media (min-width: 1200px) {
+      grid-template-columns: 1fr 1fr 260px 3rem;
+    }
   }
 
   tr {

@@ -3,15 +3,13 @@
 exports[`Logs page renders without crashing and matches snapshot 1`] = `
 <Layout>
   <div
-    className="p-strip"
+    className="row"
   >
-    <div
-      className="row"
+    <Notification
+      type="caution"
     >
-      <h2>
-        Logs
-      </h2>
-    </div>
+      We're still working on this functionality - please check back soon!
+    </Notification>
   </div>
 </Layout>
 `;

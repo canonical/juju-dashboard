@@ -55,14 +55,6 @@
     }
   }
 
-  .p-primary-nav__bottom {
-    margin-top: auto;
-
-    .p-list__link {
-      color: $color-mid-x-light;
-    }
-  }
-
   .p-list__item {
     padding: 0;
 
@@ -72,6 +64,7 @@
       display: flex;
       padding: 0.25rem 0;
       padding-left: calc(1rem - 3px);
+      width: 100%;
 
       &:hover {
         background-color: $color-navigation-highlight;
@@ -88,6 +81,32 @@
       padding-right: 1.25rem;
       position: relative;
       top: 0.2rem;
+    }
+  }
+
+  .p-primary-nav__bottom {
+    border-top: 1px solid #666;
+    margin-top: 0;
+    padding-top: 1rem;
+
+    .p-list {
+      &__item {
+        color: #fff;
+        display: flex;
+
+        .p-label--new {
+          margin-left: auto;
+          margin-right: 1rem;
+          margin-top: 0.5rem;
+        }
+
+        .version {
+          color: $color-light;
+          font-size: 0.875rem;
+          padding-left: 3.25rem;
+          padding-top: 0.5rem;
+        }
+      }
     }
   }
 
