@@ -13,7 +13,11 @@ import UserIcon from "components/UserIcon/UserIcon";
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "app/actions";
-import { generateStatusElement, generateSpanClass } from "app/utils";
+import {
+  generateStatusElement,
+  generateSpanClass,
+  generateIconPath
+} from "app/utils";
 
 import "./_model-details.scss";
 
@@ -61,7 +65,7 @@ const generateIconImg = (name, namespace) => {
       width="24"
       height="24"
       className="entity-icon"
-      src={`https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`}
+      src={generateIconPath(namespace)}
     />
   );
 };
@@ -88,11 +92,7 @@ const generateApplicationRows = modelStatusData => {
     return {
       columns: [
         {
-          content: generateEntityLink(
-            app.charm ? app.charm.replace("cs:", "") : "",
-            "#",
-            key
-          ),
+          content: generateEntityLink(app.charm || "", "#", key),
           className: "u-display--flex"
         },
         {
@@ -127,7 +127,7 @@ const generateUnitRows = modelStatusData => {
           {
             content: generateEntityLink(
               applications[applicationName].charm
-                ? applications[applicationName].charm.replace("cs:", "")
+                ? applications[applicationName].charm
                 : "",
               "#",
               unitId
@@ -157,12 +157,7 @@ const generateUnitRows = modelStatusData => {
           unitRows.push({
             columns: [
               {
-                content: generateEntityLink(
-                  subordinate.charm.replace("cs:", ""),
-                  "#",
-                  key,
-                  true
-                ),
+                content: generateEntityLink(subordinate.charm, "#", key, true),
                 className: "u-display--flex"
               },
               {
@@ -208,7 +203,7 @@ const generateRelationIconImage = (applicationName, modelStatusData) => {
   if (!application || !applicationName) {
     return;
   }
-  return generateIconImg(applicationName, application.charm.replace("cs:", ""));
+  return generateIconImg(applicationName, application.charm);
 };
 
 const generateRelationRows = modelStatusData => {
@@ -334,7 +329,7 @@ const ModelDetails = () => {
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {
       // This model may not be in the first batch of models that we request
-      // status from in the main loop so request for it now.
+      // status from in the main loop so update the status now.
       dispatch(fetchModelStatus(modelUUID));
     }
   }, [dispatch, modelUUID, modelStatusData]);
