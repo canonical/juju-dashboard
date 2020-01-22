@@ -138,9 +138,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -258,9 +258,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-central1
-                /
                 google
+                /
+                us-central1
               </a>,
             },
             Object {
@@ -378,9 +378,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                europe-west1
-                /
                 google
+                /
+                europe-west1
               </a>,
             },
             Object {
@@ -498,9 +498,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -618,9 +618,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -738,9 +738,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                eu-central-1
-                /
                 aws
+                /
+                eu-central-1
               </a>,
             },
             Object {
@@ -984,9 +984,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>
@@ -1163,9 +1163,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-central1
-                    /
                     google
+                    /
+                    us-central1
                   </a>
                 </td>
               </TableCell>
@@ -1342,9 +1342,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    europe-west1
-                    /
                     google
+                    /
+                    europe-west1
                   </a>
                 </td>
               </TableCell>
@@ -1521,9 +1521,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>
@@ -1700,9 +1700,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>
@@ -1879,9 +1879,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    eu-central-1
-                    /
                     aws
+                    /
+                    eu-central-1
                   </a>
                 </td>
               </TableCell>
@@ -2061,9 +2061,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-central1
-                /
                 google
+                /
+                us-central1
               </a>,
             },
             Object {
@@ -2175,9 +2175,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -2289,9 +2289,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -2403,9 +2403,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                eu-central-1
-                /
                 aws
+                /
+                eu-central-1
               </a>,
             },
             Object {
@@ -2643,9 +2643,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-central1
-                    /
                     google
+                    /
+                    us-central1
                   </a>
                 </td>
               </TableCell>
@@ -2816,9 +2816,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>
@@ -2989,9 +2989,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>
@@ -3162,9 +3162,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    eu-central-1
-                    /
                     aws
+                    /
+                    eu-central-1
                   </a>
                 </td>
               </TableCell>
@@ -3344,9 +3344,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -3458,9 +3458,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-central1
-                /
                 google
+                /
+                us-central1
               </a>,
             },
             Object {
@@ -3572,9 +3572,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-central1
-                /
                 google
+                /
+                us-central1
               </a>,
             },
             Object {
@@ -3686,9 +3686,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -3800,9 +3800,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -3914,9 +3914,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -4028,9 +4028,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                 className="p-link--soft"
                 href="#_"
               >
-                us-east1
-                /
                 google
+                /
+                us-east1
               </a>,
             },
             Object {
@@ -4268,9 +4268,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>
@@ -4441,9 +4441,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-central1
-                    /
                     google
+                    /
+                    us-central1
                   </a>
                 </td>
               </TableCell>
@@ -4614,9 +4614,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-central1
-                    /
                     google
+                    /
+                    us-central1
                   </a>
                 </td>
               </TableCell>
@@ -4787,9 +4787,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>
@@ -4960,9 +4960,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>
@@ -5133,9 +5133,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>
@@ -5306,9 +5306,9 @@ exports[`StatusGroup renders without crashing and matches snapshot 1`] = `
                     className="p-link--soft"
                     href="#_"
                   >
-                    us-east1
-                    /
                     google
+                    /
+                    us-east1
                   </a>
                 </td>
               </TableCell>

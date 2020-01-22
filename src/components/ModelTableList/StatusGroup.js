@@ -113,8 +113,8 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
           {
             content: (
               <a href="#_" className="p-link--soft">
-                {getStatusValue(model, "region")}/
-                {getStatusValue(model, "cloudTag")}
+                {getStatusValue(model, "cloudTag")}/
+                {getStatusValue(model, "region")}
               </a>
             )
           },
