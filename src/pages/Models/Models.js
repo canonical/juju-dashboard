@@ -44,13 +44,15 @@ export default function Models() {
       <Header>
         <div className="models__header">
           <div className="models__count">
-            {`${models} ${pluralize(
-              models,
-              "model"
-            )}: ${blocked} blocked, ${alert} ${pluralize(
-              alert,
-              "alert"
-            )}, ${running} running`}
+            <span>
+              {`${models} ${pluralize(
+                models,
+                "model"
+              )}: ${blocked} blocked, ${alert} ${pluralize(
+                alert,
+                "alert"
+              )}, ${running} running`}
+            </span>
           </div>
           <ModelGroupToggle setGroupedBy={setGroupedBy} groupedBy={groupedBy} />
           <FilterTags />

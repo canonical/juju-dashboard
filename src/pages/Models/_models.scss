@@ -2,12 +2,20 @@
   &__count {
     font-size: 0.875rem;
     padding: 0 1.5rem;
+
+    @media (max-width: 1080px) {
+      display: none;
+    }
   }
 
   &__header {
     align-items: center;
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 3rem;
+    grid-template-columns: 1fr 200px 3rem;
+
+    @media (min-width: 1080px) {
+      grid-template-columns: 1fr 1fr 200px 3rem;
+    }
   }
 
   tr {
