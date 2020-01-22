@@ -7,36 +7,24 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
   <div
     className="p-primary-nav__header"
   >
-    <Link
+    <a
       className="p-primary-nav__logo"
-      to="/"
+      href="https://jaas.ai"
     >
-      <LinkAnchor
-        className="p-primary-nav__logo"
-        href="/"
-        navigate={[Function]}
-      >
-        <a
-          className="p-primary-nav__logo"
-          href="/"
-          onClick={[Function]}
-        >
-          <img
-            alt="JAAS logo"
-            className="p-primary-nav__logo-icon"
-            height="30"
-            src="logo-mark.svg"
-            width="30"
-          />
-          <img
-            alt=""
-            className="p-primary-nav__logo-text"
-            height="30"
-            src="logo-text.svg"
-          />
-        </a>
-      </LinkAnchor>
-    </Link>
+      <img
+        alt="JAAS logo"
+        className="p-primary-nav__logo-icon"
+        height="30"
+        src="logo-mark.svg"
+        width="30"
+      />
+      <img
+        alt=""
+        className="p-primary-nav__logo-text"
+        height="30"
+        src="logo-text.svg"
+      />
+    </a>
     <button
       className="p-primary-nav__toggle"
       onClick={[Function]}
@@ -68,7 +56,7 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
     >
       <a
         className="p-list__link"
-        href="https://jaas.ai/about"
+        href="https://jaas.ai/jaas"
         rel="noopener noreferrer"
         target="_blank"
       >
@@ -210,96 +198,6 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
         </Link>
       </NavLink>
     </li>
-    <li
-      className="p-list__item"
-      key="/usage"
-    >
-      <NavLink
-        activeClassName="is-selected"
-        className="p-list__link"
-        isActive={[Function]}
-        to="/usage"
-      >
-        <Link
-          aria-current={null}
-          className="p-list__link"
-          to={
-            Object {
-              "hash": "",
-              "pathname": "/usage",
-              "search": "",
-              "state": null,
-            }
-          }
-        >
-          <LinkAnchor
-            aria-current={null}
-            className="p-list__link"
-            href="/usage"
-            navigate={[Function]}
-          >
-            <a
-              aria-current={null}
-              className="p-list__link"
-              href="/usage"
-              onClick={[Function]}
-            >
-              <img
-                alt="Usage icon"
-                className="p-list__icon"
-                src="usage-icon.svg"
-              />
-              Usage
-            </a>
-          </LinkAnchor>
-        </Link>
-      </NavLink>
-    </li>
-    <li
-      className="p-list__item"
-      key="/logs"
-    >
-      <NavLink
-        activeClassName="is-selected"
-        className="p-list__link"
-        isActive={[Function]}
-        to="/logs"
-      >
-        <Link
-          aria-current={null}
-          className="p-list__link"
-          to={
-            Object {
-              "hash": "",
-              "pathname": "/logs",
-              "search": "",
-              "state": null,
-            }
-          }
-        >
-          <LinkAnchor
-            aria-current={null}
-            className="p-list__link"
-            href="/logs"
-            navigate={[Function]}
-          >
-            <a
-              aria-current={null}
-              className="p-list__link"
-              href="/logs"
-              onClick={[Function]}
-            >
-              <img
-                alt="Logs icon"
-                className="p-list__icon"
-                src="logs-icon.svg"
-              />
-              Logs
-            </a>
-          </LinkAnchor>
-        </Link>
-      </NavLink>
-    </li>
   </ul>
   <div
     className="p-primary-nav__bottom"
@@ -323,6 +221,11 @@ exports[`Primary Nav renders without crashing and matches snapshot 1`] = `
           />
           Report a bug
         </a>
+        <span
+          className="p-label--new"
+        >
+          Alpha
+        </span>
       </li>
     </ul>
   </div>
