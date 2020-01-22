@@ -58,11 +58,8 @@ export default function User() {
         })}
       >
         <span className="p-contextual-menu__group">
-          <a href="#_" className="p-contextual-menu__link">
-            Profile
-          </a>
-          <a href="#_" className="p-contextual-menu__link">
-            Help
+          <a href="/docs" className="p-contextual-menu__link p-link--external">
+            Docs
           </a>
           <Link
             className="p-contextual-menu__link"
