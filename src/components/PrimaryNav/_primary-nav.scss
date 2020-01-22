@@ -87,7 +87,7 @@
   .p-primary-nav__bottom {
     border-top: 1px solid #666;
     margin-top: 0;
-    padding-top: 0.75rem;
+    padding-top: 1rem;
 
     .p-list {
       &__item {
@@ -101,7 +101,9 @@
         }
 
         .version {
-          padding-left: 3rem;
+          color: $color-light;
+          font-size: 0.875rem;
+          padding-left: 3.25rem;
           padding-top: 0.5rem;
         }
       }
