@@ -36,7 +36,7 @@ const PrimaryNav = () => {
       className={classNames("p-primary-nav", { "ext-nav-open": extNavOpen })}
     >
       <div className="p-primary-nav__header">
-        <Link to="/" className="p-primary-nav__logo">
+        <a href="https://jaas.ai" className="p-primary-nav__logo">
           <img
             className="p-primary-nav__logo-icon"
             src={logoMark}
@@ -50,7 +50,7 @@ const PrimaryNav = () => {
             height="30"
             alt=""
           />
-        </Link>
+        </a>
         <button
           className="p-primary-nav__toggle"
           onClick={() => setExtNavOpen(!extNavOpen)}
