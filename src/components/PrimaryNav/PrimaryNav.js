@@ -23,9 +23,10 @@ const pages = [
     label: "Controllers",
     path: "/controllers",
     icon: controllersIcon
-  },
-  { label: "Usage", path: "/usage", icon: usageIcon },
-  { label: "Logs", path: "/logs", icon: logsIcon }
+  }
+  // Remove these nav links until these sections are active
+  // { label: "Usage", path: "/usage", icon: usageIcon },
+  // { label: "Logs", path: "/logs", icon: logsIcon }
 ];
 
 const PrimaryNav = () => {
