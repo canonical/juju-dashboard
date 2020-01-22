@@ -72,7 +72,7 @@ const PrimaryNav = () => {
         <li className="p-list__item">
           <a
             className="p-list__link"
-            href="https://jaas.ai/about"
+            href="https://jaas.ai/jaas"
             target="_blank"
             rel="noopener noreferrer"
           >
