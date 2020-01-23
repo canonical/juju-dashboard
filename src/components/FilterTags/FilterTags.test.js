@@ -10,7 +10,19 @@ import dataDump from "../../testing/complete-redux-store-dump";
 const mockStore = configureStore([]);
 
 describe("FilterTags", () => {
-  it("displays the filter panel when input focused", () => {
+  it("renders without crashing and matches snapshot", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <FilterTags />
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(wrapper.find(".p-filter-tags")).toMatchSnapshot();
+  });
+
+  it("displays the filter panel when input clicked", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <MemoryRouter>
@@ -22,7 +34,7 @@ describe("FilterTags", () => {
     const input = ".p-filter-tags__input";
     const panel = ".p-filter-panel";
     expect(wrapper.find(panel).hasClass("is-visible")).toEqual(false);
-    wrapper.find(input).simulate("focus");
+    wrapper.find(input).simulate("click");
     expect(wrapper.find(panel).hasClass("is-visible")).toEqual(true);
   });
 
