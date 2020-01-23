@@ -93,14 +93,14 @@ const FilterTags = () => {
 
   return (
     <div className="p-filter-tags" ref={node}>
-      <form>
-        <input
-          type="text"
-          placeholder="Filter models"
-          className="p-filter-tags__input"
-          onFocus={() => setfilterPanelVisibility(true)}
-        />
-      </form>
+      <div
+        type="text"
+        className="p-filter-tags__input"
+        onClick={() => setfilterPanelVisibility(!filterPanelVisibility)}
+      >
+        Filter models
+      </div>
+
       <div
         className={classNames("p-card--highlighted p-filter-panel", {
           "is-visible": filterPanelVisibility
