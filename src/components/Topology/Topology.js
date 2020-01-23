@@ -32,7 +32,6 @@ const computePositionDelta = annotations => {
     if (!isNaN(x) && (deltaX === null || x < deltaX)) {
       deltaX = x;
     }
-    console.log(y, deltaY, y < deltaY);
     if (!isNaN(y) && (deltaY === null || y < deltaY)) {
       deltaY = y;
     }
@@ -86,17 +85,42 @@ export default ({ modelData, width, height }) => {
       .classed("application", true)
       .attr("data-name", d => d.name)
       .append("circle")
+      .attr("cx", d => (isSubordinate(d) ? 60 : 90))
+      .attr("cy", d => (isSubordinate(d) ? 60 : 90))
       .attr("r", d => (isSubordinate(d) ? 60 : 90))
       .attr("fill", "#f5f5f5")
       .attr("stroke-width", 1)
-      .attr("stroke", "#888888");
+      .attr("stroke", "#888888")
+      .call(_ => {
+        // When ever a new element is added zoom the canvas to fit.
+        const {
+          width: svgWidth,
+          height: svgHeight
+        } = topo.node().getBoundingClientRect();
+        if (svgWidth > 0 && svgHeight > 0) {
+          // Magic number that presents reasonable padding around the viz.
+          const padding = 200;
+          const scale = Math.min(
+            width / (svgWidth + padding),
+            height / (svgHeight + padding)
+          );
+          const translateX = (width - svgWidth * scale) / 2;
+          const translateY = (height - svgHeight * scale) / 2;
+          topo.attr(
+            "transform",
+            `translate(${translateX},${translateY}) scale(${scale},${scale})`
+          );
+        }
+      });
 
     appIcon
       .append("image")
       .attr("xlink:href", d => generateIconPath(d.charm))
       .attr("width", 96)
       .attr("height", 96)
-      .attr("transform", "translate(-47,-47)");
+      .attr("transform", d =>
+        isSubordinate(d) ? "translate(17, 17)" : "translate(47, 47)"
+      );
 
     appIcons.exit().remove();
 
