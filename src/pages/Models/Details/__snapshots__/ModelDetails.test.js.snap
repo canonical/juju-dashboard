@@ -12,7 +12,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
         className="info-panel__pictogram"
       >
         <Topology
-          height={250}
+          height={300}
           modelData={
             Object {
               "applications": Object {
@@ -863,7 +863,7 @@ exports[`ModelDetail Container renders the details pane 1`] = `
               "uuid": "57650e3c-815f-4540-89df-81fd5d70b7ef",
             }
           }
-          width={270}
+          width={300}
         >
           <div
             className="topology"
@@ -4705,9 +4705,9 @@ exports[`ModelDetail Container renders the details pane for models shared-with-m
         className="info-panel__pictogram"
       >
         <Topology
-          height={250}
+          height={300}
           modelData={null}
-          width={270}
+          width={300}
         >
           <div
             className="topology"

@@ -8,7 +8,7 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
     className="info-panel__pictogram"
   >
     <Topology
-      height={250}
+      height={300}
       modelData={
         Object {
           "applications": Object {
@@ -859,7 +859,7 @@ exports[`Info Panel renders without crashing and matches snapshot 1`] = `
           "uuid": "57650e3c-815f-4540-89df-81fd5d70b7ef",
         }
       }
-      width={270}
+      width={300}
     >
       <div
         className="topology"
