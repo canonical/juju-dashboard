@@ -9,7 +9,9 @@
     background: $color-light;
     border: solid 1px $color-mid-x-light;
     margin-bottom: 1rem;
-    padding: 1rem;
+    // Keep these in sync with the dimensions of the Topology component.
+    width: 300px;
+    height: 300px;
   }
 
   &__grid {
