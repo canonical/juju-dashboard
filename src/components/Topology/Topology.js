@@ -43,7 +43,7 @@ const computePositionDelta = annotations => {
 /**
   Retrieve the X and Y annotation with the highest value.
   @param {Object} annotations The annotations object from the model status.
-  @returns {Number} The value of the annotation with the highest X and Y value.
+  @returns {Object} The value of the annotation with the highest X and Y value.
 */
 const computeMaxXY = annotations => {
   let maxY = 0;
