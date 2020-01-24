@@ -6,10 +6,13 @@
   padding: 1rem;
 
   &__pictogram {
+    // Keep height and width in sync with the dimensions of
+    // the Topology component.
     background: $color-light;
     border: solid 1px $color-mid-x-light;
+    height: 300px;
     margin-bottom: 1rem;
-    padding: 1rem;
+    width: 300px;
   }
 
   &__grid {
