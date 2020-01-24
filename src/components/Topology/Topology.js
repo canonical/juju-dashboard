@@ -40,6 +40,40 @@ const computePositionDelta = annotations => {
   return { deltaX, deltaY };
 };
 
+/**
+  Retrieve the X and Y annotation with the highest value.
+  @param {Object} annotations The annotations object from the model status.
+  @returns {Number} The value of the annotation with the highest X and Y value.
+*/
+const computeMaxXY = annotations => {
+  let maxY = 0;
+  let maxX = 0;
+  if (!annotations) {
+    return { maxX, maxY };
+  }
+
+  Object.keys(annotations).forEach(appName => {
+    const { "gui-x": guiX, "gui-y": guiY } = annotations[appName];
+    const y = parseFloat(guiY);
+    const x = parseFloat(guiX);
+    if (!isNaN(x) && x > maxX) {
+      maxX = x;
+    }
+    if (!isNaN(y) && y > maxY) {
+      maxY = y;
+    }
+  });
+
+  return { maxX, maxY };
+};
+
+/**
+  Applies the supplied delta to the supplied position. Both inputs are parsed
+  as floats.
+  @param {Number} position
+  @param {Number} delta
+  @returns {Float} The position value with the delta applied.
+*/
 const applyDelta = (position, delta) =>
   parseFloat(position) + -parseFloat(delta);
 
@@ -59,6 +93,24 @@ export default ({ modelData, width, height }) => {
       }))) ||
     [];
 
+  // Apply deltas to the annotations.
+  for (const appName in applications) {
+    const application = applications[appName];
+    if (application["gui-x"]) {
+      application["gui-x"] = applyDelta(application["gui-x"], deltaX);
+    }
+    if (application["gui-y"]) {
+      application["gui-y"] = applyDelta(application["gui-y"], deltaY);
+    }
+  }
+
+  let { maxX, maxY } = computeMaxXY(modelData && modelData.annotations);
+  if (maxX === 0) {
+    // If there is no maxX then all of the icons are unplaced
+    // so set a maximum width.
+    maxX = 500;
+  }
+
   useEffect(() => {
     const topo = d3
       .select(ref.current)
@@ -68,16 +120,25 @@ export default ({ modelData, width, height }) => {
 
     const appIcons = topo.selectAll(".application").data(applications);
 
-    let gridCount = 0;
+    let gridCount = {
+      x: 0,
+      y: maxY
+    };
+
     const appIcon = appIcons
       .enter()
       .append("g")
       .attr("transform", d => {
-        const x =
-          d["gui-x"] !== undefined ? applyDelta(d["gui-x"], deltaX) : gridCount;
-        const y =
-          d["gui-y"] !== undefined ? applyDelta(d["gui-y"], deltaY) : gridCount;
-        gridCount += 130;
+        const x = d["gui-x"] !== undefined ? d["gui-x"] : gridCount.x;
+        const y = d["gui-y"] !== undefined ? d["gui-y"] : gridCount.y;
+        gridCount.x += 250;
+        // Let the placed units determine the max width of the visualization.
+        // and move the grid units to a new line.
+        if (gridCount.x > maxX) {
+          gridCount.x = 0;
+          gridCount.y += 200;
+        }
+
         return `translate(${x}, ${y})`;
       });
 
@@ -127,6 +188,6 @@ export default ({ modelData, width, height }) => {
     return () => {
       topo.remove();
     };
-  }, [applications, deltaX, deltaY, height, width]);
+  }, [applications, deltaX, deltaY, height, width, maxX, maxY]);
   return <svg ref={ref} />;
 };
