@@ -13,7 +13,6 @@
     border: 1px solid $color-mid-dark;
     border-radius: 0.125rem;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
-    color: $color-mid-dark;
     font-size: 0.875rem;
     font-weight: 300;
     line-height: 1.5rem;
@@ -24,7 +23,7 @@
     width: 100%;
 
     .placeholder {
-      color: $color-mid-x-light;
+      color: $color-mid-dark;
     }
   }
 }
