@@ -12,11 +12,10 @@ import {
 import "./_filter-tags.scss";
 
 const FilterTags = () => {
-  const [filterPanelVisibility, setfilterPanelVisibility] = useState(false);
+  const [filterPanelVisibility, setFilterPanelVisibility] = useState(false);
+  const [activeFilters, setActiveFilters] = useState({});
   const node = useRef();
-
   const filters = {};
-
   const modelData = useSelector(getModelData);
 
   /**
@@ -55,9 +54,10 @@ const FilterTags = () => {
     addFilter("credential", credentialFilter);
   });
 
+  // This useEffect sets up listeners so the panel will close if user clicks anywhere else on the page or hits the escape key
   useEffect(() => {
     const closePanel = () => {
-      setfilterPanelVisibility(false);
+      setFilterPanelVisibility(false);
       document.querySelector(".p-filter-tags__input").blur();
     };
 
@@ -70,7 +70,7 @@ const FilterTags = () => {
     };
 
     const keyDown = e => {
-      if (e.keyCode === 27) {
+      if (e.code === "Escape") {
         // Close panel if Esc keydown detected
         closePanel();
       }
@@ -87,8 +87,15 @@ const FilterTags = () => {
     };
   }, []);
 
-  const handleFilterClick = () => {
-    console.log("Filter clicked");
+  const addActiveFilter = (filter, filterBy) => {
+    setActiveFilters(filters => {
+      const updatedFilters = { ...filters };
+      updatedFilters[filterBy] = updatedFilters[filterBy] || [];
+      if (!updatedFilters[filterBy].includes(filter)) {
+        updatedFilters[filterBy].push(filter);
+      }
+      return updatedFilters;
+    });
   };
 
   return (
@@ -96,9 +103,17 @@ const FilterTags = () => {
       <div
         type="text"
         className="p-filter-tags__input"
-        onClick={() => setfilterPanelVisibility(!filterPanelVisibility)}
+        onClick={() => setFilterPanelVisibility(!filterPanelVisibility)}
       >
-        Filter models
+        {Object.entries(activeFilters).length > 0 &&
+          Object.entries(activeFilters).map(activeFilters => (
+            <span key={activeFilters[0] + activeFilters[1]}>
+              {activeFilters[0]}: {activeFilters[1]}
+            </span>
+          ))}
+        {Object.entries(activeFilters).length < 1 && (
+          <span>Filter models:</span>
+        )}
       </div>
 
       <div
@@ -121,7 +136,7 @@ const FilterTags = () => {
                   {filters[filterBy].map(filter => (
                     <li key={filter} className="p-filter-panel__item">
                       <button
-                        onClick={e => handleFilterClick(e)}
+                        onClick={e => addActiveFilter(filter, filterBy)}
                         className="p-filter-panel__button"
                       >
                         {filter}
