@@ -99,11 +99,15 @@ const FilterTags = () => {
     e.currentTarget.classList.add("is-selected");
   };
 
-  console.log(activeFilters);
-
-  const removeActiveFilter = (e, filter) => {
+  const removeActiveFilter = (e, filter, filterBy) => {
     e.stopPropagation();
-    console.log(filter);
+    setActiveFilters(filters => {
+      const updatedFilters = { ...filters };
+      if (updatedFilters[filterBy].includes(filter)) {
+        delete updatedFilters[filterBy];
+      }
+      return updatedFilters;
+    });
   };
 
   console.log(activeFilters);
@@ -116,17 +120,19 @@ const FilterTags = () => {
         onClick={() => setFilterPanelVisibility(!filterPanelVisibility)}
       >
         {Object.entries(activeFilters).length > 0 &&
-          Object.entries(activeFilters).map(activeFilter => {
-            return Object.values(activeFilter[1]).map(filter => {
+          Object.entries(activeFilters).map(activeFilterObj => {
+            return Object.values(activeFilterObj[1]).map(activeFilter => {
               return (
                 <span
                   className="p-filter-tags__active-filter"
-                  key={activeFilter[0] + filter}
+                  key={activeFilterObj[0] + activeFilter}
                 >
-                  {activeFilter[0]}: {filter}{" "}
+                  {activeFilterObj[0]}: {activeFilter}{" "}
                   <i
                     className="p-icon--close"
-                    onClick={e => removeActiveFilter(e, activeFilter)}
+                    onClick={e =>
+                      removeActiveFilter(e, activeFilter, activeFilterObj[0])
+                    }
                   >
                     Remove
                   </i>
