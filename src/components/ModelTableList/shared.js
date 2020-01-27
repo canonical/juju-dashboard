@@ -138,8 +138,8 @@ export function generateControllerUUID(uuid) {
     controllerUUID = "JAAS";
   }
   return (
-    <a href="#_" className="p-link--soft" title={controllerUUID}>
+    <span className="p-link--soft" title={uuid}>
       {controllerUUID}
-    </a>
+    </span>
   );
 }
