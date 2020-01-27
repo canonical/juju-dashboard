@@ -87,7 +87,7 @@ const FilterTags = () => {
     };
   }, []);
 
-  const addActiveFilter = (filter, filterBy) => {
+  const addActiveFilter = (e, filter, filterBy) => {
     setActiveFilters(filters => {
       const updatedFilters = { ...filters };
       updatedFilters[filterBy] = updatedFilters[filterBy] || [];
@@ -96,7 +96,17 @@ const FilterTags = () => {
       }
       return updatedFilters;
     });
+    e.currentTarget.classList.add("is-selected");
   };
+
+  console.log(activeFilters);
+
+  const removeActiveFilter = (e, filter) => {
+    e.stopPropagation();
+    console.log(filter);
+  };
+
+  console.log(activeFilters);
 
   return (
     <div className="p-filter-tags" ref={node}>
@@ -106,11 +116,24 @@ const FilterTags = () => {
         onClick={() => setFilterPanelVisibility(!filterPanelVisibility)}
       >
         {Object.entries(activeFilters).length > 0 &&
-          Object.entries(activeFilters).map(activeFilters => (
-            <span key={activeFilters[0] + activeFilters[1]}>
-              {activeFilters[0]}: {activeFilters[1]}
-            </span>
-          ))}
+          Object.entries(activeFilters).map(activeFilter => {
+            return Object.values(activeFilter[1]).map(filter => {
+              return (
+                <span
+                  className="p-filter-tags__active-filter"
+                  key={activeFilter[0] + filter}
+                >
+                  {activeFilter[0]}: {filter}{" "}
+                  <i
+                    className="p-icon--close"
+                    onClick={e => removeActiveFilter(e, activeFilter)}
+                  >
+                    Remove
+                  </i>
+                </span>
+              );
+            });
+          })}
         {Object.entries(activeFilters).length < 1 && (
           <span>Filter models:</span>
         )}
@@ -136,7 +159,7 @@ const FilterTags = () => {
                   {filters[filterBy].map(filter => (
                     <li key={filter} className="p-filter-panel__item">
                       <button
-                        onClick={e => addActiveFilter(filter, filterBy)}
+                        onClick={e => addActiveFilter(e, filter, filterBy)}
                         className="p-filter-panel__button"
                       >
                         {filter}
