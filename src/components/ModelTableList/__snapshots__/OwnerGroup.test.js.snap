@@ -144,13 +144,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -255,13 +254,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -366,13 +364,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -477,13 +474,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -588,13 +584,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -840,13 +835,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -1011,13 +1005,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -1182,13 +1175,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -1353,13 +1345,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -1524,13 +1515,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -1690,13 +1680,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -1801,13 +1790,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -1912,13 +1900,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -2023,13 +2010,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -2134,13 +2120,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -2245,13 +2230,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -2497,13 +2481,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -2668,13 +2651,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -2839,13 +2821,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -3010,13 +2991,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -3181,13 +3161,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -3352,13 +3331,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -3518,13 +3496,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -3770,13 +3747,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -3936,13 +3912,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -4047,13 +4022,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -4158,13 +4132,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -4410,13 +4383,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -4581,13 +4553,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -4752,13 +4723,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -4918,13 +4888,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -5029,13 +4998,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
               </a>,
             },
             Object {
-              "content": <a
+              "content": <span
                 className="p-link--soft"
-                href="#_"
                 title="a030379a-940f-4760-8fcf-3062b41a04e7"
               >
-                a030379a...
-              </a>,
+                JAAS
+              </span>,
             },
             Object {
               "className": "u-align--right",
@@ -5281,13 +5249,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell
@@ -5452,13 +5419,12 @@ exports[`OwnerGroup renders without crashing and matches snapshot 1`] = `
                   className=""
                   role="gridcell"
                 >
-                  <a
+                  <span
                     className="p-link--soft"
-                    href="#_"
                     title="a030379a-940f-4760-8fcf-3062b41a04e7"
                   >
-                    a030379a...
-                  </a>
+                    JAAS
+                  </span>
                 </td>
               </TableCell>
               <TableCell

@@ -3,7 +3,11 @@ import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { generateStatusElement, getModelStatusGroupData } from "app/utils";
 import { getGroupedModelDataByOwner } from "app/selectors";
-import { generateModelDetailsLink, getStatusValue } from "./shared";
+import {
+  generateControllerUUID,
+  generateModelDetailsLink,
+  getStatusValue
+} from "./shared";
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -89,15 +93,8 @@ export default function OwnerGroup({ activeUser }) {
             // We're not currently able to get the controller name from the API
             // so, display the controller UUID instead.
             {
-              content: (
-                <a
-                  href="#_"
-                  className="p-link--soft"
-                  title={getStatusValue(model.info, "controllerUuid")}
-                >
-                  {getStatusValue(model.info, "controllerUuid").split("-")[0] +
-                    "..."}
-                </a>
+              content: generateControllerUUID(
+                getStatusValue(model.info, "controllerUuid")
               )
             },
             // We're not currently able to get a last-accessed or updated from JAAS.
