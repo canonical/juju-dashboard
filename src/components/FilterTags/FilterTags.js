@@ -102,11 +102,24 @@ const FilterTags = () => {
   const removeActiveFilter = (e, filter, filterBy) => {
     e.stopPropagation();
     setActiveFilters(filters => {
-      const updatedFilters = { ...filters };
+      const updatedFilters = {
+        ...filters
+      };
       if (updatedFilters[filterBy].includes(filter)) {
-        delete updatedFilters[filterBy];
+        const index = updatedFilters[filterBy].indexOf(filter);
+        delete updatedFilters[filterBy][index];
       }
       return updatedFilters;
+    });
+
+    // Remove is-selected from filter panel
+    const panelFilterItems = document.querySelectorAll(
+      ".p-filter-panel__button"
+    );
+    panelFilterItems.forEach(panelFilterItem => {
+      if (panelFilterItem.innerHTML === filter) {
+        panelFilterItem.classList.remove("is-selected");
+      }
     });
   };
 
