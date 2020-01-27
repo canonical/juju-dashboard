@@ -15,9 +15,13 @@
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
     font-size: 0.875rem;
     font-weight: 300;
+    // height required to hide overflow
+    // value is height of default text input
+    height: 33px;
     line-height: 1.5rem;
     margin: 0;
     min-width: 10em;
+    overflow: hidden;
     padding: 0.25rem 0.5rem;
     vertical-align: baseline;
     width: 100%;
@@ -25,6 +29,25 @@
     .placeholder {
       color: $color-mid-dark;
     }
+
+    .p-icon--close {
+      height: 0.65rem;
+      margin-right: 0.5rem;
+      position: relative;
+      top: -1px;
+      width: 0.65rem;
+    }
+  }
+
+  &__active-filter {
+    background: $color-mid-x-light;
+    border: 1px solid #999;
+    border-radius: 0.25rem;
+    display: inline-block;
+    margin: 0 0.25rem 0.5rem 0;
+    padding: 0 0.15rem;
+    position: relative;
+    top: -1px;
   }
 }
 
@@ -59,10 +82,6 @@
     display: inline-block;
     font-size: 0.875rem;
     padding: 0;
-
-    &.is-selected {
-      background-color: $color-mid-x-light;
-    }
   }
 
   &__button {
@@ -73,5 +92,9 @@
     margin-bottom: 0.5rem;
     margin-right: 0.5rem;
     padding: 0 0.5rem;
+
+    &.is-selected {
+      background-color: $color-mid-x-light;
+    }
   }
 }
