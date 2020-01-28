@@ -17,7 +17,7 @@ jest.mock("components/Topology/Topology", () => {
 });
 
 describe("Info Panel", () => {
-  it("renders without crashing and matches snapshot", () => {
+  it("renders the topology", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
@@ -28,7 +28,7 @@ describe("Info Panel", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".info-panel")).toMatchSnapshot();
+    expect(wrapper.find("Topology").length).toBe(1);
   });
 
   it("displays correct model status info", () => {
