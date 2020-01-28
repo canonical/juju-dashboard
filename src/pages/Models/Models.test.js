@@ -20,8 +20,8 @@ describe("Models page", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("Header")).anything();
-    expect(wrapper.find("TableList")).anything();
+    expect(wrapper.find("Header")).toBeDefined();
+    expect(wrapper.find("TableList")).toBeDefined();
   });
 
   it("has a header which shows the model counts", () => {
@@ -60,6 +60,6 @@ describe("Models page", () => {
     ).toBe("owner");
     const searchParams = new URLSearchParams(history.location.search);
     expect(searchParams.get("groupedby")).toEqual("owner");
-    expect(wrapper.find(".owners-group")).anything();
+    expect(wrapper.find(".owners-group")).toBeDefined();
   });
 });
