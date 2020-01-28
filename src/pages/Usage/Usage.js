@@ -7,7 +7,8 @@ export default function Usage() {
     <Layout>
       <div className="row">
         <Notification type="caution">
-          We're still working on this functionality - please check back soon!
+          We&apos;re still working on this functionality - please check back
+          soon!
         </Notification>
       </div>
     </Layout>
