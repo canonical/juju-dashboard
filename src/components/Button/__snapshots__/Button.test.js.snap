@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Button renders without crashing and matches snapshot 1`] = `
-<button
-  className="p-button--filter"
-/>
-`;
