@@ -5,22 +5,22 @@ import { MemoryRouter } from "react-router-dom";
 import ModelGroupToggle from "./ModelGroupToggle";
 
 describe("Model group toggle", () => {
-  it("renders without crashing and matches snapshot", () => {
-    const wrapper = mount(
-      <MemoryRouter>
-        <ModelGroupToggle />
-      </MemoryRouter>
-    );
-    expect(wrapper.find(".p-model-group-toggle")).toMatchSnapshot();
-  });
-
   it("shows active grouping", () => {
     const wrapper = mount(
       <MemoryRouter>
         <ModelGroupToggle groupedBy="cloud" />
       </MemoryRouter>
     );
-    expect(wrapper.find(".p-model-group-toggle")).toMatchSnapshot();
+    expect(wrapper.find(".is-selected").length).toBe(1);
+  });
+
+  it("if no grouping is defined then none is selected", () => {
+    const wrapper = mount(
+      <MemoryRouter>
+        <ModelGroupToggle />
+      </MemoryRouter>
+    );
+    expect(wrapper.find(".is-selected")).toEqual({});
   });
 
   it("calls to set group by on click", () => {
