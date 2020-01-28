@@ -72,7 +72,7 @@ export async function loginWithBakery(bakery) {
   @returns {Object} The full model status.
 */
 async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
-  const timeout = new Promise((resolve, reject) => {
+  const timeout = new Promise(resolve => {
     setTimeout(resolve, duration, "timeout");
   });
   const juju = jujulib.connectAndLogin(modelURL, {}, options);
@@ -204,7 +204,7 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
 */
 export async function fetchControllerList(reduxStore) {
   const bakery = getBakery(reduxStore.getState());
-  function errorHandler(err, data) {
+  function errorHandler(err) {
     // XXX Surface to UI.
     console.error("unable to fetch controller list", err);
     return;

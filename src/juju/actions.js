@@ -31,7 +31,7 @@ export function updateControllerList(controllers) {
   @param {Array} models The list of models to store.
 */
 export function updateModelList(models) {
-  return function updateModelList(dispatch, getState) {
+  return function updateModelList(dispatch) {
     dispatch({
       type: actionsList.updateModelList,
       payload: models
@@ -45,7 +45,7 @@ export function updateModelList(models) {
   @param {Object} status The status data as returned from the API.
  */
 export function updateModelStatus(modelUUID, status) {
-  return function updateModelStatus(dispatch, getState) {
+  return function updateModelStatus(dispatch) {
     dispatch({
       type: actionsList.updateModelStatus,
       payload: {
@@ -60,7 +60,7 @@ export function updateModelStatus(modelUUID, status) {
   @param {Object} modelInfo The model info data as returned from the API.
  */
 export function updateModelInfo(modelInfo) {
-  return function updateModelInfo(dispatch, getState) {
+  return function updateModelInfo(dispatch) {
     dispatch({
       type: actionsList.updateModelInfo,
       payload: modelInfo

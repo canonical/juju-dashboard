@@ -4,7 +4,7 @@ import Button from "components/Button/Button";
 import "./_filter.scss";
 
 const Filter = ({ label, filters }) => {
-  const _handleFilter = e => {
+  const _handleFilter = () => {
     console.log("Handle filter click");
   };
 
