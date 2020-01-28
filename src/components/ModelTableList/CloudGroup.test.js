@@ -11,18 +11,6 @@ import dataDump from "../../testing/complete-redux-store-dump";
 const mockStore = configureStore([]);
 
 describe("CloudGroup", () => {
-  it("renders without crashing and matches snapshot", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <MemoryRouter>
-        <Provider store={store}>
-          <CloudGroup />
-        </Provider>
-      </MemoryRouter>
-    );
-    expect(wrapper.find(".cloud-group")).toMatchSnapshot();
-  });
-
   it("by default, renders no tables with no data", () => {
     const store = mockStore({
       root: {},
