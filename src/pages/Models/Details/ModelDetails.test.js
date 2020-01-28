@@ -32,7 +32,8 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".model-details")).toMatchSnapshot();
+    expect(wrapper.find("Topology").length).toBe(1);
+    expect(wrapper.find("MainTable").length).toBe(4);
   });
 
   it("renders the details pane for models shared-with-me", () => {
@@ -48,7 +49,7 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".model-details")).toMatchSnapshot();
+    expect(wrapper.find("MainTable").length).toBe(4);
   });
 
   it("renders the machine details section", () => {
@@ -62,7 +63,12 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("MainTable").at(2)).toMatchSnapshot();
+    expect(
+      wrapper
+        .find("MainTable")
+        .at(2)
+        .hasClass("model-details__machines")
+    ).toBe(true);
   });
 
   it("subordinate rows render correct amount", () => {
@@ -76,7 +82,6 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".subordinate")).toMatchSnapshot();
     expect(wrapper.find(".subordinate").length).toEqual(2);
   });
 
@@ -91,6 +96,6 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("Terminal")).toMatchSnapshot();
+    expect(wrapper.find("Terminal").length).toBe(1);
   });
 });
