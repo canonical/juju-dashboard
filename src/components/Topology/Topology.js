@@ -77,7 +77,7 @@ const computeMaxXY = annotations => {
 const applyDelta = (position, delta) =>
   parseFloat(position) + -parseFloat(delta);
 
-export default ({ modelData, width, height }) => {
+export default function Topology({ modelData, width, height }) {
   const ref = useRef();
 
   const { deltaX, deltaY } = computePositionDelta(
@@ -190,4 +190,4 @@ export default ({ modelData, width, height }) => {
     };
   }, [applications, deltaX, deltaY, height, width, maxX, maxY]);
   return <svg ref={ref} />;
-};
+}
