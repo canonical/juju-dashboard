@@ -1,11 +1,15 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import Header from "./Header";
 
 describe("Header", () => {
-  it("renders without crashing and matches snapshot", () => {
-    const wrapper = shallow(<Header />);
-    expect(wrapper).toMatchSnapshot();
+  it("renders supplied children", () => {
+    const wrapper = mount(
+      <Header>
+        <div className="child"></div>
+      </Header>
+    );
+    expect(wrapper.find(".child").length).toBe(1);
   });
 });
