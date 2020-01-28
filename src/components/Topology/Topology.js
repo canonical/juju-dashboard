@@ -77,6 +77,34 @@ const computeMaxXY = annotations => {
 const applyDelta = (position, delta) =>
   parseFloat(position) + -parseFloat(delta);
 
+/**
+  Generates the relation positions for the two endpoints based on the
+  application name data passed in.
+  @param {*} data The relation data.
+  @returns {Object} x and y coordinates for the two relation endpoints.
+*/
+const getRelationPosition = data => {
+  // Gets the values from the elements translate attribute.
+  // translate(123.456, 789.012)
+  const translateValues = /(\d*\.?\d*),\s(\d*\.?\d*)/;
+  const getElement = index => d3.select(`[data-name="${data[index]}"]`);
+  const getRect = element =>
+    translateValues.exec(element.node().getAttribute("transform"));
+  const getData = element => element.data()[0];
+
+  const element1 = getElement(0);
+  const element2 = getElement(1);
+  const app1 = getRect(element1);
+  const app2 = getRect(element2);
+
+  return {
+    x1: applyDelta(app1[1], isSubordinate(getData(element1)) ? -60 : -90),
+    y1: applyDelta(app1[2], isSubordinate(getData(element1)) ? -60 : -90),
+    x2: applyDelta(app2[1], isSubordinate(getData(element2)) ? -60 : -90),
+    y2: applyDelta(app2[2], isSubordinate(getData(element2)) ? -60 : -90)
+  };
+};
+
 export default ({ modelData, width, height }) => {
   const ref = useRef();
 
@@ -111,6 +139,21 @@ export default ({ modelData, width, height }) => {
     maxX = 500;
   }
 
+  // Dedupe the relations as we only draw a single line between two
+  // applications regardless of how many relations are between them.
+  const endpoints =
+    modelData &&
+    modelData.relations.reduce((acc, relation) => {
+      const endpoints = relation.endpoints;
+      // We don't draw peer relations so we can ignore them.
+      if (endpoints.length > 1) {
+        acc.push(`${endpoints[0].application}:${endpoints[1].application}`);
+      }
+      return acc;
+    }, []);
+  // Remove any duplicate endpoints and split into pairs.
+  const relations = [...new Set(endpoints)].map(pair => pair.split(":"));
+
   useEffect(() => {
     const topo = d3
       .select(ref.current)
@@ -138,7 +181,6 @@ export default ({ modelData, width, height }) => {
           gridCount.x = 0;
           gridCount.y += 200;
         }
-
         return `translate(${x}, ${y})`;
       });
 
@@ -180,14 +222,28 @@ export default ({ modelData, width, height }) => {
       .attr("width", 96)
       .attr("height", 96)
       .attr("transform", d =>
-        isSubordinate(d) ? "translate(17, 17)" : "translate(47, 47)"
-      );
+        isSubordinate(d) ? "translate(13, 13)" : "translate(44, 44)"
+      )
+      .attr("clip-path", "circle(43px at 48px 48px)");
+
+    const relationLines = topo.selectAll(".relation").data(relations);
+    const relationLine = relationLines.enter().insert("g", ":first-child");
+
+    relationLine
+      .classed("relation", true)
+      .append("line")
+      .attr("x1", d => getRelationPosition(d).x1)
+      .attr("y1", d => getRelationPosition(d).y1)
+      .attr("x2", d => getRelationPosition(d).x2)
+      .attr("y2", d => getRelationPosition(d).y2)
+      .attr("stroke", "#cdcdcd");
 
     appIcons.exit().remove();
+    relationLines.exit().remove();
 
     return () => {
       topo.remove();
     };
-  }, [applications, deltaX, deltaY, height, width, maxX, maxY]);
+  }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
   return <svg ref={ref} />;
 };
