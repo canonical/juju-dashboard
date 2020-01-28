@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getMacaroons } from "app/selectors";
-import classNames from "classnames";
 
 import cleanUpTerminal from "./cleanup-terminal";
 import setupTerminal from "./setup-terminal";
@@ -39,18 +38,9 @@ const Terminal = ({ address, modelName }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [terminalVisible, setTerminalVisible] = useState(false);
-
   return (
-    <div
-      className={classNames("p-terminal", {
-        "is-visible": terminalVisible
-      })}
-    >
-      <div
-        className="p-terminal__header"
-        onClick={() => setTerminalVisible(!terminalVisible)}
-      >
+    <div className="p-terminal is-visible">
+      <div className="p-terminal__header">
         <span>Juju Terminal</span>
         <div className="p-terminal__toggle">
           <i className="p-icon--contextual-menu">Toggle Terminal visibility</i>
