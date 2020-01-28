@@ -49,7 +49,10 @@ export default function User() {
     <div
       className="user-icon"
       onClick={() => setUserPanelVisibility(!userPanelVisibility)}
+      onKeyPress={() => setUserPanelVisibility(!userPanelVisibility)}
       ref={node}
+      tabIndex={0}
+      role="button"
     >
       <i className="p-icon--user">Account icon</i>
       <div
