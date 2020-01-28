@@ -236,7 +236,7 @@ export default ({ modelData, width, height }) => {
       .attr("y1", d => getRelationPosition(d).y1)
       .attr("x2", d => getRelationPosition(d).x2)
       .attr("y2", d => getRelationPosition(d).y2)
-      .attr("stroke", "black");
+      .attr("stroke", "#cdcdcd");
 
     appIcons.exit().remove();
     relationLines.exit().remove();
