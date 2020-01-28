@@ -14,6 +14,7 @@ import "./_filter-tags.scss";
 const FilterTags = () => {
   const [filterPanelVisibility, setFilterPanelVisibility] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
+
   const node = useRef();
   const filters = {};
   const modelData = useSelector(getModelData);
@@ -87,6 +88,12 @@ const FilterTags = () => {
     };
   }, []);
 
+  /**
+  Apply a given filter
+  @param {object} e The event object
+  @param {string} filter The name of the filter
+   @param {string} filterBy The name of the filter group
+*/
   const addActiveFilter = (e, filter, filterBy) => {
     setActiveFilters(filters => {
       const updatedFilters = { ...filters };
@@ -99,6 +106,12 @@ const FilterTags = () => {
     e.currentTarget.classList.add("is-selected");
   };
 
+  /**
+  Remove a given filter
+  @param {object} e The event object
+  @param {string} filter The name of the filter
+   @param {string} filterBy The name of the filter group
+*/
   const removeActiveFilter = (e, filter, filterBy) => {
     e.stopPropagation();
     setActiveFilters(filters => {
@@ -107,12 +120,12 @@ const FilterTags = () => {
       };
       if (updatedFilters[filterBy].includes(filter)) {
         const index = updatedFilters[filterBy].indexOf(filter);
-        delete updatedFilters[filterBy][index];
+        updatedFilters[filterBy].splice(index, 1);
       }
       return updatedFilters;
     });
 
-    // Remove is-selected from filter panel
+    // Remove is-selected state from relevant filter from filter panel
     const panelFilterItems = document.querySelectorAll(
       ".p-filter-panel__button"
     );
@@ -123,7 +136,10 @@ const FilterTags = () => {
     });
   };
 
-  console.log(activeFilters);
+  let activeFiltersCount = 0;
+  Object.values(activeFilters).forEach(filterGroup => {
+    activeFiltersCount = activeFiltersCount + filterGroup.length;
+  });
 
   return (
     <div className="p-filter-tags" ref={node}>
@@ -153,8 +169,11 @@ const FilterTags = () => {
               );
             });
           })}
-        {Object.entries(activeFilters).length < 1 && (
-          <span>Filter models:</span>
+        {activeFiltersCount === 0 && <span>Filter models:</span>}
+        {activeFiltersCount > 0 && (
+          <span className="p-filter-tags__active-count">
+            +{activeFiltersCount}
+          </span>
         )}
       </div>
 
