@@ -68,3 +68,28 @@ describe("FilterTags", () => {
     expect(wrapper.find('[data-test="credential"] li').length).toBe(8);
   });
 });
+
+describe("Filter capsules", () => {
+  it("display in the input field when clicked", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <FilterTags />
+        </Provider>
+      </MemoryRouter>
+    );
+    const firstAvailableFilter = wrapper
+      .find(".p-filter-panel .p-filter-panel__button")
+      .first();
+    firstAvailableFilter.simulate("click");
+    wrapper.update();
+    console.log(firstAvailableFilter.debug());
+    expect(
+      wrapper
+        .find(".p-filter-panel .p-filter-panel__button")
+        .first()
+        .hasClass("is-selected")
+    ).toEqual(true);
+  });
+});
