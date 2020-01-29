@@ -9,18 +9,6 @@ import PrimaryNav from "./PrimaryNav";
 
 const mockStore = configureStore([]);
 describe("Primary Nav", () => {
-  it("renders without crashing and matches snapshot", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <Router>
-          <PrimaryNav />
-        </Router>
-      </Provider>
-    );
-    expect(wrapper.find(".p-primary-nav")).toMatchSnapshot();
-  });
-
   it("toggles external nav menu", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(

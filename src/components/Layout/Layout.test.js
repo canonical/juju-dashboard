@@ -8,18 +8,6 @@ import Layout from "./Layout";
 
 const mockStore = configureStore([]);
 describe("Layout", () => {
-  it("renders without crashing and matches snapshot", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <Router>
-          <Layout />
-        </Router>
-      </Provider>
-    );
-    expect(wrapper.find(".l-container")).toMatchSnapshot();
-  });
-
   it("renders with a sidebar", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(

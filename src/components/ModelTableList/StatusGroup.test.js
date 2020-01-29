@@ -11,17 +11,6 @@ import dataDump from "../../testing/complete-redux-store-dump";
 const mockStore = configureStore([]);
 
 describe("StatusGroup", () => {
-  it("renders without crashing and matches snapshot", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <MemoryRouter>
-        <Provider store={store}>
-          <StatusGroup />
-        </Provider>
-      </MemoryRouter>
-    );
-    expect(wrapper.find(".status-group")).toMatchSnapshot();
-  });
   it("by default, renders with all table headers and no data", () => {
     const store = mockStore({
       root: {},
