@@ -51,6 +51,7 @@ module.exports = function({ env }) {
                     safari10: true,
                     reserved: [
                       // Juju facades
+                      "AnnotationsV2",
                       "ClientV2",
                       "ModelManagerV5",
                       "PingerV1",
