@@ -7,7 +7,7 @@
 
   .p-modal {
     position: fixed;
-    z-index: 1;
+    z-index: z("beta");
   }
 
   &__pictogram {
@@ -20,7 +20,7 @@
     position: relative;
     width: 300px;
 
-    i {
+    .p-icon--expand {
       bottom: 10px;
       cursor: pointer;
       position: absolute;
