@@ -1,9 +1,15 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
 
 .info-panel {
   margin-right: 1rem;
   padding: 1rem;
+
+  .p-modal {
+    position: fixed;
+    z-index: z("beta");
+  }
 
   &__pictogram {
     // Keep height and width in sync with the dimensions of
@@ -12,7 +18,15 @@
     border: solid 1px $color-mid-x-light;
     height: 300px;
     margin-bottom: 1rem;
+    position: relative;
     width: 300px;
+
+    .p-icon--expand {
+      bottom: 10px;
+      cursor: pointer;
+      position: absolute;
+      right: 10px;
+    }
   }
 
   &__grid {

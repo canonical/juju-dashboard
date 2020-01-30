@@ -31,6 +31,7 @@ $color-navigation-background: $color-brand;
 @include vf-b-typography;
 @include vf-p-navigation;
 @include vf-p-notification;
+@include vf-p-modal;
 @include vf-p-muted-heading;
 @include vf-u-off-screen;
 @include vf-p-strip;
