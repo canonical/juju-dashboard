@@ -6,8 +6,8 @@
   padding: 1rem;
 
   .p-modal {
-    z-index: 1;
     position: fixed;
+    z-index: 1;
   }
 
   &__pictogram {
@@ -19,11 +19,12 @@
     margin-bottom: 1rem;
     position: relative;
     width: 300px;
+
     i {
-      position: absolute;
-      right: 10px;
       bottom: 10px;
       cursor: pointer;
+      position: absolute;
+      right: 10px;
     }
   }
 
