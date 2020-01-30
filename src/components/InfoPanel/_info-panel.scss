@@ -12,7 +12,14 @@
     border: solid 1px $color-mid-x-light;
     height: 300px;
     margin-bottom: 1rem;
+    position: relative;
     width: 300px;
+    i {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      cursor: pointer;
+    }
   }
 
   &__grid {
