@@ -42,9 +42,9 @@ describe("Info Panel", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("Modal").length).toBe(0);
+    expect(wrapper.find("[data-test='topology-modal']").length).toBe(0);
     wrapper.find("i.p-icon--expand").simulate("click");
-    expect(wrapper.find("Modal").length).toBe(1);
+    expect(wrapper.find("[data-test='topology-modal']").length).toBe(1);
   });
 
   it("displays correct model status info", () => {
