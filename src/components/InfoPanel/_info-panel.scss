@@ -5,6 +5,10 @@
   margin-right: 1rem;
   padding: 1rem;
 
+  .p-modal {
+    z-index: 1;
+  }
+
   &__pictogram {
     // Keep height and width in sync with the dimensions of
     // the Topology component.
