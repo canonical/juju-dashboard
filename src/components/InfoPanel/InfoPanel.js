@@ -41,7 +41,11 @@ const InfoPanel = () => {
   return (
     <div className="info-panel">
       {showExpandedTopology ? (
-        <Modal close={() => setShowExpandedTopology(false)} title={false}>
+        <Modal
+          close={() => setShowExpandedTopology(false)}
+          title={false}
+          data-test="topology-modal"
+        >
           <Topology width={width} height={height} modelData={modelStatusData} />
         </Modal>
       ) : (
