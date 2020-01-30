@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import queryString from "query-string";
@@ -24,6 +24,9 @@ export default function Models() {
   const groupedByFilter = queryStrings.groupedby || "status";
 
   const [groupModelsBy, setGroupModelsBy] = useState(groupedByFilter);
+  if (groupModelsBy !== groupedByFilter) {
+    setGroupModelsBy(groupedByFilter);
+  }
 
   const updateFilterQuery = groupedBy => {
     queryStrings.groupedby = groupedBy;
@@ -37,7 +40,7 @@ export default function Models() {
 
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
   const models = blocked + alert + running;
-  console.log(groupModelsBy);
+
   return (
     <Layout>
       <Header>
