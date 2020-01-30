@@ -199,6 +199,7 @@ const FilterTags = () => {
                       <button
                         onClick={e => addActiveFilter(e, filter, filterBy)}
                         className="p-filter-panel__button"
+                        type="button"
                       >
                         {filter}
                       </button>
