@@ -22,23 +22,22 @@ export default function Models() {
   const queryStrings = queryString.parse(location.search);
   // If it doesn't exist, fall back to grouping by status
   const groupedByFilter = queryStrings.groupedby || "status";
-  // Set initial state using filter from URL
-  const [groupedBy, setGroupedBy] = useState(groupedByFilter);
-  // Assign updated filter back to queryStrings obj
-  queryStrings.groupedby = groupedBy;
-  // Stringify the obj again to push back to URL
-  const updatedQs = queryString.stringify(queryStrings);
-  // Add as an effect so UI is updated on each component render (e.g. Back button)
-  useEffect(() => {
+
+  const [groupModelsBy, setGroupModelsBy] = useState(groupedByFilter);
+
+  const updateFilterQuery = groupedBy => {
+    queryStrings.groupedby = groupedBy;
+    const updatedQs = queryString.stringify(queryStrings);
     history.push({
       pathname: "/models",
       search: groupedBy === "status" ? null : updatedQs
     });
-  }, [history, groupedBy, updatedQs]);
+    setGroupModelsBy(groupedBy);
+  };
 
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
   const models = blocked + alert + running;
-
+  console.log(groupModelsBy);
   return (
     <Layout>
       <Header>
@@ -52,14 +51,17 @@ export default function Models() {
               "alert"
             )}, ${running} running`}
           </div>
-          <ModelGroupToggle setGroupedBy={setGroupedBy} groupedBy={groupedBy} />
+          <ModelGroupToggle
+            setGroupedBy={updateFilterQuery}
+            groupedBy={groupModelsBy}
+          />
           <FilterTags />
           <UserIcon />
         </div>
       </Header>
       <div className="l-content">
         <div className="models">
-          <ModelTableList groupedBy={groupedBy} />
+          <ModelTableList groupedBy={groupModelsBy} />
         </div>
       </div>
     </Layout>
