@@ -43,7 +43,7 @@ describe("Info Panel", () => {
       </Provider>
     );
     expect(wrapper.find("[data-test='topology-modal']").length).toBe(0);
-    wrapper.find("i.p-icon--expand").simulate("click");
+    wrapper.find(".info-panel__pictogram .p-icon--expand").simulate("click");
     expect(wrapper.find("[data-test='topology-modal']").length).toBe(1);
   });
 
