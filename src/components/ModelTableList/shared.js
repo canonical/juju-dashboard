@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  generateSpanClass,
-  extractCloudName,
-  extractCredentialName
-} from "app/utils";
+import { extractCloudName, extractCredentialName } from "app/utils";
+
+import appsIcon from "static/images/icons/apps-icon.svg";
+import unitsIcon from "static/images/icons/units-icon.svg";
+import machinesIcon from "static/images/icons/machines-icon.svg";
+
 /**
   Generates the model details link for the table cell. If no ownerTag can be
   provided then it'll return raw text for the model name.
@@ -50,27 +51,26 @@ export function getStatusValue(status, key) {
     switch (key) {
       case "summary":
         const applicationKeys = Object.keys(status.applications);
-        const applicationCount = generateSpanClass(
-          "model-details__app-icon",
-          applicationKeys.length
+        const applicationCount = applicationKeys.length;
+        const machineCount = Object.keys(status.machines).length;
+        const unitCount = applicationKeys.reduce(
+          (prev, key) =>
+            prev + Object.keys(status.applications[key].units).length,
+          0
         );
-        const machineCount = generateSpanClass(
-          "model-details__machine-icon",
-          Object.keys(status.machines).length
-        );
-        const unitCount = generateSpanClass(
-          "model-details__unit-icon",
-          applicationKeys.reduce(
-            (prev, key) =>
-              prev + Object.keys(status.applications[key].units).length,
-            0
-          )
-        );
+
         returnValue = (
           <>
             <div className="model-details__config">
               <div className="p-tooltip--top-center" aria-describedby="tp-cntr">
-                {applicationCount}
+                <div className="model-details__config-item">
+                  <img
+                    className="model-details__config-icon"
+                    src={appsIcon}
+                    alt=""
+                  />
+                  {applicationCount}
+                </div>
                 <span
                   className="p-tooltip__message"
                   role="tooltip"
@@ -80,7 +80,14 @@ export function getStatusValue(status, key) {
                 </span>
               </div>
               <div className="p-tooltip--top-center" aria-describedby="tp-cntr">
-                {unitCount}
+                <div className="model-details__config-item">
+                  <img
+                    className="model-details__config-icon"
+                    src={unitsIcon}
+                    alt=""
+                  />
+                  {unitCount}
+                </div>
                 <span
                   className="p-tooltip__message"
                   role="tooltip"
@@ -90,7 +97,14 @@ export function getStatusValue(status, key) {
                 </span>
               </div>
               <div className="p-tooltip--top-center" aria-describedby="tp-cntr">
-                {machineCount}
+                <div className="model-details__config-item">
+                  <img
+                    className="model-details__config-icon"
+                    src={machinesIcon}
+                    alt=""
+                  />
+                  {machineCount}
+                </div>
                 <span
                   className="p-tooltip__message"
                   role="tooltip"

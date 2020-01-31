@@ -80,41 +80,24 @@
   }
 
   &__config {
-    display: grid;
-    gap: 0.25rem;
-    grid-template-columns: repeat(3, 1fr);
     padding-right: 0.75rem;
     text-align: left;
-  }
 
-  &__app-icon,
-  &__machine-icon,
-  &__unit-icon {
-    padding-left: 1rem;
-    position: relative;
-
-    &::before {
-      background-repeat: no-repeat;
-      background-size: cover;
-      content: " ";
-      height: 0.75rem;
-      left: 0;
-      position: absolute;
-      top: 0.35rem;
-      width: 0.75rem;
+    .p-tooltip--top-center {
+      display: inline-block;
+      margin-right: 1rem;
     }
-  }
 
-  &__app-icon::before {
-    background-image: url("../../../static/images/icons/apps-icon.svg");
-  }
+    &-item {
+      display: flex;
+      min-width: 2.3rem;
+    }
 
-  &__machine-icon::before {
-    background-image: url("../../../static/images/icons/machines-icon.svg");
-  }
-
-  &__unit-icon::before {
-    background-image: url("../../../static/images/icons/units-icon.svg");
+    &-icon {
+      height: 1rem;
+      margin: 0.25rem 0.25rem 0 0;
+      width: 1rem;
+    }
   }
 
   .entity-icon {
