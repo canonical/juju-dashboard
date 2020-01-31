@@ -8,31 +8,43 @@ import { getGroupedModelStatusCounts } from "app/selectors";
 // Image imports
 import logoMark from "static/images/logo/logo-mark.svg";
 import logoText from "static/images/logo/logo-text.svg";
-import modelsIcon from "static/images/icons/models-icon.svg";
-import controllersIcon from "static/images/icons/controllers-icon.svg";
 import bugIcon from "static/images/icons/bug-icon.svg";
+import modelsIcon from "static/images/icons/models-icon.svg";
+import modelsIconSelected from "static/images/icons/models-icon--selected.svg";
+import controllersIcon from "static/images/icons/controllers-icon.svg";
+import controllersIconSelected from "static/images/icons/controllers-icon--selected.svg";
 // Remove these nav links until these sections are active
 // import usageIcon from "static/images/icons/usage-icon.svg";
+// import usageIconSelected from "static/images/icons/usage-icon--selected.svg";
 // import logsIcon from "static/images/icons/logs-icon.svg";
+// import logsIconSelected from "static/images/icons/logs-icon--selected.svg";
 
 // Style imports
 import "./_primary-nav.scss";
 
 const pages = [
-  { label: "Models", path: "/models", icon: modelsIcon },
+  {
+    label: "Models",
+    path: "/models",
+    icon: modelsIcon,
+    iconSelected: modelsIconSelected
+  },
   {
     label: "Controllers",
     path: "/controllers",
-    icon: controllersIcon
+    icon: controllersIcon,
+    iconSelected: controllersIconSelected
   }
   // Remove these nav links until these sections are active
-  // { label: "Usage", path: "/usage", icon: usageIcon },
-  // { label: "Logs", path: "/logs", icon: logsIcon }
+  // { label: "Usage", path: "/usage", icon: usageIcon, iconSelected: usageIconSelected },
+  // { label: "Logs", path: "/logs", icon: logsIcon, iconSelected: logsIconSelected },
 ];
 
 const PrimaryNav = () => {
   const [extNavOpen, setExtNavOpen] = useState(false);
+  const [activeLinkValue, setActiveLinkValue] = useState("");
   const { blocked } = useSelector(getGroupedModelStatusCounts);
+
   return (
     <nav
       className={classNames("p-primary-nav", { "ext-nav-open": extNavOpen })}
@@ -119,6 +131,7 @@ const PrimaryNav = () => {
               className="p-list__link"
               isActive={match => {
                 if (match && match.url.includes(navItem.path)) {
+                  setActiveLinkValue(navItem.path);
                   return true;
                 }
               }}
@@ -127,7 +140,11 @@ const PrimaryNav = () => {
             >
               <img
                 className="p-list__icon"
-                src={navItem.icon}
+                src={
+                  activeLinkValue === navItem.path
+                    ? navItem.iconSelected
+                    : navItem.icon
+                }
                 alt={`${navItem.label} icon`}
               />
               {navItem.label}
