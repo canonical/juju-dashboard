@@ -128,7 +128,7 @@ async function fetchModelStatus(modelUUID, getState) {
       }
       logout();
     } catch (e) {
-      console.error("timeout, unable to log in to model:", modelUUID);
+      console.error("error connecting to model:", modelUUID, e);
     }
   }
   return status;
