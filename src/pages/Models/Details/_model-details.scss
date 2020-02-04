@@ -34,8 +34,14 @@
     display: grid;
   }
 
-  .model-details__apps tr {
-    grid-template-columns: 20% 13% 6% 11% 17.5% 5% 10% 20%;
+  &__apps {
+    tbody tr:hover {
+      cursor: pointer;
+    }
+
+    tr {
+      grid-template-columns: 20% 13% 6% 11% 17.5% 5% 10% 20%;
+    }
   }
 
   .model-details__units tr {
