@@ -1,4 +1,5 @@
 import React from "react";
+import classnames from "classnames";
 
 import {
   generateStatusElement,
@@ -178,7 +179,9 @@ export function generateUnitRows(modelStatusData, filterByApp) {
                 className: "model-details__truncate-cell"
               }
             ],
-            className: "subordinate-row"
+            className: classnames("subordinate-row", {
+              "is-selected": filterByApp === key.split("/")[0]
+            })
           });
         }
       }

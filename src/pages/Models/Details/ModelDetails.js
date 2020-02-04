@@ -30,20 +30,22 @@ import "./_model-details.scss";
 /**
   Returns the modelStatusData filtered by the supplied values.
   @param {Object} modelStatusData The model status data to filter
-  @param {String} app The name of the application to filter the data by.
+  @param {String} appName The name of the application to filter the data by.
 */
-const filterModelStatusData = (modelStatusData, app) => {
-  if (!modelStatusData) {
+const filterModelStatusData = (modelStatusData, appName) => {
+  if (!modelStatusData || appName === "") {
     return modelStatusData;
   }
   const filteredData = cloneDeep(modelStatusData);
   // remove the units from the application objects that are not
   // the filter-by app.
+  const subordinateTo = filteredData.applications[appName].subordinateTo || [];
   Object.keys(filteredData.applications).forEach(key => {
-    if (app !== "" && key !== app) {
+    if (key !== appName && !subordinateTo.includes(key)) {
       filteredData.applications[key].units = {};
     }
   });
+
   return filteredData;
 };
 
