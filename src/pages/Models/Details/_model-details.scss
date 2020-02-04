@@ -5,6 +5,26 @@
   display: grid;
   grid-template-columns: 230px 1fr;
   padding-bottom: 14rem;
+  margin-bottom: 2rem;
+
+  &:last-child {
+    margin-bottom: 1rem;
+  }
+
+  td,
+  th {
+    &:first-child {
+      padding-left: 0.5rem;
+    }
+  }
+
+  tbody tr {
+    @include vf-animation(background, brisk, ease-in-out);
+
+    &:hover {
+      background-color: #e7f9ff;
+    }
+  }
 
   @media (min-width: $breakpoint-m-large) {
     grid-template-columns: 350px 1fr;
@@ -35,8 +55,16 @@
   }
 
   &__apps {
-    tbody tr:hover {
-      cursor: pointer;
+    tbody {
+      tr {
+        &.is-selected,
+        &.is-selected:hover {
+          background-color: #cef3ff;
+        }
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
 
     tr {
@@ -60,29 +88,6 @@
 
   &__truncate-cell {
     white-space: nowrap;
-  }
-
-  .p-table--sortable {
-    margin-bottom: 2rem;
-
-    &:last-child {
-      margin-bottom: 1rem;
-    }
-
-    td,
-    th {
-      &:first-child {
-        padding-left: 0.5rem;
-      }
-    }
-
-    tbody tr {
-      @include vf-animation(background, brisk, ease-in-out);
-
-      &:hover {
-        background-color: #cef3ff;
-      }
-    }
   }
 
   &__config {
