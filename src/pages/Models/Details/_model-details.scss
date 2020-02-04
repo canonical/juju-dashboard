@@ -21,6 +21,11 @@
   tbody tr {
     @include vf-animation(background, brisk, ease-in-out);
 
+    &.is-selected,
+    &.is-selected:hover {
+      background-color: #cef3ff;
+    }
+
     &:hover {
       background-color: #e7f9ff;
     }
@@ -56,14 +61,8 @@
 
   &__apps {
     tbody {
-      tr {
-        &.is-selected,
-        &.is-selected:hover {
-          background-color: #cef3ff;
-        }
-        &:hover {
-          cursor: pointer;
-        }
+      tr:hover {
+        cursor: pointer;
       }
     }
 

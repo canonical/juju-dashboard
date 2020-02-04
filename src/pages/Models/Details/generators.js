@@ -102,7 +102,7 @@ export function generateApplicationRows(
   });
 }
 
-export function generateUnitRows(modelStatusData) {
+export function generateUnitRows(modelStatusData, filterByApp) {
   if (!modelStatusData) {
     return [];
   }
@@ -145,7 +145,8 @@ export function generateUnitRows(modelStatusData) {
             ),
             className: "model-details__truncate-cell"
           }
-        ]
+        ],
+        className: filterByApp === unitId.split("/")[0] ? "is-selected" : ""
       });
 
       const subordinates = unit.subordinates;
