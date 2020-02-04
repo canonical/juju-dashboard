@@ -134,8 +134,8 @@ const ModelDetails = () => {
     [filterByApp, filteredModelStatusData]
   );
   const relationTableRows = useMemo(
-    () => generateRelationRows(filteredModelStatusData),
-    [filteredModelStatusData]
+    () => generateRelationRows(filteredModelStatusData, filterByApp),
+    [filterByApp, filteredModelStatusData]
   );
 
   return (

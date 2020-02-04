@@ -257,7 +257,7 @@ const generateRelationIconImage = (applicationName, modelStatusData) => {
   return generateIconImg(applicationName, application.charm);
 };
 
-export function generateRelationRows(modelStatusData) {
+export function generateRelationRows(modelStatusData, filterByApp) {
   if (!modelStatusData) {
     return [];
   }
@@ -309,7 +309,10 @@ export function generateRelationRows(modelStatusData) {
             relation.status.status
           )
         }
-      ]
+      ],
+      // If there is a filter provided and the relation is visible then
+      // it's been filtered so we want to highlight it.
+      className: classnames({ "is-selected": !!filterByApp })
     };
   });
 }
