@@ -199,7 +199,7 @@ const splitParts = hardware =>
     })
   );
 
-export function generateMachineRows(modelStatusData) {
+export function generateMachineRows(modelStatusData, filterByApp) {
   if (!modelStatusData) {
     return [];
   }
@@ -231,7 +231,10 @@ export function generateMachineRows(modelStatusData) {
           ),
           className: "model-details__truncate-cell"
         }
-      ]
+      ],
+      // If there is a filter provided and the machine is visible then
+      // it's been filtered so we want to highlight it.
+      className: classnames({ "is-selected": !!filterByApp })
     };
   });
 }

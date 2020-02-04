@@ -37,14 +37,24 @@ const filterModelStatusData = (modelStatusData, appName) => {
     return modelStatusData;
   }
   const filteredData = cloneDeep(modelStatusData);
+  const application = filteredData.applications[appName];
   // remove the units from the application objects that are not
   // the filter-by app.
-  const subordinateTo = filteredData.applications[appName].subordinateTo || [];
+  const subordinateTo = application.subordinateTo || [];
   Object.keys(filteredData.applications).forEach(key => {
     if (key !== appName && !subordinateTo.includes(key)) {
       filteredData.applications[key].units = {};
     }
   });
+
+  const appMachines = new Set();
+  for (let unitId in application.units) {
+    const unit = application.units[unitId];
+    appMachines.add(unit.machine);
+  }
+  for (let machineId in filteredData.machines) {
+    if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
+  }
 
   return filteredData;
 };
@@ -105,12 +115,12 @@ const ModelDetails = () => {
     () => generateUnitRows(filteredModelStatusData, filterByApp),
     [filterByApp, filteredModelStatusData]
   );
+  const machinesTableRows = useMemo(
+    () => generateMachineRows(filteredModelStatusData, filterByApp),
+    [filterByApp, filteredModelStatusData]
+  );
   const relationTableRows = useMemo(
     () => generateRelationRows(filteredModelStatusData),
-    [filteredModelStatusData]
-  );
-  const machinesTableRows = useMemo(
-    () => generateMachineRows(filteredModelStatusData),
     [filteredModelStatusData]
   );
 
