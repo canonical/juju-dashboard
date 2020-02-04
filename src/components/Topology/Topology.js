@@ -222,12 +222,12 @@ export default ({ modelData, width, height }) => {
       .attr("width", d => (isSubordinate(d) ? 96 : 126))
       .attr("height", d => (isSubordinate(d) ? 96 : 126))
       .attr("transform", d =>
-        isSubordinate(d) ? "translate(13, 13)" : "translate(30, 30)"
+        isSubordinate(d) ? "translate(13, 13)" : "translate(28, 28)"
       )
       .attr("clip-path", d =>
         isSubordinate(d)
           ? "circle(43px at 48px 48px)"
-          : "circle(60px at 62px 62px)"
+          : "circle(55px at 63px 63px)"
       );
 
     const relationLines = topo.selectAll(".relation").data(relations);
