@@ -192,7 +192,7 @@ export default ({ modelData, width, height }) => {
       .attr("cy", d => (isSubordinate(d) ? 60 : 90))
       .attr("r", d => (isSubordinate(d) ? 60 : 90))
       .attr("fill", "#f5f5f5")
-      .attr("stroke-width", 1)
+      .attr("stroke-width", 3)
       .attr("stroke", "#888888")
       .call(_ => {
         // When ever a new element is added zoom the canvas to fit.
@@ -219,12 +219,16 @@ export default ({ modelData, width, height }) => {
     appIcon
       .append("image")
       .attr("xlink:href", d => generateIconPath(d.charm))
-      .attr("width", 96)
-      .attr("height", 96)
+      .attr("width", d => (isSubordinate(d) ? 96 : 126))
+      .attr("height", d => (isSubordinate(d) ? 96 : 126))
       .attr("transform", d =>
-        isSubordinate(d) ? "translate(13, 13)" : "translate(44, 44)"
+        isSubordinate(d) ? "translate(13, 13)" : "translate(28, 28)"
       )
-      .attr("clip-path", "circle(43px at 48px 48px)");
+      .attr("clip-path", d =>
+        isSubordinate(d)
+          ? "circle(43px at 48px 48px)"
+          : "circle(55px at 63px 63px)"
+      );
 
     const relationLines = topo.selectAll(".relation").data(relations);
     const relationLine = relationLines.enter().insert("g", ":first-child");
@@ -236,7 +240,8 @@ export default ({ modelData, width, height }) => {
       .attr("y1", d => getRelationPosition(d).y1)
       .attr("x2", d => getRelationPosition(d).x2)
       .attr("y2", d => getRelationPosition(d).y2)
-      .attr("stroke", "#cdcdcd");
+      .attr("stroke", "#666666")
+      .attr("stroke-width", 2);
 
     appIcons.exit().remove();
     relationLines.exit().remove();
