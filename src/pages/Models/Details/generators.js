@@ -65,7 +65,11 @@ export function generateEntityLink(namespace, href, name, subordinate) {
   );
 }
 
-export function generateApplicationRows(modelStatusData) {
+export function generateApplicationRows(
+  modelStatusData,
+  filterByApp,
+  onRowClick
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -90,7 +94,10 @@ export function generateApplicationRows(modelStatusData) {
         { content: key.split("-")[-1] || "-", className: "u-align--right" },
         { content: "Ubuntu" },
         { content: "-" }
-      ]
+      ],
+      className: filterByApp === key ? "is-selected" : "",
+      onClick: onRowClick,
+      "data-app": key
     };
   });
 }
