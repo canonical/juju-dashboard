@@ -47,6 +47,7 @@ const filterModelStatusData = (modelStatusData, appName) => {
     }
   });
 
+  // Remove all the machines that the selected application isn't installed on.
   const appMachines = new Set();
   for (let unitId in application.units) {
     const unit = application.units[unitId];
@@ -63,6 +64,11 @@ const filterModelStatusData = (modelStatusData, appName) => {
   for (let machineId in filteredData.machines) {
     if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
   }
+
+  // Remove all relations that don't involve the selected application.
+  filteredData.relations = modelStatusData.relations.filter(
+    relation => relation.key.indexOf(appName) > -1
+  );
 
   return filteredData;
 };
