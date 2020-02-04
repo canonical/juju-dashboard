@@ -52,6 +52,14 @@ const filterModelStatusData = (modelStatusData, appName) => {
     const unit = application.units[unitId];
     appMachines.add(unit.machine);
   }
+  subordinateTo.forEach(subAppName => {
+    // this will be the parent of the subordinate and grab the machines from it
+    const parent = filteredData.applications[subAppName];
+    for (let unitId in parent.units) {
+      const unit = parent.units[unitId];
+      appMachines.add(unit.machine);
+    }
+  });
   for (let machineId in filteredData.machines) {
     if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
   }
