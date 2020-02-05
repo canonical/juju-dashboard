@@ -46,6 +46,21 @@ const filterModelStatusData = (modelStatusData, appName) => {
       filteredData.applications[key].units = {};
     }
   });
+  // Loop through all of the units of the remaining applications that are
+  // listed in the subordinateTo list. This is done because although
+  // a subordinate is supposed to be installed on each unit, that's not
+  // always the case.
+  subordinateTo.forEach(parentName => {
+    const units = filteredData.applications[parentName].units;
+    Object.entries(units).forEach(entry => {
+      const found = Object.entries(entry[1].subordinates).find(
+        ele => ele[0].split("/")[0] === appName
+      );
+      if (!found) {
+        delete units[entry[0]];
+      }
+    });
+  });
 
   // Remove all the machines that the selected application isn't installed on.
   const appMachines = new Set();
