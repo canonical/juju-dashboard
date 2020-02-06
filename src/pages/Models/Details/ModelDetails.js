@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import cloneDeep from "clone-deep";
 
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
@@ -14,310 +15,83 @@ import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "app/actions";
 import {
-  generateStatusElement,
-  generateSpanClass,
-  generateIconPath
-} from "app/utils";
+  applicationTableHeaders,
+  unitTableHeaders,
+  machineTableHeaders,
+  relationTableHeaders,
+  generateApplicationRows,
+  generateMachineRows,
+  generateRelationRows,
+  generateUnitRows
+} from "./generators";
 
 import "./_model-details.scss";
 
-const applicationTableHeaders = [
-  { content: "app" },
-  { content: "status" },
-  { content: "version", className: "u-align--right" },
-  { content: "scale", className: "u-align--right" },
-  { content: "store" },
-  { content: "rev", className: "u-align--right" },
-  { content: "os" },
-  { content: "notes" }
-];
-
-const unitTableHeaders = [
-  { content: "unit" },
-  { content: "workload" },
-  { content: "agent" },
-  { content: "machine", className: "u-align--right" },
-  { content: "public address" },
-  { content: "port", className: "u-align--right" },
-  { content: "message" }
-];
-
-const machineTableHeaders = [
-  { content: "machine" },
-  { content: "state" },
-  { content: "az" },
-  { content: "instance id" },
-  { content: "message" }
-];
-
-const relationTableHeaders = [
-  { content: "relation provider" },
-  { content: "requirer" },
-  { content: "interface" },
-  { content: "type" },
-  { content: "message" }
-];
-
-const generateIconImg = (name, namespace) => {
-  return (
-    <img
-      alt={name + " icon"}
-      width="24"
-      height="24"
-      className="entity-icon"
-      src={generateIconPath(namespace)}
-    />
-  );
-};
-
-const generateEntityLink = (namespace, href, name, subordinate) => {
-  return (
-    <>
-      {subordinate && <span className="subordinate"></span>}
-      {namespace && generateIconImg(name, namespace)}
-      <a href={href}>{name}</a>
-    </>
-  );
-};
-
-const generateApplicationRows = modelStatusData => {
-  if (!modelStatusData) {
-    return [];
+/**
+  Returns the modelStatusData filtered by the supplied values.
+  @param {Object} modelStatusData The model status data to filter
+  @param {String} appName The name of the application to filter the data by.
+*/
+const filterModelStatusData = (modelStatusData, appName) => {
+  if (!modelStatusData || appName === "") {
+    return modelStatusData;
   }
-
-  const applications = modelStatusData.applications;
-
-  return Object.keys(applications).map(key => {
-    const app = applications[key];
-    return {
-      columns: [
-        {
-          content: generateEntityLink(app.charm || "", "#", key),
-          className: "u-display--flex"
-        },
-        {
-          content: app.status ? generateStatusElement(app.status.status) : "-",
-          className: "u-capitalise"
-        },
-        { content: "-", className: "u-align--right" },
-        { content: "-", className: "u-align--right" },
-        { content: "CharmHub" },
-        { content: key.split("-")[-1] || "-", className: "u-align--right" },
-        { content: "Ubuntu" },
-        { content: "-" }
-      ]
-    };
+  const filteredData = cloneDeep(modelStatusData);
+  const application = filteredData.applications[appName];
+  // remove the units from the application objects that are not
+  // the filter-by app.
+  const subordinateTo = application.subordinateTo || [];
+  Object.keys(filteredData.applications).forEach(key => {
+    if (key !== appName && !subordinateTo.includes(key)) {
+      filteredData.applications[key].units = {};
+    }
   });
-};
-
-const generateUnitRows = modelStatusData => {
-  if (!modelStatusData) {
-    return [];
-  }
-
-  const applications = modelStatusData.applications;
-  const unitRows = [];
-
-  Object.keys(applications).forEach(applicationName => {
-    const units = applications[applicationName].units || [];
-    Object.keys(units).forEach(unitId => {
-      const unit = units[unitId];
-      unitRows.push({
-        columns: [
-          {
-            content: generateEntityLink(
-              applications[applicationName].charm
-                ? applications[applicationName].charm
-                : "",
-              "#",
-              unitId
-            ),
-            className: "u-display--flex"
-          },
-          {
-            content: generateStatusElement(unit.workloadStatus.status),
-            className: "u-capitalise"
-          },
-          { content: unit.agentStatus.status },
-          { content: unit.machine, className: "u-align--right" },
-          { content: unit.publicAddress },
-          {
-            content: unit.publicAddress.split(":")[-1] || "-",
-            className: "u-align--right"
-          },
-          {
-            content: (
-              <span title={unit.workloadStatus.info}>
-                {unit.workloadStatus.info}
-              </span>
-            ),
-            className: "model-details__truncate-cell"
-          }
-        ]
-      });
-
-      const subordinates = unit.subordinates;
-
-      if (subordinates) {
-        for (let [key] of Object.entries(subordinates)) {
-          const subordinate = subordinates[key];
-          unitRows.push({
-            columns: [
-              {
-                content: generateEntityLink(subordinate.charm, "#", key, true),
-                className: "u-display--flex"
-              },
-              {
-                content: generateStatusElement(
-                  subordinate["workload-status"].status
-                ),
-                className: "u-capitalise"
-              },
-              { content: subordinate["agent-status"].status },
-              { content: subordinate.machine, className: "u-align--right" },
-              { content: subordinate["public-address"] },
-              {
-                content: subordinate["public-address"].split(":")[-1] || "-",
-                className: "u-align--right"
-              },
-              {
-                content: subordinate["workload-status"].info,
-                className: "model-details__truncate-cell"
-              }
-            ],
-            className: "subordinate-row"
-          });
-        }
+  // Loop through all of the units of the remaining applications that are
+  // listed in the subordinateTo list. This is done because although
+  // a subordinate is supposed to be installed on each unit, that's not
+  // always the case.
+  subordinateTo.forEach(parentName => {
+    const units = filteredData.applications[parentName].units;
+    Object.entries(units).forEach(entry => {
+      const found = Object.entries(entry[1].subordinates).find(
+        ele => ele[0].split("/")[0] === appName
+      );
+      if (!found) {
+        delete units[entry[0]];
       }
     });
   });
 
-  return unitRows;
-};
-
-const extractRelationEndpoints = relation => {
-  const endpoints = {};
-  relation.endpoints.forEach(endpoint => {
-    const role = endpoint.role;
-    endpoints[role] = endpoint.application + ":" + endpoint.name;
-    endpoints[`${role}ApplicationName`] = endpoint.application;
-  });
-  return endpoints;
-};
-
-const generateRelationIconImage = (applicationName, modelStatusData) => {
-  const application = modelStatusData.applications[applicationName];
-  if (!application || !applicationName) {
-    return;
+  // Remove all the machines that the selected application isn't installed on.
+  const appMachines = new Set();
+  for (let unitId in application.units) {
+    const unit = application.units[unitId];
+    appMachines.add(unit.machine);
   }
-  return generateIconImg(applicationName, application.charm);
-};
-
-const generateRelationRows = modelStatusData => {
-  if (!modelStatusData) {
-    return [];
+  subordinateTo.forEach(subAppName => {
+    // this will be the parent of the subordinate and grab the machines from it
+    const parent = filteredData.applications[subAppName];
+    for (let unitId in parent.units) {
+      const unit = parent.units[unitId];
+      appMachines.add(unit.machine);
+    }
+  });
+  for (let machineId in filteredData.machines) {
+    if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
   }
 
-  const relations = modelStatusData.relations;
-  return Object.keys(relations).map(relationId => {
-    const relation = relations[relationId];
-    const {
-      provider,
-      requirer,
-      peer,
-      providerApplicationName,
-      requirerApplicationName,
-      peerApplicationName
-    } = extractRelationEndpoints(relation);
-
-    return {
-      columns: [
-        {
-          content: (
-            <>
-              {generateRelationIconImage(
-                providerApplicationName || peerApplicationName,
-                modelStatusData
-              )}
-              {provider || peer || "-"}
-            </>
-          ),
-          className: "u-display--flex"
-        },
-        {
-          content: (
-            <>
-              {generateRelationIconImage(
-                requirerApplicationName,
-                modelStatusData
-              )}
-              {requirer || "-"}
-            </>
-          ),
-          title: requirer || "-",
-          className: "u-display--flex"
-        },
-        { content: relation.interface },
-        { content: relation.endpoints[0].role },
-        {
-          content: generateSpanClass(
-            "u-capitalise--first-letter",
-            relation.status.status
-          )
-        }
-      ]
-    };
-  });
-};
-
-const splitParts = hardware =>
-  Object.fromEntries(
-    hardware.split(" ").map(item => {
-      const parts = item.split("=");
-      return [parts[0], parts[1]];
-    })
+  // Remove all relations that don't involve the selected application.
+  filteredData.relations = modelStatusData.relations.filter(
+    relation => relation.key.indexOf(appName) > -1
   );
 
-const generateMachineRows = modelStatusData => {
-  if (!modelStatusData) {
-    return [];
-  }
-
-  const machines = modelStatusData.machines;
-  return Object.keys(machines).map(machineId => {
-    const machine = machines[machineId];
-    return {
-      columns: [
-        {
-          content: (
-            <>
-              <div>{machineId}</div>
-              <a href="#_">{machine.dnsName}</a>
-            </>
-          )
-        },
-        {
-          content: generateStatusElement(machine.instanceStatus.status),
-          className: "u-capitalise"
-        },
-        { content: splitParts(machine.hardware)["availability-zone"] },
-        { content: machine.instanceId },
-        {
-          content: (
-            <span title={machine.instanceStatus.info}>
-              {machine.instanceStatus.info}
-            </span>
-          ),
-          className: "model-details__truncate-cell"
-        }
-      ]
-    };
-  });
+  return filteredData;
 };
 
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
+  const [filterByApp, setFilterByApp] = useState("");
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
@@ -325,6 +99,10 @@ const ModelDetails = () => {
     modelUUID
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
+  const filteredModelStatusData = filterModelStatusData(
+    modelStatusData,
+    filterByApp
+  );
 
   useEffect(() => {
     dispatch(collapsibleSidebar(true));
@@ -334,30 +112,45 @@ const ModelDetails = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (modelUUID !== null && modelStatusData === null) {
+    if (modelUUID !== null && filteredModelStatusData === null) {
       // This model may not be in the first batch of models that we request
       // status from in the main loop so update the status now.
       dispatch(fetchModelStatus(modelUUID));
     }
-  }, [dispatch, modelUUID, modelStatusData]);
+  }, [dispatch, modelUUID, filteredModelStatusData]);
+
+  const handleRowClick = e => {
+    const currentTarget = e.currentTarget;
+    if (currentTarget.classList.contains("is-selected")) {
+      setFilterByApp("");
+      return;
+    }
+    setFilterByApp(currentTarget.dataset.app);
+  };
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
   const statusFilters = ["all", "maintenance", "blocked"];
 
   const applicationTableRows = useMemo(
-    () => generateApplicationRows(modelStatusData),
-    [modelStatusData]
+    () =>
+      generateApplicationRows(
+        filteredModelStatusData,
+        filterByApp,
+        handleRowClick
+      ),
+    [filterByApp, filteredModelStatusData]
   );
-  const unitTableRows = useMemo(() => generateUnitRows(modelStatusData), [
-    modelStatusData
-  ]);
-  const relationTableRows = useMemo(
-    () => generateRelationRows(modelStatusData),
-    [modelStatusData]
+  const unitTableRows = useMemo(
+    () => generateUnitRows(filteredModelStatusData, filterByApp),
+    [filterByApp, filteredModelStatusData]
   );
   const machinesTableRows = useMemo(
-    () => generateMachineRows(modelStatusData),
-    [modelStatusData]
+    () => generateMachineRows(filteredModelStatusData, filterByApp),
+    [filterByApp, filteredModelStatusData]
+  );
+  const relationTableRows = useMemo(
+    () => generateRelationRows(filteredModelStatusData, filterByApp),
+    [filterByApp, filteredModelStatusData]
   );
 
   return (

@@ -35,7 +35,9 @@ describe("Info Panel", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/activedev@external/group-test"]}
+        >
           <TestRoute path="/models/*">
             <InfoPanel />
           </TestRoute>

@@ -4,7 +4,56 @@
 .model-details {
   display: grid;
   grid-template-columns: 230px 1fr;
+  margin-bottom: 2rem;
   padding-bottom: 14rem;
+
+  &:last-child {
+    margin-bottom: 1rem;
+  }
+
+  td,
+  th {
+    &:first-child {
+      padding-left: 0.5rem;
+    }
+  }
+
+  tr {
+    display: grid;
+  }
+
+  tbody tr {
+    @include vf-animation(background, brisk, ease-in-out);
+
+    &.is-selected,
+    &.is-selected:hover {
+      background-color: #cef3ff;
+    }
+  }
+
+  .model-details__apps tr {
+    grid-template-columns: 20% 13% 6% 11% 17.5% 5% 10% 20%;
+  }
+
+  .model-details__units tr {
+    grid-template-columns: 20% 13% 9% 9% 14% 5% 30%;
+  }
+
+  .model-details__machines tr {
+    grid-template-columns: 20% 15% 11% 26.5% 27.5%;
+  }
+
+  .model-details__relations tr {
+    grid-template-columns: 30% 30% 15% 9% 16%;
+  }
+
+  tbody tr:hover {
+    background-color: #e7f9ff;
+  }
+
+  .model-details__apps tbody tr:hover {
+    cursor: pointer;
+  }
 
   @media (min-width: $breakpoint-m-large) {
     grid-template-columns: 350px 1fr;
@@ -30,53 +79,8 @@
     text-align: center;
   }
 
-  tr {
-    display: grid;
-  }
-
-  .model-details__apps tr {
-    grid-template-columns: 20% 13% 6% 11% 17.5% 5% 10% 20%;
-  }
-
-  .model-details__units tr {
-    grid-template-columns: 20% 13% 9% 9% 14% 5% 30%;
-  }
-
-  .model-details__machines tr {
-    grid-template-columns: 20% 15% 11% 26.5% 27.5%;
-  }
-
-  .model-details__relations {
-    tr {
-      grid-template-columns: 30% 30% 15% 9% 16%;
-    }
-  }
-
   &__truncate-cell {
     white-space: nowrap;
-  }
-
-  .p-table--sortable {
-    margin-bottom: 2rem;
-
-    &:last-child {
-      margin-bottom: 1rem;
-    }
-
-    td,
-    th {
-      &:first-child {
-        padding-left: 0.5rem;
-      }
-    }
-
-    tbody tr {
-      @include vf-animation(background, brisk, ease-in-out);
-
-      &:hover {
-        background-color: #cef3ff;
-      }
-    }
   }
 
   &__config {
