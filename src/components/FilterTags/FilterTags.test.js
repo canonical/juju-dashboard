@@ -57,8 +57,8 @@ describe("FilterTags", () => {
   });
 });
 
-describe("Filter capsules", () => {
-  it("display in the input field when clicked", () => {
+describe("Filter pills", () => {
+  it("display as selected when clicked", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <MemoryRouter>
@@ -67,15 +67,21 @@ describe("Filter capsules", () => {
         </Provider>
       </MemoryRouter>
     );
-    const firstAvailableFilter = wrapper
-      .find(".p-filter-panel .p-filter-panel__button")
-      .first();
-    firstAvailableFilter.simulate("click");
-    wrapper.update();
-    console.log(firstAvailableFilter.debug());
+
+    const firstFilterButton = ".p-filter-panel__button";
     expect(
       wrapper
-        .find(".p-filter-panel .p-filter-panel__button")
+        .find(firstFilterButton)
+        .first()
+        .hasClass("is-selected")
+    ).toEqual(false);
+    wrapper
+      .find(firstFilterButton)
+      .first()
+      .simulate("click");
+    expect(
+      wrapper
+        .find(firstFilterButton)
         .first()
         .hasClass("is-selected")
     ).toEqual(true);

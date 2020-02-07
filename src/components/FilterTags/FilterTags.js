@@ -94,7 +94,7 @@ const FilterTags = () => {
   @param {string} filter The name of the filter
    @param {string} filterBy The name of the filter group
 */
-  const addActiveFilter = (e, filter) => {
+  const addActiveFilter = filter => {
     setActiveFilters(filters => {
       const updatedFilters = [...filters];
       if (!updatedFilters.includes(filter)) {
@@ -102,7 +102,6 @@ const FilterTags = () => {
       }
       return updatedFilters;
     });
-    e.currentTarget.classList.add("is-selected");
   };
 
   /**
@@ -114,25 +113,12 @@ const FilterTags = () => {
   const removeActiveFilter = (e, filter) => {
     e.stopPropagation();
     setActiveFilters(filters => {
-      const updatedFilters = [
-        ...filters
-      ];
+      const updatedFilters = [...filters];
       if (updatedFilters.includes(filter)) {
         const index = updatedFilters.indexOf(filter);
         updatedFilters.splice(index, 1);
       }
       return updatedFilters;
-    });
-
-    // Remove is-selected state from relevant filter from filter panel
-    const panelFilterItems = document.querySelectorAll(
-      ".p-filter-panel__button"
-    ) || [];
-    panelFilterItems && panelFilterItems.forEach(panelFilterItem => {
-
-      if (panelFilterItem.innerHTML === filter.split(" ")[1]) {
-        panelFilterItem.classList.remove("is-selected");
-      }
     });
   };
 
@@ -142,7 +128,11 @@ const FilterTags = () => {
         type="text"
         className="p-filter-tags__input"
         onClick={() => setFilterPanelVisibility(!filterPanelVisibility)}
-        placeholder={activeFilters.length ? `Active filters: ${activeFilters.length}` : "Filter models"}
+        placeholder={
+          activeFilters.length
+            ? `Active filters: ${activeFilters.length}`
+            : "Filter models"
+        }
       />
 
       <div
@@ -150,11 +140,12 @@ const FilterTags = () => {
           "is-visible": filterPanelVisibility
         })}
       >
-
         {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
 
-        {activeFilters.length > 0 &&
-          activeFilters.map(activeFilter => {
+        {activeFilters.length > 0 && (
+          <div className="p-filter-panel__section">
+            <h4 className="p-filter-panel__heading">Selected</h4>
+            {activeFilters.map(activeFilter => {
               return (
                 <span
                   className="p-filter-tags__active-filter"
@@ -163,15 +154,15 @@ const FilterTags = () => {
                   {activeFilter}
                   <i
                     className="p-icon--close"
-                    onClick={e =>
-                      removeActiveFilter(e, activeFilter)
-                    }
+                    onClick={e => removeActiveFilter(e, activeFilter)}
                   >
                     Remove
                   </i>
                 </span>
               );
-          })}
+            })}
+          </div>
+        )}
 
         {Object.keys(filters).map(filterBy => {
           return (
@@ -187,8 +178,14 @@ const FilterTags = () => {
                   {filters[filterBy].map(filter => (
                     <li key={filter} className="p-filter-panel__item">
                       <button
-                        onClick={e => addActiveFilter(e, `${filterBy}: ${filter}`)}
-                        className="p-filter-panel__button"
+                        onClick={() =>
+                          addActiveFilter(`${filterBy}: ${filter}`)
+                        }
+                        className={classNames("p-filter-panel__button", {
+                          "is-selected": activeFilters.includes(
+                            `${filterBy}: ${filter}`
+                          )
+                        })}
                         type="button"
                       >
                         {filter}
