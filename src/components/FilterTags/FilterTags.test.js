@@ -121,6 +121,7 @@ describe("Filter pills", () => {
     const selectedActiveFilter = ".p-filter-tags__active-filter";
     const selectedActiveFilterClose =
       ".p-filter-tags__active-filter .p-icon--close";
+    expect(wrapper.find(selectedActiveFilter)).toHaveLength(0);
     wrapper
       .find(firstFilterButton)
       .first()
