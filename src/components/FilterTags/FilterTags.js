@@ -166,11 +166,7 @@ const FilterTags = () => {
         {Object.keys(filters).map(filterBy => {
           return (
             filters[filterBy].length > 0 && (
-              <div
-                key={filterBy}
-                className="p-filter-panel__section"
-                data-test={filterBy}
-              >
+              <div key={filterBy} className="p-filter-panel__section">
                 <h4 className="p-filter-panel__heading">
                   {pluralize(filters[filterBy].length, filterBy)}
                 </h4>
