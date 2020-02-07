@@ -140,11 +140,10 @@ const FilterTags = () => {
         })}
       >
         {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
-
-        {activeFilters.length > 0 && (
-          <div className="p-filter-panel__section" data-test="selected">
-            <h4 className="p-filter-panel__heading">Selected</h4>
-            {activeFilters.map(activeFilter => {
+        <div className="p-filter-panel__section" data-test="selected">
+          <h4 className="p-filter-panel__heading">Selected</h4>
+          {activeFilters.length > 0 &&
+            activeFilters.map(activeFilter => {
               return (
                 <span
                   className="p-filter-tags__active-filter"
@@ -160,9 +159,7 @@ const FilterTags = () => {
                 </span>
               );
             })}
-          </div>
-        )}
-
+        </div>
         {Object.keys(filters).map(filterBy => {
           return (
             filters[filterBy].length > 0 && (

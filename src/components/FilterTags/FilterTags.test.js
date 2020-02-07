@@ -99,7 +99,6 @@ describe("Filter pills", () => {
     const selectedSection = "[data-test='selected']";
     const firstFilterButton = ".p-filter-panel__button";
     const selectedActiveFilter = ".p-filter-tags__active-filter";
-    expect(wrapper.find(selectedSection)).toHaveLength(0);
     wrapper
       .find(firstFilterButton)
       .first()
