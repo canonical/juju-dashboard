@@ -87,7 +87,7 @@ describe("Filter pills", () => {
     ).toEqual(true);
   });
 
-  it("move to selected section when clicked", () => {
+  it("add to selected section when clicked", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <MemoryRouter>
