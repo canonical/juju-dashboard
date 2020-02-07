@@ -136,18 +136,23 @@ const FilterTags = () => {
     });
   };
 
-  let activeFiltersCount = 0;
-  Object.values(activeFilters).forEach(filterGroup => {
-    activeFiltersCount = activeFiltersCount + filterGroup.length;
-  });
-
   return (
     <div className="p-filter-tags" ref={node}>
-      <div
+      <input
         type="text"
         className="p-filter-tags__input"
         onClick={() => setFilterPanelVisibility(!filterPanelVisibility)}
+        placeholder="Filter models"
+      />
+
+      <div
+        className={classNames("p-card--highlighted p-filter-panel", {
+          "is-visible": filterPanelVisibility
+        })}
       >
+
+        {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
+
         {Object.entries(activeFilters).length > 0 &&
           Object.entries(activeFilters).map(activeFilterObj => {
             return Object.values(activeFilterObj[1]).map(activeFilter => {
@@ -169,20 +174,7 @@ const FilterTags = () => {
               );
             });
           })}
-        {activeFiltersCount === 0 && <span>Filter models:</span>}
-        {activeFiltersCount > 0 && (
-          <span className="p-filter-tags__active-count">
-            +{activeFiltersCount}
-          </span>
-        )}
-      </div>
 
-      <div
-        className={classNames("p-card--highlighted p-filter-panel", {
-          "is-visible": filterPanelVisibility
-        })}
-      >
-        {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
         {Object.keys(filters).map(filterBy => {
           return (
             filters[filterBy].length > 0 && (

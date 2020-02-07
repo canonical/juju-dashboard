@@ -44,6 +44,7 @@
     border: 1px solid #999;
     border-radius: 0.25rem;
     display: inline-block;
+    font-size: 0.875rem;
     margin: 0 0.25rem 0.5rem 0;
     padding: 0 0.15rem;
     position: relative;
@@ -51,6 +52,12 @@
 
     &:first-child {
       margin-left: 0.2rem;
+    }
+
+    .p-icon--close {
+      pointer: cursor;
+      width: 0.5rem;
+      top: 1px;
     }
   }
 
@@ -106,7 +113,7 @@
     padding: 0 0.5rem;
 
     &.is-selected {
-      background-color: $color-mid-x-light;
+      display: none;
     }
   }
 }
