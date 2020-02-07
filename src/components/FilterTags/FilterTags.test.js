@@ -86,4 +86,50 @@ describe("Filter pills", () => {
         .hasClass("is-selected")
     ).toEqual(true);
   });
+
+  it("move to selected section when clicked", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <FilterTags />
+        </Provider>
+      </MemoryRouter>
+    );
+    const selectedSection = "[data-test='selected']";
+    const firstFilterButton = ".p-filter-panel__button";
+    const selectedActiveFilter = ".p-filter-tags__active-filter";
+    expect(wrapper.find(selectedSection)).toHaveLength(0);
+    wrapper
+      .find(firstFilterButton)
+      .first()
+      .simulate("click");
+    expect(wrapper.find(selectedSection)).toHaveLength(1);
+    expect(wrapper.find(selectedActiveFilter)).toHaveLength(1);
+  });
+
+  it("remove from selected section when clicked", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <FilterTags />
+        </Provider>
+      </MemoryRouter>
+    );
+    const firstFilterButton = ".p-filter-panel__button";
+    const selectedActiveFilter = ".p-filter-tags__active-filter";
+    const selectedActiveFilterClose =
+      ".p-filter-tags__active-filter .p-icon--close";
+    wrapper
+      .find(firstFilterButton)
+      .first()
+      .simulate("click");
+    expect(wrapper.find(selectedActiveFilter)).toHaveLength(1);
+    wrapper
+      .find(selectedActiveFilterClose)
+      .first()
+      .simulate("click");
+    expect(wrapper.find(selectedActiveFilter)).toHaveLength(0);
+  });
 });

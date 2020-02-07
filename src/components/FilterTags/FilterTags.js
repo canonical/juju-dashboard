@@ -110,8 +110,7 @@ const FilterTags = () => {
   @param {string} filter The name of the filter
    @param {string} filterBy The name of the filter group
 */
-  const removeActiveFilter = (e, filter) => {
-    e.stopPropagation();
+  const removeActiveFilter = filter => {
     setActiveFilters(filters => {
       const updatedFilters = [...filters];
       if (updatedFilters.includes(filter)) {
@@ -143,7 +142,7 @@ const FilterTags = () => {
         {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
 
         {activeFilters.length > 0 && (
-          <div className="p-filter-panel__section">
+          <div className="p-filter-panel__section" data-test="selected">
             <h4 className="p-filter-panel__heading">Selected</h4>
             {activeFilters.map(activeFilter => {
               return (
@@ -154,7 +153,7 @@ const FilterTags = () => {
                   {activeFilter}
                   <i
                     className="p-icon--close"
-                    onClick={e => removeActiveFilter(e, activeFilter)}
+                    onClick={() => removeActiveFilter(activeFilter)}
                   >
                     Remove
                   </i>
@@ -167,7 +166,11 @@ const FilterTags = () => {
         {Object.keys(filters).map(filterBy => {
           return (
             filters[filterBy].length > 0 && (
-              <div key={filterBy} className="p-filter-panel__section">
+              <div
+                key={filterBy}
+                className="p-filter-panel__section"
+                data-test={filterBy}
+              >
                 <h4 className="p-filter-panel__heading">
                   {pluralize(filters[filterBy].length, filterBy)}
                 </h4>
