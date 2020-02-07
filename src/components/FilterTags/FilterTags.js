@@ -12,11 +12,11 @@ import {
 import "./_filter-tags.scss";
 
 const FilterTags = () => {
-  const [filterPanelVisibility, setfilterPanelVisibility] = useState(false);
+  const [filterPanelVisibility, setFilterPanelVisibility] = useState(false);
+  const [activeFilters, setActiveFilters] = useState([]);
+
   const node = useRef();
-
   const filters = {};
-
   const modelData = useSelector(getModelData);
 
   /**
@@ -55,9 +55,10 @@ const FilterTags = () => {
     addFilter("credential", credentialFilter);
   });
 
+  // This useEffect sets up listeners so the panel will close if user clicks anywhere else on the page or hits the escape key
   useEffect(() => {
     const closePanel = () => {
-      setfilterPanelVisibility(false);
+      setFilterPanelVisibility(false);
       document.querySelector(".p-filter-tags__input").blur();
     };
 
@@ -70,7 +71,7 @@ const FilterTags = () => {
     };
 
     const keyDown = e => {
-      if (e.keyCode === 27) {
+      if (e.code === "Escape") {
         // Close panel if Esc keydown detected
         closePanel();
       }
@@ -87,26 +88,78 @@ const FilterTags = () => {
     };
   }, []);
 
-  const handleFilterClick = () => {
-    console.log("Filter clicked");
+  /**
+  Apply a given filter
+  @param {object} e The event object
+  @param {string} filter The name of the filter
+   @param {string} filterBy The name of the filter group
+*/
+  const addActiveFilter = filter => {
+    setActiveFilters(filters => {
+      const updatedFilters = [...filters];
+      if (!updatedFilters.includes(filter)) {
+        updatedFilters.push(filter);
+      }
+      return updatedFilters;
+    });
+  };
+
+  /**
+  Remove a given filter
+  @param {object} e The event object
+  @param {string} filter The name of the filter
+   @param {string} filterBy The name of the filter group
+*/
+  const removeActiveFilter = filter => {
+    setActiveFilters(filters => {
+      const updatedFilters = [...filters];
+      if (updatedFilters.includes(filter)) {
+        const index = updatedFilters.indexOf(filter);
+        updatedFilters.splice(index, 1);
+      }
+      return updatedFilters;
+    });
   };
 
   return (
     <div className="p-filter-tags" ref={node}>
-      <form>
-        <input
-          type="text"
-          placeholder="Filter models"
-          className="p-filter-tags__input"
-          onFocus={() => setfilterPanelVisibility(true)}
-        />
-      </form>
+      <input
+        type="text"
+        className="p-filter-tags__input"
+        onClick={() => setFilterPanelVisibility(true)}
+        placeholder={
+          activeFilters.length
+            ? `Active filters: ${activeFilters.length}`
+            : "Filter models"
+        }
+      />
+
       <div
         className={classNames("p-card--highlighted p-filter-panel", {
           "is-visible": filterPanelVisibility
         })}
       >
         {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
+        <div className="p-filter-panel__section" data-test="selected">
+          <h4 className="p-filter-panel__heading">Selected</h4>
+          {activeFilters.length > 0 &&
+            activeFilters.map(activeFilter => {
+              return (
+                <span
+                  className="p-filter-tags__active-filter"
+                  key={activeFilter}
+                >
+                  {activeFilter}
+                  <i
+                    className="p-icon--close"
+                    onClick={() => removeActiveFilter(activeFilter)}
+                  >
+                    Remove
+                  </i>
+                </span>
+              );
+            })}
+        </div>
         {Object.keys(filters).map(filterBy => {
           return (
             filters[filterBy].length > 0 && (
@@ -121,8 +174,15 @@ const FilterTags = () => {
                   {filters[filterBy].map(filter => (
                     <li key={filter} className="p-filter-panel__item">
                       <button
-                        onClick={e => handleFilterClick(e)}
-                        className="p-filter-panel__button"
+                        onClick={() =>
+                          addActiveFilter(`${filterBy}: ${filter}`)
+                        }
+                        className={classNames("p-filter-panel__button", {
+                          "is-selected": activeFilters.includes(
+                            `${filterBy}: ${filter}`
+                          )
+                        })}
+                        type="button"
                       >
                         {filter}
                       </button>
