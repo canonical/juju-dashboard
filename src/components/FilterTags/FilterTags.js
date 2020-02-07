@@ -13,7 +13,7 @@ import "./_filter-tags.scss";
 
 const FilterTags = () => {
   const [filterPanelVisibility, setFilterPanelVisibility] = useState(false);
-  const [activeFilters, setActiveFilters] = useState({});
+  const [activeFilters, setActiveFilters] = useState([]);
 
   const node = useRef();
   const filters = {};
@@ -94,12 +94,11 @@ const FilterTags = () => {
   @param {string} filter The name of the filter
    @param {string} filterBy The name of the filter group
 */
-  const addActiveFilter = (e, filter, filterBy) => {
+  const addActiveFilter = (e, filter) => {
     setActiveFilters(filters => {
-      const updatedFilters = { ...filters };
-      updatedFilters[filterBy] = updatedFilters[filterBy] || [];
-      if (!updatedFilters[filterBy].includes(filter)) {
-        updatedFilters[filterBy].push(filter);
+      const updatedFilters = [...filters];
+      if (!updatedFilters.includes(filter)) {
+        updatedFilters.push(filter);
       }
       return updatedFilters;
     });
@@ -112,15 +111,15 @@ const FilterTags = () => {
   @param {string} filter The name of the filter
    @param {string} filterBy The name of the filter group
 */
-  const removeActiveFilter = (e, filter, filterBy) => {
+  const removeActiveFilter = (e, filter) => {
     e.stopPropagation();
     setActiveFilters(filters => {
-      const updatedFilters = {
+      const updatedFilters = [
         ...filters
-      };
-      if (updatedFilters[filterBy].includes(filter)) {
-        const index = updatedFilters[filterBy].indexOf(filter);
-        updatedFilters[filterBy].splice(index, 1);
+      ];
+      if (updatedFilters.includes(filter)) {
+        const index = updatedFilters.indexOf(filter);
+        updatedFilters.splice(index, 1);
       }
       return updatedFilters;
     });
@@ -128,9 +127,10 @@ const FilterTags = () => {
     // Remove is-selected state from relevant filter from filter panel
     const panelFilterItems = document.querySelectorAll(
       ".p-filter-panel__button"
-    );
-    panelFilterItems.forEach(panelFilterItem => {
-      if (panelFilterItem.innerHTML === filter) {
+    ) || [];
+    panelFilterItems && panelFilterItems.forEach(panelFilterItem => {
+
+      if (panelFilterItem.innerHTML === filter.split(" ")[1]) {
         panelFilterItem.classList.remove("is-selected");
       }
     });
@@ -153,26 +153,24 @@ const FilterTags = () => {
 
         {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
 
-        {Object.entries(activeFilters).length > 0 &&
-          Object.entries(activeFilters).map(activeFilterObj => {
-            return Object.values(activeFilterObj[1]).map(activeFilter => {
+        {activeFilters.length > 0 &&
+          activeFilters.map(activeFilter => {
               return (
                 <span
                   className="p-filter-tags__active-filter"
-                  key={activeFilterObj[0] + activeFilter}
+                  key={activeFilter}
                 >
-                  {activeFilterObj[0]}: {activeFilter}{" "}
+                  {activeFilter}
                   <i
                     className="p-icon--close"
                     onClick={e =>
-                      removeActiveFilter(e, activeFilter, activeFilterObj[0])
+                      removeActiveFilter(e, activeFilter)
                     }
                   >
                     Remove
                   </i>
                 </span>
               );
-            });
           })}
 
         {Object.keys(filters).map(filterBy => {
@@ -189,7 +187,7 @@ const FilterTags = () => {
                   {filters[filterBy].map(filter => (
                     <li key={filter} className="p-filter-panel__item">
                       <button
-                        onClick={e => addActiveFilter(e, filter, filterBy)}
+                        onClick={e => addActiveFilter(e, `${filterBy}: ${filter}`)}
                         className="p-filter-panel__button"
                         type="button"
                       >
