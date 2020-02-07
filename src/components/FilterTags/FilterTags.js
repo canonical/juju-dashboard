@@ -142,7 +142,7 @@ const FilterTags = () => {
         type="text"
         className="p-filter-tags__input"
         onClick={() => setFilterPanelVisibility(!filterPanelVisibility)}
-        placeholder="Filter models"
+        placeholder={activeFilters.length ? `Active filters: ${activeFilters.length}` : "Filter models"}
       />
 
       <div
