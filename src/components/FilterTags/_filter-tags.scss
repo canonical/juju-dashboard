@@ -25,18 +25,6 @@
     padding: 0.25rem 0.5rem;
     vertical-align: baseline;
     width: 100%;
-
-    .placeholder {
-      color: $color-mid-dark;
-    }
-
-    .p-icon--close {
-      height: 0.65rem;
-      margin-right: 0.5rem;
-      position: relative;
-      top: -1px;
-      width: 0.65rem;
-    }
   }
 
   &__active-filter {
@@ -57,8 +45,8 @@
     .p-icon--close {
       cursor: pointer;
       margin: 0 0.25rem;
-      width: 0.5rem;
       top: 1px;
+      width: 0.5rem;
     }
   }
 
