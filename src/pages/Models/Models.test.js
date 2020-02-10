@@ -54,7 +54,6 @@ describe("Models page", () => {
     wrapper.find("button[value='owner']").simulate("click", {
       target: { value: "owner" }
     });
-    wrapper.update();
     expect(
       wrapper.find(".p-model-group-toggle__button.is-selected").text()
     ).toBe("owner");
