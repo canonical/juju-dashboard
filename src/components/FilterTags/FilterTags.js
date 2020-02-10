@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
 import { useSelector } from "react-redux";
+import { useHistory, useLocation } from "react-router-dom";
 import { getModelData } from "app/selectors";
+import queryString from "query-string";
 import {
   extractCloudName,
   extractOwnerName,
@@ -18,6 +20,9 @@ const FilterTags = () => {
   const node = useRef();
   const filters = {};
   const modelData = useSelector(getModelData);
+
+  const history = useHistory();
+  const location = useLocation();
 
   /**
   Check if filter exists and adds to array if not
@@ -87,6 +92,15 @@ const FilterTags = () => {
       document.removeEventListener("keydown", keyDown);
     };
   }, []);
+
+  // Update query params when adding and removing filters
+  useEffect(() => {
+    const queryParams = queryString.parse(location.search);
+    queryParams.activeFilters = activeFilters;
+    history.push({
+      search: queryString.stringify(queryParams)
+    });
+  }, [activeFilters, history, location.search]);
 
   /**
   Apply a given filter

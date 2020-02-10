@@ -1,8 +1,9 @@
 import React from "react";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Router } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
+import { createMemoryHistory } from "history";
 import FilterTags from "./FilterTags";
 
 import dataDump from "../../testing/complete-redux-store-dump";
@@ -131,5 +132,32 @@ describe("Filter pills", () => {
       .first()
       .simulate("click");
     expect(wrapper.find(selectedActiveFilter)).toHaveLength(0);
+  });
+
+  it("displays correct URL query params when adding/removing filters", () => {
+    const history = createMemoryHistory();
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router initialEntries={["/models"]} history={history}>
+          <FilterTags />
+        </Router>
+      </Provider>
+    );
+    const firstFilterButton = ".p-filter-panel__button";
+    const selectedActiveFilterClose =
+      ".p-filter-tags__active-filter .p-icon--close";
+    wrapper
+      .find(firstFilterButton)
+      .first()
+      .simulate("click");
+    const searchParams = new URLSearchParams(history.location.search);
+    expect(searchParams.get("activeFilters")).toEqual("cloud: google");
+    wrapper
+      .find(selectedActiveFilterClose)
+      .first()
+      .simulate("click");
+    const updatedSearchParams = new URLSearchParams(history.location.search);
+    expect(updatedSearchParams.get("activeFilters")).toEqual(null);
   });
 });
