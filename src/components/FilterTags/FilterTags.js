@@ -14,15 +14,20 @@ import {
 import "./_filter-tags.scss";
 
 const FilterTags = () => {
+  const history = useHistory();
+  const location = useLocation();
+
+  const queryParams = queryString.parse(location.search);
+  const queryParamsActiveFilters = queryParams.activeFilters;
+
   const [filterPanelVisibility, setFilterPanelVisibility] = useState(false);
-  const [activeFilters, setActiveFilters] = useState([]);
+  const [activeFilters, setActiveFilters] = useState(
+    queryParamsActiveFilters || []
+  );
 
   const node = useRef();
   const filters = {};
   const modelData = useSelector(getModelData);
-
-  const history = useHistory();
-  const location = useLocation();
 
   /**
   Check if filter exists and adds to array if not
@@ -98,7 +103,7 @@ const FilterTags = () => {
     const queryParams = queryString.parse(location.search);
     queryParams.activeFilters = activeFilters;
     history.push({
-      search: queryString.stringify(queryParams).replace("%20", "")
+      search: queryString.stringify(queryParams)
     });
   }, [activeFilters, history, location.search]);
 
@@ -158,7 +163,9 @@ const FilterTags = () => {
           {Object.entries(filters).length > 0 && (
             <h4 className="p-filter-panel__heading">Selected</h4>
           )}
-          {activeFilters.length > 0 &&
+          {Array.isArray(activeFilters) &&
+            Object.entries(filters).length > 0 &&
+            activeFilters.length > 0 &&
             activeFilters.map(activeFilter => (
               <span className="p-filter-tags__active-filter" key={activeFilter}>
                 {activeFilter}
