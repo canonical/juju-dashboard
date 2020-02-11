@@ -98,7 +98,7 @@ const FilterTags = () => {
     const queryParams = queryString.parse(location.search);
     queryParams.activeFilters = activeFilters;
     history.push({
-      search: queryString.stringify(queryParams)
+      search: queryString.stringify(queryParams).replace("%20", "")
     });
   }, [activeFilters, history, location.search]);
 
