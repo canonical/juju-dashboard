@@ -152,7 +152,7 @@ describe("Filter pills", () => {
       .first()
       .simulate("click");
     const searchParams = new URLSearchParams(history.location.search);
-    expect(searchParams.get("activeFilters")).toEqual("cloud: google");
+    expect(searchParams.get("activeFilters")).toEqual("cloud:google");
     wrapper
       .find(selectedActiveFilterClose)
       .first()
