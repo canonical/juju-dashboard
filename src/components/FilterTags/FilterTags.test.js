@@ -144,20 +144,56 @@ describe("Filter pills", () => {
         </Router>
       </Provider>
     );
-    const firstFilterButton = ".p-filter-panel__button";
+    const filterButton = ".p-filter-panel__button";
     const selectedActiveFilterClose =
       ".p-filter-tags__active-filter .p-icon--close";
     wrapper
-      .find(firstFilterButton)
-      .first()
+      .find(filterButton)
+      .at(0)
       .simulate("click");
     const searchParams = new URLSearchParams(history.location.search);
     expect(searchParams.get("activeFilters")).toEqual("cloud: google");
     wrapper
       .find(selectedActiveFilterClose)
-      .first()
+      .at(0)
       .simulate("click");
     const updatedSearchParams = new URLSearchParams(history.location.search);
     expect(updatedSearchParams.get("activeFilters")).toEqual(null);
+  });
+
+  it("displays correct URL query params when adding/removing multiple filters", () => {
+    const history = createMemoryHistory();
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router initialEntries={["/models"]} history={history}>
+          <FilterTags />
+        </Router>
+      </Provider>
+    );
+    const filterButton = ".p-filter-panel__button";
+    const selectedActiveFilterClose =
+      ".p-filter-tags__active-filter .p-icon--close";
+    wrapper
+      .find(filterButton)
+      .at(0)
+      .simulate("click");
+    wrapper
+      .find(filterButton)
+      .at(1)
+      .simulate("click");
+    expect(history.location.search).toEqual(
+      "?activeFilters=cloud%3A%20google&activeFilters=cloud%3A%20aws"
+    );
+    wrapper
+      .find(selectedActiveFilterClose)
+      .at(0)
+      .simulate("click");
+    expect(history.location.search).toEqual("?activeFilters=cloud%3A%20aws");
+    wrapper
+      .find(selectedActiveFilterClose)
+      .at(0)
+      .simulate("click");
+    expect(history.location.search).toEqual("");
   });
 });
