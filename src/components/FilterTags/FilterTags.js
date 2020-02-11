@@ -155,24 +155,21 @@ const FilterTags = () => {
       >
         {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
         <div className="p-filter-panel__section" data-test="selected">
-          <h4 className="p-filter-panel__heading">Selected</h4>
+          {Object.entries(filters).length > 0 && (
+            <h4 className="p-filter-panel__heading">Selected</h4>
+          )}
           {activeFilters.length > 0 &&
-            activeFilters.map(activeFilter => {
-              return (
-                <span
-                  className="p-filter-tags__active-filter"
-                  key={activeFilter}
+            activeFilters.map(activeFilter => (
+              <span className="p-filter-tags__active-filter" key={activeFilter}>
+                {activeFilter}
+                <i
+                  className="p-icon--close"
+                  onClick={() => removeActiveFilter(activeFilter)}
                 >
-                  {activeFilter}
-                  <i
-                    className="p-icon--close"
-                    onClick={() => removeActiveFilter(activeFilter)}
-                  >
-                    Remove
-                  </i>
-                </span>
-              );
-            })}
+                  Remove
+                </i>
+              </span>
+            ))}
         </div>
         {Object.keys(filters).map(filterBy => {
           return (
