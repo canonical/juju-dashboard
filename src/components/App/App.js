@@ -15,7 +15,7 @@ const baseURL = process.env.REACT_APP_BASE_APP_URL;
 function App() {
   if (process.env.NODE_ENV === "production") {
     ReactGA.initialize("UA-1018242-68");
-    ReactGA.pageview(window.location.pathname + window.location.search);
+    ReactGA.pageview(window.location.href.replace(window.location.origin, ''));
   }
   return (
     <Router basename={baseURL}>
