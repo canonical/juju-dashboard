@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useDispatch, useStore } from "react-redux";
+import ReactGA from "react-ga";
 
 import { logOut } from "app/actions";
 
@@ -48,7 +49,15 @@ export default function User() {
   return (
     <div
       className="user-icon"
-      onClick={() => setUserPanelVisibility(!userPanelVisibility)}
+      onClick={() => {
+        setUserPanelVisibility(!userPanelVisibility);
+        if (userPanelVisibility) {
+          ReactGA.event({
+            category: "User",
+            action: "Opened user panel"
+          });
+        }
+      }}
       ref={node}
     >
       <i className="p-icon--user">Account icon</i>
