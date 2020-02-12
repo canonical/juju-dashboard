@@ -46,17 +46,20 @@ export default function User() {
 
   const getState = useStore().getState;
 
+  useEffect(() => {
+    if (userPanelVisibility) {
+      ReactGA.event({
+        category: "User",
+        action: "Opened user panel"
+      });
+    }
+  }, [userPanelVisibility]);
+
   return (
     <div
       className="user-icon"
       onClick={() => {
         setUserPanelVisibility(!userPanelVisibility);
-        if (userPanelVisibility) {
-          ReactGA.event({
-            category: "User",
-            action: "Opened user panel"
-          });
-        }
       }}
       ref={node}
     >
