@@ -148,12 +148,10 @@ const FilterTags = () => {
         className="p-filter-tags__input"
         onClick={() => {
           setFilterPanelVisibility(true);
-          if (filterPanelVisibility) {
             ReactGA.event({
               category: "User",
               action: "Opened filter panel"
             });
-          }
         }}
         placeholder={
           activeFilters.length

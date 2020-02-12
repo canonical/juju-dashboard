@@ -56,12 +56,10 @@ const InfoPanel = () => {
             className="p-icon--expand"
             onClick={() => {
               setShowExpandedTopology(!showExpandedTopology);
-              if (showExpandedTopology) {
-                ReactGA.event({
-                  category: "User",
-                  action: "Opened expanded topology"
-                });
-              }
+              ReactGA.event({
+                category: "User",
+                action: "Opened expanded topology"
+              });
             }}
           >
             Expand topology
