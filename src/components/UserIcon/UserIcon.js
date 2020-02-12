@@ -75,6 +75,9 @@ export default function User() {
           >
             Docs
           </a>
+          <Link className="p-contextual-menu__link" to="/settings">
+            Settings
+          </Link>
           <Link
             className="p-contextual-menu__link"
             to="/"
