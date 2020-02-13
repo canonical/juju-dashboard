@@ -9,15 +9,21 @@ import OwnerGroup from "./OwnerGroup";
 
 import "./_model-table-list.scss";
 
-export default function ModelTableList({ groupedBy }) {
+export default function ModelTableList({ groupedBy, activeFilters }) {
   const activeUser = useSelector(getActiveUserTag);
   switch (groupedBy) {
     case "status":
     default:
-      return <StatusGroup activeUser={activeUser} />;
+      return (
+        <StatusGroup activeUser={activeUser} activeFilters={activeFilters} />
+      );
     case "cloud":
-      return <CloudGroup activeUser={activeUser} />;
+      return (
+        <CloudGroup activeUser={activeUser} activeFilters={activeFilters} />
+      );
     case "owner":
-      return <OwnerGroup activeUser={activeUser} />;
+      return (
+        <OwnerGroup activeUser={activeUser} activeFilters={activeFilters} />
+      );
   }
 }

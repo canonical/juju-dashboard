@@ -1,4 +1,5 @@
 import { createSelector } from "reselect";
+import cloneDeep from "clone-deep";
 import {
   getModelStatusGroupData,
   extractOwnerName,
@@ -382,6 +383,31 @@ export const getActiveUserTag = state =>
 export const getModelStatus = modelUUID => {
   return createSelector(getModelData, modelData =>
     getModelDataByUUID(modelUUID, modelData)
+  );
+};
+
+const filterModelData = (activeFilters, modelData) => {
+  let modelDataClone = cloneDeep(modelData);
+  // Pull out the models
+  const models = modelDataClone.juju.modelData;
+  // Loop the models and delete models not matching the filter
+  Object.entries(models).forEach(([key, instance]) => {
+    if (
+      activeFilters === "cloud: google" &&
+      instance.model.cloudTag !== "cloud-google"
+    ) {
+      delete modelDataClone.juju.modelData[key];
+    }
+  });
+  console.log("Y U NO RETURN?");
+  return modelDataClone;
+};
+
+export const getFilteredStatusData = activeFilters => {
+  return createSelector(
+    getModelData,
+    modelData => filterModelData(activeFilters, modelData),
+    filteredModelData => groupModelsByStatus(filteredModelData)
   );
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
@@ -8,7 +8,7 @@ import {
   extractOwnerName
 } from "app/utils";
 
-import { getGroupedModelDataByStatus } from "app/selectors";
+import { getFilteredStatusData } from "app/selectors";
 
 import {
   generateControllerUUID,
@@ -149,13 +149,18 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
   return modelData;
 }
 
-export default function StatusGroup({ activeUser }) {
-  const groupedModelDataByStatus = useSelector(getGroupedModelDataByStatus);
+export default function StatusGroup({ activeUser, activeFilters }) {
+  const getFilteredStatusDataMemo = getFilteredStatusData(activeFilters);
+
+  const filteredStatusData = useSelector(getFilteredStatusDataMemo);
+
+  console.log(filteredStatusData);
+
   const {
     blockedRows,
     alertRows,
     runningRows
-  } = generateModelTableDataByStatus(groupedModelDataByStatus, activeUser);
+  } = generateModelTableDataByStatus(filteredStatusData, activeUser);
 
   return (
     <div className="status-group">

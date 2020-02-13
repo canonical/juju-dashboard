@@ -20,6 +20,8 @@ export default function Models() {
   const history = useHistory();
   const location = useLocation();
   const queryStrings = queryString.parse(location.search);
+  const queryParamsActiveFilters = queryStrings.activeFilters;
+
   // If it doesn't exist, fall back to grouping by status
   const groupedByFilter = queryStrings.groupedby || "status";
 
@@ -64,7 +66,10 @@ export default function Models() {
       </Header>
       <div className="l-content">
         <div className="models">
-          <ModelTableList groupedBy={groupModelsBy} />
+          <ModelTableList
+            groupedBy={groupModelsBy}
+            activeFilters={queryParamsActiveFilters}
+          />
         </div>
       </div>
     </Layout>
