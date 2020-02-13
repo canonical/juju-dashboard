@@ -18,7 +18,11 @@ const FilterTags = () => {
   const location = useLocation();
 
   const queryParams = queryString.parse(location.search);
-  const queryParamsActiveFilters = queryParams.activeFilters;
+  let queryParamsActiveFilters = queryParams.activeFilters;
+
+  if (typeof queryParamsActiveFilters === "string") {
+    queryParamsActiveFilters = queryParamsActiveFilters.split();
+  }
 
   const [filterPanelVisibility, setFilterPanelVisibility] = useState(false);
   const [activeFilters, setActiveFilters] = useState(
