@@ -4,13 +4,15 @@ import { useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { getModelData } from "app/selectors";
 import queryString from "query-string";
-import ReactGA from "react-ga";
+
 import {
   extractCloudName,
   extractOwnerName,
   extractCredentialName,
   pluralize
 } from "app/utils";
+
+import useSendAnalytics from "app/send-analytics-hook";
 
 import "./_filter-tags.scss";
 
@@ -30,11 +32,13 @@ const FilterTags = () => {
   const filters = {};
   const modelData = useSelector(getModelData);
 
+  const sendAnalytics = useSendAnalytics();
+
   /**
-  Check if filter exists and adds to array if not
-  @param {string} string The type of filter
-  @param {string} value The name of the filter
-*/
+    Check if filter exists and adds to array if not
+    @param {string} string The type of filter
+    @param {string} value The name of the filter
+  */
   const addFilter = function(type, value) {
     filters[type] = filters[type] || [];
     if (!filters[type].includes(value)) {
@@ -148,7 +152,7 @@ const FilterTags = () => {
         className="p-filter-tags__input"
         onClick={() => {
           setFilterPanelVisibility(true);
-          ReactGA.event({
+          sendAnalytics({
             category: "User",
             action: "Opened filter panel"
           });
