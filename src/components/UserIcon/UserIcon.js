@@ -47,12 +47,11 @@ export default function User() {
   const getState = useStore().getState;
 
   useEffect(() => {
-    if (userPanelVisibility) {
+    if (userPanelVisibility)
       ReactGA.event({
         category: "User",
         action: "Opened user panel"
       });
-    }
   }, [userPanelVisibility]);
 
   return (
