@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import ReactGA from "react-ga";
 
 // Components
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
@@ -12,6 +13,10 @@ import NotFound from "pages/NotFound/NotFound";
 const baseURL = process.env.REACT_APP_BASE_APP_URL;
 
 function App() {
+  if (process.env.NODE_ENV === "production") {
+    ReactGA.initialize("UA-1018242-68");
+    ReactGA.pageview(window.location.href.replace(window.location.origin, ""));
+  }
   return (
     <Router basename={baseURL}>
       <ErrorBoundary>

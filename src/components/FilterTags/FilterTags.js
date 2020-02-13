@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { getModelData } from "app/selectors";
 import queryString from "query-string";
+import ReactGA from "react-ga";
 import {
   extractCloudName,
   extractOwnerName,
@@ -145,7 +146,13 @@ const FilterTags = () => {
       <input
         type="text"
         className="p-filter-tags__input"
-        onClick={() => setFilterPanelVisibility(true)}
+        onClick={() => {
+          setFilterPanelVisibility(true);
+          ReactGA.event({
+            category: "User",
+            action: "Opened filter panel"
+          });
+        }}
         placeholder={
           activeFilters.length
             ? `Active filters: ${activeFilters.length}`

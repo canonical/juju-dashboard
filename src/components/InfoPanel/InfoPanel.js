@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import ReactGA from "react-ga";
 
 import Topology from "components/Topology/Topology";
 import Modal from "@canonical/react-components/dist/components/Modal";
@@ -53,7 +54,13 @@ const InfoPanel = () => {
           <Topology width={300} height={300} modelData={modelStatusData} />
           <i
             className="p-icon--expand"
-            onClick={() => setShowExpandedTopology(!showExpandedTopology)}
+            onClick={() => {
+              setShowExpandedTopology(!showExpandedTopology);
+              ReactGA.event({
+                category: "User",
+                action: "Opened expanded topology"
+              });
+            }}
           >
             Expand topology
           </i>
