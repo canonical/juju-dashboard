@@ -92,6 +92,7 @@ const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
   const [filterByApp, setFilterByApp] = useState("");
+  const [viewFilterToggle, setViewFilterToggle] = useState({ all: true });
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
@@ -159,7 +160,12 @@ const ModelDetails = () => {
         <div className="model-details__header">
           <strong>{modelStatusData ? modelStatusData.model.name : ""}</strong>
           <div className="model-details__filters">
-            <Filter label="View:" filters={viewFilters} />
+            <Filter
+              label="View:"
+              filters={viewFilters}
+              setViewFilterToggle={setViewFilterToggle}
+              viewFilterToggle={viewFilterToggle}
+            />
             <Filter label="Status:" filters={statusFilters} />
           </div>
           <UserIcon />
@@ -169,30 +175,42 @@ const ModelDetails = () => {
         <div className="model-details">
           <InfoPanel />
           <div className="model-details__main">
-            <MainTable
-              headers={applicationTableHeaders}
-              rows={applicationTableRows}
-              className="model-details__apps"
-              sortable
-            />
-            <MainTable
-              headers={unitTableHeaders}
-              rows={unitTableRows}
-              className="model-details__units"
-              sortable
-            />
-            <MainTable
-              headers={machineTableHeaders}
-              rows={machinesTableRows}
-              className="model-details__machines"
-              sortable
-            />
-            <MainTable
-              headers={relationTableHeaders}
-              rows={relationTableRows}
-              className="model-details__relations"
-              sortable
-            />
+            {(viewFilterToggle.all === true ||
+              viewFilterToggle.apps === true) && (
+              <MainTable
+                headers={applicationTableHeaders}
+                rows={applicationTableRows}
+                className="model-details__apps"
+                sortable
+              />
+            )}
+            {(viewFilterToggle.all === true ||
+              viewFilterToggle.units === true) && (
+              <MainTable
+                headers={unitTableHeaders}
+                rows={unitTableRows}
+                className="model-details__units"
+                sortable
+              />
+            )}
+            {(viewFilterToggle.all === true ||
+              viewFilterToggle.machines === true) && (
+              <MainTable
+                headers={machineTableHeaders}
+                rows={machinesTableRows}
+                className="model-details__machines"
+                sortable
+              />
+            )}
+            {(viewFilterToggle.all === true ||
+              viewFilterToggle.relations === true) && (
+              <MainTable
+                headers={relationTableHeaders}
+                rows={relationTableRows}
+                className="model-details__relations"
+                sortable
+              />
+            )}
           </div>
         </div>
       </div>
