@@ -194,3 +194,10 @@ export const generateIconPath = namespace => {
   }
   return `https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`;
 };
+
+export const analyticsEnabled = () => {};
+
+export const feedbackEnabled = () => {
+  const disableFeedback = localStorage.getItem("disableFeedback");
+  return disableFeedback === "false" || disableFeedback === null;
+};

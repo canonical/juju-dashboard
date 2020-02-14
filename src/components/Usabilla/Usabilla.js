@@ -1,9 +1,9 @@
 import { useEffect } from "react";
+import { feedbackEnabled } from "app/utils";
 
 export default function Usabilla() {
   useEffect(() => {
-    const disableFeedback = localStorage.getItem("disableFeedback");
-    if (disableFeedback !== "false" && disableFeedback !== null) {
+    if (!feedbackEnabled()) {
       return;
     }
     /* eslint-disable */
