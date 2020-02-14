@@ -15,7 +15,8 @@ export default function Settings() {
       <div className="l-content">
         <div className="settings__toggles">
           <Notification>
-            You will need to refresh your browser for this change to take effect
+            You will need to refresh your browser for these changes to take
+            effect
           </Notification>
           <label className="row">
             <div className="col-6">Disable Analytics</div>
@@ -29,6 +30,25 @@ export default function Settings() {
                 onChange={e => {
                   localStorage.setItem(
                     "disableAnalytics",
+                    e.currentTarget.checked
+                  );
+                }}
+              />
+              <div className="p-switch__slider"></div>
+            </div>
+          </label>
+          <label className="row">
+            <div className="col-6">Disable Feedback</div>
+            <div className="col-3">
+              <input
+                type="checkbox"
+                className="p-switch"
+                defaultChecked={
+                  localStorage.getItem("disableFeedback") === "true"
+                }
+                onChange={e => {
+                  localStorage.setItem(
+                    "disableFeedback",
                     e.currentTarget.checked
                   );
                 }}
