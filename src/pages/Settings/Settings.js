@@ -14,6 +14,9 @@ export default function Settings() {
       </Header>
       <div className="l-content">
         <div className="settings__toggles">
+          <Notification>
+            You will need to refresh your browser for this change to take effect
+          </Notification>
           <label className="row">
             <div className="col-6">Disable Analytics</div>
             <div className="col-3">
@@ -33,9 +36,6 @@ export default function Settings() {
               <div className="p-switch__slider"></div>
             </div>
           </label>
-          <Notification>
-            You will need to refresh your browser for this change to take effect
-          </Notification>
         </div>
       </div>
     </Layout>
