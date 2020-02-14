@@ -195,7 +195,13 @@ export const generateIconPath = namespace => {
   return `https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`;
 };
 
-export const analyticsEnabled = () => {};
+export const analyticsEnabled = () => {
+  const disableAnalytics = localStorage.getItem("disableAnalytics");
+  return (
+    process.env.NODE_ENV === "production" &&
+    (disableAnalytics === "false" || disableAnalytics === null)
+  );
+};
 
 export const feedbackEnabled = () => {
   const disableFeedback = localStorage.getItem("disableFeedback");

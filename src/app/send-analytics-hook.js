@@ -1,12 +1,9 @@
 import ReactGA from "react-ga";
+import { analyticsEnabled } from "app/utils";
 
 export default function useSendAnalytics() {
   return ({ path, category, action }) => {
-    const disableAnalytics = localStorage.getItem("disableAnalytics");
-    if (
-      process.env.NODE_ENV !== "production" ||
-      (disableAnalytics !== "false" && disableAnalytics !== null)
-    ) {
+    if (!analyticsEnabled()) {
       return;
     }
 
