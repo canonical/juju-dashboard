@@ -42,7 +42,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-tooltips;
 @include vf-u-align;
 @include vf-u-layout;
-
+@include vf-p-switch;
 // Fix consecutive table bug
 // https://github.com/canonical-web-and-design/vanilla-framework/issues/2491
 table + table {

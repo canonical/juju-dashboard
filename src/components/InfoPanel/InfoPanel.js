@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import ReactGA from "react-ga";
 
 import Topology from "components/Topology/Topology";
 import Modal from "@canonical/react-components/dist/components/Modal";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { extractCloudName } from "app/utils";
+import useSendAnalytics from "app/send-analytics-hook";
 
 import "./_info-panel.scss";
 
@@ -39,6 +39,8 @@ const InfoPanel = () => {
 
   const { width, height } = expandedTopologyDimensions();
 
+  const sendAnalytics = useSendAnalytics();
+
   return (
     <div className="info-panel">
       {showExpandedTopology ? (
@@ -56,7 +58,7 @@ const InfoPanel = () => {
             className="p-icon--expand"
             onClick={() => {
               setShowExpandedTopology(!showExpandedTopology);
-              ReactGA.event({
+              sendAnalytics({
                 category: "User",
                 action: "Opened expanded topology"
               });

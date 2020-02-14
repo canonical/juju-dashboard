@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useDispatch, useStore } from "react-redux";
-import ReactGA from "react-ga";
 
 import { logOut } from "app/actions";
+
+import useSendAnalytics from "app/send-analytics-hook";
 
 import "./_user-icon.scss";
 
@@ -12,6 +13,8 @@ export default function User() {
   const [userPanelVisibility, setUserPanelVisibility] = useState(false);
   const dispatch = useDispatch();
   const node = useRef();
+
+  const sendAnalytics = useSendAnalytics();
 
   useEffect(() => {
     const closePanel = () => {
@@ -47,12 +50,13 @@ export default function User() {
   const getState = useStore().getState;
 
   useEffect(() => {
-    if (userPanelVisibility)
-      ReactGA.event({
+    if (userPanelVisibility) {
+      sendAnalytics({
         category: "User",
         action: "Opened user panel"
       });
-  }, [userPanelVisibility]);
+    }
+  }, [userPanelVisibility, sendAnalytics]);
 
   return (
     <div
@@ -75,6 +79,9 @@ export default function User() {
           >
             Docs
           </a>
+          <Link className="p-contextual-menu__link" to="/settings">
+            Settings
+          </Link>
           <Link
             className="p-contextual-menu__link"
             to="/"
