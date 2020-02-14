@@ -6,6 +6,7 @@ import ReactGA from "react-ga";
 // Components
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 import Login from "components/LogIn/LogIn";
+import Usabilla from "components/Usabilla/Usabilla";
 import { Routes } from "components/Routes/Routes";
 
 // Pages
@@ -19,7 +20,7 @@ function App() {
   const disableAnalytics = localStorage.getItem("disableAnalytics");
   if (
     process.env.NODE_ENV === "production" &&
-    (disableAnalytics === undefined || disableAnalytics === "false")
+    (disableAnalytics === null || disableAnalytics === "false")
   ) {
     ReactGA.initialize("UA-1018242-68");
     ReactGA.pageview(window.location.href.replace(window.location.origin, ""));
@@ -40,6 +41,7 @@ function App() {
         <Switch>
           <Login>
             <Routes />
+            <Usabilla />
           </Login>
           <Route component={NotFound} />
         </Switch>

@@ -5,7 +5,7 @@ export default function useSendAnalytics() {
     const disableAnalytics = localStorage.getItem("disableAnalytics");
     if (
       process.env.NODE_ENV !== "production" ||
-      (disableAnalytics !== "false" && disableAnalytics !== undefined)
+      (disableAnalytics !== "false" && disableAnalytics !== null)
     ) {
       return;
     }
