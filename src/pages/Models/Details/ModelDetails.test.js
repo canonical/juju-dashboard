@@ -285,7 +285,16 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".model-details__apps").length).toBe(1);
-    // Why is the above returning 3??
+    expect(wrapper.find("MainTable").length).toBe(4);
+    wrapper.find("[data-test='apps'] button").simulate("click");
+    expect(wrapper.find("MainTable").length).toBe(1);
+    expect(wrapper.find("table.model-details__apps").length).toBe(1);
+    wrapper.find("[data-test='apps'] button").simulate("click");
+    expect(wrapper.find("MainTable").length).toBe(4);
+    wrapper.find("[data-test='machines'] button").simulate("click");
+    expect(wrapper.find("table.model-details__machines").length).toBe(1);
+    wrapper.find("[data-test='relations'] button").simulate("click");
+    expect(wrapper.find("table.model-details__relations").length).toBe(1);
+    expect(wrapper.find("MainTable").length).toBe(2);
   });
 });
