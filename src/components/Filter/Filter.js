@@ -20,7 +20,6 @@ const Filter = ({ label, filters, setViewFilterToggle, viewFilterToggle }) => {
 
       // If user unselected all specific view filters, return to 'all' default
       const isFalse = currentValue => currentValue === false;
-      console.log(Object.values(tempViewFilterToggle).every(isFalse));
       if (Object.values(tempViewFilterToggle).every(isFalse)) {
         tempViewFilterToggle["all"] = true;
       }
