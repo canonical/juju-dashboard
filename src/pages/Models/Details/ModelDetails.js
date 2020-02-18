@@ -92,7 +92,9 @@ const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
   const [filterByApp, setFilterByApp] = useState("");
+
   const [viewFilterToggle, setViewFilterToggle] = useState({ all: true });
+  const [statusFilterToggle, setStatusFilterToggle] = useState({ all: true });
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
@@ -163,10 +165,15 @@ const ModelDetails = () => {
             <Filter
               label="View:"
               filters={viewFilters}
-              setViewFilterToggle={setViewFilterToggle}
-              viewFilterToggle={viewFilterToggle}
+              setFilterToggle={setViewFilterToggle}
+              filterToggle={viewFilterToggle}
             />
-            <Filter label="Status:" filters={statusFilters} />
+            <Filter
+              label="Status:"
+              filters={statusFilters}
+              setFilterToggle={setStatusFilterToggle}
+              filterToggle={statusFilterToggle}
+            />
           </div>
           <UserIcon />
         </div>

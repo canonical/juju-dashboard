@@ -4,9 +4,9 @@ import classNames from "classnames";
 
 import "./_filter.scss";
 
-const Filter = ({ label, filters, setViewFilterToggle, viewFilterToggle }) => {
+const Filter = ({ label, filters, setFilterToggle, filterToggle }) => {
   const handleViewFilterClick = filter => {
-    setViewFilterToggle(viewFilterToggle => {
+    setFilterToggle(viewFilterToggle => {
       const tempViewFilterToggle = { ...viewFilterToggle };
       tempViewFilterToggle[filter] = !tempViewFilterToggle[filter];
       if (filter !== "all") {
@@ -34,7 +34,7 @@ const Filter = ({ label, filters, setViewFilterToggle, viewFilterToggle }) => {
         data-test={filter}
         className={classNames("p-filter__item", {
           "is-selected":
-            viewFilterToggle && viewFilterToggle[filter] ? "is-selected" : null
+            filterToggle && filterToggle[filter] ? "is-selected" : null
         })}
       >
         <Button onClick={() => handleViewFilterClick(filter)}>{filter}</Button>
