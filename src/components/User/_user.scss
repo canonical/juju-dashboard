@@ -1,0 +1,56 @@
+@import "../../scss/settings";
+@import "vanilla-framework/scss/vanilla";
+
+.user {
+  @include vf-animation(all, brisk, ease-in-out);
+
+  background-color: $color-navigation-dark;
+  bottom: 0;
+  color: $color-light;
+  max-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  position: absolute;
+  width: 100%;
+
+  &.is-expanded {
+    max-height: 120px;
+  }
+
+  &__header {
+    cursor: pointer;
+    display: flex;
+
+    [class^="p-icon"] {
+      position: relative;
+      top: 0.25rem;
+    }
+
+    .p-icon--contextual-menu {
+      transform: rotate(180deg);
+
+      @at-root {
+        .is-expanded .p-icon--contextual-menu {
+          transform: none;
+        }
+      }
+    }
+  }
+
+  &__name {
+    display: inline-block;
+    flex-grow: 1;
+    padding: 0 1rem;
+  }
+
+  &__options {
+    margin: 1rem 0;
+    padding: 0;
+  }
+
+  &__link {
+    &,
+    &:visited {
+      color: $color-light;
+    }
+  }
+}
