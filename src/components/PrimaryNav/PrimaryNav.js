@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
 
-import User from "components/User/User";
+import UserMenu from "components/UserMenu/UserMenu";
 
 // Image imports
 import logoMark from "static/images/logo/logo-mark.svg";
@@ -178,7 +178,7 @@ const PrimaryNav = () => {
           </li>
         </ul>
       </div>
-      <User />
+      <UserMenu />
     </nav>
   );
 };
