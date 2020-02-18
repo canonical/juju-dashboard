@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User Icon renders without crashing and matches snapshot 1`] = `
+<div
+  className="user"
+>
+  <div
+    className="user__header"
+    onClick={[Function]}
+  >
+    <i
+      className="p-icon--user"
+    />
+    <span
+      className="user__name"
+    >
+      Account
+    </span>
+    <i
+      className="p-icon--contextual-menu"
+    />
+  </div>
+  <ul
+    className="user__options"
+  >
+    <li>
+      <Link
+        className="user__link"
+        to="/settings"
+      >
+        <LinkAnchor
+          className="user__link"
+          href="/settings"
+          navigate={[Function]}
+        >
+          <a
+            className="user__link"
+            href="/settings"
+            onClick={[Function]}
+          >
+            Settings
+          </a>
+        </LinkAnchor>
+      </Link>
+    </li>
+    <li>
+      <Link
+        className="user__link"
+        onClick={[Function]}
+        to="/"
+      >
+        <LinkAnchor
+          className="user__link"
+          href="/"
+          navigate={[Function]}
+          onClick={[Function]}
+        >
+          <a
+            className="user__link"
+            href="/"
+            onClick={[Function]}
+          >
+            Log out
+          </a>
+        </LinkAnchor>
+      </Link>
+    </li>
+  </ul>
+</div>
+`;
