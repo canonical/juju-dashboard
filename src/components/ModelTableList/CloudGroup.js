@@ -6,7 +6,7 @@ import {
   getModelStatusGroupData,
   extractOwnerName
 } from "app/utils";
-import { getGroupedModelDataByCloud } from "app/selectors";
+import { getGroupedByCloudAndFilteredModelData } from "app/selectors";
 import {
   generateControllerUUID,
   generateModelDetailsLink,
@@ -53,9 +53,12 @@ function generateCloudTableHeaders(cloud, count) {
   ];
 }
 
-export default function CloudGroup({ activeUser }) {
-  const groupedModelDataByCloud = useSelector(getGroupedModelDataByCloud);
-  const cloudRows = generateModelTableDataByCloud(groupedModelDataByCloud);
+export default function CloudGroup({ activeUser, filters }) {
+  const groupedAndFilteredData = useSelector(
+    getGroupedByCloudAndFilteredModelData(filters)
+  );
+
+  const cloudRows = generateModelTableDataByCloud(groupedAndFilteredData);
   let cloudTables = [];
   let cloudModels = {};
   for (const cloud in cloudRows) {
