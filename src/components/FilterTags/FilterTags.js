@@ -186,7 +186,7 @@ const FilterTags = () => {
             activeFilters.length > 0 &&
             activeFilters.map(activeFilter => (
               <span className="p-filter-tags__active-filter" key={activeFilter}>
-                {activeFilter}
+                {activeFilter.replace(":", ": ")}
                 <i
                   className="p-icon--close"
                   onClick={() => removeActiveFilter(activeFilter)}
@@ -210,12 +210,10 @@ const FilterTags = () => {
                   {filters[filterBy].map(filter => (
                     <li key={filter} className="p-filter-panel__item">
                       <button
-                        onClick={() =>
-                          addActiveFilter(`${filterBy}: ${filter}`)
-                        }
+                        onClick={() => addActiveFilter(`${filterBy}:${filter}`)}
                         className={classNames("p-filter-panel__button", {
                           "is-selected": activeFilters.includes(
-                            `${filterBy}: ${filter}`
+                            `${filterBy}:${filter}`
                           )
                         })}
                         type="button"
