@@ -26,13 +26,13 @@
     }
 
     .p-icon--contextual-menu {
-      transform: rotate(180deg);
-
       @at-root {
         .is-expanded .p-icon--contextual-menu {
           transform: none;
         }
       }
+
+      transform: rotate(180deg);
     }
   }
 
