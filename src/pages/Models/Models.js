@@ -69,7 +69,7 @@ export default function Models() {
       </Header>
       <div className="l-content">
         <div className="models">
-          <ModelTableList groupedBy={groupModelsBy} />
+          <ModelTableList groupedBy={groupModelsBy} filters={activeFilters} />
         </div>
       </div>
     </Layout>

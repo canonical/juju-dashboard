@@ -8,7 +8,7 @@ import {
   extractOwnerName
 } from "app/utils";
 
-import { getGroupedModelDataByStatus } from "app/selectors";
+import { getGroupedByStatusAndFilteredModelData } from "app/selectors";
 
 import {
   generateControllerUUID,
@@ -149,13 +149,16 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
   return modelData;
 }
 
-export default function StatusGroup({ activeUser }) {
-  const groupedModelDataByStatus = useSelector(getGroupedModelDataByStatus);
+export default function StatusGroup({ activeUser, filters }) {
+  const groupedAndFilteredData = useSelector(
+    getGroupedByStatusAndFilteredModelData(filters)
+  );
+
   const {
     blockedRows,
     alertRows,
     runningRows
-  } = generateModelTableDataByStatus(groupedModelDataByStatus, activeUser);
+  } = generateModelTableDataByStatus(groupedAndFilteredData, activeUser);
 
   return (
     <div className="status-group">
