@@ -13,6 +13,15 @@
     margin-right: 0.25rem;
   }
 
+  &__item {
+    &.is-selected {
+      .p-button--filter {
+        background-color: $color-mid-x-light;
+        border: solid 1px $color-mid-light;
+      }
+    }
+  }
+
   & + & {
     padding-left: 1rem;
   }

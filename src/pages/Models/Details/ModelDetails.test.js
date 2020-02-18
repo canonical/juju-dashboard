@@ -271,4 +271,30 @@ describe("ModelDetail Container", () => {
         .text()
     ).toBe("resourcemanager:juju-info");
   });
+
+  it("view filters hide and show tables", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/models/spaceman@external/hadoopspark"]}
+        >
+          <TestRoute path="/models/*">
+            <ModelDetails />
+          </TestRoute>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find("MainTable").length).toBe(4);
+    wrapper.find("[data-test='apps'] button").simulate("click");
+    expect(wrapper.find("MainTable").length).toBe(1);
+    expect(wrapper.find("table.model-details__apps").length).toBe(1);
+    wrapper.find("[data-test='apps'] button").simulate("click");
+    expect(wrapper.find("MainTable").length).toBe(4);
+    wrapper.find("[data-test='machines'] button").simulate("click");
+    expect(wrapper.find("table.model-details__machines").length).toBe(1);
+    wrapper.find("[data-test='relations'] button").simulate("click");
+    expect(wrapper.find("table.model-details__relations").length).toBe(1);
+    expect(wrapper.find("MainTable").length).toBe(2);
+  });
 });
