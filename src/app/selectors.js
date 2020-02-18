@@ -1,4 +1,5 @@
 import { createSelector } from "reselect";
+import cloneDeep from "clone-deep";
 import {
   getModelStatusGroupData,
   extractOwnerName,
@@ -307,6 +308,51 @@ const countModelStatusGroups = groupedModelStatuses => {
   return counts;
 };
 
+/**
+  Uses the supplied filters object to filter down the supplied modelData and
+  returns the filtered object.
+  @param {Object} filters The filters to filter by in the format:
+    {segment: [values]}
+  @param {Object} modelData The model data from the redux store.
+  @returns {Object} The filtered model data.
+*/
+const filterModelData = (filters, modelData) => {
+  if (!filters) {
+    return modelData;
+  }
+  const filterSegments = {};
+  // Collect segments
+  filters.forEach(filter => {
+    const values = filter.split(":");
+    if (!filterSegments[values[0]]) {
+      filterSegments[values[0]] = [];
+    }
+    filterSegments[values[0]].push(values[1]);
+  });
+
+  const clonedModelData = cloneDeep(modelData);
+
+  Object.entries(clonedModelData).forEach(([uuid, data]) => {
+    const remove = Object.entries(filterSegments).some(([segment, values]) => {
+      switch (segment) {
+        case "cloud":
+          return !values.includes(data.model.cloudTag.replace("cloud-", ""));
+        case "credential":
+          break;
+        case "region":
+          break;
+        case "owner":
+          break;
+      }
+      return false;
+    });
+    if (remove) {
+      delete clonedModelData[uuid];
+    }
+  });
+  return clonedModelData;
+};
+
 // ----- Exported functions
 
 /**
@@ -384,6 +430,18 @@ export const getModelStatus = modelUUID => {
     getModelDataByUUID(modelUUID, modelData)
   );
 };
+
+/**
+  Returns the model data filtered and grouped by status.
+  @param {Object} filters The filters to filter the model data by.
+  @returns {Object} The filtered and grouped model data.
+*/
+export const getGroupedByStatusAndFilteredModelData = filters =>
+  createSelector(getModelData, modelData => {
+    const filtered = filterModelData(filters, modelData);
+    const grouped = groupModelsByStatus(filtered);
+    return grouped;
+  });
 
 /**
   Returns the model statuses sorted by status.
