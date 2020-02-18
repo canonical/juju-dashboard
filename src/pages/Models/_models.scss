@@ -12,10 +12,11 @@
   &__header {
     align-items: center;
     display: grid;
-    grid-template-columns: 1fr 280px 3rem;
+    grid-template-columns: 1fr 280px;
+    padding-right: 1rem;
 
     @media (min-width: 1200px) {
-      grid-template-columns: 1fr 1fr 260px 3rem;
+      grid-template-columns: 1fr 1fr 260px;
     }
   }
 

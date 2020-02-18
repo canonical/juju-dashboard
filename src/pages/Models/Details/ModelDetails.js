@@ -9,7 +9,6 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Terminal from "components/Terminal/Terminal";
 import Header from "components/Header/Header";
-import UserIcon from "components/UserIcon/UserIcon";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
@@ -175,7 +174,6 @@ const ModelDetails = () => {
               filterToggle={statusFilterToggle}
             />
           </div>
-          <UserIcon />
         </div>
       </Header>
       <div className="l-content">

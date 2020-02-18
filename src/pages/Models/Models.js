@@ -8,7 +8,6 @@ import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import ModelGroupToggle from "components/ModelGroupToggle/ModelGroupToggle";
 import FilterTags from "components/FilterTags/FilterTags";
-import UserIcon from "components/UserIcon/UserIcon";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
 import { pluralize } from "app/utils";
@@ -59,7 +58,6 @@ export default function Models() {
             groupedBy={groupModelsBy}
           />
           <FilterTags />
-          <UserIcon />
         </div>
       </Header>
       <div className="l-content">
