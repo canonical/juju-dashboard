@@ -62,7 +62,7 @@
   &__header {
     align-items: center;
     display: grid;
-    grid-template-columns: 0.5fr 3fr 3rem;
+    grid-template-columns: 0.5fr 3fr;
     padding-left: 1rem;
   }
 
@@ -73,6 +73,7 @@
   &__filters {
     display: flex;
     margin-left: auto;
+    padding-right: 1rem;
   }
 
   &__user {
