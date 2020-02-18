@@ -74,6 +74,18 @@ export const getPingerIntervalId = state => {
 // ---- Utility selectors
 
 /**
+  Returns a selector for the filtered model data.
+  @param {Object} filters The filters to filter the model data by.
+  @returns {Object} A selector for the filtered model data.
+*/
+const getFilteredModelData = filters =>
+  createSelector(getModelData, modelData =>
+    filterModelData(filters, modelData)
+  );
+
+// ---- Utility functions
+
+/**
   Pull the users macaroon credentials from state.
   @param {Object} state The application state.
   @returns {Object} The macaroons extracted from the bakery in state.
@@ -447,11 +459,15 @@ export const getModelStatus = modelUUID => {
   @returns {Object} The filtered and grouped model data.
 */
 export const getGroupedByStatusAndFilteredModelData = filters =>
-  createSelector(getModelData, modelData => {
-    const filtered = filterModelData(filters, modelData);
-    const grouped = groupModelsByStatus(filtered);
-    return grouped;
-  });
+  createSelector(getFilteredModelData(filters), groupModelsByStatus);
+
+/**
+  Returns the model data filtered and grouped by cloud.
+  @param {Object} filters The filters to filter the model data by.
+  @returns {Object} The filtered and grouped model data.
+*/
+export const getGroupedByCloudAndFilteredModelData = filters =>
+  createSelector(getFilteredModelData(filters), groupModelsByCloud);
 
 /**
   Returns the model statuses sorted by status.
@@ -497,16 +513,6 @@ export const getGroupedApplicationsDataByStatus = createSelector(
 export const getGroupedModelDataByOwner = createSelector(
   getModelData,
   groupModelsByOwner
-);
-
-/**
-  Returns the model statuses sorted by cloud.
-  @returns {Function} The memoized selector to return the models
-    grouped by cloud.
-*/
-export const getGroupedModelDataByCloud = createSelector(
-  getModelData,
-  groupModelsByCloud
 );
 
 /**
