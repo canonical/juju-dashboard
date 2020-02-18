@@ -470,6 +470,14 @@ export const getGroupedByCloudAndFilteredModelData = filters =>
   createSelector(getFilteredModelData(filters), groupModelsByCloud);
 
 /**
+  Returns the model data filtered and grouped by owner.
+  @param {Object} filters The filters to filter the model data by.
+  @returns {Object} The filtered and grouped model data.
+*/
+export const getGroupedByOwnerAndFilteredModelData = filters =>
+  createSelector(getFilteredModelData(filters), groupModelsByOwner);
+
+/**
   Returns the model statuses sorted by status.
   @returns {Function} The memoized selector to return the sorted model statuses.
 */
@@ -503,16 +511,6 @@ export const getGroupedUnitsDataByStatus = createSelector(
 export const getGroupedApplicationsDataByStatus = createSelector(
   getModelData,
   groupApplicationsByStatus
-);
-
-/**
-  Returns the model statuses sorted by owner.
-  @returns {Function} The memoized selector to return the models
-    grouped by owner.
-*/
-export const getGroupedModelDataByOwner = createSelector(
-  getModelData,
-  groupModelsByOwner
 );
 
 /**

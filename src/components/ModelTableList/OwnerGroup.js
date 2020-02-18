@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { generateStatusElement, getModelStatusGroupData } from "app/utils";
-import { getGroupedModelDataByOwner } from "app/selectors";
+import { getGroupedByOwnerAndFilteredModelData } from "app/selectors";
 import {
   generateControllerUUID,
   generateModelDetailsLink,
@@ -48,9 +48,11 @@ function generateOwnerTableHeaders(owner, count) {
   ];
 }
 
-export default function OwnerGroup({ activeUser }) {
-  const groupedModelDataByOwner = useSelector(getGroupedModelDataByOwner);
-  const ownerRows = generateModelTableDataByOwner(groupedModelDataByOwner);
+export default function OwnerGroup({ activeUser, filters }) {
+  const groupedAndFilteredData = useSelector(
+    getGroupedByOwnerAndFilteredModelData(filters)
+  );
+  const ownerRows = generateModelTableDataByOwner(groupedAndFilteredData);
   let ownerTables = [];
   let ownerModels = {};
   for (const owner in ownerRows) {
