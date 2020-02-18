@@ -7,8 +7,8 @@
   background-color: $color-navigation-dark;
   bottom: 0;
   color: $color-light;
-  max-height: 2.5rem;
-  padding: 0.5rem 1rem;
+  max-height: 3rem;
+  padding: 0.5rem 0;
   position: absolute;
   width: 100%;
 
@@ -19,6 +19,7 @@
   &__header {
     cursor: pointer;
     display: flex;
+    padding: 0 1rem;
 
     [class^="p-icon"] {
       position: relative;
@@ -48,9 +49,16 @@
   }
 
   &__link {
+    display: block;
+    padding: 0.25rem 1rem;
+
     &,
     &:visited {
       color: $color-light;
+    }
+
+    &:hover {
+      background-color: $color-navigation-highlight;
     }
   }
 }
