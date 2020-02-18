@@ -1,7 +1,7 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 
-.user {
+.user-menu {
   @include vf-animation(all, brisk, ease-in-out);
 
   background-color: $color-navigation-dark;

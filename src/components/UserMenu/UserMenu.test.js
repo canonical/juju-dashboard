@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { mount } from "enzyme";
 import dataDump from "testing/complete-redux-store-dump";
 
-import User from "./User";
+import UserMenu from "./UserMenu";
 
 const mockStore = configureStore([]);
 describe("User Icon", () => {
@@ -14,11 +14,11 @@ describe("User Icon", () => {
     const wrapper = mount(
       <Provider store={store}>
         <Router>
-          <User />
+          <UserMenu />
         </Router>
       </Provider>
     );
-    expect(wrapper.find(".user")).toMatchSnapshot();
+    expect(wrapper.find(".user-menu")).toMatchSnapshot();
   });
 
   it("toggles drop-down panel", () => {
@@ -26,13 +26,13 @@ describe("User Icon", () => {
     const wrapper = mount(
       <Provider store={store}>
         <Router>
-          <User />
+          <UserMenu />
         </Router>
       </Provider>
     );
 
-    const user = ".user";
-    const userOptionsToggle = ".user__header";
+    const user = ".user-menu";
+    const userOptionsToggle = ".user-menu__header";
 
     expect(wrapper.find(user).hasClass("is-expanded")).toEqual(false);
     wrapper.find(userOptionsToggle).simulate("click");

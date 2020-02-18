@@ -2,17 +2,17 @@
 
 exports[`User Icon renders without crashing and matches snapshot 1`] = `
 <div
-  className="user"
+  className="user-menu"
 >
   <div
-    className="user__header"
+    className="user-menu__header"
     onClick={[Function]}
   >
     <i
       className="p-icon--user"
     />
     <span
-      className="user__name"
+      className="user-menu__name"
     >
       Account
     </span>
@@ -21,20 +21,20 @@ exports[`User Icon renders without crashing and matches snapshot 1`] = `
     />
   </div>
   <ul
-    className="user__options"
+    className="user-menu__options"
   >
     <li>
       <Link
-        className="user__link"
+        className="user-menu__link"
         to="/settings"
       >
         <LinkAnchor
-          className="user__link"
+          className="user-menu__link"
           href="/settings"
           navigate={[Function]}
         >
           <a
-            className="user__link"
+            className="user-menu__link"
             href="/settings"
             onClick={[Function]}
           >
@@ -45,18 +45,18 @@ exports[`User Icon renders without crashing and matches snapshot 1`] = `
     </li>
     <li>
       <Link
-        className="user__link"
+        className="user-menu__link"
         onClick={[Function]}
         to="/"
       >
         <LinkAnchor
-          className="user__link"
+          className="user-menu__link"
           href="/"
           navigate={[Function]}
           onClick={[Function]}
         >
           <a
-            className="user__link"
+            className="user-menu__link"
             href="/"
             onClick={[Function]}
           >
