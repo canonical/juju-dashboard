@@ -338,10 +338,20 @@ const filterModelData = (filters, modelData) => {
         case "cloud":
           return !values.includes(data.model.cloudTag.replace("cloud-", ""));
         case "credential":
+          if (data.info) {
+            return !values.includes(
+              data.info.cloudCredentialTag.split("@")[1].split("_")[1]
+            );
+          }
           break;
         case "region":
-          break;
+          return !values.includes(data.model.region);
         case "owner":
+          if (data.info) {
+            return !values.includes(
+              data.info.ownerTag.split("@")[0].replace("user-", "")
+            );
+          }
           break;
       }
       return false;
