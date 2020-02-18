@@ -18,7 +18,14 @@ export default function Models() {
   // Grab filter from 'groupedby' query in URL and assign to variable
   const history = useHistory();
   const location = useLocation();
-  const queryStrings = queryString.parse(location.search);
+  const queryStrings = queryString.parse(location.search, {
+    arrayFormat: "comma"
+  });
+  let activeFilters = queryStrings.activeFilters;
+  if (typeof activeFilters === "string") {
+    // Maintain a consistent type returned from the parsing of the querystring.
+    activeFilters = [activeFilters];
+  }
   // If it doesn't exist, fall back to grouping by status
   const groupedByFilter = queryStrings.groupedby || "status";
 

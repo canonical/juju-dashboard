@@ -20,9 +20,14 @@ const FilterTags = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const queryParams = queryString.parse(location.search);
-  const queryParamsActiveFilters = queryParams.activeFilters;
-
+  const queryParams = queryString.parse(location.search, {
+    arrayFormat: "comma"
+  });
+  let queryParamsActiveFilters = queryParams.activeFilters;
+  if (typeof queryParamsActiveFilters === "string") {
+    // Maintain a consistent type returned from the parsing of the querystring.
+    queryParamsActiveFilters = [queryParamsActiveFilters];
+  }
   const [filterPanelVisibility, setFilterPanelVisibility] = useState(false);
   const [activeFilters, setActiveFilters] = useState(
     queryParamsActiveFilters || []
@@ -108,7 +113,9 @@ const FilterTags = () => {
     const queryParams = queryString.parse(location.search);
     queryParams.activeFilters = activeFilters;
     history.push({
-      search: queryString.stringify(queryParams)
+      search: queryString.stringify(queryParams, {
+        arrayFormat: "comma"
+      })
     });
   }, [activeFilters, history, location.search]);
 
