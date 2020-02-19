@@ -47,4 +47,16 @@ describe("OwnerGroup", () => {
     expect(tables.get(3).props.rows.length).toEqual(3);
     expect(tables.get(4).props.rows.length).toEqual(2);
   });
+
+  it("fetches filtered data if filters supplied", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <OwnerGroup filters={["cloud:aws"]} />
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(wrapper.find("tbody TableRow").length).toBe(2);
+  });
 });

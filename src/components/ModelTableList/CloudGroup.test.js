@@ -44,4 +44,18 @@ describe("CloudGroup", () => {
     expect(tables.get(0).props.rows.length).toEqual(15);
     expect(tables.get(1).props.rows.length).toEqual(2);
   });
+
+  it("fetches filtered data if filters supplied", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <CloudGroup filters={["cloud:aws"]} />
+        </Provider>
+      </MemoryRouter>
+    );
+    const tables = wrapper.find("MainTable");
+    expect(tables.length).toBe(1);
+    expect(tables.get(0).props.rows.length).toBe(2);
+  });
 });
