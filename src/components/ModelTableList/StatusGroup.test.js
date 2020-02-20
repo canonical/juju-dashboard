@@ -48,4 +48,16 @@ describe("StatusGroup", () => {
     expect(tables.get(1).props.rows.length).toEqual(4);
     expect(tables.get(2).props.rows.length).toEqual(7);
   });
+
+  it("fetches filtered data if filters supplied", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <StatusGroup filters={["cloud:aws"]} />
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(wrapper.find("tbody TableRow").length).toBe(2);
+  });
 });

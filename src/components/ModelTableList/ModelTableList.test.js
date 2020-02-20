@@ -26,33 +26,50 @@ describe("ModelTableList", () => {
     expect(wrapper.find("OwnerGroup").length).toBe(0);
   });
 
-  it("displays all data from redux store when grouping by status", () => {
+  it("displays all data from redux store when grouping by...", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ModelTableList groupedBy="status" />
-        </Provider>
-      </MemoryRouter>
-    );
-    const statusGroup = wrapper.find("StatusGroup");
-    expect(statusGroup.length).toBe(1);
-    expect(statusGroup.prop("activeUser")).toBe("user-activedev@external");
-    expect(wrapper.find("OwnerGroup").length).toBe(0);
+    const user = "user-activedev@external";
+    const tables = [
+      ["status", "StatusGroup"],
+      ["owner", "OwnerGroup"],
+      ["cloud", "CloudGroup"]
+    ];
+    tables.forEach(table => {
+      const wrapper = mount(
+        <MemoryRouter>
+          <Provider store={store}>
+            <ModelTableList groupedBy={table[0]} />
+          </Provider>
+        </MemoryRouter>
+      );
+      const Group = wrapper.find(table[1]);
+      expect(Group.length).toBe(1);
+      expect(Group.prop("activeUser")).toBe(user);
+      tables.forEach(otherTable => {
+        if (otherTable[0] !== table[0]) {
+          expect(wrapper.find(otherTable[1]).length).toBe(0);
+        }
+      });
+    });
   });
 
-  it("displays all data from redux store when grouping by owner", () => {
+  it("passes the filters to the group components", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ModelTableList groupedBy="owner" />
-        </Provider>
-      </MemoryRouter>
-    );
-    const ownerGroup = wrapper.find("OwnerGroup");
-    expect(ownerGroup.length).toBe(1);
-    expect(ownerGroup.prop("activeUser")).toBe("user-activedev@external");
-    expect(wrapper.find("StatusGroup").length).toBe(0);
+    const tables = [
+      { groupedBy: "status", component: "StatusGroup" },
+      { groupedBy: "status", component: "StatusGroup" },
+      { groupedBy: "status", component: "StatusGroup" }
+    ];
+    const filters = ["cloud:aws"];
+    tables.forEach(table => {
+      const wrapper = mount(
+        <MemoryRouter>
+          <Provider store={store}>
+            <ModelTableList groupedBy={table.groupedBy} filters={filters} />
+          </Provider>
+        </MemoryRouter>
+      );
+      expect(wrapper.find(table.component).prop("filters")).toBe(filters);
+    });
   });
 });

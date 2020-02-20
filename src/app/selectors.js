@@ -1,11 +1,13 @@
 import { createSelector } from "reselect";
+import cloneDeep from "clone-deep";
 import {
   getModelStatusGroupData,
   extractOwnerName,
   extractCloudName,
   getApplicationStatusGroup,
   getMachineStatusGroup,
-  getUnitStatusGroup
+  getUnitStatusGroup,
+  extractCredentialName
 } from "./utils";
 
 // ---- Selectors for top level keys
@@ -71,6 +73,18 @@ export const getPingerIntervalId = state => {
 };
 
 // ---- Utility selectors
+
+/**
+  Returns a selector for the filtered model data.
+  @param {Object} filters The filters to filter the model data by.
+  @returns {Object} A selector for the filtered model data.
+*/
+const getFilteredModelData = filters =>
+  createSelector(getModelData, modelData =>
+    filterModelData(filters, modelData)
+  );
+
+// ---- Utility functions
 
 /**
   Pull the users macaroon credentials from state.
@@ -307,6 +321,59 @@ const countModelStatusGroups = groupedModelStatuses => {
   return counts;
 };
 
+/**
+  Uses the supplied filters object to filter down the supplied modelData and
+  returns the filtered object.
+  @param {Object} filters The filters to filter by in the format:
+    {segment: [values]}
+  @param {Object} modelData The model data from the redux store.
+  @returns {Object} The filtered model data.
+*/
+const filterModelData = (filters, modelData) => {
+  if (!filters) {
+    return modelData;
+  }
+  const filterSegments = {};
+  // Collect segments
+  filters.forEach(filter => {
+    const values = filter.split(":");
+    if (!filterSegments[values[0]]) {
+      filterSegments[values[0]] = [];
+    }
+    filterSegments[values[0]].push(values[1]);
+  });
+
+  const clonedModelData = cloneDeep(modelData);
+
+  Object.entries(clonedModelData).forEach(([uuid, data]) => {
+    const remove = Object.entries(filterSegments).some(([segment, values]) => {
+      switch (segment) {
+        case "cloud":
+          return !values.includes(extractCloudName(data.model.cloudTag));
+        case "credential":
+          if (data.info) {
+            return !values.includes(
+              extractCredentialName(data.info.cloudCredentialTag)
+            );
+          }
+          break;
+        case "region":
+          return !values.includes(data.model.region);
+        case "owner":
+          if (data.info) {
+            return !values.includes(extractOwnerName(data.info.ownerTag));
+          }
+          break;
+      }
+      return false;
+    });
+    if (remove) {
+      delete clonedModelData[uuid];
+    }
+  });
+  return clonedModelData;
+};
+
 // ----- Exported functions
 
 /**
@@ -386,6 +453,30 @@ export const getModelStatus = modelUUID => {
 };
 
 /**
+  Returns the model data filtered and grouped by status.
+  @param {Object} filters The filters to filter the model data by.
+  @returns {Object} The filtered and grouped model data.
+*/
+export const getGroupedByStatusAndFilteredModelData = filters =>
+  createSelector(getFilteredModelData(filters), groupModelsByStatus);
+
+/**
+  Returns the model data filtered and grouped by cloud.
+  @param {Object} filters The filters to filter the model data by.
+  @returns {Object} The filtered and grouped model data.
+*/
+export const getGroupedByCloudAndFilteredModelData = filters =>
+  createSelector(getFilteredModelData(filters), groupModelsByCloud);
+
+/**
+  Returns the model data filtered and grouped by owner.
+  @param {Object} filters The filters to filter the model data by.
+  @returns {Object} The filtered and grouped model data.
+*/
+export const getGroupedByOwnerAndFilteredModelData = filters =>
+  createSelector(getFilteredModelData(filters), groupModelsByOwner);
+
+/**
   Returns the model statuses sorted by status.
   @returns {Function} The memoized selector to return the sorted model statuses.
 */
@@ -419,26 +510,6 @@ export const getGroupedUnitsDataByStatus = createSelector(
 export const getGroupedApplicationsDataByStatus = createSelector(
   getModelData,
   groupApplicationsByStatus
-);
-
-/**
-  Returns the model statuses sorted by owner.
-  @returns {Function} The memoized selector to return the models
-    grouped by owner.
-*/
-export const getGroupedModelDataByOwner = createSelector(
-  getModelData,
-  groupModelsByOwner
-);
-
-/**
-  Returns the model statuses sorted by cloud.
-  @returns {Function} The memoized selector to return the models
-    grouped by cloud.
-*/
-export const getGroupedModelDataByCloud = createSelector(
-  getModelData,
-  groupModelsByCloud
 );
 
 /**

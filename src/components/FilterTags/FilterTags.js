@@ -20,9 +20,14 @@ const FilterTags = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const queryParams = queryString.parse(location.search);
-  const queryParamsActiveFilters = queryParams.activeFilters;
-
+  const queryParams = queryString.parse(location.search, {
+    arrayFormat: "comma"
+  });
+  let queryParamsActiveFilters = queryParams.activeFilters;
+  if (typeof queryParamsActiveFilters === "string") {
+    // Maintain a consistent type returned from the parsing of the querystring.
+    queryParamsActiveFilters = [queryParamsActiveFilters];
+  }
   const [filterPanelVisibility, setFilterPanelVisibility] = useState(false);
   const [activeFilters, setActiveFilters] = useState(
     queryParamsActiveFilters || []
@@ -108,7 +113,9 @@ const FilterTags = () => {
     const queryParams = queryString.parse(location.search);
     queryParams.activeFilters = activeFilters;
     history.push({
-      search: queryString.stringify(queryParams)
+      search: queryString.stringify(queryParams, {
+        arrayFormat: "comma"
+      })
     });
   }, [activeFilters, history, location.search]);
 
@@ -179,7 +186,7 @@ const FilterTags = () => {
             activeFilters.length > 0 &&
             activeFilters.map(activeFilter => (
               <span className="p-filter-tags__active-filter" key={activeFilter}>
-                {activeFilter}
+                {activeFilter.replace(":", ": ")}
                 <i
                   className="p-icon--close"
                   onClick={() => removeActiveFilter(activeFilter)}
@@ -203,12 +210,10 @@ const FilterTags = () => {
                   {filters[filterBy].map(filter => (
                     <li key={filter} className="p-filter-panel__item">
                       <button
-                        onClick={() =>
-                          addActiveFilter(`${filterBy}: ${filter}`)
-                        }
+                        onClick={() => addActiveFilter(`${filterBy}:${filter}`)}
                         className={classNames("p-filter-panel__button", {
                           "is-selected": activeFilters.includes(
-                            `${filterBy}: ${filter}`
+                            `${filterBy}:${filter}`
                           )
                         })}
                         type="button"

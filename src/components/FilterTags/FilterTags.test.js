@@ -152,7 +152,7 @@ describe("Filter pills", () => {
       .at(0)
       .simulate("click");
     const searchParams = new URLSearchParams(history.location.search);
-    expect(searchParams.get("activeFilters")).toEqual("cloud: google");
+    expect(searchParams.get("activeFilters")).toEqual("cloud:google");
     wrapper
       .find(selectedActiveFilterClose)
       .at(0)
@@ -183,13 +183,13 @@ describe("Filter pills", () => {
       .at(1)
       .simulate("click");
     expect(history.location.search).toEqual(
-      "?activeFilters=cloud%3A%20google&activeFilters=cloud%3A%20aws"
+      "?activeFilters=cloud%3Agoogle,cloud%3Aaws"
     );
     wrapper
       .find(selectedActiveFilterClose)
       .at(0)
       .simulate("click");
-    expect(history.location.search).toEqual("?activeFilters=cloud%3A%20aws");
+    expect(history.location.search).toEqual("?activeFilters=cloud%3Aaws");
     wrapper
       .find(selectedActiveFilterClose)
       .at(0)
