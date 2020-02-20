@@ -6,7 +6,8 @@ import {
   extractCloudName,
   getApplicationStatusGroup,
   getMachineStatusGroup,
-  getUnitStatusGroup
+  getUnitStatusGroup,
+  extractCredentialName
 } from "./utils";
 
 // ---- Selectors for top level keys
@@ -348,11 +349,11 @@ const filterModelData = (filters, modelData) => {
     const remove = Object.entries(filterSegments).some(([segment, values]) => {
       switch (segment) {
         case "cloud":
-          return !values.includes(data.model.cloudTag.replace("cloud-", ""));
+          return !values.includes(extractCloudName(data.model.cloudTag));
         case "credential":
           if (data.info) {
             return !values.includes(
-              data.info.cloudCredentialTag.split("@")[1].split("_")[1]
+              extractCredentialName(data.info.cloudCredentialTag)
             );
           }
           break;
@@ -360,9 +361,7 @@ const filterModelData = (filters, modelData) => {
           return !values.includes(data.model.region);
         case "owner":
           if (data.info) {
-            return !values.includes(
-              data.info.ownerTag.split("@")[0].replace("user-", "")
-            );
+            return !values.includes(extractOwnerName(data.info.ownerTag));
           }
           break;
       }
