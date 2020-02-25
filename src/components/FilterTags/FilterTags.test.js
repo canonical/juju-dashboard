@@ -11,7 +11,7 @@ import dataDump from "../../testing/complete-redux-store-dump";
 const mockStore = configureStore([]);
 
 describe("FilterTags", () => {
-  it("displays the filter panel when input clicked", () => {
+  it("displays the filter panel when button clicked", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <MemoryRouter>
@@ -20,10 +20,10 @@ describe("FilterTags", () => {
         </Provider>
       </MemoryRouter>
     );
-    const input = ".p-filter-tags__input";
+    const button = ".p-filter-tags .p-button";
     const panel = ".p-filter-panel";
     expect(wrapper.find(panel).hasClass("is-visible")).toEqual(false);
-    wrapper.find(input).simulate("click");
+    wrapper.find(button).simulate("click");
     expect(wrapper.find(panel).hasClass("is-visible")).toEqual(true);
   });
 
