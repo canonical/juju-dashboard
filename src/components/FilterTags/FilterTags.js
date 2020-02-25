@@ -79,7 +79,6 @@ const FilterTags = () => {
   useEffect(() => {
     const closePanel = () => {
       setFilterPanelVisibility(false);
-      document.querySelector(".p-filter-tags__input").blur();
     };
 
     const mouseDown = e => {
@@ -154,9 +153,8 @@ const FilterTags = () => {
 
   return (
     <div className="p-filter-tags" ref={node}>
-      <input
-        type="text"
-        className="p-filter-tags__input"
+      <button
+        className="p-button has-icon"
         onClick={() => {
           setFilterPanelVisibility(true);
           sendAnalytics({
@@ -164,13 +162,14 @@ const FilterTags = () => {
             action: "Opened filter panel"
           });
         }}
-        placeholder={
-          activeFilters.length
+      >
+        <span className="p-filter-tags__active-count">
+          {activeFilters.length
             ? `Active filters: ${activeFilters.length}`
-            : "Filter models"
-        }
-      />
-
+            : "Filter models"}
+        </span>
+        <i className="p-icon--contextual-menu"></i>
+      </button>
       <div
         className={classNames("p-card--highlighted p-filter-panel", {
           "is-visible": filterPanelVisibility

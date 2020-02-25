@@ -5,26 +5,11 @@
   padding: 0.5rem;
   position: relative;
 
-  // Increased specificity needed here due to:
-  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/254
-  .p-filter-tags__input {
-    appearance: textfield;
-    background-color: $color-x-light;
-    border: 1px solid $color-mid-dark;
-    border-radius: 0.125rem;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
-    font-size: 0.875rem;
-    font-weight: 300;
-    // height required to hide overflow
-    // value is height of default text input
-    height: 33px;
-    line-height: 1.5rem;
+  .p-button {
+    display: flex;
     margin: 0;
-    min-width: 10em;
-    overflow: hidden;
-    padding: 0.25rem 0.5rem;
-    vertical-align: baseline;
-    width: 100%;
+    padding: 0.15rem 0.5rem;
+    width: 100% !important;
   }
 
   &__active-filter {
@@ -51,11 +36,15 @@
   }
 
   &__active-count {
-    background: $color-x-light;
-    color: $color-information;
-    position: absolute;
-    right: 1.5rem;
-    top: 0.75rem;
+    flex-grow: 1;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+
+  .p-icon--contextual-menu {
+    margin: 0 !important;
+    position: relative;
+    top: 0.25rem;
   }
 }
 
