@@ -40,4 +40,17 @@ describe("User Icon", () => {
     wrapper.find(userOptionsToggle).simulate("click");
     expect(wrapper.find(user).hasClass("is-expanded")).toEqual(false);
   });
+
+  it("displays current logged in user", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router>
+          <UserMenu />
+        </Router>
+      </Provider>
+    );
+    const username = ".user-menu__name";
+    expect(wrapper.find(username).text()).toEqual("activedev");
+  });
 });
