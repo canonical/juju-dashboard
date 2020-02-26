@@ -438,8 +438,7 @@ export const isConnecting = state => !!state.root.visitURL;
   @returns {String} The users userTag.
 */
 export const getActiveUserTag = state =>
-  state.root.controllerConnection &&
-  state.root.controllerConnection.info.user.identity;
+  state?.root?.controllerConnection?.info.user.identity;
 
 /**
   Returns a model status for the supplied modelUUID.
