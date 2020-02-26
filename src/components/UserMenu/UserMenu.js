@@ -33,36 +33,34 @@ const UserMenu = () => {
         "is-expanded": isExpanded
       })}
     >
-      {activeUser && (
-        <>
-          <div
-            className="user-menu__header"
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
-            <i className="p-icon--user"></i>
-            <span className="user-menu__name">
-              {extractOwnerName(activeUser)}
-            </span>
-            <i className="p-icon--contextual-menu"></i>
-          </div>
-          <ul className="user-menu__options">
-            <li>
-              <Link className="user-menu__link" to="/settings">
-                Settings
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="user-menu__link"
-                to="/"
-                onClick={() => dispatch(logOut(getState))}
-              >
-                Log out
-              </Link>
-            </li>
-          </ul>
-        </>
-      )}
+      <>
+        <div
+          className="user-menu__header"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <i className="p-icon--user"></i>
+          <span className="user-menu__name">
+            {activeUser ? extractOwnerName(activeUser) : ""}
+          </span>
+          <i className="p-icon--contextual-menu"></i>
+        </div>
+        <ul className="user-menu__options">
+          <li>
+            <Link className="user-menu__link" to="/settings">
+              Settings
+            </Link>
+          </li>
+          <li>
+            <Link
+              className="user-menu__link"
+              to="/"
+              onClick={() => dispatch(logOut(getState))}
+            >
+              Log out
+            </Link>
+          </li>
+        </ul>
+      </>
     </div>
   );
 };
