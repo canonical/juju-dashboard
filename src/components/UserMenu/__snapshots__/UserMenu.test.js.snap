@@ -14,7 +14,7 @@ exports[`User Icon renders without crashing and matches snapshot 1`] = `
     <span
       className="user-menu__name"
     >
-      Account
+      activedev
     </span>
     <i
       className="p-icon--contextual-menu"
