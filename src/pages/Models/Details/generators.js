@@ -65,9 +65,14 @@ export function generateEntityLink(namespace, name, subordinate) {
     <>
       {subordinate && <span className="subordinate"></span>}
       {namespace && generateIconImg(name, namespace)}
-      <a data-test="app-link" href={`https://www.jaas.ai/${charmStorePath}`}>
-        {name}
-      </a>
+      {/* Ensure app is not a local charm */}
+      {namespace.includes("cs:") ? (
+        <a data-test="app-link" href={`https://www.jaas.ai/${charmStorePath}`}>
+          {name}
+        </a>
+      ) : (
+        { name }
+      )}
     </>
   );
 }
