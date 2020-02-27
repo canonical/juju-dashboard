@@ -152,14 +152,17 @@ const FilterTags = () => {
   };
 
   return (
-    <div className="p-filter-tags" ref={node}>
+    <span className="p-contextual-menu" ref={node}>
       <button
-        className="p-button has-icon"
+        className="p-contextual-menu__toggle is-dense"
+        aria-controls="filter-tags"
+        aria-expanded="false"
+        aria-haspopup="true"
         onClick={() => {
-          setFilterPanelVisibility(true);
+          setFilterPanelVisibility(!filterPanelVisibility);
           sendAnalytics({
             category: "User",
-            action: "Opened filter panel"
+            action: "Toggled filter panel"
           });
         }}
       >
@@ -168,66 +171,89 @@ const FilterTags = () => {
             ? `Active filters: ${activeFilters.length}`
             : "Filter models"}
         </span>
-        <i className="p-icon--contextual-menu"></i>
+        <i
+          className={classNames("p-icon--contextual-menu", {
+            "is-active": filterPanelVisibility
+          })}
+        ></i>
       </button>
-      <div
-        className={classNames("p-card--highlighted p-filter-panel", {
+      <span
+        className={classNames("p-contextual-menu__dropdown p-filter-panel", {
           "is-visible": filterPanelVisibility
         })}
+        id="filter-tags"
+        aria-hidden="true"
+        aria-label="submenu"
       >
-        {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
-        <div className="p-filter-panel__section" data-test="selected">
-          {Object.entries(filters).length > 0 && (
-            <h4 className="p-filter-panel__heading">Selected</h4>
-          )}
-          {Array.isArray(activeFilters) &&
-            Object.entries(filters).length > 0 &&
-            activeFilters.length > 0 &&
-            activeFilters.map(activeFilter => (
-              <span className="p-filter-tags__active-filter" key={activeFilter}>
-                {activeFilter.replace(":", ": ")}
-                <i
-                  className="p-icon--close"
-                  onClick={() => removeActiveFilter(activeFilter)}
+        <span className="p-contextual-menu__group">
+          {Object.entries(filters).length <= 0 && <p>Loading filters...</p>}
+          <div className="p-filter-panel__section" data-test="selected">
+            {Object.entries(filters).length > 0 && (
+              <h4 className="p-contextual-menu__dropdown__heading">Selected</h4>
+            )}
+            {Array.isArray(activeFilters) &&
+              Object.entries(filters).length > 0 &&
+              activeFilters.length > 0 &&
+              activeFilters.map(activeFilter => (
+                <span
+                  className="p-filter-tags__active-filter"
+                  key={activeFilter}
                 >
-                  Remove
-                </i>
-              </span>
-            ))}
-        </div>
-        {Object.keys(filters).map(filterBy => {
-          return (
-            filters[filterBy].length > 0 && (
-              <div key={filterBy} className="p-filter-panel__section">
-                <h4 className="p-filter-panel__heading">
-                  {pluralize(filters[filterBy].length, filterBy)}
-                </h4>
-                <ul
-                  className="p-list p-filter-panel__list"
-                  data-test={filterBy}
+                  {activeFilter.replace(":", ": ")}
+                  <i
+                    className="p-icon--close"
+                    onClick={() => removeActiveFilter(activeFilter)}
+                  >
+                    Remove
+                  </i>
+                </span>
+              ))}
+          </div>
+          {Object.keys(filters).map(filterBy => {
+            return (
+              filters[filterBy].length > 0 && (
+                <div
+                  key={filterBy}
+                  className="p-contextual-menu__dropdown__section"
                 >
-                  {filters[filterBy].map(filter => (
-                    <li key={filter} className="p-filter-panel__item">
-                      <button
-                        onClick={() => addActiveFilter(`${filterBy}:${filter}`)}
-                        className={classNames("p-filter-panel__button", {
-                          "is-selected": activeFilters.includes(
-                            `${filterBy}:${filter}`
-                          )
-                        })}
-                        type="button"
+                  <h4 className="p-contextual-menu__dropdown__heading">
+                    {pluralize(filters[filterBy].length, filterBy)}
+                  </h4>
+                  <ul
+                    className="p-list p-contextual-menu__dropdown__list"
+                    data-test={filterBy}
+                  >
+                    {filters[filterBy].map(filter => (
+                      <li
+                        key={filter}
+                        className="p-contextual-menu__dropdown__item"
                       >
-                        {filter}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )
-          );
-        })}
-      </div>
-    </div>
+                        <button
+                          onClick={() =>
+                            addActiveFilter(`${filterBy}:${filter}`)
+                          }
+                          className={classNames(
+                            "p-contextual-menu__dropdown__button",
+                            {
+                              "is-selected": activeFilters.includes(
+                                `${filterBy}:${filter}`
+                              )
+                            }
+                          )}
+                          type="button"
+                        >
+                          {filter}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            );
+          })}
+        </span>
+      </span>
+    </span>
   );
 };
 

@@ -20,7 +20,7 @@ describe("FilterTags", () => {
         </Provider>
       </MemoryRouter>
     );
-    const button = ".p-filter-tags .p-button";
+    const button = ".p-contextual-menu__toggle";
     const panel = ".p-filter-panel";
     expect(wrapper.find(panel).hasClass("is-visible")).toEqual(false);
     wrapper.find(button).simulate("click");
@@ -69,7 +69,7 @@ describe("Filter pills", () => {
       </MemoryRouter>
     );
 
-    const firstFilterButton = ".p-filter-panel__button";
+    const firstFilterButton = ".p-contextual-menu__dropdown__button";
     expect(
       wrapper
         .find(firstFilterButton)
@@ -98,7 +98,7 @@ describe("Filter pills", () => {
       </MemoryRouter>
     );
     const selectedSection = "[data-test='selected']";
-    const firstFilterButton = ".p-filter-panel__button";
+    const firstFilterButton = ".p-contextual-menu__dropdown__button";
     const selectedActiveFilter = ".p-filter-tags__active-filter";
     wrapper
       .find(firstFilterButton)
@@ -117,7 +117,7 @@ describe("Filter pills", () => {
         </Provider>
       </MemoryRouter>
     );
-    const firstFilterButton = ".p-filter-panel__button";
+    const firstFilterButton = ".p-contextual-menu__dropdown__button";
     const selectedActiveFilter = ".p-filter-tags__active-filter";
     const selectedActiveFilterClose =
       ".p-filter-tags__active-filter .p-icon--close";
@@ -144,7 +144,7 @@ describe("Filter pills", () => {
         </Router>
       </Provider>
     );
-    const filterButton = ".p-filter-panel__button";
+    const filterButton = ".p-contextual-menu__dropdown__button";
     const selectedActiveFilterClose =
       ".p-filter-tags__active-filter .p-icon--close";
     wrapper
@@ -171,7 +171,7 @@ describe("Filter pills", () => {
         </Router>
       </Provider>
     );
-    const filterButton = ".p-filter-panel__button";
+    const filterButton = ".p-contextual-menu__dropdown__button";
     const selectedActiveFilterClose =
       ".p-filter-tags__active-filter .p-icon--close";
     wrapper
