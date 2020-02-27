@@ -1,5 +1,6 @@
 import React from "react";
 import classnames from "classnames";
+import { URL } from "@canonical/jaaslib/lib/urls";
 
 import {
   generateStatusElement,
@@ -56,12 +57,17 @@ export function generateIconImg(name, namespace) {
   );
 }
 
-export function generateEntityLink(namespace, href, name, subordinate) {
+export function generateEntityLink(namespace, name, subordinate) {
+  const charmStorePath = URL.fromAnyString(namespace)
+    .toString()
+    .replace("cs:", "");
   return (
     <>
       {subordinate && <span className="subordinate"></span>}
       {namespace && generateIconImg(name, namespace)}
-      <a href={href}>{name}</a>
+      <a data-test="app-link" href={`https://www.jaas.ai/${charmStorePath}`}>
+        {name}
+      </a>
     </>
   );
 }
@@ -82,7 +88,7 @@ export function generateApplicationRows(
     return {
       columns: [
         {
-          content: generateEntityLink(app.charm || "", "#", key),
+          content: generateEntityLink(app.charm || "", key),
           className: "u-display--flex"
         },
         {
@@ -122,7 +128,6 @@ export function generateUnitRows(modelStatusData, filterByApp) {
               applications[applicationName].charm
                 ? applications[applicationName].charm
                 : "",
-              "#",
               unitId
             ),
             className: "u-display--flex"
@@ -158,7 +163,7 @@ export function generateUnitRows(modelStatusData, filterByApp) {
           unitRows.push({
             columns: [
               {
-                content: generateEntityLink(subordinate.charm, "#", key, true),
+                content: generateEntityLink(subordinate.charm, key, true),
                 className: "u-display--flex"
               },
               {

@@ -297,4 +297,25 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find("table.model-details__relations").length).toBe(1);
     expect(wrapper.find("MainTable").length).toBe(2);
   });
+
+  it("app names link to charm store pages", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/models/spaceman@external/hadoopspark"]}
+        >
+          <TestRoute path="/models/*">
+            <ModelDetails />
+          </TestRoute>
+        </MemoryRouter>
+      </Provider>
+    );
+    const appsFirstRowLink = wrapper
+      .find(".model-details__apps tr [data-test='app-link']")
+      .at(1);
+    expect(appsFirstRowLink.prop("href")).toEqual(
+      "https://www.jaas.ai/u/activedev/failtester/precise/7"
+    );
+  });
 });
