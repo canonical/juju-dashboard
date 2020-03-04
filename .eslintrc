@@ -25,6 +25,7 @@
     "window": true,
     "document": true,
     "localStorage": true,
-    "windowLocation": true
+    "windowLocation": true,
+    "jaasDashboardConfig": true
   }
 }
