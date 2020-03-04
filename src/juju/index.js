@@ -7,7 +7,7 @@ import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 
-import { getBakery, isLoggedIn } from "app/selectors";
+import { getBakery, isLoggedIn, getUserPass } from "app/selectors";
 import {
   updateControllerList,
   updateModelInfo,
@@ -41,22 +41,38 @@ function generateConnectionOptions(usePinger = false, bakery, onClose) {
   };
 }
 
+function determineLoginParams(credentials) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { identityProviderAvailable } = useConfig();
+  let loginParams = {};
+  if (!identityProviderAvailable) {
+    loginParams = {
+      user: `user-${credentials.user}`,
+      password: credentials.password
+    };
+  }
+  return loginParams;
+}
+
 /**
   Connects to the controller at the url defined in the baseControllerURL
   configuration value.
+  @param {Object|null} credentials The users credentials in the format
+    {user: ..., password: ...}
   @param {Object} bakery A bakery instance.
   @returns {Object}
     conn The controller connection instance.
     juju The juju api instance.
 */
-export async function loginWithBakery(bakery) {
+export async function loginWithBakery(credentials, bakery) {
   const juju = await jujulib.connect(
     wsControllerURL,
     generateConnectionOptions(true, bakery, e =>
       console.log("controller closed", e)
     )
   );
-  const conn = await juju.login({});
+  const loginParams = determineLoginParams(credentials);
+  const conn = await juju.login(loginParams);
   // Ping to keep the connection alive.
   const intervalId = setInterval(() => {
     conn.facades.pinger.ping();
@@ -69,15 +85,23 @@ export async function loginWithBakery(bakery) {
   Connects and logs in to the supplied modelURL. If the connection takes longer
   than the allowed timeout it gives up.
   @param {String} modelURL The fully qualified url of the model api.
+  @param {Object|Null} credentials The users credentials in the format
+    {user: ..., password: ...}
   @param {Object} options The options for the connection.
   @param {Number} duration The timeout in ms for the connection. Defaults to 5s
   @returns {Object} The full model status.
 */
-async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
+async function connectAndLoginWithTimeout(
+  modelURL,
+  credentials,
+  options,
+  duration = 5000
+) {
   const timeout = new Promise((resolve, reject) => {
     setTimeout(resolve, duration, "timeout");
   });
-  const juju = jujulib.connectAndLogin(modelURL, {}, options);
+  const loginParams = determineLoginParams(credentials);
+  const juju = jujulib.connectAndLogin(modelURL, loginParams, options);
   return new Promise((resolve, reject) => {
     Promise.race([timeout, juju]).then(resp => {
       if (resp === "timeout") {
@@ -105,8 +129,10 @@ async function fetchModelStatus(modelUUID, getState) {
   // between requests.
   if (isLoggedIn(getState())) {
     try {
+      const credentials = getUserPass(getState());
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
+        credentials,
         generateConnectionOptions(false, bakery)
       );
       if (isLoggedIn(getState())) {
