@@ -177,10 +177,13 @@ export const extractCloudName = tag => {
   @returns {string} The simplified cloud string
 */
 export const extractCredentialName = tag => {
-  return tag
-    .split("cloudcred-")[1]
-    .split("@")[1]
-    .split("_")[1];
+  // @ is not there in local boostraps
+  // cloudcred-localhost_admin_localhost
+  let cred = tag.split("cloudcred-")[1];
+  if (cred.indexOf("@") > -1) {
+    return cred.split("@")[1].split("_")[1];
+  }
+  return cred.split("_")[1];
 };
 
 /**
