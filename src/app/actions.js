@@ -4,6 +4,8 @@ import {
   getPingerIntervalId
 } from "app/selectors";
 
+import connectAndListModels from "app/model-poller";
+
 import { clearModelData } from "juju/actions";
 
 // Action labels
@@ -99,6 +101,17 @@ export function logOut(getState) {
     clearInterval(pingerIntervalId);
     dispatch(clearBakeryIdentity());
     dispatch(clearModelData());
+  };
+}
+
+/**
+  Trigger the connection and polling of models.
+  @param {Object} reduxStore The reduxStore.
+  @param {Object} bakery The bakery.
+*/
+export function connectAndStartPolling(reduxStore, bakery) {
+  return async function connectAndStartPolling(dispatch) {
+    connectAndListModels(reduxStore, bakery);
   };
 }
 

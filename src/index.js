@@ -5,12 +5,16 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
-
 import App from "components/App/App";
 import checkAuth from "app/check-auth";
 import rootReducer from "app/root";
-import { storeBakery, storeVisitURL } from "app/actions";
-import connectAndListModels from "app/model-poller";
+import {
+  connectAndStartPolling,
+  storeBakery,
+  storeVisitURL
+} from "app/actions";
+
+import useConfig from "app/use-config-hook";
 
 import jujuReducers from "juju/reducers";
 
@@ -35,7 +39,11 @@ const bakery = new Bakery({
 });
 reduxStore.dispatch(storeBakery(bakery));
 
-connectAndListModels(reduxStore, bakery);
+if (useConfig().identityProviderAvailable) {
+  // If an identity provider is available then try and connect automatically
+  // If not then wait for the login UI to trigger this
+  reduxStore.dispatch(connectAndStartPolling(reduxStore, bakery));
+}
 
 const rootElement = document.getElementById("root");
 
