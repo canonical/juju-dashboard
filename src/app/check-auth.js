@@ -6,6 +6,7 @@ import { isLoggedIn } from "app/selectors";
 
 const actionWhitelist = [
   "STORE_BAKERY",
+  "STORE_USER_PASS",
   "UPDATE_CONTROLLER_CONNECTION",
   "UPDATE_JUJU_API_INSTANCE",
   "UPDATE_PINGER_INTERVAL_ID",
@@ -17,7 +18,7 @@ const actionWhitelist = [
 
 // When updating this list be sure to update the mangle.reserved list in
 // craco.config.js so that the name doesn't get mangled by CRA.
-const thunkWhitelist = ["logOut"];
+const thunkWhitelist = ["connectAndStartPolling", "logOut"];
 
 function error(name) {
   console.log("unable to perform action:", name, "user not authenticated");

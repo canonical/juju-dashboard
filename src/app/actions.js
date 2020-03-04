@@ -11,6 +11,7 @@ export const actionsList = {
   collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR",
   logOut: "LOG_OUT",
   storeBakery: "STORE_BAKERY",
+  storeUserPass: "STORE_USER_PASS",
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
   updateJujuAPIInstance: "UPDATE_JUJU_API_INSTANCE",
@@ -27,6 +28,17 @@ export function storeBakery(bakery) {
   return {
     type: actionsList.storeBakery,
     payload: bakery
+  };
+}
+
+/**
+  @param {Object} credentials The users credentials in the format
+    {user: ..., password: ...}
+*/
+export function storeUserPass(credentials) {
+  return {
+    type: actionsList.storeUserPass,
+    payload: credentials
   };
 }
 

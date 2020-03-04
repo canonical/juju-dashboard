@@ -49,6 +49,18 @@ export const getBakery = state => {
 };
 
 /**
+  Fetches the username and password from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The username and password or null if none found.
+*/
+export const getUserPass = state => {
+  if (state.root && state.root.credentials) {
+    return state.root.credentials;
+  }
+  return null;
+};
+
+/**
   Fetches the juju api instance from state.
   @param {Object} state The application state.
   @returns {Object|Null} The juju api instance or null if none found.
