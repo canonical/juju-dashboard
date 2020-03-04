@@ -1,6 +1,7 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { isLoggedIn } from "app/selectors";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector, useStore } from "react-redux";
+import { isLoggedIn, getBakery } from "app/selectors";
+import { connectAndStartPolling, storeUserPass } from "app/actions";
 
 import Loader from "@canonical/react-components/dist/components/Loader";
 
@@ -50,19 +51,36 @@ function IdentityProviderForm() {
 }
 
 function UserPassForm() {
+  const dispatch = useDispatch();
+  const store = useStore();
+  const bakery = useSelector(getBakery);
+  const focus = useRef();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const elements = e.currentTarget.elements;
+    const user = elements.username.value;
+    const password = elements.password.value;
+    dispatch(storeUserPass({ user, password }));
+    dispatch(connectAndStartPolling(store, bakery));
+  }
+
+  useEffect(() => {
+    focus.current.focus();
+  }, []);
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <label htmlFor="username">Username</label>
-      <input type="text" id="username" />
+      <input type="text" name="username" id="username" ref={focus} />
       <label htmlFor="password">Password</label>
-      <input type="password" id="password" />
+      <input type="password" name="password" id="password" />
       <button className="p-button--positive" type="submit">
         Log in
       </button>
     </form>
   );
 }
-
 
 function Button({ visitURL }) {
   if (visitURL) {
