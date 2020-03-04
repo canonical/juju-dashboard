@@ -12,10 +12,10 @@ import { Routes } from "components/Routes/Routes";
 import NotFound from "pages/NotFound/NotFound";
 
 import useSendAnalytics from "app/send-analytics-hook";
-
-const baseURL = process.env.REACT_APP_BASE_APP_URL;
+import useConfig from "app/use-config-hook";
 
 function App() {
+  const baseURL = useConfig().baseAppURL;
   const disableAnalytics = localStorage.getItem("disableAnalytics");
   if (
     process.env.NODE_ENV === "production" &&
