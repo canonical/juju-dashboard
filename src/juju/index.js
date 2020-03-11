@@ -14,8 +14,10 @@ import {
   updateModelStatus
 } from "./actions";
 
+import useConfig from "../app/use-config-hook";
+
 // Full URL path to the controller.
-const controllerBaseURL = process.env.REACT_APP_BASE_CONTROLLER_URL;
+const controllerBaseURL = useConfig().baseControllerURL;
 const wsControllerURL = `wss://${controllerBaseURL}/api`;
 const httpControllerURL = `https://${controllerBaseURL}/v2`;
 /**
@@ -40,8 +42,8 @@ function generateConnectionOptions(usePinger = false, bakery, onClose) {
 }
 
 /**
-  Connects to the controller at the url defined in the REACT_APP_CONTROLLER_URL
-  environment variable.
+  Connects to the controller at the url defined in the baseControllerURL
+  configuration value.
   @param {Object} bakery A bakery instance.
   @returns {Object}
     conn The controller connection instance.
