@@ -104,8 +104,19 @@
         .version {
           color: $color-light;
           font-size: 0.875rem;
-          padding-left: 3.25rem;
+          padding-left: 1.25rem;
           padding-top: 0.5rem;
+        }
+      }
+    }
+
+    @at-root {
+      .is-collapsed {
+        .p-primary-nav__bottom {
+          @include vf-animation(opacity, brisk, ease-in-out);
+
+          opacity: 0;
+          pointer-events: none;
         }
       }
     }
