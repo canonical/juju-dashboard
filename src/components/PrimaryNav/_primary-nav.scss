@@ -86,14 +86,15 @@
   }
 
   .p-primary-nav__bottom {
-    border-top: 1px solid #666;
+    border-top: 1px solid $color-mid-dark;
     margin-top: 0;
     padding-top: 1rem;
 
     .p-list {
       &__item {
-        color: #fff;
+        color: $color-x-light;
         display: flex;
+        font-size: 0.875rem;
 
         .p-label--new {
           margin-left: auto;
@@ -104,7 +105,7 @@
         .version {
           color: $color-light;
           font-size: 0.875rem;
-          padding-left: 1.25rem;
+          padding-left: 1rem;
           padding-top: 0.5rem;
         }
       }
