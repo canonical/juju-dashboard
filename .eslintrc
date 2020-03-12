@@ -26,6 +26,7 @@
     "document": true,
     "localStorage": true,
     "windowLocation": true,
-    "jaasDashboardConfig": true
+    "jaasDashboardConfig": true,
+    "lightningjs": true
   }
 }
