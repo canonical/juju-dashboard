@@ -195,18 +195,16 @@ const FilterTags = () => {
               Object.entries(filters).length > 0 &&
               activeFilters.length > 0 &&
               activeFilters.map(activeFilter => (
-                <span
+                <button
                   className="p-filter-tags__active-filter"
+                  onClick={() => removeActiveFilter(activeFilter)}
                   key={activeFilter}
                 >
                   {activeFilter.replace(":", ": ")}
-                  <i
-                    className="p-icon--close"
-                    onClick={() => removeActiveFilter(activeFilter)}
-                  >
+                  <i className="p-icon--close" href="#_">
                     Remove
                   </i>
-                </span>
+                </button>
               ))}
           </div>
           {Object.keys(filters).map(filterBy => {
