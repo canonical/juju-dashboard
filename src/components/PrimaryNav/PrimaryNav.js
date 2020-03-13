@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
@@ -45,6 +45,11 @@ const PrimaryNav = () => {
   const [extNavOpen, setExtNavOpen] = useState(false);
   const [activeLinkValue, setActiveLinkValue] = useState("");
   const { blocked } = useSelector(getGroupedModelStatusCounts);
+  const location = useLocation();
+
+  useEffect(() => {
+    setActiveLinkValue(location.pathname);
+  }, [location.pathname]);
 
   useEffect(() => {
     // Inject the the Usabilla script.
@@ -146,7 +151,6 @@ const PrimaryNav = () => {
               className="p-list__link"
               isActive={match => {
                 if (match && match.url.includes(navItem.path)) {
-                  setActiveLinkValue(navItem.path);
                   return true;
                 }
               }}
