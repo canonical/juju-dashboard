@@ -1,18 +1,16 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
-import { isLoggedIn, getBakery } from "app/selectors";
+import { isLoggedIn, getBakery, getConfig } from "app/selectors";
 import { connectAndStartPolling, storeUserPass } from "app/actions";
 
 import Loader from "@canonical/react-components/dist/components/Loader";
 
 import logo from "static/images/logo/logo-black-on-white.svg";
 
-import useConfig from "app/use-config-hook";
-
 import "./_login.scss";
 
 export default function LogIn({ children }) {
-  const { identityProviderAvailable } = useConfig();
+  const { identityProviderAvailable } = useSelector(getConfig);
   const userIsLoggedIn = useSelector(isLoggedIn);
 
   if (!userIsLoggedIn) {
@@ -76,7 +74,7 @@ function UserPassForm() {
       <label htmlFor="password">Password</label>
       <input type="password" name="password" id="password" />
       <button className="p-button--positive" type="submit">
-        Log in
+        Log in to the dashboard
       </button>
     </form>
   );

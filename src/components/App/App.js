@@ -17,7 +17,7 @@ import useSendAnalytics from "app/send-analytics-hook";
 import { getConfig } from "app/selectors";
 
 function App() {
-  const { baseURL } = useSelector(getConfig);
+  const { baseAppURL } = useSelector(getConfig);
   const disableAnalytics = localStorage.getItem("disableAnalytics");
   if (
     process.env.NODE_ENV === "production" &&
@@ -37,7 +37,7 @@ function App() {
   });
 
   return (
-    <Router basename={baseURL} history={history}>
+    <Router basename={baseAppURL} history={history}>
       <ErrorBoundary>
         <Switch>
           <Login>
