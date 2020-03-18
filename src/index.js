@@ -11,16 +11,23 @@ import rootReducer from "app/root";
 import {
   connectAndStartPolling,
   storeBakery,
+  storeConfig,
   storeVisitURL
 } from "app/actions";
 
-import useConfig from "app/use-config-hook";
+import { getConfig } from "app/selectors";
 
 import jujuReducers from "juju/reducers";
 
 import "./scss/index.scss";
 
 import * as serviceWorker from "./serviceWorker";
+
+if (!window.jaasDashboardConfig) {
+  console.error(
+    "Configuration values not defined unable to bootstrap application"
+  );
+}
 
 const reduxStore = createStore(
   combineReducers({
@@ -31,6 +38,8 @@ const reduxStore = createStore(
   composeWithDevTools(applyMiddleware(checkAuth, thunk))
 );
 
+reduxStore.dispatch(storeConfig(window.jaasDashboardConfig));
+
 const bakery = new Bakery({
   visitPage: resp => {
     reduxStore.dispatch(storeVisitURL(resp.Info.VisitURL));
@@ -39,7 +48,7 @@ const bakery = new Bakery({
 });
 reduxStore.dispatch(storeBakery(bakery));
 
-if (useConfig().identityProviderAvailable) {
+if (getConfig(reduxStore.getState()).identityProviderAvailable) {
   // If an identity provider is available then try and connect automatically
   // If not then wait for the login UI to trigger this
   reduxStore.dispatch(connectAndStartPolling(reduxStore, bakery));

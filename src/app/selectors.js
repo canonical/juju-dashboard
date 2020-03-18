@@ -49,6 +49,18 @@ export const getBakery = state => {
 };
 
 /**
+  Fetches the application config from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The config object or null if none found.
+*/
+export const getConfig = state => {
+  if (state.root && state.root.config) {
+    return state.root.config;
+  }
+  return null;
+};
+
+/**
   Fetches the username and password from state.
   @param {Object} state The application state.
   @returns {Object|Null} The username and password or null if none found.
@@ -532,4 +544,13 @@ export const getGroupedApplicationsDataByStatus = createSelector(
 export const getGroupedModelStatusCounts = createSelector(
   getGroupedModelDataByStatus,
   countModelStatusGroups
+);
+
+/**
+  Returns the fully qualified websocket controller API URL.
+  @returns {Function} The memoized selector to return the controller websocket api url.
+*/
+export const getWSControllerURL = createSelector(
+  getConfig,
+  config => `wss://${config.baseControllerURL}/api`
 );

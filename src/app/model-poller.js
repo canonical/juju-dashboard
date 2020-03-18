@@ -9,14 +9,24 @@ import {
   updateJujuAPIInstance,
   updatePingerIntervalId
 } from "app/actions";
-import { getUserPass, isLoggedIn } from "./selectors";
+import {
+  getConfig,
+  getUserPass,
+  getWSControllerURL,
+  isLoggedIn
+} from "./selectors";
 
 export default async function connectAndListModels(reduxStore, bakery) {
   try {
-    const credentials = getUserPass(reduxStore.getState());
+    const storeState = reduxStore.getState();
+    const credentials = getUserPass(storeState);
+    const { identityProviderAvailable } = getConfig(storeState);
+    const wsControllerURL = getWSControllerURL(storeState);
     const { conn, juju, intervalId } = await loginWithBakery(
+      wsControllerURL,
       credentials,
-      bakery
+      bakery,
+      identityProviderAvailable
     );
     reduxStore.dispatch(updateControllerConnection(conn));
     reduxStore.dispatch(updateJujuAPIInstance(juju));

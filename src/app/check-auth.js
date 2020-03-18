@@ -6,6 +6,7 @@ import { isLoggedIn } from "app/selectors";
 
 const actionWhitelist = [
   "STORE_BAKERY",
+  "STORE_CONFIG",
   "STORE_USER_PASS",
   "UPDATE_CONTROLLER_CONNECTION",
   "UPDATE_JUJU_API_INSTANCE",

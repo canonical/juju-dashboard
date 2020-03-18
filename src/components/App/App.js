@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import ReactGA from "react-ga";
@@ -12,10 +13,11 @@ import { Routes } from "components/Routes/Routes";
 import NotFound from "pages/NotFound/NotFound";
 
 import useSendAnalytics from "app/send-analytics-hook";
-import useConfig from "app/use-config-hook";
+
+import { getConfig } from "app/selectors";
 
 function App() {
-  const baseURL = useConfig().baseAppURL;
+  const { baseURL } = useSelector(getConfig);
   const disableAnalytics = localStorage.getItem("disableAnalytics");
   if (
     process.env.NODE_ENV === "production" &&
