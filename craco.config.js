@@ -56,6 +56,7 @@ module.exports = function({ env }) {
                       "ModelManagerV5",
                       "PingerV1",
                       // Thunks
+                      "connectAndStartPolling",
                       "logOut"
                     ]
                   },
