@@ -1,10 +1,21 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
+import { mount } from "enzyme";
 import App from "./App";
 
+import dataDump from "../../testing/complete-redux-store-dump";
+
+const mockStore = configureStore([]);
+
 describe("App", () => {
-  it("renders without crashing and matches snapshot", () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper).toMatchSnapshot();
+  it("properly sets up Router", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
+    expect(wrapper.find("Router").prop("basename")).toBe("/");
   });
 });

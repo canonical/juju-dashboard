@@ -49,6 +49,30 @@ export const getBakery = state => {
 };
 
 /**
+  Fetches the application config from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The config object or null if none found.
+*/
+export const getConfig = state => {
+  if (state.root && state.root.config) {
+    return state.root.config;
+  }
+  return null;
+};
+
+/**
+  Fetches the username and password from state.
+  @param {Object} state The application state.
+  @returns {Object|Null} The username and password or null if none found.
+*/
+export const getUserPass = state => {
+  if (state.root && state.root.credentials) {
+    return state.root.credentials;
+  }
+  return null;
+};
+
+/**
   Fetches the juju api instance from state.
   @param {Object} state The application state.
   @returns {Object|Null} The juju api instance or null if none found.
@@ -426,10 +450,12 @@ export const getMacaroons = createSelector(
   @param {Object} state The application state.
   @returns {Boolean} If the user is logged in.
 */
-export const isLoggedIn = state =>
-  state.root.controllerConnection &&
-  state.root.bakery &&
-  state.root.bakery.storage._store.identity;
+export const isLoggedIn = state => {
+  return (
+    state.root.controllerConnection &&
+    state.root.controllerConnection.info.user.identity
+  );
+};
 
 export const isConnecting = state => !!state.root.visitURL;
 /**
@@ -518,4 +544,13 @@ export const getGroupedApplicationsDataByStatus = createSelector(
 export const getGroupedModelStatusCounts = createSelector(
   getGroupedModelDataByStatus,
   countModelStatusGroups
+);
+
+/**
+  Returns the fully qualified websocket controller API URL.
+  @returns {Function} The memoized selector to return the controller websocket api url.
+*/
+export const getWSControllerURL = createSelector(
+  getConfig,
+  config => `wss://${config.baseControllerURL}/api`
 );

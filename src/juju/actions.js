@@ -78,7 +78,9 @@ export function fetchModelList() {
     const state = getState();
     const conn = state.root.controllerConnection;
     const modelManager = conn.facades.modelManager;
-    const models = await modelManager.listModels({ tag: conn.info.identity });
+    const models = await modelManager.listModels({
+      tag: conn.info.user.identity
+    });
     dispatch(updateModelList(models));
   };
 }

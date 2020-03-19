@@ -4,6 +4,8 @@ import {
   getPingerIntervalId
 } from "app/selectors";
 
+import connectAndListModels from "app/model-poller";
+
 import { clearModelData } from "juju/actions";
 
 // Action labels
@@ -11,6 +13,8 @@ export const actionsList = {
   collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR",
   logOut: "LOG_OUT",
   storeBakery: "STORE_BAKERY",
+  storeConfig: "STORE_CONFIG",
+  storeUserPass: "STORE_USER_PASS",
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
   updateJujuAPIInstance: "UPDATE_JUJU_API_INSTANCE",
@@ -27,6 +31,27 @@ export function storeBakery(bakery) {
   return {
     type: actionsList.storeBakery,
     payload: bakery
+  };
+}
+
+/**
+  @param {Object} config The configuration values for the application.
+*/
+export function storeConfig(config) {
+  return {
+    type: actionsList.storeConfig,
+    payload: config
+  };
+}
+
+/**
+  @param {Object} credentials The users credentials in the format
+    {user: ..., password: ...}
+*/
+export function storeUserPass(credentials) {
+  return {
+    type: actionsList.storeUserPass,
+    payload: credentials
   };
 }
 
@@ -87,6 +112,17 @@ export function logOut(getState) {
     clearInterval(pingerIntervalId);
     dispatch(clearBakeryIdentity());
     dispatch(clearModelData());
+  };
+}
+
+/**
+  Trigger the connection and polling of models.
+  @param {Object} reduxStore The reduxStore.
+  @param {Object} bakery The bakery.
+*/
+export function connectAndStartPolling(reduxStore, bakery) {
+  return async function connectAndStartPolling(dispatch) {
+    connectAndListModels(reduxStore, bakery);
   };
 }
 

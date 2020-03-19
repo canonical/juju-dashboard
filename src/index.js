@@ -5,18 +5,29 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
-
 import App from "components/App/App";
 import checkAuth from "app/check-auth";
 import rootReducer from "app/root";
-import { storeBakery, storeVisitURL } from "app/actions";
-import connectAndListModels from "app/model-poller";
+import {
+  connectAndStartPolling,
+  storeBakery,
+  storeConfig,
+  storeVisitURL
+} from "app/actions";
+
+import { getConfig } from "app/selectors";
 
 import jujuReducers from "juju/reducers";
 
 import "./scss/index.scss";
 
 import * as serviceWorker from "./serviceWorker";
+
+if (!window.jaasDashboardConfig) {
+  console.error(
+    "Configuration values not defined unable to bootstrap application"
+  );
+}
 
 const reduxStore = createStore(
   combineReducers({
@@ -27,6 +38,8 @@ const reduxStore = createStore(
   composeWithDevTools(applyMiddleware(checkAuth, thunk))
 );
 
+reduxStore.dispatch(storeConfig(window.jaasDashboardConfig));
+
 const bakery = new Bakery({
   visitPage: resp => {
     reduxStore.dispatch(storeVisitURL(resp.Info.VisitURL));
@@ -35,7 +48,11 @@ const bakery = new Bakery({
 });
 reduxStore.dispatch(storeBakery(bakery));
 
-connectAndListModels(reduxStore, bakery);
+if (getConfig(reduxStore.getState()).identityProviderAvailable) {
+  // If an identity provider is available then try and connect automatically
+  // If not then wait for the login UI to trigger this
+  reduxStore.dispatch(connectAndStartPolling(reduxStore, bakery));
+}
 
 const rootElement = document.getElementById("root");
 

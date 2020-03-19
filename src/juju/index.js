@@ -7,19 +7,19 @@ import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 
-import { getBakery, isLoggedIn } from "app/selectors";
+import {
+  getBakery,
+  getConfig,
+  getWSControllerURL,
+  isLoggedIn,
+  getUserPass
+} from "app/selectors";
 import {
   updateControllerList,
   updateModelInfo,
   updateModelStatus
 } from "./actions";
 
-import useConfig from "../app/use-config-hook";
-
-// Full URL path to the controller.
-const controllerBaseURL = useConfig().baseControllerURL;
-const wsControllerURL = `wss://${controllerBaseURL}/api`;
-const httpControllerURL = `https://${controllerBaseURL}/v2`;
 /**
   Return a common connection option config.
   @param {Boolean} usePinger If the connection will be long lived then use the
@@ -41,22 +41,46 @@ function generateConnectionOptions(usePinger = false, bakery, onClose) {
   };
 }
 
+function determineLoginParams(credentials, identityProviderAvailable) {
+  let loginParams = {};
+  if (!identityProviderAvailable) {
+    loginParams = {
+      user: `user-${credentials.user}`,
+      password: credentials.password
+    };
+  }
+  return loginParams;
+}
+
 /**
   Connects to the controller at the url defined in the baseControllerURL
   configuration value.
+  @param {String} wsControllerURL The fully qualified URL of the controller api.
+  @param {Object|null} credentials The users credentials in the format
+    {user: ..., password: ...}
   @param {Object} bakery A bakery instance.
+  @param {Boolean} identityProviderAvailable Whether an identity provider is available.
   @returns {Object}
     conn The controller connection instance.
     juju The juju api instance.
 */
-export async function loginWithBakery(bakery) {
+export async function loginWithBakery(
+  wsControllerURL,
+  credentials,
+  bakery,
+  identityProviderAvailable
+) {
   const juju = await jujulib.connect(
     wsControllerURL,
     generateConnectionOptions(true, bakery, e =>
       console.log("controller closed", e)
     )
   );
-  const conn = await juju.login({});
+  const loginParams = determineLoginParams(
+    credentials,
+    identityProviderAvailable
+  );
+  const conn = await juju.login(loginParams);
   // Ping to keep the connection alive.
   const intervalId = setInterval(() => {
     conn.facades.pinger.ping();
@@ -69,15 +93,27 @@ export async function loginWithBakery(bakery) {
   Connects and logs in to the supplied modelURL. If the connection takes longer
   than the allowed timeout it gives up.
   @param {String} modelURL The fully qualified url of the model api.
+  @param {Object|Null} credentials The users credentials in the format
+    {user: ..., password: ...}
   @param {Object} options The options for the connection.
-  @param {Number} duration The timeout in ms for the connection. Defaults to 5s
+  @param {Boolean} identityProviderAvailable If an identity provider is available.
   @returns {Object} The full model status.
 */
-async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
+async function connectAndLoginWithTimeout(
+  modelURL,
+  credentials,
+  options,
+  identityProviderAvailable
+) {
+  const duration = 5000;
   const timeout = new Promise((resolve, reject) => {
     setTimeout(resolve, duration, "timeout");
   });
-  const juju = jujulib.connectAndLogin(modelURL, {}, options);
+  const loginParams = determineLoginParams(
+    credentials,
+    identityProviderAvailable
+  );
+  const juju = jujulib.connectAndLogin(modelURL, loginParams, options);
   return new Promise((resolve, reject) => {
     Promise.race([timeout, juju]).then(resp => {
       if (resp === "timeout") {
@@ -98,16 +134,24 @@ async function connectAndLoginWithTimeout(modelURL, options, duration = 5000) {
   @returns {Object} The full model status.
 */
 async function fetchModelStatus(modelUUID, getState) {
-  const bakery = getBakery(getState());
-  const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
+  const appState = getState();
+  const bakery = getBakery(appState);
+  const { identityProviderAvailable } = getConfig(appState);
+  const modelURL = getWSControllerURL(appState).replace(
+    "/api",
+    `/model/${modelUUID}/api`
+  );
   let status = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
   if (isLoggedIn(getState())) {
     try {
+      const credentials = getUserPass(getState());
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
-        generateConnectionOptions(false, bakery)
+        credentials,
+        generateConnectionOptions(false, bakery),
+        identityProviderAvailable
       );
       if (isLoggedIn(getState())) {
         status = await conn.facades.client.fullStatus();
@@ -205,7 +249,10 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
   @param {Object} reduxStore The applications reduxStore.
 */
 export async function fetchControllerList(reduxStore) {
-  const bakery = getBakery(reduxStore.getState());
+  const appState = reduxStore.getState();
+  const bakery = getBakery(appState);
+  const { baseControllerURL } = getConfig(appState);
+  const httpControllerURL = `https://${baseControllerURL}/v2`;
   function errorHandler(err, data) {
     // XXX Surface to UI.
     console.error("unable to fetch controller list", err);

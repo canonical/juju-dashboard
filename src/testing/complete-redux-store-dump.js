@@ -15,6 +15,11 @@ export default {
       },
       _dischargeDisabled: false
     },
+    config: {
+      baseControllerURL: 'jimm.jujucharms.com',
+      baseAppURL: '/',
+      identityProviderAvailable: true
+    },
     controllerConnection: {
       transport: {
         _ws: {},
