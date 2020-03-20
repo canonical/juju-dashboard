@@ -93,7 +93,6 @@ const ModelDetails = () => {
   const [filterByApp, setFilterByApp] = useState("");
 
   const [viewFilterToggle, setViewFilterToggle] = useState({ all: true });
-  const [statusFilterToggle, setStatusFilterToggle] = useState({ all: true });
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
@@ -131,7 +130,6 @@ const ModelDetails = () => {
   };
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
-  const statusFilters = ["all", "maintenance", "blocked"];
 
   const applicationTableRows = useMemo(
     () =>
@@ -166,12 +164,6 @@ const ModelDetails = () => {
               filters={viewFilters}
               setFilterToggle={setViewFilterToggle}
               filterToggle={viewFilterToggle}
-            />
-            <Filter
-              label="Status:"
-              filters={statusFilters}
-              setFilterToggle={setStatusFilterToggle}
-              filterToggle={statusFilterToggle}
             />
           </div>
         </div>
