@@ -157,8 +157,7 @@ export default ({ modelData, width, height }) => {
   useEffect(() => {
     const topo = d3
       .select(ref.current)
-      .attr("width", width)
-      .attr("height", height)
+      .attr("viewBox", `0 0 ${width} ${height}`)
       .append("g");
 
     const appIcons = topo.selectAll(".application").data(applications);
