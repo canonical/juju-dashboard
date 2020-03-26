@@ -56,13 +56,18 @@ module.exports = function({ env }) {
                       "ModelManagerV5",
                       "PingerV1",
                       // Thunks
+                      // March 25 2020 Jeff - This doesn't actually prevent the munging of these function
+                      // names due to a bug in terser. Placing the values in `mangle.properties.reserved`
+                      // causes terser to generate invalid code. In order to support the check-auth.js
+                      // feature the `keep_fnames` property below has been hard coded to true and not
+                      // determined by the --profile flag.
                       "connectAndStartPolling",
                       "logOut"
                     ]
                   },
                   // Added for profiling in devtools
                   keep_classnames: isEnvProductionProfile,
-                  keep_fnames: isEnvProductionProfile,
+                  keep_fnames: true,
                   output: {
                     ecma: 5,
                     comments: false,
