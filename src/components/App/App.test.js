@@ -16,6 +16,6 @@ describe("App", () => {
         <App />
       </Provider>
     );
-    expect(wrapper.find("Router").prop("basename")).toBe("/");
+    expect(wrapper.find("BrowserRouter").prop("basename")).toBe("/");
   });
 });
