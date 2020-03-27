@@ -38,6 +38,15 @@ const reduxStore = createStore(
   composeWithDevTools(applyMiddleware(checkAuth, thunk))
 );
 
+// If the baseControllerURL is `null` then set it's value to the
+// hostname:port of the server serving the application. This is done as the
+// hostname:port is not always provided by the Juju webserver but in which
+// case we can reliably connect to the API using the same hostname:port as
+// the dashboard assets are served from.
+const config = window.jaasDashboardConfig;
+if (config.baseControllerURL === null) {
+  config.baseControllerURL = window.location.host;
+}
 reduxStore.dispatch(storeConfig(window.jaasDashboardConfig));
 
 const bakery = new Bakery({
