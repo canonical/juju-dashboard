@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Redirect, useLocation } from "react-router-dom";
 
 import Controllers from "pages/Controllers/Controllers";
 import Logs from "pages/Logs/Logs";
@@ -7,6 +7,7 @@ import Models from "pages/Models/Models";
 import ModelDetails from "pages/Models/Details/ModelDetails";
 import Settings from "pages/Settings/Settings";
 import Usage from "pages/Usage/Usage";
+import useSendAnalytics from "app/send-analytics-hook";
 
 export const paths = {
   "/": { redirect: "/models" },
@@ -19,6 +20,16 @@ export const paths = {
 };
 
 export function Routes() {
+  const sendAnalytics = useSendAnalytics();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Send an analytics event when the URL changes.
+    sendAnalytics({
+      path: window.location.href.replace(window.location.origin, "")
+    });
+  }, [location, sendAnalytics]);
+
   return Object.entries(paths).map(path => {
     if (path[1].redirect) {
       return (
