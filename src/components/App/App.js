@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Router, Route, Switch } from "react-router-dom";
-import { createBrowserHistory } from "history";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ReactGA from "react-ga";
 
 // Components
@@ -11,8 +10,6 @@ import { Routes } from "components/Routes/Routes";
 
 // Pages
 import NotFound from "pages/NotFound/NotFound";
-
-import useSendAnalytics from "app/send-analytics-hook";
 
 import { getConfig } from "app/selectors";
 
@@ -27,17 +24,8 @@ function App() {
     ReactGA.pageview(window.location.href.replace(window.location.origin, ""));
   }
 
-  const history = createBrowserHistory();
-  const sendAnalytics = useSendAnalytics();
-
-  history.listen(location => {
-    sendAnalytics({
-      path: window.location.href.replace(window.location.origin, "")
-    });
-  });
-
   return (
-    <Router basename={baseAppURL} history={history}>
+    <Router basename={baseAppURL}>
       <ErrorBoundary>
         <Switch>
           <Login>
