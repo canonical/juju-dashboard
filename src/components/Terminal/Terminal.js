@@ -80,6 +80,7 @@ const Terminal = ({ address, modelName }) => {
   }, []);
 
   useEffect(() => {
+    // This effect must run after the one above so the terminal fits on first run
     fitAddonRef.current.fit();
   }, [terminalHeight]);
 
