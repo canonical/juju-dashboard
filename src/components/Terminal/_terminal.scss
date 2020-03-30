@@ -1,13 +1,22 @@
 @import "vanilla-framework/scss/vanilla";
 @import "xterm/css/xterm";
 
-$terminal-shell-height: 10rem;
 $terminal-header-height: 40px;
 
 .p-terminal {
   &,
   &__toggle {
     @include vf-animation(transform, brisk, ease-in-out);
+  }
+
+  &__handle {
+    background-color: $color-mid-light;
+    height: 3px;
+    margin-left: -2rem;
+    position: absolute;
+    right: 50%;
+    top: 0;
+    width: 2rem;
   }
 
   background-color: $color-x-dark;
@@ -17,6 +26,7 @@ $terminal-header-height: 40px;
   // Disable until connection issue fixed
   // https://github.com/canonical-web-and-design/jaas-dashboard/issues/107
   // transform: translateY(160px);
+  transition: height 0.15s;
   width: 100%;
 
   &.is-visible {
@@ -30,7 +40,11 @@ $terminal-header-height: 40px;
     padding: 0.5rem;
 
     &:hover {
-      cursor: pointer;
+      cursor: ns-resize;
+    }
+
+    span {
+      pointer-events: none;
     }
   }
 
@@ -41,10 +55,6 @@ $terminal-header-height: 40px;
     .is-visible & {
       transform: rotate(0);
     }
-  }
-
-  &__shell {
-    height: $terminal-shell-height;
   }
 }
 
