@@ -11120,5 +11120,9 @@ export default {
         Public: true
       }
     ]
+  },
+   ui: {
+    collapsibleSidebar: false,
+    userMenuActive: false
   }
 }

@@ -37,6 +37,12 @@ const reduxStore = createStore(
     juju: jujuReducer,
     ui: uiReducer
   }),
+  {
+    ui: {
+      collapsibleSidebar: false,
+      userMenuActive: false
+    }
+  },
   // Order of the middleware is important
   composeWithDevTools(applyMiddleware(checkAuth, thunk))
 );
