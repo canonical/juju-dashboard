@@ -15,7 +15,7 @@ import { isUserMenuActive } from "ui/selectors";
 import "./_user-menu.scss";
 
 const UserMenu = () => {
-  const sendAnalytics = useSendAnalytics();
+  const sendAnalytics = useAnalytics();
   const dispatch = useDispatch();
   const getState = useStore().getState;
   const activeUser = useSelector(getActiveUserTag);

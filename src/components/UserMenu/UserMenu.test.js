@@ -8,7 +8,7 @@ import dataDump from "testing/complete-redux-store-dump";
 import UserMenu from "./UserMenu";
 
 const mockStore = configureStore([]);
-describe("User Icon", () => {
+describe("User Menu", () => {
   it("renders without crashing and matches snapshot", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
@@ -21,7 +21,7 @@ describe("User Icon", () => {
     expect(wrapper.find(".user-menu")).toMatchSnapshot();
   });
 
-  it("toggles drop-down panel", () => {
+  it("is inactive by default", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
@@ -30,15 +30,24 @@ describe("User Icon", () => {
         </Router>
       </Provider>
     );
+    expect(wrapper.find(".user-menu").hasClass("is-active")).toEqual(false);
+  });
 
-    const userMenu = ".user-menu";
-    const userMenuToggle = ".user-menu__header";
+  it("is active when userMenuActive in redux store is true", () => {
+    const store = mockStore({
+      ui: {
+        userMenuActive: true
+      }
+    });
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router>
+          <UserMenu />
+        </Router>
+      </Provider>
+    );
 
-    expect(wrapper.find(userMenu).hasClass("is-active")).toEqual(false);
-    wrapper.find(userMenuToggle).simulate("click");
-    expect(wrapper.find(userMenu).hasClass("is-active")).toEqual(true);
-    wrapper.find(userMenuToggle).simulate("click");
-    expect(wrapper.find(userMenu).hasClass("is-active")).toEqual(false);
+    expect(wrapper.find(".user-menu").hasClass("is-active")).toEqual(true);
   });
 
   it("displays current logged in user", () => {
