@@ -401,20 +401,6 @@ const filterModelData = (filters, modelData) => {
 // ----- Exported functions
 
 /**
-  Checks state to see if the sidebar is collapsible.
-  Usage:
-    const isSidebarCollapsible = useSelector(isSidebarCollapsible);
-
-  @param {Object} state The application state.
-  @returns {Boolean} If the sidebar is collapsible.
-*/
-export const isSidebarCollapsible = (state) => {
-  if (state && state.root) {
-    return state.root.collapsibleSidebar;
-  }
-};
-
-/**
   Gets the model UUID from the supplied name using a memoized selector
   Usage:
     const getModelUUIDMemo = useMemo(getModelUUID.bind(null, modelName), [

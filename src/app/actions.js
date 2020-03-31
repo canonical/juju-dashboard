@@ -10,7 +10,6 @@ import { clearModelData } from "juju/actions";
 
 // Action labels
 export const actionsList = {
-  collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR",
   logOut: "LOG_OUT",
   storeBakery: "STORE_BAKERY",
   storeConfig: "STORE_CONFIG",
@@ -123,15 +122,5 @@ export function logOut(getState) {
 export function connectAndStartPolling(reduxStore, bakery) {
   return async function connectAndStartPolling(dispatch) {
     connectAndListModels(reduxStore, bakery);
-  };
-}
-
-/**
-  Toggle collapsible sidebar
-*/
-export function collapsibleSidebar(toggle) {
-  return {
-    type: actionsList.collapsibleSidebar,
-    payload: toggle,
   };
 }
