@@ -8,6 +8,9 @@ function uiReducer(state = {}, action) {
       case actionsList.collapsibleSidebar:
         draftState.collapsibleSidebar = action.payload;
         break;
+      case actionsList.userMenuActive:
+        draftState.userMenuActive = action.payload;
+        break;
       default:
         // no default value, fall through.
         break;

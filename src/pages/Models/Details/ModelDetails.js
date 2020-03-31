@@ -13,6 +13,7 @@ import Header from "components/Header/Header";
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "ui/actions";
+
 import {
   applicationTableHeaders,
   unitTableHeaders,

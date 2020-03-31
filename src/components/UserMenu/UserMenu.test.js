@@ -31,14 +31,14 @@ describe("User Icon", () => {
       </Provider>
     );
 
-    const user = ".user-menu";
-    const userOptionsToggle = ".user-menu__header";
+    const userMenu = ".user-menu";
+    const userMenuToggle = ".user-menu__header";
 
-    expect(wrapper.find(user).hasClass("is-expanded")).toEqual(false);
-    wrapper.find(userOptionsToggle).simulate("click");
-    expect(wrapper.find(user).hasClass("is-expanded")).toEqual(true);
-    wrapper.find(userOptionsToggle).simulate("click");
-    expect(wrapper.find(user).hasClass("is-expanded")).toEqual(false);
+    expect(wrapper.find(userMenu).hasClass("is-active")).toEqual(false);
+    wrapper.find(userMenuToggle).simulate("click");
+    expect(wrapper.find(userMenu).hasClass("is-active")).toEqual(true);
+    wrapper.find(userMenuToggle).simulate("click");
+    expect(wrapper.find(userMenu).hasClass("is-active")).toEqual(false);
   });
 
   it("displays current logged in user", () => {
