@@ -6,13 +6,13 @@ import { useDispatch, useStore } from "react-redux";
 import { getActiveUserTag } from "app/selectors";
 
 import { logOut } from "app/actions";
-import useSendAnalytics from "app/send-analytics-hook";
+import useAnalytics from "hooks/useAnalytics";
 import { extractOwnerName } from "app/utils";
 
 import "./_user-menu.scss";
 
 const UserMenu = () => {
-  const sendAnalytics = useSendAnalytics();
+  const sendAnalytics = useAnalytics();
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
   const getState = useStore().getState;

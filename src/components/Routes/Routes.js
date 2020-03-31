@@ -7,7 +7,7 @@ import Models from "pages/Models/Models";
 import ModelDetails from "pages/Models/Details/ModelDetails";
 import Settings from "pages/Settings/Settings";
 import Usage from "pages/Usage/Usage";
-import useSendAnalytics from "app/send-analytics-hook";
+import useAnalytics from "hooks/useAnalytics";
 
 export const paths = {
   "/": { redirect: "/models" },
@@ -20,7 +20,7 @@ export const paths = {
 };
 
 export function Routes() {
-  const sendAnalytics = useSendAnalytics();
+  const sendAnalytics = useAnalytics();
   const location = useLocation();
 
   useEffect(() => {
