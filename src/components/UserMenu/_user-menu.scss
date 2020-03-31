@@ -12,7 +12,7 @@
   position: absolute;
   width: 100%;
 
-  &.is-expanded {
+  &.is-active {
     max-height: 120px;
   }
 
@@ -28,7 +28,7 @@
 
     .p-icon--contextual-menu {
       @at-root {
-        .is-expanded .p-icon--contextual-menu {
+        .is-active .p-icon--contextual-menu {
           transform: none;
         }
       }
