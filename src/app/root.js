@@ -29,9 +29,6 @@ function rootReducer(state = {}, action) {
       case actionsList.updatePingerIntervalId:
         draftState.pingerIntervalId = action.payload;
         break;
-      case actionsList.collapsibleSidebar:
-        draftState.collapsibleSidebar = action.payload;
-        break;
       default:
         // no default value, fall through.
         break;

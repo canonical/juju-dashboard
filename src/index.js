@@ -8,6 +8,8 @@ import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 import App from "components/App/App";
 import checkAuth from "app/check-auth";
 import rootReducer from "app/root";
+import uiReducer from "ui";
+
 import {
   connectAndStartPolling,
   storeBakery,
@@ -33,6 +35,7 @@ const reduxStore = createStore(
   combineReducers({
     root: rootReducer,
     juju: jujuReducers,
+    ui: uiReducer
   }),
   // Order of the middleware is important
   composeWithDevTools(applyMiddleware(checkAuth, thunk))

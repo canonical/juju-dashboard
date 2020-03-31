@@ -4,7 +4,7 @@ import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
 import useHover from "hooks/useHover";
 
-import { isSidebarCollapsible } from "app/selectors";
+import { isSidebarCollapsible } from "ui/selectors";
 
 import "./_layout.scss";
 
