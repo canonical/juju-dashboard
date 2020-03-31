@@ -7,7 +7,7 @@ import Modal from "@canonical/react-components/dist/components/Modal";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { extractCloudName } from "app/utils";
-import useSendAnalytics from "app/send-analytics-hook";
+import useAnalytics from "hooks/useAnalytics";
 
 import "./_info-panel.scss";
 
@@ -39,7 +39,7 @@ const InfoPanel = () => {
 
   const { width, height } = expandedTopologyDimensions();
 
-  const sendAnalytics = useSendAnalytics();
+  const sendAnalytics = useAnalytics();
 
   return (
     <div className="info-panel">

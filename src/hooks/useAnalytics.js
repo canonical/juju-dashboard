@@ -1,6 +1,6 @@
 import ReactGA from "react-ga";
 
-export default function useSendAnalytics() {
+export default function useAnalytics() {
   return ({ path, category, action }) => {
     const disableAnalytics = localStorage.getItem("disableAnalytics");
     if (

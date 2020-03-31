@@ -12,7 +12,7 @@ import {
   pluralize
 } from "app/utils";
 
-import useSendAnalytics from "app/send-analytics-hook";
+import useAnalytics from "hooks/useAnalytics";
 
 import "./_filter-tags.scss";
 
@@ -37,7 +37,7 @@ const FilterTags = () => {
   const filters = {};
   const modelData = useSelector(getModelData);
 
-  const sendAnalytics = useSendAnalytics();
+  const sendAnalytics = useAnalytics();
 
   /**
     Check if filter exists and adds to array if not
