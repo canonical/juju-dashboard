@@ -19,7 +19,7 @@ import {
 
 import { getConfig } from "app/selectors";
 
-import jujuReducers from "juju/reducers";
+import jujuReducer from "juju/reducer";
 
 import "./scss/index.scss";
 
@@ -34,7 +34,7 @@ if (!window.jaasDashboardConfig) {
 const reduxStore = createStore(
   combineReducers({
     root: rootReducer,
-    juju: jujuReducers,
+    juju: jujuReducer,
     ui: uiReducer
   }),
   // Order of the middleware is important
