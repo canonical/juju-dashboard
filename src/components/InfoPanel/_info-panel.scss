@@ -9,6 +9,10 @@
   .p-modal {
     position: fixed;
     z-index: z("lambda");
+
+    &__dialog {
+      width: 90%;
+    }
   }
 
   &__pictogram {
