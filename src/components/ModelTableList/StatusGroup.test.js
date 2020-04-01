@@ -18,8 +18,8 @@ describe("StatusGroup", () => {
         models: {},
         modelData: {},
         modelInfo: {},
-        modelStatuses: {}
-      }
+        modelStatuses: {},
+      },
     });
     const wrapper = mount(
       <Provider store={store}>

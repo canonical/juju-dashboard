@@ -14,12 +14,12 @@ const Layout = ({ children }) => {
   return (
     <div
       className={classNames("l-container", {
-        "has-collapsible-sidebar": sidebarCollapsible
+        "has-collapsible-sidebar": sidebarCollapsible,
       })}
     >
       <div
         className={classNames("l-side", {
-          "is-collapsed": sidebarCollapsible && !isSidebarHovered
+          "is-collapsed": sidebarCollapsible && !isSidebarHovered,
         })}
         ref={sidebarRef}
       >

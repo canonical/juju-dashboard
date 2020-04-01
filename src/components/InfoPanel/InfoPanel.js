@@ -18,7 +18,7 @@ const expandedTopologyDimensions = () => {
   const delta = 300;
   return {
     width: vw - delta,
-    height: vh - delta
+    height: vh - delta,
   };
 };
 
@@ -36,7 +36,7 @@ const InfoPanel = () => {
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
   const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
-    modelUUID
+    modelUUID,
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
 
@@ -73,7 +73,7 @@ const InfoPanel = () => {
               setShowExpandedTopology(!showExpandedTopology);
               sendAnalytics({
                 category: "User",
-                action: "Opened expanded topology"
+                action: "Opened expanded topology",
               });
             }}
           >

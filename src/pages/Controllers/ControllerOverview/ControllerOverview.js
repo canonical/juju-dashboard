@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import {
   getGroupedMachinesDataByStatus,
   getGroupedApplicationsDataByStatus,
-  getGroupedUnitsDataByStatus
+  getGroupedUnitsDataByStatus,
 } from "app/selectors";
 import ControllerChart from "../ControllerChart/ControllerChart";
 
@@ -22,17 +22,17 @@ export default function ControllersOverview() {
   let machinesChartData = {
     blocked: groupedMachinesDataByStatus.blocked.length,
     alert: groupedMachinesDataByStatus.alert.length,
-    running: groupedMachinesDataByStatus.running.length
+    running: groupedMachinesDataByStatus.running.length,
   };
   let applicationsChartData = {
     blocked: groupedApplicationsDataByStatus.blocked.length,
     alert: groupedApplicationsDataByStatus.alert.length,
-    running: groupedApplicationsDataByStatus.running.length
+    running: groupedApplicationsDataByStatus.running.length,
   };
   let unitsChartData = {
     blocked: groupedUnitsDataByStatus.blocked.length,
     alert: groupedUnitsDataByStatus.alert.length,
-    running: groupedUnitsDataByStatus.running.length
+    running: groupedUnitsDataByStatus.running.length,
   };
 
   return (

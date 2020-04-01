@@ -5,7 +5,7 @@ import { URL } from "@canonical/jaaslib/lib/urls";
 import {
   generateStatusElement,
   generateIconPath,
-  generateSpanClass
+  generateSpanClass,
 } from "app/utils";
 
 export const applicationTableHeaders = [
@@ -16,7 +16,7 @@ export const applicationTableHeaders = [
   { content: "store" },
   { content: "rev", className: "u-align--right" },
   { content: "os" },
-  { content: "notes" }
+  { content: "notes" },
 ];
 
 export const unitTableHeaders = [
@@ -26,7 +26,7 @@ export const unitTableHeaders = [
   { content: "machine", className: "u-align--right" },
   { content: "public address" },
   { content: "port", className: "u-align--right" },
-  { content: "message" }
+  { content: "message" },
 ];
 
 export const machineTableHeaders = [
@@ -34,7 +34,7 @@ export const machineTableHeaders = [
   { content: "state" },
   { content: "az" },
   { content: "instance id" },
-  { content: "message" }
+  { content: "message" },
 ];
 
 export const relationTableHeaders = [
@@ -42,7 +42,7 @@ export const relationTableHeaders = [
   { content: "requirer" },
   { content: "interface" },
   { content: "type" },
-  { content: "message" }
+  { content: "message" },
 ];
 
 export function generateIconImg(name, namespace) {
@@ -88,28 +88,28 @@ export function generateApplicationRows(
 
   const applications = modelStatusData.applications;
 
-  return Object.keys(applications).map(key => {
+  return Object.keys(applications).map((key) => {
     const app = applications[key];
     return {
       columns: [
         {
           content: generateEntityLink(app.charm || "", key),
-          className: "u-display--flex"
+          className: "u-display--flex",
         },
         {
           content: app.status ? generateStatusElement(app.status.status) : "-",
-          className: "u-capitalise"
+          className: "u-capitalise",
         },
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
         { content: "CharmHub" },
         { content: key.split("-")[-1] || "-", className: "u-align--right" },
         { content: "Ubuntu" },
-        { content: "-" }
+        { content: "-" },
       ],
       className: filterByApp === key ? "is-selected" : "",
       onClick: onRowClick,
-      "data-app": key
+      "data-app": key,
     };
   });
 }
@@ -122,9 +122,9 @@ export function generateUnitRows(modelStatusData, filterByApp) {
   const applications = modelStatusData.applications;
   const unitRows = [];
 
-  Object.keys(applications).forEach(applicationName => {
+  Object.keys(applications).forEach((applicationName) => {
     const units = applications[applicationName].units || [];
-    Object.keys(units).forEach(unitId => {
+    Object.keys(units).forEach((unitId) => {
       const unit = units[unitId];
       unitRows.push({
         columns: [
@@ -135,18 +135,18 @@ export function generateUnitRows(modelStatusData, filterByApp) {
                 : "",
               unitId
             ),
-            className: "u-display--flex"
+            className: "u-display--flex",
           },
           {
             content: generateStatusElement(unit.workloadStatus.status),
-            className: "u-capitalise"
+            className: "u-capitalise",
           },
           { content: unit.agentStatus.status },
           { content: unit.machine, className: "u-align--right" },
           { content: unit.publicAddress },
           {
             content: unit.publicAddress.split(":")[-1] || "-",
-            className: "u-align--right"
+            className: "u-align--right",
           },
           {
             content: (
@@ -154,10 +154,10 @@ export function generateUnitRows(modelStatusData, filterByApp) {
                 {unit.workloadStatus.info}
               </span>
             ),
-            className: "model-details__truncate-cell"
-          }
+            className: "model-details__truncate-cell",
+          },
         ],
-        className: filterByApp === unitId.split("/")[0] ? "is-selected" : ""
+        className: filterByApp === unitId.split("/")[0] ? "is-selected" : "",
       });
 
       const subordinates = unit.subordinates;
@@ -169,29 +169,29 @@ export function generateUnitRows(modelStatusData, filterByApp) {
             columns: [
               {
                 content: generateEntityLink(subordinate.charm, key, true),
-                className: "u-display--flex"
+                className: "u-display--flex",
               },
               {
                 content: generateStatusElement(
                   subordinate["workload-status"].status
                 ),
-                className: "u-capitalise"
+                className: "u-capitalise",
               },
               { content: subordinate["agent-status"].status },
               { content: subordinate.machine, className: "u-align--right" },
               { content: subordinate["public-address"] },
               {
                 content: subordinate["public-address"].split(":")[-1] || "-",
-                className: "u-align--right"
+                className: "u-align--right",
               },
               {
                 content: subordinate["workload-status"].info,
-                className: "model-details__truncate-cell"
-              }
+                className: "model-details__truncate-cell",
+              },
             ],
             className: classnames("subordinate-row", {
-              "is-selected": filterByApp === key.split("/")[0]
-            })
+              "is-selected": filterByApp === key.split("/")[0],
+            }),
           });
         }
       }
@@ -201,9 +201,9 @@ export function generateUnitRows(modelStatusData, filterByApp) {
   return unitRows;
 }
 
-const splitParts = hardware =>
+const splitParts = (hardware) =>
   Object.fromEntries(
-    hardware.split(" ").map(item => {
+    hardware.split(" ").map((item) => {
       const parts = item.split("=");
       return [parts[0], parts[1]];
     })
@@ -215,7 +215,7 @@ export function generateMachineRows(modelStatusData, filterByApp) {
   }
 
   const machines = modelStatusData.machines;
-  return Object.keys(machines).map(machineId => {
+  return Object.keys(machines).map((machineId) => {
     const machine = machines[machineId];
     return {
       columns: [
@@ -225,11 +225,11 @@ export function generateMachineRows(modelStatusData, filterByApp) {
               <div>{machineId}</div>
               <a href="#_">{machine.dnsName}</a>
             </>
-          )
+          ),
         },
         {
           content: generateStatusElement(machine.instanceStatus.status),
-          className: "u-capitalise"
+          className: "u-capitalise",
         },
         { content: splitParts(machine.hardware)["availability-zone"] },
         { content: machine.instanceId },
@@ -239,19 +239,19 @@ export function generateMachineRows(modelStatusData, filterByApp) {
               {machine.instanceStatus.info}
             </span>
           ),
-          className: "model-details__truncate-cell"
-        }
+          className: "model-details__truncate-cell",
+        },
       ],
       // If there is a filter provided and the machine is visible then
       // it's been filtered so we want to highlight it.
-      className: classnames({ "is-selected": !!filterByApp })
+      className: classnames({ "is-selected": !!filterByApp }),
     };
   });
 }
 
-const extractRelationEndpoints = relation => {
+const extractRelationEndpoints = (relation) => {
   const endpoints = {};
-  relation.endpoints.forEach(endpoint => {
+  relation.endpoints.forEach((endpoint) => {
     const role = endpoint.role;
     endpoints[role] = endpoint.application + ":" + endpoint.name;
     endpoints[`${role}ApplicationName`] = endpoint.application;
@@ -273,7 +273,7 @@ export function generateRelationRows(modelStatusData, filterByApp) {
   }
 
   const relations = modelStatusData.relations;
-  return Object.keys(relations).map(relationId => {
+  return Object.keys(relations).map((relationId) => {
     const relation = relations[relationId];
     const {
       provider,
@@ -281,7 +281,7 @@ export function generateRelationRows(modelStatusData, filterByApp) {
       peer,
       providerApplicationName,
       requirerApplicationName,
-      peerApplicationName
+      peerApplicationName,
     } = extractRelationEndpoints(relation);
 
     return {
@@ -296,7 +296,7 @@ export function generateRelationRows(modelStatusData, filterByApp) {
               {provider || peer || "-"}
             </>
           ),
-          className: "u-display--flex"
+          className: "u-display--flex",
         },
         {
           content: (
@@ -309,7 +309,7 @@ export function generateRelationRows(modelStatusData, filterByApp) {
             </>
           ),
           title: requirer || "-",
-          className: "u-display--flex"
+          className: "u-display--flex",
         },
         { content: relation.interface },
         { content: relation.endpoints[0].role },
@@ -317,12 +317,12 @@ export function generateRelationRows(modelStatusData, filterByApp) {
           content: generateSpanClass(
             "u-capitalise--first-letter",
             relation.status.status
-          )
-        }
+          ),
+        },
       ],
       // If there is a filter provided and the relation is visible then
       // it's been filtered so we want to highlight it.
-      className: classnames({ "is-selected": !!filterByApp })
+      className: classnames({ "is-selected": !!filterByApp }),
     };
   });
 }

@@ -16,7 +16,7 @@ export const paths = {
   "/controllers": { component: Controllers },
   "/usage": { component: Usage },
   "/logs": { component: Logs },
-  "/settings": { component: Settings }
+  "/settings": { component: Settings },
 };
 
 export function Routes() {
@@ -26,11 +26,11 @@ export function Routes() {
   useEffect(() => {
     // Send an analytics event when the URL changes.
     sendAnalytics({
-      path: window.location.href.replace(window.location.origin, "")
+      path: window.location.href.replace(window.location.origin, ""),
     });
   }, [location, sendAnalytics]);
 
-  return Object.entries(paths).map(path => {
+  return Object.entries(paths).map((path) => {
     if (path[1].redirect) {
       return (
         <Route key={path[0]} path={path[0]} exact>

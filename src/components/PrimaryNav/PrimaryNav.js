@@ -28,14 +28,14 @@ const pages = [
     label: "Models",
     path: "/models",
     icon: modelsIcon,
-    iconSelected: modelsIconSelected
+    iconSelected: modelsIconSelected,
   },
   {
     label: "Controllers",
     path: "/controllers",
     icon: controllersIcon,
-    iconSelected: controllersIconSelected
-  }
+    iconSelected: controllersIconSelected,
+  },
   // Remove these nav links until these sections are active
   // { label: "Usage", path: "/usage", icon: usageIcon, iconSelected: usageIconSelected },
   // { label: "Logs", path: "/logs", icon: logsIcon, iconSelected: logsIconSelected },
@@ -145,11 +145,11 @@ const PrimaryNav = () => {
         </li>
       </ul>
       <ul className="p-list is-internal">
-        {pages.map(navItem => (
+        {pages.map((navItem) => (
           <li key={navItem.path} className="p-list__item">
             <NavLink
               className="p-list__link"
-              isActive={match => {
+              isActive={(match) => {
                 if (match && match.url.includes(navItem.path)) {
                   return true;
                 }
@@ -194,7 +194,7 @@ const PrimaryNav = () => {
               target="_blank"
               className="p-list__link"
               href="#_"
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 window.usabilla_live("click");
               }}

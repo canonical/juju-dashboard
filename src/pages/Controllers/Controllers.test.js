@@ -13,7 +13,7 @@ const mockStore = configureStore([]);
 describe("Controllers table", () => {
   it("renders a blank page if no data", () => {
     const store = mockStore({
-      juju: {}
+      juju: {},
     });
     const wrapper = mount(
       <MemoryRouter>

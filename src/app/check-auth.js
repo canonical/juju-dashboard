@@ -14,7 +14,7 @@ const actionWhitelist = [
   "LOG_OUT",
   "CLEAR_MODEL_DATA",
   "STORE_VISIT_URL",
-  "TOGGLE_COLLAPSIBLE_SIDEBAR"
+  "TOGGLE_COLLAPSIBLE_SIDEBAR",
 ];
 
 // When updating this list be sure to update the mangle.reserved list in
@@ -25,7 +25,7 @@ function error(name) {
   console.log("unable to perform action:", name, "user not authenticated");
 }
 
-export default ({ getState }) => next => async action => {
+export default ({ getState }) => (next) => async (action) => {
   const loggedIn = isLoggedIn(getState());
   // If the action is a function then it's probably a thunk.
   if (typeof action === "function") {

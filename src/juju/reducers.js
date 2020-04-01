@@ -4,22 +4,22 @@ import { actionsList } from "./actions";
 
 const defaultState = {
   models: {},
-  modelData: {}
+  modelData: {},
 };
 
 export default function jujuReducer(state = defaultState, action) {
-  return produce(state, draftState => {
+  return produce(state, (draftState) => {
     const payload = action.payload;
     switch (action.type) {
       case actionsList.updateModelList:
         const modelList = {};
-        action.payload.userModels.forEach(model => {
+        action.payload.userModels.forEach((model) => {
           modelList[model.model.uuid] = {
             lastConnection: model.lastConnection,
             name: model.model.name,
             ownerTag: model.model.ownerTag,
             type: model.model.type,
-            uuid: model.model.uuid
+            uuid: model.model.uuid,
           };
         });
         draftState.models = modelList;
@@ -40,10 +40,10 @@ export default function jujuReducer(state = defaultState, action) {
           "model",
           "offers",
           "relations",
-          "remoteApplications"
+          "remoteApplications",
         ];
 
-        allowedKeys.forEach(key => {
+        allowedKeys.forEach((key) => {
           draftState.modelData[modelUUID][key] = payload.status[key];
         });
         // The status doesn't contain a top level uuid and when this data is
