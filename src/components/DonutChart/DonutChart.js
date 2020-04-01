@@ -24,7 +24,7 @@ const DonutChart = ({ chartData }) => {
       .domain(data)
       .range(["is-blocked", "is-alert", "is-running"]);
 
-    const pie = d3.pie().value(function(d) {
+    const pie = d3.pie().value(function (d) {
       return d.value;
     });
     const dataReady = pie(d3.entries(data));
@@ -34,14 +34,8 @@ const DonutChart = ({ chartData }) => {
       .data(dataReady)
       .enter()
       .append("path")
-      .attr(
-        "d",
-        d3
-          .arc()
-          .innerRadius(100)
-          .outerRadius(radius)
-      )
-      .attr("class", function(d) {
+      .attr("d", d3.arc().innerRadius(100).outerRadius(radius))
+      .attr("class", function (d) {
         return color(d.data.key);
       });
 

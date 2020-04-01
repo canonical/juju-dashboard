@@ -71,20 +71,11 @@ describe("Filter pills", () => {
 
     const firstFilterButton = ".p-contextual-menu__dropdown__button";
     expect(
-      wrapper
-        .find(firstFilterButton)
-        .first()
-        .hasClass("is-selected")
+      wrapper.find(firstFilterButton).first().hasClass("is-selected")
     ).toEqual(false);
-    wrapper
-      .find(firstFilterButton)
-      .first()
-      .simulate("click");
+    wrapper.find(firstFilterButton).first().simulate("click");
     expect(
-      wrapper
-        .find(firstFilterButton)
-        .first()
-        .hasClass("is-selected")
+      wrapper.find(firstFilterButton).first().hasClass("is-selected")
     ).toEqual(true);
   });
 
@@ -100,10 +91,7 @@ describe("Filter pills", () => {
     const selectedSection = "[data-test='selected']";
     const firstFilterButton = ".p-contextual-menu__dropdown__button";
     const selectedActiveFilter = ".p-filter-tags__active-filter";
-    wrapper
-      .find(firstFilterButton)
-      .first()
-      .simulate("click");
+    wrapper.find(firstFilterButton).first().simulate("click");
     expect(wrapper.find(selectedSection)).toHaveLength(1);
     expect(wrapper.find(selectedActiveFilter)).toHaveLength(1);
   });
@@ -122,15 +110,9 @@ describe("Filter pills", () => {
     const selectedActiveFilterClose =
       ".p-filter-tags__active-filter .p-icon--close";
     expect(wrapper.find(selectedActiveFilter)).toHaveLength(0);
-    wrapper
-      .find(firstFilterButton)
-      .first()
-      .simulate("click");
+    wrapper.find(firstFilterButton).first().simulate("click");
     expect(wrapper.find(selectedActiveFilter)).toHaveLength(1);
-    wrapper
-      .find(selectedActiveFilterClose)
-      .first()
-      .simulate("click");
+    wrapper.find(selectedActiveFilterClose).first().simulate("click");
     expect(wrapper.find(selectedActiveFilter)).toHaveLength(0);
   });
 
@@ -147,16 +129,10 @@ describe("Filter pills", () => {
     const filterButton = ".p-contextual-menu__dropdown__button";
     const selectedActiveFilterClose =
       ".p-filter-tags__active-filter .p-icon--close";
-    wrapper
-      .find(filterButton)
-      .at(0)
-      .simulate("click");
+    wrapper.find(filterButton).at(0).simulate("click");
     const searchParams = new URLSearchParams(history.location.search);
     expect(searchParams.get("activeFilters")).toEqual("cloud:google");
-    wrapper
-      .find(selectedActiveFilterClose)
-      .at(0)
-      .simulate("click");
+    wrapper.find(selectedActiveFilterClose).at(0).simulate("click");
     const updatedSearchParams = new URLSearchParams(history.location.search);
     expect(updatedSearchParams.get("activeFilters")).toEqual(null);
   });
@@ -174,26 +150,14 @@ describe("Filter pills", () => {
     const filterButton = ".p-contextual-menu__dropdown__button";
     const selectedActiveFilterClose =
       ".p-filter-tags__active-filter .p-icon--close";
-    wrapper
-      .find(filterButton)
-      .at(0)
-      .simulate("click");
-    wrapper
-      .find(filterButton)
-      .at(1)
-      .simulate("click");
+    wrapper.find(filterButton).at(0).simulate("click");
+    wrapper.find(filterButton).at(1).simulate("click");
     expect(history.location.search).toEqual(
       "?activeFilters=cloud%3Agoogle,cloud%3Aaws"
     );
-    wrapper
-      .find(selectedActiveFilterClose)
-      .at(0)
-      .simulate("click");
+    wrapper.find(selectedActiveFilterClose).at(0).simulate("click");
     expect(history.location.search).toEqual("?activeFilters=cloud%3Aaws");
-    wrapper
-      .find(selectedActiveFilterClose)
-      .at(0)
-      .simulate("click");
+    wrapper.find(selectedActiveFilterClose).at(0).simulate("click");
     expect(history.location.search).toEqual("");
   });
 });

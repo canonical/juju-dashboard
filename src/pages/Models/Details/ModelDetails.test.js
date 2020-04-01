@@ -64,10 +64,7 @@ describe("ModelDetail Container", () => {
       </Provider>
     );
     expect(
-      wrapper
-        .find("MainTable")
-        .at(2)
-        .hasClass("model-details__machines")
+      wrapper.find("MainTable").at(2).hasClass("model-details__machines")
     ).toBe(true);
   });
 
@@ -117,20 +114,10 @@ describe("ModelDetail Container", () => {
     const units = wrapper.find(".model-details__units tbody tr");
     expect(units.length).toBe(1);
     expect(units.hasClass("is-selected"));
-    expect(
-      units
-        .find("td")
-        .first()
-        .text()
-    ).toBe("easyrsa/0");
+    expect(units.find("td").first().text()).toBe("easyrsa/0");
     const machines = wrapper.find(".model-details__machines tbody tr");
     expect(machines.length).toBe(1);
-    expect(
-      machines
-        .find("td")
-        .first()
-        .text()
-    ).toBe("135.229.83.62");
+    expect(machines.find("td").first().text()).toBe("135.229.83.62");
     expect(wrapper.find(".model-details__relations tbody tr").length).toBe(0);
   });
 
@@ -151,43 +138,15 @@ describe("ModelDetail Container", () => {
       .simulate("click");
     const units = wrapper.find(".model-details__units tbody tr");
     expect(units.length).toBe(3);
-    expect(
-      units
-        .first()
-        .find("td")
-        .at(0)
-        .text()
-    ).toBe("ubuntu/0");
-    expect(
-      units
-        .at(1)
-        .find("td")
-        .first()
-        .text()
-    ).toBe("nrpe/0");
-    expect(
-      units
-        .at(2)
-        .find("td")
-        .first()
-        .text()
-    ).toBe("telegraf/0");
+    expect(units.first().find("td").at(0).text()).toBe("ubuntu/0");
+    expect(units.at(1).find("td").first().text()).toBe("nrpe/0");
+    expect(units.at(2).find("td").first().text()).toBe("telegraf/0");
     const machines = wrapper.find(".model-details__machines tbody tr");
     expect(machines.length).toBe(1);
-    expect(
-      machines
-        .find("td")
-        .first()
-        .text()
-    ).toBe("035.243.128.238");
+    expect(machines.find("td").first().text()).toBe("035.243.128.238");
     const relations = wrapper.find(".model-details__relations tbody tr");
     expect(relations.length).toBe(1);
-    expect(
-      relations
-        .find("td")
-        .first()
-        .text()
-    ).toBe("ubuntu:juju-info");
+    expect(relations.find("td").first().text()).toBe("ubuntu:juju-info");
   });
 
   it("clicking an application row filters the results (missing subordinates)", () => {
@@ -211,65 +170,26 @@ describe("ModelDetail Container", () => {
       .simulate("click");
     const units = wrapper.find(".model-details__units tbody tr");
     expect(units.length).toBe(3);
-    expect(
-      units
-        .first()
-        .find("td")
-        .at(0)
-        .text()
-    ).toBe("slave/1");
-    expect(
-      units
-        .at(1)
-        .find("td")
-        .first()
-        .text()
-    ).toBe("ganglia-node/0");
-    expect(
-      units
-        .at(2)
-        .find("td")
-        .first()
-        .text()
-    ).toBe("rsyslog-forwarder-ha/0");
+    expect(units.first().find("td").at(0).text()).toBe("slave/1");
+    expect(units.at(1).find("td").first().text()).toBe("ganglia-node/0");
+    expect(units.at(2).find("td").first().text()).toBe(
+      "rsyslog-forwarder-ha/0"
+    );
     const machines = wrapper.find(".model-details__machines tbody tr");
     expect(machines.length).toBe(1);
-    expect(
-      machines
-        .find("td")
-        .first()
-        .text()
-    ).toBe("035.227.34.90");
+    expect(machines.find("td").first().text()).toBe("035.227.34.90");
     const relations = wrapper.find(".model-details__relations tbody tr");
     expect(relations.length).toBe(4);
-    expect(
-      relations
-        .first()
-        .find("td")
-        .first()
-        .text()
-    ).toBe("rsyslog:aggregator");
-    expect(
-      relations
-        .at(1)
-        .find("td")
-        .first()
-        .text()
-    ).toBe("namenode:juju-info");
-    expect(
-      relations
-        .at(2)
-        .find("td")
-        .first()
-        .text()
-    ).toBe("slave:juju-info");
-    expect(
-      relations
-        .at(3)
-        .find("td")
-        .first()
-        .text()
-    ).toBe("resourcemanager:juju-info");
+    expect(relations.first().find("td").first().text()).toBe(
+      "rsyslog:aggregator"
+    );
+    expect(relations.at(1).find("td").first().text()).toBe(
+      "namenode:juju-info"
+    );
+    expect(relations.at(2).find("td").first().text()).toBe("slave:juju-info");
+    expect(relations.at(3).find("td").first().text()).toBe(
+      "resourcemanager:juju-info"
+    );
   });
 
   it("view filters hide and show tables", () => {
