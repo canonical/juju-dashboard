@@ -25,7 +25,7 @@ function error(name) {
   console.log("unable to perform action:", name, "user not authenticated");
 }
 
-export default ({ getState }) => next => async action => {
+export default ({ getState }) => (next) => async (action) => {
   const loggedIn = isLoggedIn(getState());
   // If the action is a function then it's probably a thunk.
   if (typeof action === "function") {

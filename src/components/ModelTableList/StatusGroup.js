@@ -46,7 +46,7 @@ function generateStatusTableHeaders(label, count) {
   @param {Object} model The full model data.
   @return {Object} The react component for the warning message.
 */
-const generateWarningMessage = model => {
+const generateWarningMessage = (model) => {
   const { messages } = getModelStatusGroupData(model);
   const title = messages.join("; ");
   return (
@@ -93,9 +93,9 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
     runningRows: [],
   };
 
-  Object.keys(groupedModels).forEach(groupLabel => {
+  Object.keys(groupedModels).forEach((groupLabel) => {
     const models = groupedModels[groupLabel];
-    models.forEach(model => {
+    models.forEach((model) => {
       let owner = "";
       if (model.info) {
         owner = extractOwnerName(model.info.ownerTag);

@@ -34,7 +34,7 @@ describe("ModelTableList", () => {
       ["owner", "OwnerGroup"],
       ["cloud", "CloudGroup"],
     ];
-    tables.forEach(table => {
+    tables.forEach((table) => {
       const wrapper = mount(
         <MemoryRouter>
           <Provider store={store}>
@@ -45,7 +45,7 @@ describe("ModelTableList", () => {
       const Group = wrapper.find(table[1]);
       expect(Group.length).toBe(1);
       expect(Group.prop("activeUser")).toBe(user);
-      tables.forEach(otherTable => {
+      tables.forEach((otherTable) => {
         if (otherTable[0] !== table[0]) {
           expect(wrapper.find(otherTable[1]).length).toBe(0);
         }
@@ -61,7 +61,7 @@ describe("ModelTableList", () => {
       { groupedBy: "status", component: "StatusGroup" },
     ];
     const filters = ["cloud:aws"];
-    tables.forEach(table => {
+    tables.forEach((table) => {
       const wrapper = mount(
         <MemoryRouter>
           <Provider store={store}>

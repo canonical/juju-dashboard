@@ -16,7 +16,7 @@ import {
 */
 function generateModelTableDataByOwner(groupedModels) {
   const modelData = {};
-  Object.keys(groupedModels).forEach(owner => {
+  Object.keys(groupedModels).forEach((owner) => {
     modelData[owner] = modelData[owner] || [];
     modelData[owner].push(groupedModels[owner]);
   });
@@ -56,9 +56,9 @@ export default function OwnerGroup({ activeUser, filters }) {
   let ownerTables = [];
   let ownerModels = {};
   for (const owner in ownerRows) {
-    Object.values(ownerRows[owner]).forEach(modelGroup => {
+    Object.values(ownerRows[owner]).forEach((modelGroup) => {
       ownerModels.rows = [];
-      modelGroup.forEach(model => {
+      modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
         ownerModels.rows.push({
           columns: [

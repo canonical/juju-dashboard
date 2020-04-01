@@ -30,7 +30,7 @@ export default function Controllers() {
 
   const rows =
     controllerData &&
-    Object.values(controllerData).map(c => ({
+    Object.values(controllerData).map((c) => ({
       columns: [
         { content: c.path },
         { content: `${c.location.cloud}/${c.location.region}` },

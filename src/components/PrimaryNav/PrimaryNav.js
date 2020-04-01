@@ -145,11 +145,11 @@ const PrimaryNav = () => {
         </li>
       </ul>
       <ul className="p-list is-internal">
-        {pages.map(navItem => (
+        {pages.map((navItem) => (
           <li key={navItem.path} className="p-list__item">
             <NavLink
               className="p-list__link"
-              isActive={match => {
+              isActive={(match) => {
                 if (match && match.url.includes(navItem.path)) {
                   return true;
                 }
@@ -194,7 +194,7 @@ const PrimaryNav = () => {
               target="_blank"
               className="p-list__link"
               href="#_"
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 window.usabilla_live("click");
               }}

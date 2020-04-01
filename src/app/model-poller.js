@@ -36,7 +36,7 @@ export default async function connectAndListModels(reduxStore, bakery) {
       await reduxStore.dispatch(fetchModelList());
       await fetchAllModelStatuses(conn, reduxStore);
       // Wait 30s then start again.
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         setTimeout(() => {
           resolve(true);
         }, 30000);

@@ -25,7 +25,7 @@ const Terminal = ({ address, modelName }) => {
   useEffect(() => {
     // If the model name is found after a juju switch then
     // switch to that route.
-    const switchFound = model => {
+    const switchFound = (model) => {
       if (modelName !== model) {
         history.push(`/models/${model}`);
       }
@@ -42,7 +42,7 @@ const Terminal = ({ address, modelName }) => {
     terminalInstance.loadAddon(fitAddon);
     fitAddonRef.current = fitAddon;
 
-    const resize = e => {
+    const resize = (e) => {
       const viewPortHeight = window.innerHeight;
       const mousePosition = e.clientY;
       const newTerminalHeight =
@@ -52,7 +52,7 @@ const Terminal = ({ address, modelName }) => {
       }
     };
 
-    const addResizeListener = e => {
+    const addResizeListener = (e) => {
       if (e.target.classList.value === "p-terminal__header") {
         document.addEventListener("mousemove", resize);
       }

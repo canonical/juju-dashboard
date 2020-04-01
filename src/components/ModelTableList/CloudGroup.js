@@ -20,7 +20,7 @@ import {
 */
 function generateModelTableDataByCloud(groupedModels) {
   const modelData = {};
-  Object.keys(groupedModels).forEach(cloud => {
+  Object.keys(groupedModels).forEach((cloud) => {
     modelData[cloud] = modelData[cloud] || [];
     modelData[cloud].push(groupedModels[cloud]);
   });
@@ -62,9 +62,9 @@ export default function CloudGroup({ activeUser, filters }) {
   let cloudTables = [];
   let cloudModels = {};
   for (const cloud in cloudRows) {
-    Object.values(cloudRows[cloud]).forEach(modelGroup => {
+    Object.values(cloudRows[cloud]).forEach((modelGroup) => {
       cloudModels.rows = [];
-      modelGroup.forEach(model => {
+      modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
         cloudModels.rows.push({
           columns: [

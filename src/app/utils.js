@@ -31,15 +31,15 @@ const setHighestStatus = (entityStatus, highestStatus) => {
 
 // If it's the highest status then we don't need to continue looping
 // applications or units.
-const checkHighestStatus = highestStatus => {
+const checkHighestStatus = (highestStatus) => {
   return highestStatus === statusOrder[statusOrder.length - 1];
 };
 
-export const getModelStatusGroupData = model => {
+export const getModelStatusGroupData = (model) => {
   let highestStatus = statusOrder[0]; // Set the highest status to the lowest.
   let messages = [];
   const applications = model.applications;
-  Object.keys(applications).forEach(appName => {
+  Object.keys(applications).forEach((appName) => {
     const app = applications[appName];
     const { status: appStatus } = getApplicationStatusGroup(app);
     highestStatus = setHighestStatus(appStatus, highestStatus);
@@ -48,7 +48,7 @@ export const getModelStatusGroupData = model => {
       messages.push(app.status.info);
       return;
     }
-    Object.keys(app.units).forEach(unitId => {
+    Object.keys(app.units).forEach((unitId) => {
       const unit = app.units[unitId];
       const { status: unitStatus } = getUnitStatusGroup(unit);
       highestStatus = setHighestStatus(unitStatus, highestStatus);
@@ -71,7 +71,7 @@ export const getModelStatusGroupData = model => {
     format stored in the redux store.
   @returns {Object} The status of the application and any relevent messaging.
 */
-export const getApplicationStatusGroup = application => {
+export const getApplicationStatusGroup = (application) => {
   // Possible "blocked" or error states in application statuses.
   const blocked = ["blocked"];
   // Possible "alert" states in application statuses.
@@ -96,7 +96,7 @@ export const getApplicationStatusGroup = application => {
     format stored in the redux store.
   @returns {Object} The status of the machine and any relevent messaging.
 */
-export const getMachineStatusGroup = machine => {
+export const getMachineStatusGroup = (machine) => {
   // Possible "blocked" or error states in machine statuses.
   const blocked = ["down"];
   // Possible "alert" states in machine statuses.
@@ -121,7 +121,7 @@ export const getMachineStatusGroup = machine => {
     format stored in the redux store.
   @returns {Object} The status of the unit and any relevent messaging.
 */
-export const getUnitStatusGroup = unit => {
+export const getUnitStatusGroup = (unit) => {
   // Possible "blocked" or error states in the unit statuses.
   const blocked = ["lost"];
   // Possible "alert" states in the unit statuses.
@@ -145,7 +145,7 @@ export const getUnitStatusGroup = unit => {
   @param {string} ownerTag The ownerTag identifier returns from the API
   @returns {string} The simplified owner string
 */
-export const extractOwnerName = tag => {
+export const extractOwnerName = (tag) => {
   return tag.split("@")[0].replace("user-", "");
 };
 
@@ -167,7 +167,7 @@ export const pluralize = (value, string) => {
   @param {string} cloudTag The cloudTag identifier returns from the API
   @returns {string} The simplified cloud string
 */
-export const extractCloudName = tag => {
+export const extractCloudName = (tag) => {
   return tag.replace("cloud-", "");
 };
 
@@ -176,7 +176,7 @@ export const extractCloudName = tag => {
   @param {string} cloudTag The cloudTag identifier returns from the API
   @returns {string} The simplified cloud string
 */
-export const extractCredentialName = tag => {
+export const extractCredentialName = (tag) => {
   // @ is not there in local boostraps
   // cloudcred-localhost_admin_localhost
   let cred = tag.split("cloudcred-")[1];
@@ -191,7 +191,7 @@ export const extractCredentialName = tag => {
   @param {String} namespace The fully qualified charm name.
   @returns {String} The link to the charm icon.
 */
-export const generateIconPath = namespace => {
+export const generateIconPath = (namespace) => {
   if (namespace.indexOf("cs:") === 0) {
     namespace = namespace.replace("cs:", "");
   }

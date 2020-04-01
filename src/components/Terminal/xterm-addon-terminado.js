@@ -12,13 +12,13 @@ class TerminadoAddon {
     if (this._utf8) {
       // TODO for terminado.
       this._disposables.push(
-        addSocketListener(this._socket, "message", ev =>
+        addSocketListener(this._socket, "message", (ev) =>
           terminal.writeUtf8(new Uint8Array(ev.data))
         )
       );
     } else {
       this._disposables.push(
-        addSocketListener(this._socket, "message", ev => {
+        addSocketListener(this._socket, "message", (ev) => {
           const data = JSON.parse(ev.data);
           // TODO add buffering support.
           if (data[0] === "stdout") {
@@ -30,7 +30,7 @@ class TerminadoAddon {
 
     if (this._bidirectional) {
       this._disposables.push(
-        terminal.onData(data => {
+        terminal.onData((data) => {
           this._sendData(data);
         })
       );
@@ -47,7 +47,7 @@ class TerminadoAddon {
     );
   }
   dispose() {
-    this._disposables.forEach(d => d.dispose());
+    this._disposables.forEach((d) => d.dispose());
   }
   _sendData(data) {
     if (this._socket.readyState !== 1) {

@@ -30,7 +30,7 @@ export function Routes() {
     });
   }, [location, sendAnalytics]);
 
-  return Object.entries(paths).map(path => {
+  return Object.entries(paths).map((path) => {
     if (path[1].redirect) {
       return (
         <Route key={path[0]} path={path[0]} exact>

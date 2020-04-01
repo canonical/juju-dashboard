@@ -88,7 +88,7 @@ export function generateApplicationRows(
 
   const applications = modelStatusData.applications;
 
-  return Object.keys(applications).map(key => {
+  return Object.keys(applications).map((key) => {
     const app = applications[key];
     return {
       columns: [
@@ -122,9 +122,9 @@ export function generateUnitRows(modelStatusData, filterByApp) {
   const applications = modelStatusData.applications;
   const unitRows = [];
 
-  Object.keys(applications).forEach(applicationName => {
+  Object.keys(applications).forEach((applicationName) => {
     const units = applications[applicationName].units || [];
-    Object.keys(units).forEach(unitId => {
+    Object.keys(units).forEach((unitId) => {
       const unit = units[unitId];
       unitRows.push({
         columns: [
@@ -201,9 +201,9 @@ export function generateUnitRows(modelStatusData, filterByApp) {
   return unitRows;
 }
 
-const splitParts = hardware =>
+const splitParts = (hardware) =>
   Object.fromEntries(
-    hardware.split(" ").map(item => {
+    hardware.split(" ").map((item) => {
       const parts = item.split("=");
       return [parts[0], parts[1]];
     })
@@ -215,7 +215,7 @@ export function generateMachineRows(modelStatusData, filterByApp) {
   }
 
   const machines = modelStatusData.machines;
-  return Object.keys(machines).map(machineId => {
+  return Object.keys(machines).map((machineId) => {
     const machine = machines[machineId];
     return {
       columns: [
@@ -249,9 +249,9 @@ export function generateMachineRows(modelStatusData, filterByApp) {
   });
 }
 
-const extractRelationEndpoints = relation => {
+const extractRelationEndpoints = (relation) => {
   const endpoints = {};
-  relation.endpoints.forEach(endpoint => {
+  relation.endpoints.forEach((endpoint) => {
     const role = endpoint.role;
     endpoints[role] = endpoint.application + ":" + endpoint.name;
     endpoints[`${role}ApplicationName`] = endpoint.application;
@@ -273,7 +273,7 @@ export function generateRelationRows(modelStatusData, filterByApp) {
   }
 
   const relations = modelStatusData.relations;
-  return Object.keys(relations).map(relationId => {
+  return Object.keys(relations).map((relationId) => {
     const relation = relations[relationId];
     const {
       provider,

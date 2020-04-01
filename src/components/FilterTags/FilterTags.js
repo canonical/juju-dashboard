@@ -52,7 +52,7 @@ const FilterTags = () => {
   };
 
   // Loop the model data and pull out the available filters
-  Object.values(modelData).forEach(model => {
+  Object.values(modelData).forEach((model) => {
     if (!model.info) {
       return;
     }
@@ -81,7 +81,7 @@ const FilterTags = () => {
       setFilterPanelVisibility(false);
     };
 
-    const mouseDown = e => {
+    const mouseDown = (e) => {
       // Check if click is outside of filter panel
       if (!node.current.contains(e.target)) {
         // If so, close the panel
@@ -89,7 +89,7 @@ const FilterTags = () => {
       }
     };
 
-    const keyDown = e => {
+    const keyDown = (e) => {
       if (e.code === "Escape") {
         // Close panel if Esc keydown detected
         closePanel();
@@ -124,8 +124,8 @@ const FilterTags = () => {
   @param {string} filter The name of the filter
    @param {string} filterBy The name of the filter group
 */
-  const addActiveFilter = filter => {
-    setActiveFilters(filters => {
+  const addActiveFilter = (filter) => {
+    setActiveFilters((filters) => {
       const updatedFilters = [...filters];
       if (!updatedFilters.includes(filter)) {
         updatedFilters.push(filter);
@@ -140,8 +140,8 @@ const FilterTags = () => {
   @param {string} filter The name of the filter
    @param {string} filterBy The name of the filter group
 */
-  const removeActiveFilter = filter => {
-    setActiveFilters(filters => {
+  const removeActiveFilter = (filter) => {
+    setActiveFilters((filters) => {
       const updatedFilters = [...filters];
       if (updatedFilters.includes(filter)) {
         const index = updatedFilters.indexOf(filter);
@@ -194,7 +194,7 @@ const FilterTags = () => {
             {Array.isArray(activeFilters) &&
               Object.entries(filters).length > 0 &&
               activeFilters.length > 0 &&
-              activeFilters.map(activeFilter => (
+              activeFilters.map((activeFilter) => (
                 <button
                   className="p-filter-tags__active-filter"
                   onClick={() => removeActiveFilter(activeFilter)}
@@ -207,7 +207,7 @@ const FilterTags = () => {
                 </button>
               ))}
           </div>
-          {Object.keys(filters).map(filterBy => {
+          {Object.keys(filters).map((filterBy) => {
             return (
               filters[filterBy].length > 0 && (
                 <div
@@ -221,7 +221,7 @@ const FilterTags = () => {
                     className="p-list p-contextual-menu__dropdown__list"
                     data-test={filterBy}
                   >
-                    {filters[filterBy].map(filter => (
+                    {filters[filterBy].map((filter) => (
                       <li
                         key={filter}
                         className="p-contextual-menu__dropdown__item"

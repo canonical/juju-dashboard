@@ -34,7 +34,7 @@ export default function Models() {
     setGroupModelsBy(groupedByFilter);
   }
 
-  const updateFilterQuery = groupedBy => {
+  const updateFilterQuery = (groupedBy) => {
     queryStrings.groupedby = groupedBy;
     const updatedQs = queryString.stringify(queryStrings);
     history.push({

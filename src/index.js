@@ -50,7 +50,7 @@ if (config.baseControllerURL === null) {
 reduxStore.dispatch(storeConfig(window.jaasDashboardConfig));
 
 const bakery = new Bakery({
-  visitPage: resp => {
+  visitPage: (resp) => {
     reduxStore.dispatch(storeVisitURL(resp.Info.VisitURL));
   },
   storage: new BakeryStorage(localStorage, {}),
