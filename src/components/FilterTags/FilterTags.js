@@ -44,7 +44,7 @@ const FilterTags = () => {
     @param {string} string The type of filter
     @param {string} value The name of the filter
   */
-  const addFilter = function(type, value) {
+  const addFilter = function (type, value) {
     filters[type] = filters[type] || [];
     if (!filters[type].includes(value)) {
       filters[type].push(value);
