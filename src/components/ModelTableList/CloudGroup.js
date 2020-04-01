@@ -4,13 +4,13 @@ import MainTable from "@canonical/react-components/dist/components/MainTable";
 import {
   generateStatusElement,
   getModelStatusGroupData,
-  extractOwnerName
+  extractOwnerName,
 } from "app/utils";
 import { getGroupedByCloudAndFilteredModelData } from "app/selectors";
 import {
   generateControllerUUID,
   generateModelDetailsLink,
-  getStatusValue
+  getStatusValue,
 } from "./shared";
 
 /**
@@ -20,7 +20,7 @@ import {
 */
 function generateModelTableDataByCloud(groupedModels) {
   const modelData = {};
-  Object.keys(groupedModels).forEach(cloud => {
+  Object.keys(groupedModels).forEach((cloud) => {
     modelData[cloud] = modelData[cloud] || [];
     modelData[cloud].push(groupedModels[cloud]);
   });
@@ -37,7 +37,7 @@ function generateCloudTableHeaders(cloud, count) {
   return [
     {
       content: generateStatusElement(cloud, count, false),
-      sortKey: cloud.toLowerCase()
+      sortKey: cloud.toLowerCase(),
     },
     { content: "Owner", sortKey: "owner" },
     { content: "Status", sortKey: "status" },
@@ -48,8 +48,8 @@ function generateCloudTableHeaders(cloud, count) {
     {
       content: "Last Updated",
       sortKey: "last-updated",
-      className: "u-align--right"
-    }
+      className: "u-align--right",
+    },
   ];
 }
 
@@ -62,9 +62,9 @@ export default function CloudGroup({ activeUser, filters }) {
   let cloudTables = [];
   let cloudModels = {};
   for (const cloud in cloudRows) {
-    Object.values(cloudRows[cloud]).forEach(modelGroup => {
+    Object.values(cloudRows[cloud]).forEach((modelGroup) => {
       cloudModels.rows = [];
-      modelGroup.forEach(model => {
+      modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
         cloudModels.rows.push({
           columns: [
@@ -73,46 +73,46 @@ export default function CloudGroup({ activeUser, filters }) {
                 model.info.name,
                 model.info && model.info.ownerTag,
                 activeUser
-              )
+              ),
             },
             {
-              content: extractOwnerName(model.info.ownerTag)
+              content: extractOwnerName(model.info.ownerTag),
             },
             {
               content: generateStatusElement(highestStatus),
-              className: "u-capitalise"
+              className: "u-capitalise",
             },
             {
               content: getStatusValue(model, "summary"),
-              className: "u-overflow--visible"
+              className: "u-overflow--visible",
             },
             {
               content: (
                 <a href="#_" className="p-link--soft">
                   {getStatusValue(model, "region")}
                 </a>
-              )
+              ),
             },
             {
               content: (
                 <a href="#_" className="p-link--soft">
                   {getStatusValue(model.info, "cloudCredentialTag")}
                 </a>
-              )
+              ),
             },
             // We're not currently able to get the controller name from the API
             // so, display the controller UUID instead.
             {
               content: generateControllerUUID(
                 getStatusValue(model.info, "controllerUuid")
-              )
+              ),
             },
             // We're not currently able to get a last-accessed or updated from JAAS.
             {
               content: getStatusValue(model.info, "status.since"),
-              className: "u-align--right"
-            }
-          ]
+              className: "u-align--right",
+            },
+          ],
         });
       });
     });

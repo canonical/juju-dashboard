@@ -15,7 +15,7 @@ $z-layers: (
   "theta": 7,
   "iota": 8,
   "kappa": 9,
-  "lambda": 10
+  "lambda": 10,
 );
 
 // A function helper to avoid having to type `map-get($z-layers, ...)`

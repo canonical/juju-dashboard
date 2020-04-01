@@ -7,21 +7,21 @@ export const actionsList = {
   updateControllerList: "UPDATE_CONTROLLER_LIST",
   updateModelInfo: "UPDATE_MODEL_INFO",
   updateModelStatus: "UPDATE_MODEL_STATUS",
-  updateModelList: "UPDATE_MODEL_LIST"
+  updateModelList: "UPDATE_MODEL_LIST",
 };
 
 // Action creators
 
 export function clearModelData() {
   return {
-    type: actionsList.clearModelData
+    type: actionsList.clearModelData,
   };
 }
 
 export function updateControllerList(controllers) {
   return {
     type: actionsList.updateControllerList,
-    payload: controllers
+    payload: controllers,
   };
 }
 
@@ -34,7 +34,7 @@ export function updateModelList(models) {
   return function updateModelList(dispatch, getState) {
     dispatch({
       type: actionsList.updateModelList,
-      payload: models
+      payload: models,
     });
   };
 }
@@ -50,8 +50,8 @@ export function updateModelStatus(modelUUID, status) {
       type: actionsList.updateModelStatus,
       payload: {
         modelUUID,
-        status
-      }
+        status,
+      },
     });
   };
 }
@@ -63,7 +63,7 @@ export function updateModelInfo(modelInfo) {
   return function updateModelInfo(dispatch, getState) {
     dispatch({
       type: actionsList.updateModelInfo,
-      payload: modelInfo
+      payload: modelInfo,
     });
   };
 }
@@ -79,7 +79,7 @@ export function fetchModelList() {
     const conn = state.root.controllerConnection;
     const modelManager = conn.facades.modelManager;
     const models = await modelManager.listModels({
-      tag: conn.info.user.identity
+      tag: conn.info.user.identity,
     });
     dispatch(updateModelList(models));
   };

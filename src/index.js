@@ -12,7 +12,7 @@ import {
   connectAndStartPolling,
   storeBakery,
   storeConfig,
-  storeVisitURL
+  storeVisitURL,
 } from "app/actions";
 
 import { getConfig } from "app/selectors";
@@ -32,7 +32,7 @@ if (!window.jaasDashboardConfig) {
 const reduxStore = createStore(
   combineReducers({
     root: rootReducer,
-    juju: jujuReducers
+    juju: jujuReducers,
   }),
   // Order of the middleware is important
   composeWithDevTools(applyMiddleware(checkAuth, thunk))
@@ -50,10 +50,10 @@ if (config.baseControllerURL === null) {
 reduxStore.dispatch(storeConfig(window.jaasDashboardConfig));
 
 const bakery = new Bakery({
-  visitPage: resp => {
+  visitPage: (resp) => {
     reduxStore.dispatch(storeVisitURL(resp.Info.VisitURL));
   },
-  storage: new BakeryStorage(localStorage, {})
+  storage: new BakeryStorage(localStorage, {}),
 });
 reduxStore.dispatch(storeBakery(bakery));
 

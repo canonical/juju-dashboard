@@ -12,12 +12,12 @@ import {
   getConfig,
   getWSControllerURL,
   isLoggedIn,
-  getUserPass
+  getUserPass,
 } from "app/selectors";
 import {
   updateControllerList,
   updateModelInfo,
-  updateModelStatus
+  updateModelStatus,
 } from "./actions";
 
 /**
@@ -37,7 +37,7 @@ function generateConnectionOptions(usePinger = false, bakery, onClose) {
     bakery,
     closeCallback: onClose,
     debug: false,
-    facades
+    facades,
   };
 }
 
@@ -46,7 +46,7 @@ function determineLoginParams(credentials, identityProviderAvailable) {
   if (!identityProviderAvailable) {
     loginParams = {
       user: `user-${credentials.user}`,
-      password: credentials.password
+      password: credentials.password,
     };
   }
   return loginParams;
@@ -72,7 +72,7 @@ export async function loginWithBakery(
 ) {
   const juju = await jujulib.connect(
     wsControllerURL,
-    generateConnectionOptions(true, bakery, e =>
+    generateConnectionOptions(true, bakery, (e) =>
       console.log("controller closed", e)
     )
   );
@@ -115,7 +115,7 @@ async function connectAndLoginWithTimeout(
   );
   const juju = jujulib.connectAndLogin(modelURL, loginParams, options);
   return new Promise((resolve, reject) => {
-    Promise.race([timeout, juju]).then(resp => {
+    Promise.race([timeout, juju]).then((resp) => {
       if (resp === "timeout") {
         reject("timeout");
         return;
@@ -157,14 +157,14 @@ async function fetchModelStatus(modelUUID, getState) {
         status = await conn.facades.client.fullStatus();
       }
       if (isLoggedIn(getState())) {
-        const entities = Object.keys(status.applications).map(name => ({
-          tag: `application-${name}`
+        const entities = Object.keys(status.applications).map((name) => ({
+          tag: `application-${name}`,
         }));
         const response = await conn.facades.annotations.get({ entities });
         // It will return an entry for every entity even if there are no
         // annotations so we have to inspect them and strip out the empty.
         const annotations = {};
-        response.results.forEach(item => {
+        response.results.forEach((item) => {
           if (Object.keys(item.annotations).length > 0) {
             const appName = item.entity.replace("application-", "");
             annotations[appName] = item.annotations;
@@ -205,7 +205,7 @@ export async function fetchAndStoreModelStatus(modelUUID, dispatch, getState) {
 */
 async function fetchModelInfo(conn, modelUUID) {
   const modelInfo = await conn.facades.modelManager.modelInfo({
-    entities: [{ tag: `model-${modelUUID}` }]
+    entities: [{ tag: `model-${modelUUID}` }],
   });
   return modelInfo;
 }
@@ -224,8 +224,8 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
   const dispatch = reduxStore.dispatch;
   const queue = new Limiter({ concurrency: 5 });
   const modelUUIDs = Object.keys(modelList);
-  modelUUIDs.forEach(modelUUID => {
-    queue.push(async done => {
+  modelUUIDs.forEach((modelUUID) => {
+    queue.push(async (done) => {
       if (isLoggedIn(getState())) {
         await fetchAndStoreModelStatus(modelUUID, dispatch, getState);
       }
@@ -236,7 +236,7 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
       done();
     });
   });
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     queue.onDone(() => {
       resolve();
     });

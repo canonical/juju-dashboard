@@ -11,15 +11,15 @@ const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
       <div className="p-model-group-toggle__inner">
         <span className="p-model-group-toggle__label">Group by:</span>
         <div className="p-model-group-toggle__buttons">
-          {buttons.map(label => (
+          {buttons.map((label) => (
             <button
               aria-label={`group by ${label}`}
               key={label}
               className={classNames("p-model-group-toggle__button", {
-                "is-selected": groupedBy === label
+                "is-selected": groupedBy === label,
               })}
               value={label}
-              onClick={e => setGroupedBy(e.currentTarget.value)}
+              onClick={(e) => setGroupedBy(e.currentTarget.value)}
             >
               {label}
             </button>

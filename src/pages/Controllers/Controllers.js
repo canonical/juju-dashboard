@@ -21,16 +21,16 @@ export default function Controllers() {
     {
       content: "applications",
       sortKey: "applications",
-      className: "u-align--right"
+      className: "u-align--right",
     },
     { content: "units", sortKey: "units", className: "u-align--right" },
     { content: "version", sortKey: "version", className: "u-align--right" },
-    { content: "public", sortKey: "public", className: "u-align--right" }
+    { content: "public", sortKey: "public", className: "u-align--right" },
   ];
 
   const rows =
     controllerData &&
-    Object.values(controllerData).map(c => ({
+    Object.values(controllerData).map((c) => ({
       columns: [
         { content: c.path },
         { content: `${c.location.cloud}/${c.location.region}` },
@@ -39,8 +39,8 @@ export default function Controllers() {
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
-        { content: `${c.Public}`, className: "u-align--right u-capitalise" }
-      ]
+        { content: `${c.Public}`, className: "u-align--right u-capitalise" },
+      ],
     }));
 
   return (

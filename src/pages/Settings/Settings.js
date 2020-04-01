@@ -26,7 +26,7 @@ export default function Settings() {
                 defaultChecked={
                   localStorage.getItem("disableAnalytics") === "true"
                 }
-                onChange={e => {
+                onChange={(e) => {
                   localStorage.setItem(
                     "disableAnalytics",
                     e.currentTarget.checked

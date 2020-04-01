@@ -21,7 +21,7 @@ import {
   generateApplicationRows,
   generateMachineRows,
   generateRelationRows,
-  generateUnitRows
+  generateUnitRows,
 } from "./generators";
 
 import "./_model-details.scss";
@@ -40,7 +40,7 @@ const filterModelStatusData = (modelStatusData, appName) => {
   // remove the units from the application objects that are not
   // the filter-by app.
   const subordinateTo = application.subordinateTo || [];
-  Object.keys(filteredData.applications).forEach(key => {
+  Object.keys(filteredData.applications).forEach((key) => {
     if (key !== appName && !subordinateTo.includes(key)) {
       filteredData.applications[key].units = {};
     }
@@ -49,11 +49,11 @@ const filterModelStatusData = (modelStatusData, appName) => {
   // listed in the subordinateTo list. This is done because although
   // a subordinate is supposed to be installed on each unit, that's not
   // always the case.
-  subordinateTo.forEach(parentName => {
+  subordinateTo.forEach((parentName) => {
     const units = filteredData.applications[parentName].units;
-    Object.entries(units).forEach(entry => {
+    Object.entries(units).forEach((entry) => {
       const found = Object.entries(entry[1].subordinates).find(
-        ele => ele[0].split("/")[0] === appName
+        (ele) => ele[0].split("/")[0] === appName
       );
       if (!found) {
         delete units[entry[0]];
@@ -67,7 +67,7 @@ const filterModelStatusData = (modelStatusData, appName) => {
     const unit = application.units[unitId];
     appMachines.add(unit.machine);
   }
-  subordinateTo.forEach(subAppName => {
+  subordinateTo.forEach((subAppName) => {
     // this will be the parent of the subordinate and grab the machines from it
     const parent = filteredData.applications[subAppName];
     for (let unitId in parent.units) {
@@ -81,7 +81,7 @@ const filterModelStatusData = (modelStatusData, appName) => {
 
   // Remove all relations that don't involve the selected application.
   filteredData.relations = modelStatusData.relations.filter(
-    relation => relation.key.indexOf(appName) > -1
+    (relation) => relation.key.indexOf(appName) > -1
   );
 
   return filteredData;
@@ -97,7 +97,7 @@ const ModelDetails = () => {
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
   const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
-    modelUUID
+    modelUUID,
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
   const filteredModelStatusData = filterModelStatusData(
@@ -120,7 +120,7 @@ const ModelDetails = () => {
     }
   }, [dispatch, modelUUID, filteredModelStatusData]);
 
-  const handleRowClick = e => {
+  const handleRowClick = (e) => {
     const currentTarget = e.currentTarget;
     if (currentTarget.classList.contains("is-selected")) {
       setFilterByApp("");

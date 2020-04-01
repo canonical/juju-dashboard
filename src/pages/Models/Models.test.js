@@ -52,7 +52,7 @@ describe("Models page", () => {
       wrapper.find(".p-model-group-toggle__button.is-selected").text()
     ).toBe("status");
     wrapper.find("button[value='owner']").simulate("click", {
-      target: { value: "owner" }
+      target: { value: "owner" },
     });
     expect(
       wrapper.find(".p-model-group-toggle__button.is-selected").text()

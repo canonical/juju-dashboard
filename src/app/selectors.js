@@ -7,7 +7,7 @@ import {
   getApplicationStatusGroup,
   getMachineStatusGroup,
   getUnitStatusGroup,
-  extractCredentialName
+  extractCredentialName,
 } from "./utils";
 
 // ---- Selectors for top level keys
@@ -17,7 +17,7 @@ import {
   @param {Object} state The application state.
   @returns {Object|Null} The list of model data or null if none found.
 */
-export const getModelData = state => {
+export const getModelData = (state) => {
   if (state.juju && state.juju.modelData) {
     return state.juju.modelData;
   }
@@ -29,7 +29,7 @@ export const getModelData = state => {
   @param {Object} state The application state.
   @returns {Object|Null} The list of controller data or null if none found.
 */
-export const getControllerData = state => {
+export const getControllerData = (state) => {
   if (state.juju && state.juju.controllers) {
     return state.juju.controllers;
   }
@@ -41,7 +41,7 @@ export const getControllerData = state => {
   @param {Object} state The application state.
   @returns {Object|Null} The bakery instance or null if none found.
 */
-export const getBakery = state => {
+export const getBakery = (state) => {
   if (state.root && state.root.bakery) {
     return state.root.bakery;
   }
@@ -53,7 +53,7 @@ export const getBakery = state => {
   @param {Object} state The application state.
   @returns {Object|Null} The config object or null if none found.
 */
-export const getConfig = state => {
+export const getConfig = (state) => {
   if (state.root && state.root.config) {
     return state.root.config;
   }
@@ -65,7 +65,7 @@ export const getConfig = state => {
   @param {Object} state The application state.
   @returns {Object|Null} The username and password or null if none found.
 */
-export const getUserPass = state => {
+export const getUserPass = (state) => {
   if (state.root && state.root.credentials) {
     return state.root.credentials;
   }
@@ -77,7 +77,7 @@ export const getUserPass = state => {
   @param {Object} state The application state.
   @returns {Object|Null} The juju api instance or null if none found.
 */
-export const getJujuAPIInstance = state => {
+export const getJujuAPIInstance = (state) => {
   if (state.root && state.root.juju) {
     return state.root.juju;
   }
@@ -89,7 +89,7 @@ export const getJujuAPIInstance = state => {
   @param {Object} state The application state.
   @returns {Object|Null} The pinger intervalId or null if none found.
 */
-export const getPingerIntervalId = state => {
+export const getPingerIntervalId = (state) => {
   if (state.root && state.root.pingerIntervalId) {
     return state.root.pingerIntervalId;
   }
@@ -103,8 +103,8 @@ export const getPingerIntervalId = state => {
   @param {Object} filters The filters to filter the model data by.
   @returns {Object} A selector for the filtered model data.
 */
-const getFilteredModelData = filters =>
-  createSelector(getModelData, modelData =>
+const getFilteredModelData = (filters) =>
+  createSelector(getModelData, (modelData) =>
     filterModelData(filters, modelData)
   );
 
@@ -115,7 +115,7 @@ const getFilteredModelData = filters =>
   @param {Object} state The application state.
   @returns {Object} The macaroons extracted from the bakery in state.
 */
-const getUserCredentials = state => {
+const getUserCredentials = (state) => {
   let storedMacaroons = null;
   if (state.root && state.root.bakery) {
     storedMacaroons = state.root.bakery.storage._store;
@@ -128,12 +128,12 @@ const getUserCredentials = state => {
   @param {Object} macaroons The macaroons data from the bakery.
   @returns {Object} The users decoded macaroons.
 */
-const getDecodedMacaroons = macaroons => {
+const getDecodedMacaroons = (macaroons) => {
   if (!macaroons) {
     return null;
   }
   let decodedMacaroons = {};
-  Object.keys(macaroons).forEach(key => {
+  Object.keys(macaroons).forEach((key) => {
     try {
       decodedMacaroons[key] = JSON.parse(atob(macaroons[key]));
     } catch (err) {
@@ -193,11 +193,11 @@ const getModelDataByUUID = (modelUUID, modelData) => {
   @param {Object} modelData
   @returns {Object} The grouped model statuses.
 */
-const groupModelsByStatus = modelData => {
+const groupModelsByStatus = (modelData) => {
   const grouped = {
     blocked: [],
     alert: [],
-    running: []
+    running: [],
   };
   if (!modelData) {
     return grouped;
@@ -215,11 +215,11 @@ const groupModelsByStatus = modelData => {
   @param {Object} modelData
   @returns {Object} The grouped machine instances.
 */
-const groupMachinesByStatus = modelData => {
+const groupMachinesByStatus = (modelData) => {
   const grouped = {
     blocked: [],
     alert: [],
-    running: []
+    running: [],
   };
   if (!modelData) {
     return grouped;
@@ -239,11 +239,11 @@ const groupMachinesByStatus = modelData => {
   @param {Object} modelData
   @returns {Function} The grouped unit instances.
 */
-const groupUnitsByStatus = modelData => {
+const groupUnitsByStatus = (modelData) => {
   const grouped = {
     blocked: [],
     alert: [],
-    running: []
+    running: [],
   };
   if (!modelData) {
     return grouped;
@@ -266,11 +266,11 @@ const groupUnitsByStatus = modelData => {
   @param {Object} modelData
   @returns {Object} The grouped machine instances.
 */
-const groupApplicationsByStatus = modelData => {
+const groupApplicationsByStatus = (modelData) => {
   const grouped = {
     blocked: [],
     alert: [],
-    running: []
+    running: [],
   };
   if (!modelData) {
     return grouped;
@@ -290,7 +290,7 @@ const groupApplicationsByStatus = modelData => {
   @param {Object} modelData
   @returns {Object} The grouped model statuses by owner.
 */
-const groupModelsByOwner = modelData => {
+const groupModelsByOwner = (modelData) => {
   const grouped = {};
   if (!modelData) {
     return grouped;
@@ -313,7 +313,7 @@ const groupModelsByOwner = modelData => {
   @param {Object} modelData
   @returns {Object} The grouped model statuses by cloud.
 */
-const groupModelsByCloud = modelData => {
+const groupModelsByCloud = (modelData) => {
   const grouped = {};
   if (!modelData) {
     return grouped;
@@ -336,11 +336,11 @@ const groupModelsByCloud = modelData => {
   @param {Object} groupedModelStatuses
   @returns {Object} The counts for each group of model statuses.
 */
-const countModelStatusGroups = groupedModelStatuses => {
+const countModelStatusGroups = (groupedModelStatuses) => {
   const counts = {
     blocked: groupedModelStatuses.blocked.length,
     alert: groupedModelStatuses.alert.length,
-    running: groupedModelStatuses.running.length
+    running: groupedModelStatuses.running.length,
   };
   return counts;
 };
@@ -359,7 +359,7 @@ const filterModelData = (filters, modelData) => {
   }
   const filterSegments = {};
   // Collect segments
-  filters.forEach(filter => {
+  filters.forEach((filter) => {
     const values = filter.split(":");
     if (!filterSegments[values[0]]) {
       filterSegments[values[0]] = [];
@@ -408,7 +408,7 @@ const filterModelData = (filters, modelData) => {
   @param {Object} state The application state.
   @returns {Boolean} If the sidebar is collapsible.
 */
-export const isSidebarCollapsible = state => {
+export const isSidebarCollapsible = (state) => {
   if (state && state.root) {
     return state.root.collapsibleSidebar;
   }
@@ -424,8 +424,8 @@ export const isSidebarCollapsible = state => {
   @param {String} modelName The name of the model.
   @returns {Function} The memoized selector to return a modelUUID.
 */
-export const getModelUUID = modelName => {
-  return createSelector(getModelData, modelData =>
+export const getModelUUID = (modelName) => {
+  return createSelector(getModelData, (modelData) =>
     getModelUUIDByName(modelName, modelData)
   );
 };
@@ -450,20 +450,20 @@ export const getMacaroons = createSelector(
   @param {Object} state The application state.
   @returns {Boolean} If the user is logged in.
 */
-export const isLoggedIn = state => {
+export const isLoggedIn = (state) => {
   return (
     state.root.controllerConnection &&
     state.root.controllerConnection.info.user.identity
   );
 };
 
-export const isConnecting = state => !!state.root.visitURL;
+export const isConnecting = (state) => !!state.root.visitURL;
 /**
   Returns the users current controller logged in identity
   @param {Object} state The application state.
   @returns {String} The users userTag.
 */
-export const getActiveUserTag = state =>
+export const getActiveUserTag = (state) =>
   state?.root?.controllerConnection?.info.user.identity;
 
 /**
@@ -471,8 +471,8 @@ export const getActiveUserTag = state =>
   @param {String} modelUUID The model UUID to fetch the status for
   @returns {Function} The memoized selector to return the model status.
 */
-export const getModelStatus = modelUUID => {
-  return createSelector(getModelData, modelData =>
+export const getModelStatus = (modelUUID) => {
+  return createSelector(getModelData, (modelData) =>
     getModelDataByUUID(modelUUID, modelData)
   );
 };
@@ -482,7 +482,7 @@ export const getModelStatus = modelUUID => {
   @param {Object} filters The filters to filter the model data by.
   @returns {Object} The filtered and grouped model data.
 */
-export const getGroupedByStatusAndFilteredModelData = filters =>
+export const getGroupedByStatusAndFilteredModelData = (filters) =>
   createSelector(getFilteredModelData(filters), groupModelsByStatus);
 
 /**
@@ -490,7 +490,7 @@ export const getGroupedByStatusAndFilteredModelData = filters =>
   @param {Object} filters The filters to filter the model data by.
   @returns {Object} The filtered and grouped model data.
 */
-export const getGroupedByCloudAndFilteredModelData = filters =>
+export const getGroupedByCloudAndFilteredModelData = (filters) =>
   createSelector(getFilteredModelData(filters), groupModelsByCloud);
 
 /**
@@ -498,7 +498,7 @@ export const getGroupedByCloudAndFilteredModelData = filters =>
   @param {Object} filters The filters to filter the model data by.
   @returns {Object} The filtered and grouped model data.
 */
-export const getGroupedByOwnerAndFilteredModelData = filters =>
+export const getGroupedByOwnerAndFilteredModelData = (filters) =>
   createSelector(getFilteredModelData(filters), groupModelsByOwner);
 
 /**
@@ -552,5 +552,5 @@ export const getGroupedModelStatusCounts = createSelector(
 */
 export const getWSControllerURL = createSelector(
   getConfig,
-  config => `wss://${config.baseControllerURL}/api`
+  (config) => `wss://${config.baseControllerURL}/api`
 );
