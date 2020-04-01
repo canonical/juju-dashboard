@@ -22,6 +22,13 @@ const expandedTopologyDimensions = () => {
   };
 };
 
+const infoPanelDimensions = () => {
+  const de = document.documentElement;
+  const vw = Math.max(de.clientWidth, window.innerWidth || 0);
+  const size = vw >= 1580 ? 300 : 180;
+  return size;
+};
+
 const InfoPanel = () => {
   const { 0: modelName } = useParams();
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
@@ -38,6 +45,7 @@ const InfoPanel = () => {
     : "";
 
   const { width, height } = expandedTopologyDimensions();
+  const topologySize = infoPanelDimensions();
 
   const sendAnalytics = useAnalytics();
 
@@ -53,7 +61,12 @@ const InfoPanel = () => {
         </Modal>
       ) : (
         <div className="info-panel__pictogram">
-          <Topology width={300} height={300} modelData={modelStatusData} />
+          <Topology
+            width={topologySize}
+            height={topologySize}
+            modelData={modelStatusData}
+            data-test="topology"
+          />
           <i
             className="p-icon--expand"
             onClick={() => {
