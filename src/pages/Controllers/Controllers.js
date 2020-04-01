@@ -21,11 +21,11 @@ export default function Controllers() {
     {
       content: "applications",
       sortKey: "applications",
-      className: "u-align--right"
+      className: "u-align--right",
     },
     { content: "units", sortKey: "units", className: "u-align--right" },
     { content: "version", sortKey: "version", className: "u-align--right" },
-    { content: "public", sortKey: "public", className: "u-align--right" }
+    { content: "public", sortKey: "public", className: "u-align--right" },
   ];
 
   const rows =
@@ -39,8 +39,8 @@ export default function Controllers() {
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
         { content: "-", className: "u-align--right" },
-        { content: `${c.Public}`, className: "u-align--right u-capitalise" }
-      ]
+        { content: `${c.Public}`, className: "u-align--right u-capitalise" },
+      ],
     }));
 
   return (

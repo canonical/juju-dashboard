@@ -65,7 +65,7 @@ function addSocketListener(socket, type, handler) {
         return;
       }
       socket.removeEventListener(type, handler);
-    }
+    },
   };
 }
 

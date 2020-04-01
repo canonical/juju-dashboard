@@ -14,9 +14,9 @@ describe("LogIn", () => {
     const store = mockStore({
       root: {
         config: {
-          identityProviderAvailable: true
-        }
-      }
+          identityProviderAvailable: true,
+        },
+      },
     });
     const wrapper = mount(
       <Provider store={store}>
@@ -32,8 +32,8 @@ describe("LogIn", () => {
     const store = mockStore({
       root: {
         visitURL: "I am a url",
-        config: dataDump.root.config
-      }
+        config: dataDump.root.config,
+      },
     });
     const wrapper = mount(
       <Provider store={store}>
@@ -51,9 +51,9 @@ describe("LogIn", () => {
     const store = mockStore({
       root: {
         config: {
-          identityProviderAvailable: false
-        }
-      }
+          identityProviderAvailable: false,
+        },
+      },
     });
     const wrapper = mount(
       <Provider store={store}>

@@ -7,7 +7,7 @@ import {
   getApplicationStatusGroup,
   getMachineStatusGroup,
   getUnitStatusGroup,
-  extractCredentialName
+  extractCredentialName,
 } from "./utils";
 
 // ---- Selectors for top level keys
@@ -197,7 +197,7 @@ const groupModelsByStatus = modelData => {
   const grouped = {
     blocked: [],
     alert: [],
-    running: []
+    running: [],
   };
   if (!modelData) {
     return grouped;
@@ -219,7 +219,7 @@ const groupMachinesByStatus = modelData => {
   const grouped = {
     blocked: [],
     alert: [],
-    running: []
+    running: [],
   };
   if (!modelData) {
     return grouped;
@@ -243,7 +243,7 @@ const groupUnitsByStatus = modelData => {
   const grouped = {
     blocked: [],
     alert: [],
-    running: []
+    running: [],
   };
   if (!modelData) {
     return grouped;
@@ -270,7 +270,7 @@ const groupApplicationsByStatus = modelData => {
   const grouped = {
     blocked: [],
     alert: [],
-    running: []
+    running: [],
   };
   if (!modelData) {
     return grouped;
@@ -340,7 +340,7 @@ const countModelStatusGroups = groupedModelStatuses => {
   const counts = {
     blocked: groupedModelStatuses.blocked.length,
     alert: groupedModelStatuses.alert.length,
-    running: groupedModelStatuses.running.length
+    running: groupedModelStatuses.running.length,
   };
   return counts;
 };

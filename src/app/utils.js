@@ -61,7 +61,7 @@ export const getModelStatusGroupData = model => {
   });
   return {
     highestStatus,
-    messages
+    messages,
   };
 };
 
@@ -79,7 +79,7 @@ export const getApplicationStatusGroup = application => {
   const status = application.status.status;
   const response = {
     status: "running",
-    message: null
+    message: null,
   };
   if (blocked.includes(status)) {
     response.status = "blocked";
@@ -104,7 +104,7 @@ export const getMachineStatusGroup = machine => {
   const status = machine.agentStatus.status;
   const response = {
     status: "running",
-    message: null
+    message: null,
   };
   if (blocked.includes(status)) {
     response.status = "blocked";
@@ -129,7 +129,7 @@ export const getUnitStatusGroup = unit => {
   const status = unit.agentStatus.status;
   const response = {
     status: "running",
-    message: null
+    message: null,
   };
   if (blocked.includes(status)) {
     response.status = "blocked";

@@ -34,7 +34,7 @@ describe("Model group toggle", () => {
       wrapper.find(".p-model-group-toggle__button.is-selected").text()
     ).toBe("cloud");
     wrapper.find("button[value='owner']").simulate("click", {
-      target: { value: "owner" }
+      target: { value: "owner" },
     });
     expect(setGroupedBy.mock.calls.length).toBe(1);
     expect(setGroupedBy.mock.calls[0]).toEqual(["owner"]);

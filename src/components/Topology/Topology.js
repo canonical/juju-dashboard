@@ -101,7 +101,7 @@ const getRelationPosition = data => {
     x1: applyDelta(app1[1], isSubordinate(getData(element1)) ? -60 : -90),
     y1: applyDelta(app1[2], isSubordinate(getData(element1)) ? -60 : -90),
     x2: applyDelta(app2[1], isSubordinate(getData(element2)) ? -60 : -90),
-    y2: applyDelta(app2[2], isSubordinate(getData(element2)) ? -60 : -90)
+    y2: applyDelta(app2[2], isSubordinate(getData(element2)) ? -60 : -90),
   };
 };
 
@@ -117,7 +117,7 @@ export default ({ modelData, width, height }) => {
       Object.keys(modelData.applications).map(appName => ({
         ...modelData.annotations[appName],
         ...modelData.applications[appName],
-        name: appName
+        name: appName,
       }))) ||
     [];
 
@@ -164,7 +164,7 @@ export default ({ modelData, width, height }) => {
 
     let gridCount = {
       x: 0,
-      y: maxY
+      y: maxY,
     };
 
     const appIcon = appIcons
@@ -197,7 +197,7 @@ export default ({ modelData, width, height }) => {
         // When ever a new element is added zoom the canvas to fit.
         const {
           width: svgWidth,
-          height: svgHeight
+          height: svgHeight,
         } = topo.node().getBoundingClientRect();
         if (svgWidth > 0 && svgHeight > 0) {
           // Magic number that presents reasonable padding around the viz.

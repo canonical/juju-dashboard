@@ -14,7 +14,7 @@ const actionWhitelist = [
   "LOG_OUT",
   "CLEAR_MODEL_DATA",
   "STORE_VISIT_URL",
-  "TOGGLE_COLLAPSIBLE_SIDEBAR"
+  "TOGGLE_COLLAPSIBLE_SIDEBAR",
 ];
 
 // When updating this list be sure to update the mangle.reserved list in

@@ -21,7 +21,7 @@ import {
   generateApplicationRows,
   generateMachineRows,
   generateRelationRows,
-  generateUnitRows
+  generateUnitRows,
 } from "./generators";
 
 import "./_model-details.scss";
@@ -97,7 +97,7 @@ const ModelDetails = () => {
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
   const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
-    modelUUID
+    modelUUID,
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
   const filteredModelStatusData = filterModelStatusData(

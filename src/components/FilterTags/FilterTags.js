@@ -9,7 +9,7 @@ import {
   extractCloudName,
   extractOwnerName,
   extractCredentialName,
-  pluralize
+  pluralize,
 } from "app/utils";
 
 import useAnalytics from "hooks/useAnalytics";
@@ -21,7 +21,7 @@ const FilterTags = () => {
   const location = useLocation();
 
   const queryParams = queryString.parse(location.search, {
-    arrayFormat: "comma"
+    arrayFormat: "comma",
   });
   let queryParamsActiveFilters = queryParams.activeFilters;
   if (typeof queryParamsActiveFilters === "string") {
@@ -113,8 +113,8 @@ const FilterTags = () => {
     queryParams.activeFilters = activeFilters;
     history.push({
       search: queryString.stringify(queryParams, {
-        arrayFormat: "comma"
-      })
+        arrayFormat: "comma",
+      }),
     });
   }, [activeFilters, history, location.search]);
 
@@ -162,7 +162,7 @@ const FilterTags = () => {
           setFilterPanelVisibility(!filterPanelVisibility);
           sendAnalytics({
             category: "User",
-            action: "Toggled filter panel"
+            action: "Toggled filter panel",
           });
         }}
       >
@@ -173,13 +173,13 @@ const FilterTags = () => {
         </span>
         <i
           className={classNames("p-icon--contextual-menu", {
-            "is-active": filterPanelVisibility
+            "is-active": filterPanelVisibility,
           })}
         ></i>
       </button>
       <span
         className={classNames("p-contextual-menu__dropdown p-filter-panel", {
-          "is-visible": filterPanelVisibility
+          "is-visible": filterPanelVisibility,
         })}
         id="filter-tags"
         aria-hidden="true"
@@ -235,7 +235,7 @@ const FilterTags = () => {
                             {
                               "is-selected": activeFilters.includes(
                                 `${filterBy}:${filter}`
-                              )
+                              ),
                             }
                           )}
                           type="button"

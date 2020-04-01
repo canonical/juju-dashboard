@@ -4,7 +4,7 @@ import { actionsList } from "./actions";
 
 const defaultState = {
   models: {},
-  modelData: {}
+  modelData: {},
 };
 
 export default function jujuReducer(state = defaultState, action) {
@@ -19,7 +19,7 @@ export default function jujuReducer(state = defaultState, action) {
             name: model.model.name,
             ownerTag: model.model.ownerTag,
             type: model.model.type,
-            uuid: model.model.uuid
+            uuid: model.model.uuid,
           };
         });
         draftState.models = modelList;
@@ -40,7 +40,7 @@ export default function jujuReducer(state = defaultState, action) {
           "model",
           "offers",
           "relations",
-          "remoteApplications"
+          "remoteApplications",
         ];
 
         allowedKeys.forEach(key => {

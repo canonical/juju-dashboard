@@ -12,12 +12,12 @@ import {
   getConfig,
   getWSControllerURL,
   isLoggedIn,
-  getUserPass
+  getUserPass,
 } from "app/selectors";
 import {
   updateControllerList,
   updateModelInfo,
-  updateModelStatus
+  updateModelStatus,
 } from "./actions";
 
 /**
@@ -37,7 +37,7 @@ function generateConnectionOptions(usePinger = false, bakery, onClose) {
     bakery,
     closeCallback: onClose,
     debug: false,
-    facades
+    facades,
   };
 }
 
@@ -46,7 +46,7 @@ function determineLoginParams(credentials, identityProviderAvailable) {
   if (!identityProviderAvailable) {
     loginParams = {
       user: `user-${credentials.user}`,
-      password: credentials.password
+      password: credentials.password,
     };
   }
   return loginParams;
@@ -158,7 +158,7 @@ async function fetchModelStatus(modelUUID, getState) {
       }
       if (isLoggedIn(getState())) {
         const entities = Object.keys(status.applications).map(name => ({
-          tag: `application-${name}`
+          tag: `application-${name}`,
         }));
         const response = await conn.facades.annotations.get({ entities });
         // It will return an entry for every entity even if there are no
@@ -205,7 +205,7 @@ export async function fetchAndStoreModelStatus(modelUUID, dispatch, getState) {
 */
 async function fetchModelInfo(conn, modelUUID) {
   const modelInfo = await conn.facades.modelManager.modelInfo({
-    entities: [{ tag: `model-${modelUUID}` }]
+    entities: [{ tag: `model-${modelUUID}` }],
   });
   return modelInfo;
 }

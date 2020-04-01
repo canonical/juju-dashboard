@@ -5,7 +5,7 @@ import MainTable from "@canonical/react-components/dist/components/MainTable";
 import {
   generateStatusElement,
   getModelStatusGroupData,
-  extractOwnerName
+  extractOwnerName,
 } from "app/utils";
 
 import { getGroupedByStatusAndFilteredModelData } from "app/selectors";
@@ -13,7 +13,7 @@ import { getGroupedByStatusAndFilteredModelData } from "app/selectors";
 import {
   generateControllerUUID,
   generateModelDetailsLink,
-  getStatusValue
+  getStatusValue,
 } from "./shared";
 
 /**
@@ -26,7 +26,7 @@ function generateStatusTableHeaders(label, count) {
   return [
     {
       content: generateStatusElement(label, count),
-      sortKey: label.toLowerCase()
+      sortKey: label.toLowerCase(),
     },
     { content: "Owner", sortKey: "owner" },
     { content: "Configuration", sortKey: "summary" },
@@ -36,8 +36,8 @@ function generateStatusTableHeaders(label, count) {
     {
       content: "Last Updated",
       sortKey: "last-updated",
-      className: "u-align--right"
-    }
+      className: "u-align--right",
+    },
   ];
 }
 
@@ -90,7 +90,7 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
   const modelData = {
     blockedRows: [],
     alertRows: [],
-    runningRows: []
+    runningRows: [],
   };
 
   Object.keys(groupedModels).forEach(groupLabel => {
@@ -108,11 +108,11 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
               <a href="#_" className="p-link--soft">
                 {owner}
               </a>
-            )
+            ),
           },
           {
             content: getStatusValue(model, "summary"),
-            className: "u-overflow--visible"
+            className: "u-overflow--visible",
           },
           {
             content: (
@@ -120,28 +120,28 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
                 {getStatusValue(model, "cloudTag")}/
                 {getStatusValue(model, "region")}
               </a>
-            )
+            ),
           },
           {
             content: (
               <a href="#_" className="p-link--soft">
                 {getStatusValue(model.info, "cloudCredentialTag")}
               </a>
-            )
+            ),
           },
           // We're not currently able to get the controller name from the API
           // so display the controller UUID instead.
           {
             content: generateControllerUUID(
               getStatusValue(model.info, "controllerUuid")
-            )
+            ),
           },
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
             content: getStatusValue(model.info, "status.since"),
-            className: "u-align--right"
-          }
-        ]
+            className: "u-align--right",
+          },
+        ],
       });
     });
   });
@@ -157,7 +157,7 @@ export default function StatusGroup({ activeUser, filters }) {
   const {
     blockedRows,
     alertRows,
-    runningRows
+    runningRows,
   } = generateModelTableDataByStatus(groupedAndFilteredData, activeUser);
 
   return (

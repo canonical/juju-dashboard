@@ -22,7 +22,7 @@ const UserMenu = () => {
     if (isExpanded) {
       sendAnalytics({
         category: "User",
-        action: "Opened user panel"
+        action: "Opened user panel",
       });
     }
   }, [isExpanded, sendAnalytics]);
@@ -30,7 +30,7 @@ const UserMenu = () => {
   return (
     <div
       className={classNames("user-menu", {
-        "is-expanded": isExpanded
+        "is-expanded": isExpanded,
       })}
     >
       <>

@@ -28,14 +28,14 @@ const pages = [
     label: "Models",
     path: "/models",
     icon: modelsIcon,
-    iconSelected: modelsIconSelected
+    iconSelected: modelsIconSelected,
   },
   {
     label: "Controllers",
     path: "/controllers",
     icon: controllersIcon,
-    iconSelected: controllersIconSelected
-  }
+    iconSelected: controllersIconSelected,
+  },
   // Remove these nav links until these sections are active
   // { label: "Usage", path: "/usage", icon: usageIcon, iconSelected: usageIconSelected },
   // { label: "Logs", path: "/logs", icon: logsIcon, iconSelected: logsIconSelected },

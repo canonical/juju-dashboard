@@ -32,7 +32,7 @@ describe("ModelTableList", () => {
     const tables = [
       ["status", "StatusGroup"],
       ["owner", "OwnerGroup"],
-      ["cloud", "CloudGroup"]
+      ["cloud", "CloudGroup"],
     ];
     tables.forEach(table => {
       const wrapper = mount(
@@ -58,7 +58,7 @@ describe("ModelTableList", () => {
     const tables = [
       { groupedBy: "status", component: "StatusGroup" },
       { groupedBy: "status", component: "StatusGroup" },
-      { groupedBy: "status", component: "StatusGroup" }
+      { groupedBy: "status", component: "StatusGroup" },
     ];
     const filters = ["cloud:aws"];
     tables.forEach(table => {

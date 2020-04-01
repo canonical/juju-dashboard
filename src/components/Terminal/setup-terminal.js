@@ -35,8 +35,8 @@ export default function setupTerminal(
 ) {
   let terminalInstance = new Xterm({
     theme: {
-      background: "#111"
-    }
+      background: "#111",
+    },
   });
 
   const ws = new WebSocket(address);
@@ -47,7 +47,7 @@ export default function setupTerminal(
         operation: OP_LOGIN,
         username: creds.user,
         password: creds.password,
-        macaroons: creds.macaroons
+        macaroons: creds.macaroons,
       })
     );
     ws.send(JSON.stringify({ operation: OP_START }));

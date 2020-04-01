@@ -1,7 +1,7 @@
 import {
   getBakery,
   getJujuAPIInstance,
-  getPingerIntervalId
+  getPingerIntervalId,
 } from "app/selectors";
 
 import connectAndListModels from "app/model-poller";
@@ -18,7 +18,7 @@ export const actionsList = {
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
   updateJujuAPIInstance: "UPDATE_JUJU_API_INSTANCE",
-  updatePingerIntervalId: "UPDATE_PINGER_INTERVAL_ID"
+  updatePingerIntervalId: "UPDATE_PINGER_INTERVAL_ID",
 };
 
 // Action creators
@@ -30,7 +30,7 @@ export const actionsList = {
 export function storeBakery(bakery) {
   return {
     type: actionsList.storeBakery,
-    payload: bakery
+    payload: bakery,
   };
 }
 
@@ -40,7 +40,7 @@ export function storeBakery(bakery) {
 export function storeConfig(config) {
   return {
     type: actionsList.storeConfig,
-    payload: config
+    payload: config,
   };
 }
 
@@ -51,7 +51,7 @@ export function storeConfig(config) {
 export function storeUserPass(credentials) {
   return {
     type: actionsList.storeUserPass,
-    payload: credentials
+    payload: credentials,
   };
 }
 
@@ -61,21 +61,21 @@ export function storeUserPass(credentials) {
 export function updateControllerConnection(conn) {
   return {
     type: actionsList.updateControllerConnection,
-    payload: conn
+    payload: conn,
   };
 }
 
 export function updateJujuAPIInstance(juju) {
   return {
     type: actionsList.updateJujuAPIInstance,
-    payload: juju
+    payload: juju,
   };
 }
 
 export function updatePingerIntervalId(intervalId) {
   return {
     type: actionsList.updatePingerIntervalId,
-    payload: intervalId
+    payload: intervalId,
   };
 }
 
@@ -86,13 +86,13 @@ export function updatePingerIntervalId(intervalId) {
 export function storeVisitURL(visitURL) {
   return {
     type: actionsList.storeVisitURL,
-    payload: visitURL
+    payload: visitURL,
   };
 }
 
 export function clearBakeryIdentity() {
   return {
-    type: actionsList.logOut
+    type: actionsList.logOut,
   };
 }
 
@@ -132,6 +132,6 @@ export function connectAndStartPolling(reduxStore, bakery) {
 export function collapsibleSidebar(toggle) {
   return {
     type: actionsList.collapsibleSidebar,
-    payload: toggle
+    payload: toggle,
   };
 }

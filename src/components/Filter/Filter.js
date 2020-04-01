@@ -34,7 +34,7 @@ const Filter = ({ label, filters, setFilterToggle, filterToggle }) => {
         data-test={filter}
         className={classNames("p-filter__item", {
           "is-selected":
-            filterToggle && filterToggle[filter] ? "is-selected" : null
+            filterToggle && filterToggle[filter] ? "is-selected" : null,
         })}
       >
         <Button onClick={() => handleViewFilterClick(filter)}>{filter}</Button>

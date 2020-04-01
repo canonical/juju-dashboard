@@ -88,7 +88,7 @@ const Terminal = ({ address, modelName }) => {
     <div
       className="p-terminal"
       style={{
-        height: `${terminalHeight}px`
+        height: `${terminalHeight}px`,
       }}
     >
       <div className="p-terminal__header">
@@ -101,7 +101,7 @@ const Terminal = ({ address, modelName }) => {
       <div
         className="p-terminal__shell"
         style={{
-          height: `${terminalHeight - terminalHeaderHeight}px`
+          height: `${terminalHeight - terminalHeaderHeight}px`,
         }}
         ref={terminalElement}
       ></div>

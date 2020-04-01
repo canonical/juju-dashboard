@@ -16,7 +16,7 @@ const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
               aria-label={`group by ${label}`}
               key={label}
               className={classNames("p-model-group-toggle__button", {
-                "is-selected": groupedBy === label
+                "is-selected": groupedBy === label,
               })}
               value={label}
               onClick={e => setGroupedBy(e.currentTarget.value)}

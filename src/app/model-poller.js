@@ -1,19 +1,19 @@
 import {
   fetchAllModelStatuses,
   fetchControllerList,
-  loginWithBakery
+  loginWithBakery,
 } from "juju";
 import { fetchModelList } from "juju/actions";
 import {
   updateControllerConnection,
   updateJujuAPIInstance,
-  updatePingerIntervalId
+  updatePingerIntervalId,
 } from "app/actions";
 import {
   getConfig,
   getUserPass,
   getWSControllerURL,
-  isLoggedIn
+  isLoggedIn,
 } from "./selectors";
 
 export default async function connectAndListModels(reduxStore, bakery) {
