@@ -160,22 +160,27 @@ export default function StatusGroup({ activeUser, filters }) {
     runningRows,
   } = generateModelTableDataByStatus(groupedAndFilteredData, activeUser);
 
+  const emptyStateMsg = "There are no models with this status";
+
   return (
     <div className="status-group">
       <MainTable
-        className={"u-table-layout--auto"}
+        className={"p-main-table u-table-layout--auto"}
         headers={generateStatusTableHeaders("Blocked", blockedRows.length)}
         rows={blockedRows}
+        emptyStateMsg={emptyStateMsg}
       />
       <MainTable
-        className={"u-table-layout--auto"}
+        className={"p-main-table u-table-layout--auto"}
         headers={generateStatusTableHeaders("Alert", alertRows.length)}
         rows={alertRows}
+        emptyStateMsg={emptyStateMsg}
       />
       <MainTable
-        className={"u-table-layout--auto"}
+        className={"p-main-table u-table-layout--auto"}
         headers={generateStatusTableHeaders("Running", runningRows.length)}
         rows={runningRows}
+        emptyStateMsg={emptyStateMsg}
       />
     </div>
   );
