@@ -12,8 +12,14 @@
   position: absolute;
   width: 100%;
 
-  &.is-expanded {
+  &.is-active {
     max-height: 120px;
+  }
+
+  @at-root {
+    .has-collapsible-sidebar .is-collapsed .user-menu.is-active {
+      max-height: 2.5rem;
+    }
   }
 
   &__header {
@@ -28,7 +34,7 @@
 
     .p-icon--contextual-menu {
       @at-root {
-        .is-expanded .p-icon--contextual-menu {
+        .is-active .p-icon--contextual-menu {
           transform: none;
         }
       }

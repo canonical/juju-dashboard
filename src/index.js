@@ -8,6 +8,8 @@ import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 import App from "components/App/App";
 import checkAuth from "app/check-auth";
 import rootReducer from "app/root";
+import uiReducer from "ui";
+
 import {
   connectAndStartPolling,
   storeBakery,
@@ -17,7 +19,7 @@ import {
 
 import { getConfig } from "app/selectors";
 
-import jujuReducers from "juju/reducers";
+import jujuReducer from "juju/reducer";
 
 import "./scss/index.scss";
 
@@ -32,8 +34,15 @@ if (!window.jaasDashboardConfig) {
 const reduxStore = createStore(
   combineReducers({
     root: rootReducer,
-    juju: jujuReducers,
+    juju: jujuReducer,
+    ui: uiReducer,
   }),
+  {
+    ui: {
+      collapsibleSidebar: false,
+      userMenuActive: false,
+    },
+  },
   // Order of the middleware is important
   composeWithDevTools(applyMiddleware(checkAuth, thunk))
 );

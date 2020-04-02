@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
@@ -9,34 +9,37 @@ import { logOut } from "app/actions";
 import useAnalytics from "hooks/useAnalytics";
 import { extractOwnerName } from "app/utils";
 
+import { userMenuActive } from "ui/actions";
+import { isUserMenuActive } from "ui/selectors";
+
 import "./_user-menu.scss";
 
 const UserMenu = () => {
   const sendAnalytics = useAnalytics();
-  const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
   const getState = useStore().getState;
   const activeUser = useSelector(getActiveUserTag);
+  const isActive = useSelector(isUserMenuActive) || false;
 
   useEffect(() => {
-    if (isExpanded) {
+    if (isActive) {
       sendAnalytics({
         category: "User",
-        action: "Opened user panel",
+        action: "Opened user menu",
       });
     }
-  }, [isExpanded, sendAnalytics]);
+  }, [isActive, sendAnalytics]);
 
   return (
     <div
       className={classNames("user-menu", {
-        "is-expanded": isExpanded,
+        "is-active": isActive,
       })}
     >
       <>
         <div
           className="user-menu__header"
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={() => dispatch(userMenuActive(!isActive))}
         >
           <i className="p-icon--user"></i>
           <span className="user-menu__name">
