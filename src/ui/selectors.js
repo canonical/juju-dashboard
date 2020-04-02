@@ -8,7 +8,7 @@
   @param {Object} state The application state.
   @returns {Boolean} If the sidebar is collapsible.
 */
-export const isSidebarCollapsible = state => {
+export const isSidebarCollapsible = (state) => {
   if (state?.ui) {
     return state.ui.collapsibleSidebar;
   }
@@ -22,7 +22,7 @@ export const isSidebarCollapsible = state => {
   @param {Object} state The application state.
   @returns {Boolean} If the user menu is active
 */
-export const isUserMenuActive = state => {
+export const isUserMenuActive = (state) => {
   if (state?.ui) {
     return state.ui.userMenuActive;
   }

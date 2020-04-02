@@ -36,8 +36,8 @@ describe("User Menu", () => {
   it("is active when userMenuActive in redux store is true", () => {
     const store = mockStore({
       ui: {
-        userMenuActive: true
-      }
+        userMenuActive: true,
+      },
     });
     const wrapper = mount(
       <Provider store={store}>
