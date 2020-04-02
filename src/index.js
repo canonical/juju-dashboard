@@ -35,13 +35,13 @@ const reduxStore = createStore(
   combineReducers({
     root: rootReducer,
     juju: jujuReducer,
-    ui: uiReducer
+    ui: uiReducer,
   }),
   {
     ui: {
       collapsibleSidebar: false,
-      userMenuActive: false
-    }
+      userMenuActive: false,
+    },
   },
   // Order of the middleware is important
   composeWithDevTools(applyMiddleware(checkAuth, thunk))

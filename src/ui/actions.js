@@ -1,7 +1,7 @@
 // Action labels
 export const actionsList = {
   collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR",
-  userMenuActive: "TOGGLE_USER_MENU"
+  userMenuActive: "TOGGLE_USER_MENU",
 };
 
 /**
@@ -10,7 +10,7 @@ export const actionsList = {
 export function collapsibleSidebar(toggle) {
   return {
     type: actionsList.collapsibleSidebar,
-    payload: toggle
+    payload: toggle,
   };
 }
 
@@ -20,6 +20,6 @@ export function collapsibleSidebar(toggle) {
 export function userMenuActive(toggle) {
   return {
     type: actionsList.userMenuActive,
-    payload: toggle
+    payload: toggle,
   };
 }

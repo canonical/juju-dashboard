@@ -25,7 +25,7 @@ const UserMenu = () => {
     if (isActive) {
       sendAnalytics({
         category: "User",
-        action: "Opened user menu"
+        action: "Opened user menu",
       });
     }
   }, [isActive, sendAnalytics]);
@@ -33,7 +33,7 @@ const UserMenu = () => {
   return (
     <div
       className={classNames("user-menu", {
-        "is-active": isActive
+        "is-active": isActive,
       })}
     >
       <>
