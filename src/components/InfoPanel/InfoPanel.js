@@ -52,7 +52,7 @@ const InfoPanel = () => {
   // Close topology, if open, on Escape key press
   useEffect(() => {
     const closeOnEscape = function (e) {
-      if (e.key === "Escape" && showExpandedTopology) {
+      if (e.code === "Escape" && showExpandedTopology) {
         setShowExpandedTopology(false);
       }
     };
@@ -67,7 +67,7 @@ const InfoPanel = () => {
       {showExpandedTopology ? (
         <Modal
           close={() => setShowExpandedTopology(false)}
-          title={modelName.split("/")[1] || "Error: model not loading"}
+          title={modelName.split("/")[1] || "Error: model not loaded..."}
           data-test="topology-modal"
         >
           <Topology width={width} height={height} modelData={modelStatusData} />
@@ -80,18 +80,20 @@ const InfoPanel = () => {
             modelData={modelStatusData}
             data-test="topology"
           />
-          <i
-            className="p-icon--expand"
-            onClick={() => {
-              setShowExpandedTopology(!showExpandedTopology);
-              sendAnalytics({
-                category: "User",
-                action: "Opened expanded topology",
-              });
-            }}
-          >
-            Expand topology
-          </i>
+          {modelName !== undefined && (
+            <i
+              className="p-icon--expand"
+              onClick={() => {
+                setShowExpandedTopology(!showExpandedTopology);
+                sendAnalytics({
+                  category: "User",
+                  action: "Opened expanded topology",
+                });
+              }}
+            >
+              Expand topology
+            </i>
+          )}
         </div>
       )}
       <div className="info-panel__grid">
