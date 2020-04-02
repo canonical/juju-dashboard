@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -49,12 +49,25 @@ const InfoPanel = () => {
 
   const sendAnalytics = useAnalytics();
 
+  // Close topology, if open, on Escape key press
+  useEffect(() => {
+    const closeOnEscape = function (e) {
+      if (e.key === "Escape" && showExpandedTopology) {
+        setShowExpandedTopology(false);
+      }
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  });
+
   return (
     <div className="info-panel">
       {showExpandedTopology ? (
         <Modal
           close={() => setShowExpandedTopology(false)}
-          title={modelName.split("/")[1]}
+          title={modelName.split("/")[1] || ""}
           data-test="topology-modal"
         >
           <Topology width={width} height={height} modelData={modelStatusData} />
