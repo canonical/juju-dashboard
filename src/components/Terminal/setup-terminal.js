@@ -35,8 +35,8 @@ export default function setupTerminal(
 ) {
   let terminalInstance = new Xterm({
     theme: {
-      background: "#111"
-    }
+      background: "#111",
+    },
   });
 
   const ws = new WebSocket(address);
@@ -47,18 +47,18 @@ export default function setupTerminal(
         operation: OP_LOGIN,
         username: creds.user,
         password: creds.password,
-        macaroons: creds.macaroons
+        macaroons: creds.macaroons,
       })
     );
     ws.send(JSON.stringify({ operation: OP_START }));
   };
 
-  ws.onerror = err => {
+  ws.onerror = (err) => {
     terminalInstance.write("Failed to open Websocket connection");
     console.error(err);
   };
 
-  ws.onclose = evt => {
+  ws.onclose = (evt) => {
     // 1000 is the code for a normal closure, anything above that is abnormal.
     if (evt && evt.code > 1000) {
       // It is not a normal closure so we should issue an error.
@@ -67,7 +67,7 @@ export default function setupTerminal(
     }
   };
 
-  ws.onmessage = evt => {
+  ws.onmessage = (evt) => {
     const resp = JSON.parse(evt.data);
     if (resp.code === CODE_ERR) {
       console.error(resp.message);

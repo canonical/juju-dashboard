@@ -5,21 +5,21 @@ import classNames from "classnames";
 import "./_filter.scss";
 
 const Filter = ({ label, filters, setFilterToggle, filterToggle }) => {
-  const handleViewFilterClick = filter => {
-    setFilterToggle(viewFilterToggle => {
+  const handleViewFilterClick = (filter) => {
+    setFilterToggle((viewFilterToggle) => {
       const tempViewFilterToggle = { ...viewFilterToggle };
       tempViewFilterToggle[filter] = !tempViewFilterToggle[filter];
       if (filter !== "all") {
         tempViewFilterToggle["all"] = false;
       } else {
-        Object.keys(tempViewFilterToggle).forEach(filter => {
+        Object.keys(tempViewFilterToggle).forEach((filter) => {
           tempViewFilterToggle[filter] = false;
         });
         tempViewFilterToggle["all"] = true;
       }
 
       // If user unselected all specific view filters, return to 'all' default
-      const isFalse = currentValue => currentValue === false;
+      const isFalse = (currentValue) => currentValue === false;
       if (Object.values(tempViewFilterToggle).every(isFalse)) {
         tempViewFilterToggle["all"] = true;
       }
@@ -27,14 +27,14 @@ const Filter = ({ label, filters, setFilterToggle, filterToggle }) => {
     });
   };
 
-  const filterButtons = filters.map(filter => {
+  const filterButtons = filters.map((filter) => {
     return (
       <span
         key={filter}
         data-test={filter}
         className={classNames("p-filter__item", {
           "is-selected":
-            filterToggle && filterToggle[filter] ? "is-selected" : null
+            filterToggle && filterToggle[filter] ? "is-selected" : null,
         })}
       >
         <Button onClick={() => handleViewFilterClick(filter)}>{filter}</Button>

@@ -36,7 +36,7 @@ export default function LogIn({ children }) {
 function IdentityProviderForm() {
   const userIsLoggedIn = useSelector(isLoggedIn);
 
-  const visitURL = useSelector(state => {
+  const visitURL = useSelector((state) => {
     if (!userIsLoggedIn) {
       const root = state.root;
       if (root && root.visitURL) {

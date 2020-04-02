@@ -15,7 +15,7 @@ export default function useAnalytics() {
     } else {
       ReactGA.event({
         category,
-        action
+        action,
       });
     }
   };

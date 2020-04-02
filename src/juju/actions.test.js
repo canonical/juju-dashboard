@@ -11,9 +11,9 @@ describe("action creators", () => {
       [
         {
           type: actions.actionsList.updateModelList,
-          payload: models
-        }
-      ]
+          payload: models,
+        },
+      ],
     ]);
   });
 });

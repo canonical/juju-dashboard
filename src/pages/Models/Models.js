@@ -19,7 +19,7 @@ export default function Models() {
   const history = useHistory();
   const location = useLocation();
   const queryStrings = queryString.parse(location.search, {
-    arrayFormat: "comma"
+    arrayFormat: "comma",
   });
   let activeFilters = queryStrings.activeFilters;
   if (typeof activeFilters === "string") {
@@ -34,12 +34,12 @@ export default function Models() {
     setGroupModelsBy(groupedByFilter);
   }
 
-  const updateFilterQuery = groupedBy => {
+  const updateFilterQuery = (groupedBy) => {
     queryStrings.groupedby = groupedBy;
     const updatedQs = queryString.stringify(queryStrings);
     history.push({
       pathname: "/models",
-      search: groupedBy === "status" ? null : updatedQs
+      search: groupedBy === "status" ? null : updatedQs,
     });
     setGroupModelsBy(groupedBy);
   };
