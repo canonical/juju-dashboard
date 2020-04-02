@@ -67,7 +67,7 @@ const InfoPanel = () => {
       {showExpandedTopology ? (
         <Modal
           close={() => setShowExpandedTopology(false)}
-          title={modelName.split("/")[1] || ""}
+          title={modelName.split("/")[1] || "Error: model not loading"}
           data-test="topology-modal"
         >
           <Topology width={width} height={height} modelData={modelStatusData} />
