@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
+import { userMenuActive } from "ui/actions";
 import dataDump from "testing/complete-redux-store-dump";
 
 import UserMenu from "./UserMenu";
@@ -61,5 +62,20 @@ describe("User Menu", () => {
     );
     const username = ".user-menu__name";
     expect(wrapper.find(username).text()).toEqual("activedev");
+  });
+
+  it("Test dispatch function is fired", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router>
+          <UserMenu />
+        </Router>
+      </Provider>
+    );
+    wrapper.find(".user-menu__header").simulate("click");
+    const actions = store.getActions();
+    const expectedPayload = { payload: true, type: "TOGGLE_USER_MENU" };
+    expect(actions).toEqual([expectedPayload]);
   });
 });
