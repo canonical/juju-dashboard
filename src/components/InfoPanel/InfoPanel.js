@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -22,6 +22,13 @@ const expandedTopologyDimensions = () => {
   };
 };
 
+const infoPanelDimensions = () => {
+  const de = document.documentElement;
+  const vw = Math.max(de.clientWidth, window.innerWidth || 0);
+  const size = vw >= 1580 ? 300 : 180;
+  return size;
+};
+
 const InfoPanel = () => {
   const { 0: modelName } = useParams();
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
@@ -38,34 +45,55 @@ const InfoPanel = () => {
     : "";
 
   const { width, height } = expandedTopologyDimensions();
+  const topologySize = infoPanelDimensions();
 
   const sendAnalytics = useAnalytics();
+
+  // Close topology, if open, on Escape key press
+  useEffect(() => {
+    const closeOnEscape = function (e) {
+      if (e.code === "Escape" && showExpandedTopology) {
+        setShowExpandedTopology(false);
+      }
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  });
 
   return (
     <div className="info-panel">
       {showExpandedTopology ? (
         <Modal
           close={() => setShowExpandedTopology(false)}
-          title={modelName.split("/")[1]}
+          title={modelName.split("/")[1] || "Error: model not loaded..."}
           data-test="topology-modal"
         >
           <Topology width={width} height={height} modelData={modelStatusData} />
         </Modal>
       ) : (
         <div className="info-panel__pictogram">
-          <Topology width={300} height={300} modelData={modelStatusData} />
-          <i
-            className="p-icon--expand"
-            onClick={() => {
-              setShowExpandedTopology(!showExpandedTopology);
-              sendAnalytics({
-                category: "User",
-                action: "Opened expanded topology",
-              });
-            }}
-          >
-            Expand topology
-          </i>
+          <Topology
+            width={topologySize}
+            height={topologySize}
+            modelData={modelStatusData}
+            data-test="topology"
+          />
+          {modelName !== undefined && (
+            <i
+              className="p-icon--expand"
+              onClick={() => {
+                setShowExpandedTopology(!showExpandedTopology);
+                sendAnalytics({
+                  category: "User",
+                  action: "Opened expanded topology",
+                });
+              }}
+            >
+              Expand topology
+            </i>
+          )}
         </div>
       )}
       <div className="info-panel__grid">
