@@ -15,12 +15,13 @@ const Terminal = ({ address, modelName }) => {
   const history = useHistory();
 
   // save default terminal height in the state object
-  let [terminalHeight, setTerminalHeight] = useState(200);
+  const [terminalHeight, setTerminalHeight] = useState(200);
 
   const fitAddonRef = useRef({ current: null });
 
   const terminalHeaderHeight = 40; // px
   const minimumTerminalHeight = 84; // px
+  const modelDetailHeaderHeight = 42; // px
 
   useEffect(() => {
     // If the model name is found after a juju switch then
@@ -47,7 +48,12 @@ const Terminal = ({ address, modelName }) => {
       const mousePosition = e.clientY;
       const newTerminalHeight =
         viewPortHeight - mousePosition + terminalHeaderHeight;
-      if (newTerminalHeight >= minimumTerminalHeight) {
+
+      const maximumTerminalHeight = viewPortHeight - modelDetailHeaderHeight;
+      if (
+        newTerminalHeight < maximumTerminalHeight &&
+        newTerminalHeight >= minimumTerminalHeight
+      ) {
         setTerminalHeight(newTerminalHeight);
       }
     };
