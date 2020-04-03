@@ -11,6 +11,9 @@ function uiReducer(state = {}, action) {
       case actionsList.userMenuActive:
         draftState.userMenuActive = action.payload;
         break;
+      case actionsList.externalNavActive:
+        draftState.externalNavActive = action.payload;
+        break;
       default:
         // no default value, fall through.
         break;

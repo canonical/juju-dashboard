@@ -21,12 +21,11 @@ describe("Primary Nav", () => {
 
     const primaryNav = ".p-primary-nav";
     const primaryNavToggle = ".p-primary-nav__toggle";
-
     expect(wrapper.find(primaryNav).hasClass("ext-nav-open")).toEqual(false);
     wrapper.find(primaryNavToggle).simulate("click");
-    expect(wrapper.find(primaryNav).hasClass("ext-nav-open")).toEqual(true);
-    wrapper.find(primaryNavToggle).simulate("click");
-    expect(wrapper.find(primaryNav).hasClass("ext-nav-open")).toEqual(false);
+    const actions = store.getActions();
+    const expectedPayload = { payload: true, type: "TOGGLE_EXTERNAL_NAV" };
+    expect(actions).toEqual([expectedPayload]);
   });
 
   it("applies is-selected state correctly", () => {

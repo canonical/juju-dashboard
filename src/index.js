@@ -41,6 +41,7 @@ const reduxStore = createStore(
     ui: {
       collapsibleSidebar: false,
       userMenuActive: false,
+      externalNavActive: false,
     },
   },
   // Order of the middleware is important
