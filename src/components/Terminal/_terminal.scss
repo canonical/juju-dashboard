@@ -1,9 +1,18 @@
 @import "vanilla-framework/scss/vanilla";
 @import "xterm/css/xterm";
+@import "../../scss/functions/z-index";
 
 $terminal-header-height: 40px;
 
 .p-terminal {
+  background-color: $color-x-dark;
+  bottom: 0;
+  color: $color-x-light;
+  position: fixed;
+  transition: height 0.15s;
+  width: 100%;
+  z-index: z("delta");
+
   &,
   &__toggle {
     @include vf-animation(transform, brisk, ease-in-out);
@@ -18,16 +27,6 @@ $terminal-header-height: 40px;
     top: 0;
     width: 2rem;
   }
-
-  background-color: $color-x-dark;
-  bottom: 0;
-  color: $color-x-light;
-  position: fixed;
-  // Disable until connection issue fixed
-  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/107
-  // transform: translateY(160px);
-  transition: height 0.15s;
-  width: 100%;
 
   &.is-visible {
     transform: translateY(0);
