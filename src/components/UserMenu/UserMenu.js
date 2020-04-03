@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import classNames from "classnames";
 import { useDispatch, useStore } from "react-redux";
 import { getActiveUserTag } from "app/selectors";
@@ -47,13 +47,22 @@ const UserMenu = () => {
           </span>
           <i className="p-icon--contextual-menu"></i>
         </div>
-        <ul className="user-menu__options">
-          <li>
-            <Link className="user-menu__link" to="/settings">
+        <ul className="p-list user-menu__options">
+          <li className="p-list__item">
+            <NavLink
+              className="user-menu__link p-list__link"
+              isActive={(match) => {
+                if (match && match.url.includes("settings")) {
+                  return true;
+                }
+              }}
+              to="/settings"
+              activeClassName="is-selected"
+            >
               Settings
-            </Link>
+            </NavLink>
           </li>
-          <li>
+          <li className="p-list__item">
             <Link
               className="user-menu__link"
               to="/"
