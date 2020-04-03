@@ -2,6 +2,7 @@
 export const actionsList = {
   collapsibleSidebar: "TOGGLE_COLLAPSIBLE_SIDEBAR",
   userMenuActive: "TOGGLE_USER_MENU",
+  externalNavActive: "TOGGLE_EXTERNAL_NAV",
 };
 
 /**
@@ -20,6 +21,16 @@ export function collapsibleSidebar(toggle) {
 export function userMenuActive(toggle) {
   return {
     type: actionsList.userMenuActive,
+    payload: toggle,
+  };
+}
+
+/**
+  Persist external navigation visibility between page renders
+*/
+export function externalNavActive(toggle) {
+  return {
+    type: actionsList.externalNavActive,
     payload: toggle,
   };
 }

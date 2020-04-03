@@ -27,3 +27,17 @@ export const isUserMenuActive = (state) => {
     return state.ui.userMenuActive;
   }
 };
+
+/**
+  Checks state to see if the external nav is active.
+  Usage:
+    const externalNavActive = useSelector(isExternalNavActive);
+
+  @param {Object} state The application state.
+  @returns {Boolean} If the external navigation menu is active
+*/
+export const isExternalNavActive = (state) => {
+  if (state?.ui) {
+    return state.ui.externalNavActive;
+  }
+};

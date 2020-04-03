@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
+
+import { externalNavActive } from "ui/actions";
+import { isExternalNavActive } from "ui/selectors";
 
 import UserMenu from "components/UserMenu/UserMenu";
 
@@ -42,10 +45,11 @@ const pages = [
 ];
 
 const PrimaryNav = () => {
-  const [extNavOpen, setExtNavOpen] = useState(false);
   const [activeLinkValue, setActiveLinkValue] = useState("");
+  const extNavActive = useSelector(isExternalNavActive);
   const { blocked } = useSelector(getGroupedModelStatusCounts);
   const location = useLocation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setActiveLinkValue(location.pathname);
@@ -67,7 +71,9 @@ const PrimaryNav = () => {
 
   return (
     <nav
-      className={classNames("p-primary-nav", { "ext-nav-open": extNavOpen })}
+      className={classNames("p-primary-nav", {
+        "ext-nav-open": extNavActive,
+      })}
     >
       <div className="p-primary-nav__header">
         <a href="https://jaas.ai" className="p-primary-nav__logo">
@@ -87,7 +93,7 @@ const PrimaryNav = () => {
         </a>
         <button
           className="p-primary-nav__toggle"
-          onClick={() => setExtNavOpen(!extNavOpen)}
+          onClick={() => dispatch(externalNavActive(!extNavActive))}
         >
           <i className="p-icon--contextual-menu">Toggle external navigation</i>
         </button>
