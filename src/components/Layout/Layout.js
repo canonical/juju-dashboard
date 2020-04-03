@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
 import useHover from "hooks/useHover";
+import { getViewportWidth, debounce } from "app/utils";
 
 import { isSidebarCollapsible } from "ui/selectors";
 
@@ -10,16 +11,33 @@ import "./_layout.scss";
 
 const Layout = ({ children }) => {
   const [sidebarRef, isSidebarHovered] = useHover();
+  const [screenWidth, setScreenWidth] = useState(getViewportWidth());
   const sidebarCollapsible = useSelector(isSidebarCollapsible);
+  const smallScreenBreakpoint = 1400;
+  const isSmallScreen = screenWidth <= smallScreenBreakpoint ? true : false;
+
+  const handleScreenResize = () => {
+    setScreenWidth(getViewportWidth());
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", debounce(handleScreenResize, 1000));
+    return () => {
+      window.removeEventListener("resize", debounce(handleScreenResize, 1000));
+    };
+  }, []);
+
   return (
     <div
       className={classNames("l-container", {
-        "has-collapsible-sidebar": sidebarCollapsible,
+        "has-collapsible-sidebar": sidebarCollapsible || isSmallScreen,
       })}
     >
       <div
         className={classNames("l-side", {
-          "is-collapsed": sidebarCollapsible && !isSidebarHovered,
+          "is-collapsed":
+            (sidebarCollapsible && !isSidebarHovered) ||
+            (isSmallScreen && !isSidebarHovered),
         })}
         ref={sidebarRef}
       >
