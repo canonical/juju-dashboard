@@ -197,3 +197,23 @@ export const generateIconPath = (namespace) => {
   }
   return `https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`;
 };
+
+/**
+  @returns {Int || 0} Returns the current viewport width
+*/
+export const getViewportWidth = () => {
+  const de = document.documentElement;
+  return Math.max(de.clientWidth, window.innerWidth || 0);
+};
+
+/**
+ * @param {function} fn Function to debounce
+ * @param {String} wait Time in milliseconds to wait
+ */
+export const debounce = (fn, wait) => {
+  let t;
+  return function () {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, arguments), wait);
+  };
+};
