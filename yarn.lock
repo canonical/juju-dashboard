@@ -973,10 +973,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@craco/craco@5.6.3":
-  version "5.6.3"
-  resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-5.6.3.tgz#e76d5d8099b1d31574c0af006703ca6e3d8c1f4a"
-  integrity sha512-QxH+cfLQoqmrVgvesED3VK+WTZbUIaybwEc3/u7m/axQPTY2wjWDm39/jg4Cv8nwDWpGep0JUtBYyRF8Ba2oWA==
+"@craco/craco@5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-5.6.2.tgz#d98d660962e810bb1c9bb3e5318b99df6c620472"
+  integrity sha512-64nPBTTf4EpIAbdVZbgCR77cCTgLI2xgLSesj886HsfatQi6WfcYder4u60CnBsjvQE4/lz8Wa4DvD1ebTXjGQ==
   dependencies:
     cross-spawn "^7.0.0"
     lodash.mergewith "^4.6.2"
