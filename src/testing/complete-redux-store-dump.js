@@ -11123,6 +11123,7 @@ export default {
   },
    ui: {
     collapsibleSidebar: false,
+    externalNavActive: false,
     userMenuActive: false
   }
 }
