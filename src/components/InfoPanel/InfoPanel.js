@@ -6,7 +6,7 @@ import Topology from "components/Topology/Topology";
 import Modal from "@canonical/react-components/dist/components/Modal";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
-import { extractCloudName } from "app/utils";
+import { extractCloudName, getViewportWidth } from "app/utils";
 import useAnalytics from "hooks/useAnalytics";
 
 import "./_info-panel.scss";
@@ -23,8 +23,7 @@ const expandedTopologyDimensions = () => {
 };
 
 const infoPanelDimensions = () => {
-  const de = document.documentElement;
-  const vw = Math.max(de.clientWidth, window.innerWidth || 0);
+  const vw = getViewportWidth();
   const size = vw >= 1580 ? 300 : 180;
   return size;
 };
