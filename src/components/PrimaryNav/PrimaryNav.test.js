@@ -28,6 +28,25 @@ describe("Primary Nav", () => {
     expect(actions).toEqual([expectedPayload]);
   });
 
+  it("external nav is active when externalNavActive in redux store is true", () => {
+    const store = mockStore({
+      ui: {
+        externalNavActive: true,
+      },
+    });
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router>
+          <PrimaryNav />
+        </Router>
+      </Provider>
+    );
+
+    expect(wrapper.find(".p-primary-nav").hasClass("ext-nav-open")).toEqual(
+      true
+    );
+  });
+
   it("applies is-selected state correctly", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
