@@ -15,7 +15,3 @@
 .has-collapsible-sidebar .l-side + .l-main .header {
   width: calc(100vw - #{$sidebar-collapsed});
 }
-
-.l-side:not(.is-collapsed) + .l-main {
-  padding-top: 3rem;
-}

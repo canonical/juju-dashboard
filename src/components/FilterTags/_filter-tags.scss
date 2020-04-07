@@ -32,8 +32,6 @@
 }
 
 .p-contextual-menu {
-  margin-left: 1rem !important;
-
   &__toggle {
     border-color: $color-mid-light;
     display: flex;
@@ -82,6 +80,7 @@
     &__item {
       display: inline-block;
       font-size: 0.875rem;
+      margin-right: 0.5rem;
       padding: 0;
     }
 

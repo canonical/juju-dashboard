@@ -196,7 +196,7 @@ const FilterTags = () => {
               activeFilters.length > 0 &&
               activeFilters.map((activeFilter) => (
                 <button
-                  className="p-filter-tags__active-filter"
+                  className="p-contextual-menu__dropdown__button p-filter-tags__active-filter"
                   onClick={() => removeActiveFilter(activeFilter)}
                   key={activeFilter}
                 >
