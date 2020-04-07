@@ -5,7 +5,7 @@
 .l-container {
   display: flex;
   min-height: 100vh;
-  overflow: hidden;
+  position: relative;
 }
 
 .l-main {
@@ -21,7 +21,6 @@
 }
 
 .has-collapsible-sidebar .is-collapsed + .l-main {
-  margin-top: 3rem;
   width: 100vw;
 }
 
