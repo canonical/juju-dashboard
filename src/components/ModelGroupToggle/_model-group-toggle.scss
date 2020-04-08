@@ -1,16 +1,14 @@
 @import "vanilla-framework/scss/vanilla";
 
 .p-model-group-toggle {
-  align-items: center;
+  align-content: center;
   column-gap: 1rem;
   display: flex;
   font-size: 0.875rem;
   padding: 0.25rem 0;
 
   &__label {
-    display: inline-block;
     margin-right: 0.5rem;
-    text-align: right;
 
     @media (max-width: 768px) {
       display: none;
@@ -20,12 +18,18 @@
   &__buttons {
     border: 1px solid $color-mid-light;
     border-radius: 0.25rem;
-    display: inline-flex;
+    display: flex;
     margin-bottom: 0.5rem;
     width: 100%;
+
+    @media (min-width: $breakpoint-medium) {
+      margin-bottom: 0;
+      width: auto;
+    }
   }
 
   &__inner {
+    display: flex;
     width: 100%;
   }
 
@@ -33,6 +37,7 @@
     border: none;
     border-right: 1px solid $color-mid-light;
     display: inline-block;
+    flex: 1;
     font-size: 0.875rem;
     height: 100%;
     line-height: 1.5;
