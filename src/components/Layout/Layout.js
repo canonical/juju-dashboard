@@ -21,9 +21,9 @@ const Layout = ({ children }) => {
   };
 
   useEffect(() => {
-    window.addEventListener("resize", debounce(handleScreenResize, 1000));
+    window.addEventListener("resize", debounce(handleScreenResize, 250));
     return () => {
-      window.removeEventListener("resize", debounce(handleScreenResize, 1000));
+      window.removeEventListener("resize", debounce(handleScreenResize, 250));
     };
   }, []);
 
