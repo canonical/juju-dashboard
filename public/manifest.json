@@ -1,6 +1,6 @@
 {
-  "short_name": "JAAS Dashboard",
-  "name": "JAAS Dashboard",
+  "short_name": "JAAS",
+  "name": "JAAS",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,8 +8,8 @@
       "type": "image/x-icon"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
+  "start_url": "/",
+  "display": "fullscreen",
   "theme_color": "#E9531F",
   "background_color": "#ffffff"
 }
