@@ -93,6 +93,7 @@
     display: grid;
     gap: 0.5rem;
     grid-template-columns: repeat(3, 1fr);
+    margin-right: 0.5rem;
     text-align: left;
 
     .p-tooltip--top-center {
