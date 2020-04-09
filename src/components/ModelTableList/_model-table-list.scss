@@ -2,7 +2,16 @@
 
 .model-table-list_error-message {
   color: $color-negative;
+  display: block;
   font-size: 0.875rem;
+  max-width: 200px;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  @media (max-width: $breakpoint-large) {
+    display: inline-block;
+    max-width: 200px;
+    padding-right: 1rem;
+  }
 }

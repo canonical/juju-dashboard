@@ -3,8 +3,18 @@
 @import "../../scss/functions/z-index";
 
 .info-panel {
-  margin-right: 1rem;
   padding: 1rem;
+
+  @media (min-width: $breakpoint-small) {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: $breakpoint-medium) {
+    gap: 0;
+    grid-template-columns: 1fr;
+  }
 
   .p-modal {
     position: fixed;
@@ -20,6 +30,7 @@
     // the Topology component.
     background: $color-light;
     border: solid 1px $color-mid-x-light;
+    flex: 1;
     margin-bottom: 1rem;
     position: relative;
 
@@ -33,10 +44,10 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
 
-    @media (min-width: $breakpoint-m-large) {
-      grid-template-columns: 1fr 1fr;
+    @media (min-width: $breakpoint-medium) {
+      grid-template-columns: 1fr;
     }
   }
 

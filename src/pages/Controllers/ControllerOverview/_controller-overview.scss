@@ -1,8 +1,14 @@
+@import "vanilla-framework/scss/vanilla";
+
 .controllers-overview {
-  overflow-x: auto;
   width: 100%;
 
-  .controller-overview__container {
-    min-width: 1200px;
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    @media (min-width: $breakpoint-x-small) {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 }

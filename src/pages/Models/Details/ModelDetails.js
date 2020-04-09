@@ -158,7 +158,9 @@ const ModelDetails = () => {
     <Layout>
       <Header>
         <div className="model-details__header">
-          <strong>{modelStatusData ? modelStatusData.model.name : ""}</strong>
+          <div className="model-details__title">
+            {modelStatusData ? modelStatusData.model.name : "..."}
+          </div>
           <div className="model-details__filters">
             <Filter
               label="View:"
@@ -172,7 +174,7 @@ const ModelDetails = () => {
       <div className="l-content">
         <div className="model-details">
           <InfoPanel />
-          <div className="model-details__main">
+          <div className="model-details__main u-overflow--scroll">
             {(viewFilterToggle.all === true ||
               viewFilterToggle.apps === true) && (
               <MainTable
