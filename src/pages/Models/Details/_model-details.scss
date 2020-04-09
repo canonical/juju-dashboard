@@ -92,9 +92,17 @@
   &__config {
     display: grid;
     gap: 0.5rem;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     margin-right: 0.5rem;
     text-align: left;
+
+    @media (min-width: $breakpoint-medium) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: $breakpoint-large) {
+      grid-template-columns: repeat(3, 1fr);
+    }
 
     .p-tooltip--top-center {
       display: inline-block;
