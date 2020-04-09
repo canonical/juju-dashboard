@@ -2,8 +2,8 @@
   td,
   th {
     &:first-child {
-      white-space: nowrap;
       min-width: 25%;
+      white-space: nowrap;
     }
   }
 }
