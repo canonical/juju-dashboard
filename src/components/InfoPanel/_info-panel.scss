@@ -12,8 +12,7 @@
   }
 
   @media (min-width: $breakpoint-medium) {
-    gap: 0;
-    grid-template-columns: 1fr;
+    display: block;
   }
 
   .p-modal {
