@@ -69,7 +69,8 @@ describe("Filter pills", () => {
       </MemoryRouter>
     );
 
-    const firstFilterButton = ".p-contextual-menu__dropdown__button";
+    const firstFilterButton =
+      ".p-contextual-menu__dropdown__section .p-contextual-menu__dropdown__button";
     expect(
       wrapper.find(firstFilterButton).first().hasClass("is-selected")
     ).toEqual(false);
@@ -147,7 +148,8 @@ describe("Filter pills", () => {
         </Router>
       </Provider>
     );
-    const filterButton = ".p-contextual-menu__dropdown__button";
+    const filterButton =
+      ".p-contextual-menu__dropdown__section .p-contextual-menu__dropdown__button";
     const selectedActiveFilterClose =
       ".p-filter-tags__active-filter .p-icon--close";
     wrapper.find(filterButton).at(0).simulate("click");
