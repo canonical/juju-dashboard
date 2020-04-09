@@ -163,21 +163,18 @@ export default function StatusGroup({ activeUser, filters }) {
   const emptyStateMsg = "There are no models with this status";
 
   return (
-    <div className="status-group">
+    <div className="status-group u-overflow--scroll">
       <MainTable
-        className={"p-main-table u-table-layout--auto"}
         headers={generateStatusTableHeaders("Blocked", blockedRows.length)}
         rows={blockedRows}
         emptyStateMsg={emptyStateMsg}
       />
       <MainTable
-        className={"p-main-table u-table-layout--auto"}
         headers={generateStatusTableHeaders("Alert", alertRows.length)}
         rows={alertRows}
         emptyStateMsg={emptyStateMsg}
       />
       <MainTable
-        className={"p-main-table u-table-layout--auto"}
         headers={generateStatusTableHeaders("Running", runningRows.length)}
         rows={runningRows}
         emptyStateMsg={emptyStateMsg}

@@ -111,12 +111,11 @@ export default function OwnerGroup({ activeUser, filters }) {
 
     ownerTables.push(
       <MainTable
-        className={"u-table-layout--auto"}
         key={owner}
         headers={generateOwnerTableHeaders(owner, ownerModels.rows.length)}
         rows={ownerModels.rows}
       />
     );
   }
-  return <div className="owners-group">{ownerTables}</div>;
+  return <div className="owners-group u-overflow--scroll">{ownerTables}</div>;
 }

@@ -119,12 +119,11 @@ export default function CloudGroup({ activeUser, filters }) {
 
     cloudTables.push(
       <MainTable
-        className={"u-table-layout--auto"}
         key={cloud}
         headers={generateCloudTableHeaders(cloud, cloudModels.rows.length)}
         rows={cloudModels.rows}
       />
     );
   }
-  return <div className="cloud-group">{cloudTables}</div>;
+  return <div className="cloud-group u-overflow--scroll">{cloudTables}</div>;
 }

@@ -1,17 +1,9 @@
 // Site-wide Vanilla table overrides
-
-table tr th {
-  font-size: 0.75rem;
-  margin-bottom: 0;
-  padding-bottom: 0.5rem;
+table {
+  min-width: 900px;
 }
 
+th,
 td {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-// this override is counter cross-browser inconsistencies with CSS Grid
-thead {
-  display: block;
+  min-width: 150px;
 }

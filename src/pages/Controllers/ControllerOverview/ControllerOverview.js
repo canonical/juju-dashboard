@@ -37,20 +37,18 @@ export default function ControllersOverview() {
 
   return (
     <div className="p-strip is-shallow controllers-overview">
-      <div className="row">
-        <h5>Model status across controllers</h5>
-      </div>
-      <div className="row controller-overview__container">
-        <div className="col-4">
+      <h5>Model status across controllers</h5>
+      <div className="controllers-overview__container">
+        <div className="controllers-overview__chart">
           <ControllerChart chartData={machinesChartData} totalLabel="machine" />
         </div>
-        <div className="col-4">
+        <div className="controllers-overview__chart">
           <ControllerChart
             chartData={applicationsChartData}
             totalLabel="application"
           />
         </div>
-        <div className="col-4">
+        <div className="controllers-overview__chart">
           <ControllerChart chartData={unitsChartData} totalLabel="unit" />
         </div>
       </div>

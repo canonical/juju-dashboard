@@ -48,7 +48,7 @@ export default function Controllers() {
       <Header></Header>
       <div className="l-content controllers">
         <ControllersOverview />
-        <div className="row l-controllers-table">
+        <div className="l-controllers-table u-overflow--scroll">
           <h5>Controller status</h5>
           <MainTable
             className={"u-table-layout--auto"}
