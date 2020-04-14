@@ -19,7 +19,7 @@ const Terminal = ({ address, modelName }) => {
 
   const fitAddonRef = useRef({ current: null });
 
-  const terminalHeaderHeight = 40; // px
+  const terminalheaderHeight = 40; // px
   const minimumTerminalHeight = 84; // px
   const modelDetailHeaderHeight = 42; // px
 
@@ -47,7 +47,7 @@ const Terminal = ({ address, modelName }) => {
       const viewPortHeight = window.innerHeight;
       const mousePosition = e.clientY;
       const newTerminalHeight =
-        viewPortHeight - mousePosition + terminalHeaderHeight;
+        viewPortHeight - mousePosition + terminalheaderHeight;
 
       const maximumTerminalHeight = viewPortHeight - modelDetailHeaderHeight;
       if (
@@ -104,7 +104,7 @@ const Terminal = ({ address, modelName }) => {
       <div
         className="p-terminal__shell"
         style={{
-          height: `${terminalHeight - terminalHeaderHeight}px`,
+          height: `${terminalHeight - terminalheaderHeight}px`,
         }}
         ref={terminalElement}
       ></div>
