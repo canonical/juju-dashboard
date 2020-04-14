@@ -17,6 +17,10 @@
   &--visible {
     overflow: visible;
   }
+
+  &--hidden {
+    overflow: hidden;
+  }
 }
 
 // Display overrides

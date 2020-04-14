@@ -23,7 +23,16 @@ const Terminal = ({ address, modelName }) => {
   const minimumTerminalHeight = 84; // px
   const modelDetailHeaderHeight = 42; // px
 
+  const handleWheel = function (e) {
+    if (e.target.closest(".p-terminal")) {
+      document.body.classList.add("u-overflow--hidden");
+    } else {
+      document.body.classList.remove("u-overflow--hidden");
+    }
+  };
+
   useEffect(() => {
+    window.addEventListener("wheel", handleWheel);
     // If the model name is found after a juju switch then
     // switch to that route.
     const switchFound = (model) => {
@@ -77,6 +86,7 @@ const Terminal = ({ address, modelName }) => {
       // remove resize listener
       window.removeEventListener("mousedown", addResizeListener);
       window.removeEventListener("mouseup", removeResizeListener);
+      window.removeEventListener("wheel", handleWheel);
     };
     // Because the user can switch the model details UI from within the
     // component the `modelName` passed above will change as the UI
