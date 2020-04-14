@@ -23,11 +23,11 @@ const Terminal = ({ address, modelName }) => {
   const minimumTerminalHeight = 84; // px
   const modelDetailHeaderHeight = 42; // px
 
+  // Prevent scrolling the main content area when scrolling the terminal
+  // that is position fixed.
   const handleWheel = function (e) {
-    if (e.target.closest(".p-terminal")) {
-      document.body.classList.add("u-overflow--hidden");
-    } else {
-      document.body.classList.remove("u-overflow--hidden");
+    if (e.target.classList.contains("xterm-cursor-layer")) {
+      e.preventDefault();
     }
   };
 
