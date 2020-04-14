@@ -100,9 +100,6 @@ const Terminal = ({ address, modelName }) => {
       <div className="p-terminal__header">
         <span className="p-terminal__handle"></span>
         <span>Juju Terminal</span>
-        <div className="p-terminal__toggle">
-          <i className="p-icon--contextual-menu">Toggle Terminal visibility</i>
-        </div>
       </div>
       <div
         className="p-terminal__shell"
