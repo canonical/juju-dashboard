@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
@@ -15,14 +15,19 @@ const Layout = ({ children }) => {
   const sidebarCollapsible = useSelector(isSidebarCollapsible);
   const smallScreenBreakpoint = 1400;
   const isSmallScreen = screenWidth <= smallScreenBreakpoint ? true : false;
+  let isMounted = useRef(false);
 
   const handleScreenResize = () => {
-    setScreenWidth(getViewportWidth());
+    if (isMounted.current) {
+      setScreenWidth(getViewportWidth());
+    }
   };
 
   useEffect(() => {
+    isMounted.current = true;
     window.addEventListener("resize", debounce(handleScreenResize, 250));
     return () => {
+      isMounted.current = false;
       window.removeEventListener("resize", debounce(handleScreenResize, 250));
     };
   }, []);
