@@ -32,7 +32,7 @@ const Terminal = ({ address, modelName }) => {
   };
 
   useEffect(() => {
-    window.addEventListener("wheel", handleWheel);
+    window.addEventListener("wheel", handleWheel, { passive: false });
     // If the model name is found after a juju switch then
     // switch to that route.
     const switchFound = (model) => {
