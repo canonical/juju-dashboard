@@ -3,10 +3,7 @@ import ReactGA from "react-ga";
 export default function useAnalytics() {
   return ({ path, category, action }) => {
     const disableAnalytics = localStorage.getItem("disableAnalytics");
-    if (
-      process.env.NODE_ENV !== "production" ||
-      (disableAnalytics !== "false" && disableAnalytics !== undefined)
-    ) {
+    if (disableAnalytics === "true") {
       return;
     }
 

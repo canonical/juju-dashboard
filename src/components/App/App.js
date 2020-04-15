@@ -16,10 +16,7 @@ import { getConfig } from "app/selectors";
 function App() {
   const { baseAppURL } = useSelector(getConfig);
   const disableAnalytics = localStorage.getItem("disableAnalytics");
-  if (
-    process.env.NODE_ENV === "production" &&
-    (disableAnalytics === undefined || disableAnalytics === "false")
-  ) {
+  if (!disableAnalytics || disableAnalytics === "false") {
     ReactGA.initialize("UA-1018242-68");
     ReactGA.pageview(window.location.href.replace(window.location.origin, ""));
   }
