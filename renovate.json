@@ -1,9 +1,15 @@
 {
-  "extends": ["config:base", "schedule:monthly", "group:all"],
+  "extends": ["config:base"],
+  "labels": ["maintenance"],
   "packageRules": [
     {
-      "depTypeList": ["devDependencies"],
-      "extends": [":automergeMinor"]
+      "packagePatterns": ["*"],
+      "excludePackagePatterns": ["vanilla-framework"],
+      "extends": ["schedule:weekly"],
+      "minor": {
+        "groupName": "all non-major dependencies",
+        "groupSlug": "all-minor-patch"
+      }
     }
   ]
 }
