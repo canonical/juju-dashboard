@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
 
-import { getGroupedModelStatusCounts } from "app/selectors";
+import { getConfig, getGroupedModelStatusCounts } from "app/selectors";
 
 import { externalNavActive } from "ui/actions";
 import { isExternalNavActive } from "ui/selectors";
@@ -13,6 +13,7 @@ import UserMenu from "components/UserMenu/UserMenu";
 // Image imports
 import logoMark from "static/images/logo/logo-mark.svg";
 import logoText from "static/images/logo/logo-text.svg";
+import jujuText from "static/images/logo/juju-text.svg";
 import modelsIcon from "static/images/icons/models-icon.svg";
 import modelsIconSelected from "static/images/icons/models-icon--selected.svg";
 import controllersIcon from "static/images/icons/controllers-icon.svg";
@@ -69,6 +70,8 @@ const PrimaryNav = () => {
     /* eslint-enable */
   }, []);
 
+  const isJuju = useSelector(getConfig).isJuju;
+
   return (
     <nav
       className={classNames("p-primary-nav", {
@@ -86,7 +89,7 @@ const PrimaryNav = () => {
           />
           <img
             className="p-primary-nav__logo-text"
-            src={logoText}
+            src={isJuju ? jujuText : logoText}
             height="30"
             alt=""
           />
