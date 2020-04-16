@@ -76,7 +76,7 @@
     "redux-mock-store": "^1.5.3",
     "redux-thunk": "2.3.0",
     "reselect": "^4.0.0",
-    "vanilla-framework": "2.9.0",
+    "vanilla-framework": "2.9.1",
     "xterm": "4.4.0",
     "xterm-addon-fit": "0.3.0"
   },
