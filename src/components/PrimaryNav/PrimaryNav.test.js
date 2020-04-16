@@ -30,9 +30,8 @@ describe("Primary Nav", () => {
 
   it("external nav is active when externalNavActive in redux store is true", () => {
     const store = mockStore({
-      ui: {
-        externalNavActive: true,
-      },
+      root: { config: {} },
+      ui: { externalNavActive: true },
     });
     const wrapper = mount(
       <Provider store={store}>
@@ -69,5 +68,35 @@ describe("Primary Nav", () => {
       </Provider>
     );
     expect(wrapper.find(".entity-count").text()).toStrictEqual("6");
+  });
+
+  it("displays the JAAS logo under JAAS", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <PrimaryNav />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".p-primary-nav__logo-text").prop("src")).toBe(
+      "logo-text.svg"
+    );
+  });
+
+  it("displays the Juju logo under Juju", () => {
+    const store = mockStore({
+      root: { config: { isJuju: true } },
+    });
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <PrimaryNav />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".p-primary-nav__logo-text").prop("src")).toBe(
+      "juju-text.svg"
+    );
   });
 });
