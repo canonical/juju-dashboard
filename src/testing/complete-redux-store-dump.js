@@ -18,7 +18,8 @@ export default {
     config: {
       baseControllerURL: 'jimm.jujucharms.com',
       baseAppURL: '/',
-      identityProviderAvailable: true
+      identityProviderAvailable: true,
+      isJuju: false
     },
     controllerConnection: {
       transport: {
