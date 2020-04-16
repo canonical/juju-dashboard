@@ -108,9 +108,7 @@ const getRelationPosition = (data) => {
 export default ({ modelData, width, height }) => {
   const ref = useRef();
 
-  const { deltaX, deltaY } = computePositionDelta(
-    modelData && modelData.annotations
-  );
+  const { deltaX, deltaY } = computePositionDelta(modelData?.annotations);
 
   const applications =
     (modelData &&
@@ -132,7 +130,7 @@ export default ({ modelData, width, height }) => {
     }
   }
 
-  let { maxX, maxY } = computeMaxXY(modelData && modelData.annotations);
+  let { maxX, maxY } = computeMaxXY(modelData?.annotations);
   if (maxX === 0) {
     // If there is no maxX then all of the icons are unplaced
     // so set a maximum width.
@@ -141,16 +139,14 @@ export default ({ modelData, width, height }) => {
 
   // Dedupe the relations as we only draw a single line between two
   // applications regardless of how many relations are between them.
-  const endpoints =
-    modelData &&
-    modelData.relations.reduce((acc, relation) => {
-      const endpoints = relation.endpoints;
-      // We don't draw peer relations so we can ignore them.
-      if (endpoints.length > 1) {
-        acc.push(`${endpoints[0].application}:${endpoints[1].application}`);
-      }
-      return acc;
-    }, []);
+  const endpoints = modelData?.relations.reduce((acc, relation) => {
+    const endpoints = relation.endpoints;
+    // We don't draw peer relations so we can ignore them.
+    if (endpoints.length > 1) {
+      acc.push(`${endpoints[0].application}:${endpoints[1].application}`);
+    }
+    return acc;
+  }, []);
   // Remove any duplicate endpoints and split into pairs.
   const deDupedRelations = [...new Set(endpoints)].map((pair) =>
     pair.split(":")
