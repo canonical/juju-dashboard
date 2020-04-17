@@ -201,7 +201,7 @@ export default ({ modelData, width, height }) => {
       .attr("stroke-width", 3)
       .attr("stroke", "#888888")
       .call((_) => {
-        // When ever a new element is added zoom the canvas to fit.
+        // Whenever a new element is added zoom the canvas to fit.
         const {
           width: svgWidth,
           height: svgHeight,
