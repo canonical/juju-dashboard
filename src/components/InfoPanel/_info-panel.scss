@@ -39,6 +39,11 @@
       position: absolute;
       right: 10px;
     }
+
+    // Prevent click events on topology model unless in modal
+    svg {
+      pointer-events: none;
+    }
   }
 
   &__grid {
