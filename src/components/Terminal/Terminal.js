@@ -19,11 +19,20 @@ const Terminal = ({ address, modelName }) => {
 
   const fitAddonRef = useRef({ current: null });
 
-  const terminalHeaderHeight = 40; // px
+  const terminalheaderHeight = 40; // px
   const minimumTerminalHeight = 84; // px
   const modelDetailHeaderHeight = 42; // px
 
+  // Prevent scrolling the main content area when scrolling the terminal
+  // that is position fixed.
+  const handleWheel = function (e) {
+    if (e.target.closest(".p-terminal")) {
+      e.preventDefault();
+    }
+  };
+
   useEffect(() => {
+    window.addEventListener("wheel", handleWheel, { passive: false });
     // If the model name is found after a juju switch then
     // switch to that route.
     const switchFound = (model) => {
@@ -47,7 +56,7 @@ const Terminal = ({ address, modelName }) => {
       const viewPortHeight = window.innerHeight;
       const mousePosition = e.clientY;
       const newTerminalHeight =
-        viewPortHeight - mousePosition + terminalHeaderHeight;
+        viewPortHeight - mousePosition + terminalheaderHeight;
 
       const maximumTerminalHeight = viewPortHeight - modelDetailHeaderHeight;
       if (
@@ -77,6 +86,7 @@ const Terminal = ({ address, modelName }) => {
       // remove resize listener
       window.removeEventListener("mousedown", addResizeListener);
       window.removeEventListener("mouseup", removeResizeListener);
+      window.removeEventListener("wheel", handleWheel);
     };
     // Because the user can switch the model details UI from within the
     // component the `modelName` passed above will change as the UI
@@ -100,14 +110,11 @@ const Terminal = ({ address, modelName }) => {
       <div className="p-terminal__header">
         <span className="p-terminal__handle"></span>
         <span>Juju Terminal</span>
-        <div className="p-terminal__toggle">
-          <i className="p-icon--contextual-menu">Toggle Terminal visibility</i>
-        </div>
       </div>
       <div
         className="p-terminal__shell"
         style={{
-          height: `${terminalHeight - terminalHeaderHeight}px`,
+          height: `${terminalHeight - terminalheaderHeight}px`,
         }}
         ref={terminalElement}
       ></div>

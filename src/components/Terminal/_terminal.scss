@@ -46,15 +46,6 @@ $terminal-header-height: 40px;
       pointer-events: none;
     }
   }
-
-  &__toggle {
-    text-align: center;
-    transform: rotate(180deg);
-
-    .is-visible & {
-      transform: rotate(0);
-    }
-  }
 }
 
 .xterm-screen {
