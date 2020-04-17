@@ -26,7 +26,7 @@ const Terminal = ({ address, modelName }) => {
   // Prevent scrolling the main content area when scrolling the terminal
   // that is position fixed.
   const handleWheel = function (e) {
-    if (e.target.classList.contains("xterm-cursor-layer")) {
+    if (e.target.closest(".p-terminal")) {
       e.preventDefault();
     }
   };
