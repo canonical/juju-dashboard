@@ -1,4 +1,5 @@
 import {
+  disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
   loginWithBakery,
@@ -20,7 +21,7 @@ export default async function connectAndListModels(reduxStore, bakery) {
   try {
     const storeState = reduxStore.getState();
     const credentials = getUserPass(storeState);
-    const { identityProviderAvailable } = getConfig(storeState);
+    const { identityProviderAvailable, isJuju } = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
     const { conn, juju, intervalId } = await loginWithBakery(
       wsControllerURL,
@@ -31,7 +32,12 @@ export default async function connectAndListModels(reduxStore, bakery) {
     reduxStore.dispatch(updateControllerConnection(conn));
     reduxStore.dispatch(updateJujuAPIInstance(juju));
     reduxStore.dispatch(updatePingerIntervalId(intervalId));
-    fetchControllerList(reduxStore);
+    fetchControllerList(conn, reduxStore);
+    if (!isJuju) {
+      // This call will be a noop if the user isn't an administrator
+      // on the JIMM controller we're connected to.
+      disableControllerUUIDMasking(conn);
+    }
     do {
       await reduxStore.dispatch(fetchModelList());
       await fetchAllModelStatuses(conn, reduxStore);

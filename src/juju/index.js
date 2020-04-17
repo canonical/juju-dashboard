@@ -7,6 +7,8 @@ import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 
+import jimm from "app/jimm-facade";
+
 import {
   getBakery,
   getConfig,
@@ -29,7 +31,7 @@ import {
 */
 function generateConnectionOptions(usePinger = false, bakery, onClose) {
   // The options used when connecting to a Juju controller or model.
-  const facades = [annotations, client, modelManager];
+  const facades = [annotations, client, jimm, modelManager];
   if (usePinger) {
     facades.push(pinger);
   }
@@ -270,4 +272,13 @@ export async function fetchControllerList(reduxStore) {
       errorHandler(error, resp.currentTarget.response);
     }
   });
+}
+
+/**
+  Calls to disable the controller UUID masking on JIMM. This will be a noop
+  if the user is not an administrator on the controller.
+  @param {Object} conn The controller connection instance.
+*/
+export function disableControllerUUIDMasking(conn) {
+  conn.facades.jimM.disableControllerUUIDMasking();
 }
