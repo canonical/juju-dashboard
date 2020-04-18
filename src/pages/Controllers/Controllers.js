@@ -30,16 +30,21 @@ export default function Controllers() {
         const model = modelData[modelUUID];
         if (model.info) {
           const controllerUUID = model.info.controllerUuid;
-          controllerMap[controllerUUID].models += 1;
-          controllerMap[controllerUUID].machines += Object.keys(
-            model.machines
-          ).length;
-          const applicationKeys = Object.keys(model.applications);
-          controllerMap[controllerUUID].applications += applicationKeys.length;
-          const unitCount = applicationKeys.reduce((acc, appName) => {
-            return acc + Object.keys(model.applications[appName].units).length;
-          }, 0);
-          controllerMap[controllerUUID].units += unitCount;
+          if (controllerMap[controllerUUID]) {
+            controllerMap[controllerUUID].models += 1;
+            controllerMap[controllerUUID].machines += Object.keys(
+              model.machines
+            ).length;
+            const applicationKeys = Object.keys(model.applications);
+            controllerMap[controllerUUID].applications +=
+              applicationKeys.length;
+            const unitCount = applicationKeys.reduce((acc, appName) => {
+              return (
+                acc + Object.keys(model.applications[appName].units).length
+              );
+            }, 0);
+            controllerMap[controllerUUID].units += unitCount;
+          }
         }
       }
     }
