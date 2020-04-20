@@ -127,8 +127,9 @@
     @at-root {
       .is-collapsed {
         .p-primary-nav__logo-text {
-          @include vf-animation(padding, slow, ease-in-out);
-          padding: 0 0 0 0.6rem;
+          @include vf-animation(padding-left, slow, ease-in-out);
+
+          padding-left: 0.6rem;
         }
 
         .p-primary-nav__bottom {
