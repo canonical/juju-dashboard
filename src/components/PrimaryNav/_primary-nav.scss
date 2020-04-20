@@ -31,7 +31,7 @@
     padding-top: 3px;
 
     &-text {
-      padding-left: 0.6rem;
+      padding-left: 0.3rem;
     }
   }
 
@@ -126,6 +126,11 @@
 
     @at-root {
       .is-collapsed {
+        .p-primary-nav__logo-text {
+          @include vf-animation(padding, slow, ease-in-out);
+          padding: 0 0 0 0.6rem;
+        }
+
         .p-primary-nav__bottom {
           @include vf-animation(opacity, brisk, ease-in-out);
 
