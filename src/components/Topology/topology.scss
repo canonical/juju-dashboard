@@ -1,0 +1,10 @@
+.p-modal .application {
+  &:hover {
+    cursor: move;
+    z-index: 99999;
+  }
+
+  image {
+    pointer-events: none;
+  }
+}
