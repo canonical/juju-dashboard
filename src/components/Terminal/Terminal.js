@@ -11,6 +11,7 @@ import "./_terminal.scss";
 
 const Terminal = ({ address, modelName }) => {
   const terminalElement = useRef(null);
+  const resizeDeltaY = useRef(0);
   const macaroons = useSelector(getMacaroons);
   const history = useHistory();
 
@@ -56,7 +57,7 @@ const Terminal = ({ address, modelName }) => {
       const viewPortHeight = window.innerHeight;
       const mousePosition = e.clientY;
       const newTerminalHeight =
-        viewPortHeight - mousePosition + terminalheaderHeight;
+        viewPortHeight - mousePosition + resizeDeltaY.current;
 
       const maximumTerminalHeight = viewPortHeight - modelDetailHeaderHeight;
       if (
@@ -69,6 +70,7 @@ const Terminal = ({ address, modelName }) => {
 
     const addResizeListener = (e) => {
       if (e.target.classList.value === "p-terminal__header") {
+        resizeDeltaY.current = e.layerY;
         document.addEventListener("mousemove", resize);
       }
     };
