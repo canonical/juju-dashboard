@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
-
 import { generateIconPath } from "app/utils";
+
+import "./topology.scss";
 
 /**
   Returns whether the application is a subordinate.
@@ -174,9 +175,21 @@ export default ({ modelData, width, height }) => {
       y: maxY,
     };
 
+    function drag() {
+      const radius = d3.select("circle", this).attr("r");
+      d3.select(this)
+        .raise()
+        .attr("transform", (d) => {
+          const x = d3.event.x - radius;
+          const y = d3.event.y - radius;
+          return `translate(${x}, ${y})`;
+        });
+    }
+
     const appIcon = appIcons
       .enter()
       .append("g")
+      .call(d3.drag().on("drag", drag))
       .attr("transform", (d) => {
         const x = d["gui-x"] !== undefined ? d["gui-x"] : gridCount.x;
         const y = d["gui-y"] !== undefined ? d["gui-y"] : gridCount.y;
