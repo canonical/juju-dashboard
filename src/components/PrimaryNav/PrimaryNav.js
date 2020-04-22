@@ -256,17 +256,19 @@ const PrimaryNav = () => {
           </li>
         </ul>
       </div>
-      <div className="p-primary-nav__bottom">
-        <li className="p-list__item">
-          <a
-            className="p-list__link"
-            href="#_"
-            onClick={() => setShowSwitchModal(true)}
-          >
-            Switch back to the old Juju GUI
-          </a>
-        </li>
-      </div>
+      {!isJuju ? (
+        <div className="p-primary-nav__bottom">
+          <li className="p-list__item">
+            <a
+              className="p-list__link"
+              href="#_"
+              onClick={() => setShowSwitchModal(true)}
+            >
+              Switch back to the old Juju GUI
+            </a>
+          </li>
+        </div>
+      ) : null}
       <UserMenu />
     </nav>
   );
