@@ -9,6 +9,7 @@ import { externalNavActive } from "ui/actions";
 import { isExternalNavActive } from "ui/selectors";
 
 import UserMenu from "components/UserMenu/UserMenu";
+import Modal from "@canonical/react-components/dist/components/Modal";
 
 // Image imports
 import logoMark from "static/images/logo/logo-mark.svg";
@@ -47,6 +48,7 @@ const pages = [
 
 const PrimaryNav = () => {
   const [activeLinkValue, setActiveLinkValue] = useState("");
+  const [showSwitchModal, setShowSwitchModal] = useState(false);
   const extNavActive = useSelector(isExternalNavActive);
   const { blocked } = useSelector(getGroupedModelStatusCounts);
   const location = useLocation();
@@ -78,6 +80,43 @@ const PrimaryNav = () => {
         "ext-nav-open": extNavActive,
       })}
     >
+      {showSwitchModal ? (
+        <Modal
+          close={() => setShowSwitchModal(false)}
+          title={"Switch back to the old Juju GUI"}
+        >
+          <p>
+            We're sorry to see you go, we would really appreciate it if you
+            could take a moment to tell us why you prefer the old GUI using the
+            methods below.
+          </p>
+          <p>
+            <a
+              className="p-list__link"
+              href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Create an issue on GitHub
+            </a>
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              className="p-list__link"
+              href="#_"
+              onClick={(e) => {
+                e.preventDefault();
+                window.usabilla_live("click");
+              }}
+            >
+              Give feedback
+            </a>
+          </p>
+          <a href="https://jujucharms.com/new" className="p-button--neutral">
+            Click here to go back to the old Juju GUI
+          </a>
+        </Modal>
+      ) : null}
       <div className="p-primary-nav__header">
         <a href="https://jaas.ai" className="p-primary-nav__logo">
           <img
@@ -216,6 +255,17 @@ const PrimaryNav = () => {
             <span className="p-label--new">Alpha</span>
           </li>
         </ul>
+      </div>
+      <div className="p-primary-nav__bottom">
+        <li className="p-list__item">
+          <a
+            className="p-list__link"
+            href="#_"
+            onClick={() => setShowSwitchModal(true)}
+          >
+            Switch back to the old Juju GUI
+          </a>
+        </li>
       </div>
       <UserMenu />
     </nav>
