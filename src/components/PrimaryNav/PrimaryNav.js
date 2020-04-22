@@ -92,17 +92,17 @@ const PrimaryNav = () => {
           </p>
           <p>
             <a
-              className="p-list__link"
               href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new"
               target="_blank"
               rel="noopener noreferrer"
             >
               Create an issue on GitHub
             </a>
+          </p>
+          <p>
             <a
               rel="noopener noreferrer"
               target="_blank"
-              className="p-list__link"
               href="#_"
               onClick={(e) => {
                 e.preventDefault();
@@ -258,15 +258,17 @@ const PrimaryNav = () => {
       </div>
       {!isJuju ? (
         <div className="p-primary-nav__bottom">
-          <li className="p-list__item">
-            <a
-              className="p-list__link"
-              href="#_"
-              onClick={() => setShowSwitchModal(true)}
-            >
-              Switch back to the old Juju GUI
-            </a>
-          </li>
+          <ul className="p-list">
+            <li className="p-list__item">
+              <a
+                className="p-list__link"
+                href="#_"
+                onClick={() => setShowSwitchModal(true)}
+              >
+                Switch back to the old Juju GUI
+              </a>
+            </li>
+          </ul>
         </div>
       ) : null}
       <UserMenu />
