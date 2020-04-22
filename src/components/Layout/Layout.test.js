@@ -29,8 +29,8 @@ describe("Layout", () => {
         </Router>
       </Provider>
     );
-    expect(wrapper.find("#main-content").html()).toStrictEqual(
-      `<main class="l-main" id="main-content">content</main>`
+    expect(wrapper.find("[data-test='main-children']").html()).toStrictEqual(
+      `<div data-test="main-children">content</div>`
     );
   });
 });
