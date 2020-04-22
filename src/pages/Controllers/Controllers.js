@@ -5,13 +5,50 @@ import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
-import { getControllerData } from "app/selectors";
+import { getControllerData, getModelData } from "app/selectors";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 
 import "./_controllers.scss";
 
 export default function Controllers() {
   const controllerData = useSelector(getControllerData);
+  const modelData = useSelector(getModelData);
+
+  const controllerMap = {};
+  if (controllerData) {
+    controllerData.forEach((controller) => {
+      controllerMap[controller.uuid] = {
+        ...controller,
+        models: 0,
+        machines: 0,
+        applications: 0,
+        units: 0,
+      };
+    });
+    if (modelData) {
+      for (const modelUUID in modelData) {
+        const model = modelData[modelUUID];
+        if (model.info) {
+          const controllerUUID = model.info.controllerUuid;
+          if (controllerMap[controllerUUID]) {
+            controllerMap[controllerUUID].models += 1;
+            controllerMap[controllerUUID].machines += Object.keys(
+              model.machines
+            ).length;
+            const applicationKeys = Object.keys(model.applications);
+            controllerMap[controllerUUID].applications +=
+              applicationKeys.length;
+            const unitCount = applicationKeys.reduce((acc, appName) => {
+              return (
+                acc + Object.keys(model.applications[appName].units).length
+              );
+            }, 0);
+            controllerMap[controllerUUID].units += unitCount;
+          }
+        }
+      }
+    }
+  }
 
   const headers = [
     { content: "running", sortKey: "running" },
@@ -29,16 +66,16 @@ export default function Controllers() {
   ];
 
   const rows =
-    controllerData &&
-    Object.values(controllerData).map((c) => ({
+    controllerMap &&
+    Object.values(controllerMap).map((c) => ({
       columns: [
         { content: c.path },
         { content: `${c.location.cloud}/${c.location.region}` },
-        { content: "-", className: "u-align--right" },
-        { content: "-", className: "u-align--right" },
-        { content: "-", className: "u-align--right" },
-        { content: "-", className: "u-align--right" },
-        { content: "-", className: "u-align--right" },
+        { content: c.models, className: "u-align--right" },
+        { content: c.machines, className: "u-align--right" },
+        { content: c.applications, className: "u-align--right" },
+        { content: c.units, className: "u-align--right" },
+        { content: c.version, className: "u-align--right" },
         { content: `${c.Public}`, className: "u-align--right u-capitalise" },
       ],
     }));

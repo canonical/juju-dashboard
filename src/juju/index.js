@@ -7,6 +7,8 @@ import client from "@canonical/jujulib/api/facades/client-v2";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 
+import jimm from "app/jimm-facade";
+
 import {
   getBakery,
   getConfig,
@@ -29,7 +31,7 @@ import {
 */
 function generateConnectionOptions(usePinger = false, bakery, onClose) {
   // The options used when connecting to a Juju controller or model.
-  const facades = [annotations, client, modelManager];
+  const facades = [annotations, client, jimm, modelManager];
   if (usePinger) {
     facades.push(pinger);
   }
@@ -246,28 +248,19 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
 /**
   Performs an HTTP request to the controller to fetch the controller list.
   Will fail with a console error message if the user doesn't have access.
+  @param {Object} conn The Juju controller connection.
   @param {Object} reduxStore The applications reduxStore.
 */
-export async function fetchControllerList(reduxStore) {
-  const appState = reduxStore.getState();
-  const bakery = getBakery(appState);
-  const { baseControllerURL } = getConfig(appState);
-  const httpControllerURL = `https://${baseControllerURL}/v2`;
-  function errorHandler(err, data) {
-    // XXX Surface to UI.
-    console.error("unable to fetch controller list", err);
-    return;
-  }
-  bakery.get(`${httpControllerURL}/controller`, null, (err, resp) => {
-    if (err !== null) {
-      errorHandler(err, resp);
-      return;
-    }
-    try {
-      const parsed = JSON.parse(resp.currentTarget.response);
-      reduxStore.dispatch(updateControllerList(parsed.controllers));
-    } catch (error) {
-      errorHandler(error, resp.currentTarget.response);
-    }
-  });
+export async function fetchControllerList(conn, reduxStore) {
+  const response = await conn.facades.jimM.listControllers();
+  reduxStore.dispatch(updateControllerList(response.controllers));
+}
+
+/**
+  Calls to disable the controller UUID masking on JIMM. This will be a noop
+  if the user is not an administrator on the controller.
+  @param {Object} conn The controller connection instance.
+*/
+export function disableControllerUUIDMasking(conn) {
+  conn.facades.jimM.disableControllerUUIDMasking();
 }

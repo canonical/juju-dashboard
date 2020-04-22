@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Controllers table counts models, machines, apps, and units 1`] = `
+<tr
+  role="row"
+>
+  <TableCell>
+    admins/1-eu-west-1-aws-jaas
+  </TableCell>
+  <TableCell>
+    aws/eu-west-1
+  </TableCell>
+  <TableCell
+    className="u-align--right"
+  >
+    1
+  </TableCell>
+  <TableCell
+    className="u-align--right"
+  >
+    10
+  </TableCell>
+  <TableCell
+    className="u-align--right"
+  >
+    6
+  </TableCell>
+  <TableCell
+    className="u-align--right"
+  >
+    10
+  </TableCell>
+  <TableCell
+    className="u-align--right"
+  >
+    2.6.10
+  </TableCell>
+  <TableCell
+    className="u-align--right u-capitalise"
+  >
+    true
+  </TableCell>
+</tr>
+`;
