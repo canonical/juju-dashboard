@@ -41,6 +41,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-table-sortable;
 @include vf-p-tooltips;
 @include vf-u-align;
+@include vf-u-hide;
 @include vf-u-layout;
 @include vf-p-switch;
 

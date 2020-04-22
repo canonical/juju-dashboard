@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
 import useHover from "hooks/useHover";
@@ -49,7 +50,24 @@ const Layout = ({ children }) => {
         <PrimaryNav />
       </div>
       <main className="l-main" id="main-content">
-        {children}
+        <div data-test="main-children">{children}</div>
+        {!localStorage.getItem("release20_04") && (
+          <Notification
+            type="information"
+            close={() => {
+              localStorage.setItem("release20_04", true);
+            }}
+          >
+            Welcome the new JAAS Dashboard! This dashboard replaces the previous
+            Juju GUI here on jaas.ai and on your local Juju Controller from Juju
+            2.8.{" "}
+            <span className="u-hide--small">
+              Read more and join the discussion about this new product{" "}
+              <a href="#_">on Discourse</a>. We would love to hear your
+              feedback!
+            </span>
+          </Notification>
+        )}
       </main>
     </div>
   );

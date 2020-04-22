@@ -18,6 +18,20 @@
     padding-left: $sidebar-collapsed;
     width: 100vw;
   }
+
+  .p-notification--information {
+    bottom: 0;
+    margin: 0 1rem 1rem;
+    position: fixed;
+    width: calc(100vw - 18rem);
+    z-index: z("kappa");
+
+    @at-root {
+      .is-collapsed + .l-main .p-notification--information {
+        width: calc(100vw - 5rem);
+      }
+    }
+  }
 }
 
 .has-collapsible-sidebar .is-collapsed + .l-main {
