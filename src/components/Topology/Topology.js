@@ -106,7 +106,7 @@ const getRelationPosition = (data) => {
   };
 };
 
-export default ({ modelData, width, height }) => {
+const Topology = ({ modelData, width, height }) => {
   const ref = useRef();
 
   const { deltaX, deltaY } = computePositionDelta(modelData?.annotations);
@@ -271,3 +271,5 @@ export default ({ modelData, width, height }) => {
   }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
   return <svg ref={ref} />;
 };
+
+export default React.memo(Topology);
