@@ -22,14 +22,6 @@
     &__dialog {
       max-width: 400px;
     }
-
-    .p-list__link {
-      display: block;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
   }
 
   &__logo {
@@ -73,6 +65,10 @@
     }
   }
 
+  .p-modal .p-list__link {
+    display: block;
+  }
+
   .p-list__item {
     padding: 0;
 
@@ -100,6 +96,10 @@
       position: relative;
       top: 0.275rem;
     }
+  }
+
+  .p-modal .p-list__link:hover {
+    text-decoration: underline;
   }
 
   .p-primary-nav__bottom {
