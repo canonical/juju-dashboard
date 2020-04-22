@@ -11,8 +11,17 @@
 
   a,
   a:hover {
-    color: $color-light;
     text-decoration: none;
+  }
+
+  .p-modal {
+    // Temporary override for the 'back to old gui' popup.
+    position: fixed;
+    z-index: z("beta");
+
+    &__dialog {
+      max-width: 400px;
+    }
   }
 
   &__logo {
@@ -83,6 +92,10 @@
       position: relative;
       top: 0.275rem;
     }
+  }
+
+  .p-modal .p-list__link:hover {
+    text-decoration: underline;
   }
 
   .p-primary-nav__bottom {
