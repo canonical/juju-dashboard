@@ -251,8 +251,8 @@ const PrimaryNav = () => {
             </a>
           </li>
           <li className="p-list__item">
-            <span className="version">Version 0.0.2</span>
-            <span className="p-label--new">Alpha</span>
+            <span className="version">Version 0.1.0</span>
+            <span className="p-label--new">Beta</span>
           </li>
         </ul>
       </div>
