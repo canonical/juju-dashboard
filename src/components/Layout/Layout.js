@@ -58,8 +58,8 @@ const Layout = ({ children }) => {
               localStorage.setItem("release20_04", true);
             }}
           >
-            Welcome the new JAAS Dashboard! This dashboard replaces the previous
-            Juju GUI here on jaas.ai and on your local Juju Controller from Juju
+            Welcome the new JAAS Dashboard! This dashboard is the replacement
+            for the Juju GUI in JAAS and individual Juju Controllers from Juju
             2.8.{" "}
             <span className="u-hide--small">
               Read more and join the discussion about this new product{" "}
