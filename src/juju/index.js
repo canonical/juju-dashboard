@@ -292,3 +292,7 @@ export async function fetchControllerList(conn, reduxStore) {
 export function disableControllerUUIDMasking(conn) {
   conn.facades.jimM.disableControllerUUIDMasking();
 }
+
+export function updateAnnotations(annotations) {
+  console.log("updated juju");
+}

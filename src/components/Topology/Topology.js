@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
+import { updateAnnotations } from "juju/index";
 import { generateIconPath } from "app/utils";
 
 import "./topology.scss";
@@ -224,32 +225,26 @@ const Topology = ({ modelData, width, height }) => {
       const {
         width: svgWidth,
         height: svgHeight,
-      } = topo.node().getBoundingClientRect();
+      } = ref.current.getBoundingClientRect();
 
       console.log();
-
       d3.select(this).attr("transform", () => {
         const iconX = d3.event.x - radius;
         const iconY = d3.event.y - radius;
 
-        // Keep icon drag positon within bounds of SVG
-        const scale =
-          d3
-            .select(topo)
-            .node()
-            .attr("transform")
-            .split("scale(")[1]
-            .split(",")[0] * 10;
-        const x = Math.min(Math.max(iconX, 0), svgWidth * scale);
-        const y = Math.min(Math.max(iconY, 0), svgHeight * scale);
 
-        return `translate(${x}, ${y})`;
+
+        const x = Math.max(iconX, 0);
+        const y = Math.max(iconY, 0);
+
+        return `translate(${x}, ${iconY})`;
       });
       updateRelations(relationLine);
     }
 
     function dragended() {
       d3.select(this).select("circle").attr("stroke", "#888888");
+      updateAnnotations();
     }
 
     appIcon.call(
