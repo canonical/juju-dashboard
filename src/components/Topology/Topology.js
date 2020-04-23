@@ -221,9 +221,28 @@ const Topology = ({ modelData, width, height }) => {
 
     function drag() {
       const radius = d3.select("circle", this).attr("r");
+      const {
+        width: svgWidth,
+        height: svgHeight,
+      } = topo.node().getBoundingClientRect();
+
+      console.log();
+
       d3.select(this).attr("transform", () => {
-        const x = d3.event.x - radius;
-        const y = d3.event.y - radius;
+        const iconX = d3.event.x - radius;
+        const iconY = d3.event.y - radius;
+
+        // Keep icon drag positon within bounds of SVG
+        const scale =
+          d3
+            .select(topo)
+            .node()
+            .attr("transform")
+            .split("scale(")[1]
+            .split(",")[0] * 10;
+        const x = Math.min(Math.max(iconX, 0), svgWidth * scale);
+        const y = Math.min(Math.max(iconY, 0), svgHeight * scale);
+
         return `translate(${x}, ${y})`;
       });
       updateRelations(relationLine);
@@ -248,11 +267,12 @@ const Topology = ({ modelData, width, height }) => {
       .attr("stroke-width", 3)
       .attr("stroke", "#888888")
       .call((_) => {
-        // Whenever a new element is added zoom the canvas to fit.
         const {
           width: svgWidth,
           height: svgHeight,
         } = topo.node().getBoundingClientRect();
+        // Whenever a new element is added zoom the canvas to fit.
+        console.log(topo.node());
         if (svgWidth > 0 && svgHeight > 0) {
           // Magic number that presents reasonable padding around the viz.
           const padding = 200;
