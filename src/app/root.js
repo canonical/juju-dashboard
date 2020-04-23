@@ -17,6 +17,9 @@ function rootReducer(state = {}, action) {
       case actionsList.storeUserPass:
         draftState.credentials = action.payload;
         break;
+      case actionsList.storeVersion:
+        draftState.appVersion = action.payload;
+        break;
       case actionsList.storeVisitURL:
         draftState.visitURL = action.payload;
         break;

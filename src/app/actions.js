@@ -14,6 +14,7 @@ export const actionsList = {
   storeBakery: "STORE_BAKERY",
   storeConfig: "STORE_CONFIG",
   storeUserPass: "STORE_USER_PASS",
+  storeVersion: "STORE_VERSION",
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
   updateJujuAPIInstance: "UPDATE_JUJU_API_INSTANCE",
@@ -40,6 +41,16 @@ export function storeConfig(config) {
   return {
     type: actionsList.storeConfig,
     payload: config,
+  };
+}
+
+/**
+  @param {String} version The version of the application.
+*/
+export function storeVersion(version) {
+  return {
+    type: actionsList.storeVersion,
+    payload: version,
   };
 }
 

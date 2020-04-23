@@ -96,6 +96,13 @@ export const getPingerIntervalId = (state) => {
   return null;
 };
 
+/**
+  Fetches the application version.
+  @param {Object} state The application state.
+  @returns {Object|Undefined} The application version or undefined
+*/
+export const getAppVersion = (state) => state?.root?.appVersion;
+
 // ---- Utility selectors
 
 /**
