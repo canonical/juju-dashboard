@@ -4,6 +4,7 @@
 
 export default {
   root: {
+    appVersion: '0.1.0',
     bakery: {
       storage: {
         _store: {

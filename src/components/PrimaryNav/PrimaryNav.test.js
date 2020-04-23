@@ -99,4 +99,16 @@ describe("Primary Nav", () => {
       "juju-text.svg"
     );
   });
+
+  it("displays the version number", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <PrimaryNav />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".version").text()).toBe("Version 0.1.0");
+  });
 });
