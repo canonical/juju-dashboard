@@ -8,3 +8,11 @@
     pointer-events: none;
   }
 }
+
+svg {
+  outline: 1px solid blue;
+
+  > g {
+    outline: 2px solid palevioletred;
+  }
+}
