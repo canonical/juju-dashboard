@@ -14,6 +14,7 @@ import {
   connectAndStartPolling,
   storeBakery,
   storeConfig,
+  storeVersion,
   storeVisitURL,
 } from "app/actions";
 
@@ -22,6 +23,7 @@ import { getConfig } from "app/selectors";
 import jujuReducer from "juju/reducer";
 
 import "./scss/index.scss";
+import { version as appVersion } from "../package.json";
 
 import * as serviceWorker from "./serviceWorker";
 
@@ -58,6 +60,7 @@ if (config.baseControllerURL === null) {
   config.baseControllerURL = window.location.host;
 }
 reduxStore.dispatch(storeConfig(window.jaasDashboardConfig));
+reduxStore.dispatch(storeVersion(appVersion));
 
 const bakery = new Bakery({
   visitPage: (resp) => {

@@ -3,7 +3,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
 
-import { getConfig, getGroupedModelStatusCounts } from "app/selectors";
+import {
+  getConfig,
+  getGroupedModelStatusCounts,
+  getAppVersion,
+} from "app/selectors";
 
 import { externalNavActive } from "ui/actions";
 import { isExternalNavActive } from "ui/selectors";
@@ -51,6 +55,7 @@ const PrimaryNav = () => {
   const [showSwitchModal, setShowSwitchModal] = useState(false);
   const extNavActive = useSelector(isExternalNavActive);
   const { blocked } = useSelector(getGroupedModelStatusCounts);
+  const appVersion = useSelector(getAppVersion);
   const location = useLocation();
   const dispatch = useDispatch();
 
@@ -251,7 +256,7 @@ const PrimaryNav = () => {
             </a>
           </li>
           <li className="p-list__item">
-            <span className="version">Version 0.1.0</span>
+            <span className="version">Version {appVersion}</span>
             <span className="p-label--new">Beta</span>
           </li>
         </ul>
