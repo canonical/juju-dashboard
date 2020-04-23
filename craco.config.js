@@ -67,7 +67,7 @@ module.exports = function ({ env }) {
                     ],
                   },
                   // Added for profiling in devtools
-                  keep_classnames: isEnvProductionProfile,
+                  keep_classnames: true,
                   keep_fnames: true,
                   output: {
                     ecma: 5,
