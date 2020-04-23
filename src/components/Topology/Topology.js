@@ -178,18 +178,6 @@ const Topology = ({ modelData, width, height }) => {
     const relationLines = topo.selectAll(".relation").data(relations);
     const relationLine = relationLines.enter().insert("g", ":first-child");
 
-    function drag() {
-      const radius = d3.select("circle", this).attr("r");
-      d3.select(this)
-        .raise()
-        .attr("transform", (d) => {
-          const x = d3.event.x - radius;
-          const y = d3.event.y - radius;
-          return `translate(${x}, ${y})`;
-        });
-      updateRelations(relationLine);
-    }
-
     function setRelations(relationLine) {
       relationLine
         .classed("relation", true)
@@ -214,7 +202,6 @@ const Topology = ({ modelData, width, height }) => {
     const appIcon = appIcons
       .enter()
       .append("g")
-      .call(d3.drag().on("drag", drag))
       .attr("transform", (d) => {
         const x = d["gui-x"] !== undefined ? d["gui-x"] : gridCount.x;
         const y = d["gui-y"] !== undefined ? d["gui-y"] : gridCount.y;
@@ -227,6 +214,28 @@ const Topology = ({ modelData, width, height }) => {
         }
         return `translate(${x}, ${y})`;
       });
+
+    function dragstarted() {
+      d3.select(this).select("circle").attr("stroke", "#E9531F");
+    }
+
+    function drag() {
+      const radius = d3.select("circle", this).attr("r");
+      d3.select(this).attr("transform", () => {
+        const x = d3.event.x - radius;
+        const y = d3.event.y - radius;
+        return `translate(${x}, ${y})`;
+      });
+      updateRelations(relationLine);
+    }
+
+    function dragended() {
+      d3.select(this).select("circle").attr("stroke", "#888888");
+    }
+
+    appIcon.call(
+      d3.drag().on("start", dragstarted).on("drag", drag).on("end", dragended)
+    );
 
     appIcon
       .classed("application", true)
