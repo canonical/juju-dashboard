@@ -175,6 +175,9 @@ const Topology = ({ modelData, width, height }) => {
       y: maxY,
     };
 
+    const relationLines = topo.selectAll(".relation").data(relations);
+    const relationLine = relationLines.enter().insert("g", ":first-child");
+
     function drag() {
       const radius = d3.select("circle", this).attr("r");
       d3.select(this)
@@ -184,6 +187,28 @@ const Topology = ({ modelData, width, height }) => {
           const y = d3.event.y - radius;
           return `translate(${x}, ${y})`;
         });
+      updateRelations(relationLine);
+    }
+
+    function setRelations(relationLine) {
+      relationLine
+        .classed("relation", true)
+        .append("line")
+        .attr("x1", (d) => getRelationPosition(d).x1)
+        .attr("y1", (d) => getRelationPosition(d).y1)
+        .attr("x2", (d) => getRelationPosition(d).x2)
+        .attr("y2", (d) => getRelationPosition(d).y2)
+        .attr("stroke", "#666666")
+        .attr("stroke-width", 2);
+    }
+
+    function updateRelations(relationLine) {
+      relationLine
+        .select("line")
+        .attr("x1", (d) => getRelationPosition(d).x1)
+        .attr("y1", (d) => getRelationPosition(d).y1)
+        .attr("x2", (d) => getRelationPosition(d).x2)
+        .attr("y2", (d) => getRelationPosition(d).y2);
     }
 
     const appIcon = appIcons
@@ -249,18 +274,7 @@ const Topology = ({ modelData, width, height }) => {
           : "circle(55px at 63px 63px)"
       );
 
-    const relationLines = topo.selectAll(".relation").data(relations);
-    const relationLine = relationLines.enter().insert("g", ":first-child");
-
-    relationLine
-      .classed("relation", true)
-      .append("line")
-      .attr("x1", (d) => getRelationPosition(d).x1)
-      .attr("y1", (d) => getRelationPosition(d).y1)
-      .attr("x2", (d) => getRelationPosition(d).x2)
-      .attr("y2", (d) => getRelationPosition(d).y2)
-      .attr("stroke", "#666666")
-      .attr("stroke-width", 2);
+    setRelations(relationLine);
 
     appIcons.exit().remove();
     relationLines.exit().remove();
