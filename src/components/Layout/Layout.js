@@ -62,7 +62,7 @@ const Layout = ({ children }) => {
             for the Juju GUI in JAAS and individual Juju Controllers from Juju
             2.8.{" "}
             <span className="u-hide--small">
-              Read more and join the discussion about this new product{" "}
+              Read more and join the discussion about this new dashboard{" "}
               <a
                 className="p-link--external"
                 target="_blank"
