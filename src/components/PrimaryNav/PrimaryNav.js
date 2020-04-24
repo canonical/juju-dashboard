@@ -9,6 +9,8 @@ import {
   getAppVersion,
 } from "app/selectors";
 
+import useAnalytics from "hooks/useAnalytics";
+
 import { externalNavActive } from "ui/actions";
 import { isExternalNavActive } from "ui/selectors";
 
@@ -58,6 +60,7 @@ const PrimaryNav = () => {
   const appVersion = useSelector(getAppVersion);
   const location = useLocation();
   const dispatch = useDispatch();
+  const sendAnalytics = useAnalytics();
 
   useEffect(() => {
     setActiveLinkValue(location.pathname);
@@ -268,7 +271,13 @@ const PrimaryNav = () => {
               <a
                 className="p-list__link"
                 href="#_"
-                onClick={() => setShowSwitchModal(true)}
+                onClick={() => {
+                  sendAnalytics({
+                    category: "User",
+                    action: "Clicked 'Switch back to old GUI' link",
+                  });
+                  setShowSwitchModal(true);
+                }}
               >
                 Switch back to the old Juju GUI
               </a>
