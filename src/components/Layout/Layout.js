@@ -71,7 +71,7 @@ const Layout = ({ children }) => {
               >
                 on Discourse
               </a>
-              We would love to hear your feedback!
+              . We would love to hear your feedback.
             </span>
           </Notification>
         )}
