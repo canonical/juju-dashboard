@@ -4,6 +4,7 @@ import Notification from "@canonical/react-components/dist/components/Notificati
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
 import useHover from "hooks/useHover";
+import useLocalStorage from "hooks/useLocalStorage";
 import { getViewportWidth, debounce } from "app/utils";
 
 import { isSidebarCollapsible } from "ui/selectors";
@@ -13,6 +14,10 @@ import "./_layout.scss";
 const Layout = ({ children }) => {
   const [sidebarRef, isSidebarHovered] = useHover();
   const [screenWidth, setScreenWidth] = useState(getViewportWidth());
+  const [releaseNotification, setReleaseNotification] = useLocalStorage(
+    "releaseNotification",
+    false
+  );
   const sidebarCollapsible = useSelector(isSidebarCollapsible);
   const smallScreenBreakpoint = 1400;
   const isSmallScreen = screenWidth <= smallScreenBreakpoint ? true : false;
@@ -51,11 +56,11 @@ const Layout = ({ children }) => {
       </div>
       <main className="l-main" id="main-content">
         <div data-test="main-children">{children}</div>
-        {!localStorage.getItem("release20_04") && (
+        {!releaseNotification && (
           <Notification
             type="information"
             close={() => {
-              localStorage.setItem("release20_04", true);
+              setReleaseNotification(true);
             }}
           >
             Welcome to the new JAAS Dashboard! This dashboard is the replacement
