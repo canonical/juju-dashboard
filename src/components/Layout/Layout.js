@@ -63,8 +63,15 @@ const Layout = ({ children }) => {
             2.8.{" "}
             <span className="u-hide--small">
               Read more and join the discussion about this new product{" "}
-              <a href="#_">on Discourse</a>. We would love to hear your
-              feedback!
+              <a
+                className="p-link--external"
+                target="_blank"
+                rel="noreferrer noopener"
+                href="https://discourse.juju.is/t/jaas-dashboard-the-new-juju-gui/2978"
+              >
+                on Discourse
+              </a>
+              We would love to hear your feedback!
             </span>
           </Notification>
         )}
