@@ -12,10 +12,11 @@ import { Routes } from "components/Routes/Routes";
 import NotFound from "pages/NotFound/NotFound";
 
 import { getConfig } from "app/selectors";
+import useLocalStorage from "hooks/useLocalStorage";
 
 function App() {
   const { baseAppURL } = useSelector(getConfig);
-  const disableAnalytics = localStorage.getItem("disableAnalytics");
+  const [disableAnalytics] = useLocalStorage("disableAnalytics", false);
   if (!disableAnalytics || disableAnalytics === "false") {
     ReactGA.initialize("UA-1018242-68");
     ReactGA.pageview(window.location.href.replace(window.location.origin, ""));

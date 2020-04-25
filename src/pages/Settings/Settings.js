@@ -4,9 +4,16 @@ import Notification from "@canonical/react-components/dist/components/Notificati
 import Header from "components/Header/Header";
 import Layout from "components/Layout/Layout";
 
+import useLocalStorage from "hooks/useLocalStorage";
+
 import "./settings.scss";
 
 export default function Settings() {
+  const [disableAnalytics, setDisableAnalytics] = useLocalStorage(
+    "disableAnalytics",
+    false
+  );
+
   return (
     <Layout>
       <Header>
@@ -23,14 +30,9 @@ export default function Settings() {
               <input
                 type="checkbox"
                 className="p-switch"
-                defaultChecked={
-                  localStorage.getItem("disableAnalytics") === "true"
-                }
+                defaultChecked={disableAnalytics}
                 onChange={(e) => {
-                  localStorage.setItem(
-                    "disableAnalytics",
-                    e.currentTarget.checked
-                  );
+                  setDisableAnalytics(e.currentTarget.checked);
                 }}
               />
               <div className="p-switch__slider"></div>
