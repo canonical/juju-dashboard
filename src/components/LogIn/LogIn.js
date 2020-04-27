@@ -3,7 +3,7 @@ import { useDispatch, useSelector, useStore } from "react-redux";
 import { isLoggedIn, getBakery, getConfig } from "app/selectors";
 import { connectAndStartPolling, storeUserPass } from "app/actions";
 
-import Loader from "@canonical/react-components/dist/components/Loader";
+import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import logo from "static/images/logo/logo-black-on-white.svg";
 
@@ -95,7 +95,7 @@ function Button({ visitURL }) {
   } else {
     return (
       <button className="p-button--neutral" disabled>
-        <Loader text="Connecting..." />
+        <Spinner text="Connecting..." />
       </button>
     );
   }
