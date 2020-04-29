@@ -8,11 +8,6 @@ import dataDump from "testing/complete-redux-store-dump";
 
 import ModelDetails from "./ModelDetails";
 
-jest.mock("components/Terminal/Terminal", () => {
-  const Terminal = () => <div className="terminal"></div>;
-  return Terminal;
-});
-
 jest.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
   return Topology;
@@ -80,20 +75,6 @@ describe("ModelDetail Container", () => {
       </Provider>
     );
     expect(wrapper.find(".subordinate").length).toEqual(2);
-  });
-
-  it("renders the terminal", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/test1"]}>
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find("Terminal").length).toBe(1);
   });
 
   it("clicking an application row filters the results", () => {
