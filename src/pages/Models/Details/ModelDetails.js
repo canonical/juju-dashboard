@@ -7,7 +7,6 @@ import cloneDeep from "clone-deep";
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
-import Terminal from "components/Terminal/Terminal";
 import Header from "components/Header/Header";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
@@ -214,10 +213,6 @@ const ModelDetails = () => {
           </div>
         </div>
       </div>
-      <Terminal
-        address="wss://shell.jujugui.org:443/ws/"
-        modelName={modelName}
-      />
     </Layout>
   );
 };
