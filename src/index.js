@@ -5,6 +5,7 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
+import * as Sentry from "@sentry/browser";
 import App from "components/App/App";
 import checkAuth from "app/check-auth";
 import rootReducer from "app/root";
@@ -26,6 +27,12 @@ import "./scss/index.scss";
 import { version as appVersion } from "../package.json";
 
 import * as serviceWorker from "./serviceWorker";
+
+if (process.env.NODE_ENV === "production") {
+  Sentry.init({
+    dsn: "https://5b54e6946be34749935c4dd2d9d01cb8@sentry.is.canonical.com/7",
+  });
+}
 
 if (!window.jaasDashboardConfig) {
   console.error(
