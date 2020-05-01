@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import * as Sentry from "@sentry/browser";
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -14,15 +15,17 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    // Log to Sentry when enabled
-    console.log(error, info); // eslint-disable-line no-console
+    Sentry.withScope((scope) => {
+      scope.setExtras(info);
+      const eventId = Sentry.captureException(error);
+      this.setState({ eventId });
+    });
   }
 
   render() {
     const { hasError } = this.state;
     const { children } = this.props;
     if (hasError) {
-      // Render error notification
       return (
         <div className="p-notification--negative">
           <p className="p-notification__response">
