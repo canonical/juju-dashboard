@@ -1,6 +1,6 @@
 {
   "name": "jaas-dashboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A dashboard for JAAS (Juju as a service)",
   "bugs": {
     "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
@@ -16,9 +16,11 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "craco build",
+    "build": "craco build && yarn run generate-version-file",
     "clean": "./scripts/clean-files",
     "eslint-check": "eslint src/",
+    "generate-release-tarball": "yarn run build && ./scripts/generate-release-tarball",
+    "generate-version-file": "./scripts/generate-version-file",
     "lint": "yarn run eslint-check && yarn run prettier-check && yarn run stylelint-check",
     "prettier-check": "prettier --check 'src/**/*'",
     "serve": "yarn run start",
