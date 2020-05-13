@@ -252,8 +252,10 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
   @param {Object} reduxStore The applications reduxStore.
 */
 export async function fetchControllerList(conn, reduxStore) {
-  const response = await conn.facades.jimM.listControllers();
-  reduxStore.dispatch(updateControllerList(response.controllers));
+  if (conn.facades.jimM) {
+    const response = await conn.facades.jimM.listControllers();
+    reduxStore.dispatch(updateControllerList(response.controllers));
+  }
 }
 
 /**
