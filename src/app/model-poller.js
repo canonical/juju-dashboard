@@ -17,6 +17,8 @@ import {
   isLoggedIn,
 } from "./selectors";
 
+import { userIsControllerAdmin } from "./utils";
+
 export default async function connectAndListModels(reduxStore, bakery) {
   try {
     const storeState = reduxStore.getState();
@@ -32,11 +34,13 @@ export default async function connectAndListModels(reduxStore, bakery) {
     reduxStore.dispatch(updateControllerConnection(conn));
     reduxStore.dispatch(updateJujuAPIInstance(juju));
     reduxStore.dispatch(updatePingerIntervalId(intervalId));
-    fetchControllerList(conn, reduxStore);
-    if (!isJuju) {
-      // This call will be a noop if the user isn't an administrator
-      // on the JIMM controller we're connected to.
-      disableControllerUUIDMasking(conn);
+    if (userIsControllerAdmin(conn)) {
+      fetchControllerList(conn, reduxStore);
+      if (!isJuju) {
+        // This call will be a noop if the user isn't an administrator
+        // on the JIMM controller we're connected to.
+        disableControllerUUIDMasking(conn);
+      }
     }
     do {
       await reduxStore.dispatch(fetchModelList());
