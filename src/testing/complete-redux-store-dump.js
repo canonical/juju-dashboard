@@ -36,7 +36,7 @@ export default {
         user: {
           displayName: 'activedev',
           identity: 'user-activedev@external',
-          controllerAccess: '',
+          controllerAccess: 'superuser',
           modelAccess: ''
         }
       },

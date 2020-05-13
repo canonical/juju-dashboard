@@ -58,4 +58,19 @@ describe("Controllers table", () => {
     );
     expect(wrapper.find("tbody tr").get(0)).toMatchSnapshot();
   });
+
+  it("renders a warning if you do not have access", () => {
+    dataDump.root.controllerConnection.info.user.controllerAccess = "";
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <Controllers />
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(
+      wrapper.find('Notification[type="caution"]').text()
+    ).toMatchSnapshot();
+  });
 });
