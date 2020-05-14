@@ -1,0 +1,6 @@
+#!/bin/bash
+
+VERSION=`npm version | grep jaas-dashboard | cut -d"'" -f4`
+GIT_SHA=`git rev-parse HEAD`
+
+echo '{"version": "'$VERSION'", "git-sha": "'$GIT_SHA'"}' >> build/version.json
