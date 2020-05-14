@@ -1,5 +1,9 @@
 @import "vanilla-framework/scss/vanilla";
 
+.models .p-main-table caption {
+  margin-top: 0.5rem;
+}
+
 .model-table-list_error-message {
   color: $color-negative;
   display: block;
