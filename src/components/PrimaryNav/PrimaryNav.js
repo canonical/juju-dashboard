@@ -258,33 +258,33 @@ const PrimaryNav = () => {
               Give feedback
             </a>
           </li>
+          {!isJuju ? (
+            <li className="p-list__item">
+              <a
+                className="p-list__link"
+                href="#_"
+                onClick={() => {
+                  sendAnalytics({
+                    category: "User",
+                    action: "Clicked 'Switch back to old GUI' link",
+                  });
+                  setShowSwitchModal(true);
+                }}
+              >
+                Switch back to the old Juju GUI
+              </a>
+            </li>
+          ) : null}
+        </ul>
+      </div>
+      <div className="p-primary-nav__bottom">
+        <ul className="p-list">
           <li className="p-list__item">
-            <a
-              className="p-list__link"
-              href="#_"
-              onClick={() => {
-                sendAnalytics({
-                  category: "User",
-                  action: "Clicked 'Switch back to old GUI' link",
-                });
-                setShowSwitchModal(true);
-              }}
-            >
-              Switch back to the old Juju GUI
-            </a>
+            <span className="version">Version {appVersion}</span>
+            <span className="p-label--new">Beta</span>
           </li>
         </ul>
       </div>
-      {!isJuju ? (
-        <div className="p-primary-nav__bottom">
-          <ul className="p-list">
-            <li className="p-list__item">
-              <span className="version">Version {appVersion}</span>
-              <span className="p-label--new">Beta</span>
-            </li>
-          </ul>
-        </div>
-      ) : null}
       <UserMenu />
     </nav>
   );
