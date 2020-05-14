@@ -450,6 +450,9 @@ export const isLoggedIn = (state) => {
   );
 };
 
+export const getControllerConnection = (state) =>
+  state?.root?.controllerConnection;
+
 export const isConnecting = (state) => !!state.root.visitURL;
 /**
   Returns the users current controller logged in identity

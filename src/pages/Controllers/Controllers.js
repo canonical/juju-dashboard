@@ -3,14 +3,21 @@ import { useSelector } from "react-redux";
 
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
+import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
-import { getControllerData, getModelData } from "app/selectors";
+import {
+  getControllerConnection,
+  getControllerData,
+  getModelData,
+} from "app/selectors";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
+
+import { userIsControllerAdmin } from "../../app/utils";
 
 import "./_controllers.scss";
 
-export default function Controllers() {
+function Details() {
   const controllerData = useSelector(getControllerData);
   const modelData = useSelector(getModelData);
 
@@ -81,14 +88,32 @@ export default function Controllers() {
     }));
 
   return (
+    <>
+      <ControllersOverview />
+      <div className="l-controllers-table u-overflow--scroll">
+        <h5>Controller status</h5>
+        <MainTable headers={headers} rows={rows} />
+      </div>
+    </>
+  );
+}
+
+function NoAccess() {
+  return (
+    <Notification type="caution">
+      Sorry, you do not have permission to view this page, If you think that
+      this is in error, contact your administrator.
+    </Notification>
+  );
+}
+
+export default function Controllers() {
+  const conn = useSelector(getControllerConnection);
+  return (
     <Layout>
       <Header></Header>
       <div className="l-content controllers">
-        <ControllersOverview />
-        <div className="l-controllers-table u-overflow--scroll">
-          <h5>Controller status</h5>
-          <MainTable headers={headers} rows={rows} />
-        </div>
+        {userIsControllerAdmin(conn) ? <Details /> : <NoAccess />}
       </div>
     </Layout>
   );

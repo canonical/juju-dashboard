@@ -217,3 +217,8 @@ export const debounce = (fn, wait) => {
     t = setTimeout(() => fn.apply(this, arguments), wait);
   };
 };
+
+export const userIsControllerAdmin = (conn) => {
+  const controllerAccess = conn?.info?.user?.controllerAccess;
+  return ["superuser", "admin"].includes(controllerAccess);
+};
