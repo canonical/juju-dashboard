@@ -43,4 +43,4 @@ exports[`Controllers table counts models, machines, apps, and units 1`] = `
 </tr>
 `;
 
-exports[`Controllers table renders a warning if you do not have access 1`] = `"Sorry, you do not have permission to view this page, If you think that this is in error, contact your administrator."`;
+exports[`Controllers table renders a warning if you do not have access 1`] = `"Sorry, you do not have permission to view this page. If you think you should have permission, please contact your administrator."`;
