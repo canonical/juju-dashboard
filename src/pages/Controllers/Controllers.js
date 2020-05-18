@@ -101,8 +101,8 @@ function Details() {
 function NoAccess() {
   return (
     <Notification type="caution">
-      Sorry, you do not have permission to view this page, If you think that
-      this is in error, contact your administrator.
+      Sorry, you do not have permission to view this page. If you think you
+      should have permission, please contact your administrator.
     </Notification>
   );
 }
