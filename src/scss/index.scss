@@ -1,6 +1,10 @@
 // Import Vanilla Framework
 @import "node_modules/vanilla-framework/scss/vanilla";
 
+// Vanilla overrides
+$increase-font-size-on-larger-screens: false;
+$color-link-visited: $color-link;
+
 // Import settings
 @import "settings";
 
