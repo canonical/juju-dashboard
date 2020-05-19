@@ -14,6 +14,14 @@
     text-decoration: none;
   }
 
+  &__divider {
+    background: $color-x-light;
+    box-sizing: border-box;
+    margin: 0 1rem 1rem;
+    max-width: calc(#{$sidebar-full-width} - 2rem);
+    opacity: 0.1;
+  }
+
   .p-modal {
     // Temporary override for the 'back to old gui' popup.
     position: fixed;
@@ -67,6 +75,10 @@
     }
   }
 
+  .p-list {
+    margin-bottom: 1rem;
+  }
+
   .p-list__item {
     padding: 0;
 
@@ -101,9 +113,7 @@
   }
 
   .p-primary-nav__bottom {
-    border-top: 1px solid $color-mid-dark;
     margin-top: 0;
-    padding-top: 1rem;
 
     .p-list {
       &__item {
