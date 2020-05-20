@@ -232,6 +232,7 @@ const PrimaryNav = () => {
           </li>
         ))}
       </ul>
+      <hr className="p-primary-nav__divider" />
       <div className="p-primary-nav__bottom">
         <ul className="p-list">
           <li className="p-list__item">
@@ -277,6 +278,7 @@ const PrimaryNav = () => {
           ) : null}
         </ul>
       </div>
+      <hr className="p-primary-nav__divider" />
       <div className="p-primary-nav__bottom">
         <ul className="p-list">
           <li className="p-list__item">
