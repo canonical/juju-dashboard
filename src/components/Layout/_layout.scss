@@ -24,10 +24,12 @@
     margin: 0 1rem 1rem;
     position: fixed;
     width: calc(100vw - 18rem);
-    z-index: z("kappa");
+    z-index: z("iota");
 
     @at-root {
-      .is-collapsed + .l-main .p-notification--information {
+      /* prettier-ignore */
+      .is-collapsed + .l-main .p-notification--information,
+      .has-collapsible-sidebar :not(.is-collapsed) + .l-main .p-notification--information {
         width: calc(100vw - 5rem);
       }
     }
