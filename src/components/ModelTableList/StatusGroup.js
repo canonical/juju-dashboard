@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import Skeleton from "react-loading-skeleton";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
 import {
@@ -154,13 +155,60 @@ export default function StatusGroup({ activeUser, filters }) {
     getGroupedByStatusAndFilteredModelData(filters)
   );
 
-  const {
-    blockedRows,
-    alertRows,
-    runningRows,
-  } = generateModelTableDataByStatus(groupedAndFilteredData, activeUser);
+  let { blockedRows, alertRows, runningRows } = generateModelTableDataByStatus(
+    groupedAndFilteredData,
+    activeUser
+  );
 
   const emptyStateMsg = "There are no models with this status";
+
+  if (blockedRows.length === 0) {
+    blockedRows = [
+      {
+        columns: [
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+        ],
+      },
+    ];
+  }
+
+  if (alertRows.length === 0) {
+    alertRows = [
+      {
+        columns: [
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+        ],
+      },
+    ];
+  }
+
+  if (runningRows.length === 0) {
+    runningRows = [
+      {
+        columns: [
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+          { content: <Skeleton count={5} /> },
+        ],
+      },
+    ];
+  }
 
   return (
     <div className="status-group u-overflow--scroll">
