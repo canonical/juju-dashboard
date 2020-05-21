@@ -1,11 +1,36 @@
+@import "vanilla-framework/scss/vanilla";
+
 .settings {
+  label {
+    border-bottom: 1px solid $color-mid-light;
+    padding-bottom: 0.5rem;
+    width: 100%;
+  }
+
+  &__toggles-group {
+    margin-bottom: 2rem;
+    position: relative;
+    width: 100%;
+
+    .p-switch__slider {
+      position: absolute;
+      right: 0;
+      top: 0.25rem;
+    }
+  }
+
+  &__toggles-info {
+    color: $color-mid-dark;
+    font-size: 0.875rem;
+  }
+
   &__header {
     align-items: center;
     display: grid;
   }
 
   &__toggles {
-    margin-top: 2rem;
-    max-width: 550px;
+    margin-top: 1rem;
+    max-width: 300px;
   }
 }
