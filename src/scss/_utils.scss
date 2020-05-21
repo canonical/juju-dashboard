@@ -3,8 +3,12 @@
   text-transform: capitalize;
 
   // Capitalise only the first letter of a string
-  &--first-letter::first-letter {
-    text-transform: uppercase;
+  &--first-letter {
+    display: inline-block;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
   }
 }
 
