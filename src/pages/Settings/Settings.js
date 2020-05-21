@@ -1,6 +1,4 @@
 import React from "react";
-import Notification from "@canonical/react-components/dist/components/Notification/Notification";
-
 import Header from "components/Header/Header";
 import Layout from "components/Layout/Layout";
 
@@ -19,25 +17,26 @@ export default function Settings() {
       <Header>
         <span className="l-content settings__header">Settings</span>
       </Header>
-      <div className="l-content">
+      <div className="l-content settings">
         <div className="settings__toggles">
-          <Notification>
-            You will need to refresh your browser for this change to take effect
-          </Notification>
-          <label className="row">
-            <div className="col-6">Disable Analytics</div>
-            <div className="col-3">
+          <div className="settings__toggles-group">
+            <label>
+              Disable analytics
               <input
                 type="checkbox"
                 className="p-switch"
                 defaultChecked={disableAnalytics}
-                onChange={(e) => {
-                  setDisableAnalytics(e.currentTarget.checked);
+                onChange={() => {
+                  setDisableAnalytics(!disableAnalytics);
                 }}
               />
               <div className="p-switch__slider"></div>
+            </label>
+            <div className="settings__toggles-info">
+              You will need to refresh your browser for this setting to take
+              effect.
             </div>
-          </label>
+          </div>
         </div>
       </div>
     </Layout>
