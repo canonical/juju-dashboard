@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import { isLoggedIn } from "app/selectors";
 import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
@@ -18,6 +19,7 @@ const Layout = ({ children }) => {
     "releaseNotification",
     false
   );
+  const userIsLoggedIn = useSelector(isLoggedIn);
   const sidebarCollapsible = useSelector(isSidebarCollapsible);
   const smallScreenBreakpoint = 1400;
   const isSmallScreen = screenWidth <= smallScreenBreakpoint ? true : false;
@@ -56,7 +58,7 @@ const Layout = ({ children }) => {
       </div>
       <main className="l-main" id="main-content">
         <div data-test="main-children">{children}</div>
-        {!releaseNotification && (
+        {userIsLoggedIn && !releaseNotification && (
           <Notification
             type="information"
             close={() => {
