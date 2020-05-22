@@ -1,3 +1,5 @@
+import cloneDeep from "clone-deep";
+
 import { fetchAndStoreModelStatus } from "juju";
 
 // Action labels
@@ -99,5 +101,27 @@ export function fetchModelStatus(modelUUID) {
       return;
     }
     fetchAndStoreModelStatus(modelUUID, dispatch, getState);
+  };
+}
+
+/**
+  Updates the correct controller entry with a cloud and region fetched from
+  the supplied model info call.
+  @param {String} modelInfo The response from a modelInfo call.
+*/
+export function addControllerCloudRegion(modelInfo) {
+  return async function addControllerCloudRegion(dispatch, getState) {
+    const controllers = getState()?.juju?.controllers;
+    const model = modelInfo.results[0].result;
+    const updatedControllers = cloneDeep(controllers).map((controller) => {
+      if (controller.uuid === model.controllerUuid) {
+        controller.location = {
+          cloud: model.cloudRegion,
+          region: model.cloudTag.replace("cloud-", ""),
+        };
+      }
+      return controller;
+    });
+    dispatch(updateControllerList(updatedControllers));
   };
 }

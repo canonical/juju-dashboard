@@ -4,6 +4,8 @@ import jujulib from "@canonical/jujulib";
 // mangle.reserved list in craco.config.js.
 import annotations from "@canonical/jujulib/api/facades/annotations-v2";
 import client from "@canonical/jujulib/api/facades/client-v2";
+import cloud from "@canonical/jujulib/api/facades/cloud-v3";
+import controller from "@canonical/jujulib/api/facades/controller-v5";
 import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/api/facades/pinger-v1";
 
@@ -17,6 +19,7 @@ import {
   getUserPass,
 } from "app/selectors";
 import {
+  addControllerCloudRegion,
   updateControllerList,
   updateModelInfo,
   updateModelStatus,
@@ -31,7 +34,7 @@ import {
 */
 function generateConnectionOptions(usePinger = false, bakery, onClose) {
   // The options used when connecting to a Juju controller or model.
-  const facades = [annotations, client, jimm, modelManager];
+  const facades = [annotations, client, cloud, controller, jimm, modelManager];
   if (usePinger) {
     facades.push(pinger);
   }
@@ -234,6 +237,11 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
       if (isLoggedIn(getState())) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         dispatch(updateModelInfo(modelInfo));
+        if (modelInfo.results[0].result.isController) {
+          // If this is a controller model then update the
+          // controller data with this model data.
+          dispatch(addControllerCloudRegion(modelInfo));
+        }
       }
       done();
     });
@@ -252,10 +260,22 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
   @param {Object} reduxStore The applications reduxStore.
 */
 export async function fetchControllerList(conn, reduxStore) {
+  let controllers = null;
   if (conn.facades.jimM) {
     const response = await conn.facades.jimM.listControllers();
-    reduxStore.dispatch(updateControllerList(response.controllers));
+    controllers = response.controllers;
+  } else {
+    // If we're not connected to a JIMM then call to get the controller config
+    // and generate a fake controller list.
+    const controllerConfig = await conn.facades.controller.controllerConfig();
+    controllers = [
+      {
+        path: controllerConfig.config["controller-name"],
+        uuid: controllerConfig.config["controller-uuid"],
+      },
+    ];
   }
+  reduxStore.dispatch(updateControllerList(controllers));
 }
 
 /**
