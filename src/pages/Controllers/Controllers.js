@@ -74,18 +74,24 @@ function Details() {
 
   const rows =
     controllerMap &&
-    Object.values(controllerMap).map((c) => ({
-      columns: [
-        { content: c.path },
-        { content: `${c.location.cloud}/${c.location.region}` },
-        { content: c.models, className: "u-align--right" },
-        { content: c.machines, className: "u-align--right" },
-        { content: c.applications, className: "u-align--right" },
-        { content: c.units, className: "u-align--right" },
-        { content: c.version, className: "u-align--right" },
-        { content: `${c.Public}`, className: "u-align--right u-capitalise" },
-      ],
-    }));
+    Object.values(controllerMap).map((c) => {
+      const cloud = c?.location?.cloud || "unknown";
+      const region = c?.location?.region || "unknown";
+      const cloudRegion = `${cloud}/${region}`;
+      const publicAccess = c?.Public || "False";
+      return {
+        columns: [
+          { content: c.path },
+          { content: cloudRegion },
+          { content: c.models, className: "u-align--right" },
+          { content: c.machines, className: "u-align--right" },
+          { content: c.applications, className: "u-align--right" },
+          { content: c.units, className: "u-align--right" },
+          { content: c.version, className: "u-align--right" },
+          { content: publicAccess, className: "u-align--right u-capitalise" },
+        ],
+      };
+    });
 
   return (
     <>
