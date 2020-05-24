@@ -42,7 +42,6 @@ export const relationTableHeaders = [
   { content: "requirer" },
   { content: "interface" },
   { content: "type" },
-  { content: "message" },
 ];
 
 export function generateIconImg(name, namespace) {
