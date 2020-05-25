@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
-import { isLoggedIn, getBakery, getConfig } from "app/selectors";
+import { isLoggedIn, getBakery, getConfig, getLoginError } from "app/selectors";
 import { connectAndStartPolling, storeUserPass } from "app/actions";
 
 import Spinner from "@canonical/react-components/dist/components/Spinner";
@@ -12,6 +12,7 @@ import "./_login.scss";
 export default function LogIn({ children }) {
   const { identityProviderAvailable } = useSelector(getConfig);
   const userIsLoggedIn = useSelector(isLoggedIn);
+  const loginError = useSelector(getLoginError);
 
   if (!userIsLoggedIn) {
     return (
@@ -24,6 +25,7 @@ export default function LogIn({ children }) {
             ) : (
               <UserPassForm />
             )}
+            {generateErrorMessage(loginError)}
           </div>
         </div>
         <main>{children}</main>
@@ -31,6 +33,31 @@ export default function LogIn({ children }) {
     );
   }
   return children;
+}
+
+/**
+  Generates the necessary elements to render the error message.
+  @param {String} loginError The error message from the store.
+  @returns {Object} A component for the error message.
+*/
+function generateErrorMessage(loginError) {
+  if (!loginError) {
+    return null;
+  }
+  let loginErrorMessage = null;
+  switch (loginError) {
+    case '"user-" is not a valid user tag':
+      loginErrorMessage = "Invalid user name";
+      break;
+    default:
+      loginErrorMessage = loginError;
+  }
+  return (
+    <p className="error-message">
+      <i className="p-icon--error" />
+      {loginErrorMessage}
+    </p>
+  );
 }
 
 function IdentityProviderForm() {

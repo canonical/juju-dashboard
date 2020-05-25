@@ -27,6 +27,14 @@
     .p-icon--spinner {
       top: -2px;
     }
+
+    .error-message {
+      margin-top: 0.5rem;
+
+      .p-icon--error {
+        margin-right: 0.5rem;
+      }
+    }
   }
 
   &__logo {

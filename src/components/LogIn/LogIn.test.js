@@ -66,4 +66,23 @@ describe("LogIn", () => {
     expect(wrapper.find("LogIn main").text()).toBe("App content");
     expect(wrapper).toMatchSnapshot();
   });
+
+  it("renders a login error if one exists", () => {
+    const store = mockStore({
+      root: {
+        loginError: "Invalid user name",
+        config: {
+          identityProviderAvailable: false,
+        },
+      },
+    });
+    const wrapper = mount(
+      <Provider store={store}>
+        <LogIn>App content</LogIn>
+      </Provider>
+    );
+    expect(wrapper.find("LogIn .error-message").text()).toBe(
+      "Invalid user name"
+    );
+  });
 });
