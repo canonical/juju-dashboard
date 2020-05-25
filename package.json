@@ -63,7 +63,7 @@
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.2",
     "enzyme-to-json": "3.4.4",
-    "immer": "6.0.5",
+    "immer": "6.0.8",
     "node-sass": "4.14.1",
     "prop-types": "15.7.2",
     "query-string": "6.12.1",
@@ -93,7 +93,7 @@
     "eslint-plugin-react": "7.20.0",
     "prettier": "2.0.5",
     "redux-devtools": "3.5.0",
-    "stylelint": "13.4.0",
+    "stylelint": "13.5.0",
     "stylelint-config-standard": "20.0.0",
     "stylelint-order": "4.0.0"
   }
