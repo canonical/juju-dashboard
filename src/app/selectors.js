@@ -73,6 +73,13 @@ export const getUserPass = (state) => {
 };
 
 /**
+  Fetches a login error from state
+  @param {Object} state The application state.
+  @returns {String|Undefined} The error message if any.
+*/
+export const getLoginError = (state) => state?.root?.loginError;
+
+/**
   Fetches the juju api instance from state.
   @param {Object} state The application state.
   @returns {Object|Null} The juju api instance or null if none found.

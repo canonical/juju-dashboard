@@ -6,6 +6,7 @@ import { isLoggedIn } from "app/selectors";
 
 const actionWhitelist = [
   "STORE_BAKERY",
+  "STORE_LOGIN_ERROR",
   "STORE_CONFIG",
   "STORE_USER_PASS",
   "STORE_VERSION",

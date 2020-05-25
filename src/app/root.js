@@ -14,6 +14,9 @@ function rootReducer(state = {}, action) {
       case actionsList.storeConfig:
         draftState.config = action.payload;
         break;
+      case actionsList.storeLoginError:
+        draftState.loginError = action.payload;
+        break;
       case actionsList.storeUserPass:
         draftState.credentials = action.payload;
         break;
