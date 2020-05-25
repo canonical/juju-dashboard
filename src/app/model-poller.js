@@ -6,6 +6,7 @@ import {
 } from "juju";
 import { fetchModelList } from "juju/actions";
 import {
+  storeLoginError,
   updateControllerConnection,
   updateJujuAPIInstance,
   updatePingerIntervalId,
@@ -25,12 +26,16 @@ export default async function connectAndListModels(reduxStore, bakery) {
     const credentials = getUserPass(storeState);
     const { identityProviderAvailable, isJuju } = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
-    const { conn, juju, intervalId } = await loginWithBakery(
+    const { conn, error, juju, intervalId } = await loginWithBakery(
       wsControllerURL,
       credentials,
       bakery,
       identityProviderAvailable
     );
+    if (error) {
+      reduxStore.dispatch(storeLoginError(error));
+      return;
+    }
     reduxStore.dispatch(updateControllerConnection(conn));
     reduxStore.dispatch(updateJujuAPIInstance(juju));
     reduxStore.dispatch(updatePingerIntervalId(intervalId));
