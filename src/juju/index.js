@@ -85,7 +85,13 @@ export async function loginWithBakery(
     credentials,
     identityProviderAvailable
   );
-  const conn = await juju.login(loginParams);
+  let conn = null;
+  try {
+    conn = await juju.login(loginParams);
+  } catch (error) {
+    return { error };
+  }
+
   // Ping to keep the connection alive.
   const intervalId = setInterval(() => {
     conn.facades.pinger.ping();
