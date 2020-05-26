@@ -13,6 +13,7 @@ export const actionsList = {
   logOut: "LOG_OUT",
   storeBakery: "STORE_BAKERY",
   storeConfig: "STORE_CONFIG",
+  storeLoginError: "STORE_LOGIN_ERROR",
   storeUserPass: "STORE_USER_PASS",
   storeVersion: "STORE_VERSION",
   storeVisitURL: "STORE_VISIT_URL",
@@ -41,6 +42,16 @@ export function storeConfig(config) {
   return {
     type: actionsList.storeConfig,
     payload: config,
+  };
+}
+
+/**
+  @param {String} error The error message to store.
+*/
+export function storeLoginError(error) {
+  return {
+    type: actionsList.storeLoginError,
+    payload: error,
   };
 }
 
