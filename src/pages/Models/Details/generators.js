@@ -232,7 +232,10 @@ export function generateMachineRows(modelStatusData, filterByApp) {
         {
           content: (
             <>
-              <div>{machineId}</div>
+              <div>
+                {machineId}
+                <span className="u-capitalise">. {machine.series}</span>
+              </div>
               <a href="#_">{machine.dnsName}</a>
             </>
           ),
