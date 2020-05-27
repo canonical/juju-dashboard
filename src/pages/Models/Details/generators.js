@@ -58,9 +58,13 @@ export function generateIconImg(name, namespace) {
 }
 
 export function generateEntityLink(namespace, name, subordinate) {
-  const charmStorePath = URL.fromAnyString(namespace)
-    .toString()
-    .replace("cs:", "");
+  let charmStorePath = "";
+  try {
+    charmStorePath = URL.fromAnyString(namespace).toString().replace("cs:", "");
+  } catch (e) {
+    console.error("unable to parse charmstore path", e);
+  }
+
   return (
     <>
       {subordinate && <span className="subordinate"></span>}
