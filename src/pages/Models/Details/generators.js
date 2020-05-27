@@ -74,7 +74,7 @@ export function generateEntityLink(namespace, name, subordinate) {
         <a
           data-test="app-link"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           href={`https://www.jaas.ai/${charmStorePath}`}
         >
           {name}
@@ -109,7 +109,10 @@ export function generateApplicationRows(
           className: "u-capitalise",
         },
         { content: app.workloadVersion || "-", className: "u-align--right" },
-        { content: Object.keys(app.units).length, className: "u-align--right" },
+        {
+          content: Object.keys(app.units || {}).length,
+          className: "u-align--right",
+        },
         { content: "CharmHub" },
         {
           content: extractRevisionNumber(app.charm) || "-",

@@ -50,7 +50,7 @@ function generateErrorMessage(loginError) {
       loginErrorMessage = "Invalid user name";
       break;
     case "invalid entity name or password":
-      loginErrorMessage = "invalid user name or password";
+      loginErrorMessage = "Invalid user name or password";
       break;
     default:
       loginErrorMessage = loginError;
