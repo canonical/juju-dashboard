@@ -7,6 +7,10 @@
   margin-bottom: 2rem;
   padding-bottom: 14rem;
 
+  .p-main-table caption {
+    margin-top: 0.5rem;
+  }
+
   @media (min-width: $breakpoint-medium) {
     gap: 1rem;
     grid-template-columns: 230px 1fr;
