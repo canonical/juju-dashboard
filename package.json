@@ -1,6 +1,6 @@
 {
   "name": "jaas-dashboard",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "A dashboard for JAAS (Juju as a service)",
   "bugs": {
     "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
