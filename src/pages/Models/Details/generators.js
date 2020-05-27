@@ -132,7 +132,6 @@ export function generateUnitRows(modelStatusData, filterByApp) {
 
   const applications = modelStatusData.applications;
   const unitRows = [];
-
   Object.keys(applications).forEach((applicationName) => {
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach((unitId) => {
@@ -156,7 +155,7 @@ export function generateUnitRows(modelStatusData, filterByApp) {
           { content: unit.machine, className: "u-align--right" },
           { content: unit.publicAddress },
           {
-            content: unit.publicAddress.split(":")[-1] || "-",
+            content: unit.openedPorts.join(" ") || "-",
             className: "u-align--right",
           },
           {
