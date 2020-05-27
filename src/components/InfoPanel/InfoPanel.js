@@ -24,6 +24,8 @@ const expandedTopologyDimensions = () => {
 
 const infoPanelDimensions = () => {
   const vw = getViewportWidth();
+  // If changes are made to the 1580px breakpoint below then be sure to update
+  // the same breakpoint in _info-panel.scss.
   const size = vw >= 1580 ? 300 : 180;
   return size;
 };
