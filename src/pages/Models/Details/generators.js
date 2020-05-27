@@ -3,6 +3,7 @@ import classnames from "classnames";
 import { URL } from "@canonical/jaaslib/lib/urls";
 
 import {
+  extractRevisionNumber,
   generateStatusElement,
   generateIconPath,
   generateSpanClass,
@@ -86,7 +87,6 @@ export function generateApplicationRows(
   }
 
   const applications = modelStatusData.applications;
-  console.log(applications);
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     return {
@@ -99,10 +99,13 @@ export function generateApplicationRows(
           content: app.status ? generateStatusElement(app.status.status) : "-",
           className: "u-capitalise",
         },
-        { content: "-", className: "u-align--right" },
+        { content: app.workloadVersion || "-", className: "u-align--right" },
         { content: Object.keys(app.units).length, className: "u-align--right" },
         { content: "CharmHub" },
-        { content: key.split("-")[-1] || "-", className: "u-align--right" },
+        {
+          content: extractRevisionNumber(app.charm) || "-",
+          className: "u-align--right",
+        },
         { content: "Ubuntu" },
         { content: "-" },
       ],
