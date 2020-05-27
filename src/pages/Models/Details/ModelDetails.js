@@ -179,8 +179,9 @@ const ModelDetails = () => {
               <MainTable
                 headers={applicationTableHeaders}
                 rows={applicationTableRows}
-                className="model-details__apps"
+                className="model-details__apps p-main-table"
                 sortable
+                emptyStateMsg={"There are no applications in this model"}
               />
             )}
             {(viewFilterToggle.all === true ||
@@ -188,8 +189,9 @@ const ModelDetails = () => {
               <MainTable
                 headers={unitTableHeaders}
                 rows={unitTableRows}
-                className="model-details__units"
+                className="model-details__units p-main-table"
                 sortable
+                emptyStateMsg={"There are no units in this model"}
               />
             )}
             {(viewFilterToggle.all === true ||
@@ -197,8 +199,9 @@ const ModelDetails = () => {
               <MainTable
                 headers={machineTableHeaders}
                 rows={machinesTableRows}
-                className="model-details__machines"
+                className="model-details__machines p-main-table"
                 sortable
+                emptyStateMsg={"There are no machines in this model"}
               />
             )}
             {(viewFilterToggle.all === true ||
@@ -206,8 +209,9 @@ const ModelDetails = () => {
               <MainTable
                 headers={relationTableHeaders}
                 rows={relationTableRows}
-                className="model-details__relations"
+                className="model-details__relations p-main-table"
                 sortable
+                emptyStateMsg={"There are no relations in this model"}
               />
             )}
           </div>

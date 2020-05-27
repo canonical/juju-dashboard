@@ -3,6 +3,7 @@ import classnames from "classnames";
 import { URL } from "@canonical/jaaslib/lib/urls";
 
 import {
+  extractRevisionNumber,
   generateStatusElement,
   generateIconPath,
   generateSpanClass,
@@ -57,16 +58,25 @@ export function generateIconImg(name, namespace) {
 }
 
 export function generateEntityLink(namespace, name, subordinate) {
-  const charmStorePath = URL.fromAnyString(namespace)
-    .toString()
-    .replace("cs:", "");
+  let charmStorePath = "";
+  try {
+    charmStorePath = URL.fromAnyString(namespace).toString().replace("cs:", "");
+  } catch (e) {
+    console.error("unable to parse charmstore path", e);
+  }
+
   return (
     <>
       {subordinate && <span className="subordinate"></span>}
       {namespace && generateIconImg(name, namespace)}
       {/* Ensure app is not a local charm */}
       {namespace.includes("cs:") ? (
-        <a data-test="app-link" href={`https://www.jaas.ai/${charmStorePath}`}>
+        <a
+          data-test="app-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://www.jaas.ai/${charmStorePath}`}
+        >
           {name}
         </a>
       ) : (
@@ -86,7 +96,6 @@ export function generateApplicationRows(
   }
 
   const applications = modelStatusData.applications;
-
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     return {
@@ -99,10 +108,16 @@ export function generateApplicationRows(
           content: app.status ? generateStatusElement(app.status.status) : "-",
           className: "u-capitalise",
         },
-        { content: "-", className: "u-align--right" },
-        { content: "-", className: "u-align--right" },
+        { content: app.workloadVersion || "-", className: "u-align--right" },
+        {
+          content: Object.keys(app.units || {}).length,
+          className: "u-align--right",
+        },
         { content: "CharmHub" },
-        { content: key.split("-")[-1] || "-", className: "u-align--right" },
+        {
+          content: extractRevisionNumber(app.charm) || "-",
+          className: "u-align--right",
+        },
         { content: "Ubuntu" },
         { content: "-" },
       ],
@@ -120,7 +135,6 @@ export function generateUnitRows(modelStatusData, filterByApp) {
 
   const applications = modelStatusData.applications;
   const unitRows = [];
-
   Object.keys(applications).forEach((applicationName) => {
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach((unitId) => {
@@ -144,7 +158,7 @@ export function generateUnitRows(modelStatusData, filterByApp) {
           { content: unit.machine, className: "u-align--right" },
           { content: unit.publicAddress },
           {
-            content: unit.publicAddress.split(":")[-1] || "-",
+            content: unit.openedPorts.join(" ") || "-",
             className: "u-align--right",
           },
           {
@@ -221,7 +235,10 @@ export function generateMachineRows(modelStatusData, filterByApp) {
         {
           content: (
             <>
-              <div>{machineId}</div>
+              <div>
+                {machineId}
+                <span className="u-capitalise">. {machine.series}</span>
+              </div>
               <a href="#_">{machine.dnsName}</a>
             </>
           ),

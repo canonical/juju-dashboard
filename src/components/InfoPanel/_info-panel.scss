@@ -43,10 +43,12 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
 
-    @media (min-width: $breakpoint-medium) {
-      grid-template-columns: 1fr;
+    // This needs to be kept in sync with the 1580px breakpoint in
+    // InfoPanel.js:infoPanelDimensions.
+    @media (min-width: 1580px) {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 

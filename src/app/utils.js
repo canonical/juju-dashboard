@@ -187,6 +187,12 @@ export const extractCredentialName = (tag) => {
 };
 
 /**
+  Returns the version of the supplied charm string.
+  @param {String} charmName The full path of the charm ex) cs:foo/bar-123
+*/
+export const extractRevisionNumber = (charmName) => charmName.split("-").pop();
+
+/**
   Returns a link to the charm icon for the provided charm name.
   @param {String} namespace The fully qualified charm name.
   @returns {String} The link to the charm icon.

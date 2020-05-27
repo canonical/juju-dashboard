@@ -49,6 +49,9 @@ function generateErrorMessage(loginError) {
     case '"user-" is not a valid user tag':
       loginErrorMessage = "Invalid user name";
       break;
+    case "invalid entity name or password":
+      loginErrorMessage = "Invalid user name or password";
+      break;
     default:
       loginErrorMessage = loginError;
   }
