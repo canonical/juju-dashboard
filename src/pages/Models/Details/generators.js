@@ -43,6 +43,7 @@ export const relationTableHeaders = [
   { content: "requirer" },
   { content: "interface" },
   { content: "type" },
+  { content: "message" },
 ];
 
 export function generateIconImg(name, namespace) {
@@ -102,11 +103,11 @@ export function generateApplicationRows(
       columns: [
         {
           content: generateEntityLink(app.charm || "", key),
-          className: "u-flex",
+          className: "u-truncate",
         },
         {
           content: app.status ? generateStatusElement(app.status.status) : "-",
-          className: "u-capitalise",
+          className: "u-capitalise u-truncate",
         },
         { content: app.workloadVersion || "-", className: "u-align--right" },
         {
@@ -148,7 +149,7 @@ export function generateUnitRows(modelStatusData, filterByApp) {
                 : "",
               unitId
             ),
-            className: "u-flex",
+            className: "u-truncate",
           },
           {
             content: generateStatusElement(unit.workloadStatus.status),
@@ -182,7 +183,7 @@ export function generateUnitRows(modelStatusData, filterByApp) {
             columns: [
               {
                 content: generateEntityLink(subordinate.charm, key, true),
-                className: "u-flex",
+                className: "u-truncate",
               },
               {
                 content: generateStatusElement(
@@ -312,7 +313,7 @@ export function generateRelationRows(modelStatusData, filterByApp) {
               {provider || peer || "-"}
             </>
           ),
-          className: "u-flex",
+          className: "u-truncate",
         },
         {
           content: (
@@ -325,7 +326,7 @@ export function generateRelationRows(modelStatusData, filterByApp) {
             </>
           ),
           title: requirer || "-",
-          className: "u-flex",
+          className: "u-truncate",
         },
         { content: relation.interface },
         { content: relation.endpoints[0].role },

@@ -49,6 +49,7 @@
       height: 1.5rem;
       margin-right: 0.5rem;
       position: relative;
+      vertical-align: top;
       width: 1.5rem;
     }
 
@@ -57,15 +58,14 @@
     }
 
     .subordinate {
-      display: inline-block;
       margin-right: 0.5rem;
-      padding-left: 1.25rem;
+      padding-left: 1.5rem;
       position: relative;
-      width: 1.75rem;
 
       &::before {
         content: url("../../../static/images/unit-tree.svg");
         left: 0.75rem;
+        top: -0.25rem;
         position: absolute;
       }
     }
@@ -144,11 +144,11 @@
       }
 
       &:nth-child(2) {
-        width: 19%;
+        width: 10%;
       }
 
       &:nth-child(3) {
-        width: 6%;
+        width: 15%;
       }
 
       &:nth-child(4) {
@@ -169,7 +169,8 @@
     }
   }
 
-  .model-details__machines {
+  .model-details__machines,
+  .model-details__relations {
     th,
     td {
       &:nth-child(1) {
