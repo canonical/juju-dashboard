@@ -65,14 +65,15 @@
       &::before {
         content: url("../../../static/images/unit-tree.svg");
         left: 0.75rem;
-        top: -0.25rem;
         position: absolute;
+        top: -0.25rem;
       }
     }
   }
 }
 
 @mixin model-details-tables {
+  /* stylelint-disable no-descending-specificity */
   .p-main-table {
     th,
     td {
@@ -194,6 +195,7 @@
       }
     }
   }
+  /* stylelint-enable no-descending-specificity */
 }
 
 @include model-details-layout;
