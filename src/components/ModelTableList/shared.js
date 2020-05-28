@@ -61,15 +61,14 @@ export function getStatusValue(status, key) {
 
         returnValue = (
           <>
-            <div className="model-details__config">
-              <div className="p-tooltip--top-center" aria-describedby="tp-cntr">
-                <div className="model-details__config-item">
-                  <img
-                    className="model-details__config-icon"
-                    src={appsIcon}
-                    alt=""
-                  />
-                  {applicationCount}
+            <div className="u-flex">
+              <div
+                className="u-flex--block p-tooltip--top-center"
+                aria-describedby="tp-cntr"
+              >
+                <div className="has-icon">
+                  <img src={appsIcon} alt="" className="p-icon" />
+                  <span>{applicationCount}</span>
                 </div>
                 <span
                   className="p-tooltip__message"
@@ -79,14 +78,13 @@ export function getStatusValue(status, key) {
                   Applications
                 </span>
               </div>
-              <div className="p-tooltip--top-center" aria-describedby="tp-cntr">
-                <div className="model-details__config-item">
-                  <img
-                    className="model-details__config-icon"
-                    src={unitsIcon}
-                    alt=""
-                  />
-                  {unitCount}
+              <div
+                className="u-flex--block p-tooltip--top-center"
+                aria-describedby="tp-cntr"
+              >
+                <div className="has-icon">
+                  <img src={unitsIcon} alt="" className="p-icon" />
+                  <span>{unitCount}</span>
                 </div>
                 <span
                   className="p-tooltip__message"
@@ -96,14 +94,13 @@ export function getStatusValue(status, key) {
                   Units
                 </span>
               </div>
-              <div className="p-tooltip--top-center" aria-describedby="tp-cntr">
-                <div className="model-details__config-item">
-                  <img
-                    className="model-details__config-icon"
-                    src={machinesIcon}
-                    alt=""
-                  />
-                  {machineCount}
+              <div
+                className="u-flex--block p-tooltip--top-center"
+                aria-describedby="tp-cntr"
+              >
+                <div className="has-icon">
+                  <img src={machinesIcon} alt="" className="p-icon" />
+                  <span>{machineCount}</span>
                 </div>
                 <span
                   className="p-tooltip__message"

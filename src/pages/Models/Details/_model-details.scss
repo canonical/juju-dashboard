@@ -42,39 +42,8 @@
   }
 }
 
-@mixin model-details-misc {
-  .model-details {
-    &__config {
-      display: grid;
-      gap: 0.5rem;
-      grid-template-columns: 1fr;
-      margin-right: 0.5rem;
-      text-align: left;
-
-      @media (min-width: $breakpoint-medium) {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      @media (min-width: $breakpoint-large) {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .p-tooltip--top-center {
-        display: inline-block;
-      }
-
-      &-item {
-        display: flex;
-        min-width: 2.3rem;
-      }
-
-      &-icon {
-        height: 1rem;
-        margin: 0.25rem 0.25rem 0 0;
-        width: 1rem;
-      }
-    }
-
+@mixin model-details-main {
+  .model-details__main {
     .entity-icon {
       border-radius: 50%;
       height: 1.5rem;
@@ -82,22 +51,23 @@
       position: relative;
       width: 1.5rem;
     }
-  }
 
-  .subordinate-row {
-    border-top: none !important;
-  }
+    .subordinate-row {
+      border-top: none !important;
+    }
 
-  .subordinate {
-    display: inline-block;
-    padding-left: 1.25rem;
-    position: relative;
-    width: 1.75rem;
+    .subordinate {
+      display: inline-block;
+      margin-right: 0.5rem;
+      padding-left: 1.25rem;
+      position: relative;
+      width: 1.75rem;
 
-    &::before {
-      content: url("../../../static/images/unit-tree.svg");
-      left: 0.75rem;
-      position: absolute;
+      &::before {
+        content: url("../../../static/images/unit-tree.svg");
+        left: 0.75rem;
+        position: absolute;
+      }
     }
   }
 }
@@ -228,5 +198,5 @@
 @include model-details-layout;
 @include model-details-header;
 @include model-details-title;
+@include model-details-main;
 @include model-details-tables;
-@include model-details-misc;
