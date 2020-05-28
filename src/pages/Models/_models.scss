@@ -15,7 +15,6 @@
     align-items: center;
     display: grid;
     grid-template-columns: 1fr;
-    padding: 0.575rem;
 
     @media (min-width: $breakpoint-medium) {
       grid-template-columns: 1fr 280px;

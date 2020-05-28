@@ -47,6 +47,7 @@ $color-navigation-background: $color-brand;
 @include vf-u-align;
 @include vf-u-hide;
 @include vf-u-layout;
+@include vf-u-truncate;
 @include vf-p-switch;
 
 // Fix consecutive table bug

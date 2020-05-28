@@ -24,8 +24,10 @@
 }
 
 // Display overrides
-.u-display {
-  &--flex {
-    display: flex;
+.u-flex {
+  display: flex;
+
+  &--block {
+    flex: 1 auto;
   }
 }
