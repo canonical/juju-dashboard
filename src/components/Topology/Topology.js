@@ -152,8 +152,19 @@ export default ({ modelData, width, height }) => {
       return acc;
     }, []);
   // Remove any duplicate endpoints and split into pairs.
-  const relations = [...new Set(endpoints)].map((pair) => pair.split(":"));
-
+  const deDupedRelations = [...new Set(endpoints)].map((pair) =>
+    pair.split(":")
+  );
+  // Remove relations that do not have all applications in the map.
+  // The missing application is likely a cross-model-relation which isn't
+  // fully supported yet.
+  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/526
+  const applicationNames = applications.map((app) => app.name);
+  const relations = deDupedRelations.filter(
+    (relation) =>
+      applicationNames.includes(relation[0]) &&
+      applicationNames.includes(relation[1])
+  );
   useEffect(() => {
     const topo = d3
       .select(ref.current)
