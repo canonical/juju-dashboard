@@ -375,15 +375,25 @@ const filterModelData = (filters, modelData, controllerData) => {
   // Add controllerName to the model data by mapping the controllerData
   Object.entries(clonedModelData).forEach((model) => {
     if (model[1].info) {
-      let controllerName = "";
-      for (var i = 0; i < controllerData.length; i++) {
-        if (controllerData[i].uuid == model[1].info.controllerUuid) {
-          controllerName = controllerData[i].path;
+      let controllerName = null;
+      if (controllerData) {
+        for (var i = 0; i < controllerData.length; i++) {
+          if (controllerData[i].uuid === model[1].info.controllerUuid) {
+            controllerName = controllerData[i].path;
+          }
         }
       }
       if (!controllerName) {
-        controllerName = model[1].info.controllerUuid;
+        if (
+          model[1].info.controllerUuid ===
+          "a030379a-940f-4760-8fcf-3062b41a04e7"
+        ) {
+          controllerName = "JAAS";
+        } else {
+          controllerName = model[1].info.controllerUuid;
+        }
       }
+
       model[1].info.controllerName = controllerName;
     }
   });

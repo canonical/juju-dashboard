@@ -57,8 +57,10 @@ export default function OwnerGroup({ activeUser, filters }) {
       modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
         ownerModels.rows.push({
+          "data-test-model-id": model?.uuid,
           columns: [
             {
+              "data-test-column": "name",
               content: generateModelDetailsLink(
                 model.info.name,
                 model.info && model.info.ownerTag,
@@ -66,14 +68,17 @@ export default function OwnerGroup({ activeUser, filters }) {
               ),
             },
             {
+              "data-test-column": "status",
               content: generateStatusElement(highestStatus),
               className: "u-capitalise",
             },
             {
+              "data-test-column": "summary",
               content: getStatusValue(model, "summary"),
               className: "u-overflow--visible",
             },
             {
+              "data-test-column": "cloud",
               content: (
                 <a href="#_" className="p-link--soft">
                   {getStatusValue(model, "region")}/
@@ -82,19 +87,24 @@ export default function OwnerGroup({ activeUser, filters }) {
               ),
             },
             {
+              "data-test-column": "credential",
               content: (
                 <a href="#_" className="p-link--soft">
                   {getStatusValue(model.info, "cloudCredentialTag")}
                 </a>
               ),
             },
-            // We're not currently able to get the controller name from the API
-            // so, display the controller UUID instead.
             {
-              content: getStatusValue(model.info, "controllerName"),
+              "data-test-column": "controller",
+              content: (
+                <span data-test="controller-name">
+                  {getStatusValue(model.info, "controllerName")}
+                </span>
+              ),
             },
             // We're not currently able to get a last-accessed or updated from JAAS.
             {
+              "data-test-column": "updated",
               content: getStatusValue(model.info, "status.since"),
               className: "u-align--right",
             },
