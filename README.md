@@ -36,7 +36,7 @@ When you want to access a dashboard that was automatically installed with a `juj
 
 - [Create a ssh tunnel](#creating-a-tunnel-from-an-lxd-controller-to-a-multipass-host)
 - In the host
-  - `multipass info dev | grep IPv4` and take note of the IP address.
+  - `multipass info <vm name> | grep IPv4` and take note of the IP address.
   - In your browser visit `http://<that ip>:17070`
   - Log in using the credentials provided from the `juju dashboard` command.
 
