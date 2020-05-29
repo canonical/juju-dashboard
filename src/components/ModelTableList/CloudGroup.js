@@ -7,11 +7,7 @@ import {
   extractOwnerName,
 } from "app/utils";
 import { getGroupedByCloudAndFilteredModelData } from "app/selectors";
-import {
-  generateControllerUUID,
-  generateModelDetailsLink,
-  getStatusValue,
-} from "./shared";
+import { generateModelDetailsLink, getStatusValue } from "./shared";
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -103,9 +99,7 @@ export default function CloudGroup({ activeUser, filters }) {
             // We're not currently able to get the controller name from the API
             // so, display the controller UUID instead.
             {
-              content: generateControllerUUID(
-                getStatusValue(model.info, "controllerUuid")
-              ),
+              content: getStatusValue(model.info, "controllerName"),
             },
             // We're not currently able to get a last-accessed or updated from JAAS.
             {

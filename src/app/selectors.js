@@ -118,8 +118,11 @@ export const getAppVersion = (state) => state?.root?.appVersion;
   @returns {Object} A selector for the filtered model data.
 */
 const getFilteredModelData = (filters) =>
-  createSelector(getModelData, (modelData) =>
-    filterModelData(filters, modelData)
+  createSelector(
+    [getModelData, getControllerData],
+    (modelData, controllerData) =>
+      // inject modeldata with controller data
+      filterModelData(filters, modelData, controllerData)
   );
 
 // ---- Utility functions
@@ -367,9 +370,25 @@ const countModelStatusGroups = (groupedModelStatuses) => {
   @param {Object} modelData The model data from the redux store.
   @returns {Object} The filtered model data.
 */
-const filterModelData = (filters, modelData) => {
+const filterModelData = (filters, modelData, controllerData) => {
+  const clonedModelData = cloneDeep(modelData);
+  // Add controllerName to the model data by mapping the controllerData
+  Object.entries(clonedModelData).forEach((model) => {
+    if (model[1].info) {
+      let controllerName = "";
+      for (var i = 0; i < controllerData.length; i++) {
+        if (controllerData[i].uuid == model[1].info.controllerUuid) {
+          controllerName = controllerData[i].path;
+        }
+      }
+      if (!controllerName) {
+        controllerName = model[1].info.controllerUuid;
+      }
+      model[1].info.controllerName = controllerName;
+    }
+  });
   if (!filters) {
-    return modelData;
+    return clonedModelData;
   }
   const filterSegments = {};
   // Collect segments
@@ -380,8 +399,6 @@ const filterModelData = (filters, modelData) => {
     }
     filterSegments[values[0]].push(values[1]);
   });
-
-  const clonedModelData = cloneDeep(modelData);
 
   Object.entries(clonedModelData).forEach(([uuid, data]) => {
     const remove = Object.entries(filterSegments).some(([segment, values]) => {
