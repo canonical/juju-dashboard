@@ -1,5 +1,7 @@
 import React from "react";
 
+import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
+
 export const generateStatusElement = (status, count, useIcon = true) => {
   let statusClass = status ? `is-${status.toLowerCase()}` : "";
   let countValue = "";
@@ -198,10 +200,14 @@ export const extractRevisionNumber = (charmName) => charmName.split("-").pop();
   @returns {String} The link to the charm icon.
 */
 export const generateIconPath = (namespace) => {
+  if (namespace.indexOf("local:") === 0) {
+    return defaultCharmIcon;
+  }
   if (namespace.indexOf("cs:") === 0) {
     namespace = namespace.replace("cs:", "");
+    return `https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`;
   }
-  return `https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`;
+  return "";
 };
 
 /**

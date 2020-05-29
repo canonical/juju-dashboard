@@ -2,6 +2,8 @@ import React from "react";
 import classnames from "classnames";
 import { URL } from "@canonical/jaaslib/lib/urls";
 
+import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
+
 import {
   extractRevisionNumber,
   generateStatusElement,
@@ -46,19 +48,23 @@ export const relationTableHeaders = [
   { content: "message" },
 ];
 
-export function generateIconImg(name, namespace) {
+export function generateIconImg(name, namespace, baseAppURL) {
+  let iconSrc = defaultCharmIcon;
+  if (namespace.indexOf("local:") !== 0) {
+    iconSrc = generateIconPath(namespace);
+  }
   return (
     <img
       alt={name + " icon"}
       width="24"
       height="24"
       className="entity-icon"
-      src={generateIconPath(namespace)}
+      src={iconSrc}
     />
   );
 }
 
-export function generateEntityLink(namespace, name, subordinate) {
+export function generateEntityLink(namespace, name, subordinate, baseAppURL) {
   let charmStorePath = "";
   try {
     charmStorePath = URL.fromAnyString(namespace).toString().replace("cs:", "");
@@ -69,7 +75,7 @@ export function generateEntityLink(namespace, name, subordinate) {
   return (
     <>
       {subordinate && <span className="subordinate"></span>}
-      {namespace && generateIconImg(name, namespace)}
+      {namespace && generateIconImg(name, namespace, baseAppURL)}
       {/* Ensure app is not a local charm */}
       {namespace.includes("cs:") ? (
         <a
@@ -81,7 +87,7 @@ export function generateEntityLink(namespace, name, subordinate) {
           {name}
         </a>
       ) : (
-        { name }
+        name
       )}
     </>
   );
@@ -90,7 +96,8 @@ export function generateEntityLink(namespace, name, subordinate) {
 export function generateApplicationRows(
   modelStatusData,
   filterByApp,
-  onRowClick
+  onRowClick,
+  baseAppURL
 ) {
   if (!modelStatusData) {
     return [];
@@ -102,7 +109,7 @@ export function generateApplicationRows(
     return {
       columns: [
         {
-          content: generateEntityLink(app.charm || "", key),
+          content: generateEntityLink(app.charm || "", key, false, baseAppURL),
           className: "u-truncate",
         },
         {
@@ -129,7 +136,7 @@ export function generateApplicationRows(
   });
 }
 
-export function generateUnitRows(modelStatusData, filterByApp) {
+export function generateUnitRows(modelStatusData, filterByApp, baseAppURL) {
   if (!modelStatusData) {
     return [];
   }
@@ -147,7 +154,9 @@ export function generateUnitRows(modelStatusData, filterByApp) {
               applications[applicationName].charm
                 ? applications[applicationName].charm
                 : "",
-              unitId
+              unitId,
+              false,
+              baseAppURL
             ),
             className: "u-truncate",
           },
@@ -182,7 +191,12 @@ export function generateUnitRows(modelStatusData, filterByApp) {
           unitRows.push({
             columns: [
               {
-                content: generateEntityLink(subordinate.charm, key, true),
+                content: generateEntityLink(
+                  subordinate.charm,
+                  key,
+                  true,
+                  baseAppURL
+                ),
                 className: "u-truncate",
               },
               {
@@ -276,15 +290,19 @@ const extractRelationEndpoints = (relation) => {
   return endpoints;
 };
 
-const generateRelationIconImage = (applicationName, modelStatusData) => {
+const generateRelationIconImage = (
+  applicationName,
+  modelStatusData,
+  baseAppURL
+) => {
   const application = modelStatusData.applications[applicationName];
   if (!application || !applicationName) {
     return;
   }
-  return generateIconImg(applicationName, application.charm);
+  return generateIconImg(applicationName, application.charm, baseAppURL);
 };
 
-export function generateRelationRows(modelStatusData, filterByApp) {
+export function generateRelationRows(modelStatusData, filterByApp, baseAppURL) {
   if (!modelStatusData) {
     return [];
   }
@@ -308,7 +326,8 @@ export function generateRelationRows(modelStatusData, filterByApp) {
             <>
               {generateRelationIconImage(
                 providerApplicationName || peerApplicationName,
-                modelStatusData
+                modelStatusData,
+                baseAppURL
               )}
               {provider || peer || "-"}
             </>
@@ -320,7 +339,8 @@ export function generateRelationRows(modelStatusData, filterByApp) {
             <>
               {generateRelationIconImage(
                 requirerApplicationName,
-                modelStatusData
+                modelStatusData,
+                baseAppURL
               )}
               {requirer || "-"}
             </>

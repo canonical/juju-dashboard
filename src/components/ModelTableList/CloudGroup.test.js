@@ -41,8 +41,8 @@ describe("CloudGroup", () => {
     );
     const tables = wrapper.find("MainTable");
     expect(tables.length).toBe(2);
-    expect(tables.get(0).props.rows.length).toEqual(15);
-    expect(tables.get(1).props.rows.length).toEqual(2);
+    expect(tables.get(0).props.rows.length).toEqual(3);
+    expect(tables.get(1).props.rows.length).toEqual(15);
   });
 
   it("fetches filtered data if filters supplied", () => {
@@ -56,6 +56,6 @@ describe("CloudGroup", () => {
     );
     const tables = wrapper.find("MainTable");
     expect(tables.length).toBe(1);
-    expect(tables.get(0).props.rows.length).toBe(2);
+    expect(tables.get(0).props.rows.length).toBe(3);
   });
 });

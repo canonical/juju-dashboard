@@ -184,9 +184,353 @@ export default {
         ownerTag: 'user-that-guy@external',
         type: 'iaas',
         uuid: '8f86503e-f79f-49ef-8ed9-3a6ea5b280e7'
+      },
+      '9cbc8931-c530-487a-8829-dd6facd4d1b0': {
+        lastConnection: '2020-05-29T00:21:02Z',
+        name: 'local-test',
+        ownerTag: 'user-admin',
+        type: 'iaas',
+        uuid: '9cbc8931-c530-487a-8829-dd6facd4d1b0'
       }
     },
     modelData: {
+      '9cbc8931-c530-487a-8829-dd6facd4d1b0': {
+        annotations: {},
+        applications: {
+          cockroachdb: {
+            charm: 'local:bionic/cockroachdb-0',
+            series: 'bionic',
+            exposed: false,
+            life: '',
+            relations: {
+              cluster: [
+                'cockroachdb'
+              ]
+            },
+            canUpgradeTo: '',
+            subordinateTo: [],
+            units: {
+              'cockroachdb/0': {
+                agentStatus: {
+                  status: 'idle',
+                  info: '',
+                  data: {},
+                  since: '2020-05-29T00:19:13.303957559Z',
+                  kind: '',
+                  version: '2.8.1.1',
+                  life: ''
+                },
+                workloadStatus: {
+                  status: 'error',
+                  info: 'hook failed: "install"',
+                  data: {},
+                  since: '2020-05-29T00:19:13.303957559Z',
+                  kind: '',
+                  version: '',
+                  life: ''
+                },
+                workloadVersion: '',
+                machine: '0',
+                openedPorts: [],
+                publicAddress: '54.145.49.94',
+                charm: '',
+                subordinates: {},
+                leader: true
+              }
+            },
+            meterStatuses: {},
+            status: {
+              status: 'error',
+              info: 'hook failed: "install"',
+              data: {
+                hook: 'install'
+              },
+              since: '2020-05-29T00:19:13.303957559Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            workloadVersion: '',
+            charmVerion: 'f092c0f',
+            endpointBindings: {
+              '': 'alpha',
+              cluster: 'alpha',
+              db: 'alpha',
+              'proxy-listen-tcp': 'alpha'
+            },
+            publicAddress: ''
+          },
+          kibana: {
+            charm: 'cs:kibana-22',
+            series: 'xenial',
+            exposed: false,
+            life: '',
+            relations: {},
+            canUpgradeTo: '',
+            subordinateTo: [],
+            units: {
+              'kibana/0': {
+                agentStatus: {
+                  status: 'idle',
+                  info: '',
+                  data: {},
+                  since: '2020-05-29T00:20:28.291986989Z',
+                  kind: '',
+                  version: '2.8.1.1',
+                  life: ''
+                },
+                workloadStatus: {
+                  status: 'unknown',
+                  info: '',
+                  data: {},
+                  since: '2020-05-29T00:20:28.250182344Z',
+                  kind: '',
+                  version: '',
+                  life: ''
+                },
+                workloadVersion: '',
+                machine: '1',
+                openedPorts: [
+                  '80/tcp'
+                ],
+                publicAddress: '18.213.218.9',
+                charm: '',
+                subordinates: {},
+                leader: true
+              }
+            },
+            meterStatuses: {},
+            status: {
+              status: 'unknown',
+              info: '',
+              data: {},
+              since: '2020-05-29T00:20:28.250182344Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            workloadVersion: '',
+            charmVerion: 'a264969',
+            endpointBindings: {
+              '': 'alpha',
+              rest: 'alpha',
+              web: 'alpha'
+            },
+            publicAddress: ''
+          }
+        },
+        machines: {
+          '0': {
+            agentStatus: {
+              status: 'started',
+              info: '',
+              data: {},
+              since: '2020-05-28T22:48:38.710018633Z',
+              kind: '',
+              version: '2.8.1.1',
+              life: ''
+            },
+            instanceStatus: {
+              status: 'running',
+              info: 'running',
+              data: {},
+              since: '2020-05-28T22:47:39.307220922Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            dnsName: '54.145.49.94',
+            ipAddresses: [
+              '54.145.49.94',
+              '10.136.200.241'
+            ],
+            instanceId: 'i-094fe6feaa6dc1d0a',
+            series: 'bionic',
+            id: '0',
+            networkInterfaces: {
+              eth0: {
+                ipAddresses: [
+                  '10.136.200.241'
+                ],
+                macAddress: '22:00:0a:88:c8:f1',
+                gateway: '10.136.200.193',
+                dnsNameservers: [],
+                isUp: true
+              }
+            },
+            containers: {},
+            constraints: '',
+            hardware: 'arch=amd64 cores=4 cpu-power=1344 mem=31232M root-disk=8192M availability-zone=us-east-1a',
+            jobs: [
+              'JobHostUnits'
+            ],
+            hasVote: false,
+            wantsVote: false,
+            lxdProfiles: {}
+          },
+          '1': {
+            agentStatus: {
+              status: 'started',
+              info: '',
+              data: {},
+              since: '2020-05-29T00:20:15.272851732Z',
+              kind: '',
+              version: '2.8.1.1',
+              life: ''
+            },
+            instanceStatus: {
+              status: 'running',
+              info: 'running',
+              data: {},
+              since: '2020-05-29T00:19:51.082223349Z',
+              kind: '',
+              version: '',
+              life: ''
+            },
+            dnsName: '18.213.218.9',
+            ipAddresses: [
+              '18.213.218.9',
+              '10.102.230.164'
+            ],
+            instanceId: 'i-020ebc592b8f3c155',
+            series: 'xenial',
+            id: '1',
+            networkInterfaces: {
+              eth0: {
+                ipAddresses: [
+                  '10.102.230.164'
+                ],
+                macAddress: '22:00:0a:66:e6:a4',
+                gateway: '10.102.230.1',
+                dnsNameservers: [],
+                isUp: true
+              }
+            },
+            containers: {},
+            constraints: '',
+            hardware: 'arch=amd64 cores=4 cpu-power=1344 mem=31232M root-disk=8192M availability-zone=us-east-1b',
+            jobs: [
+              'JobHostUnits'
+            ],
+            hasVote: false,
+            wantsVote: false,
+            lxdProfiles: {}
+          }
+        },
+        model: {
+          name: 'local-test',
+          type: 'iaas',
+          cloudTag: 'cloud-aws',
+          region: 'us-east-1',
+          version: '2.8.1.1',
+          availableVersion: '',
+          modelStatus: {
+            status: 'available',
+            info: '',
+            data: {},
+            since: '2020-05-28T22:45:25.509755523Z',
+            kind: '',
+            version: '',
+            life: ''
+          },
+          meterStatus: {
+            color: '',
+            message: ''
+          },
+          sla: 'unsupported'
+        },
+        offers: {},
+        relations: [
+          {
+            id: 0,
+            key: 'cockroachdb:cluster',
+            'interface': 'cockroachdb-peer',
+            scope: 'global',
+            endpoints: [
+              {
+                application: 'cockroachdb',
+                name: 'cluster',
+                role: 'peer',
+                subordinate: false
+              }
+            ],
+            status: {
+              status: 'joining',
+              info: '',
+              data: {},
+              since: '2020-05-28T22:46:41.112211227Z',
+              kind: '',
+              version: '',
+              life: ''
+            }
+          }
+        ],
+        remoteApplications: {},
+        uuid: '9cbc8931-c530-487a-8829-dd6facd4d1b0',
+        info: {
+          name: 'local-test',
+          type: 'iaas',
+          uuid: '9cbc8931-c530-487a-8829-dd6facd4d1b0',
+          controllerUuid: '63e0004e-8f2c-4a22-88b9-1ef92709004e',
+          isController: false,
+          providerType: 'ec2',
+          defaultSeries: 'bionic',
+          cloudTag: 'cloud-aws',
+          cloudRegion: 'us-east-1',
+          cloudCredentialTag: 'cloudcred-aws_admin_aws-new-staging',
+          ownerTag: 'user-admin',
+          life: 'alive',
+          status: {
+            status: 'available',
+            info: '',
+            data: {},
+            since: '2020-05-28T22:45:25.509755523Z'
+          },
+          users: [
+            {
+              user: 'admin',
+              displayName: 'admin',
+              lastConnection: '2020-05-29T00:21:33Z',
+              access: 'admin'
+            }
+          ],
+          machines: [
+            {
+              id: '0',
+              hardware: {
+                arch: 'amd64',
+                mem: 31232,
+                rootDisk: 8192,
+                cores: 4,
+                cpuPower: 1344,
+                tags: [],
+                availabilityZone: 'us-east-1a'
+              },
+              instanceId: 'i-094fe6feaa6dc1d0a',
+              status: 'started'
+            },
+            {
+              id: '1',
+              hardware: {
+                arch: 'amd64',
+                mem: 31232,
+                rootDisk: 8192,
+                cores: 4,
+                cpuPower: 1344,
+                tags: [],
+                availabilityZone: 'us-east-1b'
+              },
+              instanceId: 'i-020ebc592b8f3c155',
+              status: 'started'
+            }
+          ],
+          sla: {
+            level: 'unsupported',
+            owner: ''
+          },
+          agentVersion: '2.8.1.1'
+        }
+      },
       'e1e81a64-3385-4779-8643-05e3d5ed4523': {
         applications: {
           easyrsa: {
