@@ -47,15 +47,19 @@ export const relationTableHeaders = [
 ];
 
 export function generateIconImg(name, namespace) {
-  return (
-    <img
-      alt={name + " icon"}
-      width="24"
-      height="24"
-      className="entity-icon"
-      src={generateIconPath(namespace)}
-    />
-  );
+  if (namespace.indexOf("local:") === 0) {
+    return <div className="entity-icon entity-icon__local-mock"></div>;
+  } else {
+    return (
+      <img
+        alt={name + " icon"}
+        width="24"
+        height="24"
+        className="entity-icon"
+        src={generateIconPath(namespace)}
+      />
+    );
+  }
 }
 
 export function generateEntityLink(namespace, name, subordinate) {
@@ -81,7 +85,7 @@ export function generateEntityLink(namespace, name, subordinate) {
           {name}
         </a>
       ) : (
-        { name }
+        name
       )}
     </>
   );
