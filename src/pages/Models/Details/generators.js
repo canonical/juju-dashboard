@@ -43,6 +43,7 @@ export const relationTableHeaders = [
   { content: "requirer" },
   { content: "interface" },
   { content: "type" },
+  { content: "message" },
 ];
 
 export function generateIconImg(name, namespace) {
@@ -102,11 +103,11 @@ export function generateApplicationRows(
       columns: [
         {
           content: generateEntityLink(app.charm || "", key),
-          className: "u-display--flex",
+          className: "u-truncate",
         },
         {
           content: app.status ? generateStatusElement(app.status.status) : "-",
-          className: "u-capitalise",
+          className: "u-capitalise u-truncate",
         },
         { content: app.workloadVersion || "-", className: "u-align--right" },
         {
@@ -148,7 +149,7 @@ export function generateUnitRows(modelStatusData, filterByApp) {
                 : "",
               unitId
             ),
-            className: "u-display--flex",
+            className: "u-truncate",
           },
           {
             content: generateStatusElement(unit.workloadStatus.status),
@@ -167,7 +168,7 @@ export function generateUnitRows(modelStatusData, filterByApp) {
                 {unit.workloadStatus.info}
               </span>
             ),
-            className: "model-details__truncate-cell",
+            className: "u-truncate",
           },
         ],
         className: filterByApp === unitId.split("/")[0] ? "is-selected" : "",
@@ -182,7 +183,7 @@ export function generateUnitRows(modelStatusData, filterByApp) {
             columns: [
               {
                 content: generateEntityLink(subordinate.charm, key, true),
-                className: "u-display--flex",
+                className: "u-truncate",
               },
               {
                 content: generateStatusElement(
@@ -199,7 +200,7 @@ export function generateUnitRows(modelStatusData, filterByApp) {
               },
               {
                 content: subordinate["workload-status"].info,
-                className: "model-details__truncate-cell",
+                className: "u-truncate",
               },
             ],
             className: classnames("subordinate-row", {
@@ -255,7 +256,7 @@ export function generateMachineRows(modelStatusData, filterByApp) {
               {machine.instanceStatus.info}
             </span>
           ),
-          className: "model-details__truncate-cell",
+          className: "u-truncate",
         },
       ],
       // If there is a filter provided and the machine is visible then
@@ -312,7 +313,7 @@ export function generateRelationRows(modelStatusData, filterByApp) {
               {provider || peer || "-"}
             </>
           ),
-          className: "u-display--flex",
+          className: "u-truncate",
         },
         {
           content: (
@@ -325,7 +326,7 @@ export function generateRelationRows(modelStatusData, filterByApp) {
             </>
           ),
           title: requirer || "-",
-          className: "u-display--flex",
+          className: "u-truncate",
         },
         { content: relation.interface },
         { content: relation.endpoints[0].role },

@@ -1,152 +1,205 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 
-.model-details {
-  display: grid;
-  grid-template-columns: 1fr;
-  margin-bottom: 2rem;
-  padding-bottom: 14rem;
+@mixin model-details-layout {
+  .model-details {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-bottom: 2rem;
+    padding-bottom: 3rem;
 
-  .p-main-table caption {
-    margin-top: 0.5rem;
+    @media (min-width: $breakpoint-medium) {
+      gap: 1rem;
+      grid-template-columns: 230px 1fr;
+    }
+
+    @media (min-width: $breakpoint-m-large) {
+      grid-template-columns: 350px 1fr;
+    }
   }
+}
 
-  @media (min-width: $breakpoint-medium) {
-    gap: 1rem;
-    grid-template-columns: 230px 1fr;
-  }
-
-  &:last-child {
-    margin-bottom: 1rem;
-  }
-
-  &__header {
+@mixin model-details-header {
+  .model-details__header {
     align-items: center;
-    padding: 0.75rem;
 
     @media (min-width: $breakpoint-medium) {
       display: flex;
     }
-
-    .p-filter__label {
-      display: none;
-    }
-
-    .p-filter {
-      display: grid;
-      gap: 0.5rem;
-      grid-template-columns: repeat(2, 1fr);
-      width: 100%;
-
-      .p-button--filter {
-        width: 100%;
-      }
-
-      @media (min-width: $breakpoint-medium) {
-        display: flex;
-      }
-    }
   }
 
-  &__title {
-    font-weight: 400;
+  .model-details__filters {
+    display: flex;
+    margin-left: auto;
+  }
+}
 
+@mixin model-details-title {
+  .model-details__title {
     @media (max-width: $breakpoint-medium) {
       margin-bottom: 0.75rem;
     }
   }
+}
 
-  tbody tr {
-    @include vf-animation(background, brisk, ease-in-out);
-
-    &.is-selected,
-    &.is-selected:hover {
-      background-color: #cef3ff;
-    }
-  }
-
-  tbody tr:hover {
-    background-color: #e7f9ff;
-  }
-
-  .model-details__apps tbody tr:hover {
-    cursor: pointer;
-  }
-
-  @media (min-width: $breakpoint-m-large) {
-    grid-template-columns: 350px 1fr;
-  }
-
-  &__main {
-    padding-top: 1rem;
-  }
-
-  &__filters {
-    display: flex;
-    margin-left: auto;
-  }
-
-  &__user {
-    text-align: center;
-  }
-
-  &__truncate-cell {
-    white-space: nowrap;
-  }
-
-  &__config {
-    display: grid;
-    gap: 0.5rem;
-    grid-template-columns: 1fr;
-    margin-right: 0.5rem;
-    text-align: left;
-
-    @media (min-width: $breakpoint-medium) {
-      grid-template-columns: repeat(2, 1fr);
+@mixin model-details-main {
+  .model-details__main {
+    .entity-icon {
+      border-radius: 50%;
+      height: 1.5rem;
+      margin-right: 0.5rem;
+      position: relative;
+      vertical-align: top;
+      width: 1.5rem;
     }
 
-    @media (min-width: $breakpoint-large) {
-      grid-template-columns: repeat(3, 1fr);
+    .subordinate-row {
+      border-top: none !important;
     }
 
-    .p-tooltip--top-center {
-      display: inline-block;
-    }
+    .subordinate {
+      margin-right: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
 
-    &-item {
-      display: flex;
-      min-width: 2.3rem;
+      &::before {
+        content: url("../../../static/images/unit-tree.svg");
+        left: 0.75rem;
+        position: absolute;
+        top: -0.25rem;
+      }
     }
-
-    &-icon {
-      height: 1rem;
-      margin: 0.25rem 0.25rem 0 0;
-      width: 1rem;
-    }
-  }
-
-  .entity-icon {
-    border-radius: 50%;
-    height: 1.5rem;
-    margin-right: 0.5rem;
-    position: relative;
-    width: 1.5rem;
   }
 }
 
-.subordinate-row {
-  border-top: none !important;
-}
+@mixin model-details-tables {
+  /* stylelint-disable no-descending-specificity */
+  .p-main-table {
+    th,
+    td {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
 
-.subordinate {
-  display: inline-block;
-  padding-left: 1.25rem;
-  position: relative;
-  width: 1.75rem;
+    tr {
+      @include vf-animation(background, brisk, ease-in-out);
 
-  &::before {
-    content: url("../../../static/images/unit-tree.svg");
-    left: 0.75rem;
-    position: absolute;
+      &.is-selected,
+      &.is-selected:hover {
+        background-color: #cef3ff;
+      }
+    }
+
+    caption {
+      margin-top: 0.5rem;
+    }
   }
+
+  .model-details__apps {
+    tbody tr:hover {
+      background-color: #e7f9ff;
+      cursor: pointer;
+    }
+
+    th,
+    td {
+      &:nth-child(1) {
+        width: 25%;
+      }
+
+      &:nth-child(2) {
+        width: 10%;
+      }
+
+      &:nth-child(3) {
+        width: 15%;
+      }
+
+      &:nth-child(4) {
+        width: 10%;
+      }
+
+      &:nth-child(5) {
+        width: 15%;
+      }
+
+      &:nth-child(6) {
+        width: 10%;
+      }
+
+      &:nth-child(7) {
+        width: 10%;
+      }
+
+      &:nth-child(8) {
+        width: 25%;
+      }
+    }
+  }
+
+  .model-details__units {
+    th,
+    td {
+      &:nth-child(1) {
+        width: 25%;
+      }
+
+      &:nth-child(2) {
+        width: 10%;
+      }
+
+      &:nth-child(3) {
+        width: 15%;
+      }
+
+      &:nth-child(4) {
+        width: 10%;
+      }
+
+      &:nth-child(5) {
+        width: 15%;
+      }
+
+      &:nth-child(6) {
+        width: 10%;
+      }
+
+      &:nth-child(7) {
+        width: 35%;
+      }
+    }
+  }
+
+  .model-details__machines,
+  .model-details__relations {
+    th,
+    td {
+      &:nth-child(1) {
+        width: 25%;
+      }
+
+      &:nth-child(2) {
+        width: 19%;
+      }
+
+      &:nth-child(3) {
+        width: 16%;
+      }
+
+      &:nth-child(4) {
+        width: 25%;
+      }
+
+      &:nth-child(5) {
+        width: 35%;
+      }
+    }
+  }
+  /* stylelint-enable no-descending-specificity */
 }
+
+@include model-details-layout;
+@include model-details-header;
+@include model-details-title;
+@include model-details-main;
+@include model-details-tables;

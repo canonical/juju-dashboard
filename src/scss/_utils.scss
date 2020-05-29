@@ -24,8 +24,17 @@
 }
 
 // Display overrides
-.u-display {
-  &--flex {
-    display: flex;
+.u-flex {
+  display: flex;
+
+  &--block {
+    flex: 1 auto;
   }
+}
+
+// Extend has-icon to work outside of buttons
+// https://github.com/canonical-web-and-design/vanilla-framework/issues/3102
+.has-icon [class*="p-icon"]:first-child {
+  margin-right: 0.25rem;
+  margin-top: 0.25rem;
 }

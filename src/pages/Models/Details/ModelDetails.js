@@ -157,9 +157,9 @@ const ModelDetails = () => {
     <Layout>
       <Header>
         <div className="model-details__header">
-          <div className="model-details__title">
+          <strong className="model-details__title">
             {modelStatusData ? modelStatusData.model.name : "..."}
-          </div>
+          </strong>
           <div className="model-details__filters">
             <Filter
               label="View:"
