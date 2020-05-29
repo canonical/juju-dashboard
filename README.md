@@ -4,6 +4,19 @@ The dashboard to monitor your [Juju](https://juju.is) & [JAAS](https://jaas.ai) 
 
 Starting with Juju 2.8 this dashboard is installed by default with every bootstrap. To access it simply run `juju dashboard` and visit the link provided and log in using the supplied credentials. It's also available and automatically updated for users of JAAS on [jaas.ai](jaas.ai/models).
 
+## Using the Dashboard with Juju
+
+Below are the commands you can use to interact with the dashboard with Juju 2.8+
+
+usage: `juju <command>`
+
+| command           | description                                                                                                                            |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| dashboard         | Outputs the Juju Dashboard URL, username and password. <br>The password will only be shown if you haven't changed it from its default. |
+| upgrade-dashboard | Upgrade to a new released Juju Dashboard version. <br>A file path to a tarball can be provided to switch to a custom version.          |
+
+see `juju help <command>` for detailed option output.
+
 ## Getting started
 
 Assuming you already have [Docker](https://www.docker.com/) installed, you can simply run;
