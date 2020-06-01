@@ -6,7 +6,7 @@ Starting with Juju 2.8 this dashboard is installed by default with every bootstr
 
 ## Using the Dashboard with Juju
 
-Below are the commands you can use to interact with the dashboard with Juju 2.8+
+Below are the commands you can use to interact with the dashboard from Juju 2.8+
 
 usage: `juju <command>`
 
