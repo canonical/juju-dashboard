@@ -19,7 +19,7 @@ usage: `juju <command>`
 
 see `juju help <command>` for detailed option output.
 
-## Getting started
+## Developing the dashboard
 
 Assuming you already have [Docker](https://www.docker.com/) installed, you can simply run;
 
@@ -27,25 +27,23 @@ Assuming you already have [Docker](https://www.docker.com/) installed, you can s
 ./run
 ```
 
-...and view the site locally at: http://localhost:8036/
+...and view the site locally at: http://localhost:8036/. Any changes to the code will be auto built and reloaded in the browser.
 
-## Developing the dashboard
-
-To start development with the dashboard follow the [Getting started](#geting-started) instructions and any changes to the code will be auto built and the browser refreshed.
-
-### To run the tests.
+### Running the tests.
 
 ```
 ./run test
 ```
 
-### Generating a release for Juju
+### Generating a release tarball for Juju
 
 ```
 ./run exec yarn run generate-release-tarball
 ```
 
-### Accessing a lxd bootstrapped Dashboard that's also within a `multipass` VM
+### Accessing the dashboard from nested containers
+
+#### A lxd bootstrapped Dashboard that's also within a `multipass` VM
 
 When you want to access a dashboard that was automatically installed with a `juju bootstrap` within an lxd in a `multipass` vm from the host.
 
@@ -55,7 +53,7 @@ When you want to access a dashboard that was automatically installed with a `juj
   - In your browser visit `http://<that ip>:17070`
   - Log in using the credentials provided from the `juju dashboard` command.
 
-### Accessing a local bootstrapped controller from a hosted Dashboard.
+#### A local bootstrapped controller from a hosted Dashboard.
 
 When you have a Juju controller bootstrapped in an lxd within a `multipass` vm and a dashboard being hosted from the same `multipass` vm but accessed from the host.
 
@@ -67,7 +65,7 @@ When you have a Juju controller bootstrapped in an lxd within a `multipass` vm a
     - `identityProviderAvailable` to `false`.
     - `isJuju` to `true`.
 
-### Creating a tunnel from an lxd controller to a `multipass` host.
+#### Creating a tunnel from an lxd controller to a `multipass` host.
 
 If you're bootstrapping a Juju controller within a `multipass` VM you will not have access to the dashboard from the host because there is no network path to it. To create a tunnel to access the dashboard follow these steps.
 
@@ -80,6 +78,12 @@ If you're bootstrapping a Juju controller within a `multipass` VM you will not h
   - `juju dashboard` and take note of the ip:port
   - `ssh -fN -L *:17070:0:17070 ubuntu@10.223.241.32` Where the "10." ip is replaced with the ip from the output of the `juju dashboard` command.
 
-### Updating CRA
+### Writing tests
+
+...coming soon...
+
+### Developer notes
+
+#### Updating CRA
 
 When updating Create React App it's important to take a look at the `optimization.minimizer` values in the webpack config and then update the config in `craco.config.js`. After copying over any updates be sure to re-introduce the `terserOptions.mangle.reserved` key and values in the newly updated config.
