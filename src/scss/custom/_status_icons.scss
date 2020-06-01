@@ -12,6 +12,7 @@
   }
 
   &.is-provisioning,
+  &.is-down,
   &.is-error,
   &.is-blocked {
     &::before {
@@ -21,6 +22,8 @@
 
   &.is-maintenance,
   &.is-attention,
+  &.is-stopped,
+  &.is-pending,
   &.is-alert,
   &.is-waiting {
     &::before {
@@ -29,6 +32,7 @@
   }
 
   &.is-running,
+  &.is-started,
   &.is-active {
     &::before {
       color: $color-mid-light;

@@ -259,15 +259,15 @@ export function generateMachineRows(modelStatusData, filterByApp) {
           ),
         },
         {
-          content: generateStatusElement(machine.instanceStatus.status),
+          content: generateStatusElement(machine.agentStatus.status),
           className: "u-capitalise",
         },
         { content: splitParts(machine.hardware)["availability-zone"] },
         { content: machine.instanceId },
         {
           content: (
-            <span title={machine.instanceStatus.info}>
-              {machine.instanceStatus.info}
+            <span title={machine.agentStatus.info}>
+              {machine.agentStatus.info}
             </span>
           ),
           className: "u-truncate",
