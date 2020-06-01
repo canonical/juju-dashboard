@@ -10,10 +10,12 @@ Below are the commands you can use to interact with the dashboard with Juju 2.8+
 
 usage: `juju <command>`
 
-| command           | description                                                                                                                            |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| dashboard         | Outputs the Juju Dashboard URL, username and password. <br>The password will only be shown if you haven't changed it from its default. |
-| upgrade-dashboard | Upgrade to a new released Juju Dashboard version. <br>A file path to a tarball can be provided to switch to a custom version.          |
+<!-- prettier-ignore-start -->
+| command | description |
+| --- | --- |
+| dashboard | Outputs the Juju Dashboard URL, username and password. <br>The password will only be shown if you haven't changed it from its default. |
+| upgrade-dashboard | Upgrade to a new released Juju Dashboard version. <br>A file path to a tarball can be provided to switch to a custom version. |
+<!-- prettier-ignore-end -->
 
 see `juju help <command>` for detailed option output.
 
