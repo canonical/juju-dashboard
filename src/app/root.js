@@ -28,6 +28,7 @@ function rootReducer(state = {}, action) {
         break;
       case actionsList.logOut:
         delete draftState.bakery.storage._store.identity;
+        delete draftState.controllerConnection;
         break;
       case actionsList.updateJujuAPIInstance:
         draftState.juju = action.payload;
