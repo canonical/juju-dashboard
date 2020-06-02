@@ -57,11 +57,7 @@ export default function OwnerGroup({ activeUser, filters }) {
       modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
         ownerModels.rows.push({
-<<<<<<< Updated upstream
-          "data-test-model-id": model?.uuid,
-=======
           "data-test-model-uuid": model?.uuid,
->>>>>>> Stashed changes
           columns: [
             {
               "data-test-column": "name",

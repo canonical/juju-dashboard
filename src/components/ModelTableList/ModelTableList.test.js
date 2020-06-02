@@ -83,7 +83,7 @@ describe("ModelTableList", () => {
         </Provider>
       </MemoryRouter>
     );
-    const controllerNames = wrapper.find('[data-test-column="controller"]');
+    const controllerNames = wrapper.find('td[data-test-column="controller"]');
     expect(controllerNames.first().text()).toStrictEqual("JAAS");
   });
 
@@ -101,10 +101,10 @@ describe("ModelTableList", () => {
         </Provider>
       </MemoryRouter>
     );
-    const controllerNames = wrapper.find(
-      `[data-test-model-uuid="${testModelUUID}"] [data-test-column="controller"]`
+    const controllerName = wrapper.find(
+      `[data-test-model-uuid="${testModelUUID}"] td[data-test-column="controller"]`
     );
-    expect(controllerNames.text()).toStrictEqual(unknownUUID);
+    expect(controllerName.text()).toStrictEqual(unknownUUID);
   });
 
   it("renders the controller name if known controller", () => {
@@ -122,7 +122,7 @@ describe("ModelTableList", () => {
       </MemoryRouter>
     );
     const controllerNames = wrapper.find(
-      `[data-test-model-uuid="${testModelUUID}"] [data-test-column="controller"]`
+      `[data-test-model-uuid="${testModelUUID}"] td[data-test-column="controller"]`
     );
     expect(controllerNames.text()).toStrictEqual("admins/1-eu-west-1-aws-jaas");
   });

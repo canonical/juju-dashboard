@@ -97,11 +97,7 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
         owner = extractOwnerName(model.info.ownerTag);
       }
       modelData[`${groupLabel}Rows`].push({
-<<<<<<< Updated upstream
-        "data-test-model-id": model?.uuid,
-=======
         "data-test-model-uuid": model?.uuid,
->>>>>>> Stashed changes
         columns: [
           {
             "data-test-column": "name",
