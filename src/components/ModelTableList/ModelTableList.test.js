@@ -1,4 +1,5 @@
 import React from "react";
+import cloneDeep from "clone-deep";
 import { MemoryRouter } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
@@ -71,5 +72,58 @@ describe("ModelTableList", () => {
       );
       expect(wrapper.find(table.component).prop("filters")).toBe(filters);
     });
+  });
+
+  it("renders the controller name as JAAS", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <ModelTableList />
+        </Provider>
+      </MemoryRouter>
+    );
+    const controllerNames = wrapper.find('td[data-test-column="controller"]');
+    expect(controllerNames.first().text()).toStrictEqual("JAAS");
+  });
+
+  it("renders the controller name as UUID if unknown", () => {
+    const clonedData = cloneDeep(dataDump);
+    // override existing data mock while using as much real content as possible.
+    const unknownUUID = "unknown-6245-2134-1325-ee33ee55dd66";
+    const testModelUUID = "e1e81a64-3385-4779-8643-05e3d5ed4523";
+    clonedData.juju.modelData[testModelUUID].info.controllerUuid = unknownUUID;
+    const store = mockStore(clonedData);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <ModelTableList />
+        </Provider>
+      </MemoryRouter>
+    );
+    const controllerName = wrapper.find(
+      `[data-test-model-uuid="${testModelUUID}"] td[data-test-column="controller"]`
+    );
+    expect(controllerName.text()).toStrictEqual(unknownUUID);
+  });
+
+  it("renders the controller name if known controller", () => {
+    const clonedData = cloneDeep(dataDump);
+    // override existing data mock while using as much real content as possible.
+    const knownUUID = "086f0bf8-da79-4ad4-8d73-890721332c8b";
+    const testModelUUID = "e1e81a64-3385-4779-8643-05e3d5ed4523";
+    clonedData.juju.modelData[testModelUUID].info.controllerUuid = knownUUID;
+    const store = mockStore(clonedData);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <ModelTableList />
+        </Provider>
+      </MemoryRouter>
+    );
+    const controllerNames = wrapper.find(
+      `[data-test-model-uuid="${testModelUUID}"] td[data-test-column="controller"]`
+    );
+    expect(controllerNames.text()).toStrictEqual("admins/1-eu-west-1-aws-jaas");
   });
 });

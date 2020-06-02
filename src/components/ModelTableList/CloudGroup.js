@@ -7,11 +7,7 @@ import {
   extractOwnerName,
 } from "app/utils";
 import { getGroupedByCloudAndFilteredModelData } from "app/selectors";
-import {
-  generateControllerUUID,
-  generateModelDetailsLink,
-  getStatusValue,
-} from "./shared";
+import { generateModelDetailsLink, getStatusValue } from "./shared";
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -67,8 +63,10 @@ export default function CloudGroup({ activeUser, filters }) {
       modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
         cloudModels.rows.push({
+          "data-test-model-uuid": model?.uuid,
           columns: [
             {
+              "data-test-column": "name",
               content: generateModelDetailsLink(
                 model.info.name,
                 model.info && model.info.ownerTag,
@@ -76,17 +74,21 @@ export default function CloudGroup({ activeUser, filters }) {
               ),
             },
             {
+              "data-test-column": "owner",
               content: extractOwnerName(model.info.ownerTag),
             },
             {
+              "data-test-column": "status",
               content: generateStatusElement(highestStatus),
               className: "u-capitalise",
             },
             {
+              "data-test-column": "summary",
               content: getStatusValue(model, "summary"),
               className: "u-overflow--visible",
             },
             {
+              "data-test-column": "region",
               content: (
                 <a href="#_" className="p-link--soft">
                   {getStatusValue(model, "region")}
@@ -94,21 +96,20 @@ export default function CloudGroup({ activeUser, filters }) {
               ),
             },
             {
+              "data-test-column": "credential",
               content: (
                 <a href="#_" className="p-link--soft">
                   {getStatusValue(model.info, "cloudCredentialTag")}
                 </a>
               ),
             },
-            // We're not currently able to get the controller name from the API
-            // so, display the controller UUID instead.
             {
-              content: generateControllerUUID(
-                getStatusValue(model.info, "controllerUuid")
-              ),
+              "data-test-column": "controller",
+              content: getStatusValue(model.info, "controllerName"),
             },
             // We're not currently able to get a last-accessed or updated from JAAS.
             {
+              "data-test-column": "updated",
               content: getStatusValue(model.info, "status.since"),
               className: "u-align--right",
             },

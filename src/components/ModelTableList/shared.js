@@ -126,6 +126,9 @@ export function getStatusValue(status, key) {
       case "controllerUuid":
         returnValue = status.controllerUuid;
         break;
+      case "controllerName":
+        returnValue = status.controllerName;
+        break;
       case "status.since":
         returnValue = status.status.since.split("T")[0];
         break;
@@ -135,22 +138,4 @@ export function getStatusValue(status, key) {
     }
   }
   return returnValue;
-}
-
-/**
-  Renders the controller UUID element. If the UUID is the JAAS controller then
-  it replaces the UUID with "JAAS".
-  @param {string} uuid The controller UUID.
-  @returns {Object} The element to render the controller UUID entry
-*/
-export function generateControllerUUID(uuid) {
-  let controllerUUID = uuid.split("-")[0] + "...";
-  if (uuid === "a030379a-940f-4760-8fcf-3062b41a04e7") {
-    controllerUUID = "JAAS";
-  }
-  return (
-    <span className="p-link--soft" title={uuid}>
-      {controllerUUID}
-    </span>
-  );
 }
