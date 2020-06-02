@@ -83,7 +83,7 @@ describe("ModelTableList", () => {
         </Provider>
       </MemoryRouter>
     );
-    const controllerNames = wrapper.find('[data-test="controller-name"]');
+    const controllerNames = wrapper.find('[data-test-column="controller"]');
     expect(controllerNames.first().text()).toStrictEqual("JAAS");
   });
 
@@ -102,7 +102,7 @@ describe("ModelTableList", () => {
       </MemoryRouter>
     );
     const controllerNames = wrapper.find(
-      `[data-test-model-id="${testModelUUID}"] [data-test="controller-name"]`
+      `[data-test-model-uuid="${testModelUUID}"] [data-test-column="controller"]`
     );
     expect(controllerNames.text()).toStrictEqual(unknownUUID);
   });
@@ -122,7 +122,7 @@ describe("ModelTableList", () => {
       </MemoryRouter>
     );
     const controllerNames = wrapper.find(
-      `[data-test-model-id="${testModelUUID}"] [data-test="controller-name"]`
+      `[data-test-model-uuid="${testModelUUID}"] [data-test-column="controller"]`
     );
     expect(controllerNames.text()).toStrictEqual("admins/1-eu-west-1-aws-jaas");
   });

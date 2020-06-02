@@ -97,7 +97,11 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
         owner = extractOwnerName(model.info.ownerTag);
       }
       modelData[`${groupLabel}Rows`].push({
+<<<<<<< Updated upstream
         "data-test-model-id": model?.uuid,
+=======
+        "data-test-model-uuid": model?.uuid,
+>>>>>>> Stashed changes
         columns: [
           {
             "data-test-column": "name",
@@ -135,11 +139,7 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
           },
           {
             "data-test-column": "controller",
-            content: (
-              <span data-test="controller-name">
-                {getStatusValue(model.info, "controllerName")}
-              </span>
-            ),
+            content: getStatusValue(model.info, "controllerName"),
           },
           // We're not currently able to get a last-accessed or updated from JAAS.
           {

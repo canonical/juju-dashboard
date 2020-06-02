@@ -57,7 +57,11 @@ export default function OwnerGroup({ activeUser, filters }) {
       modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
         ownerModels.rows.push({
+<<<<<<< Updated upstream
           "data-test-model-id": model?.uuid,
+=======
+          "data-test-model-uuid": model?.uuid,
+>>>>>>> Stashed changes
           columns: [
             {
               "data-test-column": "name",
@@ -96,11 +100,7 @@ export default function OwnerGroup({ activeUser, filters }) {
             },
             {
               "data-test-column": "controller",
-              content: (
-                <span data-test="controller-name">
-                  {getStatusValue(model.info, "controllerName")}
-                </span>
-              ),
+              content: getStatusValue(model.info, "controllerName"),
             },
             // We're not currently able to get a last-accessed or updated from JAAS.
             {
