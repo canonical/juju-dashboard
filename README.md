@@ -27,7 +27,7 @@ Assuming you already have [Docker](https://www.docker.com/) installed, you can s
 ./run
 ```
 
-...and view the site locally at: http://localhost:8036/. Any changes to the code will be auto built and reloaded in the browser.
+...and view the site locally at: http://localhost:8036/. Any changes you make to the code will be automatically recompiled and reloaded in the browser.
 
 ### Running the tests.
 
