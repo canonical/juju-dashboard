@@ -170,8 +170,6 @@ const Topology = ({ modelData, width, height }) => {
       .attr("viewBox", `0 0 ${width - padding} ${height - padding}`)
       .append("g");
 
-    topo.select("g").attr("width", width - padding);
-
     const appIcons = topo.selectAll(".application").data(applications);
 
     let gridCount = {
@@ -225,10 +223,6 @@ const Topology = ({ modelData, width, height }) => {
 
     function drag() {
       const radius = d3.select("circle", this).attr("r");
-      // const {
-      //   width: svgWidth,
-      //   height: svgHeight,
-      // } = ref.current.getBoundingClientRect();
 
       d3.select(this).attr("transform", () => {
         const iconX = d3.event.x - radius;
