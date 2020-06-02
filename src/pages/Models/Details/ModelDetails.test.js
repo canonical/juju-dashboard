@@ -219,4 +219,20 @@ describe("ModelDetail Container", () => {
       "https://www.jaas.ai/u/activedev/failtester/precise/7"
     );
   });
+
+  it("supports local charms", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/admin/local-test"]}>
+          <TestRoute path="/models/*">
+            <ModelDetails />
+          </TestRoute>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper.find(".model-details__apps tr[data-app='cockroachdb']").length
+    ).toBe(1);
+  });
 });

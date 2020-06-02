@@ -9,7 +9,7 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 
-import { getModelUUID, getModelStatus } from "app/selectors";
+import { getConfig, getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "ui/actions";
 
@@ -104,6 +104,7 @@ const ModelDetails = () => {
     modelStatusData,
     filterByApp
   );
+  const { baseAppURL } = useSelector(getConfig);
 
   useEffect(() => {
     dispatch(collapsibleSidebar(true));
@@ -136,21 +137,23 @@ const ModelDetails = () => {
       generateApplicationRows(
         filteredModelStatusData,
         filterByApp,
-        handleRowClick
+        handleRowClick,
+        baseAppURL
       ),
-    [filterByApp, filteredModelStatusData]
+    [baseAppURL, filterByApp, filteredModelStatusData]
   );
   const unitTableRows = useMemo(
-    () => generateUnitRows(filteredModelStatusData, filterByApp),
-    [filterByApp, filteredModelStatusData]
+    () => generateUnitRows(filteredModelStatusData, filterByApp, baseAppURL),
+    [baseAppURL, filterByApp, filteredModelStatusData]
   );
   const machinesTableRows = useMemo(
     () => generateMachineRows(filteredModelStatusData, filterByApp),
     [filterByApp, filteredModelStatusData]
   );
   const relationTableRows = useMemo(
-    () => generateRelationRows(filteredModelStatusData, filterByApp),
-    [filterByApp, filteredModelStatusData]
+    () =>
+      generateRelationRows(filteredModelStatusData, filterByApp, baseAppURL),
+    [baseAppURL, filterByApp, filteredModelStatusData]
   );
 
   return (
