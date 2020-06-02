@@ -108,7 +108,8 @@ const getRelationPosition = (data) => {
 };
 
 const Topology = ({ modelData, width, height }) => {
-  const ref = useRef();
+  const svgRef = useRef();
+  const padding = 32; // 1rem x 2
 
   const { deltaX, deltaY } = computePositionDelta(modelData?.annotations);
 
@@ -165,9 +166,11 @@ const Topology = ({ modelData, width, height }) => {
   );
   useEffect(() => {
     const topo = d3
-      .select(ref.current)
-      .attr("viewBox", `0 0 ${width} ${height}`)
+      .select(svgRef.current)
+      .attr("viewBox", `0 0 ${width - padding} ${height - padding}`)
       .append("g");
+
+    topo.select("g").attr("width", width - padding);
 
     const appIcons = topo.selectAll(".application").data(applications);
 
@@ -222,22 +225,19 @@ const Topology = ({ modelData, width, height }) => {
 
     function drag() {
       const radius = d3.select("circle", this).attr("r");
-      const {
-        width: svgWidth,
-        height: svgHeight,
-      } = ref.current.getBoundingClientRect();
+      // const {
+      //   width: svgWidth,
+      //   height: svgHeight,
+      // } = ref.current.getBoundingClientRect();
 
-      console.log();
       d3.select(this).attr("transform", () => {
         const iconX = d3.event.x - radius;
         const iconY = d3.event.y - radius;
 
-
-
         const x = Math.max(iconX, 0);
         const y = Math.max(iconY, 0);
 
-        return `translate(${x}, ${iconY})`;
+        return `translate(${x}, ${y})`;
       });
       updateRelations(relationLine);
     }
@@ -269,18 +269,18 @@ const Topology = ({ modelData, width, height }) => {
         // Whenever a new element is added zoom the canvas to fit.
         console.log(topo.node());
         if (svgWidth > 0 && svgHeight > 0) {
-          // Magic number that presents reasonable padding around the viz.
-          const padding = 200;
           const scale = Math.min(
-            width / (svgWidth + padding),
-            height / (svgHeight + padding)
+            (width - padding) / svgWidth,
+            (height - padding) / svgHeight
           );
-          const translateX = (width - svgWidth * scale) / 2;
-          const translateY = (height - svgHeight * scale) / 2;
-          topo.attr(
-            "transform",
-            `translate(${translateX},${translateY}) scale(${scale},${scale})`
-          );
+          const translateX = (width - padding - svgWidth * scale) / 2;
+          const translateY = (height - padding - svgHeight * scale) / 2;
+          topo
+            .attr(
+              "transform",
+              `translate(${translateX},${translateY}) scale(${scale},${scale})`
+            )
+            .attr("width", `${width - padding}`);
         }
       });
 
@@ -307,7 +307,7 @@ const Topology = ({ modelData, width, height }) => {
       topo.remove();
     };
   }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
-  return <svg ref={ref} />;
+  return <svg ref={svgRef} />;
 };
 
 export default React.memo(Topology);

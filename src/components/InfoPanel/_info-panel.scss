@@ -19,7 +19,13 @@
     position: fixed;
     z-index: z("lambda");
 
+    // Offset height of .p-modal__header as it pushes SVG off canvas
+    &__header + div {
+      margin-top: -48px;
+    }
+
     &__dialog {
+      height: 100vh;
       width: 90%;
     }
   }

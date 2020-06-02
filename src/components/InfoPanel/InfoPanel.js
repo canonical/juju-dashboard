@@ -1,4 +1,10 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -13,28 +19,18 @@ import fullScreenIcon from "static/images/icons/fullscreen-icon.svg";
 
 import "./_info-panel.scss";
 
-const expandedTopologyDimensions = () => {
-  const de = document.documentElement;
-  const vw = Math.max(de.clientWidth, window.innerWidth || 0);
-  const vh = Math.max(de.clientHeight, window.innerHeight || 0);
-  const delta = 300;
-  return {
-    width: vw - delta,
-    height: vh - delta,
-  };
-};
-
 const infoPanelDimensions = () => {
   const vw = getViewportWidth();
   // If changes are made to the 1580px breakpoint below then be sure to update
   // the same breakpoint in _info-panel.scss.
-  const size = vw >= 1580 ? 300 : 180;
+  const size = vw >= 1580 ? 300 : 230;
   return size;
 };
 
 const InfoPanel = () => {
   const { 0: modelName } = useParams();
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
+  const [modalDialogDimensions, setModalDialogDimensions] = useState({});
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
@@ -47,10 +43,19 @@ const InfoPanel = () => {
     ? extractCloudName(modelStatusData.model.cloudTag)
     : "";
 
-  const { width, height } = expandedTopologyDimensions();
+  const { width: modalWidth, height: modalHeight } = modalDialogDimensions;
   const topologySize = infoPanelDimensions();
 
   const sendAnalytics = useAnalytics();
+  const infoPanelRef = useRef();
+
+  // Expanded topology width
+  useLayoutEffect(() => {
+    const modalDialog = infoPanelRef.current.querySelector(".p-modal__dialog");
+    if (modalDialog) {
+      setModalDialogDimensions(modalDialog.getBoundingClientRect());
+    }
+  }, [showExpandedTopology]);
 
   // Close topology, if open, on Escape key press
   useEffect(() => {
@@ -66,14 +71,18 @@ const InfoPanel = () => {
   });
 
   return (
-    <div className="info-panel">
+    <div className="info-panel" ref={infoPanelRef}>
       {showExpandedTopology ? (
         <Modal
           close={() => setShowExpandedTopology(false)}
           title={modelName.split("/")[1] || modelName}
           data-test="topology-modal"
         >
-          <Topology width={width} height={height} modelData={modelStatusData} />
+          <Topology
+            width={modalWidth}
+            height={modalHeight}
+            modelData={modelStatusData}
+          />
         </Modal>
       ) : (
         <div className="info-panel__pictogram">
