@@ -111,12 +111,6 @@ export function storeVisitURL(visitURL) {
   };
 }
 
-export function clearBakeryIdentity() {
-  return {
-    type: actionsList.logOut,
-  };
-}
-
 // Thunks
 /**
   Flush bakery from redux store
@@ -131,7 +125,9 @@ export function logOut(getState) {
     bakery.storage._store.removeItem("https://api.jujucharms.com/identity");
     juju.logout();
     clearInterval(pingerIntervalId);
-    dispatch(clearBakeryIdentity());
+    dispatch({
+      type: actionsList.logOut,
+    });
     dispatch(clearModelData());
   };
 }
