@@ -118,7 +118,7 @@ export function generateApplicationRows(
         },
         { content: app.workloadVersion || "-", className: "u-align--right" },
         {
-          content: Object.keys(app.units || {}).length,
+          content: app.unitsCount,
           className: "u-align--right",
         },
         { content: "CharmHub" },
