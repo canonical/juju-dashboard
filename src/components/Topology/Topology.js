@@ -177,6 +177,9 @@ const Topology = ({ modelData, width, height }) => {
       y: maxY,
     };
 
+    let canvasBoundaryX = 0;
+    let canvasBoundaryY = 0;
+
     const relationLines = topo.selectAll(".relation").data(relations);
     const relationLine = relationLines.enter().insert("g", ":first-child");
 
@@ -217,34 +220,6 @@ const Topology = ({ modelData, width, height }) => {
         return `translate(${x}, ${y})`;
       });
 
-    function dragstarted() {
-      d3.select(this).select("circle").attr("stroke", "#E9531F");
-    }
-
-    function drag() {
-      const radius = d3.select("circle", this).attr("r");
-
-      d3.select(this).attr("transform", () => {
-        const iconX = d3.event.x - radius;
-        const iconY = d3.event.y - radius;
-
-        const x = Math.max(iconX, 0);
-        const y = Math.max(iconY, 0);
-
-        return `translate(${x}, ${y})`;
-      });
-      updateRelations(relationLine);
-    }
-
-    function dragended() {
-      d3.select(this).select("circle").attr("stroke", "#888888");
-      updateAnnotations();
-    }
-
-    appIcon.call(
-      d3.drag().on("start", dragstarted).on("drag", drag).on("end", dragended)
-    );
-
     appIcon
       .classed("application", true)
       .attr("data-name", (d) => d.name)
@@ -260,14 +235,21 @@ const Topology = ({ modelData, width, height }) => {
           width: svgWidth,
           height: svgHeight,
         } = topo.node().getBoundingClientRect();
+
+        // Grab width/height of SVG canvas to create outer bounds for repositioning
+        canvasBoundaryX = svgWidth;
+        canvasBoundaryY = svgHeight;
+
         // Whenever a new element is added zoom the canvas to fit.
         if (svgWidth > 0 && svgHeight > 0) {
-          const scale = Math.min(
-            (width - padding) / svgWidth,
-            (height - padding) / svgHeight
-          );
-          const translateX = (width - padding - svgWidth * scale) / 2;
-          const translateY = (height - padding - svgHeight * scale) / 2;
+          const scale =
+            Math.min(
+              (width - padding) / svgWidth,
+              (height - padding) / svgHeight
+            ) || 1;
+
+          const translateX = (width - padding - svgWidth * scale) / 2 || 0;
+          const translateY = (height - padding - svgHeight * scale) / 2 || 0;
           topo
             .attr(
               "transform",
@@ -291,6 +273,46 @@ const Topology = ({ modelData, width, height }) => {
           : "circle(55px at 63px 63px)"
       );
 
+    function dragstarted() {
+      d3.select(this).select("circle").attr("stroke", "#E9531F");
+    }
+
+    function drag() {
+      const app = d3.select("circle", this);
+      const radius = app.attr("r");
+
+      d3.select(this).attr("transform", () => {
+        const iconX = d3.event.x - radius;
+        const iconY = d3.event.y - radius;
+
+        // Find lower bounds of canvas (top and left)
+        const xLower = Math.max(iconX, 0);
+        const yLower = Math.max(iconY, 0);
+
+        // Find upper bounds of canvas (right and bottom)
+        const x = Math.min(
+          xLower,
+          canvasBoundaryX - padding - radius - radius / 2
+        );
+        const y = Math.min(
+          yLower,
+          canvasBoundaryY - padding - radius - radius / 2
+        );
+
+        return `translate(${x}, ${y})`;
+      });
+      updateRelations(relationLine);
+    }
+
+    function dragended() {
+      d3.select(this).select("circle").attr("stroke", "#888888");
+      updateAnnotations();
+    }
+
+    appIcon.call(
+      d3.drag().on("start", dragstarted).on("drag", drag).on("end", dragended)
+    );
+
     setRelations(relationLine);
 
     appIcons.exit().remove();
@@ -300,6 +322,7 @@ const Topology = ({ modelData, width, height }) => {
       topo.remove();
     };
   }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
+
   return <svg ref={svgRef} />;
 };
 
