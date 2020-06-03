@@ -167,7 +167,7 @@ const Topology = ({ modelData, width, height }) => {
   useEffect(() => {
     const topo = d3
       .select(svgRef.current)
-      .attr("viewBox", `0 0 ${width - padding} ${height - padding}`)
+      .attr("viewBox", `0 0 ${width - padding || 0} ${height - padding || 0}`)
       .append("g");
 
     const appIcons = topo.selectAll(".application").data(applications);
@@ -261,7 +261,6 @@ const Topology = ({ modelData, width, height }) => {
           height: svgHeight,
         } = topo.node().getBoundingClientRect();
         // Whenever a new element is added zoom the canvas to fit.
-        console.log(topo.node());
         if (svgWidth > 0 && svgHeight > 0) {
           const scale = Math.min(
             (width - padding) / svgWidth,
