@@ -235,4 +235,27 @@ describe("ModelDetail Container", () => {
       wrapper.find(".model-details__apps tr[data-app='cockroachdb']").length
     ).toBe(1);
   });
+
+  it("displays the correct scale value", () => {
+    const store = mockStore(dataDump);
+    const testApp = "kibana";
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+          <TestRoute path="/models/*">
+            <ModelDetails />
+          </TestRoute>
+        </MemoryRouter>
+      </Provider>
+    );
+    const applicationRow = wrapper.find(`tr[data-app="${testApp}"]`);
+    expect(applicationRow.find("td[data-test-column='scale']").text()).toBe(
+      "1"
+    );
+    // Filtering the tables shouldn't effect the scale count
+    applicationRow.simulate("click");
+    expect(applicationRow.find("td[data-test-column='scale']").text()).toBe(
+      "1"
+    );
+  });
 });

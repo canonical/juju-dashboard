@@ -109,25 +109,36 @@ export function generateApplicationRows(
     return {
       columns: [
         {
+          "data-test-column": "name",
           content: generateEntityLink(app.charm || "", key, false, baseAppURL),
           className: "u-truncate",
         },
         {
+          "data-test-column": "status",
           content: app.status ? generateStatusElement(app.status.status) : "-",
           className: "u-capitalise u-truncate",
         },
-        { content: app.workloadVersion || "-", className: "u-align--right" },
         {
+          "data-test-column": "version",
+          content: app.workloadVersion || "-",
+          className: "u-align--right",
+        },
+        {
+          "data-test-column": "scale",
           content: app.unitsCount,
           className: "u-align--right",
         },
-        { content: "CharmHub" },
         {
+          "data-test-column": "store",
+          content: "CharmHub",
+        },
+        {
+          "data-test-column": "revision",
           content: extractRevisionNumber(app.charm) || "-",
           className: "u-align--right",
         },
-        { content: "Ubuntu" },
-        { content: "-" },
+        { "data-test-column": "os", content: "Ubuntu" },
+        { "data-test-column": "notes", content: "-" },
       ],
       className: filterByApp === key ? "is-selected" : "",
       onClick: onRowClick,
