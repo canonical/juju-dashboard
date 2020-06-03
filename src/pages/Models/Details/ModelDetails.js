@@ -92,9 +92,9 @@ const filterModelStatusData = (modelStatusData, appName) => {
     );
 
     return filteredData;
-  } else {
-    return modelStatusData;
   }
+
+  return modelStatusData;
 };
 
 const ModelDetails = () => {
