@@ -32,59 +32,69 @@ import "./_model-details.scss";
   @param {String} appName The name of the application to filter the data by.
 */
 const filterModelStatusData = (modelStatusData, appName) => {
-  if (!modelStatusData || appName === "") {
-    return modelStatusData;
-  }
-  const filteredData = cloneDeep(modelStatusData);
-  const application = filteredData.applications[appName];
-  // remove the units from the application objects that are not
-  // the filter-by app.
-  const subordinateTo = application.subordinateTo || [];
-  Object.keys(filteredData.applications).forEach((key) => {
-    if (key !== appName && !subordinateTo.includes(key)) {
-      filteredData.applications[key].units = {};
+  if (modelStatusData) {
+    const filteredData = cloneDeep(modelStatusData);
+    Object.keys(filteredData.applications).forEach((key) => {
+      filteredData.applications[key].unitsCount = Object.keys(
+        filteredData.applications[key].units
+      ).length;
+    });
+    if (appName === "") {
+      return filteredData;
     }
-  });
-  // Loop through all of the units of the remaining applications that are
-  // listed in the subordinateTo list. This is done because although
-  // a subordinate is supposed to be installed on each unit, that's not
-  // always the case.
-  subordinateTo.forEach((parentName) => {
-    const units = filteredData.applications[parentName].units;
-    Object.entries(units).forEach((entry) => {
-      const found = Object.entries(entry[1].subordinates).find(
-        (ele) => ele[0].split("/")[0] === appName
-      );
-      if (!found) {
-        delete units[entry[0]];
+
+    const application = filteredData.applications[appName];
+    // remove the units from the application objects that are not
+    // the filter-by app.
+    const subordinateTo = application.subordinateTo || [];
+    Object.keys(filteredData.applications).forEach((key) => {
+      if (key !== appName && !subordinateTo.includes(key)) {
+        filteredData.applications[key].units = {};
       }
     });
-  });
+    // Loop through all of the units of the remaining applications that are
+    // listed in the subordinateTo list. This is done because although
+    // a subordinate is supposed to be installed on each unit, that's not
+    // always the case.
+    subordinateTo.forEach((parentName) => {
+      const units = filteredData.applications[parentName].units;
+      Object.entries(units).forEach((entry) => {
+        const found = Object.entries(entry[1].subordinates).find(
+          (ele) => ele[0].split("/")[0] === appName
+        );
+        if (!found) {
+          delete units[entry[0]];
+        }
+      });
+    });
 
-  // Remove all the machines that the selected application isn't installed on.
-  const appMachines = new Set();
-  for (let unitId in application.units) {
-    const unit = application.units[unitId];
-    appMachines.add(unit.machine);
-  }
-  subordinateTo.forEach((subAppName) => {
-    // this will be the parent of the subordinate and grab the machines from it
-    const parent = filteredData.applications[subAppName];
-    for (let unitId in parent.units) {
-      const unit = parent.units[unitId];
+    // Remove all the machines that the selected application isn't installed on.
+    const appMachines = new Set();
+    for (let unitId in application.units) {
+      const unit = application.units[unitId];
       appMachines.add(unit.machine);
     }
-  });
-  for (let machineId in filteredData.machines) {
-    if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
+    subordinateTo.forEach((subAppName) => {
+      // this will be the parent of the subordinate and grab the machines from it
+      const parent = filteredData.applications[subAppName];
+      for (let unitId in parent.units) {
+        const unit = parent.units[unitId];
+        appMachines.add(unit.machine);
+      }
+    });
+    for (let machineId in filteredData.machines) {
+      if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
+    }
+
+    // Remove all relations that don't involve the selected application.
+    filteredData.relations = modelStatusData.relations.filter(
+      (relation) => relation.key.indexOf(appName) > -1
+    );
+
+    return filteredData;
   }
 
-  // Remove all relations that don't involve the selected application.
-  filteredData.relations = modelStatusData.relations.filter(
-    (relation) => relation.key.indexOf(appName) > -1
-  );
-
-  return filteredData;
+  return modelStatusData;
 };
 
 const ModelDetails = () => {
