@@ -1,18 +1,78 @@
-.p-modal .application {
-  &:hover {
-    cursor: move;
-    z-index: 99999;
+@import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
+
+.topology {
+  background-color: transparent;
+  transition: all 0.5s ease-in-out;
+
+  &[data-fullscreen="true"] {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: inline-flex;
+    height: 100vh;
+    justify-items: center;
+    left: 0;
+    max-width: 100vh;
+    position: fixed;
+    top: 0;
+    z-index: z("lambda");
+
+    .topology__inner {
+      margin: 2rem;
+      width: calc(100vw - 4rem);
+    }
   }
 
-  image {
-    pointer-events: none;
+  &__inner {
+    background: $color-light;
+    border: solid 1px $color-mid-x-light;
+    flex: 1;
+    position: relative;
   }
-}
 
-svg {
-  outline: 1px solid blue;
-
-  > g {
-    outline: 2px solid palevioletred;
+  .p-icon--fullscreen {
+    bottom: 10px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
   }
+
+  .p-icon--close {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .read-only {
+    background-color: $color-mid-x-light;
+    bottom: 0;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    position: absolute;
+    right: 0;
+    text-transform: uppercase;
+  }
+
+  .application {
+    &:hover {
+      cursor: move;
+      z-index: 99999;
+    }
+
+    image {
+      pointer-events: none;
+    }
+  }
+
+  // svg {
+  //   outline: 1px solid blue;
+
+  //   > g {
+  //     outline: 2px solid palevioletred;
+  //   }
+  // }
 }

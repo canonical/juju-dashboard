@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import { updateAnnotations } from "juju/index";
 import { generateIconPath } from "app/utils";
+import fullScreenIcon from "static/images/icons/fullscreen-icon.svg";
 
 import "./topology.scss";
 
@@ -107,9 +108,11 @@ const getRelationPosition = (data) => {
   };
 };
 
-const Topology = ({ modelData, width, height }) => {
+const Topology = ({ modelData }) => {
   const svgRef = useRef();
-  const padding = 32; // 1rem x 2
+  const topologyRef = useRef();
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isReadOnly, setisReadOnly] = useState(false);
 
   const { deltaX, deltaY } = computePositionDelta(modelData?.annotations);
 
@@ -165,9 +168,18 @@ const Topology = ({ modelData, width, height }) => {
       applicationNames.includes(relation[1])
   );
   useEffect(() => {
+    const topologyDimensions = topologyRef.current
+      .querySelector(".topology__inner")
+      .getBoundingClientRect();
+
+    const { width: topologyWidth, height: topologyHeight } = topologyDimensions;
+
+    const width = topologyWidth;
+    const height = !isFullscreen ? topologyWidth : topologyHeight;
+
     const topo = d3
       .select(svgRef.current)
-      .attr("viewBox", `0 0 ${width - padding || 0} ${height - padding || 0}`)
+      .attr("viewBox", `0 0 ${width} ${height}`)
       .append("g");
 
     const appIcons = topo.selectAll(".application").data(applications);
@@ -242,20 +254,16 @@ const Topology = ({ modelData, width, height }) => {
 
         // Whenever a new element is added zoom the canvas to fit.
         if (svgWidth > 0 && svgHeight > 0) {
-          const scale =
-            Math.min(
-              (width - padding) / svgWidth,
-              (height - padding) / svgHeight
-            ) || 1;
+          const scale = Math.min(width / svgWidth, height / svgHeight) || 1;
 
-          const translateX = (width - padding - svgWidth * scale) / 2 || 0;
-          const translateY = (height - padding - svgHeight * scale) / 2 || 0;
+          const translateX = (width - svgWidth * scale) / 2 || 0;
+          const translateY = (height - svgHeight * scale) / 2 || 0;
           topo
             .attr(
               "transform",
               `translate(${translateX},${translateY}) scale(${scale},${scale})`
             )
-            .attr("width", `${width - padding}`);
+            .attr("width", `${width}`);
         }
       });
 
@@ -290,14 +298,8 @@ const Topology = ({ modelData, width, height }) => {
         const yLower = Math.max(iconY, 0);
 
         // Find upper bounds of canvas (right and bottom)
-        const x = Math.min(
-          xLower,
-          canvasBoundaryX - padding - radius - radius / 2
-        );
-        const y = Math.min(
-          yLower,
-          canvasBoundaryY - padding - radius - radius / 2
-        );
+        const x = Math.min(xLower, canvasBoundaryX - radius - radius / 2);
+        const y = Math.min(yLower, canvasBoundaryY - radius - radius / 2);
 
         return `translate(${x}, ${y})`;
       });
@@ -321,9 +323,41 @@ const Topology = ({ modelData, width, height }) => {
     return () => {
       topo.remove();
     };
-  }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
+  }, [applications, deltaX, deltaY, isFullscreen, maxX, maxY, relations]);
 
-  return <svg ref={svgRef} />;
+  // Close topology, if open, on Escape key press
+  useEffect(() => {
+    const closeOnEscape = function (e) {
+      if (e.code === "Escape" && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  });
+
+  return (
+    <div className="topology" data-fullscreen={isFullscreen} ref={topologyRef}>
+      <div className="topology__inner">
+        {isFullscreen && (
+          <i className="p-icon--close" onClick={() => setIsFullscreen(false)} />
+        )}
+        <svg ref={svgRef} />
+        {!isFullscreen && (
+          <i
+            style={{ backgroundImage: `url(${fullScreenIcon})` }}
+            className="p-icon--expand p-icon--fullscreen"
+            onClick={() => setIsFullscreen(true)}
+          />
+        )}
+        {isReadOnly && isFullscreen && (
+          <span className="read-only">Read only</span>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default React.memo(Topology);
