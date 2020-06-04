@@ -180,6 +180,11 @@ const Topology = ({ modelData }) => {
     const topo = d3
       .select(svgRef.current)
       .attr("viewBox", `0 0 ${width} ${height}`)
+      .call(
+        d3.zoom().on("zoom", function () {
+          topo.attr("transform", d3.event.transform);
+        })
+      )
       .append("g");
 
     const appIcons = topo.selectAll(".application").data(applications);
