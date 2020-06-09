@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import * as d3 from "d3";
 import { updateAnnotations } from "juju/index";
-import { generateIconPath } from "app/utils";
+import { generateIconPath, extractOwnerName } from "app/utils";
+import { getActiveUserTag } from "app/selectors";
 import fullScreenIcon from "static/images/icons/fullscreen-icon.svg";
 
 import "./topology.scss";
@@ -114,7 +116,20 @@ const Topology = ({ modelData }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isReadOnly, setisReadOnly] = useState(false);
 
+  const activeUser = useSelector(getActiveUserTag);
+
   const { deltaX, deltaY } = computePositionDelta(modelData?.annotations);
+
+  const modelOwner = extractOwnerName(modelData?.info?.ownerTag || "");
+  const currentActiveUser = extractOwnerName(activeUser || "");
+
+  // If active user and model owner are oen and the same, grant write access
+  // to reposition topology
+  useEffect(() => {
+    if (modelOwner !== "" && currentActiveUser !== "") {
+      setisReadOnly(modelOwner !== currentActiveUser);
+    }
+  }, [modelOwner, currentActiveUser]);
 
   const applications =
     (modelData &&
@@ -316,9 +331,11 @@ const Topology = ({ modelData }) => {
       updateAnnotations();
     }
 
-    appIcon.call(
-      d3.drag().on("start", dragstarted).on("drag", drag).on("end", dragended)
-    );
+    if (!isReadOnly) {
+      appIcon.call(
+        d3.drag().on("start", dragstarted).on("drag", drag).on("end", dragended)
+      );
+    }
 
     setRelations(relationLine);
 
@@ -328,7 +345,16 @@ const Topology = ({ modelData }) => {
     return () => {
       topo.remove();
     };
-  }, [applications, deltaX, deltaY, isFullscreen, maxX, maxY, relations]);
+  }, [
+    applications,
+    deltaX,
+    deltaY,
+    isFullscreen,
+    isReadOnly,
+    maxX,
+    maxY,
+    relations,
+  ]);
 
   // Close topology, if open, on Escape key press
   useEffect(() => {
