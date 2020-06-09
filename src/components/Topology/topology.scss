@@ -10,7 +10,8 @@
 .topology {
   background-color: transparent;
   margin-bottom: 1rem;
-  transition: all 0.5s ease-in-out;
+  transition-duration: 0.2s;
+  transition-property: width, height;
 
   &__loading {
     padding-bottom: 100%;
@@ -22,6 +23,10 @@
       position: absolute;
       top: calc(50% - 0.5rem);
     }
+  }
+
+  .topology__svg {
+    margin: 1rem;
   }
 
   &[data-fullscreen="true"] {
@@ -40,7 +45,7 @@
     .topology__inner {
       border-width: 5px;
       margin: 2rem auto;
-      max-width: calc(100vh - 4rem);
+      padding: 1rem;
       width: calc(100vw - 4rem);
     }
   }
@@ -73,7 +78,7 @@
     background-color: $color-mid-x-light;
     bottom: 0;
     font-size: 0.875rem;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1rem 5px;
     position: absolute;
     right: 0;
     text-transform: uppercase;

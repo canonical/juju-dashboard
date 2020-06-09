@@ -183,24 +183,33 @@ const Topology = ({ modelData }) => {
       applicationNames.includes(relation[1])
   );
   useEffect(() => {
-    const topologyEl = topologyRef?.current.querySelector(".topology__inner");
-    const topologyDimensions = topologyEl
-      ? topologyEl.getBoundingClientRect()
+    const topologySVGwrap = topologyRef?.current.querySelector(
+      ".topology__svg"
+    );
+    const topologyDimensions = topologySVGwrap
+      ? topologySVGwrap.getBoundingClientRect()
       : {};
 
     const { width: topologyWidth, height: topologyHeight } = topologyDimensions;
 
+    const topologySpacing = 260; //px
+    const maxViewportHeight = window.innerHeight - topologySpacing;
+
     const width = topologyWidth;
-    const height = !isFullscreen ? topologyWidth : topologyHeight;
+    const height = !isFullscreen
+      ? topologyWidth
+      : Math.min(topologyHeight, maxViewportHeight);
+
+    console.log(Math.min(topologyHeight, maxViewportHeight));
 
     const topo = d3
       .select(svgRef.current)
       .attr("viewBox", `0 0 ${width} ${height}`)
-      .call(
-        d3.zoom().on("zoom", function () {
-          topo.attr("transform", d3.event.transform);
-        })
-      )
+      // .call(
+      //   d3.zoom().on("zoom", function () {
+      //     topo.attr("transform", d3.event.transform);
+      //   })
+      // )
       .append("g");
 
     const appIcons = topo.selectAll(".application").data(applications);
@@ -317,7 +326,7 @@ const Topology = ({ modelData }) => {
       updateAnnotations();
     }
 
-    if (!isReadOnly) {
+    if (isReadOnly) {
       appIcon.call(
         d3.drag().on("start", dragstarted).on("drag", drag).on("end", dragended)
       );
@@ -363,7 +372,9 @@ const Topology = ({ modelData }) => {
         )}
 
         {modelData ? (
-          <svg ref={svgRef} />
+          <div className="topology__svg">
+            <svg ref={svgRef} />
+          </div>
         ) : (
           <div className="topology__loading">
             <i className="p-icon--spinner">Loading...</i>
