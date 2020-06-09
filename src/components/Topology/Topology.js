@@ -210,9 +210,6 @@ const Topology = ({ modelData }) => {
       y: maxY,
     };
 
-    let canvasBoundaryX = 0;
-    let canvasBoundaryY = 0;
-
     const relationLines = topo.selectAll(".relation").data(relations);
     const relationLine = relationLines.enter().insert("g", ":first-child");
 
@@ -269,10 +266,6 @@ const Topology = ({ modelData }) => {
           ? topoNode.getBoundingClientRect()
           : {};
 
-        // Grab width/height of SVG canvas to create outer bounds for repositioning
-        canvasBoundaryX = svgWidth;
-        canvasBoundaryY = svgHeight;
-
         // Whenever a new element is added zoom the canvas to fit.
         if (svgWidth > 0 && svgHeight > 0) {
           const scale = Math.min(width / svgWidth, height / svgHeight) || 1;
@@ -314,15 +307,7 @@ const Topology = ({ modelData }) => {
         const iconX = d3.event.x - radius;
         const iconY = d3.event.y - radius;
 
-        // Find lower bounds of canvas (top and left)
-        const xLower = Math.max(iconX, 0);
-        const yLower = Math.max(iconY, 0);
-
-        // Find upper bounds of canvas (right and bottom)
-        const x = Math.min(xLower, canvasBoundaryX - radius - radius / 2);
-        const y = Math.min(yLower, canvasBoundaryY - radius - radius / 2);
-
-        return `translate(${x}, ${y})`;
+        return `translate(${iconX}, ${iconY})`;
       });
       updateRelations(relationLine);
     }
