@@ -183,9 +183,10 @@ const Topology = ({ modelData }) => {
       applicationNames.includes(relation[1])
   );
   useEffect(() => {
-    const topologyDimensions = topologyRef.current
-      .querySelector(".topology__inner")
-      .getBoundingClientRect();
+    const topologyEl = topologyRef?.current.querySelector(".topology__inner");
+    const topologyDimensions = topologyEl
+      ? topologyEl.getBoundingClientRect()
+      : {};
 
     const { width: topologyWidth, height: topologyHeight } = topologyDimensions;
 
@@ -263,10 +264,10 @@ const Topology = ({ modelData }) => {
       .attr("stroke-width", 3)
       .attr("stroke", "#888888")
       .call((_) => {
-        const {
-          width: svgWidth,
-          height: svgHeight,
-        } = topo.node().getBoundingClientRect();
+        const topoNode = topo.node();
+        const { width: svgWidth, height: svgHeight } = topoNode
+          ? topoNode.getBoundingClientRect()
+          : {};
 
         // Grab width/height of SVG canvas to create outer bounds for repositioning
         canvasBoundaryX = svgWidth;
@@ -375,8 +376,16 @@ const Topology = ({ modelData }) => {
         {isFullscreen && (
           <i className="p-icon--close" onClick={() => setIsFullscreen(false)} />
         )}
-        <svg ref={svgRef} />
-        {!isFullscreen && (
+
+        {modelData ? (
+          <svg ref={svgRef} />
+        ) : (
+          <div className="topology__loading">
+            <i className="p-icon--spinner">Loading...</i>
+          </div>
+        )}
+
+        {!isFullscreen && modelData && (
           <i
             style={{ backgroundImage: `url(${fullScreenIcon})` }}
             className="p-icon--expand p-icon--fullscreen"

@@ -1,9 +1,28 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
 
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .topology {
   background-color: transparent;
+  margin-bottom: 1rem;
   transition: all 0.5s ease-in-out;
+
+  &__loading {
+    padding-bottom: 100%;
+    position: relative;
+
+    i {
+      animation: rotate 1s linear infinite;
+      left: calc(50% - 0.5rem);
+      position: absolute;
+      top: calc(50% - 0.5rem);
+    }
+  }
 
   &[data-fullscreen="true"] {
     align-items: center;
@@ -19,6 +38,7 @@
     z-index: z("lambda");
 
     .topology__inner {
+      border-width: 5px;
       margin: 2rem auto;
       max-width: calc(100vh - 4rem);
       width: calc(100vw - 4rem);
