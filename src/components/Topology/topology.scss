@@ -12,13 +12,15 @@
     height: 100vh;
     justify-items: center;
     left: 0;
-    max-width: 100vh;
+    padding: 4rem;
     position: fixed;
     top: 0;
+    width: 100vw;
     z-index: z("lambda");
 
     .topology__inner {
-      margin: 2rem;
+      margin: 2rem auto;
+      max-width: calc(100vh - 4rem);
       width: calc(100vw - 4rem);
     }
   }
