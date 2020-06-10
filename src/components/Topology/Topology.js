@@ -200,8 +200,6 @@ const Topology = ({ modelData }) => {
       ? topologyWidth
       : Math.min(topologyHeight, maxViewportHeight);
 
-    console.log(Math.min(topologyHeight, maxViewportHeight));
-
     const topo = d3
       .select(svgRef.current)
       .attr("viewBox", `0 0 ${width} ${height}`)
