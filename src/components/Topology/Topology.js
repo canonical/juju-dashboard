@@ -91,7 +91,7 @@ const applyDelta = (position, delta) =>
 const getRelationPosition = (data) => {
   // Gets the values from the elements translate attribute.
   // translate(123.456, 789.012)
-  const translateValues = /(\d*\.?\d*),\s(\d*\.?\d*)/;
+  const translateValues = /(\d*\.?\d*),\s(-?\d*\.?\d*)/;
   const getElement = (index) => d3.select(`[data-name="${data[index]}"]`);
   const getRect = (element) =>
     translateValues.exec(element.node().getAttribute("transform"));
