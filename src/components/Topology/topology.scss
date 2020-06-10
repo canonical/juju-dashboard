@@ -29,6 +29,13 @@
     margin: 1rem;
   }
 
+  &__inner {
+    background: $color-light;
+    border: solid 1px $color-mid-x-light;
+    flex: 1;
+    position: relative;
+  }
+
   &[data-fullscreen="true"] {
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
@@ -49,13 +56,6 @@
       padding: 1rem;
       width: calc(100vw - 4rem);
     }
-  }
-
-  &__inner {
-    background: $color-light;
-    border: solid 1px $color-mid-x-light;
-    flex: 1;
-    position: relative;
   }
 
   .p-icon--fullscreen {
@@ -96,14 +96,16 @@
     }
   }
 
-  // svg {
-  //   outline: 1px solid blue;
   svg {
     overflow: visible !important;
   }
 
-  //   > g {
-  //     outline: 2px solid palevioletred;
-  //   }
-  // }
+  // debug colors
+  svg {
+    outline: 1px solid blue;
+
+    > g {
+      outline: 2px solid palevioletred;
+    }
+  }
 }
