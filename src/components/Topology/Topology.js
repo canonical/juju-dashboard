@@ -114,7 +114,7 @@ const Topology = ({ modelData }) => {
   const svgRef = useRef();
   const topologyRef = useRef();
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isReadOnly, setisReadOnly] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   const activeUser = useSelector(getActiveUserTag);
 
@@ -127,7 +127,7 @@ const Topology = ({ modelData }) => {
   // to reposition topology
   useEffect(() => {
     if (modelOwner !== "" && currentActiveUser !== "") {
-      setisReadOnly(modelOwner !== currentActiveUser);
+      setIsReadOnly(modelOwner !== currentActiveUser);
     }
   }, [modelOwner, currentActiveUser]);
 
