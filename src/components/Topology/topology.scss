@@ -45,6 +45,7 @@
     .topology__inner {
       border-width: 5px;
       margin: 2rem auto;
+      overflow: hidden;
       padding: 1rem;
       width: calc(100vw - 4rem);
     }
@@ -97,6 +98,9 @@
 
   // svg {
   //   outline: 1px solid blue;
+  svg {
+    overflow: visible !important;
+  }
 
   //   > g {
   //     outline: 2px solid palevioletred;
