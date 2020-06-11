@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, memo } from "react";
 import { useSelector } from "react-redux";
 import * as d3 from "d3";
 import { updateAnnotations } from "juju/index";
@@ -403,4 +403,11 @@ const Topology = ({ modelData }) => {
   );
 };
 
-export default React.memo(Topology);
+function freezeRendering(prevProps) {
+  /*
+    Freeze rerendering once modelData has been passed via props
+  */
+  if (prevProps.modelData) return true;
+}
+
+export default memo(Topology, freezeRendering);
