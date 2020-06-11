@@ -186,7 +186,7 @@ const Topology = ({ modelData }) => {
       applicationNames.includes(relation[1])
   );
   useEffect(() => {
-    const topologySVGwrap = topologyRef?.current.querySelector(
+    const topologySVGwrap = topologyRef?.current?.querySelector(
       ".topology__svg"
     );
     const topologyDimensions = topologySVGwrap
@@ -371,36 +371,47 @@ const Topology = ({ modelData }) => {
     };
   });
 
-  return (
-    <div className="topology" data-fullscreen={isFullscreen} ref={topologyRef}>
-      <div className="topology__inner">
-        {isFullscreen && (
-          <i className="p-icon--close" onClick={() => setIsFullscreen(false)} />
-        )}
+  if (Object.entries(modelData?.applications || {}).length) {
+    return (
+      <div
+        className="topology"
+        data-fullscreen={isFullscreen}
+        ref={topologyRef}
+      >
+        <div className="topology__inner">
+          {isFullscreen && (
+            <i
+              className="p-icon--close"
+              onClick={() => setIsFullscreen(false)}
+            />
+          )}
 
-        {modelData ? (
-          <div className="topology__svg">
-            <svg ref={svgRef} />
-          </div>
-        ) : (
-          <div className="topology__loading">
-            <i className="p-icon--spinner">Loading...</i>
-          </div>
-        )}
+          {modelData ? (
+            <div className="topology__svg">
+              <svg ref={svgRef} />
+            </div>
+          ) : (
+            <div className="topology__loading">
+              <i className="p-icon--spinner">Loading...</i>
+            </div>
+          )}
 
-        {!isFullscreen && modelData && (
-          <i
-            style={{ backgroundImage: `url(${fullScreenIcon})` }}
-            className="p-icon--expand p-icon--fullscreen"
-            onClick={() => setIsFullscreen(true)}
-          />
-        )}
-        {isReadOnly && isFullscreen && (
-          <span className="read-only">Read only</span>
-        )}
+          {!isFullscreen && modelData && (
+            <i
+              style={{ backgroundImage: `url(${fullScreenIcon})` }}
+              className="p-icon--expand p-icon--fullscreen"
+              onClick={() => setIsFullscreen(true)}
+            />
+          )}
+          {isReadOnly && isFullscreen && (
+            <span className="read-only">Read only</span>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return null;
+  }
 };
 
 function freezeRendering(prevProps) {
