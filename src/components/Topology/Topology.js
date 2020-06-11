@@ -333,7 +333,7 @@ const Topology = ({ modelData }) => {
       updateAnnotations();
     }
 
-    if (isReadOnly) {
+    if (!isReadOnly) {
       appIcon.call(
         d3.drag().on("start", dragstarted).on("drag", drag).on("end", dragended)
       );
@@ -376,6 +376,7 @@ const Topology = ({ modelData }) => {
       <div
         className="topology"
         data-fullscreen={isFullscreen}
+        data-readOnly={isReadOnly}
         ref={topologyRef}
       >
         <div className="topology__inner">

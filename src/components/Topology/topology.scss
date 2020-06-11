@@ -56,6 +56,25 @@
       padding: 1rem;
       width: calc(100vw - 4rem);
     }
+
+    .topology__svg {
+      &:hover {
+        cursor: grab;
+      }
+    }
+
+    &[data-readonly="false"] .application {
+      z-index: 99999;
+
+      &:hover {
+        cursor: move !important;
+        z-index: 99999;
+      }
+
+      image {
+        pointer-events: none;
+      }
+    }
   }
 
   .p-icon--fullscreen {
@@ -83,17 +102,6 @@
     position: absolute;
     right: 0;
     text-transform: uppercase;
-  }
-
-  .application {
-    &:hover {
-      cursor: move;
-      z-index: 99999;
-    }
-
-    image {
-      pointer-events: none;
-    }
   }
 
   svg {
