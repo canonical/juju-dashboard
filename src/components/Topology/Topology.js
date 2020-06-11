@@ -113,6 +113,7 @@ const getRelationPosition = (data) => {
 const Topology = ({ modelData }) => {
   const svgRef = useRef();
   const topologyRef = useRef();
+  const [applications, setApplications] = useState([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
 
@@ -131,14 +132,16 @@ const Topology = ({ modelData }) => {
     }
   }, [modelOwner, currentActiveUser]);
 
-  const applications =
-    (modelData &&
-      Object.keys(modelData.applications).map((appName) => ({
-        ...modelData.annotations[appName],
-        ...modelData.applications[appName],
-        name: appName,
-      }))) ||
-    [];
+  useEffect(() => {
+    const applications = modelData
+      ? Object.keys(modelData.applications).map((appName) => ({
+          ...modelData.annotations[appName],
+          ...modelData.applications[appName],
+          name: appName,
+        }))
+      : [];
+    setApplications(applications);
+  }, [modelData]);
 
   // Apply deltas to the annotations.
   for (const appName in applications) {
