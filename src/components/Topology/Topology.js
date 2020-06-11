@@ -203,16 +203,16 @@ const Topology = ({ modelData }) => {
       ? topologyWidth
       : Math.min(topologyHeight, maxViewportHeight);
 
+    const zoom = d3.zoom().on("zoom", function () {
+      if (isFullscreen) {
+        topo.attr("transform", d3.event.transform);
+      }
+    });
+
     const topo = d3
       .select(svgRef.current)
       .attr("viewBox", `0 0 ${width} ${height}`)
-      .call(
-        d3.zoom().on("zoom", function () {
-          if (isFullscreen) {
-            topo.attr("transform", d3.event.transform);
-          }
-        })
-      )
+      .call(zoom)
       .append("g");
 
     const appIcons = topo.selectAll(".application").data(applications);
@@ -289,7 +289,11 @@ const Topology = ({ modelData }) => {
               "transform",
               `translate(${translateX},${translateY}) scale(${scale},${scale})`
             )
-            .attr("width", `${width}`);
+            .attr("width", `${width}`)
+            .call(
+              zoom.transform,
+              d3.zoomIdentity.translate(translateX, translateY).scale(scale)
+            );
         }
       });
 
