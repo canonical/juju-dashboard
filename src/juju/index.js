@@ -293,6 +293,18 @@ export function disableControllerUUIDMasking(conn) {
   conn.facades.jimM.disableControllerUUIDMasking();
 }
 
-export function updateAnnotations(annotations) {
-  console.log("updated juju");
+export async function updateAnnotations(conn, name, annotations) {
+  // XXX Disable until we can properly save back to juju
+  // const response = await conn?.facades?.annotations?.set({
+  //   annotations: [
+  //     {
+  //       entity: `application-${name}`,
+  //       annotations: {
+  //         "gui-x": annotations[0],
+  //         "gui-y": annotations[1],
+  //       },
+  //     },
+  //   ],
+  // });
+  // return response;
 }

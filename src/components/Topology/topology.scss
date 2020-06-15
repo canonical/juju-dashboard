@@ -10,6 +10,7 @@
 .topology {
   background-color: transparent;
   margin-bottom: 1rem;
+  pointer-events: none;
   transition-duration: 0.2s;
   transition-property: width, height;
 
@@ -44,10 +45,11 @@
     justify-items: center;
     left: 0;
     padding: 4rem;
+    pointer-events: auto;
     position: fixed;
     top: 0;
     width: 100vw;
-    z-index: z("lambda");
+    z-index: z("kappa");
 
     .topology__inner {
       border-width: 5px;
@@ -75,13 +77,37 @@
         pointer-events: none;
       }
     }
+
+    .flashMessage {
+      color: $color-mid-x-light;
+      left: 0;
+      padding: 0.25rem 0.5rem;
+      position: absolute;
+      top: 0;
+      transform: translateY(-100%);
+      transition: all 0.5s;
+      width: 100%;
+      z-index: z("lambda");
+
+      &[data-type="error"] {
+        background-color: $color-negative;
+        transform: translateY(0);
+      }
+
+      &[data-type="success"] {
+        background-color: $color-positive;
+        transform: translateY(0);
+      }
+    }
   }
 
   .p-icon--fullscreen {
     bottom: 10px;
     cursor: pointer;
+    pointer-events: auto;
     position: absolute;
     right: 10px;
+    z-index: z("lambda");
   }
 
   .p-icon--close {

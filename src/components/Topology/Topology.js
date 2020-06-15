@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState, memo } from "react";
 import { useSelector } from "react-redux";
 import * as d3 from "d3";
-import { updateAnnotations } from "juju/index";
+// import { updateAnnotations } from "juju/index";
 import { generateIconPath, extractOwnerName } from "app/utils";
-import { getActiveUserTag } from "app/selectors";
+import { getActiveUserTag, getControllerConnection } from "app/selectors";
 import fullScreenIcon from "static/images/icons/fullscreen-icon.svg";
 
 import "./topology.scss";
@@ -83,18 +83,24 @@ const applyDelta = (position, delta) =>
   parseFloat(position) + -parseFloat(delta);
 
 /**
+// Gets the values from the elements translate attribute.
+// translate(123.456, 789.012)
+  @param {*} element
+  @returns {Array} [123.456, 789.012]
+*/
+const getRect = (element) => {
+  const translateValues = /(-?\d*\.?\d*),\s(-?\d*\.?\d*)/;
+  return translateValues.exec(element.node().getAttribute("transform"));
+};
+
+/**
   Generates the relation positions for the two endpoints based on the
   application name data passed in.
   @param {*} data The relation data.
   @returns {Object} x and y coordinates for the two relation endpoints.
 */
 const getRelationPosition = (data) => {
-  // Gets the values from the elements translate attribute.
-  // translate(123.456, 789.012)
-  const translateValues = /(-?\d*\.?\d*),\s(-?\d*\.?\d*)/;
   const getElement = (index) => d3.select(`[data-name="${data[index]}"]`);
-  const getRect = (element) =>
-    translateValues.exec(element.node().getAttribute("transform"));
   const getData = (element) => element.data()[0];
 
   const element1 = getElement(0);
@@ -113,6 +119,9 @@ const getRelationPosition = (data) => {
 const Topology = ({ modelData }) => {
   const svgRef = useRef();
   const topologyRef = useRef();
+  const conn = useSelector(getControllerConnection);
+  // XXX Remove flash messages until we can save positions back to juju
+  // const [flashMessage, setFlashMessage] = useState({});
   const [applications, setApplications] = useState([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
@@ -329,8 +338,24 @@ const Topology = ({ modelData }) => {
     }
 
     function dragended() {
-      d3.select(this).select("circle").attr("stroke", "#888888");
-      updateAnnotations();
+      const app = d3.select(this);
+      app.select("circle").attr("stroke", "#888888");
+      // const name = app.attr("data-name");
+      // const annotations = getRect(app);
+      // const updateResponse = updateAnnotations(conn, name, annotations);
+      // updateResponse.then((data) => {
+      //   if (!data) {
+      //     setFlashMessage({
+      //       type: "error",
+      //       message: "Sorry - the position of your apps could not be updated.",
+      //     });
+      //   } else {
+      //     setFlashMessage({
+      //       type: "success",
+      //       message: "The position of your apps have been updated.",
+      //     });
+      //   }
+      // });
     }
 
     if (!isReadOnly) {
@@ -349,6 +374,7 @@ const Topology = ({ modelData }) => {
     };
   }, [
     applications,
+    conn,
     deltaX,
     deltaY,
     isFullscreen,
@@ -357,6 +383,19 @@ const Topology = ({ modelData }) => {
     maxY,
     relations,
   ]);
+
+  // XXX Remove flash messaging until we can save results back to juju
+  // Reset flash messages after 3 seconds
+  // useEffect(() => {
+  //   if (flashMessage.message) {
+  //     window.clearFlashMessage = setTimeout(() => {
+  //       setFlashMessage({});
+  //     }, 3000);
+  //   }
+  //   return () => {
+  //     clearTimeout(window.clearFlashMessage);
+  //   };
+  // }, [flashMessage]);
 
   // Close topology, if open, on Escape key press
   useEffect(() => {
@@ -371,15 +410,20 @@ const Topology = ({ modelData }) => {
     };
   });
 
+  console.log("texts");
   if (Object.entries(modelData?.applications || {}).length) {
     return (
       <div
         className="topology"
         data-fullscreen={isFullscreen}
-        data-readOnly={isReadOnly}
+        data-readonly={isReadOnly}
         ref={topologyRef}
       >
         <div className="topology__inner">
+          {/* Remove flash messaging until we can save positions back to juju */}
+          {/* <div className="flashMessage" data-type={flashMessage?.type}>
+            {flashMessage?.message}
+          </div> */}
           {isFullscreen && (
             <i
               className="p-icon--close"
@@ -401,6 +445,7 @@ const Topology = ({ modelData }) => {
             <i
               style={{ backgroundImage: `url(${fullScreenIcon})` }}
               className="p-icon--expand p-icon--fullscreen"
+              data-test="icon--fullscreen"
               onClick={() => setIsFullscreen(true)}
             />
           )}
@@ -411,7 +456,14 @@ const Topology = ({ modelData }) => {
       </div>
     );
   } else {
-    return null;
+    return (
+      <i
+        style={{ backgroundImage: `url(${fullScreenIcon})` }}
+        className="p-icon--expand p-icon--fullscreen"
+        data-test="icon--fullscreen"
+        onClick={() => setIsFullscreen(true)}
+      />
+    );
   }
 };
 

@@ -7,7 +7,7 @@ import dataDump from "testing/complete-redux-store-dump";
 
 import TestRoute from "components/Routes/TestRoute";
 
-import InfoPanel from "./InfoPanel";
+import Topology from "./Topology";
 
 const mockStore = configureStore([]);
 
@@ -16,14 +16,14 @@ jest.mock("components/Topology/Topology", () => {
   return Topology;
 });
 
-describe("Info Panel", () => {
-  it("renders the topology", () => {
+describe("Topology", () => {
+  it("renders as expected", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
           <TestRoute path="/models/*">
-            <InfoPanel />
+            <Topology />
           </TestRoute>
         </MemoryRouter>
       </Provider>
@@ -31,19 +31,29 @@ describe("Info Panel", () => {
     expect(wrapper.find("Topology").length).toBe(1);
   });
 
-  it("displays correct model status info", () => {
+  it("renders the expanded topology on click", () => {
     const store = mockStore(dataDump);
+    // console.log(
+    //   dataDump.juju.modelData["e1e81a64-3385-4779-8643-05e3d5ed4523"]
+    // );
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/activedev@external/group-test"]}
+        >
           <TestRoute path="/models/*">
-            <InfoPanel />
+            <Topology
+              modelData={
+                dataDump.juju.modelData["e1e81a64-3385-4779-8643-05e3d5ed4523"]
+              }
+              data-test="topology"
+            />
           </TestRoute>
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find('[data-name="controller"]').text()).toStrictEqual(
-      "iaas"
-    );
+    expect(wrapper.find(".topology[data-fullscreen='true']").length).toBe(0);
+    wrapper.find("[data-test='icon--fullscreen']").simulate("click");
+    expect(wrapper.find(".topology[data-fullscreen='true']").length).toBe(1);
   });
 });
