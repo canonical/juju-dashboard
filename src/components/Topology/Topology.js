@@ -377,8 +377,6 @@ const Topology = ({ modelData }) => {
     };
   });
 
-  console.log(modelData?.applications);
-
   return (
     <div
       className="topology"

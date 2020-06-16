@@ -43,7 +43,6 @@ describe("Topology", () => {
               modelData={
                 dataDump.juju.modelData["e1e81a64-3385-4779-8643-05e3d5ed4523"]
               }
-              data-test="topology"
             />
           </TestRoute>
         </MemoryRouter>

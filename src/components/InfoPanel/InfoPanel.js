@@ -26,7 +26,7 @@ const InfoPanel = () => {
   return (
     <div className="info-panel">
       <div className="info-panel__pictogram">
-        <Topology modelData={modelStatusData} data-test="topology" />
+        <Topology modelData={modelStatusData} />
       </div>
 
       <div className="info-panel__grid">
