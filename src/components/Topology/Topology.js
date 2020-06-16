@@ -129,7 +129,7 @@ const Topology = ({ modelData }) => {
   const modelOwner = extractOwnerName(modelData?.info?.ownerTag || "");
   const currentActiveUser = extractOwnerName(activeUser || "");
 
-  // If active user and model owner are oen and the same, grant write access
+  // If active user and model owner are one and the same, grant write access
   // to reposition topology
   useEffect(() => {
     if (modelOwner !== "" && currentActiveUser !== "") {
@@ -430,7 +430,7 @@ const Topology = ({ modelData }) => {
 
 function freezeRendering(prevProps) {
   /*
-    Freeze rerendering once modelData has been passed via props
+    Freeze re-rendering once modelData has been passed via props
   */
   if (prevProps.modelData) return true;
 }
