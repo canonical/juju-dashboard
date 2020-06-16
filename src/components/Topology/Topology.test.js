@@ -33,9 +33,6 @@ describe("Topology", () => {
 
   it("renders the expanded topology on click", () => {
     const store = mockStore(dataDump);
-    // console.log(
-    //   dataDump.juju.modelData["e1e81a64-3385-4779-8643-05e3d5ed4523"]
-    // );
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter

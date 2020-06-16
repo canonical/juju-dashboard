@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -23,10 +23,8 @@ const InfoPanel = () => {
     ? extractCloudName(modelStatusData.model.cloudTag)
     : "";
 
-  const infoPanelRef = useRef();
-
   return (
-    <div className="info-panel" ref={infoPanelRef}>
+    <div className="info-panel">
       <div className="info-panel__pictogram">
         <Topology modelData={modelStatusData} data-test="topology" />
       </div>
