@@ -27,7 +27,6 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("Topology").length).toBe(1);
     expect(wrapper.find("MainTable").length).toBe(4);
   });
 
