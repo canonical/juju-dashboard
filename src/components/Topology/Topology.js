@@ -84,6 +84,7 @@ const applyDelta = (position, delta) =>
 /**
 // Gets the values from the elements translate attribute.
 // translate(123.456, 789.012)
+// translate(-123.456, -789.012)
   @param {*} element
   @returns {Array} [123.456, 789.012]
 */
