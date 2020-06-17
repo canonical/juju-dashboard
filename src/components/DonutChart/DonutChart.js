@@ -9,10 +9,11 @@ const DonutChart = ({ chartData }) => {
 
   const isDisabled =
     (chartData?.blocked || 0) +
-    (chartData?.alert || 0) +
-    (chartData?.running || 0)
-      ? 0 > false
-      : true;
+      (chartData?.alert || 0) +
+      (chartData?.running || 0) ===
+    0
+      ? true
+      : false;
 
   useEffect(() => {
     const radius = Math.min(width, height) / 2 - margin;
