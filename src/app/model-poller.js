@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
@@ -35,6 +36,9 @@ export default async function connectAndListModels(reduxStore, bakery) {
     if (error) {
       reduxStore.dispatch(storeLoginError(error));
       return;
+    }
+    if (process.env.NODE_ENV === "production") {
+      Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
     }
     reduxStore.dispatch(updateControllerConnection(conn));
     reduxStore.dispatch(updateJujuAPIInstance(juju));
