@@ -32,6 +32,7 @@ if (process.env.NODE_ENV === "production") {
   Sentry.init({
     dsn: "https://5b54e6946be34749935c4dd2d9d01cb8@sentry.is.canonical.com/7",
   });
+  Sentry.setTag("dashboardVersion", appVersion);
 }
 
 if (!window.jaasDashboardConfig) {
