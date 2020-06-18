@@ -4,6 +4,29 @@ The dashboard to monitor your [Juju](https://juju.is) & [JAAS](https://jaas.ai) 
 
 Starting with Juju 2.8 this dashboard is installed by default with every bootstrap. To access it simply run `juju dashboard` and visit the link provided and log in using the supplied credentials. It's also available and automatically updated for users of JAAS on [jaas.ai](jaas.ai/models).
 
+- [Using the Dashboard with Juju](#using-the-dashboard-with-juju)
+- [QA'ing the Dashboard](#qa'ing-the-dashboard)
+  - [In Juju](#in-juju)
+    - [Uploading the tarball to a Juju controller](#uploading-the-tarball-to-a-juju-controller)
+    - [Connecting a local Dashboard to a remote controller](#connecting-a-local-dashboard-to-a-remote-controller)
+  - [In JAAS](#in-jaas)
+- [Developing the Dashboard](#developing-the-dashboard)
+  - [Developing while connected to a Juju controller](#developing-while-connected-to-a-juju-controller)
+  - [Running the tests](#running-the-tests)
+  - [Generating a release tarball for Juju](#generating-a-release-tarball-for-juju)
+  - [Accessing the Dashboard from nested containers](#accessing-the-dashboard-from-nested-containers)
+    - [A lxd bootstrapped Dashboard that's also within a `multipass` VM](#a-lxd-bootstrapped-dashboard-that's-also-within-a-`multipass`-VM)
+    - [A local bootstrapped controller from a hosted Dashboard](#a-local-bootstrapped-controller-from-a-hosted-dashboard)
+    - [Creating a tunnel from an lxd controller to a `multipass` host](#creating-a-tunnel-from-an-lxd-controller-to-a-`multipass`-host)
+  - [Writing React components](#writing-react-components)
+    - [React component conventions](#react-component-conventions)
+  - [Writing tests](#writing-tests)
+    - [Testing conventions](#testing-conventions)
+    - [Mocking data](#mocking-data)
+    - [Test snippets](#test-snippets)
+  - [Developer notes](#developer-notes)
+    - [Updating CRA](#updating-cra)
+
 ## Using the Dashboard with Juju
 
 Below are the commands you can use to interact with the dashboard from Juju 2.8+
@@ -33,7 +56,7 @@ git pull git://github.com/<pr creators username>/jaas-dashboard.git <pull reques
 
 ### In Juju
 
-#### Uploading the a tarball to a Juju controller
+#### Uploading the tarball to a Juju controller
 
 This is the preferred approach as it's served by Juju itself which is also generating the configuration files so it's the closest to a production environment.
 
@@ -45,7 +68,7 @@ juju dashboard
 
 And connect to the Dashboard from your browser using the supplied details.
 
-#### Connecting a local dashboard to a remote controller
+#### Connecting a local Dashboard to a remote controller
 
 If you'd like to run the Dashboard locally and connect to a remote controller
 see [Developing while connected to a Juju controller](#developing-while-connected-to-a-juju-controller)
@@ -95,7 +118,7 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
 ./run exec yarn run generate-release-tarball
 ```
 
-### Accessing the dashboard from nested containers
+### Accessing the Dashboard from nested containers
 
 #### A lxd bootstrapped Dashboard that's also within a `multipass` VM
 
@@ -172,7 +195,7 @@ The file [complete-redux-store-dump.js](src/testing/complete-redux-store-dump.js
 
 If you want to test states that are not included in the data dump, or if you want to see how a component will act in different data states you can modify it locally within the test. If you must modify some value see if there is value in adding another entry into the dataset for others to use.
 
-#### Test Snippets
+#### Test snippets
 
 The typical import and test case setup looks like the following. Note that we create a shared `mockStore` factory at the top of each test suite.
 
