@@ -90,7 +90,7 @@ const applyDelta = (position, delta) =>
 */
 const translateValues = /(-?\d*\.?\d*),\s(-?\d*\.?\d*)/;
 const getRect = (element) => {
-  return translateValues.exec(element.node().getAttribute("transform"));
+  return translateValues.exec(element.attr("transform"));
 };
 
 /**
