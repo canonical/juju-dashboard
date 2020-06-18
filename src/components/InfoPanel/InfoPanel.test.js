@@ -31,24 +31,6 @@ describe("Info Panel", () => {
     expect(wrapper.find("Topology").length).toBe(1);
   });
 
-  it("renders the expanded topology on click", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/activedev@external/group-test"]}
-        >
-          <TestRoute path="/models/*">
-            <InfoPanel />
-          </TestRoute>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find("[data-test='topology-modal']").length).toBe(0);
-    wrapper.find(".info-panel__pictogram .p-icon--expand").simulate("click");
-    expect(wrapper.find("[data-test='topology-modal']").length).toBe(1);
-  });
-
   it("displays correct model status info", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(

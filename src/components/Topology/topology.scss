@@ -1,0 +1,114 @@
+@import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.topology {
+  background-color: transparent;
+  margin-bottom: 1rem;
+  pointer-events: none;
+  transition-duration: 0.2s;
+  transition-property: width, height;
+
+  &__loading {
+    padding-bottom: 100%;
+    position: relative;
+
+    i {
+      animation: rotate 1s linear infinite;
+      left: calc(50% - 0.5rem);
+      position: absolute;
+      top: calc(50% - 0.5rem);
+    }
+  }
+
+  .topology__svg {
+    margin: 1rem;
+  }
+
+  &__inner {
+    background: $color-light;
+    border: solid 1px $color-mid-x-light;
+    flex: 1;
+    position: relative;
+  }
+
+  &[data-fullscreen="true"] {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: inline-flex;
+    height: 100vh;
+    justify-items: center;
+    left: 0;
+    padding: 4rem;
+    pointer-events: auto;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    z-index: z("kappa");
+
+    .topology__inner {
+      border-width: 5px;
+      margin: 2rem auto;
+      overflow: hidden;
+      padding: 1rem;
+      width: calc(100vw - 4rem);
+    }
+
+    .topology__svg {
+      &:hover {
+        cursor: grab;
+      }
+    }
+
+    &[data-readonly="false"] .application {
+      z-index: 99999;
+
+      &:hover {
+        cursor: move !important;
+        z-index: 99999;
+      }
+
+      image {
+        pointer-events: none;
+      }
+    }
+  }
+
+  .p-icon--fullscreen {
+    bottom: 10px;
+    cursor: pointer;
+    pointer-events: auto;
+    position: absolute;
+    right: 10px;
+    z-index: z("lambda");
+  }
+
+  .p-icon--close {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .read-only {
+    background-color: $color-mid-x-light;
+    bottom: 0;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem 5px;
+    position: absolute;
+    right: 0;
+    text-transform: uppercase;
+  }
+
+  svg {
+    overflow: visible !important;
+  }
+}

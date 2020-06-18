@@ -1,7 +1,11 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState, memo } from "react";
+import { useSelector } from "react-redux";
 import * as d3 from "d3";
+import { generateIconPath, extractOwnerName } from "app/utils";
+import { getActiveUserTag } from "app/selectors";
+import fullScreenIcon from "static/images/icons/fullscreen-icon.svg";
 
-import { generateIconPath } from "app/utils";
+import "./topology.scss";
 
 /**
   Returns whether the application is a subordinate.
@@ -78,18 +82,25 @@ const applyDelta = (position, delta) =>
   parseFloat(position) + -parseFloat(delta);
 
 /**
+// Gets the values from the elements translate attribute.
+// translate(123.456, 789.012)
+// translate(-123.456, -789.012)
+  @param {*} element
+  @returns {Array} [123.456, 789.012]
+*/
+const translateValues = /(-?\d*\.?\d*),\s(-?\d*\.?\d*)/;
+const getRect = (element) => {
+  return translateValues.exec(element.attr("transform"));
+};
+
+/**
   Generates the relation positions for the two endpoints based on the
   application name data passed in.
   @param {*} data The relation data.
   @returns {Object} x and y coordinates for the two relation endpoints.
 */
 const getRelationPosition = (data) => {
-  // Gets the values from the elements translate attribute.
-  // translate(123.456, 789.012)
-  const translateValues = /(\d*\.?\d*),\s(\d*\.?\d*)/;
   const getElement = (index) => d3.select(`[data-name="${data[index]}"]`);
-  const getRect = (element) =>
-    translateValues.exec(element.node().getAttribute("transform"));
   const getData = (element) => element.data()[0];
 
   const element1 = getElement(0);
@@ -105,21 +116,38 @@ const getRelationPosition = (data) => {
   };
 };
 
-export default ({ modelData, width, height }) => {
-  const ref = useRef();
+const Topology = ({ modelData }) => {
+  const svgRef = useRef();
+  const topologyRef = useRef();
+  const [applications, setApplications] = useState([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
-  const { deltaX, deltaY } = computePositionDelta(
-    modelData && modelData.annotations
-  );
+  const activeUser = useSelector(getActiveUserTag);
 
-  const applications =
-    (modelData &&
-      Object.keys(modelData.applications).map((appName) => ({
-        ...modelData.annotations[appName],
-        ...modelData.applications[appName],
-        name: appName,
-      }))) ||
-    [];
+  const { deltaX, deltaY } = computePositionDelta(modelData?.annotations);
+
+  const modelOwner = extractOwnerName(modelData?.info?.ownerTag || "");
+  const currentActiveUser = extractOwnerName(activeUser || "");
+
+  // If active user and model owner are one and the same, grant write access
+  // to reposition topology
+  useEffect(() => {
+    if (modelOwner !== "" && currentActiveUser !== "") {
+      setIsReadOnly(modelOwner !== currentActiveUser);
+    }
+  }, [modelOwner, currentActiveUser]);
+
+  useEffect(() => {
+    const applications = modelData
+      ? Object.keys(modelData.applications).map((appName) => ({
+          ...modelData?.annotations[appName],
+          ...modelData?.applications[appName],
+          name: appName,
+        }))
+      : [];
+    setApplications(applications);
+  }, [modelData]);
 
   // Apply deltas to the annotations.
   for (const appName in applications) {
@@ -132,7 +160,7 @@ export default ({ modelData, width, height }) => {
     }
   }
 
-  let { maxX, maxY } = computeMaxXY(modelData && modelData.annotations);
+  let { maxX, maxY } = computeMaxXY(modelData?.annotations);
   if (maxX === 0) {
     // If there is no maxX then all of the icons are unplaced
     // so set a maximum width.
@@ -141,16 +169,14 @@ export default ({ modelData, width, height }) => {
 
   // Dedupe the relations as we only draw a single line between two
   // applications regardless of how many relations are between them.
-  const endpoints =
-    modelData &&
-    modelData.relations.reduce((acc, relation) => {
-      const endpoints = relation.endpoints;
-      // We don't draw peer relations so we can ignore them.
-      if (endpoints.length > 1) {
-        acc.push(`${endpoints[0].application}:${endpoints[1].application}`);
-      }
-      return acc;
-    }, []);
+  const endpoints = modelData?.relations.reduce((acc, relation) => {
+    const endpoints = relation.endpoints;
+    // We don't draw peer relations so we can ignore them.
+    if (endpoints.length > 1) {
+      acc.push(`${endpoints[0].application}:${endpoints[1].application}`);
+    }
+    return acc;
+  }, []);
   // Remove any duplicate endpoints and split into pairs.
   const deDupedRelations = [...new Set(endpoints)].map((pair) =>
     pair.split(":")
@@ -166,9 +192,33 @@ export default ({ modelData, width, height }) => {
       applicationNames.includes(relation[1])
   );
   useEffect(() => {
+    const topologySVGwrap = topologyRef?.current?.querySelector(
+      ".topology__svg"
+    );
+    const topologyDimensions = topologySVGwrap
+      ? topologySVGwrap.getBoundingClientRect()
+      : {};
+
+    const { width: topologyWidth, height: topologyHeight } = topologyDimensions;
+
+    const topologySpacing = 260; //px
+    const maxViewportHeight = window.innerHeight - topologySpacing;
+
+    const width = topologyWidth;
+    const height = !isFullscreen
+      ? topologyWidth
+      : Math.min(topologyHeight, maxViewportHeight);
+
+    const zoom = d3.zoom().on("zoom", function () {
+      if (isFullscreen) {
+        topo.attr("transform", d3.event.transform);
+      }
+    });
+
     const topo = d3
-      .select(ref.current)
+      .select(svgRef.current)
       .attr("viewBox", `0 0 ${width} ${height}`)
+      .call(zoom)
       .append("g");
 
     const appIcons = topo.selectAll(".application").data(applications);
@@ -177,6 +227,30 @@ export default ({ modelData, width, height }) => {
       x: 0,
       y: maxY,
     };
+
+    const relationLines = topo.selectAll(".relation").data(relations);
+    const relationLine = relationLines.enter().insert("g", ":first-child");
+
+    function setRelations(relationLine) {
+      relationLine
+        .classed("relation", true)
+        .append("line")
+        .attr("x1", (d) => getRelationPosition(d).x1)
+        .attr("y1", (d) => getRelationPosition(d).y1)
+        .attr("x2", (d) => getRelationPosition(d).x2)
+        .attr("y2", (d) => getRelationPosition(d).y2)
+        .attr("stroke", "#666666")
+        .attr("stroke-width", 2);
+    }
+
+    function updateRelations(relationLine) {
+      relationLine
+        .select("line")
+        .attr("x1", (d) => getRelationPosition(d).x1)
+        .attr("y1", (d) => getRelationPosition(d).y1)
+        .attr("x2", (d) => getRelationPosition(d).x2)
+        .attr("y2", (d) => getRelationPosition(d).y2);
+    }
 
     const appIcon = appIcons
       .enter()
@@ -205,24 +279,27 @@ export default ({ modelData, width, height }) => {
       .attr("stroke-width", 3)
       .attr("stroke", "#888888")
       .call((_) => {
-        // When ever a new element is added zoom the canvas to fit.
-        const {
-          width: svgWidth,
-          height: svgHeight,
-        } = topo.node().getBoundingClientRect();
+        const topoNode = topo.node();
+        const { width: svgWidth, height: svgHeight } = topoNode
+          ? topoNode.getBoundingClientRect()
+          : {};
+
+        // Whenever a new element is added zoom the canvas to fit.
         if (svgWidth > 0 && svgHeight > 0) {
-          // Magic number that presents reasonable padding around the viz.
-          const padding = 200;
-          const scale = Math.min(
-            width / (svgWidth + padding),
-            height / (svgHeight + padding)
-          );
-          const translateX = (width - svgWidth * scale) / 2;
-          const translateY = (height - svgHeight * scale) / 2;
-          topo.attr(
-            "transform",
-            `translate(${translateX},${translateY}) scale(${scale},${scale})`
-          );
+          const scale = Math.min(width / svgWidth, height / svgHeight) || 1;
+
+          const translateX = (width - svgWidth * scale) / 2 || 0;
+          const translateY = (height - svgHeight * scale) / 2 || 0;
+          topo
+            .attr(
+              "transform",
+              `translate(${translateX},${translateY}) scale(${scale},${scale})`
+            )
+            .attr("width", `${width}`)
+            .call(
+              zoom.transform,
+              d3.zoomIdentity.translate(translateX, translateY).scale(scale)
+            );
         }
       });
 
@@ -240,18 +317,35 @@ export default ({ modelData, width, height }) => {
           : "circle(55px at 63px 63px)"
       );
 
-    const relationLines = topo.selectAll(".relation").data(relations);
-    const relationLine = relationLines.enter().insert("g", ":first-child");
+    function dragstarted() {
+      d3.select(this).select("circle").attr("stroke", "#E9531F");
+    }
 
-    relationLine
-      .classed("relation", true)
-      .append("line")
-      .attr("x1", (d) => getRelationPosition(d).x1)
-      .attr("y1", (d) => getRelationPosition(d).y1)
-      .attr("x2", (d) => getRelationPosition(d).x2)
-      .attr("y2", (d) => getRelationPosition(d).y2)
-      .attr("stroke", "#666666")
-      .attr("stroke-width", 2);
+    function drag() {
+      const app = d3.select("circle", this);
+      const radius = app.attr("r");
+
+      d3.select(this).attr("transform", () => {
+        const iconX = d3.event.x - radius;
+        const iconY = d3.event.y - radius;
+
+        return `translate(${iconX}, ${iconY})`;
+      });
+      updateRelations(relationLine);
+    }
+
+    function dragended() {
+      const app = d3.select(this);
+      app.select("circle").attr("stroke", "#888888");
+    }
+
+    if (!isReadOnly) {
+      appIcon.call(
+        d3.drag().on("start", dragstarted).on("drag", drag).on("end", dragended)
+      );
+    }
+
+    setRelations(relationLine);
 
     appIcons.exit().remove();
     relationLines.exit().remove();
@@ -259,6 +353,74 @@ export default ({ modelData, width, height }) => {
     return () => {
       topo.remove();
     };
-  }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
-  return <svg ref={ref} />;
+  }, [
+    applications,
+    deltaX,
+    deltaY,
+    isFullscreen,
+    isReadOnly,
+    maxX,
+    maxY,
+    relations,
+  ]);
+
+  // Close topology, if open, on Escape key press
+  useEffect(() => {
+    const closeOnEscape = function (e) {
+      if (e.code === "Escape" && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  });
+
+  return (
+    <div
+      className="topology"
+      data-fullscreen={isFullscreen}
+      data-readonly={isReadOnly}
+      ref={topologyRef}
+    >
+      <div className="topology__inner">
+        {isFullscreen && (
+          <i className="p-icon--close" onClick={() => setIsFullscreen(false)} />
+        )}
+
+        {modelData ? (
+          <div className="topology__svg">
+            <svg ref={svgRef} />
+          </div>
+        ) : (
+          <div className="topology__loading">
+            <i className="p-icon--spinner">Loading...</i>
+          </div>
+        )}
+
+        {!isFullscreen &&
+          Object.entries(modelData?.applications || {}).length > 0 && (
+            <i
+              style={{ backgroundImage: `url(${fullScreenIcon})` }}
+              className="p-icon--expand p-icon--fullscreen"
+              data-test="icon--fullscreen"
+              onClick={() => setIsFullscreen(true)}
+            />
+          )}
+        {isReadOnly && isFullscreen && (
+          <span className="read-only">Read only</span>
+        )}
+      </div>
+    </div>
+  );
 };
+
+function freezeRendering(prevProps) {
+  /*
+    Freeze re-rendering once modelData has been passed via props
+  */
+  if (prevProps.modelData) return true;
+}
+
+export default memo(Topology, freezeRendering);

@@ -25,19 +25,19 @@ export default function ControllerChart({ chartData, totalLabel }) {
             className="p-list__item p-legend__item is-blocked"
             data-test="legend-blocked"
           >
-            Blocked: {chartData.blocked}
+            Blocked: {chartData.blocked || 0}
           </li>
           <li
             className="p-list__item p-legend__item is-alert"
             data-test="legend-alert"
           >
-            Alerts: {chartData.alert}
+            Alerts: {chartData.alert || 0}
           </li>
           <li
             className="p-list__item p-legend__item is-running"
             data-test="legend-running"
           >
-            Running: {chartData.running}
+            Running: {chartData.running || 0}
           </li>
         </ul>
       </div>

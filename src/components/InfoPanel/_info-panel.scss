@@ -15,32 +15,6 @@
     display: block;
   }
 
-  .p-modal {
-    position: fixed;
-    z-index: z("lambda");
-
-    &__dialog {
-      width: 90%;
-    }
-  }
-
-  &__pictogram {
-    // Keep height and width in sync with the dimensions of
-    // the Topology component.
-    background: $color-light;
-    border: solid 1px $color-mid-x-light;
-    flex: 1;
-    margin-bottom: 1rem;
-    position: relative;
-
-    .p-icon--fullscreen {
-      bottom: 10px;
-      cursor: pointer;
-      position: absolute;
-      right: 10px;
-    }
-  }
-
   &__grid {
     display: grid;
     grid-template-columns: 1fr;
