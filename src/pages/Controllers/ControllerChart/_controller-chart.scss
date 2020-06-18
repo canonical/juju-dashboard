@@ -1,6 +1,10 @@
 @import "vanilla-framework/scss/vanilla";
 
 .p-chart {
+  .is-disabled {
+    fill: rgba($color-mid-light, 0.33);
+  }
+
   .is-blocked {
     fill: $color-negative;
   }
