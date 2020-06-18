@@ -5,7 +5,7 @@ The dashboard to monitor your [Juju](https://juju.is) & [JAAS](https://jaas.ai) 
 Starting with Juju 2.8 this dashboard is installed by default with every bootstrap. To access it simply run `juju dashboard` and visit the link provided and log in using the supplied credentials. It's also available and automatically updated for users of JAAS on [jaas.ai](jaas.ai/models).
 
 - [Using the Dashboard with Juju](#using-the-dashboard-with-juju)
-- [QA'ing the Dashboard](#qa'ing-the-dashboard)
+- [QA'ing the Dashboard](#qaing-the-dashboard)
   - [In Juju](#in-juju)
     - [Uploading the tarball to a Juju controller](#uploading-the-tarball-to-a-juju-controller)
     - [Connecting a local Dashboard to a remote controller](#connecting-a-local-dashboard-to-a-remote-controller)
@@ -15,9 +15,9 @@ Starting with Juju 2.8 this dashboard is installed by default with every bootstr
   - [Developing while connected to a Juju controller](#developing-while-connected-to-a-juju-controller)
   - [Running the tests](#running-the-tests)
   - [Accessing the Dashboard from nested containers](#accessing-the-dashboard-from-nested-containers)
-    - [A lxd bootstrapped Dashboard that's also within a `multipass` VM](#a-lxd-bootstrapped-dashboard-that's-also-within-a-`multipass`-VM)
+    - [A lxd bootstrapped Dashboard that's also within a `multipass` VM](#a-lxd-bootstrapped-dashboard-that's-also-within-a-multipass-VM)
     - [A local bootstrapped controller from a hosted Dashboard](#a-local-bootstrapped-controller-from-a-hosted-dashboard)
-    - [Creating a tunnel from an lxd controller to a `multipass` host](#creating-a-tunnel-from-an-lxd-controller-to-a-`multipass`-host)
+    - [Creating a tunnel from an lxd controller to a `multipass` host](#creating-a-tunnel-from-an-lxd-controller-to-a-multipass-host)
   - [Writing React components](#writing-react-components)
     - [React component conventions](#react-component-conventions)
   - [Writing tests](#writing-tests)
@@ -29,7 +29,7 @@ Starting with Juju 2.8 this dashboard is installed by default with every bootstr
 - [Releasing the Dashboard](#releasing-the-dashboard)
   - [Release prep](#release-prep)
   - [Generate a release tarball for Juju](#generate-a-release-tarball-for-juju)
-  - [Release to jaas.ai](#release-to-jaas.ai)
+  - [Release to jaas.ai](#release-to-jaasai)
   - [Release to Juju Simplestreams](#release-to-juju-simplestreams)
   - [Create an announcement on the Juju Discourse](#create-an-announcement-on-the-juju-discourse)
 
@@ -314,9 +314,9 @@ The version of the Dashboard that's installed with every new Juju bootstrap is g
 The release to jaas.ai is in two steps. New releases of the jaas.ai website will pull in the
 latest release of the Dashboard for JAAS.
 
-- Visit the CI instance and release a new version of jaas.ai to staging.
+- Trigger the [Staging CI job](https://jenkins.canonical.com/webteam/job/jaas.ai-staging/) to release a new version of jaas.ai to staging.
 - Validate that the website works as expected and that the [release tests](#release-tests) are pass successfully.
-- Visit the CI instance and perform the release to jaas.ai production.
+- Trigger the [Production CI job](https://jenkins.canonical.com/webteam/job/jaas.ai-production/) to perform the release to jaas.ai production.
 - Validate that the website works as expected and that the [release tests](#release-tests) are pass successfully.
 
 ### Release to Juju Simplestreams
