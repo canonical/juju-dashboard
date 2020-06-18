@@ -15,7 +15,7 @@ Starting with Juju 2.8 this dashboard is installed by default with every bootstr
   - [Developing while connected to a Juju controller](#developing-while-connected-to-a-juju-controller)
   - [Running the tests](#running-the-tests)
   - [Accessing the Dashboard from nested containers](#accessing-the-dashboard-from-nested-containers)
-    - [A lxd bootstrapped Dashboard that's also within a `multipass` VM](#a-lxd-bootstrapped-dashboard-thats-also-within-a-multipass-VM)
+    - [A lxd bootstrapped Dashboard that is also within a `multipass` VM](#a-lxd-bootstrapped-dashboard-that-is-also-within-a-multipass-VM)
     - [A local bootstrapped controller from a hosted Dashboard](#a-local-bootstrapped-controller-from-a-hosted-dashboard)
     - [Creating a tunnel from an lxd controller to a `multipass` host](#creating-a-tunnel-from-an-lxd-controller-to-a-multipass-host)
   - [Writing React components](#writing-react-components)
@@ -136,7 +136,7 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
 
 ### Accessing the Dashboard from nested containers
 
-#### A lxd bootstrapped Dashboard that's also within a `multipass` VM
+#### A lxd bootstrapped Dashboard that is also within a `multipass` VM
 
 When you want to access a dashboard that was automatically installed with a `juju bootstrap` within an lxd in a `multipass` vm from the host.
 
@@ -342,4 +342,4 @@ To release a tarball of the Dashboard to Simplestreams:
 
 ### Create an announcement on the Juju Discourse
 
-Coming soon...
+Create a new post in the [News category](https://discourse.juju.is/c/news) on the Juju Discourse outlining what new features and fixes were included as well as what we're planning on including in upcoming releases.
