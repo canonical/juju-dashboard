@@ -15,7 +15,7 @@ Starting with Juju 2.8 this dashboard is installed by default with every bootstr
   - [Developing while connected to a Juju controller](#developing-while-connected-to-a-juju-controller)
   - [Running the tests](#running-the-tests)
   - [Accessing the Dashboard from nested containers](#accessing-the-dashboard-from-nested-containers)
-    - [A lxd bootstrapped Dashboard that's also within a `multipass` VM](#a-lxd-bootstrapped-dashboard-that's-also-within-a-multipass-VM)
+    - [A lxd bootstrapped Dashboard that's also within a `multipass` VM](#a-lxd-bootstrapped-dashboard-thats-also-within-a-multipass-VM)
     - [A local bootstrapped controller from a hosted Dashboard](#a-local-bootstrapped-controller-from-a-hosted-dashboard)
     - [Creating a tunnel from an lxd controller to a `multipass` host](#creating-a-tunnel-from-an-lxd-controller-to-a-multipass-host)
   - [Writing React components](#writing-react-components)
@@ -91,7 +91,19 @@ Then connect to the Dashboard from your browser at http://localhost:8036/.
 
 ### Release tests
 
-Coming soon...
+- [ ] Can you log in?
+- [ ] Does the model list show your available models?
+- [ ] Are your models correctly grouped by status?
+- [ ] Are your models correctly grouped by owner?
+- [ ] Are your models correctly grouped by cloud?
+- [ ] Can you filter the tables?
+- [ ] Can you view the controllers list?
+- [ ] Is the controllers list hidden if you do not have permission to view it?
+- [ ] Are your model details accurate?
+- [ ] Can you hide and show tables in the model details?
+- [ ] Is the Topology rendered correctly?
+- [ ] Chaos monkey, did anything break?
+- [ ] General observations, was there anything that needs improvement?
 
 ## Developing the Dashboard
 
