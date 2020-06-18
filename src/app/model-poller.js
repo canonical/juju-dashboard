@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
@@ -36,6 +37,9 @@ export default async function connectAndListModels(reduxStore, bakery) {
       reduxStore.dispatch(storeLoginError(error));
       return;
     }
+    if (process.env.NODE_ENV === "production") {
+      Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
+    }
     reduxStore.dispatch(updateControllerConnection(conn));
     reduxStore.dispatch(updateJujuAPIInstance(juju));
     reduxStore.dispatch(updatePingerIntervalId(intervalId));
@@ -59,8 +63,9 @@ export default async function connectAndListModels(reduxStore, bakery) {
     } while (isLoggedIn(reduxStore.getState()));
   } catch (error) {
     // XXX Surface error to UI.
-    // XXX Send to sentry.
-    // eslint-disable-next-line no-console
-    console.log("Something went wrong: ", error);
+    // XXX Send to sentry if it's an error that's not connection related
+    // a common error returned by this is:
+    // Something went wrong:  cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
+    console.error("Something went wrong: ", error);
   }
 }

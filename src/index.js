@@ -28,16 +28,28 @@ import { version as appVersion } from "../package.json";
 
 import * as serviceWorker from "./serviceWorker";
 
-if (process.env.NODE_ENV === "production") {
-  Sentry.init({
-    dsn: "https://5b54e6946be34749935c4dd2d9d01cb8@sentry.is.canonical.com/7",
-  });
-}
-
 if (!window.jaasDashboardConfig) {
   console.error(
     "Configuration values not defined unable to bootstrap application"
   );
+}
+
+// If the baseControllerURL is `null` then set it's value to the
+// hostname:port of the server serving the application. This is done as the
+// hostname:port is not always provided by the Juju webserver but in which
+// case we can reliably connect to the API using the same hostname:port as
+// the dashboard assets are served from.
+const config = window.jaasDashboardConfig;
+if (config.baseControllerURL === null) {
+  config.baseControllerURL = window.location.host;
+}
+
+if (process.env.NODE_ENV === "production") {
+  Sentry.init({
+    dsn: "https://5b54e6946be34749935c4dd2d9d01cb8@sentry.is.canonical.com/7",
+  });
+  Sentry.setTag("dashboardVersion", appVersion);
+  Sentry.setTag("isJuju", config.isJuju);
 }
 
 const reduxStore = createStore(
@@ -57,15 +69,6 @@ const reduxStore = createStore(
   composeWithDevTools(applyMiddleware(checkAuth, thunk))
 );
 
-// If the baseControllerURL is `null` then set it's value to the
-// hostname:port of the server serving the application. This is done as the
-// hostname:port is not always provided by the Juju webserver but in which
-// case we can reliably connect to the API using the same hostname:port as
-// the dashboard assets are served from.
-const config = window.jaasDashboardConfig;
-if (config.baseControllerURL === null) {
-  config.baseControllerURL = window.location.host;
-}
 reduxStore.dispatch(storeConfig(window.jaasDashboardConfig));
 reduxStore.dispatch(storeVersion(appVersion));
 

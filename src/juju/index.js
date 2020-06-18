@@ -94,7 +94,11 @@ export async function loginWithBakery(
 
   // Ping to keep the connection alive.
   const intervalId = setInterval(() => {
-    conn.facades.pinger.ping();
+    conn.facades.pinger.ping().catch((e) => {
+      // If the pinger fails for whatever reason then cancel the ping.
+      console.error("pinger stopped,", e);
+      clearInterval(intervalId);
+    });
   }, 20000);
 
   return { conn, juju, intervalId };
