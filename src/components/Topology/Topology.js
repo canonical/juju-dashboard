@@ -141,8 +141,8 @@ const Topology = ({ modelData }) => {
   useEffect(() => {
     const applications = modelData
       ? Object.keys(modelData.applications).map((appName) => ({
-          ...modelData.annotations[appName],
-          ...modelData.applications[appName],
+          ...modelData?.annotations[appName],
+          ...modelData?.applications[appName],
           name: appName,
         }))
       : [];
