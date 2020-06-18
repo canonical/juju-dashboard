@@ -19,7 +19,48 @@ usage: `juju <command>`
 
 see `juju help <command>` for detailed option output.
 
-## Developing the dashboard
+## QA'ing the Dashboard
+
+The Juju Dashboard is run in a number of different environments that distill down to two different backends, Juju and JAAS. A thorough QA will test the new features in both environments.
+
+For both environments you'll want to pull down the code locally from the appropriate pull request.
+
+```
+git clone git@github.com:canonical-web-and-design/jaas-dashboard.git
+git checkout -b branch-name-for-the-pr master
+git pull git://github.com/<pr creators username>/jaas-dashboard.git <pull request branch name>
+```
+
+### In Juju
+
+#### Uploading the a tarball to a Juju controller
+
+This is the preferred approach as it's served by Juju itself which is also generating the configuration files so it's the closest to a production environment.
+
+```
+./run exec yarn run generate-release-tarball
+juju upgrade-dashboard juju-dashboard-<version>.tar.bz2
+juju dashboard
+```
+
+And connect to the Dashboard from your browser using the supplied details.
+
+#### Connecting a local dashboard to a remote controller
+
+If you'd like to run the Dashboard locally and connect to a remote controller
+see [Developing while connected to a Juju controller](#developing-while-connected-to-a-juju-controller)
+
+### In JAAS
+
+The default configuration setting for the Dashboard is to connect to public JAAS so you can simply:
+
+```
+./run
+```
+
+Then connect to the Dashboard from your browser at http://localhost:8036/.
+
+## Developing the Dashboard
 
 Assuming you already have [Docker](https://www.docker.com/) installed, you can simply run;
 
@@ -28,6 +69,19 @@ Assuming you already have [Docker](https://www.docker.com/) installed, you can s
 ```
 
 ...and view the site locally at: http://localhost:8036/. Any changes you make to the code will be automatically recompiled and reloaded in the browser.
+
+### Developing while connected to a Juju controller
+
+Assuming you already have a [Juju controller created](https://juju.is/docs/getting-started-with-juju) you will need to connect to the existing controller and accept the self-signed certificate. Without this step your local dashboard will not be permitted to complete the required secure websocket connection to the controller.
+
+- Run `juju dashboard` and view the Dashboard using the supplied url.
+  - Accept the self-signed cert
+- Open `config.js` and modify the following values:
+  - `baseControllerURL` should be output from the `juju dashboard` call above with the port `17070`.
+  - `identityProviderAvailable` to `false`.
+  - `isJuju` to `true`.
+- Start the Dashboard with `./run`.
+- You can now access the dashboard at http://localhost:8036/ and it'll require the log in credentials from the above `juju dashboard` command.
 
 ### Running the tests.
 
@@ -61,7 +115,7 @@ When you have a Juju controller bootstrapped in an lxd within a `multipass` vm a
 - In the host
   - `multipass info dev | grep IPv4` and take note of the IP address.
   - Open `config.js` and modify the following values:
-    - 'baseControllerURL`should be output from the`multipass info`call above with the port`17070`.
+    - `baseControllerURL` should be output from the `multipass info` call above with the port `17070`.
     - `identityProviderAvailable` to `false`.
     - `isJuju` to `true`.
 
