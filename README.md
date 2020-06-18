@@ -132,9 +132,112 @@ If you're bootstrapping a Juju controller within a `multipass` VM you will not h
   - `juju dashboard` and take note of the ip:port
   - `ssh -fN -L *:17070:0:17070 ubuntu@10.223.241.32` Where the "10." ip is replaced with the ip from the output of the `juju dashboard` command.
 
+### Writing React components
+
+The Juju Dashboard uses [Vanilla CSS](https://vanillaframework.io/) and [Vanilla React Components](https://github.com/canonical-web-and-design/react-components). Be sure to check there first for any components before writing your own.
+
+#### React component conventions
+
+- Components are stored in their own self-named folders using the TitleCase format.
+- Tests and css files are stored along side each component with the naming convention of ComponentName.css and ComponentName.test.js respectively.
+- Sub components are nested within subfolders their parent components if not shared.
+- Use functional components.
+- Use hooks.
+- Consider contributing generic components back to [Vanilla CSS](https://vanillaframework.io/) and [Vanilla React Components](https://github.com/canonical-web-and-design/react-components) where appropriate.
+- Components can be as big as they need to be, don't split them up into micro components.
+- Components either accept props or interact with the redux store via selectors, do not access data sources directly.
+
 ### Writing tests
 
-...coming soon...
+We follow the [Testing your user contract](https://fromanegg.com/post/2020/01/01/testing-your-user-contract/) system of writing tests.
+
+> The consumer expects that when they perform action X, they receive outcome Y. Typically they are not concerned about how X became Y just that it does so reliably.
+
+This effectively means that we write integration and component tests, not unit tests.
+
+#### Testing conventions
+
+- The test files are kept along side the library or component file following the naming convention `<component|filename>.test.js`.
+- We limit the use of snapshots except for where the snapshot updates can be easily verified by a reviewer.
+- Add assertions for the explicit content you're expecting. This allows changes to things that may not be relevant to the test like classNames, attributes, etc.
+- When searching for an element, use element selectors where possible and add a data attribute when not. We follow the format of `data-test="..."` or `data-test-<specifier>="..."` ex) `<a data-test-column="priority">High</a>`.
+- Test labels should be specific and representative of the test content. Create additional tests if you need assertions that do not apply to the label.
+- Do not mock components unless absolutely necessary. The data dump mentioned below should contain sufficient data to render the full component tree in the test.
+
+#### Mocking data
+
+The file [complete-redux-store-dump.js](src/testing/complete-redux-store-dump.js) contains a sanitized redux dump from a Dashboard instance with many models in different states. When writing a test use the real data provided by this file when generating a redux store that will provide the data to your component or library. Because every test uses the same data set this allows us to see when a library or component will fail if the data that's saved to the redux store, or a selector is modified.
+
+> **If you modify the data that is saved into the redux store then you must update this file**
+
+If you want to test states that are not included in the data dump, or if you want to see how a component will act in different data states you can modify it locally within the test. If you must modify some value see if there is value in adding another entry into the data set for others to use.
+
+#### Test Snippits
+
+The typical imports and test case setup looks like the following. Note that we create a shared mockStore factory at the top of each test suite.
+
+```
+import React from "react";
+import { MemoryRouter } from "react-router";
+import { mount } from "enzyme";
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
+import dataDump from "../../testing/complete-redux-store-dump";
+
+const mockStore = configureStore([]);
+
+describe("ComponentName", () => {
+
+ it('', () => {
+   // test case
+ });
+
+ //... more tests
+
+});
+```
+
+Setting up a typical component test involves creating a mock store and passing that to the Provider so that any component you're testing can still use its built-in redux selectors.
+
+```
+const store = mockStore(dataDump);
+const wrapper = mount(
+  <MemoryRouter>
+    <Provider store={store}>
+      <StatusGroup />
+    </Provider>
+  </MemoryRouter>
+);
+```
+
+If you need to modify the data used in the application, clone the data dump in each test so that you do not run the risk of overriding data in subsequent tests. You should only update the values directly.
+
+```
+const clonedData = cloneDeep(dataDump);
+clonedData.root.appVersion = "0.1.8";
+const store = mockStore(clonedData);
+const wrapper = mount(
+  <MemoryRouter>
+    <Provider store={store}>
+      <StatusGroup />
+    </Provider>
+  </MemoryRouter>
+);
+```
+
+We have a [special component](src/components/Routes/TestRoute.js) for routing to be used with testing. It ensures that the routes that are used in the test are valid within the application by comparing them to the real routes.
+
+```
+const wrapper = mount(
+  <Provider store={store}>
+    <MemoryRouter initialEntries={["/models/group-test"]}>
+      <TestRoute path="/models/*">
+        <InfoPanel />
+      </TestRoute>
+    </MemoryRouter>
+  </Provider>
+);
+```
 
 ### Developer notes
 
