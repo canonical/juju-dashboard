@@ -139,8 +139,8 @@ The Juju Dashboard uses [Vanilla CSS](https://vanillaframework.io/) and [Vanilla
 #### React component conventions
 
 - Components are stored in their own self-named folders using the TitleCase format.
-- Tests and css files are stored along side each component with the naming convention of ComponentName.css and ComponentName.test.js respectively.
-- Sub components are nested within subfolders their parent components if not shared.
+- Tests and Sass files are stored along side each component with the naming convention of `ComponentName.css` and `ComponentName.test.js` respectively.
+- Sub components are nested within subfolders of their parent components if they are not shared among other components.
 - Use functional components.
 - Use hooks.
 - Consider contributing generic components back to [Vanilla CSS](https://vanillaframework.io/) and [Vanilla React Components](https://github.com/canonical-web-and-design/react-components) where appropriate.
@@ -166,15 +166,15 @@ This effectively means that we write integration and component tests, not unit t
 
 #### Mocking data
 
-The file [complete-redux-store-dump.js](src/testing/complete-redux-store-dump.js) contains a sanitized redux dump from a Dashboard instance with many models in different states. When writing a test use the real data provided by this file when generating a redux store that will provide the data to your component or library. Because every test uses the same data set this allows us to see when a library or component will fail if the data that's saved to the redux store, or a selector is modified.
+The file [complete-redux-store-dump.js](src/testing/complete-redux-store-dump.js) contains a sanitized redux dump from a Dashboard instance with many models in different states. When writing a test use the real data provided by this file when generating a redux store that will provide the data to your component or library. Because every test uses the same dataset this allows us to see when a library or component will fail if the data that's saved to the redux store, or a selector is modified.
 
 > **If you modify the data that is saved into the redux store then you must update this file**
 
-If you want to test states that are not included in the data dump, or if you want to see how a component will act in different data states you can modify it locally within the test. If you must modify some value see if there is value in adding another entry into the data set for others to use.
+If you want to test states that are not included in the data dump, or if you want to see how a component will act in different data states you can modify it locally within the test. If you must modify some value see if there is value in adding another entry into the dataset for others to use.
 
-#### Test Snippits
+#### Test Snippets
 
-The typical imports and test case setup looks like the following. Note that we create a shared mockStore factory at the top of each test suite.
+The typical import and test case setup looks like the following. Note that we create a shared `mockStore` factory at the top of each test suite.
 
 ```
 import React from "react";
