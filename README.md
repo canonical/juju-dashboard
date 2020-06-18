@@ -10,10 +10,10 @@ Starting with Juju 2.8 this dashboard is installed by default with every bootstr
     - [Uploading the tarball to a Juju controller](#uploading-the-tarball-to-a-juju-controller)
     - [Connecting a local Dashboard to a remote controller](#connecting-a-local-dashboard-to-a-remote-controller)
   - [In JAAS](#in-jaas)
+  - [Release tests](#release-tests)
 - [Developing the Dashboard](#developing-the-dashboard)
   - [Developing while connected to a Juju controller](#developing-while-connected-to-a-juju-controller)
   - [Running the tests](#running-the-tests)
-  - [Generating a release tarball for Juju](#generating-a-release-tarball-for-juju)
   - [Accessing the Dashboard from nested containers](#accessing-the-dashboard-from-nested-containers)
     - [A lxd bootstrapped Dashboard that's also within a `multipass` VM](#a-lxd-bootstrapped-dashboard-that's-also-within-a-`multipass`-VM)
     - [A local bootstrapped controller from a hosted Dashboard](#a-local-bootstrapped-controller-from-a-hosted-dashboard)
@@ -26,6 +26,12 @@ Starting with Juju 2.8 this dashboard is installed by default with every bootstr
     - [Test snippets](#test-snippets)
   - [Developer notes](#developer-notes)
     - [Updating CRA](#updating-cra)
+- [Releasing the Dashboard](#releasing-the-dashboard)
+  - [Release prep](#release-prep)
+  - [Generate a release tarball for Juju](#generate-a-release-tarball-for-juju)
+  - [Release to jaas.ai](#release-to-jaas.ai)
+  - [Release to Juju Simplestreams](#release-to-juju-simplestreams)
+  - [Create an announcement on the Juju Discourse](#create-an-announcement-on-the-juju-discourse)
 
 ## Using the Dashboard with Juju
 
@@ -83,6 +89,10 @@ The default configuration setting for the Dashboard is to connect to public JAAS
 
 Then connect to the Dashboard from your browser at http://localhost:8036/.
 
+### Release tests
+
+Coming soon...
+
 ## Developing the Dashboard
 
 Assuming you already have [Docker](https://www.docker.com/) installed, you can simply run;
@@ -110,12 +120,6 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
 
 ```
 ./run test
-```
-
-### Generating a release tarball for Juju
-
-```
-./run exec yarn run generate-release-tarball
 ```
 
 ### Accessing the Dashboard from nested containers
@@ -267,3 +271,63 @@ const wrapper = mount(
 #### Updating CRA
 
 When updating Create React App it's important to take a look at the `optimization.minimizer` values in the webpack config and then update the config in `craco.config.js`. After copying over any updates be sure to re-introduce the `terserOptions.mangle.reserved` key and values in the newly updated config.
+
+## Releasing the Dashboard
+
+To complete QA and release the Dashboard will take aproximately 2h of total time, 1h of which is an automated process at the end.
+
+- [Release prep](#release-prep)
+- [Generate a release tarball for Juju](#generate-a-release-tarball-for-juju)
+- [Release to jaas.ai](#release-to-jaas.ai)
+- [Release to Juju Simplestreams](#release-to-juju-simplestreams)
+- [Create an announcement on the Juju Discourse](#create-an-announcement-on-the-juju-discourse)
+
+### Release prep
+
+To prepare to release:
+
+- Clone a new copy of the repository to remove the chance of any uncommitted artifacts ending up in the release.
+- Thoroughly [QA the Dashboard](#qa'ing-the-dashboard) following the [Release tests](#release-tests)
+- Update the changelog by adding the important commits from the last tag.
+
+```
+  git log `git describe --tags --abbrev=0`..HEAD --format='- %b' --merges | sed '/^- $/d'
+```
+
+- Bump the version of the `package.json` file to the next appropriate semver version.
+- Commit the changes
+- Tag that commit with the appropriate version number.
+
+### Generate a release tarball for Juju
+
+The version of the Dashboard that's installed with every new Juju bootstrap is generated using:
+
+```
+./run exec yarn run generate-release-tarball
+```
+
+- Take this tarball and create a new release on GitHub under the appropriate version tag.
+- Add the notes from the changelog to the release notes on GitHub.
+
+### Release to jaas.ai
+
+The release to jaas.ai is in two steps. New releases of the jaas.ai website will pull in the
+latest release of the Dashboard for JAAS.
+
+- Visit the CI instance and release a new version of jaas.ai to staging.
+- Validate that the website works as expected and that the [release tests](#release-tests) are pass successfully.
+- Visit the CI instance and perform the release to jaas.ai production.
+- Validate that the website works as expected and that the [release tests](#release-tests) are pass successfully.
+
+### Release to Juju Simplestreams
+
+When Juju bootstraps a new instance it fetches the appropriate content for the infrastructure it's deployed on from a system called Simplestreams.
+
+To release a tarball of the Dashboard to Simplestreams:
+
+- Clone the release script [Shipit](https://github.com/CanonicalLtd/shipit).
+- Follow the instructions in that projects `README.md` to perform the release. This will take aproximately an hour but it's automated. You'll want to keep an eye on it as it's doing its thing in the event it needs input.
+
+### Create an announcement on the Juju Discourse
+
+Coming soon...
