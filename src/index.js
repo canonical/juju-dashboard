@@ -46,7 +46,7 @@ if (config.baseControllerURL === null) {
 
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
-    dsn: "https://5b54e6946be34749935c4dd2d9d01cb8@sentry.is.canonical.com/7",
+    dsn: "https://5f679e274f34464194e9592a91ed65d4@sentry.is.canonical.com//29",
   });
   Sentry.setTag("dashboardVersion", appVersion);
   Sentry.setTag("isJuju", config.isJuju);
