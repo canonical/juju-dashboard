@@ -12,6 +12,7 @@ describe("Donut chart", () => {
     expect(svg.find(".is-blocked").length).toBe(1);
     expect(svg.find(".is-alert").length).toBe(1);
     expect(svg.find(".is-running").length).toBe(1);
+    expect(svg.find(".is-disabled").length).toBe(0);
   });
 
   it("renders as disabled if no data available", () => {
@@ -19,6 +20,9 @@ describe("Donut chart", () => {
       <DonutChart chartData={{ blocked: 0, alert: 0, running: 0 }} />
     );
     const svg = wrapper.find("svg").render();
+    expect(svg.find(".is-blocked").length).toBe(0);
+    expect(svg.find(".is-alert").length).toBe(0);
+    expect(svg.find(".is-running").length).toBe(0);
     expect(svg.find(".is-disabled").length).toBe(1);
   });
 });
