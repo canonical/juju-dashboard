@@ -31,8 +31,8 @@ function generateOwnerTableHeaders(owner, count) {
       content: generateStatusElement(owner, count, false),
       sortKey: owner.toLowerCase(),
     },
+    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
     { content: "Status", sortKey: "statusˇ" },
-    { content: "Configuration", sortKey: "summary" },
     { content: "Cloud/Region", sortKey: "cloud" },
     { content: "Credential", sortKey: "credential" },
     { content: "Controller", sortKey: "controller" },
@@ -68,14 +68,14 @@ export default function OwnerGroup({ activeUser, filters }) {
               ),
             },
             {
-              "data-test-column": "status",
-              content: generateStatusElement(highestStatus),
-              className: "u-capitalise",
-            },
-            {
               "data-test-column": "summary",
               content: getStatusValue(model, "summary"),
               className: "u-overflow--visible",
+            },
+            {
+              "data-test-column": "status",
+              content: generateStatusElement(highestStatus),
+              className: "u-capitalise",
             },
             {
               "data-test-column": "cloud",
