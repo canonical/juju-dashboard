@@ -24,8 +24,8 @@ function generateStatusTableHeaders(label, count) {
       content: generateStatusElement(label, count),
       sortKey: label.toLowerCase(),
     },
+    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
     { content: "Owner", sortKey: "owner" },
-    { content: "Configuration", sortKey: "summary" },
     { content: "Cloud/Region", sortKey: "cloud" },
     { content: "Credential", sortKey: "credential" },
     { content: "Controller", sortKey: "controller" },
@@ -104,17 +104,17 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
             content: generateModelNameCell(model, groupLabel, activeUser),
           },
           {
+            "data-test-column": "summary",
+            content: getStatusValue(model, "summary"),
+            className: "u-overflow--visible",
+          },
+          {
             "data-test-column": "owner",
             content: (
               <a href="#_" className="p-link--soft">
                 {owner}
               </a>
             ),
-          },
-          {
-            "data-test-column": "summary",
-            content: getStatusValue(model, "summary"),
-            className: "u-overflow--visible",
           },
           {
             "data-test-column": "cloud",
