@@ -1,4 +1,4 @@
-var jaasDashboardConfig = {
+var jujuDashboardConfig = {
   // API host to allow app to connect and retrieve models
   baseControllerURL: null,
   // Configurable base url to allow deploying to different paths.
