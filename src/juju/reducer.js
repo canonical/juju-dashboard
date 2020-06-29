@@ -1,4 +1,4 @@
-import produce from "immer";
+import immerProduce from "immer";
 
 import { actionsList } from "./actions";
 
@@ -8,7 +8,7 @@ const defaultState = {
 };
 
 export default function jujuReducer(state = defaultState, action) {
-  return produce(state, (draftState) => {
+  return immerProduce(state, (draftState) => {
     const payload = action.payload;
     switch (action.type) {
       case actionsList.updateModelList:

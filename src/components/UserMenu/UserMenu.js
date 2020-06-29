@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch, useStore } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import classNames from "classnames";
-import { useDispatch, useStore } from "react-redux";
 import { getActiveUserTag } from "app/selectors";
 
 import { logOut } from "app/actions";
