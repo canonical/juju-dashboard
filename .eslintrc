@@ -3,7 +3,8 @@
     "react-app",
     "prettier/react",
     "plugin:jsx-a11y/recommended",
-    "plugin:import/warnings"
+    "plugin:import/warnings",
+    "plugin:jest/recommended"
   ],
   "plugins": ["prettier", "jest", "jsx-a11y", "import"],
   "rules": {
