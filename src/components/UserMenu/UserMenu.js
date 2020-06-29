@@ -30,6 +30,8 @@ const UserMenu = () => {
     }
   }, [isActive, sendAnalytics]);
 
+  const toggleUserMenuActive = () => dispatch(userMenuActive(!isActive));
+
   return (
     <div
       className={classNames("user-menu", {
@@ -39,7 +41,10 @@ const UserMenu = () => {
       <>
         <div
           className="user-menu__header"
-          onClick={() => dispatch(userMenuActive(!isActive))}
+          onClick={toggleUserMenuActive}
+          onKeyPress={toggleUserMenuActive}
+          role="button"
+          tabIndex="0"
         >
           <i className="p-icon--user"></i>
           <span className="user-menu__name">

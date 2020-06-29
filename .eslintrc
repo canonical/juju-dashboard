@@ -1,6 +1,6 @@
 {
-  "extends": ["react-app", "prettier/react"],
-  "plugins": ["prettier", "jest"],
+  "extends": ["react-app", "prettier/react", "plugin:jsx-a11y/recommended"],
+  "plugins": ["prettier", "jest", "jsx-a11y"],
   "rules": {
     "react/prop-types": 0,
     "react/jsx-filename-extension": [
