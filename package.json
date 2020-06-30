@@ -84,7 +84,6 @@
     "xterm-addon-fit": "0.4.0"
   },
   "devDependencies": {
-    "eslint-config-airbnb": "18.2.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-import": "2.22.0",
     "eslint-plugin-jest": "23.17.1",

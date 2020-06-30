@@ -65,6 +65,14 @@ const InfoPanel = () => {
     };
   });
 
+  const handleExpandTopology = () => {
+    setShowExpandedTopology(!showExpandedTopology);
+    sendAnalytics({
+      category: "User",
+      action: "Opened expanded topology",
+    });
+  };
+
   return (
     <div className="info-panel">
       {showExpandedTopology ? (
@@ -89,13 +97,10 @@ const InfoPanel = () => {
               // https://github.com/canonical-web-and-design/jaas-dashboard/issues/453
               className="p-icon--expand p-icon--fullscreen"
               style={{ backgroundImage: `url(${fullScreenIcon})` }}
-              onClick={() => {
-                setShowExpandedTopology(!showExpandedTopology);
-                sendAnalytics({
-                  category: "User",
-                  action: "Opened expanded topology",
-                });
-              }}
+              onClick={handleExpandTopology}
+              onKeyPress={handleExpandTopology}
+              role="button"
+              tabIndex="0"
             >
               Expand topology
             </i>

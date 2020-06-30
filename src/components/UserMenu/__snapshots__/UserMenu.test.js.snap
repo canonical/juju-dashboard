@@ -7,6 +7,9 @@ exports[`User Menu renders without crashing and matches snapshot 1`] = `
   <div
     className="user-menu__header"
     onClick={[Function]}
+    onKeyPress={[Function]}
+    role="button"
+    tabIndex="0"
   >
     <i
       className="p-icon--user"
