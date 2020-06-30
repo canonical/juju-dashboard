@@ -14,6 +14,7 @@ import jimm from "app/jimm-facade";
 import {
   getBakery,
   getConfig,
+  getControllerConnection,
   getWSControllerURL,
   isLoggedIn,
   getUserPass,
@@ -282,6 +283,8 @@ export async function fetchControllerList(conn, reduxStore) {
       {
         path: controllerConfig.config["controller-name"],
         uuid: controllerConfig.config["controller-uuid"],
+        version: getControllerConnection(reduxStore.getState())?.info
+          ?.serverVersion,
       },
     ];
   }
