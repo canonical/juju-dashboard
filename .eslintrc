@@ -32,7 +32,7 @@
     "document": true,
     "localStorage": true,
     "windowLocation": true,
-    "jaasDashboardConfig": true,
+    "jujuDashboardConfig": true,
     "lightningjs": true
   }
 }
