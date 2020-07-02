@@ -28,7 +28,7 @@ import { version as appVersion } from "../package.json";
 
 import * as serviceWorker from "./serviceWorker";
 
-if (!window.jaasDashboardConfig) {
+if (!window.jujuDashboardConfig) {
   console.error(
     "Configuration values not defined unable to bootstrap application"
   );
@@ -39,7 +39,7 @@ if (!window.jaasDashboardConfig) {
 // hostname:port is not always provided by the Juju webserver but in which
 // case we can reliably connect to the API using the same hostname:port as
 // the dashboard assets are served from.
-const config = window.jaasDashboardConfig;
+const config = window.jujuDashboardConfig;
 if (config.baseControllerURL === null) {
   config.baseControllerURL = window.location.host;
 }
@@ -69,7 +69,7 @@ const reduxStore = createStore(
   composeWithDevTools(applyMiddleware(checkAuth, thunk))
 );
 
-reduxStore.dispatch(storeConfig(window.jaasDashboardConfig));
+reduxStore.dispatch(storeConfig(window.jujuDashboardConfig));
 reduxStore.dispatch(storeVersion(appVersion));
 
 const bakery = new Bakery({
