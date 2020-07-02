@@ -1,7 +1,7 @@
 // If a new key is added to this config then be sure to also add the key and
 // value to the golang template in config.js.go.
 // eslint-disable-next-line no-unused-vars
-var jaasDashboardConfig = {
+var jujuDashboardConfig = {
   // API host to allow app to connect and retrieve models
   baseControllerURL: "jimm.jujucharms.com",
   // Configurable base url to allow deploying to different paths.

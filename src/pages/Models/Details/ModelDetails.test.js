@@ -94,7 +94,7 @@ describe("ModelDetail Container", () => {
       .simulate("click");
     const units = wrapper.find(".model-details__units tbody tr");
     expect(units.length).toBe(1);
-    expect(units.hasClass("is-selected"));
+    expect(units.hasClass("is-selected")).toBe(true);
     expect(units.find("td").first().text()).toBe("easyrsa/0");
     const machines = wrapper.find(".model-details__machines tbody tr");
     expect(machines.length).toBe(1);

@@ -1,7 +1,7 @@
 {
-  "name": "jaas-dashboard",
+  "name": "juju-dashboard",
   "version": "0.1.8",
-  "description": "A dashboard for JAAS (Juju as a service)",
+  "description": "A dashboard for Juju and JAAS (Juju as a service)",
   "bugs": {
     "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
   },
@@ -84,7 +84,6 @@
     "xterm-addon-fit": "0.4.0"
   },
   "devDependencies": {
-    "eslint-config-airbnb": "18.2.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-import": "2.22.0",
     "eslint-plugin-jest": "23.17.1",

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-VERSION=`npm version | grep jaas-dashboard | cut -d"'" -f4`
+VERSION=`npm version | grep juju-dashboard | cut -d"'" -f4`
 
 tar -cjf juju-dashboard-$VERSION.tar.bz2 -C build .
