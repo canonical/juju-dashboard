@@ -130,7 +130,7 @@ export function generateApplicationRows(
         },
         {
           "data-test-column": "store",
-          content: "CharmHub",
+          content: app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub",
         },
         {
           "data-test-column": "revision",

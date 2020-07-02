@@ -234,6 +234,13 @@ describe("ModelDetail Container", () => {
     expect(
       wrapper.find(".model-details__apps tr[data-app='cockroachdb']").length
     ).toBe(1);
+    expect(
+      wrapper
+        .find(
+          ".model-details__apps tr[data-app='cockroachdb'] td[data-test-column='store']"
+        )
+        .text()
+    ).toBe("Local");
   });
 
   it("displays the correct scale value", () => {
