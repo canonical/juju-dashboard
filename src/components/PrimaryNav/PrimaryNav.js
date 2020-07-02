@@ -126,7 +126,10 @@ const PrimaryNav = () => {
         </Modal>
       ) : null}
       <div className="p-primary-nav__header">
-        <a href="https://jaas.ai" className="p-primary-nav__logo">
+        <a
+          href={isJuju ? "https://juju.is" : "https://jaas.ai"}
+          className="p-primary-nav__logo"
+        >
           <img
             className="p-primary-nav__logo-icon"
             src={logoMark}
