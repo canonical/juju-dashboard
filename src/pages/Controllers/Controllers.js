@@ -131,12 +131,17 @@ function AddNewController() {
     e.preventDefault();
     // XXX Validate form values
     console.log(formValues);
-    additionalControllers.push(formValues);
+    additionalControllers.push([
+      formValues.wsControllerURL,
+      { user: formValues.username, password: formValues.password },
+      null,
+      formValues.identityProviderAvailable,
+    ]);
     setAdditionalControllers(additionalControllers);
   }
 
   function handleInputChange(e) {
-    formValues[e.target.name] = e.target.value;
+    formValues[e.target.name] = e.target.checked || e.target.value;
     setFormValues(formValues);
   }
 
@@ -181,11 +186,11 @@ function AddNewController() {
               <input
                 type="text"
                 id="full-name-stacked"
-                name="hostname"
+                name="wsControllerURL"
                 onChange={handleInputChange}
                 required=""
               />
-              <p className="p-form-help-text">123.456.789.0:17070</p>
+              <p className="p-form-help-text">wss://123.456.789.0:17070/api</p>
             </div>
           </div>
         </div>
@@ -233,6 +238,35 @@ function AddNewController() {
                 Stored locally in your browser.
               </p>
             </div>
+          </div>
+        </div>
+
+        <div className="p-form__group row">
+          <div className="col-4">
+            <label
+              htmlFor="identityProviderAvailable"
+              className="p-form__label"
+            >
+              Identity Provider
+            </label>
+          </div>
+
+          <div className="col-8">
+            <label>
+              <input
+                type="checkbox"
+                id="identityProviderAvailable"
+                name="identityProvider"
+                defaultChecked={false}
+                onChange={handleInputChange}
+                required=""
+              />
+            </label>
+
+            <p className="p-form-help-text">
+              If you provided a username and password this should be left
+              unchecked.
+            </p>
           </div>
         </div>
 
