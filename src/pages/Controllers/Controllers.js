@@ -97,7 +97,13 @@ function Details() {
     <>
       <ControllersOverview />
       <div className="l-controllers-table u-overflow--scroll">
-        <h5>Controller status</h5>
+        <h5>Default Controllers</h5>
+        <MainTable headers={headers} rows={rows} />
+        <h5>Additional Controllers</h5>
+        <span className="p-form-help-text">
+          These controllers will only be available on this browser
+          <span className="small">[?]</span>
+        </span>
         <MainTable headers={headers} rows={rows} />
       </div>
     </>
@@ -113,13 +119,105 @@ function NoAccess() {
   );
 }
 
+function AddNewController() {
+  /* eslint-disable jsx-a11y/label-has-associated-control */
+  return (
+    <>
+      <h5>Add additional Controllers</h5>
+      <form
+        className="p-form p-form--stacked"
+        onSubmit={handleAddingControllers}
+      >
+        <div className="p-form__group row">
+          <div className="col-4">
+            <label htmlFor="full-name-stacked" className="p-form__label">
+              Controller name
+            </label>
+          </div>
+
+          <div className="col-8">
+            <div className="p-form__control">
+              <input type="text" id="full-name-stacked" required="" />
+              <p className="p-form-help-text">production-controller-aws</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-form__group row">
+          <div className="col-4">
+            <label htmlFor="full-name-stacked" className="p-form__label">
+              Full hostname
+            </label>
+          </div>
+
+          <div className="col-8">
+            <div className="p-form__control">
+              <input type="text" id="full-name-stacked" required="" />
+              <p className="p-form-help-text">123.456.789.0:17070</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-form__group row">
+          <div className="col-4">
+            <label htmlFor="full-name-stacked" className="p-form__label">
+              Username
+            </label>
+          </div>
+
+          <div className="col-8">
+            <div className="p-form__control">
+              <input type="text" id="full-name-stacked" required="" />
+              <p className="p-form-help-text">
+                Stored locally in your browser.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-form__group row">
+          <div className="col-4">
+            <label htmlFor="full-name-stacked" className="p-form__label">
+              Password
+            </label>
+          </div>
+
+          <div className="col-8">
+            <div className="p-form__control">
+              <input type="text" id="full-name-stacked" required="" />
+              <p className="p-form-help-text">
+                Stored locally in your browser.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-12">
+            <button className="p-button--positive u-float-right" type="submit">
+              Add Controller
+            </button>
+          </div>
+        </div>
+      </form>
+    </>
+  );
+  /* eslint-enable jsx-a11y/label-has-associated-control */
+}
+
+function handleAddingControllers(e) {
+  console.log(e);
+}
+
 export default function Controllers() {
   const conn = useSelector(getControllerConnection);
   return (
     <Layout>
       <Header></Header>
       <div className="l-content controllers">
-        {userIsControllerAdmin(conn) ? <Details /> : <NoAccess />}
+        {/* {userIsControllerAdmin(conn) ? <Details /> : <NoAccess/>} */}
+        <Details />
+        <div className="controllers__add-new">{AddNewController()}</div>
       </div>
     </Layout>
   );
