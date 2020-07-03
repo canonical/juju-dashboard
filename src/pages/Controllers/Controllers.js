@@ -11,6 +11,7 @@ import {
   getControllerData,
   getModelData,
 } from "app/selectors";
+import useLocalStorage from "hooks/useLocalStorage";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 
 import { userIsControllerAdmin } from "../../app/utils";
@@ -121,10 +122,17 @@ function NoAccess() {
 
 function AddNewController() {
   const [formValues, setFormValues] = useState({});
+  const [additionalControllers, setAdditionalControllers] = useLocalStorage(
+    "additionalControllers",
+    []
+  );
 
   function handleAddingControllers(e) {
     e.preventDefault();
+    // XXX Validate form values
     console.log(formValues);
+    additionalControllers.push(formValues);
+    setAdditionalControllers(additionalControllers);
   }
 
   function handleInputChange(e) {
