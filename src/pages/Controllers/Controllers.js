@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import Layout from "components/Layout/Layout";
@@ -120,6 +120,18 @@ function NoAccess() {
 }
 
 function AddNewController() {
+  const [formValues, setFormValues] = useState({});
+
+  function handleAddingControllers(e) {
+    e.preventDefault();
+    console.log(formValues);
+  }
+
+  function handleInputChange(e) {
+    formValues[e.target.name] = e.target.value;
+    setFormValues(formValues);
+  }
+
   /* eslint-disable jsx-a11y/label-has-associated-control */
   return (
     <>
@@ -137,7 +149,13 @@ function AddNewController() {
 
           <div className="col-8">
             <div className="p-form__control">
-              <input type="text" id="full-name-stacked" required="" />
+              <input
+                type="text"
+                id="full-name-stacked"
+                name="controllerName"
+                onChange={handleInputChange}
+                required=""
+              />
               <p className="p-form-help-text">production-controller-aws</p>
             </div>
           </div>
@@ -152,7 +170,13 @@ function AddNewController() {
 
           <div className="col-8">
             <div className="p-form__control">
-              <input type="text" id="full-name-stacked" required="" />
+              <input
+                type="text"
+                id="full-name-stacked"
+                name="hostname"
+                onChange={handleInputChange}
+                required=""
+              />
               <p className="p-form-help-text">123.456.789.0:17070</p>
             </div>
           </div>
@@ -167,7 +191,13 @@ function AddNewController() {
 
           <div className="col-8">
             <div className="p-form__control">
-              <input type="text" id="full-name-stacked" required="" />
+              <input
+                type="text"
+                id="full-name-stacked"
+                name="username"
+                onChange={handleInputChange}
+                required=""
+              />
               <p className="p-form-help-text">
                 Stored locally in your browser.
               </p>
@@ -184,7 +214,13 @@ function AddNewController() {
 
           <div className="col-8">
             <div className="p-form__control">
-              <input type="text" id="full-name-stacked" required="" />
+              <input
+                type="password"
+                id="full-name-stacked"
+                name="password"
+                onChange={handleInputChange}
+                required=""
+              />
               <p className="p-form-help-text">
                 Stored locally in your browser.
               </p>
@@ -203,10 +239,6 @@ function AddNewController() {
     </>
   );
   /* eslint-enable jsx-a11y/label-has-associated-control */
-}
-
-function handleAddingControllers(e) {
-  console.log(e);
 }
 
 export default function Controllers() {
