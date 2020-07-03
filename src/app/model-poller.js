@@ -31,54 +31,58 @@ export default async function connectAndListModels(
     const credentials = getUserPass(storeState);
     const { identityProviderAvailable, isJuju } = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
-    const defaultControllerData = {
+    const defaultControllerData = [
       wsControllerURL,
       credentials,
       bakery,
       identityProviderAvailable,
-    };
-    [defaultControllerData, ...additionalControllers].forEach(
-      async (controllerData) => {
-        const { conn, error, juju, intervalId } = await loginWithBakery(
-          controllerData
-        );
+    ];
+    let controllerList = [defaultControllerData];
+    if (additionalControllers) {
+      controllerList = controllerList.concat(additionalControllers);
+    }
+    controllerList.forEach(async (controllerData) => {
+      console.log(controllerData);
+      const { conn, error, juju, intervalId } = await loginWithBakery(
+        ...controllerData
+      );
 
-        if (error) {
-          reduxStore.dispatch(storeLoginError(error));
-          return;
-        }
-
-        if (process.env.NODE_ENV === "production") {
-          Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
-        }
-
-        // XXX expand to support multiple conns
-        reduxStore.dispatch(updateControllerConnection(conn));
-        // XXX expand to support multiple jujus
-        reduxStore.dispatch(updateJujuAPIInstance(juju));
-        // XXX expand to support multiple intervalId
-        reduxStore.dispatch(updatePingerIntervalId(intervalId));
-        if (true) {
-          //if (userIsControllerAdmin(conn)) { // XXX re-enable me for prod.
-          fetchControllerList(conn, reduxStore);
-          if (!isJuju) {
-            // This call will be a noop if the user isn't an administrator
-            // on the JIMM controller we're connected to.
-            disableControllerUUIDMasking(conn);
-          }
-        }
-        do {
-          await reduxStore.dispatch(fetchModelList());
-          await fetchAllModelStatuses(conn, reduxStore);
-          // Wait 30s then start again.
-          await new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(true);
-            }, 30000);
-          });
-        } while (isLoggedIn(reduxStore.getState()));
+      if (error) {
+        reduxStore.dispatch(storeLoginError(error));
+        return;
       }
-    );
+
+      if (process.env.NODE_ENV === "production") {
+        Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
+      }
+
+      // XXX expand to support multiple conns
+      reduxStore.dispatch(updateControllerConnection(conn));
+      // XXX expand to support multiple jujus
+      reduxStore.dispatch(updateJujuAPIInstance(juju));
+      // XXX expand to support multiple intervalId
+      reduxStore.dispatch(updatePingerIntervalId(intervalId));
+      if (true) {
+        //if (userIsControllerAdmin(conn)) { // XXX re-enable me for prod.
+        fetchControllerList(conn, reduxStore);
+        if (!isJuju) {
+          // This call will be a noop if the user isn't an administrator
+          // on the JIMM controller we're connected to.
+          // XXX Each controller needs its own jaas/juju flag
+          // disableControllerUUIDMasking(conn);
+        }
+      }
+      do {
+        await reduxStore.dispatch(fetchModelList());
+        await fetchAllModelStatuses(conn, reduxStore);
+        // Wait 30s then start again.
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(true);
+          }, 30000);
+        });
+      } while (isLoggedIn(reduxStore.getState()));
+    });
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry if it's an error that's not connection related
