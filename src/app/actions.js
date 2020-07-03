@@ -139,6 +139,14 @@ export function logOut(getState) {
 */
 export function connectAndStartPolling(reduxStore, bakery) {
   return async function connectAndStartPolling(dispatch) {
-    connectAndListModels(reduxStore, bakery);
+    let additionalControllers = null;
+    try {
+      const data = window.localStorage.getItem("additionalControllers");
+      additionalControllers = JSON.parse(data);
+    } catch (e) {
+      // XXX Add to Sentry.
+      console.log("oops bad data in the additionalControllers localStorage");
+    }
+    connectAndListModels(reduxStore, bakery, additionalControllers);
   };
 }
