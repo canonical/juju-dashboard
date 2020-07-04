@@ -69,10 +69,13 @@ export function storeVersion(version) {
   @param {Object} credentials The users credentials in the format
     {user: ..., password: ...}
 */
-export function storeUserPass(credentials) {
+export function storeUserPass(wsControllerURL, credential) {
   return {
     type: actionsList.storeUserPass,
-    payload: credentials,
+    payload: {
+      wsControllerURL,
+      credential,
+    },
   };
 }
 
@@ -161,6 +164,9 @@ export function connectAndStartPolling(reduxStore, bakery) {
     try {
       const data = window.localStorage.getItem("additionalControllers");
       additionalControllers = JSON.parse(data);
+      additionalControllers.forEach((controller) => {
+        dispatch(storeUserPass(controller[0], controller[1]));
+      });
     } catch (e) {
       // XXX Add to Sentry.
       console.log("oops bad data in the additionalControllers localStorage");

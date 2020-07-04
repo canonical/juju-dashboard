@@ -368,20 +368,22 @@ const countModelStatusGroups = (groupedModelStatuses) => {
   @param {Object} filters The filters to filter by in the format:
     {segment: [values]}
   @param {Object} modelData The model data from the redux store.
-  @param {Array} controllerData The controller data from the redux store.
+  @param {Array} controllers The controllers from the redux store.
   @returns {Object} The filtered model data.
 */
-const filterModelData = (filters, modelData, controllerData) => {
+const filterModelData = (filters, modelData, controllers) => {
   const clonedModelData = cloneDeep(modelData);
   // Add the controller name to the model data where we have a valid name.
   Object.entries(clonedModelData).forEach((model) => {
     if (model[1].info) {
       let controllerName = "";
       const modelInfo = model[1].info;
-      if (controllerData) {
-        controllerName = controllerData.find(
-          (controller) => modelInfo.controllerUuid === controller.uuid
-        )?.path;
+      if (controllers) {
+        Object.entries(controllers).forEach((controller) => {
+          controllerName = controller[1].find(
+            (controller) => modelInfo.controllerUuid === controller.uuid
+          )?.path;
+        });
       }
       if (modelInfo.controllerUuid === "a030379a-940f-4760-8fcf-3062b41a04e7") {
         controllerName = "JAAS";

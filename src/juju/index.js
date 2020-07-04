@@ -148,25 +148,28 @@ async function connectAndLoginWithTimeout(
   @param {Object} getState A function that'll return the app redux state.
   @returns {Object} The full model status.
 */
-async function fetchModelStatus(modelUUID, getState) {
+async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   const appState = getState();
   const bakery = getBakery(appState);
-  const { identityProviderAvailable } = getConfig(appState);
-  const modelURL = getWSControllerURL(appState).replace(
-    "/api",
-    `/model/${modelUUID}/api`
-  );
+  const { baseControllerURL, identityProviderAvailable } = getConfig(appState);
+  let useIdentityProvider = false;
+
+  if (`wss://${baseControllerURL}/api` === wsControllerURL) {
+    useIdentityProvider = identityProviderAvailable;
+  }
+  const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
   if (isLoggedIn(getState())) {
     try {
       const credentials = getUserPass(getState());
+      const controllerCredentials = credentials[wsControllerURL];
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
-        credentials,
+        controllerCredentials,
         generateConnectionOptions(false, bakery),
-        identityProviderAvailable
+        useIdentityProvider
       );
       if (isLoggedIn(getState())) {
         status = await conn.facades.client.fullStatus();
@@ -202,8 +205,13 @@ async function fetchModelStatus(modelUUID, getState) {
   @param {Function} dispatch The redux store hook method.
   @param {Object} getState A function that'll return the app redux state.
  */
-export async function fetchAndStoreModelStatus(modelUUID, dispatch, getState) {
-  const status = await fetchModelStatus(modelUUID, getState);
+export async function fetchAndStoreModelStatus(
+  modelUUID,
+  wsControllerURL,
+  dispatch,
+  getState
+) {
+  const status = await fetchModelStatus(modelUUID, wsControllerURL, getState);
   if (status === null) {
     return;
   }
@@ -242,7 +250,12 @@ export async function fetchAllModelStatuses(wsControllerURL, conn, reduxStore) {
   modelUUIDs.forEach((modelUUID) => {
     queue.push(async (done) => {
       if (isLoggedIn(wsControllerURL, getState())) {
-        await fetchAndStoreModelStatus(modelUUID, dispatch, getState);
+        await fetchAndStoreModelStatus(
+          modelUUID,
+          wsControllerURL,
+          dispatch,
+          getState
+        );
       }
       if (isLoggedIn(wsControllerURL, getState())) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
