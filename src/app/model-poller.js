@@ -58,8 +58,9 @@ export default async function connectAndListModels(
 
       reduxStore.dispatch(updateControllerConnection(controllerData[0], conn));
       reduxStore.dispatch(updateJujuAPIInstance(controllerData[0], juju));
-      // XXX expand to support multiple intervalId
-      reduxStore.dispatch(updatePingerIntervalId(intervalId));
+      reduxStore.dispatch(
+        updatePingerIntervalId(controllerData[0], intervalId)
+      );
       if (true) {
         //if (userIsControllerAdmin(conn)) { // XXX re-enable me for prod.
         fetchControllerList(conn, reduxStore);

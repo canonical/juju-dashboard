@@ -104,10 +104,17 @@ export function updateJujuAPIInstance(wsControllerURL, juju) {
   };
 }
 
-export function updatePingerIntervalId(intervalId) {
+/**
+  @param {String} wsControllerURL The URL of the websocket connection.
+  @param {Object} intervalId The intervalId for the request timeout.
+*/
+export function updatePingerIntervalId(wsControllerURL, intervalId) {
   return {
     type: actionsList.updatePingerIntervalId,
-    payload: intervalId,
+    payload: {
+      wsControllerURL,
+      intervalId,
+    },
   };
 }
 

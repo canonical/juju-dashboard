@@ -33,12 +33,14 @@ function rootReducer(state = {}, action) {
         delete draftState.controllerConnection;
         break;
       case actionsList.updateJujuAPIInstance:
-        const jujus = state.juju || {};
+        const jujus = state.jujus || {};
         jujus[action.payload.wsControllerURL] = action.payload.juju;
-        draftState.juju = jujus;
+        draftState.jujus = jujus;
         break;
       case actionsList.updatePingerIntervalId:
-        draftState.pingerIntervalId = action.payload;
+        const intervals = state.pingerIntervalIds || {};
+        intervals[action.payload.wsControllerURL] = action.payload.intervalId;
+        draftState.pingerIntervalIds = intervals;
         break;
       default:
         // no default value, fall through.
