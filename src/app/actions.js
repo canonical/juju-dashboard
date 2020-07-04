@@ -90,10 +90,17 @@ export function updateControllerConnection(wsControllerURL, conn) {
   };
 }
 
-export function updateJujuAPIInstance(juju) {
+/**
+  @param {String} wsControllerURL The URL of the websocket connection.
+  @param {Object} juju The active Juju api instance.
+*/
+export function updateJujuAPIInstance(wsControllerURL, juju) {
   return {
     type: actionsList.updateJujuAPIInstance,
-    payload: juju,
+    payload: {
+      wsControllerURL,
+      juju,
+    },
   };
 }
 

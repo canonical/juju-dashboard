@@ -7,8 +7,7 @@ function rootReducer(state = {}, action) {
     switch (action.type) {
       case actionsList.updateControllerConnection:
         const connections = state.controllerConnections || {};
-        const payload = action.payload;
-        connections[payload.wsControllerURL] = payload.conn;
+        connections[action.payload.wsControllerURL] = action.payload.conn;
         draftState.controllerConnections = connections;
         break;
       case actionsList.storeBakery:
@@ -34,7 +33,9 @@ function rootReducer(state = {}, action) {
         delete draftState.controllerConnection;
         break;
       case actionsList.updateJujuAPIInstance:
-        draftState.juju = action.payload;
+        const jujus = state.juju || {};
+        jujus[action.payload.wsControllerURL] = action.payload.juju;
+        draftState.juju = jujus;
         break;
       case actionsList.updatePingerIntervalId:
         draftState.pingerIntervalId = action.payload;
