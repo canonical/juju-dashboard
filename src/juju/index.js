@@ -266,10 +266,11 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
 /**
   Performs an HTTP request to the controller to fetch the controller list.
   Will fail with a console error message if the user doesn't have access.
+  @param {String} wsControllerURL The URL of the controller.
   @param {Object} conn The Juju controller connection.
   @param {Object} reduxStore The applications reduxStore.
 */
-export async function fetchControllerList(conn, reduxStore) {
+export async function fetchControllerList(wsControllerURL, conn, reduxStore) {
   let controllers = null;
   if (conn.facades.jimM) {
     const response = await conn.facades.jimM.listControllers();
@@ -285,7 +286,7 @@ export async function fetchControllerList(conn, reduxStore) {
       },
     ];
   }
-  reduxStore.dispatch(updateControllerList(controllers));
+  reduxStore.dispatch(updateControllerList(wsControllerURL, controllers));
 }
 
 /**

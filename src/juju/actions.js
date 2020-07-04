@@ -20,10 +20,17 @@ export function clearModelData() {
   };
 }
 
-export function updateControllerList(controllers) {
+/**
+  @param {String} wsControllerURL The URL of the websocket connection.
+  @param {Array} controllers The list of controllers to store.
+*/
+export function updateControllerList(wsControllerURL, controllers) {
   return {
     type: actionsList.updateControllerList,
-    payload: controllers,
+    payload: {
+      wsControllerURL,
+      controllers,
+    },
   };
 }
 

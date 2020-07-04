@@ -42,7 +42,6 @@ export default async function connectAndListModels(
       controllerList = controllerList.concat(additionalControllers);
     }
     controllerList.forEach(async (controllerData) => {
-      console.log(controllerData);
       const { conn, error, juju, intervalId } = await loginWithBakery(
         ...controllerData
       );
@@ -63,7 +62,7 @@ export default async function connectAndListModels(
       );
       if (true) {
         //if (userIsControllerAdmin(conn)) { // XXX re-enable me for prod.
-        fetchControllerList(conn, reduxStore);
+        fetchControllerList(controllerData[0], conn, reduxStore);
         if (!isJuju) {
           // This call will be a noop if the user isn't an administrator
           // on the JIMM controller we're connected to.
