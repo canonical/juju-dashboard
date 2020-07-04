@@ -80,14 +80,12 @@ export function updateModelInfo(modelInfo) {
 /**
   Fetches the model list from the supplied Juju controller. Requires that the
   user is logged in to dispatch the retrieved data from listModels.
+  @param {Object} conn The controller connection.
   @returns {Object} models The list of model objects under the key `userModels`.
 */
-export function fetchModelList() {
+export function fetchModelList(conn) {
   return async function fetchModelList(dispatch, getState) {
-    const state = getState();
-    const conn = state.root.controllerConnection;
-    const modelManager = conn.facades.modelManager;
-    const models = await modelManager.listModels({
+    const models = await conn.facades.modelManager.listModels({
       tag: conn.info.user.identity,
     });
     dispatch(updateModelList(models));
@@ -116,9 +114,9 @@ export function fetchModelStatus(modelUUID) {
   the supplied model info call.
   @param {String} modelInfo The response from a modelInfo call.
 */
-export function addControllerCloudRegion(modelInfo) {
+export function addControllerCloudRegion(wsControllerURL, modelInfo) {
   return async function addControllerCloudRegion(dispatch, getState) {
-    const controllers = getState()?.juju?.controllers;
+    const controllers = getState()?.juju?.controllers[wsControllerURL];
     const model = modelInfo.results[0].result;
     const updatedControllers = cloneDeep(controllers).map((controller) => {
       if (controller.uuid === model.controllerUuid) {
@@ -129,6 +127,6 @@ export function addControllerCloudRegion(modelInfo) {
       }
       return controller;
     });
-    dispatch(updateControllerList(updatedControllers));
+    dispatch(updateControllerList(wsControllerURL, updatedControllers));
   };
 }

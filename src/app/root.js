@@ -1,4 +1,5 @@
 import immerProduce from "immer";
+import cloneDeep from "clone-deep";
 
 import { actionsList } from "./actions";
 
@@ -6,7 +7,7 @@ function rootReducer(state = {}, action) {
   return immerProduce(state, (draftState) => {
     switch (action.type) {
       case actionsList.updateControllerConnection:
-        const connections = state.controllerConnections || {};
+        const connections = cloneDeep(state.controllerConnections || {});
         connections[action.payload.wsControllerURL] = action.payload.conn;
         draftState.controllerConnections = connections;
         break;
@@ -33,12 +34,12 @@ function rootReducer(state = {}, action) {
         delete draftState.controllerConnection;
         break;
       case actionsList.updateJujuAPIInstance:
-        const jujus = state.jujus || {};
+        const jujus = cloneDeep(state.jujus || {});
         jujus[action.payload.wsControllerURL] = action.payload.juju;
         draftState.jujus = jujus;
         break;
       case actionsList.updatePingerIntervalId:
-        const intervals = state.pingerIntervalIds || {};
+        const intervals = cloneDeep(state.pingerIntervalIds || {});
         intervals[action.payload.wsControllerURL] = action.payload.intervalId;
         draftState.pingerIntervalIds = intervals;
         break;

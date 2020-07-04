@@ -63,23 +63,23 @@ export default async function connectAndListModels(
       if (true) {
         //if (userIsControllerAdmin(conn)) { // XXX re-enable me for prod.
         fetchControllerList(controllerData[0], conn, reduxStore);
+        // XXX the isJuju Check needs to be done on a per-controller basis
         if (!isJuju) {
           // This call will be a noop if the user isn't an administrator
           // on the JIMM controller we're connected to.
-          // XXX Each controller needs its own jaas/juju flag
           // disableControllerUUIDMasking(conn);
         }
       }
       do {
-        await reduxStore.dispatch(fetchModelList());
-        await fetchAllModelStatuses(conn, reduxStore);
+        await reduxStore.dispatch(fetchModelList(conn));
+        await fetchAllModelStatuses(controllerData[0], conn, reduxStore);
         // Wait 30s then start again.
         await new Promise((resolve) => {
           setTimeout(() => {
             resolve(true);
           }, 30000);
         });
-      } while (isLoggedIn(reduxStore.getState()));
+      } while (isLoggedIn(controllerData[0], reduxStore.getState()));
     });
   } catch (error) {
     // XXX Surface error to UI.

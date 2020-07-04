@@ -233,7 +233,7 @@ async function fetchModelInfo(conn, modelUUID) {
   @returns {Promise} Resolves when the queue fetching the model statuses has
     completed. Does not reject.
 */
-export async function fetchAllModelStatuses(conn, reduxStore) {
+export async function fetchAllModelStatuses(wsControllerURL, conn, reduxStore) {
   const getState = reduxStore.getState;
   const modelList = getState().juju.models;
   const dispatch = reduxStore.dispatch;
@@ -241,16 +241,16 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
   const modelUUIDs = Object.keys(modelList);
   modelUUIDs.forEach((modelUUID) => {
     queue.push(async (done) => {
-      if (isLoggedIn(getState())) {
+      if (isLoggedIn(wsControllerURL, getState())) {
         await fetchAndStoreModelStatus(modelUUID, dispatch, getState);
       }
-      if (isLoggedIn(getState())) {
+      if (isLoggedIn(wsControllerURL, getState())) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         dispatch(updateModelInfo(modelInfo));
         if (modelInfo.results[0].result.isController) {
           // If this is a controller model then update the
           // controller data with this model data.
-          dispatch(addControllerCloudRegion(modelInfo));
+          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo));
         }
       }
       done();
