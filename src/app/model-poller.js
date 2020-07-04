@@ -56,8 +56,7 @@ export default async function connectAndListModels(
         Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
       }
 
-      // XXX expand to support multiple conns
-      reduxStore.dispatch(updateControllerConnection(conn));
+      reduxStore.dispatch(updateControllerConnection(controllerData[0], conn));
       // XXX expand to support multiple jujus
       reduxStore.dispatch(updateJujuAPIInstance(juju));
       // XXX expand to support multiple intervalId

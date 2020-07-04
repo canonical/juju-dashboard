@@ -77,12 +77,16 @@ export function storeUserPass(credentials) {
 }
 
 /**
+  @param {String} wsControllerURL The URL of the websocket connection.
   @param {Object} conn The active controller connection.
 */
-export function updateControllerConnection(conn) {
+export function updateControllerConnection(wsControllerURL, conn) {
   return {
     type: actionsList.updateControllerConnection,
-    payload: conn,
+    payload: {
+      wsControllerURL,
+      conn,
+    },
   };
 }
 

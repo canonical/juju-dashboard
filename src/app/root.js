@@ -6,7 +6,10 @@ function rootReducer(state = {}, action) {
   return immerProduce(state, (draftState) => {
     switch (action.type) {
       case actionsList.updateControllerConnection:
-        draftState.controllerConnection = action.payload;
+        const connections = state.controllerConnections || {};
+        const payload = action.payload;
+        connections[payload.wsControllerURL] = payload.conn;
+        draftState.controllerConnections = connections;
         break;
       case actionsList.storeBakery:
         draftState.bakery = action.payload;
