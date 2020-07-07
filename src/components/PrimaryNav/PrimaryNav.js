@@ -141,7 +141,7 @@ const PrimaryNav = () => {
             className="p-primary-nav__logo-text"
             src={isJuju ? jujuText : logoText}
             height="30"
-            alt=""
+            alt="Juju logo"
           />
         </a>
         <button
@@ -154,7 +154,9 @@ const PrimaryNav = () => {
       <ul className="p-list is-external">
         <li className="p-list__item">
           <a
-            className="p-list__link"
+            className={classNames("p-list__link", {
+              "p-link--external": isJuju,
+            })}
             href="https://jaas.ai/store"
             target="_blank"
             rel="noopener noreferrer"
@@ -164,7 +166,9 @@ const PrimaryNav = () => {
         </li>
         <li className="p-list__item">
           <a
-            className="p-list__link"
+            className={classNames("p-list__link", {
+              "p-link--external": isJuju,
+            })}
             href="https://jaas.ai/jaas"
             target="_blank"
             rel="noopener noreferrer"
@@ -174,7 +178,9 @@ const PrimaryNav = () => {
         </li>
         <li className="p-list__item">
           <a
-            className="p-list__link"
+            className={classNames("p-list__link", {
+              "p-link--external": isJuju,
+            })}
             href="https://jaas.ai/how-it-works"
             target="_blank"
             rel="noopener noreferrer"
@@ -185,7 +191,7 @@ const PrimaryNav = () => {
         <li className="p-list__item">
           <a
             className="p-link--external p-list__link"
-            href="https://discourse.jujucharms.com/"
+            href="https://discourse.juju.is/"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -195,7 +201,7 @@ const PrimaryNav = () => {
         <li className="p-list__item">
           <a
             className="p-link--external p-list__link"
-            href="https://jaas.ai/docs/"
+            href="https://juju.is/docs"
             target="_blank"
             rel="noopener noreferrer"
           >
