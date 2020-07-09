@@ -62,7 +62,12 @@ export default async function connectAndListModels(
       );
       if (true) {
         //if (userIsControllerAdmin(conn)) { // XXX re-enable me for prod.
-        fetchControllerList(controllerData[0], conn, reduxStore);
+        fetchControllerList(
+          controllerData[0],
+          conn,
+          controllerData[4],
+          reduxStore
+        );
         // XXX the isJuju Check needs to be done on a per-controller basis
         if (!isJuju) {
           // This call will be a noop if the user isn't an administrator

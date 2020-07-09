@@ -481,8 +481,8 @@ export const isLoggedIn = (state) => {
   );
 };
 
-export const getControllerConnection = (state) =>
-  state?.root?.controllerConnection;
+export const getControllerConnection = (wsControllerURL, state) =>
+  state?.root?.controllerConnections?.[wsControllerURL];
 
 export const isConnecting = (state) => !!state.root.visitURL;
 /**

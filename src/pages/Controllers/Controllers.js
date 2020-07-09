@@ -23,15 +23,21 @@ function Details() {
   const modelData = useSelector(getModelData);
 
   const controllerMap = {};
+  const additionalControllers = [];
   if (controllerData) {
-    controllerData.forEach((controller) => {
-      controllerMap[controller.uuid] = {
-        ...controller,
-        models: 0,
-        machines: 0,
-        applications: 0,
-        units: 0,
-      };
+    Object.entries(controllerData).forEach((controllerData) => {
+      controllerData[1].forEach((controller) => {
+        if (controller.additionalController) {
+          additionalControllers.push(controller.uuid);
+        }
+        controllerMap[controller.uuid] = {
+          ...controller,
+          models: 0,
+          machines: 0,
+          applications: 0,
+          units: 0,
+        };
+      });
     });
     if (modelData) {
       for (const modelUUID in modelData) {
@@ -73,26 +79,33 @@ function Details() {
     { content: "public", sortKey: "public", className: "u-align--right" },
   ];
 
-  const rows =
-    controllerMap &&
-    Object.values(controllerMap).map((c) => {
-      const cloud = c?.location?.cloud || "unknown";
-      const region = c?.location?.region || "unknown";
-      const cloudRegion = `${cloud}/${region}`;
-      const publicAccess = c?.Public || "False";
-      return {
-        columns: [
-          { content: c.path },
-          { content: cloudRegion },
-          { content: c.models, className: "u-align--right" },
-          { content: c.machines, className: "u-align--right" },
-          { content: c.applications, className: "u-align--right" },
-          { content: c.units, className: "u-align--right" },
-          { content: c.version, className: "u-align--right" },
-          { content: publicAccess, className: "u-align--right u-capitalise" },
-        ],
-      };
-    });
+  function generateRow(c) {
+    const cloud = c?.location?.cloud || "unknown";
+    const region = c?.location?.region || "unknown";
+    const cloudRegion = `${cloud}/${region}`;
+    const publicAccess = c?.Public || "False";
+    return {
+      columns: [
+        { content: c.path },
+        { content: cloudRegion },
+        { content: c.models, className: "u-align--right" },
+        { content: c.machines, className: "u-align--right" },
+        { content: c.applications, className: "u-align--right" },
+        { content: c.units, className: "u-align--right" },
+        { content: c.version, className: "u-align--right" },
+        { content: publicAccess, className: "u-align--right u-capitalise" },
+      ],
+    };
+  }
+
+  // XXX this isn't a great way of doing this.
+  const additionalRows = additionalControllers.map((uuid) => {
+    const row = generateRow(controllerMap[uuid]);
+    delete controllerMap[uuid];
+    return row;
+  });
+
+  const rows = controllerMap && Object.values(controllerMap).map(generateRow);
 
   return (
     <>
@@ -105,7 +118,7 @@ function Details() {
           These controllers will only be available on this browser
           <span className="small">[?]</span>
         </span>
-        <MainTable headers={headers} rows={rows} />
+        <MainTable headers={headers} rows={additionalRows} />
       </div>
     </>
   );
@@ -132,10 +145,11 @@ function AddNewController() {
     // XXX Validate form values
     console.log(formValues);
     additionalControllers.push([
-      formValues.wsControllerURL,
-      { user: formValues.username, password: formValues.password },
-      null,
-      formValues.identityProviderAvailable,
+      formValues.wsControllerURL, // wsControllerURL
+      { user: formValues.username, password: formValues.password }, // credentials
+      null, // bakery
+      formValues.identityProviderAvailable, // identityProviderAvailable
+      true, // additional controller
     ]);
     setAdditionalControllers(additionalControllers);
   }

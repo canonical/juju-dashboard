@@ -14,6 +14,7 @@ import jimm from "app/jimm-facade";
 import {
   getBakery,
   getConfig,
+  getControllerConnection,
   getWSControllerURL,
   isLoggedIn,
   getUserPass,
@@ -282,12 +283,19 @@ export async function fetchAllModelStatuses(wsControllerURL, conn, reduxStore) {
   @param {String} wsControllerURL The URL of the controller.
   @param {Object} conn The Juju controller connection.
   @param {Object} reduxStore The applications reduxStore.
+  @param {Boolean} additionalController If this is an additional controller.
 */
-export async function fetchControllerList(wsControllerURL, conn, reduxStore) {
+export async function fetchControllerList(
+  wsControllerURL,
+  conn,
+  additionalController,
+  reduxStore
+) {
   let controllers = null;
   if (conn.facades.jimM) {
     const response = await conn.facades.jimM.listControllers();
     controllers = response.controllers;
+    controllers.forEach((c) => (c.additionalController = additionalController));
   } else {
     // If we're not connected to a JIMM then call to get the controller config
     // and generate a fake controller list.
@@ -296,6 +304,9 @@ export async function fetchControllerList(wsControllerURL, conn, reduxStore) {
       {
         path: controllerConfig.config["controller-name"],
         uuid: controllerConfig.config["controller-uuid"],
+        version: getControllerConnection(wsControllerURL, reduxStore.getState())
+          ?.info?.serverVersion,
+        additionalController,
       },
     ];
   }
