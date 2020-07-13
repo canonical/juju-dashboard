@@ -40,16 +40,19 @@ if (process.env.NODE_ENV === "production") {
 // a few cycles before trying again.
 let checkCounter = 0;
 const checkConfigExists = () => {
-  if (!window.jujuDashboardConfig && checkCounter < 5) {
-    checkCounter++;
-    setTimeout(checkConfigExists, 500);
-    return;
+  if (!window.jujuDashboardConfig) {
+    if (checkCounter < 5) {
+      checkCounter++;
+      setTimeout(checkConfigExists, 500);
+      return;
+    } else {
+      console.error(
+        "Configuration values not defined unable to bootstrap application"
+      );
+    }
   } else {
-    console.error(
-      "Configuration values not defined unable to bootstrap application"
-    );
+    bootstrap();
   }
-  bootstrap();
 };
 checkConfigExists();
 
