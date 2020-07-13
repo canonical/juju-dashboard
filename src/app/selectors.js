@@ -470,15 +470,16 @@ export const getMacaroons = createSelector(
   @param {Object} state The application state.
   @returns {Boolean} If the user is logged in.
 */
-export const isLoggedIn = (state) => {
-  return (
-    state.root.controllerConnection &&
-    state.root.controllerConnection.info.user.identity
-  );
+export const isLoggedIn = (wsControllerURL, state) => {
+  return state.root.controllerConnections?.[wsControllerURL]?.info?.user
+    ?.identity;
 };
 
 export const getControllerConnection = (wsControllerURL, state) =>
   state?.root?.controllerConnections?.[wsControllerURL];
+
+export const getControllerConnections = (state) =>
+  state?.root?.controllerConnections;
 
 export const isConnecting = (state) => !!state.root.visitURL;
 /**

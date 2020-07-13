@@ -15,7 +15,6 @@ import {
   getBakery,
   getConfig,
   getControllerConnection,
-  getWSControllerURL,
   isLoggedIn,
   getUserPass,
 } from "app/selectors";

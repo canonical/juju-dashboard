@@ -19,8 +19,6 @@ import {
   storeVisitURL,
 } from "app/actions";
 
-import { getConfig } from "app/selectors";
-
 import jujuReducer from "juju/reducer";
 
 import "./scss/index.scss";
@@ -88,7 +86,7 @@ function bootstrap() {
     composeWithDevTools(applyMiddleware(checkAuth, thunk))
   );
 
-  reduxStore.dispatch(storeConfig(window.jujuDashboardConfig));
+  reduxStore.dispatch(storeConfig(config));
   reduxStore.dispatch(storeVersion(appVersion));
 
   const bakery = new Bakery({
@@ -98,8 +96,7 @@ function bootstrap() {
     storage: new BakeryStorage(localStorage, {}),
   });
   reduxStore.dispatch(storeBakery(bakery));
-
-  if (getConfig(reduxStore.getState()).identityProviderAvailable) {
+  if (config.identityProviderAvailable) {
     // If an identity provider is available then try and connect automatically
     // If not then wait for the login UI to trigger this
     reduxStore.dispatch(connectAndStartPolling(reduxStore, bakery));

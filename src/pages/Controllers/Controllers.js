@@ -326,7 +326,7 @@ function RegisterAController({
         <form onSubmit={handleRegisterAController}>
           <span>
             Visit{" "}
-            <a href={dashboardLink} target="_blank" rel="noreferrer">
+            <a href={dashboardLink} target="_blank" rel="noopener noreferrer">
               {dashboardLink}
             </a>{" "}
             to accept the certificate on this controller to enable a secure

@@ -21,7 +21,9 @@ function rootReducer(state = {}, action) {
         draftState.loginError = action.payload;
         break;
       case actionsList.storeUserPass:
-        draftState.credentials = action.payload;
+        const credentials = cloneDeep(state.credentials || {});
+        credentials[action.payload.wsControllerURL] = action.payload.credential;
+        draftState.credentials = credentials;
         break;
       case actionsList.storeVersion:
         draftState.appVersion = action.payload;
