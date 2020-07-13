@@ -162,7 +162,7 @@ async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   let status = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
-  if (isLoggedIn(getState())) {
+  if (isLoggedIn(wsControllerURL, getState())) {
     try {
       const credentials = getUserPass(getState());
       const controllerCredentials = credentials[wsControllerURL];
@@ -172,10 +172,10 @@ async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
         generateConnectionOptions(false, bakery),
         useIdentityProvider
       );
-      if (isLoggedIn(getState())) {
+      if (isLoggedIn(wsControllerURL, getState())) {
         status = await conn.facades.client.fullStatus();
       }
-      if (isLoggedIn(getState())) {
+      if (isLoggedIn(wsControllerURL, getState())) {
         const entities = Object.keys(status.applications).map((name) => ({
           tag: `application-${name}`,
         }));
@@ -216,7 +216,7 @@ export async function fetchAndStoreModelStatus(
   if (status === null) {
     return;
   }
-  dispatch(updateModelStatus(modelUUID, status));
+  dispatch(updateModelStatus(modelUUID, status), { wsControllerURL });
 }
 
 /**
@@ -260,11 +260,13 @@ export async function fetchAllModelStatuses(wsControllerURL, conn, reduxStore) {
       }
       if (isLoggedIn(wsControllerURL, getState())) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
-        dispatch(updateModelInfo(modelInfo));
+        dispatch(updateModelInfo(modelInfo), { wsControllerURL });
         if (modelInfo.results[0].result.isController) {
           // If this is a controller model then update the
           // controller data with this model data.
-          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo));
+          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo), {
+            wsControllerURL,
+          });
         }
       }
       done();
@@ -310,7 +312,9 @@ export async function fetchControllerList(
       },
     ];
   }
-  reduxStore.dispatch(updateControllerList(wsControllerURL, controllers));
+  reduxStore.dispatch(updateControllerList(wsControllerURL, controllers), {
+    wsControllerURL,
+  });
 }
 
 /**

@@ -76,7 +76,9 @@ export default async function connectAndListModels(
         }
       }
       do {
-        await reduxStore.dispatch(fetchModelList(conn));
+        await reduxStore.dispatch(fetchModelList(conn), {
+          wsControllerURL: controllerData[0],
+        });
         await fetchAllModelStatuses(controllerData[0], conn, reduxStore);
         // Wait 30s then start again.
         await new Promise((resolve) => {

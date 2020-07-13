@@ -53,12 +53,7 @@ export const getBakery = (state) => {
   @param {Object} state The application state.
   @returns {Object|Null} The config object or null if none found.
 */
-export const getConfig = (state) => {
-  if (state.root && state.root.config) {
-    return state.root.config;
-  }
-  return null;
-};
+export const getConfig = (state) => state?.root?.config;
 
 /**
   Fetches the username and password from state.

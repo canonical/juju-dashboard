@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
-import { isLoggedIn } from "app/selectors";
+import { useSelector, useStore } from "react-redux";
+import { getConfig, isLoggedIn } from "app/selectors";
 import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
@@ -19,7 +19,12 @@ const Layout = ({ children }) => {
     "releaseNotification",
     false
   );
-  const userIsLoggedIn = useSelector(isLoggedIn);
+  const { baseControllerURL } = useSelector(getConfig);
+  const store = useStore();
+  const userIsLoggedIn = isLoggedIn(
+    `wss://${baseControllerURL}/api`,
+    store.getState()
+  );
   const sidebarCollapsible = useSelector(isSidebarCollapsible);
   const smallScreenBreakpoint = 1400;
   const isSmallScreen = screenWidth <= smallScreenBreakpoint ? true : false;

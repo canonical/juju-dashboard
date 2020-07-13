@@ -34,17 +34,13 @@ export function updateControllerList(wsControllerURL, controllers) {
   };
 }
 
-// Thunks
-
 /**
   @param {Array} models The list of models to store.
 */
 export function updateModelList(models) {
-  return function updateModelList(dispatch, getState) {
-    dispatch({
-      type: actionsList.updateModelList,
-      payload: models,
-    });
+  return {
+    type: actionsList.updateModelList,
+    payload: models,
   };
 }
 
@@ -54,14 +50,12 @@ export function updateModelList(models) {
   @param {Object} status The status data as returned from the API.
  */
 export function updateModelStatus(modelUUID, status) {
-  return function updateModelStatus(dispatch, getState) {
-    dispatch({
-      type: actionsList.updateModelStatus,
-      payload: {
-        modelUUID,
-        status,
-      },
-    });
+  return {
+    type: actionsList.updateModelStatus,
+    payload: {
+      modelUUID,
+      status,
+    },
   };
 }
 
@@ -69,13 +63,13 @@ export function updateModelStatus(modelUUID, status) {
   @param {Object} modelInfo The model info data as returned from the API.
  */
 export function updateModelInfo(modelInfo) {
-  return function updateModelInfo(dispatch, getState) {
-    dispatch({
-      type: actionsList.updateModelInfo,
-      payload: modelInfo,
-    });
+  return {
+    type: actionsList.updateModelInfo,
+    payload: modelInfo,
   };
 }
+
+// Thunks
 
 /**
   Fetches the model list from the supplied Juju controller. Requires that the
@@ -88,7 +82,9 @@ export function fetchModelList(conn) {
     const models = await conn.facades.modelManager.listModels({
       tag: conn.info.user.identity,
     });
-    dispatch(updateModelList(models));
+    dispatch(updateModelList(models), {
+      wsControllerURL: conn.transport._ws.url,
+    });
   };
 }
 
@@ -127,6 +123,8 @@ export function addControllerCloudRegion(wsControllerURL, modelInfo) {
       }
       return controller;
     });
-    dispatch(updateControllerList(wsControllerURL, updatedControllers));
+    dispatch(updateControllerList(wsControllerURL, updatedControllers), {
+      wsControllerURL,
+    });
   };
 }
