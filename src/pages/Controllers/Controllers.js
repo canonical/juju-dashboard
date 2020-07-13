@@ -4,18 +4,11 @@ import { useSelector } from "react-redux";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
-import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
-import {
-  getControllerConnection,
-  getControllerData,
-  getModelData,
-} from "app/selectors";
+import { getControllerData, getModelData } from "app/selectors";
 import useLocalStorage from "hooks/useLocalStorage";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
-
-import { userIsControllerAdmin } from "../../app/utils";
 
 import "./_controllers.scss";
 
@@ -142,15 +135,6 @@ function Details() {
         ) : null}
       </div>
     </>
-  );
-}
-
-function NoAccess() {
-  return (
-    <Notification type="caution">
-      Sorry, you do not have permission to view this page. If you think you
-      should have permission, please contact your administrator.
-    </Notification>
   );
 }
 
@@ -373,14 +357,11 @@ function RegisterAController({
 }
 
 export default function Controllers() {
-  const conn = useSelector(getControllerConnection);
   return (
     <Layout>
       <Header></Header>
       <div className="l-content controllers">
-        {/* {userIsControllerAdmin(conn) ? <Details /> : <NoAccess/>} */}
         <Details />
-        <div className="controllers__add-new">{AddNewController()}</div>
       </div>
     </Layout>
   );
