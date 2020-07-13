@@ -122,8 +122,13 @@ function Details() {
         <MainTable headers={headers} rows={rows} />
         <h5>Registered Controllers</h5>
         <span className="p-form-help-text">
-          These controllers will only be available on this browser
-          <span className="small">[?]</span>
+          These controllers will only be available on this browser{" "}
+          <span
+            className="controllers--registered-tooltip"
+            title="The controller authentication data is only stored in your browser localstorage. If you'd like this to persist across browsers try JAAS"
+          >
+            [?]
+          </span>
         </span>
         <MainTable headers={headers} rows={additionalRows} />
         {showRegisterAController ? (
