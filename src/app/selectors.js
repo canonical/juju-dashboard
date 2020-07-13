@@ -376,13 +376,14 @@ const filterModelData = (filters, modelData, controllers) => {
   // Add the controller name to the model data where we have a valid name.
   Object.entries(clonedModelData).forEach((model) => {
     if (model[1].info) {
-      let controllerName = "";
+      let controllerName = null;
       const modelInfo = model[1].info;
       if (controllers) {
-        Object.entries(controllers).forEach((controller) => {
+        Object.entries(controllers).some((controller) => {
           controllerName = controller[1].find(
             (controller) => modelInfo.controllerUuid === controller.uuid
           )?.path;
+          return controllerName;
         });
       }
       if (modelInfo.controllerUuid === "a030379a-940f-4760-8fcf-3062b41a04e7") {
