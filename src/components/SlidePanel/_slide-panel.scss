@@ -1,0 +1,15 @@
+.slide-panel {
+  position: absolute;
+  top: 24px; // height of the top bar
+  height: calc(100% - 25px);
+  right: 0;
+  background-color: white;
+  box-shadow: 0 1px 5px 1px rgba(51, 51, 51, 0.2);
+
+  &--close {
+    text-align: right;
+    margin-right: 1rem;
+    margin-top: 1rem;
+    cursor: pointer;
+  }
+}
