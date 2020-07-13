@@ -1,5 +1,9 @@
 @import "vanilla-framework/scss/vanilla";
 
+.p-strip.is-shallow.controllers-overview {
+  padding-top: 0;
+}
+
 .controllers-overview {
   width: 100%;
 

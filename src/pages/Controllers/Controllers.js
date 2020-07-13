@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
+import SlidePanel from "components/SlidePanel/SlidePanel";
 import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
@@ -21,6 +22,8 @@ import "./_controllers.scss";
 function Details() {
   const controllerData = useSelector(getControllerData);
   const modelData = useSelector(getModelData);
+
+  const [showRegisterAController, setShowRegisterAController] = useState(false);
 
   const controllerMap = {};
   const additionalControllers = [];
@@ -109,16 +112,31 @@ function Details() {
 
   return (
     <>
+      <div className="register-a-controller">
+        <button
+          className="p-button--positive"
+          onClick={() => {
+            setShowRegisterAController(!showRegisterAController);
+          }}
+        >
+          Register a Controller
+        </button>
+      </div>
       <ControllersOverview />
       <div className="l-controllers-table u-overflow--scroll">
         <h5>Default Controllers</h5>
         <MainTable headers={headers} rows={rows} />
-        <h5>Additional Controllers</h5>
+        <h5>Registered Controllers</h5>
         <span className="p-form-help-text">
           These controllers will only be available on this browser
           <span className="small">[?]</span>
         </span>
         <MainTable headers={headers} rows={additionalRows} />
+        {showRegisterAController ? (
+          <RegisterAController
+            onClose={() => setShowRegisterAController(false)}
+          />
+        ) : null}
       </div>
     </>
   );
@@ -133,7 +151,7 @@ function NoAccess() {
   );
 }
 
-function AddNewController() {
+function RegisterAController({ onClose }) {
   const [formValues, setFormValues] = useState({});
   const [additionalControllers, setAdditionalControllers] = useLocalStorage(
     "additionalControllers",
@@ -161,8 +179,8 @@ function AddNewController() {
 
   /* eslint-disable jsx-a11y/label-has-associated-control */
   return (
-    <>
-      <h5>Add additional Controllers</h5>
+    <SlidePanel onClose={onClose}>
+      <h5>Register a Controller</h5>
       <form
         className="p-form p-form--stacked"
         onSubmit={handleAddingControllers}
@@ -292,7 +310,7 @@ function AddNewController() {
           </div>
         </div>
       </form>
-    </>
+    </SlidePanel>
   );
   /* eslint-enable jsx-a11y/label-has-associated-control */
 }
