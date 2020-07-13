@@ -68,7 +68,7 @@ function Details() {
   }
 
   const headers = [
-    { content: "running", sortKey: "running" },
+    { content: "name", sortKey: "name" },
     { content: "cloud/region", sortKey: "cloud/region" },
     { content: "models", sortKey: "models", className: "u-align--right" },
     { content: "machines", sortKey: "machines", className: "u-align--right" },
@@ -170,6 +170,7 @@ function RegisterAController({ onClose }) {
       true, // additional controller
     ]);
     setAdditionalControllers(additionalControllers);
+    onClose(); // Close the SlidePanel
   }
 
   function handleInputChange(e) {
