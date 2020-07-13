@@ -60,8 +60,8 @@ export default async function connectAndListModels(
       reduxStore.dispatch(
         updatePingerIntervalId(controllerData[0], intervalId)
       );
-      if (true) {
-        //if (userIsControllerAdmin(conn)) { // XXX re-enable me for prod.
+
+      if (userIsControllerAdmin(conn)) {
         fetchControllerList(
           controllerData[0],
           conn,
