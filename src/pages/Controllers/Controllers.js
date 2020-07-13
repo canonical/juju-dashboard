@@ -24,6 +24,7 @@ function Details() {
   const modelData = useSelector(getModelData);
 
   const [showRegisterAController, setShowRegisterAController] = useState(false);
+  const [showConfirmRegister, setShowConfirmRegister] = useState(false);
 
   const controllerMap = {};
   const additionalControllers = [];
@@ -135,6 +136,8 @@ function Details() {
         {showRegisterAController ? (
           <RegisterAController
             onClose={() => setShowRegisterAController(false)}
+            showConfirmRegister={showConfirmRegister}
+            setShowConfirmRegister={setShowConfirmRegister}
           />
         ) : null}
       </div>
@@ -151,17 +154,24 @@ function NoAccess() {
   );
 }
 
-function RegisterAController({ onClose }) {
+function RegisterAController({
+  onClose,
+  showConfirmRegister,
+  setShowConfirmRegister,
+}) {
   const [formValues, setFormValues] = useState({});
   const [additionalControllers, setAdditionalControllers] = useLocalStorage(
     "additionalControllers",
     []
   );
 
-  function handleAddingControllers(e) {
+  function moveToConfirm(e) {
     e.preventDefault();
     // XXX Validate form values
-    console.log(formValues);
+    setShowConfirmRegister(true);
+  }
+
+  function handleRegisterAController() {
     additionalControllers.push([
       formValues.wsControllerURL, // wsControllerURL
       { user: formValues.username, password: formValues.password }, // credentials
@@ -178,112 +188,157 @@ function RegisterAController({ onClose }) {
     setFormValues(formValues);
   }
 
+  const controllerIP = formValues?.wsControllerURL
+    ? formValues.wsControllerURL.replace("wss://", "").replace("/api", "")
+    : "";
+  const dashboardLink = `https://${controllerIP}/dashboard`;
+
   /* eslint-disable jsx-a11y/label-has-associated-control */
   return (
     <SlidePanel onClose={onClose}>
       <h5>Register a Controller</h5>
-      <form
-        className="p-form p-form--stacked"
-        onSubmit={handleAddingControllers}
-      >
-        <div className="p-form__group row">
-          <div className="col-4">
-            <label htmlFor="full-name-stacked" className="p-form__label">
-              Controller name
-            </label>
-          </div>
+      {!showConfirmRegister ? (
+        <form className="p-form p-form--stacked" onSubmit={moveToConfirm}>
+          <div className="p-form__group row">
+            <div className="col-4">
+              <label htmlFor="full-name-stacked" className="p-form__label">
+                Controller name
+              </label>
+            </div>
 
-          <div className="col-8">
-            <div className="p-form__control">
-              <input
-                type="text"
-                id="full-name-stacked"
-                name="controllerName"
-                onChange={handleInputChange}
-                required=""
-              />
-              <p className="p-form-help-text">production-controller-aws</p>
+            <div className="col-8">
+              <div className="p-form__control">
+                <input
+                  type="text"
+                  id="full-name-stacked"
+                  name="controllerName"
+                  onChange={handleInputChange}
+                  required=""
+                />
+                <p className="p-form-help-text">production-controller-aws</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="p-form__group row">
-          <div className="col-4">
-            <label htmlFor="full-name-stacked" className="p-form__label">
-              Full hostname
-            </label>
-          </div>
+          <div className="p-form__group row">
+            <div className="col-4">
+              <label htmlFor="full-name-stacked" className="p-form__label">
+                Full hostname
+              </label>
+            </div>
 
-          <div className="col-8">
-            <div className="p-form__control">
-              <input
-                type="text"
-                id="full-name-stacked"
-                name="wsControllerURL"
-                onChange={handleInputChange}
-                required=""
-              />
-              <p className="p-form-help-text">wss://123.456.789.0:17070/api</p>
+            <div className="col-8">
+              <div className="p-form__control">
+                <input
+                  type="text"
+                  id="full-name-stacked"
+                  name="wsControllerURL"
+                  onChange={handleInputChange}
+                  required=""
+                />
+                <p className="p-form-help-text">
+                  wss://123.456.789.0:17070/api
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="p-form__group row">
-          <div className="col-4">
-            <label htmlFor="full-name-stacked" className="p-form__label">
-              Username
-            </label>
+          <div className="p-form__group row">
+            <div className="col-4">
+              <label htmlFor="full-name-stacked" className="p-form__label">
+                Username
+              </label>
+            </div>
+
+            <div className="col-8">
+              <div className="p-form__control">
+                <input
+                  type="text"
+                  id="full-name-stacked"
+                  name="username"
+                  onChange={handleInputChange}
+                  required=""
+                />
+                <p className="p-form-help-text">
+                  Stored locally in your browser.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="col-8">
-            <div className="p-form__control">
-              <input
-                type="text"
-                id="full-name-stacked"
-                name="username"
-                onChange={handleInputChange}
-                required=""
-              />
+          <div className="p-form__group row">
+            <div className="col-4">
+              <label htmlFor="full-name-stacked" className="p-form__label">
+                Password
+              </label>
+            </div>
+
+            <div className="col-8">
+              <div className="p-form__control">
+                <input
+                  type="password"
+                  id="full-name-stacked"
+                  name="password"
+                  onChange={handleInputChange}
+                  required=""
+                />
+                <p className="p-form-help-text">
+                  Stored locally in your browser.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-form__group row">
+            <div className="col-4">
+              <label
+                htmlFor="identityProviderAvailable"
+                className="p-form__label"
+              >
+                Identity Provider
+              </label>
+            </div>
+
+            <div className="col-8">
+              <label>
+                <input
+                  type="checkbox"
+                  id="identityProviderAvailable"
+                  name="identityProvider"
+                  defaultChecked={false}
+                  onChange={handleInputChange}
+                  required=""
+                />
+              </label>
+
               <p className="p-form-help-text">
-                Stored locally in your browser.
+                If you provided a username and password this should be left
+                unchecked.
               </p>
             </div>
           </div>
-        </div>
 
-        <div className="p-form__group row">
-          <div className="col-4">
-            <label htmlFor="full-name-stacked" className="p-form__label">
-              Password
-            </label>
-          </div>
-
-          <div className="col-8">
-            <div className="p-form__control">
-              <input
-                type="password"
-                id="full-name-stacked"
-                name="password"
-                onChange={handleInputChange}
-                required=""
-              />
-              <p className="p-form-help-text">
-                Stored locally in your browser.
-              </p>
+          <div className="row">
+            <div className="col-12">
+              <button
+                className="p-button--positive u-float-right"
+                type="submit"
+              >
+                Next Step
+              </button>
             </div>
           </div>
-        </div>
-
-        <div className="p-form__group row">
-          <div className="col-4">
-            <label
-              htmlFor="identityProviderAvailable"
-              className="p-form__label"
-            >
-              Identity Provider
-            </label>
-          </div>
-
+        </form>
+      ) : (
+        <form onSubmit={handleRegisterAController}>
+          <span>
+            Visit{" "}
+            <a href={dashboardLink} target="_blank" rel="noreferrer">
+              {dashboardLink}
+            </a>{" "}
+            to accept the certificate on this controller to enable a secure
+            connection
+          </span>
           <div className="col-8">
             <label>
               <input
@@ -297,20 +352,21 @@ function RegisterAController({ onClose }) {
             </label>
 
             <p className="p-form-help-text">
-              If you provided a username and password this should be left
-              unchecked.
+              The certificate, if any, has been accepted.
             </p>
           </div>
-        </div>
-
-        <div className="row">
-          <div className="col-12">
-            <button className="p-button--positive u-float-right" type="submit">
-              Add Controller
-            </button>
+          <div className="row">
+            <div className="col-12">
+              <button
+                className="p-button--positive u-float-right"
+                type="submit"
+              >
+                Add Controller
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      )}
     </SlidePanel>
   );
   /* eslint-enable jsx-a11y/label-has-associated-control */
