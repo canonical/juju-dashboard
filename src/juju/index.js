@@ -322,5 +322,7 @@ export async function fetchControllerList(
   @param {Object} conn The controller connection instance.
 */
 export function disableControllerUUIDMasking(conn) {
-  conn.facades.jimM.disableControllerUUIDMasking();
+  if (conn?.facades?.jimM) {
+    conn.facades.jimM.disableControllerUUIDMasking();
+  }
 }

@@ -72,7 +72,7 @@ export default async function connectAndListModels(
         if (!isJuju) {
           // This call will be a noop if the user isn't an administrator
           // on the JIMM controller we're connected to.
-          // disableControllerUUIDMasking(conn);
+          disableControllerUUIDMasking(conn);
         }
       }
       do {
