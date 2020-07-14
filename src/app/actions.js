@@ -163,10 +163,12 @@ export function connectAndStartPolling(reduxStore, bakery) {
     let additionalControllers = null;
     try {
       const data = window.localStorage.getItem("additionalControllers");
-      additionalControllers = JSON.parse(data);
-      additionalControllers.forEach((controller) => {
-        dispatch(storeUserPass(controller[0], controller[1]));
-      });
+      if (data) {
+        additionalControllers = JSON.parse(data);
+        additionalControllers.forEach((controller) => {
+          dispatch(storeUserPass(controller[0], controller[1]));
+        });
+      }
     } catch (e) {
       // XXX Add to Sentry.
       console.log("oops bad data in the additionalControllers localStorage");
