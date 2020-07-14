@@ -57,15 +57,13 @@ export const getConfig = (state) => state?.root?.config;
 
 /**
   Fetches the username and password from state.
+  @param {String} wsControllerURL The fully qualified wsController URL to
+    retrieve the credentials from.
   @param {Object} state The application state.
   @returns {Object|Null} The username and password or null if none found.
 */
-export const getUserPass = (state) => {
-  if (state.root && state.root.credentials) {
-    return state.root.credentials;
-  }
-  return null;
-};
+export const getUserPass = (wsControllerURL, state) =>
+  state?.root?.credentials?.[wsControllerURL];
 
 /**
   Fetches a login error from state

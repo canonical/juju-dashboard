@@ -163,8 +163,7 @@ async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   // between requests.
   if (isLoggedIn(wsControllerURL, getState())) {
     try {
-      const credentials = getUserPass(getState());
-      const controllerCredentials = credentials[wsControllerURL];
+      const controllerCredentials = getUserPass(wsControllerURL, getState());
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,

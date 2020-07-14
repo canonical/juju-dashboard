@@ -28,9 +28,9 @@ export default async function connectAndListModels(
 ) {
   try {
     const storeState = reduxStore.getState();
-    const credentials = getUserPass(storeState);
     const { identityProviderAvailable, isJuju } = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
+    const credentials = getUserPass(wsControllerURL, storeState);
     const defaultControllerData = [
       wsControllerURL,
       credentials,
@@ -60,7 +60,6 @@ export default async function connectAndListModels(
       reduxStore.dispatch(
         updatePingerIntervalId(controllerData[0], intervalId)
       );
-
       if (userIsControllerAdmin(conn)) {
         fetchControllerList(
           controllerData[0],

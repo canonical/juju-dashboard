@@ -16,7 +16,9 @@ import logo from "static/images/logo/logo-black-on-white.svg";
 import "./_login.scss";
 
 export default function LogIn({ children }) {
-  const { identityProviderAvailable } = useSelector(getConfig);
+  const { baseControllerURL, identityProviderAvailable } = useSelector(
+    getConfig
+  );
 
   const controllerConnections = useSelector(getControllerConnections) || {};
   const wsControllerURLs = Object.keys(controllerConnections);
@@ -39,7 +41,7 @@ export default function LogIn({ children }) {
             {identityProviderAvailable ? (
               <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />
             ) : (
-              <UserPassForm />
+              <UserPassForm baseControllerURL={baseControllerURL} />
             )}
             {generateErrorMessage(loginError)}
           </div>
@@ -92,7 +94,7 @@ function IdentityProviderForm({ userIsLoggedIn }) {
   return <Button visitURL={visitURL}></Button>;
 }
 
-function UserPassForm() {
+function UserPassForm({ baseControllerURL }) {
   const dispatch = useDispatch();
   const store = useStore();
   const bakery = useSelector(getBakery);
@@ -103,7 +105,9 @@ function UserPassForm() {
     const elements = e.currentTarget.elements;
     const user = elements.username.value;
     const password = elements.password.value;
-    dispatch(storeUserPass({ user, password }));
+    dispatch(
+      storeUserPass(`wss://${baseControllerURL}/api`, { user, password })
+    );
     dispatch(connectAndStartPolling(store, bakery));
   }
 
