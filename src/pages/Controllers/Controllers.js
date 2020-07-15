@@ -366,9 +366,25 @@ function RegisterAController({
 }
 
 export default function Controllers() {
+  const controllerData = useSelector(getControllerData);
+  let controllerCount = 0;
+  if (controllerData) {
+    controllerCount = Object.keys(controllerData).length;
+  }
+  const modelData = useSelector(getModelData);
+  let modelCount = 0;
+  if (modelData) {
+    modelCount = Object.keys(modelData).length;
+  }
+
   return (
     <Layout>
-      <Header></Header>
+      <Header>
+        <div className="controllers--count">
+          {controllerCount} controllers,{" "}
+          <a href="/models">{modelCount} models</a>
+        </div>
+      </Header>
       <div className="l-content controllers">
         <Details />
       </div>

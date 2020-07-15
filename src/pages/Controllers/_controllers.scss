@@ -14,6 +14,12 @@
     }
   }
 
+  &--count {
+    font-size: 0.875rem;
+    padding: 0 1.5rem;
+    line-height: 32px; // to synchronize the height between the model page.
+  }
+
   &--header {
     border-bottom: 1px solid $color-dark;
     color: $color-mid-dark;
