@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import cloneDeep from "clone-deep";
 
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
@@ -62,7 +63,7 @@ function Details() {
   }
 
   const headers = [
-    { content: "name", sortKey: "name" },
+    { content: "Default", sortKey: "name" },
     { content: "cloud/region", sortKey: "cloud/region" },
     { content: "models", sortKey: "models", className: "u-align--right" },
     { content: "machines", sortKey: "machines", className: "u-align--right" },
@@ -75,6 +76,17 @@ function Details() {
     { content: "version", sortKey: "version", className: "u-align--right" },
     { content: "public", sortKey: "public", className: "u-align--right" },
   ];
+
+  const additionalHeaders = cloneDeep(headers);
+  additionalHeaders[0].content = (
+    <span>
+      Registered
+      <span
+        className="controllers--registered-tooltip p-icon--help"
+        title="The controller authentication data is only stored in your browser localstorage. If you'd like this to persist across browsers try JAAS"
+      ></span>
+    </span>
+  );
 
   function generateRow(c) {
     const cloud = c?.location?.cloud || "unknown";
@@ -118,23 +130,10 @@ function Details() {
       </div>
       <ControllersOverview />
       <div className="l-controllers-table u-overflow--scroll">
-        <h5>Default Controllers</h5>
         <MainTable headers={headers} rows={rows} />
-        {additionalRows.length ? (
-          <>
-            <h5>Registered Controllers</h5>
-            <span className="p-form-help-text">
-              These controllers will only be available on this browser{" "}
-              <span
-                className="controllers--registered-tooltip"
-                title="The controller authentication data is only stored in your browser localstorage. If you'd like this to persist across browsers try JAAS"
-              >
-                [?]
-              </span>
-            </span>
-            <MainTable headers={headers} rows={additionalRows} />
-          </>
-        ) : null}
+        {/* {additionalRows.length ? ( */}
+        <MainTable headers={additionalHeaders} rows={additionalRows} />
+        {/* ) : null} */}
         {showRegisterAController ? (
           <RegisterAController
             onClose={() => setShowRegisterAController(false)}
