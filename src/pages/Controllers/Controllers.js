@@ -118,6 +118,7 @@ function Details() {
 
   return (
     <>
+      <div className="controllers--header">Model status across controllers</div>
       <div className="register-a-controller">
         <button
           className="p-button--positive"

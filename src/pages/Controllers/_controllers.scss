@@ -1,6 +1,11 @@
 @import "vanilla-framework/scss/vanilla";
 
 .controllers {
+  th {
+    padding-bottom: 6px;
+    padding-top: 6px;
+  }
+
   td,
   th {
     &:first-child {
@@ -9,8 +14,22 @@
     }
   }
 
+  &--header {
+    border-bottom: 1px solid $color-dark;
+    color: $color-mid-dark;
+    font-size: 0.76562rem;
+    font-weight: 400;
+    padding: 6px 16px;
+    text-transform: uppercase;
+  }
+
   .register-a-controller {
+    margin-top: 1rem;
     text-align: right;
+
+    button {
+      margin: 0;
+    }
   }
 
   .slide-panel--content {
@@ -18,8 +37,9 @@
   }
 
   .controllers--registered-tooltip {
+    @include vf-icon-help($color-mid-light);
+
     cursor: pointer;
     margin-left: 0.4rem;
-    @include vf-icon-help($color-mid-light);
   }
 }
