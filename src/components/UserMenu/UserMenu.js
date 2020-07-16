@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch, useStore } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import classNames from "classnames";
-import { getActiveUserTag } from "app/selectors";
+import { getActiveUserTag, getWSControllerURL } from "app/selectors";
 
 import { logOut } from "app/actions";
 import useAnalytics from "hooks/useAnalytics";
@@ -17,7 +17,10 @@ const UserMenu = () => {
   const sendAnalytics = useAnalytics();
   const dispatch = useDispatch();
   const getState = useStore().getState;
-  const activeUser = useSelector(getActiveUserTag);
+  const activeUser = getActiveUserTag(
+    useSelector(getWSControllerURL),
+    getState()
+  );
   const isActive = useSelector(isUserMenuActive) || false;
 
   useEffect(() => {

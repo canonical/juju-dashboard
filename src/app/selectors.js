@@ -482,11 +482,12 @@ export const getControllerConnections = (state) =>
 export const isConnecting = (state) => !!state.root.visitURL;
 /**
   Returns the users current controller logged in identity
+  @param {String} wsControllerURL The controller url to make the query on.
   @param {Object} state The application state.
   @returns {String} The users userTag.
 */
-export const getActiveUserTag = (state) =>
-  state?.root?.controllerConnection?.info.user.identity;
+export const getActiveUserTag = (wsControllerURL, state) =>
+  state?.root?.controllerConnections?.[wsControllerURL]?.info.user.identity;
 
 /**
   Returns a model status for the supplied modelUUID.

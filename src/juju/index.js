@@ -17,6 +17,7 @@ import {
   getControllerConnection,
   isLoggedIn,
   getUserPass,
+  getWSControllerURL,
 } from "app/selectors";
 import {
   addControllerCloudRegion,
@@ -151,10 +152,11 @@ async function connectAndLoginWithTimeout(
 async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   const appState = getState();
   const bakery = getBakery(appState);
-  const { baseControllerURL, identityProviderAvailable } = getConfig(appState);
+  const baseWSControllerURL = getWSControllerURL(appState);
+  const { identityProviderAvailable } = getConfig(appState);
   let useIdentityProvider = false;
 
-  if (`wss://${baseControllerURL}/api` === wsControllerURL) {
+  if (baseWSControllerURL === wsControllerURL) {
     useIdentityProvider = identityProviderAvailable;
   }
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
