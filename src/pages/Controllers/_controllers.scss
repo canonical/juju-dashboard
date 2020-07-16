@@ -25,17 +25,30 @@
     color: $color-mid-dark;
     font-size: 0.76562rem;
     font-weight: 400;
-    padding: 6px 16px;
+    padding: 6px 0 4px 16px;
+    margin-bottom: 1rem;
     text-transform: uppercase;
+    width: 100%;
+    display: inline-grid;
+    grid-template-columns: repeat(2, 50%);
+
+    .controllers--heading {
+      padding-top: 0.8rem;
+    }
+
+    .controllers--register {
+      text-align: right;
+    }
+
+    button {
+      margin: 0;
+      max-width: 15rem;
+    }
   }
 
   .register-a-controller {
     margin-top: 1rem;
     text-align: right;
-
-    button {
-      margin: 0;
-    }
   }
 
   .slide-panel--content {

@@ -118,16 +118,20 @@ function Details() {
 
   return (
     <>
-      <div className="controllers--header">Model status across controllers</div>
-      <div className="register-a-controller">
-        <button
-          className="p-button--positive"
-          onClick={() => {
-            setShowRegisterAController(!showRegisterAController);
-          }}
-        >
-          Register a controller
-        </button>
+      <div className="controllers--header">
+        <div className="controllers--heading">
+          Model status across controllers
+        </div>
+        <div className="controllers--register">
+          <button
+            className="p-button--positive"
+            onClick={() => {
+              setShowRegisterAController(!showRegisterAController);
+            }}
+          >
+            Register a controller
+          </button>
+        </div>
       </div>
       <ControllersOverview />
       <div className="l-controllers-table u-overflow--scroll">
