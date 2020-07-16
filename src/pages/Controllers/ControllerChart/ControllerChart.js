@@ -10,11 +10,19 @@ function getPercentage(denominator, numerator) {
   if (denominator === 0 || numerator === 0) {
     return 0;
   }
-  return Math.trunc(denominator / numerator);
+  const trunc = Math.trunc(denominator / numerator);
+  if (Number.isNaN(trunc)) {
+    return 0;
+  }
+  return trunc;
 }
 
 export default function ControllerChart({ chartData, totalLabel }) {
-  const totalCount = chartData.blocked + chartData.alert + chartData.running;
+  const totalCount =
+    (chartData.blocked || 0) +
+    (chartData.alert || 0) +
+    (chartData.running || 0);
+
   return (
     <div className="p-chart">
       <div className="p-chart__chart">
