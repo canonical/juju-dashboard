@@ -22,14 +22,14 @@
   &--header {
     border-bottom: 1px solid $color-dark;
     color: $color-mid-dark;
+    display: inline-grid;
     font-size: 0.76562rem;
     font-weight: 400;
-    padding: 6px 0 4px 16px;
+    grid-template-columns: repeat(2, 50%);
     margin-bottom: 1rem;
+    padding: 6px 0 4px 16px;
     text-transform: uppercase;
     width: 100%;
-    display: inline-grid;
-    grid-template-columns: repeat(2, 50%);
 
     .controllers--heading {
       padding-top: 0.8rem;
