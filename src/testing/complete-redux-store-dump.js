@@ -22,44 +22,46 @@ export default {
       identityProviderAvailable: true,
       isJuju: false
     },
-    controllerConnection: {
-      transport: {
-        _ws: {},
-        _counter: 155,
-        _callbacks: {},
-        _debug: false
-      },
-      info: {
-        controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
-        serverVersion: '2.6.8',
-        servers: [],
-        user: {
-          displayName: 'activedev',
-          identity: 'user-activedev@external',
-          controllerAccess: 'superuser',
-          modelAccess: ''
-        }
-      },
-      facades: {
-        modelManager: {
-          _transport: {
-            _ws: {},
-            _counter: 155,
-            _callbacks: {},
-            _debug: false
-          },
-          _info: {
-            controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
-            serverVersion: '2.6.8',
-            servers: [],
-            user: {
-              displayName: 'activedev',
-              identity: 'user-activedev@external',
-              controllerAccess: '',
-              modelAccess: ''
-            }
-          },
-          version: 5
+    controllerConnections: {
+      'wss://jimm.jujucharms.com/api': {
+        transport: {
+          _ws: {},
+          _counter: 155,
+          _callbacks: {},
+          _debug: false
+        },
+        info: {
+          controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
+          serverVersion: '2.6.8',
+          servers: [],
+          user: {
+            displayName: 'activedev',
+            identity: 'user-activedev@external',
+            controllerAccess: 'superuser',
+            modelAccess: ''
+          }
+        },
+        facades: {
+          modelManager: {
+            _transport: {
+              _ws: {},
+              _counter: 155,
+              _callbacks: {},
+              _debug: false
+            },
+            _info: {
+              controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
+              serverVersion: '2.6.8',
+              servers: [],
+              user: {
+                displayName: 'activedev',
+                identity: 'user-activedev@external',
+                controllerAccess: '',
+                modelAccess: ''
+              }
+            },
+            version: 5
+          }
         }
       }
     }
@@ -11416,68 +11418,70 @@ export default {
         }
       }
     },
-    controllers: [
-      {
-        path: 'admins/1-eu-west-1-aws-jaas',
-        location: {
-          cloud: 'aws',
-          region: 'eu-west-1'
+    controllers: {
+      'wss://jimm.jujucharms.com/api': [
+        {
+          path: 'admins/1-eu-west-1-aws-jaas',
+          location: {
+            cloud: 'aws',
+            region: 'eu-west-1'
+          },
+          Public: true,
+          uuid: '086f0bf8-da79-4ad4-8d73-890721332c8b',
+          version: '2.6.10'
         },
-        Public: true,
-        uuid: '086f0bf8-da79-4ad4-8d73-890721332c8b',
-        version: '2.6.10'
-      },
-      {
-        path: 'admins/1-us-central1-gce-jaas',
-        location: {
-          cloud: 'google',
-          region: 'us-central1'
+        {
+          path: 'admins/1-us-central1-gce-jaas',
+          location: {
+            cloud: 'google',
+            region: 'us-central1'
+          },
+          Public: true,
+          uuid: '018ee6bb-3d3c-486d-8b10-a8f7fd1fd151',
+          version: '2.6.10'
         },
-        Public: true,
-        uuid: '018ee6bb-3d3c-486d-8b10-a8f7fd1fd151',
-        version: '2.6.10'
-      },
-      {
-        path: 'admins/1-us-east-1-aws-jaas',
-        location: {
-          cloud: 'aws',
-          region: 'us-east-1'
+        {
+          path: 'admins/1-us-east-1-aws-jaas',
+          location: {
+            cloud: 'aws',
+            region: 'us-east-1'
+          },
+          Public: true,
+          uuid: '5392879a-6c3b-47f8-8bd4-cec06c2a1c4d',
+          version: '2.6.10'
         },
-        Public: true,
-        uuid: '5392879a-6c3b-47f8-8bd4-cec06c2a1c4d',
-        version: '2.6.10'
-      },
-      {
-        path: 'admins/1-us-east1-gce-jaas',
-        location: {
-          cloud: 'google',
-          region: 'us-east1'
+        {
+          path: 'admins/1-us-east1-gce-jaas',
+          location: {
+            cloud: 'google',
+            region: 'us-east1'
+          },
+          Public: true,
+          uuid: '76b9c391-12be-47fc-8406-c31f2db68ee5',
+          version: '2.6.10'
         },
-        Public: true,
-        uuid: '76b9c391-12be-47fc-8406-c31f2db68ee5',
-        version: '2.6.10'
-      },
-      {
-        path: 'admins/1-westeurope-azure-jaas',
-        location: {
-          cloud: 'azure',
-          region: 'westeurope'
+        {
+          path: 'admins/1-westeurope-azure-jaas',
+          location: {
+            cloud: 'azure',
+            region: 'westeurope'
+          },
+          Public: true,
+          uuid: 'c1c2432b-7e25-4444-8ab5-1e3aea49ec1f',
+          version: '2.6.10'
         },
-        Public: true,
-        uuid: 'c1c2432b-7e25-4444-8ab5-1e3aea49ec1f',
-        version: '2.6.10'
-      },
-      {
-        path: 'admins/1-westus-azure-jaas',
-        location: {
-          cloud: 'azure',
-          region: 'westus'
-        },
-        Public: true,
-        uuid: '626e9705-6182-4b3a-8a89-30cf6ab21abb',
-        version: '2.6.10'
-      }
-    ]
+        {
+          path: 'admins/1-westus-azure-jaas',
+          location: {
+            cloud: 'azure',
+            region: 'westus'
+          },
+          Public: true,
+          uuid: '626e9705-6182-4b3a-8a89-30cf6ab21abb',
+          version: '2.6.10'
+        }
+      ]
+    }
   },
    ui: {
     collapsibleSidebar: false,
