@@ -126,7 +126,7 @@ function Details() {
             setShowRegisterAController(!showRegisterAController);
           }}
         >
-          Register a Controller
+          Register a controller
         </button>
       </div>
       <ControllersOverview />

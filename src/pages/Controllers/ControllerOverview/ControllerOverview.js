@@ -37,7 +37,6 @@ export default function ControllersOverview() {
 
   return (
     <div className="p-strip is-shallow controllers-overview">
-      <h5>Model status across controllers</h5>
       <div className="controllers-overview__container">
         <div className="controllers-overview__chart">
           <ControllerChart chartData={machinesChartData} totalLabel="machine" />
