@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
+import cloneDeep from "clone-deep";
 import dataDump from "testing/complete-redux-store-dump";
 
 import UserMenu from "./UserMenu";
@@ -34,11 +35,9 @@ describe("User Menu", () => {
   });
 
   it("is active when userMenuActive in redux store is true", () => {
-    const store = mockStore({
-      ui: {
-        userMenuActive: true,
-      },
-    });
+    const clonedDump = cloneDeep(dataDump);
+    clonedDump.ui.userMenuActive = true;
+    const store = mockStore(clonedDump);
     const wrapper = mount(
       <Provider store={store}>
         <Router>
