@@ -114,17 +114,24 @@ export function addControllerCloudRegion(wsControllerURL, modelInfo) {
   return async function addControllerCloudRegion(dispatch, getState) {
     const controllers = getState()?.juju?.controllers[wsControllerURL];
     const model = modelInfo.results[0].result;
-    const updatedControllers = cloneDeep(controllers).map((controller) => {
-      if (controller.uuid === model.controllerUuid) {
-        controller.location = {
-          cloud: model.cloudRegion,
-          region: model.cloudTag.replace("cloud-", ""),
-        };
-      }
-      return controller;
-    });
-    dispatch(updateControllerList(wsControllerURL, updatedControllers), {
-      wsControllerURL,
-    });
+    if (controllers) {
+      const updatedControllers = cloneDeep(controllers).map((controller) => {
+        if (controller.uuid === model.controllerUuid) {
+          controller.location = {
+            cloud: model.cloudRegion,
+            region: model.cloudTag.replace("cloud-", ""),
+          };
+        }
+        return controller;
+      });
+      dispatch(updateControllerList(wsControllerURL, updatedControllers), {
+        wsControllerURL,
+      });
+    } else {
+      console.log(
+        "attempting to update non existant controller:",
+        wsControllerURL
+      );
+    }
   };
 }
