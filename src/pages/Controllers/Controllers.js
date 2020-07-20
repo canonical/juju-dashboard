@@ -119,7 +119,7 @@ function Details() {
   return (
     <>
       <div className="controllers--header">
-        <div className="controllers--heading">
+        <div className="controllers__heading">
           Model status across controllers
         </div>
         <div className="controllers--register">
