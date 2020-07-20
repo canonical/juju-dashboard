@@ -4,19 +4,21 @@
   margin-top: 0.5rem;
 }
 
-.model-table-list_error-message a,
-.model-table-list_error-message a:visited {
-  color: $color-negative;
-  display: block;
-  font-size: 0.875rem;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  @media (max-width: $breakpoint-large) {
-    display: inline-block;
+.model-table-list_error-message a {
+  &,
+  &:visited {
+    color: $color-negative;
+    display: block;
+    font-size: 0.875rem;
     max-width: 200px;
-    padding-right: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @media (max-width: $breakpoint-large) {
+      display: inline-block;
+      max-width: 200px;
+      padding-right: 1rem;
+    }
   }
 }

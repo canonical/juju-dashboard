@@ -48,7 +48,7 @@ const generateWarningMessage = (model, activeUser) => {
   const title = messages.join("; ");
   const link = generateModelDetailsLink(
     model.model.name,
-    model.info && model.info.ownerTag,
+    model?.info?.ownerTag,
     activeUser,
     title
   );
