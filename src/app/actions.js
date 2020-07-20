@@ -171,7 +171,7 @@ export function connectAndStartPolling(reduxStore, bakery) {
       }
     } catch (e) {
       // XXX Add to Sentry.
-      console.log("oops bad data in the additionalControllers localStorage");
+      console.log("Error retrieving additional registered controllers", e);
     }
     connectAndListModels(reduxStore, bakery, additionalControllers);
   };

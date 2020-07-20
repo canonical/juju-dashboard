@@ -129,7 +129,7 @@ export function addControllerCloudRegion(wsControllerURL, modelInfo) {
       });
     } else {
       console.log(
-        "attempting to update non existant controller:",
+        "attempting to update non-existant controller:",
         wsControllerURL
       );
     }
