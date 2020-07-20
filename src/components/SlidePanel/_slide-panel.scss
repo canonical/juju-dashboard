@@ -1,8 +1,8 @@
 @import "vanilla-framework/scss/vanilla";
 
-$top-header-height: 40px;
-
 .slide-panel {
+  $top-header-height: 40px;
+
   background-color: $color-x-light;
   box-shadow: $box-shadow;
   height: calc(100% - #{$top-header-height});

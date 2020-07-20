@@ -6,7 +6,7 @@ function SlidePanel({ children, onClose }) {
   return (
     <div className="slide-panel">
       <button
-        class="p-modal__close"
+        className="p-modal__close"
         aria-label="Close active modal"
         aria-controls="modal"
         onClick={onClose}
