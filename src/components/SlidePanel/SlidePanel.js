@@ -5,16 +5,16 @@ import "./_slide-panel.scss";
 function SlidePanel({ children, onClose }) {
   return (
     <div className="slide-panel">
-      <div className="slide-panel--close">
-        <span
-          className="p-icon--close"
-          onClick={onClose}
-          onKeyPress={onClose}
-          role="button"
-          tabIndex="0"
-        ></span>
-      </div>
-      <div className="slide-panel--content">{children}</div>
+      <button
+        class="p-modal__close"
+        aria-label="Close active modal"
+        aria-controls="modal"
+        onClick={onClose}
+        onKeyPress={onClose}
+      >
+        Close
+      </button>
+      <div className="slide-panel__content">{children}</div>
     </div>
   );
 }

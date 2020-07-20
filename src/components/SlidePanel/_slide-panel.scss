@@ -1,15 +1,20 @@
+@import "vanilla-framework/scss/vanilla";
+
+$top-header-height: 40px;
+
 .slide-panel {
-  background-color: white;
-  box-shadow: 0 1px 5px 1px rgba(51, 51, 51, 0.2);
-  height: calc(100% - 25px);
+  background-color: $color-x-light;
+  box-shadow: $box-shadow;
+  height: calc(100% - #{$top-header-height});
   position: absolute;
   right: 0;
-  top: 40px; // height of the top bar
+  top: $top-header-height;
 
-  &--close {
-    cursor: pointer;
-    margin-right: 1rem;
-    margin-top: 1rem;
-    text-align: right;
+  .p-modal__close {
+    margin: 1rem;
+  }
+
+  &__content {
+    padding: 1rem;
   }
 }
