@@ -205,7 +205,7 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="controllerName"
                 onChange={handleInputChange}
-                required=""
+                required="true"
               />
               <p className="p-form-help-text">
                 Must be a valid alpha-numeric Juju controller name. <br />
@@ -229,7 +229,7 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="wsControllerURL"
                 onChange={handleInputChange}
-                required=""
+                required="true"
               />
               <p className="p-form-help-text">
                 You'll typically want to use the public IP address for the
@@ -312,7 +312,7 @@ function RegisterAController({ onClose }) {
               name="certificateAccepted"
               defaultChecked={false}
               onChange={handleInputChange}
-              required=""
+              required="true"
             />
             <label htmlfor="certificateHasBeenAccepted">
               The SSL certificate, if any, has been accepted. Visit{" "}
