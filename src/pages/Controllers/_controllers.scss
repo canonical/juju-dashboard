@@ -50,8 +50,25 @@
     text-align: right;
   }
 
-  .slide-panel--content {
-    padding: 0 1rem;
+  .slide-panel__content {
+    width: 550px;
+
+    .row {
+      padding: 0;
+      grid-gap: 0;
+    }
+
+    .push-1-rem {
+      padding-top: 1rem;
+    }
+
+    .horizonal-rule {
+      border-bottom: 1px solid $color-mid-x-light;
+    }
+
+    .register-a-controller__submit-segment {
+      text-align: right;
+    }
   }
 
   .controllers--registered-tooltip {

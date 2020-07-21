@@ -18,7 +18,6 @@ function Details() {
   const modelData = useSelector(getModelData);
 
   const [showRegisterAController, setShowRegisterAController] = useState(false);
-  const [showConfirmRegister, setShowConfirmRegister] = useState(false);
 
   const controllerMap = {};
   const additionalControllers = [];
@@ -142,8 +141,6 @@ function Details() {
         {showRegisterAController ? (
           <RegisterAController
             onClose={() => setShowRegisterAController(false)}
-            showConfirmRegister={showConfirmRegister}
-            setShowConfirmRegister={setShowConfirmRegister}
           />
         ) : null}
       </div>
@@ -151,24 +148,16 @@ function Details() {
   );
 }
 
-function RegisterAController({
-  onClose,
-  showConfirmRegister,
-  setShowConfirmRegister,
-}) {
+function RegisterAController({ onClose }) {
   const [formValues, setFormValues] = useState({});
   const [additionalControllers, setAdditionalControllers] = useLocalStorage(
     "additionalControllers",
     []
   );
 
-  function moveToConfirm(e) {
+  function handleRegisterAController(e) {
     e.preventDefault();
     // XXX Validate form values
-    setShowConfirmRegister(true);
-  }
-
-  function handleRegisterAController() {
     additionalControllers.push([
       formValues.wsControllerURL, // wsControllerURL
       { user: formValues.username, password: formValues.password }, // credentials
@@ -194,176 +183,159 @@ function RegisterAController({
   return (
     <SlidePanel onClose={onClose}>
       <h5>Register a Controller</h5>
-      {!showConfirmRegister ? (
-        <form className="p-form p-form--stacked" onSubmit={moveToConfirm}>
-          <div className="p-form__group row">
-            <div className="col-4">
-              <label htmlFor="full-name-stacked" className="p-form__label">
-                Controller name
-              </label>
-            </div>
-
-            <div className="col-8">
-              <div className="p-form__control">
-                <input
-                  type="text"
-                  id="full-name-stacked"
-                  name="controllerName"
-                  onChange={handleInputChange}
-                  required=""
-                />
-                <p className="p-form-help-text">production-controller-aws</p>
-              </div>
-            </div>
+      <p className="p-form-help-text">
+        Controller information can be retrieved using the `juju show-controller`
+        command.
+      </p>
+      <form
+        className="p-form p-form--stacked"
+        onSubmit={handleRegisterAController}
+      >
+        <div className="p-form__group row">
+          <div className="col-4">
+            <label htmlFor="full-name-stacked" className="p-form__label">
+              Controller name
+            </label>
           </div>
 
-          <div className="p-form__group row">
-            <div className="col-4">
-              <label htmlFor="full-name-stacked" className="p-form__label">
-                Full hostname
-              </label>
-            </div>
-
-            <div className="col-8">
-              <div className="p-form__control">
-                <input
-                  type="text"
-                  id="full-name-stacked"
-                  name="wsControllerURL"
-                  onChange={handleInputChange}
-                  required=""
-                />
-                <p className="p-form-help-text">
-                  wss://123.456.789.0:17070/api
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-form__group row">
-            <div className="col-4">
-              <label htmlFor="full-name-stacked" className="p-form__label">
-                Username
-              </label>
-            </div>
-
-            <div className="col-8">
-              <div className="p-form__control">
-                <input
-                  type="text"
-                  id="full-name-stacked"
-                  name="username"
-                  onChange={handleInputChange}
-                  required=""
-                />
-                <p className="p-form-help-text">
-                  Stored locally in your browser.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-form__group row">
-            <div className="col-4">
-              <label htmlFor="full-name-stacked" className="p-form__label">
-                Password
-              </label>
-            </div>
-
-            <div className="col-8">
-              <div className="p-form__control">
-                <input
-                  type="password"
-                  id="full-name-stacked"
-                  name="password"
-                  onChange={handleInputChange}
-                  required=""
-                />
-                <p className="p-form-help-text">
-                  Stored locally in your browser.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-form__group row">
-            <div className="col-4">
-              <label
-                htmlFor="identityProviderAvailable"
-                className="p-form__label"
-              >
-                Identity Provider
-              </label>
-            </div>
-
-            <div className="col-8">
-              <label>
-                <input
-                  type="checkbox"
-                  id="identityProviderAvailable"
-                  name="identityProvider"
-                  defaultChecked={false}
-                  onChange={handleInputChange}
-                  required=""
-                />
-              </label>
-
-              <p className="p-form-help-text">
-                If you provided a username and password this should be left
-                unchecked.
-              </p>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-12">
-              <button
-                className="p-button--positive u-float-right"
-                type="submit"
-              >
-                Next Step
-              </button>
-            </div>
-          </div>
-        </form>
-      ) : (
-        <form onSubmit={handleRegisterAController}>
-          <span>
-            Visit{" "}
-            <a href={dashboardLink} target="_blank" rel="noopener noreferrer">
-              {dashboardLink}
-            </a>{" "}
-            to accept the certificate on this controller to enable a secure
-            connection
-          </span>
           <div className="col-8">
-            <label>
+            <div className="p-form__control">
               <input
-                type="checkbox"
-                id="identityProviderAvailable"
-                name="identityProvider"
-                defaultChecked={false}
+                type="text"
+                id="full-name-stacked"
+                name="controllerName"
                 onChange={handleInputChange}
                 required=""
               />
-            </label>
-
-            <p className="p-form-help-text">
-              The certificate, if any, has been accepted.
-            </p>
-          </div>
-          <div className="row">
-            <div className="col-12">
-              <button
-                className="p-button--positive u-float-right"
-                type="submit"
-              >
-                Add Controller
-              </button>
+              <p className="p-form-help-text">
+                Must be a valid alpha-numeric Juju controller name. <br />
+                ex) production-controller-aws
+              </p>
             </div>
           </div>
-        </form>
-      )}
+        </div>
+
+        <div className="p-form__group row">
+          <div className="col-4">
+            <label htmlFor="full-name-stacked" className="p-form__label">
+              Full hostname
+            </label>
+          </div>
+
+          <div className="col-8">
+            <div className="p-form__control">
+              <input
+                type="text"
+                id="full-name-stacked"
+                name="wsControllerURL"
+                onChange={handleInputChange}
+                required=""
+              />
+              <p className="p-form-help-text">
+                You'll typically want to use the public IP address for the
+                controller. <br />
+                ex) wss://123.456.789.0:17070/api
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-form__group row">
+          <div className="col-4">
+            <label htmlFor="full-name-stacked" className="p-form__label">
+              Username
+            </label>
+          </div>
+
+          <div className="col-8">
+            <div className="p-form__control">
+              <input
+                type="text"
+                id="full-name-stacked"
+                name="username"
+                onChange={handleInputChange}
+                required=""
+              />
+              <p className="p-form-help-text">
+                The username you use to access the controller.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-form__group row">
+          <div className="col-4">
+            <label htmlFor="full-name-stacked" className="p-form__label">
+              Password
+            </label>
+          </div>
+
+          <div className="col-8">
+            <div className="p-form__control">
+              <input
+                type="password"
+                id="full-name-stacked"
+                name="password"
+                onChange={handleInputChange}
+                required=""
+              />
+              <p className="p-form-help-text">
+                The password will be what you used when running `juju register`
+                or if unchanged from the default it can be retrieved by running
+                `juju dashboard`.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-form__group row">
+          <div className="col-8 col-start-large-5">
+            <input
+              type="checkbox"
+              id="identityProviderAvailable"
+              name="identityProvider"
+              defaultChecked={false}
+              onChange={handleInputChange}
+              required=""
+            />
+            <label htmlFor="identityProviderAvailable">
+              An identity provider is available. If you provided a username and
+              password this should be left unchecked.
+            </label>
+          </div>
+        </div>
+        <div className="row horizonal-rule">
+          <div className="col-8 col-start-large-5">
+            <input
+              type="checkbox"
+              id="certificateHasBeenAccepted"
+              name="certificateAccepted"
+              defaultChecked={false}
+              onChange={handleInputChange}
+              required=""
+            />
+            <label htmlfor="certificateHasBeenAccepted">
+              The SSL certificate, if any, has been accepted. Visit{" "}
+              <a href={dashboardLink} target="_blank" rel="noopener noreferrer">
+                The controller
+              </a>{" "}
+              to accept the certificate on this controller to enable a secure
+              connection
+            </label>
+          </div>
+        </div>
+        <div className="row register-a-controller__submit-segment push-1-rem">
+          <div className="col-12">
+            <button className="p-button--positive u-float-right" type="submit">
+              Add Controller
+            </button>
+            <p className="p-form-help-text">
+              The credentials are stored locally in your browser and can be
+              cleared on log-out.
+            </p>
+          </div>
+        </div>
+      </form>
     </SlidePanel>
   );
   /* eslint-enable jsx-a11y/label-has-associated-control */
