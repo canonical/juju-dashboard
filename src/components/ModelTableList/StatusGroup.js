@@ -40,14 +40,21 @@ function generateStatusTableHeaders(label, count) {
 /**
   Generates the warning message for the model name cell.
   @param {Object} model The full model data.
+  @param {String} activeUser The active user name.
   @return {Object} The react component for the warning message.
 */
-const generateWarningMessage = (model) => {
+const generateWarningMessage = (model, activeUser) => {
   const { messages } = getModelStatusGroupData(model);
   const title = messages.join("; ");
+  const link = generateModelDetailsLink(
+    model.model.name,
+    model?.info?.ownerTag,
+    activeUser,
+    title
+  );
   return (
     <span className="model-table-list_error-message" title={title}>
-      {title}
+      {link}
     </span>
   );
 };
@@ -70,7 +77,9 @@ const generateModelNameCell = (model, groupLabel, activeUser) => {
   return (
     <>
       <div>{link}</div>
-      {groupLabel === "blocked" ? generateWarningMessage(model) : null}
+      {groupLabel === "blocked"
+        ? generateWarningMessage(model, activeUser)
+        : null}
     </>
   );
 };

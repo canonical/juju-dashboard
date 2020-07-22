@@ -12,9 +12,16 @@ import machinesIcon from "static/images/icons/machines-icon.svg";
   @param {String} modelName The name of the model.
   @param {String} ownerTag The ownerTag of the model.
   @param {String} activeUser The ownerTag of the active user.
+  @param {String} contents The contents of the link. Optional, will default to
+    the modelName.
   @returns {Object} The React component for the link.
 */
-export function generateModelDetailsLink(modelName, ownerTag, activeUser) {
+export function generateModelDetailsLink(
+  modelName,
+  ownerTag,
+  activeUser,
+  contents
+) {
   const modelDetailsPath = `/models/${modelName}`;
   if (ownerTag === activeUser) {
     return <Link to={modelDetailsPath}>{modelName}</Link>;
@@ -34,7 +41,7 @@ export function generateModelDetailsLink(modelName, ownerTag, activeUser) {
     "user-",
     ""
   )}/${modelName}`;
-  return <Link to={sharedModelDetailsPath}>{modelName}</Link>;
+  return <Link to={sharedModelDetailsPath}>{contents || modelName}</Link>;
 }
 
 /**
