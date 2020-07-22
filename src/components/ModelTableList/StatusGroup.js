@@ -72,7 +72,8 @@ const generateModelNameCell = (model, groupLabel, activeUser) => {
   const link = generateModelDetailsLink(
     model.model.name,
     model.info && model.info.ownerTag,
-    activeUser
+    activeUser,
+    model.model.name
   );
   return (
     <>

@@ -64,7 +64,8 @@ export default function OwnerGroup({ activeUser, filters }) {
               content: generateModelDetailsLink(
                 model.info.name,
                 model.info && model.info.ownerTag,
-                activeUser
+                activeUser,
+                model.info.name
               ),
             },
             {
