@@ -12,12 +12,18 @@ import machinesIcon from "static/images/icons/machines-icon.svg";
   @param {String} modelName The name of the model.
   @param {String} ownerTag The ownerTag of the model.
   @param {String} activeUser The ownerTag of the active user.
+  @param {String} label The contents of the link.
   @returns {Object} The React component for the link.
 */
-export function generateModelDetailsLink(modelName, ownerTag, activeUser) {
+export function generateModelDetailsLink(
+  modelName,
+  ownerTag,
+  activeUser,
+  label
+) {
   const modelDetailsPath = `/models/${modelName}`;
   if (ownerTag === activeUser) {
-    return <Link to={modelDetailsPath}>{modelName}</Link>;
+    return <Link to={modelDetailsPath}>{label}</Link>;
   }
   // Because we get some data at different times based on the multiple API calls
   // we need to check for their existence and supply reasonable fallbacks if it
@@ -26,7 +32,7 @@ export function generateModelDetailsLink(modelName, ownerTag, activeUser) {
   if (!ownerTag) {
     // We will just return an unclickable name until we get an owner tag as
     // without it we can't create a reliable link.
-    return modelName;
+    return label;
   }
   // If the owner isn't the logged in user then we need to use the
   // fully qualified path name.
@@ -34,7 +40,7 @@ export function generateModelDetailsLink(modelName, ownerTag, activeUser) {
     "user-",
     ""
   )}/${modelName}`;
-  return <Link to={sharedModelDetailsPath}>{modelName}</Link>;
+  return <Link to={sharedModelDetailsPath}>{label}</Link>;
 }
 
 /**
