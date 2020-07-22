@@ -4,9 +4,10 @@
   margin-top: 0.5rem;
 }
 
-.model-table-list_error-message a {
+.model-table-list_error-message {
   &,
-  &:visited {
+  & a,
+  & a:visited {
     color: $color-negative;
     display: block;
     font-size: 0.875rem;
