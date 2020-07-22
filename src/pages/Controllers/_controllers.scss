@@ -51,7 +51,7 @@
   }
 
   .slide-panel__content {
-    width: 550px;
+    max-width: 550px;
 
     .row {
       grid-gap: 0;
@@ -87,7 +87,6 @@
   .controllers--registered-tooltip {
     @include vf-icon-help($color-mid-light);
 
-    cursor: pointer;
     margin-left: 0.4rem;
   }
 }
