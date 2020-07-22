@@ -170,15 +170,16 @@ function RegisterAController({ onClose }) {
   }
 
   function handleInputChange(e) {
-    formValues[e.target.name] = e.target.checked || e.target.value;
-    setFormValues(formValues);
+    const newFormValues = { ...formValues };
+    newFormValues[e.target.name] =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    setFormValues(newFormValues);
   }
 
   const controllerIP = formValues?.wsControllerURL
     ? formValues.wsControllerURL.replace("wss://", "").replace("/api", "")
     : "";
   const dashboardLink = `https://${controllerIP}/dashboard`;
-
   /* eslint-disable jsx-a11y/label-has-associated-control */
   return (
     <SlidePanel onClose={onClose}>
@@ -301,7 +302,7 @@ function RegisterAController({ onClose }) {
             <label htmlFor="identityProviderAvailable">
               An identity provider is available.{" "}
             </label>
-            <div className="p-form-help-text">
+            <div className="p-form-help-text identity-provider">
               If you provided a username and password this should be left
               unchecked.
             </div>
@@ -330,14 +331,18 @@ function RegisterAController({ onClose }) {
               onChange={handleInputChange}
               required="true"
             />
-            <label htmlfor="certificateHasBeenAccepted">
+            <label htmlFor="certificateHasBeenAccepted">
               The SSL certificate, if any, has been accepted.
             </label>
           </div>
         </div>
         <div className="row register-a-controller__submit-segment push-1-rem">
           <div className="col-12">
-            <button className="p-button--positive u-float-right" type="submit">
+            <button
+              className="p-button--positive u-float-right"
+              type="submit"
+              disabled={!formValues.certificateAccepted}
+            >
               Add Controller
             </button>
             <p className="p-form-help-text">
