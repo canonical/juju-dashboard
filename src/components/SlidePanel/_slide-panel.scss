@@ -6,11 +6,11 @@
   background-color: $color-x-light;
   box-shadow: $box-shadow;
   height: calc(100% - #{$top-header-height});
+  margin-left: 48px;
   overflow: scroll;
   position: fixed;
   right: 0;
   top: $top-header-height;
-  margin-left: 48px;
 
   .p-modal__close {
     margin: 1rem;
