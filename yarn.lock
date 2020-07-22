@@ -1221,56 +1221,56 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@sentry/browser@5.18.1":
-  version "5.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-5.18.1.tgz#6a2ebe8f4ba88b2e98ccc91442e1dcb37b2df988"
-  integrity sha512-U1w0d5kRMsfzMYwWn4+awDKfBEI5lxhHa0bMChSpj5z/dWiz/e0mikZ9gCoF+ZNqkXJ92l/3r9gRz+SIsn5ZoA==
+"@sentry/browser@5.19.2":
+  version "5.19.2"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-5.19.2.tgz#8bad445b8d1efd50e6510bb43b3018b941f6e5cb"
+  integrity sha512-o6Z532n+0N5ANDzgR9GN+Q6CU7zVlIJvBEW234rBiB+ZZj6XwTLS1dD+JexGr8lCo8PeXI2rypKcj1jUGLVW8w==
   dependencies:
-    "@sentry/core" "5.18.1"
-    "@sentry/types" "5.18.1"
-    "@sentry/utils" "5.18.1"
+    "@sentry/core" "5.19.2"
+    "@sentry/types" "5.19.2"
+    "@sentry/utils" "5.19.2"
     tslib "^1.9.3"
 
-"@sentry/core@5.18.1":
-  version "5.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-5.18.1.tgz#c2aa7ef9054e372d006d32234969711234d2bb02"
-  integrity sha512-nC2aK6gwVIBVysmtdFHxYJyuChIHtkv7TnvmwgA5788L/HWo7E3R+Rd8Tf2npvp/aP+kmNITNbc5CIIqwGPaqQ==
+"@sentry/core@5.19.2":
+  version "5.19.2"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-5.19.2.tgz#99a64ef0e55230fc02a083c48fa07ada85de4929"
+  integrity sha512-sfbBsVXpA0WYJUichz5IhvqKD8xJUfQvsszrTsUKa7PQAMAboOmuh6bo8KquaVQnAZyZWZU08UduvlSV3tA7tw==
   dependencies:
-    "@sentry/hub" "5.18.1"
-    "@sentry/minimal" "5.18.1"
-    "@sentry/types" "5.18.1"
-    "@sentry/utils" "5.18.1"
+    "@sentry/hub" "5.19.2"
+    "@sentry/minimal" "5.19.2"
+    "@sentry/types" "5.19.2"
+    "@sentry/utils" "5.19.2"
     tslib "^1.9.3"
 
-"@sentry/hub@5.18.1":
-  version "5.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-5.18.1.tgz#4c2f642e29a320885692b902fba89e57a9906e64"
-  integrity sha512-dFnaj1fQRT74EhoF8MXJ23K3svt11zEF6CS3cdMrkSzfRbAHjyza7KT2AJHUeF6gtH2BZzqsSw+FnfAke0HGIg==
+"@sentry/hub@5.19.2":
+  version "5.19.2"
+  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-5.19.2.tgz#ab7f3d2d253c3441b2833a530b17c6de2418b2c7"
+  integrity sha512-2KkEYX4q9TDCOiaVEo2kQ1W0IXyZxJxZtIjDdFQyes9T4ubYlKHAbvCjTxHSQv37lDO4t7sOIApWG9rlkHzlEA==
   dependencies:
-    "@sentry/types" "5.18.1"
-    "@sentry/utils" "5.18.1"
+    "@sentry/types" "5.19.2"
+    "@sentry/utils" "5.19.2"
     tslib "^1.9.3"
 
-"@sentry/minimal@5.18.1":
-  version "5.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/minimal/-/minimal-5.18.1.tgz#8de01e87c5f5c6e74b707849202150cd4b316ee0"
-  integrity sha512-St2bjcZ5FFiH+bYkWoEPlEb0w38YSvftnjJTvZyk05SCdsF7HkGfoBeFmztwBf1VLQPYt3ojny14L6KDAvOTpw==
+"@sentry/minimal@5.19.2":
+  version "5.19.2"
+  resolved "https://registry.yarnpkg.com/@sentry/minimal/-/minimal-5.19.2.tgz#0fc2fdf9911a0cb31b52f7ccad061b74785724a3"
+  integrity sha512-rApEOkjy+ZmkeqEItgFvUFxe5l+dht9AumuUzq74pWp+HJqxxv9IVTusKppBsE1adjtmyhwK4O3Wr8qyc75xlw==
   dependencies:
-    "@sentry/hub" "5.18.1"
-    "@sentry/types" "5.18.1"
+    "@sentry/hub" "5.19.2"
+    "@sentry/types" "5.19.2"
     tslib "^1.9.3"
 
-"@sentry/types@5.18.1":
-  version "5.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-5.18.1.tgz#9d72254262f28e966b06371c5b3833de8f0253b8"
-  integrity sha512-y5YTkRFC4Y7r4GHrvin6aZLBpQIGdMZRq78f/s7IIEZrmWYbVKsK4dyJht6pOsUdEaxeYpsu3okIA0bqmthSJA==
+"@sentry/types@5.19.2":
+  version "5.19.2"
+  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-5.19.2.tgz#ead586f0b64b91c396d3521b938ca25f7b59d655"
+  integrity sha512-O6zkW8oM1qK5Uma9+B/UMlmlm9/gkw9MooqycWuEhIaKfDBj/yVbwb/UTiJmNkGc5VJQo0v1uXUZZQt6/Xq1GA==
 
-"@sentry/utils@5.18.1":
-  version "5.18.1"
-  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-5.18.1.tgz#c9880056793ae77d651db0dae76a08a8a0b31eac"
-  integrity sha512-P4lt6NauCBWASaP6R5kfOmc24imbD32G5FeWqK7vHftIphOJ0X7OZfh93DJPs3e5RIvW3YCywUsa7MpTH5/ClA==
+"@sentry/utils@5.19.2":
+  version "5.19.2"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-5.19.2.tgz#f2819d9de5abc33173019e81955904247e4a8246"
+  integrity sha512-gEPkC0CJwvIWqcTcPSdIzqJkJa9N5vZzUZyBvdu1oiyJu7MfazpJEvj3whfJMysSfXJQxoJ+a1IPrA73VY23VA==
   dependencies:
-    "@sentry/types" "5.18.1"
+    "@sentry/types" "5.19.2"
     tslib "^1.9.3"
 
 "@stylelint/postcss-css-in-js@^0.37.1":
@@ -4598,10 +4598,10 @@ eslint-plugin-import@2.22.0:
     resolve "^1.17.0"
     tsconfig-paths "^3.9.0"
 
-eslint-plugin-jest@23.17.1:
-  version "23.17.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-23.17.1.tgz#c0f39ba78e0f33b7ee1ce4ec92b773e39026ea3f"
-  integrity sha512-/o36fw67qNbJGWbSBIBMfseMsNP/d88WUHAGHCi1xFwsNB3XXZGdvxbOw49j3iQz6MCW/yw8OeOsuQhi6mM5ZA==
+eslint-plugin-jest@23.18.0:
+  version "23.18.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-23.18.0.tgz#4813eacb181820ed13c5505f400956d176b25af8"
+  integrity sha512-wLPM/Rm1SGhxrFQ2TKM/BYsYPhn7ch6ZEK92S2o/vGkAAnDXM0I4nTIo745RIX+VlCRMFgBuJEax6XfTHMdeKg==
   dependencies:
     "@typescript-eslint/experimental-utils" "^2.5.0"
 
@@ -4667,10 +4667,10 @@ eslint-plugin-react@7.19.0:
     string.prototype.matchall "^4.0.2"
     xregexp "^4.3.0"
 
-eslint-plugin-react@7.20.1:
-  version "7.20.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.20.1.tgz#87fcf8d0de225817ba0b2d8f38740733d61ff4ba"
-  integrity sha512-HitovDhscMmu3uOod3aqZRdKURdXgmlkptEue958gJBmIJO9hvgO4uZyqsJ4+22WqJVP3CsTKfqWSuTlJL6b8w==
+eslint-plugin-react@7.20.3:
+  version "7.20.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.20.3.tgz#0590525e7eb83890ce71f73c2cf836284ad8c2f1"
+  integrity sha512-txbo090buDeyV0ugF3YMWrzLIUqpYTsWSDZV9xLSmExE1P/Kmgg9++PD931r+KEWS66O1c9R4srLVVHmeHpoAg==
   dependencies:
     array-includes "^3.1.1"
     array.prototype.flatmap "^1.2.3"
@@ -9943,10 +9943,10 @@ react-error-overlay@^6.0.7:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.7.tgz#1dcfb459ab671d53f660a991513cb2f0a0553108"
   integrity sha512-TAv1KJFh3RhqxNvhzxj6LeT5NWklP6rDr2a0jaTfsZ5wSZWHOGeqQyejUp3xxLfPt2UpyJEcVQB/zyPcmonNFA==
 
-react-ga@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-3.0.0.tgz#4d665389cf0c489c36c5fdf97722a7e53efdfc5b"
-  integrity sha512-IKqqCtSMe0IfSRNvbHAiwXwIXbuza4VvHvB/2N3hEiMFGSjv8fNI6obPH6bkDdIjDpwzbUqKs8895OxBckWJ2g==
+react-ga@3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-3.1.2.tgz#e13f211c51a2e5c401ea69cf094b9501fe3c51ce"
+  integrity sha512-OJrMqaHEHbodm+XsnjA6ISBEHTwvpFrxco65mctzl/v3CASMSLSyUkFqz9yYrPDKGBUfNQzKCjuMJwctjlWBbw==
 
 react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6, react-is@^16.9.0:
   version "16.13.1"
@@ -12301,10 +12301,10 @@ vanilla-framework@2.10.0:
   resolved "https://registry.yarnpkg.com/vanilla-framework/-/vanilla-framework-2.10.0.tgz#74c0cba977ce058552aa4443cccaa6bbf9308e9e"
   integrity sha512-otQLBXzRBLyiN8RFtHP0E19Iy2p3Frbm7E4TIU7Q7LN+ScmfmgAc7InqbYXvTL9oIATTs0sBD7T/2Fzezgmalg==
 
-vanilla-framework@2.13.0:
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/vanilla-framework/-/vanilla-framework-2.13.0.tgz#ac73e745150bcef183eb35e3ee47f3fd079ddd3e"
-  integrity sha512-EuxlGxO4SmCGL4GVzcye5aas2HGVqRhPxlTHg84Lfw1e1E4F/Coxs78i3xxkPGw3LOcfea0KU096ar1PnLNuXQ==
+vanilla-framework@2.14.1:
+  version "2.14.1"
+  resolved "https://registry.yarnpkg.com/vanilla-framework/-/vanilla-framework-2.14.1.tgz#33fd21f3e546e1905f5c59c2dc5d04ae456d3e20"
+  integrity sha512-AHqqvbixiCKW6pHxsYh2WXPNMWvpiE0BNPxpFLP+mNigISGKghv+TB/OzJFhozfz2Zub+uGrlPjN2ysPON9G9w==
 
 vary@~1.1.2:
   version "1.1.2"
@@ -12828,10 +12828,10 @@ xterm-addon-fit@0.4.0:
   resolved "https://registry.yarnpkg.com/xterm-addon-fit/-/xterm-addon-fit-0.4.0.tgz#06e0c5d0a6aaacfb009ef565efa1c81e93d90193"
   integrity sha512-p4BESuV/g2L6pZzFHpeNLLnep9mp/DkF3qrPglMiucSFtD8iJxtMufEoEJbN8LZwB4i+8PFpFvVuFrGOSpW05w==
 
-xterm@4.7.0:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/xterm/-/xterm-4.7.0.tgz#254485811146b03fbea10c911f7f68a99e1d3bfd"
-  integrity sha512-UeH6U/1iknCBP94/AcKAFBeQz6ZicMugJHGXruTmsY8RcZt+mkx+vl8jLLOqNYweXdBbywCg2kK88WDKjcmSmg==
+xterm@4.8.1:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/xterm/-/xterm-4.8.1.tgz#155a1729a43e1a89b406524e22c5634339e39ca1"
+  integrity sha512-ax91ny4tI5eklqIfH79OUSGE2PUX2rGbwONmB6DfqpyhSZO8/cf++sqiaMWEVCMjACyMfnISW7C3gGMoNvNolQ==
 
 "y18n@^3.2.1 || ^4.0.0", y18n@^4.0.0:
   version "4.0.0"
