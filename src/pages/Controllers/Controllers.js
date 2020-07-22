@@ -299,9 +299,25 @@ function RegisterAController({ onClose }) {
               required=""
             />
             <label htmlFor="identityProviderAvailable">
-              An identity provider is available. If you provided a username and
-              password this should be left unchecked.
+              An identity provider is available.{" "}
             </label>
+            <div className="p-form-help-text">
+              If you provided a username and password this should be left
+              unchecked.
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-8 col-start-large-5">
+            <i className="p-icon--warning"></i>
+            <div className="controller-link-message">
+              Visit{" "}
+              <a href={dashboardLink} target="_blank" rel="noopener noreferrer">
+                the controller
+              </a>{" "}
+              to accept the certificate on this controller to enable a secure
+              connection
+            </div>
           </div>
         </div>
         <div className="row horizonal-rule">
@@ -315,12 +331,7 @@ function RegisterAController({ onClose }) {
               required="true"
             />
             <label htmlfor="certificateHasBeenAccepted">
-              The SSL certificate, if any, has been accepted. Visit{" "}
-              <a href={dashboardLink} target="_blank" rel="noopener noreferrer">
-                The controller
-              </a>{" "}
-              to accept the certificate on this controller to enable a secure
-              connection
+              The SSL certificate, if any, has been accepted.
             </label>
           </div>
         </div>

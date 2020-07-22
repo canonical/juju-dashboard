@@ -69,6 +69,15 @@
     .register-a-controller__submit-segment {
       text-align: right;
     }
+
+    .p-icon--warning {
+      position: absolute;
+      margin-top: 7px;
+    }
+
+    .controller-link-message {
+      padding-left: 2rem;
+    }
   }
 
   .controllers--registered-tooltip {
