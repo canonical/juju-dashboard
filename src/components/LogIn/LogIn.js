@@ -1,6 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
-import { isLoggedIn, getBakery, getConfig, getLoginError } from "app/selectors";
+import {
+  isLoggedIn,
+  getBakery,
+  getConfig,
+  getLoginError,
+  getControllerConnections,
+  getWSControllerURL,
+} from "app/selectors";
 import { connectAndStartPolling, storeUserPass } from "app/actions";
 
 import Spinner from "@canonical/react-components/dist/components/Spinner";
@@ -11,7 +18,17 @@ import "./_login.scss";
 
 export default function LogIn({ children }) {
   const { identityProviderAvailable } = useSelector(getConfig);
-  const userIsLoggedIn = useSelector(isLoggedIn);
+
+  const controllerConnections = useSelector(getControllerConnections) || {};
+  const wsControllerURLs = Object.keys(controllerConnections);
+
+  const store = useStore();
+  // Loop through all of the available controller connections to see
+  // if we're logged in.
+  const userIsLoggedIn = wsControllerURLs.some((wsControllerURL) =>
+    isLoggedIn(wsControllerURL, store.getState())
+  );
+
   const loginError = useSelector(getLoginError);
 
   if (!userIsLoggedIn) {
@@ -21,7 +38,7 @@ export default function LogIn({ children }) {
           <div className="login__inner p-card--highlighted">
             <img className="login__logo" src={logo} alt="JAAS logo" />
             {identityProviderAvailable ? (
-              <IdentityProviderForm />
+              <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />
             ) : (
               <UserPassForm />
             )}
@@ -63,9 +80,7 @@ function generateErrorMessage(loginError) {
   );
 }
 
-function IdentityProviderForm() {
-  const userIsLoggedIn = useSelector(isLoggedIn);
-
+function IdentityProviderForm({ userIsLoggedIn }) {
   const visitURL = useSelector((state) => {
     if (!userIsLoggedIn) {
       const root = state.root;
@@ -89,7 +104,9 @@ function UserPassForm() {
     const elements = e.currentTarget.elements;
     const user = elements.username.value;
     const password = elements.password.value;
-    dispatch(storeUserPass({ user, password }));
+    dispatch(
+      storeUserPass(getWSControllerURL(store.getState()), { user, password })
+    );
     dispatch(connectAndStartPolling(store, bakery));
   }
 

@@ -20,24 +20,27 @@ export function clearModelData() {
   };
 }
 
-export function updateControllerList(controllers) {
+/**
+  @param {String} wsControllerURL The URL of the websocket connection.
+  @param {Array} controllers The list of controllers to store.
+*/
+export function updateControllerList(wsControllerURL, controllers) {
   return {
     type: actionsList.updateControllerList,
-    payload: controllers,
+    payload: {
+      wsControllerURL,
+      controllers,
+    },
   };
 }
-
-// Thunks
 
 /**
   @param {Array} models The list of models to store.
 */
 export function updateModelList(models) {
-  return function updateModelList(dispatch, getState) {
-    dispatch({
-      type: actionsList.updateModelList,
-      payload: models,
-    });
+  return {
+    type: actionsList.updateModelList,
+    payload: models,
   };
 }
 
@@ -47,14 +50,12 @@ export function updateModelList(models) {
   @param {Object} status The status data as returned from the API.
  */
 export function updateModelStatus(modelUUID, status) {
-  return function updateModelStatus(dispatch, getState) {
-    dispatch({
-      type: actionsList.updateModelStatus,
-      payload: {
-        modelUUID,
-        status,
-      },
-    });
+  return {
+    type: actionsList.updateModelStatus,
+    payload: {
+      modelUUID,
+      status,
+    },
   };
 }
 
@@ -62,28 +63,28 @@ export function updateModelStatus(modelUUID, status) {
   @param {Object} modelInfo The model info data as returned from the API.
  */
 export function updateModelInfo(modelInfo) {
-  return function updateModelInfo(dispatch, getState) {
-    dispatch({
-      type: actionsList.updateModelInfo,
-      payload: modelInfo,
-    });
+  return {
+    type: actionsList.updateModelInfo,
+    payload: modelInfo,
   };
 }
+
+// Thunks
 
 /**
   Fetches the model list from the supplied Juju controller. Requires that the
   user is logged in to dispatch the retrieved data from listModels.
+  @param {Object} conn The controller connection.
   @returns {Object} models The list of model objects under the key `userModels`.
 */
-export function fetchModelList() {
+export function fetchModelList(conn) {
   return async function fetchModelList(dispatch, getState) {
-    const state = getState();
-    const conn = state.root.controllerConnection;
-    const modelManager = conn.facades.modelManager;
-    const models = await modelManager.listModels({
+    const models = await conn.facades.modelManager.listModels({
       tag: conn.info.user.identity,
     });
-    dispatch(updateModelList(models));
+    dispatch(updateModelList(models), {
+      wsControllerURL: conn.transport._ws.url,
+    });
   };
 }
 
@@ -109,19 +110,28 @@ export function fetchModelStatus(modelUUID) {
   the supplied model info call.
   @param {String} modelInfo The response from a modelInfo call.
 */
-export function addControllerCloudRegion(modelInfo) {
+export function addControllerCloudRegion(wsControllerURL, modelInfo) {
   return async function addControllerCloudRegion(dispatch, getState) {
-    const controllers = getState()?.juju?.controllers;
+    const controllers = getState()?.juju?.controllers[wsControllerURL];
     const model = modelInfo.results[0].result;
-    const updatedControllers = cloneDeep(controllers).map((controller) => {
-      if (controller.uuid === model.controllerUuid) {
-        controller.location = {
-          cloud: model.cloudRegion,
-          region: model.cloudTag.replace("cloud-", ""),
-        };
-      }
-      return controller;
-    });
-    dispatch(updateControllerList(updatedControllers));
+    if (controllers) {
+      const updatedControllers = cloneDeep(controllers).map((controller) => {
+        if (controller.uuid === model.controllerUuid) {
+          controller.location = {
+            cloud: model.cloudRegion,
+            region: model.cloudTag.replace("cloud-", ""),
+          };
+        }
+        return controller;
+      });
+      dispatch(updateControllerList(wsControllerURL, updatedControllers), {
+        wsControllerURL,
+      });
+    } else {
+      console.log(
+        "attempting to update non-existant controller:",
+        wsControllerURL
+      );
+    }
   };
 }

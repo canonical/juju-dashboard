@@ -14,9 +14,10 @@ import jimm from "app/jimm-facade";
 import {
   getBakery,
   getConfig,
-  getWSControllerURL,
+  getControllerConnection,
   isLoggedIn,
   getUserPass,
+  getWSControllerURL,
 } from "app/selectors";
 import {
   addControllerCloudRegion,
@@ -148,30 +149,33 @@ async function connectAndLoginWithTimeout(
   @param {Object} getState A function that'll return the app redux state.
   @returns {Object} The full model status.
 */
-async function fetchModelStatus(modelUUID, getState) {
+async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   const appState = getState();
   const bakery = getBakery(appState);
+  const baseWSControllerURL = getWSControllerURL(appState);
   const { identityProviderAvailable } = getConfig(appState);
-  const modelURL = getWSControllerURL(appState).replace(
-    "/api",
-    `/model/${modelUUID}/api`
-  );
+  let useIdentityProvider = false;
+
+  if (baseWSControllerURL === wsControllerURL) {
+    useIdentityProvider = identityProviderAvailable;
+  }
+  const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
-  if (isLoggedIn(getState())) {
+  if (isLoggedIn(wsControllerURL, getState())) {
     try {
-      const credentials = getUserPass(getState());
+      const controllerCredentials = getUserPass(wsControllerURL, getState());
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
-        credentials,
+        controllerCredentials,
         generateConnectionOptions(false, bakery),
-        identityProviderAvailable
+        useIdentityProvider
       );
-      if (isLoggedIn(getState())) {
+      if (isLoggedIn(wsControllerURL, getState())) {
         status = await conn.facades.client.fullStatus();
       }
-      if (isLoggedIn(getState())) {
+      if (isLoggedIn(wsControllerURL, getState())) {
         const entities = Object.keys(status.applications).map((name) => ({
           tag: `application-${name}`,
         }));
@@ -202,12 +206,17 @@ async function fetchModelStatus(modelUUID, getState) {
   @param {Function} dispatch The redux store hook method.
   @param {Object} getState A function that'll return the app redux state.
  */
-export async function fetchAndStoreModelStatus(modelUUID, dispatch, getState) {
-  const status = await fetchModelStatus(modelUUID, getState);
+export async function fetchAndStoreModelStatus(
+  modelUUID,
+  wsControllerURL,
+  dispatch,
+  getState
+) {
+  const status = await fetchModelStatus(modelUUID, wsControllerURL, getState);
   if (status === null) {
     return;
   }
-  dispatch(updateModelStatus(modelUUID, status));
+  dispatch(updateModelStatus(modelUUID, status), { wsControllerURL });
 }
 
 /**
@@ -233,7 +242,7 @@ async function fetchModelInfo(conn, modelUUID) {
   @returns {Promise} Resolves when the queue fetching the model statuses has
     completed. Does not reject.
 */
-export async function fetchAllModelStatuses(conn, reduxStore) {
+export async function fetchAllModelStatuses(wsControllerURL, conn, reduxStore) {
   const getState = reduxStore.getState;
   const modelList = getState().juju.models;
   const dispatch = reduxStore.dispatch;
@@ -241,16 +250,23 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
   const modelUUIDs = Object.keys(modelList);
   modelUUIDs.forEach((modelUUID) => {
     queue.push(async (done) => {
-      if (isLoggedIn(getState())) {
-        await fetchAndStoreModelStatus(modelUUID, dispatch, getState);
+      if (isLoggedIn(wsControllerURL, getState())) {
+        await fetchAndStoreModelStatus(
+          modelUUID,
+          wsControllerURL,
+          dispatch,
+          getState
+        );
       }
-      if (isLoggedIn(getState())) {
+      if (isLoggedIn(wsControllerURL, getState())) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
-        dispatch(updateModelInfo(modelInfo));
+        dispatch(updateModelInfo(modelInfo), { wsControllerURL });
         if (modelInfo.results[0].result.isController) {
           // If this is a controller model then update the
           // controller data with this model data.
-          dispatch(addControllerCloudRegion(modelInfo));
+          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo), {
+            wsControllerURL,
+          });
         }
       }
       done();
@@ -266,14 +282,22 @@ export async function fetchAllModelStatuses(conn, reduxStore) {
 /**
   Performs an HTTP request to the controller to fetch the controller list.
   Will fail with a console error message if the user doesn't have access.
+  @param {String} wsControllerURL The URL of the controller.
   @param {Object} conn The Juju controller connection.
   @param {Object} reduxStore The applications reduxStore.
+  @param {Boolean} additionalController If this is an additional controller.
 */
-export async function fetchControllerList(conn, reduxStore) {
+export async function fetchControllerList(
+  wsControllerURL,
+  conn,
+  additionalController,
+  reduxStore
+) {
   let controllers = null;
   if (conn.facades.jimM) {
     const response = await conn.facades.jimM.listControllers();
     controllers = response.controllers;
+    controllers.forEach((c) => (c.additionalController = additionalController));
   } else {
     // If we're not connected to a JIMM then call to get the controller config
     // and generate a fake controller list.
@@ -282,10 +306,15 @@ export async function fetchControllerList(conn, reduxStore) {
       {
         path: controllerConfig.config["controller-name"],
         uuid: controllerConfig.config["controller-uuid"],
+        version: getControllerConnection(wsControllerURL, reduxStore.getState())
+          ?.info?.serverVersion,
+        additionalController,
       },
     ];
   }
-  reduxStore.dispatch(updateControllerList(controllers));
+  reduxStore.dispatch(updateControllerList(wsControllerURL, controllers), {
+    wsControllerURL,
+  });
 }
 
 /**
@@ -294,5 +323,7 @@ export async function fetchControllerList(conn, reduxStore) {
   @param {Object} conn The controller connection instance.
 */
 export function disableControllerUUIDMasking(conn) {
-  conn.facades.jimM.disableControllerUUIDMasking();
+  if (conn?.facades?.jimM) {
+    conn.facades.jimM.disableControllerUUIDMasking();
+  }
 }

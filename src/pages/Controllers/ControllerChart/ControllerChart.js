@@ -6,38 +6,58 @@ import { pluralize } from "app/utils";
 
 import "./_controller-chart.scss";
 
+function getPercentage(denominator, numerator) {
+  if (denominator === 0 || numerator === 0) {
+    return 0;
+  }
+  const trunc = Math.trunc(denominator / numerator);
+  if (Number.isNaN(trunc)) {
+    return 0;
+  }
+  return trunc;
+}
+
 export default function ControllerChart({ chartData, totalLabel }) {
   const totalCount =
-    chartData.blocked || 0 + chartData.alert || 0 + chartData.running || 0;
+    (chartData.blocked || 0) +
+    (chartData.alert || 0) +
+    (chartData.running || 0);
+
   return (
     <div className="p-chart">
       <div className="p-chart__chart">
         <DonutChart chartData={chartData} />
       </div>
       <div className="p-chart__legend">
-        <p>
-          <strong data-test="total-count">
-            {totalCount} {pluralize(totalCount, totalLabel)}
-          </strong>
-        </p>
         <ul className="p-list p-legend">
+          <li
+            className="p-list__item p-legend__item label"
+            data-test="legend-label"
+          >
+            <strong data-test="total-count">
+              {totalCount} {pluralize(totalCount, totalLabel)}
+            </strong>
+          </li>
           <li
             className="p-list__item p-legend__item is-blocked"
             data-test="legend-blocked"
           >
-            Blocked: {chartData.blocked || 0}
+            Blocked: {getPercentage(totalCount, chartData.blocked)}%,{" "}
+            {chartData.blocked || 0}
           </li>
           <li
             className="p-list__item p-legend__item is-alert"
             data-test="legend-alert"
           >
-            Alerts: {chartData.alert || 0}
+            Alerts: {getPercentage(totalCount, chartData.alert)}%,{" "}
+            {chartData.alert || 0}
           </li>
           <li
             className="p-list__item p-legend__item is-running"
             data-test="legend-running"
           >
-            Running: {chartData.running || 0}
+            Running: {getPercentage(totalCount, chartData.running)}%,{" "}
+            {chartData.running || 0}
           </li>
         </ul>
       </div>

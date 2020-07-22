@@ -2,6 +2,7 @@
   Redux middleware that gates every request on authentication unless an action
   has been whitelisted.
 */
+
 import { isLoggedIn } from "app/selectors";
 
 const actionWhitelist = [
@@ -23,27 +24,56 @@ const actionWhitelist = [
 // craco.config.js so that the name doesn't get mangled by CRA.
 const thunkWhitelist = ["connectAndStartPolling", "logOut"];
 
-function error(name) {
-  console.log("unable to perform action:", name, "user not authenticated");
+function error(name, wsControllerURL) {
+  console.log(
+    "unable to perform action:",
+    name,
+    "user not authenticated for:",
+    wsControllerURL
+  );
 }
 
-export default ({ getState }) => (next) => async (action) => {
-  const loggedIn = isLoggedIn(getState());
+const checkLoggedIn = (state, wsControllerURL) => {
+  if (!wsControllerURL) {
+    console.error("unable to determine logged in status");
+  }
+  return isLoggedIn(wsControllerURL, state);
+};
+
+/**
+  Redux middleware to enable gating actions on the respective controller
+  authentication.
+  @param {Object} action The typical Redux action or thunk to execute
+  @param {Object} options Any options that this checker needs to perform an
+    appropriate auth check.
+      wsControllerURL: The full controller websocket url that the controller
+        is stored under in redux in order to determine it's logged in status.
+*/
+export default ({ getState }) => (next) => async (action, options) => {
+  const state = getState();
+  const wsControllerURL = options?.wsControllerURL;
+
   // If the action is a function then it's probably a thunk.
   if (typeof action === "function") {
-    if (thunkWhitelist.includes(action.name) || loggedIn) {
+    if (
+      thunkWhitelist.includes(action.name) ||
+      checkLoggedIn(state, wsControllerURL)
+    ) {
       // Await the next to support async thunks
       await next(action);
       return;
     } else {
-      error(action.name);
+      error(action.name, wsControllerURL);
     }
   } else {
-    if (actionWhitelist.includes(action.type) || loggedIn) {
+    if (
+      actionWhitelist.includes(action.type) ||
+      checkLoggedIn(state, wsControllerURL)
+    ) {
       next(action);
       return;
     } else {
-      error(action.type);
+      error(action.type, wsControllerURL);
     }
   }
 };

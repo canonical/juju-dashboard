@@ -1,9 +1,92 @@
+@import "vanilla-framework/scss/vanilla";
+
 .controllers {
+  th {
+    padding-bottom: 6px;
+    padding-top: 6px;
+  }
+
   td,
   th {
     &:first-child {
       min-width: 25%;
       white-space: nowrap;
     }
+  }
+
+  &--count {
+    font-size: 0.875rem;
+    padding: 0.25rem 1.5rem;
+  }
+
+  &--header {
+    border-bottom: 1px solid $color-dark;
+    color: $color-mid-dark;
+    display: inline-grid;
+    font-size: 0.76562rem;
+    font-weight: 400;
+    grid-template-columns: repeat(2, 50%);
+    margin-bottom: 1rem;
+    padding: 6px 0 4px 16px;
+    text-transform: uppercase;
+    width: 100%;
+
+    .controllers__heading {
+      padding-top: 0.8rem;
+    }
+
+    .controllers--register {
+      text-align: right;
+    }
+
+    button {
+      margin: 0;
+      max-width: 15rem;
+    }
+  }
+
+  .register-a-controller {
+    margin-top: 1rem;
+    text-align: right;
+  }
+
+  .slide-panel__content {
+    max-width: 550px;
+
+    .row {
+      grid-gap: 0;
+      padding: 0;
+    }
+
+    .push-1-rem {
+      padding-top: 1rem;
+    }
+
+    .horizonal-rule {
+      border-bottom: 1px solid $color-mid-x-light;
+    }
+
+    .register-a-controller__submit-segment {
+      text-align: right;
+    }
+
+    .p-icon--warning {
+      margin-top: 7px;
+      position: absolute;
+    }
+
+    .p-form-help-text.identity-provider {
+      padding-left: 2rem;
+    }
+
+    .controller-link-message {
+      padding-left: 2rem;
+    }
+  }
+
+  .controllers--registered-tooltip {
+    @include vf-icon-help($color-mid-light);
+
+    margin-left: 0.4rem;
   }
 }

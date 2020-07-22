@@ -19,8 +19,6 @@ import {
   storeVisitURL,
 } from "app/actions";
 
-import { getConfig } from "app/selectors";
-
 import jujuReducer from "juju/reducer";
 
 import "./scss/index.scss";
@@ -40,16 +38,19 @@ if (process.env.NODE_ENV === "production") {
 // a few cycles before trying again.
 let checkCounter = 0;
 const checkConfigExists = () => {
-  if (!window.jujuDashboardConfig && checkCounter < 5) {
-    checkCounter++;
-    setTimeout(checkConfigExists, 500);
-    return;
+  if (!window.jujuDashboardConfig) {
+    if (checkCounter < 5) {
+      checkCounter++;
+      setTimeout(checkConfigExists, 500);
+      return;
+    } else {
+      console.error(
+        "Configuration values not defined unable to bootstrap application"
+      );
+    }
   } else {
-    console.error(
-      "Configuration values not defined unable to bootstrap application"
-    );
+    bootstrap();
   }
-  bootstrap();
 };
 checkConfigExists();
 
@@ -85,7 +86,7 @@ function bootstrap() {
     composeWithDevTools(applyMiddleware(checkAuth, thunk))
   );
 
-  reduxStore.dispatch(storeConfig(window.jujuDashboardConfig));
+  reduxStore.dispatch(storeConfig(config));
   reduxStore.dispatch(storeVersion(appVersion));
 
   const bakery = new Bakery({
@@ -95,8 +96,7 @@ function bootstrap() {
     storage: new BakeryStorage(localStorage, {}),
   });
   reduxStore.dispatch(storeBakery(bakery));
-
-  if (getConfig(reduxStore.getState()).identityProviderAvailable) {
+  if (config.identityProviderAvailable) {
     // If an identity provider is available then try and connect automatically
     // If not then wait for the login UI to trigger this
     reduxStore.dispatch(connectAndStartPolling(reduxStore, bakery));

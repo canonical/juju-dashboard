@@ -1,4 +1,5 @@
 import immerProduce from "immer";
+import cloneDeep from "clone-deep";
 
 import { actionsList } from "./actions";
 
@@ -12,7 +13,7 @@ export default function jujuReducer(state = defaultState, action) {
     const payload = action.payload;
     switch (action.type) {
       case actionsList.updateModelList:
-        const modelList = {};
+        const modelList = cloneDeep(state.models || {});
         action.payload.userModels.forEach((model) => {
           modelList[model.model.uuid] = {
             lastConnection: model.lastConnection,
@@ -68,7 +69,10 @@ export default function jujuReducer(state = defaultState, action) {
         draftState.models = {};
         break;
       case actionsList.updateControllerList:
-        draftState.controllers = action.payload;
+        const controllers = cloneDeep(state.controllers || {});
+        controllers[action.payload.wsControllerURL] =
+          action.payload.controllers;
+        draftState.controllers = controllers;
         break;
       default:
         // No default value, fall through.

@@ -18,13 +18,13 @@ describe("Controllers chart", () => {
       <ControllerChart chartData={chartData} totalLabel="machine" />
     );
     expect(wrapper.find("[data-test='legend-blocked']").text()).toBe(
-      "Blocked: 5"
+      "Blocked: 6%, 5"
     );
     expect(wrapper.find("[data-test='legend-alert']").text()).toBe(
-      "Alerts: 10"
+      "Alerts: 3%, 10"
     );
     expect(wrapper.find("[data-test='legend-running']").text()).toBe(
-      "Running: 15"
+      "Running: 2%, 15"
     );
   });
 });

@@ -19,48 +19,72 @@ import {
   isLoggedIn,
 } from "./selectors";
 
-import { userIsControllerAdmin } from "./utils";
-
-export default async function connectAndListModels(reduxStore, bakery) {
+export default async function connectAndListModels(
+  reduxStore,
+  bakery,
+  additionalControllers
+) {
   try {
     const storeState = reduxStore.getState();
-    const credentials = getUserPass(storeState);
     const { identityProviderAvailable, isJuju } = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
-    const { conn, error, juju, intervalId } = await loginWithBakery(
+    const credentials = getUserPass(wsControllerURL, storeState);
+    const defaultControllerData = [
       wsControllerURL,
       credentials,
       bakery,
-      identityProviderAvailable
-    );
-    if (error) {
-      reduxStore.dispatch(storeLoginError(error));
-      return;
+      identityProviderAvailable,
+    ];
+    let controllerList = [defaultControllerData];
+    if (additionalControllers) {
+      controllerList = controllerList.concat(additionalControllers);
     }
-    if (process.env.NODE_ENV === "production") {
-      Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
-    }
-    reduxStore.dispatch(updateControllerConnection(conn));
-    reduxStore.dispatch(updateJujuAPIInstance(juju));
-    reduxStore.dispatch(updatePingerIntervalId(intervalId));
-    if (userIsControllerAdmin(conn)) {
-      fetchControllerList(conn, reduxStore);
+    controllerList.forEach(async (controllerData) => {
+      const { conn, error, juju, intervalId } = await loginWithBakery(
+        ...controllerData
+      );
+
+      if (error) {
+        reduxStore.dispatch(storeLoginError(error));
+        return;
+      }
+
+      if (process.env.NODE_ENV === "production") {
+        Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
+      }
+
+      reduxStore.dispatch(updateControllerConnection(controllerData[0], conn));
+      reduxStore.dispatch(updateJujuAPIInstance(controllerData[0], juju));
+      reduxStore.dispatch(
+        updatePingerIntervalId(controllerData[0], intervalId)
+      );
+
+      fetchControllerList(
+        controllerData[0],
+        conn,
+        controllerData[4],
+        reduxStore
+      );
+      // XXX the isJuju Check needs to be done on a per-controller basis
       if (!isJuju) {
         // This call will be a noop if the user isn't an administrator
         // on the JIMM controller we're connected to.
         disableControllerUUIDMasking(conn);
       }
-    }
-    do {
-      await reduxStore.dispatch(fetchModelList());
-      await fetchAllModelStatuses(conn, reduxStore);
-      // Wait 30s then start again.
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(true);
-        }, 30000);
-      });
-    } while (isLoggedIn(reduxStore.getState()));
+
+      do {
+        await reduxStore.dispatch(fetchModelList(conn), {
+          wsControllerURL: controllerData[0],
+        });
+        await fetchAllModelStatuses(controllerData[0], conn, reduxStore);
+        // Wait 30s then start again.
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(true);
+          }, 30000);
+        });
+      } while (isLoggedIn(controllerData[0], reduxStore.getState()));
+    });
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry if it's an error that's not connection related

@@ -69,34 +69,55 @@ export function storeVersion(version) {
   @param {Object} credentials The users credentials in the format
     {user: ..., password: ...}
 */
-export function storeUserPass(credentials) {
+export function storeUserPass(wsControllerURL, credential) {
   return {
     type: actionsList.storeUserPass,
-    payload: credentials,
+    payload: {
+      wsControllerURL,
+      credential,
+    },
   };
 }
 
 /**
+  @param {String} wsControllerURL The URL of the websocket connection.
   @param {Object} conn The active controller connection.
 */
-export function updateControllerConnection(conn) {
+export function updateControllerConnection(wsControllerURL, conn) {
   return {
     type: actionsList.updateControllerConnection,
-    payload: conn,
+    payload: {
+      wsControllerURL,
+      conn,
+    },
   };
 }
 
-export function updateJujuAPIInstance(juju) {
+/**
+  @param {String} wsControllerURL The URL of the websocket connection.
+  @param {Object} juju The active Juju api instance.
+*/
+export function updateJujuAPIInstance(wsControllerURL, juju) {
   return {
     type: actionsList.updateJujuAPIInstance,
-    payload: juju,
+    payload: {
+      wsControllerURL,
+      juju,
+    },
   };
 }
 
-export function updatePingerIntervalId(intervalId) {
+/**
+  @param {String} wsControllerURL The URL of the websocket connection.
+  @param {Object} intervalId The intervalId for the request timeout.
+*/
+export function updatePingerIntervalId(wsControllerURL, intervalId) {
   return {
     type: actionsList.updatePingerIntervalId,
-    payload: intervalId,
+    payload: {
+      wsControllerURL,
+      intervalId,
+    },
   };
 }
 
@@ -139,6 +160,19 @@ export function logOut(getState) {
 */
 export function connectAndStartPolling(reduxStore, bakery) {
   return async function connectAndStartPolling(dispatch) {
-    connectAndListModels(reduxStore, bakery);
+    let additionalControllers = null;
+    try {
+      const data = window.localStorage.getItem("additionalControllers");
+      if (data) {
+        additionalControllers = JSON.parse(data);
+        additionalControllers.forEach((controller) => {
+          dispatch(storeUserPass(controller[0], controller[1]));
+        });
+      }
+    } catch (e) {
+      // XXX Add to Sentry.
+      console.log("Error retrieving additional registered controllers", e);
+    }
+    connectAndListModels(reduxStore, bakery, additionalControllers);
   };
 }
