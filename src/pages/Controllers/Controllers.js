@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import cloneDeep from "clone-deep";
+import classNames from "classnames";
 
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
@@ -295,7 +296,11 @@ function RegisterAController({ onClose }) {
           </div>
         </div>
 
-        <div className="p-form__group row">
+        <div
+          className={classNames("p-form__group row", {
+            "u-hide": formValues.username && formValues.password,
+          })}
+        >
           <div className="col-8 col-start-large-5">
             <input
               type="checkbox"
