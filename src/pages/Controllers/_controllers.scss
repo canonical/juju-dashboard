@@ -51,7 +51,7 @@
   }
 
   .slide-panel__content {
-    max-width: 550px;
+    max-width: 560px;
 
     .row {
       grid-gap: 0;
@@ -62,7 +62,7 @@
       padding-top: 1rem;
     }
 
-    .horizonal-rule {
+    .horizontal-rule {
       border-bottom: 1px solid $color-mid-x-light;
     }
 
@@ -75,8 +75,15 @@
       position: absolute;
     }
 
-    .p-form-help-text.identity-provider {
-      padding-left: 2rem;
+    .p-form-help-text {
+      code {
+        display: inline-block;
+        margin: 0.25rem 0.25rem;
+      }
+
+      &.identity-provider {
+        padding-left: 2rem;
+      }
     }
 
     .controller-link-message {

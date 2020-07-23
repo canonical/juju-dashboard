@@ -185,8 +185,8 @@ function RegisterAController({ onClose }) {
     <SlidePanel onClose={onClose}>
       <h5>Register a Controller</h5>
       <p className="p-form-help-text">
-        Controller information can be retrieved using the `juju show-controller`
-        command.
+        Controller information can be retrieved using the{" "}
+        <code>juju show-controller</code> command.
       </p>
       <form
         className="p-form p-form--stacked"
@@ -281,9 +281,9 @@ function RegisterAController({ onClose }) {
                 required=""
               />
               <p className="p-form-help-text">
-                The password will be what you used when running `juju register`
-                or if unchanged from the default it can be retrieved by running
-                `juju dashboard`.
+                The password will be what you used when running{" "}
+                <code>juju register</code> or if unchanged from the default it
+                can be retrieved by running <code>juju dashboard</code>.
               </p>
             </div>
           </div>
@@ -321,7 +321,7 @@ function RegisterAController({ onClose }) {
             </div>
           </div>
         </div>
-        <div className="row horizonal-rule">
+        <div className="row horizontal-rule">
           <div className="col-8 col-start-large-5">
             <input
               type="checkbox"
