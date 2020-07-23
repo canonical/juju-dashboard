@@ -199,7 +199,7 @@ This effectively means that we write integration and component tests, not unit t
 - The test files are kept along side the library or component file following the naming convention `<component|filename>.test.js`.
 - We limit the use of snapshots except for where the snapshot updates can be easily verified by a reviewer.
 - Add assertions for the explicit content you're expecting. This allows changes to things that may not be relevant to the test like classNames, attributes, etc.
-- When searching for an element, use element selectors where possible and add a data attribute when not. We follow the format of `data-test="..."` or `data-test-<specifier>="..."` ex) `<a data-test-column="priority">High</a>`.
+- When searching for an element, use element selectors where possible and add a data attribute when not. We follow the format of `data-test="..."` or `data-test-<specifier>="..."` e.g. `<a data-test-column="priority">High</a>`.
 - Test labels should be specific and representative of the test content. Create additional tests if you need assertions that do not apply to the label.
 - Do not mock components unless absolutely necessary. The data dump mentioned below should contain sufficient data to render the full component tree in the test.
 
