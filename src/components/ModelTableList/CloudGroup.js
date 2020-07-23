@@ -35,9 +35,9 @@ function generateCloudTableHeaders(cloud, count) {
       content: generateStatusElement(cloud, count, false),
       sortKey: cloud.toLowerCase(),
     },
+    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
     { content: "Owner", sortKey: "owner" },
     { content: "Status", sortKey: "status" },
-    { content: "Configuration", sortKey: "summary" },
     { content: "Region", sortKey: "region" },
     { content: "Credential", sortKey: "credential" },
     { content: "Controller", sortKey: "controller" },
@@ -70,8 +70,14 @@ export default function CloudGroup({ activeUser, filters }) {
               content: generateModelDetailsLink(
                 model.info.name,
                 model.info && model.info.ownerTag,
-                activeUser
+                activeUser,
+                model.info.name
               ),
+            },
+            {
+              "data-test-column": "summary",
+              content: getStatusValue(model, "summary"),
+              className: "u-overflow--visible",
             },
             {
               "data-test-column": "owner",
@@ -81,11 +87,6 @@ export default function CloudGroup({ activeUser, filters }) {
               "data-test-column": "status",
               content: generateStatusElement(highestStatus),
               className: "u-capitalise",
-            },
-            {
-              "data-test-column": "summary",
-              content: getStatusValue(model, "summary"),
-              className: "u-overflow--visible",
             },
             {
               "data-test-column": "region",

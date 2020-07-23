@@ -82,6 +82,9 @@ describe("Primary Nav", () => {
     expect(wrapper.find(".p-primary-nav__logo-text").prop("src")).toBe(
       "logo-text.svg"
     );
+    expect(wrapper.find(".p-primary-nav__logo").prop("href")).toBe(
+      "https://jaas.ai"
+    );
   });
 
   it("displays the Juju logo under Juju", () => {
@@ -97,6 +100,9 @@ describe("Primary Nav", () => {
     );
     expect(wrapper.find(".p-primary-nav__logo-text").prop("src")).toBe(
       "juju-text.svg"
+    );
+    expect(wrapper.find(".p-primary-nav__logo").prop("href")).toBe(
+      "https://juju.is"
     );
   });
 

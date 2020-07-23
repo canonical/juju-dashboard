@@ -4,6 +4,35 @@ The dashboard to monitor your [Juju](https://juju.is) & [JAAS](https://jaas.ai) 
 
 Starting with Juju 2.8 this dashboard is installed by default with every bootstrap. To access it simply run `juju dashboard` and visit the link provided and log in using the supplied credentials. It's also available and automatically updated for users of JAAS on [jaas.ai](jaas.ai/models).
 
+- [Using the Dashboard with Juju](#using-the-dashboard-with-juju)
+- [QA'ing the Dashboard](#qaing-the-dashboard)
+  - [In Juju](#in-juju)
+    - [Uploading the tarball to a Juju controller](#uploading-the-tarball-to-a-juju-controller)
+    - [Connecting a local Dashboard to a remote controller](#connecting-a-local-dashboard-to-a-remote-controller)
+  - [In JAAS](#in-jaas)
+  - [Release tests](#release-tests)
+- [Developing the Dashboard](#developing-the-dashboard)
+  - [Developing while connected to a Juju controller](#developing-while-connected-to-a-juju-controller)
+  - [Running the tests](#running-the-tests)
+  - [Accessing the Dashboard from nested containers](#accessing-the-dashboard-from-nested-containers)
+    - [A lxd bootstrapped Dashboard that is also within a `multipass` VM](#a-lxd-bootstrapped-dashboard-that-is-also-within-a-multipass-VM)
+    - [A local bootstrapped controller from a hosted Dashboard](#a-local-bootstrapped-controller-from-a-hosted-dashboard)
+    - [Creating a tunnel from an lxd controller to a `multipass` host](#creating-a-tunnel-from-an-lxd-controller-to-a-multipass-host)
+  - [Writing React components](#writing-react-components)
+    - [React component conventions](#react-component-conventions)
+  - [Writing tests](#writing-tests)
+    - [Testing conventions](#testing-conventions)
+    - [Mocking data](#mocking-data)
+    - [Test snippets](#test-snippets)
+  - [Developer notes](#developer-notes)
+    - [Updating CRA](#updating-cra)
+- [Releasing the Dashboard](#releasing-the-dashboard)
+  - [Release prep](#release-prep)
+  - [Generate a release tarball for Juju](#generate-a-release-tarball-for-juju)
+  - [Release to jaas.ai](#release-to-jaasai)
+  - [Release to Juju Simplestreams](#release-to-juju-simplestreams)
+  - [Create an announcement on the Juju Discourse](#create-an-announcement-on-the-juju-discourse)
+
 ## Using the Dashboard with Juju
 
 Below are the commands you can use to interact with the dashboard from Juju 2.8+
@@ -33,7 +62,7 @@ git pull git://github.com/<pr creators username>/jaas-dashboard.git <pull reques
 
 ### In Juju
 
-#### Uploading the a tarball to a Juju controller
+#### Uploading the tarball to a Juju controller
 
 This is the preferred approach as it's served by Juju itself which is also generating the configuration files so it's the closest to a production environment.
 
@@ -45,7 +74,7 @@ juju dashboard
 
 And connect to the Dashboard from your browser using the supplied details.
 
-#### Connecting a local dashboard to a remote controller
+#### Connecting a local Dashboard to a remote controller
 
 If you'd like to run the Dashboard locally and connect to a remote controller
 see [Developing while connected to a Juju controller](#developing-while-connected-to-a-juju-controller)
@@ -59,6 +88,22 @@ The default configuration setting for the Dashboard is to connect to public JAAS
 ```
 
 Then connect to the Dashboard from your browser at http://localhost:8036/.
+
+### Release tests
+
+- [ ] Can you log in?
+- [ ] Does the model list show your available models?
+- [ ] Are your models correctly grouped by status?
+- [ ] Are your models correctly grouped by owner?
+- [ ] Are your models correctly grouped by cloud?
+- [ ] Can you filter the tables?
+- [ ] Can you view the controllers list?
+- [ ] Is the controllers list hidden if you do not have permission to view it?
+- [ ] Are your model details accurate?
+- [ ] Can you hide and show tables in the model details?
+- [ ] Is the Topology rendered correctly?
+- [ ] Chaos monkey, did anything break?
+- [ ] General observations, was there anything that needs improvement?
 
 ## Developing the Dashboard
 
@@ -89,15 +134,9 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
 ./run test
 ```
 
-### Generating a release tarball for Juju
+### Accessing the Dashboard from nested containers
 
-```
-./run exec yarn run generate-release-tarball
-```
-
-### Accessing the dashboard from nested containers
-
-#### A lxd bootstrapped Dashboard that's also within a `multipass` VM
+#### A lxd bootstrapped Dashboard that is also within a `multipass` VM
 
 When you want to access a dashboard that was automatically installed with a `juju bootstrap` within an lxd in a `multipass` vm from the host.
 
@@ -160,7 +199,7 @@ This effectively means that we write integration and component tests, not unit t
 - The test files are kept along side the library or component file following the naming convention `<component|filename>.test.js`.
 - We limit the use of snapshots except for where the snapshot updates can be easily verified by a reviewer.
 - Add assertions for the explicit content you're expecting. This allows changes to things that may not be relevant to the test like classNames, attributes, etc.
-- When searching for an element, use element selectors where possible and add a data attribute when not. We follow the format of `data-test="..."` or `data-test-<specifier>="..."` ex) `<a data-test-column="priority">High</a>`.
+- When searching for an element, use element selectors where possible and add a data attribute when not. We follow the format of `data-test="..."` or `data-test-<specifier>="..."` e.g. `<a data-test-column="priority">High</a>`.
 - Test labels should be specific and representative of the test content. Create additional tests if you need assertions that do not apply to the label.
 - Do not mock components unless absolutely necessary. The data dump mentioned below should contain sufficient data to render the full component tree in the test.
 
@@ -172,7 +211,7 @@ The file [complete-redux-store-dump.js](src/testing/complete-redux-store-dump.js
 
 If you want to test states that are not included in the data dump, or if you want to see how a component will act in different data states you can modify it locally within the test. If you must modify some value see if there is value in adding another entry into the dataset for others to use.
 
-#### Test Snippets
+#### Test snippets
 
 The typical import and test case setup looks like the following. Note that we create a shared `mockStore` factory at the top of each test suite.
 
@@ -244,3 +283,63 @@ const wrapper = mount(
 #### Updating CRA
 
 When updating Create React App it's important to take a look at the `optimization.minimizer` values in the webpack config and then update the config in `craco.config.js`. After copying over any updates be sure to re-introduce the `terserOptions.mangle.reserved` key and values in the newly updated config.
+
+## Releasing the Dashboard
+
+To complete QA and release the Dashboard will take aproximately 2h of total time, 1h of which is an automated process at the end.
+
+- [Release prep](#release-prep)
+- [Generate a release tarball for Juju](#generate-a-release-tarball-for-juju)
+- [Release to jaas.ai](#release-to-jaas.ai)
+- [Release to Juju Simplestreams](#release-to-juju-simplestreams)
+- [Create an announcement on the Juju Discourse](#create-an-announcement-on-the-juju-discourse)
+
+### Release prep
+
+To prepare to release:
+
+- Clone a new copy of the repository to remove the chance of any uncommitted artifacts ending up in the release.
+- Thoroughly [QA the Dashboard](#qa'ing-the-dashboard) following the [Release tests](#release-tests)
+- Update the changelog by adding the important commits from the last tag.
+
+```
+  git log `git describe --tags --abbrev=0`..HEAD --format='- %b' --merges | sed '/^- $/d'
+```
+
+- Bump the version of the `package.json` file to the next appropriate semver version.
+- Commit the changes
+- Tag that commit with the appropriate version number.
+
+### Generate a release tarball for Juju
+
+The version of the Dashboard that's installed with every new Juju bootstrap is generated using:
+
+```
+./run exec yarn run generate-release-tarball
+```
+
+- Take this tarball and create a new release on GitHub under the appropriate version tag.
+- Add the notes from the changelog to the release notes on GitHub.
+
+### Release to jaas.ai
+
+The release to jaas.ai is in two steps. New releases of the jaas.ai website will pull in the
+latest release of the Dashboard for JAAS.
+
+- Trigger the [Staging CI job](https://jenkins.canonical.com/webteam/job/jaas.ai-staging/) to release a new version of jaas.ai to staging.
+- Validate that the website works as expected and that the [release tests](#release-tests) are pass successfully.
+- Trigger the [Production CI job](https://jenkins.canonical.com/webteam/job/jaas.ai-production/) to perform the release to jaas.ai production.
+- Validate that the website works as expected and that the [release tests](#release-tests) are pass successfully.
+
+### Release to Juju Simplestreams
+
+When Juju bootstraps a new instance it fetches the appropriate content for the infrastructure it's deployed on from a system called Simplestreams.
+
+To release a tarball of the Dashboard to Simplestreams:
+
+- Clone the release script [Shipit](https://github.com/CanonicalLtd/shipit).
+- Follow the instructions in that projects `README.md` to perform the release. This will take aproximately an hour but it's automated. You'll want to keep an eye on it as it's doing its thing in the event it needs input.
+
+### Create an announcement on the Juju Discourse
+
+Create a new post in the [News category](https://discourse.juju.is/c/news) on the Juju Discourse outlining what new features and fixes were included as well as what we're planning on including in upcoming releases.

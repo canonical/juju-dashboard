@@ -1,6 +1,12 @@
 {
-  "extends": ["react-app", "prettier/react"],
-  "plugins": ["prettier", "jest"],
+  "extends": [
+    "react-app",
+    "prettier/react",
+    "plugin:jsx-a11y/recommended",
+    "plugin:import/warnings",
+    "plugin:jest/recommended"
+  ],
+  "plugins": ["prettier", "jest", "jsx-a11y", "import"],
   "rules": {
     "react/prop-types": 0,
     "react/jsx-filename-extension": [
@@ -26,7 +32,7 @@
     "document": true,
     "localStorage": true,
     "windowLocation": true,
-    "jaasDashboardConfig": true,
+    "jujuDashboardConfig": true,
     "lightningjs": true
   }
 }

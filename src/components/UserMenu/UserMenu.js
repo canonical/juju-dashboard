@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch, useStore } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import classNames from "classnames";
-import { useDispatch, useStore } from "react-redux";
-import { getActiveUserTag } from "app/selectors";
+import { getActiveUserTag, getWSControllerURL } from "app/selectors";
 
 import { logOut } from "app/actions";
 import useAnalytics from "hooks/useAnalytics";
@@ -18,7 +17,10 @@ const UserMenu = () => {
   const sendAnalytics = useAnalytics();
   const dispatch = useDispatch();
   const getState = useStore().getState;
-  const activeUser = useSelector(getActiveUserTag);
+  const activeUser = getActiveUserTag(
+    useSelector(getWSControllerURL),
+    getState()
+  );
   const isActive = useSelector(isUserMenuActive) || false;
 
   useEffect(() => {
@@ -30,6 +32,8 @@ const UserMenu = () => {
     }
   }, [isActive, sendAnalytics]);
 
+  const toggleUserMenuActive = () => dispatch(userMenuActive(!isActive));
+
   return (
     <div
       className={classNames("user-menu", {
@@ -39,7 +43,10 @@ const UserMenu = () => {
       <>
         <div
           className="user-menu__header"
-          onClick={() => dispatch(userMenuActive(!isActive))}
+          onClick={toggleUserMenuActive}
+          onKeyPress={toggleUserMenuActive}
+          role="button"
+          tabIndex="0"
         >
           <i className="p-icon--user"></i>
           <span className="user-menu__name">

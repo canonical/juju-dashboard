@@ -53,24 +53,17 @@ export const getBakery = (state) => {
   @param {Object} state The application state.
   @returns {Object|Null} The config object or null if none found.
 */
-export const getConfig = (state) => {
-  if (state.root && state.root.config) {
-    return state.root.config;
-  }
-  return null;
-};
+export const getConfig = (state) => state?.root?.config;
 
 /**
   Fetches the username and password from state.
+  @param {String} wsControllerURL The fully qualified wsController URL to
+    retrieve the credentials from.
   @param {Object} state The application state.
   @returns {Object|Null} The username and password or null if none found.
 */
-export const getUserPass = (state) => {
-  if (state.root && state.root.credentials) {
-    return state.root.credentials;
-  }
-  return null;
-};
+export const getUserPass = (wsControllerURL, state) =>
+  state?.root?.credentials?.[wsControllerURL];
 
 /**
   Fetches a login error from state
@@ -368,20 +361,23 @@ const countModelStatusGroups = (groupedModelStatuses) => {
   @param {Object} filters The filters to filter by in the format:
     {segment: [values]}
   @param {Object} modelData The model data from the redux store.
-  @param {Array} controllerData The controller data from the redux store.
+  @param {Array} controllers The controllers from the redux store.
   @returns {Object} The filtered model data.
 */
-const filterModelData = (filters, modelData, controllerData) => {
+const filterModelData = (filters, modelData, controllers) => {
   const clonedModelData = cloneDeep(modelData);
   // Add the controller name to the model data where we have a valid name.
   Object.entries(clonedModelData).forEach((model) => {
     if (model[1].info) {
-      let controllerName = "";
+      let controllerName = null;
       const modelInfo = model[1].info;
-      if (controllerData) {
-        controllerName = controllerData.find(
-          (controller) => modelInfo.controllerUuid === controller.uuid
-        )?.path;
+      if (controllers) {
+        Object.entries(controllers).some((controller) => {
+          controllerName = controller[1].find(
+            (controller) => modelInfo.controllerUuid === controller.uuid
+          )?.path;
+          return controllerName;
+        });
       }
       if (modelInfo.controllerUuid === "a030379a-940f-4760-8fcf-3062b41a04e7") {
         controllerName = "JAAS";
@@ -472,24 +468,26 @@ export const getMacaroons = createSelector(
   @param {Object} state The application state.
   @returns {Boolean} If the user is logged in.
 */
-export const isLoggedIn = (state) => {
-  return (
-    state.root.controllerConnection &&
-    state.root.controllerConnection.info.user.identity
-  );
+export const isLoggedIn = (wsControllerURL, state) => {
+  return state.root.controllerConnections?.[wsControllerURL]?.info?.user
+    ?.identity;
 };
 
-export const getControllerConnection = (state) =>
-  state?.root?.controllerConnection;
+export const getControllerConnection = (wsControllerURL, state) =>
+  state?.root?.controllerConnections?.[wsControllerURL];
+
+export const getControllerConnections = (state) =>
+  state?.root?.controllerConnections;
 
 export const isConnecting = (state) => !!state.root.visitURL;
 /**
   Returns the users current controller logged in identity
+  @param {String} wsControllerURL The controller url to make the query on.
   @param {Object} state The application state.
   @returns {String} The users userTag.
 */
-export const getActiveUserTag = (state) =>
-  state?.root?.controllerConnection?.info.user.identity;
+export const getActiveUserTag = (wsControllerURL, state) =>
+  state?.root?.controllerConnections?.[wsControllerURL]?.info.user.identity;
 
 /**
   Returns a model status for the supplied modelUUID.

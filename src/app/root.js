@@ -1,12 +1,15 @@
-import produce from "immer";
+import immerProduce from "immer";
+import cloneDeep from "clone-deep";
 
 import { actionsList } from "./actions";
 
 function rootReducer(state = {}, action) {
-  return produce(state, (draftState) => {
+  return immerProduce(state, (draftState) => {
     switch (action.type) {
       case actionsList.updateControllerConnection:
-        draftState.controllerConnection = action.payload;
+        const connections = cloneDeep(state.controllerConnections || {});
+        connections[action.payload.wsControllerURL] = action.payload.conn;
+        draftState.controllerConnections = connections;
         break;
       case actionsList.storeBakery:
         draftState.bakery = action.payload;
@@ -18,7 +21,9 @@ function rootReducer(state = {}, action) {
         draftState.loginError = action.payload;
         break;
       case actionsList.storeUserPass:
-        draftState.credentials = action.payload;
+        const credentials = cloneDeep(state.credentials || {});
+        credentials[action.payload.wsControllerURL] = action.payload.credential;
+        draftState.credentials = credentials;
         break;
       case actionsList.storeVersion:
         draftState.appVersion = action.payload;
@@ -31,10 +36,14 @@ function rootReducer(state = {}, action) {
         delete draftState.controllerConnection;
         break;
       case actionsList.updateJujuAPIInstance:
-        draftState.juju = action.payload;
+        const jujus = cloneDeep(state.jujus || {});
+        jujus[action.payload.wsControllerURL] = action.payload.juju;
+        draftState.jujus = jujus;
         break;
       case actionsList.updatePingerIntervalId:
-        draftState.pingerIntervalId = action.payload;
+        const intervals = cloneDeep(state.pingerIntervalIds || {});
+        intervals[action.payload.wsControllerURL] = action.payload.intervalId;
+        draftState.pingerIntervalIds = intervals;
         break;
       default:
         // no default value, fall through.

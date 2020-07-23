@@ -6,14 +6,13 @@
   background-color: $color-x-light;
   box-shadow: 0 1px 5px 1px rgba(51, 51, 51, 0.2);
   display: grid;
-  padding: 0.75rem;
+  padding: 0.5rem;
   position: sticky;
   top: 0;
   width: calc(100vw - #{$sidebar-full-width});
   z-index: z("beta");
 }
 
-// XXX Ant: Need to work out why 100vw - sidebar width does not work
 .has-collapsible-sidebar .l-side + .l-main .header {
-  width: calc(100vw - 60px);
+  width: calc(100vw - #{$sidebar-collapsed});
 }

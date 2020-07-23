@@ -94,7 +94,7 @@ describe("ModelDetail Container", () => {
       .simulate("click");
     const units = wrapper.find(".model-details__units tbody tr");
     expect(units.length).toBe(1);
-    expect(units.hasClass("is-selected"));
+    expect(units.hasClass("is-selected")).toBe(true);
     expect(units.find("td").first().text()).toBe("easyrsa/0");
     const machines = wrapper.find(".model-details__machines tbody tr");
     expect(machines.length).toBe(1);
@@ -234,6 +234,13 @@ describe("ModelDetail Container", () => {
     expect(
       wrapper.find(".model-details__apps tr[data-app='cockroachdb']").length
     ).toBe(1);
+    expect(
+      wrapper
+        .find(
+          ".model-details__apps tr[data-app='cockroachdb'] td[data-test-column='store']"
+        )
+        .text()
+    ).toBe("Local");
   });
 
   it("displays the correct scale value", () => {

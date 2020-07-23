@@ -24,8 +24,8 @@ function generateStatusTableHeaders(label, count) {
       content: generateStatusElement(label, count),
       sortKey: label.toLowerCase(),
     },
+    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
     { content: "Owner", sortKey: "owner" },
-    { content: "Configuration", sortKey: "summary" },
     { content: "Cloud/Region", sortKey: "cloud" },
     { content: "Credential", sortKey: "credential" },
     { content: "Controller", sortKey: "controller" },
@@ -40,14 +40,21 @@ function generateStatusTableHeaders(label, count) {
 /**
   Generates the warning message for the model name cell.
   @param {Object} model The full model data.
+  @param {String} activeUser The active user name.
   @return {Object} The react component for the warning message.
 */
-const generateWarningMessage = (model) => {
+const generateWarningMessage = (model, activeUser) => {
   const { messages } = getModelStatusGroupData(model);
   const title = messages.join("; ");
+  const link = generateModelDetailsLink(
+    model.model.name,
+    model?.info?.ownerTag,
+    activeUser,
+    title
+  );
   return (
     <span className="model-table-list_error-message" title={title}>
-      {title}
+      {link}
     </span>
   );
 };
@@ -56,21 +63,24 @@ const generateWarningMessage = (model) => {
   Generates the model name cell.
   @param {Object} model The model data.
   @param {String} groupLabel The status group the model belongs in.
-    ex) blocked, alert, running
+    e.g. blocked, alert, running
   @param {String} activeUser The user tag for the active user.
-    ex) user-foo@external
+    e.g. user-foo@external
   @returns {Object} The React element for the model name cell.
 */
 const generateModelNameCell = (model, groupLabel, activeUser) => {
   const link = generateModelDetailsLink(
     model.model.name,
     model.info && model.info.ownerTag,
-    activeUser
+    activeUser,
+    model.model.name
   );
   return (
     <>
       <div>{link}</div>
-      {groupLabel === "blocked" ? generateWarningMessage(model) : null}
+      {groupLabel === "blocked"
+        ? generateWarningMessage(model, activeUser)
+        : null}
     </>
   );
 };
@@ -79,7 +89,7 @@ const generateModelNameCell = (model, groupLabel, activeUser) => {
   Returns the model info and statuses in the proper format for the table data.
   @param {Object} groupedModels The models grouped by state
   @param {String} activeUser The fully qualified user name tag
-    ex) user-foo@external
+    e.g. user-foo@external
   @returns {Object} The formatted table data.
 */
 function generateModelTableDataByStatus(groupedModels, activeUser) {
@@ -104,17 +114,17 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
             content: generateModelNameCell(model, groupLabel, activeUser),
           },
           {
+            "data-test-column": "summary",
+            content: getStatusValue(model, "summary"),
+            className: "u-overflow--visible",
+          },
+          {
             "data-test-column": "owner",
             content: (
               <a href="#_" className="p-link--soft">
                 {owner}
               </a>
             ),
-          },
-          {
-            "data-test-column": "summary",
-            content: getStatusValue(model, "summary"),
-            className: "u-overflow--visible",
           },
           {
             "data-test-column": "cloud",

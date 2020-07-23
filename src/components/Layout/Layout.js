@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
-import { isLoggedIn } from "app/selectors";
+import { useSelector, useStore } from "react-redux";
+import { isLoggedIn, getWSControllerURL } from "app/selectors";
 import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
@@ -19,7 +19,12 @@ const Layout = ({ children }) => {
     "releaseNotification",
     false
   );
-  const userIsLoggedIn = useSelector(isLoggedIn);
+
+  const store = useStore();
+  const userIsLoggedIn = isLoggedIn(
+    useSelector(getWSControllerURL),
+    store.getState()
+  );
   const sidebarCollapsible = useSelector(isSidebarCollapsible);
   const smallScreenBreakpoint = 1400;
   const isSmallScreen = screenWidth <= smallScreenBreakpoint ? true : false;
@@ -65,7 +70,7 @@ const Layout = ({ children }) => {
               setReleaseNotification(true);
             }}
           >
-            Welcome to the new JAAS Dashboard! This dashboard is the replacement
+            Welcome to the new Juju Dashboard! This dashboard is the replacement
             for the Juju GUI in JAAS and individual Juju Controllers from Juju
             2.8.{" "}
             <span className="u-hide--small">

@@ -25,7 +25,9 @@ exports[`LogIn renders a 'connecting' message while connecting 1`] = `
           className="login__logo"
           src="logo-black-on-white.svg"
         />
-        <IdentityProviderForm>
+        <IdentityProviderForm
+          userIsLoggedIn={false}
+        >
           <Button>
             <button
               className="p-button--neutral"
@@ -150,7 +152,9 @@ exports[`LogIn renders an IdentityProvider login UI if the user is not logged in
           className="login__logo"
           src="logo-black-on-white.svg"
         />
-        <IdentityProviderForm>
+        <IdentityProviderForm
+          userIsLoggedIn={false}
+        >
           <Button
             visitURL="I am a url"
           >
