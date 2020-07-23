@@ -323,7 +323,7 @@ function RegisterAController({ onClose }) {
             </div>
           </div>
         </div>
-        <div className="row horizonal-rule">
+        <div className="row horizontal-rule">
           <div className="col-8 col-start-large-5">
             <input
               type="checkbox"
