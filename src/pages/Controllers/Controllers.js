@@ -186,8 +186,7 @@ function RegisterAController({ onClose }) {
       <h5>Register a Controller</h5>
       <p className="p-form-help-text">
         Controller information can be retrieved using the{" "}
-        <code>juju show-controller</code>
-        command.
+        <code>juju show-controller</code> command.
       </p>
       <form
         className="p-form p-form--stacked"
@@ -283,9 +282,8 @@ function RegisterAController({ onClose }) {
               />
               <p className="p-form-help-text">
                 The password will be what you used when running{" "}
-                <code>juju register</code>
-                or if unchanged from the default it can be retrieved by running{" "}
-                <code>juju dashboard</code>.
+                <code>juju register</code> or if unchanged from the default it
+                can be retrieved by running <code>juju dashboard</code>.
               </p>
             </div>
           </div>
