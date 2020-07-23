@@ -39,58 +39,9 @@ export default async function connectAndListModels(
     if (additionalControllers) {
       controllerList = controllerList.concat(additionalControllers);
     }
-    controllerList.forEach(async (controllerData) => {
-      let conn, error, juju, intervalId;
-      try {
-        ({ conn, error, juju, intervalId } = await loginWithBakery(
-          ...controllerData
-        ));
-        if (error) {
-          reduxStore.dispatch(storeLoginError(error));
-          return;
-        }
-      } catch (e) {
-        return console.log("unable to log into controller", e, controllerData);
-      }
-
-      // XXX Now that we can register multiple controllers this needs
-      // to be set per controller.
-      if (process.env.NODE_ENV === "production") {
-        Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
-      }
-
-      reduxStore.dispatch(updateControllerConnection(controllerData[0], conn));
-      reduxStore.dispatch(updateJujuAPIInstance(controllerData[0], juju));
-      reduxStore.dispatch(
-        updatePingerIntervalId(controllerData[0], intervalId)
-      );
-
-      fetchControllerList(
-        controllerData[0],
-        conn,
-        controllerData[4],
-        reduxStore
-      );
-      // XXX the isJuju Check needs to be done on a per-controller basis
-      if (!isJuju) {
-        // This call will be a noop if the user isn't an administrator
-        // on the JIMM controller we're connected to.
-        disableControllerUUIDMasking(conn);
-      }
-
-      do {
-        await reduxStore.dispatch(fetchModelList(conn), {
-          wsControllerURL: controllerData[0],
-        });
-        await fetchAllModelStatuses(controllerData[0], conn, reduxStore);
-        // Wait 30s then start again.
-        await new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(true);
-          }, 30000);
-        });
-      } while (isLoggedIn(controllerData[0], reduxStore.getState()));
-    });
+    controllerList.forEach((controllerData) =>
+      connectAndPollController(controllerData, isJuju, reduxStore)
+    );
   } catch (error) {
     // XXX Surface error to UI.
     // XXX Send to sentry if it's an error that's not connection related
@@ -98,4 +49,54 @@ export default async function connectAndListModels(
     // Something went wrong:  cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
     console.error("Something went wrong: ", error);
   }
+}
+
+export async function connectAndPollController(
+  controllerData,
+  isJuju,
+  reduxStore
+) {
+  let conn, error, juju, intervalId;
+  try {
+    ({ conn, error, juju, intervalId } = await loginWithBakery(
+      ...controllerData
+    ));
+    if (error) {
+      reduxStore.dispatch(storeLoginError(error));
+      return;
+    }
+  } catch (e) {
+    return console.log("unable to log into controller", e, controllerData);
+  }
+
+  // XXX Now that we can register multiple controllers this needs
+  // to be sent per controller.
+  if (process.env.NODE_ENV === "production") {
+    Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
+  }
+
+  reduxStore.dispatch(updateControllerConnection(controllerData[0], conn));
+  reduxStore.dispatch(updateJujuAPIInstance(controllerData[0], juju));
+  reduxStore.dispatch(updatePingerIntervalId(controllerData[0], intervalId));
+
+  fetchControllerList(controllerData[0], conn, controllerData[4], reduxStore);
+  // XXX the isJuju Check needs to be done on a per-controller basis
+  if (!isJuju) {
+    // This call will be a noop if the user isn't an administrator
+    // on the JIMM controller we're connected to.
+    disableControllerUUIDMasking(conn);
+  }
+
+  do {
+    await reduxStore.dispatch(fetchModelList(conn), {
+      wsControllerURL: controllerData[0],
+    });
+    await fetchAllModelStatuses(controllerData[0], conn, reduxStore);
+    // Wait 30s then start again.
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 30000);
+    });
+  } while (isLoggedIn(controllerData[0], reduxStore.getState()));
 }
