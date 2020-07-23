@@ -198,20 +198,20 @@ function RegisterAController({ onClose }) {
     <SlidePanel onClose={onClose}>
       <h5>Register a Controller</h5>
       <p className="p-form-help-text">
-        Controller information can be retrieved using the{" "}
-        <code>juju show-controller</code> command.
+        Information can be retrieved using the <code>juju show-controller</code>{" "}
+        command.
       </p>
       <form
         className="p-form p-form--stacked"
         onSubmit={handleRegisterAController}
       >
         <div className="p-form__group row">
-          <div className="col-4">
+          <div className="col-3">
             <label
               htmlFor="full-name-stacked"
               className="p-form__label is-required"
             >
-              Controller name
+              Name
             </label>
           </div>
 
@@ -233,12 +233,12 @@ function RegisterAController({ onClose }) {
         </div>
 
         <div className="p-form__group row">
-          <div className="col-4">
+          <div className="col-3">
             <label
               htmlFor="full-name-stacked"
               className="p-form__label is-required"
             >
-              Full hostname
+              Host
             </label>
           </div>
 
@@ -252,16 +252,16 @@ function RegisterAController({ onClose }) {
                 required="true"
               />
               <p className="p-form-help-text">
-                You'll typically want to use the public IP address for the
+                You'll typically want to use the public IP:Port address for the
                 controller. <br />
-                e.g. wss://123.456.789.0:17070/api
+                e.g. 123.456.789.0:17070
               </p>
             </div>
           </div>
         </div>
 
         <div className="p-form__group row">
-          <div className="col-4">
+          <div className="col-3">
             <label htmlFor="full-name-stacked" className="p-form__label">
               Username
             </label>
@@ -284,7 +284,7 @@ function RegisterAController({ onClose }) {
         </div>
 
         <div className="p-form__group row">
-          <div className="col-4">
+          <div className="col-3">
             <label htmlFor="full-name-stacked" className="p-form__label">
               Password
             </label>
@@ -313,7 +313,7 @@ function RegisterAController({ onClose }) {
             "u-hide": formValues.username && formValues.password,
           })}
         >
-          <div className="col-8 col-start-large-5">
+          <div className="col-8 col-start-large-4">
             <input
               type="checkbox"
               id="identityProviderAvailable"
@@ -332,7 +332,7 @@ function RegisterAController({ onClose }) {
           </div>
         </div>
         <div className="row">
-          <div className="col-8 col-start-large-5">
+          <div className="col-8 col-start-large-4">
             <i className="p-icon--warning"></i>
             <div className="controller-link-message">
               Visit {generateTheControllerLink(controllerIP)} to accept the
@@ -341,7 +341,7 @@ function RegisterAController({ onClose }) {
           </div>
         </div>
         <div className="row horizontal-rule">
-          <div className="col-8 col-start-large-5">
+          <div className="col-8 col-start-large-4">
             <input
               type="checkbox"
               id="certificateHasBeenAccepted"
