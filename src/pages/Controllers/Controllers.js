@@ -180,7 +180,19 @@ function RegisterAController({ onClose }) {
   const controllerIP = formValues?.wsControllerURL
     ? formValues.wsControllerURL.replace("wss://", "").replace("/api", "")
     : "";
-  const dashboardLink = `https://${controllerIP}/dashboard`;
+
+  function generateTheControllerLink(controllerIP) {
+    if (!controllerIP) {
+      return "the controller";
+    }
+    const dashboardLink = `https://${controllerIP}/dashboard`;
+    return (
+      <a href={dashboardLink} target="_blank" rel="noopener noreferrer">
+        the controller
+      </a>
+    );
+  }
+
   /* eslint-disable jsx-a11y/label-has-associated-control */
   return (
     <SlidePanel onClose={onClose}>
@@ -323,12 +335,8 @@ function RegisterAController({ onClose }) {
           <div className="col-8 col-start-large-5">
             <i className="p-icon--warning"></i>
             <div className="controller-link-message">
-              Visit{" "}
-              <a href={dashboardLink} target="_blank" rel="noopener noreferrer">
-                the controller
-              </a>{" "}
-              to accept the certificate on this controller to enable a secure
-              connection
+              Visit {generateTheControllerLink(controllerIP)} to accept the
+              certificate on this controller to enable a secure connection
             </div>
           </div>
         </div>
