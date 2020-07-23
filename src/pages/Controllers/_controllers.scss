@@ -89,6 +89,10 @@
     .controller-link-message {
       padding-left: 2rem;
     }
+
+    .required-star {
+      color: $color-negative;
+    }
   }
 
   .controllers--registered-tooltip {

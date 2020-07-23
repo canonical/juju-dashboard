@@ -194,7 +194,10 @@ function RegisterAController({ onClose }) {
       >
         <div className="p-form__group row">
           <div className="col-4">
-            <label htmlFor="full-name-stacked" className="p-form__label">
+            <label
+              htmlFor="full-name-stacked"
+              className="p-form__label is-required"
+            >
               Controller name
             </label>
           </div>
@@ -218,7 +221,10 @@ function RegisterAController({ onClose }) {
 
         <div className="p-form__group row">
           <div className="col-4">
-            <label htmlFor="full-name-stacked" className="p-form__label">
+            <label
+              htmlFor="full-name-stacked"
+              className="p-form__label is-required"
+            >
               Full hostname
             </label>
           </div>
@@ -331,8 +337,9 @@ function RegisterAController({ onClose }) {
               onChange={handleInputChange}
               required="true"
             />
-            <label htmlFor="certificateHasBeenAccepted">
-              The SSL certificate, if any, has been accepted.
+            <label htmlFor="certificateHasBeenAccepted" className="is-required">
+              The SSL certificate, if any, has been accepted.{" "}
+              <span className="required-star">*</span>
             </label>
           </div>
         </div>
