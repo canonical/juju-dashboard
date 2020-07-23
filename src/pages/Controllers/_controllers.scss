@@ -51,7 +51,7 @@
   }
 
   .slide-panel__content {
-    max-width: 560px;
+    max-width: 540px;
 
     .row {
       grid-gap: 0;
@@ -88,6 +88,10 @@
 
     .controller-link-message {
       padding-left: 2rem;
+    }
+
+    .required-star {
+      color: $color-negative;
     }
   }
 

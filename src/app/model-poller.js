@@ -40,15 +40,21 @@ export default async function connectAndListModels(
       controllerList = controllerList.concat(additionalControllers);
     }
     controllerList.forEach(async (controllerData) => {
-      const { conn, error, juju, intervalId } = await loginWithBakery(
-        ...controllerData
-      );
-
-      if (error) {
-        reduxStore.dispatch(storeLoginError(error));
-        return;
+      let conn, error, juju, intervalId;
+      try {
+        ({ conn, error, juju, intervalId } = await loginWithBakery(
+          ...controllerData
+        ));
+        if (error) {
+          reduxStore.dispatch(storeLoginError(error));
+          return;
+        }
+      } catch (e) {
+        return console.log("unable to log into controller", e, controllerData);
       }
 
+      // XXX Now that we can register multiple controllers this needs
+      // to be set per controller.
       if (process.env.NODE_ENV === "production") {
         Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
       }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import cloneDeep from "clone-deep";
+import classNames from "classnames";
 
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
@@ -159,7 +160,7 @@ function RegisterAController({ onClose }) {
     e.preventDefault();
     // XXX Validate form values
     additionalControllers.push([
-      formValues.wsControllerURL, // wsControllerURL
+      `wss://${formValues.wsControllerHost}/api`, // wsControllerURL
       { user: formValues.username, password: formValues.password }, // credentials
       null, // bakery
       formValues.identityProviderAvailable, // identityProviderAvailable
@@ -176,26 +177,37 @@ function RegisterAController({ onClose }) {
     setFormValues(newFormValues);
   }
 
-  const controllerIP = formValues?.wsControllerURL
-    ? formValues.wsControllerURL.replace("wss://", "").replace("/api", "")
-    : "";
-  const dashboardLink = `https://${controllerIP}/dashboard`;
+  function generateTheControllerLink(controllerIP) {
+    if (!controllerIP) {
+      return "the controller";
+    }
+    const dashboardLink = `https://${controllerIP}/dashboard`;
+    return (
+      <a href={dashboardLink} target="_blank" rel="noopener noreferrer">
+        the controller
+      </a>
+    );
+  }
+
   /* eslint-disable jsx-a11y/label-has-associated-control */
   return (
     <SlidePanel onClose={onClose}>
       <h5>Register a Controller</h5>
       <p className="p-form-help-text">
-        Controller information can be retrieved using the{" "}
-        <code>juju show-controller</code> command.
+        Information can be retrieved using the <code>juju show-controller</code>{" "}
+        command.
       </p>
       <form
         className="p-form p-form--stacked"
         onSubmit={handleRegisterAController}
       >
         <div className="p-form__group row">
-          <div className="col-4">
-            <label htmlFor="full-name-stacked" className="p-form__label">
-              Controller name
+          <div className="col-3">
+            <label
+              htmlFor="full-name-stacked"
+              className="p-form__label is-required"
+            >
+              Name
             </label>
           </div>
 
@@ -217,9 +229,12 @@ function RegisterAController({ onClose }) {
         </div>
 
         <div className="p-form__group row">
-          <div className="col-4">
-            <label htmlFor="full-name-stacked" className="p-form__label">
-              Full hostname
+          <div className="col-3">
+            <label
+              htmlFor="full-name-stacked"
+              className="p-form__label is-required"
+            >
+              Host
             </label>
           </div>
 
@@ -228,21 +243,21 @@ function RegisterAController({ onClose }) {
               <input
                 type="text"
                 id="full-name-stacked"
-                name="wsControllerURL"
+                name="wsControllerHost"
                 onChange={handleInputChange}
                 required="true"
               />
               <p className="p-form-help-text">
-                You'll typically want to use the public IP address for the
+                You'll typically want to use the public IP:Port address for the
                 controller. <br />
-                e.g. wss://123.456.789.0:17070/api
+                e.g. 123.456.789.0:17070
               </p>
             </div>
           </div>
         </div>
 
         <div className="p-form__group row">
-          <div className="col-4">
+          <div className="col-3">
             <label htmlFor="full-name-stacked" className="p-form__label">
               Username
             </label>
@@ -265,7 +280,7 @@ function RegisterAController({ onClose }) {
         </div>
 
         <div className="p-form__group row">
-          <div className="col-4">
+          <div className="col-3">
             <label htmlFor="full-name-stacked" className="p-form__label">
               Password
             </label>
@@ -289,8 +304,12 @@ function RegisterAController({ onClose }) {
           </div>
         </div>
 
-        <div className="p-form__group row">
-          <div className="col-8 col-start-large-5">
+        <div
+          className={classNames("p-form__group row", {
+            "u-hide": formValues.username && formValues.password,
+          })}
+        >
+          <div className="col-8 col-start-large-4">
             <input
               type="checkbox"
               id="identityProviderAvailable"
@@ -309,20 +328,17 @@ function RegisterAController({ onClose }) {
           </div>
         </div>
         <div className="row">
-          <div className="col-8 col-start-large-5">
+          <div className="col-8 col-start-large-4">
             <i className="p-icon--warning"></i>
             <div className="controller-link-message">
-              Visit{" "}
-              <a href={dashboardLink} target="_blank" rel="noopener noreferrer">
-                the controller
-              </a>{" "}
-              to accept the certificate on this controller to enable a secure
+              Visit {generateTheControllerLink(formValues?.wsControllerHost)} to
+              accept the certificate on this controller to enable a secure
               connection
             </div>
           </div>
         </div>
         <div className="row horizontal-rule">
-          <div className="col-8 col-start-large-5">
+          <div className="col-8 col-start-large-4">
             <input
               type="checkbox"
               id="certificateHasBeenAccepted"
@@ -332,7 +348,8 @@ function RegisterAController({ onClose }) {
               required="true"
             />
             <label htmlFor="certificateHasBeenAccepted">
-              The SSL certificate, if any, has been accepted.
+              The SSL certificate, if any, has been accepted.{" "}
+              <span className="required-star">*</span>
             </label>
           </div>
         </div>
