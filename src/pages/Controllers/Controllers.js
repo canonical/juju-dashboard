@@ -160,7 +160,7 @@ function RegisterAController({ onClose }) {
     e.preventDefault();
     // XXX Validate form values
     additionalControllers.push([
-      formValues.wsControllerURL, // wsControllerURL
+      `wss://${formValues.wsControllerHost}/api`, // wsControllerURL
       { user: formValues.username, password: formValues.password }, // credentials
       null, // bakery
       formValues.identityProviderAvailable, // identityProviderAvailable
@@ -176,10 +176,6 @@ function RegisterAController({ onClose }) {
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setFormValues(newFormValues);
   }
-
-  const controllerIP = formValues?.wsControllerURL
-    ? formValues.wsControllerURL.replace("wss://", "").replace("/api", "")
-    : "";
 
   function generateTheControllerLink(controllerIP) {
     if (!controllerIP) {
@@ -247,7 +243,7 @@ function RegisterAController({ onClose }) {
               <input
                 type="text"
                 id="full-name-stacked"
-                name="wsControllerURL"
+                name="wsControllerHost"
                 onChange={handleInputChange}
                 required="true"
               />
@@ -335,8 +331,9 @@ function RegisterAController({ onClose }) {
           <div className="col-8 col-start-large-4">
             <i className="p-icon--warning"></i>
             <div className="controller-link-message">
-              Visit {generateTheControllerLink(controllerIP)} to accept the
-              certificate on this controller to enable a secure connection
+              Visit {generateTheControllerLink(formValues?.wsControllerHost)} to
+              accept the certificate on this controller to enable a secure
+              connection
             </div>
           </div>
         </div>
@@ -350,7 +347,7 @@ function RegisterAController({ onClose }) {
               onChange={handleInputChange}
               required="true"
             />
-            <label htmlFor="certificateHasBeenAccepted" className="is-required">
+            <label htmlFor="certificateHasBeenAccepted">
               The SSL certificate, if any, has been accepted.{" "}
               <span className="required-star">*</span>
             </label>
