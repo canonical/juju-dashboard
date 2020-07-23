@@ -210,7 +210,7 @@ function RegisterAController({ onClose }) {
               />
               <p className="p-form-help-text">
                 Must be a valid alpha-numeric Juju controller name. <br />
-                ex) production-controller-aws
+                e.g. production-controller-aws
               </p>
             </div>
           </div>
@@ -235,7 +235,7 @@ function RegisterAController({ onClose }) {
               <p className="p-form-help-text">
                 You'll typically want to use the public IP address for the
                 controller. <br />
-                ex) wss://123.456.789.0:17070/api
+                e.g. wss://123.456.789.0:17070/api
               </p>
             </div>
           </div>

@@ -63,9 +63,9 @@ const generateWarningMessage = (model, activeUser) => {
   Generates the model name cell.
   @param {Object} model The model data.
   @param {String} groupLabel The status group the model belongs in.
-    ex) blocked, alert, running
+    e.g. blocked, alert, running
   @param {String} activeUser The user tag for the active user.
-    ex) user-foo@external
+    e.g. user-foo@external
   @returns {Object} The React element for the model name cell.
 */
 const generateModelNameCell = (model, groupLabel, activeUser) => {
@@ -89,7 +89,7 @@ const generateModelNameCell = (model, groupLabel, activeUser) => {
   Returns the model info and statuses in the proper format for the table data.
   @param {Object} groupedModels The models grouped by state
   @param {String} activeUser The fully qualified user name tag
-    ex) user-foo@external
+    e.g. user-foo@external
   @returns {Object} The formatted table data.
 */
 function generateModelTableDataByStatus(groupedModels, activeUser) {
