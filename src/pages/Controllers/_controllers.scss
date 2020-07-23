@@ -75,8 +75,15 @@
       position: absolute;
     }
 
-    .p-form-help-text.identity-provider {
-      padding-left: 2rem;
+    .p-form-help-text {
+      code {
+        display: inline-block;
+        margin: 0.25rem 0.25rem;
+      }
+
+      &.identity-provider {
+        padding-left: 2rem;
+      }
     }
 
     .controller-link-message {
