@@ -14,6 +14,7 @@ import {
 } from "app/actions";
 import {
   getConfig,
+  getControllerData,
   getUserPass,
   getWSControllerURL,
   isLoggedIn,
@@ -29,6 +30,7 @@ export default async function connectAndListModels(
     const { identityProviderAvailable, isJuju } = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
     const credentials = getUserPass(wsControllerURL, storeState);
+    const controllers = getControllerData(storeState) || {};
     const defaultControllerData = [
       wsControllerURL,
       credentials,
@@ -39,6 +41,11 @@ export default async function connectAndListModels(
     if (additionalControllers) {
       controllerList = controllerList.concat(additionalControllers);
     }
+    const connectedControllers = Object.keys(controllers);
+    controllerList = controllerList.filter((controllerData) => {
+      // remove controllers we're already connected to.
+      return !connectedControllers.includes(controllerData[0]);
+    });
     controllerList.forEach((controllerData) =>
       connectAndPollController(controllerData, isJuju, reduxStore)
     );
@@ -51,6 +58,19 @@ export default async function connectAndListModels(
   }
 }
 
+/**
+
+  @param {Object} controllerData The data to use to connect to the controller.
+    In the format [
+      wsControllerURL - The fully qualified controller url wss://ip:port/api
+      credentials - An object with the keys {user, password}
+      bakery - An instance of the bakery to use if necessary
+      identityProviderAvailable - If an identity provider is to be used. If so
+        a bakery must be provided.
+    ]
+  @param {Boolean} isJuju
+  @param {Object} reduxStore
+*/
 export async function connectAndPollController(
   controllerData,
   isJuju,

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import cloneDeep from "clone-deep";
 import classNames from "classnames";
 
@@ -8,7 +8,8 @@ import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
-import { getControllerData, getModelData } from "app/selectors";
+import { getBakery, getControllerData, getModelData } from "app/selectors";
+import { connectAndStartPolling } from "app/actions";
 import useLocalStorage from "hooks/useLocalStorage";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 
@@ -151,6 +152,9 @@ function Details() {
 
 function RegisterAController({ onClose }) {
   const [formValues, setFormValues] = useState({});
+  const dispatch = useDispatch();
+  const reduxStore = useStore();
+  const bakery = useSelector(getBakery);
   const [additionalControllers, setAdditionalControllers] = useLocalStorage(
     "additionalControllers",
     []
@@ -167,6 +171,7 @@ function RegisterAController({ onClose }) {
       true, // additional controller
     ]);
     setAdditionalControllers(additionalControllers);
+    dispatch(connectAndStartPolling(reduxStore, bakery));
     onClose(); // Close the SlidePanel
   }
 
