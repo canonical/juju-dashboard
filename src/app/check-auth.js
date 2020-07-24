@@ -18,6 +18,7 @@ const actionWhitelist = [
   "CLEAR_MODEL_DATA",
   "STORE_VISIT_URL",
   "TOGGLE_COLLAPSIBLE_SIDEBAR",
+  "TOGGLE_USER_MENU",
 ];
 
 // When updating this list be sure to update the mangle.reserved list in
