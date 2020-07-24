@@ -218,7 +218,7 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="controllerName"
                 onChange={handleInputChange}
-                required="true"
+                required={true}
               />
               <p className="p-form-help-text">
                 Must be a valid alpha-numeric Juju controller name. <br />
@@ -245,7 +245,7 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="wsControllerHost"
                 onChange={handleInputChange}
-                required="true"
+                required={true}
               />
               <p className="p-form-help-text">
                 You'll typically want to use the public IP:Port address for the
@@ -270,7 +270,6 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="username"
                 onChange={handleInputChange}
-                required=""
               />
               <p className="p-form-help-text">
                 The username you use to access the controller.
@@ -293,7 +292,6 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="password"
                 onChange={handleInputChange}
-                required=""
               />
               <p className="p-form-help-text">
                 The password will be what you used when running{" "}
@@ -316,7 +314,6 @@ function RegisterAController({ onClose }) {
               name="identityProvider"
               defaultChecked={false}
               onChange={handleInputChange}
-              required=""
             />
             <label htmlFor="identityProviderAvailable">
               An identity provider is available.{" "}
@@ -345,7 +342,7 @@ function RegisterAController({ onClose }) {
               name="certificateAccepted"
               defaultChecked={false}
               onChange={handleInputChange}
-              required="true"
+              required={true}
             />
             <label htmlFor="certificateHasBeenAccepted">
               The SSL certificate, if any, has been accepted.{" "}
