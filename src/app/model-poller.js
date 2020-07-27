@@ -5,13 +5,16 @@ import {
   fetchControllerList,
   loginWithBakery,
 } from "juju";
-import { fetchModelList } from "juju/actions";
+
 import {
   storeLoginError,
   updateControllerConnection,
   updateJujuAPIInstance,
   updatePingerIntervalId,
 } from "app/actions";
+
+import { updateModelList } from "juju/actions";
+
 import {
   getConfig,
   getControllerData,
@@ -108,10 +111,19 @@ export async function connectAndPollController(
   }
 
   do {
-    await reduxStore.dispatch(fetchModelList(conn), {
+    const models = await conn.facades.modelManager.listModels({
+      tag: conn.info.user.identity,
+    });
+    reduxStore.dispatch(updateModelList(models), {
       wsControllerURL: controllerData[0],
     });
-    await fetchAllModelStatuses(controllerData[0], conn, reduxStore);
+    const modelUUIDList = models.userModels.map((item) => item.model.uuid);
+    await fetchAllModelStatuses(
+      controllerData[0],
+      modelUUIDList,
+      conn,
+      reduxStore
+    );
     // Wait 30s then start again.
     await new Promise((resolve) => {
       setTimeout(() => {
