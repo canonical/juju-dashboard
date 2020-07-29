@@ -238,17 +238,21 @@ async function fetchModelInfo(conn, modelUUID) {
   Loops through each model UUID to fetch the status. Uppon receiving the status
   dispatches to store that status data.
   @param {Object} conn The connection to the controller.
+  @param {Array} modelUUIDList A list of the model uuid's to connect to.
   @param {Object} reduxStore The applications reduxStore.
   @returns {Promise} Resolves when the queue fetching the model statuses has
     completed. Does not reject.
 */
-export async function fetchAllModelStatuses(wsControllerURL, conn, reduxStore) {
+export async function fetchAllModelStatuses(
+  wsControllerURL,
+  modelUUIDList,
+  conn,
+  reduxStore
+) {
   const getState = reduxStore.getState;
-  const modelList = getState().juju.models;
   const dispatch = reduxStore.dispatch;
   const queue = new Limiter({ concurrency: 5 });
-  const modelUUIDs = Object.keys(modelList);
-  modelUUIDs.forEach((modelUUID) => {
+  modelUUIDList.forEach((modelUUID) => {
     queue.push(async (done) => {
       if (isLoggedIn(wsControllerURL, getState())) {
         await fetchAndStoreModelStatus(

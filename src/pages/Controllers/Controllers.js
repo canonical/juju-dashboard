@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import cloneDeep from "clone-deep";
 import classNames from "classnames";
 
@@ -8,7 +8,8 @@ import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
-import { getControllerData, getModelData } from "app/selectors";
+import { getBakery, getControllerData, getModelData } from "app/selectors";
+import { connectAndStartPolling } from "app/actions";
 import useLocalStorage from "hooks/useLocalStorage";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 
@@ -151,6 +152,9 @@ function Details() {
 
 function RegisterAController({ onClose }) {
   const [formValues, setFormValues] = useState({});
+  const dispatch = useDispatch();
+  const reduxStore = useStore();
+  const bakery = useSelector(getBakery);
   const [additionalControllers, setAdditionalControllers] = useLocalStorage(
     "additionalControllers",
     []
@@ -167,6 +171,7 @@ function RegisterAController({ onClose }) {
       true, // additional controller
     ]);
     setAdditionalControllers(additionalControllers);
+    dispatch(connectAndStartPolling(reduxStore, bakery));
     onClose(); // Close the SlidePanel
   }
 
@@ -218,7 +223,7 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="controllerName"
                 onChange={handleInputChange}
-                required="true"
+                required={true}
               />
               <p className="p-form-help-text">
                 Must be a valid alpha-numeric Juju controller name. <br />
@@ -245,7 +250,7 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="wsControllerHost"
                 onChange={handleInputChange}
-                required="true"
+                required={true}
               />
               <p className="p-form-help-text">
                 You'll typically want to use the public IP:Port address for the
@@ -270,7 +275,6 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="username"
                 onChange={handleInputChange}
-                required=""
               />
               <p className="p-form-help-text">
                 The username you use to access the controller.
@@ -293,7 +297,6 @@ function RegisterAController({ onClose }) {
                 id="full-name-stacked"
                 name="password"
                 onChange={handleInputChange}
-                required=""
               />
               <p className="p-form-help-text">
                 The password will be what you used when running{" "}
@@ -316,7 +319,6 @@ function RegisterAController({ onClose }) {
               name="identityProvider"
               defaultChecked={false}
               onChange={handleInputChange}
-              required=""
             />
             <label htmlFor="identityProviderAvailable">
               An identity provider is available.{" "}
@@ -345,7 +347,7 @@ function RegisterAController({ onClose }) {
               name="certificateAccepted"
               defaultChecked={false}
               onChange={handleInputChange}
-              required="true"
+              required={true}
             />
             <label htmlFor="certificateHasBeenAccepted">
               The SSL certificate, if any, has been accepted.{" "}

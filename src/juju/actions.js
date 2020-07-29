@@ -5,7 +5,6 @@ import { fetchAndStoreModelStatus } from "juju";
 // Action labels
 export const actionsList = {
   clearModelData: "CLEAR_MODEL_DATA",
-  fetchModelList: "FETCH_MODEL_LIST",
   updateControllerList: "UPDATE_CONTROLLER_LIST",
   updateModelInfo: "UPDATE_MODEL_INFO",
   updateModelStatus: "UPDATE_MODEL_STATUS",
@@ -70,23 +69,6 @@ export function updateModelInfo(modelInfo) {
 }
 
 // Thunks
-
-/**
-  Fetches the model list from the supplied Juju controller. Requires that the
-  user is logged in to dispatch the retrieved data from listModels.
-  @param {Object} conn The controller connection.
-  @returns {Object} models The list of model objects under the key `userModels`.
-*/
-export function fetchModelList(conn) {
-  return async function fetchModelList(dispatch, getState) {
-    const models = await conn.facades.modelManager.listModels({
-      tag: conn.info.user.identity,
-    });
-    dispatch(updateModelList(models), {
-      wsControllerURL: conn.transport._ws.url,
-    });
-  };
-}
 
 /**
   Returns the model status that's stored in the database if it exists or makes
