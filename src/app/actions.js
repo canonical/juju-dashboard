@@ -1,12 +1,12 @@
 import {
   getBakery,
-  getJujuAPIInstance,
-  getPingerIntervalId,
+  getJujuAPIInstances,
+  getPingerIntervalIds,
 } from "app/selectors";
 
 import connectAndListModels from "app/model-poller";
 
-import { clearModelData } from "juju/actions";
+import { clearControllerData, clearModelData } from "juju/actions";
 
 // Action labels
 export const actionsList = {
@@ -140,16 +140,20 @@ export function logOut(getState) {
   return async function logOut(dispatch) {
     const state = getState();
     const bakery = getBakery(state);
-    const juju = getJujuAPIInstance(state);
-    const pingerIntervalId = getPingerIntervalId(state);
+    const jujus = getJujuAPIInstances(state);
+    const pingerIntervalIds = getPingerIntervalIds(state);
     bakery.storage._store.removeItem("identity");
     bakery.storage._store.removeItem("https://api.jujucharms.com/identity");
-    juju.logout();
-    clearInterval(pingerIntervalId);
+    localStorage.removeItem("additionalControllers");
+    Object.entries(jujus).forEach((juju) => juju[1].logout());
+    Object.entries(pingerIntervalIds).forEach((pingerIntervalId) =>
+      clearInterval(pingerIntervalId[1])
+    );
     dispatch({
       type: actionsList.logOut,
     });
     dispatch(clearModelData());
+    dispatch(clearControllerData());
   };
 }
 
