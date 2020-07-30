@@ -34,6 +34,7 @@ function rootReducer(state = {}, action) {
       case actionsList.logOut:
         delete draftState.bakery.storage._store.identity;
         delete draftState.controllerConnections;
+        delete draftState.visitURL;
         break;
       case actionsList.updateJujuAPIInstance:
         const jujus = cloneDeep(state.jujus || {});
