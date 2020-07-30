@@ -93,10 +93,11 @@ function Details() {
     const cloud = c?.location?.cloud || "unknown";
     const region = c?.location?.region || "unknown";
     const cloudRegion = `${cloud}/${region}`;
-    const publicAccess = c?.Public || "False";
+    const publicAccess = `${c?.Public}` || "False";
+    const path = c.path === "admin/jaas" ? "JAAS" : c.path;
     return {
       columns: [
-        { content: c.path },
+        { content: path },
         { content: cloudRegion },
         { content: c.models, className: "u-align--right" },
         { content: c.machines, className: "u-align--right" },

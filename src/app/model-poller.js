@@ -107,7 +107,12 @@ export async function connectAndPollController(
   if (!isJuju) {
     // This call will be a noop if the user isn't an administrator
     // on the JIMM controller we're connected to.
-    disableControllerUUIDMasking(conn);
+    try {
+      await disableControllerUUIDMasking(conn);
+    } catch (e) {
+      // Silently fail, if this doesn't work then the user isn't authorized
+      // to perform the action.
+    }
   }
 
   do {
