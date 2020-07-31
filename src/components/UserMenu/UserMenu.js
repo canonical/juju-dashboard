@@ -16,7 +16,8 @@ import "./_user-menu.scss";
 const UserMenu = () => {
   const sendAnalytics = useAnalytics();
   const dispatch = useDispatch();
-  const getState = useStore().getState;
+  const store = useStore();
+  const getState = store.getState;
   const activeUser = getActiveUserTag(
     useSelector(getWSControllerURL),
     getState()
@@ -73,7 +74,7 @@ const UserMenu = () => {
             <Link
               className="user-menu__link"
               to="/"
-              onClick={() => dispatch(logOut(getState))}
+              onClick={() => dispatch(logOut(store))}
             >
               Log out
             </Link>

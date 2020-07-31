@@ -136,9 +136,11 @@ export function storeVisitURL(visitURL) {
 /**
   Flush bakery from redux store
 */
-export function logOut(getState) {
+export function logOut(store) {
   return async function logOut(dispatch) {
-    const state = getState();
+    const state = store.getState();
+    const identityProviderAvailable =
+      state?.root?.config?.identityProviderAvailable;
     const bakery = getBakery(state);
     const jujus = getJujuAPIInstances(state);
     const pingerIntervalIds = getPingerIntervalIds(state);
@@ -154,6 +156,12 @@ export function logOut(getState) {
     });
     dispatch(clearModelData());
     dispatch(clearControllerData());
+    if (identityProviderAvailable) {
+      // To enable users to log back in after logging out we have to re-connect
+      // to the controller to get another wait url and start polling on it
+      // again.
+      dispatch(connectAndStartPolling(store, bakery));
+    }
   };
 }
 
