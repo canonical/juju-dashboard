@@ -116,19 +116,24 @@ export async function connectAndPollController(
   }
 
   do {
-    const models = await conn.facades.modelManager.listModels({
-      tag: conn.info.user.identity,
-    });
-    reduxStore.dispatch(updateModelList(models), {
-      wsControllerURL: controllerData[0],
-    });
-    const modelUUIDList = models.userModels.map((item) => item.model.uuid);
-    await fetchAllModelStatuses(
-      controllerData[0],
-      modelUUIDList,
-      conn,
-      reduxStore
-    );
+    try {
+      const models = await conn.facades.modelManager.listModels({
+        tag: conn.info.user.identity,
+      });
+      reduxStore.dispatch(updateModelList(models), {
+        wsControllerURL: controllerData[0],
+      });
+      const modelUUIDList = models.userModels.map((item) => item.model.uuid);
+      await fetchAllModelStatuses(
+        controllerData[0],
+        modelUUIDList,
+        conn,
+        reduxStore
+      );
+    } catch (e) {
+      console.log(e);
+    }
+
     // Wait 30s then start again.
     await new Promise((resolve) => {
       setTimeout(() => {
