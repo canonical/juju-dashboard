@@ -68,6 +68,9 @@ export default function jujuReducer(state = defaultState, action) {
         draftState.modelData = {};
         draftState.models = {};
         break;
+      case actionsList.clearControllerData:
+        draftState.controllers = {};
+        break;
       case actionsList.updateControllerList:
         const controllers = cloneDeep(state.controllers || {});
         controllers[action.payload.wsControllerURL] =

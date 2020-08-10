@@ -4,6 +4,7 @@ import { fetchAndStoreModelStatus } from "juju";
 
 // Action labels
 export const actionsList = {
+  clearControllerData: "CLEAR_CONTROLLER_DATA",
   clearModelData: "CLEAR_MODEL_DATA",
   updateControllerList: "UPDATE_CONTROLLER_LIST",
   updateModelInfo: "UPDATE_MODEL_INFO",
@@ -16,6 +17,12 @@ export const actionsList = {
 export function clearModelData() {
   return {
     type: actionsList.clearModelData,
+  };
+}
+
+export function clearControllerData() {
+  return {
+    type: actionsList.clearControllerData,
   };
 }
 

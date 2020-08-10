@@ -83,10 +83,7 @@ function generateErrorMessage(loginError) {
 function IdentityProviderForm({ userIsLoggedIn }) {
   const visitURL = useSelector((state) => {
     if (!userIsLoggedIn) {
-      const root = state.root;
-      if (root && root.visitURL) {
-        return root.visitURL;
-      }
+      return state?.root?.visitURL;
     }
   });
 

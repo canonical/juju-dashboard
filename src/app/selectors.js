@@ -67,24 +67,14 @@ export const getLoginError = (state) => state?.root?.loginError;
   @param {Object} state The application state.
   @returns {Object|Null} The juju api instance or null if none found.
 */
-export const getJujuAPIInstance = (state) => {
-  if (state.root && state.root.juju) {
-    return state.root.juju;
-  }
-  return null;
-};
+export const getJujuAPIInstances = (state) => state?.root?.jujus;
 
 /**
   Fetches the pinger intervalId from state.
   @param {Object} state The application state.
   @returns {Object|Null} The pinger intervalId or null if none found.
 */
-export const getPingerIntervalId = (state) => {
-  if (state.root && state.root.pingerIntervalId) {
-    return state.root.pingerIntervalId;
-  }
-  return null;
-};
+export const getPingerIntervalIds = (state) => state?.root?.pingerIntervalIds;
 
 /**
   Fetches the application version.
