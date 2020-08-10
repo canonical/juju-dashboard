@@ -61,7 +61,7 @@
     "clone-deep": "4.0.1",
     "d3": "5.16.0",
     "enzyme": "3.11.0",
-    "enzyme-adapter-react-16": "1.15.2",
+    "enzyme-adapter-react-16": "1.15.3",
     "enzyme-to-json": "3.5.0",
     "immer": "7.0.7",
     "node-sass": "4.14.1",
