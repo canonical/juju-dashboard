@@ -2,9 +2,9 @@ import React from "react";
 
 import "./_slide-panel.scss";
 
-function SlidePanel({ children, onClose }) {
+function SlidePanel({ children, onClose, isActive }) {
   return (
-    <div className="slide-panel">
+    <div className="slide-panel" aria-hidden={!isActive}>
       <button
         className="p-modal__close"
         aria-label="Close active modal"

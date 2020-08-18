@@ -1,6 +1,7 @@
 @import "vanilla-framework/scss/vanilla";
 
 .slide-panel {
+  @include vf-animation(transform, brisk, out);
   $top-header-height: 40px;
 
   background-color: $color-x-light;
@@ -11,6 +12,11 @@
   position: fixed;
   right: 0;
   top: $top-header-height;
+  transform: translateX(100%);
+
+  &[aria-hidden="false"] {
+    transform: translateX(0);
+  }
 
   .p-modal__close {
     margin: 1rem;
