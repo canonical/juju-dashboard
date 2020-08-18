@@ -138,20 +138,17 @@ function Details() {
       <ControllersOverview />
       <div className="l-controllers-table u-overflow--scroll">
         <MainTable headers={headers} rows={rows} />
-        {/* {additionalRows.length ? ( */}
         <MainTable headers={additionalHeaders} rows={additionalRows} />
-        {/* ) : null} */}
-        {showRegisterAController ? (
-          <RegisterAController
-            onClose={() => setShowRegisterAController(false)}
-          />
-        ) : null}
+        <RegisterAController
+          onClose={() => setShowRegisterAController(false)}
+          showRegisterAController={showRegisterAController}
+        />
       </div>
     </>
   );
 }
 
-function RegisterAController({ onClose }) {
+function RegisterAController({ onClose, showRegisterAController }) {
   const [formValues, setFormValues] = useState({});
   const dispatch = useDispatch();
   const reduxStore = useStore();
@@ -197,7 +194,7 @@ function RegisterAController({ onClose }) {
 
   /* eslint-disable jsx-a11y/label-has-associated-control */
   return (
-    <SlidePanel onClose={onClose}>
+    <SlidePanel onClose={onClose} isActive={showRegisterAController}>
       <h5>Register a Controller</h5>
       <p className="p-form-help-text">
         Information can be retrieved using the <code>juju show-controller</code>{" "}
