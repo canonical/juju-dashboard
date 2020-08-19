@@ -51,12 +51,12 @@ const ModelDetails = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (modelUUID !== null) {
+    if (modelUUID !== null && modelStatusData === null) {
       // This model may not be in the first batch of models that we request
       // status from in the main loop so update the status now.
       dispatch(fetchModelStatus(modelUUID));
     }
-  }, [dispatch, modelUUID]);
+  }, [dispatch, modelUUID, modelStatusData]);
 
   const handleRowClick = (e) => {
     const currentTarget = e.currentTarget;
@@ -146,7 +146,7 @@ const ModelDetails = () => {
           </div>
         </div>
         <SlidePanel
-          isActive={slidePanelData}
+          isActive={Object.entries(slidePanelData).length}
           onClose={() => setSlidePanelData({})}
         >
           <h3>{slidePanelData.app}</h3>
