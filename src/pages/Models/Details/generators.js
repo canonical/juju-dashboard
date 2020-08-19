@@ -1,5 +1,4 @@
 import React from "react";
-import classnames from "classnames";
 import { URL } from "@canonical/jaaslib/lib/urls";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
@@ -95,7 +94,6 @@ export function generateEntityLink(namespace, name, subordinate, baseAppURL) {
 
 export function generateApplicationRows(
   modelStatusData,
-  filterByApp,
   onRowClick,
   baseAppURL
 ) {
@@ -140,14 +138,13 @@ export function generateApplicationRows(
         { "data-test-column": "os", content: "Ubuntu" },
         { "data-test-column": "notes", content: "-" },
       ],
-      className: filterByApp === key ? "is-selected" : "",
       onClick: onRowClick,
       "data-app": key,
     };
   });
 }
 
-export function generateUnitRows(modelStatusData, filterByApp, baseAppURL) {
+export function generateUnitRows(modelStatusData, baseAppURL) {
   if (!modelStatusData) {
     return [];
   }
@@ -191,7 +188,6 @@ export function generateUnitRows(modelStatusData, filterByApp, baseAppURL) {
             className: "u-truncate",
           },
         ],
-        className: filterByApp === unitId.split("/")[0] ? "is-selected" : "",
       });
 
       const subordinates = unit.subordinates;
@@ -228,9 +224,6 @@ export function generateUnitRows(modelStatusData, filterByApp, baseAppURL) {
                 className: "u-truncate",
               },
             ],
-            className: classnames("subordinate-row", {
-              "is-selected": filterByApp === key.split("/")[0],
-            }),
           });
         }
       }
@@ -248,7 +241,7 @@ const splitParts = (hardware) =>
     })
   );
 
-export function generateMachineRows(modelStatusData, filterByApp) {
+export function generateMachineRows(modelStatusData) {
   if (!modelStatusData) {
     return [];
   }
@@ -284,9 +277,6 @@ export function generateMachineRows(modelStatusData, filterByApp) {
           className: "u-truncate",
         },
       ],
-      // If there is a filter provided and the machine is visible then
-      // it's been filtered so we want to highlight it.
-      className: classnames({ "is-selected": !!filterByApp }),
     };
   });
 }
@@ -313,7 +303,7 @@ const generateRelationIconImage = (
   return generateIconImg(applicationName, application.charm, baseAppURL);
 };
 
-export function generateRelationRows(modelStatusData, filterByApp, baseAppURL) {
+export function generateRelationRows(modelStatusData, baseAppURL) {
   if (!modelStatusData) {
     return [];
   }
@@ -368,9 +358,6 @@ export function generateRelationRows(modelStatusData, filterByApp, baseAppURL) {
           ),
         },
       ],
-      // If there is a filter provided and the relation is visible then
-      // it's been filtered so we want to highlight it.
-      className: classnames({ "is-selected": !!filterByApp }),
     };
   });
 }

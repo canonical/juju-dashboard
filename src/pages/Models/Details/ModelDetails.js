@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import cloneDeep from "clone-deep";
 
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
@@ -27,85 +26,13 @@ import {
 
 import "./_model-details.scss";
 
-/**
-  Returns the modelStatusData filtered by the supplied values.
-  @param {Object} modelStatusData The model status data to filter
-  @param {String} appName The name of the application to filter the data by.
-*/
-const filterModelStatusData = (modelStatusData, appName) => {
-  if (modelStatusData) {
-    const filteredData = cloneDeep(modelStatusData);
-    Object.keys(filteredData.applications).forEach((key) => {
-      filteredData.applications[key].unitsCount = Object.keys(
-        filteredData.applications[key].units
-      ).length;
-    });
-    if (appName === "") {
-      return filteredData;
-    }
-
-    const application = filteredData.applications[appName];
-    // remove the units from the application objects that are not
-    // the filter-by app.
-    const subordinateTo = application.subordinateTo || [];
-    Object.keys(filteredData.applications).forEach((key) => {
-      if (key !== appName && !subordinateTo.includes(key)) {
-        filteredData.applications[key].units = {};
-      }
-    });
-    // Loop through all of the units of the remaining applications that are
-    // listed in the subordinateTo list. This is done because although
-    // a subordinate is supposed to be installed on each unit, that's not
-    // always the case.
-    subordinateTo.forEach((parentName) => {
-      const units = filteredData.applications[parentName].units;
-      Object.entries(units).forEach((entry) => {
-        const found = Object.entries(entry[1].subordinates).find(
-          (ele) => ele[0].split("/")[0] === appName
-        );
-        if (!found) {
-          delete units[entry[0]];
-        }
-      });
-    });
-
-    // Remove all the machines that the selected application isn't installed on.
-    const appMachines = new Set();
-    for (let unitId in application.units) {
-      const unit = application.units[unitId];
-      appMachines.add(unit.machine);
-    }
-    subordinateTo.forEach((subAppName) => {
-      // this will be the parent of the subordinate and grab the machines from it
-      const parent = filteredData.applications[subAppName];
-      for (let unitId in parent.units) {
-        const unit = parent.units[unitId];
-        appMachines.add(unit.machine);
-      }
-    });
-    for (let machineId in filteredData.machines) {
-      if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
-    }
-
-    // Remove all relations that don't involve the selected application.
-    filteredData.relations = modelStatusData.relations.filter(
-      (relation) => relation.key.indexOf(appName) > -1
-    );
-
-    return filteredData;
-  }
-
-  return modelStatusData;
-};
-
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
-  const [filterByApp, setFilterByApp] = useState("");
 
   const [viewFilterToggle, setViewFilterToggle] = useState({ all: true });
 
-  const [slidePanelActive, setSlidePanelActive] = useState(false);
+  const [slidePanelData, setSlidePanelData] = useState({});
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
@@ -113,10 +40,7 @@ const ModelDetails = () => {
     modelUUID,
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
-  const filteredModelStatusData = filterModelStatusData(
-    modelStatusData,
-    filterByApp
-  );
+
   const { baseAppURL } = useSelector(getConfig);
 
   useEffect(() => {
@@ -127,48 +51,35 @@ const ModelDetails = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (modelUUID !== null && filteredModelStatusData === null) {
+    if (modelUUID !== null) {
       // This model may not be in the first batch of models that we request
       // status from in the main loop so update the status now.
       dispatch(fetchModelStatus(modelUUID));
     }
-  }, [dispatch, modelUUID, filteredModelStatusData]);
+  }, [dispatch, modelUUID]);
 
   const handleRowClick = (e) => {
-    console.log("handle click");
-    setSlidePanelActive(!slidePanelActive);
-    // const currentTarget = e.currentTarget;
-    // if (currentTarget.classList.contains("is-selected")) {
-    //   setFilterByApp("");
-    //   return;
-    // }
-    // setFilterByApp(currentTarget.dataset.app);
+    const currentTarget = e.currentTarget;
+    setSlidePanelData({ app: currentTarget.dataset.app });
   };
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
 
   const applicationTableRows = useMemo(
-    () =>
-      generateApplicationRows(
-        filteredModelStatusData,
-        filterByApp,
-        handleRowClick,
-        baseAppURL
-      ),
-    [baseAppURL, filterByApp, filteredModelStatusData]
+    () => generateApplicationRows(modelStatusData, handleRowClick, baseAppURL),
+    [baseAppURL, modelStatusData]
   );
   const unitTableRows = useMemo(
-    () => generateUnitRows(filteredModelStatusData, filterByApp, baseAppURL),
-    [baseAppURL, filterByApp, filteredModelStatusData]
+    () => generateUnitRows(modelStatusData, baseAppURL),
+    [baseAppURL, modelStatusData]
   );
   const machinesTableRows = useMemo(
-    () => generateMachineRows(filteredModelStatusData, filterByApp),
-    [filterByApp, filteredModelStatusData]
+    () => generateMachineRows(modelStatusData),
+    [modelStatusData]
   );
   const relationTableRows = useMemo(
-    () =>
-      generateRelationRows(filteredModelStatusData, filterByApp, baseAppURL),
-    [baseAppURL, filterByApp, filteredModelStatusData]
+    () => generateRelationRows(modelStatusData, baseAppURL),
+    [baseAppURL, modelStatusData]
   );
 
   return (
@@ -235,10 +146,10 @@ const ModelDetails = () => {
           </div>
         </div>
         <SlidePanel
-          isActive={slidePanelActive}
-          onClose={() => setSlidePanelActive(!slidePanelActive)}
+          isActive={slidePanelData}
+          onClose={() => setSlidePanelData({})}
         >
-          Apps details
+          <h3>{slidePanelData.app}</h3>
         </SlidePanel>
       </div>
     </Layout>
