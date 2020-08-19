@@ -77,102 +77,6 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find(".subordinate").length).toEqual(2);
   });
 
-  it("clicking an application row filters the results", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/activedev@external/sub-test"]}>
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".model-details__units tbody tr").length).toBe(4);
-    wrapper
-      .find('.model-details__apps tr[data-app="easyrsa"]')
-      .simulate("click");
-    const units = wrapper.find(".model-details__units tbody tr");
-    expect(units.length).toBe(1);
-    expect(units.hasClass("is-selected")).toBe(true);
-    expect(units.find("td").first().text()).toBe("easyrsa/0");
-    const machines = wrapper.find(".model-details__machines tbody tr");
-    expect(machines.length).toBe(1);
-    expect(machines.find("td").first().text()).toBe("1. bionic35.229.83.62");
-    expect(wrapper.find(".model-details__relations tbody tr").length).toBe(0);
-  });
-
-  it("clicking an application row filters the results (subordinates)", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/activedev@external/sub-test"]}>
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".model-details__units tbody tr").length).toBe(4);
-    wrapper
-      .find('.model-details__apps tr[data-app="telegraf"]')
-      .simulate("click");
-    const units = wrapper.find(".model-details__units tbody tr");
-    expect(units.length).toBe(3);
-    expect(units.first().find("td").at(0).text()).toBe("ubuntu/0");
-    expect(units.at(1).find("td").first().text()).toBe("nrpe/0");
-    expect(units.at(2).find("td").first().text()).toBe("telegraf/0");
-    const machines = wrapper.find(".model-details__machines tbody tr");
-    expect(machines.length).toBe(1);
-    expect(machines.find("td").first().text()).toBe("0. bionic35.243.128.238");
-    const relations = wrapper.find(".model-details__relations tbody tr");
-    expect(relations.length).toBe(1);
-    expect(relations.find("td").first().text()).toBe("ubuntu:juju-info");
-  });
-
-  it("clicking an application row filters the results (missing subordinates)", () => {
-    // This is for when an application has subordinates related to it but not
-    // all units have those subordinates for whatever reason.
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/spaceman@external/hadoopspark"]}
-        >
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".model-details__units tbody tr").length).toBe(12);
-    wrapper
-      .find('.model-details__apps tr[data-app="rsyslog-forwarder-ha"]')
-      .simulate("click");
-    const units = wrapper.find(".model-details__units tbody tr");
-    expect(units.length).toBe(3);
-    expect(units.first().find("td").at(0).text()).toBe("slave/1");
-    expect(units.at(1).find("td").first().text()).toBe("ganglia-node/0");
-    expect(units.at(2).find("td").first().text()).toBe(
-      "rsyslog-forwarder-ha/0"
-    );
-    const machines = wrapper.find(".model-details__machines tbody tr");
-    expect(machines.length).toBe(1);
-    expect(machines.find("td").first().text()).toBe("0. xenial35.227.34.90");
-    const relations = wrapper.find(".model-details__relations tbody tr");
-    expect(relations.length).toBe(4);
-    expect(relations.first().find("td").first().text()).toBe(
-      "rsyslog:aggregator"
-    );
-    expect(relations.at(1).find("td").first().text()).toBe(
-      "namenode:juju-info"
-    );
-    expect(relations.at(2).find("td").first().text()).toBe("slave:juju-info");
-    expect(relations.at(3).find("td").first().text()).toBe(
-      "resourcemanager:juju-info"
-    );
-  });
-
   it("view filters hide and show tables", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
@@ -256,11 +160,6 @@ describe("ModelDetail Container", () => {
       </Provider>
     );
     const applicationRow = wrapper.find(`tr[data-app="${testApp}"]`);
-    expect(applicationRow.find("td[data-test-column='scale']").text()).toBe(
-      "1"
-    );
-    // Filtering the tables shouldn't effect the scale count
-    applicationRow.simulate("click");
     expect(applicationRow.find("td[data-test-column='scale']").text()).toBe(
       "1"
     );
