@@ -8,6 +8,7 @@ import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
+import SlidePanel from "components/SlidePanel/SlidePanel";
 
 import { getConfig, getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
@@ -104,6 +105,8 @@ const ModelDetails = () => {
 
   const [viewFilterToggle, setViewFilterToggle] = useState({ all: true });
 
+  const [slidePanelActive, setSlidePanelActive] = useState(false);
+
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
   const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
@@ -132,12 +135,14 @@ const ModelDetails = () => {
   }, [dispatch, modelUUID, filteredModelStatusData]);
 
   const handleRowClick = (e) => {
-    const currentTarget = e.currentTarget;
-    if (currentTarget.classList.contains("is-selected")) {
-      setFilterByApp("");
-      return;
-    }
-    setFilterByApp(currentTarget.dataset.app);
+    console.log("handle click");
+    setSlidePanelActive(!slidePanelActive);
+    // const currentTarget = e.currentTarget;
+    // if (currentTarget.classList.contains("is-selected")) {
+    //   setFilterByApp("");
+    //   return;
+    // }
+    // setFilterByApp(currentTarget.dataset.app);
   };
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
@@ -229,6 +234,12 @@ const ModelDetails = () => {
             )}
           </div>
         </div>
+        <SlidePanel
+          isActive={slidePanelActive}
+          onClose={() => setSlidePanelActive(!slidePanelActive)}
+        >
+          Apps details
+        </SlidePanel>
       </div>
     </Layout>
   );
