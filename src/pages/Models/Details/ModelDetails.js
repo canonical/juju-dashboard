@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import cloneDeep from "clone-deep";
 
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
@@ -27,9 +28,81 @@ import {
 
 import "./_model-details.scss";
 
+/**
+  Returns the modelStatusData filtered by the supplied values.
+  @param {Object} modelStatusData The model status data to filter
+  @param {String} appName The name of the application to filter the data by.
+*/
+const filterModelStatusData = (modelStatusData, appName) => {
+  if (modelStatusData) {
+    const filteredData = cloneDeep(modelStatusData);
+    Object.keys(filteredData.applications).forEach((key) => {
+      filteredData.applications[key].unitsCount = Object.keys(
+        filteredData.applications[key].units
+      ).length;
+    });
+    if (appName === "") {
+      return filteredData;
+    }
+
+    const application = filteredData.applications[appName];
+    // remove the units from the application objects that are not
+    // the filter-by app.
+    const subordinateTo = application.subordinateTo || [];
+    Object.keys(filteredData.applications).forEach((key) => {
+      if (key !== appName && !subordinateTo.includes(key)) {
+        filteredData.applications[key].units = {};
+      }
+    });
+    // Loop through all of the units of the remaining applications that are
+    // listed in the subordinateTo list. This is done because although
+    // a subordinate is supposed to be installed on each unit, that's not
+    // always the case.
+    subordinateTo.forEach((parentName) => {
+      const units = filteredData.applications[parentName].units;
+      Object.entries(units).forEach((entry) => {
+        const found = Object.entries(entry[1].subordinates).find(
+          (ele) => ele[0].split("/")[0] === appName
+        );
+        if (!found) {
+          delete units[entry[0]];
+        }
+      });
+    });
+
+    // Remove all the machines that the selected application isn't installed on.
+    const appMachines = new Set();
+    for (let unitId in application.units) {
+      const unit = application.units[unitId];
+      appMachines.add(unit.machine);
+    }
+    subordinateTo.forEach((subAppName) => {
+      // this will be the parent of the subordinate and grab the machines from it
+      const parent = filteredData.applications[subAppName];
+      for (let unitId in parent.units) {
+        const unit = parent.units[unitId];
+        appMachines.add(unit.machine);
+      }
+    });
+    for (let machineId in filteredData.machines) {
+      if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
+    }
+
+    // Remove all relations that don't involve the selected application.
+    filteredData.relations = modelStatusData.relations.filter(
+      (relation) => relation.key.indexOf(appName) > -1
+    );
+
+    return filteredData;
+  }
+
+  return modelStatusData;
+};
+
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
+  const [filterByApp, setFilterByApp] = useState("");
 
   const [viewFilterToggle, setViewFilterToggle] = useState({ all: true });
 
@@ -41,6 +114,10 @@ const ModelDetails = () => {
     modelUUID,
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
+  const filteredModelStatusData = filterModelStatusData(
+    modelStatusData,
+    filterByApp
+  );
 
   const { baseAppURL } = useSelector(getConfig);
 
@@ -59,9 +136,10 @@ const ModelDetails = () => {
     }
   }, [dispatch, modelUUID, modelStatusData]);
 
-  const handleAppRowClick = (app) => {
+  const handleAppRowClick = (e, app) => {
     console.log(app);
     setSlidePanelData({ app });
+    setFilterByApp(e.currentTarget.dataset.app);
   };
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
@@ -71,18 +149,34 @@ const ModelDetails = () => {
       generateApplicationRows(modelStatusData, handleAppRowClick, baseAppURL),
     [baseAppURL, modelStatusData]
   );
+
   const unitTableRows = useMemo(
     () => generateUnitRows(modelStatusData, baseAppURL),
     [baseAppURL, modelStatusData]
   );
+  const unitSlidePanelRows = useMemo(
+    () => generateUnitRows(filteredModelStatusData, baseAppURL),
+    [baseAppURL, filteredModelStatusData]
+  );
+
   const machinesTableRows = useMemo(
     () => generateMachineRows(modelStatusData),
     [modelStatusData]
   );
+  const machinesSlidePanelRows = useMemo(
+    () => generateMachineRows(filteredModelStatusData),
+    [filteredModelStatusData]
+  );
+
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData, baseAppURL),
     [modelStatusData, baseAppURL]
   );
+  const relationSlidePanelRows = useMemo(
+    () => generateRelationRows(filteredModelStatusData, baseAppURL),
+    [filteredModelStatusData, baseAppURL]
+  );
+
   const appSlidePanel = useMemo(
     () => generateAppSlidePanel(slidePanelData.app),
     [slidePanelData.app]
@@ -158,6 +252,27 @@ const ModelDetails = () => {
           onClose={() => setSlidePanelData({})}
         >
           {appSlidePanel}
+          <MainTable
+            headers={unitTableHeaders}
+            rows={unitSlidePanelRows}
+            className="model-details__units p-main-table"
+            sortable
+            emptyStateMsg={"There are no units in this model"}
+          />
+          <MainTable
+            headers={machineTableHeaders}
+            rows={machinesSlidePanelRows}
+            className="model-details__machines p-main-table"
+            sortable
+            emptyStateMsg={"There are no machines in this model"}
+          />
+          <MainTable
+            headers={relationTableHeaders}
+            rows={relationSlidePanelRows}
+            className="model-details__relations p-main-table"
+            sortable
+            emptyStateMsg={"There are no relations in this model"}
+          />
         </SlidePanel>
       </div>
     </Layout>

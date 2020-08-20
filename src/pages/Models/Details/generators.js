@@ -138,7 +138,7 @@ export function generateApplicationRows(
         { "data-test-column": "os", content: "Ubuntu" },
         { "data-test-column": "notes", content: "-" },
       ],
-      onClick: () => onRowClick(app),
+      onClick: (e) => onRowClick(e, app),
       "data-app": key,
     };
   });
@@ -383,39 +383,6 @@ export function generateAppSlidePanel(app) {
           <h4 className="p-muted-heading">
             Version: {app.workloadVersion || "-"}
           </h4>
-          <table style={{ maxWidth: "500px" }}>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Workload</th>
-                <th>Machine</th>
-                <th>Agent</th>
-                <th>Public Address</th>
-                <th>Ports</th>
-                <th>Message</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>easyrsa/0</th>
-                <td>Error</td>
-                <td>0</td>
-                <td>Idle</td>
-                <td>0.0.0.0.1</td>
-                <td>3306/tcp</td>
-                <td>Agent lost</td>
-              </tr>
-              <tr>
-                <th>easyrsa/1</th>
-                <td>Error</td>
-                <td>0</td>
-                <td>Idle</td>
-                <td>0.0.0.0.1</td>
-                <td>3306/tcp</td>
-                <td>Agent lost</td>
-              </tr>
-            </tbody>
-          </table>
         </>
       ) : (
         <p>loading</p>
