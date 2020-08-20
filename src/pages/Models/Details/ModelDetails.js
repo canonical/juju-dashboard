@@ -96,12 +96,14 @@ const ModelDetails = () => {
             {modelStatusData ? modelStatusData.model.name : "..."}
           </strong>
           <div className="model-details__filters">
-            <Filter
-              label="View:"
-              filters={viewFilters}
-              setFilterToggle={setViewFilterToggle}
-              filterToggle={viewFilterToggle}
-            />
+            {!Object.entries(slidePanelData).length && (
+              <Filter
+                label="View:"
+                filters={viewFilters}
+                setFilterToggle={setViewFilterToggle}
+                filterToggle={viewFilterToggle}
+              />
+            )}
           </div>
         </div>
       </Header>
