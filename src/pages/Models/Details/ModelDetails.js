@@ -192,14 +192,13 @@ const ModelDetails = () => {
             {modelStatusData ? modelStatusData.model.name : "..."}
           </strong>
           <div className="model-details__filters">
-            {!slidePanelActive && (
-              <Filter
-                label="View:"
-                filters={viewFilters}
-                setFilterToggle={setViewFilterToggle}
-                filterToggle={viewFilterToggle}
-              />
-            )}
+            <Filter
+              label="View:"
+              filters={viewFilters}
+              setFilterToggle={setViewFilterToggle}
+              filterToggle={viewFilterToggle}
+              disabled={slidePanelActive}
+            />
           </div>
         </div>
       </Header>
