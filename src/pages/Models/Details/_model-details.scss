@@ -16,6 +16,11 @@
     @media (min-width: $breakpoint-m-large) {
       grid-template-columns: 350px 1fr;
     }
+
+    &[aria-disabled="true"] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
   }
 }
 

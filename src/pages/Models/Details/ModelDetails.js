@@ -182,7 +182,7 @@ const ModelDetails = () => {
     [slidePanelData.app]
   );
 
-  const slidePanelActive = Object.entries(slidePanelData).length;
+  const slidePanelActive = Object.entries(slidePanelData).length > 0;
 
   return (
     <Layout>
@@ -204,7 +204,7 @@ const ModelDetails = () => {
         </div>
       </Header>
       <div className="l-content">
-        <div className="model-details">
+        <div className="model-details" aria-disabled={slidePanelActive}>
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
             {(viewFilterToggle.all || viewFilterToggle.apps) && (
@@ -249,28 +249,30 @@ const ModelDetails = () => {
           isActive={slidePanelActive}
           onClose={() => setSlidePanelData({})}
         >
-          {appSlidePanel}
-          <MainTable
-            headers={unitTableHeaders}
-            rows={unitSlidePanelRows}
-            className="model-details__units p-main-table"
-            sortable
-            emptyStateMsg={"There are no units in this model"}
-          />
-          <MainTable
-            headers={machineTableHeaders}
-            rows={machinesSlidePanelRows}
-            className="model-details__machines p-main-table"
-            sortable
-            emptyStateMsg={"There are no machines in this model"}
-          />
-          <MainTable
-            headers={relationTableHeaders}
-            rows={relationSlidePanelRows}
-            className="model-details__relations p-main-table"
-            sortable
-            emptyStateMsg={"There are no relations in this model"}
-          />
+          <div style={{ maxWidth: "75vw" }}>
+            {appSlidePanel}
+            <MainTable
+              headers={unitTableHeaders}
+              rows={unitSlidePanelRows}
+              className="model-details__units p-main-table"
+              sortable
+              emptyStateMsg={"There are no units in this model"}
+            />
+            <MainTable
+              headers={machineTableHeaders}
+              rows={machinesSlidePanelRows}
+              className="model-details__machines p-main-table"
+              sortable
+              emptyStateMsg={"There are no machines in this model"}
+            />
+            <MainTable
+              headers={relationTableHeaders}
+              rows={relationSlidePanelRows}
+              className="model-details__relations p-main-table"
+              sortable
+              emptyStateMsg={"There are no relations in this model"}
+            />
+          </div>
         </SlidePanel>
       </div>
     </Layout>
