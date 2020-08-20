@@ -182,6 +182,8 @@ const ModelDetails = () => {
     [slidePanelData.app]
   );
 
+  const slidePanelActive = Object.entries(slidePanelData).length;
+
   return (
     <Layout>
       <Header>
@@ -190,7 +192,7 @@ const ModelDetails = () => {
             {modelStatusData ? modelStatusData.model.name : "..."}
           </strong>
           <div className="model-details__filters">
-            {!Object.entries(slidePanelData).length && (
+            {!slidePanelActive && (
               <Filter
                 label="View:"
                 filters={viewFilters}
@@ -244,7 +246,7 @@ const ModelDetails = () => {
           </div>
         </div>
         <SlidePanel
-          isActive={Object.entries(slidePanelData).length}
+          isActive={slidePanelActive}
           onClose={() => setSlidePanelData({})}
         >
           {appSlidePanel}
