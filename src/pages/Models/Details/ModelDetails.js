@@ -22,6 +22,7 @@ import {
   generateMachineRows,
   generateRelationRows,
   generateUnitRows,
+  generateAppSlidePanel,
 } from "./generators";
 
 import "./_model-details.scss";
@@ -58,15 +59,16 @@ const ModelDetails = () => {
     }
   }, [dispatch, modelUUID, modelStatusData]);
 
-  const handleRowClick = (e) => {
-    const currentTarget = e.currentTarget;
-    setSlidePanelData({ app: currentTarget.dataset.app });
+  const handleAppRowClick = (app) => {
+    console.log(app);
+    setSlidePanelData({ app });
   };
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
 
   const applicationTableRows = useMemo(
-    () => generateApplicationRows(modelStatusData, handleRowClick, baseAppURL),
+    () =>
+      generateApplicationRows(modelStatusData, handleAppRowClick, baseAppURL),
     [baseAppURL, modelStatusData]
   );
   const unitTableRows = useMemo(
@@ -79,7 +81,11 @@ const ModelDetails = () => {
   );
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData, baseAppURL),
-    [baseAppURL, modelStatusData]
+    [modelStatusData, baseAppURL]
+  );
+  const appSlidePanel = useMemo(
+    () => generateAppSlidePanel(slidePanelData.app),
+    [slidePanelData.app]
   );
 
   return (
@@ -149,7 +155,7 @@ const ModelDetails = () => {
           isActive={Object.entries(slidePanelData).length}
           onClose={() => setSlidePanelData({})}
         >
-          <h3>{slidePanelData.app}</h3>
+          {appSlidePanel}
         </SlidePanel>
       </div>
     </Layout>
