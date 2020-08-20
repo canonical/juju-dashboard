@@ -265,7 +265,7 @@ export function generateMachineRows(modelStatusData, filterByApp) {
                 {machineId}
                 <span className="u-capitalise">. {machine.series}</span>
               </div>
-              <a href="#_">{machine.dnsName}</a>
+              {machine.dnsName}
             </>
           ),
         },

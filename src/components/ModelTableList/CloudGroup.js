@@ -90,19 +90,11 @@ export default function CloudGroup({ activeUser, filters }) {
             },
             {
               "data-test-column": "region",
-              content: (
-                <a href="#_" className="p-link--soft">
-                  {getStatusValue(model, "region")}
-                </a>
-              ),
+              content: <>{getStatusValue(model, "region")}</>,
             },
             {
               "data-test-column": "credential",
-              content: (
-                <a href="#_" className="p-link--soft">
-                  {getStatusValue(model.info, "cloudCredentialTag")}
-                </a>
-              ),
+              content: <>{getStatusValue(model.info, "cloudCredentialTag")}</>,
             },
             {
               "data-test-column": "controller",
