@@ -205,8 +205,7 @@ const ModelDetails = () => {
         <div className="model-details">
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
-            {(viewFilterToggle.all === true ||
-              viewFilterToggle.apps === true) && (
+            {(viewFilterToggle.all || viewFilterToggle.apps) && (
               <MainTable
                 headers={applicationTableHeaders}
                 rows={applicationTableRows}
@@ -215,8 +214,7 @@ const ModelDetails = () => {
                 emptyStateMsg={"There are no applications in this model"}
               />
             )}
-            {(viewFilterToggle.all === true ||
-              viewFilterToggle.units === true) && (
+            {(viewFilterToggle.all || viewFilterToggle.units) && (
               <MainTable
                 headers={unitTableHeaders}
                 rows={unitTableRows}
@@ -225,8 +223,7 @@ const ModelDetails = () => {
                 emptyStateMsg={"There are no units in this model"}
               />
             )}
-            {(viewFilterToggle.all === true ||
-              viewFilterToggle.machines === true) && (
+            {(viewFilterToggle.all || viewFilterToggle.machines) && (
               <MainTable
                 headers={machineTableHeaders}
                 rows={machinesTableRows}
@@ -235,8 +232,7 @@ const ModelDetails = () => {
                 emptyStateMsg={"There are no machines in this model"}
               />
             )}
-            {(viewFilterToggle.all === true ||
-              viewFilterToggle.relations === true) && (
+            {(viewFilterToggle.all || viewFilterToggle.relations) && (
               <MainTable
                 headers={relationTableHeaders}
                 rows={relationTableRows}
