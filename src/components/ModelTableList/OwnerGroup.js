@@ -81,19 +81,15 @@ export default function OwnerGroup({ activeUser, filters }) {
             {
               "data-test-column": "cloud",
               content: (
-                <a href="#_" className="p-link--soft">
+                <>
                   {getStatusValue(model, "region")}/
                   {getStatusValue(model, "cloudTag")}
-                </a>
+                </>
               ),
             },
             {
               "data-test-column": "credential",
-              content: (
-                <a href="#_" className="p-link--soft">
-                  {getStatusValue(model.info, "cloudCredentialTag")}
-                </a>
-              ),
+              content: <>{getStatusValue(model.info, "cloudCredentialTag")}</>,
             },
             {
               "data-test-column": "controller",
