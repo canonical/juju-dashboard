@@ -8,6 +8,7 @@
   box-shadow: $box-shadow;
   height: calc(100% - #{$top-header-height});
   margin-left: 48px;
+  max-width: 75vw;
   overflow: scroll;
   position: fixed;
   right: 0;

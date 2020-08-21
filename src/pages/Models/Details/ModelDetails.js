@@ -248,7 +248,7 @@ const ModelDetails = () => {
           isActive={slidePanelActive}
           onClose={() => setSlidePanelData({})}
         >
-          <div style={{ maxWidth: "75vw" }}>
+          <>
             {appSlidePanel}
             <MainTable
               headers={unitTableHeaders}
@@ -271,7 +271,7 @@ const ModelDetails = () => {
               sortable
               emptyStateMsg={"There are no relations in this model"}
             />
-          </div>
+          </>
         </SlidePanel>
       </div>
     </Layout>
