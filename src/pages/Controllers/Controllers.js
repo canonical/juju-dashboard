@@ -192,7 +192,6 @@ function RegisterAController({ onClose, showRegisterAController }) {
     );
   }
 
-  /* eslint-disable jsx-a11y/label-has-associated-control */
   return (
     <SlidePanel onClose={onClose} isActive={showRegisterAController}>
       <h5>Register a Controller</h5>
@@ -207,7 +206,7 @@ function RegisterAController({ onClose, showRegisterAController }) {
         <div className="p-form__group row">
           <div className="col-3">
             <label
-              htmlFor="full-name-stacked"
+              htmlFor="controller-name"
               className="p-form__label is-required"
             >
               Name
@@ -218,7 +217,7 @@ function RegisterAController({ onClose, showRegisterAController }) {
             <div className="p-form__control">
               <input
                 type="text"
-                id="full-name-stacked"
+                id="controller-name"
                 name="controllerName"
                 onChange={handleInputChange}
                 required={true}
@@ -233,10 +232,7 @@ function RegisterAController({ onClose, showRegisterAController }) {
 
         <div className="p-form__group row">
           <div className="col-3">
-            <label
-              htmlFor="full-name-stacked"
-              className="p-form__label is-required"
-            >
+            <label htmlFor="host" className="p-form__label is-required">
               Host
             </label>
           </div>
@@ -245,7 +241,7 @@ function RegisterAController({ onClose, showRegisterAController }) {
             <div className="p-form__control">
               <input
                 type="text"
-                id="full-name-stacked"
+                id="host"
                 name="wsControllerHost"
                 onChange={handleInputChange}
                 required={true}
@@ -261,7 +257,7 @@ function RegisterAController({ onClose, showRegisterAController }) {
 
         <div className="p-form__group row">
           <div className="col-3">
-            <label htmlFor="full-name-stacked" className="p-form__label">
+            <label htmlFor="username" className="p-form__label">
               Username
             </label>
           </div>
@@ -270,7 +266,7 @@ function RegisterAController({ onClose, showRegisterAController }) {
             <div className="p-form__control">
               <input
                 type="text"
-                id="full-name-stacked"
+                id="username"
                 name="username"
                 onChange={handleInputChange}
               />
@@ -283,7 +279,7 @@ function RegisterAController({ onClose, showRegisterAController }) {
 
         <div className="p-form__group row">
           <div className="col-3">
-            <label htmlFor="full-name-stacked" className="p-form__label">
+            <label htmlFor="password" className="p-form__label">
               Password
             </label>
           </div>
@@ -292,7 +288,7 @@ function RegisterAController({ onClose, showRegisterAController }) {
             <div className="p-form__control">
               <input
                 type="password"
-                id="full-name-stacked"
+                id="password"
                 name="password"
                 onChange={handleInputChange}
               />
@@ -371,7 +367,6 @@ function RegisterAController({ onClose, showRegisterAController }) {
       </form>
     </SlidePanel>
   );
-  /* eslint-enable jsx-a11y/label-has-associated-control */
 }
 
 export default function Controllers() {
