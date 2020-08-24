@@ -364,29 +364,50 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
 
 export function generateAppSlidePanel(app) {
   return (
-    <>
+    <div className="slidepanel-apps-header">
       {app ? (
-        <>
-          <h3>{app.charm || ""}</h3>
-          <h4 className="p-muted-heading">
-            Status:{" "}
-            {app.status?.status
-              ? generateStatusElement(app.status.status)
-              : "-"}
-          </h4>
-          <h4 className="p-muted-heading">Message:</h4>
-          <h4 className="p-muted-heading">Charm:</h4>
-          <h4 className="p-muted-heading">OS: Ubuntu</h4>
-          <h4 className="p-muted-heading">
-            Revision: {extractRevisionNumber(app.charm) || "-"}
-          </h4>
-          <h4 className="p-muted-heading">
-            Version: {app.workloadVersion || "-"}
-          </h4>
-        </>
+        <div className="row">
+          <div className="col-3">
+            <div>{app.charm || ""}</div>
+            <div className="p-muted-heading">
+              Status:{" "}
+              {app.status?.status
+                ? generateStatusElement(app.status.status)
+                : "-"}
+            </div>
+          </div>
+          <div className="col-3">
+            <div className="slidepanel-apps__kv">
+              <span className="slidepanel-apps__label">Charm: </span>
+              <span className="slidepanel-apps__value"></span>
+            </div>
+
+            <div className="slidepanel-apps__kv">
+              <span className="slidepanel-apps__label">OS:</span>
+              <span className="slidepanel-apps__value">Ubuntu</span>
+            </div>
+
+            <div className="slidepanel-apps__kv">
+              <span className="slidepanel-apps__label">Revision:</span>
+              <span className="slidepanel-apps__value">
+                {extractRevisionNumber(app.charm) || "-"}
+              </span>
+            </div>
+
+            <div className="slidepanel-apps__kv">
+              <span className="slidepanel-apps__label">Version:</span>
+              <span className="slidepanel-apps__value">
+                {app.workloadVersion || "-"}
+              </span>
+            </div>
+          </div>
+          <div className="col-6">
+            {/* Notes - not currently implemented/available */}
+          </div>
+        </div>
       ) : (
         <p>loading</p>
       )}
-    </>
+    </div>
   );
 }

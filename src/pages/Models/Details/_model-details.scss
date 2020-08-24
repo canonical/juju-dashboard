@@ -203,8 +203,33 @@
   /* stylelint-enable no-descending-specificity */
 }
 
+@mixin model-details-slidepanel-apps {
+  .slidepanel-apps {
+    &-header {
+      margin: 2rem 0;
+
+      .row {
+        padding: 0;
+      }
+    }
+
+    &__label {
+      color: #333;
+      display: inline-block;
+      text-align: right;
+    }
+
+    &__kv {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
 @include model-details-layout;
 @include model-details-header;
 @include model-details-title;
 @include model-details-main;
 @include model-details-tables;
+@include model-details-slidepanel-apps;
