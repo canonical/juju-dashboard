@@ -239,3 +239,13 @@ export const userIsControllerAdmin = (conn) => {
   const controllerAccess = conn?.info?.user?.controllerAccess;
   return ["superuser", "admin"].includes(controllerAccess);
 };
+
+/**
+  Returns the charm name for provided namespace.
+  @param {String} namespace The fully qualified charm name.
+  @returns {String} The charm name.
+*/
+export const extractCharmName = (namespace) => {
+  if (!namespace) return null;
+  return namespace.replace("cs:~", "").split("/")[1].split("-")[0];
+};
