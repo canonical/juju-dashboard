@@ -49,15 +49,6 @@
 
 @mixin model-details-main {
   .model-details__main {
-    .entity-icon {
-      border-radius: 50%;
-      height: 1.5rem;
-      margin-right: 0.5rem;
-      position: relative;
-      vertical-align: top;
-      width: 1.5rem;
-    }
-
     .subordinate-row {
       border-top: none !important;
     }
@@ -206,15 +197,19 @@
 @mixin model-details-slidepanel-apps {
   .slidepanel-apps {
     &-header {
-      margin: 2rem 0;
+      margin: 0.5rem 2rem 2rem 1.5rem;
 
       .row {
         padding: 0;
       }
+
+      .status-icon {
+        left: 0.5rem;
+      }
     }
 
     &__label {
-      color: #333;
+      color: $color-mid-dark;
       display: inline-block;
       text-align: right;
     }
@@ -227,9 +222,21 @@
   }
 }
 
+@mixin model-details-entity-icons {
+  .entity-icon {
+    border-radius: 50%;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    position: relative;
+    vertical-align: top;
+    width: 1.5rem;
+  }
+}
+
 @include model-details-layout;
 @include model-details-header;
 @include model-details-title;
 @include model-details-main;
 @include model-details-tables;
+@include model-details-entity-icons;
 @include model-details-slidepanel-apps;

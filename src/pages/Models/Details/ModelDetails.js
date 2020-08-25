@@ -177,9 +177,9 @@ const ModelDetails = () => {
     [filteredModelStatusData, baseAppURL]
   );
 
-  const appSlidePanel = useMemo(
-    () => generateAppSlidePanel(slidePanelData.app),
-    [slidePanelData.app]
+  const appSlidePanelHeader = useMemo(
+    () => generateAppSlidePanelHeader(slidePanelData.app, baseAppURL),
+    [slidePanelData.app, baseAppURL]
   );
 
   const slidePanelActive = Object.entries(slidePanelData).length > 0;

@@ -8,6 +8,7 @@ import {
   generateStatusElement,
   generateIconPath,
   generateSpanClass,
+  extractCharmName,
 } from "app/utils";
 
 export const applicationTableHeaders = [
@@ -72,7 +73,7 @@ export function generateEntityLink(namespace, name, subordinate, baseAppURL) {
   }
 
   return (
-    <>
+    <div className="entity-link">
       {subordinate && <span className="subordinate"></span>}
       {namespace && generateIconImg(name, namespace, baseAppURL)}
       {/* Ensure app is not a local charm */}
@@ -88,7 +89,7 @@ export function generateEntityLink(namespace, name, subordinate, baseAppURL) {
       ) : (
         name
       )}
-    </>
+    </div>
   );
 }
 
@@ -362,19 +363,25 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
   });
 }
 
-export function generateAppSlidePanel(app) {
+export function generateAppSlidePanelHeader(app, baseAppURL) {
   return (
     <div className="slidepanel-apps-header">
       {app ? (
         <div className="row">
           <div className="col-3">
-            <div>{app.charm || ""}</div>
-            <div className="p-muted-heading">
-              Status:{" "}
+            <div>
+              {generateEntityLink(
+                app.charm || "",
+                extractCharmName(app?.charm),
+                false,
+                baseAppURL
+              )}
+            </div>
+            <span className="u-capitalise">
               {app.status?.status
                 ? generateStatusElement(app.status.status)
                 : "-"}
-            </div>
+            </span>
           </div>
           <div className="col-3">
             <div className="slidepanel-apps__kv">
