@@ -23,7 +23,7 @@ import {
   generateMachineRows,
   generateRelationRows,
   generateUnitRows,
-  generateAppSlidePanel,
+  generateAppSlidePanelHeader,
 } from "./generators";
 
 import "./_model-details.scss";
@@ -249,7 +249,7 @@ const ModelDetails = () => {
           onClose={() => setSlidePanelData({})}
         >
           <>
-            {appSlidePanel}
+            {appSlidePanelHeader}
             <MainTable
               headers={unitTableHeaders}
               rows={unitSlidePanelRows}
