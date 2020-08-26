@@ -171,4 +171,25 @@ describe("ModelDetail Container", () => {
       "1"
     );
   });
+
+  it("displays correct side panel when app row is clicked", () => {
+    const store = mockStore(dataDump);
+    const testApp = "kibana";
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+          <TestRoute path="/models/*">
+            <ModelDetails />
+          </TestRoute>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".slide-panel").prop("aria-hidden")).toBe(true);
+    const applicationRow = wrapper.find(`tr[data-app="${testApp}"]`);
+    applicationRow.simulate("click");
+    expect(wrapper.find(".slide-panel").prop("aria-hidden")).toBe(false);
+    expect(wrapper.find(".slidepanel-apps-header .entity-name").text()).toBe(
+      "kibana"
+    );
+  });
 });
