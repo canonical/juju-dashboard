@@ -36,11 +36,7 @@ import "./_model-details.scss";
 const filterModelStatusData = (modelStatusData, appName) => {
   if (modelStatusData) {
     const filteredData = cloneDeep(modelStatusData);
-    Object.keys(filteredData.applications).forEach((key) => {
-      filteredData.applications[key].unitsCount = Object.keys(
-        filteredData.applications[key].units
-      ).length;
-    });
+
     if (appName === "") {
       return filteredData;
     }
@@ -137,9 +133,10 @@ const ModelDetails = () => {
   }, [dispatch, modelUUID, modelStatusData]);
 
   const handleAppRowClick = (e, app) => {
-    console.log(app);
-    setSlidePanelData({ app });
-    setFilterByApp(e.currentTarget.dataset.app);
+    const currentApp = cloneDeep(app);
+    currentApp.name = e.currentTarget.dataset.app;
+    setSlidePanelData({ currentApp });
+    setFilterByApp(currentApp.name);
   };
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
@@ -178,8 +175,8 @@ const ModelDetails = () => {
   );
 
   const appSlidePanelHeader = useMemo(
-    () => generateAppSlidePanelHeader(slidePanelData.app, baseAppURL),
-    [slidePanelData.app, baseAppURL]
+    () => generateAppSlidePanelHeader(slidePanelData.currentApp, baseAppURL),
+    [slidePanelData.currentApp, baseAppURL]
   );
 
   const slidePanelActive = Object.entries(slidePanelData).length > 0;

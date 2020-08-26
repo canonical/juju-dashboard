@@ -1,5 +1,6 @@
 import React from "react";
 import { URL } from "@canonical/jaaslib/lib/urls";
+import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 
@@ -102,7 +103,12 @@ export function generateApplicationRows(
     return [];
   }
 
-  const applications = modelStatusData.applications;
+  const applications = cloneDeep(modelStatusData.applications);
+
+  Object.keys(applications).forEach((key) => {
+    applications[key].unitsCount = Object.keys(applications[key].units).length;
+  });
+
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     return {
@@ -370,12 +376,7 @@ export function generateAppSlidePanelHeader(app, baseAppURL) {
         <div className="row">
           <div className="col-3">
             <div>
-              {generateEntityLink(
-                app.charm || "",
-                extractCharmName(app?.charm),
-                false,
-                baseAppURL
-              )}
+              {generateEntityLink(app.charm, app.name, false, baseAppURL)}
             </div>
             <span className="u-capitalise">
               {app.status?.status
@@ -386,7 +387,9 @@ export function generateAppSlidePanelHeader(app, baseAppURL) {
           <div className="col-3">
             <div className="slidepanel-apps__kv">
               <span className="slidepanel-apps__label">Charm: </span>
-              <span className="slidepanel-apps__value"></span>
+              <span className="slidepanel-apps__value u-capitalise">
+                {extractCharmName(app.charm)}
+              </span>
             </div>
 
             <div className="slidepanel-apps__kv">

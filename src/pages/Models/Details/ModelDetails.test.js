@@ -28,7 +28,7 @@ describe("ModelDetail Container", () => {
       </Provider>
     );
     expect(wrapper.find("Topology").length).toBe(1);
-    expect(wrapper.find("MainTable").length).toBe(4);
+    expect(wrapper.find(".model-details__main table").length).toBe(4);
   });
 
   it("renders the details pane for models shared-with-me", () => {
@@ -44,7 +44,7 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("MainTable").length).toBe(4);
+    expect(wrapper.find(".model-details__main table").length).toBe(4);
   });
 
   it("renders the machine details section", () => {
@@ -59,7 +59,10 @@ describe("ModelDetail Container", () => {
       </Provider>
     );
     expect(
-      wrapper.find("MainTable").at(2).hasClass("model-details__machines")
+      wrapper
+        .find(".model-details__main table")
+        .at(2)
+        .hasClass("model-details__machines")
     ).toBe(true);
   });
 
@@ -74,7 +77,7 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".subordinate").length).toEqual(2);
+    expect(wrapper.find(".model-details__main .subordinate").length).toEqual(2);
   });
 
   it("view filters hide and show tables", () => {
@@ -90,17 +93,21 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("MainTable").length).toBe(4);
+    expect(wrapper.find(".model-details__main table").length).toBe(4);
     wrapper.find("[data-test='apps'] button").simulate("click");
-    expect(wrapper.find("MainTable").length).toBe(1);
+    expect(wrapper.find(".model-details__main table").length).toBe(1);
     expect(wrapper.find("table.model-details__apps").length).toBe(1);
     wrapper.find("[data-test='apps'] button").simulate("click");
-    expect(wrapper.find("MainTable").length).toBe(4);
+    expect(wrapper.find(".model-details__main table").length).toBe(4);
     wrapper.find("[data-test='machines'] button").simulate("click");
-    expect(wrapper.find("table.model-details__machines").length).toBe(1);
+    expect(
+      wrapper.find(".model-details__main table.model-details__machines").length
+    ).toBe(1);
     wrapper.find("[data-test='relations'] button").simulate("click");
-    expect(wrapper.find("table.model-details__relations").length).toBe(1);
-    expect(wrapper.find("MainTable").length).toBe(2);
+    expect(
+      wrapper.find(".model-details__main table.model-details__relations").length
+    ).toBe(1);
+    expect(wrapper.find(".model-details__main table").length).toBe(2);
   });
 
   it("app names link to charm store pages", () => {
