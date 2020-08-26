@@ -366,7 +366,7 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
 export function generateAppSlidePanelHeader(app, baseAppURL) {
   return (
     <div className="slidepanel-apps-header">
-      {app ? (
+      {app && (
         <div className="row">
           <div className="col-3">
             <div>
@@ -412,8 +412,6 @@ export function generateAppSlidePanelHeader(app, baseAppURL) {
             {/* Notes - not currently implemented/available */}
           </div>
         </div>
-      ) : (
-        <p>loading</p>
       )}
     </div>
   );
