@@ -65,7 +65,13 @@ export function generateIconImg(name, namespace, baseAppURL) {
   );
 }
 
-export function generateEntityLink(namespace, name, subordinate, baseAppURL) {
+export function generateEntityIdentifier(
+  namespace,
+  name,
+  subordinate,
+  baseAppURL,
+  disableLink = false
+) {
   let charmStorePath = "";
   try {
     charmStorePath = URL.fromAnyString(namespace).toString().replace("cs:", "");
@@ -74,11 +80,11 @@ export function generateEntityLink(namespace, name, subordinate, baseAppURL) {
   }
 
   return (
-    <div className="entity-link">
+    <div className="entity-name">
       {subordinate && <span className="subordinate"></span>}
       {namespace && generateIconImg(name, namespace, baseAppURL)}
-      {/* Ensure app is not a local charm */}
-      {namespace.includes("cs:") ? (
+      {/* Ensure app is not a local charm or disable link is true */}
+      {namespace.includes("cs:") && !disableLink ? (
         <a
           data-test="app-link"
           target="_blank"
@@ -115,7 +121,12 @@ export function generateApplicationRows(
       columns: [
         {
           "data-test-column": "name",
-          content: generateEntityLink(app.charm || "", key, false, baseAppURL),
+          content: generateEntityIdentifier(
+            app.charm || "",
+            key,
+            false,
+            baseAppURL
+          ),
           className: "u-truncate",
         },
         {
@@ -165,7 +176,7 @@ export function generateUnitRows(modelStatusData, baseAppURL) {
       unitRows.push({
         columns: [
           {
-            content: generateEntityLink(
+            content: generateEntityIdentifier(
               applications[applicationName].charm
                 ? applications[applicationName].charm
                 : "",
@@ -205,7 +216,7 @@ export function generateUnitRows(modelStatusData, baseAppURL) {
           unitRows.push({
             columns: [
               {
-                content: generateEntityLink(
+                content: generateEntityIdentifier(
                   subordinate.charm,
                   key,
                   true,
@@ -376,7 +387,13 @@ export function generateAppSlidePanelHeader(app, baseAppURL) {
         <div className="row">
           <div className="col-3">
             <div>
-              {generateEntityLink(app.charm, app.name, false, baseAppURL)}
+              {generateEntityIdentifier(
+                app.charm,
+                app.name,
+                false,
+                baseAppURL,
+                true // disable link
+              )}
             </div>
             <span className="u-capitalise">
               {app.status?.status
