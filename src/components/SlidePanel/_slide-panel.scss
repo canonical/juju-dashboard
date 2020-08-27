@@ -8,12 +8,16 @@
   box-shadow: $box-shadow;
   height: calc(100% - #{$top-header-height});
   margin-left: 48px;
-  max-width: 75vw;
+  max-width: calc(100vw - 40px);
   overflow: scroll;
   position: fixed;
   right: 0;
   top: $top-header-height;
   transform: translateX(100%);
+
+  @media (min-width: $breakpoint-medium) {
+    width: 75vw;
+  }
 
   &[aria-hidden="false"] {
     transform: translateX(0);

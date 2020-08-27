@@ -195,6 +195,16 @@
 }
 
 @mixin model-details-slidepanel-apps {
+  .slide-panel {
+    @media (max-width: $breakpoint-medium) {
+      top: 8rem;
+    }
+  }
+
+  .slide-panel__tables {
+    overflow-x: scroll;
+  }
+
   .slidepanel-apps {
     &-header {
       margin: 0.5rem 2rem 2rem 1.5rem;
@@ -210,12 +220,21 @@
       .entity-name {
         font-weight: 400;
       }
+
+      @media (max-width: $breakpoint-medium) {
+        [class*="col"] {
+          margin-bottom: 1rem;
+        }
+      }
     }
 
     &__label {
       color: $color-mid-dark;
       display: inline-block;
-      text-align: right;
+
+      @media (min-width: $breakpoint-medium) {
+        text-align: right;
+      }
     }
 
     &__value {
@@ -227,7 +246,11 @@
     &__kv {
       display: grid;
       gap: 1rem;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 100px 1fr;
+
+      @media (min-width: $breakpoint-medium) {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   }
 }
