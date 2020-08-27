@@ -10,8 +10,19 @@ function SlidePanel({ children, onClose, isActive }) {
         onClose();
       }
     });
+    const closeOnClickOutside = document.addEventListener("click", (e) => {
+      console.log(e.target.closest('[role="row"]'));
+      if (
+        isActive &&
+        !e.target.closest(".slide-panel") &&
+        !e.target.closest('[role="row"]')
+      ) {
+        onClose();
+      }
+    });
     return () => {
       document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("click", closeOnClickOutside);
     };
   }, [isActive, onClose]);
 
