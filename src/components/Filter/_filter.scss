@@ -41,7 +41,7 @@
   }
 
   &[aria-disabled="true"] {
-    opacity: 0;
+    opacity: 0.5;
     pointer-events: none;
   }
 }
