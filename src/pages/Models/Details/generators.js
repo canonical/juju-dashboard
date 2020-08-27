@@ -125,7 +125,8 @@ export function generateApplicationRows(
             app.charm || "",
             key,
             false,
-            baseAppURL
+            baseAppURL,
+            true
           ),
           className: "u-truncate",
         },
