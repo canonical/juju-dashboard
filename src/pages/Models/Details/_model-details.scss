@@ -218,6 +218,12 @@
       text-align: right;
     }
 
+    &__value {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     &__kv {
       display: grid;
       gap: 1rem;

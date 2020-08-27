@@ -9,7 +9,6 @@ import {
   generateStatusElement,
   generateIconPath,
   generateSpanClass,
-  extractCharmName,
 } from "app/utils";
 
 export const applicationTableHeaders = [
@@ -405,8 +404,8 @@ export function generateAppSlidePanelHeader(app, baseAppURL) {
           <div className="col-3">
             <div className="slidepanel-apps__kv">
               <span className="slidepanel-apps__label">Charm: </span>
-              <span className="slidepanel-apps__value u-capitalise">
-                {extractCharmName(app.charm)}
+              <span title={app.charm} className="slidepanel-apps__value">
+                {app.charm}
               </span>
             </div>
 
