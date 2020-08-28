@@ -181,8 +181,6 @@ const ModelDetails = () => {
 
   const slidePanelActive = Object.entries(slidePanelData).length > 0;
 
-  console.log(slidePanelActive);
-
   return (
     <Layout>
       <Header>
