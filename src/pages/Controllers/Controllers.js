@@ -386,7 +386,7 @@ export default function Controllers() {
       <Header>
         <div className="controllers--count">
           {controllerCount} controllers,{" "}
-          <a href="/models">{modelCount} models</a>
+          <a href="/dashboard/models">{modelCount} models</a>
         </div>
       </Header>
       <div className="l-content controllers">
