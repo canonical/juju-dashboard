@@ -11,7 +11,6 @@ function SlidePanel({ children, onClose, isActive }) {
       }
     });
     const closeOnClickOutside = document.addEventListener("click", (e) => {
-      console.log(e.target.closest('[role="row"]'));
       if (
         isActive &&
         !e.target.closest(".slide-panel") &&
