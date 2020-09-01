@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import "./_slide-panel.scss";
 
 function SlidePanel({ children, onClose, isActive }) {
+  // If Escape key is pressed when slide panel is open, close it
+  useEffect(() => {
+    if (!isActive) return;
+    const closeOnEscape = document.body.addEventListener("keydown", (e) => {
+      if (isActive && e.code === "Escape") {
+        onClose();
+      }
+    });
+    const closeOnClickOutside = document.body.addEventListener("click", (e) => {
+      if (
+        isActive &&
+        !e.target.closest(".slide-panel") &&
+        !e.target.closest('[role="row"]')
+      ) {
+        onClose();
+      }
+    });
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("click", closeOnClickOutside);
+    };
+  }, [isActive, onClose]);
+
   return (
     <div className="slide-panel" aria-hidden={!isActive}>
       <button

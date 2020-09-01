@@ -8,6 +8,7 @@ import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
+import SlidePanel from "components/SlidePanel/SlidePanel";
 
 import { getConfig, getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
@@ -22,6 +23,7 @@ import {
   generateMachineRows,
   generateRelationRows,
   generateUnitRows,
+  generateAppSlidePanelHeader,
 } from "./generators";
 
 import "./_model-details.scss";
@@ -34,11 +36,7 @@ import "./_model-details.scss";
 const filterModelStatusData = (modelStatusData, appName) => {
   if (modelStatusData) {
     const filteredData = cloneDeep(modelStatusData);
-    Object.keys(filteredData.applications).forEach((key) => {
-      filteredData.applications[key].unitsCount = Object.keys(
-        filteredData.applications[key].units
-      ).length;
-    });
+
     if (appName === "") {
       return filteredData;
     }
@@ -104,6 +102,8 @@ const ModelDetails = () => {
 
   const [viewFilterToggle, setViewFilterToggle] = useState({ all: true });
 
+  const [slidePanelData, setSlidePanelData] = useState({});
+
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
   const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
@@ -114,6 +114,7 @@ const ModelDetails = () => {
     modelStatusData,
     filterByApp
   );
+
   const { baseAppURL } = useSelector(getConfig);
 
   useEffect(() => {
@@ -124,47 +125,61 @@ const ModelDetails = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (modelUUID !== null && filteredModelStatusData === null) {
+    if (modelUUID !== null && modelStatusData === null) {
       // This model may not be in the first batch of models that we request
       // status from in the main loop so update the status now.
       dispatch(fetchModelStatus(modelUUID));
     }
-  }, [dispatch, modelUUID, filteredModelStatusData]);
+  }, [dispatch, modelUUID, modelStatusData]);
 
-  const handleRowClick = (e) => {
-    const currentTarget = e.currentTarget;
-    if (currentTarget.classList.contains("is-selected")) {
-      setFilterByApp("");
-      return;
-    }
-    setFilterByApp(currentTarget.dataset.app);
+  const handleAppRowClick = (e, app) => {
+    const currentApp = cloneDeep(app);
+    currentApp.name = e.currentTarget.dataset.app;
+    setSlidePanelData({ currentApp });
+    setFilterByApp(currentApp.name);
   };
 
   const viewFilters = ["all", "apps", "units", "machines", "relations"];
 
   const applicationTableRows = useMemo(
     () =>
-      generateApplicationRows(
-        filteredModelStatusData,
-        filterByApp,
-        handleRowClick,
-        baseAppURL
-      ),
-    [baseAppURL, filterByApp, filteredModelStatusData]
+      generateApplicationRows(modelStatusData, handleAppRowClick, baseAppURL),
+    [baseAppURL, modelStatusData]
   );
+
   const unitTableRows = useMemo(
-    () => generateUnitRows(filteredModelStatusData, filterByApp, baseAppURL),
-    [baseAppURL, filterByApp, filteredModelStatusData]
+    () => generateUnitRows(modelStatusData, baseAppURL),
+    [baseAppURL, modelStatusData]
   );
+  const unitSlidePanelRows = useMemo(
+    () => generateUnitRows(filteredModelStatusData, baseAppURL),
+    [baseAppURL, filteredModelStatusData]
+  );
+
   const machinesTableRows = useMemo(
-    () => generateMachineRows(filteredModelStatusData, filterByApp),
-    [filterByApp, filteredModelStatusData]
+    () => generateMachineRows(modelStatusData),
+    [modelStatusData]
   );
+  const machinesSlidePanelRows = useMemo(
+    () => generateMachineRows(filteredModelStatusData),
+    [filteredModelStatusData]
+  );
+
   const relationTableRows = useMemo(
-    () =>
-      generateRelationRows(filteredModelStatusData, filterByApp, baseAppURL),
-    [baseAppURL, filterByApp, filteredModelStatusData]
+    () => generateRelationRows(modelStatusData, baseAppURL),
+    [modelStatusData, baseAppURL]
   );
+  const relationSlidePanelRows = useMemo(
+    () => generateRelationRows(filteredModelStatusData, baseAppURL),
+    [filteredModelStatusData, baseAppURL]
+  );
+
+  const appSlidePanelHeader = useMemo(
+    () => generateAppSlidePanelHeader(slidePanelData.currentApp, baseAppURL),
+    [slidePanelData.currentApp, baseAppURL]
+  );
+
+  const slidePanelActive = Object.entries(slidePanelData).length > 0;
 
   return (
     <Layout>
@@ -179,16 +194,16 @@ const ModelDetails = () => {
               filters={viewFilters}
               setFilterToggle={setViewFilterToggle}
               filterToggle={viewFilterToggle}
+              disabled={slidePanelActive}
             />
           </div>
         </div>
       </Header>
       <div className="l-content">
-        <div className="model-details">
+        <div className="model-details" aria-disabled={slidePanelActive}>
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
-            {(viewFilterToggle.all === true ||
-              viewFilterToggle.apps === true) && (
+            {(viewFilterToggle.all || viewFilterToggle.apps) && (
               <MainTable
                 headers={applicationTableHeaders}
                 rows={applicationTableRows}
@@ -197,8 +212,7 @@ const ModelDetails = () => {
                 emptyStateMsg={"There are no applications in this model"}
               />
             )}
-            {(viewFilterToggle.all === true ||
-              viewFilterToggle.units === true) && (
+            {(viewFilterToggle.all || viewFilterToggle.units) && (
               <MainTable
                 headers={unitTableHeaders}
                 rows={unitTableRows}
@@ -207,8 +221,7 @@ const ModelDetails = () => {
                 emptyStateMsg={"There are no units in this model"}
               />
             )}
-            {(viewFilterToggle.all === true ||
-              viewFilterToggle.machines === true) && (
+            {(viewFilterToggle.all || viewFilterToggle.machines) && (
               <MainTable
                 headers={machineTableHeaders}
                 rows={machinesTableRows}
@@ -217,8 +230,7 @@ const ModelDetails = () => {
                 emptyStateMsg={"There are no machines in this model"}
               />
             )}
-            {(viewFilterToggle.all === true ||
-              viewFilterToggle.relations === true) && (
+            {(viewFilterToggle.all || viewFilterToggle.relations) && (
               <MainTable
                 headers={relationTableHeaders}
                 rows={relationTableRows}
@@ -229,6 +241,37 @@ const ModelDetails = () => {
             )}
           </div>
         </div>
+        <SlidePanel
+          isActive={slidePanelActive}
+          onClose={() => setSlidePanelData({})}
+        >
+          <>
+            {appSlidePanelHeader}
+            <div className="slide-panel__tables">
+              <MainTable
+                headers={unitTableHeaders}
+                rows={unitSlidePanelRows}
+                className="model-details__units p-main-table"
+                sortable
+                emptyStateMsg={"There are no units in this model"}
+              />
+              <MainTable
+                headers={machineTableHeaders}
+                rows={machinesSlidePanelRows}
+                className="model-details__machines p-main-table"
+                sortable
+                emptyStateMsg={"There are no machines in this model"}
+              />
+              <MainTable
+                headers={relationTableHeaders}
+                rows={relationSlidePanelRows}
+                className="model-details__relations p-main-table"
+                sortable
+                emptyStateMsg={"There are no relations in this model"}
+              />
+            </div>
+          </>
+        </SlidePanel>
       </div>
     </Layout>
   );

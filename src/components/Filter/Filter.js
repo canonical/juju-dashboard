@@ -4,7 +4,13 @@ import classNames from "classnames";
 
 import "./_filter.scss";
 
-const Filter = ({ label, filters, setFilterToggle, filterToggle }) => {
+const Filter = ({
+  label,
+  filters,
+  setFilterToggle,
+  filterToggle,
+  disabled = false,
+}) => {
   const handleViewFilterClick = (filter) => {
     setFilterToggle((viewFilterToggle) => {
       const tempViewFilterToggle = { ...viewFilterToggle };
@@ -42,7 +48,7 @@ const Filter = ({ label, filters, setFilterToggle, filterToggle }) => {
     );
   });
   return (
-    <div className="p-filter">
+    <div className="p-filter" aria-disabled={disabled}>
       <span className="p-filter__label">{label}</span>
       {filterButtons}
     </div>

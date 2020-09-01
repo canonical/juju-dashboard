@@ -16,6 +16,11 @@
     @media (min-width: $breakpoint-m-large) {
       grid-template-columns: 350px 1fr;
     }
+
+    &[aria-disabled="true"] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
   }
 }
 
@@ -44,15 +49,6 @@
 
 @mixin model-details-main {
   .model-details__main {
-    .entity-icon {
-      border-radius: 50%;
-      height: 1.5rem;
-      margin-right: 0.5rem;
-      position: relative;
-      vertical-align: top;
-      width: 1.5rem;
-    }
-
     .subordinate-row {
       border-top: none !important;
     }
@@ -198,8 +194,88 @@
   /* stylelint-enable no-descending-specificity */
 }
 
+@mixin model-details-slidepanel-apps {
+  .slide-panel {
+    @media (max-width: $breakpoint-medium) {
+      top: 8rem;
+    }
+  }
+
+  .slide-panel__tables {
+    overflow-x: scroll;
+
+    table {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .slidepanel-apps {
+    &-header {
+      margin: 0.5rem 2rem 2rem 1.5rem;
+
+      .row {
+        padding: 0;
+      }
+
+      .status-icon {
+        left: 0.5rem;
+      }
+
+      .entity-name {
+        font-weight: 400;
+        margin-bottom: 0.25rem;
+      }
+
+      @media (max-width: $breakpoint-medium) {
+        [class*="col"] {
+          margin-bottom: 1rem;
+        }
+      }
+    }
+
+    &__label {
+      color: $color-mid-dark;
+      display: inline-block;
+
+      @media (min-width: $breakpoint-medium) {
+        text-align: right;
+      }
+    }
+
+    &__value {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &__kv {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 100px 1fr;
+      margin-bottom: 0.25rem;
+
+      @media (min-width: $breakpoint-medium) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  }
+}
+
+@mixin model-details-entity-icons {
+  .entity-icon {
+    border-radius: 50%;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    position: relative;
+    vertical-align: top;
+    width: 1.5rem;
+  }
+}
+
 @include model-details-layout;
 @include model-details-header;
 @include model-details-title;
 @include model-details-main;
 @include model-details-tables;
+@include model-details-entity-icons;
+@include model-details-slidepanel-apps;

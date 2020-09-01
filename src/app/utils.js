@@ -230,6 +230,11 @@ export const debounce = (fn, wait) => {
   };
 };
 
+/**
+  Returns a bool on whether a user can admin controllers
+  @param {Obj} conn The user connection.
+  @returns {Boolean} If they are an admin or not.
+*/
 export const userIsControllerAdmin = (conn) => {
   const controllerAccess = conn?.info?.user?.controllerAccess;
   return ["superuser", "admin"].includes(controllerAccess);

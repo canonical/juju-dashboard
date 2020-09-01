@@ -1,6 +1,6 @@
 import React from "react";
-import classnames from "classnames";
 import { URL } from "@canonical/jaaslib/lib/urls";
+import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 
@@ -64,7 +64,13 @@ export function generateIconImg(name, namespace, baseAppURL) {
   );
 }
 
-export function generateEntityLink(namespace, name, subordinate, baseAppURL) {
+export function generateEntityIdentifier(
+  namespace,
+  name,
+  subordinate,
+  baseAppURL,
+  disableLink = false
+) {
   let charmStorePath = "";
   try {
     charmStorePath = URL.fromAnyString(namespace).toString().replace("cs:", "");
@@ -73,11 +79,11 @@ export function generateEntityLink(namespace, name, subordinate, baseAppURL) {
   }
 
   return (
-    <>
+    <div className="entity-name">
       {subordinate && <span className="subordinate"></span>}
       {namespace && generateIconImg(name, namespace, baseAppURL)}
-      {/* Ensure app is not a local charm */}
-      {namespace.includes("cs:") ? (
+      {/* Ensure app is not a local charm or disable link is true */}
+      {namespace.includes("cs:") && !disableLink ? (
         <a
           data-test="app-link"
           target="_blank"
@@ -89,13 +95,12 @@ export function generateEntityLink(namespace, name, subordinate, baseAppURL) {
       ) : (
         name
       )}
-    </>
+    </div>
   );
 }
 
 export function generateApplicationRows(
   modelStatusData,
-  filterByApp,
   onRowClick,
   baseAppURL
 ) {
@@ -103,14 +108,25 @@ export function generateApplicationRows(
     return [];
   }
 
-  const applications = modelStatusData.applications;
+  const applications = cloneDeep(modelStatusData.applications);
+
+  Object.keys(applications).forEach((key) => {
+    applications[key].unitsCount = Object.keys(applications[key].units).length;
+  });
+
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     return {
       columns: [
         {
           "data-test-column": "name",
-          content: generateEntityLink(app.charm || "", key, false, baseAppURL),
+          content: generateEntityIdentifier(
+            app.charm || "",
+            key,
+            false,
+            baseAppURL,
+            true
+          ),
           className: "u-truncate",
         },
         {
@@ -140,14 +156,13 @@ export function generateApplicationRows(
         { "data-test-column": "os", content: "Ubuntu" },
         { "data-test-column": "notes", content: "-" },
       ],
-      className: filterByApp === key ? "is-selected" : "",
-      onClick: onRowClick,
+      onClick: (e) => onRowClick(e, app),
       "data-app": key,
     };
   });
 }
 
-export function generateUnitRows(modelStatusData, filterByApp, baseAppURL) {
+export function generateUnitRows(modelStatusData, baseAppURL) {
   if (!modelStatusData) {
     return [];
   }
@@ -161,7 +176,7 @@ export function generateUnitRows(modelStatusData, filterByApp, baseAppURL) {
       unitRows.push({
         columns: [
           {
-            content: generateEntityLink(
+            content: generateEntityIdentifier(
               applications[applicationName].charm
                 ? applications[applicationName].charm
                 : "",
@@ -191,7 +206,6 @@ export function generateUnitRows(modelStatusData, filterByApp, baseAppURL) {
             className: "u-truncate",
           },
         ],
-        className: filterByApp === unitId.split("/")[0] ? "is-selected" : "",
       });
 
       const subordinates = unit.subordinates;
@@ -202,7 +216,7 @@ export function generateUnitRows(modelStatusData, filterByApp, baseAppURL) {
           unitRows.push({
             columns: [
               {
-                content: generateEntityLink(
+                content: generateEntityIdentifier(
                   subordinate.charm,
                   key,
                   true,
@@ -228,9 +242,6 @@ export function generateUnitRows(modelStatusData, filterByApp, baseAppURL) {
                 className: "u-truncate",
               },
             ],
-            className: classnames("subordinate-row", {
-              "is-selected": filterByApp === key.split("/")[0],
-            }),
           });
         }
       }
@@ -248,7 +259,7 @@ const splitParts = (hardware) =>
     })
   );
 
-export function generateMachineRows(modelStatusData, filterByApp) {
+export function generateMachineRows(modelStatusData) {
   if (!modelStatusData) {
     return [];
   }
@@ -284,9 +295,6 @@ export function generateMachineRows(modelStatusData, filterByApp) {
           className: "u-truncate",
         },
       ],
-      // If there is a filter provided and the machine is visible then
-      // it's been filtered so we want to highlight it.
-      className: classnames({ "is-selected": !!filterByApp }),
     };
   });
 }
@@ -313,7 +321,7 @@ const generateRelationIconImage = (
   return generateIconImg(applicationName, application.charm, baseAppURL);
 };
 
-export function generateRelationRows(modelStatusData, filterByApp, baseAppURL) {
+export function generateRelationRows(modelStatusData, baseAppURL) {
   if (!modelStatusData) {
     return [];
   }
@@ -368,9 +376,63 @@ export function generateRelationRows(modelStatusData, filterByApp, baseAppURL) {
           ),
         },
       ],
-      // If there is a filter provided and the relation is visible then
-      // it's been filtered so we want to highlight it.
-      className: classnames({ "is-selected": !!filterByApp }),
     };
   });
+}
+
+export function generateAppSlidePanelHeader(app, baseAppURL) {
+  return (
+    <div className="slidepanel-apps-header">
+      {app && (
+        <div className="row">
+          <div className="col-3">
+            <div>
+              {generateEntityIdentifier(
+                app.charm,
+                app.name,
+                false,
+                baseAppURL,
+                true // disable link
+              )}
+            </div>
+            <span className="u-capitalise">
+              {app.status?.status
+                ? generateStatusElement(app.status.status)
+                : "-"}
+            </span>
+          </div>
+          <div className="col-3">
+            <div className="slidepanel-apps__kv">
+              <span className="slidepanel-apps__label">Charm: </span>
+              <span title={app.charm} className="slidepanel-apps__value">
+                {app.charm}
+              </span>
+            </div>
+
+            <div className="slidepanel-apps__kv">
+              <span className="slidepanel-apps__label">OS:</span>
+              <span className="slidepanel-apps__value">Ubuntu</span>
+            </div>
+
+            <div className="slidepanel-apps__kv">
+              <span className="slidepanel-apps__label">Revision:</span>
+              <span className="slidepanel-apps__value">
+                {extractRevisionNumber(app.charm) || "-"}
+              </span>
+            </div>
+
+            <div className="slidepanel-apps__kv">
+              <span className="slidepanel-apps__label">Version:</span>
+              <span className="slidepanel-apps__value">
+                {app.workloadVersion || "-"}
+              </span>
+            </div>
+          </div>
+          <div className="col-6">
+            {/* Notes - not currently implemented/available */}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
