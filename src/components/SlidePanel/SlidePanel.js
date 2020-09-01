@@ -10,7 +10,7 @@ function SlidePanel({ children, onClose, isActive }) {
         onClose();
       }
     });
-    const closeOnClickOutside = document.addEventListener("click", (e) => {
+    const closeOnClickOutside = document.body.addEventListener("click", (e) => {
       if (
         isActive &&
         !e.target.closest(".slide-panel") &&
