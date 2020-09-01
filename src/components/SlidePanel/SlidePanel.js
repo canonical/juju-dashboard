@@ -5,7 +5,7 @@ import "./_slide-panel.scss";
 function SlidePanel({ children, onClose, isActive }) {
   // If Escape key is pressed when slide panel is open, close it
   useEffect(() => {
-    const closeOnEscape = document.addEventListener("keydown", (e) => {
+    const closeOnEscape = document.body.addEventListener("keydown", (e) => {
       if (isActive && e.code === "Escape") {
         onClose();
       }

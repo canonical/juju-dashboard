@@ -48,19 +48,21 @@ describe("Slide Panel", () => {
     outerNode.dispatchEvent(new Event("click", { bubbles: true }));
     expect(onClose).toHaveBeenCalled();
   });
-});
 
-  it("should call close function when Escape key is pressed", () => {
+  it("should call close function when escape key is pressed", () => {
+    const onClose = jest.fn();
     const outerNode = document.createElement("div");
     document.body.appendChild(outerNode);
-    const onClose = jest.fn();
-
-    const wrapper = mount(<SlidePanel isActive={true} onClose={onClose} />, {
+    mount(<SlidePanel isActive={true} onClose={onClose} />, {
       attachTo: outerNode,
     });
-    const slidePanelContent = wrapper.find(`.slide-panel__content`);
-
-    outerNode.dispatchEvent(new Event("keydown", {'code': "Escape"}));
+    outerNode.dispatchEvent(
+      new KeyboardEvent("keydown", { code: "Enter", bubbles: true })
+    );
+    expect(onClose).not.toHaveBeenCalled();
+    outerNode.dispatchEvent(
+      new KeyboardEvent("keydown", { code: "Escape", bubbles: true })
+    );
     expect(onClose).toHaveBeenCalled();
   });
 });
