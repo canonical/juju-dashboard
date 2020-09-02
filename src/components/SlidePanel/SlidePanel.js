@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
+import classnames from "classnames";
 
 import "./_slide-panel.scss";
 
-function SlidePanel({ children, onClose, isActive }) {
+function SlidePanel({ children, onClose, isActive, className }) {
   // If Escape key is pressed when slide panel is open, close it
   useEffect(() => {
     if (!isActive) return;
@@ -27,7 +28,10 @@ function SlidePanel({ children, onClose, isActive }) {
   }, [isActive, onClose]);
 
   return (
-    <div className="slide-panel" aria-hidden={!isActive}>
+    <div
+      className={classnames("slide-panel", className)}
+      aria-hidden={!isActive}
+    >
       <button
         className="p-modal__close"
         aria-label="Close active modal"
