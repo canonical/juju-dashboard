@@ -194,7 +194,11 @@ function RegisterAController({ onClose, showRegisterAController }) {
   }
 
   return (
-    <SlidePanel onClose={onClose} isActive={showRegisterAController}>
+    <SlidePanel
+      onClose={onClose}
+      isActive={showRegisterAController}
+      className="register-a-controller__slide-panel"
+    >
       <h5>Register a Controller</h5>
       <p className="p-form-help-text">
         Information can be retrieved using the <code>juju show-controller</code>{" "}
