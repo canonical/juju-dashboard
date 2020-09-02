@@ -27,6 +27,7 @@
   &__pictogram {
     // Keep height and width in sync with the dimensions of
     // the Topology component.
+
     background: $color-light;
     border: solid 1px $color-mid-x-light;
     flex: 1;
@@ -47,6 +48,7 @@
 
     // This needs to be kept in sync with the 1580px breakpoint in
     // InfoPanel.js:infoPanelDimensions.
+
     @media (min-width: 1580px) {
       grid-template-columns: repeat(2, 1fr);
     }
