@@ -195,7 +195,7 @@
 }
 
 @mixin model-details-slidepanel-apps {
-  .slide-panel {
+  .slide-panel__application-details {
     @media (max-width: $breakpoint-medium) {
       top: 8rem;
     }

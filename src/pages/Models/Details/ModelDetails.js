@@ -244,6 +244,7 @@ const ModelDetails = () => {
         <SlidePanel
           isActive={slidePanelActive}
           onClose={() => setSlidePanelData({})}
+          className="slide-panel__application-details"
         >
           <>
             {appSlidePanelHeader}
