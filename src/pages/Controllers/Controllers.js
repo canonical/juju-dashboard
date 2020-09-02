@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
+import { Link } from "react-router-dom";
 import cloneDeep from "clone-deep";
 import classNames from "classnames";
 
@@ -386,7 +387,7 @@ export default function Controllers() {
       <Header>
         <div className="controllers--count">
           {controllerCount} controllers,{" "}
-          <a href="/models">{modelCount} models</a>
+          <Link to="/models">{modelCount} models</Link>
         </div>
       </Header>
       <div className="l-content controllers">
