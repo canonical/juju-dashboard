@@ -32,15 +32,13 @@ const DonutChart = ({ chartData }) => {
 
     const color = d3
       .scaleOrdinal()
-      .domain(data)
+      .domain(Object.keys(data))
       .range(
         !isDisabled ? ["is-blocked", "is-alert", "is-running"] : ["is-disabled"]
       );
 
-    const pie = d3.pie().value(function (d) {
-      return d.value;
-    });
-    const dataReady = pie(d3.entries(data));
+    const pie = d3.pie().value((d) => d[1]);
+    const dataReady = pie(Object.entries(data));
 
     svg
       .selectAll("g")
@@ -48,9 +46,7 @@ const DonutChart = ({ chartData }) => {
       .enter()
       .append("path")
       .attr("d", d3.arc().innerRadius(100).outerRadius(radius))
-      .attr("class", function (d) {
-        return color(d.data.key);
-      });
+      .attr("class", (d) => color(d.data[0]));
 
     return () => {
       svg.remove();
