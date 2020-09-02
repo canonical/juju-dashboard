@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
+import { Link } from "react-router-dom";
 import cloneDeep from "clone-deep";
 import classNames from "classnames";
 
@@ -193,7 +194,11 @@ function RegisterAController({ onClose, showRegisterAController }) {
   }
 
   return (
-    <SlidePanel onClose={onClose} isActive={showRegisterAController}>
+    <SlidePanel
+      onClose={onClose}
+      isActive={showRegisterAController}
+      className="register-a-controller__slide-panel"
+    >
       <h5>Register a Controller</h5>
       <p className="p-form-help-text">
         Information can be retrieved using the <code>juju show-controller</code>{" "}
@@ -386,7 +391,7 @@ export default function Controllers() {
       <Header>
         <div className="controllers--count">
           {controllerCount} controllers,{" "}
-          <a href="/models">{modelCount} models</a>
+          <Link to="/models">{modelCount} models</Link>
         </div>
       </Header>
       <div className="l-content controllers">

@@ -65,4 +65,13 @@ describe("Slide Panel", () => {
     );
     expect(onClose).toHaveBeenCalled();
   });
+
+  it("accepts classnames and adds them to the wrapper", () => {
+    const wrapper = shallow(
+      <SlidePanel isActive={true} className="test-class" />
+    );
+    expect(wrapper.find(".slide-panel").prop("className")).toBe(
+      "slide-panel test-class"
+    );
+  });
 });
