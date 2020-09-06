@@ -17,7 +17,7 @@ import { updateModelList } from "juju/actions";
 
 import {
   getConfig,
-  getControllerData,
+  getControllerConnections,
   getUserPass,
   getWSControllerURL,
   isLoggedIn,
@@ -33,7 +33,7 @@ export default async function connectAndListModels(
     const { identityProviderAvailable, isJuju } = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
     const credentials = getUserPass(wsControllerURL, storeState);
-    const controllers = getControllerData(storeState) || {};
+    const controllerConnections = getControllerConnections(storeState) || {};
     const defaultControllerData = [
       wsControllerURL,
       credentials,
@@ -44,7 +44,7 @@ export default async function connectAndListModels(
     if (additionalControllers) {
       controllerList = controllerList.concat(additionalControllers);
     }
-    const connectedControllers = Object.keys(controllers);
+    const connectedControllers = Object.keys(controllerConnections);
     controllerList = controllerList.filter((controllerData) => {
       // remove controllers we're already connected to.
       return !connectedControllers.includes(controllerData[0]);

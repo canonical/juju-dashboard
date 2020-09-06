@@ -6,7 +6,11 @@ import {
 
 import connectAndListModels from "app/model-poller";
 
-import { clearControllerData, clearModelData } from "juju/actions";
+import {
+  clearControllerData,
+  clearModelData,
+  updateControllerList,
+} from "juju/actions";
 
 // Action labels
 export const actionsList = {
@@ -179,6 +183,11 @@ export function connectAndStartPolling(reduxStore, bakery) {
         additionalControllers = JSON.parse(data);
         additionalControllers.forEach((controller) => {
           dispatch(storeUserPass(controller[0], controller[1]));
+          dispatch(
+            updateControllerList(controller[0], [
+              { additionalController: true },
+            ])
+          );
         });
       }
     } catch (e) {

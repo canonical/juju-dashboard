@@ -45,6 +45,10 @@
     }
   }
 
+  .is-disconnected {
+    color: $color-negative;
+  }
+
   .register-a-controller__slide-panel {
     width: inherit;
   }

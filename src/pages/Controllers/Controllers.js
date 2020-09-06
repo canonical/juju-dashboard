@@ -36,6 +36,7 @@ function Details() {
           machines: 0,
           applications: 0,
           units: 0,
+          wsControllerURL: controllerData[0],
         };
       });
     });
@@ -90,15 +91,29 @@ function Details() {
     </span>
   );
 
+  function generatePathValue(controllerData) {
+    const column = { content: "" };
+    if (controllerData.path === "admin/jaas") {
+      column.content = "JAAS";
+    } else if (controllerData.path) {
+      column.content = controllerData.path;
+    } else {
+      column.content = controllerData.wsControllerURL;
+      column.className = "is-disconnected";
+      column.title = "disconnected";
+    }
+    return column;
+  }
+
   function generateRow(c) {
     const cloud = c?.location?.cloud || "unknown";
     const region = c?.location?.region || "unknown";
     const cloudRegion = `${cloud}/${region}`;
     const publicAccess = `${c?.Public}` || "False";
-    const path = c.path === "admin/jaas" ? "JAAS" : c.path;
+
     return {
       columns: [
-        { content: path },
+        generatePathValue(c),
         { content: cloudRegion },
         { content: c.models, className: "u-align--right" },
         { content: c.machines, className: "u-align--right" },
