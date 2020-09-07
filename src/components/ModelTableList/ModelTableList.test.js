@@ -48,7 +48,7 @@ describe("ModelTableList", () => {
       expect(Group.prop("activeUser")).toBe(user);
       tables.forEach((otherTable) => {
         if (otherTable[0] !== table[0]) {
-          expect(wrapper.find(otherTable[1]).length).toBe(0);
+          expect(wrapper.find(otherTable[1]).length).toBe(0); // eslint-disable-line jest/no-conditional-expect
         }
       });
     });
