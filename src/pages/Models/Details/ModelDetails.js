@@ -267,7 +267,6 @@ const ModelDetails = () => {
             )}
           </div>
         </div>
-        {generateTerminalComponent(modelUUID, controllerWSHost)}
         <SlidePanel
           isActive={slidePanelActive}
           onClose={() => setSlidePanelData({})}
@@ -301,6 +300,7 @@ const ModelDetails = () => {
           </>
         </SlidePanel>
       </div>
+      {generateTerminalComponent(modelUUID, controllerWSHost)}
     </Layout>
   );
 };
