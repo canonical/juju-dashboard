@@ -1,8 +1,11 @@
 class JujuAddon {
-  constructor(socket) {
+  constructor(socket, userData) {
     this._disposables = [];
     this._socket = socket;
     this._buffer = "";
+    this._user = userData.user;
+    this._credentials = userData.credentials;
+    this._macaroons = userData.macaroons;
   }
 
   activate(terminal) {
@@ -31,8 +34,24 @@ class JujuAddon {
     terminal.onData((e) => {
       switch (e) {
         case "\r": // Enter
-          this._sendData(this._buffer);
+          terminal.writeln("");
+          let command = this._buffer;
           this._buffer = "";
+          if (command.indexOf("juju ") === 0) {
+            // The 'juju' command prefix is not required, strip it
+            // before sending the command if it's provided.
+            command = command.substring(5);
+          }
+          const message = {
+            commands: [command],
+          };
+          if (this._macaroons) {
+            message.macaroons = this._macaroons;
+          } else {
+            message.user = this._user;
+            message.credentials = this._credentials;
+          }
+          this._sendData(message);
           break;
         case "\u0003": // Ctrl+C
           this._prompt(terminal);
