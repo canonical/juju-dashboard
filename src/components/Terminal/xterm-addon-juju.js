@@ -43,7 +43,7 @@ class JujuAddon {
             terminal.write("\b \b");
           }
           // Remove the end of the buffer;
-          this._buffer.substring(0, -1);
+          this._buffer = this._buffer.substring(0, -1);
           break;
         default:
           terminal.write(e);
