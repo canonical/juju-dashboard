@@ -102,6 +102,8 @@ const filterModelStatusData = (modelStatusData, appName) => {
 };
 
 const generateTerminalComponent = (modelUUID, controllerWSHost) => {
+  return null; // XXX Remove me to see the Terminal
+  /* eslint-disable no-unreachable */
   if (modelUUID && controllerWSHost) {
     return (
       <Terminal
@@ -110,6 +112,7 @@ const generateTerminalComponent = (modelUUID, controllerWSHost) => {
     );
   }
   return null;
+  /* eslint-enable no-unreachable */
 };
 
 const ModelDetails = () => {
