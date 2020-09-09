@@ -6,7 +6,7 @@ import queryString from "query-string";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
-import ModelGroupToggle from "components/ModelGroupToggle/ModelGroupToggle";
+import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import FilterTags from "components/FilterTags/FilterTags";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
@@ -60,7 +60,8 @@ export default function Models() {
               "alert"
             )}, ${running} running`}
           </div>
-          <ModelGroupToggle
+          <ButtonGroup
+            buttons={["status", "cloud", "owner"]}
             setGroupedBy={updateFilterQuery}
             groupedBy={groupModelsBy}
           />

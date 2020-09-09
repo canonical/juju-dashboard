@@ -48,15 +48,15 @@ describe("Models page", () => {
         </Router>
       </Provider>
     );
-    expect(
-      wrapper.find(".p-model-group-toggle__button.is-selected").text()
-    ).toBe("status");
+    expect(wrapper.find(".p-button-group__button.is-selected").text()).toBe(
+      "status"
+    );
     wrapper.find("button[value='owner']").simulate("click", {
       target: { value: "owner" },
     });
-    expect(
-      wrapper.find(".p-model-group-toggle__button.is-selected").text()
-    ).toBe("owner");
+    expect(wrapper.find(".p-button-group__button.is-selected").text()).toBe(
+      "owner"
+    );
     const searchParams = new URLSearchParams(history.location.search);
     expect(searchParams.get("groupedby")).toEqual("owner");
     expect(wrapper.find(".owners-group")).toBeDefined();
