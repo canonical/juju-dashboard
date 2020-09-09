@@ -2,13 +2,13 @@ import React from "react";
 import { mount } from "enzyme";
 import { MemoryRouter } from "react-router-dom";
 
-import ModelGroupToggle from "./ModelGroupToggle";
+import ButtonGroup from "./ButtonGroup";
 
-describe("Model group toggle", () => {
+describe("ButtonGroup", () => {
   it("shows active grouping", () => {
     const wrapper = mount(
       <MemoryRouter>
-        <ModelGroupToggle groupedBy="cloud" />
+        <ButtonGroup buttons={["status", "cloud", "owner"]} groupedBy="cloud" />
       </MemoryRouter>
     );
     expect(wrapper.find(".is-selected").length).toBe(1);
@@ -17,7 +17,7 @@ describe("Model group toggle", () => {
   it("if no grouping is defined then none is selected", () => {
     const wrapper = mount(
       <MemoryRouter>
-        <ModelGroupToggle />
+        <ButtonGroup buttons={["status", "cloud", "owner"]} />
       </MemoryRouter>
     );
     expect(wrapper.find(".is-selected")).toEqual({});
@@ -27,12 +27,16 @@ describe("Model group toggle", () => {
     const setGroupedBy = jest.fn();
     const wrapper = mount(
       <MemoryRouter>
-        <ModelGroupToggle groupedBy="cloud" setGroupedBy={setGroupedBy} />
+        <ButtonGroup
+          buttons={["status", "cloud", "owner"]}
+          groupedBy="cloud"
+          setGroupedBy={setGroupedBy}
+        />
       </MemoryRouter>
     );
-    expect(
-      wrapper.find(".p-model-group-toggle__button.is-selected").text()
-    ).toBe("cloud");
+    expect(wrapper.find(".p-button-group__button.is-selected").text()).toBe(
+      "cloud"
+    );
     wrapper.find("button[value='owner']").simulate("click", {
       target: { value: "owner" },
     });

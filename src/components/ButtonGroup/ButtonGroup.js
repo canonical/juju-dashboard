@@ -1,21 +1,19 @@
 import React from "react";
 import classNames from "classnames";
 
-import "./_model-group-toggle.scss";
+import "./_button-group.scss";
 
-const buttons = ["status", "cloud", "owner"];
-
-const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
+const ButtonGroup = ({ buttons, groupedBy, setGroupedBy }) => {
   return (
-    <div className="p-model-group-toggle">
-      <div className="p-model-group-toggle__inner">
-        <span className="p-model-group-toggle__label">Group by:</span>
-        <div className="p-model-group-toggle__buttons">
+    <div className="p-button-group">
+      <div className="p-button-group__inner">
+        <span className="p-button-group__label">Group by:</span>
+        <div className="p-button-group__buttons">
           {buttons.map((label) => (
             <button
               aria-label={`group by ${label}`}
               key={label}
-              className={classNames("p-model-group-toggle__button", {
+              className={classNames("p-button-group__button", {
                 "is-selected": groupedBy === label,
               })}
               value={label}
@@ -30,4 +28,4 @@ const ModelGroupToggle = ({ groupedBy, setGroupedBy }) => {
   );
 };
 
-export default ModelGroupToggle;
+export default ButtonGroup;
