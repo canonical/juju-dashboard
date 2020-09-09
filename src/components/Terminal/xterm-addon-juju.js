@@ -37,6 +37,10 @@ class JujuAddon {
           terminal.writeln("");
           let command = this._buffer;
           this._buffer = "";
+          if (!command) {
+            this._prompt(terminal);
+            return;
+          }
           if (command.indexOf("juju ") === 0) {
             // The 'juju' command prefix is not required, strip it
             // before sending the command if it's provided.
@@ -56,7 +60,7 @@ class JujuAddon {
         case "\u0003": // Ctrl+C
           this._prompt(terminal);
           break;
-        case "\u007F": // Backspace (DEL)
+        case "\u007F": // Backspace
           // Do not delete the prompt
           if (terminal._core.buffer.x > 2) {
             terminal.write("\b \b");
