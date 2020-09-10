@@ -116,7 +116,12 @@ const FilterTags = () => {
         arrayFormat: "comma",
       }),
     });
-  }, [activeFilters, history, location.search]);
+    // The `search` value is intentionally left of the dependencies array below
+    // as the act of pushing the history updates the search value which puts this
+    // callback into an infinite loop. Passing in queryStrings instead has the
+    // same effect as it's a new object on every parse.
+    // eslint-disable-next-line
+  }, [activeFilters, history]);
 
   /**
   Apply a given filter
