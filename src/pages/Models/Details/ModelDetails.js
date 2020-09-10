@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import cloneDeep from "clone-deep";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
-import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
@@ -98,12 +97,21 @@ const filterModelStatusData = (modelStatusData, appName) => {
   return modelStatusData;
 };
 
+const shouldShow = (segment, activeView) => {
+  switch (activeView) {
+    case "status":
+      return true;
+    case "units":
+    case "machines":
+    case "relations":
+      return segment === activeView;
+  }
+};
+
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
   const [filterByApp, setFilterByApp] = useState("");
-
-  const [viewFilterToggle, setViewFilterToggle] = useState({ all: true });
 
   const [slidePanelData, setSlidePanelData] = useState({});
 
@@ -141,8 +149,6 @@ const ModelDetails = () => {
     setSlidePanelData({ currentApp });
     setFilterByApp(currentApp.name);
   };
-
-  const viewFilters = ["all", "apps", "units", "machines", "relations"];
 
   const applicationTableRows = useMemo(
     () =>
@@ -207,7 +213,7 @@ const ModelDetails = () => {
         <div className="model-details" aria-disabled={slidePanelActive}>
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
-            {(viewFilterToggle.all || viewFilterToggle.apps) && (
+            {shouldShow("apps", activeView) && (
               <MainTable
                 headers={applicationTableHeaders}
                 rows={applicationTableRows}
@@ -216,7 +222,7 @@ const ModelDetails = () => {
                 emptyStateMsg={"There are no applications in this model"}
               />
             )}
-            {(viewFilterToggle.all || viewFilterToggle.units) && (
+            {shouldShow("units", activeView) && (
               <MainTable
                 headers={unitTableHeaders}
                 rows={unitTableRows}
@@ -225,7 +231,7 @@ const ModelDetails = () => {
                 emptyStateMsg={"There are no units in this model"}
               />
             )}
-            {(viewFilterToggle.all || viewFilterToggle.machines) && (
+            {shouldShow("machines", activeView) && (
               <MainTable
                 headers={machineTableHeaders}
                 rows={machinesTableRows}
@@ -234,7 +240,7 @@ const ModelDetails = () => {
                 emptyStateMsg={"There are no machines in this model"}
               />
             )}
-            {(viewFilterToggle.all || viewFilterToggle.relations) && (
+            {shouldShow("relations", activeView) && (
               <MainTable
                 headers={relationTableHeaders}
                 rows={relationTableRows}
