@@ -4,11 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import cloneDeep from "clone-deep";
 
+import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import Filter from "components/Filter/Filter";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
+
+import useQueryString from "hooks/useQueryString";
 
 import { getConfig, getModelUUID, getModelStatus } from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
@@ -181,6 +184,8 @@ const ModelDetails = () => {
 
   const slidePanelActive = Object.entries(slidePanelData).length > 0;
 
+  const [activeView, setActiveView] = useQueryString("view", "status");
+
   return (
     <Layout>
       <Header>
@@ -188,13 +193,12 @@ const ModelDetails = () => {
           <strong className="model-details__title">
             {modelStatusData ? modelStatusData.model.name : "..."}
           </strong>
-          <div className="model-details__filters">
-            <Filter
+          <div className="model-details__view-selector">
+            <ButtonGroup
+              buttons={["status", "units", "machines", "relations"]}
               label="View:"
-              filters={viewFilters}
-              setFilterToggle={setViewFilterToggle}
-              filterToggle={viewFilterToggle}
-              disabled={slidePanelActive}
+              activeButton={activeView}
+              setActiveButton={setActiveView}
             />
           </div>
         </div>
