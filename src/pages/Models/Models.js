@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import queryString from "query-string";
 
 import Layout from "components/Layout/Layout";
@@ -9,14 +9,19 @@ import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import FilterTags from "components/FilterTags/FilterTags";
 
+import useQueryString from "hooks/useQueryString";
+
 import { getGroupedModelStatusCounts } from "app/selectors";
 import { pluralize } from "app/utils";
 
 import "./_models.scss";
 
 export default function Models() {
+  const [groupModelsBy, setGroupModelsBy] = useQueryString(
+    "groupedby",
+    "status"
+  );
   // Grab filter from 'groupedby' query in URL and assign to variable
-  const history = useHistory();
   const location = useLocation();
   const queryStrings = queryString.parse(location.search, {
     arrayFormat: "comma",
@@ -26,23 +31,6 @@ export default function Models() {
     // Maintain a consistent type returned from the parsing of the querystring.
     activeFilters = [activeFilters];
   }
-  // If it doesn't exist, fall back to grouping by status
-  const groupedByFilter = queryStrings.groupedby || "status";
-
-  const [groupModelsBy, setGroupModelsBy] = useState(groupedByFilter);
-  if (groupModelsBy !== groupedByFilter) {
-    setGroupModelsBy(groupedByFilter);
-  }
-
-  const updateFilterQuery = (groupedBy) => {
-    queryStrings.groupedby = groupedBy;
-    const updatedQs = queryString.stringify(queryStrings);
-    history.push({
-      pathname: "/models",
-      search: groupedBy === "status" ? null : updatedQs,
-    });
-    setGroupModelsBy(groupedBy);
-  };
 
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
   const models = blocked + alert + running;
@@ -61,9 +49,10 @@ export default function Models() {
             )}, ${running} running`}
           </div>
           <ButtonGroup
+            activeButton={groupModelsBy}
             buttons={["status", "cloud", "owner"]}
-            setGroupedBy={updateFilterQuery}
-            groupedBy={groupModelsBy}
+            label="Group by:"
+            setActiveButton={setGroupModelsBy}
           />
           <FilterTags />
         </div>
