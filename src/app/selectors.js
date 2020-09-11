@@ -557,3 +557,16 @@ export const getWSControllerURL = createSelector(
   getConfig,
   (config) => `wss://${config.baseControllerURL}/api`
 );
+
+/**
+  Returns the controller data in the format of an Object.entries output.
+  [wsControllerURL, [data]]
+  @param {String} controllerUUID The full controller UUID.
+*/
+export const getControllerDataByUUID = (controllerUUID) => {
+  return createSelector(getControllerData, (controllerData) => {
+    return Object.entries(controllerData).find(
+      (controller) => controllerUUID === controller[1][0].uuid
+    );
+  });
+};

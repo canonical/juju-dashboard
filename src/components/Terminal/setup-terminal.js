@@ -1,25 +1,17 @@
 import { Terminal as Xterm } from "xterm";
 import { FitAddon as XtermFitAddon } from "xterm-addon-fit";
 
-import XtermTerminadoAddon from "./xterm-addon-terminado";
+import XtermJujuAddon from "./xterm-addon-juju";
 
-// Define jujushell API operations and codes.
-const OP_LOGIN = "login";
-const OP_START = "start";
-const CODE_OK = "ok"; // eslint-disable-line no-unused-vars
-const CODE_ERR = "error";
 const UNEXPECTED_CLOSE =
   "Terminal connection unexpectedly closed. " +
   "Close and re-open the terminal window to reconnect.";
 
-const JUJU_SWITCH_REGEX = RegExp(/ctrl:.*->\sctrl:(.*)/, "g");
 /**
   Setup the terminal instance.
   @param {String} address The address to connect the websocket to.
-  @param {Object} creds The credentials format as extracted from the bakery
-    including username, password, or the macaroons for the active user.
-  @param {String} modelName The model name to switch to uppon connection,
-    if any.
+  @param {Object} credentials The credentials as pulled from the store
+    in the correct structure for either u/p or macaroon based auth.
   @param {Object} terminalElement The element in the DOM to render the xterm
     instance into.
   @param {Function} switchFound The function to call with the model name
@@ -28,8 +20,7 @@ const JUJU_SWITCH_REGEX = RegExp(/ctrl:.*->\sctrl:(.*)/, "g");
 */
 export default function setupTerminal(
   address,
-  creds,
-  modelName,
+  credentials,
   terminalElement,
   switchFound
 ) {
@@ -41,17 +32,7 @@ export default function setupTerminal(
 
   const ws = new WebSocket(address);
 
-  ws.onopen = () => {
-    ws.send(
-      JSON.stringify({
-        operation: OP_LOGIN,
-        username: creds.user,
-        password: creds.password,
-        macaroons: creds.macaroons,
-      })
-    );
-    ws.send(JSON.stringify({ operation: OP_START }));
-  };
+  ws.onopen = () => {};
 
   ws.onerror = (err) => {
     terminalInstance.write("Failed to open Websocket connection");
@@ -67,47 +48,23 @@ export default function setupTerminal(
     }
   };
 
-  ws.onmessage = (evt) => {
-    const resp = JSON.parse(evt.data);
-    if (resp.code === CODE_ERR) {
-      console.error(resp.message);
-      terminalInstance.write(
-        `Error talking to the terminal server: ${resp.message}`
-      );
-      return;
-    }
-    switch (resp[0]) {
-      case "disconnect":
-        // Terminado sends a "disconnect" message when the process it's
-        // running exits. When we receive that, we close the terminal.
-        // We also have to overwrite the onclose method because the WebSocket
-        // isn't properly terminated by terminado and instead a 1006 close
-        // code is generated triggering the error notification.
-        this.ws.onclose = () => {};
-        terminalInstance.writeln(UNEXPECTED_CLOSE);
-        break;
-      case "setup":
-        // Terminado sends a "setup" message after it's fully done setting
-        // up on the server side and will be sending the first PS1 to the
-        // client.
-        const cmd = `juju switch ${modelName}`;
-        ws.send(JSON.stringify(["stdin", `${cmd}\n`]));
-        break;
-      case "stdout":
-        const switchValue = JUJU_SWITCH_REGEX.exec(resp[1]);
-        if (switchValue !== null) {
-          switchFound(switchValue[1]);
-        }
-    }
-  };
+  ws.onmessage = () => {};
 
   let fitAddon = new XtermFitAddon();
   terminalInstance.loadAddon(fitAddon);
-  terminalInstance.loadAddon(new XtermTerminadoAddon(ws));
+  terminalInstance.loadAddon(new XtermJujuAddon(ws, credentials));
 
   terminalInstance.open(terminalElement.current);
   fitAddon.fit();
-  terminalInstance.writeln("connecting... ");
+  terminalInstance.writeln("Welcome to the Juju Web CLI.");
+  terminalInstance.writeln(
+    "Run `help` to see what juju commands are available to you."
+  );
+  terminalInstance.writeln("Commands do not need to be prefixed with `juju`");
+  terminalInstance.prompt = () => {
+    terminalInstance.write("\r\n$ ");
+  };
+  terminalInstance.prompt();
 
   return terminalInstance;
 }

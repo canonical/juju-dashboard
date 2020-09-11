@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { getMacaroons } from "app/selectors";
+// import { useSelector } from "react-redux";
+// import { getMacaroons } from "app/selectors";
 import { FitAddon } from "xterm-addon-fit";
 
 import cleanUpTerminal from "./cleanup-terminal";
@@ -12,7 +12,7 @@ import "./_terminal.scss";
 const Terminal = ({ address, modelName }) => {
   const terminalElement = useRef(null);
   const resizeDeltaY = useRef(0);
-  const macaroons = useSelector(getMacaroons);
+  // const macaroons = useSelector(getMacaroons);
   const history = useHistory();
 
   // save default terminal height in the state object
@@ -41,12 +41,16 @@ const Terminal = ({ address, modelName }) => {
         history.push(`/models/${model}`);
       }
     };
-    const creds = { macaroons };
+    // const creds = { macaroons };
+    // XXX credentials need to be pulled from the store.
+    const credentials = {
+      user: "admin",
+      credentials: "9eef4b03836b2a805dd5a03d43d5f3c0",
+    };
     const fitAddon = new FitAddon();
     const terminalInstance = setupTerminal(
       address,
-      creds,
-      modelName,
+      credentials,
       terminalElement,
       switchFound
     );

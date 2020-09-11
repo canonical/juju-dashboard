@@ -9,10 +9,16 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
+import Terminal from "components/Terminal/Terminal";
 
 import useQueryString from "hooks/useQueryString";
 
-import { getConfig, getModelUUID, getModelStatus } from "app/selectors";
+import {
+  getConfig,
+  getControllerDataByUUID,
+  getModelUUID,
+  getModelStatus,
+} from "app/selectors";
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "ui/actions";
 
@@ -97,6 +103,20 @@ const filterModelStatusData = (modelStatusData, appName) => {
   return modelStatusData;
 };
 
+const generateTerminalComponent = (modelUUID, controllerWSHost) => {
+  return null; // XXX Remove me to see the Terminal
+  /* eslint-disable no-unreachable */
+  if (modelUUID && controllerWSHost) {
+    return (
+      <Terminal
+        address={`wss://${controllerWSHost}/model/${modelUUID}/commands`}
+      />
+    );
+  }
+  return null;
+  /* eslint-enable no-unreachable */
+};
+
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
     case "status":
@@ -121,6 +141,15 @@ const ModelDetails = () => {
     modelUUID,
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
+  const controllerUUID = modelStatusData?.info.controllerUuid;
+  const controllerData = useSelector(getControllerDataByUUID(controllerUUID));
+  let controllerWSHost = "";
+  if (controllerData) {
+    controllerWSHost = controllerData[0]
+      .replace("wss://", "")
+      .replace("/api", "");
+  }
+
   const filteredModelStatusData = filterModelStatusData(
     modelStatusData,
     filterByApp
@@ -284,6 +313,7 @@ const ModelDetails = () => {
           </>
         </SlidePanel>
       </div>
+      {generateTerminalComponent(modelUUID, controllerWSHost)}
     </Layout>
   );
 };
