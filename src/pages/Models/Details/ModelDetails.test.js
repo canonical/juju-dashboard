@@ -80,7 +80,7 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find(".model-details__main .subordinate").length).toEqual(2);
   });
 
-  it("view filters hide and show tables", () => {
+  it("view toggles hide and show tables", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
@@ -94,20 +94,26 @@ describe("ModelDetail Container", () => {
       </Provider>
     );
     expect(wrapper.find(".model-details__main table").length).toBe(4);
-    wrapper.find("[data-test='apps'] button").simulate("click");
+    wrapper.find("ButtonGroup button[value='units']").simulate("click");
     expect(wrapper.find(".model-details__main table").length).toBe(1);
-    expect(wrapper.find("table.model-details__apps").length).toBe(1);
-    wrapper.find("[data-test='apps'] button").simulate("click");
-    expect(wrapper.find(".model-details__main table").length).toBe(4);
-    wrapper.find("[data-test='machines'] button").simulate("click");
+    expect(
+      wrapper.find(".model-details__main table.model-details__units").length
+    ).toBe(1);
+
+    wrapper.find("ButtonGroup button[value='machines']").simulate("click");
+    expect(wrapper.find(".model-details__main table").length).toBe(1);
     expect(
       wrapper.find(".model-details__main table.model-details__machines").length
     ).toBe(1);
-    wrapper.find("[data-test='relations'] button").simulate("click");
+
+    wrapper.find("ButtonGroup button[value='relations']").simulate("click");
+    expect(wrapper.find(".model-details__main table").length).toBe(1);
     expect(
       wrapper.find(".model-details__main table.model-details__relations").length
     ).toBe(1);
-    expect(wrapper.find(".model-details__main table").length).toBe(2);
+
+    wrapper.find("ButtonGroup button[value='status']").simulate("click");
+    expect(wrapper.find(".model-details__main table").length).toBe(4);
   });
 
   it("supports local charms", () => {
