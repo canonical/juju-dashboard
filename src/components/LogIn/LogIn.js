@@ -46,7 +46,7 @@ export default function LogIn({ children }) {
           </div>
         </div>
       ) : null}
-      {children}
+      <main>{children}</main>
     </>
   );
 }
