@@ -115,7 +115,7 @@ const generateTerminalComponent = (modelUUID, controllerWSHost) => {
   }
   return null;
   /* eslint-enable no-unreachable */
-}
+};
 
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
