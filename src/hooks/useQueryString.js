@@ -16,17 +16,24 @@ import queryString from "query-string";
  * ]
  */
 function useQueryString(queryKey, resetValue) {
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
   const history = useHistory();
-  const queryStrings = queryString.parse(search, {
-    arrayFormat: "comma",
-  });
+  const queryStrings = parseQuery();
   const [queryValue, setQueryValue] = useState(queryStrings[queryKey]);
 
   useEffect(() => {
-    const queryStrings = queryString.parse(search, {
-      arrayFormat: "comma",
-    });
+    function handleBackButton() {
+      const queryStrings = parseQuery();
+      setQueryValue(queryStrings[queryKey]);
+    }
+    window.addEventListener("popstate", handleBackButton);
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [queryKey]);
+
+  useEffect(() => {
+    const queryStrings = parseQuery();
     if (
       queryStrings[queryKey] === queryValue ||
       (!queryStrings[queryKey] && queryValue === resetValue)
@@ -40,14 +47,15 @@ function useQueryString(queryKey, resetValue) {
       pathname,
       search: queryValue === resetValue ? null : updatedQs,
     });
-    // The `search` value is intentionally left of the dependencies array below
-    // as the act of pushing the history updates the search value which puts this
-    // callback into an infinite loop. Passing in queryStrings instead has the
-    // same effect as it's a new object on every parse.
-    // eslint-disable-next-line
   }, [queryValue, queryKey, resetValue, pathname, history]);
 
   return [queryValue || resetValue, setQueryValue];
+}
+
+function parseQuery() {
+  return queryString.parse(window.location.search, {
+    arrayFormat: "comma",
+  });
 }
 
 export default useQueryString;
