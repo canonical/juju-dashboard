@@ -31,9 +31,9 @@ export default function LogIn({ children }) {
 
   const loginError = useSelector(getLoginError);
 
-  if (!userIsLoggedIn) {
-    return (
-      <>
+  return (
+    <>
+      {!userIsLoggedIn ? (
         <div className="login">
           <div className="login__inner p-card--highlighted">
             <img className="login__logo" src={logo} alt="JAAS logo" />
@@ -45,11 +45,10 @@ export default function LogIn({ children }) {
             {generateErrorMessage(loginError)}
           </div>
         </div>
-        <main>{children}</main>
-      </>
-    );
-  }
-  return children;
+      ) : null}
+      <main>{children}</main>
+    </>
+  );
 }
 
 /**
