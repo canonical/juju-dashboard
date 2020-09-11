@@ -109,14 +109,14 @@ const FilterTags = () => {
 
   // Update query params when adding and removing filters
   useEffect(() => {
-    const queryParams = queryString.parse(location.search);
+    const queryParams = queryString.parse(window.location.search);
     queryParams.activeFilters = activeFilters;
     history.push({
       search: queryString.stringify(queryParams, {
         arrayFormat: "comma",
       }),
     });
-  }, [activeFilters, history, location.search]);
+  }, [activeFilters, history]);
 
   /**
   Apply a given filter
