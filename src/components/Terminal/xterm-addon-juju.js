@@ -11,7 +11,7 @@ class JujuAddon {
   activate(terminal) {
     this._disposables.push(
       addSocketListener(this._socket, "message", (e) => {
-        const data = JSON.parse(ev.data);
+        const data = JSON.parse(e.data);
         if (data.output) {
           terminal.writeln(`${data.output[0]}`);
         }
