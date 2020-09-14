@@ -5,7 +5,7 @@ import "./_counts.scss";
 
 const Counts = ({ primaryEntity, secondaryEntities }) => {
   const statuses = secondaryEntities
-    .map((entity) => {
+    ?.map((entity) => {
       return `${entity.count} ${pluralize(entity.count, entity.label)}`;
     })
     .join(", ");
