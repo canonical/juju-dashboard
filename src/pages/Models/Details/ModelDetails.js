@@ -129,21 +129,106 @@ const shouldShow = (segment, activeView) => {
   }
 };
 
+const incrementCounts = (status, counts) => {
+  if (counts[status]) {
+    counts[status] = counts[status] += 1;
+  } else {
+    counts[status] = 1;
+  }
+  return counts;
+};
+
+const formatCounts = (counts) =>
+  Object.entries(counts).map((statusSet) => ({
+    count: statusSet[1],
+    label: statusSet[0],
+  }));
+
 const generateApplicationSecondaryCounts = (modelStatusData) =>
-  Object.entries(
+  formatCounts(
     Object.entries(modelStatusData.applications).reduce(
       (counts, application) => {
         const status = application[1].status.status;
-        if (counts[status]) {
-          counts[status] = counts[status] += 1;
-        } else {
-          counts[status] = 1;
-        }
-        return counts;
+        return incrementCounts(status, counts);
       },
       {}
     )
-  ).map((statusSet) => ({ count: statusSet[1], label: statusSet[0] }));
+  );
+
+const generateUnitSecondaryCounts = (modelStatusData) => {
+  const counts = {};
+  let totalUnits = 0;
+  const applications = modelStatusData.applications;
+  Object.keys(applications).forEach((applicationName) => {
+    const units = applications[applicationName].units || [];
+    Object.keys(units).forEach((unitId) => {
+      const status = units[unitId].agentStatus.status;
+      totalUnits += 1;
+      return incrementCounts(status, counts);
+    });
+  });
+  return [formatCounts(counts), totalUnits];
+};
+
+const generateMachineSecondaryCounts = (modelStatusData) => {
+  return formatCounts(
+    Object.entries(modelStatusData.machines).reduce((counts, machine) => {
+      const status = machine[1].agentStatus.status;
+      return incrementCounts(status, counts);
+    }, {})
+  );
+};
+
+const renderCounts = (activeView, modelStatusData) => {
+  switch (activeView) {
+    case "status":
+      return (
+        <Counts
+          primaryEntity={{
+            count: Object.keys(modelStatusData.applications).length,
+            label: "application",
+          }}
+          secondaryEntities={generateApplicationSecondaryCounts(
+            modelStatusData
+          )}
+        />
+      );
+    case "units":
+      const [secondaryUnitEntities, totalUnits] = generateUnitSecondaryCounts(
+        modelStatusData
+      );
+      return (
+        <Counts
+          primaryEntity={{
+            count: totalUnits,
+            label: "unit",
+          }}
+          secondaryEntities={secondaryUnitEntities}
+        />
+      );
+    case "machines":
+      return (
+        <Counts
+          primaryEntity={{
+            count: Object.keys(modelStatusData.machines).length,
+            label: "machine",
+          }}
+          secondaryEntities={generateMachineSecondaryCounts(modelStatusData)}
+        />
+      );
+    case "relations":
+      const relationLength = Object.keys(modelStatusData.relations).length;
+      return (
+        <Counts
+          primaryEntity={{
+            count: relationLength,
+            label: "relation",
+          }}
+          secondaryEntities={[{ count: relationLength, label: "joined" }]}
+        />
+      );
+  }
+};
 
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
@@ -259,25 +344,15 @@ const ModelDetails = () => {
         <div className="model-details" aria-disabled={slidePanelActive}>
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
+            {renderCounts(activeView, modelStatusData)}
             {shouldShow("apps", activeView) && (
-              <>
-                <Counts
-                  primaryEntity={{
-                    count: applicationTableRows.length,
-                    label: "application",
-                  }}
-                  secondaryEntities={generateApplicationSecondaryCounts(
-                    modelStatusData
-                  )}
-                />
-                <MainTable
-                  headers={applicationTableHeaders}
-                  rows={applicationTableRows}
-                  className="model-details__apps p-main-table"
-                  sortable
-                  emptyStateMsg={"There are no applications in this model"}
-                />
-              </>
+              <MainTable
+                headers={applicationTableHeaders}
+                rows={applicationTableRows}
+                className="model-details__apps p-main-table"
+                sortable
+                emptyStateMsg={"There are no applications in this model"}
+              />
             )}
             {shouldShow("units", activeView) && (
               <MainTable
