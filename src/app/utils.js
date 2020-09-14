@@ -159,7 +159,10 @@ export const extractOwnerName = (tag) => {
 */
 export const pluralize = (value, string) => {
   const special = {
+    active: "active",
     running: "running",
+    unknown: "unknown",
+    waiting: "waiting",
   };
   if (value === 1) {
     return string;
