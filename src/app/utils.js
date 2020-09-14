@@ -160,7 +160,12 @@ export const extractOwnerName = (tag) => {
 export const pluralize = (value, string) => {
   const special = {
     active: "active",
+    allocating: "allocating",
+    down: "down",
+    joined: "joined",
+    lost: "lost",
     running: "running",
+    started: "started",
     unknown: "unknown",
     waiting: "waiting",
   };
