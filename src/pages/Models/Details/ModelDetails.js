@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import cloneDeep from "clone-deep";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
+import Counts from "components/Counts/Counts";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
@@ -128,6 +129,22 @@ const shouldShow = (segment, activeView) => {
   }
 };
 
+const generateApplicationSecondaryCounts = (modelStatusData) =>
+  Object.entries(
+    Object.entries(modelStatusData.applications).reduce(
+      (counts, application) => {
+        const status = application[1].status.status;
+        if (counts[status]) {
+          counts[status] = counts[status] += 1;
+        } else {
+          counts[status] = 1;
+        }
+        return counts;
+      },
+      {}
+    )
+  ).map((statusSet) => ({ count: statusSet[1], label: statusSet[0] }));
+
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
@@ -243,13 +260,24 @@ const ModelDetails = () => {
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
             {shouldShow("apps", activeView) && (
-              <MainTable
-                headers={applicationTableHeaders}
-                rows={applicationTableRows}
-                className="model-details__apps p-main-table"
-                sortable
-                emptyStateMsg={"There are no applications in this model"}
-              />
+              <>
+                <Counts
+                  primaryEntity={{
+                    count: applicationTableRows.length,
+                    label: "application",
+                  }}
+                  secondaryEntities={generateApplicationSecondaryCounts(
+                    modelStatusData
+                  )}
+                />
+                <MainTable
+                  headers={applicationTableHeaders}
+                  rows={applicationTableRows}
+                  className="model-details__apps p-main-table"
+                  sortable
+                  emptyStateMsg={"There are no applications in this model"}
+                />
+              </>
             )}
             {shouldShow("units", activeView) && (
               <MainTable
