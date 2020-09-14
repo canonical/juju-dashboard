@@ -6,6 +6,7 @@
     display: grid;
     grid-template-columns: 1fr;
     margin-bottom: 2rem;
+    padding-top: 1rem;
     padding-bottom: 3rem;
 
     @media (min-width: $breakpoint-medium) {
