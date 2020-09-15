@@ -144,16 +144,14 @@ const formatCounts = (counts) =>
     label: statusSet[0],
   }));
 
-const generateApplicationSecondaryCounts = (modelStatusData) =>
-  formatCounts(
-    Object.entries(modelStatusData.applications).reduce(
-      (counts, application) => {
-        const status = application[1].status.status;
-        return incrementCounts(status, counts);
-      },
-      {}
-    )
+const generateSecondaryCounts = (modelStatusData, segment, selector) => {
+  return formatCounts(
+    Object.entries(modelStatusData[segment]).reduce((counts, section) => {
+      const status = section[1][selector].status;
+      return incrementCounts(status, counts);
+    }, {})
   );
+};
 
 const generateUnitSecondaryCounts = (modelStatusData) => {
   const counts = {};
@@ -170,64 +168,58 @@ const generateUnitSecondaryCounts = (modelStatusData) => {
   return [formatCounts(counts), totalUnits];
 };
 
-const generateMachineSecondaryCounts = (modelStatusData) => {
-  return formatCounts(
-    Object.entries(modelStatusData.machines).reduce((counts, machine) => {
-      const status = machine[1].agentStatus.status;
-      return incrementCounts(status, counts);
-    }, {})
-  );
-};
-
 const renderCounts = (activeView, modelStatusData) => {
+  let primaryEntity = null;
+  let secondaryEntities = null;
   switch (activeView) {
     case "status":
-      return (
-        <Counts
-          primaryEntity={{
-            count: Object.keys(modelStatusData.applications).length,
-            label: "application",
-          }}
-          secondaryEntities={generateApplicationSecondaryCounts(
-            modelStatusData
-          )}
-        />
+      primaryEntity = {
+        count: Object.keys(modelStatusData.applications).length,
+        label: "application",
+      };
+      secondaryEntities = generateSecondaryCounts(
+        modelStatusData,
+        "applications",
+        "status"
       );
+      break;
     case "units":
-      const [secondaryUnitEntities, totalUnits] = generateUnitSecondaryCounts(
+      let totalUnits;
+      [secondaryEntities, totalUnits] = generateUnitSecondaryCounts(
         modelStatusData
       );
-      return (
-        <Counts
-          primaryEntity={{
-            count: totalUnits,
-            label: "unit",
-          }}
-          secondaryEntities={secondaryUnitEntities}
-        />
-      );
+      primaryEntity = {
+        count: totalUnits,
+        label: "unit",
+      };
+      break;
     case "machines":
-      return (
-        <Counts
-          primaryEntity={{
-            count: Object.keys(modelStatusData.machines).length,
-            label: "machine",
-          }}
-          secondaryEntities={generateMachineSecondaryCounts(modelStatusData)}
-        />
+      primaryEntity = {
+        count: Object.keys(modelStatusData.machines).length,
+        label: "machine",
+      };
+      secondaryEntities = generateSecondaryCounts(
+        modelStatusData,
+        "machines",
+        "agentStatus"
       );
+      break;
     case "relations":
       const relationLength = Object.keys(modelStatusData.relations).length;
-      return (
-        <Counts
-          primaryEntity={{
-            count: relationLength,
-            label: "relation",
-          }}
-          secondaryEntities={[{ count: relationLength, label: "joined" }]}
-        />
-      );
+      primaryEntity = {
+        count: relationLength,
+        label: "relation",
+      };
+      secondaryEntities = [{ count: relationLength, label: "joined" }];
+      break;
   }
+
+  return (
+    <Counts
+      primaryEntity={primaryEntity}
+      secondaryEntities={secondaryEntities}
+    />
+  );
 };
 
 const ModelDetails = () => {
