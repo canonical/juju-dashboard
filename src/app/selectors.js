@@ -565,6 +565,7 @@ export const getWSControllerURL = createSelector(
 */
 export const getControllerDataByUUID = (controllerUUID) => {
   return createSelector(getControllerData, (controllerData) => {
+    if (!controllerData) return null;
     return Object.entries(controllerData).find(
       (controller) => controllerUUID === controller[1][0].uuid
     );
