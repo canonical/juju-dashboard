@@ -43,6 +43,7 @@ function useQueryString(queryKey, resetValue) {
     }
     queryStrings[queryKey] = queryValue;
     const updatedQs = queryString.stringify(queryStrings);
+    // Don't allow empty query string Values
     if (queryValue) {
       history.push({
         pathname,
