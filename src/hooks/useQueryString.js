@@ -43,10 +43,12 @@ function useQueryString(queryKey, resetValue) {
     }
     queryStrings[queryKey] = queryValue;
     const updatedQs = queryString.stringify(queryStrings);
-    history.push({
-      pathname,
-      search: queryValue === resetValue ? null : updatedQs,
-    });
+    if (queryValue) {
+      history.push({
+        pathname,
+        search: queryValue === resetValue ? null : updatedQs,
+      });
+    }
   }, [queryValue, queryKey, resetValue, pathname, history]);
 
   return [queryValue || resetValue, setQueryValue];
