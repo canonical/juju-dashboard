@@ -36,7 +36,7 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter
-          initialEntries={["/models/space-man@external/frontend-ci"]}
+          initialEntries={["/models/spaceman@external/hadoopspark"]}
         >
           <TestRoute path="/models/*">
             <ModelDetails />
