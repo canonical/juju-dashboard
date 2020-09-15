@@ -1,4 +1,5 @@
 import React from "react";
+import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 
@@ -251,4 +252,71 @@ export const debounce = (fn, wait) => {
 export const userIsControllerAdmin = (conn) => {
   const controllerAccess = conn?.info?.user?.controllerAccess;
   return ["superuser", "admin"].includes(controllerAccess);
+};
+
+/**
+  Returns the modelStatusData filtered by the supplied values.
+  @param {Object} modelStatusData The model status data to filter
+  @param {String} appName The name of the application to filter the data by.
+*/
+export const filterModelStatusData = (modelStatusData, appName) => {
+  if (modelStatusData) {
+    const filteredData = cloneDeep(modelStatusData);
+
+    if (appName === "") {
+      return filteredData;
+    }
+
+    const application = filteredData.applications[appName];
+    // remove the units from the application objects that are not
+    // the filter-by app.
+    const subordinateTo = application.subordinateTo || [];
+    Object.keys(filteredData.applications).forEach((key) => {
+      if (key !== appName && !subordinateTo.includes(key)) {
+        filteredData.applications[key].units = {};
+      }
+    });
+    // Loop through all of the units of the remaining applications that are
+    // listed in the subordinateTo list. This is done because although
+    // a subordinate is supposed to be installed on each unit, that's not
+    // always the case.
+    subordinateTo.forEach((parentName) => {
+      const units = filteredData.applications[parentName].units;
+      Object.entries(units).forEach((entry) => {
+        const found = Object.entries(entry[1].subordinates).find(
+          (ele) => ele[0].split("/")[0] === appName
+        );
+        if (!found) {
+          delete units[entry[0]];
+        }
+      });
+    });
+
+    // Remove all the machines that the selected application isn't installed on.
+    const appMachines = new Set();
+    for (let unitId in application.units) {
+      const unit = application.units[unitId];
+      appMachines.add(unit.machine);
+    }
+    subordinateTo.forEach((subAppName) => {
+      // this will be the parent of the subordinate and grab the machines from it
+      const parent = filteredData.applications[subAppName];
+      for (let unitId in parent.units) {
+        const unit = parent.units[unitId];
+        appMachines.add(unit.machine);
+      }
+    });
+    for (let machineId in filteredData.machines) {
+      if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
+    }
+
+    // Remove all relations that don't involve the selected application.
+    filteredData.relations = modelStatusData.relations.filter(
+      (relation) => relation.key.indexOf(appName) > -1
+    );
+
+    return filteredData;
+  }
+
+  return modelStatusData;
 };
