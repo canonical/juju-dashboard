@@ -10,10 +10,10 @@ const Counts = ({ primaryEntity, secondaryEntities }) => {
     })
     .join(", ");
   return (
-    <div className="entity-counts">
+    <small className="entity-counts">
       {primaryEntity.count}{" "}
       {pluralize(primaryEntity.count, primaryEntity.label)}: {statuses}
-    </div>
+    </small>
   );
 };
 
