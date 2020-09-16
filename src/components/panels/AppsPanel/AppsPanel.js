@@ -2,9 +2,9 @@ import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getConfig, getModelUUID, getModelStatus } from "app/selectors";
-import useQueryString from "hooks/useQueryString";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+
 import {
   generateEntityIdentifier,
   unitTableHeaders,
@@ -23,7 +23,7 @@ import {
 
 import "./_apps-panel.scss";
 
-export default function AppsPanel({ isActive, onClose, filterByApp }) {
+export default function AppsPanel({ isActive, onClose, entity }) {
   // Get model status info
   const { 0: modelName } = useParams();
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
@@ -33,16 +33,14 @@ export default function AppsPanel({ isActive, onClose, filterByApp }) {
   ]);
   const modelStatusData = useSelector(getModelStatusMemo);
 
-  const { 0: appName } = useQueryString("entity");
-
   const { baseAppURL } = useSelector(getConfig);
 
   const filteredModelStatusData = filterModelStatusData(
     modelStatusData,
-    filterByApp
+    entity
   );
 
-  const generateAppPanelHeader = (app, baseAppURL = "") => {
+  const generateAppPanelHeader = (app, baseAppURL) => {
     return (
       <div className="slidepanel-apps-header">
         {app && (
@@ -100,8 +98,9 @@ export default function AppsPanel({ isActive, onClose, filterByApp }) {
   };
 
   const appPanelHeader = useMemo(
-    () => generateAppPanelHeader(modelStatusData?.applications[appName], ""),
-    [modelStatusData, appName]
+    () =>
+      generateAppPanelHeader(modelStatusData?.applications[entity], baseAppURL),
+    [modelStatusData, entity, baseAppURL]
   );
 
   const machinesSlidePanelRows = useMemo(
@@ -119,32 +118,35 @@ export default function AppsPanel({ isActive, onClose, filterByApp }) {
     [filteredModelStatusData, baseAppURL]
   );
 
-  return (
-    <SlidePanel isActive={isActive} onClose={onClose}>
-      {appPanelHeader}
+  const isLoading = !modelStatusData?.applications?.[entity];
 
-      <div className="slide-panel__tables">
-        <MainTable
-          headers={unitTableHeaders}
-          rows={unitSlidePanelRows}
-          className="model-details__units p-main-table"
-          sortable
-          emptyStateMsg={"There are no units in this model"}
-        />
-        <MainTable
-          headers={machineTableHeaders}
-          rows={machinesSlidePanelRows}
-          className="model-details__machines p-main-table"
-          sortable
-          emptyStateMsg={"There are no machines in this model"}
-        />
-        <MainTable
-          headers={relationTableHeaders}
-          rows={relationSlidePanelRows}
-          className="model-details__relations p-main-table"
-          sortable
-          emptyStateMsg={"There are no relations in this model"}
-        />
+  return (
+    <SlidePanel isActive={isActive} onClose={onClose} isLoading={isLoading}>
+      <div className="apps-panel">
+        {appPanelHeader}
+        <div className="slide-panel__tables">
+          <MainTable
+            headers={unitTableHeaders}
+            rows={unitSlidePanelRows}
+            className="model-details__units p-main-table"
+            sortable
+            emptyStateMsg={"There are no units in this model"}
+          />
+          <MainTable
+            headers={machineTableHeaders}
+            rows={machinesSlidePanelRows}
+            className="model-details__machines p-main-table"
+            sortable
+            emptyStateMsg={"There are no machines in this model"}
+          />
+          <MainTable
+            headers={relationTableHeaders}
+            rows={relationSlidePanelRows}
+            className="model-details__relations p-main-table"
+            sortable
+            emptyStateMsg={"There are no relations in this model"}
+          />
+        </div>
       </div>
     </SlidePanel>
   );
