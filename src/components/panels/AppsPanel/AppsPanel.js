@@ -21,8 +21,6 @@ import {
   filterModelStatusData,
 } from "app/utils";
 
-import "./_apps-panel.scss";
-
 export default function AppsPanel({ isActive, onClose, entity }) {
   // Get model status info
   const { 0: modelName } = useParams();
@@ -35,12 +33,14 @@ export default function AppsPanel({ isActive, onClose, entity }) {
 
   const { baseAppURL } = useSelector(getConfig);
 
+  // Filter model status via selected entity
   const filteredModelStatusData = filterModelStatusData(
     modelStatusData,
     entity
   );
 
-  const generateAppPanelHeader = (app, baseAppURL) => {
+  // Generate panel header for given entity
+  const generateAppPanelHeader = (app, baseAppURL, entity) => {
     return (
       <div className="slidepanel-apps-header">
         {app && (
@@ -49,7 +49,7 @@ export default function AppsPanel({ isActive, onClose, entity }) {
               <div>
                 {generateEntityIdentifier(
                   app.charm,
-                  app.name,
+                  entity,
                   false,
                   baseAppURL,
                   true // disable link
@@ -99,7 +99,11 @@ export default function AppsPanel({ isActive, onClose, entity }) {
 
   const appPanelHeader = useMemo(
     () =>
-      generateAppPanelHeader(modelStatusData?.applications[entity], baseAppURL),
+      generateAppPanelHeader(
+        modelStatusData?.applications[entity],
+        baseAppURL,
+        entity
+      ),
     [modelStatusData, entity, baseAppURL]
   );
 
@@ -118,7 +122,8 @@ export default function AppsPanel({ isActive, onClose, entity }) {
     [filteredModelStatusData, baseAppURL]
   );
 
-  const isLoading = !modelStatusData?.applications?.[entity];
+  // Check for loading status
+  const isLoading = !filteredModelStatusData?.applications?.[entity];
 
   return (
     <SlidePanel isActive={isActive} onClose={onClose} isLoading={isLoading}>
