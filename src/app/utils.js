@@ -270,7 +270,7 @@ export const filterModelStatusData = (modelStatusData, appName) => {
     const application = filteredData.applications[appName];
     // remove the units from the application objects that are not
     // the filter-by app.
-    const subordinateTo = application.subordinateTo || [];
+    const subordinateTo = application?.subordinateTo || [];
     Object.keys(filteredData.applications).forEach((key) => {
       if (key !== appName && !subordinateTo.includes(key)) {
         filteredData.applications[key].units = {};
@@ -294,7 +294,7 @@ export const filterModelStatusData = (modelStatusData, appName) => {
 
     // Remove all the machines that the selected application isn't installed on.
     const appMachines = new Set();
-    for (let unitId in application.units) {
+    for (let unitId in application?.units) {
       const unit = application.units[unitId];
       appMachines.add(unit.machine);
     }
