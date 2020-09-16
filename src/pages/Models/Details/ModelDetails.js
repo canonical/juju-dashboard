@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import cloneDeep from "clone-deep";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
+import Counts from "components/Counts/Counts";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
@@ -128,6 +129,99 @@ const shouldShow = (segment, activeView) => {
   }
 };
 
+const incrementCounts = (status, counts) => {
+  if (counts[status]) {
+    counts[status] = counts[status] += 1;
+  } else {
+    counts[status] = 1;
+  }
+  return counts;
+};
+
+const formatCounts = (counts) =>
+  Object.entries(counts).map((statusSet) => ({
+    count: statusSet[1],
+    label: statusSet[0],
+  }));
+
+const generateSecondaryCounts = (modelStatusData, segment, selector) => {
+  return formatCounts(
+    Object.entries(modelStatusData[segment]).reduce((counts, section) => {
+      const status = section[1][selector].status;
+      return incrementCounts(status, counts);
+    }, {})
+  );
+};
+
+const generateUnitSecondaryCounts = (modelStatusData) => {
+  const counts = {};
+  let totalUnits = 0;
+  const applications = modelStatusData.applications;
+  Object.keys(applications).forEach((applicationName) => {
+    const units = applications[applicationName].units || [];
+    Object.keys(units).forEach((unitId) => {
+      const status = units[unitId].agentStatus.status;
+      totalUnits += 1;
+      return incrementCounts(status, counts);
+    });
+  });
+  return [formatCounts(counts), totalUnits];
+};
+
+const renderCounts = (activeView, modelStatusData) => {
+  let primaryEntity = null;
+  let secondaryEntities = null;
+  switch (activeView) {
+    case "status":
+      primaryEntity = {
+        count: Object.keys(modelStatusData.applications).length,
+        label: "application",
+      };
+      secondaryEntities = generateSecondaryCounts(
+        modelStatusData,
+        "applications",
+        "status"
+      );
+      break;
+    case "units":
+      let totalUnits;
+      [secondaryEntities, totalUnits] = generateUnitSecondaryCounts(
+        modelStatusData
+      );
+      primaryEntity = {
+        count: totalUnits,
+        label: "unit",
+      };
+      break;
+    case "machines":
+      primaryEntity = {
+        count: Object.keys(modelStatusData.machines).length,
+        label: "machine",
+      };
+      secondaryEntities = generateSecondaryCounts(
+        modelStatusData,
+        "machines",
+        "agentStatus"
+      );
+      break;
+    case "relations":
+      const relationLength = Object.keys(modelStatusData.relations).length;
+      primaryEntity = {
+        count: relationLength,
+        label: "relation",
+      };
+      secondaryEntities = [{ count: relationLength, label: "joined" }];
+      break;
+  }
+
+  return (
+    <Counts
+      primaryEntity={primaryEntity}
+      secondaryEntities={secondaryEntities}
+    />
+  );
+};
+
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
@@ -242,6 +336,7 @@ const ModelDetails = () => {
         <div className="model-details" aria-disabled={slidePanelActive}>
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
+            {renderCounts(activeView, modelStatusData)}
             {shouldShow("apps", activeView) && (
               <MainTable
                 headers={applicationTableHeaders}

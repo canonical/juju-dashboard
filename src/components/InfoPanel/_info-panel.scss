@@ -3,8 +3,6 @@
 @import "../../scss/functions/z-index";
 
 .info-panel {
-  padding: 1rem 0;
-
   @media (min-width: $breakpoint-small) {
     display: grid;
     gap: 1rem;

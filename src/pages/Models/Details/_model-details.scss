@@ -7,6 +7,7 @@
     grid-template-columns: 1fr;
     margin-bottom: 2rem;
     padding-bottom: 3rem;
+    padding-top: 1rem;
 
     @media (min-width: $breakpoint-medium) {
       gap: 1rem;

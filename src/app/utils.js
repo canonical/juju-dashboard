@@ -152,16 +152,29 @@ export const extractOwnerName = (tag) => {
 };
 
 /**
-  Returns (s) string if the value is more then one
+  Pluralizes the supplied word based on the provided dataset.
   @param {string} value The integer to be checked
   @param {string} string The item name to be pluralized
   @returns {string} The item pluralized if required
 */
 export const pluralize = (value, string) => {
-  if (value === 0 || value > 1) {
-    return string + "s";
+  const special = {
+    active: "active",
+    allocating: "allocating",
+    down: "down",
+    joined: "joined",
+    lost: "lost",
+    running: "running",
+    started: "started",
+    unknown: "unknown",
+    waiting: "waiting",
+  };
+  if (value === 1) {
+    return string;
+  } else if (special[string]) {
+    return special[string];
   }
-  return string;
+  return `${string}s`;
 };
 
 /**
