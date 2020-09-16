@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
@@ -103,12 +103,13 @@ const generateUnitSecondaryCounts = (modelStatusData) => {
 };
 
 const renderCounts = (activeView, modelStatusData) => {
+  if (!modelStatusData) return null;
   let primaryEntity = null;
   let secondaryEntities = null;
   switch (activeView) {
     case "status":
       primaryEntity = {
-        count: Object.keys(modelStatusData.applications).length,
+        count: Object.keys(modelStatusData?.applications).length,
         label: "application",
       };
       secondaryEntities = generateSecondaryCounts(
@@ -159,8 +160,6 @@ const renderCounts = (activeView, modelStatusData) => {
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
-  const [filterByApp, setFilterByApp] = useState("");
-  const [slidePanelData] = useState({});
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
@@ -199,7 +198,6 @@ const ModelDetails = () => {
   const handleAppRowClick = (e, app) => {
     const currentApp = cloneDeep(app);
     currentApp.name = e.currentTarget.dataset.app;
-    setFilterByApp(currentApp.name);
     setPanelType("apps");
     setEntity(currentApp.name);
   };
@@ -232,8 +230,6 @@ const ModelDetails = () => {
     [modelStatusData, baseAppURL]
   );
 
-  const slidePanelActive = Object.entries(slidePanelData).length > 0;
-
   const [activeView, setActiveView] = useQueryString("view", "status");
   const [panelType, setPanelType] = useQueryString("panel");
   const [entity, setEntity] = useQueryString("entity");
@@ -256,7 +252,7 @@ const ModelDetails = () => {
         </div>
       </Header>
       <div className="l-content">
-        <div className="model-details" aria-disabled={slidePanelActive}>
+        <div className="model-details" aria-disabled={panelType != null}>
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
             {renderCounts(activeView, modelStatusData)}
@@ -302,7 +298,6 @@ const ModelDetails = () => {
           entity={entity}
           isActive={panelType}
           onClose={() => closePanel()}
-          filterByApp={filterByApp}
         />
       </div>
       {generateTerminalComponent(modelUUID, controllerWSHost)}
