@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 
+/**
+ * Returns offline status
+ *
+ * @returns {Boolean} isOffline
+ */
 export default function useOffline() {
   const [isOffline, setIsOffline] = useState(null);
 
-  // Offline notification
   useEffect(() => {
     const offlineEvent = window.addEventListener(
       "offline",
