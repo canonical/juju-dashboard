@@ -1,6 +1,7 @@
 import React from "react";
 import { mount } from "enzyme";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route } from "react-router-dom";
+import { QueryParamProvider } from "use-query-params";
 
 import ButtonGroup from "./ButtonGroup";
 
@@ -8,10 +9,12 @@ describe("ButtonGroup", () => {
   it("shows active button", () => {
     const wrapper = mount(
       <MemoryRouter>
-        <ButtonGroup
-          buttons={["status", "cloud", "owner"]}
-          activeButton="cloud"
-        />
+        <QueryParamProvider ReactRouterRoute={Route}>
+          <ButtonGroup
+            buttons={["status", "cloud", "owner"]}
+            activeButton="cloud"
+          />
+        </QueryParamProvider>
       </MemoryRouter>
     );
     expect(wrapper.find(".is-selected").length).toBe(1);
@@ -20,7 +23,9 @@ describe("ButtonGroup", () => {
   it("if no active button is defined then none is selected", () => {
     const wrapper = mount(
       <MemoryRouter>
-        <ButtonGroup buttons={["status", "cloud", "owner"]} />
+        <QueryParamProvider ReactRouterRoute={Route}>
+          <ButtonGroup buttons={["status", "cloud", "owner"]} />
+        </QueryParamProvider>
       </MemoryRouter>
     );
     expect(wrapper.find(".is-selected")).toEqual({});
@@ -30,11 +35,13 @@ describe("ButtonGroup", () => {
     const setActiveButton = jest.fn();
     const wrapper = mount(
       <MemoryRouter>
-        <ButtonGroup
-          buttons={["status", "cloud", "owner"]}
-          activeButton="cloud"
-          setActiveButton={setActiveButton}
-        />
+        <QueryParamProvider ReactRouterRoute={Route}>
+          <ButtonGroup
+            buttons={["status", "cloud", "owner"]}
+            activeButton="cloud"
+            setActiveButton={setActiveButton}
+          />
+        </QueryParamProvider>
       </MemoryRouter>
     );
     expect(wrapper.find(".p-button-group__button.is-selected").text()).toBe(

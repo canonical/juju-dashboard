@@ -182,6 +182,10 @@ const ModelDetails = () => {
     activeView: withDefault(StringParam, "status"),
   });
 
+  const setActiveView = (view) => {
+    setQuery({ activeView: view });
+  };
+
   useEffect(() => {
     dispatch(collapsibleSidebar(true));
     return () => {
@@ -241,7 +245,7 @@ const ModelDetails = () => {
               buttons={["status", "units", "machines", "relations"]}
               label="View:"
               activeButton={activeView}
-              setActiveButton={setQuery}
+              setActiveButton={setActiveView}
             />
           </div>
         </div>

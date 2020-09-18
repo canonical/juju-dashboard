@@ -2,7 +2,8 @@ import React from "react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import { MemoryRouter } from "react-router";
+import { QueryParamProvider } from "use-query-params";
+import { MemoryRouter, Route } from "react-router";
 import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
 
@@ -21,9 +22,11 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -38,9 +41,11 @@ describe("ModelDetail Container", () => {
         <MemoryRouter
           initialEntries={["/models/spaceman@external/hadoopspark"]}
         >
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -52,9 +57,11 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/spaceman@external/mymodel"]}>
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -71,9 +78,11 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/sub-test"]}>
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -87,9 +96,11 @@ describe("ModelDetail Container", () => {
         <MemoryRouter
           initialEntries={["/models/spaceman@external/hadoopspark"]}
         >
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -121,9 +132,11 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/admin/local-test"]}>
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -145,9 +158,11 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -163,9 +178,11 @@ describe("ModelDetail Container", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
-          <TestRoute path="/models/*">
-            <ModelDetails />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );

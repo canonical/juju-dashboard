@@ -17,9 +17,7 @@ const ButtonGroup = ({ buttons, label, activeButton, setActiveButton }) => {
                 "is-selected": activeButton === label,
               })}
               value={label}
-              onClick={(e) =>
-                setActiveButton({ activeView: e.currentTarget.value })
-              }
+              onClick={(e) => setActiveButton(e.currentTarget.value)}
             >
               {label}
             </button>
