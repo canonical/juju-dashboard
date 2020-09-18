@@ -82,7 +82,7 @@ const Layout = ({ children }) => {
         Skip to main content
       </a>
 
-      {offline && <Banner>Oh noes, the app is offline :(</Banner>}
+      <Banner isActive={offline}>Oh noes, the app is offline :(</Banner>
 
       <div
         className={classNames("l-container", {

@@ -1,8 +1,15 @@
 @import "vanilla-framework/scss/vanilla";
 
 .banner {
-  background: $color-brand;
+  background: $color-caution;
   color: $color-light;
-  padding: 0.775rem;
+  max-height: 0;
+  padding: 0;
   text-align: center;
+  transition: all 0.25s;
+
+  &[data-active="true"] {
+    max-height: 100%;
+    padding: 0.775rem;
+  }
 }
