@@ -21,6 +21,8 @@ import {
   filterModelStatusData,
 } from "app/utils";
 
+import "./_apps-panel.scss";
+
 export default function AppsPanel({ isActive, onClose, entity }) {
   // Get model status info
   const { 0: modelName } = useParams();
