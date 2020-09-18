@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useStore, useDispatch } from "react-redux";
 import { isLoggedIn, getWSControllerURL } from "app/selectors";
 import Notification from "@canonical/react-components/dist/components/Notification/Notification";
+import Banner from "components/Banner/Banner";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
 import useHover from "hooks/useHover";
@@ -14,6 +15,7 @@ import { isSidebarCollapsible } from "ui/selectors";
 import "./_layout.scss";
 
 const Layout = ({ children }) => {
+  const [offline, setOffline] = useState(false);
   const [sidebarRef, isSidebarHovered] = useHover();
   const [sidebarInFocus, setSidebarInFocus] = useState(false);
   const [screenWidth, setScreenWidth] = useState(getViewportWidth());
@@ -73,11 +75,35 @@ const Layout = ({ children }) => {
     };
   }, []);
 
+  // Offline notification
+  useEffect(() => {
+    const offline = window.addEventListener(
+      "offline",
+      function () {
+        setOffline(true);
+      },
+      false
+    );
+    const online = window.addEventListener(
+      "online",
+      function () {
+        setOffline(false);
+      },
+      false
+    );
+    return () => {
+      window.removeEventListener("offline", offline);
+      window.removeEventListener("online", online);
+    };
+  }, []);
+
   return (
     <>
       <a className="skip-main" href="#main-content">
         Skip to main content
       </a>
+
+      {offline && <Banner>Oh noes, the app is offline :(</Banner>}
 
       <div
         className={classNames("l-container", {
