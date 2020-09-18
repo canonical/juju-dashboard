@@ -7,6 +7,7 @@ import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
 import useHover from "hooks/useHover";
 import useLocalStorage from "hooks/useLocalStorage";
+import useOffline from "hooks/useOffline";
 import { getViewportWidth, debounce } from "app/utils";
 
 import { userMenuActive, externalNavActive } from "ui/actions";
@@ -15,7 +16,6 @@ import { isSidebarCollapsible } from "ui/selectors";
 import "./_layout.scss";
 
 const Layout = ({ children }) => {
-  const [offline, setOffline] = useState(false);
   const [sidebarRef, isSidebarHovered] = useHover();
   const [sidebarInFocus, setSidebarInFocus] = useState(false);
   const [screenWidth, setScreenWidth] = useState(getViewportWidth());
@@ -25,6 +25,7 @@ const Layout = ({ children }) => {
   );
   const containerRef = useRef(null);
   const dispatch = useDispatch();
+  const offline = useOffline();
 
   const store = useStore();
   const userIsLoggedIn = isLoggedIn(
@@ -72,28 +73,6 @@ const Layout = ({ children }) => {
     return () => {
       isMounted.current = false;
       window.removeEventListener("resize", debounce(handleScreenResize, 250));
-    };
-  }, []);
-
-  // Offline notification
-  useEffect(() => {
-    const offline = window.addEventListener(
-      "offline",
-      function () {
-        setOffline(true);
-      },
-      false
-    );
-    const online = window.addEventListener(
-      "online",
-      function () {
-        setOffline(false);
-      },
-      false
-    );
-    return () => {
-      window.removeEventListener("offline", offline);
-      window.removeEventListener("online", online);
     };
   }, []);
 
