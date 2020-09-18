@@ -17,7 +17,7 @@ import { pluralize } from "app/utils";
 import "./_models.scss";
 
 export default function Models() {
-  const [query, setQuery] = useQueryParam(
+  const [groupModelsBy, setGroupModelsBy] = useQueryParam(
     "groupedby",
     withDefault(StringParam, "status")
   );
@@ -50,17 +50,17 @@ export default function Models() {
             )}, ${running} running`}
           </div>
           <ButtonGroup
-            activeButton={query}
+            activeButton={groupModelsBy}
             buttons={["status", "cloud", "owner"]}
             label="Group by:"
-            setActiveButton={setQuery}
+            setActiveButton={setGroupModelsBy}
           />
           <FilterTags />
         </div>
       </Header>
       <div className="l-content">
         <div className="models">
-          <ModelTableList groupedBy={query} filters={activeFilters} />
+          <ModelTableList groupedBy={groupModelsBy} filters={activeFilters} />
         </div>
       </div>
     </Layout>
