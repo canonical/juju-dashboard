@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useHistory } from "react-router-dom";
-import cloneDeep from "clone-deep";
+import { useParams } from "react-router-dom";
+import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import Counts from "components/Counts/Counts";
@@ -12,8 +12,6 @@ import Header from "components/Header/Header";
 import Terminal from "components/Terminal/Terminal";
 
 import AppsPanel from "components/panels/AppsPanel/AppsPanel";
-
-import useQueryString from "hooks/useQueryString";
 
 import {
   getConfig,
@@ -176,9 +174,13 @@ const ModelDetails = () => {
       .replace("/api", "");
   }
 
-  const history = useHistory();
-
   const { baseAppURL } = useSelector(getConfig);
+
+  const [query, setQuery] = useQueryParams({
+    panel: StringParam,
+    entity: StringParam,
+    activeView: withDefault(StringParam, "status"),
+  });
 
   useEffect(() => {
     dispatch(collapsibleSidebar(true));
@@ -195,17 +197,12 @@ const ModelDetails = () => {
     }
   }, [dispatch, modelUUID, modelStatusData]);
 
-  const handleAppRowClick = (e, app) => {
-    const currentApp = cloneDeep(app);
-    currentApp.name = e.currentTarget.dataset.app;
-    setPanelType("apps");
-    setEntity(currentApp.name);
+  const handleAppRowClick = (e) => {
+    setQuery({ panel: "apps", entity: e.currentTarget.dataset.app });
   };
 
   const closePanel = () => {
-    history.push(`/models/${modelName}`);
-    setPanelType(null);
-    setEntity(null);
+    setQuery({ panel: undefined, entity: undefined });
   };
 
   const applicationTableRows = useMemo(
@@ -230,9 +227,7 @@ const ModelDetails = () => {
     [modelStatusData, baseAppURL]
   );
 
-  const [activeView, setActiveView] = useQueryString("view", "status");
-  const [panelType, setPanelType] = useQueryString("panel");
-  const [entity, setEntity] = useQueryString("entity");
+  const { panel, entity, activeView } = query;
 
   return (
     <Layout>
@@ -246,13 +241,13 @@ const ModelDetails = () => {
               buttons={["status", "units", "machines", "relations"]}
               label="View:"
               activeButton={activeView}
-              setActiveButton={setActiveView}
+              setActiveButton={setQuery}
             />
           </div>
         </div>
       </Header>
       <div className="l-content">
-        <div className="model-details" aria-disabled={panelType != null}>
+        <div className="model-details" aria-disabled={panel != null}>
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
             {renderCounts(activeView, modelStatusData)}
@@ -296,7 +291,7 @@ const ModelDetails = () => {
         </div>
         <AppsPanel
           entity={entity}
-          isActive={panelType}
+          isActive={panel}
           onClose={() => closePanel()}
         />
       </div>
