@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
   );
   const containerRef = useRef(null);
   const dispatch = useDispatch();
-  const offline = useOffline();
+  const isOffline = useOffline();
 
   const store = useStore();
   const userIsLoggedIn = isLoggedIn(
@@ -82,7 +82,19 @@ const Layout = ({ children }) => {
         Skip to main content
       </a>
 
-      <Banner isActive={offline}>Oh noes, the app is offline :(</Banner>
+      <Banner
+        isActive={isOffline !== null}
+        type={isOffline === false ? "positive" : "caution"}
+      >
+        {isOffline ? (
+          <p>The dashboard is offline.</p>
+        ) : (
+          <p>
+            The dashboard is online - please{" "}
+            <a href={window.location}>refresh your browser.</a>
+          </p>
+        )}
+      </Banner>
 
       <div
         className={classNames("l-container", {

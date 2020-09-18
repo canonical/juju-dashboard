@@ -2,7 +2,7 @@
 
 .banner {
   background: $color-caution;
-  color: $color-light;
+  color: $color-brand;
   max-height: 0;
   padding: 0;
   text-align: center;
@@ -11,5 +11,24 @@
   &[data-active="true"] {
     max-height: 100%;
     padding: 0.775rem;
+  }
+
+  &[data-type="caution"] {
+    background: $color-caution;
+  }
+
+  &[data-type="positive"] {
+    background: $color-positive;
+    color: $color-light;
+
+    a {
+      color: $color-light;
+      text-decoration: underline;
+    }
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
   }
 }

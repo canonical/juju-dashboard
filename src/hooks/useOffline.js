@@ -1,29 +1,29 @@
 import { useState, useEffect } from "react";
 
 export default function useOffline() {
-  const [offline, setOffline] = useState(false);
+  const [isOffline, setIsOffline] = useState(null);
 
   // Offline notification
   useEffect(() => {
-    const offline = window.addEventListener(
+    const offlineEvent = window.addEventListener(
       "offline",
       function () {
-        setOffline(true);
+        setIsOffline(true);
       },
       false
     );
-    const online = window.addEventListener(
+    const onlineEvent = window.addEventListener(
       "online",
       function () {
-        setOffline(false);
+        setIsOffline(false);
       },
       false
     );
     return () => {
-      window.removeEventListener("offline", offline);
-      window.removeEventListener("online", online);
+      window.removeEventListener("offline", offlineEvent);
+      window.removeEventListener("online", onlineEvent);
     };
   }, []);
 
-  return offline;
+  return isOffline;
 }
