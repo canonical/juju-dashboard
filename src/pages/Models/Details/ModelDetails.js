@@ -1,18 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import cloneDeep from "clone-deep";
+import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import Counts from "components/Counts/Counts";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
-import SlidePanel from "components/SlidePanel/SlidePanel";
 import Terminal from "components/Terminal/Terminal";
 
-import useQueryString from "hooks/useQueryString";
+import AppsPanel from "components/panels/AppsPanel/AppsPanel";
 
 import {
   getConfig,
@@ -20,6 +19,7 @@ import {
   getModelUUID,
   getModelStatus,
 } from "app/selectors";
+
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "ui/actions";
 
@@ -32,77 +32,9 @@ import {
   generateMachineRows,
   generateRelationRows,
   generateUnitRows,
-  generateAppSlidePanelHeader,
 } from "./generators";
 
 import "./_model-details.scss";
-
-/**
-  Returns the modelStatusData filtered by the supplied values.
-  @param {Object} modelStatusData The model status data to filter
-  @param {String} appName The name of the application to filter the data by.
-*/
-const filterModelStatusData = (modelStatusData, appName) => {
-  if (modelStatusData) {
-    const filteredData = cloneDeep(modelStatusData);
-
-    if (appName === "") {
-      return filteredData;
-    }
-
-    const application = filteredData.applications[appName];
-    // remove the units from the application objects that are not
-    // the filter-by app.
-    const subordinateTo = application.subordinateTo || [];
-    Object.keys(filteredData.applications).forEach((key) => {
-      if (key !== appName && !subordinateTo.includes(key)) {
-        filteredData.applications[key].units = {};
-      }
-    });
-    // Loop through all of the units of the remaining applications that are
-    // listed in the subordinateTo list. This is done because although
-    // a subordinate is supposed to be installed on each unit, that's not
-    // always the case.
-    subordinateTo.forEach((parentName) => {
-      const units = filteredData.applications[parentName].units;
-      Object.entries(units).forEach((entry) => {
-        const found = Object.entries(entry[1].subordinates).find(
-          (ele) => ele[0].split("/")[0] === appName
-        );
-        if (!found) {
-          delete units[entry[0]];
-        }
-      });
-    });
-
-    // Remove all the machines that the selected application isn't installed on.
-    const appMachines = new Set();
-    for (let unitId in application.units) {
-      const unit = application.units[unitId];
-      appMachines.add(unit.machine);
-    }
-    subordinateTo.forEach((subAppName) => {
-      // this will be the parent of the subordinate and grab the machines from it
-      const parent = filteredData.applications[subAppName];
-      for (let unitId in parent.units) {
-        const unit = parent.units[unitId];
-        appMachines.add(unit.machine);
-      }
-    });
-    for (let machineId in filteredData.machines) {
-      if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
-    }
-
-    // Remove all relations that don't involve the selected application.
-    filteredData.relations = modelStatusData.relations.filter(
-      (relation) => relation.key.indexOf(appName) > -1
-    );
-
-    return filteredData;
-  }
-
-  return modelStatusData;
-};
 
 const generateTerminalComponent = (modelUUID, controllerWSHost) => {
   return null; // XXX Remove me to see the Terminal
@@ -169,12 +101,13 @@ const generateUnitSecondaryCounts = (modelStatusData) => {
 };
 
 const renderCounts = (activeView, modelStatusData) => {
+  if (!modelStatusData) return null;
   let primaryEntity = null;
   let secondaryEntities = null;
   switch (activeView) {
     case "status":
       primaryEntity = {
-        count: Object.keys(modelStatusData.applications).length,
+        count: Object.keys(modelStatusData?.applications).length,
         label: "application",
       };
       secondaryEntities = generateSecondaryCounts(
@@ -225,9 +158,6 @@ const renderCounts = (activeView, modelStatusData) => {
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
-  const [filterByApp, setFilterByApp] = useState("");
-
-  const [slidePanelData, setSlidePanelData] = useState({});
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
@@ -244,12 +174,17 @@ const ModelDetails = () => {
       .replace("/api", "");
   }
 
-  const filteredModelStatusData = filterModelStatusData(
-    modelStatusData,
-    filterByApp
-  );
-
   const { baseAppURL } = useSelector(getConfig);
+
+  const [query, setQuery] = useQueryParams({
+    panel: StringParam,
+    entity: StringParam,
+    activeView: withDefault(StringParam, "status"),
+  });
+
+  const setActiveView = (view) => {
+    setQuery({ activeView: view });
+  };
 
   useEffect(() => {
     dispatch(collapsibleSidebar(true));
@@ -266,54 +201,37 @@ const ModelDetails = () => {
     }
   }, [dispatch, modelUUID, modelStatusData]);
 
-  const handleAppRowClick = (e, app) => {
-    const currentApp = cloneDeep(app);
-    currentApp.name = e.currentTarget.dataset.app;
-    setSlidePanelData({ currentApp });
-    setFilterByApp(currentApp.name);
+  const closePanel = () => {
+    setQuery({ panel: undefined, entity: undefined });
   };
 
-  const applicationTableRows = useMemo(
-    () =>
-      generateApplicationRows(modelStatusData, handleAppRowClick, baseAppURL),
-    [baseAppURL, modelStatusData]
-  );
+  const applicationTableRows = useMemo(() => {
+    const handleAppRowClick = (e) => {
+      setQuery({ panel: "apps", entity: e.currentTarget.dataset.app });
+    };
+    return generateApplicationRows(
+      modelStatusData,
+      handleAppRowClick,
+      baseAppURL
+    );
+  }, [baseAppURL, modelStatusData, setQuery]);
 
   const unitTableRows = useMemo(
     () => generateUnitRows(modelStatusData, baseAppURL),
     [baseAppURL, modelStatusData]
-  );
-  const unitSlidePanelRows = useMemo(
-    () => generateUnitRows(filteredModelStatusData, baseAppURL),
-    [baseAppURL, filteredModelStatusData]
   );
 
   const machinesTableRows = useMemo(
     () => generateMachineRows(modelStatusData),
     [modelStatusData]
   );
-  const machinesSlidePanelRows = useMemo(
-    () => generateMachineRows(filteredModelStatusData),
-    [filteredModelStatusData]
-  );
 
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData, baseAppURL),
     [modelStatusData, baseAppURL]
   );
-  const relationSlidePanelRows = useMemo(
-    () => generateRelationRows(filteredModelStatusData, baseAppURL),
-    [filteredModelStatusData, baseAppURL]
-  );
 
-  const appSlidePanelHeader = useMemo(
-    () => generateAppSlidePanelHeader(slidePanelData.currentApp, baseAppURL),
-    [slidePanelData.currentApp, baseAppURL]
-  );
-
-  const slidePanelActive = Object.entries(slidePanelData).length > 0;
-
-  const [activeView, setActiveView] = useQueryString("view", "status");
+  const { panel, entity, activeView } = query;
 
   return (
     <Layout>
@@ -333,7 +251,7 @@ const ModelDetails = () => {
         </div>
       </Header>
       <div className="l-content">
-        <div className="model-details" aria-disabled={slidePanelActive}>
+        <div className="model-details" aria-disabled={panel != null}>
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
             {renderCounts(activeView, modelStatusData)}
@@ -375,38 +293,11 @@ const ModelDetails = () => {
             )}
           </div>
         </div>
-        <SlidePanel
-          isActive={slidePanelActive}
-          onClose={() => setSlidePanelData({})}
-          className="slide-panel__application-details"
-        >
-          <>
-            {appSlidePanelHeader}
-            <div className="slide-panel__tables">
-              <MainTable
-                headers={unitTableHeaders}
-                rows={unitSlidePanelRows}
-                className="model-details__units p-main-table"
-                sortable
-                emptyStateMsg={"There are no units in this model"}
-              />
-              <MainTable
-                headers={machineTableHeaders}
-                rows={machinesSlidePanelRows}
-                className="model-details__machines p-main-table"
-                sortable
-                emptyStateMsg={"There are no machines in this model"}
-              />
-              <MainTable
-                headers={relationTableHeaders}
-                rows={relationSlidePanelRows}
-                className="model-details__relations p-main-table"
-                sortable
-                emptyStateMsg={"There are no relations in this model"}
-              />
-            </div>
-          </>
-        </SlidePanel>
+        <AppsPanel
+          entity={entity}
+          isActive={panel}
+          onClose={() => closePanel()}
+        />
       </div>
       {generateTerminalComponent(modelUUID, controllerWSHost)}
     </Layout>

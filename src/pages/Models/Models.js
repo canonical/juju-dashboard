@@ -9,7 +9,7 @@ import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import FilterTags from "components/FilterTags/FilterTags";
 
-import useQueryString from "hooks/useQueryString";
+import { useQueryParam, StringParam, withDefault } from "use-query-params";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
 import { pluralize } from "app/utils";
@@ -17,10 +17,11 @@ import { pluralize } from "app/utils";
 import "./_models.scss";
 
 export default function Models() {
-  const [groupModelsBy, setGroupModelsBy] = useQueryString(
+  const [groupModelsBy, setGroupModelsBy] = useQueryParam(
     "groupedby",
-    "status"
+    withDefault(StringParam, "status")
   );
+
   // Grab filter from 'groupedby' query in URL and assign to variable
   const location = useLocation();
   const queryStrings = queryString.parse(location.search, {

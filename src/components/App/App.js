@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { QueryParamProvider } from "use-query-params";
 import ReactGA from "react-ga";
 
 // Components
@@ -26,12 +27,14 @@ function App() {
   return (
     <Router basename={baseAppURL}>
       <ErrorBoundary>
-        <Switch>
-          <Login>
-            <Routes />
-          </Login>
-          <Route component={NotFound} />
-        </Switch>
+        <QueryParamProvider ReactRouterRoute={Route}>
+          <Switch>
+            <Login>
+              <Routes />
+            </Login>
+            <Route component={NotFound} />
+          </Switch>
+        </QueryParamProvider>
       </ErrorBoundary>
     </Router>
   );

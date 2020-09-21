@@ -1,9 +1,16 @@
 import React, { useEffect } from "react";
 import classnames from "classnames";
+import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import "./_slide-panel.scss";
 
-function SlidePanel({ children, onClose, isActive, className }) {
+function SlidePanel({
+  children,
+  onClose,
+  isActive,
+  isLoading = false,
+  className,
+}) {
   // If Escape key is pressed when slide panel is open, close it
   useEffect(() => {
     if (!isActive) return;
@@ -41,7 +48,9 @@ function SlidePanel({ children, onClose, isActive, className }) {
       >
         Close
       </button>
-      <div className="slide-panel__content">{children}</div>
+      <div className="slide-panel__content" data-loading={isLoading}>
+        {isLoading ? <Spinner /> : <>{children}</>}
+      </div>
     </div>
   );
 }

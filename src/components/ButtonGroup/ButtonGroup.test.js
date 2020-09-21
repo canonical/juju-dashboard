@@ -1,27 +1,22 @@
 import React from "react";
 import { mount } from "enzyme";
-import { MemoryRouter } from "react-router-dom";
 
 import ButtonGroup from "./ButtonGroup";
 
 describe("ButtonGroup", () => {
   it("shows active button", () => {
     const wrapper = mount(
-      <MemoryRouter>
-        <ButtonGroup
-          buttons={["status", "cloud", "owner"]}
-          activeButton="cloud"
-        />
-      </MemoryRouter>
+      <ButtonGroup
+        buttons={["status", "cloud", "owner"]}
+        activeButton="cloud"
+      />
     );
     expect(wrapper.find(".is-selected").length).toBe(1);
   });
 
   it("if no active button is defined then none is selected", () => {
     const wrapper = mount(
-      <MemoryRouter>
-        <ButtonGroup buttons={["status", "cloud", "owner"]} />
-      </MemoryRouter>
+      <ButtonGroup buttons={["status", "cloud", "owner"]} />
     );
     expect(wrapper.find(".is-selected")).toEqual({});
   });
@@ -29,13 +24,11 @@ describe("ButtonGroup", () => {
   it("calls to set active button on click", () => {
     const setActiveButton = jest.fn();
     const wrapper = mount(
-      <MemoryRouter>
-        <ButtonGroup
-          buttons={["status", "cloud", "owner"]}
-          activeButton="cloud"
-          setActiveButton={setActiveButton}
-        />
-      </MemoryRouter>
+      <ButtonGroup
+        buttons={["status", "cloud", "owner"]}
+        activeButton="cloud"
+        setActiveButton={setActiveButton}
+      />
     );
     expect(wrapper.find(".p-button-group__button.is-selected").text()).toBe(
       "cloud"

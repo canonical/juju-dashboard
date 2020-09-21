@@ -23,6 +23,12 @@
     transform: translateX(0);
   }
 
+  [data-loading="true"] {
+    align-items: center;
+    display: flex;
+    height: 100%;
+  }
+
   .p-modal__close {
     margin: 1rem;
   }
