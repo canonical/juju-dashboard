@@ -201,20 +201,20 @@ const ModelDetails = () => {
     }
   }, [dispatch, modelUUID, modelStatusData]);
 
-  const handleAppRowClick = (e) => {
-    setQuery({ panel: "apps", entity: e.currentTarget.dataset.app });
-  };
-
   const closePanel = () => {
     setQuery({ panel: undefined, entity: undefined });
   };
 
-  const applicationTableRows = useMemo(
-    () =>
-      generateApplicationRows(modelStatusData, handleAppRowClick, baseAppURL),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [baseAppURL, modelStatusData]
-  );
+  const applicationTableRows = useMemo(() => {
+    const handleAppRowClick = (e) => {
+      setQuery({ panel: "apps", entity: e.currentTarget.dataset.app });
+    };
+    return generateApplicationRows(
+      modelStatusData,
+      handleAppRowClick,
+      baseAppURL
+    );
+  }, [baseAppURL, modelStatusData, setQuery]);
 
   const unitTableRows = useMemo(
     () => generateUnitRows(modelStatusData, baseAppURL),
