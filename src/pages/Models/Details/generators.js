@@ -102,7 +102,8 @@ export function generateEntityIdentifier(
 export function generateApplicationRows(
   modelStatusData,
   onRowClick,
-  baseAppURL
+  baseAppURL,
+  selectedEntity
 ) {
   if (!modelStatusData) {
     return [];
@@ -158,6 +159,7 @@ export function generateApplicationRows(
       ],
       onClick: (e) => onRowClick(e, app),
       "data-app": key,
+      class: selectedEntity === key ? "is-selected" : "",
     };
   });
 }

@@ -212,9 +212,10 @@ const ModelDetails = () => {
     return generateApplicationRows(
       modelStatusData,
       handleAppRowClick,
-      baseAppURL
+      baseAppURL,
+      query?.entity
     );
-  }, [baseAppURL, modelStatusData, setQuery]);
+  }, [baseAppURL, modelStatusData, setQuery, query]);
 
   const unitTableRows = useMemo(
     () => generateUnitRows(modelStatusData, baseAppURL),
