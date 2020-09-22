@@ -94,11 +94,6 @@
   }
 
   .model-details__apps {
-    tbody tr:hover {
-      background-color: #e7f9ff;
-      cursor: pointer;
-    }
-
     th,
     td {
       &:nth-child(1) {
@@ -191,6 +186,14 @@
       &:nth-child(5) {
         width: 35%;
       }
+    }
+  }
+
+  .model-details__apps,
+  .model-details__machines {
+    tbody tr:hover {
+      background-color: #e7f9ff;
+      cursor: pointer;
     }
   }
   /* stylelint-enable no-descending-specificity */
