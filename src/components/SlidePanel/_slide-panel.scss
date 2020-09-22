@@ -16,7 +16,7 @@
   transform: translateX(100%);
 
   @media (min-width: $breakpoint-medium) {
-    width: 75vw;
+    width: 60vw;
   }
 
   &[aria-hidden="false"] {
