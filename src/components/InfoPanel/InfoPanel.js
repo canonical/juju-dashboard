@@ -1,13 +1,12 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import Topology from "components/Topology/Topology";
 import Modal from "@canonical/react-components/dist/components/Modal";
 
-import { getModelUUID, getModelStatus } from "app/selectors";
 import { extractCloudName, getViewportWidth } from "app/utils";
 import useAnalytics from "hooks/useAnalytics";
+import useModelStatus from "hooks/useModelStatus";
 
 import fullScreenIcon from "static/images/icons/fullscreen-icon.svg";
 
@@ -35,13 +34,7 @@ const infoPanelDimensions = () => {
 const InfoPanel = () => {
   const { 0: modelName } = useParams();
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
-
-  const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
-  const modelUUID = useSelector(getModelUUIDMemo);
-  const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
-    modelUUID,
-  ]);
-  const modelStatusData = useSelector(getModelStatusMemo);
+  const modelStatusData = useModelStatus();
 
   const cloudProvider = modelStatusData
     ? extractCloudName(modelStatusData.model.cloudTag)

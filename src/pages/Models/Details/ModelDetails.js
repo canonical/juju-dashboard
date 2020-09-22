@@ -17,8 +17,9 @@ import {
   getConfig,
   getControllerDataByUUID,
   getModelUUID,
-  getModelStatus,
 } from "app/selectors";
+
+import useModelStatus from "hooks/useModelStatus";
 
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "ui/actions";

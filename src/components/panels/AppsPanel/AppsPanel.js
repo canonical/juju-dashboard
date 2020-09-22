@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { getConfig, getModelUUID, getModelStatus } from "app/selectors";
+import { getConfig } from "app/selectors";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+
+import useModelStatus from "hooks/useModelStatus";
 
 import {
   generateEntityIdentifier,
@@ -25,13 +26,7 @@ import "./_apps-panel.scss";
 
 export default function AppsPanel({ isActive, onClose, entity }) {
   // Get model status info
-  const { 0: modelName } = useParams();
-  const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
-  const modelUUID = useSelector(getModelUUIDMemo);
-  const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
-    modelUUID,
-  ]);
-  const modelStatusData = useSelector(getModelStatusMemo);
+  const modelStatusData = useModelStatus();
 
   const { baseAppURL } = useSelector(getConfig);
 
