@@ -251,7 +251,7 @@ const ModelDetails = () => {
         </div>
       </Header>
       <div className="l-content">
-        <div className="model-details" aria-disabled={panel != null}>
+        <div className="model-details">
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
             {renderCounts(activeView, modelStatusData)}
