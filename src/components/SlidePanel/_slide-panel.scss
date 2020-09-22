@@ -36,4 +36,12 @@
   &__content {
     padding: 1rem;
   }
+
+  &__tables {
+    overflow-x: scroll;
+
+    table {
+      margin-bottom: 1rem;
+    }
+  }
 }

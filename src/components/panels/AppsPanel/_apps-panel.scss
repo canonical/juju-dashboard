@@ -1,14 +1,6 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 
-.slide-panel__tables {
-  overflow-x: scroll;
-
-  table {
-    margin-bottom: 1rem;
-  }
-}
-
 .slidepanel-apps {
   &-header {
     margin: 0.5rem 2rem 2rem 0.5rem;
