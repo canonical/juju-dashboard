@@ -12,6 +12,7 @@ import Header from "components/Header/Header";
 import Terminal from "components/Terminal/Terminal";
 
 import AppsPanel from "components/panels/AppsPanel/AppsPanel";
+import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 
 import {
   getConfig,
@@ -297,7 +298,12 @@ const ModelDetails = () => {
         </div>
         <AppsPanel
           entity={entity}
-          isActive={panel}
+          isActive={panel === "apps"}
+          onClose={() => closePanel()}
+        />
+        <MachinesPanel
+          entity={entity}
+          isActive={panel === "machines"}
           onClose={() => closePanel()}
         />
       </div>
