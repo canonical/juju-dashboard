@@ -163,10 +163,8 @@ const ModelDetails = () => {
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
-  const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
-    modelUUID,
-  ]);
-  const modelStatusData = useSelector(getModelStatusMemo);
+  const modelStatusData = useModelStatus();
+
   const controllerUUID = modelStatusData?.info.controllerUuid;
   const controllerData = useSelector(getControllerDataByUUID(controllerUUID));
   let controllerWSHost = "";
