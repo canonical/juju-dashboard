@@ -2,10 +2,12 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useStore, useDispatch } from "react-redux";
 import { isLoggedIn, getWSControllerURL } from "app/selectors";
 import Notification from "@canonical/react-components/dist/components/Notification/Notification";
+import Banner from "components/Banner/Banner";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import classNames from "classnames";
 import useHover from "hooks/useHover";
 import useLocalStorage from "hooks/useLocalStorage";
+import useOffline from "hooks/useOffline";
 import { getViewportWidth, debounce } from "app/utils";
 
 import { userMenuActive, externalNavActive } from "ui/actions";
@@ -23,6 +25,7 @@ const Layout = ({ children }) => {
   );
   const containerRef = useRef(null);
   const dispatch = useDispatch();
+  const isOffline = useOffline();
 
   const store = useStore();
   const userIsLoggedIn = isLoggedIn(
@@ -78,6 +81,20 @@ const Layout = ({ children }) => {
       <a className="skip-main" href="#main-content">
         Skip to main content
       </a>
+
+      <Banner
+        isActive={isOffline !== null}
+        type={isOffline === false ? "positive" : "caution"}
+      >
+        {isOffline ? (
+          <p>The dashboard is offline.</p>
+        ) : (
+          <p>
+            The dashboard is online - please{" "}
+            <a href={window.location}>refresh your browser.</a>
+          </p>
+        )}
+      </Banner>
 
       <div
         className={classNames("l-container", {
