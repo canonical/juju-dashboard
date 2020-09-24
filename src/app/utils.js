@@ -320,3 +320,12 @@ export const filterModelStatusDataByApp = (modelStatusData, appName) => {
 
   return modelStatusData;
 };
+
+/**
+  Returns the modelStatusData filtered by the supplied machine.
+  @param {Object} modelStatusData The model status data to filter
+  @param {String} machine The machine to filter the data by.
+*/
+export const filterModelStatusDataByMachine = (modelStatusData, machine) => {
+  // console.log("hello");
+};

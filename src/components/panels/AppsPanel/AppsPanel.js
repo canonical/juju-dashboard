@@ -39,10 +39,10 @@ export default function AppsPanel({ isActive, onClose, entity }) {
   // Generate panel header for given entity
   const generateAppPanelHeader = (app, baseAppURL, entity) => {
     return (
-      <div className="slidepanel-apps-header">
+      <div className="panel-header">
         {app && (
           <div className="row">
-            <div className="col-3">
+            <div className="col-4">
               <div>
                 {generateEntityIdentifier(
                   app.charm,
@@ -58,34 +58,34 @@ export default function AppsPanel({ isActive, onClose, entity }) {
                   : "-"}
               </span>
             </div>
-            <div className="col-3">
-              <div className="slidepanel-apps__kv">
-                <span className="slidepanel-apps__label">Charm: </span>
-                <span title={app.charm} className="slidepanel-apps__value">
+            <div className="col-4">
+              <div className="panel__kv">
+                <span className="panel__label">Charm: </span>
+                <span title={app.charm} className="panel__value">
                   {app.charm}
                 </span>
               </div>
 
-              <div className="slidepanel-apps__kv">
-                <span className="slidepanel-apps__label">OS:</span>
-                <span className="slidepanel-apps__value">Ubuntu</span>
+              <div className="panel__kv">
+                <span className="panel__label">OS:</span>
+                <span className="panel__value">Ubuntu</span>
               </div>
 
-              <div className="slidepanel-apps__kv">
-                <span className="slidepanel-apps__label">Revision:</span>
-                <span className="slidepanel-apps__value">
+              <div className="panel__kv">
+                <span className="panel__label">Revision:</span>
+                <span className="panel__value">
                   {extractRevisionNumber(app.charm) || "-"}
                 </span>
               </div>
 
-              <div className="slidepanel-apps__kv">
-                <span className="slidepanel-apps__label">Version:</span>
-                <span className="slidepanel-apps__value">
+              <div className="panel__kv">
+                <span className="panel__label">Version:</span>
+                <span className="panel__value">
                   {app.workloadVersion || "-"}
                 </span>
               </div>
             </div>
-            <div className="col-6">
+            <div className="col-4">
               {/* Notes - not currently implemented/available */}
             </div>
           </div>
@@ -104,17 +104,17 @@ export default function AppsPanel({ isActive, onClose, entity }) {
     [modelStatusData, entity, baseAppURL]
   );
 
-  const machinesSlidePanelRows = useMemo(
+  const machinespanelRows = useMemo(
     () => generateMachineRows(filteredModelStatusData),
     [filteredModelStatusData]
   );
 
-  const unitSlidePanelRows = useMemo(
+  const unitpanelRows = useMemo(
     () => generateUnitRows(filteredModelStatusData, baseAppURL),
     [baseAppURL, filteredModelStatusData]
   );
 
-  const relationSlidePanelRows = useMemo(
+  const relationpanelRows = useMemo(
     () => generateRelationRows(filteredModelStatusData, baseAppURL),
     [filteredModelStatusData, baseAppURL]
   );
@@ -129,21 +129,21 @@ export default function AppsPanel({ isActive, onClose, entity }) {
         <div className="slide-panel__tables">
           <MainTable
             headers={unitTableHeaders}
-            rows={unitSlidePanelRows}
+            rows={unitpanelRows}
             className="model-details__units p-main-table"
             sortable
             emptyStateMsg={"There are no units in this model"}
           />
           <MainTable
             headers={machineTableHeaders}
-            rows={machinesSlidePanelRows}
+            rows={machinespanelRows}
             className="model-details__machines p-main-table"
             sortable
             emptyStateMsg={"There are no machines in this model"}
           />
           <MainTable
             headers={relationTableHeaders}
-            rows={relationSlidePanelRows}
+            rows={relationpanelRows}
             className="model-details__relations p-main-table"
             sortable
             emptyStateMsg={"There are no relations in this model"}

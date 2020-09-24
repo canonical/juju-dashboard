@@ -261,7 +261,7 @@ const splitParts = (hardware) =>
     })
   );
 
-export function generateMachineRows(modelStatusData) {
+export function generateMachineRows(modelStatusData, onRowClick) {
   if (!modelStatusData) {
     return [];
   }
@@ -297,6 +297,8 @@ export function generateMachineRows(modelStatusData) {
           className: "u-truncate",
         },
       ],
+      onClick: (e) => onRowClick(e, machineId),
+      "data-machine": machineId,
     };
   });
 }

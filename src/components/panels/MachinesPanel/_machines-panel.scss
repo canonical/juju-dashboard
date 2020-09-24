@@ -1,6 +1,8 @@
-@import "../../scss/settings";
-@import "vanilla-framework/scss/vanilla";
+@import "../panels";
 
-.slidepanel-machines {
-  background: hotpink;
+.machine-panel {
+  &__id {
+    padding-left: 2rem;
+    text-transform: capitalize;
+  }
 }

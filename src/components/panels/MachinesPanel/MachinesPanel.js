@@ -9,22 +9,23 @@ import useModelStatus from "hooks/useModelStatus";
 import {
   generateEntityIdentifier,
   unitTableHeaders,
-  machineTableHeaders,
   relationTableHeaders,
-  generateMachineRows,
   generateRelationRows,
   generateUnitRows,
 } from "pages/Models/Details/generators";
 
 import {
-  extractRevisionNumber,
-  generateStatusElement,
   filterModelStatusDataByMachine,
+  generateStatusElement,
 } from "app/utils";
 
 import "./_machines-panel.scss";
 
-export default function MachinesPanel({ isActive, onClose, entity }) {
+export default function MachinesPanel({
+  isActive,
+  onClose,
+  entity: machineId,
+}) {
   const modelStatusData = useModelStatus();
 
   const { baseAppURL } = useSelector(getConfig);
@@ -32,76 +33,80 @@ export default function MachinesPanel({ isActive, onClose, entity }) {
   // Filter model status via selected entity
   const filteredModelStatusData = filterModelStatusDataByMachine(
     modelStatusData,
-    entity
+    machineId
   );
 
+  const machine = modelStatusData?.machines[machineId];
+
+  console.log(machine);
+
+  const getHardwareSpecs = () => {
+    if (!machine) return {};
+    const hardware = {};
+    const hardwareArr = machine.hardware.split(" ");
+    hardwareArr.forEach((spec) => {
+      const [name, value] = spec.split("=");
+      hardware[name] = value;
+    });
+    return hardware;
+  };
+
   // Generate panel header for given entity
-  // const generateMachinesPanelHeader = (machine, baseAppURL, entity) => {
-  //   return (
-  //     <div className="slidepanel-apps-header">
-  //       {machine && (
-  //         <div className="row">
-  //           <div className="col-3">
-  //             <div>
-  //               {generateEntityIdentifier(
-  //                 machine.charm,
-  //                 entity,
-  //                 false,
-  //                 baseAppURL,
-  //                 true // disable link
-  //               )}
-  //             </div>
-  //             <span className="u-capitalise">
-  //               {machine.status?.status
-  //                 ? generateStatusElement(machine.status.status)
-  //                 : "-"}
-  //             </span>
-  //           </div>
-  //           <div className="col-3">
-  //             <div className="slidepanel-apps__kv">
-  //               <span className="slidepanel-apps__label">Charm: </span>
-  //               <span title={machine.charm} className="slidepanel-apps__value">
-  //                 {machine.charm}
-  //               </span>
-  //             </div>
+  const generateMachinesPanelHeader = () => {
+    const hardware = getHardwareSpecs();
+    return (
+      <div className="panel-header">
+        {machine && (
+          <div className="row">
+            <div className="col-4">
+              <div className="machine-panel__id">
+                <strong>
+                  Machine '{machineId}' - {machine?.series}
+                </strong>
+              </div>
+              <span className="u-capitalise">
+                {generateStatusElement(machine.agentStatus.status)}
+              </span>
+              <span>{}</span>
+            </div>
 
-  //             <div className="slidepanel-apps__kv">
-  //               <span className="slidepanel-apps__label">OS:</span>
-  //               <span className="slidepanel-apps__value">Ubuntu</span>
-  //             </div>
+            <div className="col-4">
+              {hardware["mem"] && (
+                <div className="panel__kv">
+                  <span className="panel__label">Memory</span>
+                  <span className="panel__value">{hardware["mem"]}</span>
+                </div>
+              )}
+              {hardware["root-disk"] && (
+                <div className="panel__kv">
+                  <span className="panel__label">Disk</span>
+                  <span className="panel__value">{hardware["root-disk"]}</span>
+                </div>
+              )}
+              {hardware["cpu-power"] && (
+                <div className="panel__kv">
+                  <span className="panel__label">CPU</span>
+                  <span className="panel__value">{hardware["cpu-power"]}</span>
+                </div>
+              )}
+              {hardware["cores"] && (
+                <div className="panel__kv">
+                  <span className="panel__label">Cores</span>
+                  <span className="panel__value">{hardware["cores"]}</span>
+                </div>
+              )}
+            </div>
+            <div className="col-4">{machine.agentStatus.info}</div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
-  //             <div className="slidepanel-apps__kv">
-  //               <span className="slidepanel-apps__label">Revision:</span>
-  //               <span className="slidepanel-apps__value">
-  //                 {extractRevisionNumber(machine.charm) || "-"}
-  //               </span>
-  //             </div>
-
-  //             <div className="slidepanel-apps__kv">
-  //               <span className="slidepanel-apps__label">Version:</span>
-  //               <span className="slidepanel-apps__value">
-  //                 {machine.workloadVersion || "-"}
-  //               </span>
-  //             </div>
-  //           </div>
-  //           <div className="col-6">
-  //             {/* Notes - not currently implemented/available */}
-  //           </div>
-  //         </div>
-  //       )}
-  //     </div>
-  //   );
-  // };
-
-  // const appPanelHeader = useMemo(
-  //   () =>
-  //     generateMachinesPanelHeader(
-  //       modelStatusData?.applications[entity],
-  //       baseAppURL,
-  //       entity
-  //     ),
-  //   [modelStatusData, entity, baseAppURL]
-  // );
+  const machinePanelHeader = useMemo(
+    () => generateMachinesPanelHeader(modelStatusData?.applications[machineId]),
+    [modelStatusData, machineId]
+  );
 
   const unitSlidePanelRows = useMemo(
     () => generateUnitRows(filteredModelStatusData, baseAppURL),
@@ -111,20 +116,20 @@ export default function MachinesPanel({ isActive, onClose, entity }) {
   // Check for loading status
   const isLoading = !modelStatusData?.machines;
 
-  console.log(modelStatusData);
+  console.log(modelStatusData?.machines[machineId]);
 
   return (
     <SlidePanel isActive={isActive} onClose={onClose} isLoading={isLoading}>
       <div className="apps-panel">
-        {/* {appPanelHeader} */}
+        {machinePanelHeader}
         <div className="slide-panel__tables">
-          <MainTable
+          {/* <MainTable
             headers={unitTableHeaders}
             rows={unitSlidePanelRows}
             className="model-details__units p-main-table"
             sortable
             emptyStateMsg={"There are no units in this model"}
-          />
+          /> */}
         </div>
       </div>
     </SlidePanel>

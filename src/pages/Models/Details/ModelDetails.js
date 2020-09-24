@@ -222,10 +222,12 @@ const ModelDetails = () => {
     [baseAppURL, modelStatusData]
   );
 
-  const machinesTableRows = useMemo(
-    () => generateMachineRows(modelStatusData),
-    [modelStatusData]
-  );
+  const machinesTableRows = useMemo(() => {
+    const handleMachineRowClick = (e) => {
+      setQuery({ panel: "machines", entity: e.currentTarget.dataset.machine });
+    };
+    return generateMachineRows(modelStatusData, handleMachineRowClick);
+  }, [modelStatusData, setQuery]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData, baseAppURL),
