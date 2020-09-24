@@ -19,7 +19,7 @@ import {
 import {
   extractRevisionNumber,
   generateStatusElement,
-  filterModelStatusData,
+  filterModelStatusDataByApp,
 } from "app/utils";
 
 import "./_apps-panel.scss";
@@ -31,7 +31,7 @@ export default function AppsPanel({ isActive, onClose, entity }) {
   const { baseAppURL } = useSelector(getConfig);
 
   // Filter model status via selected entity
-  const filteredModelStatusData = filterModelStatusData(
+  const filteredModelStatusData = filterModelStatusDataByApp(
     modelStatusData,
     entity
   );
