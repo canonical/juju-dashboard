@@ -48,6 +48,18 @@ export const relationTableHeaders = [
   { content: "message" },
 ];
 
+export const consumedTableHeaders = [
+  { content: "consumed" },
+  { content: "endpoint" },
+  { content: "status" },
+];
+
+export const offersTableHeaders = [
+  { content: "connected offers" },
+  { content: "endpoints" },
+  { content: "connections" },
+];
+
 export function generateIconImg(name, namespace, baseAppURL) {
   let iconSrc = defaultCharmIcon;
   if (namespace.indexOf("local:") !== 0) {
@@ -392,6 +404,80 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
             "u-capitalise--first-letter",
             relation.status.status
           ),
+        },
+      ],
+    };
+  });
+}
+
+export function generateOffersRows(modelStatusData, baseAppURL) {
+  if (!modelStatusData) {
+    return [];
+  }
+
+  const offers = modelStatusData.offers;
+  return Object.keys(offers).map((offerId) => {
+    const offer = offers[offerId];
+    return {
+      columns: [
+        {
+          content: (
+            <>
+              {generateRelationIconImage(
+                offer.applicationName,
+                modelStatusData,
+                baseAppURL
+              )}
+              {offer.applicationName}:db
+            </>
+          ),
+          className: "u-truncate",
+        },
+        {
+          content: Object.entries(offer.endpoints)
+            .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
+            .join("/n"),
+          className: "u-truncate",
+        },
+        {
+          content: offer.activeConnectedCount,
+        },
+      ],
+    };
+  });
+}
+
+export function generateConsumedRows(modelStatusData, baseAppURL) {
+  if (!modelStatusData) {
+    return [];
+  }
+
+  const remoteApplications = modelStatusData.remoteApplications;
+  return Object.keys(remoteApplications).map((appName) => {
+    const application = remoteApplications[appName];
+    return {
+      columns: [
+        {
+          content: (
+            <>
+              {generateRelationIconImage(
+                application.offerName,
+                modelStatusData,
+                baseAppURL
+              )}
+              {application.offerName}
+            </>
+          ),
+          className: "u-truncate",
+        },
+        {
+          content: Object.entries(application.endpoints)
+            .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
+            .join("/n"),
+          className: "u-truncate",
+        },
+        {
+          content: application.status.status,
         },
       ],
     };

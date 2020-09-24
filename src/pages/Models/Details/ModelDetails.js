@@ -28,12 +28,16 @@ import { collapsibleSidebar } from "ui/actions";
 
 import {
   applicationTableHeaders,
+  consumedTableHeaders,
+  offersTableHeaders,
   unitTableHeaders,
   machineTableHeaders,
   relationTableHeaders,
   generateApplicationRows,
+  generateConsumedRows,
   generateMachineRows,
   generateRelationRows,
+  generateOffersRows,
   generateUnitRows,
 } from "./generators";
 
@@ -56,10 +60,16 @@ const generateTerminalComponent = (modelUUID, controllerWSHost) => {
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
     case "status":
+      if (segment === "relations-title") {
+        return false;
+      }
       return true;
     case "units":
     case "machines":
     case "relations":
+      if (segment === "relations-title") {
+        return true;
+      }
       return segment === activeView;
   }
 };
@@ -141,13 +151,7 @@ const renderCounts = (activeView, modelStatusData) => {
       );
       break;
     case "relations":
-      const relationLength = Object.keys(modelStatusData.relations).length;
-      primaryEntity = {
-        count: relationLength,
-        label: "relation",
-      };
-      secondaryEntities = [{ count: relationLength, label: "joined" }];
-      break;
+      return null;
   }
 
   return (
@@ -256,6 +260,15 @@ const ModelDetails = () => {
     [modelStatusData, baseAppURL]
   );
 
+  const consumedTableRows = useMemo(
+    () => generateConsumedRows(modelStatusData, baseAppURL),
+    [modelStatusData, baseAppURL]
+  );
+  const offersTableRows = useMemo(
+    () => generateOffersRows(modelStatusData, baseAppURL),
+    [modelStatusData, baseAppURL]
+  );
+
   const { panel, entity, activeView } = query;
 
   return (
@@ -311,13 +324,46 @@ const ModelDetails = () => {
               />
             )}
             {shouldShow("relations", activeView) && (
-              <MainTable
-                headers={relationTableHeaders}
-                rows={relationTableRows}
-                className="model-details__relations p-main-table"
-                sortable
-                emptyStateMsg={"There are no relations in this model"}
-              />
+              <>
+                {shouldShow("relations-title", activeView) && (
+                  <h5>Relations ({relationTableRows.length})</h5>
+                )}
+                <MainTable
+                  headers={relationTableHeaders}
+                  rows={relationTableRows}
+                  className="model-details__relations p-main-table"
+                  sortable
+                  emptyStateMsg={"There are no relations in this model"}
+                />
+                {shouldShow("relations-title", activeView) && (
+                  <h5>
+                    Cross-model relations (
+                    {consumedTableRows.length + offersTableRows.length})
+                  </h5>
+                )}
+                {consumedTableRows.length ? (
+                  <MainTable
+                    headers={consumedTableHeaders}
+                    rows={consumedTableRows}
+                    className="model-details__relations p-main-table"
+                    sortable
+                    emptyStateMsg={
+                      "There are no remote relations in this model"
+                    }
+                  />
+                ) : null}
+                {offersTableRows.length ? (
+                  <MainTable
+                    headers={offersTableHeaders}
+                    rows={offersTableRows}
+                    className="model-details__relations p-main-table"
+                    sortable
+                    emptyStateMsg={
+                      "There are no connected offers in this model"
+                    }
+                  />
+                ) : null}
+              </>
             )}
           </div>
         </div>
