@@ -164,7 +164,12 @@ export function generateApplicationRows(
   });
 }
 
-export function generateUnitRows(modelStatusData, baseAppURL) {
+export function generateUnitRows(
+  modelStatusData,
+  onRowClick,
+  baseAppURL,
+  selectedEntity
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -208,6 +213,9 @@ export function generateUnitRows(modelStatusData, baseAppURL) {
             className: "u-truncate",
           },
         ],
+        onClick: (e) => onRowClick(e, unit),
+        "data-unit": unit,
+        class: selectedEntity === unit ? "is-selected" : "",
       });
 
       const subordinates = unit.subordinates;
