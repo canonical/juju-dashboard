@@ -41,7 +41,9 @@ export default function MachinesPanel({
             <div className="col-4">
               <div className="machine-panel__id">
                 <strong>
-                  Machine '{machineId}' - {machine?.series}
+                  <span className="entity-name">
+                    Machine '{machineId}' - {machine?.series}
+                  </span>
                 </strong>
               </div>
               <span className="u-capitalise">

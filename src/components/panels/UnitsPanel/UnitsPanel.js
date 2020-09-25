@@ -27,7 +27,9 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
           <div className="row">
             <div className="col-4">
               <div className="units-panel__id">
-                <strong>{unitId}</strong>
+                <strong>
+                  <span className="entity-name">{unitId}</span>
+                </strong>
               </div>
               <span className="u-capitalise">
                 {generateStatusElement(unit.agentStatus.status)}

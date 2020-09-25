@@ -198,4 +198,60 @@ describe("ModelDetail Container", () => {
       wrapper.find(".slide-panel.apps-panel .panel-header .entity-name").text()
     ).toBe("kibana");
   });
+
+  it("displays correct side panel when machine row is clicked", () => {
+    const store = mockStore(dataDump);
+    const testMachine = "1";
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper.find(".slide-panel.machines-panel").prop("aria-hidden")
+    ).toBe(true);
+    const machineRow = wrapper.find(`tr[data-machine="${testMachine}"]`);
+    machineRow.simulate("click");
+    expect(
+      wrapper.find(".slide-panel.machines-panel").prop("aria-hidden")
+    ).toBe(false);
+    expect(
+      wrapper
+        .find(".slide-panel.machines-panel .panel-header .entity-name")
+        .text()
+    ).toBe("Machine '1' - trusty");
+  });
+
+  it("displays correct side panel when unit row is clicked", () => {
+    const store = mockStore(dataDump);
+    const testUnit = "kibana/0";
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".slide-panel.units-panel").prop("aria-hidden")).toBe(
+      true
+    );
+    const unitRow = wrapper.find(`tr[data-unit="${testUnit}"]`);
+    unitRow.simulate("click");
+    expect(wrapper.find(".slide-panel.units-panel").prop("aria-hidden")).toBe(
+      false
+    );
+    expect(
+      wrapper.find(".slide-panel.units-panel .panel-header .entity-name").text()
+    ).toBe("kibana/0");
+  });
 });
