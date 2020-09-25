@@ -3,7 +3,11 @@
 
 .panel {
   &-header {
-    margin: 0.5rem 2rem 2rem 0.5rem;
+    margin: 3.5rem 2rem 2rem 0.5rem;
+
+    @media (min-width: $breakpoint-medium) {
+      margin-top: 0.5rem;
+    }
 
     .row {
       padding: 0;
@@ -49,5 +53,9 @@
     @media (min-width: $breakpoint-medium) {
       grid-template-columns: repeat(2, 1fr);
     }
+  }
+
+  &__table tr {
+    pointer-events: none;
   }
 }
