@@ -190,7 +190,8 @@
   }
 
   .model-details__apps,
-  .model-details__machines {
+  .model-details__machines,
+  .model-details__units {
     tbody tr:hover {
       background-color: #e7f9ff;
       cursor: pointer;

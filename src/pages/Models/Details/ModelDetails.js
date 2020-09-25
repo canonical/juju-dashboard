@@ -218,10 +218,20 @@ const ModelDetails = () => {
     );
   }, [baseAppURL, modelStatusData, setQuery, query]);
 
-  const unitTableRows = useMemo(
-    () => generateUnitRows(modelStatusData, baseAppURL),
-    [baseAppURL, modelStatusData]
-  );
+  const unitTableRows = useMemo(() => {
+    const handleUnitsRowClick = (e) => {
+      setQuery({
+        panel: "units",
+        entity: e.currentTarget.dataset.unit,
+      });
+    };
+    return generateUnitRows(
+      modelStatusData,
+      handleUnitsRowClick,
+      baseAppURL,
+      query?.entity
+    );
+  }, [baseAppURL, modelStatusData, query, setQuery]);
 
   const machinesTableRows = useMemo(() => {
     const handleMachineRowClick = (e) => {

@@ -5,71 +5,57 @@ import MainTable from "@canonical/react-components/dist/components/MainTable";
 import useModelStatus from "hooks/useModelStatus";
 
 import {
-  unitTableHeaders,
+  machineTableHeaders,
   applicationTableHeaders,
 } from "pages/Models/Details/generators";
 
-import { generateStatusElement } from "app/utils";
+import { generateStatusElement, extractRevisionNumber } from "app/utils";
 
 import "./_units-panel.scss";
 
-export default function UnitsPanel({ isActive, onClose, entity: machineId }) {
+export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
   const modelStatusData = useModelStatus();
-  const machine = modelStatusData?.machines[machineId];
-
-  const getHardwareSpecs = () => {
-    if (!machine) return {};
-    const hardware = {};
-    const hardwareArr = machine.hardware.split(" ");
-    hardwareArr.forEach((spec) => {
-      const [name, value] = spec.split("=");
-      hardware[name] = value;
-    });
-    return hardware;
-  };
+  const appName = unitId?.split("/")[0];
+  const unit = modelStatusData?.applications[appName]?.units[unitId];
+  const app = modelStatusData?.applications[appName];
 
   // Generate panel header for given entity
-  const generateMachinesPanelHeader = () => {
-    const hardware = getHardwareSpecs();
+  const generateUnitsPanelHeader = () => {
     return (
       <div className="panel-header">
-        {machine && (
+        {unit && (
           <div className="row">
             <div className="col-4">
               <div className="units-panel__id">
-                <strong>
-                  Machine '{machineId}' - {machine?.series}
-                </strong>
+                <strong>{unitId}</strong>
               </div>
               <span className="u-capitalise">
-                {generateStatusElement(machine.agentStatus.status)}
+                {generateStatusElement(unit.agentStatus.status)}
               </span>
-              <span>{}</span>
             </div>
-
             <div className="col-4">
               <div className="panel__kv">
-                <span className="panel__label">Memory</span>
-                <span className="panel__value">{hardware["mem"] || "-"}</span>
+                <span className="panel__label">Charm</span>
+                <span className="panel__value">{app.charm || "-"}</span>
               </div>
               <div className="panel__kv">
-                <span className="panel__label">Disk</span>
+                <span className="panel__label">OS</span>
+                <span className="panel__value">{"-"}</span>
+              </div>
+              <div className="panel__kv">
+                <span className="panel__label">Revision</span>
                 <span className="panel__value">
-                  {hardware["root-disk"] || "-"}
+                  {extractRevisionNumber(app.charm) || "-"}
                 </span>
               </div>
               <div className="panel__kv">
-                <span className="panel__label">CPU</span>
+                <span className="panel__label">Version</span>
                 <span className="panel__value">
-                  {hardware["cpu-power"] || "-"}
+                  {app.workloadVersion || "-"}
                 </span>
-              </div>
-              <div className="panel__kv">
-                <span className="panel__label">Cores</span>
-                <span className="panel__value">{hardware["cores"] || "-"}</span>
               </div>
             </div>
-            <div className="col-4">{machine.agentStatus.info}</div>
+            <div className="col-4">{app.status.info}</div>
           </div>
         )}
       </div>
@@ -77,8 +63,8 @@ export default function UnitsPanel({ isActive, onClose, entity: machineId }) {
   };
 
   const machinePanelHeader = useMemo(
-    () => generateMachinesPanelHeader(modelStatusData?.applications[machineId]),
-    [modelStatusData, machineId]
+    () => generateUnitsPanelHeader(modelStatusData?.applications[unitId]),
+    [modelStatusData, unitId]
   );
 
   // Check for loading status
@@ -90,11 +76,11 @@ export default function UnitsPanel({ isActive, onClose, entity: machineId }) {
         {machinePanelHeader}
         <div className="slide-panel__tables">
           <MainTable
-            headers={unitTableHeaders}
+            headers={machineTableHeaders}
             rows={{}} // Temp disable
-            className="model-details__units p-main-table"
+            className="model-details__machines p-main-table"
             sortable
-            emptyStateMsg={"There are no units in this model"}
+            emptyStateMsg={"There are no machines in this model"}
           />
           <MainTable
             headers={applicationTableHeaders}

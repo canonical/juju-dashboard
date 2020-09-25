@@ -189,7 +189,8 @@ export function generateUnitRows(
                 : "",
               unitId,
               false,
-              baseAppURL
+              baseAppURL,
+              true // disable link
             ),
             className: "u-truncate",
           },
@@ -213,9 +214,9 @@ export function generateUnitRows(
             className: "u-truncate",
           },
         ],
-        onClick: (e) => onRowClick(e, unit),
-        "data-unit": unit,
-        class: selectedEntity === unit ? "is-selected" : "",
+        onClick: (e) => onRowClick(e, unitId),
+        "data-unit": unitId,
+        class: selectedEntity === unitId ? "is-selected" : "",
       });
 
       const subordinates = unit.subordinates;

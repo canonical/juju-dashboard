@@ -130,21 +130,21 @@ export default function AppsPanel({ isActive, onClose, entity }) {
           <MainTable
             headers={unitTableHeaders}
             rows={unitpanelRows}
-            className="model-details__units p-main-table"
+            className="model-details__units p-main-table panel__table"
             sortable
             emptyStateMsg={"There are no units in this model"}
           />
           <MainTable
             headers={machineTableHeaders}
             rows={machinespanelRows}
-            className="model-details__machines p-main-table"
+            className="model-details__machines p-main-table panel__table"
             sortable
             emptyStateMsg={"There are no machines in this model"}
           />
           <MainTable
             headers={relationTableHeaders}
             rows={relationpanelRows}
-            className="model-details__relations p-main-table"
+            className="model-details__relations p-main-table panel__table"
             sortable
             emptyStateMsg={"There are no relations in this model"}
           />
