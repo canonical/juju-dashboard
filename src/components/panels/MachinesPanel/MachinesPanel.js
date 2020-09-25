@@ -88,8 +88,13 @@ export default function MachinesPanel({
   const isLoading = !modelStatusData?.machines;
 
   return (
-    <SlidePanel isActive={isActive} onClose={onClose} isLoading={isLoading}>
-      <div className="apps-panel">
+    <SlidePanel
+      isActive={isActive}
+      onClose={onClose}
+      isLoading={isLoading}
+      className="machines-panel"
+    >
+      <>
         {machinePanelHeader}
         <div className="slide-panel__tables">
           <MainTable
@@ -107,7 +112,7 @@ export default function MachinesPanel({
             emptyStateMsg={"There are no apps in this model"}
           />
         </div>
-      </div>
+      </>
     </SlidePanel>
   );
 }

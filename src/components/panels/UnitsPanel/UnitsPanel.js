@@ -71,26 +71,31 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
   const isLoading = !modelStatusData?.machines;
 
   return (
-    <SlidePanel isActive={isActive} onClose={onClose} isLoading={isLoading}>
-      <div className="apps-panel">
+    <SlidePanel
+      isActive={isActive}
+      onClose={onClose}
+      isLoading={isLoading}
+      className="units-panel"
+    >
+      <>
         {machinePanelHeader}
         <div className="slide-panel__tables">
           <MainTable
             headers={machineTableHeaders}
-            rows={{}} // Temp disable
+            rows={[]} // Temp disable
             className="model-details__machines p-main-table"
             sortable
             emptyStateMsg={"There are no machines in this model"}
           />
           <MainTable
             headers={applicationTableHeaders}
-            rows={{}} // Temp disable
+            rows={[]} // Temp disable
             className="model-details__apps p-main-table"
             sortable
             emptyStateMsg={"There are no apps in this model"}
           />
         </div>
-      </div>
+      </>
     </SlidePanel>
   );
 }

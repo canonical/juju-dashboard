@@ -123,8 +123,13 @@ export default function AppsPanel({ isActive, onClose, entity }) {
   const isLoading = !filteredModelStatusData?.applications?.[entity];
 
   return (
-    <SlidePanel isActive={isActive} onClose={onClose} isLoading={isLoading}>
-      <div className="apps-panel">
+    <SlidePanel
+      isActive={isActive}
+      onClose={onClose}
+      isLoading={isLoading}
+      className="apps-panel"
+    >
+      <>
         {appPanelHeader}
         <div className="slide-panel__tables">
           <MainTable
@@ -149,7 +154,7 @@ export default function AppsPanel({ isActive, onClose, entity }) {
             emptyStateMsg={"There are no relations in this model"}
           />
         </div>
-      </div>
+      </>
     </SlidePanel>
   );
 }

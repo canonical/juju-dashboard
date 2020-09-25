@@ -186,12 +186,16 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".slide-panel").prop("aria-hidden")).toBe(true);
+    expect(wrapper.find(".slide-panel.apps-panel").prop("aria-hidden")).toBe(
+      true
+    );
     const applicationRow = wrapper.find(`tr[data-app="${testApp}"]`);
     applicationRow.simulate("click");
-    expect(wrapper.find(".slide-panel").prop("aria-hidden")).toBe(false);
-    expect(wrapper.find(".slidepanel-apps-header .entity-name").text()).toBe(
-      "kibana"
+    expect(wrapper.find(".slide-panel.apps-panel").prop("aria-hidden")).toBe(
+      false
     );
+    expect(
+      wrapper.find(".slide-panel.apps-panel .panel-header .entity-name").text()
+    ).toBe("kibana");
   });
 });
