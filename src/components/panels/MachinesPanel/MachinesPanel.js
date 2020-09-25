@@ -95,14 +95,14 @@ export default function MachinesPanel({
         <div className="slide-panel__tables">
           <MainTable
             headers={unitTableHeaders}
-            rows={{}} // Temp disable
+            rows={[]} // Temp disable
             className="model-details__units p-main-table"
             sortable
             emptyStateMsg={"There are no units in this model"}
           />
           <MainTable
             headers={applicationTableHeaders}
-            rows={{}} // Temp disable
+            rows={[]} // Temp disable
             className="model-details__apps p-main-table"
             sortable
             emptyStateMsg={"There are no apps in this model"}
