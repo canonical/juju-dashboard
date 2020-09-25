@@ -159,7 +159,7 @@ export function generateApplicationRows(
       ],
       onClick: (e) => onRowClick(e, app),
       "data-app": key,
-      class: selectedEntity === key ? "is-selected" : "",
+      className: selectedEntity === key ? "is-selected" : "",
     };
   });
 }
@@ -216,7 +216,7 @@ export function generateUnitRows(
         ],
         onClick: (e) => onRowClick(e, unitId),
         "data-unit": unitId,
-        class: selectedEntity === unitId ? "is-selected" : "",
+        className: selectedEntity === unitId ? "is-selected" : "",
       });
 
       const subordinates = unit.subordinates;
@@ -312,7 +312,7 @@ export function generateMachineRows(
       ],
       onClick: (e) => onRowClick(e, machineId),
       "data-machine": machineId,
-      class: selectedEntity === machineId ? "is-selected" : "",
+      className: selectedEntity === machineId ? "is-selected" : "",
     };
   });
 }
