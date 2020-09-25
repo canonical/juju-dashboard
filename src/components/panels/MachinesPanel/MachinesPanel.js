@@ -1,23 +1,15 @@
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
-import { getConfig } from "app/selectors";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
 import useModelStatus from "hooks/useModelStatus";
 
 import {
-  generateEntityIdentifier,
   unitTableHeaders,
-  relationTableHeaders,
-  generateRelationRows,
-  generateUnitRows,
+  applicationTableHeaders,
 } from "pages/Models/Details/generators";
 
-import {
-  filterModelStatusDataByMachine,
-  generateStatusElement,
-} from "app/utils";
+import { generateStatusElement } from "app/utils";
 
 import "./_machines-panel.scss";
 
@@ -27,18 +19,7 @@ export default function MachinesPanel({
   entity: machineId,
 }) {
   const modelStatusData = useModelStatus();
-
-  const { baseAppURL } = useSelector(getConfig);
-
-  // Filter model status via selected entity
-  const filteredModelStatusData = filterModelStatusDataByMachine(
-    modelStatusData,
-    machineId
-  );
-
   const machine = modelStatusData?.machines[machineId];
-
-  console.log(machine);
 
   const getHardwareSpecs = () => {
     if (!machine) return {};
@@ -71,30 +52,26 @@ export default function MachinesPanel({
             </div>
 
             <div className="col-4">
-              {hardware["mem"] && (
-                <div className="panel__kv">
-                  <span className="panel__label">Memory</span>
-                  <span className="panel__value">{hardware["mem"]}</span>
-                </div>
-              )}
-              {hardware["root-disk"] && (
-                <div className="panel__kv">
-                  <span className="panel__label">Disk</span>
-                  <span className="panel__value">{hardware["root-disk"]}</span>
-                </div>
-              )}
-              {hardware["cpu-power"] && (
-                <div className="panel__kv">
-                  <span className="panel__label">CPU</span>
-                  <span className="panel__value">{hardware["cpu-power"]}</span>
-                </div>
-              )}
-              {hardware["cores"] && (
-                <div className="panel__kv">
-                  <span className="panel__label">Cores</span>
-                  <span className="panel__value">{hardware["cores"]}</span>
-                </div>
-              )}
+              <div className="panel__kv">
+                <span className="panel__label">Memory</span>
+                <span className="panel__value">{hardware["mem"] || "-"}</span>
+              </div>
+              <div className="panel__kv">
+                <span className="panel__label">Disk</span>
+                <span className="panel__value">
+                  {hardware["root-disk"] || "-"}
+                </span>
+              </div>
+              <div className="panel__kv">
+                <span className="panel__label">CPU</span>
+                <span className="panel__value">
+                  {hardware["cpu-power"] || "-"}
+                </span>
+              </div>
+              <div className="panel__kv">
+                <span className="panel__label">Cores</span>
+                <span className="panel__value">{hardware["cores"] || "-"}</span>
+              </div>
             </div>
             <div className="col-4">{machine.agentStatus.info}</div>
           </div>
@@ -108,28 +85,28 @@ export default function MachinesPanel({
     [modelStatusData, machineId]
   );
 
-  const unitSlidePanelRows = useMemo(
-    () => generateUnitRows(filteredModelStatusData, baseAppURL),
-    [baseAppURL, filteredModelStatusData]
-  );
-
   // Check for loading status
   const isLoading = !modelStatusData?.machines;
-
-  console.log(modelStatusData?.machines[machineId]);
 
   return (
     <SlidePanel isActive={isActive} onClose={onClose} isLoading={isLoading}>
       <div className="apps-panel">
         {machinePanelHeader}
         <div className="slide-panel__tables">
-          {/* <MainTable
+          <MainTable
             headers={unitTableHeaders}
-            rows={unitSlidePanelRows}
+            rows={{}} // Temp disable
             className="model-details__units p-main-table"
             sortable
             emptyStateMsg={"There are no units in this model"}
-          /> */}
+          />
+          <MainTable
+            headers={applicationTableHeaders}
+            rows={{}} // Temp disable
+            className="model-details__apps p-main-table"
+            sortable
+            emptyStateMsg={"There are no apps in this model"}
+          />
         </div>
       </div>
     </SlidePanel>

@@ -322,10 +322,32 @@ export const filterModelStatusDataByApp = (modelStatusData, appName) => {
 };
 
 /**
-  Returns the modelStatusData filtered by the supplied machine.
+  Returns the units filtered by the supplied machine.
   @param {Object} modelStatusData The model status data to filter
   @param {String} machine The machine to filter the data by.
 */
-export const filterModelStatusDataByMachine = (modelStatusData, machine) => {
-  // console.log("hello");
+export const filterUnitsByMachine = (modelStatusData, machineId) => {
+  console.log(modelStatusData);
+  const filteredUnits = [];
+  const applications = modelStatusData?.applications;
+
+  applications &&
+    Object.values(applications).forEach((app) => {
+      Object.entries(app.units).forEach((unit) => {
+        const [unitName, unitInfo] = unit;
+        if (unitInfo.machine === machineId) {
+          filteredUnits.push(unitName);
+        }
+      });
+    });
+
+  // const filteredUnitsData = Object.values(modelStatusData).reduce(
+  //   (filteredUnits) => {
+  //     console.log(filteredUnits);
+  //   }
+  // );
+
+  console.log(filteredUnits);
+
+  //return filteredUnitsData;
 };
