@@ -226,8 +226,12 @@ const ModelDetails = () => {
     const handleMachineRowClick = (e) => {
       setQuery({ panel: "machines", entity: e.currentTarget.dataset.machine });
     };
-    return generateMachineRows(modelStatusData, handleMachineRowClick);
-  }, [modelStatusData, setQuery]);
+    return generateMachineRows(
+      modelStatusData,
+      handleMachineRowClick,
+      query?.entity
+    );
+  }, [modelStatusData, setQuery, query]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData, baseAppURL),

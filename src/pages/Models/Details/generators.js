@@ -261,7 +261,11 @@ const splitParts = (hardware) =>
     })
   );
 
-export function generateMachineRows(modelStatusData, onRowClick) {
+export function generateMachineRows(
+  modelStatusData,
+  onRowClick,
+  selectedEntity
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -299,6 +303,7 @@ export function generateMachineRows(modelStatusData, onRowClick) {
       ],
       onClick: (e) => onRowClick(e, machineId),
       "data-machine": machineId,
+      class: selectedEntity === machineId ? "is-selected" : "",
     };
   });
 }
