@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
@@ -20,7 +20,7 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
   const app = modelStatusData?.applications[appName];
 
   // Generate panel header for given entity
-  const generateUnitsPanelHeader = () => {
+  const generateUnitsPanelHeader = useCallback(() => {
     return (
       <div className="panel-header">
         {unit && (
@@ -60,11 +60,11 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
         )}
       </div>
     );
-  };
+  }, [app, unit, unitId]);
 
   const machinePanelHeader = useMemo(
     () => generateUnitsPanelHeader(modelStatusData?.applications[unitId]),
-    [modelStatusData, unitId]
+    [modelStatusData, unitId, generateUnitsPanelHeader]
   );
 
   // Check for loading status

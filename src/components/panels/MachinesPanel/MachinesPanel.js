@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
@@ -21,19 +21,18 @@ export default function MachinesPanel({
   const modelStatusData = useModelStatus();
   const machine = modelStatusData?.machines[machineId];
 
-  const getHardwareSpecs = () => {
-    if (!machine) return {};
-    const hardware = {};
-    const hardwareArr = machine.hardware.split(" ");
-    hardwareArr.forEach((spec) => {
-      const [name, value] = spec.split("=");
-      hardware[name] = value;
-    });
-    return hardware;
-  };
-
   // Generate panel header for given entity
-  const generateMachinesPanelHeader = () => {
+  const generateMachinesPanelHeader = useCallback(() => {
+    const getHardwareSpecs = () => {
+      if (!machine) return {};
+      const hardware = {};
+      const hardwareArr = machine.hardware.split(" ");
+      hardwareArr.forEach((spec) => {
+        const [name, value] = spec.split("=");
+        hardware[name] = value;
+      });
+      return hardware;
+    };
     const hardware = getHardwareSpecs();
     return (
       <div className="panel-header">
@@ -78,11 +77,11 @@ export default function MachinesPanel({
         )}
       </div>
     );
-  };
+  }, [machine, machineId]);
 
   const machinePanelHeader = useMemo(
     () => generateMachinesPanelHeader(modelStatusData?.applications[machineId]),
-    [modelStatusData, machineId]
+    [modelStatusData, machineId, generateMachinesPanelHeader]
   );
 
   // Check for loading status
