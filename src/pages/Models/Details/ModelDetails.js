@@ -220,10 +220,12 @@ const ModelDetails = () => {
 
   const unitTableRows = useMemo(() => {
     const handleUnitsRowClick = (e) => {
-      setQuery({
-        panel: "units",
-        entity: e.currentTarget.dataset.unit,
-      });
+      if (process.env.NODE_ENV !== "production") {
+        setQuery({
+          panel: "units",
+          entity: e.currentTarget.dataset.unit,
+        });
+      }
     };
     return generateUnitRows(
       modelStatusData,
@@ -235,7 +237,12 @@ const ModelDetails = () => {
 
   const machinesTableRows = useMemo(() => {
     const handleMachineRowClick = (e) => {
-      setQuery({ panel: "machines", entity: e.currentTarget.dataset.machine });
+      if (process.env.NODE_ENV !== "production") {
+        setQuery({
+          panel: "machines",
+          entity: e.currentTarget.dataset.machine,
+        });
+      }
     };
     return generateMachineRows(
       modelStatusData,
@@ -269,7 +276,10 @@ const ModelDetails = () => {
         </div>
       </Header>
       <div className="l-content">
-        <div className="model-details">
+        <div
+          className="model-details"
+          data-enable-panels={process.env.NODE_ENV !== "production"}
+        >
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
             {renderCounts(activeView, modelStatusData)}

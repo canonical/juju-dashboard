@@ -190,8 +190,8 @@
   }
 
   .model-details__apps,
-  .model-details__machines,
-  .model-details__units {
+  [data-enable-panels="true"] .model-details__machines,
+  [data-enable-panels="true"] .model-details__units {
     tbody tr:hover {
       background-color: #e7f9ff;
       cursor: pointer;
