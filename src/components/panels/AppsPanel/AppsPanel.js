@@ -104,17 +104,17 @@ export default function AppsPanel({ isActive, onClose, entity }) {
     [modelStatusData, entity, baseAppURL]
   );
 
-  const machinespanelRows = useMemo(
+  const machinesPanelRows = useMemo(
     () => generateMachineRows(filteredModelStatusData),
     [filteredModelStatusData]
   );
 
-  const unitpanelRows = useMemo(
+  const unitPanelRows = useMemo(
     () => generateUnitRows(filteredModelStatusData, baseAppURL),
     [baseAppURL, filteredModelStatusData]
   );
 
-  const relationpanelRows = useMemo(
+  const relationPanelRows = useMemo(
     () => generateRelationRows(filteredModelStatusData, baseAppURL),
     [filteredModelStatusData, baseAppURL]
   );
@@ -129,21 +129,21 @@ export default function AppsPanel({ isActive, onClose, entity }) {
         <div className="slide-panel__tables">
           <MainTable
             headers={unitTableHeaders}
-            rows={unitpanelRows}
+            rows={unitPanelRows}
             className="model-details__units p-main-table panel__table"
             sortable
             emptyStateMsg={"There are no units in this model"}
           />
           <MainTable
             headers={machineTableHeaders}
-            rows={machinespanelRows}
+            rows={machinesPanelRows}
             className="model-details__machines p-main-table panel__table"
             sortable
             emptyStateMsg={"There are no machines in this model"}
           />
           <MainTable
             headers={relationTableHeaders}
-            rows={relationpanelRows}
+            rows={relationPanelRows}
             className="model-details__relations p-main-table panel__table"
             sortable
             emptyStateMsg={"There are no relations in this model"}

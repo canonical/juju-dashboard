@@ -255,7 +255,7 @@ export const userIsControllerAdmin = (conn) => {
 };
 
 /**
-  Returns the modelStatusData filtered by the supplied app value.
+  Returns the modelStatusData filtered by app name.
   @param {Object} modelStatusData The model status data to filter
   @param {String} appName The name of the application to filter the data by.
 */
@@ -319,35 +319,4 @@ export const filterModelStatusDataByApp = (modelStatusData, appName) => {
   }
 
   return modelStatusData;
-};
-
-/**
-  Returns the units filtered by the supplied machine.
-  @param {Object} modelStatusData The model status data to filter
-  @param {String} machine The machine to filter the data by.
-*/
-export const filterUnitsByMachine = (modelStatusData, machineId) => {
-  console.log(modelStatusData);
-  const filteredUnits = [];
-  const applications = modelStatusData?.applications;
-
-  applications &&
-    Object.values(applications).forEach((app) => {
-      Object.entries(app.units).forEach((unit) => {
-        const [unitName, unitInfo] = unit;
-        if (unitInfo.machine === machineId) {
-          filteredUnits.push(unitName);
-        }
-      });
-    });
-
-  // const filteredUnitsData = Object.values(modelStatusData).reduce(
-  //   (filteredUnits) => {
-  //     console.log(filteredUnits);
-  //   }
-  // );
-
-  console.log(filteredUnits);
-
-  //return filteredUnitsData;
 };
