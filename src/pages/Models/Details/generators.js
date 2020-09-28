@@ -428,7 +428,7 @@ export function generateOffersRows(modelStatusData, baseAppURL) {
                 modelStatusData,
                 baseAppURL
               )}
-              {offer.applicationName}:db
+              {offer.applicationName}
             </>
           ),
           className: "u-truncate",
