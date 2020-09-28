@@ -159,12 +159,17 @@ export function generateApplicationRows(
       ],
       onClick: (e) => onRowClick(e, app),
       "data-app": key,
-      class: selectedEntity === key ? "is-selected" : "",
+      className: selectedEntity === key ? "is-selected" : "",
     };
   });
 }
 
-export function generateUnitRows(modelStatusData, baseAppURL) {
+export function generateUnitRows(
+  modelStatusData,
+  onRowClick,
+  baseAppURL,
+  selectedEntity
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -184,7 +189,8 @@ export function generateUnitRows(modelStatusData, baseAppURL) {
                 : "",
               unitId,
               false,
-              baseAppURL
+              baseAppURL,
+              true // disable link
             ),
             className: "u-truncate",
           },
@@ -208,6 +214,9 @@ export function generateUnitRows(modelStatusData, baseAppURL) {
             className: "u-truncate",
           },
         ],
+        onClick: (e) => onRowClick(e, unitId),
+        "data-unit": unitId,
+        className: selectedEntity === unitId ? "is-selected" : "",
       });
 
       const subordinates = unit.subordinates;
@@ -261,7 +270,11 @@ const splitParts = (hardware) =>
     })
   );
 
-export function generateMachineRows(modelStatusData) {
+export function generateMachineRows(
+  modelStatusData,
+  onRowClick,
+  selectedEntity
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -297,6 +310,9 @@ export function generateMachineRows(modelStatusData) {
           className: "u-truncate",
         },
       ],
+      onClick: (e) => onRowClick(e, machineId),
+      "data-machine": machineId,
+      className: selectedEntity === machineId ? "is-selected" : "",
     };
   });
 }

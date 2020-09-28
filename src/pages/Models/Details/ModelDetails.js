@@ -12,13 +12,16 @@ import Header from "components/Header/Header";
 import Terminal from "components/Terminal/Terminal";
 
 import AppsPanel from "components/panels/AppsPanel/AppsPanel";
+import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
+import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
 
 import {
   getConfig,
   getControllerDataByUUID,
   getModelUUID,
-  getModelStatus,
 } from "app/selectors";
+
+import useModelStatus from "hooks/useModelStatus";
 
 import { fetchModelStatus } from "juju/actions";
 import { collapsibleSidebar } from "ui/actions";
@@ -161,10 +164,8 @@ const ModelDetails = () => {
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
-  const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [
-    modelUUID,
-  ]);
-  const modelStatusData = useSelector(getModelStatusMemo);
+  const modelStatusData = useModelStatus();
+
   const controllerUUID = modelStatusData?.info.controllerUuid;
   const controllerData = useSelector(getControllerDataByUUID(controllerUUID));
   let controllerWSHost = "";
@@ -217,15 +218,38 @@ const ModelDetails = () => {
     );
   }, [baseAppURL, modelStatusData, setQuery, query]);
 
-  const unitTableRows = useMemo(
-    () => generateUnitRows(modelStatusData, baseAppURL),
-    [baseAppURL, modelStatusData]
-  );
+  const unitTableRows = useMemo(() => {
+    const handleUnitsRowClick = (e) => {
+      if (process.env.NODE_ENV !== "production") {
+        setQuery({
+          panel: "units",
+          entity: e.currentTarget.dataset.unit,
+        });
+      }
+    };
+    return generateUnitRows(
+      modelStatusData,
+      handleUnitsRowClick,
+      baseAppURL,
+      query?.entity
+    );
+  }, [baseAppURL, modelStatusData, query, setQuery]);
 
-  const machinesTableRows = useMemo(
-    () => generateMachineRows(modelStatusData),
-    [modelStatusData]
-  );
+  const machinesTableRows = useMemo(() => {
+    const handleMachineRowClick = (e) => {
+      if (process.env.NODE_ENV !== "production") {
+        setQuery({
+          panel: "machines",
+          entity: e.currentTarget.dataset.machine,
+        });
+      }
+    };
+    return generateMachineRows(
+      modelStatusData,
+      handleMachineRowClick,
+      query?.entity
+    );
+  }, [modelStatusData, setQuery, query]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData, baseAppURL),
@@ -252,7 +276,10 @@ const ModelDetails = () => {
         </div>
       </Header>
       <div className="l-content">
-        <div className="model-details">
+        <div
+          className="model-details"
+          data-enable-panels={process.env.NODE_ENV !== "production"}
+        >
           <InfoPanel />
           <div className="model-details__main u-overflow--scroll">
             {renderCounts(activeView, modelStatusData)}
@@ -296,7 +323,17 @@ const ModelDetails = () => {
         </div>
         <AppsPanel
           entity={entity}
-          isActive={panel}
+          isActive={panel === "apps"}
+          onClose={() => closePanel()}
+        />
+        <MachinesPanel
+          entity={entity}
+          isActive={panel === "machines"}
+          onClose={() => closePanel()}
+        />
+        <UnitsPanel
+          entity={entity}
+          isActive={panel === "units"}
           onClose={() => closePanel()}
         />
       </div>

@@ -255,11 +255,11 @@ export const userIsControllerAdmin = (conn) => {
 };
 
 /**
-  Returns the modelStatusData filtered by the supplied values.
+  Returns the modelStatusData filtered by app name.
   @param {Object} modelStatusData The model status data to filter
   @param {String} appName The name of the application to filter the data by.
 */
-export const filterModelStatusData = (modelStatusData, appName) => {
+export const filterModelStatusDataByApp = (modelStatusData, appName) => {
   if (modelStatusData) {
     const filteredData = cloneDeep(modelStatusData);
 
