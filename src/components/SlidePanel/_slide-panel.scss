@@ -14,6 +14,7 @@
   right: 0;
   top: $top-header-height;
   transform: translateX(100%);
+  width: 100%;
 
   @media (min-width: $breakpoint-medium) {
     width: 60vw;
@@ -35,5 +36,13 @@
 
   &__content {
     padding: 1rem;
+  }
+
+  &__tables {
+    overflow-x: scroll;
+
+    table {
+      margin-bottom: 1rem;
+    }
   }
 }
