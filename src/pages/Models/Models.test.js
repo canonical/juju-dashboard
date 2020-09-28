@@ -17,7 +17,9 @@ describe("Models page", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter>
-          <Models />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <Models />
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -30,7 +32,9 @@ describe("Models page", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter>
-          <Models />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <Models />
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
