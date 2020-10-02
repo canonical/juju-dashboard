@@ -33,11 +33,11 @@ export const unitTableHeaders = [
 ];
 
 export const machineTableHeaders = [
-  { content: "machine" },
-  { content: "state" },
-  { content: "az" },
-  { content: "instance id" },
-  { content: "message" },
+  { content: "machine", sortKey: "machine" },
+  { content: "state", sortKey: "state" },
+  { content: "az", sortKey: "az" },
+  { content: "instance id", sortKey: "instanceId" },
+  { content: "message", sortKey: "message" },
 ];
 
 export const relationTableHeaders = [
@@ -308,6 +308,7 @@ export function generateMachineRows(
   const machines = modelStatusData.machines;
   return Object.keys(machines).map((machineId) => {
     const machine = machines[machineId];
+    const az = splitParts(machine.hardware)["availability-zone"] || "";
     return {
       columns: [
         {
@@ -325,7 +326,7 @@ export function generateMachineRows(
           content: generateStatusElement(machine.agentStatus.status),
           className: "u-capitalise",
         },
-        { content: splitParts(machine.hardware)["availability-zone"] },
+        { content: az },
         { content: machine.instanceId },
         {
           content: (
@@ -336,6 +337,13 @@ export function generateMachineRows(
           className: "u-truncate",
         },
       ],
+      sortData: {
+        machine: machine.series,
+        state: machine?.agentStatus?.status,
+        az,
+        instanceId: machine.instanceId,
+        message: machine?.agentStatus?.info,
+      },
       onClick: (e) => onRowClick(e, machineId),
       "data-machine": machineId,
       className: selectedEntity === machineId ? "is-selected" : "",
