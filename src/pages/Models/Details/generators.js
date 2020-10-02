@@ -12,14 +12,14 @@ import {
 } from "app/utils";
 
 export const applicationTableHeaders = [
-  { content: "app" },
-  { content: "status" },
-  { content: "version", className: "u-align--right" },
-  { content: "scale", className: "u-align--right" },
-  { content: "store" },
-  { content: "rev", className: "u-align--right" },
-  { content: "os" },
-  { content: "notes" },
+  { content: "app", sortKey: "app" },
+  { content: "status", sortKey: "status" },
+  { content: "version", className: "u-align--right", sortKey: "version" },
+  { content: "scale", className: "u-align--right", sortKey: "scale" },
+  { content: "store", sortKey: "store" },
+  { content: "rev", className: "u-align--right", sortKey: "rev" },
+  { content: "os", sortKey: "os" },
+  { content: "notes", sortKey: "notes" },
 ];
 
 export const unitTableHeaders = [
@@ -129,6 +129,10 @@ export function generateApplicationRows(
 
   return Object.keys(applications).map((key) => {
     const app = applications[key];
+    const rev = extractRevisionNumber(app.charm) || "-";
+    const store = app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub";
+    const scale = app.unitsCount;
+    const version = app.workloadVersion || "-";
     return {
       columns: [
         {
@@ -149,26 +153,36 @@ export function generateApplicationRows(
         },
         {
           "data-test-column": "version",
-          content: app.workloadVersion || "-",
+          content: version,
           className: "u-align--right",
         },
         {
           "data-test-column": "scale",
-          content: app.unitsCount,
+          content: scale,
           className: "u-align--right",
         },
         {
           "data-test-column": "store",
-          content: app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub",
+          content: store,
         },
         {
           "data-test-column": "revision",
-          content: extractRevisionNumber(app.charm) || "-",
+          content: rev,
           className: "u-align--right",
         },
         { "data-test-column": "os", content: "Ubuntu" },
         { "data-test-column": "notes", content: "-" },
       ],
+      sortData: {
+        app: key,
+        status: app.status?.status,
+        version,
+        scale,
+        store,
+        rev,
+        os: "Ubuntu",
+        notes: "-",
+      },
       onClick: (e) => onRowClick(e, app),
       "data-app": key,
       className: selectedEntity === key ? "is-selected" : "",
