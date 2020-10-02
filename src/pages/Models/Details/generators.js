@@ -23,13 +23,13 @@ export const applicationTableHeaders = [
 ];
 
 export const unitTableHeaders = [
-  { content: "unit" },
-  { content: "workload" },
-  { content: "agent" },
-  { content: "machine", className: "u-align--right" },
-  { content: "public address" },
-  { content: "port", className: "u-align--right" },
-  { content: "message" },
+  { content: "unit", sortKey: "unit" },
+  { content: "workload", sortKey: "workload" },
+  { content: "agent", sortKey: "agent" },
+  { content: "machine", className: "u-align--right", sortKey: "machine" },
+  { content: "public address", sortKey: "publicAddress" },
+  { content: "port", className: "u-align--right", sortKey: "port" },
+  { content: "message", sortKey: "message" },
 ];
 
 export const machineTableHeaders = [
@@ -206,6 +206,11 @@ export function generateUnitRows(
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach((unitId) => {
       const unit = units[unitId];
+      const workload = unit.workloadStatus.status || "-";
+      const agent = unit.agentStatus.status || "-";
+      const publicAddress = unit.publicAddress || "-";
+      const port = unit.openedPorts.join(" ") || "-";
+      const message = unit.workloadStatus.info || "-";
       unitRows.push({
         columns: [
           {
@@ -221,25 +226,30 @@ export function generateUnitRows(
             className: "u-truncate",
           },
           {
-            content: generateStatusElement(unit.workloadStatus.status),
+            content: generateStatusElement(workload),
             className: "u-capitalise",
           },
-          { content: unit.agentStatus.status },
+          { content: agent },
           { content: unit.machine, className: "u-align--right" },
-          { content: unit.publicAddress },
+          { content: publicAddress },
           {
-            content: unit.openedPorts.join(" ") || "-",
+            content: port,
             className: "u-align--right",
           },
           {
-            content: (
-              <span title={unit.workloadStatus.info}>
-                {unit.workloadStatus.info}
-              </span>
-            ),
+            content: <span title={message}>{message}</span>,
             className: "u-truncate",
           },
         ],
+        sortData: {
+          unit: unitId,
+          workload,
+          agent,
+          machine: unit.machine,
+          publicAddress,
+          port,
+          message,
+        },
         onClick: (e) => onRowClick(e, unitId),
         "data-unit": unitId,
         className: selectedEntity === unitId ? "is-selected" : "",
@@ -279,6 +289,18 @@ export function generateUnitRows(
                 className: "u-truncate",
               },
             ],
+            // This is using the parent data for sorting so that they stick to
+            // their parent while being sorted. This isn't fool-proof but it's
+            // the best we have for the current design and table implementation.
+            sortData: {
+              unit: unitId,
+              workload,
+              agent,
+              machine: unit.machine,
+              publicAddress,
+              port,
+              message,
+            },
           });
         }
       }
