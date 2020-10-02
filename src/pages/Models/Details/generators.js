@@ -41,11 +41,11 @@ export const machineTableHeaders = [
 ];
 
 export const relationTableHeaders = [
-  { content: "relation provider" },
-  { content: "requirer" },
-  { content: "interface" },
-  { content: "type" },
-  { content: "message" },
+  { content: "relation provider", sortKey: "provider" },
+  { content: "requirer", sortKey: "requirer" },
+  { content: "interface", sortKey: "interface" },
+  { content: "type", sortKey: "type" },
+  { content: "message", sortKey: "message" },
 ];
 
 export const consumedTableHeaders = [
@@ -390,6 +390,8 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
       peerApplicationName,
     } = extractRelationEndpoints(relation);
 
+    const providerLabel = provider || peer || "-";
+    const requirerLabel = requirer || "-";
     return {
       columns: [
         {
@@ -400,7 +402,7 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
                 modelStatusData,
                 baseAppURL
               )}
-              {provider || peer || "-"}
+              {providerLabel}
             </>
           ),
           className: "u-truncate",
@@ -413,10 +415,10 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
                 modelStatusData,
                 baseAppURL
               )}
-              {requirer || "-"}
+              {requirerLabel}
             </>
           ),
-          title: requirer || "-",
+          title: requirerLabel,
           className: "u-truncate",
         },
         { content: relation.interface },
@@ -428,6 +430,13 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
           ),
         },
       ],
+      sortData: {
+        provider: providerLabel,
+        requirer: requirerLabel,
+        interface: relation.interface,
+        type: relation?.endpoints[0]?.role,
+        message: relation?.status?.status,
+      },
     };
   });
 }
