@@ -14,12 +14,12 @@ function SlidePanel({
   // If Escape key is pressed when slide panel is open, close it
   useEffect(() => {
     if (!isActive) return;
-    const closeOnEscape = document.body.addEventListener("keydown", (e) => {
+    const closeOnEscape = (e) => {
       if (isActive && e.code === "Escape") {
         onClose();
       }
-    });
-    const closeOnClickOutside = document.body.addEventListener("click", (e) => {
+    };
+    const closeOnClickOutside = (e) => {
       if (
         isActive &&
         !e.target.closest(".slide-panel") &&
@@ -27,10 +27,12 @@ function SlidePanel({
       ) {
         onClose();
       }
-    });
+    };
+    document.body.addEventListener("keydown", closeOnEscape);
+    document.body.addEventListener("click", closeOnClickOutside);
     return () => {
-      document.removeEventListener("keydown", closeOnEscape);
-      document.removeEventListener("click", closeOnClickOutside);
+      document.body.removeEventListener("keydown", closeOnEscape);
+      document.body.removeEventListener("click", closeOnClickOutside);
     };
   }, [isActive, onClose]);
 
