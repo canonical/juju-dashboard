@@ -12,40 +12,40 @@ import {
 } from "app/utils";
 
 export const applicationTableHeaders = [
-  { content: "app" },
-  { content: "status" },
-  { content: "version", className: "u-align--right" },
-  { content: "scale", className: "u-align--right" },
-  { content: "store" },
-  { content: "rev", className: "u-align--right" },
-  { content: "os" },
-  { content: "notes" },
+  { content: "app", sortKey: "app" },
+  { content: "status", sortKey: "status" },
+  { content: "version", className: "u-align--right", sortKey: "version" },
+  { content: "scale", className: "u-align--right", sortKey: "scale" },
+  { content: "store", sortKey: "store" },
+  { content: "rev", className: "u-align--right", sortKey: "rev" },
+  { content: "os", sortKey: "os" },
+  { content: "notes", sortKey: "notes" },
 ];
 
 export const unitTableHeaders = [
-  { content: "unit" },
-  { content: "workload" },
-  { content: "agent" },
-  { content: "machine", className: "u-align--right" },
-  { content: "public address" },
-  { content: "port", className: "u-align--right" },
-  { content: "message" },
+  { content: "unit", sortKey: "unit" },
+  { content: "workload", sortKey: "workload" },
+  { content: "agent", sortKey: "agent" },
+  { content: "machine", className: "u-align--right", sortKey: "machine" },
+  { content: "public address", sortKey: "publicAddress" },
+  { content: "port", className: "u-align--right", sortKey: "port" },
+  { content: "message", sortKey: "message" },
 ];
 
 export const machineTableHeaders = [
-  { content: "machine" },
-  { content: "state" },
-  { content: "az" },
-  { content: "instance id" },
-  { content: "message" },
+  { content: "machine", sortKey: "machine" },
+  { content: "state", sortKey: "state" },
+  { content: "az", sortKey: "az" },
+  { content: "instance id", sortKey: "instanceId" },
+  { content: "message", sortKey: "message" },
 ];
 
 export const relationTableHeaders = [
-  { content: "relation provider" },
-  { content: "requirer" },
-  { content: "interface" },
-  { content: "type" },
-  { content: "message" },
+  { content: "relation provider", sortKey: "provider" },
+  { content: "requirer", sortKey: "requirer" },
+  { content: "interface", sortKey: "interface" },
+  { content: "type", sortKey: "type" },
+  { content: "message", sortKey: "message" },
 ];
 
 export const consumedTableHeaders = [
@@ -129,6 +129,10 @@ export function generateApplicationRows(
 
   return Object.keys(applications).map((key) => {
     const app = applications[key];
+    const rev = extractRevisionNumber(app.charm) || "-";
+    const store = app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub";
+    const scale = app.unitsCount;
+    const version = app.workloadVersion || "-";
     return {
       columns: [
         {
@@ -149,26 +153,36 @@ export function generateApplicationRows(
         },
         {
           "data-test-column": "version",
-          content: app.workloadVersion || "-",
+          content: version,
           className: "u-align--right",
         },
         {
           "data-test-column": "scale",
-          content: app.unitsCount,
+          content: scale,
           className: "u-align--right",
         },
         {
           "data-test-column": "store",
-          content: app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub",
+          content: store,
         },
         {
           "data-test-column": "revision",
-          content: extractRevisionNumber(app.charm) || "-",
+          content: rev,
           className: "u-align--right",
         },
         { "data-test-column": "os", content: "Ubuntu" },
         { "data-test-column": "notes", content: "-" },
       ],
+      sortData: {
+        app: key,
+        status: app.status?.status,
+        version,
+        scale,
+        store,
+        rev,
+        os: "Ubuntu",
+        notes: "-",
+      },
       onClick: (e) => onRowClick(e, app),
       "data-app": key,
       className: selectedEntity === key ? "is-selected" : "",
@@ -192,6 +206,11 @@ export function generateUnitRows(
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach((unitId) => {
       const unit = units[unitId];
+      const workload = unit.workloadStatus.status || "-";
+      const agent = unit.agentStatus.status || "-";
+      const publicAddress = unit.publicAddress || "-";
+      const port = unit.openedPorts.join(" ") || "-";
+      const message = unit.workloadStatus.info || "-";
       unitRows.push({
         columns: [
           {
@@ -207,25 +226,30 @@ export function generateUnitRows(
             className: "u-truncate",
           },
           {
-            content: generateStatusElement(unit.workloadStatus.status),
+            content: generateStatusElement(workload),
             className: "u-capitalise",
           },
-          { content: unit.agentStatus.status },
+          { content: agent },
           { content: unit.machine, className: "u-align--right" },
-          { content: unit.publicAddress },
+          { content: publicAddress },
           {
-            content: unit.openedPorts.join(" ") || "-",
+            content: port,
             className: "u-align--right",
           },
           {
-            content: (
-              <span title={unit.workloadStatus.info}>
-                {unit.workloadStatus.info}
-              </span>
-            ),
+            content: <span title={message}>{message}</span>,
             className: "u-truncate",
           },
         ],
+        sortData: {
+          unit: unitId,
+          workload,
+          agent,
+          machine: unit.machine,
+          publicAddress,
+          port,
+          message,
+        },
         onClick: (e) => onRowClick(e, unitId),
         "data-unit": unitId,
         className: selectedEntity === unitId ? "is-selected" : "",
@@ -265,6 +289,18 @@ export function generateUnitRows(
                 className: "u-truncate",
               },
             ],
+            // This is using the parent data for sorting so that they stick to
+            // their parent while being sorted. This isn't fool-proof but it's
+            // the best we have for the current design and table implementation.
+            sortData: {
+              unit: unitId,
+              workload,
+              agent,
+              machine: unit.machine,
+              publicAddress,
+              port,
+              message,
+            },
           });
         }
       }
@@ -294,6 +330,7 @@ export function generateMachineRows(
   const machines = modelStatusData.machines;
   return Object.keys(machines).map((machineId) => {
     const machine = machines[machineId];
+    const az = splitParts(machine.hardware)["availability-zone"] || "";
     return {
       columns: [
         {
@@ -311,7 +348,7 @@ export function generateMachineRows(
           content: generateStatusElement(machine.agentStatus.status),
           className: "u-capitalise",
         },
-        { content: splitParts(machine.hardware)["availability-zone"] },
+        { content: az },
         { content: machine.instanceId },
         {
           content: (
@@ -322,6 +359,13 @@ export function generateMachineRows(
           className: "u-truncate",
         },
       ],
+      sortData: {
+        machine: machine.series,
+        state: machine?.agentStatus?.status,
+        az,
+        instanceId: machine.instanceId,
+        message: machine?.agentStatus?.info,
+      },
       onClick: (e) => onRowClick(e, machineId),
       "data-machine": machineId,
       className: selectedEntity === machineId ? "is-selected" : "",
@@ -368,6 +412,8 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
       peerApplicationName,
     } = extractRelationEndpoints(relation);
 
+    const providerLabel = provider || peer || "-";
+    const requirerLabel = requirer || "-";
     return {
       columns: [
         {
@@ -378,7 +424,7 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
                 modelStatusData,
                 baseAppURL
               )}
-              {provider || peer || "-"}
+              {providerLabel}
             </>
           ),
           className: "u-truncate",
@@ -391,10 +437,10 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
                 modelStatusData,
                 baseAppURL
               )}
-              {requirer || "-"}
+              {requirerLabel}
             </>
           ),
-          title: requirer || "-",
+          title: requirerLabel,
           className: "u-truncate",
         },
         { content: relation.interface },
@@ -406,6 +452,13 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
           ),
         },
       ],
+      sortData: {
+        provider: providerLabel,
+        requirer: requirerLabel,
+        interface: relation.interface,
+        type: relation?.endpoints[0]?.role,
+        message: relation?.status?.status,
+      },
     };
   });
 }

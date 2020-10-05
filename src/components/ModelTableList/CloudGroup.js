@@ -33,7 +33,7 @@ function generateCloudTableHeaders(cloud, count) {
   return [
     {
       content: generateStatusElement(cloud, count, false),
-      sortKey: cloud.toLowerCase(),
+      sortKey: "name",
     },
     { content: "", sortKey: "summary" }, // The unit/machines/apps counts
     { content: "Owner", sortKey: "owner" },
@@ -43,7 +43,7 @@ function generateCloudTableHeaders(cloud, count) {
     { content: "Controller", sortKey: "controller" },
     {
       content: "Last Updated",
-      sortKey: "last-updated",
+      sortKey: "lastUpdated",
       className: "u-align--right",
     },
   ];
@@ -62,6 +62,11 @@ export default function CloudGroup({ activeUser, filters }) {
       cloudModels.rows = [];
       modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
+        const owner = extractOwnerName(model.info.ownerTag);
+        const region = getStatusValue(model, "region");
+        const credential = getStatusValue(model.info, "cloudCredentialTag");
+        const controller = getStatusValue(model.info, "controllerName");
+        const lastUpdated = getStatusValue(model.info, "status.since");
         cloudModels.rows.push({
           "data-test-model-uuid": model?.uuid,
           columns: [
@@ -81,7 +86,7 @@ export default function CloudGroup({ activeUser, filters }) {
             },
             {
               "data-test-column": "owner",
-              content: extractOwnerName(model.info.ownerTag),
+              content: owner,
             },
             {
               "data-test-column": "status",
@@ -90,23 +95,32 @@ export default function CloudGroup({ activeUser, filters }) {
             },
             {
               "data-test-column": "region",
-              content: <>{getStatusValue(model, "region")}</>,
+              content: region,
             },
             {
               "data-test-column": "credential",
-              content: <>{getStatusValue(model.info, "cloudCredentialTag")}</>,
+              content: credential,
             },
             {
               "data-test-column": "controller",
-              content: getStatusValue(model.info, "controllerName"),
+              content: controller,
             },
             // We're not currently able to get a last-accessed or updated from JAAS.
             {
               "data-test-column": "updated",
-              content: getStatusValue(model.info, "status.since"),
+              content: lastUpdated,
               className: "u-align--right",
             },
           ],
+          sortData: {
+            name: model.info.name,
+            owner,
+            status: highestStatus,
+            region,
+            credential,
+            controller,
+            lastUpdated,
+          },
         });
       });
     });
@@ -116,6 +130,7 @@ export default function CloudGroup({ activeUser, filters }) {
         key={cloud}
         headers={generateCloudTableHeaders(cloud, cloudModels.rows.length)}
         rows={cloudModels.rows}
+        sortable
       />
     );
   }

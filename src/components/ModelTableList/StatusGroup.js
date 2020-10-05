@@ -22,7 +22,7 @@ function generateStatusTableHeaders(label, count) {
   return [
     {
       content: generateStatusElement(label, count),
-      sortKey: label.toLowerCase(),
+      sortKey: "name",
     },
     { content: "", sortKey: "summary" }, // The unit/machines/apps counts
     { content: "Owner", sortKey: "owner" },
@@ -31,7 +31,7 @@ function generateStatusTableHeaders(label, count) {
     { content: "Controller", sortKey: "controller" },
     {
       content: "Last Updated",
-      sortKey: "last-updated",
+      sortKey: "lastUpdated",
       className: "u-align--right",
     },
   ];
@@ -106,6 +106,13 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
       if (model.info) {
         owner = extractOwnerName(model.info.ownerTag);
       }
+      const cloud = `${getStatusValue(model, "cloudTag")}/${getStatusValue(
+        model,
+        "region"
+      )}`;
+      const credential = getStatusValue(model.info, "cloudCredentialTag");
+      const controller = getStatusValue(model.info, "controllerName");
+      const lastUpdated = getStatusValue(model.info, "status.since");
       modelData[`${groupLabel}Rows`].push({
         "data-test-model-uuid": model?.uuid,
         columns: [
@@ -124,28 +131,31 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
           },
           {
             "data-test-column": "cloud",
-            content: (
-              <>
-                {getStatusValue(model, "cloudTag")}/
-                {getStatusValue(model, "region")}
-              </>
-            ),
+            content: cloud,
           },
           {
             "data-test-column": "credential",
-            content: <>{getStatusValue(model.info, "cloudCredentialTag")}</>,
+            content: credential,
           },
           {
             "data-test-column": "controller",
-            content: getStatusValue(model.info, "controllerName"),
+            content: controller,
           },
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
             "data-test-column": "updated",
-            content: getStatusValue(model.info, "status.since"),
+            content: lastUpdated,
             className: "u-align--right",
           },
         ],
+        sortData: {
+          name: model.model.name,
+          owner,
+          cloud,
+          credential,
+          controller,
+          lastUpdated,
+        },
       });
     });
   });
@@ -171,16 +181,19 @@ export default function StatusGroup({ activeUser, filters }) {
       <MainTable
         headers={generateStatusTableHeaders("Blocked", blockedRows.length)}
         rows={blockedRows}
+        sortable
         emptyStateMsg={emptyStateMsg}
       />
       <MainTable
         headers={generateStatusTableHeaders("Alert", alertRows.length)}
         rows={alertRows}
+        sortable
         emptyStateMsg={emptyStateMsg}
       />
       <MainTable
         headers={generateStatusTableHeaders("Running", runningRows.length)}
         rows={runningRows}
+        sortable
         emptyStateMsg={emptyStateMsg}
       />
     </div>
