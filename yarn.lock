@@ -971,10 +971,10 @@
   dependencies:
     macaroon "^3.0.4"
 
-"@canonical/react-components@0.11.1":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@canonical/react-components/-/react-components-0.11.1.tgz#d2e58a4e6d21b7c765192f230c2aad5e12a044b4"
-  integrity sha512-dC4J4F42jLqzYu0N5owoWX1yQCSH3TYHk2VkJWr/zcbs4fe8DYXgRhX8FH7CdLCSp9einkabTJgrxMi0oOq59w==
+"@canonical/react-components@0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@canonical/react-components/-/react-components-0.12.0.tgz#64f94828bdd85ce1f4ca81eba2f35015bf9a7215"
+  integrity sha512-2ClE9O1J0wCNVFXMJgIuK1i741MeKqydguFVlzy948SuDpL7+LJPZe08oO1ZmshiMeaX4J+2WKRv7Jz5Wzkmaw==
   dependencies:
     "@types/jest" "26.0.14"
     "@types/node" "14.11.2"
@@ -4850,10 +4850,10 @@ eslint-plugin-react@7.19.0:
     string.prototype.matchall "^4.0.2"
     xregexp "^4.3.0"
 
-eslint-plugin-react@7.21.2:
-  version "7.21.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.21.2.tgz#3bd5d2c4c36d5a0428d0d6dda301ac9a84d681b2"
-  integrity sha512-j3XKvrK3rpBzveKFbgAeGsWb9uz6iUOrR0jixRfjwdFeGSRsXvVTFtHDQYCjsd1/6Z/xvb8Vy3LiI5Reo7fDrg==
+eslint-plugin-react@7.21.3:
+  version "7.21.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.21.3.tgz#71655d2af5155b19285ec929dd2cdc67a4470b52"
+  integrity sha512-OI4GwTCqyIb4ipaOEGLWdaOHCXZZydStAsBEPB2e1ZfNM37bojpgO1BoOQbFb0eLVz3QLDx7b+6kYcrxCuJfhw==
   dependencies:
     array-includes "^3.1.1"
     array.prototype.flatmap "^1.2.3"
@@ -9981,10 +9981,10 @@ qs@~6.5.2:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
 
-query-string@6.13.4:
-  version "6.13.4"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.13.4.tgz#b35a9a3bd4955bce55f94feb0e819b3d0be6f66f"
-  integrity sha512-E2NPIeJoBEJGQNy3ib1k/Z/OkDBUKIo8IV2ZVwbKfoa65IS9unqWWUlLcbfU70Da0qNoxUZZA8CfKUjKLE641Q==
+query-string@6.13.5:
+  version "6.13.5"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.13.5.tgz#99e95e2fb7021db90a6f373f990c0c814b3812d8"
+  integrity sha512-svk3xg9qHR39P3JlHuD7g3nRnyay5mHbrPctEBDUxUkHRifPHXJDhBUycdCC0NBjXoDf44Gb+IsOZL1Uwn8M/Q==
   dependencies:
     decode-uri-component "^0.2.0"
     split-on-first "^1.0.0"
