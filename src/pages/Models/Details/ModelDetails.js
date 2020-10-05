@@ -206,10 +206,6 @@ const ModelDetails = () => {
     }
   }, [dispatch, modelUUID, modelStatusData]);
 
-  const closePanel = () => {
-    setQuery({ panel: undefined, entity: undefined });
-  };
-
   const applicationTableRows = useMemo(() => {
     const handleAppRowClick = (e) => {
       setQuery({ panel: "apps", entity: e.currentTarget.dataset.app });
@@ -269,7 +265,8 @@ const ModelDetails = () => {
     [modelStatusData, baseAppURL]
   );
 
-  const { panel, entity, activeView } = query;
+  const { panel: activePanel, entity, activeView } = query;
+  const closePanelConfig = { panel: undefined, entity: undefined };
 
   return (
     <Layout>
@@ -369,18 +366,18 @@ const ModelDetails = () => {
         </div>
         <AppsPanel
           entity={entity}
-          isActive={panel === "apps"}
-          onClose={() => closePanel()}
+          isActive={activePanel === "apps"}
+          onClose={() => setQuery(closePanelConfig)}
         />
         <MachinesPanel
           entity={entity}
-          isActive={panel === "machines"}
-          onClose={() => closePanel()}
+          isActive={activePanel === "machines"}
+          onClose={() => setQuery(closePanelConfig)}
         />
         <UnitsPanel
           entity={entity}
-          isActive={panel === "units"}
-          onClose={() => closePanel()}
+          isActive={activePanel === "units"}
+          onClose={() => setQuery(closePanelConfig)}
         />
       </div>
       {generateTerminalComponent(modelUUID, controllerWSHost)}
