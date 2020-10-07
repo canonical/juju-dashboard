@@ -64,7 +64,7 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
     );
   }, [app, unit, unitId]);
 
-  const machinePanelHeader = useMemo(
+  const unitsPanelHeader = useMemo(
     () => generateUnitsPanelHeader(modelStatusData?.applications[unitId]),
     [modelStatusData, unitId, generateUnitsPanelHeader]
   );
@@ -80,7 +80,7 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
       className="units-panel"
     >
       <>
-        {machinePanelHeader}
+        {unitsPanelHeader}
         <div className="slide-panel__tables">
           <MainTable
             headers={machineTableHeaders}
