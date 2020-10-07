@@ -178,24 +178,30 @@ export default function StatusGroup({ activeUser, filters }) {
 
   return (
     <div className="status-group u-overflow--scroll">
-      <MainTable
-        headers={generateStatusTableHeaders("Blocked", blockedRows.length)}
-        rows={blockedRows}
-        sortable
-        emptyStateMsg={emptyStateMsg}
-      />
-      <MainTable
-        headers={generateStatusTableHeaders("Alert", alertRows.length)}
-        rows={alertRows}
-        sortable
-        emptyStateMsg={emptyStateMsg}
-      />
-      <MainTable
-        headers={generateStatusTableHeaders("Running", runningRows.length)}
-        rows={runningRows}
-        sortable
-        emptyStateMsg={emptyStateMsg}
-      />
+      {blockedRows.length ? (
+        <MainTable
+          headers={generateStatusTableHeaders("Blocked", blockedRows.length)}
+          rows={blockedRows}
+          sortable
+          emptyStateMsg={emptyStateMsg}
+        />
+      ) : null}
+      {alertRows.length ? (
+        <MainTable
+          headers={generateStatusTableHeaders("Alert", alertRows.length)}
+          rows={alertRows}
+          sortable
+          emptyStateMsg={emptyStateMsg}
+        />
+      ) : null}
+      {runningRows.length ? (
+        <MainTable
+          headers={generateStatusTableHeaders("Running", runningRows.length)}
+          rows={runningRows}
+          sortable
+          emptyStateMsg={emptyStateMsg}
+        />
+      ) : null}
     </div>
   );
 }
