@@ -11,7 +11,7 @@ import dataDump from "../../testing/complete-redux-store-dump";
 const mockStore = configureStore([]);
 
 describe("StatusGroup", () => {
-  it("by default, renders with all table headers and no data", () => {
+  it("by default, renders no tables when there is no data", () => {
     const store = mockStore({
       root: {},
       juju: {
@@ -27,10 +27,7 @@ describe("StatusGroup", () => {
       </Provider>
     );
     const tables = wrapper.find("MainTable");
-    expect(tables.length).toBe(3);
-    expect(tables.get(0).props.rows).toEqual([]);
-    expect(tables.get(1).props.rows).toEqual([]);
-    expect(tables.get(2).props.rows).toEqual([]);
+    expect(tables.length).toBe(0);
   });
 
   it("displays model data grouped by status from the redux store", () => {
