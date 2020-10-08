@@ -9,6 +9,7 @@ import {
   machineTableHeaders,
   applicationTableHeaders,
   generateMachineRows,
+  generateApplicationRows,
 } from "pages/Models/Details/generators";
 
 import { generateStatusElement, extractRevisionNumber } from "app/utils";
@@ -31,6 +32,22 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
           }
         });
       }
+      return filteredModelStatusData;
+    },
+    [modelStatusData]
+  );
+
+  const filteredModelStatusDataByApp = useCallback(
+    (appName) => {
+      const filteredModelStatusData = cloneDeep(modelStatusData);
+      filteredModelStatusData &&
+        Object.keys(filteredModelStatusData.applications).forEach(
+          (application) => {
+            if (application !== appName) {
+              delete filteredModelStatusData.applications[application];
+            }
+          }
+        );
       return filteredModelStatusData;
     },
     [modelStatusData]
@@ -86,10 +103,17 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
     [modelStatusData, unitId, generateUnitsPanelHeader]
   );
 
-  // Generate machines table
+  // Generate machines table content
   const machineRows = useMemo(
-    () => generateMachineRows(filteredModelStatusDataByMachine(unit)),
+    () =>
+      generateMachineRows(filteredModelStatusDataByMachine(unit, "machines")),
     [filteredModelStatusDataByMachine, unit]
+  );
+
+  // Generate apps table content
+  const applicationRows = useMemo(
+    () => generateApplicationRows(filteredModelStatusDataByApp(appName)),
+    [filteredModelStatusDataByApp, appName]
   );
 
   // Check for loading status
@@ -114,7 +138,7 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
           />
           <MainTable
             headers={applicationTableHeaders}
-            rows={[]} // Temp disable
+            rows={applicationRows}
             className="model-details__apps p-main-table"
             sortable
             emptyStateMsg={"There are no apps in this model"}
