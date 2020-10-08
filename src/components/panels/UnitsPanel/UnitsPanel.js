@@ -1,12 +1,14 @@
 import React, { useMemo, useCallback } from "react";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import cloneDeep from "clone-deep";
 
 import useModelStatus from "hooks/useModelStatus";
 
 import {
   machineTableHeaders,
   applicationTableHeaders,
+  generateMachineRows,
 } from "pages/Models/Details/generators";
 
 import { generateStatusElement, extractRevisionNumber } from "app/utils";
@@ -18,6 +20,21 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
   const appName = unitId?.split("/")[0];
   const unit = modelStatusData?.applications[appName]?.units[unitId];
   const app = modelStatusData?.applications[appName];
+
+  const filteredModelStatusDataByMachine = useCallback(
+    (unit) => {
+      const filteredModelStatusData = cloneDeep(modelStatusData);
+      if (unit?.machine) {
+        Object.keys(filteredModelStatusData.machines).forEach((machineId) => {
+          if (machineId !== unit.machine) {
+            delete filteredModelStatusData.machines[machineId];
+          }
+        });
+      }
+      return filteredModelStatusData;
+    },
+    [modelStatusData]
+  );
 
   // Generate panel header for given entity
   const generateUnitsPanelHeader = useCallback(() => {
@@ -69,6 +86,12 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
     [modelStatusData, unitId, generateUnitsPanelHeader]
   );
 
+  // Generate machines table
+  const machineRows = useMemo(
+    () => generateMachineRows(filteredModelStatusDataByMachine(unit)),
+    [filteredModelStatusDataByMachine, unit]
+  );
+
   // Check for loading status
   const isLoading = !modelStatusData?.machines;
 
@@ -84,7 +107,7 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
         <div className="slide-panel__tables">
           <MainTable
             headers={machineTableHeaders}
-            rows={[]} // Temp disable
+            rows={machineRows}
             className="model-details__machines p-main-table"
             sortable
             emptyStateMsg={"There are no machines in this model"}
