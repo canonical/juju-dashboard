@@ -1,12 +1,14 @@
 import React, { useMemo, useCallback } from "react";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import cloneDeep from "clone-deep";
 
 import useModelStatus from "hooks/useModelStatus";
 
 import {
   unitTableHeaders,
   applicationTableHeaders,
+  generateApplicationRows,
 } from "pages/Models/Details/generators";
 
 import { generateStatusElement } from "app/utils";
@@ -86,6 +88,32 @@ export default function MachinesPanel({
     [modelStatusData, machineId, generateMachinesPanelHeader]
   );
 
+  const filteredModelStatusDataByApp = useCallback(
+    (machineId) => {
+      const filteredModelStatusData = cloneDeep(modelStatusData);
+      filteredModelStatusData &&
+        Object.keys(filteredModelStatusData.applications).forEach(
+          (application) => {
+            const units =
+              filteredModelStatusData.applications[application].units;
+            Object.values(units).forEach((unit) => {
+              if (unit.machine !== machineId) {
+                delete filteredModelStatusData.applications[application];
+              }
+            });
+          }
+        );
+      return filteredModelStatusData;
+    },
+    [modelStatusData]
+  );
+
+  // Generate apps table content
+  const applicationRows = useMemo(
+    () => generateApplicationRows(filteredModelStatusDataByApp(machineId)),
+    [filteredModelStatusDataByApp, machineId]
+  );
+
   // Check for loading status
   const isLoading = !modelStatusData?.machines;
 
@@ -108,7 +136,7 @@ export default function MachinesPanel({
           />
           <MainTable
             headers={applicationTableHeaders}
-            rows={[]} // Temp disable
+            rows={applicationRows} // Temp disable
             className="model-details__apps p-main-table"
             sortable
             emptyStateMsg={"There are no apps in this model"}
