@@ -9,6 +9,14 @@
     padding-bottom: 3rem;
     padding-top: 1rem;
 
+    &__loading {
+      align-items: center;
+      display: flex;
+      justify-items: center;
+      min-height: calc(100vh - 48px);
+      width: 100%;
+    }
+
     @media (min-width: $breakpoint-medium) {
       gap: 1rem;
       grid-template-columns: 230px 1fr;

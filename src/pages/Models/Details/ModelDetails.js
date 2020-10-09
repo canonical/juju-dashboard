@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import Spinner from "@canonical/react-components/dist/components/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
