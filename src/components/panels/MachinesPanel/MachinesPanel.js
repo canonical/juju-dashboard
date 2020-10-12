@@ -20,7 +20,7 @@ export default function MachinesPanel({
   isActive,
   onClose,
   entity: machineId,
-  panelRowClick
+  panelRowClick,
 }) {
   const modelStatusData = useModelStatus();
   const machine = modelStatusData?.machines[machineId];
@@ -134,13 +134,18 @@ export default function MachinesPanel({
 
   // Generate apps table content
   const applicationRows = useMemo(
-    () => generateApplicationRows(filteredModelStatusDataByApp(machineId), panelRowClick),
+    () =>
+      generateApplicationRows(
+        filteredModelStatusDataByApp(machineId),
+        panelRowClick
+      ),
     [filteredModelStatusDataByApp, machineId, panelRowClick]
   );
 
   // Generate units table content
   const unitRows = useMemo(
-    () => generateUnitRows(filteredModelStatusDataByUnit(machineId), panelRowClick),
+    () =>
+      generateUnitRows(filteredModelStatusDataByUnit(machineId), panelRowClick),
     [filteredModelStatusDataByUnit, machineId, panelRowClick]
   );
 

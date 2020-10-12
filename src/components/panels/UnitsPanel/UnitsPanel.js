@@ -111,7 +111,10 @@ export default function UnitsPanel({
   // Generate machines table content
   const machineRows = useMemo(
     () =>
-      generateMachineRows(filteredModelStatusDataByMachine(unit, "machines"), panelRowClick),
+      generateMachineRows(
+        filteredModelStatusDataByMachine(unit, "machines"),
+        panelRowClick
+      ),
     [filteredModelStatusDataByMachine, panelRowClick, unit]
   );
 

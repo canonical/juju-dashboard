@@ -24,7 +24,12 @@ import {
 
 import "./_apps-panel.scss";
 
-export default function AppsPanel({ isActive, onClose, entity, panelRowClick }) {
+export default function AppsPanel({
+  isActive,
+  onClose,
+  entity,
+  panelRowClick,
+}) {
   // Get model status info
   const modelStatusData = useModelStatus();
 
