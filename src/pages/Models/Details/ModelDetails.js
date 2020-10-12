@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 import { useDispatch, useSelector } from "react-redux";
@@ -192,6 +192,13 @@ const ModelDetails = () => {
     setQuery({ activeView: view });
   };
 
+  const panelRowClick = useCallback(
+    (entityName, entityPanel) => {
+      return setQuery({ panel: entityPanel, entity: entityName });
+    },
+    [setQuery]
+  );
+
   useEffect(() => {
     dispatch(collapsibleSidebar(true));
     return () => {
@@ -208,42 +215,26 @@ const ModelDetails = () => {
   }, [dispatch, modelUUID, modelStatusData]);
 
   const applicationTableRows = useMemo(() => {
-    const handleAppRowClick = (e) => {
-      setQuery({ panel: "apps", entity: e.currentTarget.dataset.app });
-    };
     return generateApplicationRows(
       modelStatusData,
-      handleAppRowClick,
+      panelRowClick,
       baseAppURL,
       query?.entity
     );
-  }, [baseAppURL, modelStatusData, setQuery, query]);
+  }, [baseAppURL, modelStatusData, query, panelRowClick]);
 
   const unitTableRows = useMemo(() => {
-    const handleUnitsRowClick = (e) => {
-      setQuery({
-        panel: "units",
-        entity: e.currentTarget.dataset.unit,
-      });
-    };
     return generateUnitRows(
       modelStatusData,
-      handleUnitsRowClick,
+      panelRowClick,
       baseAppURL,
       query?.entity
     );
-  }, [baseAppURL, modelStatusData, query, setQuery]);
+  }, [baseAppURL, modelStatusData, query, panelRowClick]);
 
   const machinesTableRows = useMemo(() => {
-    const handleMachineRowClick = (e) => {
-      setQuery({ panel: "machines", entity: e.currentTarget.dataset.machine });
-    };
-    return generateMachineRows(
-      modelStatusData,
-      handleMachineRowClick,
-      query?.entity
-    );
-  }, [modelStatusData, setQuery, query]);
+    return generateMachineRows(modelStatusData, panelRowClick, query?.entity);
+  }, [modelStatusData, panelRowClick, query]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData, baseAppURL),
@@ -261,10 +252,6 @@ const ModelDetails = () => {
 
   const { panel: activePanel, entity, activeView } = query;
   const closePanelConfig = { panel: undefined, entity: undefined };
-
-  const panelRowClick = (e, entityName, entityPanel) => {
-    return setQuery({ panel: entityPanel, entity: entityName });
-  };
 
   return (
     <Layout>

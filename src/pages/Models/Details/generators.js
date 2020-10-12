@@ -183,7 +183,7 @@ export function generateApplicationRows(
         os: "Ubuntu",
         notes: "-",
       },
-      onClick: (e) => onRowClick(e, key, "apps"),
+      onClick: () => onRowClick(key, "apps"),
       "data-app": key,
       className: selectedEntity === key ? "is-selected" : "",
     };
@@ -250,7 +250,7 @@ export function generateUnitRows(
           port,
           message,
         },
-        onClick: (e) => onRowClick(e, unitId, "units"),
+        onClick: () => onRowClick(unitId, "units"),
         "data-unit": unitId,
         className: selectedEntity === unitId ? "is-selected" : "",
       });
@@ -367,7 +367,7 @@ export function generateMachineRows(
         instanceId: machine.instanceId,
         message: machine?.agentStatus?.info,
       },
-      onClick: (e) => onRowClick(e, machineId, "machines"),
+      onClick: () => onRowClick(machineId, "machines"),
       "data-machine": machineId,
       className: selectedEntity === machineId ? "is-selected" : "",
     };
