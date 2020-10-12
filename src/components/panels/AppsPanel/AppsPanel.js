@@ -24,7 +24,7 @@ import {
 
 import "./_apps-panel.scss";
 
-export default function AppsPanel({ isActive, onClose, entity }) {
+export default function AppsPanel({ isActive, onClose, entity, panelRowClick }) {
   // Get model status info
   const modelStatusData = useModelStatus();
 
@@ -105,13 +105,13 @@ export default function AppsPanel({ isActive, onClose, entity }) {
   );
 
   const machinesPanelRows = useMemo(
-    () => generateMachineRows(filteredModelStatusData),
-    [filteredModelStatusData]
+    () => generateMachineRows(filteredModelStatusData, panelRowClick),
+    [filteredModelStatusData, panelRowClick]
   );
 
   const unitPanelRows = useMemo(
-    () => generateUnitRows(filteredModelStatusData, baseAppURL),
-    [baseAppURL, filteredModelStatusData]
+    () => generateUnitRows(filteredModelStatusData, panelRowClick),
+    [panelRowClick, filteredModelStatusData]
   );
 
   const relationPanelRows = useMemo(

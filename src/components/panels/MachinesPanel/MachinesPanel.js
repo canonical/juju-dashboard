@@ -7,6 +7,7 @@ import useModelStatus from "hooks/useModelStatus";
 
 import {
   unitTableHeaders,
+  generateUnitRows,
   applicationTableHeaders,
   generateApplicationRows,
 } from "pages/Models/Details/generators";
@@ -19,6 +20,7 @@ export default function MachinesPanel({
   isActive,
   onClose,
   entity: machineId,
+  panelRowClick
 }) {
   const modelStatusData = useModelStatus();
   const machine = modelStatusData?.machines[machineId];
@@ -108,10 +110,38 @@ export default function MachinesPanel({
     [modelStatusData]
   );
 
+  const filteredModelStatusDataByUnit = useCallback(
+    (machineId) => {
+      const filteredModelStatusData = cloneDeep(modelStatusData);
+      filteredModelStatusData &&
+        Object.keys(filteredModelStatusData.applications).forEach(
+          (application) => {
+            const units =
+              filteredModelStatusData.applications[application].units;
+            for (let [key, unit] of Object.entries(units)) {
+              if (unit.machine !== machineId) {
+                delete filteredModelStatusData.applications[application].units[
+                  key
+                ];
+              }
+            }
+          }
+        );
+      return filteredModelStatusData;
+    },
+    [modelStatusData]
+  );
+
   // Generate apps table content
   const applicationRows = useMemo(
-    () => generateApplicationRows(filteredModelStatusDataByApp(machineId)),
-    [filteredModelStatusDataByApp, machineId]
+    () => generateApplicationRows(filteredModelStatusDataByApp(machineId), panelRowClick),
+    [filteredModelStatusDataByApp, machineId, panelRowClick]
+  );
+
+  // Generate units table content
+  const unitRows = useMemo(
+    () => generateUnitRows(filteredModelStatusDataByUnit(machineId), panelRowClick),
+    [filteredModelStatusDataByUnit, machineId, panelRowClick]
   );
 
   // Check for loading status
@@ -129,14 +159,14 @@ export default function MachinesPanel({
         <div className="slide-panel__tables">
           <MainTable
             headers={unitTableHeaders}
-            rows={[]} // Temp disable
+            rows={unitRows}
             className="model-details__units p-main-table"
             sortable
             emptyStateMsg={"There are no units in this model"}
           />
           <MainTable
             headers={applicationTableHeaders}
-            rows={applicationRows} // Temp disable
+            rows={applicationRows}
             className="model-details__apps p-main-table"
             sortable
             emptyStateMsg={"There are no apps in this model"}

@@ -57,23 +57,21 @@
   }
 }
 
-@mixin model-details-main {
-  .model-details__main {
-    .subordinate-row {
-      border-top: none !important;
-    }
+@mixin model-details-subordinates {
+  .subordinate-row {
+    border-top: none !important;
+  }
 
-    .subordinate {
-      margin-right: 0.5rem;
-      padding-left: 1.5rem;
-      position: relative;
+  .subordinate {
+    margin-right: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
 
-      &::before {
-        content: url("../../../static/images/unit-tree.svg");
-        left: 0.75rem;
-        position: absolute;
-        top: -0.25rem;
-      }
+    &::before {
+      content: url("../../../static/images/unit-tree.svg");
+      left: 0.75rem;
+      position: absolute;
+      top: -0.25rem;
     }
   }
 }
@@ -222,6 +220,6 @@
 @include model-details-layout;
 @include model-details-header;
 @include model-details-title;
-@include model-details-main;
+@include model-details-subordinates;
 @include model-details-tables;
 @include model-details-entity-icons;

@@ -16,7 +16,12 @@ import { generateStatusElement, extractRevisionNumber } from "app/utils";
 
 import "./_units-panel.scss";
 
-export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
+export default function UnitsPanel({
+  isActive,
+  onClose,
+  entity: unitId,
+  panelRowClick,
+}) {
   const modelStatusData = useModelStatus();
   const appName = unitId?.split("/")[0];
   const unit = modelStatusData?.applications[appName]?.units[unitId];
@@ -106,14 +111,18 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
   // Generate machines table content
   const machineRows = useMemo(
     () =>
-      generateMachineRows(filteredModelStatusDataByMachine(unit, "machines")),
-    [filteredModelStatusDataByMachine, unit]
+      generateMachineRows(filteredModelStatusDataByMachine(unit, "machines"), panelRowClick),
+    [filteredModelStatusDataByMachine, panelRowClick, unit]
   );
 
   // Generate apps table content
   const applicationRows = useMemo(
-    () => generateApplicationRows(filteredModelStatusDataByApp(appName)),
-    [filteredModelStatusDataByApp, appName]
+    () =>
+      generateApplicationRows(
+        filteredModelStatusDataByApp(appName),
+        panelRowClick
+      ),
+    [filteredModelStatusDataByApp, panelRowClick, appName]
   );
 
   // Check for loading status
