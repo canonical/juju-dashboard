@@ -31,7 +31,7 @@ describe("ModelDetail Container", () => {
       </Provider>
     );
     expect(wrapper.find("Topology").length).toBe(1);
-    expect(wrapper.find(".model-details__main table").length).toBe(4);
+    expect(wrapper.find(".model-details__main table").length).toBe(2);
   });
 
   it("renders the details pane for models shared-with-me", () => {
@@ -216,7 +216,9 @@ describe("ModelDetail Container", () => {
     expect(
       wrapper.find(".slide-panel.machines-panel").prop("aria-hidden")
     ).toBe(true);
-    const machineRow = wrapper.find(`tr[data-machine="${testMachine}"]`);
+    const machineRow = wrapper.find(
+      `.model-details__main tr[data-machine="${testMachine}"]`
+    );
     machineRow.simulate("click");
     expect(
       wrapper.find(".slide-panel.machines-panel").prop("aria-hidden")
