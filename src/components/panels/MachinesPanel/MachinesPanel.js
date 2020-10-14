@@ -97,12 +97,20 @@ export default function MachinesPanel({
         Object.keys(filteredModelStatusData.applications).forEach(
           (application) => {
             const units =
-              filteredModelStatusData.applications[application].units;
-            Object.values(units).forEach((unit) => {
-              if (unit.machine !== machineId) {
-                delete filteredModelStatusData.applications[application];
-              }
-            });
+              filteredModelStatusData.applications[application]?.units;
+
+            if (Object.entries(units).length) {
+              Object.values(units).forEach((unit) => {
+                if (
+                  unit.machine !== machineId ||
+                  !Object.entries(units).length
+                ) {
+                  delete filteredModelStatusData.applications[application];
+                }
+              });
+            } else {
+              delete filteredModelStatusData.applications[application];
+            }
           }
         );
       return filteredModelStatusData;
