@@ -116,7 +116,7 @@ export default function AppsPanel({
 
   const unitPanelRows = useMemo(
     () => generateUnitRows(filteredModelStatusData, panelRowClick),
-    [panelRowClick, filteredModelStatusData]
+    [filteredModelStatusData, panelRowClick]
   );
 
   const relationPanelRows = useMemo(
