@@ -1,7 +1,26 @@
 @import "vanilla-framework/scss/vanilla";
 
+@keyframes slideIn {
+  0% {
+    transform: translateX(100vw);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
 .slide-panel {
-  @include vf-animation(transform, brisk, out);
   $top-header-height: 40px;
 
   background-color: $color-x-light;
@@ -13,7 +32,6 @@
   position: fixed;
   right: 0;
   top: $top-header-height;
-  transform: translateX(100%);
   width: 100%;
 
   @media (min-width: $breakpoint-medium) {
@@ -21,7 +39,11 @@
   }
 
   &[aria-hidden="false"] {
-    transform: translateX(0);
+    animation: slideIn 1s;
+  }
+
+  &[aria-hidden="true"] {
+    animation: slideOut 1s;
   }
 
   [data-loading="true"] {

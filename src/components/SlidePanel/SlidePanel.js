@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classnames from "classnames";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
@@ -11,6 +11,12 @@ function SlidePanel({
   isLoading = false,
   className,
 }) {
+  const [render, setRender] = useState(false);
+
+  useEffect(() => {
+    isActive && setRender(true);
+  }, [isActive]);
+
   // If Escape key is pressed when slide panel is open, close it
   useEffect(() => {
     if (!isActive) return;
@@ -35,25 +41,33 @@ function SlidePanel({
       document.body.removeEventListener("click", closeOnClickOutside);
     };
   }, [isActive, onClose]);
+  const onAnimationEnd = () => {
+    !isActive && setRender(false);
+  };
 
   return (
-    <div
-      className={classnames("slide-panel", className)}
-      aria-hidden={!isActive}
-    >
-      <button
-        className="p-modal__close"
-        aria-label="Close active modal"
-        aria-controls="modal"
-        onClick={onClose}
-        onKeyPress={onClose}
-      >
-        Close
-      </button>
-      <div className="slide-panel__content" data-loading={isLoading}>
-        {isLoading ? <Spinner /> : <>{children}</>}
-      </div>
-    </div>
+    <>
+      {render && (
+        <div
+          className={classnames("slide-panel", className)}
+          aria-hidden={!isActive}
+          onAnimationEnd={onAnimationEnd}
+        >
+          <button
+            className="p-modal__close"
+            aria-label="Close active modal"
+            aria-controls="modal"
+            onClick={onClose}
+            onKeyPress={onClose}
+          >
+            Close
+          </button>
+          <div className="slide-panel__content" data-loading={isLoading}>
+            {isLoading ? <Spinner /> : <>{children}</>}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
