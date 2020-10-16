@@ -1,5 +1,4 @@
 import React, { useMemo, useCallback } from "react";
-import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import cloneDeep from "clone-deep";
 
@@ -16,12 +15,7 @@ import { generateStatusElement } from "app/utils";
 
 import "./_machines-panel.scss";
 
-export default function MachinesPanel({
-  isActive,
-  onClose,
-  entity: machineId,
-  panelRowClick,
-}) {
+export default function MachinesPanel({ entity: machineId, panelRowClick }) {
   const modelStatusData = useModelStatus();
   const machine = modelStatusData?.machines[machineId];
 
@@ -43,7 +37,7 @@ export default function MachinesPanel({
         {machine && (
           <div className="row">
             <div className="col-4">
-              <div className="machine-panel__id">
+              <div className="machines-panel__id">
                 <strong>
                   <span className="entity-name">
                     Machine '{machineId}' - {machine?.series}
@@ -159,35 +153,25 @@ export default function MachinesPanel({
     [filteredModelStatusDataByUnit, machineId, panelRowClick]
   );
 
-  // Check for loading status
-  const isLoading = !modelStatusData?.machines;
-
   return (
-    <SlidePanel
-      isActive={isActive}
-      onClose={onClose}
-      isLoading={isLoading}
-      className="machines-panel"
-    >
-      <>
-        {machinePanelHeader}
-        <div className="slide-panel__tables">
-          <MainTable
-            headers={unitTableHeaders}
-            rows={unitRows}
-            className="model-details__units p-main-table"
-            sortable
-            emptyStateMsg={"There are no units in this model"}
-          />
-          <MainTable
-            headers={applicationTableHeaders}
-            rows={applicationRows}
-            className="model-details__apps p-main-table"
-            sortable
-            emptyStateMsg={"There are no apps in this model"}
-          />
-        </div>
-      </>
-    </SlidePanel>
+    <>
+      {machinePanelHeader}
+      <div className="slide-panel__tables">
+        <MainTable
+          headers={unitTableHeaders}
+          rows={unitRows}
+          className="model-details__units p-main-table"
+          sortable
+          emptyStateMsg={"There are no units in this model"}
+        />
+        <MainTable
+          headers={applicationTableHeaders}
+          rows={applicationRows}
+          className="model-details__apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no apps in this model"}
+        />
+      </div>
+    </>
   );
 }

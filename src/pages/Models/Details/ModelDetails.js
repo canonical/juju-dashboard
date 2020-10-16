@@ -11,6 +11,7 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import Terminal from "components/Terminal/Terminal";
+import SlidePanel from "components/SlidePanel/SlidePanel";
 
 import AppsPanel from "components/panels/AppsPanel/AppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
@@ -356,24 +357,23 @@ const ModelDetails = () => {
                 )}
             </div>
           </div>
-          <AppsPanel
-            entity={entity}
-            isActive={activePanel === "apps"}
+
+          <SlidePanel
+            isActive={activePanel}
             onClose={() => setQuery(closePanelConfig)}
-            panelRowClick={panelRowClick}
-          />
-          <MachinesPanel
-            entity={entity}
-            isActive={activePanel === "machines"}
-            onClose={() => setQuery(closePanelConfig)}
-            panelRowClick={panelRowClick}
-          />
-          <UnitsPanel
-            entity={entity}
-            isActive={activePanel === "units"}
-            onClose={() => setQuery(closePanelConfig)}
-            panelRowClick={panelRowClick}
-          />
+            isLoading={!entity}
+            className={`${activePanel}-panel`}
+          >
+            {activePanel === "apps" && (
+              <AppsPanel entity={entity} panelRowClick={panelRowClick} />
+            )}
+            {activePanel === "machines" && (
+              <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
+            )}
+            {activePanel === "units" && (
+              <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
+            )}
+          </SlidePanel>
         </div>
       )}
       {generateTerminalComponent(modelUUID, controllerWSHost)}

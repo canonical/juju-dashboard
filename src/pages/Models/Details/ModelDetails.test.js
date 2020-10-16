@@ -186,14 +186,10 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".slide-panel.apps-panel").prop("aria-hidden")).toBe(
-      true
-    );
+    expect(wrapper.find(".slide-panel.apps-panel").length).toBe(0);
     const applicationRow = wrapper.find(`tr[data-app="${testApp}"]`);
     applicationRow.simulate("click");
-    expect(wrapper.find(".slide-panel.apps-panel").prop("aria-hidden")).toBe(
-      false
-    );
+    expect(wrapper.find(".slide-panel.apps-panel").length).toBe(1);
     expect(
       wrapper.find(".slide-panel.apps-panel .panel-header .entity-name").text()
     ).toBe("kibana");
@@ -213,16 +209,12 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(
-      wrapper.find(".slide-panel.machines-panel").prop("aria-hidden")
-    ).toBe(true);
+    expect(wrapper.find(".slide-panel.machines-panel").length).toBe(0);
     const machineRow = wrapper.find(
       `.model-details__main tr[data-machine="${testMachine}"]`
     );
     machineRow.simulate("click");
-    expect(
-      wrapper.find(".slide-panel.machines-panel").prop("aria-hidden")
-    ).toBe(false);
+    expect(wrapper.find(".slide-panel.machines-panel").length).toBe(1);
     expect(
       wrapper
         .find(".slide-panel.machines-panel .panel-header .entity-name")
@@ -244,14 +236,10 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".slide-panel.units-panel").prop("aria-hidden")).toBe(
-      true
-    );
+    expect(wrapper.find(".slide-panel.units-panel").length).toBe(0);
     const unitRow = wrapper.find(`tr[data-unit="${testUnit}"]`);
     unitRow.simulate("click");
-    expect(wrapper.find(".slide-panel.units-panel").prop("aria-hidden")).toBe(
-      false
-    );
+    expect(wrapper.find(".slide-panel.units-panel").length).toBe(1);
     expect(
       wrapper.find(".slide-panel.units-panel .panel-header .entity-name").text()
     ).toBe("kibana/0");

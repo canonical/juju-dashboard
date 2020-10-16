@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getConfig } from "app/selectors";
-import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
 import useModelStatus from "hooks/useModelStatus";
@@ -24,12 +23,7 @@ import {
 
 import "./_apps-panel.scss";
 
-export default function AppsPanel({
-  isActive,
-  onClose,
-  entity,
-  panelRowClick,
-}) {
+export default function AppsPanel({ entity, panelRowClick }) {
   // Get model status info
   const modelStatusData = useModelStatus();
 
@@ -124,42 +118,32 @@ export default function AppsPanel({
     [filteredModelStatusData, baseAppURL]
   );
 
-  // Check for loading status
-  const isLoading = !filteredModelStatusData?.applications?.[entity];
-
   return (
-    <SlidePanel
-      isActive={isActive}
-      onClose={onClose}
-      isLoading={isLoading}
-      className="apps-panel"
-    >
-      <>
-        {appPanelHeader}
-        <div className="slide-panel__tables">
-          <MainTable
-            headers={unitTableHeaders}
-            rows={unitPanelRows}
-            className="model-details__units p-main-table panel__table"
-            sortable
-            emptyStateMsg={"There are no units in this model"}
-          />
-          <MainTable
-            headers={machineTableHeaders}
-            rows={machinesPanelRows}
-            className="model-details__machines p-main-table panel__table"
-            sortable
-            emptyStateMsg={"There are no machines in this model"}
-          />
-          <MainTable
-            headers={relationTableHeaders}
-            rows={relationPanelRows}
-            className="model-details__relations p-main-table panel__table"
-            sortable
-            emptyStateMsg={"There are no relations in this model"}
-          />
-        </div>
-      </>
-    </SlidePanel>
+    <>
+      {appPanelHeader}
+      <div className="slide-panel__tables">
+        <MainTable
+          headers={unitTableHeaders}
+          rows={unitPanelRows}
+          className="model-details__units p-main-table panel__table"
+          sortable
+          emptyStateMsg={"There are no units in this model"}
+        />
+        <MainTable
+          headers={machineTableHeaders}
+          rows={machinesPanelRows}
+          className="model-details__machines p-main-table panel__table"
+          sortable
+          emptyStateMsg={"There are no machines in this model"}
+        />
+        <MainTable
+          headers={relationTableHeaders}
+          rows={relationPanelRows}
+          className="model-details__relations p-main-table panel__table"
+          sortable
+          emptyStateMsg={"There are no relations in this model"}
+        />
+      </div>
+    </>
   );
 }
