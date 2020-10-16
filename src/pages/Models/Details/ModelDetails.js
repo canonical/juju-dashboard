@@ -17,6 +17,8 @@ import AppsPanel from "components/panels/AppsPanel/AppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
 
+import FadeInOut from "animations/FadeInOut/FadeInOut";
+
 import {
   getConfig,
   getControllerDataByUUID,
@@ -364,15 +366,17 @@ const ModelDetails = () => {
             isLoading={!entity}
             className={`${activePanel}-panel`}
           >
-            {activePanel === "apps" && (
+            <FadeInOut isActive={activePanel === "apps"}>
               <AppsPanel entity={entity} panelRowClick={panelRowClick} />
-            )}
-            {activePanel === "machines" && (
+            </FadeInOut>
+
+            <FadeInOut isActive={activePanel === "machines"}>
               <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
-            )}
-            {activePanel === "units" && (
+            </FadeInOut>
+
+            <FadeInOut isActive={activePanel === "units"}>
               <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
-            )}
+            </FadeInOut>
           </SlidePanel>
         </div>
       )}
