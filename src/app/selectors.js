@@ -18,7 +18,7 @@ import {
   @returns {Object|Null} The list of model data or null if none found.
 */
 export const getModelData = (state) => {
-  if (state.juju && state.juju.modelData) {
+  if (state?.juju?.modelData) {
     return state.juju.modelData;
   }
   return null;
@@ -107,7 +107,7 @@ const getFilteredModelData = (filters) =>
 */
 const getUserCredentials = (state) => {
   let storedMacaroons = null;
-  if (state.root && state.root.bakery) {
+  if (state?.root?.bakery) {
     storedMacaroons = state.root.bakery.storage._store;
   }
   return storedMacaroons;

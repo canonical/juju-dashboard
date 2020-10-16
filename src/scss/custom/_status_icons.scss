@@ -32,10 +32,15 @@
   }
 
   &.is-running,
-  &.is-started,
-  &.is-active {
+  &.is-started {
     &::before {
       color: $color-mid-light;
+    }
+  }
+
+  &.is-active {
+    &::before {
+      color: $color-positive;
     }
   }
 

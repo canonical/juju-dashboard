@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import Spinner from "@canonical/react-components/dist/components/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
@@ -10,6 +11,7 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import Terminal from "components/Terminal/Terminal";
+import SlidePanel from "components/SlidePanel/SlidePanel";
 
 import AppsPanel from "components/panels/AppsPanel/AppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
@@ -191,6 +193,13 @@ const ModelDetails = () => {
     setQuery({ activeView: view });
   };
 
+  const panelRowClick = useCallback(
+    (entityName, entityPanel) => {
+      return setQuery({ panel: entityPanel, entity: entityName });
+    },
+    [setQuery]
+  );
+
   useEffect(() => {
     dispatch(collapsibleSidebar(true));
     return () => {
@@ -207,49 +216,26 @@ const ModelDetails = () => {
   }, [dispatch, modelUUID, modelStatusData]);
 
   const applicationTableRows = useMemo(() => {
-    const handleAppRowClick = (e) => {
-      setQuery({ panel: "apps", entity: e.currentTarget.dataset.app });
-    };
     return generateApplicationRows(
       modelStatusData,
-      handleAppRowClick,
+      panelRowClick,
       baseAppURL,
       query?.entity
     );
-  }, [baseAppURL, modelStatusData, setQuery, query]);
+  }, [baseAppURL, modelStatusData, query, panelRowClick]);
 
   const unitTableRows = useMemo(() => {
-    const handleUnitsRowClick = (e) => {
-      if (process.env.NODE_ENV !== "production") {
-        setQuery({
-          panel: "units",
-          entity: e.currentTarget.dataset.unit,
-        });
-      }
-    };
     return generateUnitRows(
       modelStatusData,
-      handleUnitsRowClick,
+      panelRowClick,
       baseAppURL,
       query?.entity
     );
-  }, [baseAppURL, modelStatusData, query, setQuery]);
+  }, [baseAppURL, modelStatusData, query, panelRowClick]);
 
   const machinesTableRows = useMemo(() => {
-    const handleMachineRowClick = (e) => {
-      if (process.env.NODE_ENV !== "production") {
-        setQuery({
-          panel: "machines",
-          entity: e.currentTarget.dataset.machine,
-        });
-      }
-    };
-    return generateMachineRows(
-      modelStatusData,
-      handleMachineRowClick,
-      query?.entity
-    );
-  }, [modelStatusData, setQuery, query]);
+    return generateMachineRows(modelStatusData, panelRowClick, query?.entity);
+  }, [modelStatusData, panelRowClick, query]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData, baseAppURL),
@@ -276,110 +262,120 @@ const ModelDetails = () => {
             {modelStatusData ? modelStatusData.model.name : "..."}
           </strong>
           <div className="model-details__view-selector">
-            <ButtonGroup
-              buttons={["status", "units", "machines", "relations"]}
-              label="View:"
-              activeButton={activeView}
-              setActiveButton={setActiveView}
-            />
+            {modelStatusData && (
+              <ButtonGroup
+                buttons={["status", "units", "machines", "relations"]}
+                label="View:"
+                activeButton={activeView}
+                setActiveButton={setActiveView}
+              />
+            )}
           </div>
         </div>
       </Header>
-      <div className="l-content">
-        <div
-          className="model-details"
-          data-enable-panels={process.env.NODE_ENV !== "production"}
-        >
-          <InfoPanel />
-          <div className="model-details__main u-overflow--scroll">
-            {renderCounts(activeView, modelStatusData)}
-            {shouldShow("apps", activeView) && (
-              <MainTable
-                headers={applicationTableHeaders}
-                rows={applicationTableRows}
-                className="model-details__apps p-main-table"
-                sortable
-                emptyStateMsg={"There are no applications in this model"}
-              />
-            )}
-            {shouldShow("units", activeView) && (
-              <MainTable
-                headers={unitTableHeaders}
-                rows={unitTableRows}
-                className="model-details__units p-main-table"
-                sortable
-                emptyStateMsg={"There are no units in this model"}
-              />
-            )}
-            {shouldShow("machines", activeView) && (
-              <MainTable
-                headers={machineTableHeaders}
-                rows={machinesTableRows}
-                className="model-details__machines p-main-table"
-                sortable
-                emptyStateMsg={"There are no machines in this model"}
-              />
-            )}
-            {shouldShow("relations", activeView) && (
-              <>
-                {shouldShow("relations-title", activeView) && (
-                  <h5>Relations ({relationTableRows.length})</h5>
-                )}
-                <MainTable
-                  headers={relationTableHeaders}
-                  rows={relationTableRows}
-                  className="model-details__relations p-main-table"
-                  sortable
-                  emptyStateMsg={"There are no relations in this model"}
-                />
-                {shouldShow("relations-title", activeView) && (
-                  <h5>
-                    Cross-model relations (
-                    {consumedTableRows.length + offersTableRows.length})
-                  </h5>
-                )}
-                {consumedTableRows.length ? (
-                  <MainTable
-                    headers={consumedTableHeaders}
-                    rows={consumedTableRows}
-                    className="model-details__relations p-main-table"
-                    sortable
-                    emptyStateMsg={
-                      "There are no remote relations in this model"
-                    }
-                  />
-                ) : null}
-                {offersTableRows.length ? (
-                  <MainTable
-                    headers={offersTableHeaders}
-                    rows={offersTableRows}
-                    className="model-details__relations p-main-table"
-                    sortable
-                    emptyStateMsg={
-                      "There are no connected offers in this model"
-                    }
-                  />
-                ) : null}
-              </>
-            )}
-          </div>
+      {!modelStatusData ? (
+        <div className="model-details__loading">
+          <Spinner />
         </div>
-        <AppsPanel
-          entity={entity}
-          isActive={activePanel === "apps"}
-          onClose={() => setQuery(closePanelConfig)}
-        />
-        <MachinesPanel
-          entity={entity}
-          isActive={activePanel === "machines"}
-          onClose={() => setQuery(closePanelConfig)}
-        />
-        <UnitsPanel
-          entity={entity}
-          isActive={activePanel === "units"}
-          onClose={() => setQuery(closePanelConfig)}
-        />
-      </div>
+      ) : (
+        <div className="l-content">
+          <div className="model-details">
+            <InfoPanel />
+            <div className="model-details__main u-overflow--scroll">
+              {renderCounts(activeView, modelStatusData)}
+              {shouldShow("apps", activeView) &&
+                applicationTableRows.length > 0 && (
+                  <MainTable
+                    headers={applicationTableHeaders}
+                    rows={applicationTableRows}
+                    className="model-details__apps p-main-table"
+                    sortable
+                    emptyStateMsg={"There are no applications in this model"}
+                  />
+                )}
+              {shouldShow("units", activeView) && unitTableRows.length > 0 && (
+                <MainTable
+                  headers={unitTableHeaders}
+                  rows={unitTableRows}
+                  className="model-details__units p-main-table"
+                  sortable
+                  emptyStateMsg={"There are no units in this model"}
+                />
+              )}
+              {shouldShow("machines", activeView) &&
+                machinesTableRows.length > 0 && (
+                  <MainTable
+                    headers={machineTableHeaders}
+                    rows={machinesTableRows}
+                    className="model-details__machines p-main-table"
+                    sortable
+                    emptyStateMsg={"There are no machines in this model"}
+                  />
+                )}
+              {shouldShow("relations", activeView) &&
+                relationTableRows.length > 0 && (
+                  <>
+                    {shouldShow("relations-title", activeView) && (
+                      <h5>Relations ({relationTableRows.length})</h5>
+                    )}
+                    <MainTable
+                      headers={relationTableHeaders}
+                      rows={relationTableRows}
+                      className="model-details__relations p-main-table"
+                      sortable
+                      emptyStateMsg={"There are no relations in this model"}
+                    />
+                    {shouldShow("relations-title", activeView) && (
+                      <h5>
+                        Cross-model relations (
+                        {consumedTableRows.length + offersTableRows.length})
+                      </h5>
+                    )}
+                    {consumedTableRows.length ? (
+                      <MainTable
+                        headers={consumedTableHeaders}
+                        rows={consumedTableRows}
+                        className="model-details__relations p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no remote relations in this model"
+                        }
+                      />
+                    ) : null}
+                    {offersTableRows.length ? (
+                      <MainTable
+                        headers={offersTableHeaders}
+                        rows={offersTableRows}
+                        className="model-details__relations p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no connected offers in this model"
+                        }
+                      />
+                    ) : null}
+                  </>
+                )}
+            </div>
+          </div>
+
+          <SlidePanel
+            isActive={activePanel}
+            onClose={() => setQuery(closePanelConfig)}
+            isLoading={!entity}
+            className={`${activePanel}-panel`}
+          >
+            {activePanel === "apps" && (
+              <AppsPanel entity={entity} panelRowClick={panelRowClick} />
+            )}
+            {activePanel === "machines" && (
+              <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
+            )}
+            {activePanel === "units" && (
+              <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
+            )}
+          </SlidePanel>
+        </div>
+      )}
       {generateTerminalComponent(modelUUID, controllerWSHost)}
     </Layout>
   );

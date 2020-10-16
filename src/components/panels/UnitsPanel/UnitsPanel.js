@@ -1,23 +1,61 @@
 import React, { useMemo, useCallback } from "react";
-import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import cloneDeep from "clone-deep";
 
 import useModelStatus from "hooks/useModelStatus";
 
 import {
   machineTableHeaders,
   applicationTableHeaders,
+  generateMachineRows,
+  generateApplicationRows,
 } from "pages/Models/Details/generators";
 
 import { generateStatusElement, extractRevisionNumber } from "app/utils";
 
 import "./_units-panel.scss";
 
-export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
+export default function UnitsPanel({
+  isActive,
+  onClose,
+  entity: unitId,
+  panelRowClick,
+}) {
   const modelStatusData = useModelStatus();
   const appName = unitId?.split("/")[0];
   const unit = modelStatusData?.applications[appName]?.units[unitId];
   const app = modelStatusData?.applications[appName];
+
+  const filteredModelStatusDataByMachine = useCallback(
+    (unit) => {
+      const filteredModelStatusData = cloneDeep(modelStatusData);
+      if (unit?.machine) {
+        Object.keys(filteredModelStatusData.machines).forEach((machineId) => {
+          if (machineId !== unit.machine) {
+            delete filteredModelStatusData.machines[machineId];
+          }
+        });
+      }
+      return filteredModelStatusData;
+    },
+    [modelStatusData]
+  );
+
+  const filteredModelStatusDataByApp = useCallback(
+    (appName) => {
+      const filteredModelStatusData = cloneDeep(modelStatusData);
+      filteredModelStatusData &&
+        Object.keys(filteredModelStatusData.applications).forEach(
+          (application) => {
+            if (application !== appName) {
+              delete filteredModelStatusData.applications[application];
+            }
+          }
+        );
+      return filteredModelStatusData;
+    },
+    [modelStatusData]
+  );
 
   // Generate panel header for given entity
   const generateUnitsPanelHeader = useCallback(() => {
@@ -64,40 +102,50 @@ export default function UnitsPanel({ isActive, onClose, entity: unitId }) {
     );
   }, [app, unit, unitId]);
 
-  const machinePanelHeader = useMemo(
+  const unitsPanelHeader = useMemo(
     () => generateUnitsPanelHeader(modelStatusData?.applications[unitId]),
     [modelStatusData, unitId, generateUnitsPanelHeader]
   );
 
-  // Check for loading status
-  const isLoading = !modelStatusData?.machines;
+  // Generate machines table content
+  const machineRows = useMemo(
+    () =>
+      generateMachineRows(
+        filteredModelStatusDataByMachine(unit, "machines"),
+        panelRowClick
+      ),
+    [filteredModelStatusDataByMachine, panelRowClick, unit]
+  );
+
+  // Generate apps table content
+  const applicationRows = useMemo(
+    () =>
+      generateApplicationRows(
+        filteredModelStatusDataByApp(appName),
+        panelRowClick
+      ),
+    [filteredModelStatusDataByApp, panelRowClick, appName]
+  );
 
   return (
-    <SlidePanel
-      isActive={isActive}
-      onClose={onClose}
-      isLoading={isLoading}
-      className="units-panel"
-    >
-      <>
-        {machinePanelHeader}
-        <div className="slide-panel__tables">
-          <MainTable
-            headers={machineTableHeaders}
-            rows={[]} // Temp disable
-            className="model-details__machines p-main-table"
-            sortable
-            emptyStateMsg={"There are no machines in this model"}
-          />
-          <MainTable
-            headers={applicationTableHeaders}
-            rows={[]} // Temp disable
-            className="model-details__apps p-main-table"
-            sortable
-            emptyStateMsg={"There are no apps in this model"}
-          />
-        </div>
-      </>
-    </SlidePanel>
+    <>
+      {unitsPanelHeader}
+      <div className="slide-panel__tables">
+        <MainTable
+          headers={machineTableHeaders}
+          rows={machineRows}
+          className="model-details__machines p-main-table"
+          sortable
+          emptyStateMsg={"There are no machines in this model"}
+        />
+        <MainTable
+          headers={applicationTableHeaders}
+          rows={applicationRows}
+          className="model-details__apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no apps in this model"}
+        />
+      </div>
+    </>
   );
 }

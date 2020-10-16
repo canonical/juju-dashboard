@@ -31,7 +31,7 @@ describe("ModelDetail Container", () => {
       </Provider>
     );
     expect(wrapper.find("Topology").length).toBe(1);
-    expect(wrapper.find(".model-details__main table").length).toBe(4);
+    expect(wrapper.find(".model-details__main table").length).toBe(2);
   });
 
   it("renders the details pane for models shared-with-me", () => {
@@ -186,14 +186,10 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".slide-panel.apps-panel").prop("aria-hidden")).toBe(
-      true
-    );
+    expect(wrapper.find(".slide-panel.apps-panel").length).toBe(0);
     const applicationRow = wrapper.find(`tr[data-app="${testApp}"]`);
     applicationRow.simulate("click");
-    expect(wrapper.find(".slide-panel.apps-panel").prop("aria-hidden")).toBe(
-      false
-    );
+    expect(wrapper.find(".slide-panel.apps-panel").length).toBe(1);
     expect(
       wrapper.find(".slide-panel.apps-panel .panel-header .entity-name").text()
     ).toBe("kibana");
@@ -213,14 +209,12 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(
-      wrapper.find(".slide-panel.machines-panel").prop("aria-hidden")
-    ).toBe(true);
-    const machineRow = wrapper.find(`tr[data-machine="${testMachine}"]`);
+    expect(wrapper.find(".slide-panel.machines-panel").length).toBe(0);
+    const machineRow = wrapper.find(
+      `.model-details__main tr[data-machine="${testMachine}"]`
+    );
     machineRow.simulate("click");
-    expect(
-      wrapper.find(".slide-panel.machines-panel").prop("aria-hidden")
-    ).toBe(false);
+    expect(wrapper.find(".slide-panel.machines-panel").length).toBe(1);
     expect(
       wrapper
         .find(".slide-panel.machines-panel .panel-header .entity-name")
@@ -242,14 +236,10 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".slide-panel.units-panel").prop("aria-hidden")).toBe(
-      true
-    );
+    expect(wrapper.find(".slide-panel.units-panel").length).toBe(0);
     const unitRow = wrapper.find(`tr[data-unit="${testUnit}"]`);
     unitRow.simulate("click");
-    expect(wrapper.find(".slide-panel.units-panel").prop("aria-hidden")).toBe(
-      false
-    );
+    expect(wrapper.find(".slide-panel.units-panel").length).toBe(1);
     expect(
       wrapper.find(".slide-panel.units-panel .panel-header .entity-name").text()
     ).toBe("kibana/0");
