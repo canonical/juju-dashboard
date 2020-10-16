@@ -52,8 +52,12 @@ $color-navigation-background: $color-brand;
 @include vf-u-truncate;
 @include vf-p-switch;
 
-// Fix consecutive table bug
-// https://github.com/canonical-web-and-design/vanilla-framework/issues/2491
-table + table {
-  margin-top: 1.5rem;
+// Fixes focus styles until fix implemented in Vanilla
+// https://github.com/canonical-web-and-design/vanilla-framework/issues/3352
+:focus-visible {
+  outline: 0.1875rem solid $color-focus;
+}
+
+:focus:not(:focus-visible) {
+  outline: 0;
 }
