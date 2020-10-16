@@ -41,6 +41,7 @@ function SlidePanel({
       document.body.removeEventListener("click", closeOnClickOutside);
     };
   }, [isActive, onClose]);
+
   const onAnimationEnd = () => {
     !isActive && setRender(false);
   };

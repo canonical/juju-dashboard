@@ -1,12 +1,12 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import SlidePanel from "./SlidePanel";
 
 describe("Slide Panel", () => {
   it("should display content", () => {
-    const wrapper = shallow(
-      <SlidePanel>
+    const wrapper = mount(
+      <SlidePanel isActive={true}>
         <p>Slide panel content</p>
       </SlidePanel>
     );
@@ -14,18 +14,19 @@ describe("Slide Panel", () => {
   });
 
   it("should display when active", () => {
-    const wrapper = shallow(<SlidePanel isActive={true} />);
-    expect(wrapper.find(".slide-panel").prop("aria-hidden")).toBe(false);
+    const wrapper = mount(<SlidePanel isActive={true} />);
+    expect(wrapper.find(".slide-panel").length).toBe(1);
   });
 
   it("should hide when inactive", () => {
-    const wrapper = shallow(<SlidePanel isActive={false} />);
-    expect(wrapper.find(".slide-panel").prop("aria-hidden")).toBe(true);
+    const wrapper = mount(<SlidePanel isActive={false} />);
+    console.log(wrapper.debug());
+    expect(wrapper.find(".slide-panel").length).toBe(0);
   });
 
   it("should call close function when close button is clicked", () => {
     const onClose = jest.fn();
-    const wrapper = shallow(<SlidePanel isActive={true} onClose={onClose} />);
+    const wrapper = mount(<SlidePanel isActive={true} onClose={onClose} />);
     wrapper.find(".p-modal__close").simulate("click");
     expect(onClose).toHaveBeenCalled();
   });
@@ -67,7 +68,7 @@ describe("Slide Panel", () => {
   });
 
   it("accepts classnames and adds them to the wrapper", () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <SlidePanel isActive={true} className="test-class" />
     );
     expect(wrapper.find(".slide-panel").prop("className")).toBe(
