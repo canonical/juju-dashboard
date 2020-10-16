@@ -102,7 +102,9 @@ export default function MachinesPanel({
             if (Object.entries(units).length) {
               Object.values(units).forEach((unit) => {
                 if (
+                  // Delete any app without a unit matching this machineId...
                   unit.machine !== machineId ||
+                  // ...delete any app without units at all
                   !Object.entries(units).length
                 ) {
                   delete filteredModelStatusData.applications[application];
