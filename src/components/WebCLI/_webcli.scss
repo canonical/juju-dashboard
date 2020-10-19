@@ -14,19 +14,23 @@
 
     &-prompt {
       color: #39b54a;
+      flex-grow: 0;
       font-weight: bold;
       line-height: 2rem;
-      min-width: 3rem;
+      padding-right: 1rem;
     }
 
     &-input[type="text"] {
       background-color: black;
       color: $color-mid-light;
+      flex-grow: 1;
+      height: 2rem;
       margin-bottom: 0;
       padding: 0;
     }
 
     &-help {
+      flex-grow: 0;
       line-height: 2rem;
 
       i {
