@@ -10,12 +10,12 @@ import Counts from "components/Counts/Counts";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
-import Terminal from "components/Terminal/Terminal";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 
 import AppsPanel from "components/panels/AppsPanel/AppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
+import WebCLI from "components/WebCLI/WebCLI";
 
 import {
   getConfig,
@@ -46,17 +46,11 @@ import {
 import "./_model-details.scss";
 
 const generateTerminalComponent = (modelUUID, controllerWSHost) => {
-  return null; // XXX Remove me to see the Terminal
-  /* eslint-disable no-unreachable */
+  let address = null;
   if (modelUUID && controllerWSHost) {
-    return (
-      <Terminal
-        address={`wss://${controllerWSHost}/model/${modelUUID}/commands`}
-      />
-    );
+    address = `wss://${controllerWSHost}/model/${modelUUID}/commands`;
   }
-  return null;
-  /* eslint-enable no-unreachable */
+  return <WebCLI address={address} />;
 };
 
 const shouldShow = (segment, activeView) => {
