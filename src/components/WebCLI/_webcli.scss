@@ -20,10 +20,13 @@
       padding-right: 1rem;
     }
 
+    form {
+      flex-grow: 1;
+    }
+
     &-input[type="text"] {
       background-color: black;
       color: $color-mid-light;
-      flex-grow: 1;
       height: 2rem;
       margin-bottom: 0;
       padding: 0;
