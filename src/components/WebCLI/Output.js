@@ -38,7 +38,6 @@ const getStyle = (ansiCode) => {
 
 const colorize = (content) => {
   const colors = Array.from(content.matchAll(findANSICode));
-  console.log(colors);
   if (colors.length === 0) {
     return content;
   }
@@ -55,28 +54,27 @@ const colorize = (content) => {
         colorizedContent + content.substring(previousIndex, color.index);
       previousIndex = color.index;
     }
-    console.log(colorizedContent);
     const endIndex = colors[index + 1]?.index || content.length;
-    let part = content.substring(previousIndex, endIndex).replace(ansiCode, "");
+    let part = content.substring(color.index, endIndex).replace(ansiCode, "");
     const style = getStyle(ansiCodeNumber);
     if (style) {
       part = `<span style="${style}">${part}</span>`;
     }
     colorizedContent = colorizedContent + part;
     previousIndex = color.index;
-    console.log(colorizedContent);
-    console.log("---");
   });
   return colorizedContent;
 };
 
 const WebCLIOutput = ({ content }) => {
+  // Strip any color escape codes from the content.
+  content = content.replaceAll("\u001b", "");
   const colorizedContent = useMemo(() => colorize(content), [content]);
 
   return (
     <div className="webcli__output">
       <pre>
-        <code>{colorizedContent}</code>
+        <code dangerouslySetInnerHTML={{ __html: colorizedContent }}></code>
       </pre>
     </div>
   );
