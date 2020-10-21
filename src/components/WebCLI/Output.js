@@ -68,7 +68,7 @@ const colorize = (content) => {
 
 const DEFAULT_HEIGHT = 300;
 
-const WebCLIOutput = ({ content }) => {
+const WebCLIOutput = ({ content, helpMessage, showHelp }) => {
   const resizeDeltaY = useRef(0);
   const [height, setHeight] = useState(1);
 
@@ -102,6 +102,12 @@ const WebCLIOutput = ({ content }) => {
   }, []);
 
   useEffect(() => {
+    if (showHelp) {
+      setHeight(50);
+    }
+  }, [showHelp]);
+
+  useEffect(() => {
     // New content is coming in, so check if we're collapsed and if we
     // are then open it back up.
     // 20 is a magic number, sometimes the browser stops firing the drag at
@@ -116,7 +122,12 @@ const WebCLIOutput = ({ content }) => {
 
   // Strip any color escape codes from the content.
   content = content.replaceAll("\u001b", "");
-  const colorizedContent = useMemo(() => colorize(content), [content]);
+  const colorizedContent = useMemo(() => {
+    if (showHelp) {
+      return helpMessage;
+    }
+    return colorize(content);
+  }, [content, showHelp, helpMessage]);
 
   return (
     <div className="webcli__output" style={{ height: `${height}px` }}>

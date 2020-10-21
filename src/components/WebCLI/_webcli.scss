@@ -55,6 +55,10 @@
     height: 300px;
     overflow: hidden;
 
+    a {
+      text-decoration: underline;
+    }
+
     code,
     pre {
       background-color: #2c001e;

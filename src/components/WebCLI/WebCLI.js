@@ -16,6 +16,7 @@ const generateAddress = (controllerWSHost, modelUUID) => {
 const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
   const [connection, setConnection] = useState(null);
   const [placeholder, setPlaceholder] = useState(DEFAULT_PLACEHOLDER);
+  const [shouldShowHelp, setShouldShowHelp] = useState(false);
   const inputRef = useRef();
   const wsMessageStore = useRef();
   let [output, setOutput] = useState("");
@@ -51,6 +52,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
   const handleCommandSubmit = (e) => {
     e.preventDefault();
     clearMessageBuffer();
+    setShouldShowHelp(false);
     connection.send(
       JSON.stringify({
         user: credentials.user,
@@ -62,9 +64,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
   };
 
   const showHelp = () => {
-    setOutput(
-      `Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/webcli" target="_blank">full documentation here</a>.`
-    );
+    setShouldShowHelp(true);
   };
 
   const handleWSMessage = useCallback(
@@ -109,7 +109,11 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
 
   return (
     <div className="webcli">
-      <WebCLIOutput content={output} />
+      <WebCLIOutput
+        content={output}
+        showHelp={shouldShowHelp}
+        helpMessage={`Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/webcli" class="p-link--inverted" target="_blank">full documentation here</a>.`}
+      />
       <div className="webcli__input">
         <div className="webcli__input-prompt">$ juju</div>
         <form onSubmit={handleCommandSubmit}>
