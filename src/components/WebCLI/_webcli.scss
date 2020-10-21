@@ -53,13 +53,34 @@
   &__output {
     background-color: #2c001e;
     height: 300px;
-    overflow-y: scroll;
+    overflow: hidden;
 
     code,
     pre {
       background-color: #2c001e;
       border: none;
       color: white;
+      width: 100%;
+    }
+
+    &-content {
+      overflow-y: scroll;
+    }
+
+    &-dragarea {
+      cursor: row-resize;
+      height: 10px;
+      width: 100%;
+    }
+
+    &-handle {
+      background-color: $color-mid-light;
+      height: 3px;
+      margin-left: -2rem;
+      position: absolute;
+      right: 50%;
+      top: 0;
+      width: 2rem;
     }
   }
 }

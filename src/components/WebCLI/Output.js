@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 // Colors taken from the VSCode section of
 // https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
@@ -66,16 +66,64 @@ const colorize = (content) => {
   return colorizedContent;
 };
 
+const DEFAULT_HEIGHT = 300;
+
 const WebCLIOutput = ({ content }) => {
+  const resizeDeltaY = useRef(0);
+  const [height, setHeight] = useState(1);
+
+  useEffect(() => {
+    const resize = (e) => {
+      const viewPortHeight = window.innerHeight;
+      const mousePosition = e.clientY + 40; // magic number
+      const newHeight = viewPortHeight - mousePosition + resizeDeltaY.current;
+
+      const maximumOutputHeight = viewPortHeight - 50; // magic number.
+      if (newHeight < maximumOutputHeight && newHeight >= 0) {
+        setHeight(newHeight);
+      }
+    };
+
+    const addResizeListener = (e) => {
+      resizeDeltaY.current = e.layerY;
+      document.addEventListener("mousemove", resize);
+    };
+
+    const removeResizeListener = () => {
+      document.removeEventListener("mousemove", resize);
+    };
+
+    window.addEventListener("mousedown", addResizeListener);
+    window.addEventListener("mouseup", removeResizeListener);
+    return () => {
+      window.removeEventListener("mousedown", addResizeListener);
+      window.removeEventListener("mouseup", removeResizeListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    // New content is coming in, so check if we're collapsed and if we
+    // are then open it back up.
+    // 20 is a magic number, sometimes the browser stops firing the drag at
+    // an inoportune time and the element isn't left completely closed.
+    if (content.length > 1 && height < 20 && height !== DEFAULT_HEIGHT) {
+      setHeight(DEFAULT_HEIGHT);
+    }
+    // We can't have height as a dependency because we don't want this to run
+    // when the height changes, only when the content comes in.
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [content]);
+
   // Strip any color escape codes from the content.
   content = content.replaceAll("\u001b", "");
   const colorizedContent = useMemo(() => colorize(content), [content]);
-  if (!colorizedContent) {
-    return null;
-  }
+
   return (
-    <div className="webcli__output">
-      <pre>
+    <div className="webcli__output" style={{ height: `${height}px` }}>
+      <div className="webcli__output-dragarea" aria-hidden={true}>
+        <div className="webcli__output-handle"></div>
+      </div>
+      <pre className="webcli__output-content" style={{ height: `${height}px` }}>
         <code dangerouslySetInnerHTML={{ __html: colorizedContent }}></code>
       </pre>
     </div>
