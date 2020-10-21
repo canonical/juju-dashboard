@@ -28,6 +28,11 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
     setPlaceholder(DEFAULT_PLACEHOLDER);
   };
 
+  /*
+    The messageBuffer is required because the websocket returns messages much
+    faster than React wants to update the component. Doing this allows us to
+    store the messages in a buffer and then set the output every cycle.
+  */
   const messageBuffer = useCallback(
     (message) => {
       wsMessageStore.current = wsMessageStore.current + message;
