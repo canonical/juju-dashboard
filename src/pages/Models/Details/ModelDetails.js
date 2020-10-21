@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 import { useDispatch, useSelector, useStore } from "react-redux";
@@ -19,6 +19,7 @@ import WebCLI from "components/WebCLI/WebCLI";
 
 import {
   getConfig,
+  getControllerConnection,
   getControllerDataByUUID,
   getModelUUID,
   getUserPass,
@@ -45,20 +46,6 @@ import {
 } from "./generators";
 
 import "./_model-details.scss";
-
-const generateTerminalComponent = (
-  modelUUID,
-  controllerWSHost,
-  credentials
-) => {
-  return (
-    <WebCLI
-      controllerWSHost={controllerWSHost}
-      credentials={credentials}
-      modelUUID={modelUUID}
-    />
-  );
-};
 
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
@@ -171,6 +158,8 @@ const ModelDetails = () => {
   const store = useStore();
   const storeState = store.getState();
 
+  const [showWebCLI, setShowWebCLI] = useState(false);
+
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
   const modelStatusData = useModelStatus();
@@ -204,6 +193,20 @@ const ModelDetails = () => {
     },
     [setQuery]
   );
+
+  useEffect(() => {
+    // XXX Remove me once we have the 2.9 build.
+    if (
+      controllerData &&
+      controllerData[1]?.[0]?.version.indexOf("2.9") !== -1
+    ) {
+      // The Web CLI is only available in Juju controller versions 2.9 and
+      // above. This will allow us to only show the shell on multi-controller
+      // setups with different versions where the correct controller version
+      // is available.
+      setShowWebCLI(true);
+    }
+  }, [controllerData]);
 
   useEffect(() => {
     dispatch(collapsibleSidebar(true));
@@ -381,7 +384,13 @@ const ModelDetails = () => {
           </SlidePanel>
         </div>
       )}
-      {generateTerminalComponent(modelUUID, controllerWSHost, credentials)}
+      {showWebCLI ? (
+        <WebCLI
+          controllerWSHost={controllerWSHost}
+          credentials={credentials}
+          modelUUID={modelUUID}
+        />
+      ) : null}
     </Layout>
   );
 };
