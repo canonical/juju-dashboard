@@ -61,6 +61,12 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
     inputRef.current.value = ""; // Clear the input after sending the message.
   };
 
+  const showHelp = () => {
+    setOutput(
+      `Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/webcli" target="_blank">full documentation here</a>.`
+    );
+  };
+
   const handleWSMessage = useCallback(
     (e) => {
       try {
@@ -116,7 +122,13 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
           />
         </form>
         <div className="webcli__input-help">
-          <i className="p-icon--help is-light" />
+          <i
+            className="p-icon--help is-light"
+            onClick={showHelp}
+            onKeyDown={showHelp}
+            role="button"
+            tabIndex="0"
+          />
         </div>
       </div>
     </div>
