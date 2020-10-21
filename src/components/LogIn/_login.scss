@@ -1,21 +1,18 @@
 @import "../../scss/functions/z-index";
 
 .login {
+  align-items: center;
   background-color: rgba(255, 255, 255, 0.75);
+  display: flex;
   height: 100vh;
   left: 0;
+  place-content: center;
   position: fixed;
   top: 0;
   width: 100vw;
   z-index: z("infinity");
 
   &__inner {
-    display: grid;
-    left: 50%;
-    margin: auto;
-    position: fixed;
-    top: 50%;
-    transform: translate(-50%, -50%);
     width: 280px;
 
     .p-button--positive,
