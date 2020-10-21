@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import WebCLIOutput from "./Output.js";
 
@@ -16,6 +16,8 @@ const generateAddress = (controllerWSHost, modelUUID) => {
 const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
   const [connection, setConnection] = useState(null);
   const [placeholder, setPlaceholder] = useState(DEFAULT_PLACEHOLDER);
+  const inputRef = useRef();
+  const wsMessageStore = useRef();
   let [output, setOutput] = useState("");
 
   const setDisconnectedPlaceholder = () => {
@@ -26,8 +28,24 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
     setPlaceholder(DEFAULT_PLACEHOLDER);
   };
 
+  const messageBuffer = useCallback(
+    (message) => {
+      wsMessageStore.current = wsMessageStore.current + message;
+      setTimeout(() => {
+        setOutput(wsMessageStore.current);
+      });
+    },
+    [setOutput]
+  );
+
+  const clearMessageBuffer = () => {
+    wsMessageStore.current = "";
+    setOutput(""); // Clear the output when sending a new message.
+  };
+
   const handleCommandSubmit = (e) => {
     e.preventDefault();
+    clearMessageBuffer();
     connection.send(
       JSON.stringify({
         user: credentials.user,
@@ -35,39 +53,29 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
         commands: [e.currentTarget.children.command.value],
       })
     );
+    inputRef.current.value = ""; // Clear the input after sending the message.
   };
 
-  /*
-    Handler for the websocket message event.
-
-    This is not in a useCallback because it requires that `output` be defined
-    as a dependency but due to the slow update time of react state and the
-    rapid message handling (sometimes a new message every 5ms) we have to
-    redefine output and concat the output value and let react re-render
-    on it's own time. This could potentially cause a race condition where
-    some of the console messages are skipped if the component renders at
-    just the right time but I have not been able to produce this in practice.
-    This also has the side effect of not necessarily rendering on every message
-    but that also hasn't proven to be a problem in practice.
-  */
-  const handleWSMessage = (e) => {
-    try {
-      const data = JSON.parse(e.data);
-      if (data.done) {
-        // This is the last message.
-        return;
+  const handleWSMessage = useCallback(
+    (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        if (data.done) {
+          // This is the last message.
+          return;
+        }
+        if (!data.output) {
+          // This is the first message, an empty object and a newline.
+          return;
+        }
+        messageBuffer(`\n${data?.output[0]}`);
+      } catch (e) {
+        console.log(e);
+        // XXX handle the invalid data response
       }
-      if (!data.output) {
-        // This is the first message, an empty object and a newline.
-        return;
-      }
-      output = `${output}\n${data?.output[0]}`;
-      setOutput(output);
-    } catch (e) {
-      console.log(e);
-      // XXX handle the invalid data response
-    }
-  };
+    },
+    [messageBuffer]
+  );
 
   useEffect(() => {
     const address = generateAddress(controllerWSHost, modelUUID);
@@ -86,12 +94,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
     return () => {
       ws.close();
     };
-    // The linter complains about handleWSMessage but not any of the other
-    // included handlers for some reason. handleWSMessage gets re-declared every
-    // render and as such causes this to re-run every render causing an infinite
-    // loop which is why it's not included as a dep.
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [controllerWSHost, modelUUID]);
+  }, [controllerWSHost, modelUUID, handleWSMessage]);
 
   return (
     <div className="webcli">
@@ -103,6 +106,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
             className="webcli__input-input"
             type="text"
             name="command"
+            ref={inputRef}
             placeholder={placeholder}
           />
         </form>
