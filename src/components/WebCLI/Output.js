@@ -70,7 +70,9 @@ const WebCLIOutput = ({ content }) => {
   // Strip any color escape codes from the content.
   content = content.replaceAll("\u001b", "");
   const colorizedContent = useMemo(() => colorize(content), [content]);
-
+  if (!colorizedContent) {
+    return null;
+  }
   return (
     <div className="webcli__output">
       <pre>
