@@ -118,6 +118,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
         <div className="webcli__input-prompt">$ juju</div>
         <form onSubmit={handleCommandSubmit}>
           <input
+            autocomplete="off"
             className="webcli__input-input"
             type="text"
             name="command"
