@@ -1,15 +1,18 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 
+$canonical-purple: #2c001e;
+$row-height: 2.5rem;
+
 .webcli {
   bottom: 0;
   position: fixed;
   width: calc(100vw - #{$sidebar-collapsed});
 
   &__input {
-    background-color: black;
+    background-color: $color-x-dark;
     display: flex;
-    height: 2.5rem;
+    height: $row-height;
     padding: 0 1rem;
 
     &-prompt {
@@ -20,7 +23,7 @@
       // XXX The unquote will need to be removed with the next vanilla release
       font-family: unquote($font-monospace);
       font-weight: bold;
-      line-height: 2.5rem;
+      line-height: $row-height;
       padding-right: 0.5rem;
     }
 
@@ -29,19 +32,19 @@
     }
 
     &-input[type="text"] {
-      background-color: black;
+      background-color: $color-x-dark;
       color: $color-mid-light;
       // https://github.com/canonical-web-and-design/vanilla-framework/pull/3370
       // XXX The unquote will need to be removed with the next vanilla release
       font-family: unquote($font-monospace);
-      height: 2.5rem;
+      height: $row-height;
       margin-bottom: 0;
       padding: 0 0.5rem;
     }
 
     &-help {
       flex-grow: 0;
-      line-height: 2.5rem;
+      line-height: $row-height;
       margin-left: 1rem;
 
       i {
@@ -51,7 +54,7 @@
   }
 
   &__output {
-    background-color: #2c001e;
+    background-color: $canonical-purple;
     height: 300px;
     overflow: hidden;
 
@@ -61,7 +64,7 @@
 
     code,
     pre {
-      background-color: #2c001e;
+      background-color: $canonical-purple;
       border: none;
       color: white;
       width: 100%;
