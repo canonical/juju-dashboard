@@ -78,7 +78,7 @@ const WebCLIOutput = ({ content, helpMessage, showHelp }) => {
       const mousePosition = e.clientY + 40; // magic number
       const newHeight = viewPortHeight - mousePosition + resizeDeltaY.current;
 
-      const maximumOutputHeight = viewPortHeight - 50; // magic number.
+      const maximumOutputHeight = viewPortHeight - 100; // magic number.
       if (newHeight < maximumOutputHeight && newHeight >= 0) {
         setHeight(newHeight);
       }
