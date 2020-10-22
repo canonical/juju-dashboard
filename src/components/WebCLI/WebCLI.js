@@ -64,7 +64,13 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
   };
 
   const showHelp = () => {
-    setShouldShowHelp(true);
+    // This is to support the case when the user clicks the help button, but
+    // then closes the output. To see the help again they click the help
+    // button. This will trigger it to re-open.
+    setShouldShowHelp(false);
+    setTimeout(() => {
+      setShouldShowHelp(true);
+    });
   };
 
   const handleWSMessage = useCallback(
@@ -118,7 +124,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
         <div className="webcli__input-prompt">$ juju</div>
         <form onSubmit={handleCommandSubmit}>
           <input
-            autocomplete="off"
+            autoComplete="off"
             className="webcli__input-input"
             type="text"
             name="command"
