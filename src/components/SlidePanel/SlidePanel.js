@@ -23,7 +23,8 @@ function SlidePanel({
       if (
         isActive &&
         !e.target.closest(".slide-panel") &&
-        !e.target.closest('[role="row"]')
+        !e.target.closest('[role="row"]') &&
+        !e.target.closest(".webcli")
       ) {
         onClose();
       }
