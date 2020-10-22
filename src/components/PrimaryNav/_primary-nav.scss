@@ -5,9 +5,10 @@
 .p-primary-nav {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
   position: relative;
-  width: $sidebar-full-width;
+  width: 100%;
 
   a,
   a:hover {
@@ -18,38 +19,14 @@
     background: $color-x-light;
     box-sizing: border-box;
     margin: 0 1rem 1rem;
-    max-width: calc(#{$sidebar-full-width} - 2rem);
-    opacity: 0.1;
-  }
-
-  .p-modal {
-    // Temporary override for the 'back to old gui' popup.
-    position: fixed;
-    z-index: z("beta");
-
-    &__dialog {
-      max-width: 400px;
-    }
-  }
-
-  &__logo {
-    align-items: center;
-    display: flex;
-    margin-bottom: 0.5rem;
-    margin-left: 2px;
-    padding-top: 3px;
-
-    &-text {
-      height: 25px;
-      padding-left: 0.3rem;
-    }
+    max-width: calc(100% - 2rem);
+    opacity: 0;
   }
 
   &__header {
-    background: $color-navigation-dark;
     display: grid;
     grid-template-columns: 1fr 40px;
-    padding: 0.5rem 0.5rem 0;
+    padding: 0.75rem 0.5rem 0.35rem;
     position: relative;
   }
 
@@ -108,12 +85,26 @@
     }
   }
 
-  .p-modal .p-list__link:hover {
-    text-decoration: underline;
+  .p-modal {
+    // Temporary override for the 'back to old gui' popup.
+    position: fixed;
+    z-index: z("beta");
+
+    &__dialog {
+      max-width: 400px;
+    }
+
+    .p-list__link:hover {
+      text-decoration: underline;
+    }
   }
 
   .p-primary-nav__bottom {
     margin-top: 0;
+
+    @media (min-width: $breakpoint-medium) {
+      opacity: 0;
+    }
 
     .p-list {
       &__item {
@@ -134,58 +125,6 @@
         }
       }
     }
-
-    @at-root {
-      .is-collapsed {
-        .p-primary-nav__logo-text {
-          @include vf-animation(opacity, brisk, ease-in-out);
-
-          opacity: 0;
-        }
-
-        .p-primary-nav__bottom {
-          @include vf-animation(opacity, brisk, ease-in-out);
-
-          opacity: 0;
-          pointer-events: none;
-        }
-
-        .p-primary-nav__divider {
-          opacity: 0;
-        }
-      }
-    }
-  }
-
-  .p-list.is-external {
-    @include vf-animation(max-height, brisk, ease-in-out);
-
-    background: $color-navigation-dark;
-    margin-bottom: 0;
-    max-height: 0;
-    overflow: hidden;
-
-    .p-list__link {
-      padding-left: calc(3.25rem);
-    }
-  }
-
-  .p-primary-nav__toggle {
-    position: relative;
-    top: -3px;
-  }
-
-  .l-side:not(.is-collapsed) &.ext-nav-open {
-    .is-external {
-      max-height: 200px;
-      padding-bottom: 0.5rem;
-    }
-
-    .p-primary-nav__toggle {
-      position: relative;
-      top: -3px;
-      transform: rotate(180deg);
-    }
   }
 
   .entity-count {
@@ -199,5 +138,31 @@
     padding: 0 0.25rem;
     text-align: center;
     width: 1.5rem;
+  }
+
+  .logo__text {
+    @media (min-width: $breakpoint-medium) {
+      opacity: 0;
+    }
+  }
+
+  .p-primary-nav__bottom,
+  .logo__text {
+    @include vf-animation(opacity, brisk, ease-in-out);
+
+    @media (min-width: $breakpoint-large) {
+      opacity: 1;
+    }
+  }
+
+  &:hover {
+    .p-primary-nav__bottom,
+    .logo__text {
+      opacity: 1;
+    }
+
+    .p-primary-nav__divider {
+      opacity: 0.1;
+    }
   }
 }

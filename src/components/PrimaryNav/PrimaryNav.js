@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
-import classNames from "classnames";
 
 import {
   getConfig,
@@ -11,16 +10,11 @@ import {
 
 import useAnalytics from "hooks/useAnalytics";
 
-import { externalNavActive } from "ui/actions";
-import { isExternalNavActive } from "ui/selectors";
-
+import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
 import Modal from "@canonical/react-components/dist/components/Modal";
 
 // Image imports
-import logoMark from "static/images/logo/logo-mark.svg";
-import logoText from "static/images/logo/logo-text.svg";
-import jujuText from "static/images/logo/juju-text.svg";
 import modelsIcon from "static/images/icons/models-icon.svg";
 import modelsIconSelected from "static/images/icons/models-icon--selected.svg";
 import controllersIcon from "static/images/icons/controllers-icon.svg";
@@ -55,11 +49,9 @@ const pages = [
 const PrimaryNav = () => {
   const [activeLinkValue, setActiveLinkValue] = useState("");
   const [showSwitchModal, setShowSwitchModal] = useState(false);
-  const extNavActive = useSelector(isExternalNavActive);
   const { blocked } = useSelector(getGroupedModelStatusCounts);
   const appVersion = useSelector(getAppVersion);
   const location = useLocation();
-  const dispatch = useDispatch();
   const sendAnalytics = useAnalytics();
 
   useEffect(() => {
@@ -83,11 +75,7 @@ const PrimaryNav = () => {
   const isJuju = useSelector(getConfig).isJuju;
 
   return (
-    <nav
-      className={classNames("p-primary-nav", {
-        "ext-nav-open": extNavActive,
-      })}
-    >
+    <nav className="p-primary-nav">
       {showSwitchModal ? (
         <Modal
           close={() => setShowSwitchModal(false)}
@@ -126,89 +114,9 @@ const PrimaryNav = () => {
         </Modal>
       ) : null}
       <div className="p-primary-nav__header">
-        <a
-          href={isJuju ? "https://juju.is" : "https://jaas.ai"}
-          className="p-primary-nav__logo"
-        >
-          <img
-            className="p-primary-nav__logo-icon"
-            src={logoMark}
-            alt="JAAS logo"
-            height="30"
-            width="30"
-          />
-          <img
-            className="p-primary-nav__logo-text"
-            src={isJuju ? jujuText : logoText}
-            height="30"
-            alt="Juju logo"
-          />
-        </a>
-        <button
-          className="p-primary-nav__toggle"
-          onClick={() => dispatch(externalNavActive(!extNavActive))}
-        >
-          <i className="p-icon--contextual-menu">Toggle external navigation</i>
-        </button>
+        <Logo />
       </div>
-      <ul className="p-list is-external">
-        <li className="p-list__item">
-          <a
-            className={classNames("p-list__link", {
-              "p-link--external": isJuju,
-            })}
-            href="https://jaas.ai/store"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Store
-          </a>
-        </li>
-        <li className="p-list__item">
-          <a
-            className={classNames("p-list__link", {
-              "p-link--external": isJuju,
-            })}
-            href="https://jaas.ai/jaas"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            About
-          </a>
-        </li>
-        <li className="p-list__item">
-          <a
-            className={classNames("p-list__link", {
-              "p-link--external": isJuju,
-            })}
-            href="https://jaas.ai/how-it-works"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            How it works
-          </a>
-        </li>
-        <li className="p-list__item">
-          <a
-            className="p-link--external p-list__link"
-            href="https://discourse.juju.is/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Discourse
-          </a>
-        </li>
-        <li className="p-list__item">
-          <a
-            className="p-link--external p-list__link"
-            href="https://juju.is/docs"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Docs
-          </a>
-        </li>
-      </ul>
+
       <ul className="p-list is-internal">
         {pages.map((navItem) => (
           <li key={navItem.path} className="p-list__item">

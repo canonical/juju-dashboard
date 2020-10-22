@@ -26,7 +26,6 @@ import {
 import useModelStatus from "hooks/useModelStatus";
 
 import { fetchModelStatus } from "juju/actions";
-import { collapsibleSidebar } from "ui/actions";
 
 import {
   applicationTableHeaders,
@@ -199,13 +198,6 @@ const ModelDetails = () => {
     },
     [setQuery]
   );
-
-  useEffect(() => {
-    dispatch(collapsibleSidebar(true));
-    return () => {
-      dispatch(collapsibleSidebar(false));
-    };
-  }, [dispatch]);
 
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {

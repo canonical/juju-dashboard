@@ -9,43 +9,6 @@ import PrimaryNav from "./PrimaryNav";
 
 const mockStore = configureStore([]);
 describe("Primary Nav", () => {
-  it("toggles external nav menu", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <Router>
-          <PrimaryNav />
-        </Router>
-      </Provider>
-    );
-
-    const primaryNav = ".p-primary-nav";
-    const primaryNavToggle = ".p-primary-nav__toggle";
-    expect(wrapper.find(primaryNav).hasClass("ext-nav-open")).toEqual(false);
-    wrapper.find(primaryNavToggle).simulate("click");
-    const actions = store.getActions();
-    const expectedPayload = { payload: true, type: "TOGGLE_EXTERNAL_NAV" };
-    expect(actions).toEqual([expectedPayload]);
-  });
-
-  it("external nav is active when externalNavActive in redux store is true", () => {
-    const store = mockStore({
-      root: { config: {} },
-      ui: { externalNavActive: true },
-    });
-    const wrapper = mount(
-      <Provider store={store}>
-        <Router>
-          <PrimaryNav />
-        </Router>
-      </Provider>
-    );
-
-    expect(wrapper.find(".p-primary-nav").hasClass("ext-nav-open")).toEqual(
-      true
-    );
-  });
-
   it("applies is-selected state correctly", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
@@ -79,12 +42,8 @@ describe("Primary Nav", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".p-primary-nav__logo-text").prop("src")).toBe(
-      "logo-text.svg"
-    );
-    expect(wrapper.find(".p-primary-nav__logo").prop("href")).toBe(
-      "https://jaas.ai"
-    );
+    expect(wrapper.find(".logo__text").prop("src")).toBe("jaas-text.svg");
+    expect(wrapper.find(".logo").prop("href")).toBe("https://jaas.ai");
   });
 
   it("displays the Juju logo under Juju", () => {
@@ -98,12 +57,8 @@ describe("Primary Nav", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".p-primary-nav__logo-text").prop("src")).toBe(
-      "juju-text.svg"
-    );
-    expect(wrapper.find(".p-primary-nav__logo").prop("href")).toBe(
-      "https://juju.is"
-    );
+    expect(wrapper.find(".logo__text").prop("src")).toBe("juju-text.svg");
+    expect(wrapper.find(".logo").prop("href")).toBe("https://juju.is");
   });
 
   it("displays the version number", () => {

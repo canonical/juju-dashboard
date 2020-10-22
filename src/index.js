@@ -77,7 +77,6 @@ function bootstrap() {
     }),
     {
       ui: {
-        collapsibleSidebar: false,
         userMenuActive: false,
         externalNavActive: false,
       },

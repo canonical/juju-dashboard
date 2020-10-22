@@ -22,8 +22,9 @@ $color-link-visited: $color-link;
 $grid-max-width: 100%;
 $color-navigation-background: $color-brand;
 
-@include vf-u-animations;
+// Vanilla base
 @include vf-base;
+// Vanilla Patterns
 @include vf-p-buttons;
 @include vf-p-card;
 @include vf-p-contextual-menu;
@@ -39,18 +40,24 @@ $color-navigation-background: $color-brand;
 @include vf-p-notification;
 @include vf-p-modal;
 @include vf-p-muted-heading;
-@include vf-u-off-screen;
 @include vf-p-strip;
 @include vf-p-table-expanding;
 @include vf-p-table-of-contents;
 @include vf-p-table-mobile-card;
 @include vf-p-table-sortable;
 @include vf-p-tooltips;
+@include vf-p-switch;
+
+// Vanilla utils
+@include vf-u-off-screen;
+@include vf-u-animations;
 @include vf-u-align;
 @include vf-u-hide;
 @include vf-u-layout;
 @include vf-u-truncate;
-@include vf-p-switch;
+
+// Vanilla layout
+@include vf-l-application;
 
 // Fixes focus styles until fix implemented in Vanilla
 // https://github.com/canonical-web-and-design/vanilla-framework/issues/3352
