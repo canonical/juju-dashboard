@@ -85,6 +85,9 @@ const WebCLIOutput = ({ content, helpMessage, showHelp }) => {
     };
 
     const addResizeListener = (e) => {
+      if (e.target.classList.value !== "webcli__output-dragarea") {
+        return;
+      }
       resizeDeltaY.current = e.layerY;
       document.addEventListener("mousemove", resize);
     };

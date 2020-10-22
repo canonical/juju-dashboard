@@ -19,7 +19,6 @@ import WebCLI from "components/WebCLI/WebCLI";
 
 import {
   getConfig,
-  getControllerConnection,
   getControllerDataByUUID,
   getModelUUID,
   getUserPass,
