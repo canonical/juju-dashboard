@@ -74,6 +74,7 @@
     &-dragarea {
       cursor: row-resize;
       height: 10px;
+      user-select: none;
       width: 100%;
     }
 
