@@ -109,6 +109,10 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
     ws.onclose = setDisconnectedPlaceholder;
     ws.onmessage = handleWSMessage;
     return () => {
+      // onclose is being set to null when the component is torn down to avoid
+      // a react error where the state is being set from the
+      // `setDisconnectedPlaceholder` method above.
+      ws.onclose = null;
       ws.close();
     };
   }, [controllerWSHost, modelUUID, handleWSMessage]);
