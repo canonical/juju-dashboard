@@ -6,14 +6,14 @@ import "./_webcli.scss";
 
 const DEFAULT_PLACEHOLDER = "enter command";
 
-const generateAddress = (controllerWSHost, modelUUID) => {
+const generateAddress = (controllerWSHost, modelUUID, protocol = "wss") => {
   if (!controllerWSHost || !modelUUID) {
     return null;
   }
-  return `wss://${controllerWSHost}/model/${modelUUID}/commands`;
+  return `${protocol}://${controllerWSHost}/model/${modelUUID}/commands`;
 };
 
-const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
+const WebCLI = ({ controllerWSHost, credentials, modelUUID, protocol }) => {
   const [connection, setConnection] = useState(null);
   const [placeholder, setPlaceholder] = useState(DEFAULT_PLACEHOLDER);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
@@ -89,7 +89,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
   );
 
   useEffect(() => {
-    const address = generateAddress(controllerWSHost, modelUUID);
+    const address = generateAddress(controllerWSHost, modelUUID, protocol);
     if (!address) {
       setDisconnectedPlaceholder();
       return;
@@ -109,7 +109,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
       ws.onclose = null;
       ws.close();
     };
-  }, [controllerWSHost, modelUUID, handleWSMessage]);
+  }, [controllerWSHost, modelUUID, handleWSMessage, protocol]);
 
   return (
     <div className="webcli">
