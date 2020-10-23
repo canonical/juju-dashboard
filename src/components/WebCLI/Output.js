@@ -79,13 +79,14 @@ const WebCLIOutput = ({ content, helpMessage, showHelp }) => {
       const newHeight = viewPortHeight - mousePosition + resizeDeltaY.current;
 
       const maximumOutputHeight = viewPortHeight - 100; // magic number.
-      if (newHeight < maximumOutputHeight && newHeight >= 0) {
+      if (newHeight < maximumOutputHeight && newHeight >= 10) {
         setHeight(newHeight);
       }
     };
 
     const addResizeListener = (e) => {
-      if (e.target.classList.value !== "webcli__output-dragarea") {
+      const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
+      if (!dragHandles.includes(e.target.classList.value)) {
         return;
       }
       resizeDeltaY.current = e.layerY;
