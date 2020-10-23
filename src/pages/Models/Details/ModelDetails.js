@@ -383,13 +383,13 @@ const ModelDetails = () => {
           </SlidePanel>
         </div>
       )}
-      {showWebCLI ? (
+      {showWebCLI && (
         <WebCLI
           controllerWSHost={controllerWSHost}
           credentials={credentials}
           modelUUID={modelUUID}
         />
-      ) : null}
+      )}
     </Layout>
   );
 };
