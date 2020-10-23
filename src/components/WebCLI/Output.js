@@ -67,8 +67,17 @@ const colorize = (content) => {
 };
 
 const DEFAULT_HEIGHT = 300;
+// 20 is a magic number, sometimes the browser stops firing the drag at
+// an inoportune time and the element isn't left completely closed.
+const CONSIDER_CLOSED = 20;
+const HELP_HEIGHT = 50;
 
-const WebCLIOutput = ({ content, helpMessage, showHelp }) => {
+const WebCLIOutput = ({
+  content,
+  helpMessage,
+  showHelp,
+  setShouldShowHelp,
+}) => {
   const resizeDeltaY = useRef(0);
   const [height, setHeight] = useState(1);
 
@@ -107,16 +116,24 @@ const WebCLIOutput = ({ content, helpMessage, showHelp }) => {
 
   useEffect(() => {
     if (showHelp) {
-      setHeight(50);
+      setHeight(HELP_HEIGHT);
     }
   }, [showHelp]);
 
   useEffect(() => {
+    if (height < CONSIDER_CLOSED) {
+      setShouldShowHelp(false);
+    }
+  }, [height, setShouldShowHelp]);
+
+  useEffect(() => {
     // New content is coming in, so check if we're collapsed and if we
     // are then open it back up.
-    // 20 is a magic number, sometimes the browser stops firing the drag at
-    // an inoportune time and the element isn't left completely closed.
-    if (content.length > 1 && height < 20 && height !== DEFAULT_HEIGHT) {
+    if (
+      content.length > 1 &&
+      height <= HELP_HEIGHT &&
+      height !== DEFAULT_HEIGHT
+    ) {
       setHeight(DEFAULT_HEIGHT);
     }
     // We can't have height as a dependency because we don't want this to run

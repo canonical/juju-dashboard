@@ -64,13 +64,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
   };
 
   const showHelp = () => {
-    // This is to support the case when the user clicks the help button, but
-    // then closes the output. To see the help again they click the help
-    // button. This will trigger it to re-open.
-    setShouldShowHelp(false);
-    setTimeout(() => {
-      setShouldShowHelp(true);
-    });
+    setShouldShowHelp(true);
   };
 
   const handleWSMessage = useCallback(
@@ -122,6 +116,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID }) => {
       <WebCLIOutput
         content={output}
         showHelp={shouldShowHelp}
+        setShouldShowHelp={setShouldShowHelp}
         helpMessage={`Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/webcli" class="p-link--inverted" target="_blank">full documentation here</a>.`}
       />
       <div className="webcli__input">
