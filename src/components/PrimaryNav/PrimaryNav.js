@@ -2,17 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 
-import {
-  getConfig,
-  getGroupedModelStatusCounts,
-  getAppVersion,
-} from "app/selectors";
-
-import useAnalytics from "hooks/useAnalytics";
+import { getGroupedModelStatusCounts, getAppVersion } from "app/selectors";
 
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
-import Modal from "@canonical/react-components/dist/components/Modal";
 
 // Image imports
 import modelsIcon from "static/images/icons/models-icon.svg";
@@ -48,11 +41,9 @@ const pages = [
 
 const PrimaryNav = () => {
   const [activeLinkValue, setActiveLinkValue] = useState("");
-  const [showSwitchModal, setShowSwitchModal] = useState(false);
   const { blocked } = useSelector(getGroupedModelStatusCounts);
   const appVersion = useSelector(getAppVersion);
   const location = useLocation();
-  const sendAnalytics = useAnalytics();
 
   useEffect(() => {
     setActiveLinkValue(location.pathname);
@@ -72,47 +63,8 @@ const PrimaryNav = () => {
     /* eslint-enable */
   }, []);
 
-  const isJuju = useSelector(getConfig).isJuju;
-
   return (
     <nav className="p-primary-nav">
-      {showSwitchModal ? (
-        <Modal
-          close={() => setShowSwitchModal(false)}
-          title={"Switch back to the old Juju GUI"}
-        >
-          <p>
-            We're sorry to see you go, we would really appreciate it if you
-            could take a moment to tell us why you prefer the old GUI using the
-            methods below.
-          </p>
-          <p>
-            <a
-              href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Create an issue on GitHub
-            </a>
-          </p>
-          <p>
-            <a
-              rel="noopener noreferrer"
-              target="_blank"
-              href="#_"
-              onClick={(e) => {
-                e.preventDefault();
-                window.usabilla_live("click");
-              }}
-            >
-              Give feedback
-            </a>
-          </p>
-          <a href="https://jujucharms.com/new" className="p-button--neutral">
-            Click here to go back to the old Juju GUI
-          </a>
-        </Modal>
-      ) : null}
       <div className="p-primary-nav__header">
         <Logo />
       </div>
@@ -176,23 +128,6 @@ const PrimaryNav = () => {
               Give feedback
             </a>
           </li>
-          {!isJuju ? (
-            <li className="p-list__item">
-              <a
-                className="p-list__link"
-                href="#_"
-                onClick={() => {
-                  sendAnalytics({
-                    category: "User",
-                    action: "Clicked 'Switch back to old GUI' link",
-                  });
-                  setShowSwitchModal(true);
-                }}
-              >
-                Switch back to the old Juju GUI
-              </a>
-            </li>
-          ) : null}
         </ul>
       </div>
       <hr className="p-primary-nav__divider" />

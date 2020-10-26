@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
