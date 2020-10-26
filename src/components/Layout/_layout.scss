@@ -79,7 +79,7 @@
     }
   }
 
-  @media (max-width: $breakpoint-medium) {
+  @media (max-width: $breakpoint-medium - 1) {
     &[data-collapsed="true"] {
       transform: translateX(-100%);
     }

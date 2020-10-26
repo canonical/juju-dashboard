@@ -52,12 +52,10 @@
     color: $color-negative;
   }
 
-  .register-a-controller__slide-panel {
-    width: inherit;
-  }
-
   .slide-panel__content {
-    max-width: 540px;
+    @media (min-width: $breakpoint-medium) {
+      max-width: 540px;
+    }
 
     .row {
       grid-gap: 0;
@@ -105,5 +103,11 @@
     @include vf-icon-help($color-mid-light);
 
     margin-left: 0.4rem;
+  }
+
+  @media (min-width: $breakpoint-medium) {
+    .register-a-controller__slide-panel {
+      max-width: 540px;
+    }
   }
 }
