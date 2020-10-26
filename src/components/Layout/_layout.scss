@@ -41,6 +41,12 @@
   @media (min-width: $breakpoint-large) {
     padding-left: 0;
   }
+
+  > .p-notification--information {
+    bottom: 1rem;
+    margin: 0 1rem;
+    position: absolute;
+  }
 }
 
 .l-navigation {
