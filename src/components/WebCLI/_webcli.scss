@@ -1,0 +1,110 @@
+@import "../../scss/settings";
+@import "vanilla-framework/scss/vanilla";
+
+$canonical-purple: #2c001e;
+$row-height: 2.5rem;
+
+.webcli {
+  bottom: 0;
+  position: fixed;
+  // https://github.com/canonical-web-and-design/vanilla-framework/blob/master/scss/_layouts_application.scss#L45
+  // These variables aren't made available to the rest of the application so
+  // their values are hardcoded here.
+  width: calc(100vw - 3rem);
+
+  @media (min-width: $breakpoint-large) {
+    width: calc(100vw - 15rem);
+  }
+
+  @media (max-width: $breakpoint-medium) {
+    width: 100vw;
+  }
+
+  &__input {
+    background-color: $color-x-dark;
+    display: flex;
+    height: $row-height;
+    padding: 0 1rem;
+
+    &-prompt {
+      color: #39b54a;
+      cursor: default;
+      flex-grow: 0;
+      // https://github.com/canonical-web-and-design/vanilla-framework/pull/3370
+      // XXX The unquote will need to be removed with the next vanilla release
+      font-family: unquote($font-monospace);
+      font-weight: bold;
+      line-height: $row-height;
+      padding-right: 0.5rem;
+    }
+
+    form {
+      flex-grow: 1;
+    }
+
+    &-input[type="text"] {
+      background-color: $color-x-dark;
+      color: $color-mid-light;
+      // https://github.com/canonical-web-and-design/vanilla-framework/pull/3370
+      // XXX The unquote will need to be removed with the next vanilla release
+      font-family: unquote($font-monospace);
+      height: $row-height;
+      margin-bottom: 0;
+      padding: 0 0.5rem;
+    }
+
+    &-help {
+      flex-grow: 0;
+      line-height: $row-height;
+      margin-left: 1rem;
+
+      i {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__output {
+    background-color: $canonical-purple;
+    height: 300px;
+    min-height: 10px;
+    overflow: hidden;
+
+    a {
+      text-decoration: underline;
+    }
+
+    code {
+      padding-bottom: 1rem;
+    }
+
+    code,
+    pre {
+      background-color: $canonical-purple;
+      border: none;
+      color: $color-x-light;
+      width: 100%;
+    }
+
+    &-content {
+      overflow-y: scroll;
+    }
+
+    &-dragarea {
+      cursor: row-resize;
+      height: 10px;
+      user-select: none;
+      width: 100%;
+    }
+
+    &-handle {
+      background-color: $color-mid-light;
+      height: 3px;
+      margin-left: -2rem;
+      position: absolute;
+      right: 50%;
+      top: 0;
+      width: 2rem;
+    }
+  }
+}

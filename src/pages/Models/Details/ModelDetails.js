@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
@@ -10,17 +10,18 @@ import Counts from "components/Counts/Counts";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
-import Terminal from "components/Terminal/Terminal";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 
 import AppsPanel from "components/panels/AppsPanel/AppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
+import WebCLI from "components/WebCLI/WebCLI";
 
 import {
   getConfig,
   getControllerDataByUUID,
   getModelUUID,
+  getUserPass,
 } from "app/selectors";
 
 import useModelStatus from "hooks/useModelStatus";
@@ -43,20 +44,6 @@ import {
 } from "./generators";
 
 import "./_model-details.scss";
-
-const generateTerminalComponent = (modelUUID, controllerWSHost) => {
-  return null; // XXX Remove me to see the Terminal
-  /* eslint-disable no-unreachable */
-  if (modelUUID && controllerWSHost) {
-    return (
-      <Terminal
-        address={`wss://${controllerWSHost}/model/${modelUUID}/commands`}
-      />
-    );
-  }
-  return null;
-  /* eslint-enable no-unreachable */
-};
 
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
@@ -166,6 +153,10 @@ const renderCounts = (activeView, modelStatusData) => {
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
+  const store = useStore();
+  const storeState = store.getState();
+
+  const [showWebCLI, setShowWebCLI] = useState(false);
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
@@ -173,8 +164,10 @@ const ModelDetails = () => {
 
   const controllerUUID = modelStatusData?.info.controllerUuid;
   const controllerData = useSelector(getControllerDataByUUID(controllerUUID));
+  let credentials = null;
   let controllerWSHost = "";
   if (controllerData) {
+    credentials = getUserPass(controllerData[0], storeState);
     controllerWSHost = controllerData[0]
       .replace("wss://", "")
       .replace("/api", "");
@@ -198,6 +191,20 @@ const ModelDetails = () => {
     },
     [setQuery]
   );
+
+  useEffect(() => {
+    // XXX Remove me once we have the 2.9 build.
+    if (
+      controllerData &&
+      controllerData[1]?.[0]?.version.indexOf("2.9") !== -1
+    ) {
+      // The Web CLI is only available in Juju controller versions 2.9 and
+      // above. This will allow us to only show the shell on multi-controller
+      // setups with different versions where the correct controller version
+      // is available.
+      setShowWebCLI(true);
+    }
+  }, [controllerData]);
 
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {
@@ -368,7 +375,13 @@ const ModelDetails = () => {
           </SlidePanel>
         </div>
       )}
-      {generateTerminalComponent(modelUUID, controllerWSHost)}
+      {showWebCLI && (
+        <WebCLI
+          controllerWSHost={controllerWSHost}
+          credentials={credentials}
+          modelUUID={modelUUID}
+        />
+      )}
     </Layout>
   );
 };
