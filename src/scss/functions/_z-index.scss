@@ -16,6 +16,10 @@ $z-layers: (
   "iota": 8,
   "kappa": 9,
   "lambda": 10,
+  // Should be greater than anything set by third party (e.g. Vanilla)
+  "zelda": 99999,
+  // This sits on top of everything
+  "infinity": 999999,
 );
 
 // A function helper to avoid having to type `map-get($z-layers, ...)`

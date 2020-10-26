@@ -17,7 +17,7 @@ describe("Layout", () => {
         </Router>
       </Provider>
     );
-    expect(wrapper.find(".l-side")).toHaveLength(1);
+    expect(wrapper.find(".l-navigation")).toHaveLength(1);
   });
 
   it("should display the children", () => {
