@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+import useAnalytics from "../../hooks/useAnalytics";
+
 import WebCLIOutput from "./Output.js";
 
 import "./_webcli.scss";
@@ -20,6 +22,7 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID, protocol }) => {
   const inputRef = useRef();
   const wsMessageStore = useRef();
   let [output, setOutput] = useState("");
+  const sendAnalytics = useAnalytics();
 
   const setDisconnectedPlaceholder = () => {
     setPlaceholder("no web cli backend available");
@@ -60,6 +63,10 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID, protocol }) => {
         commands: [e.currentTarget.children.command.value],
       })
     );
+    sendAnalytics({
+      category: "User",
+      action: "WebCLI command sent",
+    });
     inputRef.current.value = ""; // Clear the input after sending the message.
   };
 
