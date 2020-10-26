@@ -131,6 +131,9 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID, protocol }) => {
         <form onSubmit={handleCommandSubmit}>
           <input
             autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="none"
+            spellCheck="false"
             className="webcli__input-input"
             type="text"
             name="command"
