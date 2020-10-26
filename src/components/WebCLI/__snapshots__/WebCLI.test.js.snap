@@ -81,10 +81,13 @@ exports[`WebCLI renders correctly 1`] = `
         onSubmit={[Function]}
       >
         <input
+          autoCapitalize="none"
           autoComplete="off"
+          autoCorrect="off"
           className="webcli__input-input"
           name="command"
           placeholder="no web cli backend available"
+          spellCheck="false"
           type="text"
         />
       </form>
