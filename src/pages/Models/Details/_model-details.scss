@@ -25,6 +25,14 @@
     @media (min-width: $breakpoint-m-large) {
       grid-template-columns: 350px 1fr;
     }
+
+    @media (max-width: $breakpoint-medium - 1) {
+      & + .slide-panel {
+        .p-modal__close {
+          margin-top: 7rem !important;
+        }
+      }
+    }
   }
 }
 

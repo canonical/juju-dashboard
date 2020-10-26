@@ -1,0 +1,14 @@
+@import "vanilla-framework/scss/vanilla";
+
+.logo {
+  align-items: center;
+  display: flex;
+  margin-bottom: 0.5rem;
+  margin-left: 6px;
+  padding-top: 3px;
+
+  &__text {
+    height: 1rem;
+    padding-left: 0.3rem;
+  }
+}
