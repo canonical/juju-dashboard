@@ -7,7 +7,16 @@ $row-height: 2.5rem;
 .webcli {
   bottom: 0;
   position: fixed;
-  width: calc(100vw - #{$sidebar-collapsed});
+  // https://github.com/canonical-web-and-design/vanilla-framework/blob/master/scss/_layouts_application.scss#L45
+  // These variables aren't made available to the rest of the application so
+  // their values are hardcoded here.
+  width: calc(100vw - 3rem);
+  @media (min-width: $breakpoint-large) {
+    width: calc(100vw - 15rem);
+  }
+  @media (max-width: $breakpoint-medium) {
+    width: 100vw;
+  }
 
   &__input {
     background-color: $color-x-dark;
