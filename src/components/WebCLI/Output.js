@@ -100,17 +100,23 @@ const WebCLIOutput = ({
       }
       resizeDeltaY.current = e.layerY;
       document.addEventListener("mousemove", resize);
+      document.addEventListener("ontouchmove", resize);
     };
 
     const removeResizeListener = () => {
       document.removeEventListener("mousemove", resize);
+      document.removeEventListener("ontouchmove", resize);
     };
 
     window.addEventListener("mousedown", addResizeListener);
     window.addEventListener("mouseup", removeResizeListener);
+    window.addEventListener("ontouchstart", addResizeListener);
+    window.addEventListener("ontouchend", removeResizeListener);
     return () => {
       window.removeEventListener("mousedown", addResizeListener);
       window.removeEventListener("mouseup", removeResizeListener);
+      window.removeEventListener("ontouchstart", addResizeListener);
+      window.removeEventListener("ontouchend", removeResizeListener);
     };
   }, []);
 
