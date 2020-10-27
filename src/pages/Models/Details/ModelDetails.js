@@ -174,6 +174,7 @@ const ModelDetails = () => {
   }
 
   const { baseAppURL } = useSelector(getConfig);
+  const showWebCLIConfig = useSelector(getConfig).showWebCLI;
 
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
@@ -195,8 +196,9 @@ const ModelDetails = () => {
   useEffect(() => {
     // XXX Remove me once we have the 2.9 build.
     if (
-      controllerData &&
-      controllerData[1]?.[0]?.version.indexOf("2.9") !== -1
+      (controllerData &&
+        controllerData[1]?.[0]?.version.indexOf("2.9") !== -1) ||
+      showWebCLIConfig
     ) {
       // The Web CLI is only available in Juju controller versions 2.9 and
       // above. This will allow us to only show the shell on multi-controller
@@ -204,7 +206,7 @@ const ModelDetails = () => {
       // is available.
       setShowWebCLI(true);
     }
-  }, [controllerData]);
+  }, [controllerData, showWebCLIConfig]);
 
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {
