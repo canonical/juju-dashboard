@@ -15,7 +15,13 @@ const generateAddress = (controllerWSHost, modelUUID, protocol = "wss") => {
   return `${protocol}://${controllerWSHost}/model/${modelUUID}/commands`;
 };
 
-const WebCLI = ({ controllerWSHost, credentials, modelUUID, protocol }) => {
+const WebCLI = ({
+  controllerWSHost,
+  credentials,
+  modelUUID,
+  protocol,
+  refreshModel,
+}) => {
   const [connection, setConnection] = useState(null);
   const [placeholder, setPlaceholder] = useState(DEFAULT_PLACEHOLDER);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
@@ -68,6 +74,11 @@ const WebCLI = ({ controllerWSHost, credentials, modelUUID, protocol }) => {
       action: "WebCLI command sent",
     });
     inputRef.current.value = ""; // Clear the input after sending the message.
+    setTimeout(() => {
+      // Delay the refresh long enough so that the Juju controller has time to
+      // respond before we request the updated status.
+      refreshModel();
+    }, 500);
   };
 
   const showHelp = () => {

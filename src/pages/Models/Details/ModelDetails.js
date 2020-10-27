@@ -27,6 +27,7 @@ import {
 
 import useModelStatus from "hooks/useModelStatus";
 
+import { fetchAndStoreModelStatus } from "juju/index";
 import { fetchModelStatus } from "juju/actions";
 
 import {
@@ -203,6 +204,18 @@ const ModelDetails = () => {
     },
     [setQuery]
   );
+
+  // Until we switch to the new lib and watcher model we want to trigger a
+  // refresh of the model data when a user submits a cli command so that it
+  // doesn't look like it did nothing.
+  const refreshModel = () => {
+    fetchAndStoreModelStatus(
+      modelUUID,
+      primaryControllerData[0],
+      dispatch,
+      store.getState
+    );
+  };
 
   useEffect(() => {
     // XXX Remove me once we have the 2.9 build.
@@ -393,6 +406,7 @@ const ModelDetails = () => {
           controllerWSHost={controllerWSHost}
           credentials={credentials}
           modelUUID={modelUUID}
+          refreshModel={refreshModel}
         />
       )}
     </Layout>
