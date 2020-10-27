@@ -269,7 +269,7 @@ function RegisterAController({ onClose, showRegisterAController }) {
               <p className="p-form-help-text">
                 You'll typically want to use the public IP:Port address for the
                 controller. <br />
-                e.g. 123.456.789.0:17070
+                e.g. 91.189.88.181:17070
               </p>
             </div>
           </div>
