@@ -13,6 +13,7 @@ import {
 } from "app/utils";
 
 import useAnalytics from "hooks/useAnalytics";
+import useEventListener from "hooks/useEventListener";
 
 import "./_filter-tags.scss";
 
@@ -75,37 +76,25 @@ const FilterTags = () => {
     addFilter("credential", credentialFilter);
   });
 
-  // This useEffect sets up listeners so the panel will close if user clicks anywhere else on the page or hits the escape key
-  useEffect(() => {
-    const closePanel = () => {
-      setFilterPanelVisibility(false);
-    };
+  const closePanel = () => {
+    setFilterPanelVisibility(false);
+  };
 
-    const mouseDown = (e) => {
-      // Check if click is outside of filter panel
-      if (!node.current.contains(e.target)) {
-        // If so, close the panel
-        closePanel();
-      }
-    };
+  // Check if click is outside of filter panel
+  const mouseDown = (e) => {
+    if (!node.current.contains(e.target)) {
+      closePanel();
+    }
+  };
+  useEventListener("mousedown", mouseDown);
 
-    const keyDown = (e) => {
-      if (e.code === "Escape") {
-        // Close panel if Esc keydown detected
-        closePanel();
-      }
-    };
-
-    // Add listener on document to capture click events
-    document.addEventListener("mousedown", mouseDown);
-    // Add listener on document to capture keydown events
-    document.addEventListener("keydown", keyDown);
-    // return function to be called when unmounted
-    return () => {
-      document.removeEventListener("mousedown", mouseDown);
-      document.removeEventListener("keydown", keyDown);
-    };
-  }, []);
+  // Close panel if Esc keydown detected
+  const keyDown = (e) => {
+    if (e.code === "Escape") {
+      closePanel();
+    }
+  };
+  useEventListener("keydown", keyDown);
 
   // Update query params when adding and removing filters
   useEffect(() => {
