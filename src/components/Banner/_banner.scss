@@ -5,12 +5,17 @@
   color: $color-brand;
   max-height: 0;
   padding: 0;
+  position: relative;
   text-align: center;
   transition: all 0.25s;
 
   &[data-active="true"] {
     max-height: 100%;
-    padding: 0.775rem;
+    padding: 0.5rem;
+
+    @media (min-width: $breakpoint-medium) and (max-width: $breakpoint-large) {
+      padding-left: 48px;
+    }
   }
 
   &[data-type="caution"] {
@@ -23,7 +28,11 @@
 
     a {
       color: $color-light;
-      text-decoration: underline;
+      font-weight: 400;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 
@@ -31,5 +40,17 @@
     margin: 0;
     max-width: 100%;
     padding: 0;
+  }
+
+  &__close {
+    &,
+    &:hover {
+      background: none;
+      border: 0;
+    }
+
+    position: absolute;
+    right: 0.5rem;
+    top: 0.15rem;
   }
 }
