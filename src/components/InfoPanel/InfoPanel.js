@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Topology from "components/Topology/Topology";
@@ -7,6 +7,7 @@ import Modal from "@canonical/react-components/dist/components/Modal";
 import { extractCloudName, getViewportWidth } from "app/utils";
 import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
+import useEventListener from "hooks/useEventListener";
 
 import fullScreenIcon from "static/images/icons/fullscreen-icon.svg";
 
@@ -46,17 +47,12 @@ const InfoPanel = () => {
   const sendAnalytics = useAnalytics();
 
   // Close topology, if open, on Escape key press
-  useEffect(() => {
-    const closeOnEscape = function (e) {
-      if (e.code === "Escape" && showExpandedTopology) {
-        setShowExpandedTopology(false);
-      }
-    };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => {
-      document.removeEventListener("keydown", closeOnEscape);
-    };
-  });
+  const closeOnEscape = function (e) {
+    if (e.code === "Escape" && showExpandedTopology) {
+      setShowExpandedTopology(false);
+    }
+  };
+  useEventListener("keydown", closeOnEscape);
 
   const handleExpandTopology = () => {
     setShowExpandedTopology(!showExpandedTopology);
