@@ -1,5 +1,5 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import Banner from "./Banner";
 
@@ -33,5 +33,14 @@ describe("Banner", () => {
     expect(wrapper.find(".banner").prop("data-active")).toStrictEqual(true);
     wrapper.find(".banner__close").simulate("click");
     expect(wrapper.find(".banner").prop("data-active")).toStrictEqual(false);
+  });
+
+  it("should return if type changes after close button is pressed", () => {
+    const wrapper = mount(<Banner isActive={true} type="caution" />);
+    wrapper.find(".banner__close").simulate("click");
+    expect(wrapper.find(".banner").prop("data-active")).toStrictEqual(false);
+    wrapper.setProps({ type: "positive", isActive: true });
+    wrapper.update();
+    expect(wrapper.find(".banner").prop("data-active")).toStrictEqual(true);
   });
 });
