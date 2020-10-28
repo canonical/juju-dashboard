@@ -1,6 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import classnames from "classnames";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
+
+import useEventListener from "hooks/useEventListener";
 
 import "./_slide-panel.scss";
 
@@ -11,31 +13,26 @@ function SlidePanel({
   isLoading = false,
   className,
 }) {
-  // If Escape key is pressed when slide panel is open, close it
-  useEffect(() => {
-    if (!isActive) return;
-    const closeOnEscape = (e) => {
-      if (isActive && e.code === "Escape") {
-        onClose();
-      }
-    };
-    const closeOnClickOutside = (e) => {
-      if (
-        isActive &&
-        !e.target.closest(".slide-panel") &&
-        !e.target.closest('[role="row"]') &&
-        !e.target.closest(".webcli")
-      ) {
-        onClose();
-      }
-    };
-    document.body.addEventListener("keydown", closeOnEscape);
-    document.body.addEventListener("click", closeOnClickOutside);
-    return () => {
-      document.body.removeEventListener("keydown", closeOnEscape);
-      document.body.removeEventListener("click", closeOnClickOutside);
-    };
-  }, [isActive, onClose]);
+  // Close panel if Escape key is pressed when panel active
+  const closeOnEscape = (e) => {
+    if (isActive && e.code === "Escape") {
+      onClose();
+    }
+  };
+  useEventListener("keydown", closeOnEscape);
+
+  // Close panel if click is detected outside when panel is active
+  const closeOnClickOutside = (e) => {
+    if (
+      isActive &&
+      !e.target.closest(".slide-panel") &&
+      !e.target.closest('[role="row"]') &&
+      !e.target.closest(".webcli")
+    ) {
+      onClose();
+    }
+  };
+  useEventListener("click", closeOnClickOutside);
 
   return (
     <div
