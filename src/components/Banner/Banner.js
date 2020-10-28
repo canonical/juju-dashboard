@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classnames from "classnames";
 
 import "./_banner.scss";
 
-export default function Banner({ isActive = true, children, type }) {
+export default function Banner({ isActive = false, children, type }) {
   const [bannerClosed, setBannerClosed] = useState(false);
+
+  // Open banner every time banner type changes
+  useEffect(() => {
+    setBannerClosed(false);
+  }, [type]);
 
   return (
     <div
