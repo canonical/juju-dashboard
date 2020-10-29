@@ -2,11 +2,9 @@ import React, { useEffect } from "react";
 import { Route, Redirect, useLocation } from "react-router-dom";
 
 import Controllers from "pages/Controllers/Controllers";
-import Logs from "pages/Logs/Logs";
 import Models from "pages/Models/Models";
 import ModelDetails from "pages/Models/Details/ModelDetails";
 import Settings from "pages/Settings/Settings";
-import Usage from "pages/Usage/Usage";
 import useAnalytics from "hooks/useAnalytics";
 
 export const paths = {
@@ -14,8 +12,6 @@ export const paths = {
   "/models": { component: Models },
   "/models/*": { component: ModelDetails },
   "/controllers": { component: Controllers },
-  "/usage": { component: Usage },
-  "/logs": { component: Logs },
   "/settings": { component: Settings },
 };
 

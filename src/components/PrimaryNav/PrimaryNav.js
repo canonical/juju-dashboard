@@ -12,11 +12,6 @@ import modelsIcon from "static/images/icons/models-icon.svg";
 import modelsIconSelected from "static/images/icons/models-icon--selected.svg";
 import controllersIcon from "static/images/icons/controllers-icon.svg";
 import controllersIconSelected from "static/images/icons/controllers-icon--selected.svg";
-// Remove these nav links until these sections are active
-// import usageIcon from "static/images/icons/usage-icon.svg";
-// import usageIconSelected from "static/images/icons/usage-icon--selected.svg";
-// import logsIcon from "static/images/icons/logs-icon.svg";
-// import logsIconSelected from "static/images/icons/logs-icon--selected.svg";
 
 // Style imports
 import "./_primary-nav.scss";
@@ -34,9 +29,6 @@ const pages = [
     icon: controllersIcon,
     iconSelected: controllersIconSelected,
   },
-  // Remove these nav links until these sections are active
-  // { label: "Usage", path: "/usage", icon: usageIcon, iconSelected: usageIconSelected },
-  // { label: "Logs", path: "/logs", icon: logsIcon, iconSelected: logsIconSelected },
 ];
 
 const PrimaryNav = () => {
