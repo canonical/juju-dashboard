@@ -38,10 +38,10 @@ const Layout = ({ children }) => {
         type={isOffline === false ? "positive" : "caution"}
       >
         {isOffline ? (
-          <p>The dashboard is offline.</p>
+          <p>Your dashboard is offline.</p>
         ) : (
           <p>
-            The dashboard is online - please{" "}
+            The dashboard is now online - please{" "}
             <a href={window.location}>refresh your browser.</a>
           </p>
         )}
