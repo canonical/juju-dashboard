@@ -1,25 +1,20 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
 import WebCLIOutput from "./Output.js";
 
+import Connection from "./connection";
+
 import "./_webcli.scss";
 
 const DEFAULT_PLACEHOLDER = "enter command";
-
-const generateAddress = (controllerWSHost, modelUUID, protocol = "wss") => {
-  if (!controllerWSHost || !modelUUID) {
-    return null;
-  }
-  return `${protocol}://${controllerWSHost}/model/${modelUUID}/commands`;
-};
 
 const WebCLI = ({
   controllerWSHost,
   credentials,
   modelUUID,
-  protocol,
+  protocol = "wss",
   refreshModel,
 }) => {
   const [connection, setConnection] = useState(null);
@@ -38,25 +33,37 @@ const WebCLI = ({
     setPlaceholder(DEFAULT_PLACEHOLDER);
   };
 
-  /*
-    The messageBuffer is required because the websocket returns messages much
-    faster than React wants to update the component. Doing this allows us to
-    store the messages in a buffer and then set the output every cycle.
-  */
-  const messageBuffer = useCallback(
-    (message) => {
-      wsMessageStore.current = wsMessageStore.current + message;
-      setTimeout(() => {
-        setOutput(wsMessageStore.current);
-      });
-    },
-    [setOutput]
-  );
-
   const clearMessageBuffer = () => {
     wsMessageStore.current = "";
     setOutput(""); // Clear the output when sending a new message.
   };
+
+  const wsAddress = useMemo(() => {
+    if (!controllerWSHost || !modelUUID) {
+      return null;
+    }
+    return `${protocol}://${controllerWSHost}/model/${modelUUID}/commands`;
+  }, [controllerWSHost, modelUUID, protocol]);
+
+  useEffect(() => {
+    const conn = new Connection({
+      address: wsAddress,
+      onopen: setConnectedPlaceholder,
+      onclose: setDisconnectedPlaceholder,
+      messageCallback: (message) => {
+        wsMessageStore.current = wsMessageStore.current + message;
+        setOutput(wsMessageStore.current);
+      },
+    }).connect();
+    setConnection(conn);
+    return () => {
+      // onclose is being set to null when the component is torn down to avoid
+      // a react error where the state is being set from the
+      // `setDisconnectedPlaceholder` method above.
+      conn.onclose = null;
+      conn.disconnect();
+    };
+  }, [wsAddress]);
 
   const handleCommandSubmit = (e) => {
     e.preventDefault();
@@ -84,50 +91,6 @@ const WebCLI = ({
   const showHelp = () => {
     setShouldShowHelp(true);
   };
-
-  const handleWSMessage = useCallback(
-    (e) => {
-      try {
-        const data = JSON.parse(e.data);
-        if (data.done) {
-          // This is the last message.
-          return;
-        }
-        if (!data.output) {
-          // This is the first message, an empty object and a newline.
-          return;
-        }
-        messageBuffer(`\n${data?.output[0]}`);
-      } catch (e) {
-        console.log(e);
-        // XXX handle the invalid data response
-      }
-    },
-    [messageBuffer]
-  );
-
-  useEffect(() => {
-    const address = generateAddress(controllerWSHost, modelUUID, protocol);
-    if (!address) {
-      setDisconnectedPlaceholder();
-      return;
-    } else {
-      setConnectedPlaceholder();
-    }
-    const ws = new WebSocket(address);
-    ws.onopen = () => {
-      setConnection(ws);
-    };
-    ws.onclose = setDisconnectedPlaceholder;
-    ws.onmessage = handleWSMessage;
-    return () => {
-      // onclose is being set to null when the component is torn down to avoid
-      // a react error where the state is being set from the
-      // `setDisconnectedPlaceholder` method above.
-      ws.onclose = null;
-      ws.close();
-    };
-  }, [controllerWSHost, modelUUID, handleWSMessage, protocol]);
 
   return (
     <div className="webcli">
