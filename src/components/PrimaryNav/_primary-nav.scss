@@ -141,14 +141,18 @@
     }
   }
 
+  .p-primary-nav__divider {
+    @include vf-animation(opacity, brisk, ease-in-out);
+
+    @media (min-width: $breakpoint-large) {
+      opacity: 0.1;
+    }
+  }
+
   &:hover {
     .p-primary-nav__bottom,
     .logo__text {
       opacity: 1;
-    }
-
-    .p-primary-nav__divider {
-      opacity: 0.1;
     }
   }
 }

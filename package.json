@@ -81,7 +81,7 @@
     "redux-thunk": "2.3.0",
     "reselect": "4.0.0",
     "use-query-params": "1.1.8",
-    "vanilla-framework": "2.19.1"
+    "vanilla-framework": "2.19.2"
   },
   "devDependencies": {
     "eslint-config-prettier": "6.14.0",
