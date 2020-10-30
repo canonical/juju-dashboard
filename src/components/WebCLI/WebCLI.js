@@ -8,8 +8,6 @@ import Connection from "./connection";
 
 import "./_webcli.scss";
 
-const DEFAULT_PLACEHOLDER = "enter command";
-
 const WebCLI = ({
   controllerWSHost,
   credentials,
@@ -18,20 +16,11 @@ const WebCLI = ({
   refreshModel,
 }) => {
   const [connection, setConnection] = useState(null);
-  const [placeholder, setPlaceholder] = useState(DEFAULT_PLACEHOLDER);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
   const inputRef = useRef();
   const wsMessageStore = useRef();
   let [output, setOutput] = useState("");
   const sendAnalytics = useAnalytics();
-
-  const setDisconnectedPlaceholder = () => {
-    setPlaceholder("no web cli backend available");
-  };
-
-  const setConnectedPlaceholder = () => {
-    setPlaceholder(DEFAULT_PLACEHOLDER);
-  };
 
   const clearMessageBuffer = () => {
     wsMessageStore.current = "";
@@ -48,8 +37,8 @@ const WebCLI = ({
   useEffect(() => {
     const conn = new Connection({
       address: wsAddress,
-      onopen: setConnectedPlaceholder,
-      onclose: setDisconnectedPlaceholder,
+      onopen: () => {},
+      onclose: () => {},
       messageCallback: (message) => {
         wsMessageStore.current = wsMessageStore.current + message;
         setOutput(wsMessageStore.current);
@@ -57,10 +46,6 @@ const WebCLI = ({
     }).connect();
     setConnection(conn);
     return () => {
-      // onclose is being set to null when the component is torn down to avoid
-      // a react error where the state is being set from the
-      // `setDisconnectedPlaceholder` method above.
-      conn.onclose = null;
       conn.disconnect();
     };
   }, [wsAddress]);
@@ -112,7 +97,7 @@ const WebCLI = ({
             type="text"
             name="command"
             ref={inputRef}
-            placeholder={placeholder}
+            placeholder="enter command"
           />
         </form>
         <div className="webcli__input-help">
