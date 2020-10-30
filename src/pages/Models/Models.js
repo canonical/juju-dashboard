@@ -7,7 +7,6 @@ import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
-import FilterTags from "components/FilterTags/FilterTags";
 
 import useWindowTitle from "hooks/useWindowTitle";
 
