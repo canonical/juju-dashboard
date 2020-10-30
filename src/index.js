@@ -21,7 +21,6 @@ import {
 
 import jujuReducer from "juju/reducer";
 
-import "./scss/index.scss";
 import { version as appVersion } from "../package.json";
 
 import * as serviceWorker from "./serviceWorker";
