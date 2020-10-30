@@ -27,12 +27,16 @@ describe("WebCLI", () => {
   };
 
   it("renders correctly", () => {
-    const wrapper = mount(<WebCLI />);
+    const wrapper = mount(
+      <WebCLI controllerWSHost="jimm.jujucharms.com:443" modelUUID="abc123" />
+    );
     expect(wrapper).toMatchSnapshot();
   });
 
   it("shows the help in the output when the ? is clicked", () => {
-    const wrapper = mount(<WebCLI />);
+    const wrapper = mount(
+      <WebCLI controllerWSHost="jimm.jujucharms.com:443" modelUUID="abc123" />
+    );
     act(() => {
       wrapper.find(".webcli__input-help i").simulate("click");
     });
@@ -50,11 +54,32 @@ describe("WebCLI", () => {
     });
   });
 
-  it("shows a disconnected message if no ws is connected", () => {
-    const wrapper = mount(<WebCLI />);
-    expect(wrapper.find(".webcli__input-input").prop("placeholder")).toBe(
-      "no web cli backend available"
+  it("calls to refresh the model on command submission", () => {
+    const mockRefreshModel = jest.fn();
+    new WS("ws://localhost:1234/model/abc123/commands", {
+      jsonProtocol: true,
+    });
+    const wrapper = mount(
+      <WebCLI
+        protocol="ws"
+        controllerWSHost="localhost:1234"
+        credentials={{
+          user: "spaceman",
+          password: "somelongpassword",
+        }}
+        modelUUID="abc123"
+        refreshModel={mockRefreshModel}
+      />
     );
+    wrapper.find(".webcli__input-input").instance().value = "status --color";
+    wrapper.find("form").simulate("submit", { preventDefault: () => {} });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        expect(mockRefreshModel).toHaveBeenCalled();
+        WS.clean();
+        resolve();
+      }, 600); // the timeout is 500ms in the app
+    });
   });
 
   describe("WebCLI Output", () => {

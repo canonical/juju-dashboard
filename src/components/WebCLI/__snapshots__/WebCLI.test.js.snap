@@ -25,7 +25,10 @@ Machine  State    DNS             Inst id        Series  AZ          Message
 `;
 
 exports[`WebCLI renders correctly 1`] = `
-<WebCLI>
+<WebCLI
+  controllerWSHost="jimm.jujucharms.com:443"
+  modelUUID="abc123"
+>
   <div
     className="webcli"
   >
@@ -86,7 +89,7 @@ exports[`WebCLI renders correctly 1`] = `
           autoCorrect="off"
           className="webcli__input-input"
           name="command"
-          placeholder="no web cli backend available"
+          placeholder="enter command"
           spellCheck="false"
           type="text"
         />
