@@ -8,6 +8,8 @@ import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 
+import SearchAndFilter from "@canonical/react-components/dist/components/SearchAndFilter";
+
 import useWindowTitle from "hooks/useWindowTitle";
 
 import { useQueryParam, StringParam, withDefault } from "use-query-params";
@@ -58,7 +60,49 @@ export default function Models() {
             label="Group by:"
             setActiveButton={setGroupModelsBy}
           />
-          <FilterTags />
+          <SearchAndFilter
+            filterPanelData={[
+              {
+                id: 0,
+                heading: "Cloud",
+                chips: [
+                  { lead: "Cloud", value: "Google" },
+                  { lead: "Cloud", value: "AWS" },
+                  { lead: "Cloud", value: "Azure" },
+                ],
+              },
+              {
+                id: 1,
+                heading: "Region",
+                chips: [
+                  { lead: "Region", value: "us-east1" },
+                  { lead: "Region", value: "us-north2" },
+                  { lead: "Region", value: "us-south3" },
+                  { lead: "Region", value: "us-north4" },
+                  { lead: "Region", value: "us-east5" },
+                  { lead: "Region", value: "us-south6" },
+                  { lead: "Region", value: "us-east7" },
+                  { lead: "Region", value: "us-east8" },
+                  { lead: "Region", value: "us-east9" },
+                  { lead: "Region", value: "us-east10" },
+                ],
+              },
+              {
+                id: 2,
+                heading: "Owner",
+                chips: [
+                  { lead: "Owner", value: "foo" },
+                  { lead: "Owner", value: "bar" },
+                  { lead: "Owner", value: "baz" },
+                ],
+              },
+            ]}
+            returnSearchData={(searchData) => {
+              if (searchData.length > 0) {
+                // do something
+              }
+            }}
+          />
         </div>
       </Header>
 
