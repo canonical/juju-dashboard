@@ -29,7 +29,7 @@ class Connection {
     try {
       const data = JSON.parse(e.data);
       if (data["redirect-to"]) {
-        // This is a JAAS ccontroller and we need to instead
+        // This is a JAAS controller and we need to instead
         // connect to the sub controller.
         this._ws.close();
         this.address = data["redirect-to"];
