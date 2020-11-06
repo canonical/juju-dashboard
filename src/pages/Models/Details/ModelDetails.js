@@ -20,12 +20,14 @@ import WebCLI from "components/WebCLI/WebCLI";
 import {
   getConfig,
   getControllerDataByUUID,
+  getModelControllerDataByUUID,
   getModelUUID,
   getUserPass,
 } from "app/selectors";
 
 import useModelStatus from "hooks/useModelStatus";
 
+import { fetchAndStoreModelStatus } from "juju/index";
 import { fetchModelStatus } from "juju/actions";
 
 import {
@@ -161,14 +163,24 @@ const ModelDetails = () => {
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
   const modelStatusData = useModelStatus();
-
+  // In a JAAS environment the controllerUUID will be the sub controller not
+  // the primary controller UUID that we connect to.
   const controllerUUID = modelStatusData?.info.controllerUuid;
-  const controllerData = useSelector(getControllerDataByUUID(controllerUUID));
+  // The primary controller data is the controller endpoint we actually connect
+  // to. In the case of a normally bootstrapped controller this will be the
+  // same as the model controller, however in a JAAS environment, this primary
+  // controller will be JAAS and the model controller will be different.
+  const primaryControllerData = useSelector(
+    getControllerDataByUUID(controllerUUID)
+  );
+  const modelControllerData = useSelector(
+    getModelControllerDataByUUID(controllerUUID)
+  );
   let credentials = null;
   let controllerWSHost = "";
-  if (controllerData) {
-    credentials = getUserPass(controllerData[0], storeState);
-    controllerWSHost = controllerData[0]
+  if (primaryControllerData) {
+    credentials = getUserPass(primaryControllerData[0], storeState);
+    controllerWSHost = primaryControllerData[0]
       .replace("wss://", "")
       .replace("/api", "");
   }
@@ -193,11 +205,23 @@ const ModelDetails = () => {
     [setQuery]
   );
 
+  // Until we switch to the new lib and watcher model we want to trigger a
+  // refresh of the model data when a user submits a cli command so that it
+  // doesn't look like it did nothing.
+  const refreshModel = () => {
+    fetchAndStoreModelStatus(
+      modelUUID,
+      primaryControllerData[0],
+      dispatch,
+      store.getState
+    );
+  };
+
   useEffect(() => {
     // XXX Remove me once we have the 2.9 build.
     if (
-      (controllerData &&
-        controllerData[1]?.[0]?.version.indexOf("2.9") !== -1) ||
+      (modelControllerData &&
+        modelControllerData.version.indexOf("2.9") !== -1) ||
       showWebCLIConfig
     ) {
       // The Web CLI is only available in Juju controller versions 2.9 and
@@ -206,7 +230,7 @@ const ModelDetails = () => {
       // is available.
       setShowWebCLI(true);
     }
-  }, [controllerData, showWebCLIConfig]);
+  }, [modelControllerData, showWebCLIConfig]);
 
   useEffect(() => {
     if (modelUUID !== null && modelStatusData === null) {
@@ -382,6 +406,7 @@ const ModelDetails = () => {
           controllerWSHost={controllerWSHost}
           credentials={credentials}
           modelUUID={modelUUID}
+          refreshModel={refreshModel}
         />
       )}
     </Layout>

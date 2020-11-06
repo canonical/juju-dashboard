@@ -562,12 +562,44 @@ export const getWSControllerURL = createSelector(
   Returns the controller data in the format of an Object.entries output.
   [wsControllerURL, [data]]
   @param {String} controllerUUID The full controller UUID.
+  @returns {Array} The controller data in the format of an Object.entries output.
 */
 export const getControllerDataByUUID = (controllerUUID) => {
   return createSelector(getControllerData, (controllerData) => {
     if (!controllerData) return null;
-    return Object.entries(controllerData).find(
-      (controller) => controllerUUID === controller[1][0].uuid
-    );
+    const found = Object.entries(controllerData).find((controller) => {
+      // Loop through the sub controllers for each primary controller.
+      // This is typically only seen in JAAS. Outside of JAAS there is only ever
+      // a single sub controller.
+      return controller[1].find(
+        (subController) => controllerUUID === subController.uuid
+      );
+    });
+    return found;
+  });
+};
+
+/**
+  @param {String} controllerUUID The full controller UUID.
+  @returns {Object} The controllerData.
+*/
+export const getModelControllerDataByUUID = (controllerUUID) => {
+  return createSelector(getControllerData, (controllerData) => {
+    if (!controllerData) return null;
+    let modelController = null;
+    Object.entries(controllerData).some((controller) => {
+      // Loop through the sub controllers for each primary controller.
+      // This is typically only seen in JAAS. Outside of JAAS there is only ever
+      // a single sub controller.
+      const modelControllerData = controller[1].find(
+        (subController) => controllerUUID === subController.uuid
+      );
+      if (modelControllerData) {
+        modelController = modelControllerData;
+        return true;
+      }
+      return false;
+    });
+    return modelController;
   });
 };
