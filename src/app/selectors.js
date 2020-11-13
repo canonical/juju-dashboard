@@ -372,37 +372,40 @@ const filterModelData = (filters, modelData, controllers) => {
     return clonedModelData;
   }
   const filterSegments = {};
-  // Collect segments
-  filters.forEach((filter) => {
-    const values = filter.split(":");
-    if (!filterSegments[values[0]]) {
-      filterSegments[values[0]] = [];
+
+  // Collect segments from filter data
+  Object.entries(filters).forEach((filter) => {
+    if (!filterSegments[filter[0]]) {
+      filterSegments[filter[0]] = [];
     }
-    filterSegments[values[0]].push(values[1]);
+    filterSegments[filter[0]].push(filter[1]);
   });
 
   Object.entries(clonedModelData).forEach(([uuid, data]) => {
-    const remove = Object.entries(filterSegments).some(([segment, values]) => {
-      switch (segment) {
-        case "cloud":
-          return !values.includes(extractCloudName(data.model.cloudTag));
-        case "credential":
-          if (data.info) {
-            return !values.includes(
-              extractCredentialName(data.info.cloudCredentialTag)
-            );
-          }
-          break;
-        case "region":
-          return !values.includes(data.model.region);
-        case "owner":
-          if (data.info) {
-            return !values.includes(extractOwnerName(data.info.ownerTag));
-          }
-          break;
+    const remove = Object.entries(filterSegments).some(
+      ([segment, valuesArr]) => {
+        const values = valuesArr[0];
+        switch (segment) {
+          case "cloud":
+            return !values.includes(extractCloudName(data.model.cloudTag));
+          case "credential":
+            if (data.info) {
+              return !values.includes(
+                extractCredentialName(data.info.cloudCredentialTag)
+              );
+            }
+            break;
+          case "region":
+            return !values.includes(data.model.region);
+          case "owner":
+            if (data.info) {
+              return !values.includes(extractOwnerName(data.info.ownerTag));
+            }
+            break;
+        }
+        return false;
       }
-      return false;
-    });
+    );
     if (remove) {
       delete clonedModelData[uuid];
     }

@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import queryString from "query-string";
 
 import Layout from "components/Layout/Layout";
@@ -8,13 +8,14 @@ import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 
-import SearchAndFilter from "@canonical/react-components/dist/components/SearchAndFilter";
+import { SearchAndFilter } from "@canonical/react-components";
+import useModelAttributes from "hooks/useModelAttributes";
 
 import useWindowTitle from "hooks/useWindowTitle";
 
 import { useQueryParam, StringParam, withDefault } from "use-query-params";
 
-import { getGroupedModelStatusCounts } from "app/selectors";
+import { getGroupedModelStatusCounts, getModelData } from "app/selectors";
 import { pluralize } from "app/utils";
 
 import "./_models.scss";
@@ -22,20 +23,46 @@ import "./_models.scss";
 export default function Models() {
   useWindowTitle("Models");
 
+  const location = useLocation();
+  const history = useHistory();
+  let activeFilters = [];
+
+  // Grab filter from 'groupedby' query in URL and assign to variable
   const [groupModelsBy, setGroupModelsBy] = useQueryParam(
     "groupedby",
     withDefault(StringParam, "status")
   );
 
-  // Grab filter from 'groupedby' query in URL and assign to variable
-  const location = useLocation();
+  // loop model data and pull out filter panel data
+  const modelData = useSelector(getModelData);
+  const { clouds, regions, owners, credentials } = useModelAttributes(
+    modelData
+  );
+
+  // Generate chips from available model data
+  const generateChips = (lead, values) => {
+    let chipValues = [];
+    values.forEach((value) => {
+      chipValues.push({ lead, value });
+    });
+    return chipValues;
+  };
+
+  // Add filter to activeFilters array
+  const addFilter = function (type, value) {
+    activeFilters[type] = activeFilters[type] || [];
+    if (!activeFilters[type].includes(value)) {
+      activeFilters[type].push(value);
+    }
+  };
+
+  // Pull current filters from URl
   const queryStrings = queryString.parse(location.search, {
     arrayFormat: "comma",
   });
-  let activeFilters = queryStrings.activeFilters;
-  if (typeof activeFilters === "string") {
-    // Maintain a consistent type returned from the parsing of the querystring.
-    activeFilters = [activeFilters];
+  // Iterate current filters from query strings and add to active filters
+  for (const [key, value] of Object.entries(queryStrings)) {
+    addFilter(key, value);
   }
 
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
@@ -65,41 +92,47 @@ export default function Models() {
               {
                 id: 0,
                 heading: "Cloud",
-                chips: [
-                  { lead: "Cloud", value: "Google" },
-                  { lead: "Cloud", value: "AWS" },
-                  { lead: "Cloud", value: "Azure" },
-                ],
+                chips: generateChips("Cloud", clouds),
               },
               {
                 id: 1,
                 heading: "Region",
-                chips: [
-                  { lead: "Region", value: "us-east1" },
-                  { lead: "Region", value: "us-north2" },
-                  { lead: "Region", value: "us-south3" },
-                  { lead: "Region", value: "us-north4" },
-                  { lead: "Region", value: "us-east5" },
-                  { lead: "Region", value: "us-south6" },
-                  { lead: "Region", value: "us-east7" },
-                  { lead: "Region", value: "us-east8" },
-                  { lead: "Region", value: "us-east9" },
-                  { lead: "Region", value: "us-east10" },
-                ],
+                chips: generateChips("Region", regions),
               },
               {
                 id: 2,
                 heading: "Owner",
-                chips: [
-                  { lead: "Owner", value: "foo" },
-                  { lead: "Owner", value: "bar" },
-                  { lead: "Owner", value: "baz" },
-                ],
+                chips: generateChips("Owner", owners),
+              },
+              {
+                id: 3,
+                heading: "Credentials",
+                chips: generateChips("Credentials", credentials),
               },
             ]}
             returnSearchData={(searchData) => {
               if (searchData.length > 0) {
-                // do something
+                // Loop search data and pull out each filter
+                searchData.forEach(({ lead = "custom", value }) => {
+                  addFilter(lead?.toLowerCase(), value);
+                });
+
+                // Construct new query string
+                const proposedQueryString = queryString.stringify(
+                  activeFilters,
+                  {
+                    arrayFormat: "comma",
+                  }
+                );
+
+                // Pull current query string from URL
+                const currentQueryString = location.search.split("?")[1];
+                // Don't update URL if query strings are unchanged
+                if (proposedQueryString !== currentQueryString) {
+                  history.push({
+                    search: proposedQueryString,
+                  });
+                }
               }
             }}
           />
