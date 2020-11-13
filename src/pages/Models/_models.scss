@@ -27,10 +27,11 @@
 
     .search-and-filter {
       @media (min-width: $breakpoint-medium) {
+        max-width: 270px;
         position: absolute;
         right: 0.75rem;
         top: 0.3rem;
-        width: 300px;
+        width: 100%;
       }
     }
   }

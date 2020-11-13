@@ -375,6 +375,7 @@ const filterModelData = (filters, modelData, controllers) => {
 
   // Collect segments from filter data
   Object.entries(filters).forEach((filter) => {
+    if (filter[1].length === 0) return;
     if (!filterSegments[filter[0]]) {
       filterSegments[filter[0]] = [];
     }

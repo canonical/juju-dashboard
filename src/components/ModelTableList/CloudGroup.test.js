@@ -47,10 +47,13 @@ describe("CloudGroup", () => {
 
   it("fetches filtered data if filters supplied", () => {
     const store = mockStore(dataDump);
+    const filters = {
+      cloud: ["aws"],
+    };
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <CloudGroup filters={["cloud:aws"]} />
+          <CloudGroup filters={filters} />
         </Provider>
       </MemoryRouter>
     );
