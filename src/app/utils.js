@@ -51,13 +51,14 @@ export const getModelStatusGroupData = (model) => {
       messages.push(app.status.info);
       return;
     }
-    Object.keys(app.units).forEach((unitId) => {
-      const unit = app.units[unitId];
+    const units = app.units || {}; // subordinates do not have units.
+    Object.keys(units).forEach((unitId) => {
+      const unit = units[unitId];
       const { status: unitStatus } = getUnitStatusGroup(unit);
       highestStatus = setHighestStatus(unitStatus, highestStatus);
       if (checkHighestStatus(highestStatus)) {
         // If it's the highest status then we want to store the message.
-        messages.push(unit.agentStatus.info);
+        messages.push(unit["agent-status"].info);
         return;
       }
     });
@@ -129,7 +130,7 @@ export const getUnitStatusGroup = (unit) => {
   const blocked = ["lost"];
   // Possible "alert" states in the unit statuses.
   const alert = ["allocating"];
-  const status = unit.agentStatus.status;
+  const status = unit["agent-status"].status;
   const response = {
     status: "running",
     message: null,

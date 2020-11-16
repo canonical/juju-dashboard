@@ -58,20 +58,20 @@ const FilterTags = () => {
       return;
     }
     // Extract cloud filters
-    const cloudFilter = extractCloudName(model.info.cloudTag);
+    const cloudFilter = extractCloudName(model.info["cloud-tag"]);
     addFilter("cloud", cloudFilter);
 
     // Extract region filters
-    const regionFilter = model.info.cloudRegion;
+    const regionFilter = model.info["cloud-region"];
     addFilter("region", regionFilter);
 
     // Extract owner filters
-    const ownerFilter = extractOwnerName(model.info.ownerTag);
+    const ownerFilter = extractOwnerName(model.info["owner-tag"]);
     addFilter("owner", ownerFilter);
 
     // Extract credential filters
     const credentialFilter = extractCredentialName(
-      model.info.cloudCredentialTag
+      model.info["cloud-credential-tag"]
     );
     addFilter("credential", credentialFilter);
   });

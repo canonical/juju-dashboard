@@ -104,7 +104,7 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
     models.forEach((model) => {
       let owner = "";
       if (model.info) {
-        owner = extractOwnerName(model.info.ownerTag);
+        owner = extractOwnerName(model.info["owner-tag"]);
       }
       const cloud = `${getStatusValue(model, "cloudTag")}/${getStatusValue(
         model,

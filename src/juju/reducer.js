@@ -14,11 +14,11 @@ export default function jujuReducer(state = defaultState, action) {
     switch (action.type) {
       case actionsList.updateModelList:
         const modelList = cloneDeep(state.models || {});
-        action.payload.userModels.forEach((model) => {
+        action.payload["user-models"].forEach((model) => {
           modelList[model.model.uuid] = {
             lastConnection: model.lastConnection,
             name: model.model.name,
-            ownerTag: model.model.ownerTag,
+            ownerTag: model.model["owner-tag"],
             type: model.model.type,
             uuid: model.model.uuid,
           };

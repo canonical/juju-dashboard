@@ -123,7 +123,9 @@ export async function connectAndPollController(
       reduxStore.dispatch(updateModelList(models), {
         wsControllerURL: controllerData[0],
       });
-      const modelUUIDList = models.userModels.map((item) => item.model.uuid);
+      const modelUUIDList = models["user-models"].map(
+        (item) => item.model.uuid
+      );
       await fetchAllModelStatuses(
         controllerData[0],
         modelUUIDList,
