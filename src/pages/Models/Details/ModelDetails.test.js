@@ -244,4 +244,21 @@ describe("ModelDetail Container", () => {
       wrapper.find(".slide-panel.units-panel .panel-header .entity-name").text()
     ).toBe("kibana/0");
   });
+
+  it("should display the correct window title", () => {
+    const store = mockStore(dataDump);
+    mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    const pageTitle = document.title;
+    expect(pageTitle).toEqual("Model: new-search-aggregate | Juju Dashboard");
+  });
 });

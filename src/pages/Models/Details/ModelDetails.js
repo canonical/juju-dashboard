@@ -11,7 +11,6 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
-
 import AppsPanel from "components/panels/AppsPanel/AppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
@@ -26,6 +25,7 @@ import {
 } from "app/selectors";
 
 import useModelStatus from "hooks/useModelStatus";
+import useWindowTitle from "hooks/useWindowTitle";
 
 import { fetchAndStoreModelStatus } from "juju/index";
 import { fetchModelStatus } from "juju/actions";
@@ -278,6 +278,12 @@ const ModelDetails = () => {
 
   const { panel: activePanel, entity, activeView } = query;
   const closePanelConfig = { panel: undefined, entity: undefined };
+
+  useWindowTitle(
+    modelStatusData?.model?.name
+      ? `Model: ${modelStatusData.model.name}`
+      : "..."
+  );
 
   return (
     <Layout>
