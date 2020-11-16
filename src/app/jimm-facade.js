@@ -1,7 +1,7 @@
 const {
   autoBind,
   createAsyncHandler,
-} = require("@canonical/jujulib/api/transform.js");
+} = require("@canonical/jujulib/dist/api/utils.js");
 
 /**
   pinger describes a resource that can be pinged and stopped.
