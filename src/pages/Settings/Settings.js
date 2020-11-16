@@ -3,10 +3,13 @@ import Header from "components/Header/Header";
 import Layout from "components/Layout/Layout";
 
 import useLocalStorage from "hooks/useLocalStorage";
+import useWindowTitle from "hooks/useWindowTitle";
 
 import "./settings.scss";
 
 export default function Settings() {
+  useWindowTitle("Settings");
+
   const [disableAnalytics, setDisableAnalytics] = useLocalStorage(
     "disableAnalytics",
     false

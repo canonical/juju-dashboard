@@ -68,4 +68,20 @@ describe("Models page", () => {
     expect(searchParams.get("groupedby")).toEqual("owner");
     expect(wrapper.find(".owners-group")).toBeDefined();
   });
+
+  it("should display the correct window title", () => {
+    const store = mockStore(dataDump);
+    const history = createMemoryHistory();
+    mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <Models />
+          </QueryParamProvider>
+        </Router>
+      </Provider>
+    );
+    const pageTitle = document.title;
+    expect(pageTitle).toEqual("Models | Juju Dashboard");
+  });
 });

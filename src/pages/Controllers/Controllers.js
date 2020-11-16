@@ -9,14 +9,18 @@ import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
+import useLocalStorage from "hooks/useLocalStorage";
+import useWindowTitle from "hooks/useWindowTitle";
+
 import { getBakery, getControllerData, getModelData } from "app/selectors";
 import { connectAndStartPolling } from "app/actions";
-import useLocalStorage from "hooks/useLocalStorage";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 
 import "./_controllers.scss";
 
 function Details() {
+  useWindowTitle("Controllers");
+
   const controllerData = useSelector(getControllerData);
   const modelData = useSelector(getModelData);
 

@@ -9,6 +9,8 @@ import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import FilterTags from "components/FilterTags/FilterTags";
 
+import useWindowTitle from "hooks/useWindowTitle";
+
 import { useQueryParam, StringParam, withDefault } from "use-query-params";
 
 import { getGroupedModelStatusCounts } from "app/selectors";
@@ -17,6 +19,8 @@ import { pluralize } from "app/utils";
 import "./_models.scss";
 
 export default function Models() {
+  useWindowTitle("Models");
+
   const [groupModelsBy, setGroupModelsBy] = useQueryParam(
     "groupedby",
     withDefault(StringParam, "status")
