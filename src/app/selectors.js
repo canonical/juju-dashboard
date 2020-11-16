@@ -288,7 +288,7 @@ const groupModelsByOwner = (modelData) => {
   for (let modelUUID in modelData) {
     const model = modelData[modelUUID];
     if (model.info) {
-      const owner = extractOwnerName(model.info.ownerTag);
+      const owner = extractOwnerName(model.info["owner-tag"]);
       if (!grouped[owner]) {
         grouped[owner] = [];
       }
@@ -311,7 +311,7 @@ const groupModelsByCloud = (modelData) => {
   for (let modelUUID in modelData) {
     const model = modelData[modelUUID];
     if (model.info) {
-      const cloud = extractCloudName(model.info.cloudTag);
+      const cloud = extractCloudName(model.info["cloud-tag"]);
       if (!grouped[cloud]) {
         grouped[cloud] = [];
       }

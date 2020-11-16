@@ -62,7 +62,7 @@ export default function CloudGroup({ activeUser, filters }) {
       cloudModels.rows = [];
       modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
-        const owner = extractOwnerName(model.info.ownerTag);
+        const owner = extractOwnerName(model.info["owner-tag"]);
         const region = getStatusValue(model, "region");
         const credential = getStatusValue(model.info, "cloudCredentialTag");
         const controller = getStatusValue(model.info, "controllerName");
