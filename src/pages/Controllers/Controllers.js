@@ -58,9 +58,8 @@ function Details() {
             controllerMap[controllerUUID].applications +=
               applicationKeys.length;
             const unitCount = applicationKeys.reduce((acc, appName) => {
-              return (
-                acc + Object.keys(model.applications[appName].units).length
-              );
+              const units = model.applications[appName].units || {}; // Subordinates don't have units
+              return acc + Object.keys(units).length;
             }, 0);
             controllerMap[controllerUUID].units += unitCount;
           }

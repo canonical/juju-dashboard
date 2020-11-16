@@ -105,7 +105,7 @@ export const getMachineStatusGroup = (machine) => {
   const blocked = ["down"];
   // Possible "alert" states in machine statuses.
   const alert = ["pending"];
-  const status = machine.agentStatus.status;
+  const status = machine["agent-status"].status;
   const response = {
     status: "running",
     message: null,
