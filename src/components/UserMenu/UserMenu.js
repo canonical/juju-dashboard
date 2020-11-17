@@ -36,52 +36,54 @@ const UserMenu = () => {
   const toggleUserMenuActive = () => dispatch(userMenuActive(!isActive));
 
   return (
-    <div
-      className={classNames("user-menu", {
-        "is-active": isActive,
-      })}
-    >
-      <>
+    <>
+      {activeUser && (
         <div
-          className="user-menu__header"
-          onClick={toggleUserMenuActive}
-          onKeyPress={toggleUserMenuActive}
-          role="button"
-          tabIndex="0"
+          className={classNames("user-menu", {
+            "is-active": isActive,
+          })}
         >
-          <i className="p-icon--user"></i>
-          <span className="user-menu__name">
-            {activeUser ? extractOwnerName(activeUser) : ""}
-          </span>
-          <i className="p-icon--contextual-menu"></i>
+          <div
+            className="user-menu__header"
+            onClick={toggleUserMenuActive}
+            onKeyPress={toggleUserMenuActive}
+            role="button"
+            tabIndex="0"
+          >
+            <i className="p-icon--user"></i>
+            <span className="user-menu__name">
+              {activeUser ? extractOwnerName(activeUser) : ""}
+            </span>
+            <i className="p-icon--contextual-menu"></i>
+          </div>
+          <ul className="p-list user-menu__options">
+            <li className="p-list__item">
+              <NavLink
+                className="user-menu__link p-list__link"
+                isActive={(match) => {
+                  if (match && match.url.includes("settings")) {
+                    return true;
+                  }
+                }}
+                to="/settings"
+                activeClassName="is-selected"
+              >
+                Settings
+              </NavLink>
+            </li>
+            <li className="p-list__item">
+              <Link
+                className="user-menu__link"
+                to="/"
+                onClick={() => dispatch(logOut(store))}
+              >
+                Log out
+              </Link>
+            </li>
+          </ul>
         </div>
-        <ul className="p-list user-menu__options">
-          <li className="p-list__item">
-            <NavLink
-              className="user-menu__link p-list__link"
-              isActive={(match) => {
-                if (match && match.url.includes("settings")) {
-                  return true;
-                }
-              }}
-              to="/settings"
-              activeClassName="is-selected"
-            >
-              Settings
-            </NavLink>
-          </li>
-          <li className="p-list__item">
-            <Link
-              className="user-menu__link"
-              to="/"
-              onClick={() => dispatch(logOut(store))}
-            >
-              Log out
-            </Link>
-          </li>
-        </ul>
-      </>
-    </div>
+      )}
+    </>
   );
 };
 
