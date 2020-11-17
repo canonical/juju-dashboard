@@ -1,10 +1,14 @@
 import React, { useEffect } from "react";
-import { Route, Redirect, useLocation } from "react-router-dom";
+import { Route, Redirect, Switch, useLocation } from "react-router-dom";
+
+import Login from "components/LogIn/LogIn";
 
 import Controllers from "pages/Controllers/Controllers";
 import Models from "pages/Models/Models";
 import ModelDetails from "pages/Models/Details/ModelDetails";
 import Settings from "pages/Settings/Settings";
+import NotFound from "pages/NotFound/NotFound";
+
 import useAnalytics from "hooks/useAnalytics";
 
 export const paths = {
@@ -26,7 +30,8 @@ export function Routes() {
     });
   }, [location, sendAnalytics]);
 
-  return Object.entries(paths).map((path) => {
+  const routes = Object.entries(paths).map((path) => {
+    const Component = path[1].component;
     if (path[1].redirect) {
       return (
         <Route key={path[0]} path={path[0]} exact>
@@ -35,7 +40,20 @@ export function Routes() {
       );
     }
     return (
-      <Route key={path[0]} path={path[0]} exact component={path[1].component} />
+      <Route key={path[0]} path={path[0]} exact>
+        <Login>
+          <Component />
+        </Login>
+      </Route>
     );
   });
+
+  return (
+    <Switch>
+      {routes}
+      <Route>
+        <NotFound />
+      </Route>
+    </Switch>
+  );
 }
