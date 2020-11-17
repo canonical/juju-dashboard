@@ -312,7 +312,7 @@ export const filterModelStatusDataByApp = (modelStatusData, appName) => {
     }
 
     // Remove all relations that don't involve the selected application.
-    filteredData.relations = modelStatusData.relations.filter(
+    filteredData.relations = modelStatusData?.relations?.filter(
       (relation) => relation.key.indexOf(appName) > -1
     );
 

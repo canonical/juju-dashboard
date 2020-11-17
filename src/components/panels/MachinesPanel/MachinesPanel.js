@@ -45,7 +45,7 @@ export default function MachinesPanel({ entity: machineId, panelRowClick }) {
                 </strong>
               </div>
               <span className="u-capitalise">
-                {generateStatusElement(machine.agentStatus.status)}
+                {generateStatusElement(machine["agent-status"].status)}
               </span>
               <span>{}</span>
             </div>
@@ -72,7 +72,7 @@ export default function MachinesPanel({ entity: machineId, panelRowClick }) {
                 <span className="panel__value">{hardware["cores"] || "-"}</span>
               </div>
             </div>
-            <div className="col-4">{machine.agentStatus.info}</div>
+            <div className="col-4">{machine["agent-status"].info}</div>
           </div>
         )}
       </div>
@@ -91,7 +91,7 @@ export default function MachinesPanel({ entity: machineId, panelRowClick }) {
         Object.keys(filteredModelStatusData.applications).forEach(
           (application) => {
             const units =
-              filteredModelStatusData.applications[application]?.units;
+              filteredModelStatusData.applications[application]?.units || {};
 
             if (Object.entries(units).length) {
               Object.values(units).forEach((unit) => {
@@ -121,7 +121,7 @@ export default function MachinesPanel({ entity: machineId, panelRowClick }) {
         Object.keys(filteredModelStatusData.applications).forEach(
           (application) => {
             const units =
-              filteredModelStatusData.applications[application].units;
+              filteredModelStatusData.applications[application].units || {};
             for (let [key, unit] of Object.entries(units)) {
               if (unit.machine !== machineId) {
                 delete filteredModelStatusData.applications[application].units[

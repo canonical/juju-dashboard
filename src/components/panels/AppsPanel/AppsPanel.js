@@ -80,7 +80,7 @@ export default function AppsPanel({ entity, panelRowClick }) {
               <div className="panel__kv">
                 <span className="panel__label">Version:</span>
                 <span className="panel__value">
-                  {app.workloadVersion || "-"}
+                  {app["workload-version"] || "-"}
                 </span>
               </div>
             </div>
