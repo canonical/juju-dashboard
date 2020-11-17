@@ -38,7 +38,7 @@ const InfoPanel = () => {
   const modelStatusData = useModelStatus();
 
   const cloudProvider = modelStatusData
-    ? extractCloudName(modelStatusData.model.cloudTag)
+    ? extractCloudName(modelStatusData.model["cloud-tag"])
     : "";
 
   const { width, height } = expandedTopologyDimensions();

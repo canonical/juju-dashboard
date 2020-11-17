@@ -105,10 +105,10 @@ export function addControllerCloudRegion(wsControllerURL, modelInfo) {
     const model = modelInfo.results[0].result;
     if (controllers) {
       const updatedControllers = cloneDeep(controllers).map((controller) => {
-        if (controller.uuid === model.controllerUuid) {
+        if (controller.uuid === model["controller-uuid"]) {
           controller.location = {
-            cloud: model.cloudRegion,
-            region: model.cloudTag.replace("cloud-", ""),
+            cloud: model["cloud-region"],
+            region: model["cloud-tag"].replace("cloud-", ""),
           };
         }
         return controller;

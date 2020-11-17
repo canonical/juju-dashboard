@@ -8,7 +8,7 @@ import { generateIconPath } from "app/utils";
   @param {Object} app The application status object.
   @returns {Boolean} If the application is a subordinate.
 */
-const isSubordinate = (app) => app.subordinateTo.length > 0;
+const isSubordinate = (app) => app?.subordinateTo?.length > 0;
 
 /**
   Computes the maximum delta from 0 for both the x and y axis. This is necessary
@@ -142,7 +142,7 @@ export default ({ modelData, width, height }) => {
   // Dedupe the relations as we only draw a single line between two
   // applications regardless of how many relations are between them.
   const endpoints =
-    modelData &&
+    modelData?.relations &&
     modelData.relations.reduce((acc, relation) => {
       const endpoints = relation.endpoints;
       // We don't draw peer relations so we can ignore them.

@@ -124,7 +124,8 @@ export function generateApplicationRows(
   const applications = cloneDeep(modelStatusData.applications);
 
   Object.keys(applications).forEach((key) => {
-    applications[key].unitsCount = Object.keys(applications[key].units).length;
+    const units = applications[key].units || {};
+    applications[key].unitsCount = Object.keys(units).length;
   });
 
   return Object.keys(applications).map((key) => {
@@ -206,11 +207,11 @@ export function generateUnitRows(
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach((unitId) => {
       const unit = units[unitId];
-      const workload = unit.workloadStatus.status || "-";
-      const agent = unit.agentStatus.status || "-";
-      const publicAddress = unit.publicAddress || "-";
-      const port = unit.openedPorts.join(" ") || "-";
-      const message = unit.workloadStatus.info || "-";
+      const workload = unit["workload-status"].status || "-";
+      const agent = unit["agent-status"].status || "-";
+      const publicAddress = unit["public-address"] || "-";
+      const port = unit?.["opened-ports"]?.join(" ") || "-";
+      const message = unit["workload-status"].info || "-";
       unitRows.push({
         columns: [
           {
@@ -346,15 +347,15 @@ export function generateMachineRows(
           ),
         },
         {
-          content: generateStatusElement(machine.agentStatus.status),
+          content: generateStatusElement(machine["agent-status"].status),
           className: "u-capitalise",
         },
         { content: az },
         { content: machine.instanceId },
         {
           content: (
-            <span title={machine.agentStatus.info}>
-              {machine.agentStatus.info}
+            <span title={machine["agent-status"].info}>
+              {machine["agent-status"].info}
             </span>
           ),
           className: "u-truncate",
@@ -362,7 +363,7 @@ export function generateMachineRows(
       ],
       sortData: {
         machine: machine.series,
-        state: machine?.agentStatus?.status,
+        state: machine?.["agent-status"]?.status,
         az,
         instanceId: machine.instanceId,
         message: machine?.agentStatus?.info,
@@ -400,8 +401,7 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
   if (!modelStatusData) {
     return [];
   }
-
-  const relations = modelStatusData.relations;
+  const relations = modelStatusData.relations || {};
   return Object.keys(relations).map((relationId) => {
     const relation = relations[relationId];
     const {
@@ -506,7 +506,7 @@ export function generateConsumedRows(modelStatusData, baseAppURL) {
     return [];
   }
 
-  const remoteApplications = modelStatusData.remoteApplications;
+  const remoteApplications = modelStatusData.remoteApplications || {};
   return Object.keys(remoteApplications).map((appName) => {
     const application = remoteApplications[appName];
     return {
