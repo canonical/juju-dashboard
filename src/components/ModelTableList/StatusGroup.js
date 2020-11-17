@@ -71,7 +71,7 @@ const generateWarningMessage = (model, activeUser) => {
 const generateModelNameCell = (model, groupLabel, activeUser) => {
   const link = generateModelDetailsLink(
     model.model.name,
-    model.info && model.info.ownerTag,
+    model.info && model.info["owner-tag"],
     activeUser,
     model.model.name
   );
