@@ -23,7 +23,6 @@ function Details() {
 
   const controllerData = useSelector(getControllerData);
   const modelData = useSelector(getModelData);
-
   const [showRegisterAController, setShowRegisterAController] = useState(false);
 
   const controllerMap = {};
@@ -48,7 +47,7 @@ function Details() {
       for (const modelUUID in modelData) {
         const model = modelData[modelUUID];
         if (model.info) {
-          const controllerUUID = model.info.controllerUuid;
+          const controllerUUID = model.info["controller-uuid"];
           if (controllerMap[controllerUUID]) {
             controllerMap[controllerUUID].models += 1;
             controllerMap[controllerUUID].machines += Object.keys(
