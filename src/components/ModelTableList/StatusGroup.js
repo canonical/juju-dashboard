@@ -106,11 +106,11 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
       if (model.info) {
         owner = extractOwnerName(model.info["owner-tag"]);
       }
-      const cloud = `${getStatusValue(model, "cloudTag")}/${getStatusValue(
+      const cloud = `${getStatusValue(model, "cloud-tag")}/${getStatusValue(
         model,
         "region"
       )}`;
-      const credential = getStatusValue(model.info, "cloudCredentialTag");
+      const credential = getStatusValue(model.info, "cloud-credential-tag");
       const controller = getStatusValue(model.info, "controllerName");
       const lastUpdated = getStatusValue(model.info, "status.since");
       modelData[`${groupLabel}Rows`].push({

@@ -119,13 +119,13 @@ export function getStatusValue(status, key) {
           </>
         );
         break;
-      case "cloudTag":
+      case "cloud-tag":
         returnValue = extractCloudName(status.model["cloud-tag"]);
         break;
       case "region":
         returnValue = status.model.region;
         break;
-      case "cloudCredentialTag":
+      case "cloud-credential-tag":
         returnValue = extractCredentialName(status["cloud-credential-tag"]);
         break;
       case "controllerUuid":

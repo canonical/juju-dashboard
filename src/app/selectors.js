@@ -359,11 +359,13 @@ const filterModelData = (filters, modelData, controllers) => {
           return controllerName;
         });
       }
-      if (modelInfo.controllerUuid === "a030379a-940f-4760-8fcf-3062b41a04e7") {
+      if (
+        modelInfo["controller-uuid"] === "a030379a-940f-4760-8fcf-3062b41a04e7"
+      ) {
         controllerName = "JAAS";
       }
       if (!controllerName) {
-        controllerName = modelInfo.controllerUuid;
+        controllerName = modelInfo["controller-uuid"];
       }
       modelInfo.controllerName = controllerName;
     }

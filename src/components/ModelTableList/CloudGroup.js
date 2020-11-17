@@ -74,7 +74,7 @@ export default function CloudGroup({ activeUser, filters }) {
               "data-test-column": "name",
               content: generateModelDetailsLink(
                 model.info.name,
-                model.info && model.info.ownerTag,
+                model.info && model.info["owner-tag"],
                 activeUser,
                 model.info.name
               ),
