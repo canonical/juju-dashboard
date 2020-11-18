@@ -78,7 +78,6 @@ function bootstrap() {
     {
       ui: {
         userMenuActive: false,
-        externalNavActive: false,
       },
     },
     // Order of the middleware is important

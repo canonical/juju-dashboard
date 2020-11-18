@@ -1,7 +1,6 @@
 import Limiter from "async-limiter";
 import { connect, connectAndLogin } from "@canonical/jujulib";
-// When updating this list of juju facades be sure to update the
-// mangle.reserved list in craco.config.js.
+
 import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
 import client from "@canonical/jujulib/dist/api/facades/client-v2";
 import cloud from "@canonical/jujulib/dist/api/facades/cloud-v3";
