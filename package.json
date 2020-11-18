@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@canonical/jaaslib": "0.6.0",
-    "@canonical/jujulib": "1.3.2",
+    "@canonical/jujulib": "^2.0.0-beta.1",
     "@canonical/macaroon-bakery": "0.3.0",
     "@canonical/react-components": "0.14.0",
     "@craco/craco": "5.7.0",
