@@ -24,8 +24,6 @@ const actionWhitelist = [
   "TOGGLE_EXTERNAL_NAV",
 ];
 
-// When updating this list be sure to update the mangle.reserved list in
-// craco.config.js so that the name doesn't get mangled by CRA.
 const thunkWhitelist = ["connectAndStartPolling", "logOut"];
 
 function error(name, wsControllerURL) {
@@ -60,14 +58,14 @@ export default ({ getState }) => (next) => async (action, options) => {
   // If the action is a function then it's probably a thunk.
   if (typeof action === "function") {
     if (
-      thunkWhitelist.includes(action.name) ||
+      thunkWhitelist.includes(action.NAME) ||
       checkLoggedIn(state, wsControllerURL)
     ) {
       // Await the next to support async thunks
       await next(action);
       return;
     } else {
-      error(action.name, wsControllerURL);
+      error(action.NAME, wsControllerURL);
     }
   } else {
     if (

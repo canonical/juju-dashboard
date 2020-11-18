@@ -141,7 +141,7 @@ export function storeVisitURL(visitURL) {
   Flush bakery from redux store
 */
 export function logOut(store) {
-  return async function logOut(dispatch) {
+  async function logOut(dispatch) {
     const state = store.getState();
     const identityProviderAvailable =
       state?.root?.config?.identityProviderAvailable;
@@ -166,7 +166,11 @@ export function logOut(store) {
       // again.
       dispatch(connectAndStartPolling(store, bakery));
     }
-  };
+  }
+  // Define a name that won't be munged by the minifier to check
+  // against in the check-auth middleware.
+  logOut.NAME = "logOut";
+  return logOut;
 }
 
 /**
@@ -175,7 +179,7 @@ export function logOut(store) {
   @param {Object} bakery The bakery.
 */
 export function connectAndStartPolling(reduxStore, bakery) {
-  return async function connectAndStartPolling(dispatch) {
+  async function connectAndStartPolling(dispatch) {
     let additionalControllers = null;
     try {
       const data = window.localStorage.getItem("additionalControllers");
@@ -195,5 +199,9 @@ export function connectAndStartPolling(reduxStore, bakery) {
       console.log("Error retrieving additional registered controllers", e);
     }
     connectAndListModels(reduxStore, bakery, additionalControllers);
-  };
+  }
+  // Define a name that won't be munged by the minifier to check
+  // against in the check-auth middleware.
+  connectAndStartPolling.NAME = "connectAndStartPolling";
+  return connectAndStartPolling;
 }
