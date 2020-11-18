@@ -52,7 +52,7 @@ function determineLoginParams(credentials, identityProviderAvailable) {
   let loginParams = {};
   if (!identityProviderAvailable) {
     loginParams = {
-      user: `user-${credentials.user}`,
+      username: credentials.user,
       password: credentials.password,
     };
   }
