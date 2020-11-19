@@ -129,7 +129,7 @@ export function getStatusValue(status, key) {
         returnValue = extractCredentialName(status["cloud-credential-tag"]);
         break;
       case "controllerUuid":
-        returnValue = status.controllerUuid;
+        returnValue = status["controller-uuid"];
         break;
       case "controllerName":
         returnValue = status.controllerName;

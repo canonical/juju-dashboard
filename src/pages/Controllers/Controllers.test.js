@@ -38,16 +38,11 @@ describe("Controllers table", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find("tbody tr").length).toBe(6);
+    expect(wrapper.find("tbody tr").length).toBe(2);
   });
 
   it("counts models, machines, apps, and units", () => {
     const clonedData = cloneDeep(dataDump);
-    // override existing data mock while using as much real content as possible.
-    const existingUUID = "086f0bf8-da79-4ad4-8d73-890721332c8b";
-    clonedData.juju.modelData[
-      "e1e81a64-3385-4779-8643-05e3d5ed4523"
-    ].info.controllerUuid = existingUUID;
     const store = mockStore(clonedData);
     const wrapper = mount(
       <MemoryRouter>

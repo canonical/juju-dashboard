@@ -59,7 +59,7 @@ describe("User Menu", () => {
       </Provider>
     );
     const username = ".user-menu__name";
-    expect(wrapper.find(username).text()).toEqual("activedev");
+    expect(wrapper.find(username).text()).toEqual("eggman");
   });
 
   it("Test dispatch function is fired", () => {

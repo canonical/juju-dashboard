@@ -38,9 +38,7 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/spaceman@external/hadoopspark"]}
-        >
+        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
               <ModelDetails />
@@ -56,7 +54,7 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/spaceman@external/mymodel"]}>
+        <MemoryRouter initialEntries={["/models/pizza@external/mymodel"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
               <ModelDetails />
@@ -93,9 +91,7 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/spaceman@external/hadoopspark"]}
-        >
+        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
               <ModelDetails />
@@ -131,7 +127,7 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/admin/local-test"]}>
+        <MemoryRouter initialEntries={["/models/local-test"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
               <ModelDetails />
@@ -154,10 +150,10 @@ describe("ModelDetail Container", () => {
 
   it("displays the correct scale value", () => {
     const store = mockStore(dataDump);
-    const testApp = "kibana";
+    const testApp = "client";
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
               <ModelDetails />
@@ -200,7 +196,7 @@ describe("ModelDetail Container", () => {
     const testMachine = "1";
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
               <ModelDetails />
@@ -219,15 +215,15 @@ describe("ModelDetail Container", () => {
       wrapper
         .find(".slide-panel.machines-panel .panel-header .entity-name")
         .text()
-    ).toBe("Machine '1' - trusty");
+    ).toBe("Machine '1' - xenial");
   });
 
   it("displays correct side panel when unit row is clicked", () => {
     const store = mockStore(dataDump);
-    const testUnit = "kibana/0";
+    const testUnit = "client/0";
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
               <ModelDetails />
@@ -242,7 +238,7 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find(".slide-panel.units-panel").length).toBe(1);
     expect(
       wrapper.find(".slide-panel.units-panel .panel-header .entity-name").text()
-    ).toBe("kibana/0");
+    ).toBe("client/0");
   });
 
   it("should display the correct window title", () => {

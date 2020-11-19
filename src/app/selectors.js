@@ -354,7 +354,7 @@ const filterModelData = (filters, modelData, controllers) => {
       if (controllers) {
         Object.entries(controllers).some((controller) => {
           controllerName = controller[1].find(
-            (controller) => modelInfo.controllerUuid === controller.uuid
+            (controller) => modelInfo["controller-uuid"] === controller.uuid
           )?.path;
           return controllerName;
         });
@@ -387,11 +387,11 @@ const filterModelData = (filters, modelData, controllers) => {
     const remove = Object.entries(filterSegments).some(([segment, values]) => {
       switch (segment) {
         case "cloud":
-          return !values.includes(extractCloudName(data.model.cloudTag));
+          return !values.includes(extractCloudName(data.model["cloud-tag"]));
         case "credential":
           if (data.info) {
             return !values.includes(
-              extractCredentialName(data.info.cloudCredentialTag)
+              extractCredentialName(data.info["cloud-credential-tag"])
             );
           }
           break;
@@ -399,7 +399,7 @@ const filterModelData = (filters, modelData, controllers) => {
           return !values.includes(data.model.region);
         case "owner":
           if (data.info) {
-            return !values.includes(extractOwnerName(data.info.ownerTag));
+            return !values.includes(extractOwnerName(data.info["owner-tag"]));
           }
           break;
       }

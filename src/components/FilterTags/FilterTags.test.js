@@ -51,10 +51,10 @@ describe("FilterTags", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find('[data-test="owner"] li').length).toBe(6);
+    expect(wrapper.find('[data-test="owner"] li').length).toBe(4);
     expect(wrapper.find('[data-test="cloud"] li').length).toBe(2);
     expect(wrapper.find('[data-test="region"] li').length).toBe(5);
-    expect(wrapper.find('[data-test="credential"] li').length).toBe(8);
+    expect(wrapper.find('[data-test="credential"] li').length).toBe(9);
   });
 });
 
@@ -132,7 +132,7 @@ describe("Filter pills", () => {
       ".p-filter-tags__active-filter .p-icon--close";
     wrapper.find(filterButton).at(0).simulate("click");
     const searchParams = new URLSearchParams(history.location.search);
-    expect(searchParams.get("activeFilters")).toEqual("cloud:aws");
+    expect(searchParams.get("activeFilters")).toEqual("cloud:google");
     wrapper.find(selectedActiveFilterClose).at(0).simulate("click");
     const updatedSearchParams = new URLSearchParams(history.location.search);
     expect(updatedSearchParams.get("activeFilters")).toEqual(null);
@@ -155,10 +155,10 @@ describe("Filter pills", () => {
     wrapper.find(filterButton).at(0).simulate("click");
     wrapper.find(filterButton).at(1).simulate("click");
     expect(history.location.search).toEqual(
-      "?activeFilters=cloud%3Aaws,cloud%3Agoogle"
+      "?activeFilters=cloud%3Agoogle,cloud%3Aaws"
     );
     wrapper.find(selectedActiveFilterClose).at(0).simulate("click");
-    expect(history.location.search).toEqual("?activeFilters=cloud%3Agoogle");
+    expect(history.location.search).toEqual("?activeFilters=cloud%3Aaws");
     wrapper.find(selectedActiveFilterClose).at(0).simulate("click");
     expect(history.location.search).toEqual("");
   });
