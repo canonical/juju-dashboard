@@ -20,5 +20,7 @@ describe("NotFound page", () => {
       </Provider>
     );
     expect(wrapper.find("NotFound").length).toBe(1);
+    // Ensure only one route is rendered
+    expect(wrapper.find("main").length).toBe(1);
   });
 });
