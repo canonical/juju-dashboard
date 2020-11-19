@@ -51,6 +51,7 @@ const checkLoggedIn = (state, wsControllerURL) => {
       wsControllerURL: The full controller websocket url that the controller
         is stored under in redux in order to determine it's logged in status.
 */
+// eslint-disable-next-line import/no-anonymous-default-export
 export default ({ getState }) => (next) => async (action, options) => {
   const state = getState();
   const wsControllerURL = options?.wsControllerURL;
