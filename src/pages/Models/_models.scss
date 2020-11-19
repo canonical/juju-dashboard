@@ -35,7 +35,7 @@
       }
 
       .p-chip {
-        // Overrdie required until upstream fix
+        // Override required until upstream fix
         // https://github.com/canonical-web-and-design/vanilla-framework/issues/3416
         &[aria-pressed="true"] {
           background-color: rgba($color-x-dark, 0.15);
