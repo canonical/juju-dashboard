@@ -94,7 +94,6 @@ const getFilteredModelData = (filters) =>
   createSelector(
     [getModelData, getControllerData],
     (modelData, controllerData) =>
-      // inject modelData with controller data
       filterModelData(filters, modelData, controllerData)
   );
 
