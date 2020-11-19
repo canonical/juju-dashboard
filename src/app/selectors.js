@@ -383,26 +383,38 @@ const filterModelData = (filters, modelData, controllers) => {
   });
 
   Object.entries(clonedModelData).forEach(([uuid, data]) => {
+    const modelName = data?.model?.name;
+    const cloud = data?.model && extractCloudName(data.model.cloudTag);
+    const credential =
+      data?.info && extractCredentialName(data.info.cloudCredentialTag);
+    const region = data?.model && data.model.region;
+    const owner = data?.info && extractOwnerName(data.info.ownerTag);
+    // Combine all of the above to create string for fuzzy custom search
+    const combinedModelAttributes = `${modelName} ${cloud} ${credential} ${region} ${owner}`;
+
     const remove = Object.entries(filterSegments).some(
       ([segment, valuesArr]) => {
         const values = valuesArr[0];
         switch (segment) {
           case "cloud":
-            return !values.includes(extractCloudName(data.model.cloudTag));
+            return !values.includes(cloud);
           case "credential":
             if (data.info) {
-              return !values.includes(
-                extractCredentialName(data.info.cloudCredentialTag)
-              );
+              return !values.includes(credential);
             }
             break;
           case "region":
-            return !values.includes(data.model.region);
+            return !values.includes(region);
           case "owner":
             if (data.info) {
-              return !values.includes(extractOwnerName(data.info.ownerTag));
+              return !values.includes(owner);
             }
             break;
+          case "custom":
+            function includesMatch(v) {
+              return combinedModelAttributes.includes(v);
+            }
+            return !values.some((v) => includesMatch(v));
         }
         return false;
       }
