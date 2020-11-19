@@ -108,8 +108,8 @@ export default function Models() {
               },
               {
                 id: 3,
-                heading: "Credentials",
-                chips: generateChips("Credentials", credentials),
+                heading: "Credential",
+                chips: generateChips("Credential", credentials),
               },
             ]}
             existingSearchData={existingSearchData}
