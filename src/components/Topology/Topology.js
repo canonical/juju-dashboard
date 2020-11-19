@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
 import * as d3 from "d3";
 
 import { generateIconPath } from "app/utils";
@@ -105,21 +105,24 @@ const getRelationPosition = (data) => {
   };
 };
 
-export default ({ modelData, width, height }) => {
+const Topology = ({ modelData, width, height }) => {
   const ref = useRef();
 
   const { deltaX, deltaY } = computePositionDelta(
     modelData && modelData.annotations
   );
 
-  const applications =
-    (modelData &&
-      Object.keys(modelData.applications).map((appName) => ({
-        ...modelData.annotations[appName],
-        ...modelData.applications[appName],
-        name: appName,
-      }))) ||
-    [];
+  const applications = useMemo(() => {
+    return (
+      (modelData &&
+        Object.keys(modelData.applications).map((appName) => ({
+          ...modelData.annotations[appName],
+          ...modelData.applications[appName],
+          name: appName,
+        }))) ||
+      []
+    );
+  }, [modelData]);
 
   // Apply deltas to the annotations.
   for (const appName in applications) {
@@ -262,3 +265,5 @@ export default ({ modelData, width, height }) => {
   }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
   return <svg ref={ref} />;
 };
+
+export default Topology;

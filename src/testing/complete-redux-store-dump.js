@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Internally consistent mock data.
 // When generating additional mock data make sure that it's internally consistent
 // across the top level keys.
