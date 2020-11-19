@@ -15,6 +15,7 @@
     align-items: center;
     display: grid;
     grid-template-columns: 1fr;
+    padding: 0.15rem;
 
     @media (min-width: $breakpoint-medium) {
       grid-template-columns: 1fr 280px;
@@ -22,6 +23,24 @@
 
     @media (min-width: $breakpoint-large) {
       grid-template-columns: repeat(2, 1fr) 260px;
+    }
+
+    .search-and-filter {
+      @media (min-width: $breakpoint-medium) {
+        max-width: 270px;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.3rem;
+        width: 100%;
+      }
+
+      .p-chip {
+        // Override required until upstream fix
+        // https://github.com/canonical-web-and-design/vanilla-framework/issues/3416
+        &[aria-pressed="true"] {
+          background-color: rgba($color-x-dark, 0.15);
+        }
+      }
     }
   }
 
