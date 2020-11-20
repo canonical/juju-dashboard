@@ -27,7 +27,7 @@
     "start": "react-scripts start",
     "stylelint-check": "stylelint 'src/**/*.scss'",
     "stylelint-fix": "stylelint --fix 'src/**/*.scss'",
-    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!@canonical)/jujulib'"
+    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!@canonical)/jujulib/dist'"
   },
   "browserslist": {
     "production": [
