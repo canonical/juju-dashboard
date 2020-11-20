@@ -16,20 +16,20 @@ export default function useModelAttributes(modelData) {
       return;
     }
     // Extract cloud filters
-    const cloudFilter = extractCloudName(model.info.cloudTag);
+    const cloudFilter = extractCloudName(model.info["cloud-tag"]);
     if (!clouds.includes(cloudFilter)) clouds.push(cloudFilter);
 
     // Extract region filters
-    const regionFilter = model.info.cloudRegion;
+    const regionFilter = model.info["cloud-region"];
     if (!regions.includes(regionFilter)) regions.push(regionFilter);
 
     // Extract owner filters
-    const ownerFilter = extractOwnerName(model.info.ownerTag);
+    const ownerFilter = extractOwnerName(model.info["owner-tag"]);
     if (!owners.includes(ownerFilter)) owners.push(ownerFilter);
 
     // Extract credential filters
     const credentialFilter = extractCredentialName(
-      model.info.cloudCredentialTag
+      model.info["cloud-credential-tag"]
     );
     if (!credentials.includes(credentialFilter))
       credentials.push(credentialFilter);
