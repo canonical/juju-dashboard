@@ -94,7 +94,6 @@ const getFilteredModelData = (filters) =>
   createSelector(
     [getModelData, getControllerData],
     (modelData, controllerData) =>
-      // inject modeldata with controller data
       filterModelData(filters, modelData, controllerData)
   );
 
@@ -374,37 +373,53 @@ const filterModelData = (filters, modelData, controllers) => {
     return clonedModelData;
   }
   const filterSegments = {};
-  // Collect segments
-  filters.forEach((filter) => {
-    const values = filter.split(":");
-    if (!filterSegments[values[0]]) {
-      filterSegments[values[0]] = [];
+
+  // Collect segments from filter data
+  Object.entries(filters).forEach((filter) => {
+    if (filter[1].length === 0) return;
+    if (!filterSegments[filter[0]]) {
+      filterSegments[filter[0]] = [];
     }
-    filterSegments[values[0]].push(values[1]);
+    filterSegments[filter[0]].push(filter[1]);
   });
 
   Object.entries(clonedModelData).forEach(([uuid, data]) => {
-    const remove = Object.entries(filterSegments).some(([segment, values]) => {
-      switch (segment) {
-        case "cloud":
-          return !values.includes(extractCloudName(data.model["cloud-tag"]));
-        case "credential":
-          if (data.info) {
-            return !values.includes(
-              extractCredentialName(data.info["cloud-credential-tag"])
-            );
-          }
-          break;
-        case "region":
-          return !values.includes(data.model.region);
-        case "owner":
-          if (data.info) {
-            return !values.includes(extractOwnerName(data.info["owner-tag"]));
-          }
-          break;
+    const modelName = data?.model?.name;
+    const cloud = data?.model && extractCloudName(data.model["cloud-tag"]);
+    const credential =
+      data?.info && extractCredentialName(data.info["cloud-credential-tag"]);
+    const region = data?.model && data.model.region;
+    const owner = data?.info && extractOwnerName(data.info["owner-tag"]);
+    // Combine all of the above to create string for fuzzy custom search
+    const combinedModelAttributes = `${modelName} ${cloud} ${credential} ${region} ${owner}`;
+
+    const remove = Object.entries(filterSegments).some(
+      ([segment, valuesArr]) => {
+        const values = valuesArr[0];
+        switch (segment) {
+          case "cloud":
+            return !values.includes(cloud);
+          case "credential":
+            if (data.info) {
+              return !values.includes(credential);
+            }
+            break;
+          case "region":
+            return !values.includes(region);
+          case "owner":
+            if (data.info) {
+              return !values.includes(owner);
+            }
+            break;
+          case "custom":
+            function includesMatch(v) {
+              return combinedModelAttributes.includes(v);
+            }
+            return !values.some((v) => includesMatch(v));
+        }
+        return false;
       }
-      return false;
-    });
+    );
     if (remove) {
       delete clonedModelData[uuid];
     }

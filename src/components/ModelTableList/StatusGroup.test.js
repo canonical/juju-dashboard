@@ -48,10 +48,13 @@ describe("StatusGroup", () => {
 
   it("fetches filtered data if filters supplied", () => {
     const store = mockStore(dataDump);
+    const filters = {
+      cloud: ["aws"],
+    };
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <StatusGroup filters={["cloud:aws"]} />
+          <StatusGroup filters={filters} />
         </Provider>
       </MemoryRouter>
     );

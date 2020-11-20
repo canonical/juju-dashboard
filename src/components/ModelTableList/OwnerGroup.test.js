@@ -49,10 +49,13 @@ describe("OwnerGroup", () => {
 
   it("fetches filtered data if filters supplied", () => {
     const store = mockStore(dataDump);
+    const filters = {
+      cloud: ["aws"],
+    };
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <OwnerGroup filters={["cloud:aws"]} />
+          <OwnerGroup filters={filters} />
         </Provider>
       </MemoryRouter>
     );

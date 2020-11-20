@@ -12,6 +12,8 @@ import { Routes } from "components/Routes/Routes";
 import { getConfig } from "app/selectors";
 import useLocalStorage from "hooks/useLocalStorage";
 
+import "../../scss/index.scss";
+
 function App() {
   const isProduction = process.env.NODE_ENV === "production" ?? true;
   const { baseAppURL } = useSelector(getConfig);
