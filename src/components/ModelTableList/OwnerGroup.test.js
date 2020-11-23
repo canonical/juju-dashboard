@@ -40,13 +40,11 @@ describe("OwnerGroup", () => {
       </MemoryRouter>
     );
     const tables = wrapper.find("MainTable");
-    expect(tables.length).toBe(6);
-    expect(tables.get(0).props.rows.length).toEqual(1);
-    expect(tables.get(1).props.rows.length).toEqual(5);
-    expect(tables.get(2).props.rows.length).toEqual(6);
+    expect(tables.length).toBe(4);
+    expect(tables.get(0).props.rows.length).toEqual(8);
+    expect(tables.get(1).props.rows.length).toEqual(2);
+    expect(tables.get(2).props.rows.length).toEqual(5);
     expect(tables.get(3).props.rows.length).toEqual(1);
-    expect(tables.get(4).props.rows.length).toEqual(3);
-    expect(tables.get(5).props.rows.length).toEqual(2);
   });
 
   it("fetches filtered data if filters supplied", () => {

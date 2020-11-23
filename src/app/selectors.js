@@ -151,7 +151,7 @@ const getModelUUIDByName = (name, modelData) => {
       const model = modelData[uuid].info;
       if (model && model.name === modelName) {
         if (owner) {
-          if (model.ownerTag === `user-${owner}`) {
+          if (model["owner-tag"] === `user-${owner}`) {
             // If this is a shared model then we'll also have an owner name
             return uuid;
           }
@@ -287,7 +287,7 @@ const groupModelsByOwner = (modelData) => {
   for (let modelUUID in modelData) {
     const model = modelData[modelUUID];
     if (model.info) {
-      const owner = extractOwnerName(model.info.ownerTag);
+      const owner = extractOwnerName(model.info["owner-tag"]);
       if (!grouped[owner]) {
         grouped[owner] = [];
       }
@@ -310,7 +310,7 @@ const groupModelsByCloud = (modelData) => {
   for (let modelUUID in modelData) {
     const model = modelData[modelUUID];
     if (model.info) {
-      const cloud = extractCloudName(model.info.cloudTag);
+      const cloud = extractCloudName(model.info["cloud-tag"]);
       if (!grouped[cloud]) {
         grouped[cloud] = [];
       }
@@ -353,16 +353,18 @@ const filterModelData = (filters, modelData, controllers) => {
       if (controllers) {
         Object.entries(controllers).some((controller) => {
           controllerName = controller[1].find(
-            (controller) => modelInfo.controllerUuid === controller.uuid
+            (controller) => modelInfo["controller-uuid"] === controller.uuid
           )?.path;
           return controllerName;
         });
       }
-      if (modelInfo.controllerUuid === "a030379a-940f-4760-8fcf-3062b41a04e7") {
+      if (
+        modelInfo["controller-uuid"] === "a030379a-940f-4760-8fcf-3062b41a04e7"
+      ) {
         controllerName = "JAAS";
       }
       if (!controllerName) {
-        controllerName = modelInfo.controllerUuid;
+        controllerName = modelInfo["controller-uuid"];
       }
       modelInfo.controllerName = controllerName;
     }
@@ -383,11 +385,11 @@ const filterModelData = (filters, modelData, controllers) => {
 
   Object.entries(clonedModelData).forEach(([uuid, data]) => {
     const modelName = data?.model?.name;
-    const cloud = data?.model && extractCloudName(data.model.cloudTag);
+    const cloud = data?.model && extractCloudName(data.model["cloud-tag"]);
     const credential =
-      data?.info && extractCredentialName(data.info.cloudCredentialTag);
+      data?.info && extractCredentialName(data.info["cloud-credential-tag"]);
     const region = data?.model && data.model.region;
-    const owner = data?.info && extractOwnerName(data.info.ownerTag);
+    const owner = data?.info && extractOwnerName(data.info["owner-tag"]);
     // Combine all of the above to create string for fuzzy custom search
     const combinedModelAttributes = `${modelName} ${cloud} ${credential} ${region} ${owner}`;
 

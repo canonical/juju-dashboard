@@ -1,7 +1,4 @@
-const {
-  autoBind,
-  createAsyncHandler,
-} = require("@canonical/jujulib/api/transform.js");
+const { autoBind } = require("@canonical/jujulib/dist/api/utils.js");
 
 /**
   pinger describes a resource that can be pinged and stopped.
@@ -16,7 +13,7 @@ class JIMMV1 {
     autoBind(this);
   }
 
-  disableControllerUUIDMasking(callback) {
+  disableControllerUUIDMasking() {
     return new Promise((resolve, reject) => {
       const params = {};
       const req = {
@@ -25,16 +22,11 @@ class JIMMV1 {
         version: 2,
         params: params,
       };
-      // Define a transform method if necessary.
-      let transform = null;
-
-      const handler = createAsyncHandler(callback, resolve, reject, transform);
-      // Send the request to the server.
-      this._transport.write(req, handler);
+      this._transport.write(req, resolve, reject);
     });
   }
 
-  listControllers(callback) {
+  listControllers() {
     return new Promise((resolve, reject) => {
       const params = {};
       const req = {
@@ -43,14 +35,11 @@ class JIMMV1 {
         version: 2,
         params: params,
       };
-      // Define a transform method if necessary.
-      let transform = null;
-
-      const handler = createAsyncHandler(callback, resolve, reject, transform);
-      // Send the request to the server.
-      this._transport.write(req, handler);
+      this._transport.write(req, resolve, reject);
     });
   }
 }
 
-module.exports = JIMMV1;
+JIMMV1.NAME = "JIMM";
+JIMMV1.VERSION = 2;
+export default JIMMV1;

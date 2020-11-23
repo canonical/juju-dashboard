@@ -1,13 +1,12 @@
 import Limiter from "async-limiter";
-import jujulib from "@canonical/jujulib";
-// When updating this list of juju facades be sure to update the
-// mangle.reserved list in craco.config.js.
-import annotations from "@canonical/jujulib/api/facades/annotations-v2";
-import client from "@canonical/jujulib/api/facades/client-v2";
-import cloud from "@canonical/jujulib/api/facades/cloud-v3";
-import controller from "@canonical/jujulib/api/facades/controller-v5";
-import modelManager from "@canonical/jujulib/api/facades/model-manager-v5";
-import pinger from "@canonical/jujulib/api/facades/pinger-v1";
+import { connect, connectAndLogin } from "@canonical/jujulib";
+
+import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
+import client from "@canonical/jujulib/dist/api/facades/client-v2";
+import cloud from "@canonical/jujulib/dist/api/facades/cloud-v3";
+import controller from "@canonical/jujulib/dist/api/facades/controller-v5";
+import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v5";
+import pinger from "@canonical/jujulib/dist/api/facades/pinger-v1";
 
 import jimm from "app/jimm-facade";
 
@@ -44,6 +43,7 @@ function generateConnectionOptions(usePinger = false, bakery, onClose) {
     closeCallback: onClose,
     debug: false,
     facades,
+    wsclass: WebSocket,
   };
 }
 
@@ -51,7 +51,7 @@ function determineLoginParams(credentials, identityProviderAvailable) {
   let loginParams = {};
   if (!identityProviderAvailable) {
     loginParams = {
-      user: `user-${credentials.user}`,
+      username: credentials.user,
       password: credentials.password,
     };
   }
@@ -76,7 +76,7 @@ export async function loginWithBakery(
   bakery,
   identityProviderAvailable
 ) {
-  const juju = await jujulib.connect(
+  const juju = await connect(
     wsControllerURL,
     generateConnectionOptions(true, bakery, (e) =>
       console.log("controller closed", e)
@@ -129,7 +129,7 @@ async function connectAndLoginWithTimeout(
     credentials,
     identityProviderAvailable
   );
-  const juju = jujulib.connectAndLogin(modelURL, loginParams, options);
+  const juju = connectAndLogin(modelURL, loginParams, options);
   return new Promise((resolve, reject) => {
     Promise.race([timeout, juju]).then((resp) => {
       if (resp === "timeout") {

@@ -280,10 +280,6 @@ const wrapper = mount(
 
 ### Developer notes
 
-#### Updating CRA
-
-When updating Create React App it's important to take a look at the `optimization.minimizer` values in the webpack config and then update the config in `craco.config.js`. After copying over any updates be sure to re-introduce the `terserOptions.mangle.reserved` key and values in the newly updated config.
-
 ## Releasing the Dashboard
 
 To complete QA and release the Dashboard will take aproximately 2h of total time, 1h of which is an automated process at the end.

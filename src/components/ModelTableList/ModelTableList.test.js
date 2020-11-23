@@ -23,13 +23,13 @@ describe("ModelTableList", () => {
     );
     const statusGroup = wrapper.find("StatusGroup");
     expect(statusGroup.length).toBe(1);
-    expect(statusGroup.prop("activeUser")).toBe("user-activedev@external");
+    expect(statusGroup.prop("activeUser")).toBe("user-eggman@external");
     expect(wrapper.find("OwnerGroup").length).toBe(0);
   });
 
   it("displays all data from redux store when grouping by...", () => {
     const store = mockStore(dataDump);
-    const user = "user-activedev@external";
+    const user = "user-eggman@external";
     const tables = [
       ["status", "StatusGroup"],
       ["owner", "OwnerGroup"],
@@ -91,8 +91,10 @@ describe("ModelTableList", () => {
     const clonedData = cloneDeep(dataDump);
     // override existing data mock while using as much real content as possible.
     const unknownUUID = "unknown-6245-2134-1325-ee33ee55dd66";
-    const testModelUUID = "e1e81a64-3385-4779-8643-05e3d5ed4523";
-    clonedData.juju.modelData[testModelUUID].info.controllerUuid = unknownUUID;
+    const testModelUUID = "19b56b55-6373-4286-8c19-957fakee8469";
+    clonedData.juju.modelData[testModelUUID].info[
+      "controller-uuid"
+    ] = unknownUUID;
     const store = mockStore(clonedData);
     const wrapper = mount(
       <MemoryRouter>
@@ -111,8 +113,10 @@ describe("ModelTableList", () => {
     const clonedData = cloneDeep(dataDump);
     // override existing data mock while using as much real content as possible.
     const knownUUID = "086f0bf8-da79-4ad4-8d73-890721332c8b";
-    const testModelUUID = "e1e81a64-3385-4779-8643-05e3d5ed4523";
-    clonedData.juju.modelData[testModelUUID].info.controllerUuid = knownUUID;
+    const testModelUUID = "19b56b55-6373-4286-8c19-957fakee8469";
+    clonedData.juju.modelData[testModelUUID].info[
+      "controller-uuid"
+    ] = knownUUID;
     const store = mockStore(clonedData);
     const wrapper = mount(
       <MemoryRouter>

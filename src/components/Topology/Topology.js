@@ -8,7 +8,7 @@ import { generateIconPath } from "app/utils";
   @param {Object} app The application status object.
   @returns {Boolean} If the application is a subordinate.
 */
-const isSubordinate = (app) => app.subordinateTo.length > 0;
+const isSubordinate = (app) => app?.subordinateTo?.length > 0;
 
 /**
   Computes the maximum delta from 0 for both the x and y axis. This is necessary
@@ -105,13 +105,17 @@ const getRelationPosition = (data) => {
   };
 };
 
-export default ({ modelData, width, height }) => {
+const Topology = ({ modelData, width, height }) => {
   const ref = useRef();
 
   const { deltaX, deltaY } = computePositionDelta(
     modelData && modelData.annotations
   );
 
+  // XXX If this is put into a useMemo as it should, it causes the topology to
+  // incorrectly position icons on every render.
+  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/762
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const applications =
     (modelData &&
       Object.keys(modelData.applications).map((appName) => ({
@@ -142,7 +146,7 @@ export default ({ modelData, width, height }) => {
   // Dedupe the relations as we only draw a single line between two
   // applications regardless of how many relations are between them.
   const endpoints =
-    modelData &&
+    modelData?.relations &&
     modelData.relations.reduce((acc, relation) => {
       const endpoints = relation.endpoints;
       // We don't draw peer relations so we can ignore them.
@@ -262,3 +266,5 @@ export default ({ modelData, width, height }) => {
   }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
   return <svg ref={ref} />;
 };
+
+export default Topology;

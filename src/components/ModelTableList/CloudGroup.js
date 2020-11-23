@@ -62,9 +62,9 @@ export default function CloudGroup({ activeUser, filters }) {
       cloudModels.rows = [];
       modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
-        const owner = extractOwnerName(model.info.ownerTag);
+        const owner = extractOwnerName(model.info["owner-tag"]);
         const region = getStatusValue(model, "region");
-        const credential = getStatusValue(model.info, "cloudCredentialTag");
+        const credential = getStatusValue(model.info, "cloud-credential-tag");
         const controller = getStatusValue(model.info, "controllerName");
         const lastUpdated = getStatusValue(model.info, "status.since");
         cloudModels.rows.push({
@@ -74,7 +74,7 @@ export default function CloudGroup({ activeUser, filters }) {
               "data-test-column": "name",
               content: generateModelDetailsLink(
                 model.info.name,
-                model.info && model.info.ownerTag,
+                model.info && model.info["owner-tag"],
                 activeUser,
                 model.info.name
               ),

@@ -58,9 +58,9 @@ export default function OwnerGroup({ activeUser, filters }) {
         const { highestStatus } = getModelStatusGroupData(model);
         const cloud = `${getStatusValue(model, "region")}/${getStatusValue(
           model,
-          "cloudTag"
+          "cloud-tag"
         )}`;
-        const credential = getStatusValue(model.info, "cloudCredentialTag");
+        const credential = getStatusValue(model.info, "cloud-credential-tag");
         const controller = getStatusValue(model.info, "controllerName");
         const lastUpdated = getStatusValue(model.info, "status.since");
         ownerModels.rows.push({
@@ -70,7 +70,7 @@ export default function OwnerGroup({ activeUser, filters }) {
               "data-test-column": "name",
               content: generateModelDetailsLink(
                 model.info.name,
-                model.info && model.info.ownerTag,
+                model.info && model.info["owner-tag"],
                 activeUser,
                 model.info.name
               ),

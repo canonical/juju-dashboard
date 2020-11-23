@@ -5,35 +5,35 @@ exports[`Controllers table counts models, machines, apps, and units 1`] = `
   role="row"
 >
   <TableCell>
-    admins/1-eu-west-1-aws-jaas
+    JAAS
   </TableCell>
   <TableCell>
-    aws/eu-west-1
+    unknown/unknown
   </TableCell>
   <TableCell
     className="u-align--right"
   >
-    1
+    16
   </TableCell>
   <TableCell
     className="u-align--right"
   >
-    10
+    50
   </TableCell>
   <TableCell
     className="u-align--right"
   >
-    6
+    66
   </TableCell>
   <TableCell
     className="u-align--right"
   >
-    10
+    51
   </TableCell>
   <TableCell
     className="u-align--right"
   >
-    2.6.10
+    2.8.3
   </TableCell>
   <TableCell
     className="u-align--right u-capitalise"

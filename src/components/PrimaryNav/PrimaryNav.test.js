@@ -30,7 +30,7 @@ describe("Primary Nav", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".entity-count").text()).toStrictEqual("6");
+    expect(wrapper.find(".entity-count").text()).toStrictEqual("4");
   });
 
   it("displays the JAAS logo under JAAS", () => {
@@ -70,6 +70,6 @@ describe("Primary Nav", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".version").text()).toBe("Version 0.1.0");
+    expect(wrapper.find(".version").text()).toBe("Version 0.4.0");
   });
 });

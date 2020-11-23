@@ -15,12 +15,7 @@ import { generateStatusElement, extractRevisionNumber } from "app/utils";
 
 import "./_units-panel.scss";
 
-export default function UnitsPanel({
-  isActive,
-  onClose,
-  entity: unitId,
-  panelRowClick,
-}) {
+export default function UnitsPanel({ entity: unitId, panelRowClick }) {
   const modelStatusData = useModelStatus();
   const appName = unitId?.split("/")[0];
   const unit = modelStatusData?.applications[appName]?.units[unitId];
@@ -70,7 +65,7 @@ export default function UnitsPanel({
                 </strong>
               </div>
               <span className="u-capitalise">
-                {generateStatusElement(unit.agentStatus.status)}
+                {generateStatusElement(unit["agent-status"].status)}
               </span>
             </div>
             <div className="col-4">
@@ -91,7 +86,7 @@ export default function UnitsPanel({
               <div className="panel__kv">
                 <span className="panel__label">Version</span>
                 <span className="panel__value">
-                  {app.workloadVersion || "-"}
+                  {app["workload-version"] || "-"}
                 </span>
               </div>
             </div>

@@ -17,7 +17,7 @@ exports[`User Menu renders without crashing and matches snapshot 1`] = `
     <span
       className="user-menu__name"
     >
-      activedev
+      eggman
     </span>
     <i
       className="p-icon--contextual-menu"

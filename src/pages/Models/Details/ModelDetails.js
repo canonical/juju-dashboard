@@ -95,7 +95,7 @@ const generateUnitSecondaryCounts = (modelStatusData) => {
   Object.keys(applications).forEach((applicationName) => {
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach((unitId) => {
-      const status = units[unitId].agentStatus.status;
+      const status = units[unitId]["agent-status"].status;
       totalUnits += 1;
       return incrementCounts(status, counts);
     });
@@ -137,7 +137,7 @@ const renderCounts = (activeView, modelStatusData) => {
       secondaryEntities = generateSecondaryCounts(
         modelStatusData,
         "machines",
-        "agentStatus"
+        "agent-status"
       );
       break;
     case "relations":

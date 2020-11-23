@@ -23,7 +23,6 @@ function Details() {
 
   const controllerData = useSelector(getControllerData);
   const modelData = useSelector(getModelData);
-
   const [showRegisterAController, setShowRegisterAController] = useState(false);
 
   const controllerMap = {};
@@ -48,7 +47,7 @@ function Details() {
       for (const modelUUID in modelData) {
         const model = modelData[modelUUID];
         if (model.info) {
-          const controllerUUID = model.info.controllerUuid;
+          const controllerUUID = model.info["controller-uuid"];
           if (controllerMap[controllerUUID]) {
             controllerMap[controllerUUID].models += 1;
             controllerMap[controllerUUID].machines += Object.keys(
@@ -58,9 +57,8 @@ function Details() {
             controllerMap[controllerUUID].applications +=
               applicationKeys.length;
             const unitCount = applicationKeys.reduce((acc, appName) => {
-              return (
-                acc + Object.keys(model.applications[appName].units).length
-              );
+              const units = model.applications[appName].units || {}; // Subordinates don't have units
+              return acc + Object.keys(units).length;
             }, 0);
             controllerMap[controllerUUID].units += unitCount;
           }

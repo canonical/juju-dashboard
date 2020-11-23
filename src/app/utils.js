@@ -51,13 +51,14 @@ export const getModelStatusGroupData = (model) => {
       messages.push(app.status.info);
       return;
     }
-    Object.keys(app.units).forEach((unitId) => {
-      const unit = app.units[unitId];
+    const units = app.units || {}; // subordinates do not have units.
+    Object.keys(units).forEach((unitId) => {
+      const unit = units[unitId];
       const { status: unitStatus } = getUnitStatusGroup(unit);
       highestStatus = setHighestStatus(unitStatus, highestStatus);
       if (checkHighestStatus(highestStatus)) {
         // If it's the highest status then we want to store the message.
-        messages.push(unit.agentStatus.info);
+        messages.push(unit["agent-status"].info);
         return;
       }
     });
@@ -104,7 +105,7 @@ export const getMachineStatusGroup = (machine) => {
   const blocked = ["down"];
   // Possible "alert" states in machine statuses.
   const alert = ["pending"];
-  const status = machine.agentStatus.status;
+  const status = machine["agent-status"].status;
   const response = {
     status: "running",
     message: null,
@@ -129,7 +130,7 @@ export const getUnitStatusGroup = (unit) => {
   const blocked = ["lost"];
   // Possible "alert" states in the unit statuses.
   const alert = ["allocating"];
-  const status = unit.agentStatus.status;
+  const status = unit["agent-status"].status;
   const response = {
     status: "running",
     message: null,
@@ -311,7 +312,7 @@ export const filterModelStatusDataByApp = (modelStatusData, appName) => {
     }
 
     // Remove all relations that don't involve the selected application.
-    filteredData.relations = modelStatusData.relations.filter(
+    filteredData.relations = modelStatusData?.relations?.filter(
       (relation) => relation.key.indexOf(appName) > -1
     );
 

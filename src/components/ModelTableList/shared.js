@@ -59,11 +59,10 @@ export function getStatusValue(status, key) {
         const applicationKeys = Object.keys(status.applications);
         const applicationCount = applicationKeys.length;
         const machineCount = Object.keys(status.machines).length;
-        const unitCount = applicationKeys.reduce(
-          (prev, key) =>
-            prev + Object.keys(status.applications[key].units).length,
-          0
-        );
+        const unitCount = applicationKeys.reduce((prev, key) => {
+          const units = status.applications[key].units || {};
+          return prev + Object.keys(units).length;
+        }, 0);
 
         returnValue = (
           <>
@@ -120,17 +119,17 @@ export function getStatusValue(status, key) {
           </>
         );
         break;
-      case "cloudTag":
-        returnValue = extractCloudName(status.model.cloudTag);
+      case "cloud-tag":
+        returnValue = extractCloudName(status.model["cloud-tag"]);
         break;
       case "region":
         returnValue = status.model.region;
         break;
-      case "cloudCredentialTag":
-        returnValue = extractCredentialName(status.cloudCredentialTag);
+      case "cloud-credential-tag":
+        returnValue = extractCredentialName(status["cloud-credential-tag"]);
         break;
       case "controllerUuid":
-        returnValue = status.controllerUuid;
+        returnValue = status["controller-uuid"];
         break;
       case "controllerName":
         returnValue = status.controllerName;

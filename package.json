@@ -16,7 +16,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "craco build && yarn run generate-version-file",
+    "build": "react-scripts build && yarn run generate-version-file",
     "clean": "./scripts/clean-files",
     "eslint-check": "eslint src/",
     "generate-release-tarball": "yarn run build && ./scripts/generate-release-tarball",
@@ -24,10 +24,10 @@
     "lint": "yarn run eslint-check && yarn run prettier-check && yarn run stylelint-check",
     "prettier-check": "prettier --check 'src/**/*'",
     "serve": "yarn run start",
-    "start": "craco start",
+    "start": "react-scripts start",
     "stylelint-check": "stylelint 'src/**/*.scss'",
     "stylelint-fix": "stylelint --fix 'src/**/*.scss'",
-    "test": "craco test"
+    "test": "react-scripts test -w 1 --transformIgnorePatterns 'node_modules/(?!@canonical)/jujulib/dist'"
   },
   "browserslist": {
     "production": [
@@ -51,10 +51,9 @@
   },
   "dependencies": {
     "@canonical/jaaslib": "0.6.0",
-    "@canonical/jujulib": "1.3.2",
+    "@canonical/jujulib": "^2.0.0-beta.1",
     "@canonical/macaroon-bakery": "0.3.0",
     "@canonical/react-components": "0.14.2",
-    "@craco/craco": "5.8.0",
     "@sentry/browser": "5.27.6",
     "async-limiter": "2.0.0",
     "classnames": "2.2.6",
@@ -74,7 +73,7 @@
     "react-ga": "3.3.0",
     "react-redux": "7.2.2",
     "react-router-dom": "5.2.0",
-    "react-scripts": "3.4.4",
+    "react-scripts": "4.0.0",
     "react-test-renderer": "16.14.0",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.8",
