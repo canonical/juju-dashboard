@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from "react";
+import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
 
 import { generateIconPath } from "app/utils";
@@ -112,17 +112,18 @@ const Topology = ({ modelData, width, height }) => {
     modelData && modelData.annotations
   );
 
-  const applications = useMemo(() => {
-    return (
-      (modelData &&
-        Object.keys(modelData.applications).map((appName) => ({
-          ...modelData.annotations[appName],
-          ...modelData.applications[appName],
-          name: appName,
-        }))) ||
-      []
-    );
-  }, [modelData]);
+  // XXX If this is put into a useMemo as it should, it causes the topology to
+  // incorrectly position icons on every render.
+  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/762
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const applications =
+    (modelData &&
+      Object.keys(modelData.applications).map((appName) => ({
+        ...modelData.annotations[appName],
+        ...modelData.applications[appName],
+        name: appName,
+      }))) ||
+    [];
 
   // Apply deltas to the annotations.
   for (const appName in applications) {
