@@ -97,12 +97,12 @@ function Details() {
 
   function generatePathValue(controllerData) {
     const column = { content: "" };
-    if (controllerData.path === "admin/jaas") {
+    if (controllerData?.path === "admin/jaas") {
       column.content = "JAAS";
-    } else if (controllerData.path) {
+    } else if (controllerData?.path) {
       column.content = controllerData.path;
     } else {
-      column.content = controllerData.wsControllerURL;
+      column.content = controllerData?.wsControllerURL;
       column.className = "is-disconnected";
       column.title = "disconnected";
     }
