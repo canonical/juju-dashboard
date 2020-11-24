@@ -14444,10 +14444,10 @@ value-or-function@^3.0.0:
   resolved "https://registry.yarnpkg.com/value-or-function/-/value-or-function-3.0.0.tgz#1c243a50b595c1be54a754bfece8563b9ff8d813"
   integrity sha1-HCQ6ULWVwb5Up1S/7OhWO5/42BM=
 
-vanilla-framework@2.19.3:
-  version "2.19.3"
-  resolved "https://registry.yarnpkg.com/vanilla-framework/-/vanilla-framework-2.19.3.tgz#e66362304e90a9da566373f9c3b274137323b0cd"
-  integrity sha512-0JCRYDTdUKwIQk0Cvbl0Af8LBPT0PiYrCH6Nw+uJHaloy9ZStYZ0vyCPwiqYQK1/4OKTtMOs/ntuUowTJB0gVw==
+vanilla-framework@2.20.0:
+  version "2.20.0"
+  resolved "https://registry.yarnpkg.com/vanilla-framework/-/vanilla-framework-2.20.0.tgz#e3cc831fc1cf49e0863c286d61443f35ac43ba43"
+  integrity sha512-wN+R94p4dzrWSGa5F0H8ki+bRsoADVdVyyX5GKIk3Ecl3KO6XXvLFhknLx6jh8E3MEF/xOtiJxv3nb8PxYPB2g==
 
 vary@~1.1.2:
   version "1.1.2"
