@@ -62,7 +62,7 @@
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.5",
     "enzyme-to-json": "3.6.1",
-    "immer": "7.0.15",
+    "immer": "8.0.0",
     "mock-socket": "^9.0.3",
     "nanoid": "3.1.18",
     "node-sass": "4.14.1",
@@ -81,7 +81,7 @@
     "redux-thunk": "2.3.0",
     "reselect": "4.0.0",
     "use-query-params": "1.1.9",
-    "vanilla-framework": "2.19.3"
+    "vanilla-framework": "2.20.0"
   },
   "devDependencies": {
     "eslint-config-prettier": "6.15.0",
