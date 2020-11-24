@@ -12,7 +12,7 @@ exports[`User Menu renders without crashing and matches snapshot 1`] = `
     tabIndex="0"
   >
     <i
-      className="p-icon--user"
+      className="p-icon--user is-light"
     />
     <span
       className="user-menu__name"
@@ -20,7 +20,7 @@ exports[`User Menu renders without crashing and matches snapshot 1`] = `
       eggman
     </span>
     <i
-      className="p-icon--contextual-menu"
+      className="p-icon--contextual-menu is-light"
     />
   </div>
   <ul

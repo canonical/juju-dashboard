@@ -50,11 +50,11 @@ const UserMenu = () => {
             role="button"
             tabIndex="0"
           >
-            <i className="p-icon--user"></i>
+            <i className="p-icon--user is-light"></i>
             <span className="user-menu__name">
               {activeUser ? extractOwnerName(activeUser) : ""}
             </span>
-            <i className="p-icon--contextual-menu"></i>
+            <i className="p-icon--contextual-menu is-light"></i>
           </div>
           <ul className="p-list user-menu__options">
             <li className="p-list__item">
