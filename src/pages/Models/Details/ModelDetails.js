@@ -386,7 +386,7 @@ const ModelDetails = () => {
                   ) : null}
                 </>
               ) : (
-                <p>
+                <p data-testid="no-relations-msg">
                   There are no relations associated with this model -{" "}
                   <a
                     className="p-link--external"
