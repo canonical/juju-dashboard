@@ -4,7 +4,7 @@ import { mount } from "enzyme";
 import StatusStrip from "./StatusStrip";
 
 describe("Status Strip", () => {
-  it("should show correct correct status counts", () => {
+  it("should show correct status counts", () => {
     const fakeStatusList = {
       model: [
         { label: "foo", count: 1 },
@@ -20,7 +20,7 @@ describe("Status Strip", () => {
     expect(wrapper.find(".is-baz").text()).toBe("baz: 3");
   });
 
-  it("should should label correctly pluralized", () => {
+  it("should show label correctly pluralized", () => {
     const fakeStatusList = {
       model: [
         { label: "foo", count: 1 },
