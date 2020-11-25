@@ -145,11 +145,11 @@ const renderCounts = (activeView, modelStatusData) => {
   }
 
   return (
-      <StatusStrip
-        statusList={{
-          [primaryEntity.label]: secondaryEntities,
-        }}
-      />
+    <StatusStrip
+      statusList={{
+        [primaryEntity.label]: secondaryEntities,
+      }}
+    />
   );
 };
 
@@ -387,15 +387,19 @@ const ModelDetails = () => {
                   ) : null}
                 </>
               ) : (
-                <p data-testid="no-relations-msg">
-                  There are no relations associated with this model -{" "}
-                  <a
-                    className="p-link--external"
-                    href="https://juju.is/docs/relations"
-                  >
-                    learn more about relations
-                  </a>
-                </p>
+                <>
+                  {activeView === "relations" && (
+                    <p data-testid="no-relations-msg">
+                      There are no relations associated with this model -{" "}
+                      <a
+                        className="p-link--external"
+                        href="https://juju.is/docs/relations"
+                      >
+                        learn more about relations
+                      </a>
+                    </p>
+                  )}
+                </>
               )}
             </div>
           </div>
