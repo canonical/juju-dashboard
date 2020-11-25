@@ -31,13 +31,13 @@
     }
   }
 
-  &.is-running,
   &.is-started {
     &::before {
       color: $color-mid-light;
     }
   }
 
+  &.is-running,
   &.is-active {
     &::before {
       color: $color-positive;

@@ -27,22 +27,6 @@ describe("Models page", () => {
     expect(wrapper.find("TableList")).toBeDefined();
   });
 
-  it("has a header which shows the model counts", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter>
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <Models />
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".models__count").text()).toBe(
-      "16 models: 4 blocked, 7 alerts, 5 running"
-    );
-  });
-
   it("displays correct grouping view", () => {
     const history = createMemoryHistory();
     const store = mockStore(dataDump);

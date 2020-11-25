@@ -1,12 +1,11 @@
 @import "vanilla-framework/scss/vanilla";
 
 .models {
-  &__count {
+  .status-strip {
     display: none;
-    font-size: 0.875rem;
-    padding: 0 1.5rem;
+    margin: 1rem 0;
 
-    @media (min-width: $breakpoint-large) {
+    @media (min-width: $breakpoint-small) {
       display: block;
     }
   }

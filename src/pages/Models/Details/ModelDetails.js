@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
-import Counts from "components/Counts/Counts";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
@@ -15,6 +14,7 @@ import AppsPanel from "components/panels/AppsPanel/AppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
 import WebCLI from "components/WebCLI/WebCLI";
+import StatusStrip from "components/StatusStrip/StatusStrip";
 
 import {
   getConfig,
@@ -145,10 +145,11 @@ const renderCounts = (activeView, modelStatusData) => {
   }
 
   return (
-    <Counts
-      primaryEntity={primaryEntity}
-      secondaryEntities={secondaryEntities}
-    />
+      <StatusStrip
+        statusList={{
+          [primaryEntity.label]: secondaryEntities,
+        }}
+      />
   );
 };
 
