@@ -257,4 +257,23 @@ describe("ModelDetail Container", () => {
     const pageTitle = document.title;
     expect(pageTitle).toEqual("Model: new-search-aggregate | Juju Dashboard");
   });
+
+  it("should a message if a model has no relations", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/models/canonical-kubernetes?activeView=relations"]}
+        >
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    const noRelationsMsg = wrapper.find("[data-testid='no-relations-msg']");
+    expect(noRelationsMsg.length).toBe(1);
+  });
 });

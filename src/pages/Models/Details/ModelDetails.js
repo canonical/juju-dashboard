@@ -344,48 +344,58 @@ const ModelDetails = () => {
                   />
                 )}
               {shouldShow("relations", activeView) &&
-                relationTableRows.length > 0 && (
-                  <>
-                    {shouldShow("relations-title", activeView) && (
-                      <h5>Relations ({relationTableRows.length})</h5>
-                    )}
+              relationTableRows.length > 0 ? (
+                <>
+                  {shouldShow("relations-title", activeView) && (
+                    <h5>Relations ({relationTableRows.length})</h5>
+                  )}
+                  <MainTable
+                    headers={relationTableHeaders}
+                    rows={relationTableRows}
+                    className="model-details__relations p-main-table"
+                    sortable
+                    emptyStateMsg={"There are no relations in this model"}
+                  />
+                  {shouldShow("relations-title", activeView) && (
+                    <h5>
+                      Cross-model relations (
+                      {consumedTableRows.length + offersTableRows.length})
+                    </h5>
+                  )}
+                  {consumedTableRows.length ? (
                     <MainTable
-                      headers={relationTableHeaders}
-                      rows={relationTableRows}
+                      headers={consumedTableHeaders}
+                      rows={consumedTableRows}
                       className="model-details__relations p-main-table"
                       sortable
-                      emptyStateMsg={"There are no relations in this model"}
+                      emptyStateMsg={
+                        "There are no remote relations in this model"
+                      }
                     />
-                    {shouldShow("relations-title", activeView) && (
-                      <h5>
-                        Cross-model relations (
-                        {consumedTableRows.length + offersTableRows.length})
-                      </h5>
-                    )}
-                    {consumedTableRows.length ? (
-                      <MainTable
-                        headers={consumedTableHeaders}
-                        rows={consumedTableRows}
-                        className="model-details__relations p-main-table"
-                        sortable
-                        emptyStateMsg={
-                          "There are no remote relations in this model"
-                        }
-                      />
-                    ) : null}
-                    {offersTableRows.length ? (
-                      <MainTable
-                        headers={offersTableHeaders}
-                        rows={offersTableRows}
-                        className="model-details__relations p-main-table"
-                        sortable
-                        emptyStateMsg={
-                          "There are no connected offers in this model"
-                        }
-                      />
-                    ) : null}
-                  </>
-                )}
+                  ) : null}
+                  {offersTableRows.length ? (
+                    <MainTable
+                      headers={offersTableHeaders}
+                      rows={offersTableRows}
+                      className="model-details__relations p-main-table"
+                      sortable
+                      emptyStateMsg={
+                        "There are no connected offers in this model"
+                      }
+                    />
+                  ) : null}
+                </>
+              ) : (
+                <p data-testid="no-relations-msg">
+                  There are no relations associated with this model -{" "}
+                  <a
+                    className="p-link--external"
+                    href="https://juju.is/docs/relations"
+                  >
+                    learn more about relations
+                  </a>
+                </p>
+              )}
             </div>
           </div>
 
