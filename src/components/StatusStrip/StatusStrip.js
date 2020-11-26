@@ -36,15 +36,15 @@ export default function StatusStrip({ statusList }) {
   }, [statusList]);
 
   return (
-    <div className="status-strip">
+    <>
       {status?.count > 0 && (
-        <span>
-          <strong>
+        <div className="status-strip">
+          <strong className="status-strip__label">
             {status.count} {pluralize(status.count, status.groupName)}:
-          </strong>{" "}
+          </strong>
           <span className="status-strip__statement">{status.statement}</span>
-        </span>
+        </div>
       )}
-    </div>
+    </>
   );
 }
