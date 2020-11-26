@@ -31,28 +31,17 @@
     }
   }
 
-  &.is-started {
+  &.is-unknown {
     &::before {
       color: $color-mid-light;
     }
   }
 
   &.is-running,
+  &.is-joined,
   &.is-active {
     &::before {
       color: $color-positive;
-    }
-  }
-
-  &.is-unknown {
-    &::before {
-      border: 1px solid $color-mid-light;
-      border-radius: 50%;
-      content: "";
-      height: 0.6rem;
-      left: 0.35rem;
-      top: 0.5rem;
-      width: 0.6rem;
     }
   }
 }
