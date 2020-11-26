@@ -12,7 +12,7 @@ import {
 } from "app/utils";
 
 export const applicationTableHeaders = [
-  { content: "app", sortKey: "app" },
+  { content: "Local apps", sortKey: "app" },
   { content: "status", sortKey: "status" },
   { content: "version", className: "u-align--right", sortKey: "version" },
   { content: "scale", className: "u-align--right", sortKey: "scale" },
@@ -163,13 +163,13 @@ export function generateApplicationRows(
           className: "u-align--right",
         },
         {
-          "data-test-column": "store",
-          content: store,
-        },
-        {
           "data-test-column": "revision",
           content: rev,
           className: "u-align--right",
+        },
+        {
+          "data-test-column": "store",
+          content: store,
         },
         { "data-test-column": "os", content: "Ubuntu" },
         { "data-test-column": "notes", content: "-" },
