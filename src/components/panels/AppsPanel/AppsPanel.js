@@ -9,9 +9,7 @@ import {
   generateEntityIdentifier,
   unitTableHeaders,
   machineTableHeaders,
-  relationTableHeaders,
   generateMachineRows,
-  generateRelationRows,
   generateUnitRows,
 } from "pages/Models/Details/generators";
 
@@ -113,11 +111,6 @@ export default function AppsPanel({ entity, panelRowClick }) {
     [filteredModelStatusData, panelRowClick]
   );
 
-  const relationPanelRows = useMemo(
-    () => generateRelationRows(filteredModelStatusData, baseAppURL),
-    [filteredModelStatusData, baseAppURL]
-  );
-
   return (
     <>
       {appPanelHeader}
@@ -135,13 +128,6 @@ export default function AppsPanel({ entity, panelRowClick }) {
           className="model-details__machines p-main-table panel__table"
           sortable
           emptyStateMsg={"There are no machines in this model"}
-        />
-        <MainTable
-          headers={relationTableHeaders}
-          rows={relationPanelRows}
-          className="model-details__relations p-main-table panel__table"
-          sortable
-          emptyStateMsg={"There are no relations in this model"}
         />
       </div>
     </>
