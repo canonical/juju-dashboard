@@ -2,11 +2,10 @@
 
 .models {
   .status-strip {
-    display: none;
-    margin: 1rem 0;
+    margin: 1.5rem 0 1rem;
 
-    @media (min-width: $breakpoint-small) {
-      display: block;
+    @media (min-width: $breakpoint-medium) {
+      margin: 1rem 0;
     }
   }
 
