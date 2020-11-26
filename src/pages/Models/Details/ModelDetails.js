@@ -147,7 +147,7 @@ const renderCounts = (activeView, modelStatusData) => {
   return (
     <StatusStrip
       statusList={{
-        [primaryEntity.label]: secondaryEntities,
+        [primaryEntity?.label]: secondaryEntities,
       }}
     />
   );
