@@ -31,7 +31,7 @@ export default function StatusStrip({ statusList }) {
 
   return (
     <div className="status-strip">
-      {status.count > 0 && (
+      {status?.count > 0 && (
         <span>
           <strong>
             {status.count} {pluralize(status.count, status.groupName)}:
