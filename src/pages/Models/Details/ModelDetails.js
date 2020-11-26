@@ -192,7 +192,7 @@ const ModelDetails = () => {
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
     entity: StringParam,
-    activeView: withDefault(StringParam, "status"),
+    activeView: withDefault(StringParam, "apps"),
   });
 
   const setActiveView = (view) => {

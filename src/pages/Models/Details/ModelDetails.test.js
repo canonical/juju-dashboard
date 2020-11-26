@@ -33,7 +33,7 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find("Topology").length).toBe(1);
   });
 
-  it("renders the main tables", () => {
+  it("renders the main table", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
@@ -46,7 +46,7 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".model-details__main table").length).toBe(2);
+    expect(wrapper.find(".model-details__main table").length).toBe(1);
   });
 
   it("renders the status strip", () => {
@@ -65,59 +65,6 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find("StatusStrip").length).toBe(1);
   });
 
-  it("renders the details pane for models shared-with-me", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
-            </TestRoute>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".model-details__main table").length).toBe(4);
-  });
-
-  it("renders the machine details section", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/pizza@external/mymodel"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
-            </TestRoute>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(
-      wrapper
-        .find(".model-details__main table")
-        .at(2)
-        .hasClass("model-details__machines")
-    ).toBe(true);
-  });
-
-  it("subordinate rows render correct amount", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/sub-test"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
-            </TestRoute>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".model-details__main .subordinate").length).toEqual(2);
-  });
-
   it("view toggles hide and show tables", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
@@ -131,27 +78,85 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".model-details__main table").length).toBe(4);
+    expect(
+      wrapper.find(".model-details__main > .model-details__apps").length
+    ).toBe(1);
     wrapper.find("ButtonGroup button[value='units']").simulate("click");
-    expect(wrapper.find(".model-details__main table").length).toBe(1);
     expect(
-      wrapper.find(".model-details__main table.model-details__units").length
+      wrapper.find(".model-details__main > .model-details__units").length
     ).toBe(1);
-
     wrapper.find("ButtonGroup button[value='machines']").simulate("click");
-    expect(wrapper.find(".model-details__main table").length).toBe(1);
     expect(
-      wrapper.find(".model-details__main table.model-details__machines").length
+      wrapper.find(".model-details__main > .model-details__machines").length
     ).toBe(1);
-
     wrapper.find("ButtonGroup button[value='relations']").simulate("click");
-    expect(wrapper.find(".model-details__main table").length).toBe(1);
     expect(
-      wrapper.find(".model-details__main table.model-details__relations").length
+      wrapper.find(".model-details__main > .model-details__relations").length
     ).toBe(1);
+    wrapper.find("ButtonGroup button[value='apps']").simulate("click");
+    expect(
+      wrapper.find(".model-details__main > .model-details__apps").length
+    ).toBe(1);
+  });
 
-    wrapper.find("ButtonGroup button[value='status']").simulate("click");
-    expect(wrapper.find(".model-details__main table").length).toBe(4);
+  it("renders the details pane for models shared-with-me", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".model-details__main table").length).toBe(1);
+  });
+
+  it("renders the machine details section", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/pizza@external/mymodel?activeView=machines",
+          ]}
+        >
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper
+        .find(".model-details__main table")
+        .hasClass("model-details__machines")
+    ).toBe(true);
+  });
+
+  it("subordinate rows render correct amount", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/pizza@external/hadoopspark?activeView=units",
+          ]}
+        >
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".subordinate").length).toEqual(2);
   });
 
   it("supports local charms", () => {
@@ -227,7 +232,11 @@ describe("ModelDetail Container", () => {
     const testMachine = "1";
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/pizza@external/hadoopspark?activeView=machines",
+          ]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
               <ModelDetails />
@@ -254,7 +263,11 @@ describe("ModelDetail Container", () => {
     const testUnit = "client/0";
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/pizza@external/hadoopspark?activeView=units",
+          ]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
               <ModelDetails />
