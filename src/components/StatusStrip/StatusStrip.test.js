@@ -15,9 +15,9 @@ describe("Status Strip", () => {
     const wrapper = mount(<StatusStrip statusList={fakeStatusList} />);
     const StatusStripHeading = wrapper.find(".status-strip strong");
     expect(StatusStripHeading.text()).toBe("6 models:");
-    expect(wrapper.find(".is-foo").text()).toBe("foo: 1");
-    expect(wrapper.find(".is-bar").text()).toBe("bar: 2");
-    expect(wrapper.find(".is-baz").text()).toBe("baz: 3");
+    expect(wrapper.find(".is-foo").text()).toBe("1 foo");
+    expect(wrapper.find(".is-bar").text()).toBe("2 bar");
+    expect(wrapper.find(".is-baz").text()).toBe("3 baz");
   });
 
   it("should show label correctly pluralized", () => {

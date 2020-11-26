@@ -14,18 +14,18 @@ export default function StatusStrip({ statusList }) {
       count = count + incrementBy;
     }
 
-    for (const [groupName, statuses] of Object.entries(statusList)) {
+    Object.entries(statusList).forEach(([groupName, statuses]) => {
       const statement = Object.values(statuses).map((status) => {
         incrementCount(status.count);
         return (
           <span
             key={status.label}
             className={`status-icon is-${status.label.toLowerCase()}`}
-          >{`${status.label}: ${status.count}`}</span>
+          >{`${status.count} ${status.label}`}</span>
         );
       });
       proposedStatus = { groupName, statement, count };
-    }
+    });
     setStatus(proposedStatus);
   }, [statusList]);
 

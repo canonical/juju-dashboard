@@ -32,6 +32,7 @@ describe("ModelDetail Container", () => {
     );
     expect(wrapper.find("Topology").length).toBe(1);
     expect(wrapper.find(".model-details__main table").length).toBe(2);
+    expect(wrapper.find("StatusStrip")).toBeDefined();
   });
 
   it("renders the details pane for models shared-with-me", () => {
