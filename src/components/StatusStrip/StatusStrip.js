@@ -4,7 +4,11 @@ import { pluralize } from "app/utils";
 import "./_status-strip.scss";
 
 export default function StatusStrip({ statusList }) {
-  const [status, setStatus] = useState({});
+  const [status, setStatus] = useState({
+    count: undefined,
+    groupName: undefined,
+    statement: undefined,
+  });
 
   useEffect(() => {
     let proposedStatus = {};
