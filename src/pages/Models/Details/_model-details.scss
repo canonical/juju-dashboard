@@ -17,6 +17,10 @@
       width: 100%;
     }
 
+    .status-strip {
+      margin-bottom: 1rem;
+    }
+
     @media (min-width: $breakpoint-medium) {
       gap: 1rem;
       grid-template-columns: 230px 1fr;

@@ -5,6 +5,7 @@ import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
+import StatusStrip from "components/StatusStrip/StatusStrip";
 
 import { SearchAndFilter } from "@canonical/react-components";
 import useModelAttributes from "hooks/useModelAttributes";
@@ -20,7 +21,6 @@ import {
 } from "use-query-params";
 
 import { getGroupedModelStatusCounts, getModelData } from "app/selectors";
-import { pluralize } from "app/utils";
 
 import "./_models.scss";
 
@@ -56,7 +56,6 @@ export default function Models() {
   };
 
   const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
-  const models = blocked + alert + running;
 
   let activeFilters = {};
 
@@ -74,15 +73,6 @@ export default function Models() {
     <Layout>
       <Header>
         <div className="models__header">
-          <div className="models__count">
-            {`${models} ${pluralize(
-              models,
-              "model"
-            )}: ${blocked} blocked, ${alert} ${pluralize(
-              alert,
-              "alert"
-            )}, ${running} running`}
-          </div>
           <ButtonGroup
             activeButton={groupModelsBy}
             buttons={["status", "cloud", "owner"]}
@@ -143,6 +133,15 @@ export default function Models() {
 
       <div className="l-content">
         <div className="models">
+          <StatusStrip
+            statusList={{
+              model: [
+                { label: "Blocked", count: blocked },
+                { label: "Alert", count: alert },
+                { label: "Running", count: running },
+              ],
+            }}
+          />
           <ModelTableList groupedBy={groupModelsBy} filters={filters} />
         </div>
       </div>

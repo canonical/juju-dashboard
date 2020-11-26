@@ -51,7 +51,7 @@ const Layout = ({ children }) => {
         <div className="l-navigation-bar">
           <Logo />
           <button
-            className="is-dense u-no-margin toggle-menu"
+            className="is-dense toggle-menu"
             onClick={() => {
               setMenuCollapsed(!menuCollapsed);
             }}

@@ -1,0 +1,16 @@
+.status-strip {
+  align-items: center;
+  display: flex;
+
+  &__label {
+    margin-right: 0.5rem;
+  }
+
+  &__statement {
+    text-transform: capitalize;
+  }
+
+  .status-icon {
+    margin-right: 1rem;
+  }
+}

@@ -17,7 +17,7 @@ jest.mock("components/Topology/Topology", () => {
 const mockStore = configureStore([]);
 
 describe("ModelDetail Container", () => {
-  it("renders the details pane", () => {
+  it("renders the topology", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
@@ -31,7 +31,38 @@ describe("ModelDetail Container", () => {
       </Provider>
     );
     expect(wrapper.find("Topology").length).toBe(1);
+  });
+
+  it("renders the main tables", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/group-test"]}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
     expect(wrapper.find(".model-details__main table").length).toBe(2);
+  });
+
+  it("renders the status strip", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/group-test"]}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find("StatusStrip").length).toBe(1);
   });
 
   it("renders the details pane for models shared-with-me", () => {
