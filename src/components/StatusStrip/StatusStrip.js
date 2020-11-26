@@ -19,15 +19,17 @@ export default function StatusStrip({ statusList }) {
     }
 
     Object.entries(statusList).forEach(([groupName, statuses]) => {
-      const statement = Object.values(statuses).map((status) => {
-        incrementCount(status.count);
-        return (
-          <span
-            key={status.label}
-            className={`status-icon is-${status.label.toLowerCase()}`}
-          >{`${status.count} ${status.label}`}</span>
-        );
-      });
+      const statement =
+        statuses &&
+        Object.values(statuses).map((status) => {
+          incrementCount(status.count);
+          return (
+            <span
+              key={status.label}
+              className={`status-icon is-${status.label.toLowerCase()}`}
+            >{`${status.count} ${status.label}`}</span>
+          );
+        });
       proposedStatus = { groupName, statement, count };
     });
     setStatus(proposedStatus);
