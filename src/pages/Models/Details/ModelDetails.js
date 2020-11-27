@@ -49,11 +49,11 @@ import "./_model-details.scss";
 
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
-    case "status":
-      if (segment === "relations-title") {
-        return false;
+    case "apps":
+      if (segment === "apps") {
+        return true;
       }
-      return true;
+      return false;
     case "units":
     case "machines":
     case "relations":
@@ -108,7 +108,7 @@ const renderCounts = (activeView, modelStatusData) => {
   let primaryEntity = null;
   let secondaryEntities = null;
   switch (activeView) {
-    case "status":
+    case "apps":
       primaryEntity = {
         count: Object.keys(modelStatusData?.applications).length,
         label: "application",
@@ -192,7 +192,7 @@ const ModelDetails = () => {
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
     entity: StringParam,
-    activeView: withDefault(StringParam, "status"),
+    activeView: withDefault(StringParam, "apps"),
   });
 
   const setActiveView = (view) => {
@@ -296,7 +296,7 @@ const ModelDetails = () => {
           <div className="model-details__view-selector">
             {modelStatusData && (
               <ButtonGroup
-                buttons={["status", "units", "machines", "relations"]}
+                buttons={["apps", "units", "machines", "relations"]}
                 label="View:"
                 activeButton={activeView}
                 setActiveButton={setActiveView}
