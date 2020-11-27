@@ -8,3 +8,4 @@ yarn-error.log
 juju-dashboard*.tar.bz2
 coverage/
 .dotrun.json
+/.eslintcache
