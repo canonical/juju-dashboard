@@ -163,13 +163,13 @@ export function generateApplicationRows(
           className: "u-align--right",
         },
         {
+          "data-test-column": "store",
+          content: store,
+        },
+        {
           "data-test-column": "revision",
           content: rev,
           className: "u-align--right",
-        },
-        {
-          "data-test-column": "store",
-          content: store,
         },
         { "data-test-column": "os", content: "Ubuntu" },
         { "data-test-column": "notes", content: "-" },
