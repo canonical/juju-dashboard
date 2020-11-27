@@ -27,7 +27,8 @@
     "start": "react-scripts start",
     "stylelint-check": "stylelint 'src/**/*.scss'",
     "stylelint-fix": "stylelint --fix 'src/**/*.scss'",
-    "test": "react-scripts test -w 1 --transformIgnorePatterns 'node_modules/(?!@canonical)/jujulib/dist'"
+    "test": "react-scripts test -w 1 --transformIgnorePatterns 'node_modules/(?!@canonical)/jujulib/dist'",
+    "typescript-build": "tsc -b"
   },
   "browserslist": {
     "production": [
@@ -73,7 +74,7 @@
     "react-ga": "3.3.0",
     "react-redux": "7.2.2",
     "react-router-dom": "5.2.0",
-    "react-scripts": "4.0.0",
+    "react-scripts": "4.0.1",
     "react-test-renderer": "16.14.0",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.8",
@@ -84,6 +85,11 @@
     "vanilla-framework": "2.20.0"
   },
   "devDependencies": {
+    "@types/classnames": "2.2.11",
+    "@types/jest": "26.0.15",
+    "@types/node": "14.14.10",
+    "@types/react": "17.0.0",
+    "@types/react-dom": "17.0.0",
     "eslint-config-prettier": "6.15.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-jest": "24.1.3",
@@ -95,6 +101,8 @@
     "redux-devtools": "3.7.0",
     "stylelint": "13.8.0",
     "stylelint-config-standard": "20.0.0",
-    "stylelint-order": "4.1.0"
+    "stylelint-order": "4.1.0",
+    "ts-jest": "26.4.4",
+    "typescript": "4.1.2"
   }
 }
