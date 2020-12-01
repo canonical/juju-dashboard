@@ -12,6 +12,8 @@ import { connectAndStartPolling, storeUserPass } from "app/actions";
 
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
+import FadeUpIn from "animations/FadeUpIn";
+
 import logo from "static/images/logo/logo-black-on-white.svg";
 
 import "./_login.scss";
@@ -33,19 +35,21 @@ export default function LogIn({ children }) {
 
   return (
     <>
-      {!userIsLoggedIn ? (
+      {!userIsLoggedIn && (
         <div className="login">
-          <div className="login__inner p-card--highlighted">
-            <img className="login__logo" src={logo} alt="JAAS logo" />
-            {identityProviderAvailable ? (
-              <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />
-            ) : (
-              <UserPassForm />
-            )}
-            {generateErrorMessage(loginError)}
-          </div>
+          <FadeUpIn isActive={!userIsLoggedIn}>
+            <div className="login__inner p-card--highlighted">
+              <img className="login__logo" src={logo} alt="JAAS logo" />
+              {identityProviderAvailable ? (
+                <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />
+              ) : (
+                <UserPassForm />
+              )}
+              {generateErrorMessage(loginError)}
+            </div>
+          </FadeUpIn>
         </div>
-      ) : null}
+      )}
       <main>{children}</main>
     </>
   );
