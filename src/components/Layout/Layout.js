@@ -35,7 +35,7 @@ const Layout = ({ children }) => {
 
       <Banner
         isActive={isOffline !== null}
-        type={isOffline === false ? "positive" : "caution"}
+        variant={isOffline === false ? "positive" : "caution"}
       >
         {isOffline ? (
           <p>Your dashboard is offline.</p>
