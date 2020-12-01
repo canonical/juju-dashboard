@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
@@ -11,6 +12,8 @@ import { SearchAndFilter } from "@canonical/react-components";
 import useModelAttributes from "hooks/useModelAttributes";
 
 import useWindowTitle from "hooks/useWindowTitle";
+
+import FadeIn from "animations/FadeIn";
 
 import {
   useQueryParam,
@@ -68,6 +71,8 @@ export default function Models() {
       existingSearchData.push({ lead, value });
     });
   }
+
+  const modelsLoaded = blocked + alert + running > 0;
 
   return (
     <Layout>
@@ -131,20 +136,28 @@ export default function Models() {
         </div>
       </Header>
 
-      <div className="l-content">
-        <div className="models">
-          <StatusStrip
-            statusList={{
-              model: [
-                { label: "Blocked", count: blocked },
-                { label: "Alert", count: alert },
-                { label: "Running", count: running },
-              ],
-            }}
-          />
-          <ModelTableList groupedBy={groupModelsBy} filters={filters} />
+      {modelsLoaded ? (
+        <FadeIn isActive={modelsLoaded}>
+          <div className="l-content">
+            <div className="models">
+              <StatusStrip
+                statusList={{
+                  model: [
+                    { label: "Blocked", count: blocked },
+                    { label: "Alert", count: alert },
+                    { label: "Running", count: running },
+                  ],
+                }}
+              />
+              <ModelTableList groupedBy={groupModelsBy} filters={filters} />
+            </div>
+          </div>
+        </FadeIn>
+      ) : (
+        <div className="model-details__loading">
+          <Spinner />
         </div>
-      </div>
+      )}
     </Layout>
   );
 }
