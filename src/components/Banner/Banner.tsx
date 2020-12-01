@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, HTMLProps } from "react";
 import classnames from "classnames";
 
 import "./_banner.scss";
 
-export default function Banner({ isActive = false, children, type }) {
+type Props = {
+  isActive: boolean;
+  children: any;
+  variant: "positive" | "caution" | "negative";
+} & HTMLProps<HTMLElement>;
+
+export default function Banner({
+  isActive,
+  children,
+  variant,
+}: Props): React.ReactElement {
   const [bannerClosed, setBannerClosed] = useState(false);
 
-  // Open banner every time banner type changes
+  // Open banner every time banner variant changes
   useEffect(() => {
     setBannerClosed(false);
-  }, [type]);
+  }, [variant]);
 
   return (
     <div
       className="banner"
       data-active={isActive && !bannerClosed}
-      data-type={type}
+      data-variant={variant}
     >
       {children}
       <button
@@ -26,7 +36,7 @@ export default function Banner({ isActive = false, children, type }) {
       >
         <i
           className={classnames("p-icon--close", {
-            "is-light": type === "positive",
+            "is-light": variant === "positive",
           })}
         >
           Close banner

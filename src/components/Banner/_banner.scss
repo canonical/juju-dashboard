@@ -19,11 +19,11 @@
     }
   }
 
-  &[data-type="caution"] {
+  &[data-variant="caution"] {
     background: $color-caution;
   }
 
-  &[data-type="positive"] {
+  &[data-variant="positive"] {
     background: $color-positive;
     color: $color-light;
 

@@ -6,7 +6,7 @@ import Banner from "./Banner";
 describe("Banner", () => {
   it("should display banner text", () => {
     const wrapper = shallow(
-      <Banner isActive={true}>
+      <Banner variant="positive" isActive={true}>
         <p>Banner text</p>
       </Banner>
     );
@@ -14,32 +14,52 @@ describe("Banner", () => {
   });
 
   it("should appear if active", () => {
-    const wrapper = shallow(<Banner isActive={true} />);
+    const wrapper = shallow(
+      <Banner variant="positive" isActive={true}>
+        <p>Banner text</p>
+      </Banner>
+    );
     expect(wrapper.find("div").prop("data-active")).toStrictEqual(true);
   });
 
   it("should not appear if not active", () => {
-    const wrapper = shallow(<Banner />);
+    const wrapper = shallow(
+      <Banner variant="positive" isActive={false}>
+        <p>Banner text</p>
+      </Banner>
+    );
     expect(wrapper.find("div").prop("data-active")).toStrictEqual(false);
   });
 
-  it("should as cautionary if type prop is set", () => {
-    const wrapper = shallow(<Banner isActive={true} type="caution" />);
-    expect(wrapper.find("div").prop("data-type")).toStrictEqual("caution");
+  it("should as cautionary if variant prop is set", () => {
+    const wrapper = shallow(
+      <Banner isActive={true} variant="caution">
+        <p>Banner text</p>
+      </Banner>
+    );
+    expect(wrapper.find("div").prop("data-variant")).toStrictEqual("caution");
   });
 
   it("should close if close button is pressed", () => {
-    const wrapper = shallow(<Banner isActive={true} type="caution" />);
+    const wrapper = shallow(
+      <Banner isActive={true} variant="caution">
+        <p>Banner text</p>
+      </Banner>
+    );
     expect(wrapper.find(".banner").prop("data-active")).toStrictEqual(true);
     wrapper.find(".banner__close").simulate("click");
     expect(wrapper.find(".banner").prop("data-active")).toStrictEqual(false);
   });
 
-  it("should return if type changes after close button is pressed", () => {
-    const wrapper = mount(<Banner isActive={true} type="caution" />);
+  it("should return if variant changes after close button is pressed", () => {
+    const wrapper = mount(
+      <Banner isActive={true} variant="caution">
+        <p>Banner text</p>
+      </Banner>
+    );
     wrapper.find(".banner__close").simulate("click");
     expect(wrapper.find(".banner").prop("data-active")).toStrictEqual(false);
-    wrapper.setProps({ type: "positive", isActive: true });
+    wrapper.setProps({ variant: "positive", isActive: true });
     wrapper.update();
     expect(wrapper.find(".banner").prop("data-active")).toStrictEqual(true);
   });
