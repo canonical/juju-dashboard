@@ -367,7 +367,7 @@ const ModelDetails = () => {
                         {consumedTableRows.length + offersTableRows.length})
                       </h5>
                     )}
-                    {consumedTableRows.length ? (
+                    {consumedTableRows.length && (
                       <MainTable
                         headers={consumedTableHeaders}
                         rows={consumedTableRows}
@@ -377,8 +377,8 @@ const ModelDetails = () => {
                           "There are no remote relations in this model"
                         }
                       />
-                    ) : null}
-                    {offersTableRows.length ? (
+                    )}
+                    {offersTableRows.length && (
                       <MainTable
                         headers={offersTableHeaders}
                         rows={offersTableRows}
@@ -388,7 +388,7 @@ const ModelDetails = () => {
                           "There are no connected offers in this model"
                         }
                       />
-                    ) : null}
+                    )}
                   </>
                 ) : (
                   <>
@@ -406,25 +406,28 @@ const ModelDetails = () => {
                   </>
                 )}
               </div>
-            </div>
 
-            <SlidePanel
-              isActive={activePanel}
-              onClose={() => setQuery(closePanelConfig)}
-              isLoading={!entity}
-              className={`${activePanel}-panel`}
-            >
-              {activePanel === "apps" && (
-                <AppsPanel entity={entity} panelRowClick={panelRowClick} />
-              )}
-              {activePanel === "machines" && (
-                <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
-              )}
-              {activePanel === "units" && (
-                <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
-              )}
-            </SlidePanel>
-          </div>
+              <SlidePanel
+                isActive={activePanel}
+                onClose={() => setQuery(closePanelConfig)}
+                isLoading={!entity}
+                className={`${activePanel}-panel`}
+              >
+                {activePanel === "apps" && (
+                  <AppsPanel entity={entity} panelRowClick={panelRowClick} />
+                )}
+                {activePanel === "machines" && (
+                  <MachinesPanel
+                    entity={entity}
+                    panelRowClick={panelRowClick}
+                  />
+                )}
+                {activePanel === "units" && (
+                  <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
+                )}
+              </SlidePanel>
+            </div>
+          </FadeIn>
         </FadeIn>
       )}
       {showWebCLI && (
