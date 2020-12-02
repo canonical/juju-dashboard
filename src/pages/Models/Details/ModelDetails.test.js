@@ -89,7 +89,7 @@ describe("ModelDetail Container", () => {
     expect(
       wrapper.find(".model-details__main > .model-details__machines").length
     ).toBe(1);
-    wrapper.find("ButtonGroup button[value='relations']").simulate("click");
+    wrapper.find("ButtonGroup button[value='integrations']").simulate("click");
     expect(
       wrapper.find(".model-details__main > .model-details__relations").length
     ).toBe(1);
@@ -302,12 +302,14 @@ describe("ModelDetail Container", () => {
     expect(pageTitle).toEqual("Model: new-search-aggregate | Juju Dashboard");
   });
 
-  it("should a message if a model has no relations", () => {
+  it("should a message if a model has no integrations", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter
-          initialEntries={["/models/canonical-kubernetes?activeView=relations"]}
+          initialEntries={[
+            "/models/canonical-kubernetes?activeView=integrations",
+          ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/*">
@@ -317,7 +319,7 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    const noRelationsMsg = wrapper.find("[data-testid='no-relations-msg']");
+    const noRelationsMsg = wrapper.find("[data-testid='no-integrations-msg']");
     expect(noRelationsMsg.length).toBe(1);
   });
 });

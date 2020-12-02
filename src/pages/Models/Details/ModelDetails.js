@@ -56,7 +56,7 @@ const shouldShow = (segment, activeView) => {
       return false;
     case "units":
     case "machines":
-    case "relations":
+    case "integrations":
       if (segment === "relations-title") {
         return true;
       }
@@ -296,7 +296,7 @@ const ModelDetails = () => {
           <div className="model-details__view-selector">
             {modelStatusData && (
               <ButtonGroup
-                buttons={["apps", "units", "machines", "relations"]}
+                buttons={["apps", "units", "machines", "integrations"]}
                 label="View:"
                 activeButton={activeView}
                 setActiveButton={setActiveView}
@@ -344,7 +344,7 @@ const ModelDetails = () => {
                     emptyStateMsg={"There are no machines in this model"}
                   />
                 )}
-              {shouldShow("relations", activeView) &&
+              {shouldShow("integrations", activeView) &&
               relationTableRows.length > 0 ? (
                 <>
                   {shouldShow("relations-title", activeView) && (
@@ -388,14 +388,14 @@ const ModelDetails = () => {
                 </>
               ) : (
                 <>
-                  {activeView === "relations" && (
-                    <p data-testid="no-relations-msg">
-                      There are no relations associated with this model -{" "}
+                  {activeView === "integrations" && (
+                    <p data-testid="no-integrations-msg">
+                      There are no integrations associated with this model -{" "}
                       <a
                         className="p-link--external"
-                        href="https://juju.is/docs/relations"
+                        href="https://juju.is/integration"
                       >
-                        learn more about relations
+                        learn more about integration
                       </a>
                     </p>
                   )}
