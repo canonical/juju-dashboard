@@ -59,7 +59,7 @@ export const offersTableHeaders = [
   { content: "connections" },
 ];
 
-export function generateIconImg(name, namespace, baseAppURL) {
+export function generateIconImg(name, namespace) {
   let iconSrc = defaultCharmIcon;
   if (namespace.indexOf("local:") !== 0) {
     iconSrc = generateIconPath(namespace);
