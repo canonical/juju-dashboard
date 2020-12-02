@@ -135,7 +135,7 @@ export function getStatusValue(status, key) {
         returnValue = status.controllerName;
         break;
       case "status.since":
-        returnValue = status.status.since.split("T")[0];
+        returnValue = status.status.since?.split("T")[0];
         break;
       default:
         console.log(`unsupported status value key: ${key}`);
