@@ -1,9 +1,21 @@
-import React from "react";
+import { ReactElement } from "react";
 import classNames from "classnames";
 
 import "./_button-group.scss";
 
-const ButtonGroup = ({ buttons, label, activeButton, setActiveButton }) => {
+type Props = {
+  buttons: string[];
+  label: string;
+  activeButton: string;
+  setActiveButton: (value: string) => void;
+};
+
+const ButtonGroup = ({
+  buttons,
+  label,
+  activeButton,
+  setActiveButton,
+}: Props): ReactElement => {
   return (
     <div className="p-button-group">
       <div className="p-button-group__inner">
