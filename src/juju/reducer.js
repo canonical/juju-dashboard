@@ -14,7 +14,11 @@ export default function jujuReducer(state = defaultState, action) {
     switch (action.type) {
       case actionsList.updateModelList:
         const modelList = cloneDeep(state.models || {});
-        action.payload["user-models"].forEach((model) => {
+        let userModels = action.payload["user-models"];
+        if (!userModels) {
+          userModels = [];
+        }
+        userModels.forEach((model) => {
           modelList[model.model.uuid] = {
             lastConnection: model.lastConnection,
             name: model.model.name,
