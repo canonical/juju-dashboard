@@ -1,4 +1,4 @@
-import React, { useState, useEffect, HTMLProps } from "react";
+import { useState, useEffect, ReactElement } from "react";
 import classnames from "classnames";
 
 import "./_banner.scss";
@@ -7,13 +7,13 @@ type Props = {
   isActive: boolean;
   children: any;
   variant: "positive" | "caution" | "negative";
-} & HTMLProps<HTMLElement>;
+};
 
 export default function Banner({
   isActive,
   children,
   variant,
-}: Props): React.ReactElement {
+}: Props): ReactElement {
   const [bannerClosed, setBannerClosed] = useState(false);
 
   // Open banner every time banner variant changes
