@@ -166,7 +166,7 @@ const ModelDetails = () => {
   const modelStatusData = useModelStatus();
   // In a JAAS environment the controllerUUID will be the sub controller not
   // the primary controller UUID that we connect to.
-  const controllerUUID = modelStatusData?.info.controllerUuid;
+  const controllerUUID = modelStatusData?.info["controller-uuid"];
   // The primary controller data is the controller endpoint we actually connect
   // to. In the case of a normally bootstrapped controller this will be the
   // same as the model controller, however in a JAAS environment, this primary
