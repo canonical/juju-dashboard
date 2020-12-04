@@ -9,6 +9,8 @@ import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
+import FadeIn from "animations/FadeIn";
+
 import useLocalStorage from "hooks/useLocalStorage";
 import useWindowTitle from "hooks/useWindowTitle";
 
@@ -412,7 +414,9 @@ export default function Controllers() {
         </div>
       </Header>
       <div className="l-content controllers">
-        <Details />
+        <FadeIn isActive={true}>
+          <Details />
+        </FadeIn>
       </div>
     </Layout>
   );

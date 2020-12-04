@@ -27,6 +27,8 @@ import {
 import useModelStatus from "hooks/useModelStatus";
 import useWindowTitle from "hooks/useWindowTitle";
 
+import FadeIn from "animations/FadeIn";
+
 import { fetchAndStoreModelStatus } from "juju/index";
 import { fetchModelStatus } from "juju/actions";
 
@@ -310,117 +312,120 @@ const ModelDetails = () => {
           <Spinner />
         </div>
       ) : (
-        <div className="l-content">
-          <div className="model-details">
-            <InfoPanel />
-            <div className="model-details__main u-overflow--scroll">
-              {renderCounts(activeView, modelStatusData)}
-              {shouldShow("apps", activeView) &&
-                applicationTableRows.length > 0 && (
-                  <MainTable
-                    headers={applicationTableHeaders}
-                    rows={applicationTableRows}
-                    className="model-details__apps p-main-table"
-                    sortable
-                    emptyStateMsg={"There are no applications in this model"}
-                  />
-                )}
-              {shouldShow("units", activeView) && unitTableRows.length > 0 && (
-                <MainTable
-                  headers={unitTableHeaders}
-                  rows={unitTableRows}
-                  className="model-details__units p-main-table"
-                  sortable
-                  emptyStateMsg={"There are no units in this model"}
-                />
-              )}
-              {shouldShow("machines", activeView) &&
-                machinesTableRows.length > 0 && (
-                  <MainTable
-                    headers={machineTableHeaders}
-                    rows={machinesTableRows}
-                    className="model-details__machines p-main-table"
-                    sortable
-                    emptyStateMsg={"There are no machines in this model"}
-                  />
-                )}
-              {shouldShow("integrations", activeView) &&
-              relationTableRows.length > 0 ? (
-                <>
-                  {shouldShow("relations-title", activeView) && (
-                    <h5>Relations ({relationTableRows.length})</h5>
-                  )}
-                  <MainTable
-                    headers={relationTableHeaders}
-                    rows={relationTableRows}
-                    className="model-details__relations p-main-table"
-                    sortable
-                    emptyStateMsg={"There are no relations in this model"}
-                  />
-                  {shouldShow("relations-title", activeView) && (
-                    <h5>
-                      Cross-model relations (
-                      {consumedTableRows.length + offersTableRows.length})
-                    </h5>
-                  )}
-                  {consumedTableRows.length ? (
+        <FadeIn isActive={modelStatusData}>
+          <div className="l-content">
+            <div className="model-details">
+              <InfoPanel />
+              <div className="model-details__main u-overflow--scroll">
+                {renderCounts(activeView, modelStatusData)}
+                {shouldShow("apps", activeView) &&
+                  applicationTableRows.length > 0 && (
                     <MainTable
-                      headers={consumedTableHeaders}
-                      rows={consumedTableRows}
+                      headers={applicationTableHeaders}
+                      rows={applicationTableRows}
+                      className="model-details__apps p-main-table"
+                      sortable
+                      emptyStateMsg={"There are no applications in this model"}
+                    />
+                  )}
+                {shouldShow("units", activeView) &&
+                  unitTableRows.length > 0 && (
+                    <MainTable
+                      headers={unitTableHeaders}
+                      rows={unitTableRows}
+                      className="model-details__units p-main-table"
+                      sortable
+                      emptyStateMsg={"There are no units in this model"}
+                    />
+                  )}
+                {shouldShow("machines", activeView) &&
+                  machinesTableRows.length > 0 && (
+                    <MainTable
+                      headers={machineTableHeaders}
+                      rows={machinesTableRows}
+                      className="model-details__machines p-main-table"
+                      sortable
+                      emptyStateMsg={"There are no machines in this model"}
+                    />
+                  )}
+                {shouldShow("integrations", activeView) &&
+                relationTableRows.length > 0 ? (
+                  <>
+                    {shouldShow("relations-title", activeView) && (
+                      <h5>Relations ({relationTableRows.length})</h5>
+                    )}
+                    <MainTable
+                      headers={relationTableHeaders}
+                      rows={relationTableRows}
                       className="model-details__relations p-main-table"
                       sortable
-                      emptyStateMsg={
-                        "There are no remote relations in this model"
-                      }
+                      emptyStateMsg={"There are no relations in this model"}
                     />
-                  ) : null}
-                  {offersTableRows.length ? (
-                    <MainTable
-                      headers={offersTableHeaders}
-                      rows={offersTableRows}
-                      className="model-details__relations p-main-table"
-                      sortable
-                      emptyStateMsg={
-                        "There are no connected offers in this model"
-                      }
-                    />
-                  ) : null}
-                </>
-              ) : (
-                <>
-                  {activeView === "integrations" && (
-                    <p data-testid="no-integrations-msg">
-                      There are no integrations associated with this model -{" "}
-                      <a
-                        className="p-link--external"
-                        href="https://juju.is/integration"
-                      >
-                        learn more about integration
-                      </a>
-                    </p>
-                  )}
-                </>
-              )}
+                    {shouldShow("relations-title", activeView) && (
+                      <h5>
+                        Cross-model relations (
+                        {consumedTableRows.length + offersTableRows.length})
+                      </h5>
+                    )}
+                    {consumedTableRows.length ? (
+                      <MainTable
+                        headers={consumedTableHeaders}
+                        rows={consumedTableRows}
+                        className="model-details__relations p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no remote relations in this model"
+                        }
+                      />
+                    ) : null}
+                    {offersTableRows.length ? (
+                      <MainTable
+                        headers={offersTableHeaders}
+                        rows={offersTableRows}
+                        className="model-details__relations p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no connected offers in this model"
+                        }
+                      />
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    {activeView === "integrations" && (
+                      <p data-testid="no-integrations-msg">
+                        There are no integrations associated with this model -{" "}
+                        <a
+                          className="p-link--external"
+                          href="https://juju.is/integration"
+                        >
+                          learn more about integration
+                        </a>
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
 
-          <SlidePanel
-            isActive={activePanel}
-            onClose={() => setQuery(closePanelConfig)}
-            isLoading={!entity}
-            className={`${activePanel}-panel`}
-          >
-            {activePanel === "apps" && (
-              <AppsPanel entity={entity} panelRowClick={panelRowClick} />
-            )}
-            {activePanel === "machines" && (
-              <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
-            )}
-            {activePanel === "units" && (
-              <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
-            )}
-          </SlidePanel>
-        </div>
+            <SlidePanel
+              isActive={activePanel}
+              onClose={() => setQuery(closePanelConfig)}
+              isLoading={!entity}
+              className={`${activePanel}-panel`}
+            >
+              {activePanel === "apps" && (
+                <AppsPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+              {activePanel === "machines" && (
+                <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+              {activePanel === "units" && (
+                <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+            </SlidePanel>
+          </div>
+        </FadeIn>
       )}
       {showWebCLI && (
         <WebCLI
