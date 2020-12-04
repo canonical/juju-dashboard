@@ -5,18 +5,27 @@ import ButtonGroup from "./ButtonGroup";
 
 describe("ButtonGroup", () => {
   it("shows active button", () => {
+    const setActiveButton = jest.fn();
     const wrapper = mount(
       <ButtonGroup
+        label="Foo"
         buttons={["status", "cloud", "owner"]}
         activeButton="cloud"
+        setActiveButton={setActiveButton}
       />
     );
     expect(wrapper.find(".is-selected").length).toBe(1);
   });
 
   it("if no active button is defined then none is selected", () => {
+    const setActiveButton = jest.fn();
     const wrapper = mount(
-      <ButtonGroup buttons={["status", "cloud", "owner"]} />
+      <ButtonGroup
+        label="Foo"
+        buttons={["status", "cloud", "owner"]}
+        activeButton="cloud"
+        setActiveButton={setActiveButton}
+      />
     );
     expect(wrapper.find(".is-selected")).toEqual({});
   });
@@ -25,6 +34,7 @@ describe("ButtonGroup", () => {
     const setActiveButton = jest.fn();
     const wrapper = mount(
       <ButtonGroup
+        label="Foo"
         buttons={["status", "cloud", "owner"]}
         activeButton="cloud"
         setActiveButton={setActiveButton}
