@@ -1,5 +1,3 @@
-import React from "react";
-
 import DonutChart from "components/DonutChart/DonutChart";
 
 import { pluralize } from "app/utils";

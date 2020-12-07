@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { generateStatusElement, getModelStatusGroupData } from "app/utils";

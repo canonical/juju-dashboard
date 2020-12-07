@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";

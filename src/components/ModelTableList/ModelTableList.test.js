@@ -1,4 +1,3 @@
-import React from "react";
 import cloneDeep from "clone-deep";
 import { MemoryRouter } from "react-router";
 import { mount } from "enzyme";

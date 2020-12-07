@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 import { useDispatch, useSelector, useStore } from "react-redux";

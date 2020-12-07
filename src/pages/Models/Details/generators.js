@@ -1,4 +1,3 @@
-import React from "react";
 import { URL } from "@canonical/jaaslib/lib/urls";
 import cloneDeep from "clone-deep";
 

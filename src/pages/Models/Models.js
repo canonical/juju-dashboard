@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getConfig } from "app/selectors";
 import MainTable from "@canonical/react-components/dist/components/MainTable";

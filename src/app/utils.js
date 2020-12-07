@@ -1,4 +1,3 @@
-import React from "react";
 import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";

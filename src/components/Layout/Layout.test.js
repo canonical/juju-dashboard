@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
