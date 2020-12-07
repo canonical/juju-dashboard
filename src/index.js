@@ -1,4 +1,4 @@
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { applyMiddleware, combineReducers, createStore } from "redux";
@@ -103,9 +103,9 @@ function bootstrap() {
 
   ReactDOM.render(
     <Provider store={reduxStore}>
-      <React.StrictMode>
+      <StrictMode>
         <App />
-      </React.StrictMode>
+      </StrictMode>
     </Provider>,
     rootElement
   );

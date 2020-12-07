@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector, useStore } from "react-redux";
 
 import { getActiveUserTag, getWSControllerURL } from "app/selectors";

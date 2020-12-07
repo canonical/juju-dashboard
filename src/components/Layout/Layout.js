@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector, useStore } from "react-redux";
 import { isLoggedIn, getWSControllerURL } from "app/selectors";
 import Notification from "@canonical/react-components/dist/components/Notification/Notification";

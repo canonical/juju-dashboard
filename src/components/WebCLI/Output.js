@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // Colors taken from the VSCode section of
 // https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit

@@ -1,4 +1,3 @@
-import React from "react";
 import classnames from "classnames";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
