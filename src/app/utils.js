@@ -40,7 +40,7 @@ const checkHighestStatus = (highestStatus) => {
 export const getModelStatusGroupData = (model) => {
   let highestStatus = statusOrder[0]; // Set the highest status to the lowest.
   let messages = [];
-  const applications = model.applications;
+  const applications = model.applications || {};
   Object.keys(applications).forEach((appName) => {
     const app = applications[appName];
     const { status: appStatus } = getApplicationStatusGroup(app);
