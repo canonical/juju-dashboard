@@ -45,7 +45,7 @@ export default function jujuReducer(state = defaultState, action) {
           "model",
           "offers",
           "relations",
-          "remoteApplications",
+          "remote-applications",
         ];
 
         allowedKeys.forEach((key) => {
