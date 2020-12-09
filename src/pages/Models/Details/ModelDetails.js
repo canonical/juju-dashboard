@@ -33,17 +33,21 @@ import { fetchAndStoreModelStatus } from "juju/index";
 import { fetchModelStatus } from "juju/actions";
 
 import {
-  applicationTableHeaders,
+  localApplicationTableHeaders,
+  remoteApplicationTableHeaders,
   consumedTableHeaders,
   offersTableHeaders,
+  appsOffersTableHeaders,
   unitTableHeaders,
   machineTableHeaders,
   relationTableHeaders,
-  generateApplicationRows,
+  generateLocalApplicationRows,
+  generateRemoteApplicationRows,
   generateConsumedRows,
   generateMachineRows,
   generateRelationRows,
   generateOffersRows,
+  generateAppOffersRows,
   generateUnitRows,
 } from "./generators";
 
@@ -243,14 +247,18 @@ const ModelDetails = () => {
     }
   }, [dispatch, modelUUID, modelStatusData]);
 
-  const applicationTableRows = useMemo(() => {
-    return generateApplicationRows(
+  const localApplicationTableRows = useMemo(() => {
+    return generateLocalApplicationRows(
       modelStatusData,
       panelRowClick,
       baseAppURL,
       query?.entity
     );
   }, [baseAppURL, modelStatusData, query, panelRowClick]);
+
+  const remoteApplicationTableRows = useMemo(() => {
+    return generateRemoteApplicationRows(modelStatusData, baseAppURL);
+  }, [modelStatusData, baseAppURL]);
 
   const unitTableRows = useMemo(() => {
     return generateUnitRows(
@@ -276,6 +284,10 @@ const ModelDetails = () => {
   );
   const offersTableRows = useMemo(
     () => generateOffersRows(modelStatusData, baseAppURL),
+    [modelStatusData, baseAppURL]
+  );
+  const appOffersRows = useMemo(
+    () => generateAppOffersRows(modelStatusData, baseAppURL),
     [modelStatusData, baseAppURL]
   );
 
@@ -318,16 +330,43 @@ const ModelDetails = () => {
               <InfoPanel />
               <div className="model-details__main u-overflow--scroll">
                 {renderCounts(activeView, modelStatusData)}
-                {shouldShow("apps", activeView) &&
-                  applicationTableRows.length > 0 && (
-                    <MainTable
-                      headers={applicationTableHeaders}
-                      rows={applicationTableRows}
-                      className="model-details__apps p-main-table"
-                      sortable
-                      emptyStateMsg={"There are no applications in this model"}
-                    />
-                  )}
+                {shouldShow("apps", activeView) && (
+                  <>
+                    {appOffersRows.length > 0 && (
+                      <MainTable
+                        headers={appsOffersTableHeaders}
+                        rows={appOffersRows}
+                        className="model-details__relations p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no offers associated with this model"
+                        }
+                      />
+                    )}
+                    {localApplicationTableRows.length > 0 && (
+                      <MainTable
+                        headers={localApplicationTableHeaders}
+                        rows={localApplicationTableRows}
+                        className="model-details__apps p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no applications in this model"
+                        }
+                      />
+                    )}
+                    {remoteApplicationTableRows.length > 0 && (
+                      <MainTable
+                        headers={remoteApplicationTableHeaders}
+                        rows={remoteApplicationTableRows}
+                        className="model-details__relations p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no remote applications in this model"
+                        }
+                      />
+                    )}
+                  </>
+                )}
                 {shouldShow("units", activeView) &&
                   unitTableRows.length > 0 && (
                     <MainTable
@@ -367,7 +406,7 @@ const ModelDetails = () => {
                         {consumedTableRows.length + offersTableRows.length})
                       </h5>
                     )}
-                    {consumedTableRows.length && (
+                    {consumedTableRows.length > 0 && (
                       <MainTable
                         headers={consumedTableHeaders}
                         rows={consumedTableRows}
@@ -378,7 +417,7 @@ const ModelDetails = () => {
                         }
                       />
                     )}
-                    {offersTableRows.length && (
+                    {offersTableRows.length > 0 && (
                       <MainTable
                         headers={offersTableHeaders}
                         rows={offersTableRows}
@@ -406,28 +445,24 @@ const ModelDetails = () => {
                   </>
                 )}
               </div>
-
-              <SlidePanel
-                isActive={activePanel}
-                onClose={() => setQuery(closePanelConfig)}
-                isLoading={!entity}
-                className={`${activePanel}-panel`}
-              >
-                {activePanel === "apps" && (
-                  <AppsPanel entity={entity} panelRowClick={panelRowClick} />
-                )}
-                {activePanel === "machines" && (
-                  <MachinesPanel
-                    entity={entity}
-                    panelRowClick={panelRowClick}
-                  />
-                )}
-                {activePanel === "units" && (
-                  <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
-                )}
-              </SlidePanel>
             </div>
-          </FadeIn>
+            <SlidePanel
+              isActive={activePanel}
+              onClose={() => setQuery(closePanelConfig)}
+              isLoading={!entity}
+              className={`${activePanel}-panel`}
+            >
+              {activePanel === "apps" && (
+                <AppsPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+              {activePanel === "machines" && (
+                <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+              {activePanel === "units" && (
+                <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+            </SlidePanel>
+          </div>
         </FadeIn>
       )}
       {showWebCLI && (
