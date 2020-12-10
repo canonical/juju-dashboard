@@ -343,7 +343,7 @@ const ModelDetails = () => {
                         }
                       />
                     )}
-                    {localApplicationTableRows.length > 0 && (
+                    {localApplicationTableRows.length > 0 ? (
                       <MainTable
                         headers={localApplicationTableHeaders}
                         rows={localApplicationTableRows}
@@ -353,6 +353,17 @@ const ModelDetails = () => {
                           "There are no applications in this model"
                         }
                       />
+                    ) : (
+                      <span>
+                        There are no applications associated with this model.
+                        Learn about{" "}
+                        <a
+                          className="p-link--external"
+                          href="https://juju.is/docs/deploying-applications"
+                        >
+                          deploying applications
+                        </a>
+                      </span>
                     )}
                     {remoteApplicationTableRows.length > 0 && (
                       <MainTable
@@ -367,16 +378,30 @@ const ModelDetails = () => {
                     )}
                   </>
                 )}
-                {shouldShow("units", activeView) &&
-                  unitTableRows.length > 0 && (
-                    <MainTable
-                      headers={unitTableHeaders}
-                      rows={unitTableRows}
-                      className="model-details__units p-main-table"
-                      sortable
-                      emptyStateMsg={"There are no units in this model"}
-                    />
-                  )}
+                {shouldShow("units", activeView) && (
+                  <>
+                    {unitTableRows.length > 0 ? (
+                      <MainTable
+                        headers={unitTableHeaders}
+                        rows={unitTableRows}
+                        className="model-details__units p-main-table"
+                        sortable
+                        emptyStateMsg={"There are no units in this model"}
+                      />
+                    ) : (
+                      <span>
+                        There are no units added to your applications in this
+                        model yet. Learn about{" "}
+                        <a
+                          className="p-link--external"
+                          href="https://juju.is/docs/scaling-applications"
+                        >
+                          scaling applications
+                        </a>
+                      </span>
+                    )}
+                  </>
+                )}
                 {shouldShow("machines", activeView) &&
                   machinesTableRows.length > 0 && (
                     <MainTable
@@ -432,7 +457,7 @@ const ModelDetails = () => {
                 ) : (
                   <>
                     {activeView === "integrations" && (
-                      <p data-testid="no-integrations-msg">
+                      <span data-testid="no-integrations-msg">
                         There are no integrations associated with this model -{" "}
                         <a
                           className="p-link--external"
@@ -440,7 +465,7 @@ const ModelDetails = () => {
                         >
                           learn more about integration
                         </a>
-                      </p>
+                      </span>
                     )}
                   </>
                 )}
