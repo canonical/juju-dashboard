@@ -1,6 +1,8 @@
 import useModelStatus from "hooks/useModelStatus";
 import { ReactElement } from "react";
 
+import { generatePanelTableRows } from "../shared";
+
 import "../_panels.scss";
 
 type Props = {
@@ -14,46 +16,28 @@ export default function RemoteAppsPanel({
   const modelStatusData = useModelStatus();
 
   const remoteApp = modelStatusData["remote-applications"][appId];
+  interface tableData {
+    th: string;
+    td: string;
+  }
+
+  const tableDataArr: tableData[] = [
+    { th: "Offer name", td: remoteApp["offer-name"] },
+    { th: "Application", td: "-" },
+    { th: "Charm", td: "-" },
+    { th: "Store", td: "-" },
+    { th: "Application", td: remoteApp["offer-url"] },
+    { th: "Status", td: remoteApp.status.status },
+    { th: "Endpoint", td: "-" },
+    { th: "Interface", td: "-" },
+  ];
 
   return (
     <div className="panel">
       <span className="p-muted-heading">flannel:etcd</span>
       <h5>Remote Offer info</h5>
       <table className="panel__table">
-        <tbody>
-          <tr className="panel__tr">
-            <th className="panel__th">Offer name</th>
-            <td className="panel__td">{remoteApp["offer-name"]}</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">Application</th>
-            <td className="panel__td">-</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">Charm</th>
-            <td className="panel__td">-</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">Store</th>
-            <td className="panel__td">-</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">URL</th>
-            <td className="panel__td">{remoteApp["offer-url"]}</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">Status</th>
-            <td className="panel__td">{remoteApp.status.status}</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">Endpoint</th>
-            <td className="panel__td">-</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">Interface</th>
-            <td className="panel__td">-</td>
-          </tr>
-        </tbody>
+        <tbody>{generatePanelTableRows(tableDataArr)}</tbody>
       </table>
     </div>
   );

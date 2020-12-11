@@ -1,6 +1,8 @@
 import { ReactElement, useState } from "react";
 import useModelStatus from "hooks/useModelStatus";
 
+import { generatePanelTableRows } from "../shared";
+
 import "../_panels.scss";
 
 type Props = {
@@ -19,37 +21,45 @@ export default function OffersPanel({
     setAccordionPanelId(id === accordionPanelId ? "" : id);
   };
 
+  interface tableData {
+    th: string;
+    td: string;
+  }
+
+  const offerInfo: tableData[] = [
+    { th: "Offer name", td: offers["offer-name"] },
+    { th: "Application", td: application },
+    { th: "Charm", td: "-" },
+    { th: "Store", td: "-" },
+    { th: "URL", td: "-" },
+  ];
+
+  const tab1: tableData[] = [
+    { th: "Endpoint", td: "-" },
+    { th: "Interface", td: "-" },
+    { th: "Role", td: "-" },
+  ];
+
+  const tab2: tableData[] = [
+    { th: "UUID", td: "-" },
+    { th: "User", td: "-" },
+    { th: "Relation-id", td: "-" },
+    { th: "Status", td: "-" },
+    { th: "Ingress-subnets", td: "-" },
+  ];
+
+  const tab3: tableData[] = [
+    { th: "User", td: "-" },
+    { th: "display-name", td: "-" },
+    { th: "access", td: "-" },
+  ];
+
   return (
     <div className="panel">
       <span className="p-muted-heading">mysql:db</span>
       <h5>Offer info</h5>
       <table className="panel__table">
-        <tbody>
-          <tr className="panel__tr">
-            <th className="panel__th">Offer name</th>
-            <td className="panel__td">{offers["offer-name"]}</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">Application</th>
-            <td className="panel__td">{application}</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">Charm</th>
-            <td className="panel__td">
-              <a className="p-link--external" href="#_">
-                {offers["charm"]}
-              </a>
-            </td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">Store</th>
-            <td className="panel__td">mysql:db</td>
-          </tr>
-          <tr className="panel__tr">
-            <th className="panel__th">URL</th>
-            <td>mysql:db</td>
-          </tr>
-        </tbody>
+        <tbody>{generatePanelTableRows(offerInfo)}</tbody>
       </table>
 
       <aside className="p-accordion">
@@ -72,20 +82,7 @@ export default function OffersPanel({
               aria-labelledby="tab1"
             >
               <table className="panel__table">
-                <tbody>
-                  <tr className="panel__tr">
-                    <th className="panel__th">Endpoint</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                  <tr className="panel__tr">
-                    <th className="panel__th">Interface</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                  <tr className="panel__tr">
-                    <th className="panel__th">Role</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                </tbody>
+                <tbody>{generatePanelTableRows(tab1)}</tbody>
               </table>
             </section>
           </li>
@@ -107,28 +104,7 @@ export default function OffersPanel({
               aria-labelledby="tab2"
             >
               <table className="panel__table">
-                <tbody>
-                  <tr className="panel__tr">
-                    <th className="panel__th">UUID</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                  <tr className="panel__tr">
-                    <th className="panel__th">User</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                  <tr className="panel__tr">
-                    <th className="panel__th">User</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                  <tr className="panel__tr">
-                    <th className="panel__th">Status</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                  <tr className="panel__tr">
-                    <th className="panel__th">Ingress-subnets</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                </tbody>
+                <tbody>{generatePanelTableRows(tab2)}</tbody>
               </table>
             </section>
           </li>
@@ -150,20 +126,7 @@ export default function OffersPanel({
               aria-labelledby="tab3"
             >
               <table className="panel__table">
-                <tbody>
-                  <tr className="panel__tr">
-                    <th className="panel__th">User</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                  <tr className="panel__tr">
-                    <th className="panel__th">Display-name</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                  <tr className="panel__tr">
-                    <th className="panel__th">Access</th>
-                    <td className="panel__td">-</td>
-                  </tr>
-                </tbody>
+                <tbody>{generatePanelTableRows(tab3)}</tbody>
               </table>
             </section>
           </li>
