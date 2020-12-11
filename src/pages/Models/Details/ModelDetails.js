@@ -10,7 +10,7 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
-import AppsPanel from "components/panels/AppsPanel/AppsPanel";
+import LocalAppsPanel from "components/panels/LocalAppsPanel/LocalAppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
 import OffersPanel from "components/panels/OffersPanel/OffersPanel";
@@ -486,7 +486,7 @@ const ModelDetails = () => {
               className={`${activePanel}-panel`}
             >
               {activePanel === "apps" && (
-                <AppsPanel entity={entity} panelRowClick={panelRowClick} />
+                <LocalAppsPanel entity={entity} panelRowClick={panelRowClick} />
               )}
               {activePanel === "machines" && (
                 <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
