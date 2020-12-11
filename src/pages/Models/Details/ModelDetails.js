@@ -379,7 +379,7 @@ const ModelDetails = () => {
                         </a>
                       </span>
                     )}
-                    {remoteApplicationTableRows.length > 0 && (
+                    {remoteApplicationTableRows?.length > 0 && (
                       <MainTable
                         headers={remoteApplicationTableHeaders}
                         rows={remoteApplicationTableRows}

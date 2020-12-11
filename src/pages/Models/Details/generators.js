@@ -201,7 +201,7 @@ export function generateLocalApplicationRows(
       onClick: () => onRowClick(key, "apps"),
       "data-app": key,
       className:
-        query.panel === "apps" && query.entity === key ? "is-selected" : "",
+        query?.panel === "apps" && query?.entity === key ? "is-selected" : "",
     };
   });
 }
@@ -216,56 +216,59 @@ export function generateRemoteApplicationRows(
     return [];
   }
   const applications = cloneDeep(modelStatusData["remote-applications"]);
-  return Object.keys(applications).map((key) => {
-    const app = applications[key];
-    const status = app.status.status;
-    const offerUrl = app["offer-url"];
+  return (
+    applications &&
+    Object.keys(applications).map((key) => {
+      const app = applications[key];
+      const status = app.status.status;
+      const offerUrl = app["offer-url"];
 
-    const interfaces = Object.keys(app?.["relations"]).map(
-      (endpointInterface) => endpointInterface
-    );
+      const interfaces = Object.keys(app?.["relations"]).map(
+        (endpointInterface) => endpointInterface
+      );
 
-    return {
-      columns: [
-        {
-          "data-test-column": "app",
-          content: app["offer-name"], // we cannot access charm name
-          className: "u-truncate",
+      return {
+        columns: [
+          {
+            "data-test-column": "app",
+            content: app["offer-name"], // we cannot access charm name
+            className: "u-truncate",
+          },
+          {
+            "data-test-column": "status",
+            content: status,
+            className: "u-capitalise u-truncate",
+          },
+          {
+            "data-test-column": "interface",
+            content: interfaces.join(","),
+          },
+          {
+            "data-test-column": "offer_url",
+            content: offerUrl,
+            className: "u-truncate",
+          },
+          {
+            "data-test-column": "store",
+            content: "-", // store info not yet available from API
+          },
+        ],
+        sortData: {
+          app: key,
+          status: "status",
+          interface: "interface",
+          offer_url: "offer_url",
+          store: "store",
         },
-        {
-          "data-test-column": "status",
-          content: status,
-          className: "u-capitalise u-truncate",
-        },
-        {
-          "data-test-column": "interface",
-          content: interfaces.join(","),
-        },
-        {
-          "data-test-column": "offer_url",
-          content: offerUrl,
-          className: "u-truncate",
-        },
-        {
-          "data-test-column": "store",
-          content: "-", // store info not yet available from API
-        },
-      ],
-      sortData: {
-        app: key,
-        status: "status",
-        interface: "interface",
-        offer_url: "offer_url",
-        store: "store",
-      },
-      "data-app": key,
-      onClick: () => onRowClick(key, "remoteApps"),
-      className:
-        query?.panel === "remoteApps" && query?.entity === key
-          ? "is-selected"
-          : "",
-    };
-  });
+        "data-app": key,
+        onClick: () => onRowClick(key, "remoteApps"),
+        className:
+          query?.panel === "remoteApps" && query?.entity === key
+            ? "is-selected"
+            : "",
+      };
+    })
+  );
 }
 
 export function generateUnitRows(
