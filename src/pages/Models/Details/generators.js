@@ -206,7 +206,12 @@ export function generateLocalApplicationRows(
   });
 }
 
-export function generateRemoteApplicationRows(modelStatusData, baseAppURL) {
+export function generateRemoteApplicationRows(
+  modelStatusData,
+  onRowClick,
+  baseAppURL,
+  query
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -254,6 +259,11 @@ export function generateRemoteApplicationRows(modelStatusData, baseAppURL) {
         store: "store",
       },
       "data-app": key,
+      onClick: () => onRowClick(key, "remoteApps"),
+      className:
+        query?.panel === "remoteApps" && query?.entity === key
+          ? "is-selected"
+          : "",
     };
   });
 }

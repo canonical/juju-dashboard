@@ -19,7 +19,7 @@ import {
   filterModelStatusDataByApp,
 } from "app/utils";
 
-import "./_local-apps-panel.scss";
+import "../_panels.scss";
 
 export default function LocalAppsPanel({ entity, panelRowClick }) {
   // Get model status info

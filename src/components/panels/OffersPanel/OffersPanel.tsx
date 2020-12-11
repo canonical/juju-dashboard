@@ -1,7 +1,7 @@
 import { ReactElement, useState } from "react";
 import useModelStatus from "hooks/useModelStatus";
 
-import "./_offers-panel.scss";
+import "../_panels.scss";
 
 type Props = {
   entity: string;
@@ -20,33 +20,33 @@ export default function OffersPanel({
   };
 
   return (
-    <div className="offers-panel">
+    <div className="panel">
       <span className="p-muted-heading">mysql:db</span>
       <h5>Offer info</h5>
-      <table className="offers-panel__table">
+      <table className="panel__table">
         <tbody>
-          <tr className="offers-panel__tr">
-            <th className="offers-panel__th">Offer name</th>
-            <td className="offers-panel__td">{offers["offer-name"]}</td>
+          <tr className="panel__tr">
+            <th className="panel__th">Offer name</th>
+            <td className="panel__td">{offers["offer-name"]}</td>
           </tr>
-          <tr className="offers-panel__tr">
-            <th className="offers-panel__th">Application</th>
-            <td className="offers-panel__td">{application}</td>
+          <tr className="panel__tr">
+            <th className="panel__th">Application</th>
+            <td className="panel__td">{application}</td>
           </tr>
-          <tr className="offers-panel__tr">
-            <th className="offers-panel__th">Charm</th>
-            <td className="offers-panel__td">
+          <tr className="panel__tr">
+            <th className="panel__th">Charm</th>
+            <td className="panel__td">
               <a className="p-link--external" href="#_">
                 {offers["charm"]}
               </a>
             </td>
           </tr>
-          <tr className="offers-panel__tr">
-            <th className="offers-panel__th">Store</th>
-            <td className="offers-panel__td">mysql:db</td>
+          <tr className="panel__tr">
+            <th className="panel__th">Store</th>
+            <td className="panel__td">mysql:db</td>
           </tr>
-          <tr className="offers-panel__tr">
-            <th className="offers-panel__th">URL</th>
+          <tr className="panel__tr">
+            <th className="panel__th">URL</th>
             <td>mysql:db</td>
           </tr>
         </tbody>
@@ -71,19 +71,19 @@ export default function OffersPanel({
               aria-hidden={accordionPanelId !== "tab1"}
               aria-labelledby="tab1"
             >
-              <table className="offers-panel__table">
+              <table className="panel__table">
                 <tbody>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">Endpoint</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">Endpoint</th>
+                    <td className="panel__td">-</td>
                   </tr>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">Interface</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">Interface</th>
+                    <td className="panel__td">-</td>
                   </tr>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">Role</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">Role</th>
+                    <td className="panel__td">-</td>
                   </tr>
                 </tbody>
               </table>
@@ -106,27 +106,27 @@ export default function OffersPanel({
               aria-hidden={accordionPanelId !== "tab2"}
               aria-labelledby="tab2"
             >
-              <table className="offers-panel__table">
+              <table className="panel__table">
                 <tbody>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">UUID</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">UUID</th>
+                    <td className="panel__td">-</td>
                   </tr>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">User</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">User</th>
+                    <td className="panel__td">-</td>
                   </tr>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">User</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">User</th>
+                    <td className="panel__td">-</td>
                   </tr>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">Status</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">Status</th>
+                    <td className="panel__td">-</td>
                   </tr>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">Ingress-subnets</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">Ingress-subnets</th>
+                    <td className="panel__td">-</td>
                   </tr>
                 </tbody>
               </table>
@@ -149,19 +149,19 @@ export default function OffersPanel({
               aria-hidden={accordionPanelId !== "tab3"}
               aria-labelledby="tab3"
             >
-              <table className="offers-panel__table">
+              <table className="panel__table">
                 <tbody>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">User</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">User</th>
+                    <td className="panel__td">-</td>
                   </tr>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">Display-name</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">Display-name</th>
+                    <td className="panel__td">-</td>
                   </tr>
-                  <tr className="offers-panel__tr">
-                    <th className="offers-panel__th">Access</th>
-                    <td className="offers-panel__td">-</td>
+                  <tr className="panel__tr">
+                    <th className="panel__th">Access</th>
+                    <td className="panel__td">-</td>
                   </tr>
                 </tbody>
               </table>

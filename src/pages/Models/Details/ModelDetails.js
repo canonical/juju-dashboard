@@ -11,6 +11,7 @@ import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import LocalAppsPanel from "components/panels/LocalAppsPanel/LocalAppsPanel";
+import RemoteAppsPanel from "components/panels/RemoteAppsPanel/RemoteAppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
 import OffersPanel from "components/panels/OffersPanel/OffersPanel";
@@ -258,8 +259,13 @@ const ModelDetails = () => {
   }, [modelStatusData, panelRowClick, baseAppURL, query]);
 
   const remoteApplicationTableRows = useMemo(() => {
-    return generateRemoteApplicationRows(modelStatusData, baseAppURL);
-  }, [modelStatusData, baseAppURL]);
+    return generateRemoteApplicationRows(
+      modelStatusData,
+      panelRowClick,
+      baseAppURL,
+      query
+    );
+  }, [modelStatusData, panelRowClick, baseAppURL, query]);
 
   const unitTableRows = useMemo(() => {
     return generateUnitRows(
@@ -377,7 +383,7 @@ const ModelDetails = () => {
                       <MainTable
                         headers={remoteApplicationTableHeaders}
                         rows={remoteApplicationTableRows}
-                        className="model-details__remote p-main-table"
+                        className="model-details__remote-apps p-main-table"
                         sortable
                         emptyStateMsg={
                           "There are no remote applications in this model"
@@ -487,6 +493,12 @@ const ModelDetails = () => {
             >
               {activePanel === "apps" && (
                 <LocalAppsPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+              {activePanel === "remoteApps" && (
+                <RemoteAppsPanel
+                  entity={entity}
+                  panelRowClick={panelRowClick}
+                />
               )}
               {activePanel === "machines" && (
                 <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
