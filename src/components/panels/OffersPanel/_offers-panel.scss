@@ -1,0 +1,28 @@
+@import "../panels";
+
+.offers-panel {
+  &__table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  &__tr {
+    border-top: 0 !important;
+    display: flex;
+    width: 100%;
+  }
+
+  &__td {
+    flex: 1;
+  }
+
+  &__th {
+    color: $color-mid-dark;
+    text-align: right;
+  }
+
+  .p-accordion__panel {
+    padding: 0;
+  }
+}

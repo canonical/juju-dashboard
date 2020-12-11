@@ -129,7 +129,7 @@ export function generateLocalApplicationRows(
   modelStatusData,
   onRowClick,
   baseAppURL,
-  selectedEntity
+  query
 ) {
   if (!modelStatusData) {
     return [];
@@ -200,7 +200,8 @@ export function generateLocalApplicationRows(
       },
       onClick: () => onRowClick(key, "apps"),
       "data-app": key,
-      className: selectedEntity === key ? "is-selected" : "",
+      className:
+        query.panel === "apps" && query.entity === key ? "is-selected" : "",
     };
   });
 }
@@ -567,7 +568,12 @@ export function generateOffersRows(modelStatusData, baseAppURL) {
   });
 }
 
-export function generateAppOffersRows(modelStatusData, baseAppURL) {
+export function generateAppOffersRows(
+  modelStatusData,
+  onRowClick,
+  baseAppURL,
+  query
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -607,6 +613,12 @@ export function generateAppOffersRows(modelStatusData, baseAppURL) {
           content: "-", // offer url is not yet available from the API
         },
       ],
+      onClick: () => onRowClick(offerId, "offers"),
+      "data-app": offerId,
+      className:
+        query.panel === "offers" && query.entity === offerId
+          ? "is-selected"
+          : "",
     };
   });
 }

@@ -13,6 +13,7 @@ import SlidePanel from "components/SlidePanel/SlidePanel";
 import AppsPanel from "components/panels/AppsPanel/AppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
+import OffersPanel from "components/panels/OffersPanel/OffersPanel";
 import WebCLI from "components/WebCLI/WebCLI";
 import StatusStrip from "components/StatusStrip/StatusStrip";
 
@@ -252,9 +253,9 @@ const ModelDetails = () => {
       modelStatusData,
       panelRowClick,
       baseAppURL,
-      query?.entity
+      query
     );
-  }, [baseAppURL, modelStatusData, query, panelRowClick]);
+  }, [modelStatusData, panelRowClick, baseAppURL, query]);
 
   const remoteApplicationTableRows = useMemo(() => {
     return generateRemoteApplicationRows(modelStatusData, baseAppURL);
@@ -283,12 +284,19 @@ const ModelDetails = () => {
     [modelStatusData, baseAppURL]
   );
   const offersTableRows = useMemo(
-    () => generateOffersRows(modelStatusData, baseAppURL),
-    [modelStatusData, baseAppURL]
+    () =>
+      generateOffersRows(
+        modelStatusData,
+        panelRowClick,
+        baseAppURL,
+        query?.entity
+      ),
+    [modelStatusData, panelRowClick, baseAppURL, query]
   );
   const appOffersRows = useMemo(
-    () => generateAppOffersRows(modelStatusData, baseAppURL),
-    [modelStatusData, baseAppURL]
+    () =>
+      generateAppOffersRows(modelStatusData, panelRowClick, baseAppURL, query),
+    [modelStatusData, panelRowClick, baseAppURL, query]
   );
 
   const { panel: activePanel, entity, activeView } = query;
@@ -336,7 +344,7 @@ const ModelDetails = () => {
                       <MainTable
                         headers={appsOffersTableHeaders}
                         rows={appOffersRows}
-                        className="model-details__relations p-main-table"
+                        className="model-details__offers p-main-table"
                         sortable
                         emptyStateMsg={
                           "There are no offers associated with this model"
@@ -369,7 +377,7 @@ const ModelDetails = () => {
                       <MainTable
                         headers={remoteApplicationTableHeaders}
                         rows={remoteApplicationTableRows}
-                        className="model-details__relations p-main-table"
+                        className="model-details__remote p-main-table"
                         sortable
                         emptyStateMsg={
                           "There are no remote applications in this model"
@@ -485,6 +493,9 @@ const ModelDetails = () => {
               )}
               {activePanel === "units" && (
                 <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+              {activePanel === "offers" && (
+                <OffersPanel entity={entity} panelRowClick={panelRowClick} />
               )}
             </SlidePanel>
           </div>
