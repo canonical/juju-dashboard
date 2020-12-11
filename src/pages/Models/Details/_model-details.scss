@@ -209,11 +209,11 @@
     }
   }
 
+  // .model-details__offers, // DISABLED PANEL
+  // .model-details__remote-apps, // DISABLED PANEL
   .model-details__apps,
-  .model-details__remote-apps,
-  .model-details__machines,
   .model-details__units,
-  .model-details__offers {
+  .model-details__machines {
     tbody tr:hover {
       background-color: #e7f9ff;
       cursor: pointer;

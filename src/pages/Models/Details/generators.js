@@ -261,7 +261,7 @@ export function generateRemoteApplicationRows(
           store: "store",
         },
         "data-app": key,
-        onClick: () => onRowClick(key, "remoteApps"),
+        onClick: () => false && onRowClick(key, "remoteApps"), // DISABLED PANEL
         className:
           query?.panel === "remoteApps" && query?.entity === key
             ? "is-selected"
@@ -626,7 +626,7 @@ export function generateAppOffersRows(
           content: "-", // offer url is not yet available from the API
         },
       ],
-      onClick: () => onRowClick(offerId, "offers"),
+      onClick: () => false && onRowClick(offerId, "offers"), // DISABLED PANEL
       "data-app": offerId,
       className:
         query.panel === "offers" && query.entity === offerId
