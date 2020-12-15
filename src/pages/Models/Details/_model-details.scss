@@ -42,12 +42,14 @@
 
 @mixin model-details-header {
   .model-details__header {
+    align-items: center;
     display: grid;
     grid-template-columns: 1fr;
 
     @media (min-width: $breakpoint-medium) {
       gap: 1rem;
       grid-template-columns: 240px 1fr;
+      padding: 0 0.5rem;
     }
 
     @media (min-width: $breakpoint-m-large) {
