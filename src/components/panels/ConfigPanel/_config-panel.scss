@@ -1,0 +1,7 @@
+@import "vanilla-framework/scss/vanilla";
+
+.config-panel__no-description {
+  height: calc(100vh - 50px); /* height of the header & spacing in panel */
+  text-align: center;
+  padding: 0 5rem;
+}
