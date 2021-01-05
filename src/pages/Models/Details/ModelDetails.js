@@ -10,9 +10,11 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
-import AppsPanel from "components/panels/AppsPanel/AppsPanel";
+import LocalAppsPanel from "components/panels/LocalAppsPanel/LocalAppsPanel";
+import RemoteAppsPanel from "components/panels/RemoteAppsPanel/RemoteAppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
+import OffersPanel from "components/panels/OffersPanel/OffersPanel";
 import WebCLI from "components/WebCLI/WebCLI";
 import StatusStrip from "components/StatusStrip/StatusStrip";
 
@@ -33,17 +35,21 @@ import { fetchAndStoreModelStatus } from "juju/index";
 import { fetchModelStatus } from "juju/actions";
 
 import {
-  applicationTableHeaders,
+  localApplicationTableHeaders,
+  remoteApplicationTableHeaders,
   consumedTableHeaders,
   offersTableHeaders,
+  appsOffersTableHeaders,
   unitTableHeaders,
   machineTableHeaders,
   relationTableHeaders,
-  generateApplicationRows,
+  generateLocalApplicationRows,
+  generateRemoteApplicationRows,
   generateConsumedRows,
   generateMachineRows,
   generateRelationRows,
   generateOffersRows,
+  generateAppOffersRows,
   generateUnitRows,
 } from "./generators";
 
@@ -243,14 +249,23 @@ const ModelDetails = () => {
     }
   }, [dispatch, modelUUID, modelStatusData]);
 
-  const applicationTableRows = useMemo(() => {
-    return generateApplicationRows(
+  const localApplicationTableRows = useMemo(() => {
+    return generateLocalApplicationRows(
       modelStatusData,
       panelRowClick,
       baseAppURL,
-      query?.entity
+      query
     );
-  }, [baseAppURL, modelStatusData, query, panelRowClick]);
+  }, [modelStatusData, panelRowClick, baseAppURL, query]);
+
+  const remoteApplicationTableRows = useMemo(() => {
+    return generateRemoteApplicationRows(
+      modelStatusData,
+      panelRowClick,
+      baseAppURL,
+      query
+    );
+  }, [modelStatusData, panelRowClick, baseAppURL, query]);
 
   const unitTableRows = useMemo(() => {
     return generateUnitRows(
@@ -275,8 +290,19 @@ const ModelDetails = () => {
     [modelStatusData, baseAppURL]
   );
   const offersTableRows = useMemo(
-    () => generateOffersRows(modelStatusData, baseAppURL),
-    [modelStatusData, baseAppURL]
+    () =>
+      generateOffersRows(
+        modelStatusData,
+        panelRowClick,
+        baseAppURL,
+        query?.entity
+      ),
+    [modelStatusData, panelRowClick, baseAppURL, query]
+  );
+  const appOffersRows = useMemo(
+    () =>
+      generateAppOffersRows(modelStatusData, panelRowClick, baseAppURL, query),
+    [modelStatusData, panelRowClick, baseAppURL, query]
   );
 
   const { panel: activePanel, entity, activeView } = query;
@@ -318,26 +344,78 @@ const ModelDetails = () => {
               <InfoPanel />
               <div className="model-details__main u-overflow--scroll">
                 {renderCounts(activeView, modelStatusData)}
-                {shouldShow("apps", activeView) &&
-                  applicationTableRows.length > 0 && (
-                    <MainTable
-                      headers={applicationTableHeaders}
-                      rows={applicationTableRows}
-                      className="model-details__apps p-main-table"
-                      sortable
-                      emptyStateMsg={"There are no applications in this model"}
-                    />
-                  )}
-                {shouldShow("units", activeView) &&
-                  unitTableRows.length > 0 && (
-                    <MainTable
-                      headers={unitTableHeaders}
-                      rows={unitTableRows}
-                      className="model-details__units p-main-table"
-                      sortable
-                      emptyStateMsg={"There are no units in this model"}
-                    />
-                  )}
+                {shouldShow("apps", activeView) && (
+                  <>
+                    {appOffersRows.length > 0 && (
+                      <MainTable
+                        headers={appsOffersTableHeaders}
+                        rows={appOffersRows}
+                        className="model-details__offers p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no offers associated with this model"
+                        }
+                      />
+                    )}
+                    {localApplicationTableRows.length > 0 ? (
+                      <MainTable
+                        headers={localApplicationTableHeaders}
+                        rows={localApplicationTableRows}
+                        className="model-details__apps p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no applications in this model"
+                        }
+                      />
+                    ) : (
+                      <span>
+                        There are no applications associated with this model.
+                        Learn about{" "}
+                        <a
+                          className="p-link--external"
+                          href="https://juju.is/docs/deploying-applications"
+                        >
+                          deploying applications
+                        </a>
+                      </span>
+                    )}
+                    {remoteApplicationTableRows?.length > 0 && (
+                      <MainTable
+                        headers={remoteApplicationTableHeaders}
+                        rows={remoteApplicationTableRows}
+                        className="model-details__remote-apps p-main-table"
+                        sortable
+                        emptyStateMsg={
+                          "There are no remote applications in this model"
+                        }
+                      />
+                    )}
+                  </>
+                )}
+                {shouldShow("units", activeView) && (
+                  <>
+                    {unitTableRows.length > 0 ? (
+                      <MainTable
+                        headers={unitTableHeaders}
+                        rows={unitTableRows}
+                        className="model-details__units p-main-table"
+                        sortable
+                        emptyStateMsg={"There are no units in this model"}
+                      />
+                    ) : (
+                      <span>
+                        There are no units added to your applications in this
+                        model yet. Learn about{" "}
+                        <a
+                          className="p-link--external"
+                          href="https://juju.is/docs/scaling-applications"
+                        >
+                          scaling applications
+                        </a>
+                      </span>
+                    )}
+                  </>
+                )}
                 {shouldShow("machines", activeView) &&
                   machinesTableRows.length > 0 && (
                     <MainTable
@@ -367,7 +445,7 @@ const ModelDetails = () => {
                         {consumedTableRows.length + offersTableRows.length})
                       </h5>
                     )}
-                    {consumedTableRows.length ? (
+                    {consumedTableRows.length > 0 && (
                       <MainTable
                         headers={consumedTableHeaders}
                         rows={consumedTableRows}
@@ -377,8 +455,8 @@ const ModelDetails = () => {
                           "There are no remote relations in this model"
                         }
                       />
-                    ) : null}
-                    {offersTableRows.length ? (
+                    )}
+                    {offersTableRows.length > 0 && (
                       <MainTable
                         headers={offersTableHeaders}
                         rows={offersTableRows}
@@ -388,12 +466,12 @@ const ModelDetails = () => {
                           "There are no connected offers in this model"
                         }
                       />
-                    ) : null}
+                    )}
                   </>
                 ) : (
                   <>
                     {activeView === "integrations" && (
-                      <p data-testid="no-integrations-msg">
+                      <span data-testid="no-integrations-msg">
                         There are no integrations associated with this model -{" "}
                         <a
                           className="p-link--external"
@@ -401,13 +479,12 @@ const ModelDetails = () => {
                         >
                           learn more about integration
                         </a>
-                      </p>
+                      </span>
                     )}
                   </>
                 )}
               </div>
             </div>
-
             <SlidePanel
               isActive={activePanel}
               onClose={() => setQuery(closePanelConfig)}
@@ -415,13 +492,22 @@ const ModelDetails = () => {
               className={`${activePanel}-panel`}
             >
               {activePanel === "apps" && (
-                <AppsPanel entity={entity} panelRowClick={panelRowClick} />
+                <LocalAppsPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+              {activePanel === "remoteApps" && (
+                <RemoteAppsPanel
+                  entity={entity}
+                  panelRowClick={panelRowClick}
+                />
               )}
               {activePanel === "machines" && (
                 <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
               )}
               {activePanel === "units" && (
                 <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
+              )}
+              {activePanel === "offers" && (
+                <OffersPanel entity={entity} panelRowClick={panelRowClick} />
               )}
             </SlidePanel>
           </div>

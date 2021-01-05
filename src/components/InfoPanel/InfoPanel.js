@@ -36,6 +36,8 @@ const InfoPanel = () => {
   const { 0: modelName } = useParams();
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
   const modelStatusData = useModelStatus();
+  const applicationsCount = Object.entries(modelStatusData.applications || {})
+    .length;
 
   const cloudProvider = modelStatusData
     ? extractCloudName(modelStatusData.model["cloud-tag"])
@@ -73,28 +75,32 @@ const InfoPanel = () => {
           <Topology width={width} height={height} modelData={modelStatusData} />
         </Modal>
       ) : (
-        <div className="info-panel__pictogram">
-          <Topology
-            width={topologySize}
-            height={topologySize}
-            modelData={modelStatusData}
-            data-test="topology"
-          />
-          {modelName !== undefined && (
-            <i
-              // @TODO the .p-icon--expand class can be removed when this issue lands
-              // https://github.com/canonical-web-and-design/jaas-dashboard/issues/453
-              className="p-icon--expand p-icon--fullscreen"
-              style={{ backgroundImage: `url(${fullScreenIcon})` }}
-              onClick={handleExpandTopology}
-              onKeyPress={handleExpandTopology}
-              role="button"
-              tabIndex="0"
-            >
-              Expand topology
-            </i>
+        <>
+          {applicationsCount > 0 && (
+            <div className="info-panel__pictogram">
+              <Topology
+                width={topologySize}
+                height={topologySize}
+                modelData={modelStatusData}
+                data-test="topology"
+              />
+              {modelName !== undefined && (
+                <i
+                  // @TODO the .p-icon--expand class can be removed when this issue lands
+                  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/453
+                  className="p-icon--expand p-icon--fullscreen"
+                  style={{ backgroundImage: `url(${fullScreenIcon})` }}
+                  onClick={handleExpandTopology}
+                  onKeyPress={handleExpandTopology}
+                  role="button"
+                  tabIndex="0"
+                >
+                  Expand topology
+                </i>
+              )}
+            </div>
           )}
-        </div>
+        </>
       )}
       <div className="info-panel__grid">
         <div className="info-panel__grid-item">

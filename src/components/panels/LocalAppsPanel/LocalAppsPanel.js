@@ -19,9 +19,9 @@ import {
   filterModelStatusDataByApp,
 } from "app/utils";
 
-import "./_apps-panel.scss";
+import "../_panels.scss";
 
-export default function AppsPanel({ entity, panelRowClick }) {
+export default function LocalAppsPanel({ entity, panelRowClick }) {
   // Get model status info
   const modelStatusData = useModelStatus();
 
