@@ -9,6 +9,11 @@ type Props = {
   entity: string;
 };
 
+type tableData = {
+  th: string;
+  td: string;
+};
+
 export default function OffersPanel({
   entity: application,
 }: Props): ReactElement {
@@ -20,11 +25,6 @@ export default function OffersPanel({
   const handleAccordionToggle = (id: string) => {
     setAccordionPanelId(id === accordionPanelId ? "" : id);
   };
-
-  interface tableData {
-    th: string;
-    td: string;
-  }
 
   const offerInfo: tableData[] = [
     { th: "Offer name", td: offers["offer-name"] },

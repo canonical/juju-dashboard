@@ -9,16 +9,17 @@ type Props = {
   entity: string;
 };
 
+type tableData = {
+  th: string;
+  td: string;
+};
+
 export default function RemoteAppsPanel({
   entity: appId,
 }: Props): ReactElement {
   // Get model status info
   const modelStatusData = useModelStatus();
 
-  interface tableData {
-    th: string;
-    td: string;
-  }
   const remoteApp = modelStatusData["remote-applications"]?.[appId];
 
   const tableDataArr: tableData[] = [
