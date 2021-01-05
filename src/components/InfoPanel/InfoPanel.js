@@ -36,7 +36,8 @@ const InfoPanel = () => {
   const { 0: modelName } = useParams();
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
   const modelStatusData = useModelStatus();
-  const applicationsCount = Object.entries(modelStatusData.applications).length;
+  const applicationsCount = Object.entries(modelStatusData.applications || {})
+    .length;
 
   const cloudProvider = modelStatusData
     ? extractCloudName(modelStatusData.model["cloud-tag"])

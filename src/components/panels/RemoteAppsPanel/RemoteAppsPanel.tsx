@@ -15,19 +15,19 @@ export default function RemoteAppsPanel({
   // Get model status info
   const modelStatusData = useModelStatus();
 
-  const remoteApp = modelStatusData["remote-applications"][appId];
   interface tableData {
     th: string;
     td: string;
   }
+  const remoteApp = modelStatusData["remote-applications"]?.[appId];
 
   const tableDataArr: tableData[] = [
-    { th: "Offer name", td: remoteApp["offer-name"] },
+    { th: "Offer name", td: remoteApp["offer-name"] || "-" },
     { th: "Application", td: "-" },
     { th: "Charm", td: "-" },
     { th: "Store", td: "-" },
-    { th: "Application", td: remoteApp["offer-url"] },
-    { th: "Status", td: remoteApp.status.status },
+    { th: "Application", td: remoteApp["offer-url"] || "-" },
+    { th: "Status", td: remoteApp.status.status || "-" },
     { th: "Endpoint", td: "-" },
     { th: "Interface", td: "-" },
   ];
