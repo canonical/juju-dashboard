@@ -1,7 +1,23 @@
 @import "vanilla-framework/scss/vanilla";
 
-.config-panel__no-description {
-  height: calc(100vh - 50px); /* height of the header & spacing in panel */
-  text-align: center;
-  padding: 0 5rem;
+.config-panel {
+  &__list-header {
+    margin: 2rem 0 1rem;
+  }
+
+  &__no-description {
+    height: calc(100vh - 50px); /* height of the header & spacing in panel */
+    text-align: center;
+    padding: 0 5rem;
+  }
+}
+
+.config-input {
+  h5 {
+    margin-bottom: 0.5rem;
+  }
+  textarea {
+    min-height: 2.3rem;
+    height: 2.3rem;
+  }
 }
