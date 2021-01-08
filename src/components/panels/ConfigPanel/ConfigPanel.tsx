@@ -57,7 +57,6 @@ export default function ConfigPanel({
     );
   }, [appName, modelUUID, reduxStore]);
 
-  const configSelected = false;
   return (
     <div className="config-panel">
       <div className="row">
@@ -72,10 +71,11 @@ export default function ConfigPanel({
           </div>
         </div>
         <div className="config-panel__description col-6">
-          {configSelected ? (
+          {selectedConfig ? (
             <>
               <h4>Configuration Description</h4>
-              <div>{selectedConfig && selectedConfig.description}</div>
+              <h5>{selectedConfig.name}</h5>
+              <pre>{selectedConfig.description}</pre>
             </>
           ) : (
             <div className="config-panel__no-description u-vertically-center">

@@ -10,6 +10,18 @@
     padding-left: 0.5rem;
   }
 
+  &__description {
+    margin-top: 2rem;
+    pre {
+      white-space: pre-wrap;
+      word-break: keep-all;
+      // reset the vanilla pre styling
+      background-color: inherit;
+      border: none;
+      padding: 0;
+    }
+  }
+
   &__no-description {
     height: calc(100vh - 50px); /* height of the header & spacing in panel */
     text-align: center;
