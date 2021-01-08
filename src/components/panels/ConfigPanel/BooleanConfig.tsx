@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import classnames from "classnames";
 
 import type { ConfigProps } from "./ConfigPanel";
@@ -9,7 +9,6 @@ export default function BooleanConfig({
   setSelectedConfig,
 }: ConfigProps): ReactElement {
   const [inputFocused, setInputFocused] = useState(false);
-  const wrapper = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (selectedConfig?.name === config.name) {
@@ -28,7 +27,6 @@ export default function BooleanConfig({
       className={classnames("config-input", {
         "config-input--focused": inputFocused,
       })}
-      ref={wrapper}
       onClick={() => setSelectedConfig(config)}
     >
       <h5>{config.name}</h5>

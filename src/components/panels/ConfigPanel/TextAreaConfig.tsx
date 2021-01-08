@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import classnames from "classnames";
 
 import type { ConfigProps } from "./ConfigPanel";
@@ -9,7 +9,6 @@ export default function TextAreaConfig({
   setSelectedConfig,
 }: ConfigProps): ReactElement {
   const [inputFocused, setInputFocused] = useState(false);
-  const wrapper = useRef<HTMLDivElement>(null);
 
   let defaultValue = null;
   let placeholder = null;
@@ -36,7 +35,6 @@ export default function TextAreaConfig({
       className={classnames("config-input", {
         "config-input--focused": inputFocused,
       })}
-      ref={wrapper}
       onClick={() => setSelectedConfig(config)}
     >
       <h5>{config.name}</h5>
