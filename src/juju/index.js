@@ -2,6 +2,7 @@ import Limiter from "async-limiter";
 import { connect, connectAndLogin } from "@canonical/jujulib";
 
 import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
+import applications from "@canonical/jujulib/dist/api/facades/application-v12";
 import client from "@canonical/jujulib/dist/api/facades/client-v2";
 import cloud from "@canonical/jujulib/dist/api/facades/cloud-v3";
 import controller from "@canonical/jujulib/dist/api/facades/controller-v5";
@@ -34,7 +35,15 @@ import {
 */
 function generateConnectionOptions(usePinger = false, bakery, onClose) {
   // The options used when connecting to a Juju controller or model.
-  const facades = [annotations, client, cloud, controller, jimm, modelManager];
+  const facades = [
+    annotations,
+    applications,
+    client,
+    cloud,
+    controller,
+    jimm,
+    modelManager,
+  ];
   if (usePinger) {
     facades.push(pinger);
   }
@@ -339,4 +348,29 @@ export function disableControllerUUIDMasking(conn) {
       resolve();
     }
   });
+}
+
+/**
+  Call the API to fetch the application config data.
+  @param {String} modelUUID
+  @param {String} appName
+  @param {Object} appState
+  @returns {Promise} The application config.
+*/
+export async function getApplicationConfig(modelUUID, appName, appState) {
+  const bakery = getBakery(appState);
+  const baseWSControllerURL = getWSControllerURL(appState);
+  const { identityProviderAvailable } = getConfig(appState);
+  const modelURL = baseWSControllerURL.replace(
+    "/api",
+    `/model/${modelUUID}/api`
+  );
+  const { conn } = await connectAndLoginWithTimeout(
+    modelURL,
+    null,
+    generateConnectionOptions(false, bakery),
+    identityProviderAvailable
+  );
+  const config = await conn.facades.application.get({ application: appName });
+  return config;
 }
