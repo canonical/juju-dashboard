@@ -415,7 +415,11 @@ const ModelDetails = () => {
               className={`${activePanel}-panel`}
             >
               {activePanel === "apps" && (
-                <AppsPanel entity={entity} panelRowClick={panelRowClick} />
+                <AppsPanel
+                  entity={entity}
+                  panelRowClick={panelRowClick}
+                  wsControllerURL={primaryControllerData[0]}
+                />
               )}
               {activePanel === "machines" && (
                 <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
