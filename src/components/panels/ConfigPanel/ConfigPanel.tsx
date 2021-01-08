@@ -2,6 +2,9 @@ import { ReactElement, useEffect, useState } from "react";
 import { getApplicationConfig } from "juju/index";
 import { useStore } from "react-redux";
 
+import BooleanConfig from "./BooleanConfig";
+import TextAreaConfig from "./TextAreaConfig";
+
 import "./_config-panel.scss";
 
 type Props = {
@@ -23,6 +26,12 @@ type Config = {
   [key: string]: ConfigData;
 };
 
+export type ConfigProps = {
+  config: ConfigData;
+  selectedConfig: ConfigData | undefined;
+  setSelectedConfig: Function;
+};
+
 export default function ConfigPanel({
   appName,
   title,
@@ -30,7 +39,7 @@ export default function ConfigPanel({
 }: Props): ReactElement {
   const reduxStore = useStore();
   const [config, setConfig] = useState<Config>({});
-  const [selectedConfig, setSelectedConfig] = useState<Config | undefined>(
+  const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
     undefined
   );
 
@@ -55,7 +64,11 @@ export default function ConfigPanel({
         <div className="config-panel__config-list col-6">
           <div className="config-panel__list-header">{title}</div>
           <div className="config-panel__list">
-            {generateConfigElementList(config)}
+            {generateConfigElementList(
+              config,
+              selectedConfig,
+              setSelectedConfig
+            )}
           </div>
         </div>
         <div className="config-panel__description col-6">
@@ -78,43 +91,31 @@ export default function ConfigPanel({
   );
 }
 
-type ConfigProps = {
-  config: ConfigData;
-};
-
-function TextAreaConfig({ config }: ConfigProps): ReactElement {
-  let defaultValue = null;
-  let placeholder = null;
-  // Use the placeholder styling native to the browser if the config value
-  // is equal to the default value of the config option.
-  if (config.default === config.value) {
-    placeholder = config.default;
-  } else {
-    defaultValue = config.value;
-  }
-
-  return (
-    <div className="config-input">
-      <h5>{config.name}</h5>
-      <textarea
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-      ></textarea>
-    </div>
-  );
-}
-
-function BooleanConfig({ config }: ConfigProps): ReactElement {
-  return <div className="config-input"></div>;
-}
-
-function generateConfigElementList(configs: Config) {
+function generateConfigElementList(
+  configs: Config,
+  selectedConfig: ConfigData | undefined,
+  setSelectedConfig: Function
+) {
   const elements = Object.keys(configs).map((key) => {
     const config = configs[key];
     if (config.type === "boolean") {
-      return <BooleanConfig config={config} />;
+      return (
+        <BooleanConfig
+          key={config.name}
+          config={config}
+          selectedConfig={selectedConfig}
+          setSelectedConfig={setSelectedConfig}
+        />
+      );
     } else {
-      return <TextAreaConfig config={config} />;
+      return (
+        <TextAreaConfig
+          key={config.name}
+          config={config}
+          selectedConfig={selectedConfig}
+          setSelectedConfig={setSelectedConfig}
+        />
+      );
     }
   });
 

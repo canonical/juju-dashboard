@@ -1,6 +1,10 @@
 @import "vanilla-framework/scss/vanilla";
 
 .config-panel {
+  .row {
+    padding: 0;
+  }
+
   &__list-header {
     margin: 2rem 0 1rem;
   }
@@ -13,9 +17,16 @@
 }
 
 .config-input {
+  cursor: pointer;
+
+  &--focused {
+    background-color: $color-light;
+  }
+
   h5 {
     margin-bottom: 0.5rem;
   }
+
   textarea {
     min-height: 2.3rem;
     height: 2.3rem;
