@@ -10,6 +10,9 @@ export default function TextAreaConfig({
   setNewValue,
 }: ConfigProps): ReactElement {
   const [inputFocused, setInputFocused] = useState(false);
+  const [showUseDefault, setShowUseDefault] = useState(
+    config.value !== config.default
+  );
 
   let defaultValue = config.default;
   if (config.default !== config.value) {
@@ -34,11 +37,24 @@ export default function TextAreaConfig({
       onClick={() => setSelectedConfig(config)}
     >
       <h5 className="u-float-left">{config.name}</h5>
-      <button className="u-float-right p-button--base">use default</button>
+      <button
+        className={classnames("u-float-right p-button--base", {
+          "u-hide": !showUseDefault,
+        })}
+      >
+        use default
+      </button>
       <textarea
         defaultValue={defaultValue}
         onFocus={() => setSelectedConfig(config)}
-        onChange={(e) => setNewValue(config.name, e.target.value)}
+        onChange={(e) => {
+          setNewValue(config.name, e.target.value);
+          if (e.target.value !== config.default) {
+            setShowUseDefault(true);
+          } else {
+            setShowUseDefault(false);
+          }
+        }}
       ></textarea>
     </div>
   );
