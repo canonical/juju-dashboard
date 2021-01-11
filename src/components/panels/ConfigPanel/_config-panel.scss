@@ -29,7 +29,7 @@
   }
 
   &__drawer {
-    @include vf-animation(transform, brisk, out);
+    @include vf-animation(max-height, slow, in);
     background-color: white;
     border-top: 1px solid $color-mid-light;
     bottom: 0;
@@ -40,7 +40,10 @@
     height: auto;
 
     &--hidden {
-      height: 0;
+      max-height: 0;
+      overflow: hidden;
+      padding: 0;
+      border: none;
     }
   }
 }

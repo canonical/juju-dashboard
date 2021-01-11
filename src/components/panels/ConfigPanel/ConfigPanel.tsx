@@ -21,6 +21,7 @@ type ConfigData = {
   source: "default" | "user";
   type: "string" | "int" | "float" | "boolean";
   value: any;
+  newValue: any;
 };
 
 type Config = {
@@ -31,6 +32,7 @@ export type ConfigProps = {
   config: ConfigData;
   selectedConfig: ConfigData | undefined;
   setSelectedConfig: Function;
+  setNewValue: Function;
 };
 
 export default function ConfigPanel({
@@ -43,6 +45,7 @@ export default function ConfigPanel({
   const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
     undefined
   );
+  const [shouldShowDrawer, setShouldShowDrawer] = useState<Boolean>(false);
 
   useEffect(() => {
     getApplicationConfig(modelUUID, appName, reduxStore.getState()).then(
@@ -60,10 +63,19 @@ export default function ConfigPanel({
 
   function setNewValue(name: string, value: any) {
     config[name].newValue = value;
+    if (config[name].newValue === config[name].value) {
+      delete config[name].newValue;
+    }
+    const fieldChanged = Object.keys(config).some(
+      (key) => config[key].newValue
+    );
+    if (fieldChanged) {
+      setShouldShowDrawer(true);
+    } else if (!fieldChanged && shouldShowDrawer) {
+      setShouldShowDrawer(false);
+    }
     setConfig(config);
   }
-
-  const shouldShowDrawer = true;
 
   return (
     <div className="config-panel">
@@ -74,12 +86,13 @@ export default function ConfigPanel({
             {generateConfigElementList(
               config,
               selectedConfig,
-              setSelectedConfig
+              setSelectedConfig,
+              setNewValue
             )}
           </div>
           <div
             className={classnames("config-panel__drawer", {
-              "config-panel__drawer--hidden": shouldShowDrawer,
+              "config-panel__drawer--hidden": !shouldShowDrawer,
             })}
           >
             <button className="p-button--neutral">Cancel</button>
@@ -110,7 +123,8 @@ export default function ConfigPanel({
 function generateConfigElementList(
   configs: Config,
   selectedConfig: ConfigData | undefined,
-  setSelectedConfig: Function
+  setSelectedConfig: Function,
+  setNewValue: Function
 ) {
   const elements = Object.keys(configs).map((key) => {
     const config = configs[key];
@@ -121,6 +135,7 @@ function generateConfigElementList(
           config={config}
           selectedConfig={selectedConfig}
           setSelectedConfig={setSelectedConfig}
+          setNewValue={setNewValue}
         />
       );
     } else {
@@ -130,6 +145,7 @@ function generateConfigElementList(
           config={config}
           selectedConfig={selectedConfig}
           setSelectedConfig={setSelectedConfig}
+          setNewValue={setNewValue}
         />
       );
     }

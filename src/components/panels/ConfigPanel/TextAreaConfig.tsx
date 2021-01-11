@@ -7,16 +7,12 @@ export default function TextAreaConfig({
   config,
   selectedConfig,
   setSelectedConfig,
+  setNewValue,
 }: ConfigProps): ReactElement {
   const [inputFocused, setInputFocused] = useState(false);
 
-  let defaultValue = null;
-  let placeholder = null;
-  // Use the placeholder styling native to the browser if the config value
-  // is equal to the default value of the config option.
-  if (config.default === config.value) {
-    placeholder = config.default;
-  } else {
+  let defaultValue = config.default;
+  if (config.default !== config.value) {
     defaultValue = config.value;
   }
 
@@ -40,8 +36,8 @@ export default function TextAreaConfig({
       <h5>{config.name}</h5>
       <textarea
         defaultValue={defaultValue}
-        placeholder={placeholder}
         onFocus={() => setSelectedConfig(config)}
+        onChange={(e) => setNewValue(config.name, e.target.value)}
       ></textarea>
     </div>
   );
