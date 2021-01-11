@@ -29,7 +29,7 @@
   }
 
   &__drawer {
-    @include vf-animation(max-height, slow, in);
+    @include vf-animation(max-height, fast, in);
     background-color: white;
     border-top: 1px solid $color-mid-light;
     bottom: 0;
@@ -37,13 +37,11 @@
     padding-right: 1.5rem;
     position: sticky;
     text-align: right;
-    height: auto;
+    max-height: 100px;
 
     &--hidden {
       max-height: 0;
       overflow: hidden;
-      padding: 0;
-      border: none;
     }
   }
 }
