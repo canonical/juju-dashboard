@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 
 import type { ConfigProps } from "./ConfigPanel";
@@ -13,6 +13,7 @@ export default function TextAreaConfig({
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   let defaultValue = config.default;
   if (config.default !== config.value) {
@@ -26,6 +27,14 @@ export default function TextAreaConfig({
       setInputFocused(false);
     }
   }, [selectedConfig, config]);
+
+  function resetToDefault() {
+    if (inputRef?.current) {
+      inputRef.current.value = config.default;
+    }
+    setNewValue(config.name, config.default);
+    setShowUseDefault(false);
+  }
 
   return (
     // XXX How to tell aria to ignore the click but not the element?
@@ -41,10 +50,12 @@ export default function TextAreaConfig({
         className={classnames("u-float-right p-button--base", {
           "u-hide": !showUseDefault,
         })}
+        onClick={resetToDefault}
       >
         use default
       </button>
       <textarea
+        ref={inputRef}
         defaultValue={defaultValue}
         onFocus={() => setSelectedConfig(config)}
         onChange={(e) => {
