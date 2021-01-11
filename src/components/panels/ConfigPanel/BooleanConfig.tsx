@@ -29,7 +29,8 @@ export default function BooleanConfig({
       })}
       onClick={() => setSelectedConfig(config)}
     >
-      <h5>{config.name}</h5>
+      <h5 className="u-float-left">{config.name}</h5>
+      <button className="u-float-right p-button--base">use default</button>
       <div className="row">
         <label className=".p-radio--inline col-1">
           <input

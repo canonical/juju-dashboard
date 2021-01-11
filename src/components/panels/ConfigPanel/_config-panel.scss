@@ -57,8 +57,17 @@
     background-color: $color-light;
   }
 
-  h5 {
+  h5,
+  button {
     margin-bottom: 0.5rem;
+    padding: 0;
+  }
+
+  button {
+    color: $color-link;
+    &:hover {
+      background-color: inherit;
+    }
   }
 
   textarea {

@@ -34,7 +34,7 @@ export default function TextAreaConfig({
       onClick={() => setSelectedConfig(config)}
     >
       <h5 className="u-float-left">{config.name}</h5>
-      <span className="u-float-right">use default</span>
+      <button className="u-float-right p-button--base">use default</button>
       <textarea
         defaultValue={defaultValue}
         onFocus={() => setSelectedConfig(config)}
