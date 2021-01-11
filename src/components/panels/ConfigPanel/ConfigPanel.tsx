@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import { getApplicationConfig } from "juju/index";
 import { useStore } from "react-redux";
+import classnames from "classnames";
 
 import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
@@ -57,6 +58,13 @@ export default function ConfigPanel({
     );
   }, [appName, modelUUID, reduxStore]);
 
+  function setNewValue(name: string, value: any) {
+    config[name].newValue = value;
+    setConfig(config);
+  }
+
+  const shouldShowDrawer = true;
+
   return (
     <div className="config-panel">
       <div className="row">
@@ -68,6 +76,14 @@ export default function ConfigPanel({
               selectedConfig,
               setSelectedConfig
             )}
+          </div>
+          <div
+            className={classnames("config-panel__drawer", {
+              "config-panel__drawer--hidden": shouldShowDrawer,
+            })}
+          >
+            <button className="p-button--neutral">Cancel</button>
+            <button className="p-button--positive">Save & appply</button>
           </div>
         </div>
         <div className="config-panel__description col-6">

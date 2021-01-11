@@ -27,6 +27,22 @@
     text-align: center;
     padding: 0 5rem;
   }
+
+  &__drawer {
+    @include vf-animation(transform, brisk, out);
+    background-color: white;
+    border-top: 1px solid $color-mid-light;
+    bottom: 0;
+    padding-top: 1rem;
+    padding-right: 1.5rem;
+    position: sticky;
+    text-align: right;
+    height: auto;
+
+    &--hidden {
+      height: 0;
+    }
+  }
 }
 
 .config-input {
