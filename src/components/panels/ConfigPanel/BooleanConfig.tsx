@@ -10,6 +10,9 @@ export default function BooleanConfig({
   setNewValue,
 }: ConfigProps): ReactElement {
   const [inputFocused, setInputFocused] = useState(false);
+  const [showUseDefault, setShowUseDefault] = useState(
+    config.value !== config.default
+  );
 
   useEffect(() => {
     if (selectedConfig?.name === config.name) {
@@ -21,6 +24,12 @@ export default function BooleanConfig({
 
   function handleOptionChange(e: any) {
     setNewValue(e.target.name, e.target.value === "true" ? true : false);
+    const bool = e.target.value === "true" ? true : false;
+    if (bool !== config.default) {
+      setShowUseDefault(true);
+    } else {
+      setShowUseDefault(false);
+    }
   }
 
   return (
@@ -33,7 +42,13 @@ export default function BooleanConfig({
       onClick={() => setSelectedConfig(config)}
     >
       <h5 className="u-float-left">{config.name}</h5>
-      <button className="u-float-right p-button--base">use default</button>
+      <button
+        className={classnames("u-float-right p-button--base", {
+          "u-hide": !showUseDefault,
+        })}
+      >
+        use default
+      </button>
       <div className="row">
         <label className=".p-radio--inline col-2">
           <input
