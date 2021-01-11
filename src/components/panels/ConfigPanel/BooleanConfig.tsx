@@ -7,6 +7,7 @@ export default function BooleanConfig({
   config,
   selectedConfig,
   setSelectedConfig,
+  setNewValue,
 }: ConfigProps): ReactElement {
   const [inputFocused, setInputFocused] = useState(false);
 
@@ -18,7 +19,9 @@ export default function BooleanConfig({
     }
   }, [selectedConfig, config]);
 
-  const inputName = `${config.name}-booleanSelect`;
+  function handleOptionChange(e: any) {
+    setNewValue(e.target.name, e.target.value === "true" ? true : false);
+  }
 
   return (
     // XXX How to tell aria to ignore the click but not the element?
@@ -32,29 +35,29 @@ export default function BooleanConfig({
       <h5 className="u-float-left">{config.name}</h5>
       <button className="u-float-right p-button--base">use default</button>
       <div className="row">
-        <label className=".p-radio--inline col-1">
+        <label className=".p-radio--inline col-2">
           <input
             type="radio"
             className="p-radio__input"
-            name={inputName}
-            aria-labelledby={inputName}
+            name={config.name}
+            aria-labelledby={config.name}
             defaultChecked={config.value === true}
+            value="true"
+            onChange={handleOptionChange}
           />
-          <span className="p-radio__label" id={inputName}>
-            true
-          </span>
+          <span className="p-radio__label">true</span>
         </label>
-        <label className="p-radio--inline col-1">
+        <label className="p-radio--inline col-2">
           <input
             type="radio"
             className="p-radio__input"
-            name={inputName}
-            aria-labelledby={inputName}
+            name={config.name}
+            aria-labelledby={config.name}
             defaultChecked={config.value === false}
+            value="false"
+            onChange={handleOptionChange}
           />
-          <span className="p-radio__label" id={inputName}>
-            false
-          </span>
+          <span className="p-radio__label">false</span>
         </label>
       </div>
     </div>

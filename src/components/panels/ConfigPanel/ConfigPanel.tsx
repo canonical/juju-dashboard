@@ -32,8 +32,10 @@ export type ConfigProps = {
   config: ConfigData;
   selectedConfig: ConfigData | undefined;
   setSelectedConfig: Function;
-  setNewValue: Function;
+  setNewValue: SetNewValue;
 };
+
+type SetNewValue = (name: string, value: any) => void;
 
 export default function ConfigPanel({
   appName,
@@ -124,7 +126,7 @@ function generateConfigElementList(
   configs: Config,
   selectedConfig: ConfigData | undefined,
   setSelectedConfig: Function,
-  setNewValue: Function
+  setNewValue: SetNewValue
 ) {
   const elements = Object.keys(configs).map((key) => {
     const config = configs[key];
