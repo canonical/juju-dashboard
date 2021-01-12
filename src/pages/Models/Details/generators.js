@@ -10,8 +10,8 @@ import {
   generateSpanClass,
 } from "app/utils";
 
-export const applicationTableHeaders = [
-  { content: "Local apps", sortKey: "app" },
+export const localApplicationTableHeaders = [
+  { content: "local apps", sortKey: "local-apps" },
   { content: "status", sortKey: "status" },
   { content: "version", className: "u-align--right", sortKey: "version" },
   { content: "scale", className: "u-align--right", sortKey: "scale" },
@@ -19,6 +19,14 @@ export const applicationTableHeaders = [
   { content: "rev", className: "u-align--right", sortKey: "rev" },
   { content: "os", sortKey: "os" },
   { content: "notes", sortKey: "notes" },
+];
+
+export const remoteApplicationTableHeaders = [
+  { content: "remote apps", sortKey: "remote-apps" },
+  { content: "status", sortKey: "status" },
+  { content: "interface", sortKey: "interface" },
+  { content: "offer url", sortKey: "offer-url" },
+  { content: "store", sortKey: "store" },
 ];
 
 export const unitTableHeaders = [
@@ -59,7 +67,14 @@ export const offersTableHeaders = [
   { content: "connections" },
 ];
 
-export function generateIconImg(name, namespace, baseAppURL) {
+export const appsOffersTableHeaders = [
+  { content: "offers" },
+  { content: "connection" },
+  { content: "interface" },
+  { content: "offer url" },
+];
+
+export function generateIconImg(name, namespace) {
   let iconSrc = defaultCharmIcon;
   if (namespace.indexOf("local:") !== 0) {
     iconSrc = generateIconPath(namespace);
@@ -110,11 +125,11 @@ export function generateEntityIdentifier(
   );
 }
 
-export function generateApplicationRows(
+export function generateLocalApplicationRows(
   modelStatusData,
   onRowClick,
   baseAppURL,
-  selectedEntity
+  query
 ) {
   if (!modelStatusData) {
     return [];
@@ -185,9 +200,75 @@ export function generateApplicationRows(
       },
       onClick: () => onRowClick(key, "apps"),
       "data-app": key,
-      className: selectedEntity === key ? "is-selected" : "",
+      className:
+        query?.panel === "apps" && query?.entity === key ? "is-selected" : "",
     };
   });
+}
+
+export function generateRemoteApplicationRows(
+  modelStatusData,
+  onRowClick,
+  baseAppURL,
+  query
+) {
+  if (!modelStatusData) {
+    return [];
+  }
+  const applications = cloneDeep(modelStatusData["remote-applications"]);
+  return (
+    applications &&
+    Object.keys(applications).map((key) => {
+      const app = applications[key];
+      const status = app.status.status;
+      const offerUrl = app["offer-url"];
+
+      const interfaces = Object.keys(app?.["relations"]).map(
+        (endpointInterface) => endpointInterface
+      );
+
+      return {
+        columns: [
+          {
+            "data-test-column": "app",
+            content: app["offer-name"], // we cannot access charm name
+            className: "u-truncate",
+          },
+          {
+            "data-test-column": "status",
+            content: status,
+            className: "u-capitalise u-truncate",
+          },
+          {
+            "data-test-column": "interface",
+            content: interfaces.join(","),
+          },
+          {
+            "data-test-column": "offer_url",
+            content: offerUrl,
+            className: "u-truncate",
+          },
+          {
+            "data-test-column": "store",
+            content: "-", // store info not yet available from API
+          },
+        ],
+        sortData: {
+          app: key,
+          status: "status",
+          interface: "interface",
+          offer_url: "offer_url",
+          store: "store",
+        },
+        "data-app": key,
+        onClick: () => false && onRowClick(key, "remoteApps"), // DISABLED PANEL
+        className:
+          query?.panel === "remoteApps" && query?.entity === key
+            ? "is-selected"
+            : "",
+      };
+    })
+  );
 }
 
 export function generateUnitRows(
@@ -496,6 +577,61 @@ export function generateOffersRows(modelStatusData, baseAppURL) {
           content: offer.activeConnectedCount,
         },
       ],
+    };
+  });
+}
+
+export function generateAppOffersRows(
+  modelStatusData,
+  onRowClick,
+  baseAppURL,
+  query
+) {
+  if (!modelStatusData) {
+    return [];
+  }
+
+  const offers = modelStatusData.offers;
+
+  return Object.keys(offers).map((offerId) => {
+    const offer = offers[offerId];
+
+    const interfaces = Object.keys(offer?.["endpoints"]).map(
+      (endpointInterface) => endpointInterface
+    );
+
+    return {
+      columns: [
+        {
+          content: (
+            <>
+              {generateRelationIconImage(offer, modelStatusData, baseAppURL)}
+              {offer["offer-name"]}
+            </>
+          ),
+          className: "u-truncate",
+        },
+        {
+          content: (
+            <>
+              {offer["active-connected-count"]} /{" "}
+              {offer["total-connected-count"]}
+            </>
+          ),
+        },
+        {
+          content: <>{interfaces.join(",")}</>,
+        },
+        {
+          content: "-", // offer url is not yet available from the API
+        },
+      ],
+      onClick: () => false && onRowClick(offerId, "offers"), // DISABLED PANEL
+      "data-app": offerId,
+      className:
+        query.panel === "offers" && query.entity === offerId
+          ? "is-selected"
+          : "",
     };
   });
 }

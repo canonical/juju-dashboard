@@ -21,7 +21,7 @@ import {
 
 import ConfigPanel from "../ConfigPanel/ConfigPanel";
 
-import "./_apps-panel.scss";
+import "../_panels.scss";
 
 // Generate panel header for given entity
 const generateAppPanelHeader = (
@@ -83,7 +83,7 @@ const generateAppPanelHeader = (
   );
 };
 
-export default function AppsPanel({ entity, panelRowClick }) {
+export default function LocalAppsPanel({ entity, panelRowClick }) {
   // Get model status info
   const modelStatusData = useModelStatus();
 

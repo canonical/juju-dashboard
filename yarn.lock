@@ -1842,10 +1842,10 @@
     jest-diff "^25.2.1"
     pretty-format "^25.2.1"
 
-"@types/jest@26.0.19":
-  version "26.0.19"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.19.tgz#e6fa1e3def5842ec85045bd5210e9bb8289de790"
-  integrity sha512-jqHoirTG61fee6v6rwbnEuKhpSKih0tuhqeFbCmMmErhtu3BYlOZaXWjffgOstMM4S/3iQD31lI5bGLTrs97yQ==
+"@types/jest@26.0.20":
+  version "26.0.20"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.20.tgz#cd2f2702ecf69e86b586e1f5223a60e454056307"
+  integrity sha512-9zi2Y+5USJRxd0FsahERhBwlcvFh6D2GLQnY2FH2BzK8J9s9omvNHIbvABwIluXa0fD8XVKMLTO0aOEuUfACAA==
   dependencies:
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
@@ -1895,10 +1895,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.10.tgz#8c102aba13bf5253f35146affbf8b26275069bef"
   integrity sha512-yV1nWZPlMFpoXyoknm4S56y2nlTAuFYaJuQtYRAOU7xA/FJ9RY0Xm7QOkaYMMmr8ESdHIuUb6oQgR/0+2NqlyA==
 
-"@types/node@14.14.19":
-  version "14.14.19"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.19.tgz#5135176a8330b88ece4e9ab1fdcfc0a545b4bab4"
-  integrity sha512-4nhBPStMK04rruRVtVc6cDqhu7S9GZai0fpXgPXrFpcPX6Xul8xnrjSdGB4KPBVYG/R5+fXWdCM8qBoiULWGPQ==
+"@types/node@14.14.20":
+  version "14.14.20"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.20.tgz#f7974863edd21d1f8a494a73e8e2b3658615c340"
+  integrity sha512-Y93R97Ouif9JEOWPIUyU+eyIdyRqQR0I8Ez1dzku4hDx34NWh4HbtIc3WNzwB1Y9ULvNGeu5B8h8bVL5cAk4/A==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -5119,10 +5119,10 @@ eslint-plugin-jsx-a11y@6.4.1, eslint-plugin-jsx-a11y@^6.3.1:
     jsx-ast-utils "^3.1.0"
     language-tags "^1.0.5"
 
-eslint-plugin-prettier@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.3.0.tgz#61e295349a65688ffac0b7808ef0a8244bdd8d40"
-  integrity sha512-tMTwO8iUWlSRZIwS9k7/E4vrTsfvsrcM5p1eftyuqWH25nKsz/o6/54I7jwQ/3zobISyC7wMy9ZsFwgTxOcOpQ==
+eslint-plugin-prettier@3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.3.1.tgz#7079cfa2497078905011e6f82e8dd8453d1371b7"
+  integrity sha512-Rq3jkcFY8RYeQLgk2cCwuc0P7SEFwDravPhsJZOQ5N4YI4DSg50NyqJ/9gdZHzQlHf8MvafSesbNJCcP/FF6pQ==
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
@@ -5760,15 +5760,15 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-framer-motion@3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-3.1.2.tgz#8b2d90bfa0de97851b23cce971abcde135ff5bc5"
-  integrity sha512-zEpaQzbSQR6dsihXbESJUAH+gCigV2FDnAbNzC6GN9+H/nA2eWScPsOLH4gygEoc+5u3jF36RToshY2CbJbC3g==
+framer-motion@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-3.2.1.tgz#66eeb883a0b5c425dd7767ecacdeac451c184cdb"
+  integrity sha512-5AWrh4JElgFAXWLqk0u8lVcdkigyuofyEy2LSsjuCxKbAb1hHqRn3PPdrV0KgPrysTHq95QO1bHFTLA7/Q8g+Q==
   dependencies:
     framesync "^5.0.0"
     hey-listen "^1.0.8"
-    popmotion "^9.0.2"
-    style-value-types "^3.2.0"
+    popmotion "^9.1.0"
+    style-value-types "^4.0.1"
     tslib "^1.10.0"
   optionalDependencies:
     "@emotion/is-prop-valid" "^0.8.2"
@@ -9096,14 +9096,14 @@ pnp-webpack-plugin@1.6.4:
   dependencies:
     ts-pnp "^1.1.6"
 
-popmotion@^9.0.2:
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/popmotion/-/popmotion-9.0.2.tgz#477650c3b4af97161011809223d9ca6860f3a2b5"
-  integrity sha512-WfSg8IfoUwYIP9uqeqbgncIsMHLAKWqebT2IP1aGAI6gdSJqTPy/H8NvP4ZyDtDCUCx5Yh3Pth/7iUJjIwR7LA==
+popmotion@^9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/popmotion/-/popmotion-9.1.0.tgz#4360d06bd18ce8baa8f9284ecec7d55344af6325"
+  integrity sha512-+J7pzzBy5kk2qsP8ilowKs/CH+HoZa3kOGEBNCleCvsPXEF3nKHdfAR3SboMyPvdpIrofaT7ZIy/xWgz446Azw==
   dependencies:
     framesync "5.0.0"
     hey-listen "^1.0.8"
-    style-value-types "3.2.0"
+    style-value-types "^4.0.1"
     tslib "^1.10.0"
 
 portfinder@^1.0.26:
@@ -10949,10 +10949,10 @@ sass-loader@8.0.2:
     schema-utils "^2.6.1"
     semver "^6.3.0"
 
-sass@1.32.0:
-  version "1.32.0"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.0.tgz#10101a026c13080b14e2b374d4e15ee24400a4d3"
-  integrity sha512-fhyqEbMIycQA4blrz/C0pYhv2o4x2y6FYYAH0CshBw3DXh5D5wyERgxw0ptdau1orc/GhNrhF7DFN2etyOCEng==
+sass@1.32.4:
+  version "1.32.4"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.4.tgz#308bf29dd7f53d44ae4f06580e9a910ad9aa411e"
+  integrity sha512-N0BT0PI/t3+gD8jKa83zJJUb7ssfQnRRfqN+GIErokW6U4guBpfYl8qYB+OFLEho+QvnV5ZH1R9qhUC/Z2Ch9w==
   dependencies:
     chokidar ">=2.0.0 <4.0.0"
 
@@ -11685,10 +11685,10 @@ style-search@^0.1.0:
   resolved "https://registry.yarnpkg.com/style-search/-/style-search-0.1.0.tgz#7958c793e47e32e07d2b5cafe5c0bf8e12e77902"
   integrity sha1-eVjHk+R+MuB9K1yv5cC/jhLneQI=
 
-style-value-types@3.2.0, style-value-types@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/style-value-types/-/style-value-types-3.2.0.tgz#eb89cab1340823fa7876f3e289d29d99c92111bb"
-  integrity sha512-ih0mGsrYYmVvdDi++/66O6BaQPRPRMQHoZevNNdMMcPlP/cH28Rnfsqf1UEba/Bwfuw9T8BmIMwbGdzsPwQKrQ==
+style-value-types@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/style-value-types/-/style-value-types-4.0.1.tgz#23f05dd03e8a850654defc22cf03ebac572aaa00"
+  integrity sha512-aOV/HHyynIyTmU27qfs0oAHhFde6BFIvV4+nMerE2MAPZMwYOeQk1/F3S6djxF2u4HdbiieCPs3ZzWsbNUoc9A==
   dependencies:
     hey-listen "^1.0.8"
     tslib "^1.10.0"

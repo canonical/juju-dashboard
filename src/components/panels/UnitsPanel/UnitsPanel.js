@@ -6,9 +6,9 @@ import useModelStatus from "hooks/useModelStatus";
 
 import {
   machineTableHeaders,
-  applicationTableHeaders,
+  localApplicationTableHeaders,
   generateMachineRows,
-  generateApplicationRows,
+  generateLocalApplicationRows,
 } from "pages/Models/Details/generators";
 
 import { generateStatusElement, extractRevisionNumber } from "app/utils";
@@ -115,7 +115,7 @@ export default function UnitsPanel({ entity: unitId, panelRowClick }) {
   // Generate apps table content
   const applicationRows = useMemo(
     () =>
-      generateApplicationRows(
+      generateLocalApplicationRows(
         filteredModelStatusDataByApp(appName),
         panelRowClick
       ),
@@ -134,7 +134,7 @@ export default function UnitsPanel({ entity: unitId, panelRowClick }) {
           emptyStateMsg={"There are no machines in this model"}
         />
         <MainTable
-          headers={applicationTableHeaders}
+          headers={localApplicationTableHeaders}
           rows={applicationRows}
           className="model-details__apps p-main-table"
           sortable

@@ -301,7 +301,7 @@ describe("ModelDetail Container", () => {
     expect(pageTitle).toEqual("Model: new-search-aggregate | Juju Dashboard");
   });
 
-  it("should a message if a model has no integrations", () => {
+  it("should show a message if a model has no integrations", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
