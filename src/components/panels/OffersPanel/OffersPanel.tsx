@@ -17,7 +17,7 @@ type tableData = {
 export default function OffersPanel({
   entity: application,
 }: Props): ReactElement {
-  const modelStatusData = useModelStatus();
+  const modelStatusData: any = useModelStatus();
   const offers = modelStatusData?.offers[application];
 
   const [accordionPanelId, setAccordionPanelId] = useState("");

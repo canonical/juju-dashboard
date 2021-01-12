@@ -18,7 +18,7 @@ export default function RemoteAppsPanel({
   entity: appId,
 }: Props): ReactElement {
   // Get model status info
-  const modelStatusData = useModelStatus();
+  const modelStatusData: any = useModelStatus();
 
   const remoteApp = modelStatusData["remote-applications"]?.[appId];
 
