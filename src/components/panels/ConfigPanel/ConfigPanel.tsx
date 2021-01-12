@@ -2,6 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { getApplicationConfig } from "juju/index";
 import { useStore } from "react-redux";
 import classnames from "classnames";
+import cloneDeep from "clone-deep";
 
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
@@ -98,6 +99,16 @@ export default function ConfigPanel({
     setShowResetAll(shouldShow);
   }
 
+  function allFieldsToDefault() {
+    const newConfig = cloneDeep(config);
+    Object.keys(newConfig).forEach((key) => {
+      newConfig[key].value = newConfig[key].default;
+      delete newConfig[key].newValue;
+    });
+    setConfig(newConfig);
+    checkAllDefaults(newConfig);
+  }
+
   return (
     <div className="config-panel">
       <div className="row">
@@ -108,6 +119,7 @@ export default function ConfigPanel({
               className={classnames("u-button-neutral col-2", {
                 "u-hide": !showResetAll,
               })}
+              onClick={allFieldsToDefault}
             >
               Reset all values
             </button>

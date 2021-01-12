@@ -13,11 +13,14 @@ export default function TextAreaConfig({
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
+  const [localNewValue, setLocalNewValue] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  let defaultValue = config.default;
-  if (config.default !== config.value) {
-    defaultValue = config.value;
+  let inputValue = config.default;
+  if (localNewValue && config.newValue) {
+    inputValue = localNewValue;
+  } else if (config.default !== config.value) {
+    inputValue = config.value;
   }
 
   useEffect(() => {
@@ -27,6 +30,12 @@ export default function TextAreaConfig({
       setInputFocused(false);
     }
   }, [selectedConfig, config]);
+
+  useEffect(() => {
+    if (config.value === config.default) {
+      setShowUseDefault(false);
+    }
+  }, [config]);
 
   function resetToDefault() {
     if (inputRef?.current) {
@@ -56,10 +65,11 @@ export default function TextAreaConfig({
       </button>
       <textarea
         ref={inputRef}
-        defaultValue={defaultValue}
+        value={inputValue}
         onFocus={() => setSelectedConfig(config)}
         onChange={(e) => {
           setNewValue(config.name, e.target.value);
+          setLocalNewValue(e.target.value);
           if (e.target.value !== config.default) {
             setShowUseDefault(true);
           } else {
