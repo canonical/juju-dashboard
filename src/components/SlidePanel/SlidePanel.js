@@ -22,7 +22,11 @@ function SlidePanel({
 
   // Close panel if click is detected outside when panel is active
   const closeOnClickOutside = (e) => {
-    if (isActive && !e.target.closest(".slide-panel")) {
+    if (
+      isActive &&
+      !e.target.closest(".slide-panel") &&
+      !e.target.closest(".webcli")
+    ) {
       onClose();
     }
   };

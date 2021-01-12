@@ -3,6 +3,8 @@ import { getApplicationConfig } from "juju/index";
 import { useStore } from "react-redux";
 import classnames from "classnames";
 
+import Spinner from "@canonical/react-components/dist/components/Spinner";
+
 import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
 
@@ -49,8 +51,10 @@ export default function ConfigPanel({
   );
   const [shouldShowDrawer, setShouldShowDrawer] = useState<Boolean>(false);
   const [showResetAll, setShowResetAll] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
 
   useEffect(() => {
+    setIsLoading(true);
     getApplicationConfig(modelUUID, appName, reduxStore.getState()).then(
       (result) => {
         // Add the key to the config object to make for easier use later.
@@ -59,6 +63,7 @@ export default function ConfigPanel({
           config[key] = result.config[key];
           config[key].name = key;
         });
+        setIsLoading(false);
         setConfig(config);
         checkAllDefaults(config);
       }
@@ -108,12 +113,20 @@ export default function ConfigPanel({
             </button>
           </div>
 
-          <div className="config-panel__list">
-            {generateConfigElementList(
-              config,
-              selectedConfig,
-              setSelectedConfig,
-              setNewValue
+          <div
+            className={classnames("config-panel__list", {
+              "is-loading u-vertically-center": isLoading,
+            })}
+          >
+            {isLoading ? (
+              <Spinner />
+            ) : (
+              generateConfigElementList(
+                config,
+                selectedConfig,
+                setSelectedConfig,
+                setNewValue
+              )
             )}
           </div>
           <div

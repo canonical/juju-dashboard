@@ -1,6 +1,8 @@
 @import "vanilla-framework/scss/vanilla";
 
 .config-panel {
+  $magic-height: 200px;
+
   .row {
     padding: 0;
   }
@@ -21,6 +23,15 @@
     }
   }
 
+  &__list {
+    min-height: calc(
+      100vh - #{$magic-height}
+    ); /* height of the header & spacing in panel */
+    &.is-loading.u-vertically-center {
+      justify-content: center;
+    }
+  }
+
   &__description {
     margin-top: 2rem;
     pre {
@@ -34,7 +45,9 @@
   }
 
   &__no-description {
-    height: calc(100vh - 50px); /* height of the header & spacing in panel */
+    min-height: calc(
+      100vh - #{$magic-height}
+    ); /* height of the header & spacing in panel */
     text-align: center;
     padding: 0 5rem;
   }
