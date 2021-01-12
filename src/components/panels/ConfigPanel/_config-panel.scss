@@ -42,6 +42,11 @@
       border: none;
       padding: 0;
     }
+
+    &-wrapper {
+      position: sticky;
+      top: 1rem;
+    }
   }
 
   &__no-description {
@@ -50,6 +55,8 @@
     ); /* height of the header & spacing in panel */
     text-align: center;
     padding: 0 5rem;
+    position: sticky;
+    top: 0;
   }
 
   &__drawer {
