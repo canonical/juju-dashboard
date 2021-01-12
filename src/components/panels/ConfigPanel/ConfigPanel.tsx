@@ -48,6 +48,7 @@ export default function ConfigPanel({
     undefined
   );
   const [shouldShowDrawer, setShouldShowDrawer] = useState<Boolean>(false);
+  const [showResetAll, setShowResetAll] = useState<Boolean>(false);
 
   useEffect(() => {
     getApplicationConfig(modelUUID, appName, reduxStore.getState()).then(
@@ -59,6 +60,7 @@ export default function ConfigPanel({
           config[key].name = key;
         });
         setConfig(config);
+        checkAllDefaults(config);
       }
     );
   }, [appName, modelUUID, reduxStore]);
@@ -77,13 +79,35 @@ export default function ConfigPanel({
       setShouldShowDrawer(false);
     }
     setConfig(config);
+    checkAllDefaults(config);
+  }
+
+  function checkAllDefaults(config: Config) {
+    const shouldShow = Object.keys(config).some((key) => {
+      const cfg = config[key];
+      return (
+        cfg.default !== cfg.value ||
+        (cfg.newValue && cfg.default !== cfg.newValue)
+      );
+    });
+    setShowResetAll(shouldShow);
   }
 
   return (
     <div className="config-panel">
       <div className="row">
         <div className="config-panel__config-list col-6">
-          <div className="config-panel__list-header">{title}</div>
+          <div className="config-panel__list-header row">
+            <div className="col-4">{title}</div>
+            <button
+              className={classnames("u-button-neutral col-2", {
+                "u-hide": !showResetAll,
+              })}
+            >
+              Reset all values
+            </button>
+          </div>
+
           <div className="config-panel__list">
             {generateConfigElementList(
               config,

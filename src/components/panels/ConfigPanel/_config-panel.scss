@@ -8,6 +8,17 @@
   &__list-header {
     margin: 2rem 0 1rem;
     padding-left: 0.5rem;
+    height: 2rem;
+
+    button {
+      margin-bottom: 0;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .entity-name {
+      font-size: 1.3rem;
+    }
   }
 
   &__description {
@@ -55,14 +66,14 @@
     background-color: $color-light;
   }
 
-  h5,
-  button {
+  h5 {
     margin-bottom: 0.5rem;
-    padding: 0;
   }
 
   button {
     color: $color-link;
+    margin: 0.3rem 0 0;
+    padding: 0;
     &:hover {
       background-color: inherit;
     }
@@ -73,5 +84,6 @@
     height: 2.3rem;
     border: 1px solid #999;
     border-radius: 2px;
+    resize: vertical;
   }
 }
