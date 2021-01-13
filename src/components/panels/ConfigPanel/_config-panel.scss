@@ -8,9 +8,9 @@
   }
 
   &__list-header {
+    height: 2rem;
     margin: 2rem 0 1rem;
     padding-left: 0.5rem;
-    height: 2rem;
 
     button {
       margin-bottom: 0;
@@ -29,9 +29,8 @@
   }
 
   &__list {
-    min-height: calc(
-      100vh - #{$magic-height}
-    ); /* height of the header & spacing in panel */
+    min-height: calc(100vh - #{$magic-height});
+
     &.is-loading.u-vertically-center {
       justify-content: center;
     }
@@ -39,13 +38,15 @@
 
   &__description {
     margin-top: 2rem;
+
     pre {
-      white-space: pre-wrap;
-      word-break: keep-all;
       // reset the vanilla pre styling
       background-color: inherit;
       border: none;
       padding: 0;
+      // extra styles
+      white-space: pre-wrap;
+      word-break: keep-all;
     }
 
     &-wrapper {
@@ -55,25 +56,24 @@
   }
 
   &__no-description {
-    min-height: calc(
-      100vh - #{$magic-height}
-    ); /* height of the header & spacing in panel */
-    text-align: center;
+    min-height: calc(100vh - #{$magic-height});
     padding: 0 5rem;
     position: sticky;
+    text-align: center;
     top: 0;
   }
 
   &__drawer {
     @include vf-animation(max-height, fast, in);
+
     background-color: white;
     border-top: 1px solid $color-mid-light;
     bottom: 0;
-    padding-top: 1rem;
+    max-height: 100px;
     padding-right: 1.5rem;
+    padding-top: 1rem;
     position: sticky;
     text-align: right;
-    max-height: 100px;
 
     &--hidden {
       max-height: 0;
@@ -83,9 +83,9 @@
 }
 
 .config-input {
+  border-radius: 2px;
   cursor: pointer;
   padding: 0 0.5rem;
-  border-radius: 2px;
 
   &--focused {
     background-color: $color-light;
@@ -99,16 +99,17 @@
     color: $color-link;
     margin: 0.3rem 0 0;
     padding: 0;
+
     &:hover {
       background-color: inherit;
     }
   }
 
   textarea {
-    min-height: 2.3rem;
-    height: 2.3rem;
     border: 1px solid #999;
     border-radius: 2px;
+    height: 2.3rem;
+    min-height: 2.3rem;
     resize: vertical;
   }
 }
