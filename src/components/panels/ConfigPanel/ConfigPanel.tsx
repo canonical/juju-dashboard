@@ -107,6 +107,7 @@ export default function ConfigPanel({
     });
     setConfig(newConfig);
     checkAllDefaults(newConfig);
+    setShouldShowDrawer(false);
   }
 
   return (

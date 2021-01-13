@@ -13,8 +13,16 @@ export default function BooleanConfig({
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
+  const [localValue, setLocalValue] = useState(config.value);
   const trueRef = useRef<HTMLInputElement>(null);
   const falseRef = useRef<HTMLInputElement>(null);
+
+  let inputValue = config.default;
+  if (localValue && config.newValue) {
+    inputValue = localValue;
+  } else if (config.default !== config.value) {
+    inputValue = config.value;
+  }
 
   useEffect(() => {
     if (selectedConfig?.name === config.name) {
@@ -24,9 +32,16 @@ export default function BooleanConfig({
     }
   }, [selectedConfig, config]);
 
+  useEffect(() => {
+    if (config.value === config.default) {
+      setShowUseDefault(false);
+    }
+  }, [config]);
+
   function handleOptionChange(e: any) {
-    setNewValue(e.target.name, e.target.value === "true" ? true : false);
     const bool = e.target.value === "true" ? true : false;
+    setNewValue(e.target.name, bool);
+    setLocalValue(bool);
     if (bool !== config.default) {
       setShowUseDefault(true);
     } else {
@@ -72,8 +87,9 @@ export default function BooleanConfig({
             className="p-radio__input"
             name={config.name}
             aria-labelledby={config.name}
-            defaultChecked={config.value === true}
+            checked={inputValue === true}
             value="true"
+            onClick={handleOptionChange}
             onChange={handleOptionChange}
             ref={trueRef}
           />
@@ -85,8 +101,9 @@ export default function BooleanConfig({
             className="p-radio__input"
             name={config.name}
             aria-labelledby={config.name}
-            defaultChecked={config.value === false}
+            checked={inputValue === false}
             value="false"
+            onClick={handleOptionChange}
             onChange={handleOptionChange}
             ref={falseRef}
           />
