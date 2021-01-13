@@ -23,6 +23,11 @@
     }
   }
 
+  &__config-list {
+    border-right: 1px solid $color-mid-light;
+    padding-right: 1rem;
+  }
+
   &__list {
     min-height: calc(
       100vh - #{$magic-height}
