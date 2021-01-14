@@ -128,6 +128,7 @@ export default function ConfigPanel({
       reduxStore.getState()
     );
     setSavingConfig(false);
+    setShouldShowDrawer(false);
   }
 
   return (
