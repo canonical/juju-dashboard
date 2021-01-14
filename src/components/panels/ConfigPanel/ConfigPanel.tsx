@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
-import { getApplicationConfig } from "juju/index";
+import { getApplicationConfig, setApplicationConfig } from "juju/index";
 import { useStore } from "react-redux";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
@@ -110,6 +110,15 @@ export default function ConfigPanel({
     setShouldShowDrawer(false);
   }
 
+  async function handleSubmit() {
+    await setApplicationConfig(
+      modelUUID,
+      appName,
+      config,
+      reduxStore.getState()
+    );
+  }
+
   return (
     <div className="config-panel">
       <div className="row">
@@ -148,7 +157,9 @@ export default function ConfigPanel({
             })}
           >
             <button className="p-button--neutral">Cancel</button>
-            <button className="p-button--positive">Save & appply</button>
+            <button className="p-button--positive" onClick={handleSubmit}>
+              Save & apply
+            </button>
           </div>
         </div>
         <div className="config-panel__description col-6">

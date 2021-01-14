@@ -10,6 +10,7 @@ import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/dist/api/facades/pinger-v1";
 
 import jimm from "app/jimm-facade";
+import { isSet } from "app/utils";
 
 import {
   getBakery,
@@ -351,13 +352,12 @@ export function disableControllerUUIDMasking(conn) {
 }
 
 /**
-  Call the API to fetch the application config data.
-  @param {String} modelUUID
-  @param {String} appName
-  @param {Object} appState
-  @returns {Promise} The application config.
+  Connect to the model representing the supplied modelUUID.
+  @param {*} modelUUID
+  @param {*} appState
+  @returns {Object} conn The connection.
 */
-export async function getApplicationConfig(modelUUID, appName, appState) {
+async function connectAndLoginToModel(modelUUID, appState) {
   const bakery = getBakery(appState);
   const baseWSControllerURL = getWSControllerURL(appState);
   const { identityProviderAvailable } = getConfig(appState);
@@ -371,6 +371,46 @@ export async function getApplicationConfig(modelUUID, appName, appState) {
     generateConnectionOptions(false, bakery),
     identityProviderAvailable
   );
+  return conn;
+}
+
+/**
+  Call the API to fetch the application config data.
+  @param {String} modelUUID
+  @param {String} appName
+  @param {Object} appState
+  @returns {Promise} The application config.
+*/
+export async function getApplicationConfig(modelUUID, appName, appState) {
+  const conn = await connectAndLoginToModel(modelUUID, appState);
   const config = await conn.facades.application.get({ application: appName });
   return config;
+}
+
+/**
+  Call the API to set the application config data.
+  @param {String} modelUUID
+  @param {String} appName
+  @param {Object} config
+  @param {Object} appState
+  @returns {Promise} The application set config response
+*/
+export async function setApplicationConfig(
+  modelUUID,
+  appName,
+  config,
+  appState
+) {
+  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const setValues = {};
+  Object.keys(config).forEach((key) => {
+    if (isSet(config[key].newValue)) {
+      setValues[key] = config[key].newValue;
+    }
+  });
+  const resp = await conn.facades.application.set({
+    application: appName,
+    options: setValues,
+  });
+  return resp;
 }
