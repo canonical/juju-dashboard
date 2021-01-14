@@ -80,6 +80,10 @@
       overflow: hidden;
     }
   }
+
+  &__save-button span {
+    padding-left: 1rem;
+  }
 }
 
 .config-input {

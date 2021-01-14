@@ -55,6 +55,7 @@ export default function ConfigPanel({
   const [shouldShowDrawer, setShouldShowDrawer] = useState<Boolean>(false);
   const [showResetAll, setShowResetAll] = useState<Boolean>(false);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [savingConfig, setSavingConfig] = useState<Boolean>(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -119,12 +120,14 @@ export default function ConfigPanel({
   }
 
   async function handleSubmit() {
+    setSavingConfig(true);
     await setApplicationConfig(
       modelUUID,
       appName,
       config,
       reduxStore.getState()
     );
+    setSavingConfig(false);
   }
 
   return (
@@ -165,8 +168,23 @@ export default function ConfigPanel({
             })}
           >
             <button className="p-button--neutral">Cancel</button>
-            <button className="p-button--positive" onClick={handleSubmit}>
-              Save & apply
+            <button
+              className={classnames(
+                "p-button--positive config-panel__save-button",
+                {
+                  "is-active": savingConfig,
+                }
+              )}
+              onClick={handleSubmit}
+            >
+              {!savingConfig ? (
+                "Save & apply"
+              ) : (
+                <>
+                  <i className="p-icon--spinner u-animation--spin is-light"></i>
+                  <span>Saving...</span>
+                </>
+              )}
             </button>
           </div>
         </div>
