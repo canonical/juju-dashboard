@@ -15,6 +15,4 @@ var jujuDashboardConfig = {
   // Development flags below:
   // Show WebCli component if enabled for dev purposes, even if not natively supported.
   showWebCLI: false,
-  // Show the in-development configuration UI.
-  showConfigurationUI: true,
 };

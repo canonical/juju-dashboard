@@ -25,12 +25,7 @@ import "../_panels.scss";
 import "./_local-apps-panel.scss";
 
 // Generate panel header for given entity
-const generateAppPanelHeader = (
-  app,
-  title,
-  showConfig,
-  showConfigurationUI
-) => {
+const generateAppPanelHeader = (app, title, showConfig) => {
   return (
     <div className="panel-header">
       {app && (
@@ -42,16 +37,14 @@ const generateAppPanelHeader = (
                 ? generateStatusElement(app.status.status)
                 : "-"}
             </span>
-            {showConfigurationUI && (
-              <div>
-                <button
-                  className="local-apps-panel__config-button"
-                  onClick={showConfig}
-                >
-                  <i className="p-icon--settings"></i>Configure
-                </button>
-              </div>
-            )}
+            <div>
+              <button
+                className="local-apps-panel__config-button"
+                onClick={showConfig}
+              >
+                <i className="p-icon--settings"></i>Configure
+              </button>
+            </div>
           </div>
           <div className="col-4">
             <div className="panel__kv">
@@ -93,7 +86,7 @@ export default function LocalAppsPanel({ entity, panelRowClick, _closePanel }) {
   // Get model status info
   const modelStatusData = useModelStatus();
 
-  const { baseAppURL, showConfigurationUI } = useSelector(getConfig);
+  const { baseAppURL } = useSelector(getConfig);
   const [shouldShowConfig, setShouldShowConfig] = useState(false);
 
   // Filter model status via selected entity
@@ -120,10 +113,9 @@ export default function LocalAppsPanel({ entity, panelRowClick, _closePanel }) {
           // closing the slide panel.
           e.stopPropagation();
           setShouldShowConfig(true);
-        },
-        showConfigurationUI
+        }
       ),
-    [modelStatusData, entity, title, showConfigurationUI]
+    [modelStatusData, entity, title]
   );
 
   const machinesPanelRows = useMemo(
