@@ -17,6 +17,7 @@ type Props = {
   appName: string;
   title: ReactElement;
   modelUUID: string;
+  closePanel: () => void;
 };
 
 type ConfigData = {
@@ -46,6 +47,7 @@ export default function ConfigPanel({
   appName,
   title,
   modelUUID,
+  closePanel,
 }: Props): ReactElement {
   const reduxStore = useStore();
   const [config, setConfig] = useState<Config>({});
@@ -168,7 +170,9 @@ export default function ConfigPanel({
               "config-panel__drawer--hidden": !shouldShowDrawer,
             })}
           >
-            <button className="p-button--neutral">Cancel</button>
+            <button className="p-button--neutral" onClick={closePanel}>
+              Cancel
+            </button>
             <button
               className={classnames(
                 "p-button--positive config-panel__save-button",

@@ -161,6 +161,21 @@ const renderCounts = (activeView, modelStatusData) => {
   );
 };
 
+function generatePanelContent(activePanel, entity, panelRowClick) {
+  switch (activePanel) {
+    case "apps":
+      return <LocalAppsPanel entity={entity} panelRowClick={panelRowClick} />;
+    case "remoteApps":
+      return <RemoteAppsPanel entity={entity} panelRowClick={panelRowClick} />;
+    case "machines":
+      return <MachinesPanel entity={entity} panelRowClick={panelRowClick} />;
+    case "units":
+      return <UnitsPanel entity={entity} panelRowClick={panelRowClick} />;
+    case "offers":
+      return <OffersPanel entity={entity} panelRowClick={panelRowClick} />;
+  }
+}
+
 const ModelDetails = () => {
   const { 0: modelName } = useParams();
   const dispatch = useDispatch();
@@ -491,24 +506,7 @@ const ModelDetails = () => {
               isLoading={!entity}
               className={`${activePanel}-panel`}
             >
-              {activePanel === "apps" && (
-                <LocalAppsPanel entity={entity} panelRowClick={panelRowClick} />
-              )}
-              {activePanel === "remoteApps" && (
-                <RemoteAppsPanel
-                  entity={entity}
-                  panelRowClick={panelRowClick}
-                />
-              )}
-              {activePanel === "machines" && (
-                <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
-              )}
-              {activePanel === "units" && (
-                <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
-              )}
-              {activePanel === "offers" && (
-                <OffersPanel entity={entity} panelRowClick={panelRowClick} />
-              )}
+              {generatePanelContent(activePanel, entity, panelRowClick)}
             </SlidePanel>
           </div>
         </FadeIn>

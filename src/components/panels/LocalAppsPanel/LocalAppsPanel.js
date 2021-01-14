@@ -83,7 +83,7 @@ const generateAppPanelHeader = (
   );
 };
 
-export default function LocalAppsPanel({ entity, panelRowClick }) {
+export default function LocalAppsPanel({ entity, panelRowClick, _closePanel }) {
   // Get model status info
   const modelStatusData = useModelStatus();
 
@@ -137,6 +137,7 @@ export default function LocalAppsPanel({ entity, panelRowClick }) {
           appName={entity}
           title={title}
           modelUUID={modelStatusData.uuid}
+          closePanel={_closePanel}
         />
       ) : (
         <>
