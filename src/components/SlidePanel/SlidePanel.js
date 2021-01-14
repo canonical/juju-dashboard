@@ -10,11 +10,12 @@ function generatePanelContent(isLoading, children, onClose) {
   if (isLoading) {
     return <Spinner />;
   }
-  if (children) {
+  if (children && !Array.isArray(children)) {
     return cloneElement(children, {
       _closePanel: onClose,
     });
   }
+  return children;
 }
 
 function SlidePanel({
