@@ -23,6 +23,7 @@ $grid-max-width: 100%;
 $color-navigation-background: $color-brand;
 
 @include vanilla;
+@include vf-p-icon-settings;
 
 // Fixes focus styles until fix implemented in Vanilla
 // https://github.com/canonical-web-and-design/vanilla-framework/issues/3352

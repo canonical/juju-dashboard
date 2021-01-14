@@ -138,15 +138,17 @@ export default function ConfigPanel({
       <div className="row">
         <div className="config-panel__config-list col-6">
           <div className="config-panel__list-header row">
-            <div className="col-4">{title}</div>
-            <button
-              className={classnames("u-button-neutral col-2", {
-                "u-hide": !showResetAll,
-              })}
-              onClick={allFieldsToDefault}
-            >
-              Reset all values
-            </button>
+            <div className="col-3">{title}</div>
+            <div className="col-3 u-align-text--right">
+              <button
+                className={classnames("u-button-neutral col-2", {
+                  "u-hide": !showResetAll,
+                })}
+                onClick={allFieldsToDefault}
+              >
+                Reset all values
+              </button>
+            </div>
           </div>
 
           <div

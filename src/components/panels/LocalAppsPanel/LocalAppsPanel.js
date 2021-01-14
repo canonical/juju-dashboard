@@ -22,6 +22,7 @@ import {
 import ConfigPanel from "../ConfigPanel/ConfigPanel";
 
 import "../_panels.scss";
+import "./_local-apps-panel.scss";
 
 // Generate panel header for given entity
 const generateAppPanelHeader = (
@@ -43,7 +44,12 @@ const generateAppPanelHeader = (
             </span>
             {showConfigurationUI && (
               <div>
-                <button onClick={showConfig}>Config</button>
+                <button
+                  className="local-apps-panel__config-button"
+                  onClick={showConfig}
+                >
+                  <i className="p-icon--settings"></i>Configure
+                </button>
               </div>
             )}
           </div>
@@ -140,7 +146,7 @@ export default function LocalAppsPanel({ entity, panelRowClick, _closePanel }) {
           closePanel={_closePanel}
         />
       ) : (
-        <>
+        <div className="local-apps-panel">
           {appPanelHeader}
           <div className="slide-panel__tables">
             <MainTable
@@ -158,7 +164,7 @@ export default function LocalAppsPanel({ entity, panelRowClick, _closePanel }) {
               emptyStateMsg={"There are no machines in this model"}
             />
           </div>
-        </>
+        </div>
       )}
     </>
   );
