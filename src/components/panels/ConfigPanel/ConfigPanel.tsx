@@ -6,6 +6,8 @@ import cloneDeep from "clone-deep";
 
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
+import { isSet } from "app/utils";
+
 import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
 
@@ -76,8 +78,8 @@ export default function ConfigPanel({
     if (config[name].newValue === config[name].value) {
       delete config[name].newValue;
     }
-    const fieldChanged = Object.keys(config).some(
-      (key) => config[key].newValue
+    const fieldChanged = Object.keys(config).some((key) =>
+      isSet(config[key].newValue)
     );
     if (fieldChanged) {
       setShouldShowDrawer(true);
@@ -91,10 +93,16 @@ export default function ConfigPanel({
   function checkAllDefaults(config: Config) {
     const shouldShow = Object.keys(config).some((key) => {
       const cfg = config[key];
-      return (
-        cfg.default !== cfg.value ||
-        (cfg.newValue && cfg.default !== cfg.newValue)
-      );
+      if (isSet(cfg.newValue)) {
+        if (cfg.newValue === cfg.default) {
+          return false;
+        } else if (cfg.newValue !== cfg.default) {
+          return true;
+        }
+      } else if (cfg.value !== cfg.default) {
+        return true;
+      }
+      return false;
     });
     setShowResetAll(shouldShow);
   }

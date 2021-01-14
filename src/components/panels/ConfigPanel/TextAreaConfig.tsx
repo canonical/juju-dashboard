@@ -1,6 +1,8 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 
+import { isSet } from "app/utils";
+
 import type { ConfigProps } from "./ConfigPanel";
 
 export default function TextAreaConfig({
@@ -17,7 +19,7 @@ export default function TextAreaConfig({
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   let inputValue = config.default;
-  if (localNewValue && config.newValue) {
+  if (isSet(localNewValue) && isSet(config.newValue)) {
     inputValue = localNewValue;
   } else if (config.default !== config.value) {
     inputValue = config.value;
@@ -38,9 +40,7 @@ export default function TextAreaConfig({
   }, [config]);
 
   function resetToDefault() {
-    if (inputRef?.current) {
-      inputRef.current.value = config.default;
-    }
+    setLocalNewValue(config.default);
     setNewValue(config.name, config.default);
     setShowUseDefault(false);
   }
