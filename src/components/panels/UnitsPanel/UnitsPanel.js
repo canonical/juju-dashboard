@@ -13,7 +13,7 @@ import {
 
 import { generateStatusElement, extractRevisionNumber } from "app/utils";
 
-import "./_units-panel.scss";
+import "../_panels.scss";
 
 export default function UnitsPanel({ entity: unitId, panelRowClick }) {
   const modelStatusData = useModelStatus();
@@ -60,6 +60,7 @@ export default function UnitsPanel({ entity: unitId, panelRowClick }) {
           <div className="row">
             <div className="col-4">
               <div className="units-panel__id">
+                <i className="p-icon--units"></i>
                 <strong>
                   <span className="entity-name">{unitId}</span>
                 </strong>
