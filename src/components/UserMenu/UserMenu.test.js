@@ -9,18 +9,6 @@ import UserMenu from "./UserMenu";
 
 const mockStore = configureStore([]);
 describe("User Menu", () => {
-  it("renders without crashing and matches snapshot", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <Router>
-          <UserMenu />
-        </Router>
-      </Provider>
-    );
-    expect(wrapper.find(".user-menu")).toMatchSnapshot();
-  });
-
   it("is inactive by default", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
