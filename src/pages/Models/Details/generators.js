@@ -41,6 +41,7 @@ export const unitTableHeaders = [
 
 export const machineTableHeaders = [
   { content: "machine", sortKey: "machine" },
+  { content: "apps", sortKey: "apps" },
   { content: "state", sortKey: "state" },
   { content: "az", sortKey: "az" },
   { content: "instance id", sortKey: "instanceId" },
@@ -82,6 +83,8 @@ export function generateIconImg(name, namespace) {
   return (
     <img
       alt={name + " icon"}
+      key={name}
+      title={name}
       width="24"
       height="24"
       className="entity-icon"
@@ -409,6 +412,27 @@ export function generateMachineRows(
     return [];
   }
 
+  const generateMachineApps = (machineId) => {
+    const appsOnMachine = [];
+    const modelApplications = modelStatusData?.applications;
+    modelApplications &&
+      Object.entries(modelApplications).forEach(([appName, appInfo]) => {
+        appInfo?.units &&
+          Object.values(appInfo.units).forEach((unitInfo) => {
+            if (machineId === unitInfo.machine) {
+              appsOnMachine.push([appName, appInfo.charm]);
+            }
+          });
+      });
+
+    const apps = appsOnMachine.length
+      ? appsOnMachine.map((app) => {
+          return generateIconImg(app[0], app[1]);
+        })
+      : "None";
+    return apps;
+  };
+
   const machines = modelStatusData.machines;
   return Object.keys(machines).map((machineId) => {
     const machine = machines[machineId];
@@ -425,6 +449,10 @@ export function generateMachineRows(
               {machine.dnsName}
             </>
           ),
+        },
+        {
+          content: generateMachineApps(machineId),
+          className: "machine-app-icons",
         },
         {
           content: generateStatusElement(machine["agent-status"].status),
