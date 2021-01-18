@@ -9,8 +9,6 @@ import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import useEventListener from "hooks/useEventListener";
 
-import fullScreenIcon from "static/images/icons/fullscreen-icon.svg";
-
 import "./_info-panel.scss";
 
 const expandedTopologyDimensions = () => {
@@ -86,10 +84,7 @@ const InfoPanel = () => {
               />
               {modelName !== undefined && (
                 <i
-                  // @TODO the .p-icon--expand class can be removed when this issue lands
-                  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/453
-                  className="p-icon--expand p-icon--fullscreen"
-                  style={{ backgroundImage: `url(${fullScreenIcon})` }}
+                  className="p-icon--fullscreen"
                   onClick={handleExpandTopology}
                   onKeyPress={handleExpandTopology}
                   role="button"

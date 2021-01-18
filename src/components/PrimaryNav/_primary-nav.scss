@@ -54,6 +54,11 @@
 
   .p-list {
     margin-bottom: 1rem;
+
+    [class^="p-icon"] {
+      margin-right: 1rem;
+      margin-top: 0.25rem;
+    }
   }
 
   .p-list__item {

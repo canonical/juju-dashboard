@@ -74,15 +74,7 @@ const PrimaryNav = () => {
               to={navItem.path}
               activeClassName="is-selected"
             >
-              <img
-                className="p-list__icon"
-                src={
-                  activeLinkValue === navItem.path
-                    ? navItem.iconSelected
-                    : navItem.icon
-                }
-                alt={`${navItem.label} icon`}
-              />
+              <i className={`p-icon--${navItem.icon} is-light`}></i>
               {navItem.label}
               {navItem.label === "Models" && blocked > 0 ? (
                 <span className="entity-count">{blocked}</span>
