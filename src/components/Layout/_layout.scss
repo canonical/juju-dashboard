@@ -84,6 +84,42 @@
       transform: translateX(-100%);
     }
   }
+
+  // Override Vanilla to always collapse navigation sidebar
+  @media (min-width: $breakpoint-large - 1) {
+    &[data-side-nav-collapsed="true"] {
+      & ~ .l-main {
+        padding-left: 3rem;
+      }
+
+      height: 100vh;
+      left: 0;
+      max-width: 3rem;
+      position: fixed;
+      top: 0;
+
+      .logo__text,
+      .p-primary-nav__bottom,
+      .p-primary-nav__divider {
+        opacity: 0;
+      }
+
+      transition: all 0.25s;
+
+      &:hover {
+        max-width: 15rem;
+
+        .logo__text,
+        .p-primary-nav__bottom {
+          opacity: 1;
+        }
+
+        .p-primary-nav__divider {
+          opacity: 0.1;
+        }
+      }
+    }
+  }
 }
 
 .l-content {
