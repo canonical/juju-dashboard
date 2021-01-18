@@ -13,7 +13,7 @@ import {
 
 import { generateStatusElement } from "app/utils";
 
-import "./_machines-panel.scss";
+import "../_panels.scss";
 
 export default function MachinesPanel({ entity: machineId, panelRowClick }) {
   const modelStatusData = useModelStatus();
@@ -38,13 +38,14 @@ export default function MachinesPanel({ entity: machineId, panelRowClick }) {
           <div className="row">
             <div className="col-4">
               <div className="machines-panel__id">
+                <i className="p-icon--machines"></i>
                 <strong>
                   <span className="entity-name">
                     Machine '{machineId}' - {machine?.series}
                   </span>
                 </strong>
               </div>
-              <span className="u-capitalise">
+              <span className="u-capitalise entity-status">
                 {generateStatusElement(machine["agent-status"].status)}
               </span>
               <span>{}</span>

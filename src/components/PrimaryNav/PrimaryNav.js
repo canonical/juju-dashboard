@@ -1,17 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import { getGroupedModelStatusCounts, getAppVersion } from "app/selectors";
 
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
-
-// Image imports
-import modelsIcon from "static/images/icons/models-icon.svg";
-import modelsIconSelected from "static/images/icons/models-icon--selected.svg";
-import controllersIcon from "static/images/icons/controllers-icon.svg";
-import controllersIconSelected from "static/images/icons/controllers-icon--selected.svg";
 
 // Style imports
 import "./_primary-nav.scss";
@@ -20,26 +14,18 @@ const pages = [
   {
     label: "Models",
     path: "/models",
-    icon: modelsIcon,
-    iconSelected: modelsIconSelected,
+    icon: "models",
   },
   {
     label: "Controllers",
     path: "/controllers",
-    icon: controllersIcon,
-    iconSelected: controllersIconSelected,
+    icon: "controllers",
   },
 ];
 
 const PrimaryNav = () => {
-  const [activeLinkValue, setActiveLinkValue] = useState("");
   const { blocked } = useSelector(getGroupedModelStatusCounts);
   const appVersion = useSelector(getAppVersion);
-  const location = useLocation();
-
-  useEffect(() => {
-    setActiveLinkValue(location.pathname);
-  }, [location.pathname]);
 
   useEffect(() => {
     // Inject the the Usabilla script.
@@ -74,15 +60,7 @@ const PrimaryNav = () => {
               to={navItem.path}
               activeClassName="is-selected"
             >
-              <img
-                className="p-list__icon"
-                src={
-                  activeLinkValue === navItem.path
-                    ? navItem.iconSelected
-                    : navItem.icon
-                }
-                alt={`${navItem.label} icon`}
-              />
+              <i className={`p-icon--${navItem.icon} is-light`}></i>
               {navItem.label}
               {navItem.label === "Models" && blocked > 0 ? (
                 <span className="entity-count">{blocked}</span>

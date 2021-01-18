@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
 import { extractCloudName, extractCredentialName } from "app/utils";
 
-import appsIcon from "static/images/icons/apps-icon.svg";
-import unitsIcon from "static/images/icons/units-icon.svg";
-import machinesIcon from "static/images/icons/machines-icon.svg";
-
 /**
   Generates the model details link for the table cell. If no ownerTag can be
   provided then it'll return raw text for the model name.
@@ -71,7 +67,7 @@ export function getStatusValue(status, key) {
                 aria-describedby="tp-cntr"
               >
                 <div className="has-icon">
-                  <img src={appsIcon} alt="" className="p-icon" />
+                  <i className="p-icon--applications"></i>
                   <span>{applicationCount}</span>
                 </div>
                 <span
@@ -87,7 +83,7 @@ export function getStatusValue(status, key) {
                 aria-describedby="tp-cntr"
               >
                 <div className="has-icon">
-                  <img src={unitsIcon} alt="" className="p-icon" />
+                  <i className="p-icon--units"></i>
                   <span>{unitCount}</span>
                 </div>
                 <span
@@ -103,7 +99,7 @@ export function getStatusValue(status, key) {
                 aria-describedby="tp-cntr"
               >
                 <div className="has-icon">
-                  <img src={machinesIcon} alt="" className="p-icon" />
+                  <i className="p-icon--machines"></i>
                   <span>{machineCount}</span>
                 </div>
                 <span
