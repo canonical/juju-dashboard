@@ -123,12 +123,17 @@ export default function ConfigPanel({
 
   async function handleSubmit() {
     setSavingConfig(true);
-    await setApplicationConfig(
+    const error = await setApplicationConfig(
       modelUUID,
       appName,
       config,
       reduxStore.getState()
     );
+    // It returns an empty object if it's successful.
+    if (typeof error === "string") {
+      // XXX Surface this to the user.
+      console.error("error setting config", error);
+    }
     setSavingConfig(false);
     setShouldShowDrawer(false);
   }

@@ -1,6 +1,8 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 
+import { isSet } from "app/utils";
+
 import type { ConfigProps } from "./ConfigPanel";
 
 export default function BooleanConfig({
@@ -18,7 +20,7 @@ export default function BooleanConfig({
   const falseRef = useRef<HTMLInputElement>(null);
 
   let inputValue = config.default;
-  if (localValue && config.newValue) {
+  if (isSet(localValue) && isSet(config.newValue)) {
     inputValue = localValue;
   } else if (config.default !== config.value) {
     inputValue = config.value;
@@ -50,15 +52,8 @@ export default function BooleanConfig({
   }
 
   function resetToDefault() {
-    if (config.default) {
-      if (trueRef?.current) {
-        trueRef.current.checked = true;
-      }
-    } else {
-      if (falseRef?.current) {
-        falseRef.current.checked = true;
-      }
-    }
+    setNewValue(config.name, config.default);
+    setLocalValue(config.default);
     setShowUseDefault(false);
   }
 

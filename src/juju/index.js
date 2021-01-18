@@ -405,7 +405,8 @@ export async function setApplicationConfig(
   const setValues = {};
   Object.keys(config).forEach((key) => {
     if (isSet(config[key].newValue)) {
-      setValues[key] = config[key].newValue;
+      // Juju requires that the value be a string, even if the field is a bool.
+      setValues[key] = `${config[key].newValue}`;
     }
   });
   const resp = await conn.facades.application.set({
