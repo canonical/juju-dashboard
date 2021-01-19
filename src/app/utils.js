@@ -320,3 +320,5 @@ export const filterModelStatusDataByApp = (modelStatusData, appName) => {
 
   return modelStatusData;
 };
+
+export const isSet = (val) => val || val !== undefined;

@@ -24,6 +24,7 @@ $grid-max-width: 100%;
 $color-navigation-background: $color-brand;
 
 @include vanilla;
+@include vf-p-icon-settings;
 
 // Include additional icons
 @include vf-p-icon-applications;

@@ -1,0 +1,127 @@
+@import "vanilla-framework/scss/vanilla";
+
+.config-panel {
+  $magic-height: 200px;
+  $magic-min-height: calc(100vh - #{$magic-height});
+
+  .row {
+    padding: 0;
+  }
+
+  .is-loading {
+    &.u-vertically-center {
+      justify-content: center;
+    }
+
+    min-height: $magic-height;
+  }
+
+  &__list-header {
+    height: 2rem;
+    margin: 2rem 0 1rem;
+    padding-left: 0.5rem;
+
+    button {
+      margin-bottom: 0;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .entity-name {
+      font-size: 1.3rem;
+    }
+  }
+
+  &__config-list {
+    border-right: 1px solid $color-mid-light;
+    padding-right: 1rem;
+  }
+
+  &__list {
+    min-height: $magic-min-height;
+  }
+
+  &__description {
+    margin-top: 2rem;
+
+    pre {
+      // reset the vanilla pre styling
+      background-color: inherit;
+      border: none;
+      padding: 0;
+      // extra styles
+      white-space: pre-wrap;
+      word-break: keep-all;
+    }
+
+    &-wrapper {
+      position: sticky;
+      top: 1rem;
+    }
+  }
+
+  &__no-description {
+    color: #335280;
+    font-size: 1.3rem;
+    min-height: $magic-min-height;
+    padding: 0 5rem;
+    position: sticky;
+    text-align: center;
+    top: 0;
+
+    img {
+      margin: 0 auto;
+    }
+
+    &__message {
+      margin-bottom: 20rem;
+    }
+  }
+
+  &__drawer {
+    background-color: white;
+    border-top: 1px solid $color-mid-light;
+    bottom: 0;
+    max-height: 100px;
+    padding-right: 1.5rem;
+    padding-top: 1rem;
+    position: sticky;
+    text-align: right;
+  }
+
+  &__save-button span {
+    padding-left: 1rem;
+  }
+}
+
+.config-input {
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 0 0.5rem;
+
+  &--focused {
+    background-color: $color-light;
+  }
+
+  h5 {
+    margin-bottom: 0.5rem;
+  }
+
+  button {
+    color: $color-link;
+    margin: 0.3rem 0 0;
+    padding: 0;
+
+    &:hover {
+      background-color: inherit;
+    }
+  }
+
+  textarea {
+    border: 1px solid #999;
+    border-radius: 2px;
+    height: 2.3rem;
+    min-height: 2.3rem;
+    resize: vertical;
+  }
+}
