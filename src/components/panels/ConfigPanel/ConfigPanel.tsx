@@ -190,11 +190,11 @@ export default function ConfigPanel({
                   onClick={handleSubmit}
                 >
                   {!savingConfig ? (
-                    "Save & apply"
+                    "Save &amp; apply"
                   ) : (
                     <>
                       <i className="p-icon--spinner u-animation--spin is-light"></i>
-                      <span>Saving...</span>
+                      <span>Saving&hellip;</span>
                     </>
                   )}
                 </button>

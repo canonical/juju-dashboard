@@ -26,11 +26,7 @@ export default function TextAreaConfig({
   }
 
   useEffect(() => {
-    if (selectedConfig?.name === config.name) {
-      setInputFocused(true);
-    } else {
-      setInputFocused(false);
-    }
+    setInputFocused(selectedConfig?.name === config.name);
   }, [selectedConfig, config]);
 
   useEffect(() => {
