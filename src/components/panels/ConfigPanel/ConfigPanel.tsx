@@ -143,82 +143,84 @@ export default function ConfigPanel({
   return (
     <div className="config-panel">
       <div className="row">
-        <div className="config-panel__config-list col-6">
-          <div className="config-panel__list-header row">
-            <div className="col-3">{title}</div>
-            <div className="col-3 u-align-text--right">
-              <button
-                className={classnames("u-button-neutral col-2", {
-                  "u-hide": !showResetAll,
-                })}
-                onClick={allFieldsToDefault}
-              >
-                Reset all values
-              </button>
-            </div>
+        {isLoading ? (
+          <div className="is-loading u-vertically-center">
+            <Spinner />
           </div>
+        ) : (
+          <>
+            <div className="config-panel__config-list col-6">
+              <div className="config-panel__list-header row">
+                <div className="col-3">{title}</div>
+                <div className="col-3 u-align-text--right">
+                  <button
+                    className={classnames("u-button-neutral col-2", {
+                      "u-hide": !showResetAll,
+                    })}
+                    onClick={allFieldsToDefault}
+                  >
+                    Reset all values
+                  </button>
+                </div>
+              </div>
 
-          <div
-            className={classnames("config-panel__list", {
-              "is-loading u-vertically-center": isLoading,
-            })}
-          >
-            {isLoading ? (
-              <Spinner />
-            ) : (
-              generateConfigElementList(
-                config,
-                selectedConfig,
-                setSelectedConfig,
-                setNewValue
-              )
-            )}
-          </div>
-          <div
-            className={classnames("config-panel__drawer", {
-              "config-panel__drawer--hidden": !shouldShowDrawer,
-            })}
-          >
-            <button className="p-button--neutral" onClick={closePanel}>
-              Cancel
-            </button>
-            <button
-              className={classnames(
-                "p-button--positive config-panel__save-button",
-                {
-                  "is-active": savingConfig,
-                }
-              )}
-              onClick={handleSubmit}
-            >
-              {!savingConfig ? (
-                "Save & apply"
-              ) : (
-                <>
-                  <i className="p-icon--spinner u-animation--spin is-light"></i>
-                  <span>Saving...</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-        <div className="config-panel__description col-6">
-          {selectedConfig ? (
-            <div className="config-panel__description-wrapper">
-              <h4>Configuration Description</h4>
-              <h5>{selectedConfig.name}</h5>
-              <pre>{selectedConfig.description}</pre>
-            </div>
-          ) : (
-            <div className="config-panel__no-description u-vertically-center">
-              <img src={bulbImage} alt="lightbulb" />
-              <div>
-                Click on a configuration row to view its related description and
-                parameters
+              <div className="config-panel__list">
+                {generateConfigElementList(
+                  config,
+                  selectedConfig,
+                  setSelectedConfig,
+                  setNewValue
+                )}
+              </div>
+              <div
+                className={classnames("config-panel__drawer", {
+                  "config-panel__drawer--hidden": !shouldShowDrawer,
+                })}
+              >
+                <button className="p-button--neutral" onClick={closePanel}>
+                  Cancel
+                </button>
+                <button
+                  className={classnames(
+                    "p-button--positive config-panel__save-button",
+                    {
+                      "is-active": savingConfig,
+                    }
+                  )}
+                  onClick={handleSubmit}
+                >
+                  {!savingConfig ? (
+                    "Save & apply"
+                  ) : (
+                    <>
+                      <i className="p-icon--spinner u-animation--spin is-light"></i>
+                      <span>Saving...</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
-          )}
-        </div>
+            <div className="config-panel__description col-6">
+              {selectedConfig ? (
+                <div className="config-panel__description-wrapper">
+                  <h4>Configuration Description</h4>
+                  <h5>{selectedConfig.name}</h5>
+                  <pre>{selectedConfig.description}</pre>
+                </div>
+              ) : (
+                <div className="config-panel__no-description u-vertically-center">
+                  <div className="config-panel__no-description__message">
+                    <img src={bulbImage} alt="lightbulb" />
+                    <p>
+                      Click on a configuration row to view its related
+                      description and parameters
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

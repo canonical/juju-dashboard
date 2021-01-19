@@ -2,9 +2,17 @@
 
 .config-panel {
   $magic-height: 200px;
+  $magic-min-height: calc(100vh - #{$magic-height});
 
   .row {
     padding: 0;
+  }
+
+  .is-loading {
+    &.u-vertically-center {
+      justify-content: center;
+    }
+    min-height: $magic-height;
   }
 
   &__list-header {
@@ -29,11 +37,7 @@
   }
 
   &__list {
-    min-height: calc(100vh - #{$magic-height});
-
-    &.is-loading.u-vertically-center {
-      justify-content: center;
-    }
+    min-height: $magic-min-height;
   }
 
   &__description {
@@ -58,7 +62,7 @@
   &__no-description {
     color: #335280;
     font-size: 1.3rem;
-    min-height: calc(100vh - #{$magic-height});
+    min-height: $magic-min-height;
     padding: 0 5rem;
     position: sticky;
     text-align: center;
@@ -66,6 +70,10 @@
 
     img {
       margin: 0 auto;
+    }
+
+    &__message {
+      margin-bottom: 20rem;
     }
   }
 
