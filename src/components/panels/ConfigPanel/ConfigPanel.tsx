@@ -56,7 +56,7 @@ export default function ConfigPanel({
   const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
     undefined
   );
-  const [shouldShowDrawer, setShouldShowDrawer] = useState<Boolean>(false);
+  const [enableSave, setEnableSave] = useState<Boolean>(false);
   const [showResetAll, setShowResetAll] = useState<Boolean>(false);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [savingConfig, setSavingConfig] = useState<Boolean>(false);
@@ -87,9 +87,9 @@ export default function ConfigPanel({
       isSet(config[key].newValue)
     );
     if (fieldChanged) {
-      setShouldShowDrawer(true);
-    } else if (!fieldChanged && shouldShowDrawer) {
-      setShouldShowDrawer(false);
+      setEnableSave(true);
+    } else if (!fieldChanged && enableSave) {
+      setEnableSave(false);
     }
     setConfig(config);
     checkAllDefaults(config);
@@ -120,7 +120,7 @@ export default function ConfigPanel({
     });
     setConfig(newConfig);
     checkAllDefaults(newConfig);
-    setShouldShowDrawer(false);
+    setEnableSave(false);
   }
 
   async function handleSubmit() {
@@ -137,7 +137,7 @@ export default function ConfigPanel({
       console.error("error setting config", error);
     }
     setSavingConfig(false);
-    setShouldShowDrawer(false);
+    setEnableSave(false);
   }
 
   return (
@@ -172,11 +172,7 @@ export default function ConfigPanel({
                   setNewValue
                 )}
               </div>
-              <div
-                className={classnames("config-panel__drawer", {
-                  "config-panel__drawer--hidden": !shouldShowDrawer,
-                })}
-              >
+              <div className="config-panel__drawer">
                 <button className="p-button--neutral" onClick={closePanel}>
                   Cancel
                 </button>
@@ -188,9 +184,10 @@ export default function ConfigPanel({
                     }
                   )}
                   onClick={handleSubmit}
+                  disabled={!enableSave}
                 >
                   {!savingConfig ? (
-                    "Save &amp; apply"
+                    "Save & apply"
                   ) : (
                     <>
                       <i className="p-icon--spinner u-animation--spin is-light"></i>

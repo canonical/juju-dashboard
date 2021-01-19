@@ -79,8 +79,6 @@
   }
 
   &__drawer {
-    @include vf-animation(max-height, fast, in);
-
     background-color: white;
     border-top: 1px solid $color-mid-light;
     bottom: 0;
@@ -89,11 +87,6 @@
     padding-top: 1rem;
     position: sticky;
     text-align: right;
-
-    &--hidden {
-      max-height: 0;
-      overflow: hidden;
-    }
   }
 
   &__save-button span {
