@@ -56,11 +56,17 @@
   }
 
   &__no-description {
+    color: #335280;
+    font-size: 1.3rem;
     min-height: calc(100vh - #{$magic-height});
     padding: 0 5rem;
     position: sticky;
     text-align: center;
     top: 0;
+
+    img {
+      margin: 0 auto;
+    }
   }
 
   &__drawer {

@@ -8,6 +8,8 @@ import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import { isSet } from "app/utils";
 
+import bulbImage from "static/images/bulb.svg";
+
 import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
 
@@ -209,6 +211,7 @@ export default function ConfigPanel({
             </div>
           ) : (
             <div className="config-panel__no-description u-vertically-center">
+              <img src={bulbImage} alt="lightbulb" />
               <div>
                 Click on a configuration row to view its related description and
                 parameters
