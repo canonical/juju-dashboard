@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useStore } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { isLoggedIn, getWSControllerURL } from "app/selectors";
 import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 import Logo from "components/Logo/Logo";
@@ -12,10 +13,26 @@ import useOffline from "hooks/useOffline";
 import "./_layout.scss";
 
 const Layout = ({ children }) => {
+  const [menuCollapsed, setMenuCollapsed] = useState(true);
+  const [sideNavCollapsed, setSideNavCollapsed] = useState(false);
+
   const [releaseNotification, setReleaseNotification] = useLocalStorage(
     "releaseNotification",
     false
   );
+
+  const location = useLocation();
+
+  // Check if pathname includes a model name - and then always collapse sidebar
+  const modelName = location.pathname.split("/models/")[1];
+  useEffect(() => {
+    if (modelName) {
+      setSideNavCollapsed(true);
+    }
+    return () => {
+      setSideNavCollapsed(false);
+    };
+  }, [modelName]);
 
   const isOffline = useOffline();
 
@@ -24,8 +41,6 @@ const Layout = ({ children }) => {
     useSelector(getWSControllerURL),
     store.getState()
   );
-
-  const [menuCollapsed, setMenuCollapsed] = useState(true);
 
   return (
     <>
@@ -59,7 +74,11 @@ const Layout = ({ children }) => {
             {menuCollapsed ? "Open menu" : "Close menu"}
           </button>
         </div>
-        <header className="l-navigation" data-collapsed={menuCollapsed}>
+        <header
+          className="l-navigation"
+          data-collapsed={menuCollapsed}
+          data-side-nav-collapsed={sideNavCollapsed}
+        >
           <div className="l-navigation__drawer">
             <PrimaryNav />
           </div>
