@@ -9,12 +9,18 @@
     padding: 0;
   }
 
-  .is-loading {
-    &.u-vertically-center {
-      justify-content: center;
-    }
+  .full-size {
+    justify-content: center;
+    min-height: $magic-min-height;
+    text-align: center;
+  }
 
-    min-height: $magic-height;
+  &__message {
+    margin-bottom: 20rem;
+  }
+
+  &--center-img {
+    margin: 0 auto;
   }
 
   &__list-header {
@@ -68,14 +74,6 @@
     position: sticky;
     text-align: center;
     top: 0;
-
-    img {
-      margin: 0 auto;
-    }
-
-    &__message {
-      margin-bottom: 20rem;
-    }
   }
 
   &__drawer {
