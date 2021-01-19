@@ -54,7 +54,7 @@ const UserMenu = () => {
             <span className="user-menu__name">
               {activeUser ? extractOwnerName(activeUser) : ""}
             </span>
-            <i className="p-icon--contextual-menu is-light"></i>
+            <i className="p-icon--chevron-up is-light"></i>
           </div>
           <ul className="p-list user-menu__options">
             <li className="p-list__item">

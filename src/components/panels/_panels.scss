@@ -12,13 +12,22 @@
       padding: 0;
     }
 
-    .status-icon {
-      left: 0.5rem;
-    }
-
     .entity-name {
       font-weight: 400;
       margin-bottom: 0.25rem;
+    }
+
+    .entity-status {
+      left: -3px;
+      position: relative;
+    }
+
+    i[class*="p-icon"] {
+      margin-right: 0.5rem;
+    }
+
+    [class*="panel__id"] {
+      text-transform: capitalize;
     }
 
     @media (max-width: $breakpoint-medium) {

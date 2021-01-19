@@ -321,4 +321,56 @@ describe("ModelDetail Container", () => {
     const noRelationsMsg = wrapper.find("[data-testid='no-integrations-msg']");
     expect(noRelationsMsg.length).toBe(1);
   });
+
+  it("should show apps appropriate number of apps on machine in hadoopspark model", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/pizza@external/hadoopspark?activeView=machines",
+          ]}
+        >
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const machineApps = wrapper.find(".machine-app-icons img");
+    expect(machineApps.length).toBe(10);
+  });
+
+  it("should show apps appropriate number of apps on machine in canonical-kubernetes model", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/pizza@external/hadoopspark?activeView=machines",
+          ]}
+        >
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/*">
+              <ModelDetails />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const machineAppIconRows = wrapper.find(".machine-app-icons");
+
+    const machineApp1 = machineAppIconRows.at(1).find("img");
+    expect(machineApp1.length).toBe(1);
+
+    const machineApp4 = machineAppIconRows.at(4).find("img");
+    expect(machineApp4.length).toBe(2);
+
+    const machineApp6 = machineAppIconRows.at(6).find("img");
+    expect(machineApp6.length).toBe(4);
+  });
 });

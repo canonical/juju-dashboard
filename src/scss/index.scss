@@ -26,6 +26,16 @@ $color-navigation-background: $color-brand;
 @include vanilla;
 @include vf-p-icon-settings;
 
+// Include additional icons
+@include vf-p-icon-applications;
+@include vf-p-icon-controllers;
+@include vf-p-icon-fullscreen;
+@include vf-p-icon-models;
+@include vf-p-icon-machines;
+@include vf-p-icon-pin;
+@include vf-p-icon-units;
+@include vf-p-icon-user;
+
 // Fixes focus styles until fix implemented in Vanilla
 // https://github.com/canonical-web-and-design/vanilla-framework/issues/3352
 :focus-visible {

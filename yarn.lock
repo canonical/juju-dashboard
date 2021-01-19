@@ -1135,14 +1135,14 @@
   resolved "https://registry.yarnpkg.com/@canonical/jaaslib/-/jaaslib-0.6.0.tgz#7b77ff0a6899a2e58adc1b2077d8971de019047b"
   integrity sha512-3x0DmeFP1Fu/JPT9Sn/vJcNbCI5QSMmwF4rHIH7N/3T/KxwI1dK+gjv8djOFAe3UD8wVbFNwlhOpuhdg+2A+VQ==
 
-"@canonical/jujulib@^2.0.0-beta.2":
-  version "2.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-2.0.0-beta.2.tgz#e59ff0b9a9d0f13ebb31fd2640511bc895c31b41"
-  integrity sha512-iygeR+YnqFFpTjoe/sBiMciRi2ywqpfHJSEwrF2sN0a9S+TI0fjq681Fx+X/q75W2uM816nM+tjsUJ2pCnBnAg==
+"@canonical/jujulib@2.0.0-beta.3":
+  version "2.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-2.0.0-beta.3.tgz#b2b311681fa6d47a132caa116d94680cfea73765"
+  integrity sha512-Chayjf17BV8ZkTJbL6JEcR2wPRv49O8lmXYjJPAYer0xfrkhz8HoJW1oEQm4wmFq1fBTE/+dS7z/hafqAJMKFQ==
   dependencies:
     "@canonical/macaroon-bakery" "0.3.0"
     btoa "1.2.1"
-    websocket "1.0.32"
+    websocket "^1.0.33"
     xhr2 "0.2.0"
 
 "@canonical/macaroon-bakery@0.3.0":
@@ -12772,10 +12772,10 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-websocket@1.0.32:
-  version "1.0.32"
-  resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.32.tgz#1f16ddab3a21a2d929dec1687ab21cfdc6d3dbb1"
-  integrity sha512-i4yhcllSP4wrpoPMU2N0TQ/q0O94LRG/eUQjEAamRltjQ1oT1PFFKOG4i877OlJgCG8rw6LrrowJp+TYCEWF7Q==
+websocket@^1.0.33:
+  version "1.0.33"
+  resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.33.tgz#407f763fc58e74a3fa41ca3ae5d78d3f5e3b82a5"
+  integrity sha512-XwNqM2rN5eh3G2CUQE3OHZj+0xfdH42+OFK6LdC2yqiC0YU8e5UK0nYre220T0IyyN031V/XOvtHvXozvJYFWA==
   dependencies:
     bufferutil "^4.0.1"
     debug "^2.2.0"
