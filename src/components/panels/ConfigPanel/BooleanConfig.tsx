@@ -16,13 +16,12 @@ export default function BooleanConfig({
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
-  const [localValue, setLocalValue] = useState(config.value);
   const trueRef = useRef<HTMLInputElement>(null);
   const falseRef = useRef<HTMLInputElement>(null);
 
   let inputValue = config.default;
-  if (isSet(localValue) && isSet(config.newValue)) {
-    inputValue = localValue;
+  if (isSet(config.newValue)) {
+    inputValue = config.newValue;
   } else if (config.default !== config.value) {
     inputValue = config.value;
   }
@@ -36,23 +35,29 @@ export default function BooleanConfig({
   }, [selectedConfig, config]);
 
   useEffect(() => {
-    setShowUseDefault(localValue !== config.default);
-    if (isSet(localValue) && localValue !== config.value) {
+    if (
+      (isSet(config.newValue) && config.newValue !== config.default) ||
+      (!isSet(config.newValue) && config.value !== config.default)
+    ) {
+      setShowUseDefault(true);
+    } else {
+      setShowUseDefault(false);
+    }
+
+    if (isSet(config.newValue) && config.newValue !== config.value) {
       setInputChanged(true);
-    } else if (!isSet(localValue) || localValue === config.value) {
+    } else {
       setInputChanged(false);
     }
-  }, [config, localValue]);
+  }, [config]);
 
   function handleOptionChange(e: any) {
     const bool = e.target.value === "true" ? true : false;
     setNewValue(e.target.name, bool);
-    setLocalValue(bool);
   }
 
   function resetToDefault() {
     setNewValue(config.name, config.default);
-    setLocalValue(config.default);
   }
 
   return (
