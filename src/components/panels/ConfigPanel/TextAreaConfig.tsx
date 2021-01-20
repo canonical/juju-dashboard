@@ -12,10 +12,11 @@ export default function TextAreaConfig({
   setNewValue,
 }: ConfigProps): ReactElement {
   const [inputFocused, setInputFocused] = useState(false);
+  const [inputChanged, setInputChanged] = useState(false);
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
-  const [localNewValue, setLocalNewValue] = useState("");
+  const [localNewValue, setLocalNewValue] = useState(config.value);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   let inputValue = config.default;
@@ -30,15 +31,24 @@ export default function TextAreaConfig({
   }, [selectedConfig, config]);
 
   useEffect(() => {
-    if (config.value === config.default) {
+    if (localNewValue !== config.default) {
+      setShowUseDefault(true);
+    } else if (isSet(config.newValue) && config.newValue !== config.default) {
+      setShowUseDefault(true);
+    } else {
       setShowUseDefault(false);
     }
-  }, [config]);
+
+    if (isSet(localNewValue) && localNewValue !== config.value) {
+      setInputChanged(true);
+    } else if (!isSet(localNewValue) || localNewValue === config.value) {
+      setInputChanged(false);
+    }
+  }, [config, localNewValue]);
 
   function resetToDefault() {
-    setLocalNewValue(config.default);
     setNewValue(config.name, config.default);
-    setShowUseDefault(false);
+    setLocalNewValue(config.default);
   }
 
   return (
@@ -47,6 +57,7 @@ export default function TextAreaConfig({
     <div
       className={classnames("config-input", {
         "config-input--focused": inputFocused,
+        "config-input--changed": inputChanged,
       })}
       onClick={() => setSelectedConfig(config)}
     >
@@ -66,11 +77,6 @@ export default function TextAreaConfig({
         onChange={(e) => {
           setNewValue(config.name, e.target.value);
           setLocalNewValue(e.target.value);
-          if (e.target.value !== config.default) {
-            setShowUseDefault(true);
-          } else {
-            setShowUseDefault(false);
-          }
         }}
       ></textarea>
     </div>
