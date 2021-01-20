@@ -16,12 +16,11 @@ export default function TextAreaConfig({
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
-  const [localNewValue, setLocalNewValue] = useState(config.value);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   let inputValue = config.default;
-  if (isSet(localNewValue) && isSet(config.newValue)) {
-    inputValue = localNewValue;
+  if (isSet(config.newValue)) {
+    inputValue = config.newValue;
   } else if (config.default !== config.value) {
     inputValue = config.value;
   }
@@ -31,24 +30,24 @@ export default function TextAreaConfig({
   }, [selectedConfig, config]);
 
   useEffect(() => {
-    if (localNewValue !== config.default) {
-      setShowUseDefault(true);
-    } else if (isSet(config.newValue) && config.newValue !== config.default) {
+    if (
+      (isSet(config.newValue) && config.newValue !== config.default) ||
+      (!isSet(config.newValue) && config.value !== config.default)
+    ) {
       setShowUseDefault(true);
     } else {
       setShowUseDefault(false);
     }
 
-    if (isSet(localNewValue) && localNewValue !== config.value) {
+    if (isSet(config.newValue) && config.newValue !== config.value) {
       setInputChanged(true);
-    } else if (!isSet(localNewValue) || localNewValue === config.value) {
+    } else {
       setInputChanged(false);
     }
-  }, [config, localNewValue]);
+  }, [config]);
 
   function resetToDefault() {
     setNewValue(config.name, config.default);
-    setLocalNewValue(config.default);
   }
 
   return (
@@ -76,7 +75,6 @@ export default function TextAreaConfig({
         onFocus={() => setSelectedConfig(config)}
         onChange={(e) => {
           setNewValue(config.name, e.target.value);
-          setLocalNewValue(e.target.value);
         }}
       ></textarea>
     </div>
