@@ -9,6 +9,7 @@ import Spinner from "@canonical/react-components/dist/components/Spinner";
 import { isSet } from "app/utils";
 
 import bulbImage from "static/images/bulb.svg";
+import boxImage from "static/images/no-config-params.svg";
 
 import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
@@ -144,8 +145,21 @@ export default function ConfigPanel({
     <div className="config-panel">
       <div className="row">
         {isLoading ? (
-          <div className="is-loading u-vertically-center">
+          <div className="full-size u-vertically-center">
             <Spinner />
+          </div>
+        ) : !isLoading && (!config || Object.keys(config).length === 0) ? (
+          <div className="full-size u-align-center">
+            <div className="config-panel__message">
+              <img
+                src={boxImage}
+                alt="3d box"
+                className="config-panel--center-img"
+              />
+              <h4>
+                This application doesn't have any configuration parameters
+              </h4>
+            </div>
           </div>
         ) : (
           <>
@@ -206,12 +220,16 @@ export default function ConfigPanel({
                 </div>
               ) : (
                 <div className="config-panel__no-description u-vertically-center">
-                  <div className="config-panel__no-description__message">
-                    <img src={bulbImage} alt="lightbulb" />
-                    <p>
+                  <div className="config-panel__message">
+                    <img
+                      src={bulbImage}
+                      alt="lightbulb"
+                      className="config-panel--center-img"
+                    />
+                    <h4>
                       Click on a configuration row to view its related
                       description and parameters
-                    </p>
+                    </h4>
                   </div>
                 </div>
               )}

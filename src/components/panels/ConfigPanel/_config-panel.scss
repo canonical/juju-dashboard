@@ -8,12 +8,26 @@
     padding: 0;
   }
 
-  .is-loading {
-    &.u-vertically-center {
-      justify-content: center;
+  .full-size {
+    justify-content: center;
+    min-height: $magic-min-height;
+    text-align: center;
+  }
+
+  &__message {
+    padding-top: 6rem;
+
+    @media (min-width: $breakpoint-medium) {
+      padding-top: 3rem;
     }
 
-    min-height: $magic-height;
+    h4 {
+      margin-top: 3rem;
+    }
+  }
+
+  &--center-img {
+    margin: 0 auto;
   }
 
   &__list-header {
@@ -61,21 +75,11 @@
   }
 
   &__no-description {
-    color: #335280;
-    font-size: 1.3rem;
     min-height: $magic-min-height;
     padding: 0 5rem;
     position: sticky;
     text-align: center;
     top: 0;
-
-    img {
-      margin: 0 auto;
-    }
-
-    &__message {
-      margin-bottom: 20rem;
-    }
   }
 
   &__drawer {
