@@ -13,7 +13,6 @@ import SlidePanel from "components/SlidePanel/SlidePanel";
 import LocalAppsPanel from "components/panels/LocalAppsPanel/LocalAppsPanel";
 import RemoteAppsPanel from "components/panels/RemoteAppsPanel/RemoteAppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
-import UnitsPanel from "components/panels/UnitsPanel/UnitsPanel";
 import OffersPanel from "components/panels/OffersPanel/OffersPanel";
 import WebCLI from "components/WebCLI/WebCLI";
 import StatusStrip from "components/StatusStrip/StatusStrip";
@@ -40,7 +39,6 @@ import {
   consumedTableHeaders,
   offersTableHeaders,
   appsOffersTableHeaders,
-  unitTableHeaders,
   machineTableHeaders,
   relationTableHeaders,
   generateLocalApplicationRows,
@@ -50,7 +48,6 @@ import {
   generateRelationRows,
   generateOffersRows,
   generateAppOffersRows,
-  generateUnitRows,
 } from "./generators";
 
 import "./_model-details.scss";
@@ -267,15 +264,6 @@ const ModelDetails = () => {
     );
   }, [modelStatusData, panelRowClick, baseAppURL, query]);
 
-  const unitTableRows = useMemo(() => {
-    return generateUnitRows(
-      modelStatusData,
-      panelRowClick,
-      baseAppURL,
-      query?.entity
-    );
-  }, [baseAppURL, modelStatusData, query, panelRowClick]);
-
   const machinesTableRows = useMemo(() => {
     return generateMachineRows(modelStatusData, panelRowClick, query?.entity);
   }, [modelStatusData, panelRowClick, query]);
@@ -324,7 +312,7 @@ const ModelDetails = () => {
           <div className="model-details__view-selector">
             {modelStatusData && (
               <ButtonGroup
-                buttons={["apps", "units", "machines", "integrations"]}
+                buttons={["apps", "integrations", "machines"]}
                 label="View:"
                 activeButton={activeView}
                 setActiveButton={setActiveView}
@@ -389,30 +377,6 @@ const ModelDetails = () => {
                           "There are no remote applications in this model"
                         }
                       />
-                    )}
-                  </>
-                )}
-                {shouldShow("units", activeView) && (
-                  <>
-                    {unitTableRows.length > 0 ? (
-                      <MainTable
-                        headers={unitTableHeaders}
-                        rows={unitTableRows}
-                        className="model-details__units p-main-table"
-                        sortable
-                        emptyStateMsg={"There are no units in this model"}
-                      />
-                    ) : (
-                      <span>
-                        There are no units added to your applications in this
-                        model yet. Learn about{" "}
-                        <a
-                          className="p-link--external"
-                          href="https://juju.is/docs/scaling-applications"
-                        >
-                          scaling applications
-                        </a>
-                      </span>
                     )}
                   </>
                 )}
@@ -502,9 +466,6 @@ const ModelDetails = () => {
               )}
               {activePanel === "machines" && (
                 <MachinesPanel entity={entity} panelRowClick={panelRowClick} />
-              )}
-              {activePanel === "units" && (
-                <UnitsPanel entity={entity} panelRowClick={panelRowClick} />
               )}
               {activePanel === "offers" && (
                 <OffersPanel entity={entity} panelRowClick={panelRowClick} />
