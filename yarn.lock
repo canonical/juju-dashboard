@@ -1135,7 +1135,7 @@
   resolved "https://registry.yarnpkg.com/@canonical/jaaslib/-/jaaslib-0.6.0.tgz#7b77ff0a6899a2e58adc1b2077d8971de019047b"
   integrity sha512-3x0DmeFP1Fu/JPT9Sn/vJcNbCI5QSMmwF4rHIH7N/3T/KxwI1dK+gjv8djOFAe3UD8wVbFNwlhOpuhdg+2A+VQ==
 
-"@canonical/jujulib@2.0.0-beta.3":
+"@canonical/jujulib@^2.0.0-beta.3":
   version "2.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-2.0.0-beta.3.tgz#b2b311681fa6d47a132caa116d94680cfea73765"
   integrity sha512-Chayjf17BV8ZkTJbL6JEcR2wPRv49O8lmXYjJPAYer0xfrkhz8HoJW1oEQm4wmFq1fBTE/+dS7z/hafqAJMKFQ==
@@ -12514,10 +12514,10 @@ value-equal@^1.0.1:
   resolved "https://registry.yarnpkg.com/value-equal/-/value-equal-1.0.1.tgz#1e0b794c734c5c0cade179c437d356d931a34d6c"
   integrity sha512-NOJ6JZCAWr0zlxZt+xqCHNTEKOsrks2HQd4MqhP1qy4z1SkbEP467eNx6TgDKXMvUOb+OENfJCZwM+16n7fRfw==
 
-vanilla-framework@2.21.0:
-  version "2.21.0"
-  resolved "https://registry.yarnpkg.com/vanilla-framework/-/vanilla-framework-2.21.0.tgz#9d0b9b7cabd2a8cd4ccf452c471445e611868d69"
-  integrity sha512-KIX/hBl3b7vN3B0HDCj+1NadDUa6WtOEC0HTHNVvyQ2yC+pvQN2WHA1yVbUn7KaGLdv0RBqfNm88YlQ1wRPtbA==
+vanilla-framework@2.22.1:
+  version "2.22.1"
+  resolved "https://registry.yarnpkg.com/vanilla-framework/-/vanilla-framework-2.22.1.tgz#cfd811b6b162e69b74a80e809437477b5777a305"
+  integrity sha512-tyFmDHcRuOOWAasNTpeq5hiOsPniFrgOp39lAZE7/WFLIxGoyCz9IkoAtom0wZ1sPGPLBX7XUMGyx3ZV6uTfgg==
 
 vary@~1.1.2:
   version "1.1.2"
