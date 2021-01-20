@@ -1,4 +1,3 @@
-@import "scss/_settings";
 @import "vanilla-framework/scss/vanilla";
 
 .config-panel {
@@ -17,6 +16,10 @@
 
   &__message {
     margin-bottom: 20rem;
+
+    h4 {
+      margin-top: 3rem;
+    }
   }
 
   &--center-img {
@@ -68,7 +71,6 @@
   }
 
   &__no-description {
-    color: $color-sidebar;
     min-height: $magic-min-height;
     padding: 0 5rem;
     position: sticky;
