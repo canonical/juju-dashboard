@@ -15,7 +15,11 @@
   }
 
   &__message {
-    margin-bottom: 20rem;
+    padding-top: 6rem;
+
+    @media (min-width: $breakpoint-medium) {
+      padding-top: 3rem;
+    }
 
     h4 {
       margin-top: 3rem;

@@ -149,7 +149,7 @@ export default function ConfigPanel({
             <Spinner />
           </div>
         ) : !isLoading && (!config || Object.keys(config).length === 0) ? (
-          <div className="full-size u-vertically-center">
+          <div className="full-size u-align-center">
             <div className="config-panel__message">
               <img
                 src={boxImage}
