@@ -157,16 +157,7 @@ export default function ConfigPanel({
           </div>
         ) : !isLoading && (!config || Object.keys(config).length === 0) ? (
           <div className="full-size u-align-center">
-            <div className="config-panel__message">
-              <img
-                src={boxImage}
-                alt="3d box"
-                className="config-panel--center-img"
-              />
-              <h4>
-                This application doesn't have any configuration parameters
-              </h4>
-            </div>
+            <NoConfigMessage />
           </div>
         ) : (
           <>
@@ -227,17 +218,7 @@ export default function ConfigPanel({
                 </div>
               ) : (
                 <div className="config-panel__no-description u-vertically-center">
-                  <div className="config-panel__message">
-                    <img
-                      src={bulbImage}
-                      alt="lightbulb"
-                      className="config-panel--center-img"
-                    />
-                    <h4>
-                      Click on a configuration row to view its related
-                      description and parameters
-                    </h4>
-                  </div>
+                  <NoDescriptionMessage />
                 </div>
               )}
             </div>
@@ -303,4 +284,29 @@ function generateConfigElementList(
   });
 
   return elements;
+}
+
+function NoConfigMessage() {
+  return (
+    <div className="config-panel__message">
+      <img src={boxImage} alt="3d box" className="config-panel--center-img" />
+      <h4>This application doesn't have any configuration parameters</h4>
+    </div>
+  );
+}
+
+function NoDescriptionMessage() {
+  return (
+    <div className="config-panel__message">
+      <img
+        src={bulbImage}
+        alt="lightbulb"
+        className="config-panel--center-img"
+      />
+      <h4>
+        Click on a configuration row to view its related description and
+        parameters
+      </h4>
+    </div>
+  );
 }
