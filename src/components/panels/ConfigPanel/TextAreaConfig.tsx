@@ -12,15 +12,15 @@ export default function TextAreaConfig({
   setNewValue,
 }: ConfigProps): ReactElement {
   const [inputFocused, setInputFocused] = useState(false);
+  const [inputChanged, setInputChanged] = useState(false);
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
-  const [localNewValue, setLocalNewValue] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   let inputValue = config.default;
-  if (isSet(localNewValue) && isSet(config.newValue)) {
-    inputValue = localNewValue;
+  if (isSet(config.newValue)) {
+    inputValue = config.newValue;
   } else if (config.default !== config.value) {
     inputValue = config.value;
   }
@@ -30,15 +30,24 @@ export default function TextAreaConfig({
   }, [selectedConfig, config]);
 
   useEffect(() => {
-    if (config.value === config.default) {
+    if (
+      (isSet(config.newValue) && config.newValue !== config.default) ||
+      (!isSet(config.newValue) && config.value !== config.default)
+    ) {
+      setShowUseDefault(true);
+    } else {
       setShowUseDefault(false);
+    }
+
+    if (isSet(config.newValue) && config.newValue !== config.value) {
+      setInputChanged(true);
+    } else {
+      setInputChanged(false);
     }
   }, [config]);
 
   function resetToDefault() {
-    setLocalNewValue(config.default);
     setNewValue(config.name, config.default);
-    setShowUseDefault(false);
   }
 
   return (
@@ -47,7 +56,9 @@ export default function TextAreaConfig({
     <div
       className={classnames("config-input", {
         "config-input--focused": inputFocused,
+        "config-input--changed": inputChanged,
       })}
+      data-config-name={config.name}
       onClick={() => setSelectedConfig(config)}
     >
       <h5 className="u-float-left">{config.name}</h5>
@@ -65,12 +76,6 @@ export default function TextAreaConfig({
         onFocus={() => setSelectedConfig(config)}
         onChange={(e) => {
           setNewValue(config.name, e.target.value);
-          setLocalNewValue(e.target.value);
-          if (e.target.value !== config.default) {
-            setShowUseDefault(true);
-          } else {
-            setShowUseDefault(false);
-          }
         }}
       ></textarea>
     </div>

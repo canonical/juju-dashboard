@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import { getApplicationConfig, setApplicationConfig } from "juju/index";
 import { useStore } from "react-redux";
+import type { Store } from "redux";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
 
@@ -64,36 +65,25 @@ export default function ConfigPanel({
 
   useEffect(() => {
     setIsLoading(true);
-    getApplicationConfig(modelUUID, appName, reduxStore.getState()).then(
-      (result) => {
-        // Add the key to the config object to make for easier use later.
-        const config: Config = {};
-        Object.keys(result.config).forEach((key) => {
-          config[key] = result.config[key];
-          config[key].name = key;
-        });
-        setIsLoading(false);
-        setConfig(config);
-        checkAllDefaults(config);
-      }
+    getConfig(
+      modelUUID,
+      appName,
+      reduxStore,
+      setIsLoading,
+      setConfig,
+      checkAllDefaults
     );
   }, [appName, modelUUID, reduxStore]);
 
   function setNewValue(name: string, value: any) {
-    config[name].newValue = value;
-    if (config[name].newValue === config[name].value) {
-      delete config[name].newValue;
+    const newConfig = cloneDeep(config);
+    newConfig[name].newValue = value;
+    if (newConfig[name].newValue === newConfig[name].value) {
+      delete newConfig[name].newValue;
     }
-    const fieldChanged = Object.keys(config).some((key) =>
-      isSet(config[key].newValue)
-    );
-    if (fieldChanged) {
-      setEnableSave(true);
-    } else if (!fieldChanged && enableSave) {
-      setEnableSave(false);
-    }
-    setConfig(config);
-    checkAllDefaults(config);
+    setConfig(newConfig);
+    checkEnableSave(newConfig);
+    checkAllDefaults(newConfig);
   }
 
   function checkAllDefaults(config: Config) {
@@ -116,12 +106,21 @@ export default function ConfigPanel({
   function allFieldsToDefault() {
     const newConfig = cloneDeep(config);
     Object.keys(newConfig).forEach((key) => {
-      newConfig[key].value = newConfig[key].default;
-      delete newConfig[key].newValue;
+      const cfg = newConfig[key];
+      if (cfg.value !== cfg.default) {
+        cfg.newValue = cfg.default;
+      }
     });
     setConfig(newConfig);
     checkAllDefaults(newConfig);
-    setEnableSave(false);
+    checkEnableSave(newConfig);
+  }
+
+  function checkEnableSave(newConfig: Config) {
+    const fieldChanged = Object.keys(newConfig).some((key) =>
+      isSet(newConfig[key].newValue)
+    );
+    setEnableSave(fieldChanged);
   }
 
   async function handleSubmit() {
@@ -137,6 +136,14 @@ export default function ConfigPanel({
       // XXX Surface this to the user.
       console.error("error setting config", error);
     }
+    await getConfig(
+      modelUUID,
+      appName,
+      reduxStore,
+      setIsLoading,
+      setConfig,
+      checkAllDefaults
+    );
     setSavingConfig(false);
     setEnableSave(false);
   }
@@ -150,16 +157,7 @@ export default function ConfigPanel({
           </div>
         ) : !isLoading && (!config || Object.keys(config).length === 0) ? (
           <div className="full-size u-align-center">
-            <div className="config-panel__message">
-              <img
-                src={boxImage}
-                alt="3d box"
-                className="config-panel--center-img"
-              />
-              <h4>
-                This application doesn't have any configuration parameters
-              </h4>
-            </div>
+            <NoConfigMessage />
           </div>
         ) : (
           <>
@@ -220,17 +218,7 @@ export default function ConfigPanel({
                 </div>
               ) : (
                 <div className="config-panel__no-description u-vertically-center">
-                  <div className="config-panel__message">
-                    <img
-                      src={bulbImage}
-                      alt="lightbulb"
-                      className="config-panel--center-img"
-                    />
-                    <h4>
-                      Click on a configuration row to view its related
-                      description and parameters
-                    </h4>
-                  </div>
+                  <NoDescriptionMessage />
                 </div>
               )}
             </div>
@@ -238,6 +226,29 @@ export default function ConfigPanel({
         )}
       </div>
     </div>
+  );
+}
+
+function getConfig(
+  modelUUID: string,
+  appName: string,
+  reduxStore: Store,
+  setIsLoading: (value: boolean) => void,
+  setConfig: (value: Config) => void,
+  checkAllDefaults: (value: Config) => void
+) {
+  return getApplicationConfig(modelUUID, appName, reduxStore.getState()).then(
+    (result) => {
+      // Add the key to the config object to make for easier use later.
+      const config: Config = {};
+      Object.keys(result.config).forEach((key) => {
+        config[key] = result.config[key];
+        config[key].name = key;
+      });
+      setIsLoading(false);
+      setConfig(config);
+      checkAllDefaults(config);
+    }
   );
 }
 
@@ -273,4 +284,29 @@ function generateConfigElementList(
   });
 
   return elements;
+}
+
+function NoConfigMessage() {
+  return (
+    <div className="config-panel__message">
+      <img src={boxImage} alt="3d box" className="config-panel--center-img" />
+      <h4>This application doesn't have any configuration parameters</h4>
+    </div>
+  );
+}
+
+function NoDescriptionMessage() {
+  return (
+    <div className="config-panel__message">
+      <img
+        src={bulbImage}
+        alt="lightbulb"
+        className="config-panel--center-img"
+      />
+      <h4>
+        Click on a configuration row to view its related description and
+        parameters
+      </h4>
+    </div>
+  );
 }

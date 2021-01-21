@@ -12,16 +12,16 @@ export default function BooleanConfig({
   setNewValue,
 }: ConfigProps): ReactElement {
   const [inputFocused, setInputFocused] = useState(false);
+  const [inputChanged, setInputChanged] = useState(false);
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
-  const [localValue, setLocalValue] = useState(config.value);
   const trueRef = useRef<HTMLInputElement>(null);
   const falseRef = useRef<HTMLInputElement>(null);
 
   let inputValue = config.default;
-  if (isSet(localValue) && isSet(config.newValue)) {
-    inputValue = localValue;
+  if (isSet(config.newValue)) {
+    inputValue = config.newValue;
   } else if (config.default !== config.value) {
     inputValue = config.value;
   }
@@ -35,26 +35,29 @@ export default function BooleanConfig({
   }, [selectedConfig, config]);
 
   useEffect(() => {
-    if (config.value === config.default) {
+    if (
+      (isSet(config.newValue) && config.newValue !== config.default) ||
+      (!isSet(config.newValue) && config.value !== config.default)
+    ) {
+      setShowUseDefault(true);
+    } else {
       setShowUseDefault(false);
+    }
+
+    if (isSet(config.newValue) && config.newValue !== config.value) {
+      setInputChanged(true);
+    } else {
+      setInputChanged(false);
     }
   }, [config]);
 
   function handleOptionChange(e: any) {
     const bool = e.target.value === "true" ? true : false;
     setNewValue(e.target.name, bool);
-    setLocalValue(bool);
-    if (bool !== config.default) {
-      setShowUseDefault(true);
-    } else {
-      setShowUseDefault(false);
-    }
   }
 
   function resetToDefault() {
     setNewValue(config.name, config.default);
-    setLocalValue(config.default);
-    setShowUseDefault(false);
   }
 
   return (
@@ -63,6 +66,7 @@ export default function BooleanConfig({
     <div
       className={classnames("config-input", {
         "config-input--focused": inputFocused,
+        "config-input--changed": inputChanged,
       })}
       onClick={() => setSelectedConfig(config)}
     >

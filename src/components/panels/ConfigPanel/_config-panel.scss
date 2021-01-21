@@ -104,7 +104,15 @@
   padding: 0 0.5rem;
 
   &--focused {
+    background-color: #ddedfe;
+  }
+
+  &--changed {
     background-color: $color-light;
+  }
+
+  &.config-input--focused.config-input--changed {
+    background-color: #ddedfe;
   }
 
   h5 {
