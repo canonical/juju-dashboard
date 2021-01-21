@@ -30,7 +30,7 @@ import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
 
-import { fetchAndStoreModelStatus } from "juju/index";
+import { fetchAndStoreModelStatus } from "juju";
 import { fetchModelStatus } from "juju/actions";
 
 import {
