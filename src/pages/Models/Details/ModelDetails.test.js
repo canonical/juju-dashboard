@@ -80,10 +80,6 @@ describe("ModelDetail Container", () => {
     expect(
       wrapper.find(".model-details__main > .model-details__apps").length
     ).toBe(1);
-    wrapper.find("ButtonGroup button[value='units']").simulate("click");
-    expect(
-      wrapper.find(".model-details__main > .model-details__units").length
-    ).toBe(1);
     wrapper.find("ButtonGroup button[value='machines']").simulate("click");
     expect(
       wrapper.find(".model-details__main > .model-details__machines").length
@@ -136,26 +132,6 @@ describe("ModelDetail Container", () => {
         .find(".model-details__main table")
         .hasClass("model-details__machines")
     ).toBe(true);
-  });
-
-  it("subordinate rows render correct amount", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/pizza@external/hadoopspark?activeView=units",
-          ]}
-        >
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
-            </TestRoute>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".subordinate").length).toEqual(2);
   });
 
   it("supports local charms", () => {
@@ -255,33 +231,6 @@ describe("ModelDetail Container", () => {
         .find(".slide-panel.machines-panel .panel-header .entity-name")
         .text()
     ).toBe("Machine '1' - xenial");
-  });
-
-  it("displays correct side panel when unit row is clicked", () => {
-    const store = mockStore(dataDump);
-    const testUnit = "client/0";
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/pizza@external/hadoopspark?activeView=units",
-          ]}
-        >
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
-            </TestRoute>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".slide-panel.units-panel").length).toBe(0);
-    const unitRow = wrapper.find(`tr[data-unit="${testUnit}"]`);
-    unitRow.simulate("click");
-    expect(wrapper.find(".slide-panel.units-panel").length).toBe(1);
-    expect(
-      wrapper.find(".slide-panel.units-panel .panel-header .entity-name").text()
-    ).toBe("client/0");
   });
 
   it("should display the correct window title", () => {
