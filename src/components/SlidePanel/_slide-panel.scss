@@ -47,9 +47,14 @@
 
   &__tables {
     overflow-x: scroll;
+    scrollbar-width: none;
 
     table {
       margin-bottom: 1rem;
     }
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
   }
 }
