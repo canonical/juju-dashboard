@@ -61,7 +61,7 @@
     "clone-deep": "4.0.1",
     "d3": "6.3.1",
     "framer-motion": "3.2.1",
-    "immer": "8.0.0",
+    "immer": "8.0.1",
     "mock-socket": "^9.0.3",
     "prop-types": "15.7.2",
     "query-string": "6.13.8",
