@@ -1135,10 +1135,10 @@
   resolved "https://registry.yarnpkg.com/@canonical/jaaslib/-/jaaslib-0.6.0.tgz#7b77ff0a6899a2e58adc1b2077d8971de019047b"
   integrity sha512-3x0DmeFP1Fu/JPT9Sn/vJcNbCI5QSMmwF4rHIH7N/3T/KxwI1dK+gjv8djOFAe3UD8wVbFNwlhOpuhdg+2A+VQ==
 
-"@canonical/jujulib@^2.0.0-beta.3":
-  version "2.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-2.0.0-beta.3.tgz#b2b311681fa6d47a132caa116d94680cfea73765"
-  integrity sha512-Chayjf17BV8ZkTJbL6JEcR2wPRv49O8lmXYjJPAYer0xfrkhz8HoJW1oEQm4wmFq1fBTE/+dS7z/hafqAJMKFQ==
+"@canonical/jujulib@2.0.0-beta.4":
+  version "2.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-2.0.0-beta.4.tgz#f36977404c3dd1d4f7b4316f0cfd3431f1fd1910"
+  integrity sha512-qKag4NVZUwNPVOEPc7kGGeqF4v4JpROtoxW+MvY/OgKUKHOhYX6aRbLqgbyemJUSB1PCjzvsaymjxt2VS5mqLQ==
   dependencies:
     "@canonical/macaroon-bakery" "0.3.0"
     btoa "1.2.1"
