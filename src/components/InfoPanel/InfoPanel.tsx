@@ -31,15 +31,7 @@ const infoPanelDimensions = () => {
 };
 
 const InfoPanel = () => {
-  const params = useParams();
-  let modelName;
-  if (Object.entries(params).length) {
-    Object.values(params).forEach((param, i) => {
-      i === 0 ? (modelName = param) : (modelName = "");
-    });
-  } else {
-    modelName = "";
-  }
+  const { 0: modelName = "" } = useParams<{ 0: string }>();
 
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
   const modelStatusData = useModelStatus();
