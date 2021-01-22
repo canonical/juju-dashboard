@@ -4,7 +4,11 @@
   $magic-height: 200px;
   $magic-min-height: calc(100vh - #{$magic-height});
 
-  .row {
+  @media (max-width: $breakpoint-large) {
+    grid-template-columns: 1fr !important;
+  }
+
+  &.row {
     padding: 0;
   }
 
@@ -35,28 +39,47 @@
     margin: 2rem 0 1rem;
     padding-left: 0.5rem;
 
+    @media screen and (max-width: $breakpoint-medium) {
+      margin-top: 4rem;
+    }
+
     button {
       margin-bottom: 0;
       padding-left: 0.5rem;
       padding-right: 0.5rem;
+      white-space: nowrap;
     }
 
     .entity-name {
       font-size: 1.3rem;
+      white-space: nowrap;
     }
   }
 
   &__config-list {
     border-right: 1px solid $color-mid-light;
+    padding-top: 1rem;
     padding-right: 1rem;
+
+    @media screen and (max-width: $breakpoint-large) {
+      border-right: none;
+    }
   }
 
   &__list {
     min-height: $magic-min-height;
+
+    @media screen and (max-width: $breakpoint-medium) {
+      margin-top: 3rem;
+    }
   }
 
   &__description {
     margin-top: 2rem;
+
+    @media screen and (max-width: $breakpoint-large) {
+      display: none !important;
+    }
 
     pre {
       // reset the vanilla pre styling
@@ -86,7 +109,7 @@
     background-color: white;
     border-top: 1px solid $color-mid-light;
     bottom: 0;
-    max-height: 100px;
+    max-height: 130px;
     padding-right: 1.5rem;
     padding-top: 1rem;
     position: sticky;
@@ -126,6 +149,12 @@
 
     &:hover {
       background-color: inherit;
+    }
+  }
+
+  @media screen and (max-width: $breakpoint-x-small) {
+    button {
+      width: auto;
     }
   }
 
