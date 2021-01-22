@@ -1,6 +1,6 @@
 {
   "name": "juju-dashboard",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "A dashboard for Juju and JAAS (Juju as a service)",
   "bugs": {
     "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@canonical/jaaslib": "0.6.0",
-    "@canonical/jujulib": "^2.0.0-beta.3",
+    "@canonical/jujulib": "2.0.0-beta.4",
     "@canonical/macaroon-bakery": "0.3.0",
     "@canonical/react-components": "0.14.2",
     "@sentry/browser": "5.29.2",
