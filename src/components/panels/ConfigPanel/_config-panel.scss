@@ -83,10 +83,6 @@
 
   &__list {
     min-height: $magic-min-height;
-
-    @media screen and (max-width: $breakpoint-medium) {
-      margin-top: 3rem;
-    }
   }
 
   &__description {
@@ -119,6 +115,10 @@
     padding-top: 1rem;
     position: sticky;
     text-align: right;
+
+    @media screen and (max-width: $breakpoint-x-small) {
+      padding-right: 0;
+    }
   }
 
   &__save-button span {

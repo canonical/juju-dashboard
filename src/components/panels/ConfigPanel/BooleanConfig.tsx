@@ -109,6 +109,12 @@ export default function BooleanConfig({
           <span className="p-radio__label">false</span>
         </label>
       </div>
+      <details>
+        <summary>
+          <span>{config.description}</span>
+        </summary>
+        <pre>{config.description}</pre>
+      </details>
     </div>
   );
 }
