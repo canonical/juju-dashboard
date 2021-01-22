@@ -58,8 +58,8 @@
 
   &__config-list {
     border-right: 1px solid $color-mid-light;
-    padding-top: 1rem;
     padding-right: 1rem;
+    padding-top: 1rem;
 
     @media screen and (max-width: $breakpoint-large) {
       border-right: none;
@@ -158,11 +158,44 @@
     }
   }
 
+  @media screen and (min-width: $breakpoint-large) {
+    textarea {
+      margin-bottom: 1.2rem !important;
+    }
+  }
+
   textarea {
     border: 1px solid #999;
     border-radius: 2px;
     height: 2.3rem;
+    margin-bottom: 0;
     min-height: 2.3rem;
     resize: vertical;
+  }
+
+  details {
+    display: none;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+
+    @media screen and (max-width: $breakpoint-large) {
+      display: block;
+    }
+
+    &[open] summary span {
+      visibility: hidden;
+    }
+
+    &[open] summary::marker {
+      visibility: visible;
+    }
+
+    summary {
+      height: 2rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 350px;
+    }
   }
 }

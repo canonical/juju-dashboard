@@ -78,6 +78,12 @@ export default function TextAreaConfig({
           setNewValue(config.name, e.target.value);
         }}
       ></textarea>
+      <details>
+        <summary>
+          <span>{config.description}</span>
+        </summary>
+        {config.description}
+      </details>
     </div>
   );
 }
