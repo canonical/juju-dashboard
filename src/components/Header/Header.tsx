@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { ReactElement } from "react";
 
 import "./_header.scss";
 
@@ -6,7 +6,7 @@ type Props = {
   children: JSX.Element;
 };
 
-const Header: FunctionComponent<Props> = ({ children }) => {
+const Header = ({ children }: Props): ReactElement => {
   return <div className="header">{children}</div>;
 };
 
