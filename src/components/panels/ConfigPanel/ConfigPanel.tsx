@@ -161,9 +161,9 @@ export default function ConfigPanel({
       ) : (
         <>
           <div className="config-panel__config-list col-6">
-            <div className="config-panel__list-header row">
-              <div className="col-3">{title}</div>
-              <div className="col-3 u-align-text--right">
+            <div className="config-panel__list-header">
+              {title}
+              <div>
                 <button
                   className={classnames("u-button-neutral", {
                     "u-hide": !showResetAll,

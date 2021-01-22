@@ -35,7 +35,9 @@
   }
 
   &__list-header {
+    display: flex;
     height: 2rem;
+    justify-content: space-between;
     margin: 2rem 0 1rem;
     padding-left: 0.5rem;
 
@@ -45,6 +47,7 @@
 
     button {
       margin-bottom: 0;
+      margin-left: 1rem;
       padding-left: 0.5rem;
       padding-right: 0.5rem;
       white-space: nowrap;
@@ -52,6 +55,8 @@
 
     .entity-name {
       font-size: 1.3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
   }
