@@ -31,7 +31,16 @@ const infoPanelDimensions = () => {
 };
 
 const InfoPanel = () => {
-  const { 0: modelName } = useParams();
+  const params = useParams();
+  let modelName;
+  if (Object.entries(params).length) {
+    Object.values(params).forEach((param, i) => {
+      i === 0 ? (modelName = param) : (modelName = "");
+    });
+  } else {
+    modelName = "";
+  }
+
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
   const modelStatusData = useModelStatus();
   const applicationsCount = Object.entries(modelStatusData.applications || {})
@@ -47,7 +56,7 @@ const InfoPanel = () => {
   const sendAnalytics = useAnalytics();
 
   // Close topology, if open, on Escape key press
-  const closeOnEscape = function (e) {
+  const closeOnEscape = function (e: KeyboardEvent) {
     if (e.code === "Escape" && showExpandedTopology) {
       setShowExpandedTopology(false);
     }
@@ -57,6 +66,7 @@ const InfoPanel = () => {
   const handleExpandTopology = () => {
     setShowExpandedTopology(!showExpandedTopology);
     sendAnalytics({
+      path: undefined,
       category: "User",
       action: "Opened expanded topology",
     });
@@ -67,7 +77,7 @@ const InfoPanel = () => {
       {showExpandedTopology ? (
         <Modal
           close={() => setShowExpandedTopology(false)}
-          title={modelName.split("/")[1] || modelName}
+          title={modelName?.split("/")[1] || modelName}
           data-test="topology-modal"
         >
           <Topology width={width} height={height} modelData={modelStatusData} />
@@ -88,7 +98,7 @@ const InfoPanel = () => {
                   onClick={handleExpandTopology}
                   onKeyPress={handleExpandTopology}
                   role="button"
-                  tabIndex="0"
+                  tabIndex={0}
                 >
                   Expand topology
                 </i>
