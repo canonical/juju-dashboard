@@ -8,6 +8,16 @@
     grid-template-columns: 1fr !important;
   }
 
+  pre {
+    // reset the vanilla pre styling
+    background-color: inherit;
+    border: none;
+    padding: 0;
+    // extra styles
+    white-space: pre-wrap;
+    word-break: keep-all;
+  }
+
   &.row {
     padding: 0;
   }
@@ -84,16 +94,6 @@
 
     @media screen and (max-width: $breakpoint-large) {
       display: none !important;
-    }
-
-    pre {
-      // reset the vanilla pre styling
-      background-color: inherit;
-      border: none;
-      padding: 0;
-      // extra styles
-      white-space: pre-wrap;
-      word-break: keep-all;
     }
 
     &-wrapper {

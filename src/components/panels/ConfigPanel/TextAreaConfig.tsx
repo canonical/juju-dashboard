@@ -82,7 +82,7 @@ export default function TextAreaConfig({
         <summary>
           <span>{config.description}</span>
         </summary>
-        {config.description}
+        <pre>{config.description}</pre>
       </details>
     </div>
   );
