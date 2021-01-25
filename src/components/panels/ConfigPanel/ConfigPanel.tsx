@@ -8,6 +8,7 @@ import cloneDeep from "clone-deep";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import { isSet } from "app/utils";
+import FadeIn from "animations/FadeIn";
 
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
@@ -159,7 +160,7 @@ export default function ConfigPanel({
           <NoConfigMessage />
         </div>
       ) : (
-        <>
+        <FadeIn isActive={true}>
           <div className="config-panel__config-list col-6">
             <div className="config-panel__list-header">
               {title}
@@ -221,7 +222,7 @@ export default function ConfigPanel({
               </div>
             )}
           </div>
-        </>
+        </FadeIn>
       )}
     </div>
   );
