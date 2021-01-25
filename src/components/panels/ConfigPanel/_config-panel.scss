@@ -73,8 +73,11 @@
 
   &__config-list {
     border-right: 1px solid $color-mid-light;
-    padding-right: 1rem;
     padding-top: 1rem;
+
+    @media screen and (min-width: $breakpoint-large) {
+      padding-right: 1rem;
+    }
 
     @media screen and (max-width: $breakpoint-large) {
       border-right: none;
@@ -158,8 +161,8 @@
     clear: both;
     display: none;
     font-size: 0.875rem;
-    margin-left: 1.3rem;
     margin-bottom: 0.5rem;
+    margin-left: 1.3rem;
 
     @media screen and (max-width: $breakpoint-large) {
       display: block;
