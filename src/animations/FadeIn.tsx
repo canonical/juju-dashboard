@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
-  children: ReactElement;
+  children: ReactElement | ReactElement[];
   isActive: boolean;
 };
 
