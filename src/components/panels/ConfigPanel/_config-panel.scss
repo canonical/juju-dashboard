@@ -187,6 +187,12 @@
       display: block;
     }
 
+    &[open] summary {
+      // There is a bug in Chrome 87 where hiding the summary does
+      // not also hide the ellipsis.
+      text-overflow: inherit;
+    }
+
     &[open] summary span {
       visibility: hidden;
     }
