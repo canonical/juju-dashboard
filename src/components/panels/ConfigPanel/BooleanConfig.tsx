@@ -19,6 +19,8 @@ export default function BooleanConfig({
   );
   const trueRef = useRef<HTMLInputElement>(null);
   const falseRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const [maxDescriptionHeight, setMaxDescriptionHeight] = useState("0px");
 
   let inputValue = config.default;
   if (isSet(config.newValue)) {
@@ -26,6 +28,27 @@ export default function BooleanConfig({
   } else if (config.default !== config.value) {
     inputValue = config.value;
   }
+
+  useEffect(() => {
+    if (descriptionRef.current?.firstChild) {
+      setMaxDescriptionHeight(
+        `${
+          (descriptionRef.current.firstChild as HTMLDivElement).clientHeight
+        }px`
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!descriptionRef.current) {
+      return;
+    }
+    if (showDescription) {
+      descriptionRef.current.style.maxHeight = maxDescriptionHeight;
+    } else {
+      descriptionRef.current.style.maxHeight = "0px";
+    }
+  }, [showDescription, maxDescriptionHeight]);
 
   useEffect(() => {
     if (selectedConfig?.name === config.name) {
@@ -100,10 +123,13 @@ export default function BooleanConfig({
       </button>
       <div
         className={classnames("config-input--description", {
-          "u-hide": !showDescription,
+          "config-input--description__show": showDescription,
         })}
+        ref={descriptionRef}
       >
-        {config.description}
+        <div className="config-input--description-container">
+          {config.description}
+        </div>
       </div>
       <div className="row">
         <label className=".p-radio--inline col-2">

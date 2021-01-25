@@ -177,11 +177,14 @@
   }
 
   &--description {
+    @include vf-animation(max-height, brisk, out);
     clear: both;
     display: none;
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
     margin-left: 1.3rem;
+    max-height: 0;
+    overflow: hidden;
 
     @media screen and (max-width: $breakpoint-large) {
       display: block;
