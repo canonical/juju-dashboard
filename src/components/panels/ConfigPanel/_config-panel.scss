@@ -45,6 +45,7 @@
   }
 
   &__list-header {
+    align-items: baseline;
     display: flex;
     height: 2rem;
     justify-content: space-between;
@@ -65,6 +66,7 @@
 
     .entity-name {
       font-size: 1.3rem;
+      margin-top: 0.3rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
