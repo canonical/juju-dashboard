@@ -9,6 +9,8 @@ import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import useEventListener from "hooks/useEventListener";
 
+import type { TSFixMe } from "types";
+
 import "./_info-panel.scss";
 
 const expandedTopologyDimensions = () => {
@@ -34,7 +36,7 @@ const InfoPanel = () => {
   const { 0: modelName = "" } = useParams<{ 0: string }>();
 
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
-  const modelStatusData = useModelStatus();
+  const modelStatusData: TSFixMe = useModelStatus();
   const applicationsCount = Object.entries(modelStatusData.applications || {})
     .length;
 
