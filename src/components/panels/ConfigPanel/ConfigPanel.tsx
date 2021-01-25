@@ -150,17 +150,19 @@ export default function ConfigPanel({
   }
 
   return (
-    <div className="config-panel row">
+    <div className="config-panel">
       {isLoading ? (
         <div className="full-size u-vertically-center">
           <Spinner />
         </div>
       ) : !isLoading && (!config || Object.keys(config).length === 0) ? (
-        <div className="full-size u-align-center">
-          <NoConfigMessage />
-        </div>
-      ) : (
         <FadeIn isActive={true}>
+          <div className="full-size u-align-center">
+            <NoConfigMessage />
+          </div>
+        </FadeIn>
+      ) : (
+        <FadeIn isActive={true} className="config-content row">
           <div className="config-panel__config-list col-6">
             <div className="config-panel__list-header">
               {title}

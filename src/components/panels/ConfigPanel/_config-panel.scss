@@ -4,8 +4,14 @@
   $magic-height: 200px;
   $magic-min-height: calc(100vh - #{$magic-height});
 
-  @media (max-width: $breakpoint-large) {
-    grid-template-columns: 1fr !important;
+  .config-content {
+    @media (max-width: $breakpoint-large) {
+      grid-template-columns: 1fr !important;
+    }
+
+    &.row {
+      padding: 0;
+    }
   }
 
   pre {
@@ -18,11 +24,8 @@
     word-break: keep-all;
   }
 
-  &.row {
-    padding: 0;
-  }
-
   .full-size {
+    display: flex;
     justify-content: center;
     min-height: $magic-min-height;
     text-align: center;
