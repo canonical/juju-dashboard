@@ -2,6 +2,7 @@ import Limiter from "async-limiter";
 import { connect, connectAndLogin } from "@canonical/jujulib";
 
 import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
+import applications from "@canonical/jujulib/dist/api/facades/application-v12";
 import client from "@canonical/jujulib/dist/api/facades/client-v2";
 import cloud from "@canonical/jujulib/dist/api/facades/cloud-v3";
 import controller from "@canonical/jujulib/dist/api/facades/controller-v5";
@@ -9,6 +10,7 @@ import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/dist/api/facades/pinger-v1";
 
 import jimm from "app/jimm-facade";
+import { isSet } from "app/utils";
 
 import {
   getBakery,
@@ -34,7 +36,15 @@ import {
 */
 function generateConnectionOptions(usePinger = false, bakery, onClose) {
   // The options used when connecting to a Juju controller or model.
-  const facades = [annotations, client, cloud, controller, jimm, modelManager];
+  const facades = [
+    annotations,
+    applications,
+    client,
+    cloud,
+    controller,
+    jimm,
+    modelManager,
+  ];
   if (usePinger) {
     facades.push(pinger);
   }
@@ -339,4 +349,69 @@ export function disableControllerUUIDMasking(conn) {
       resolve();
     }
   });
+}
+
+/**
+  Connect to the model representing the supplied modelUUID.
+  @param {*} modelUUID
+  @param {*} appState
+  @returns {Object} conn The connection.
+*/
+async function connectAndLoginToModel(modelUUID, appState) {
+  const bakery = getBakery(appState);
+  const baseWSControllerURL = getWSControllerURL(appState);
+  const { identityProviderAvailable } = getConfig(appState);
+  const modelURL = baseWSControllerURL.replace(
+    "/api",
+    `/model/${modelUUID}/api`
+  );
+  const { conn } = await connectAndLoginWithTimeout(
+    modelURL,
+    null,
+    generateConnectionOptions(false, bakery),
+    identityProviderAvailable
+  );
+  return conn;
+}
+
+/**
+  Call the API to fetch the application config data.
+  @param {String} modelUUID
+  @param {String} appName
+  @param {Object} appState
+  @returns {Promise} The application config.
+*/
+export async function getApplicationConfig(modelUUID, appName, appState) {
+  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const config = await conn.facades.application.get({ application: appName });
+  return config;
+}
+
+/**
+  Call the API to set the application config data.
+  @param {String} modelUUID
+  @param {String} appName
+  @param {Object} config
+  @param {Object} appState
+  @returns {Promise} The application set config response
+*/
+export async function setApplicationConfig(
+  modelUUID,
+  appName,
+  config,
+  appState
+) {
+  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const setValues = {};
+  Object.keys(config).forEach((key) => {
+    if (isSet(config[key].newValue)) {
+      // Juju requires that the value be a string, even if the field is a bool.
+      setValues[key] = `${config[key].newValue}`;
+    }
+  });
+  const resp = await conn.facades.application.set({
+    application: appName,
+    options: setValues,
+  });
+  return resp;
 }
