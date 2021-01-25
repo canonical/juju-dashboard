@@ -4,7 +4,21 @@
   $magic-height: 200px;
   $magic-min-height: calc(100vh - #{$magic-height});
 
-  .row {
+  @media (max-width: $breakpoint-large) {
+    grid-template-columns: 1fr !important;
+  }
+
+  pre {
+    // reset the vanilla pre styling
+    background-color: inherit;
+    border: none;
+    padding: 0;
+    // extra styles
+    white-space: pre-wrap;
+    word-break: keep-all;
+  }
+
+  &.row {
     padding: 0;
   }
 
@@ -31,24 +45,45 @@
   }
 
   &__list-header {
+    align-items: baseline;
+    display: flex;
     height: 2rem;
+    justify-content: space-between;
     margin: 2rem 0 1rem;
     padding-left: 0.5rem;
 
+    @media screen and (max-width: $breakpoint-medium) {
+      margin-top: 4rem;
+    }
+
     button {
       margin-bottom: 0;
+      margin-left: 1rem;
       padding-left: 0.5rem;
       padding-right: 0.5rem;
+      white-space: nowrap;
     }
 
     .entity-name {
       font-size: 1.3rem;
+      margin-top: 0.3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
   &__config-list {
     border-right: 1px solid $color-mid-light;
-    padding-right: 1rem;
+    padding-top: 1rem;
+
+    @media screen and (min-width: $breakpoint-large) {
+      padding-right: 1rem;
+    }
+
+    @media screen and (max-width: $breakpoint-large) {
+      border-right: none;
+    }
   }
 
   &__list {
@@ -58,14 +93,8 @@
   &__description {
     margin-top: 2rem;
 
-    pre {
-      // reset the vanilla pre styling
-      background-color: inherit;
-      border: none;
-      padding: 0;
-      // extra styles
-      white-space: pre-wrap;
-      word-break: keep-all;
+    @media screen and (max-width: $breakpoint-large) {
+      display: none !important;
     }
 
     &-wrapper {
@@ -86,11 +115,15 @@
     background-color: white;
     border-top: 1px solid $color-mid-light;
     bottom: 0;
-    max-height: 100px;
+    max-height: 130px;
     padding-right: 1.5rem;
     padding-top: 1rem;
     position: sticky;
     text-align: right;
+
+    @media screen and (max-width: $breakpoint-x-small) {
+      padding-right: 0;
+    }
   }
 
   &__save-button span {
@@ -115,8 +148,31 @@
     background-color: #ddedfe;
   }
 
-  h5 {
+  .p-icon--plus.config-input--view-description,
+  .p-icon--minus.config-input--view-description {
+    display: none;
+    margin-right: 0.5rem;
+    width: 0.875rem;
+
+    @media screen and (max-width: $breakpoint-large) {
+      display: inline-block;
+    }
+  }
+
+  &--description {
+    clear: both;
+    display: none;
+    font-size: 0.875rem;
     margin-bottom: 0.5rem;
+    margin-left: 1.3rem;
+
+    @media screen and (max-width: $breakpoint-large) {
+      display: block;
+    }
+  }
+
+  h5 {
+    margin-bottom: 0.2rem;
   }
 
   button {
@@ -129,10 +185,23 @@
     }
   }
 
+  @media screen and (max-width: $breakpoint-x-small) {
+    button {
+      width: auto;
+    }
+  }
+
+  @media screen and (min-width: $breakpoint-large) {
+    textarea {
+      margin-bottom: 1.2rem !important;
+    }
+  }
+
   textarea {
     border: 1px solid #999;
     border-radius: 2px;
     height: 2.3rem;
+    margin-bottom: 0.7rem;
     min-height: 2.3rem;
     resize: vertical;
   }

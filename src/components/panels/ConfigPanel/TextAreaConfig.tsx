@@ -16,6 +16,7 @@ export default function TextAreaConfig({
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
+  const [showDescription, setShowDescription] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   let inputValue = config.default;
@@ -61,7 +62,22 @@ export default function TextAreaConfig({
       data-config-name={config.name}
       onClick={() => setSelectedConfig(config)}
     >
-      <h5 className="u-float-left">{config.name}</h5>
+      <h5
+        className="u-float-left"
+        onClick={() => setShowDescription(!showDescription)}
+        onKeyPress={() => setShowDescription(!showDescription)}
+        // eslint-disable-next-line
+        role="button"
+        tabIndex={0}
+      >
+        <i
+          className={classnames("config-input--view-description", {
+            "p-icon--plus": !showDescription,
+            "p-icon--minus": showDescription,
+          })}
+        />
+        {config.name}
+      </h5>
       <button
         className={classnames("u-float-right p-button--base", {
           "u-hide": !showUseDefault,
@@ -70,6 +86,13 @@ export default function TextAreaConfig({
       >
         use default
       </button>
+      <div
+        className={classnames("config-input--description", {
+          "u-hide": !showDescription,
+        })}
+      >
+        {config.description}
+      </div>
       <textarea
         ref={inputRef}
         value={inputValue}
