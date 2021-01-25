@@ -137,6 +137,7 @@
   padding: 0 0.5rem;
 
   &--focused {
+    @include vf-animation(background-color, brisk, out);
     background-color: #ddedfe;
   }
 
