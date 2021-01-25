@@ -28,6 +28,15 @@
     text-align: center;
   }
 
+  .config-panel__hide-button {
+    @include vf-animation(opacity, brisk, out);
+    opacity: 0;
+  }
+
+  .config-panel__show-button {
+    opacity: 1;
+  }
+
   &__message {
     padding-top: 6rem;
 
@@ -123,6 +132,10 @@
 
     @media screen and (max-width: $breakpoint-x-small) {
       padding-right: 0;
+    }
+
+    button {
+      @include vf-animation(opacity, brisk, out);
     }
   }
 

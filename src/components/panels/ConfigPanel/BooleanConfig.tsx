@@ -88,9 +88,12 @@ export default function BooleanConfig({
         {config.name}
       </h5>
       <button
-        className={classnames("u-float-right p-button--base", {
-          "u-hide": !showUseDefault,
-        })}
+        className={classnames(
+          "u-float-right p-button--base config-panel__hide-button",
+          {
+            "config-panel__show-button": showUseDefault,
+          }
+        )}
         onClick={resetToDefault}
       >
         use default

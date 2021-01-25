@@ -166,9 +166,12 @@ export default function ConfigPanel({
               {title}
               <div>
                 <button
-                  className={classnames("u-button-neutral", {
-                    "u-hide": !showResetAll,
-                  })}
+                  className={classnames(
+                    "u-button-neutral config-panel__hide-button",
+                    {
+                      "config-panel__show-button": showResetAll,
+                    }
+                  )}
                   onClick={allFieldsToDefault}
                 >
                   Reset all values
