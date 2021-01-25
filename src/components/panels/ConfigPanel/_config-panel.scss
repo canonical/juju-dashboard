@@ -143,8 +143,30 @@
     background-color: #ddedfe;
   }
 
-  h5 {
+  .p-icon--plus.config-input--view-description {
+    display: none;
+    margin-right: 0.5rem;
+    width: 0.875rem;
+
+    @media screen and (max-width: $breakpoint-large) {
+      display: inline-block;
+    }
+  }
+
+  &--description {
+    clear: both;
+    display: none;
+    font-size: 0.875rem;
+    margin-left: 1.3rem;
     margin-bottom: 0.5rem;
+
+    @media screen and (max-width: $breakpoint-large) {
+      display: block;
+    }
+  }
+
+  h5 {
+    margin-bottom: 0.2rem;
   }
 
   button {
@@ -173,40 +195,8 @@
     border: 1px solid #999;
     border-radius: 2px;
     height: 2.3rem;
-    margin-bottom: 0;
+    margin-bottom: 0.7rem;
     min-height: 2.3rem;
     resize: vertical;
-  }
-
-  details {
-    display: none;
-    font-size: 0.9rem;
-    margin-bottom: 0;
-
-    @media screen and (max-width: $breakpoint-large) {
-      display: block;
-    }
-
-    &[open] summary {
-      // There is a bug in Chrome 87 where hiding the summary does
-      // not also hide the ellipsis.
-      text-overflow: inherit;
-    }
-
-    &[open] summary span {
-      visibility: hidden;
-    }
-
-    &[open] summary::marker {
-      visibility: visible;
-    }
-
-    summary {
-      height: 2rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      width: 350px;
-    }
   }
 }

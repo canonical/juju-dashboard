@@ -61,7 +61,10 @@ export default function TextAreaConfig({
       data-config-name={config.name}
       onClick={() => setSelectedConfig(config)}
     >
-      <h5 className="u-float-left">{config.name}</h5>
+      <h5 className="u-float-left">
+        <i className="p-icon--plus config-input--view-description"></i>
+        {config.name}
+      </h5>
       <button
         className={classnames("u-float-right p-button--base", {
           "u-hide": !showUseDefault,
@@ -70,6 +73,7 @@ export default function TextAreaConfig({
       >
         use default
       </button>
+      <div className="config-input--description">{config.description}</div>
       <textarea
         ref={inputRef}
         value={inputValue}
@@ -78,12 +82,6 @@ export default function TextAreaConfig({
           setNewValue(config.name, e.target.value);
         }}
       ></textarea>
-      <details>
-        <summary>
-          <span>{config.description}</span>
-        </summary>
-        <pre>{config.description}</pre>
-      </details>
     </div>
   );
 }
