@@ -34,6 +34,7 @@
 
   .config-panel__hide-button {
     @include vf-animation(opacity, brisk, out);
+
     opacity: 0;
   }
 
@@ -159,6 +160,7 @@
 
   &--focused {
     @include vf-animation(background-color, brisk, out);
+
     background-color: #ddedfe;
   }
 
@@ -183,6 +185,7 @@
 
   &--description {
     @include vf-animation(max-height, brisk, out);
+
     clear: both;
     display: none;
     font-size: 0.875rem;
