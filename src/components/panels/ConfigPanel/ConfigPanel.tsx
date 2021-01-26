@@ -110,6 +110,8 @@ export default function ConfigPanel({
       const cfg = newConfig[key];
       if (cfg.value !== cfg.default) {
         cfg.newValue = cfg.default;
+      } else if (cfg.newValue !== cfg.default) {
+        cfg.newValue = cfg.default;
       }
     });
     setConfig(newConfig);
@@ -118,8 +120,10 @@ export default function ConfigPanel({
   }
 
   function checkEnableSave(newConfig: Config) {
-    const fieldChanged = Object.keys(newConfig).some((key) =>
-      isSet(newConfig[key].newValue)
+    const fieldChanged = Object.keys(newConfig).some(
+      (key) =>
+        isSet(newConfig[key].newValue) &&
+        newConfig[key].newValue !== newConfig[key].value
     );
     setEnableSave(fieldChanged);
   }
@@ -295,7 +299,7 @@ function generateConfigElementList(
 function NoConfigMessage() {
   return (
     <div className="config-panel__message">
-      <img src={boxImage} alt="3d box" className="config-panel--center-img" />
+      <img src={boxImage} alt="" className="config-panel--center-img" />
       <h4>This application doesn't have any configuration parameters</h4>
     </div>
   );
@@ -304,11 +308,7 @@ function NoConfigMessage() {
 function NoDescriptionMessage() {
   return (
     <div className="config-panel__message">
-      <img
-        src={bulbImage}
-        alt="lightbulb"
-        className="config-panel--center-img"
-      />
+      <img src={bulbImage} alt="" className="config-panel--center-img" />
       <h4>
         Click on a configuration row to view its related description and
         parameters
