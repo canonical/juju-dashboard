@@ -109,6 +109,8 @@ export default function ConfigPanel({
       const cfg = newConfig[key];
       if (cfg.value !== cfg.default) {
         cfg.newValue = cfg.default;
+      } else if (cfg.newValue !== cfg.default) {
+        cfg.newValue = cfg.default;
       }
     });
     setConfig(newConfig);
@@ -117,8 +119,10 @@ export default function ConfigPanel({
   }
 
   function checkEnableSave(newConfig: Config) {
-    const fieldChanged = Object.keys(newConfig).some((key) =>
-      isSet(newConfig[key].newValue)
+    const fieldChanged = Object.keys(newConfig).some(
+      (key) =>
+        isSet(newConfig[key].newValue) &&
+        newConfig[key].newValue !== newConfig[key].value
     );
     setEnableSave(fieldChanged);
   }
