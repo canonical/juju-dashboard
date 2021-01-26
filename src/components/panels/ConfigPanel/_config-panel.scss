@@ -62,6 +62,10 @@
       padding-left: 0.5rem;
       padding-right: 0.5rem;
       white-space: nowrap;
+
+      @media screen and (max-width: $breakpoint-x-small) {
+        margin-left: inherit;
+      }
     }
 
     .entity-name {
