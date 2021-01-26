@@ -12,6 +12,7 @@ var jujuDashboardConfig = {
   // only be used for superficial updates like logos. Use feature detection
   // for other environment features.
   isJuju: false,
+  // Development flags below:
   // Show WebCli component if enabled for dev purposes, even if not natively supported.
   showWebCLI: false,
 };

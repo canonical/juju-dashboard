@@ -1,0 +1,213 @@
+@import "vanilla-framework/scss/vanilla";
+@import "../../../scss/settings";
+
+.config-panel {
+  $magic-height: 200px;
+  $magic-min-height: calc(100vh - #{$magic-height});
+
+  @media (max-width: $breakpoint-large) {
+    grid-template-columns: 1fr !important;
+  }
+
+  pre {
+    // reset the vanilla pre styling
+    background-color: inherit;
+    border: none;
+    padding: 0;
+    // extra styles
+    white-space: pre-wrap;
+    word-break: keep-all;
+  }
+
+  &.row {
+    padding: 0;
+  }
+
+  .full-size {
+    justify-content: center;
+    min-height: $magic-min-height;
+    text-align: center;
+  }
+
+  &__message {
+    padding-top: 6rem;
+
+    @media (min-width: $breakpoint-medium) {
+      padding-top: 3rem;
+    }
+
+    h4 {
+      margin-top: 3rem;
+    }
+  }
+
+  &--center-img {
+    margin: 0 auto;
+  }
+
+  &__list-header {
+    align-items: baseline;
+    display: flex;
+    height: 2rem;
+    justify-content: space-between;
+    margin: 2rem 0 1rem;
+    padding-left: 0.5rem;
+
+    @media screen and (max-width: $breakpoint-medium) {
+      margin-top: 4rem;
+    }
+
+    button {
+      margin-bottom: 0;
+      margin-left: 1rem;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      white-space: nowrap;
+
+      @media screen and (max-width: $breakpoint-x-small) {
+        margin-left: inherit;
+      }
+    }
+
+    .entity-name {
+      font-size: 1.3rem;
+      margin-top: 0.3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__config-list {
+    border-right: 1px solid $color-mid-light;
+    padding-top: 1rem;
+
+    @media screen and (min-width: $breakpoint-large) {
+      padding-right: 1rem;
+    }
+
+    @media screen and (max-width: $breakpoint-large) {
+      border-right: none;
+    }
+  }
+
+  &__list {
+    min-height: $magic-min-height;
+  }
+
+  &__description {
+    margin-top: 2rem;
+
+    @media screen and (max-width: $breakpoint-large) {
+      display: none !important;
+    }
+
+    &-wrapper {
+      position: sticky;
+      top: 1rem;
+    }
+  }
+
+  &__no-description {
+    min-height: $magic-min-height;
+    padding: 0 5rem;
+    position: sticky;
+    text-align: center;
+    top: 0;
+  }
+
+  &__drawer {
+    background-color: white;
+    border-top: 1px solid $color-mid-light;
+    bottom: 0;
+    max-height: 130px;
+    padding-right: 1.5rem;
+    padding-top: 1rem;
+    position: sticky;
+    text-align: right;
+
+    @media screen and (max-width: $breakpoint-x-small) {
+      padding-right: 0;
+    }
+  }
+
+  &__save-button span {
+    padding-left: 1rem;
+  }
+}
+
+.config-input {
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 0 0.5rem;
+
+  &--focused {
+    background-color: #ddedfe;
+  }
+
+  &--changed {
+    background-color: $color-light;
+  }
+
+  &.config-input--focused.config-input--changed {
+    background-color: $color-blue-highlight;
+  }
+
+  .p-icon--plus.config-input--view-description,
+  .p-icon--minus.config-input--view-description {
+    display: none;
+    margin-right: 0.5rem;
+    width: 0.875rem;
+
+    @media screen and (max-width: $breakpoint-large) {
+      display: inline-block;
+    }
+  }
+
+  &--description {
+    clear: both;
+    display: none;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    margin-left: 1.3rem;
+
+    @media screen and (max-width: $breakpoint-large) {
+      display: block;
+    }
+  }
+
+  h5 {
+    margin-bottom: 0.2rem;
+  }
+
+  button {
+    color: $color-link;
+    margin: 0.3rem 0 0;
+    padding: 0;
+
+    &:hover {
+      background-color: inherit;
+    }
+  }
+
+  @media screen and (max-width: $breakpoint-x-small) {
+    button {
+      width: auto;
+    }
+  }
+
+  @media screen and (min-width: $breakpoint-large) {
+    textarea {
+      margin-bottom: 1.2rem !important;
+    }
+  }
+
+  textarea {
+    border: 1px solid $color-grey60;
+    border-radius: 2px;
+    height: 2.3rem;
+    margin-bottom: 0.7rem;
+    min-height: 2.3rem;
+    resize: vertical;
+  }
+}

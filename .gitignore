@@ -9,3 +9,4 @@ juju-dashboard*.tar.bz2
 coverage/
 .dotrun.json
 /.eslintcache
+.vscode/

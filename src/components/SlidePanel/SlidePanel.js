@@ -1,9 +1,22 @@
+import { cloneElement } from "react";
 import classnames from "classnames";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import useEventListener from "hooks/useEventListener";
 
 import "./_slide-panel.scss";
+
+function generatePanelContent(isLoading, children, onClose) {
+  if (isLoading) {
+    return <Spinner />;
+  }
+  if (children && !Array.isArray(children)) {
+    return cloneElement(children, {
+      _closePanel: onClose,
+    });
+  }
+  return children;
+}
 
 function SlidePanel({
   children,
@@ -25,7 +38,6 @@ function SlidePanel({
     if (
       isActive &&
       !e.target.closest(".slide-panel") &&
-      !e.target.closest('[role="row"]') &&
       !e.target.closest(".webcli")
     ) {
       onClose();
@@ -48,7 +60,7 @@ function SlidePanel({
         Close
       </button>
       <div className="slide-panel__content" data-loading={isLoading}>
-        {isLoading ? <Spinner /> : <>{children}</>}
+        {generatePanelContent(isLoading, children, onClose)}
       </div>
     </div>
   );

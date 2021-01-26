@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfigPanel displays a message if the app has no config 1`] = `
+<NoConfigMessage>
+  <div
+    className="config-panel__message"
+  >
+    <img
+      alt=""
+      className="config-panel--center-img"
+      src="no-config-params.svg"
+    />
+    <h4>
+      This application doesn't have any configuration parameters
+    </h4>
+  </div>
+</NoConfigMessage>
+`;
