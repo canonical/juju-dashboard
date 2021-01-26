@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../../scss/settings";
 
 .config-panel {
   $magic-height: 200px;
@@ -149,7 +150,7 @@
   }
 
   &.config-input--focused.config-input--changed {
-    background-color: #ddedfe;
+    background-color: $color-blue-highlight;
   }
 
   .p-icon--plus.config-input--view-description,
@@ -202,7 +203,7 @@
   }
 
   textarea {
-    border: 1px solid #999;
+    border: 1px solid $color-grey60;
     border-radius: 2px;
     height: 2.3rem;
     margin-bottom: 0.7rem;

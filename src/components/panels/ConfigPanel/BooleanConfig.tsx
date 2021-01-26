@@ -71,19 +71,16 @@ export default function BooleanConfig({
       })}
       onClick={() => setSelectedConfig(config)}
     >
-      <h5
-        className="u-float-left"
-        onClick={() => setShowDescription(!showDescription)}
-        onKeyPress={() => setShowDescription(!showDescription)}
-        // eslint-disable-next-line
-        role="button"
-        tabIndex={0}
-      >
+      <h5 className="u-float-left">
         <i
           className={classnames("config-input--view-description", {
             "p-icon--plus": !showDescription,
             "p-icon--minus": showDescription,
           })}
+          onClick={() => setShowDescription(!showDescription)}
+          onKeyPress={() => setShowDescription(!showDescription)}
+          role="button"
+          tabIndex={0}
         />
         {config.name}
       </h5>
@@ -100,7 +97,7 @@ export default function BooleanConfig({
           "u-hide": !showDescription,
         })}
       >
-        {config.description}
+        <pre>{config.description}</pre>
       </div>
       <div className="row">
         <label className=".p-radio--inline col-2">

@@ -62,19 +62,16 @@ export default function TextAreaConfig({
       data-config-name={config.name}
       onClick={() => setSelectedConfig(config)}
     >
-      <h5
-        className="u-float-left"
-        onClick={() => setShowDescription(!showDescription)}
-        onKeyPress={() => setShowDescription(!showDescription)}
-        // eslint-disable-next-line
-        role="button"
-        tabIndex={0}
-      >
+      <h5 className="u-float-left">
         <i
           className={classnames("config-input--view-description", {
             "p-icon--plus": !showDescription,
             "p-icon--minus": showDescription,
           })}
+          onClick={() => setShowDescription(!showDescription)}
+          onKeyPress={() => setShowDescription(!showDescription)}
+          role="button"
+          tabIndex={0}
         />
         {config.name}
       </h5>
@@ -91,7 +88,7 @@ export default function TextAreaConfig({
           "u-hide": !showDescription,
         })}
       >
-        {config.description}
+        <pre>{config.description}</pre>
       </div>
       <textarea
         ref={inputRef}
