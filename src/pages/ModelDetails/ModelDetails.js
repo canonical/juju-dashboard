@@ -14,6 +14,7 @@ import LocalAppsPanel from "components/panels/LocalAppsPanel/LocalAppsPanel";
 import RemoteAppsPanel from "components/panels/RemoteAppsPanel/RemoteAppsPanel";
 import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
 import OffersPanel from "components/panels/OffersPanel/OffersPanel";
+import ConfigPanel from "components/panels/ConfigPanel/ConfigPanel";
 import WebCLI from "components/WebCLI/WebCLI";
 import StatusStrip from "components/StatusStrip/StatusStrip";
 
@@ -158,7 +159,12 @@ const renderCounts = (activeView, modelStatusData) => {
   );
 };
 
-function generatePanelContent(activePanel, entity, panelRowClick) {
+function generatePanelContent(
+  activePanel,
+  entity,
+  panelRowClick,
+  modelStatusData
+) {
   switch (activePanel) {
     case "apps":
       return <LocalAppsPanel entity={entity} panelRowClick={panelRowClick} />;
@@ -168,6 +174,12 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
       return <MachinesPanel entity={entity} panelRowClick={panelRowClick} />;
     case "offers":
       return <OffersPanel entity={entity} panelRowClick={panelRowClick} />;
+    case "config":
+      const modelUUID = modelStatusData.uuid;
+      const charm = modelStatusData.applications[entity].charm;
+      return (
+        <ConfigPanel appName={entity} charm={charm} modelUUID={modelUUID} />
+      );
   }
 }
 
@@ -468,7 +480,12 @@ const ModelDetails = () => {
               isLoading={!entity}
               className={`${activePanel}-panel`}
             >
-              {generatePanelContent(activePanel, entity, panelRowClick)}
+              {generatePanelContent(
+                activePanel,
+                entity,
+                panelRowClick,
+                modelStatusData
+              )}
             </SlidePanel>
           </div>
         </FadeIn>
