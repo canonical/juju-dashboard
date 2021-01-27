@@ -18,6 +18,8 @@ export default function TextAreaConfig({
   );
   const [showDescription, setShowDescription] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const [maxDescriptionHeight, setMaxDescriptionHeight] = useState("0px");
 
   let inputValue = config.default;
   if (isSet(config.newValue)) {
@@ -25,6 +27,27 @@ export default function TextAreaConfig({
   } else if (config.default !== config.value) {
     inputValue = config.value;
   }
+
+  useEffect(() => {
+    if (descriptionRef.current?.firstChild) {
+      setMaxDescriptionHeight(
+        `${
+          (descriptionRef.current.firstChild as HTMLPreElement).clientHeight
+        }px`
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!descriptionRef.current) {
+      return;
+    }
+    if (showDescription) {
+      descriptionRef.current.style.maxHeight = maxDescriptionHeight;
+    } else {
+      descriptionRef.current.style.maxHeight = "0px";
+    }
+  }, [showDescription, maxDescriptionHeight]);
 
   useEffect(() => {
     setInputFocused(selectedConfig?.name === config.name);
@@ -51,6 +74,10 @@ export default function TextAreaConfig({
     setNewValue(config.name, config.default);
   }
 
+  function handleShowDescription() {
+    setShowDescription(!showDescription);
+  }
+
   return (
     // XXX How to tell aria to ignore the click but not the element?
     // eslint-disable-next-line
@@ -68,27 +95,31 @@ export default function TextAreaConfig({
             "p-icon--plus": !showDescription,
             "p-icon--minus": showDescription,
           })}
-          onClick={() => setShowDescription(!showDescription)}
-          onKeyPress={() => setShowDescription(!showDescription)}
+          onClick={handleShowDescription}
+          onKeyPress={handleShowDescription}
           role="button"
           tabIndex={0}
         />
         {config.name}
       </h5>
       <button
-        className={classnames("u-float-right p-button--base", {
-          "u-hide": !showUseDefault,
-        })}
+        className={classnames(
+          "u-float-right p-button--base config-panel__hide-button",
+          {
+            "config-panel__show-button": showUseDefault,
+          }
+        )}
         onClick={resetToDefault}
       >
         use default
       </button>
       <div
-        className={classnames("config-input--description", {
-          "u-hide": !showDescription,
-        })}
+        className={classnames("config-input--description")}
+        ref={descriptionRef}
       >
-        <pre>{config.description}</pre>
+        <pre className="config-input--description-container">
+          {config.description}
+        </pre>
       </div>
       <textarea
         ref={inputRef}

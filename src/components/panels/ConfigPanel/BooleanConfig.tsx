@@ -19,6 +19,8 @@ export default function BooleanConfig({
   );
   const trueRef = useRef<HTMLInputElement>(null);
   const falseRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const [maxDescriptionHeight, setMaxDescriptionHeight] = useState("0px");
 
   let inputValue = config.default;
   if (isSet(config.newValue)) {
@@ -26,6 +28,27 @@ export default function BooleanConfig({
   } else if (config.default !== config.value) {
     inputValue = config.value;
   }
+
+  useEffect(() => {
+    if (descriptionRef.current?.firstChild) {
+      setMaxDescriptionHeight(
+        `${
+          (descriptionRef.current.firstChild as HTMLPreElement).clientHeight
+        }px`
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!descriptionRef.current) {
+      return;
+    }
+    if (showDescription) {
+      descriptionRef.current.style.maxHeight = maxDescriptionHeight;
+    } else {
+      descriptionRef.current.style.maxHeight = "0px";
+    }
+  }, [showDescription, maxDescriptionHeight]);
 
   useEffect(() => {
     if (selectedConfig?.name === config.name) {
@@ -85,19 +108,23 @@ export default function BooleanConfig({
         {config.name}
       </h5>
       <button
-        className={classnames("u-float-right p-button--base", {
-          "u-hide": !showUseDefault,
-        })}
+        className={classnames(
+          "u-float-right p-button--base config-panel__hide-button",
+          {
+            "config-panel__show-button": showUseDefault,
+          }
+        )}
         onClick={resetToDefault}
       >
         use default
       </button>
       <div
-        className={classnames("config-input--description", {
-          "u-hide": !showDescription,
-        })}
+        className={classnames("config-input--description")}
+        ref={descriptionRef}
       >
-        <pre>{config.description}</pre>
+        <pre className="config-input--description-container">
+          {config.description}
+        </pre>
       </div>
       <div className="row">
         <label className=".p-radio--inline col-2">

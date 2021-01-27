@@ -8,6 +8,7 @@ import cloneDeep from "clone-deep";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import { isSet } from "app/utils";
+import FadeIn from "animations/FadeIn";
 
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
@@ -153,25 +154,30 @@ export default function ConfigPanel({
   }
 
   return (
-    <div className="config-panel row">
+    <div className="config-panel">
       {isLoading ? (
         <div className="full-size u-vertically-center">
           <Spinner />
         </div>
       ) : !isLoading && (!config || Object.keys(config).length === 0) ? (
-        <div className="full-size u-align-center">
-          <NoConfigMessage />
-        </div>
+        <FadeIn isActive={true}>
+          <div className="full-size u-align-center">
+            <NoConfigMessage />
+          </div>
+        </FadeIn>
       ) : (
-        <>
+        <FadeIn isActive={true} className="config-content row">
           <div className="config-panel__config-list col-6">
             <div className="config-panel__list-header">
               {title}
               <div>
                 <button
-                  className={classnames("u-button-neutral", {
-                    "u-hide": !showResetAll,
-                  })}
+                  className={classnames(
+                    "u-button-neutral config-panel__hide-button",
+                    {
+                      "config-panel__show-button": showResetAll,
+                    }
+                  )}
                   onClick={allFieldsToDefault}
                 >
                   Reset all values
@@ -214,18 +220,20 @@ export default function ConfigPanel({
           </div>
           <div className="config-panel__description col-6">
             {selectedConfig ? (
-              <div className="config-panel__description-wrapper">
-                <h4>Configuration Description</h4>
-                <h5>{selectedConfig.name}</h5>
-                <pre>{selectedConfig.description}</pre>
-              </div>
+              <FadeIn isActive={true}>
+                <div className="config-panel__description-wrapper">
+                  <h4>Configuration Description</h4>
+                  <h5>{selectedConfig.name}</h5>
+                  <pre>{selectedConfig.description}</pre>
+                </div>
+              </FadeIn>
             ) : (
               <div className="config-panel__no-description u-vertically-center">
                 <NoDescriptionMessage />
               </div>
             )}
           </div>
-        </>
+        </FadeIn>
       )}
     </div>
   );

@@ -5,8 +5,14 @@
   $magic-height: 200px;
   $magic-min-height: calc(100vh - #{$magic-height});
 
-  @media (max-width: $breakpoint-large) {
-    grid-template-columns: 1fr !important;
+  .config-content {
+    @media (max-width: $breakpoint-large) {
+      grid-template-columns: 1fr !important;
+    }
+
+    &.row {
+      padding: 0;
+    }
   }
 
   pre {
@@ -19,14 +25,21 @@
     word-break: keep-all;
   }
 
-  &.row {
-    padding: 0;
-  }
-
   .full-size {
+    display: flex;
     justify-content: center;
     min-height: $magic-min-height;
     text-align: center;
+  }
+
+  .config-panel__hide-button {
+    @include vf-animation(opacity, brisk, out);
+
+    opacity: 0;
+  }
+
+  .config-panel__show-button {
+    opacity: 1;
   }
 
   &__message {
@@ -131,8 +144,12 @@
     }
   }
 
-  &__save-button span {
-    padding-left: 1rem;
+  button.config-panel__save-button {
+    @include vf-animation(opacity, brisk, out);
+
+    span {
+      padding-left: 1rem;
+    }
   }
 }
 
@@ -142,6 +159,8 @@
   padding: 0 0.5rem;
 
   &--focused {
+    @include vf-animation(background-color, brisk, out);
+
     background-color: #ddedfe;
   }
 
@@ -165,11 +184,15 @@
   }
 
   &--description {
+    @include vf-animation(max-height, brisk, out);
+
     clear: both;
     display: none;
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
     margin-left: 1.3rem;
+    max-height: 0;
+    overflow: hidden;
 
     @media screen and (max-width: $breakpoint-large) {
       display: block;
