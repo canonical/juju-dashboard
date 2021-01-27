@@ -196,6 +196,17 @@ export default function ConfigPanel({
               )}
             </div>
             <div className="config-panel__drawer">
+              <div className="config-panel__confirm">
+                <h4>Are you sure you wish to Cancel?</h4>
+                <p>
+                  You have edited the following values to the {appName}{" "}
+                  configuration:
+                </p>
+                <h5>tuning level</h5>
+                <pre>fast</pre>
+                <h5>flavour</h5>
+                <pre>percona</pre>
+              </div>
               <div className="config-panel__button-row">
                 <button className="p-button--neutral" onClick={closePanel}>
                   Cancel

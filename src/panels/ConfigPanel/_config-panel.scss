@@ -20,6 +20,10 @@
     }
   }
 
+  h5 {
+    margin-bottom: 0.2rem;
+  }
+
   pre {
     // reset the vanilla pre styling
     background-color: inherit;
@@ -135,18 +139,28 @@
   &__drawer {
     background-color: white;
     bottom: 0;
-    max-height: 130px;
+    box-shadow: 0 -1px 16px 0 rgba(0, 0, 0, 0.2);
+    max-height: 500px; // xxx fix me
+    padding-left: 1.5rem;
     position: sticky;
-    text-align: right;
 
     @media screen and (max-width: $breakpoint-x-small) {
       padding-right: 0;
+    }
+
+    .config-panel__confirm {
+      padding-top: 1rem;
+
+      h5 {
+        padding-top: 0 !important;
+      }
     }
   }
 
   &__button-row {
     border-top: 1px solid $color-mid-light;
     margin: 0 1.5rem;
+    text-align: right;
 
     button {
       margin-top: 1.2rem;
@@ -206,10 +220,6 @@
     @media screen and (max-width: $breakpoint-large) {
       display: block;
     }
-  }
-
-  h5 {
-    margin-bottom: 0.2rem;
   }
 
   button {
