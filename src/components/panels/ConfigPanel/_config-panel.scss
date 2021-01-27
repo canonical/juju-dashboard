@@ -142,14 +142,14 @@
     @media screen and (max-width: $breakpoint-x-small) {
       padding-right: 0;
     }
-
-    button {
-      @include vf-animation(opacity, brisk, out);
-    }
   }
 
-  &__save-button span {
-    padding-left: 1rem;
+  button.config-panel__save-button {
+    @include vf-animation(opacity, brisk, out);
+
+    span {
+      padding-left: 1rem;
+    }
   }
 }
 
