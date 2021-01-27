@@ -223,6 +223,7 @@ export default function ConfigPanel({
           <div className="config-panel__description col-6">
             {selectedConfig ? (
               <FadeIn
+                key={selectedConfig.name}
                 isActive={true}
                 className="config-panel__description-wrapper"
               >
