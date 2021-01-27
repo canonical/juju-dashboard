@@ -18,6 +18,7 @@ import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 import MachinesPanel from "panels/MachinesPanel/MachinesPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
 import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
+import UnitsPanel from "panels/UnitsPanel/UnitsPanel";
 
 import {
   getConfig,
@@ -178,6 +179,9 @@ function generatePanelContent(
       return <MachinesPanel entity={entity} panelRowClick={panelRowClick} />;
     case "offers":
       return <OffersPanel entity={entity} panelRowClick={panelRowClick} />;
+    case "units":
+      return <UnitsPanel entity={entity} panelRowClick={panelRowClick} />;
+
     case "config":
       const modelUUID = modelStatusData.uuid;
       const charm = modelStatusData.applications[entity].charm;
