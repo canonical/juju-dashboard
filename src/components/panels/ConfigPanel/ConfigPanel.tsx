@@ -224,12 +224,13 @@ export default function ConfigPanel({
           </div>
           <div className="config-panel__description col-6">
             {selectedConfig ? (
-              <FadeIn isActive={true}>
-                <div className="config-panel__description-wrapper">
-                  <h4>Configuration Description</h4>
-                  <h5>{selectedConfig.name}</h5>
-                  <pre>{selectedConfig.description}</pre>
-                </div>
+              <FadeIn
+                isActive={true}
+                className="config-panel__description-wrapper"
+              >
+                <h4>Configuration Description</h4>
+                <h5>{selectedConfig.name}</h5>
+                <pre>{selectedConfig.description}</pre>
               </FadeIn>
             ) : (
               <div className="config-panel__no-description u-vertically-center">
