@@ -23,12 +23,11 @@ describe("ConfigPanel", () => {
       return Promise.resolve({ config: {} });
     });
     const store = mockStore(dataDump);
-    const title = <div>title</div>;
     const wrapper = mount(
       <Provider store={store}>
         <ConfigPanel
           appName="easyrsa"
-          title={title}
+          charm="cs:easyrsa"
           modelUUID=""
           closePanel={() => {}}
         />
@@ -44,12 +43,11 @@ describe("ConfigPanel", () => {
       return Promise.resolve(configResponse);
     });
     const store = mockStore(dataDump);
-    const title = <div>title</div>;
     const wrapper = mount(
       <Provider store={store}>
         <ConfigPanel
           appName="easyrsa"
-          title={title}
+          charm="cs:easyrsa"
           modelUUID=""
           closePanel={() => {}}
         />
