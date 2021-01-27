@@ -36,13 +36,6 @@ import { fetchAndStoreModelStatus } from "juju";
 import { fetchModelStatus } from "juju/actions";
 
 import {
-  localApplicationTableHeaders,
-  remoteApplicationTableHeaders,
-  consumedTableHeaders,
-  offersTableHeaders,
-  appsOffersTableHeaders,
-  machineTableHeaders,
-  relationTableHeaders,
   generateLocalApplicationRows,
   generateRemoteApplicationRows,
   generateConsumedRows,
@@ -50,7 +43,17 @@ import {
   generateRelationRows,
   generateOffersRows,
   generateAppOffersRows,
-} from "./generators";
+} from "tables/tableRows";
+
+import {
+  appsOffersTableHeaders,
+  machineTableHeaders,
+  relationTableHeaders,
+  offersTableHeaders,
+  consumedTableHeaders,
+  localApplicationTableHeaders,
+  remoteApplicationTableHeaders,
+} from "tables/tableHeaders";
 
 import "./_model-details.scss";
 

@@ -1,4 +1,3 @@
-import { URL } from "@canonical/jaaslib/lib/urls";
 import cloneDeep from "clone-deep";
 
 import {
@@ -9,107 +8,8 @@ import {
   splitParts,
   extractRelationEndpoints,
   generateIconImg,
+  generateEntityIdentifier,
 } from "app/utils";
-
-export const localApplicationTableHeaders = [
-  { content: "local apps", sortKey: "local-apps" },
-  { content: "status", sortKey: "status" },
-  { content: "version", className: "u-align--right", sortKey: "version" },
-  { content: "scale", className: "u-align--right", sortKey: "scale" },
-  { content: "store", sortKey: "store" },
-  { content: "rev", className: "u-align--right", sortKey: "rev" },
-  { content: "os", sortKey: "os" },
-  { content: "notes", sortKey: "notes" },
-];
-
-export const remoteApplicationTableHeaders = [
-  { content: "remote apps", sortKey: "remote-apps" },
-  { content: "status", sortKey: "status" },
-  { content: "interface", sortKey: "interface" },
-  { content: "offer url", sortKey: "offer-url" },
-  { content: "store", sortKey: "store" },
-];
-
-export const unitTableHeaders = [
-  { content: "unit", sortKey: "unit" },
-  { content: "workload", sortKey: "workload" },
-  { content: "agent", sortKey: "agent" },
-  { content: "machine", className: "u-align--right", sortKey: "machine" },
-  { content: "public address", sortKey: "publicAddress" },
-  { content: "port", className: "u-align--right", sortKey: "port" },
-  { content: "message", sortKey: "message" },
-];
-
-export const machineTableHeaders = [
-  { content: "machine", sortKey: "machine" },
-  { content: "apps", sortKey: "apps" },
-  { content: "state", sortKey: "state" },
-  { content: "az", sortKey: "az" },
-  { content: "instance id", sortKey: "instanceId" },
-  { content: "message", sortKey: "message" },
-];
-
-export const relationTableHeaders = [
-  { content: "relation provider", sortKey: "provider" },
-  { content: "requirer", sortKey: "requirer" },
-  { content: "interface", sortKey: "interface" },
-  { content: "type", sortKey: "type" },
-  { content: "message", sortKey: "message" },
-];
-
-export const consumedTableHeaders = [
-  { content: "consumed" },
-  { content: "endpoint" },
-  { content: "status" },
-];
-
-export const offersTableHeaders = [
-  { content: "connected offers" },
-  { content: "endpoints" },
-  { content: "connections" },
-];
-
-export const appsOffersTableHeaders = [
-  { content: "offers" },
-  { content: "connection" },
-  { content: "interface" },
-  { content: "offer url" },
-];
-
-export function generateEntityIdentifier(
-  namespace,
-  name,
-  subordinate,
-  baseAppURL,
-  disableLink = false
-) {
-  let charmStorePath = "";
-  try {
-    charmStorePath = URL.fromAnyString(namespace).toString().replace("cs:", "");
-  } catch (e) {
-    console.error("unable to parse charmstore path", e);
-  }
-
-  return (
-    <div className="entity-name">
-      {subordinate && <span className="subordinate"></span>}
-      {namespace && generateIconImg(name, namespace, baseAppURL)}
-      {/* Ensure app is not a local charm or disable link is true */}
-      {namespace.includes("cs:") && !disableLink ? (
-        <a
-          data-test="app-link"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`https://www.jaas.ai/${charmStorePath}`}
-        >
-          {name}
-        </a>
-      ) : (
-        name
-      )}
-    </div>
-  );
-}
 
 export function generateLocalApplicationRows(
   modelStatusData,
@@ -134,6 +34,7 @@ export function generateLocalApplicationRows(
     const store = app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub";
     const scale = app.unitsCount;
     const version = app.workloadVersion || "-";
+
     return {
       columns: [
         {
@@ -188,6 +89,57 @@ export function generateLocalApplicationRows(
       "data-app": key,
       className:
         query?.panel === "apps" && query?.entity === key ? "is-selected" : "",
+    };
+  });
+}
+
+export function generateIntegrationLocalApplicationRows(
+  modelStatusData,
+  onRowClick,
+  baseAppURL,
+  query
+) {
+  if (!modelStatusData) {
+    return [];
+  }
+
+  const applications = cloneDeep(modelStatusData.applications);
+
+  Object.keys(applications).forEach((key) => {
+    const units = applications[key].units || {};
+    applications[key].unitsCount = Object.keys(units).length;
+  });
+
+  return Object.keys(applications).map((key) => {
+    const app = applications[key];
+    return {
+      columns: [
+        {
+          "data-test-column": "name",
+          content: generateEntityIdentifier(
+            app.charm || "",
+            key,
+            false,
+            baseAppURL,
+            true
+          ),
+          className: "u-truncate",
+        },
+        {
+          "data-test-column": "integration",
+          content: "-",
+        },
+      ],
+      sortData: {
+        app: key,
+        integration: "",
+      },
+      onClick: () => onRowClick(key, "integration"),
+      "data-app": key,
+      className:
+        query?.panel === "integration" && query?.entity === key
+          ? "is-selected"
+          : "",
     };
   });
 }
@@ -250,6 +202,51 @@ export function generateRemoteApplicationRows(
         onClick: () => false && onRowClick(key, "remoteApps"), // DISABLED PANEL
         className:
           query?.panel === "remoteApps" && query?.entity === key
+            ? "is-selected"
+            : "",
+      };
+    })
+  );
+}
+
+export function generateIntegrationRemoteApplicationRows(
+  modelStatusData,
+  onRowClick,
+  baseAppURL,
+  query
+) {
+  if (!modelStatusData) {
+    return [];
+  }
+  const applications = cloneDeep(modelStatusData["remote-applications"]);
+  return (
+    applications &&
+    Object.keys(applications).map((key) => {
+      const app = applications[key];
+
+      console.log(app);
+
+      return {
+        columns: [
+          {
+            "data-test-column": "app",
+            content: app["offer-name"], // we cannot access charm name
+            className: "u-truncate",
+          },
+          {
+            "data-test-column": "integration",
+            content: "",
+            className: "u-capitalise u-truncate",
+          },
+        ],
+        sortData: {
+          app: key,
+          integration: "",
+        },
+        "data-app": key,
+        onClick: () => false && onRowClick(key, "remoteApps"), // DISABLED PANEL
+        className:
+          query?.panel === "integrations" && query?.entity === key
             ? "is-selected"
             : "",
       };
@@ -593,15 +590,15 @@ export function generateAppOffersRows(
           className: "u-truncate",
         },
         {
+          content: <>{interfaces.join(",")}</>,
+        },
+        {
           content: (
             <>
               {offer["active-connected-count"]} /{" "}
               {offer["total-connected-count"]}
             </>
           ),
-        },
-        {
-          content: <>{interfaces.join(",")}</>,
         },
         {
           content: "-", // offer url is not yet available from the API
