@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
-import { getApplicationConfig, setApplicationConfig } from "juju/index";
+import { getApplicationConfig, setApplicationConfig } from "juju";
 import { useStore } from "react-redux";
 import type { Store } from "redux";
 import classnames from "classnames";

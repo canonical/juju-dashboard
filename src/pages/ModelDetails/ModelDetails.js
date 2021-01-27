@@ -10,13 +10,14 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
-import LocalAppsPanel from "components/panels/LocalAppsPanel/LocalAppsPanel";
-import RemoteAppsPanel from "components/panels/RemoteAppsPanel/RemoteAppsPanel";
-import MachinesPanel from "components/panels/MachinesPanel/MachinesPanel";
-import OffersPanel from "components/panels/OffersPanel/OffersPanel";
-import ConfigPanel from "components/panels/ConfigPanel/ConfigPanel";
 import WebCLI from "components/WebCLI/WebCLI";
 import StatusStrip from "components/StatusStrip/StatusStrip";
+
+import LocalAppsPanel from "panels/LocalAppsPanel/LocalAppsPanel";
+import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
+import MachinesPanel from "panels/MachinesPanel/MachinesPanel";
+import OffersPanel from "panels/OffersPanel/OffersPanel";
+import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 
 import {
   getConfig,

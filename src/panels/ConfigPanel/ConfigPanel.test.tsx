@@ -5,7 +5,7 @@ import dataDump from "testing/complete-redux-store-dump";
 import configResponse from "testing/config-response";
 
 import { waitForComponentToPaint } from "testing/utils";
-import { getApplicationConfig } from "juju/index";
+import { getApplicationConfig } from "juju";
 
 import ConfigPanel from "./ConfigPanel";
 
