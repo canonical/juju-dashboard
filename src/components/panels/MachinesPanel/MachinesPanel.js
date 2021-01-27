@@ -9,7 +9,7 @@ import {
   generateUnitRows,
   localApplicationTableHeaders,
   generateLocalApplicationRows,
-} from "pages/Models/Details/generators";
+} from "pages/ModelDetails/generators";
 
 import { generateStatusElement } from "app/utils";
 

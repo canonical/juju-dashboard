@@ -1,13 +1,14 @@
 import { URL } from "@canonical/jaaslib/lib/urls";
 import cloneDeep from "clone-deep";
 
-import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
-
 import {
   extractRevisionNumber,
   generateStatusElement,
-  generateIconPath,
   generateSpanClass,
+  generateRelationIconImage,
+  splitParts,
+  extractRelationEndpoints,
+  generateIconImg,
 } from "app/utils";
 
 export const localApplicationTableHeaders = [
@@ -74,24 +75,6 @@ export const appsOffersTableHeaders = [
   { content: "interface" },
   { content: "offer url" },
 ];
-
-export function generateIconImg(name, namespace) {
-  let iconSrc = defaultCharmIcon;
-  if (namespace.indexOf("local:") !== 0) {
-    iconSrc = generateIconPath(namespace);
-  }
-  return (
-    <img
-      alt={name + " icon"}
-      key={name}
-      title={name}
-      width="24"
-      height="24"
-      className="entity-icon"
-      src={iconSrc}
-    />
-  );
-}
 
 export function generateEntityIdentifier(
   namespace,
@@ -395,14 +378,6 @@ export function generateUnitRows(
   return unitRows;
 }
 
-const splitParts = (hardware) =>
-  Object.fromEntries(
-    hardware.split(" ").map((item) => {
-      const parts = item.split("=");
-      return [parts[0], parts[1]];
-    })
-  );
-
 export function generateMachineRows(
   modelStatusData,
   onRowClick,
@@ -482,28 +457,6 @@ export function generateMachineRows(
     };
   });
 }
-
-const extractRelationEndpoints = (relation) => {
-  const endpoints = {};
-  relation.endpoints.forEach((endpoint) => {
-    const role = endpoint.role;
-    endpoints[role] = endpoint.application + ":" + endpoint.name;
-    endpoints[`${role}ApplicationName`] = endpoint.application;
-  });
-  return endpoints;
-};
-
-const generateRelationIconImage = (
-  applicationName,
-  modelStatusData,
-  baseAppURL
-) => {
-  const application = modelStatusData.applications[applicationName];
-  if (!application || !applicationName) {
-    return;
-  }
-  return generateIconImg(applicationName, application.charm, baseAppURL);
-};
 
 export function generateRelationRows(modelStatusData, baseAppURL) {
   if (!modelStatusData) {

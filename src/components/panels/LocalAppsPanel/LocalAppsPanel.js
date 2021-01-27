@@ -11,7 +11,7 @@ import {
   machineTableHeaders,
   generateMachineRows,
   generateUnitRows,
-} from "pages/Models/Details/generators";
+} from "pages/ModelDetails/generators";
 
 import {
   extractRevisionNumber,
