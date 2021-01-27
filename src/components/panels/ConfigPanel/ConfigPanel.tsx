@@ -16,11 +16,13 @@ import boxImage from "static/images/no-config-params.svg";
 import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
 
+import { generateIconImg } from "../../../pages/Models/Details/generators";
+
 import "./_config-panel.scss";
 
 type Props = {
   appName: string;
-  title: ReactElement;
+  charm: string;
   modelUUID: string;
   closePanel: () => void;
 };
@@ -50,7 +52,7 @@ type SetNewValue = (name: string, value: any) => void;
 
 export default function ConfigPanel({
   appName,
-  title,
+  charm,
   modelUUID,
   closePanel,
 }: Props): ReactElement {
@@ -169,7 +171,9 @@ export default function ConfigPanel({
         <FadeIn isActive={true} className="config-content row">
           <div className="config-panel__config-list col-6">
             <div className="config-panel__list-header">
-              {title}
+              <div className="entity-name">
+                {generateIconImg(appName, charm)} {appName}
+              </div>
               <div>
                 <button
                   className={classnames(
@@ -208,7 +212,7 @@ export default function ConfigPanel({
                 disabled={!enableSave}
               >
                 {!savingConfig ? (
-                  "Save & apply"
+                  "Save and apply"
                 ) : (
                   <>
                     <i className="p-icon--spinner u-animation--spin is-light"></i>
