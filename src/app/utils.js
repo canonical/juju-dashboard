@@ -1,6 +1,43 @@
+import { URL } from "@canonical/jaaslib/lib/urls";
+
 import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
+
+export function generateEntityIdentifier(
+  namespace,
+  name,
+  subordinate,
+  baseAppURL,
+  disableLink = false
+) {
+  let charmStorePath = "";
+  try {
+    charmStorePath = URL.fromAnyString(namespace).toString().replace("cs:", "");
+  } catch (e) {
+    console.error("unable to parse charmstore path", e);
+  }
+
+  return (
+    <div className="entity-name">
+      {subordinate && <span className="subordinate"></span>}
+      {namespace && generateIconImg(name, namespace, baseAppURL)}
+      {/* Ensure app is not a local charm or disable link is true */}
+      {namespace.includes("cs:") && !disableLink ? (
+        <a
+          data-test="app-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://www.jaas.ai/${charmStorePath}`}
+        >
+          {name}
+        </a>
+      ) : (
+        name
+      )}
+    </div>
+  );
+}
 
 export const generateStatusElement = (status, count, useIcon = true) => {
   let statusClass = status ? `is-${status.toLowerCase()}` : "";

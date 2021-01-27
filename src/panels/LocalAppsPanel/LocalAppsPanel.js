@@ -7,17 +7,16 @@ import useModelStatus from "hooks/useModelStatus";
 
 import {
   generateEntityIdentifier,
-  unitTableHeaders,
-  machineTableHeaders,
-  generateMachineRows,
-  generateUnitRows,
-} from "pages/ModelDetails/generators";
-
-import {
   extractRevisionNumber,
   generateStatusElement,
   filterModelStatusDataByApp,
 } from "app/utils";
+
+import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
+
+import { generateMachineRows, generateUnitRows } from "tables/tableRows";
+
+import { machineTableHeaders, unitTableHeaders } from "tables/tableHeaders";
 
 import "../_panels.scss";
 import "./_local-apps-panel.scss";

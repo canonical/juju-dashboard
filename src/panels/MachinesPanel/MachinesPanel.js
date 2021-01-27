@@ -4,14 +4,17 @@ import cloneDeep from "clone-deep";
 
 import useModelStatus from "hooks/useModelStatus";
 
-import {
-  unitTableHeaders,
-  generateUnitRows,
-  localApplicationTableHeaders,
-  generateLocalApplicationRows,
-} from "pages/ModelDetails/generators";
-
 import { generateStatusElement } from "app/utils";
+
+import {
+  generateUnitRows,
+  generateLocalApplicationRows,
+} from "tables/tableRows";
+
+import {
+  localApplicationTableHeaders,
+  unitTableHeaders,
+} from "tables/tableHeaders";
 
 import "../_panels.scss";
 
