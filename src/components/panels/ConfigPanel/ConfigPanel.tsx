@@ -7,7 +7,7 @@ import cloneDeep from "clone-deep";
 
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
-import { isSet } from "app/utils";
+import { generateIconImg, isSet } from "app/utils";
 import FadeIn from "animations/FadeIn";
 
 import bulbImage from "static/images/bulb.svg";
@@ -15,8 +15,6 @@ import boxImage from "static/images/no-config-params.svg";
 
 import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
-
-import { generateIconImg } from "../../../pages/Models/Details/generators";
 
 import "./_config-panel.scss";
 
