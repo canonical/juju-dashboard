@@ -1,6 +1,11 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/settings";
 
+.slide-panel.config-panel .slide-panel__content {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .config-panel {
   $magic-height: 200px;
   $magic-min-height: calc(100vh - #{$magic-height});
@@ -64,7 +69,7 @@
     height: 2rem;
     justify-content: space-between;
     margin: 2rem 0 1rem;
-    padding-left: 0.5rem;
+    padding: 0 1.5rem;
 
     @media screen and (max-width: $breakpoint-medium) {
       margin-top: 4rem;
@@ -95,10 +100,6 @@
     border-right: 1px solid $color-mid-light;
     padding-top: 1rem;
 
-    @media screen and (min-width: $breakpoint-large) {
-      padding-right: 1rem;
-    }
-
     @media screen and (max-width: $breakpoint-large) {
       border-right: none;
     }
@@ -106,10 +107,12 @@
 
   &__list {
     min-height: $magic-min-height;
+    padding: 0 1rem;
   }
 
   &__description {
     margin-top: 2rem;
+    padding-right: 1.5rem;
 
     @media screen and (max-width: $breakpoint-large) {
       display: none !important;
@@ -131,11 +134,8 @@
 
   &__drawer {
     background-color: white;
-    border-top: 1px solid $color-mid-light;
     bottom: 0;
     max-height: 130px;
-    padding-right: 1.5rem;
-    padding-top: 1rem;
     position: sticky;
     text-align: right;
 
@@ -144,11 +144,20 @@
     }
   }
 
-  button.config-panel__save-button {
-    @include vf-animation(opacity, brisk, out);
+  &__button-row {
+    border-top: 1px solid $color-mid-light;
+    margin: 0 1.5rem;
 
-    span {
-      padding-left: 1rem;
+    button {
+      margin-top: 1.2rem;
+    }
+
+    button.config-panel__save-button {
+      @include vf-animation(opacity, brisk, out);
+
+      span {
+        padding-left: 1rem;
+      }
     }
   }
 }

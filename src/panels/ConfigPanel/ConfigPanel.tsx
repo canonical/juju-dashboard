@@ -196,28 +196,30 @@ export default function ConfigPanel({
               )}
             </div>
             <div className="config-panel__drawer">
-              <button className="p-button--neutral" onClick={closePanel}>
-                Cancel
-              </button>
-              <button
-                className={classnames(
-                  "p-button--positive config-panel__save-button",
-                  {
-                    "is-active": savingConfig,
-                  }
-                )}
-                onClick={handleSubmit}
-                disabled={!enableSave}
-              >
-                {!savingConfig ? (
-                  "Save and apply"
-                ) : (
-                  <>
-                    <i className="p-icon--spinner u-animation--spin is-light"></i>
-                    <span>Saving&hellip;</span>
-                  </>
-                )}
-              </button>
+              <div className="config-panel__button-row">
+                <button className="p-button--neutral" onClick={closePanel}>
+                  Cancel
+                </button>
+                <button
+                  className={classnames(
+                    "p-button--positive config-panel__save-button",
+                    {
+                      "is-active": savingConfig,
+                    }
+                  )}
+                  onClick={handleSubmit}
+                  disabled={!enableSave}
+                >
+                  {!savingConfig ? (
+                    "Save and apply"
+                  ) : (
+                    <>
+                      <i className="p-icon--spinner u-animation--spin is-light"></i>
+                      <span>Saving&hellip;</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
           <div className="config-panel__description col-6">
