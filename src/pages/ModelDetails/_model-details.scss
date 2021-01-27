@@ -1,4 +1,4 @@
-@import "../../../scss/settings";
+@import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 
 @mixin model-details-layout {
@@ -82,7 +82,7 @@
     position: relative;
 
     &::before {
-      content: url("../../../static/images/unit-tree.svg");
+      content: url("../../static/images/unit-tree.svg");
       left: 0.75rem;
       position: absolute;
       top: -0.25rem;

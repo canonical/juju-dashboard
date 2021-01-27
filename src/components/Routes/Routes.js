@@ -5,7 +5,7 @@ import Login from "components/LogIn/LogIn";
 
 import Controllers from "pages/Controllers/Controllers";
 import Models from "pages/Models/Models";
-import ModelDetails from "pages/Models/Details/ModelDetails";
+import ModelDetails from "pages/ModelDetails/ModelDetails";
 import Settings from "pages/Settings/Settings";
 import NotFound from "pages/NotFound/NotFound";
 

@@ -323,3 +323,51 @@ export const filterModelStatusDataByApp = (modelStatusData, appName) => {
 };
 
 export const isSet = (val) => val || val !== undefined;
+
+export const splitParts = (hardware) =>
+  Object.fromEntries(
+    hardware.split(" ").map((item) => {
+      const parts = item.split("=");
+      return [parts[0], parts[1]];
+    })
+  );
+
+export const extractRelationEndpoints = (relation) => {
+  const endpoints = {};
+  relation.endpoints.forEach((endpoint) => {
+    const role = endpoint.role;
+    endpoints[role] = endpoint.application + ":" + endpoint.name;
+    endpoints[`${role}ApplicationName`] = endpoint.application;
+  });
+  return endpoints;
+};
+
+export const generateIconImg = (name, namespace) => {
+  let iconSrc = defaultCharmIcon;
+  if (namespace.indexOf("local:") !== 0) {
+    iconSrc = generateIconPath(namespace);
+  }
+  return (
+    <img
+      alt={name + " icon"}
+      key={name}
+      title={name}
+      width="24"
+      height="24"
+      className="entity-icon"
+      src={iconSrc}
+    />
+  );
+};
+
+export const generateRelationIconImage = (
+  applicationName,
+  modelStatusData,
+  baseAppURL
+) => {
+  const application = modelStatusData.applications[applicationName];
+  if (!application || !applicationName) {
+    return;
+  }
+  return generateIconImg(applicationName, application.charm, baseAppURL);
+};
