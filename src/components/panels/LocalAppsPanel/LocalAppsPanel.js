@@ -19,8 +19,6 @@ import {
   filterModelStatusDataByApp,
 } from "app/utils";
 
-import ConfigPanel from "../ConfigPanel/ConfigPanel";
-
 import "../_panels.scss";
 import "./_local-apps-panel.scss";
 
@@ -87,7 +85,6 @@ export default function LocalAppsPanel({ entity, panelRowClick, _closePanel }) {
   const modelStatusData = useModelStatus();
 
   const { baseAppURL } = useSelector(getConfig);
-  const [shouldShowConfig, setShouldShowConfig] = useState(false);
 
   // Filter model status via selected entity
   const filteredModelStatusData = filterModelStatusDataByApp(
@@ -112,10 +109,10 @@ export default function LocalAppsPanel({ entity, panelRowClick, _closePanel }) {
           // Required to prevent the click from bubbling and
           // closing the slide panel.
           e.stopPropagation();
-          setShouldShowConfig(true);
+          panelRowClick(entity, "config");
         }
       ),
-    [modelStatusData, entity, title]
+    [modelStatusData, entity, title, panelRowClick]
   );
 
   const machinesPanelRows = useMemo(
@@ -129,35 +126,24 @@ export default function LocalAppsPanel({ entity, panelRowClick, _closePanel }) {
   );
 
   return (
-    <>
-      {shouldShowConfig ? (
-        <ConfigPanel
-          appName={entity}
-          title={title}
-          modelUUID={modelStatusData.uuid}
-          closePanel={_closePanel}
+    <div className="local-apps-panel">
+      {appPanelHeader}
+      <div className="slide-panel__tables">
+        <MainTable
+          headers={unitTableHeaders}
+          rows={unitPanelRows}
+          className="model-details__units p-main-table panel__table"
+          sortable
+          emptyStateMsg={"There are no units in this model"}
         />
-      ) : (
-        <div className="local-apps-panel">
-          {appPanelHeader}
-          <div className="slide-panel__tables">
-            <MainTable
-              headers={unitTableHeaders}
-              rows={unitPanelRows}
-              className="model-details__units p-main-table panel__table"
-              sortable
-              emptyStateMsg={"There are no units in this model"}
-            />
-            <MainTable
-              headers={machineTableHeaders}
-              rows={machinesPanelRows}
-              className="model-details__machines p-main-table panel__table"
-              sortable
-              emptyStateMsg={"There are no machines in this model"}
-            />
-          </div>
-        </div>
-      )}
-    </>
+        <MainTable
+          headers={machineTableHeaders}
+          rows={machinesPanelRows}
+          className="model-details__machines p-main-table panel__table"
+          sortable
+          emptyStateMsg={"There are no machines in this model"}
+        />
+      </div>
+    </div>
   );
 }
