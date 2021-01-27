@@ -2,8 +2,7 @@
 @import "../../scss/settings";
 
 .slide-panel.config-panel .slide-panel__content {
-  padding-left: 0;
-  padding-right: 0;
+  padding: 1.5rem 0 0;
 }
 
 .config-panel {
@@ -139,20 +138,33 @@
   &__drawer {
     background-color: white;
     bottom: 0;
-    box-shadow: 0 -1px 16px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: none;
     max-height: 500px; // xxx fix me
-    padding-left: 1.5rem;
     position: sticky;
 
     @media screen and (max-width: $breakpoint-x-small) {
       padding-right: 0;
     }
 
+    &.is-open {
+      box-shadow: 0 -1px 16px 0 rgba(0, 0, 0, 0.2);
+    }
+
     .config-panel__confirm {
-      padding-top: 1rem;
+      max-height: 0;
+      overflow: hidden;
+      padding-left: 1.5rem;
+
+      h4 {
+        padding-top: 1rem;
+      }
 
       h5 {
         padding-top: 0 !important;
+      }
+
+      &.is-open {
+        max-height: 500px; // xxx fix me
       }
     }
   }

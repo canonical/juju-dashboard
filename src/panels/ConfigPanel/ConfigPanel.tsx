@@ -48,6 +48,8 @@ export type ConfigProps = {
 
 type SetNewValue = (name: string, value: any) => void;
 
+type ConfirmTypes = "apply" | "cancel";
+
 export default function ConfigPanel({
   appName,
   charm,
@@ -63,6 +65,8 @@ export default function ConfigPanel({
   const [showResetAll, setShowResetAll] = useState<Boolean>(false);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [savingConfig, setSavingConfig] = useState<Boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState<Boolean>(false);
+  const [confirmType, setConfirmType] = useState<ConfirmTypes>("apply");
 
   useEffect(() => {
     setIsLoading(true);
@@ -129,6 +133,10 @@ export default function ConfigPanel({
   }
 
   async function handleSubmit() {
+    setConfirmOpen(true);
+  }
+
+  async function _submitToJuju() {
     setSavingConfig(true);
     const error = await setApplicationConfig(
       modelUUID,
@@ -151,6 +159,7 @@ export default function ConfigPanel({
     );
     setSavingConfig(false);
     setEnableSave(false);
+    setConfirmOpen(false);
   }
 
   return (
@@ -195,9 +204,17 @@ export default function ConfigPanel({
                 setNewValue
               )}
             </div>
-            <div className="config-panel__drawer">
-              <div className="config-panel__confirm">
-                <h4>Are you sure you wish to Cancel?</h4>
+            <div
+              className={classnames("config-panel__drawer", {
+                "is-open": confirmOpen,
+              })}
+            >
+              <div
+                className={classnames("config-panel__confirm", {
+                  "is-open": confirmOpen,
+                })}
+              >
+                <h4>{confirmMessages[confirmType]}</h4>
                 <p>
                   You have edited the following values to the {appName}{" "}
                   configuration:
@@ -333,3 +350,8 @@ function NoDescriptionMessage() {
     </div>
   );
 }
+
+const confirmMessages = {
+  apply: "Are you sure you wish to apply these changes?",
+  cancel: "Are you sure you wish to cancel?",
+};
