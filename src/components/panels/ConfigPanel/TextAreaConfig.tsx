@@ -32,7 +32,7 @@ export default function TextAreaConfig({
     if (descriptionRef.current?.firstChild) {
       setMaxDescriptionHeight(
         `${
-          (descriptionRef.current.firstChild as HTMLDivElement).clientHeight
+          (descriptionRef.current.firstChild as HTMLPreElement).clientHeight
         }px`
       );
     }
@@ -114,14 +114,12 @@ export default function TextAreaConfig({
         use default
       </button>
       <div
-        className={classnames("config-input--description", {
-          "config-input--description__show": showDescription,
-        })}
+        className={classnames("config-input--description")}
         ref={descriptionRef}
       >
-        <div className="config-input--description-container">
-          <pre>{config.description}</pre>
-        </div>
+        <pre className="config-input--description-container">
+          {config.description}
+        </pre>
       </div>
       <textarea
         ref={inputRef}
