@@ -1,20 +1,14 @@
 import immerProduce from "immer";
 import type { UIState } from "types";
 
-import { actionsList } from "./actions";
-
-type UIStateAction = {
-  // XXX Look into converting `type` to ENUM with the values from actionList.
-  type: string;
-  payload: boolean;
-};
+import { actionsList, ActionType } from "./actions";
 
 function uiReducer(
   state: UIState = {
     userMenuActive: false,
     confirmationModalActive: false,
   },
-  action: UIStateAction
+  action: ActionType
 ) {
   return immerProduce(state, (draftState: UIState) => {
     switch (action.type) {

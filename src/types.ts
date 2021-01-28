@@ -6,5 +6,7 @@ export type UIState = {
 };
 
 export type ReduxState = {
+  root: TSFixMe;
+  juju: TSFixMe;
   ui: UIState;
 };

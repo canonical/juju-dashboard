@@ -1,13 +1,18 @@
 // Action labels
-export const actionsList = {
-  userMenuActive: "TOGGLE_USER_MENU",
-  confirmationModalActive: "TOGGLE_CONFIRMATION_Modal",
+export enum actionsList {
+  userMenuActive = "TOGGLE_USER_MENU",
+  confirmationModalActive = "TOGGLE_CONFIRMATION_Modal",
+}
+
+export type ActionType = {
+  type: actionsList;
+  payload: boolean;
 };
 
 /**
   Persist user menu visibility between page renders
 */
-export function userMenuActive(toggle: boolean) {
+export function userMenuActive(toggle: boolean): ActionType {
   return {
     type: actionsList.userMenuActive,
     payload: toggle,
