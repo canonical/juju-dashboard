@@ -212,6 +212,7 @@ export default function ConfigPanel({
                 setNewValue
               )}
             </div>
+            <div className="config-panel__mask"></div>
             <div
               className={classnames("config-panel__drawer", {
                 "is-open": confirmOpen,

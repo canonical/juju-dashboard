@@ -8,6 +8,21 @@ type Props = {
   handleSubmit: () => void;
 };
 
+const buttonSets = {
+  default: {
+    cancel: "Cancel",
+    save: "Save and apply",
+  },
+  cancel: {
+    cancel: "Continue editing",
+    save: "Yes, I'm sure",
+  },
+  apply: {
+    cancel: "Cancel",
+    save: "Yes, apply changes",
+  },
+};
+
 export default function ButtonRow({
   enableSave,
   savingConfig,
