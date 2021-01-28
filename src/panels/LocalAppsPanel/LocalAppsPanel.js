@@ -12,8 +12,6 @@ import {
   filterModelStatusDataByApp,
 } from "app/utils";
 
-import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
-
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 
 import { machineTableHeaders, unitTableHeaders } from "tables/tableHeaders";
