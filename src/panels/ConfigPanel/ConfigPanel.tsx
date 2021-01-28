@@ -17,6 +17,7 @@ import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
 
 import "./_config-panel.scss";
+import ButtonRow from "./ButtonRow";
 
 type Props = {
   appName: string;
@@ -61,11 +62,11 @@ export default function ConfigPanel({
   const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
     undefined
   );
-  const [enableSave, setEnableSave] = useState<Boolean>(false);
-  const [showResetAll, setShowResetAll] = useState<Boolean>(false);
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [savingConfig, setSavingConfig] = useState<Boolean>(false);
-  const [confirmOpen, setConfirmOpen] = useState<Boolean>(false);
+  const [enableSave, setEnableSave] = useState<boolean>(false);
+  const [showResetAll, setShowResetAll] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [savingConfig, setSavingConfig] = useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>("apply");
 
   useEffect(() => {
@@ -132,8 +133,15 @@ export default function ConfigPanel({
     setEnableSave(fieldChanged);
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
+    setConfirmType("apply");
     setConfirmOpen(true);
+  }
+
+  function handleCancel() {
+    setConfirmType("cancel");
+    setConfirmOpen(true);
+    // closePanel();
   }
 
   async function _submitToJuju() {
@@ -224,30 +232,12 @@ export default function ConfigPanel({
                 <h5>flavour</h5>
                 <pre>percona</pre>
               </div>
-              <div className="config-panel__button-row">
-                <button className="p-button--neutral" onClick={closePanel}>
-                  Cancel
-                </button>
-                <button
-                  className={classnames(
-                    "p-button--positive config-panel__save-button",
-                    {
-                      "is-active": savingConfig,
-                    }
-                  )}
-                  onClick={handleSubmit}
-                  disabled={!enableSave}
-                >
-                  {!savingConfig ? (
-                    "Save and apply"
-                  ) : (
-                    <>
-                      <i className="p-icon--spinner u-animation--spin is-light"></i>
-                      <span>Saving&hellip;</span>
-                    </>
-                  )}
-                </button>
-              </div>
+              <ButtonRow
+                enableSave={enableSave}
+                savingConfig={savingConfig}
+                handleCancel={handleCancel}
+                handleSubmit={handleSubmit}
+              />
             </div>
           </div>
           <div className="config-panel__description col-6">
