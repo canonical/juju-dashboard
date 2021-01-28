@@ -124,7 +124,7 @@ export async function connectAndPollController(
         wsControllerURL: controllerData[0],
       });
       const modelUUIDList = models["user-models"].map(
-        (item) => item.model.uuid
+        (item) => item.model?.uuid
       );
       await fetchAllModelStatuses(
         controllerData[0],
