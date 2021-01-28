@@ -17,7 +17,6 @@ import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
 
 import "./_config-panel.scss";
-import ButtonRow from "./ButtonRow";
 
 type Props = {
   appName: string;
@@ -212,7 +211,6 @@ export default function ConfigPanel({
                 setNewValue
               )}
             </div>
-            <div className="config-panel__mask"></div>
             <div
               className={classnames("config-panel__drawer", {
                 "is-open": confirmOpen,
@@ -233,12 +231,30 @@ export default function ConfigPanel({
                 <h5>flavour</h5>
                 <pre>percona</pre>
               </div>
-              <ButtonRow
-                enableSave={enableSave}
-                savingConfig={savingConfig}
-                handleCancel={handleCancel}
-                handleSubmit={handleSubmit}
-              />
+              <div className="config-panel__button-row">
+                <button className="p-button--neutral" onClick={handleCancel}>
+                  Cancel
+                </button>
+                <button
+                  className={classnames(
+                    "p-button--positive config-panel__save-button",
+                    {
+                      "is-active": savingConfig,
+                    }
+                  )}
+                  onClick={handleSubmit}
+                  disabled={!enableSave}
+                >
+                  {!savingConfig ? (
+                    "Save and apply"
+                  ) : (
+                    <>
+                      <i className="p-icon--spinner u-animation--spin is-light"></i>
+                      <span>Saving&hellip;</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
           <div className="config-panel__description col-6">
