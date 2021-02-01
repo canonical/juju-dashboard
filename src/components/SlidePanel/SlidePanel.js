@@ -37,6 +37,7 @@ function SlidePanel({
   const closeOnClickOutside = (e) => {
     if (
       isActive &&
+      !e.target.closest(".p-modal") &&
       !e.target.closest(".slide-panel") &&
       !e.target.closest('[role="row"]') &&
       !e.target.closest(".webcli")
