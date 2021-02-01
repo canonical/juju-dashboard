@@ -1,0 +1,32 @@
+@import "../../scss/functions/z-index";
+
+#confirmation-modal-container {
+  .p-modal {
+    align-items: flex-end;
+    justify-content: right;
+    z-index: z("zelda");
+
+    &__dialog {
+      padding: 1rem 1.5rem;
+    }
+  }
+}
+
+.confirmation-modal {
+  background-color: white;
+
+  h5 {
+    padding-top: 0 !important;
+    margin-bottom: 0;
+  }
+
+  pre {
+    // reset the vanilla pre styling
+    background-color: inherit;
+    border: none;
+    padding: 0;
+    // extra styles
+    white-space: pre-wrap;
+    word-break: keep-all;
+  }
+}
