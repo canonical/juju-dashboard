@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { getApplicationConfig, setApplicationConfig } from "juju";
 import { useStore } from "react-redux";
 import type { Store } from "redux";
@@ -9,6 +9,7 @@ import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import { generateIconImg, isSet } from "app/utils";
 import FadeIn from "animations/FadeIn";
+import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
@@ -140,7 +141,6 @@ export default function ConfigPanel({
   function handleCancel() {
     setConfirmType("cancel");
     setConfirmOpen(true);
-    // closePanel();
   }
 
   async function _submitToJuju() {
@@ -167,6 +167,24 @@ export default function ConfigPanel({
     setSavingConfig(false);
     setEnableSave(false);
     setConfirmOpen(false);
+  }
+
+  function generateConfirmationDialog(): ReactElement | null {
+    if (confirmOpen) {
+      const changedConfigList = generateChangedKeyValues(config);
+      let component = SaveConfirmation;
+      if (confirmType === "cancel") {
+        component = CancelConfirmation;
+      }
+      return component.call(
+        null,
+        appName,
+        changedConfigList,
+        _submitToJuju,
+        () => setConfirmOpen(false)
+      );
+    }
+    return null;
   }
 
   return (
@@ -211,26 +229,12 @@ export default function ConfigPanel({
                 setNewValue
               )}
             </div>
+            {generateConfirmationDialog()}
             <div
               className={classnames("config-panel__drawer", {
                 "is-open": confirmOpen,
               })}
             >
-              <div
-                className={classnames("config-panel__confirm", {
-                  "is-open": confirmOpen,
-                })}
-              >
-                <h4>{confirmMessages[confirmType]}</h4>
-                <p>
-                  You have edited the following values to the {appName}{" "}
-                  configuration:
-                </p>
-                <h5>tuning level</h5>
-                <pre>fast</pre>
-                <h5>flavour</h5>
-                <pre>percona</pre>
-              </div>
               <div className="config-panel__button-row">
                 <button className="p-button--neutral" onClick={handleCancel}>
                   Cancel
@@ -337,6 +341,25 @@ function generateConfigElementList(
   return elements;
 }
 
+function generateChangedKeyValues(config: Config) {
+  const changedValues = Object.keys(config).reduce(
+    (acc: ReactNode[], key: string) => {
+      const cfg = config[key];
+      if (isSet(cfg.newValue) && cfg.newValue !== cfg.value) {
+        acc.push(
+          <div key={key}>
+            <h5>{}</h5>
+            <pre>fast</pre>
+          </div>
+        );
+      }
+      return acc;
+    },
+    []
+  );
+  return changedValues;
+}
+
 function NoConfigMessage() {
   return (
     <div className="config-panel__message">
@@ -358,7 +381,86 @@ function NoDescriptionMessage() {
   );
 }
 
-const confirmMessages = {
-  apply: "Are you sure you wish to apply these changes?",
-  cancel: "Are you sure you wish to cancel?",
-};
+function CancelConfirmation(
+  appName: string,
+  changedConfigList: ReactNode,
+  confirmFunction: () => void,
+  cancelFunction: () => void
+): ReactElement {
+  return (
+    <ConfirmationModal
+      body={
+        <>
+          <h4>Are you sure you wish to cancel?</h4>
+          <p>
+            You have edited the following values to the {appName} configuration:
+          </p>
+          {changedConfigList}
+        </>
+      }
+      buttonRow={[
+        <button
+          className="p-button--neutral"
+          key="cancel"
+          onClick={cancelFunction}
+        >
+          Continue editing
+        </button>,
+        <button
+          className="p-button--negative"
+          key="save"
+          onClick={confirmFunction}
+        >
+          Yes, I'm sure
+        </button>,
+      ]}
+    />
+  );
+}
+
+function SaveConfirmation(
+  appName: string,
+  changedConfigList: ReactNode,
+  confirmFunction: () => void,
+  cancelFunction: () => void
+): ReactElement {
+  return (
+    <ConfirmationModal
+      body={
+        <>
+          <h4>Are you sure you wish to apply these changes?</h4>
+          <p>
+            You have edited the following values to the {appName} configuration:
+          </p>
+          {changedConfigList}
+        </>
+      }
+      buttonRow={
+        <div className="foo">
+          <div className="foo">
+            You can revert back to the applications default settings by clicking
+            the “Reset all values” button; or reset each edited field by
+            clicking “Use default”.
+          </div>
+          <div className="foo">
+            <button
+              className="p-button--neutral"
+              key="cancel"
+              onClick={cancelFunction}
+            >
+              Cancel
+            </button>
+            ,
+            <button
+              className="p-button--negative"
+              key="save"
+              onClick={confirmFunction}
+            >
+              Yes, apply changes
+            </button>
+          </div>
+        </div>
+      }
+    />
+  );
+}

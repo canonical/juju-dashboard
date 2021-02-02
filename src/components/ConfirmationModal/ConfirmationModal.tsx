@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { Modal } from "@canonical/react-components/dist/components/Modal/Modal";
@@ -7,18 +7,18 @@ import "./_confirmation-modal.scss";
 
 type Props = {
   body: ReactElement;
-  buttons: ReactElement[];
+  buttonRow: ReactNode;
 };
 
 export default function ConfirmationModal({
   body,
-  buttons,
+  buttonRow,
 }: Props): ReactElement {
   const portalHost =
     document.querySelector("#confirmation-modal-container") || document.body;
 
   return createPortal(
-    <Modal buttonRow={buttons}>
+    <Modal buttonRow={buttonRow}>
       <div className="confirmation-modal">{body}</div>
     </Modal>,
     portalHost
