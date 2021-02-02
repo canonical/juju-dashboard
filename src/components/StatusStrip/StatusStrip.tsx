@@ -1,20 +1,39 @@
-import { useState, useEffect } from "react";
-import { pluralize } from "app/utils";
+import { useState, useEffect, ReactNode } from "react";
 
 import "./_status-strip.scss";
 
-export default function StatusStrip({ statusList }) {
-  const [status, setStatus] = useState({
-    count: undefined,
-    groupName: undefined,
-    statement: undefined,
+type Status = {
+  label: string;
+  count: number;
+};
+
+type Props = {
+  statusList: {
+    model: Status[];
+  };
+};
+
+export default function StatusStrip({ statusList }: Props) {
+  type Status = {
+    groupName: string;
+    statement: ReactNode;
+    count: number;
+  };
+  const [status, setStatus] = useState<Status>({
+    groupName: "",
+    statement: [],
+    count: 0,
   });
 
   useEffect(() => {
-    let proposedStatus = {};
+    let proposedStatus: Status = {
+      groupName: "",
+      statement: [],
+      count: 0,
+    };
     let count = 0;
 
-    function incrementCount(incrementBy) {
+    function incrementCount(incrementBy: number) {
       count = count + incrementBy;
     }
 
@@ -32,6 +51,7 @@ export default function StatusStrip({ statusList }) {
         });
       proposedStatus = { groupName, statement, count };
     });
+
     setStatus(proposedStatus);
   }, [statusList]);
 
@@ -39,9 +59,6 @@ export default function StatusStrip({ statusList }) {
     <>
       {status?.count > 0 && (
         <div className="status-strip">
-          <strong className="status-strip__label">
-            {status.count} {pluralize(status.count, status.groupName)}:
-          </strong>
           <span className="status-strip__statement">{status.statement}</span>
         </div>
       )}
