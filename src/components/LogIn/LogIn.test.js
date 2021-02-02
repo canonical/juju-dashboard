@@ -22,7 +22,7 @@ describe("LogIn", () => {
         <LogIn>App content</LogIn>
       </Provider>
     );
-    expect(wrapper.find(".p-button--neutral").text()).toBe("Connecting...");
+    expect(wrapper.find(".p-button--neutral").text()).toBe(" Connecting...");
     expect(wrapper.find("LogIn main").text()).toBe("App content");
   });
 
