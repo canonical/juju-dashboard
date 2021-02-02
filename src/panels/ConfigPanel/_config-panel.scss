@@ -6,6 +6,14 @@
 }
 
 .config-panel {
+  &__modal-button-row-hint {
+    font-size: 0.875rem;
+    text-align: left;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.config-panel {
   $magic-height: 200px;
   $magic-min-height: calc(100vh - #{$magic-height});
 

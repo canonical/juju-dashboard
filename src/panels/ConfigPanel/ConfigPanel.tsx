@@ -23,7 +23,7 @@ type Props = {
   appName: string;
   charm: string;
   modelUUID: string;
-  closePanel: () => void;
+  _closePanel: () => void;
 };
 
 type ConfigData = {
@@ -55,7 +55,7 @@ export default function ConfigPanel({
   appName,
   charm,
   modelUUID,
-  closePanel,
+  _closePanel,
 }: Props): ReactElement {
   const reduxStore = useStore();
   const [config, setConfig] = useState<Config>({});
@@ -172,17 +172,23 @@ export default function ConfigPanel({
   function generateConfirmationDialog(): ReactElement | null {
     if (confirmOpen) {
       const changedConfigList = generateChangedKeyValues(config);
-      let component = SaveConfirmation;
-      if (confirmType === "cancel") {
-        component = CancelConfirmation;
+
+      if (confirmType === "apply") {
+        return SaveConfirmation(appName, changedConfigList, _submitToJuju, () =>
+          setConfirmOpen(false)
+        );
       }
-      return component.call(
-        null,
-        appName,
-        changedConfigList,
-        _submitToJuju,
-        () => setConfirmOpen(false)
-      );
+      if (confirmType === "cancel") {
+        return CancelConfirmation(
+          appName,
+          changedConfigList,
+          () => {
+            setConfirmOpen(false);
+            _closePanel();
+          },
+          () => setConfirmOpen(false)
+        );
+      }
     }
     return null;
   }
@@ -348,8 +354,8 @@ function generateChangedKeyValues(config: Config) {
       if (isSet(cfg.newValue) && cfg.newValue !== cfg.value) {
         acc.push(
           <div key={key}>
-            <h5>{}</h5>
-            <pre>fast</pre>
+            <h5>{key}</h5>
+            <pre>{cfg.newValue}</pre>
           </div>
         );
       }
@@ -436,13 +442,13 @@ function SaveConfirmation(
         </>
       }
       buttonRow={
-        <div className="foo">
-          <div className="foo">
+        <div>
+          <div className="config-panel__modal-button-row-hint">
             You can revert back to the applications default settings by clicking
             the “Reset all values” button; or reset each edited field by
             clicking “Use default”.
           </div>
-          <div className="foo">
+          <div>
             <button
               className="p-button--neutral"
               key="cancel"
@@ -450,9 +456,8 @@ function SaveConfirmation(
             >
               Cancel
             </button>
-            ,
             <button
-              className="p-button--negative"
+              className="p-button--positive"
               key="save"
               onClick={confirmFunction}
             >
