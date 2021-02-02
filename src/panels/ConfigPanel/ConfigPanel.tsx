@@ -125,12 +125,16 @@ export default function ConfigPanel({
   }
 
   function checkEnableSave(newConfig: Config) {
-    const fieldChanged = Object.keys(newConfig).some(
+    const fieldChanged = hasChangedFields(newConfig);
+    setEnableSave(fieldChanged);
+  }
+
+  function hasChangedFields(newConfig: Config): boolean {
+    return Object.keys(newConfig).some(
       (key) =>
         isSet(newConfig[key].newValue) &&
         newConfig[key].newValue !== newConfig[key].value
     );
-    setEnableSave(fieldChanged);
   }
 
   function handleSubmit() {
@@ -139,8 +143,12 @@ export default function ConfigPanel({
   }
 
   function handleCancel() {
-    setConfirmType("cancel");
-    setConfirmOpen(true);
+    if (hasChangedFields(config)) {
+      setConfirmType("cancel");
+      setConfirmOpen(true);
+    } else {
+      _closePanel();
+    }
   }
 
   async function _submitToJuju() {
@@ -174,8 +182,14 @@ export default function ConfigPanel({
       const changedConfigList = generateChangedKeyValues(config);
 
       if (confirmType === "apply") {
-        return SaveConfirmation(appName, changedConfigList, _submitToJuju, () =>
-          setConfirmOpen(false)
+        return SaveConfirmation(
+          appName,
+          changedConfigList,
+          () => {
+            setConfirmOpen(false);
+            _submitToJuju();
+          },
+          () => setConfirmOpen(false)
         );
       }
       if (confirmType === "cancel") {
