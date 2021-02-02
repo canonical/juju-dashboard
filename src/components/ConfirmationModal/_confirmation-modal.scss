@@ -6,27 +6,24 @@
     justify-content: right;
     z-index: z("zelda");
 
+    h5 {
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+
+    pre {
+      // reset the vanilla pre styling
+      background-color: inherit;
+      border: none;
+      padding: 0;
+      // extra styles
+      white-space: pre-wrap;
+      word-break: keep-all;
+    }
+
     &__dialog {
       padding: 1rem 1.5rem;
+      max-width: 522px;
     }
-  }
-}
-
-.confirmation-modal {
-  background-color: white;
-
-  h5 {
-    padding-top: 0 !important;
-    margin-bottom: 0;
-  }
-
-  pre {
-    // reset the vanilla pre styling
-    background-color: inherit;
-    border: none;
-    padding: 0;
-    // extra styles
-    white-space: pre-wrap;
-    word-break: keep-all;
   }
 }

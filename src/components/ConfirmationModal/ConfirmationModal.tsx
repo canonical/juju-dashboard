@@ -19,7 +19,7 @@ export default function ConfirmationModal({
 
   return createPortal(
     <Modal buttonRow={buttonRow}>
-      <div className="confirmation-modal">{body}</div>
+      <div>{body}</div>
     </Modal>,
     portalHost
   );
