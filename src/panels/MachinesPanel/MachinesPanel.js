@@ -4,7 +4,7 @@ import cloneDeep from "clone-deep";
 
 import useModelStatus from "hooks/useModelStatus";
 
-import { generateStatusElement } from "app/utils";
+import { generateStatusElement } from "app/utils/utils";
 
 import {
   generateUnitRows,

@@ -6,7 +6,7 @@ import { getActiveUserTag, getWSControllerURL } from "app/selectors";
 
 import { logOut } from "app/actions";
 import useAnalytics from "hooks/useAnalytics";
-import { extractOwnerName } from "app/utils";
+import { extractOwnerName } from "app/utils/utils";
 
 import { userMenuActive } from "ui/actions";
 import { isUserMenuActive } from "ui/selectors";
