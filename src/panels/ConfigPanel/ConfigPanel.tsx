@@ -383,17 +383,17 @@ function generateConfigElementList(
 
 function generateChangedKeyValues(config: Config) {
   const changedValues = Object.keys(config).reduce(
-    (acc: ReactNode[], key: string) => {
+    (accumulator: ReactNode[], key: string) => {
       const cfg = config[key];
       if (isSet(cfg.newValue) && cfg.newValue !== cfg.value) {
-        acc.push(
+        accumulator.push(
           <div key={key}>
             <h5>{key}</h5>
             <pre>{cfg.newValue}</pre>
           </div>
         );
       }
-      return acc;
+      return accumulator;
     },
     []
   );
