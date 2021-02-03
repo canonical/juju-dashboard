@@ -3,6 +3,7 @@ import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import dataDump from "testing/complete-redux-store-dump";
+import cloneDeep from "clone-deep";
 
 import PrimaryNav from "./PrimaryNav";
 
@@ -46,9 +47,9 @@ describe("Primary Nav", () => {
   });
 
   it("displays the Juju logo under Juju", () => {
-    const store = mockStore({
-      root: { config: { isJuju: true } },
-    });
+    const clonedDump = cloneDeep(dataDump);
+    clonedDump.root.config.isJuju = true;
+    const store = mockStore(clonedDump);
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
