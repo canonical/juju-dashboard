@@ -7,8 +7,8 @@
     z-index: z("zelda");
 
     h5 {
-      padding-top: 0 !important;
       margin-bottom: 0;
+      padding-top: 0 !important;
     }
 
     pre {
@@ -22,8 +22,8 @@
     }
 
     &__dialog {
-      padding: 1rem 1.5rem;
       max-width: 522px;
+      padding: 1rem 1.5rem;
     }
   }
 }
