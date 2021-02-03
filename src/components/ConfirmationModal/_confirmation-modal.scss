@@ -1,10 +1,15 @@
+@import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
 
 #confirmation-modal-container {
   .p-modal {
     align-items: flex-end;
     justify-content: flex-end;
-    z-index: z("zelda");
+    z-index: z("infinity");
+
+    @media (max-width: $breakpoint-small) {
+      padding: 0;
+    }
 
     h5 {
       margin-bottom: 0;
@@ -22,8 +27,11 @@
     }
 
     &__dialog {
+      left: auto;
       max-width: 522px;
       padding: 1rem 1.5rem;
+      right: auto;
+      top: auto;
     }
   }
 }
