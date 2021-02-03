@@ -14,6 +14,8 @@ import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
 
+import { pluralize } from "app/utils/utils";
+
 import {
   useQueryParam,
   useQueryParams,
@@ -71,12 +73,16 @@ export default function Models() {
     });
   }
 
-  const modelsLoaded = blocked + alert + running > 0;
+  const modelCount = blocked + alert + running;
+  const modelsLoaded = modelCount > 0;
 
   return (
     <Layout>
       <Header>
         <div className="models__header">
+          <div className="models__count">
+            {modelCount} {pluralize(modelCount, "model")}
+          </div>
           <ButtonGroup
             activeButton={groupModelsBy}
             buttons={["status", "cloud", "owner"]}

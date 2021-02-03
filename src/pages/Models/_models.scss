@@ -15,8 +15,22 @@
     grid-template-columns: 1fr;
     padding: 0.15rem;
 
+    .models__count {
+      display: none;
+    }
+
     @media (min-width: $breakpoint-medium) {
-      grid-template-columns: 1fr 280px;
+      grid-template-columns: 120px 1fr 280px;
+
+      .models__count {
+        display: block;
+        margin-left: 1rem;
+      }
+
+      .p-button-group__inner {
+        margin: auto;
+        width: 240px;
+      }
     }
 
     @media (min-width: $breakpoint-large) {

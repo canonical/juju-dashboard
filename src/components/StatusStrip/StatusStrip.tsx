@@ -43,10 +43,11 @@ export default function StatusStrip({ statusList }: Props) {
         Object.values(statuses).map((status) => {
           incrementCount(status.count);
           return (
-            <span
-              key={status.label}
-              className={`status-icon is-${status.label.toLowerCase()}`}
-            >{`${status.count} ${status.label}`}</span>
+            <div className="p-chip" key={status.label}>
+              <span
+                className={`status-icon is-${status.label.toLowerCase()}`}
+              >{`${status.count} ${status.label}`}</span>
+            </div>
           );
         });
       proposedStatus = { groupName, statement, count };
