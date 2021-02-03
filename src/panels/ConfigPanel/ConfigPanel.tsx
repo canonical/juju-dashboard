@@ -248,7 +248,7 @@ export default function ConfigPanel({
                 <div className="entity-name">
                   {generateIconImg(appName, charm)} {appName}
                 </div>
-                <div>
+                <div className="config-panel__reset-all">
                   <button
                     className={classnames(
                       "u-button-neutral config-panel__hide-button",

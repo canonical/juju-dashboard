@@ -56,6 +56,10 @@
     opacity: 1;
   }
 
+  &__reset-all {
+    margin-left: auto;
+  }
+
   &__message {
     padding-top: 6rem;
 
@@ -75,13 +79,18 @@
   &__list-header {
     align-items: baseline;
     display: flex;
-    height: 2rem;
     justify-content: space-between;
     margin: 2rem 0 1rem;
     padding: 0 1.5rem;
 
+    @media (max-width: $breakpoint-x-small) {
+      flex-direction: column;
+    }
+
     @media screen and (max-width: $breakpoint-medium) {
       margin-top: 4rem;
+      padding-right: 4rem; // Spacing for the close X
+      padding-top: 1rem;
     }
 
     button {
