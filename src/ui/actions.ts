@@ -1,7 +1,7 @@
 // Action labels
 export enum actionsList {
   userMenuActive = "TOGGLE_USER_MENU",
-  confirmationModalActive = "TOGGLE_CONFIRMATION_Modal",
+  confirmationModalActive = "TOGGLE_CONFIRMATION_MODAL",
 }
 
 export type ActionType = {
