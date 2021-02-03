@@ -11,6 +11,7 @@ import { generateIconImg, isSet } from "app/utils";
 import FadeIn from "animations/FadeIn";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import SlidePanel from "components/SlidePanel/SlidePanel";
+import useEventListener from "hooks/useEventListener";
 
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
@@ -68,6 +69,12 @@ export default function ConfigPanel({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [savingConfig, setSavingConfig] = useState<boolean>(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
+
+  useEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.code === "Escape" && confirmType !== null) {
+      setConfirmType(null);
+    }
+  });
 
   useEffect(() => {
     setIsLoading(true);
