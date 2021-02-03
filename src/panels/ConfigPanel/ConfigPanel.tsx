@@ -50,7 +50,7 @@ export type ConfigProps = {
 
 type SetNewValue = (name: string, value: any) => void;
 
-type ConfirmTypes = "apply" | "cancel";
+type ConfirmTypes = "apply" | "cancel" | null;
 
 export default function ConfigPanel({
   appName,
@@ -67,8 +67,7 @@ export default function ConfigPanel({
   const [showResetAll, setShowResetAll] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [savingConfig, setSavingConfig] = useState<boolean>(false);
-  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
-  const [confirmType, setConfirmType] = useState<ConfirmTypes>("apply");
+  const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -140,13 +139,11 @@ export default function ConfigPanel({
 
   function handleSubmit() {
     setConfirmType("apply");
-    setConfirmOpen(true);
   }
 
   function handleCancel() {
     if (hasChangedFields(config)) {
       setConfirmType("cancel");
-      setConfirmOpen(true);
     } else {
       onClose();
     }
@@ -175,11 +172,11 @@ export default function ConfigPanel({
     );
     setSavingConfig(false);
     setEnableSave(false);
-    setConfirmOpen(false);
+    setConfirmType(null);
   }
 
   function generateConfirmationDialog(): ReactElement | null {
-    if (confirmOpen) {
+    if (confirmType) {
       const changedConfigList = generateChangedKeyValues(config);
 
       if (confirmType === "apply") {
@@ -187,10 +184,10 @@ export default function ConfigPanel({
           appName,
           changedConfigList,
           () => {
-            setConfirmOpen(false);
+            setConfirmType(null);
             _submitToJuju();
           },
-          () => setConfirmOpen(false)
+          () => setConfirmType(null)
         );
       }
       if (confirmType === "cancel") {
@@ -198,10 +195,10 @@ export default function ConfigPanel({
           appName,
           changedConfigList,
           () => {
-            setConfirmOpen(false);
+            setConfirmType(null);
             onClose();
           },
-          () => setConfirmOpen(false)
+          () => setConfirmType(null)
         );
       }
     }
@@ -213,7 +210,6 @@ export default function ConfigPanel({
       // They are trying to close the panel but the user has
       // unchanged values so show the confirmation dialog.
       setConfirmType("cancel");
-      setConfirmOpen(true);
       return false;
     }
     onClose();
@@ -271,7 +267,7 @@ export default function ConfigPanel({
               {generateConfirmationDialog()}
               <div
                 className={classnames("config-panel__drawer", {
-                  "is-open": confirmOpen,
+                  "is-open": confirmType !== null,
                 })}
               >
                 <div className="config-panel__button-row">
@@ -324,7 +320,7 @@ export default function ConfigPanel({
   );
 }
 
-function getConfig(
+async function getConfig(
   modelUUID: string,
   appName: string,
   reduxStore: Store,
