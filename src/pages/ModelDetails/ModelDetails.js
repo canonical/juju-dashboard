@@ -425,10 +425,17 @@ const ModelDetails = () => {
                       emptyStateMsg={"There are no relations in this model"}
                     />
                     {shouldShow("relations-title", activeView) && (
-                      <h5>
-                        Cross-model relations (
-                        {consumedTableRows.length + offersTableRows.length})
-                      </h5>
+                      <>
+                        {consumedTableRows.length > 0 ||
+                          (offersTableRows.length > 0 && (
+                            <h5>
+                              Cross-model relations (
+                              {consumedTableRows.length +
+                                offersTableRows.length}
+                              )
+                            </h5>
+                          ))}
+                      </>
                     )}
                     {consumedTableRows.length > 0 && (
                       <MainTable
