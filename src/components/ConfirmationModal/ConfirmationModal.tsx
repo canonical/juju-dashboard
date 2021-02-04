@@ -24,7 +24,7 @@ export default function ConfirmationModal({
         "button.p-button--neutral"
       );
       // If the modal has a neutral button then focus on that after opening
-      // to make a better keyboard navigatione experience.
+      // to make a better keyboard navigation experience.
       if (neutralButton) {
         neutralButton.focus();
       } else {
