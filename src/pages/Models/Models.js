@@ -5,7 +5,7 @@ import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
-import StatusStrip from "components/StatusStrip/StatusStrip";
+import ChipGroup from "components/ChipGroup/ChipGroup";
 
 import { SearchAndFilter } from "@canonical/react-components";
 import useModelAttributes from "hooks/useModelAttributes";
@@ -145,14 +145,12 @@ export default function Models() {
         <FadeIn isActive={modelsLoaded}>
           <div className="l-content">
             <div className="models">
-              <StatusStrip
-                statusList={{
-                  model: [
-                    { label: "Blocked", count: blocked },
-                    { label: "Alert", count: alert },
-                    { label: "Running", count: running },
-                  ],
-                }}
+              <ChipGroup
+                chips={[
+                  { label: "Blocked", count: blocked },
+                  { label: "Alert", count: alert },
+                  { label: "Running", count: running },
+                ]}
               />
               <ModelTableList groupedBy={groupModelsBy} filters={filters} />
             </div>
