@@ -29,7 +29,7 @@ describe("ConfigPanel", () => {
           appName="easyrsa"
           charm="cs:easyrsa"
           modelUUID=""
-          closePanel={() => {}}
+          onClose={() => {}}
         />
       </Provider>
     );
@@ -49,7 +49,7 @@ describe("ConfigPanel", () => {
           appName="easyrsa"
           charm="cs:easyrsa"
           modelUUID=""
-          closePanel={() => {}}
+          onClose={() => {}}
         />
       </Provider>
     );

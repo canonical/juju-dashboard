@@ -164,12 +164,7 @@ const renderCounts = (activeView, modelStatusData) => {
   );
 };
 
-function generatePanelContent(
-  activePanel,
-  entity,
-  panelRowClick,
-  modelStatusData
-) {
+function generatePanelContent(activePanel, entity, panelRowClick) {
   switch (activePanel) {
     case "apps":
       return <LocalAppsPanel entity={entity} panelRowClick={panelRowClick} />;
@@ -181,13 +176,6 @@ function generatePanelContent(
       return <OffersPanel entity={entity} panelRowClick={panelRowClick} />;
     case "units":
       return <UnitsPanel entity={entity} panelRowClick={panelRowClick} />;
-
-    case "config":
-      const modelUUID = modelStatusData.uuid;
-      const charm = modelStatusData.applications[entity].charm;
-      return (
-        <ConfigPanel appName={entity} charm={charm} modelUUID={modelUUID} />
-      );
   }
 }
 
@@ -482,19 +470,28 @@ const ModelDetails = () => {
                 )}
               </div>
             </div>
-            <SlidePanel
-              isActive={activePanel}
-              onClose={() => setQuery(closePanelConfig)}
-              isLoading={!entity}
-              className={`${activePanel}-panel`}
-            >
-              {generatePanelContent(
-                activePanel,
-                entity,
-                panelRowClick,
-                modelStatusData
-              )}
-            </SlidePanel>
+            {activePanel === "config" ? (
+              <ConfigPanel
+                appName={entity}
+                charm={modelStatusData.applications[entity].charm}
+                modelUUID={modelStatusData.uuid}
+                onClose={() => setQuery(closePanelConfig)}
+              />
+            ) : (
+              <SlidePanel
+                isActive={activePanel}
+                onClose={() => setQuery(closePanelConfig)}
+                isLoading={!entity}
+                className={`${activePanel}-panel`}
+              >
+                {generatePanelContent(
+                  activePanel,
+                  entity,
+                  panelRowClick,
+                  modelStatusData
+                )}
+              </SlidePanel>
+            )}
           </div>
         </FadeIn>
       )}

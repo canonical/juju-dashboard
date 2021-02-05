@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { getApplicationConfig, setApplicationConfig } from "juju";
 import { useStore } from "react-redux";
 import type { Store } from "redux";
@@ -9,6 +9,9 @@ import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import { generateIconImg, isSet } from "app/utils";
 import FadeIn from "animations/FadeIn";
+import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
+import SlidePanel from "components/SlidePanel/SlidePanel";
+import useEventListener from "hooks/useEventListener";
 
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
@@ -22,7 +25,7 @@ type Props = {
   appName: string;
   charm: string;
   modelUUID: string;
-  closePanel: () => void;
+  onClose: () => void;
 };
 
 type ConfigData = {
@@ -48,21 +51,30 @@ export type ConfigProps = {
 
 type SetNewValue = (name: string, value: any) => void;
 
+type ConfirmTypes = "apply" | "cancel" | null;
+
 export default function ConfigPanel({
   appName,
   charm,
   modelUUID,
-  closePanel,
+  onClose,
 }: Props): ReactElement {
   const reduxStore = useStore();
   const [config, setConfig] = useState<Config>({});
   const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
     undefined
   );
-  const [enableSave, setEnableSave] = useState<Boolean>(false);
-  const [showResetAll, setShowResetAll] = useState<Boolean>(false);
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [savingConfig, setSavingConfig] = useState<Boolean>(false);
+  const [enableSave, setEnableSave] = useState<boolean>(false);
+  const [showResetAll, setShowResetAll] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [savingConfig, setSavingConfig] = useState<boolean>(false);
+  const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
+
+  useEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.code === "Escape" && confirmType !== null) {
+      setConfirmType(null);
+    }
+  });
 
   useEffect(() => {
     setIsLoading(true);
@@ -120,15 +132,31 @@ export default function ConfigPanel({
   }
 
   function checkEnableSave(newConfig: Config) {
-    const fieldChanged = Object.keys(newConfig).some(
+    const fieldChanged = hasChangedFields(newConfig);
+    setEnableSave(fieldChanged);
+  }
+
+  function hasChangedFields(newConfig: Config): boolean {
+    return Object.keys(newConfig).some(
       (key) =>
         isSet(newConfig[key].newValue) &&
         newConfig[key].newValue !== newConfig[key].value
     );
-    setEnableSave(fieldChanged);
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
+    setConfirmType("apply");
+  }
+
+  function handleCancel() {
+    if (hasChangedFields(config)) {
+      setConfirmType("cancel");
+    } else {
+      onClose();
+    }
+  }
+
+  async function _submitToJuju() {
     setSavingConfig(true);
     const error = await setApplicationConfig(
       modelUUID,
@@ -151,99 +179,155 @@ export default function ConfigPanel({
     );
     setSavingConfig(false);
     setEnableSave(false);
+    setConfirmType(null);
+  }
+
+  function generateConfirmationDialog(): ReactElement | null {
+    if (confirmType) {
+      const changedConfigList = generateChangedKeyValues(config);
+
+      if (confirmType === "apply") {
+        return SaveConfirmation(
+          appName,
+          changedConfigList,
+          () => {
+            setConfirmType(null);
+            _submitToJuju();
+          },
+          () => setConfirmType(null)
+        );
+      }
+      if (confirmType === "cancel") {
+        return CancelConfirmation(
+          appName,
+          changedConfigList,
+          () => {
+            setConfirmType(null);
+            onClose();
+          },
+          () => setConfirmType(null)
+        );
+      }
+    }
+    return null;
+  }
+
+  function checkCanClose() {
+    if (hasChangedFields(config)) {
+      // They are trying to close the panel but the user has
+      // unchanged values so show the confirmation dialog.
+      setConfirmType("cancel");
+      return false;
+    }
+    onClose();
+    return true;
   }
 
   return (
-    <div className="config-panel">
-      {isLoading ? (
-        <div className="full-size u-vertically-center">
-          <Spinner />
-        </div>
-      ) : !isLoading && (!config || Object.keys(config).length === 0) ? (
-        <FadeIn isActive={true}>
-          <div className="full-size u-align-center">
-            <NoConfigMessage />
+    <SlidePanel
+      isActive={true}
+      onClose={checkCanClose}
+      isLoading={!appName}
+      className="config-panel"
+    >
+      <div className="config-panel">
+        {isLoading ? (
+          <div className="full-size u-vertically-center">
+            <Spinner />
           </div>
-        </FadeIn>
-      ) : (
-        <FadeIn isActive={true} className="config-content row">
-          <div className="config-panel__config-list col-6">
-            <div className="config-panel__list-header">
-              <div className="entity-name">
-                {generateIconImg(appName, charm)} {appName}
+        ) : !isLoading && (!config || Object.keys(config).length === 0) ? (
+          <FadeIn isActive={true}>
+            <div className="full-size u-align-center">
+              <NoConfigMessage />
+            </div>
+          </FadeIn>
+        ) : (
+          <FadeIn isActive={true} className="config-content row">
+            <div className="config-panel__config-list col-6">
+              <div className="config-panel__list-header">
+                <div className="entity-name">
+                  {generateIconImg(appName, charm)} {appName}
+                </div>
+                <div className="config-panel__reset-all">
+                  <button
+                    className={classnames(
+                      "u-button-neutral config-panel__hide-button",
+                      {
+                        "config-panel__show-button": showResetAll,
+                      }
+                    )}
+                    onClick={allFieldsToDefault}
+                  >
+                    Reset all values
+                  </button>
+                </div>
               </div>
-              <div>
-                <button
-                  className={classnames(
-                    "u-button-neutral config-panel__hide-button",
-                    {
-                      "config-panel__show-button": showResetAll,
-                    }
-                  )}
-                  onClick={allFieldsToDefault}
-                >
-                  Reset all values
-                </button>
+
+              <div className="config-panel__list">
+                {generateConfigElementList(
+                  config,
+                  selectedConfig,
+                  setSelectedConfig,
+                  setNewValue
+                )}
+              </div>
+              {generateConfirmationDialog()}
+              <div
+                className={classnames("config-panel__drawer", {
+                  "is-open": confirmType !== null,
+                })}
+              >
+                <div className="config-panel__button-row">
+                  <button className="p-button--neutral" onClick={handleCancel}>
+                    Cancel
+                  </button>
+                  <button
+                    className={classnames(
+                      "p-button--positive config-panel__save-button",
+                      {
+                        "is-active": savingConfig,
+                      }
+                    )}
+                    onClick={handleSubmit}
+                    disabled={!enableSave}
+                  >
+                    {!savingConfig ? (
+                      "Save and apply"
+                    ) : (
+                      <>
+                        <i className="p-icon--spinner u-animation--spin is-light"></i>
+                        <span>Saving&hellip;</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
-
-            <div className="config-panel__list">
-              {generateConfigElementList(
-                config,
-                selectedConfig,
-                setSelectedConfig,
-                setNewValue
+            <div className="config-panel__description col-6">
+              {selectedConfig ? (
+                <FadeIn
+                  key={selectedConfig.name}
+                  isActive={true}
+                  className="config-panel__description-wrapper"
+                >
+                  <h4>Configuration Description</h4>
+                  <h5>{selectedConfig.name}</h5>
+                  <pre>{selectedConfig.description}</pre>
+                </FadeIn>
+              ) : (
+                <div className="config-panel__no-description u-vertically-center">
+                  <NoDescriptionMessage />
+                </div>
               )}
             </div>
-            <div className="config-panel__drawer">
-              <button className="p-button--neutral" onClick={closePanel}>
-                Cancel
-              </button>
-              <button
-                className={classnames(
-                  "p-button--positive config-panel__save-button",
-                  {
-                    "is-active": savingConfig,
-                  }
-                )}
-                onClick={handleSubmit}
-                disabled={!enableSave}
-              >
-                {!savingConfig ? (
-                  "Save and apply"
-                ) : (
-                  <>
-                    <i className="p-icon--spinner u-animation--spin is-light"></i>
-                    <span>Saving&hellip;</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-          <div className="config-panel__description col-6">
-            {selectedConfig ? (
-              <FadeIn
-                key={selectedConfig.name}
-                isActive={true}
-                className="config-panel__description-wrapper"
-              >
-                <h4>Configuration Description</h4>
-                <h5>{selectedConfig.name}</h5>
-                <pre>{selectedConfig.description}</pre>
-              </FadeIn>
-            ) : (
-              <div className="config-panel__no-description u-vertically-center">
-                <NoDescriptionMessage />
-              </div>
-            )}
-          </div>
-        </FadeIn>
-      )}
-    </div>
+          </FadeIn>
+        )}
+      </div>
+    </SlidePanel>
   );
 }
 
-function getConfig(
+async function getConfig(
   modelUUID: string,
   appName: string,
   reduxStore: Store,
@@ -300,6 +384,25 @@ function generateConfigElementList(
   return elements;
 }
 
+function generateChangedKeyValues(config: Config) {
+  const changedValues = Object.keys(config).reduce(
+    (accumulator: ReactNode[], key: string) => {
+      const cfg = config[key];
+      if (isSet(cfg.newValue) && cfg.newValue !== cfg.value) {
+        accumulator.push(
+          <div key={key}>
+            <h5>{key}</h5>
+            <pre>{cfg.newValue}</pre>
+          </div>
+        );
+      }
+      return accumulator;
+    },
+    []
+  );
+  return changedValues;
+}
+
 function NoConfigMessage() {
   return (
     <div className="config-panel__message">
@@ -318,5 +421,88 @@ function NoDescriptionMessage() {
         parameters
       </h4>
     </div>
+  );
+}
+
+function CancelConfirmation(
+  appName: string,
+  changedConfigList: ReactNode,
+  confirmFunction: () => void,
+  cancelFunction: () => void
+): ReactElement {
+  return (
+    <ConfirmationModal
+      body={
+        <>
+          <h4>Are you sure you wish to cancel?</h4>
+          <p>
+            You have edited the following values to the {appName} configuration:
+          </p>
+          {changedConfigList}
+        </>
+      }
+      buttonRow={[
+        <button
+          className="p-button--neutral"
+          key="cancel"
+          onClick={cancelFunction}
+        >
+          Continue editing
+        </button>,
+        <button
+          className="p-button--negative"
+          key="save"
+          onClick={confirmFunction}
+        >
+          Yes, I'm sure
+        </button>,
+      ]}
+    />
+  );
+}
+
+function SaveConfirmation(
+  appName: string,
+  changedConfigList: ReactNode,
+  confirmFunction: () => void,
+  cancelFunction: () => void
+): ReactElement {
+  return (
+    <ConfirmationModal
+      body={
+        <>
+          <h4>Are you sure you wish to apply these changes?</h4>
+          <p>
+            You have edited the following values to the {appName} configuration:
+          </p>
+          {changedConfigList}
+        </>
+      }
+      buttonRow={
+        <div>
+          <div className="config-panel__modal-button-row-hint">
+            You can revert back to the applications default settings by clicking
+            the “Reset all values” button; or reset each edited field by
+            clicking “Use default”.
+          </div>
+          <div>
+            <button
+              className="p-button--neutral"
+              key="cancel"
+              onClick={cancelFunction}
+            >
+              Cancel
+            </button>
+            <button
+              className="p-button--positive"
+              key="save"
+              onClick={confirmFunction}
+            >
+              Yes, apply changes
+            </button>
+          </div>
+        </div>
+      }
+    />
   );
 }

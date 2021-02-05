@@ -17,6 +17,9 @@ describe("Controllers table", () => {
       root: {
         config: {},
       },
+      ui: {
+        userMenuActive: false,
+      },
     });
     const wrapper = mount(
       <MemoryRouter>

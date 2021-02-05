@@ -74,11 +74,6 @@ function bootstrap() {
       juju: jujuReducer,
       ui: uiReducer,
     }),
-    {
-      ui: {
-        userMenuActive: false,
-      },
-    },
     // Order of the middleware is important
     composeWithDevTools(applyMiddleware(checkAuth, thunk))
   );

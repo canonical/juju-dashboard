@@ -77,7 +77,7 @@ const generateAppPanelHeader = (app, title, showConfig) => {
   );
 };
 
-export default function LocalAppsPanel({ entity, panelRowClick, _closePanel }) {
+export default function LocalAppsPanel({ entity, panelRowClick }) {
   // Get model status info
   const modelStatusData = useModelStatus();
 

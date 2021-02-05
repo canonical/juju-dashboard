@@ -1,3 +1,5 @@
+import { ReduxState } from "types";
+
 // ----- Exported functions
 
 /**
@@ -8,4 +10,7 @@
   @param {Object} state The application state.
   @returns {Boolean} If the user menu is active
 */
-export const isUserMenuActive = (state) => state?.ui?.userMenuActive;
+export const isUserMenuActive = (state: ReduxState) => state.ui.userMenuActive;
+
+export const isConfirmationModalActive = (state: ReduxState) =>
+  state.ui.confirmationModalActive;

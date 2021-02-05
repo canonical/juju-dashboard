@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector, useStore } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { isLoggedIn, getWSControllerURL } from "app/selectors";
+
 import Notification from "@canonical/react-components/dist/components/Notification/Notification";
 import Logo from "components/Logo/Logo";
 import Banner from "components/Banner/Banner";
@@ -15,7 +16,6 @@ import "./_layout.scss";
 const Layout = ({ children }) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const [sideNavCollapsed, setSideNavCollapsed] = useState(false);
-
   const [releaseNotification, setReleaseNotification] = useLocalStorage(
     "releaseNotification",
     false
@@ -61,6 +61,8 @@ const Layout = ({ children }) => {
           </p>
         )}
       </Banner>
+
+      <div id="confirmation-modal-container"></div>
 
       <div className="l-application">
         <div className="l-navigation-bar">

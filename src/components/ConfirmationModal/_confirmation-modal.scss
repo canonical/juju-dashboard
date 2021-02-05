@@ -1,0 +1,37 @@
+@import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
+
+#confirmation-modal-container {
+  .p-modal {
+    align-items: flex-end;
+    justify-content: flex-end;
+    z-index: z("infinity");
+
+    @media (max-width: $breakpoint-small) {
+      padding: 0;
+    }
+
+    h5 {
+      margin-bottom: 0;
+      padding-top: 0 !important;
+    }
+
+    pre {
+      // reset the vanilla pre styling
+      background-color: inherit;
+      border: none;
+      padding: 0;
+      // extra styles
+      white-space: pre-wrap;
+      word-break: keep-all;
+    }
+
+    &__dialog {
+      left: auto;
+      max-width: 522px;
+      padding: 1rem 1.5rem;
+      right: auto;
+      top: auto;
+    }
+  }
+}
