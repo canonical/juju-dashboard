@@ -132,7 +132,7 @@ async function connectAndLoginWithTimeout(
   identityProviderAvailable
 ) {
   const duration = 5000;
-  const timeout = new Promise((resolve, reject) => {
+  const timeout = new Promise((resolve) => {
     setTimeout(resolve, duration, "timeout");
   });
   const loginParams = determineLoginParams(
@@ -361,13 +361,14 @@ async function connectAndLoginToModel(modelUUID, appState) {
   const bakery = getBakery(appState);
   const baseWSControllerURL = getWSControllerURL(appState);
   const { identityProviderAvailable } = getConfig(appState);
+  const credentials = getUserPass(baseWSControllerURL, appState);
   const modelURL = baseWSControllerURL.replace(
     "/api",
     `/model/${modelUUID}/api`
   );
   const { conn } = await connectAndLoginWithTimeout(
     modelURL,
-    null,
+    credentials,
     generateConnectionOptions(false, bakery),
     identityProviderAvailable
   );
