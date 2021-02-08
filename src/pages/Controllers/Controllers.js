@@ -157,8 +157,10 @@ function Details() {
       </div>
       <ControllersOverview />
       <div className="l-controllers-table u-overflow--scroll">
-        <MainTable headers={headers} rows={rows} />
-        <MainTable headers={additionalHeaders} rows={additionalRows} />
+        {rows.length > 0 && <MainTable headers={headers} rows={rows} />}
+        {additionalRows.length > 0 && (
+          <MainTable headers={additionalHeaders} rows={additionalRows} />
+        )}
         <RegisterAController
           onClose={() => setShowRegisterAController(false)}
           showRegisterAController={showRegisterAController}
