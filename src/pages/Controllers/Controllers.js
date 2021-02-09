@@ -375,19 +375,20 @@ function RegisterAController({ onClose, showRegisterAController }) {
             </label>
           </div>
         </div>
-        <div className="row register-a-controller__submit-segment push-1-rem">
-          <div className="col-12">
-            <button
-              className="p-button--positive u-float-right"
-              type="submit"
-              disabled={!formValues.certificateAccepted}
-            >
-              Add Controller
-            </button>
-            <p className="p-form-help-text">
+        <div class="row">
+          <hr />
+        </div>
+        <div class="row u-equal-height">
+          <div class="col-8 u-vertically-center">
+            <p class="p-form-help-text">
               The credentials are stored locally in your browser and can be
               cleared on log-out.
             </p>
+          </div>
+          <div class="col-4">
+            <button type="submit" disabled="" class="p-button--positive">
+              Add Controller
+            </button>
           </div>
         </div>
       </form>
