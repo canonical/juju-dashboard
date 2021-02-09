@@ -10,7 +10,7 @@ import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v5";
 import pinger from "@canonical/jujulib/dist/api/facades/pinger-v1";
 
 import jimm from "app/jimm-facade";
-import { isSet } from "app/utils";
+import { isSet } from "app/utils/utils";
 
 import {
   getBakery,

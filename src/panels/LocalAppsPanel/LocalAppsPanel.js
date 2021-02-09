@@ -10,7 +10,7 @@ import {
   extractRevisionNumber,
   generateStatusElement,
   filterModelStatusDataByApp,
-} from "app/utils";
+} from "app/utils/utils";
 
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 

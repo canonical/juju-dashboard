@@ -16,7 +16,6 @@ export default {
     bakery: {
       storage: {
         _store: {
-          releaseNotification: 'true',
           'https://api.staging.jujucharms.com/identity': 'W3siYyI6W3sJpZCB1c3NvU9aTmVmWHlzIn1d',
           identity: 'W3siYyI6W3siaSaWRlbnRpdWRnpGQVpCV3BTcDRWLUl1UzF1SzgifV0=',
           'https://api.jujucharms.com/identity': 'W3siYyI6W3siaSI6InRpbWUtYcDRWLUl1UzF1SzgifV0='
@@ -163,7 +162,6 @@ export default {
         _bakery: {
           storage: {
             _store: {
-              releaseNotification: 'true',
               'https://api.staging.jujucharms.com/identity': 'W3siYyI6W3siaSI6InRpFh1NWtPNHdNY2paeGd3MU9aTmVmWHlzIn1d',
               identity: 'W3siYyI6W3siaSI6InRpbCV3BTcDRWLUl1UzF1SzgifV0=',
               'https://api.jujucharms.com/identity': 'W3siYyI6W3siaSI6InRpbWUGQVpCV3BTcDRWLUl1UzF1SzgifV0='

@@ -9,7 +9,7 @@ import {
   extractRelationEndpoints,
   generateIconImg,
   generateEntityIdentifier,
-} from "app/utils";
+} from "app/utils/utils";
 
 export function generateLocalApplicationRows(
   modelStatusData,
