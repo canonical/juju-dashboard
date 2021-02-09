@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { extractCloudName, extractCredentialName } from "app/utils";
+import { extractCloudName, extractCredentialName } from "app/utils/utils";
 
 /**
   Generates the model details link for the table cell. If no ownerTag can be

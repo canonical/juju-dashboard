@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import * as d3 from "d3";
 
-import { generateIconPath } from "app/utils";
+import { generateIconPath } from "app/utils/utils";
 
 /**
   Returns whether the application is a subordinate.

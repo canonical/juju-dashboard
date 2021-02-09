@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Topology from "components/Topology/Topology";
 import Modal from "@canonical/react-components/dist/components/Modal";
 
-import { extractCloudName, getViewportWidth } from "app/utils";
+import { extractCloudName, getViewportWidth } from "app/utils/utils";
 import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import useEventListener from "hooks/useEventListener";

@@ -1,0 +1,18 @@
+@import "vanilla-framework/scss/vanilla";
+
+.chip-group {
+  margin-top: -0.4rem;
+  padding-bottom: 0.5rem;
+
+  .p-chip {
+    // Override Vanilla hover state as these chips are not yet actionable
+    &:hover,
+    &:active {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .status-icon {
+    margin-left: -0.5rem;
+  }
+}

@@ -14,7 +14,7 @@ import {
   generateLocalApplicationRows,
 } from "tables/tableRows";
 
-import { generateStatusElement, extractRevisionNumber } from "app/utils";
+import { generateStatusElement, extractRevisionNumber } from "app/utils/utils";
 
 import "../_panels.scss";
 
