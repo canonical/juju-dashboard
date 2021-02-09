@@ -24,7 +24,7 @@ describe("Models page", () => {
     );
     expect(wrapper.find("Header")).toBeDefined();
     expect(wrapper.find("TableList")).toBeDefined();
-    expect(wrapper.find("StatusStrip")).toBeDefined();
+    expect(wrapper.find("ChipGroup")).toBeDefined();
   });
 
   it("displays correct grouping view", () => {

@@ -2,7 +2,7 @@ import {
   extractCloudName,
   extractOwnerName,
   extractCredentialName,
-} from "app/utils";
+} from "app/utils/utils";
 
 export default function useModelAttributes(modelData) {
   const clouds = [];

@@ -4,7 +4,7 @@ import {
   generateStatusElement,
   getModelStatusGroupData,
   extractOwnerName,
-} from "app/utils";
+} from "app/utils/utils";
 import { getGroupedByCloudAndFilteredModelData } from "app/selectors";
 import { generateModelDetailsLink, getStatusValue } from "./shared";
 

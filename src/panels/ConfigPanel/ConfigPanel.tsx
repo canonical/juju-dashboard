@@ -7,7 +7,7 @@ import cloneDeep from "clone-deep";
 
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
-import { generateIconImg, isSet } from "app/utils";
+import { generateIconImg, isSet } from "app/utils/utils";
 import FadeIn from "animations/FadeIn";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import SlidePanel from "components/SlidePanel/SlidePanel";

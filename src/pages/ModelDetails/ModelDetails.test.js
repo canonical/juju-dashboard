@@ -48,7 +48,7 @@ describe("ModelDetail Container", () => {
     expect(wrapper.find(".model-details__main table").length).toBe(1);
   });
 
-  it("renders the status strip", () => {
+  it("renders the Chip Group", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
@@ -61,7 +61,7 @@ describe("ModelDetail Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("StatusStrip").length).toBe(1);
+    expect(wrapper.find("ChipGroup").length).toBe(1);
   });
 
   it("view toggles hide and show tables", () => {
