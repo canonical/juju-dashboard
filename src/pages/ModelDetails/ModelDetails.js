@@ -11,7 +11,7 @@ import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import WebCLI from "components/WebCLI/WebCLI";
-import StatusStrip from "components/StatusStrip/StatusStrip";
+import ChipGroup from "components/ChipGroup/ChipGroup";
 
 import LocalAppsPanel from "panels/LocalAppsPanel/LocalAppsPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
@@ -116,36 +116,20 @@ const generateUnitSecondaryCounts = (modelStatusData) => {
 
 const renderCounts = (activeView, modelStatusData) => {
   if (!modelStatusData) return null;
-  let primaryEntity = null;
-  let secondaryEntities = null;
+  let chips = null;
   switch (activeView) {
     case "apps":
-      primaryEntity = {
-        count: Object.keys(modelStatusData?.applications).length,
-        label: "application",
-      };
-      secondaryEntities = generateSecondaryCounts(
+      chips = generateSecondaryCounts(
         modelStatusData,
         "applications",
         "status"
       );
       break;
     case "units":
-      let totalUnits;
-      [secondaryEntities, totalUnits] = generateUnitSecondaryCounts(
-        modelStatusData
-      );
-      primaryEntity = {
-        count: totalUnits,
-        label: "unit",
-      };
+      [chips] = generateUnitSecondaryCounts(modelStatusData);
       break;
     case "machines":
-      primaryEntity = {
-        count: Object.keys(modelStatusData.machines).length,
-        label: "machine",
-      };
-      secondaryEntities = generateSecondaryCounts(
+      chips = generateSecondaryCounts(
         modelStatusData,
         "machines",
         "agent-status"
@@ -155,13 +139,7 @@ const renderCounts = (activeView, modelStatusData) => {
       return null;
   }
 
-  return (
-    <StatusStrip
-      statusList={{
-        [primaryEntity?.label]: secondaryEntities,
-      }}
-    />
-  );
+  return <ChipGroup chips={chips} />;
 };
 
 function generatePanelContent(activePanel, entity, panelRowClick) {

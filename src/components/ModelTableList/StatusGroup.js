@@ -5,7 +5,7 @@ import {
   generateStatusElement,
   getModelStatusGroupData,
   extractOwnerName,
-} from "app/utils";
+} from "app/utils/utils";
 
 import { getGroupedByStatusAndFilteredModelData } from "app/selectors";
 

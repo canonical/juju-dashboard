@@ -8,7 +8,7 @@ import {
   getMachineStatusGroup,
   getUnitStatusGroup,
   extractCredentialName,
-} from "./utils";
+} from "./utils/utils";
 
 // ---- Selectors for top level keys
 
