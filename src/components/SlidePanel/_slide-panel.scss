@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
 
 .slide-panel {
   @include vf-animation(transform, brisk, out);
@@ -13,6 +14,7 @@
   top: $top-header-height;
   transform: translateX(100%);
   width: 100%;
+  z-index: z("beta");
 
   @media (min-width: $breakpoint-medium) {
     box-shadow: $box-shadow;
