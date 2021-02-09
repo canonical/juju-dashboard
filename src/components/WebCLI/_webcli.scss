@@ -12,14 +12,6 @@ $row-height: 2.5rem;
   // their values are hardcoded here.
   width: calc(100vw - 3rem);
 
-  @media (min-width: $breakpoint-large) {
-    width: calc(100vw - 15rem);
-  }
-
-  @media (max-width: $breakpoint-medium) {
-    width: 100vw;
-  }
-
   &__input {
     background-color: $color-x-dark;
     display: flex;
