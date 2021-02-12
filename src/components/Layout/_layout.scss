@@ -27,7 +27,7 @@
     text-align: center;
     top: auto;
     width: 30%;
-    z-index: 9999;
+    z-index: z("infinity");
   }
 }
 
@@ -124,4 +124,10 @@
 
 .l-content {
   margin: 0.5rem 1rem;
+}
+
+.l-aside {
+  background-color: $color-x-light;
+  min-height: 100vh;
+  position: relative;
 }

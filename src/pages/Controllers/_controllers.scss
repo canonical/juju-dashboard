@@ -31,6 +31,11 @@
     text-transform: uppercase;
     width: 100%;
 
+    a {
+      margin-bottom: 0;
+      text-transform: none;
+    }
+
     .controllers__heading {
       color: $color-dark;
       padding-top: 0.8rem;
@@ -50,53 +55,6 @@
 
   .is-disconnected {
     color: $color-negative;
-  }
-
-  .slide-panel__content {
-    @media (min-width: $breakpoint-medium) {
-      max-width: 540px;
-    }
-
-    .row {
-      grid-gap: 0;
-      padding: 0;
-    }
-
-    .push-1-rem {
-      padding-top: 1rem;
-    }
-
-    .horizontal-rule {
-      border-bottom: 1px solid $color-mid-x-light;
-    }
-
-    .register-a-controller__submit-segment {
-      text-align: right;
-    }
-
-    .p-icon--warning {
-      margin-top: 7px;
-      position: absolute;
-    }
-
-    .p-form-help-text {
-      code {
-        display: inline-block;
-        margin: 0.25rem 0.25rem;
-      }
-
-      &.identity-provider {
-        padding-left: 2rem;
-      }
-    }
-
-    .controller-link-message {
-      padding-left: 2rem;
-    }
-
-    .required-star {
-      color: $color-negative;
-    }
   }
 
   .controllers--registered-tooltip {

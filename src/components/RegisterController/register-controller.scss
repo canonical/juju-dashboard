@@ -1,0 +1,43 @@
+@import "vanilla-framework/scss/vanilla";
+
+.register-controller {
+  .row {
+    grid-gap: 0;
+    padding: 0;
+  }
+
+  .p-panel__content {
+    padding: 1.5rem;
+  }
+
+  .p-icon--warning {
+    margin-top: 7px;
+    position: absolute;
+  }
+
+  .p-form-help-text {
+    line-height: 1.25;
+    padding-right: 1rem;
+
+    code {
+      display: inline-block;
+      margin: 0.25rem 0.25rem;
+    }
+
+    &.identity-provider {
+      padding-left: 2rem;
+    }
+  }
+
+  .controller-link-message {
+    padding-left: 2rem;
+  }
+
+  .required-star {
+    color: $color-negative;
+  }
+
+  .p-button--positive {
+    width: 100%;
+  }
+}
