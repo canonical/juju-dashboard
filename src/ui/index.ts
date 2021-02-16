@@ -7,16 +7,20 @@ function uiReducer(
   state: UIState = {
     userMenuActive: false,
     confirmationModalActive: false,
+    togglePanel: "",
   },
   action: ActionType
 ) {
   return immerProduce(state, (draftState: UIState) => {
     switch (action.type) {
       case actionsList.userMenuActive:
-        draftState.userMenuActive = action.payload;
+        draftState.userMenuActive = action.payload as boolean;
         break;
       case actionsList.confirmationModalActive:
-        draftState.confirmationModalActive = action.payload;
+        draftState.confirmationModalActive = action.payload as boolean;
+        break;
+      case actionsList.togglePanel:
+        draftState.togglePanel = action.payload as string;
         break;
       default:
         // no default value, fall through.
