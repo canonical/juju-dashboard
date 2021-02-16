@@ -4,12 +4,15 @@ import { useHistory } from "react-router-dom";
 
 import { getBakery } from "app/selectors";
 import { connectAndStartPolling } from "app/actions";
+import { togglePanel } from "ui/actions";
 
 import classNames from "classnames";
 
 import useLocalStorage from "hooks/useLocalStorage";
 
 import SlideInOut from "animations/SlideInOut";
+
+import Aside from "components/Aside/Aside";
 
 import "./register-controller.scss";
 
@@ -63,14 +66,14 @@ export default function RegisterController() {
   }
 
   return (
-    <SlideInOut>
-      <div className="l-aside">
+    <Aside>
+      <SlideInOut distanceInPx={725}>
         <div className="p-panel register-controller">
           <div className="p-panel__header">
             <h4 className="p-panel__title">Register a Controller</h4>
             <div className="p-panel__controls">
               <button
-                onClick={() => history.push("/controllers")}
+                onClick={() => dispatch(togglePanel(null))}
                 className="p-button--base js-aside-close u-no-margin--bottom has-icon"
               >
                 <i className="p-icon--close"></i>
@@ -257,7 +260,7 @@ export default function RegisterController() {
             </form>
           </div>
         </div>
-      </div>
-    </SlideInOut>
+      </SlideInOut>
+    </Aside>
   );
 }
