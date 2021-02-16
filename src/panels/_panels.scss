@@ -1,16 +1,17 @@
 @import "vanilla-framework/scss/vanilla";
 @import "./../scss/functions/z-index";
 
-.l-aside {
-  padding: 1rem;
-}
-
 .panel-container {
-  height: 100vh;
+  min-height: 100vh;
   position: absolute;
   right: 0;
   top: 0;
   z-index: z("infinity");
+}
+
+.p-panel {
+  box-shadow: 0 0 2rem 0 rgb(0 0 0 / 20%);
+  min-height: 100vh !important;
 }
 
 .panel {
