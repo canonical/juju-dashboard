@@ -1,32 +1,20 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useQueryParam, StringParam } from "use-query-params";
 import { AnimatePresence } from "framer-motion";
 
 import RegisterController from "components/RegisterController/RegisterController";
 
-import { togglePanel } from "ui/selectors";
-
 import "./_panels.scss";
 
 export default function Panels() {
-  const panelId = useSelector(togglePanel) || null;
-  const [panelQs, setPanelQs] = useQueryParam("panel", StringParam);
-
-  useEffect(() => {
-    panelId ? setPanelQs(panelId) : setPanelQs(undefined);
-    return () => {
-      panelQs && setPanelQs(undefined);
-    };
-  }, [panelId, panelQs, setPanelQs]);
+  const panelQs = useQueryParam("panel", StringParam)[0];
 
   const generatePanel = () => {
-    switch (panelId) {
-      case "registerController":
+    switch (panelQs) {
+      case "register-controller":
         return <RegisterController />;
       default:
         return null;
     }
   };
-  return <AnimatePresence>{panelId && generatePanel()}</AnimatePresence>;
+  return <AnimatePresence>{panelQs && generatePanel()}</AnimatePresence>;
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import cloneDeep from "clone-deep";
 
@@ -13,7 +13,8 @@ import FadeIn from "animations/FadeIn";
 import useWindowTitle from "hooks/useWindowTitle";
 
 import { getControllerData, getModelData } from "app/selectors";
-import { togglePanel } from "ui/actions";
+
+import { useQueryParam, StringParam } from "use-query-params";
 
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 
@@ -24,7 +25,6 @@ function Details() {
   const controllerData = useSelector(getControllerData);
   const modelData = useSelector(getModelData);
   const [showRegisterAController, setShowRegisterAController] = useState(false);
-  const dispatch = useDispatch();
 
   const controllerMap = {};
   const additionalControllers = [];
@@ -137,6 +137,8 @@ function Details() {
 
   const rows = controllerMap && Object.values(controllerMap).map(generateRow);
 
+  const setPanelQs = useQueryParam("panel", StringParam)[1];
+
   return (
     <>
       <div className="controllers--header">
@@ -146,7 +148,7 @@ function Details() {
         <div className="controllers--register">
           <button
             className="p-button--positive"
-            onClick={() => dispatch(togglePanel("registerController"))}
+            onClick={() => setPanelQs("register-controller")}
           >
             Register a controller
           </button>

@@ -2,12 +2,11 @@
 export enum actionsList {
   userMenuActive = "TOGGLE_USER_MENU",
   confirmationModalActive = "TOGGLE_CONFIRMATION_MODAL",
-  togglePanel = "TOGGLE_PANEL",
 }
 
 export type ActionType = {
   type: actionsList;
-  payload: string | boolean | null;
+  payload: boolean;
 };
 
 /**
@@ -27,12 +26,5 @@ export function confirmationPanelActive(toggle: boolean) {
   return {
     type: actionsList.confirmationModalActive,
     payload: toggle,
-  };
-}
-
-export function togglePanel(panelId: string) {
-  return {
-    type: actionsList.togglePanel,
-    payload: panelId,
   };
 }

@@ -7,7 +7,6 @@ function uiReducer(
   state: UIState = {
     userMenuActive: false,
     confirmationModalActive: false,
-    togglePanel: "",
   },
   action: ActionType
 ) {
@@ -18,9 +17,6 @@ function uiReducer(
         break;
       case actionsList.confirmationModalActive:
         draftState.confirmationModalActive = action.payload as boolean;
-        break;
-      case actionsList.togglePanel:
-        draftState.togglePanel = action.payload as string;
         break;
       default:
         // no default value, fall through.

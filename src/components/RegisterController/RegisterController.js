@@ -4,7 +4,8 @@ import { useHistory } from "react-router-dom";
 
 import { getBakery } from "app/selectors";
 import { connectAndStartPolling } from "app/actions";
-import { togglePanel } from "ui/actions";
+
+import { useQueryParam, StringParam } from "use-query-params";
 
 import classNames from "classnames";
 
@@ -65,6 +66,8 @@ export default function RegisterController() {
     );
   }
 
+  const [panelQs, setPanelQs] = useQueryParam("panel", StringParam);
+
   return (
     <Aside>
       <SlideInOut distanceInPx={725}>
@@ -73,7 +76,7 @@ export default function RegisterController() {
             <h4 className="p-panel__title">Register a Controller</h4>
             <div className="p-panel__controls">
               <button
-                onClick={() => dispatch(togglePanel(null))}
+                onClick={() => panelQs && setPanelQs(undefined)}
                 className="p-button--base js-aside-close u-no-margin--bottom has-icon"
               >
                 <i className="p-icon--close"></i>
