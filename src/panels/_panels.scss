@@ -9,11 +9,6 @@
   z-index: z("infinity");
 }
 
-.p-panel {
-  box-shadow: 0 0 2rem 0 rgb(0 0 0 / 20%);
-  min-height: 100vh !important;
-}
-
 .panel {
   &-header {
     margin: 3.5rem 2rem 2rem 0.5rem;

@@ -4,7 +4,7 @@ import classnames from "classnames";
 import "./_aside.scss";
 
 type Props = {
-  children: ReactElement;
+  children: ReactElement | ReactElement[];
   width?: "wide" | "narrow";
   pinned?: boolean;
 };
@@ -13,7 +13,7 @@ export default function Aside({
   children,
   width = undefined,
   pinned = false,
-}: Props) {
+}: Props): ReactElement {
   return (
     <div
       className={classnames("l-aside", {
