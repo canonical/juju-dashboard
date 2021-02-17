@@ -5,8 +5,8 @@ import "./_aside.scss";
 
 type Props = {
   children: ReactElement;
-  width: "wide" | "narrow" | undefined;
-  pinned: boolean;
+  width?: "wide" | "narrow";
+  pinned?: boolean;
 };
 
 export default function Aside({
