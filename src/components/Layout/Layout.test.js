@@ -15,7 +15,9 @@ describe("Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <Router>
-          <Layout />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <Layout />
+          </QueryParamProvider>
         </Router>
       </Provider>
     );
@@ -27,7 +29,9 @@ describe("Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <Router>
-          <Layout>content</Layout>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <Layout>content</Layout>
+          </QueryParamProvider>
         </Router>
       </Provider>
     );
