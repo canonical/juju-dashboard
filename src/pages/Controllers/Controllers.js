@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import cloneDeep from "clone-deep";
 
 import Layout from "components/Layout/Layout";
 import Header from "components/Header/Header";
-import SlidePanel from "components/SlidePanel/SlidePanel";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
 import FadeIn from "animations/FadeIn";
@@ -24,7 +22,6 @@ function Details() {
   useWindowTitle("Controllers");
   const controllerData = useSelector(getControllerData);
   const modelData = useSelector(getModelData);
-  const [showRegisterAController, setShowRegisterAController] = useState(false);
 
   const controllerMap = {};
   const additionalControllers = [];
@@ -160,22 +157,8 @@ function Details() {
         {additionalRows.length > 0 && (
           <MainTable headers={additionalHeaders} rows={additionalRows} />
         )}
-        <RegisterAController
-          onClose={() => setShowRegisterAController(false)}
-          showRegisterAController={showRegisterAController}
-        />
       </div>
     </>
-  );
-}
-
-function RegisterAController({ onClose, showRegisterAController }) {
-  return (
-    <SlidePanel
-      onClose={onClose}
-      isActive={showRegisterAController}
-      className="register-a-controller__slide-panel"
-    ></SlidePanel>
   );
 }
 
