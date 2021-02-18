@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { getApplicationConfig, setApplicationConfig } from "juju";
 import { useStore } from "react-redux";
 import type { Store } from "redux";
@@ -58,7 +58,7 @@ export default function ConfigPanel({
   charm,
   modelUUID,
   onClose,
-}: Props): ReactElement {
+}: Props): JSX.Element {
   const reduxStore = useStore();
   const [config, setConfig] = useState<Config>({});
   const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
@@ -182,7 +182,7 @@ export default function ConfigPanel({
     setConfirmType(null);
   }
 
-  function generateConfirmationDialog(): ReactElement | null {
+  function generateConfirmationDialog(): JSX.Element | null {
     if (confirmType) {
       const changedConfigList = generateChangedKeyValues(config);
 
@@ -243,83 +243,90 @@ export default function ConfigPanel({
           </FadeIn>
         ) : (
           <FadeIn isActive={true} className="config-content row">
-            <div className="config-panel__config-list col-6">
-              <div className="config-panel__list-header">
-                <div className="entity-name">
-                  {generateIconImg(appName, charm)} {appName}
+            <>
+              <div className="config-panel__config-list col-6">
+                <div className="config-panel__list-header">
+                  <div className="entity-name">
+                    {generateIconImg(appName, charm)} {appName}
+                  </div>
+                  <div className="config-panel__reset-all">
+                    <button
+                      className={classnames(
+                        "u-button-neutral config-panel__hide-button",
+                        {
+                          "config-panel__show-button": showResetAll,
+                        }
+                      )}
+                      onClick={allFieldsToDefault}
+                    >
+                      Reset all values
+                    </button>
+                  </div>
                 </div>
-                <div className="config-panel__reset-all">
-                  <button
-                    className={classnames(
-                      "u-button-neutral config-panel__hide-button",
-                      {
-                        "config-panel__show-button": showResetAll,
-                      }
-                    )}
-                    onClick={allFieldsToDefault}
-                  >
-                    Reset all values
-                  </button>
+
+                <div className="config-panel__list">
+                  {generateConfigElementList(
+                    config,
+                    selectedConfig,
+                    setSelectedConfig,
+                    setNewValue
+                  )}
+                </div>
+                {generateConfirmationDialog()}
+                <div
+                  className={classnames("config-panel__drawer", {
+                    "is-open": confirmType !== null,
+                  })}
+                >
+                  <div className="config-panel__button-row">
+                    <button
+                      className="p-button--neutral"
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className={classnames(
+                        "p-button--positive config-panel__save-button",
+                        {
+                          "is-active": savingConfig,
+                        }
+                      )}
+                      onClick={handleSubmit}
+                      disabled={!enableSave}
+                    >
+                      {!savingConfig ? (
+                        "Save and apply"
+                      ) : (
+                        <>
+                          <i className="p-icon--spinner u-animation--spin is-light"></i>
+                          <span>Saving&hellip;</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              <div className="config-panel__list">
-                {generateConfigElementList(
-                  config,
-                  selectedConfig,
-                  setSelectedConfig,
-                  setNewValue
+              <div className="config-panel__description col-6">
+                {selectedConfig ? (
+                  <FadeIn
+                    key={selectedConfig.name}
+                    isActive={true}
+                    className="config-panel__description-wrapper"
+                  >
+                    <>
+                      <h4>Configuration Description</h4>
+                      <h5>{selectedConfig.name}</h5>
+                      <pre>{selectedConfig.description}</pre>
+                    </>
+                  </FadeIn>
+                ) : (
+                  <div className="config-panel__no-description u-vertically-center">
+                    <NoDescriptionMessage />
+                  </div>
                 )}
               </div>
-              {generateConfirmationDialog()}
-              <div
-                className={classnames("config-panel__drawer", {
-                  "is-open": confirmType !== null,
-                })}
-              >
-                <div className="config-panel__button-row">
-                  <button className="p-button--neutral" onClick={handleCancel}>
-                    Cancel
-                  </button>
-                  <button
-                    className={classnames(
-                      "p-button--positive config-panel__save-button",
-                      {
-                        "is-active": savingConfig,
-                      }
-                    )}
-                    onClick={handleSubmit}
-                    disabled={!enableSave}
-                  >
-                    {!savingConfig ? (
-                      "Save and apply"
-                    ) : (
-                      <>
-                        <i className="p-icon--spinner u-animation--spin is-light"></i>
-                        <span>Saving&hellip;</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="config-panel__description col-6">
-              {selectedConfig ? (
-                <FadeIn
-                  key={selectedConfig.name}
-                  isActive={true}
-                  className="config-panel__description-wrapper"
-                >
-                  <h4>Configuration Description</h4>
-                  <h5>{selectedConfig.name}</h5>
-                  <pre>{selectedConfig.description}</pre>
-                </FadeIn>
-              ) : (
-                <div className="config-panel__no-description u-vertically-center">
-                  <NoDescriptionMessage />
-                </div>
-              )}
-            </div>
+            </>
           </FadeIn>
         )}
       </div>
@@ -429,7 +436,7 @@ function CancelConfirmation(
   changedConfigList: ReactNode,
   confirmFunction: () => void,
   cancelFunction: () => void
-): ReactElement {
+): JSX.Element {
   return (
     <ConfirmationModal
       body={
@@ -466,7 +473,7 @@ function SaveConfirmation(
   changedConfigList: ReactNode,
   confirmFunction: () => void,
   cancelFunction: () => void
-): ReactElement {
+): JSX.Element {
   return (
     <ConfirmationModal
       body={

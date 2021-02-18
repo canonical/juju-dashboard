@@ -1,8 +1,7 @@
-import { ReactElement } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
-  children: ReactElement | ReactElement[];
+  children: JSX.Element;
   className?: string;
   isActive: boolean;
 };
@@ -11,7 +10,7 @@ export default function FadeIn({
   children,
   className,
   isActive = true,
-}: Props): ReactElement {
+}: Props): JSX.Element {
   return (
     <>
       {isActive && (

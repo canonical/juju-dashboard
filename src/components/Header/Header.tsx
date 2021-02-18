@@ -1,12 +1,10 @@
-import { ReactElement } from "react";
-
 import "./_header.scss";
 
 type Props = {
   children: JSX.Element;
 };
 
-const Header = ({ children }: Props): ReactElement => {
+const Header = ({ children }: Props): JSX.Element => {
   return <div className="header">{children}</div>;
 };
 

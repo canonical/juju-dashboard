@@ -1,10 +1,10 @@
-import { ReactNode } from "react";
 import classnames from "classnames";
+import SlideInOut from "animations/SlideInOut";
 
 import "./_aside.scss";
 
 type Props = {
-  children: ReactNode | ReactNode[];
+  children: JSX.Element;
   width?: "wide" | "narrow";
   pinned?: boolean;
 };
@@ -22,7 +22,7 @@ export default function Aside({
         "is-pinned": pinned === true,
       })}
     >
-      {children}
+      <SlideInOut isActive={true}>{children}</SlideInOut>
     </div>
   );
 }

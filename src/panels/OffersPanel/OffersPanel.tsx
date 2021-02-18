@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 import useModelStatus from "hooks/useModelStatus";
 import type { TSFixMe } from "types";
 
@@ -17,7 +17,7 @@ type tableData = {
 
 export default function OffersPanel({
   entity: application,
-}: Props): ReactElement {
+}: Props): JSX.Element {
   const modelStatusData: TSFixMe = useModelStatus();
   const offers = modelStatusData?.offers[application];
 

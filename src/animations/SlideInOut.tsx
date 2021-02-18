@@ -1,24 +1,21 @@
-import { ReactElement } from "react";
 import { motion } from "framer-motion";
 
 type Props = {
-  distanceInPx: number;
   isActive: boolean;
-  children: ReactElement | ReactElement[];
+  children: JSX.Element;
 };
 
 export default function SlideInOut({
-  distanceInPx,
   isActive = true,
   children,
-}: Props): ReactElement {
+}: Props): JSX.Element {
   return (
     <>
       {isActive && (
         <motion.div
-          initial={{ x: distanceInPx }}
+          initial={{ x: "100%" }}
           animate={{ x: 0 }}
-          exit={{ x: distanceInPx }}
+          exit={{ x: "100%" }}
           transition={{ type: "tween" }}
         >
           {children}

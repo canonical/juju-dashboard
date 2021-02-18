@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 
 import { isSet } from "app/utils/utils";
@@ -10,7 +10,7 @@ export default function TextAreaConfig({
   selectedConfig,
   setSelectedConfig,
   setNewValue,
-}: ConfigProps): ReactElement {
+}: ConfigProps): JSX.Element {
   const [inputFocused, setInputFocused] = useState(false);
   const [inputChanged, setInputChanged] = useState(false);
   const [showUseDefault, setShowUseDefault] = useState(
