@@ -1,8 +1,8 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 
-@mixin model-details-layout {
-  .model-details {
+@mixin entity-details-layout {
+  .entity-details {
     display: grid;
     grid-template-columns: 1fr;
     margin-bottom: 2rem;
@@ -40,8 +40,8 @@
   }
 }
 
-@mixin model-details-header {
-  .model-details__header {
+@mixin entity-details-header {
+  .entity-details__header {
     align-items: center;
     display: grid;
     grid-template-columns: 1fr;
@@ -57,21 +57,21 @@
     }
   }
 
-  .model-details__filters {
+  .entity-details__filters {
     display: flex;
     margin-left: auto;
   }
 }
 
-@mixin model-details-title {
-  .model-details__title {
+@mixin entity-details-title {
+  .entity-details__title {
     @media (max-width: $breakpoint-medium) {
       margin-bottom: 0.75rem;
     }
   }
 }
 
-@mixin model-details-subordinates {
+@mixin entity-details-subordinates {
   .subordinate-row {
     border-top: none !important;
   }
@@ -90,7 +90,7 @@
   }
 }
 
-@mixin model-details-tables {
+@mixin entity-details-tables {
   /* stylelint-disable no-descending-specificity */
   .p-main-table {
     th,
@@ -113,7 +113,7 @@
     }
   }
 
-  .model-details__apps {
+  .entity-details__apps {
     th,
     td {
       &:nth-child(1) {
@@ -150,7 +150,7 @@
     }
   }
 
-  .model-details__units {
+  .entity-details__units {
     th,
     td {
       &:nth-child(1) {
@@ -183,8 +183,8 @@
     }
   }
 
-  .model-details__machines,
-  .model-details__relations {
+  .entity-details__machines,
+  .entity-details__relations {
     th,
     td {
       &:nth-child(1) {
@@ -213,11 +213,11 @@
     }
   }
 
-  // .model-details__offers, // DISABLED PANEL
-  // .model-details__remote-apps, // DISABLED PANEL
-  .model-details__apps,
-  .model-details__units,
-  .model-details__machines {
+  // .entity-details__offers, // DISABLED PANEL
+  // .entity-details__remote-apps, // DISABLED PANEL
+  .entity-details__apps,
+  .entity-details__units,
+  .entity-details__machines {
     tbody tr:hover {
       background-color: #e7f9ff;
       cursor: pointer;
@@ -226,7 +226,7 @@
   /* stylelint-enable no-descending-specificity */
 }
 
-@mixin model-details-entity-icons {
+@mixin entity-icons {
   .entity-icon {
     border-radius: 50%;
     height: 1.5rem;
@@ -237,9 +237,13 @@
   }
 }
 
-@include model-details-layout;
-@include model-details-header;
-@include model-details-title;
-@include model-details-subordinates;
-@include model-details-tables;
-@include model-details-entity-icons;
+@include entity-details-layout;
+@include entity-details-header;
+@include entity-details-title;
+@include entity-details-subordinates;
+@include entity-details-tables;
+@include entity-icons;
+
+.SidebarChannelNavigator {
+  display: none;
+}

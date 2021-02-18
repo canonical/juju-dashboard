@@ -157,7 +157,7 @@ export default function Models() {
           </div>
         </FadeIn>
       ) : (
-        <div className="model-details__loading">
+        <div className="entity-details__loading">
           <Spinner />
         </div>
       )}
