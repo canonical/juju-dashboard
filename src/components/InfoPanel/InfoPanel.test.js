@@ -21,7 +21,7 @@ describe("Info Panel", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
-          <TestRoute path="/models/*">
+          <TestRoute path="/models/:userName/:modelName?">
             <InfoPanel />
           </TestRoute>
         </MemoryRouter>
@@ -35,7 +35,7 @@ describe("Info Panel", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
-          <TestRoute path="/models/*">
+          <TestRoute path="/models/:userName/:modelName?">
             <InfoPanel />
           </TestRoute>
         </MemoryRouter>
@@ -53,7 +53,7 @@ describe("Info Panel", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
-          <TestRoute path="/models/*">
+          <TestRoute path="/models/:userName/:modelName?">
             <InfoPanel />
           </TestRoute>
         </MemoryRouter>

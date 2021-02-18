@@ -24,6 +24,7 @@ import {
   getConfig,
   getControllerDataByUUID,
   getModelControllerDataByUUID,
+  validateModelNameFromURL,
   getModelUUID,
   getUserPass,
 } from "app/selectors";
@@ -158,7 +159,9 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
 }
 
 const ModelDetails = () => {
-  const { 0: modelName } = useParams();
+  let { userName, modelName } = useParams();
+  modelName = validateModelNameFromURL(userName, modelName);
+
   const dispatch = useDispatch();
   const store = useStore();
   const storeState = store.getState();

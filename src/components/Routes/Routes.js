@@ -14,8 +14,8 @@ import useAnalytics from "hooks/useAnalytics";
 export const paths = {
   "/": { redirect: "/models" },
   "/models": { component: Models },
-  "/models/*": { component: ModelDetails },
-  "/controllers/": { component: Controllers },
+  "/models/:userName/:modelName?": { component: ModelDetails },
+  "/controllers": { component: Controllers },
   "/settings": { component: Settings },
 };
 

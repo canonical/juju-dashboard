@@ -22,7 +22,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -38,7 +38,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -54,7 +54,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/group-test"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -70,7 +70,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -100,7 +100,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -120,7 +120,7 @@ describe("ModelDetail Container", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -140,7 +140,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/local-test"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -166,7 +166,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -186,7 +186,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -213,7 +213,7 @@ describe("ModelDetail Container", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -239,7 +239,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -260,7 +260,7 @@ describe("ModelDetail Container", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -281,7 +281,7 @@ describe("ModelDetail Container", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>
@@ -303,7 +303,7 @@ describe("ModelDetail Container", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <ModelDetails />
             </TestRoute>
           </QueryParamProvider>

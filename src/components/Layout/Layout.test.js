@@ -50,7 +50,7 @@ describe("Layout", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models/:userName/:modelName?">
               <Layout />
             </TestRoute>
           </QueryParamProvider>
@@ -66,7 +66,7 @@ describe("Layout", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
+            <TestRoute path="/models">
               <Layout />
             </TestRoute>
           </QueryParamProvider>

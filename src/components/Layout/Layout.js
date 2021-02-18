@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Logo from "components/Logo/Logo";
 import Banner from "components/Banner/Banner";
@@ -15,10 +15,8 @@ const Layout = ({ children }) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const [sideNavCollapsed, setSideNavCollapsed] = useState(false);
 
-  const location = useLocation();
-
   // Check if pathname includes a model name - and then always collapse sidebar
-  const modelName = location.pathname.split("/models/")[1];
+  const { modelName } = useParams();
   useEffect(() => {
     if (modelName) {
       setSideNavCollapsed(true);
