@@ -1,19 +1,19 @@
-import { ReactElement } from "react";
+import { ReactNode } from "react";
 import classnames from "classnames";
 
 import "./_aside.scss";
 
 type Props = {
-  children: ReactElement | ReactElement[];
+  children: ReactNode | ReactNode[];
   width?: "wide" | "narrow";
   pinned?: boolean;
 };
 
 export default function Aside({
   children,
-  width = undefined,
+  width,
   pinned = false,
-}: Props): ReactElement {
+}: Props): JSX.Element {
   return (
     <div
       className={classnames("l-aside", {

@@ -1,8 +1,17 @@
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import Aside from "./Aside";
 
 describe("Aside", () => {
+  it("should display children", () => {
+    const wrapper = mount(
+      <Aside>
+        <p className="l-aside__content">Aside content</p>
+      </Aside>
+    );
+    expect(wrapper.find(".l-aside__content").length).toBe(1);
+  });
+
   it("should display without width or pinned status", () => {
     const wrapper = shallow(
       <Aside>

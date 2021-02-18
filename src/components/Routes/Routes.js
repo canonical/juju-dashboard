@@ -16,7 +16,6 @@ export const paths = {
   "/models": { component: Models },
   "/models/*": { component: ModelDetails },
   "/controllers/": { component: Controllers },
-  "/controllers/register": { component: Controllers },
   "/settings": { component: Settings },
 };
 

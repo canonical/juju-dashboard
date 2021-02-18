@@ -28,10 +28,6 @@ export default function RegisterController() {
   );
   const history = useHistory();
 
-  function closePanel() {
-    history.push("/controllers");
-  }
-
   function handleRegisterAController(e) {
     e.preventDefault();
     // XXX Validate form values
@@ -44,7 +40,8 @@ export default function RegisterController() {
     ]);
     setAdditionalControllers(additionalControllers);
     dispatch(connectAndStartPolling(reduxStore, bakery));
-    closePanel(); // Close the SlidePanel
+    // Close the panel
+    history.push("/controllers");
   }
 
   function handleInputChange(e) {
