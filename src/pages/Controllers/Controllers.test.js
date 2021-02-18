@@ -60,4 +60,22 @@ describe("Controllers table", () => {
     );
     expect(wrapper.find("tbody tr").get(0)).toMatchSnapshot();
   });
+  it("shows 'Register new controller' panel", () => {
+    const clonedData = cloneDeep(dataDump);
+    const store = mockStore(clonedData);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <MemoryRouter
+            initialEntries={["/controllers?panel=register-controller"]}
+          >
+            <QueryParamProvider ReactRouterRoute={Route}>
+              <Controllers />
+            </QueryParamProvider>
+          </MemoryRouter>
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(wrapper.find(".p-panel.register-controller").length).toBe(1);
+  });
 });
