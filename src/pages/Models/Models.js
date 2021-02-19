@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import Spinner from "@canonical/react-components/dist/components/Spinner";
 
-import Layout from "components/Layout/Layout";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
@@ -77,7 +77,7 @@ export default function Models() {
   const modelsLoaded = modelCount > 0;
 
   return (
-    <Layout>
+    <BaseLayout>
       <Header>
         <div className="models__header">
           <div className="models__count">
@@ -161,6 +161,6 @@ export default function Models() {
           <Spinner />
         </div>
       )}
-    </Layout>
+    </BaseLayout>
   );
 }

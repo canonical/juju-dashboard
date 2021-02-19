@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import cloneDeep from "clone-deep";
 
-import Layout from "components/Layout/Layout";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
 import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
 
@@ -175,7 +175,7 @@ export default function Controllers() {
   }
 
   return (
-    <Layout>
+    <BaseLayout>
       <Header>
         <div className="controllers--count">
           {controllerCount} controllers,{" "}
@@ -187,6 +187,6 @@ export default function Controllers() {
           <Details />
         </FadeIn>
       </div>
-    </Layout>
+    </BaseLayout>
   );
 }

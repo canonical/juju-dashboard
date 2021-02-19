@@ -7,7 +7,7 @@ import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import InfoPanel from "components/InfoPanel/InfoPanel";
-import Layout from "components/Layout/Layout";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import WebCLI from "components/WebCLI/WebCLI";
@@ -305,7 +305,7 @@ const EntityDetails = () => {
   );
 
   return (
-    <Layout>
+    <BaseLayout>
       <Header>
         <div className="entity-details__header">
           <strong className="entity-details__title">
@@ -491,7 +491,7 @@ const EntityDetails = () => {
           refreshModel={refreshModel}
         />
       )}
-    </Layout>
+    </BaseLayout>
   );
 };
 

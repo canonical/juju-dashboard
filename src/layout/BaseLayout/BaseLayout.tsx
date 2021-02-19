@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 import Logo from "components/Logo/Logo";
 import Banner from "components/Banner/Banner";
@@ -11,14 +11,24 @@ import { validateModelNameFromURL } from "app/selectors";
 
 import useOffline from "hooks/useOffline";
 
-import "./_layout.scss";
+import "./_base-layout.scss";
 
-const Layout = ({ children }) => {
+type Props = {
+  children: JSX.Element;
+};
+
+type Params = {
+  userName: string;
+  modelName: string;
+};
+
+const BaseLayout = ({ children }: Props) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const [sideNavCollapsed, setSideNavCollapsed] = useState(false);
+  const location = useLocation();
 
   // Check if pathname includes a model name - and then always collapse sidebar
-  let { userName, modelName } = useParams();
+  let { userName, modelName } = useParams<Params>();
   modelName = validateModelNameFromURL(userName, modelName);
 
   useEffect(() => {
@@ -46,8 +56,8 @@ const Layout = ({ children }) => {
           <p>Your dashboard is offline.</p>
         ) : (
           <p>
-            The dashboard is now online - please{" "}
-            <a href={window.location}>refresh your browser.</a>
+            The dashboard is now online - please
+            <a href={location.pathname}>refresh your browser.</a>
           </p>
         )}
       </Banner>
@@ -84,4 +94,4 @@ const Layout = ({ children }) => {
   );
 };
 
-export default Layout;
+export default BaseLayout;
