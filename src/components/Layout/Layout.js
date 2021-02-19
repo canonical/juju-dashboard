@@ -5,6 +5,8 @@ import Logo from "components/Logo/Logo";
 import Banner from "components/Banner/Banner";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 
+import Panels from "panels/panels";
+
 import useOffline from "hooks/useOffline";
 
 import "./_layout.scss";
@@ -74,6 +76,7 @@ const Layout = ({ children }) => {
         <main className="l-main" id="main-content">
           <div data-test="main-children">{children}</div>
         </main>
+        <Panels />
       </div>
     </>
   );

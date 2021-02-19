@@ -1,0 +1,14 @@
+.l-aside {
+  // Must override Vanilla box shadow and overflow to move shadow to inner panels of aside as
+  // animating content leaves a hanging shadow if not attached to animating page element
+  box-shadow: none !important;
+  min-height: 100vh;
+  overflow: visible !important;
+  padding: 0;
+  position: relative;
+
+  .p-panel {
+    box-shadow: 0 0 2rem 0 rgb(0 0 0 / 20%);
+    min-height: 100vh;
+  }
+}

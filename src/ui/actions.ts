@@ -19,6 +19,9 @@ export function userMenuActive(toggle: boolean): ActionType {
   };
 }
 
+/**
+  Display confirmation panel before confirming/dismissing changes
+*/
 export function confirmationPanelActive(toggle: boolean) {
   return {
     type: actionsList.confirmationModalActive,

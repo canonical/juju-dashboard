@@ -1,5 +1,3 @@
-import { ReactElement } from "react";
-
 import "./_button.scss";
 
 type Props = {
@@ -7,7 +5,7 @@ type Props = {
   children: string;
 };
 
-const Button = ({ onClick, children }: Props): ReactElement => {
+const Button = ({ onClick, children }: Props): JSX.Element => {
   return (
     <button className="p-button--filter" onClick={onClick}>
       {children}

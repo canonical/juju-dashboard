@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import classNames from "classnames";
 
 import "./_button-group.scss";
@@ -15,7 +14,7 @@ const ButtonGroup = ({
   label,
   activeButton,
   setActiveButton,
-}: Props): ReactElement => {
+}: Props): JSX.Element => {
   return (
     <div className="p-button-group">
       <div className="p-button-group__inner">

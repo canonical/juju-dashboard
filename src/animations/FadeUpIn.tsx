@@ -1,15 +1,14 @@
-import { ReactElement } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
-  children: ReactElement;
+  children: JSX.Element;
   isActive: boolean;
 };
 
 export default function FadeUpIn({
   children,
   isActive = true,
-}: Props): ReactElement {
+}: Props): JSX.Element {
   return (
     <>
       {isActive && (

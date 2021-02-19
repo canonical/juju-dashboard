@@ -15,7 +15,7 @@ export const paths = {
   "/": { redirect: "/models" },
   "/models": { component: Models },
   "/models/*": { component: ModelDetails },
-  "/controllers": { component: Controllers },
+  "/controllers/": { component: Controllers },
   "/settings": { component: Settings },
 };
 

@@ -1,7 +1,8 @@
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route } from "react-router";
+import { QueryParamProvider } from "use-query-params";
 import dataDump from "testing/complete-redux-store-dump";
 
 import { Routes } from "components/Routes/Routes";
@@ -14,7 +15,9 @@ describe("NotFound page", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/foobar11"]}>
-          <Routes />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <Routes />
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );

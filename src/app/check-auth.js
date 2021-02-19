@@ -19,9 +19,7 @@ const actionWhitelist = [
   "CLEAR_CONTROLLER_DATA",
   "CLEAR_MODEL_DATA",
   "STORE_VISIT_URL",
-  "TOGGLE_COLLAPSIBLE_SIDEBAR",
   "TOGGLE_USER_MENU",
-  "TOGGLE_EXTERNAL_NAV",
 ];
 
 const thunkWhitelist = ["connectAndStartPolling", "logOut"];
