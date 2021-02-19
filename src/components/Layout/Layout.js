@@ -7,6 +7,8 @@ import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 
 import Panels from "panels/panels";
 
+import { validateModelNameFromURL } from "app/selectors";
+
 import useOffline from "hooks/useOffline";
 
 import "./_layout.scss";
@@ -16,7 +18,9 @@ const Layout = ({ children }) => {
   const [sideNavCollapsed, setSideNavCollapsed] = useState(false);
 
   // Check if pathname includes a model name - and then always collapse sidebar
-  const { modelName } = useParams();
+  let { userName, modelName } = useParams();
+  modelName = validateModelNameFromURL(userName, modelName);
+
   useEffect(() => {
     if (modelName) {
       setSideNavCollapsed(true);
