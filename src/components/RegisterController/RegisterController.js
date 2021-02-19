@@ -11,8 +11,6 @@ import classNames from "classnames";
 
 import useLocalStorage from "hooks/useLocalStorage";
 
-import SlideInOut from "animations/SlideInOut";
-
 import Aside from "components/Aside/Aside";
 
 import "./register-controller.scss";
