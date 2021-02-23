@@ -11,6 +11,8 @@ import { generateIconImg, isSet } from "app/utils/utils";
 import FadeIn from "animations/FadeIn";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import SlidePanel from "components/SlidePanel/SlidePanel";
+
+import useAnalytics from "hooks/useAnalytics";
 import useEventListener from "hooks/useEventListener";
 
 import bulbImage from "static/images/bulb.svg";
@@ -70,6 +72,8 @@ export default function ConfigPanel({
   const [savingConfig, setSavingConfig] = useState<boolean>(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
 
+  const sendAnalytics = useAnalytics();
+
   useEventListener("keydown", (e: KeyboardEvent) => {
     if (e.code === "Escape" && confirmType !== null) {
       setConfirmType(null);
@@ -87,6 +91,13 @@ export default function ConfigPanel({
       checkAllDefaults
     );
   }, [appName, modelUUID, reduxStore]);
+
+  useEffect(() => {
+    sendAnalytics({
+      category: "User",
+      action: "Config Panel opened",
+    });
+  }, [sendAnalytics]);
 
   function setNewValue(name: string, value: any) {
     const newConfig = cloneDeep(config);
@@ -180,6 +191,10 @@ export default function ConfigPanel({
     setSavingConfig(false);
     setEnableSave(false);
     setConfirmType(null);
+    sendAnalytics({
+      category: "User",
+      action: "Config values updated",
+    });
   }
 
   function generateConfirmationDialog(): JSX.Element | null {
