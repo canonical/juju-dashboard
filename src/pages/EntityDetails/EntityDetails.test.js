@@ -20,7 +20,9 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails />
@@ -36,7 +38,9 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails />
@@ -52,7 +56,9 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails />
@@ -138,7 +144,9 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/local-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/local-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails />
@@ -184,7 +192,9 @@ describe("ModelDetail Container", () => {
     const testApp = "kibana";
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails />
@@ -237,7 +247,9 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails />
@@ -256,7 +268,7 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter
           initialEntries={[
-            "/models/canonical-kubernetes?activeView=integrations",
+            "/models/user-pizza@external/canonical-kubernetes?activeView=integrations",
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>

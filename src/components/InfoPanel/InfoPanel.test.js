@@ -20,7 +20,9 @@ describe("Info Panel", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <TestRoute path="/models/:userName/:modelName?">
             <InfoPanel />
           </TestRoute>
@@ -34,7 +36,9 @@ describe("Info Panel", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <TestRoute path="/models/:userName/:modelName?">
             <InfoPanel />
           </TestRoute>
@@ -52,7 +56,9 @@ describe("Info Panel", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <TestRoute path="/models/:userName/:modelName?">
             <InfoPanel />
           </TestRoute>
