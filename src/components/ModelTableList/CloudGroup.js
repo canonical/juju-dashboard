@@ -48,7 +48,7 @@ function generateCloudTableHeaders(cloud, count) {
   ];
 }
 
-export default function CloudGroup({ activeUser, filters }) {
+export default function CloudGroup({ filters }) {
   const groupedAndFilteredData = useSelector(
     getGroupedByCloudAndFilteredModelData(filters)
   );
@@ -74,7 +74,6 @@ export default function CloudGroup({ activeUser, filters }) {
               content: generateModelDetailsLink(
                 model.info.name,
                 model.info && model.info["owner-tag"],
-                activeUser,
                 model.info.name
               ),
             },

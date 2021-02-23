@@ -46,7 +46,7 @@ function generateOwnerTableHeaders(owner, count) {
   ];
 }
 
-export default function OwnerGroup({ activeUser, filters }) {
+export default function OwnerGroup({ filters }) {
   const groupedAndFilteredData = useSelector(
     getGroupedByOwnerAndFilteredModelData(filters)
   );
@@ -73,7 +73,6 @@ export default function OwnerGroup({ activeUser, filters }) {
               content: generateModelDetailsLink(
                 model.info.name,
                 model.info && model.info["owner-tag"],
-                activeUser,
                 model.info.name
               ),
             },

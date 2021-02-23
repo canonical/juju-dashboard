@@ -39,16 +39,14 @@ function generateStatusTableHeaders(label, count) {
 /**
   Generates the warning message for the model name cell.
   @param {Object} model The full model data.
-  @param {String} activeUser The active user name.
   @return {Object} The react component for the warning message.
 */
-const generateWarningMessage = (model, activeUser) => {
+const generateWarningMessage = (model) => {
   const { messages } = getModelStatusGroupData(model);
   const title = messages.join("; ");
   const link = generateModelDetailsLink(
     model.model.name,
     model?.info?.ownerTag,
-    activeUser,
     title
   );
   return (
@@ -63,23 +61,18 @@ const generateWarningMessage = (model, activeUser) => {
   @param {Object} model The model data.
   @param {String} groupLabel The status group the model belongs in.
     e.g. blocked, alert, running
-  @param {String} activeUser The user tag for the active user.
-    e.g. user-foo@external
   @returns {Object} The React element for the model name cell.
 */
-const generateModelNameCell = (model, groupLabel, activeUser) => {
+const generateModelNameCell = (model, groupLabel) => {
   const link = generateModelDetailsLink(
     model.model.name,
     model.info && model.info["owner-tag"],
-    activeUser,
     model.model.name
   );
   return (
     <>
       <div>{link}</div>
-      {groupLabel === "blocked"
-        ? generateWarningMessage(model, activeUser)
-        : null}
+      {groupLabel === "blocked" ? generateWarningMessage(model) : null}
     </>
   );
 };
@@ -87,11 +80,9 @@ const generateModelNameCell = (model, groupLabel, activeUser) => {
 /**
   Returns the model info and statuses in the proper format for the table data.
   @param {Object} groupedModels The models grouped by state
-  @param {String} activeUser The fully qualified user name tag
-    e.g. user-foo@external
   @returns {Object} The formatted table data.
 */
-function generateModelTableDataByStatus(groupedModels, activeUser) {
+function generateModelTableDataByStatus(groupedModels) {
   const modelData = {
     blockedRows: [],
     alertRows: [],
@@ -117,7 +108,7 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
         columns: [
           {
             "data-test-column": "name",
-            content: generateModelNameCell(model, groupLabel, activeUser),
+            content: generateModelNameCell(model, groupLabel),
           },
           {
             "data-test-column": "summary",
@@ -162,7 +153,7 @@ function generateModelTableDataByStatus(groupedModels, activeUser) {
   return modelData;
 }
 
-export default function StatusGroup({ activeUser, filters }) {
+export default function StatusGroup({ filters }) {
   const groupedAndFilteredData = useSelector(
     getGroupedByStatusAndFilteredModelData(filters)
   );
@@ -171,7 +162,7 @@ export default function StatusGroup({ activeUser, filters }) {
     blockedRows,
     alertRows,
     runningRows,
-  } = generateModelTableDataByStatus(groupedAndFilteredData, activeUser);
+  } = generateModelTableDataByStatus(groupedAndFilteredData);
 
   const emptyStateMsg = "There are no models with this status";
 

@@ -6,20 +6,10 @@ import { extractCloudName, extractCredentialName } from "app/utils/utils";
   provided then it'll return raw text for the model name.
   @param {String} modelName The name of the model.
   @param {String} ownerTag The ownerTag of the model.
-  @param {String} activeUser The ownerTag of the active user.
   @param {String} label The contents of the link.
   @returns {Object} The React component for the link.
 */
-export function generateModelDetailsLink(
-  modelName,
-  ownerTag,
-  activeUser,
-  label
-) {
-  const modelDetailsPath = `/models/${modelName}`;
-  if (ownerTag === activeUser) {
-    return <Link to={modelDetailsPath}>{label}</Link>;
-  }
+export function generateModelDetailsLink(modelName, ownerTag, label) {
   // Because we get some data at different times based on the multiple API calls
   // we need to check for their existence and supply reasonable fallbacks if it
   // isn't available. Once we have a single API call for all the data this check
@@ -31,11 +21,11 @@ export function generateModelDetailsLink(
   }
   // If the owner isn't the logged in user then we need to use the
   // fully qualified path name.
-  const sharedModelDetailsPath = `/models/${ownerTag.replace(
+  const modelDetailsPath = `/models/${ownerTag.replace(
     "user-",
     ""
   )}/${modelName}`;
-  return <Link to={sharedModelDetailsPath}>{label}</Link>;
+  return <Link to={modelDetailsPath}>{label}</Link>;
 }
 
 /**
