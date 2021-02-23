@@ -7,19 +7,14 @@ import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 
 import Panels from "panels/panels";
 
-import { validateModelNameFromURL } from "app/selectors";
-
 import useOffline from "hooks/useOffline";
+
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import "./_base-layout.scss";
 
 type Props = {
   children: JSX.Element;
-};
-
-type Params = {
-  userName: string;
-  modelName: string;
 };
 
 const BaseLayout = ({ children }: Props) => {
@@ -28,8 +23,7 @@ const BaseLayout = ({ children }: Props) => {
   const location = useLocation();
 
   // Check if pathname includes a model name - and then always collapse sidebar
-  let { userName, modelName } = useParams<Params>();
-  modelName = validateModelNameFromURL(userName, modelName);
+  const { modelName } = useParams<EntityDetailsRoute>();
 
   useEffect(() => {
     if (modelName) {

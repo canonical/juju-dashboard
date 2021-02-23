@@ -9,9 +9,8 @@ import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import useEventListener from "hooks/useEventListener";
 
-import { validateModelNameFromURL } from "app/selectors";
-
 import type { TSFixMe } from "types";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import "./_info-panel.scss";
 
@@ -35,11 +34,7 @@ const infoPanelDimensions = () => {
 };
 
 const InfoPanel = () => {
-  let { userName, modelName } = useParams<{
-    userName: string;
-    modelName: string;
-  }>();
-  modelName = validateModelNameFromURL(userName, modelName);
+  const { modelName } = useParams<EntityDetailsRoute>();
 
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
   const modelStatusData: TSFixMe = useModelStatus();

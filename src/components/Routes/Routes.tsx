@@ -20,6 +20,11 @@ type Paths = {
   [key: string]: Path;
 };
 
+export type EntityDetailsRoute = {
+  userName: string;
+  modelName: string;
+};
+
 export const paths: Paths = {
   "/": { redirect: "/models" },
   "/models": { component: Models },
