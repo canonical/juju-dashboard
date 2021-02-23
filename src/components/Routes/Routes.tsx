@@ -11,7 +11,16 @@ import NotFound from "pages/NotFound/NotFound";
 
 import useAnalytics from "hooks/useAnalytics";
 
-export const paths = {
+type Path = {
+  redirect?: string;
+  component?: () => JSX.Element;
+};
+
+type Paths = {
+  [key: string]: Path;
+};
+
+export const paths: Paths = {
   "/": { redirect: "/models" },
   "/models": { component: Models },
   "/models/:userName/:modelName?": { component: EntityDetails },
@@ -41,9 +50,7 @@ export function Routes() {
     }
     return (
       <Route key={path[0]} path={path[0]} exact>
-        <Login>
-          <Component />
-        </Login>
+        <Login>{Component ? <Component /> : null}</Login>
       </Route>
     );
   });
