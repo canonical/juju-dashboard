@@ -100,20 +100,6 @@ const getFilteredModelData = (filters) =>
 // ---- Utility functions
 
 /**
-  Some models can be namespaced by user so we must validate the url params
-  before confirming corrrect model name
-*/
-export const validateModelNameFromURL = (param1, param2) => {
-  let modelName;
-  if (!param2) {
-    modelName = param1;
-  } else if (param1 && param2) {
-    modelName = `${param1}/${param2}`;
-  }
-  return modelName;
-};
-
-/**
   Pull the users macaroon credentials from state.
   @param {Object} state The application state.
   @returns {Object} The macaroons extracted from the bakery in state.
