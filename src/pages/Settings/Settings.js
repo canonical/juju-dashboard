@@ -1,5 +1,5 @@
 import Header from "components/Header/Header";
-import Layout from "components/Layout/Layout";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 
 import FadeIn from "animations/FadeIn";
 
@@ -17,7 +17,7 @@ export default function Settings() {
   );
 
   return (
-    <Layout>
+    <BaseLayout>
       <Header>
         <span className="l-content settings__header">Settings</span>
       </Header>
@@ -45,6 +45,6 @@ export default function Settings() {
           </div>
         </div>
       </FadeIn>
-    </Layout>
+    </BaseLayout>
   );
 }

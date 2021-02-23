@@ -6,17 +6,19 @@ import { MemoryRouter, Route } from "react-router";
 import { QueryParamProvider } from "use-query-params";
 import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
-import Layout from "./Layout";
+import BaseLayout from "./BaseLayout";
 
 const mockStore = configureStore([]);
-describe("Layout", () => {
+describe("Base Layout", () => {
   it("renders with a sidebar", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
         <Router>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <Layout />
+            <BaseLayout>
+              <p>foo</p>
+            </BaseLayout>
           </QueryParamProvider>
         </Router>
       </Provider>
@@ -30,17 +32,19 @@ describe("Layout", () => {
       <Provider store={store}>
         <Router>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <Layout>content</Layout>
+            <BaseLayout>
+              <p>foo</p>
+            </BaseLayout>
           </QueryParamProvider>
         </Router>
       </Provider>
     );
     expect(wrapper.find("[data-test='main-children']").html()).toStrictEqual(
-      `<div data-test="main-children">content</div>`
+      `<div data-test="main-children"><p>foo</p></div>`
     );
   });
 
-  it("should collapse the sidebar on model details pages", () => {
+  it("should collapse the sidebar on entity details pages", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
@@ -50,8 +54,10 @@ describe("Layout", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <Layout />
+            <TestRoute path="/models/:userName/:modelName?">
+              <BaseLayout>
+                <p>foo</p>
+              </BaseLayout>
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -60,14 +66,16 @@ describe("Layout", () => {
     expect(wrapper.find("header").prop("data-side-nav-collapsed")).toBe(true);
   });
 
-  it("should not collapse the sidebar when not on model details pages", () => {
+  it("should not collapse the sidebar when not on entity details pages", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <Layout />
+            <TestRoute path="/models">
+              <BaseLayout>
+                <p>foo</p>
+              </BaseLayout>
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>

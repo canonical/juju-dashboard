@@ -6,7 +6,7 @@ import { MemoryRouter, Route } from "react-router";
 import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
 
-import ModelDetails from "./ModelDetails";
+import EntityDetails from "./EntityDetails";
 
 jest.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
@@ -20,10 +20,12 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -36,26 +38,30 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".model-details__main table").length).toBe(1);
+    expect(wrapper.find(".entity-details__main table").length).toBe(1);
   });
 
   it("renders the Chip Group", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -70,27 +76,27 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
     expect(
-      wrapper.find(".model-details__main > .model-details__apps").length
+      wrapper.find(".entity-details__main > .entity-details__apps").length
     ).toBe(1);
     wrapper.find("ButtonGroup button[value='machines']").simulate("click");
     expect(
-      wrapper.find(".model-details__main > .model-details__machines").length
+      wrapper.find(".entity-details__main > .entity-details__machines").length
     ).toBe(1);
     wrapper.find("ButtonGroup button[value='integrations']").simulate("click");
     expect(
-      wrapper.find(".model-details__main > .model-details__relations").length
+      wrapper.find(".entity-details__main > .entity-details__relations").length
     ).toBe(1);
     wrapper.find("ButtonGroup button[value='apps']").simulate("click");
     expect(
-      wrapper.find(".model-details__main > .model-details__apps").length
+      wrapper.find(".entity-details__main > .entity-details__apps").length
     ).toBe(1);
   });
 
@@ -100,14 +106,14 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".model-details__main table").length).toBe(1);
+    expect(wrapper.find(".entity-details__main table").length).toBe(1);
   });
 
   it("renders the machine details section", () => {
@@ -120,8 +126,8 @@ describe("ModelDetail Container", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -129,8 +135,8 @@ describe("ModelDetail Container", () => {
     );
     expect(
       wrapper
-        .find(".model-details__main table")
-        .hasClass("model-details__machines")
+        .find(".entity-details__main table")
+        .hasClass("entity-details__machines")
     ).toBe(true);
   });
 
@@ -138,22 +144,24 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/local-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/local-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
     expect(
-      wrapper.find(".model-details__apps tr[data-app='cockroachdb']").length
+      wrapper.find(".entity-details__apps tr[data-app='cockroachdb']").length
     ).toBe(1);
     expect(
       wrapper
         .find(
-          ".model-details__apps tr[data-app='cockroachdb'] td[data-test-column='store']"
+          ".entity-details__apps tr[data-app='cockroachdb'] td[data-test-column='store']"
         )
         .text()
     ).toBe("Local");
@@ -166,8 +174,8 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -184,10 +192,12 @@ describe("ModelDetail Container", () => {
     const testApp = "kibana";
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -213,8 +223,8 @@ describe("ModelDetail Container", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -222,7 +232,7 @@ describe("ModelDetail Container", () => {
     );
     expect(wrapper.find(".slide-panel.machines-panel").length).toBe(0);
     const machineRow = wrapper.find(
-      `.model-details__main tr[data-machine="${testMachine}"]`
+      `.entity-details__main tr[data-machine="${testMachine}"]`
     );
     machineRow.simulate("click");
     expect(wrapper.find(".slide-panel.machines-panel").length).toBe(1);
@@ -237,10 +247,12 @@ describe("ModelDetail Container", () => {
     const store = mockStore(dataDump);
     mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -256,12 +268,12 @@ describe("ModelDetail Container", () => {
       <Provider store={store}>
         <MemoryRouter
           initialEntries={[
-            "/models/canonical-kubernetes?activeView=integrations",
+            "/models/user-pizza@external/canonical-kubernetes?activeView=integrations",
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -281,8 +293,8 @@ describe("ModelDetail Container", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -303,8 +315,8 @@ describe("ModelDetail Container", () => {
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/*">
-              <ModelDetails />
+            <TestRoute path="/models/:userName/:modelName?">
+              <EntityDetails />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 // Return model status data based on model name in URL
 export default function useModelStatus() {
-  const { 0: modelName } = useParams();
+  const { modelName } = useParams();
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
   const getModelStatusMemo = useMemo(() => getModelStatus(modelUUID), [

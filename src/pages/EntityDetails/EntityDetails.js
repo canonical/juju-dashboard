@@ -7,7 +7,7 @@ import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import InfoPanel from "components/InfoPanel/InfoPanel";
-import Layout from "components/Layout/Layout";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import WebCLI from "components/WebCLI/WebCLI";
@@ -56,7 +56,7 @@ import {
   remoteApplicationTableHeaders,
 } from "tables/tableHeaders";
 
-import "./_model-details.scss";
+import "./_entity-details.scss";
 
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
@@ -157,8 +157,9 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
   }
 }
 
-const ModelDetails = () => {
-  const { 0: modelName } = useParams();
+const EntityDetails = () => {
+  const { modelName } = useParams();
+
   const dispatch = useDispatch();
   const store = useStore();
   const storeState = store.getState();
@@ -302,13 +303,13 @@ const ModelDetails = () => {
   );
 
   return (
-    <Layout>
+    <BaseLayout>
       <Header>
-        <div className="model-details__header">
-          <strong className="model-details__title">
+        <div className="entity-details__header">
+          <strong className="entity-details__title">
             {modelStatusData ? modelStatusData.model.name : "..."}
           </strong>
-          <div className="model-details__view-selector">
+          <div className="entity-details__view-selector">
             {modelStatusData && (
               <ButtonGroup
                 buttons={["apps", "integrations", "machines"]}
@@ -321,15 +322,15 @@ const ModelDetails = () => {
         </div>
       </Header>
       {!modelStatusData ? (
-        <div className="model-details__loading">
+        <div className="entity-details__loading">
           <Spinner />
         </div>
       ) : (
         <FadeIn isActive={modelStatusData}>
           <div className="l-content">
-            <div className="model-details">
+            <div className="entity-details">
               <InfoPanel />
-              <div className="model-details__main u-overflow--scroll">
+              <div className="entity-details__main u-overflow--scroll">
                 {renderCounts(activeView, modelStatusData)}
                 {shouldShow("apps", activeView) && (
                   <>
@@ -337,7 +338,7 @@ const ModelDetails = () => {
                       <MainTable
                         headers={appsOffersTableHeaders}
                         rows={appOffersRows}
-                        className="model-details__offers p-main-table"
+                        className="entity-details__offers p-main-table"
                         sortable
                         emptyStateMsg={
                           "There are no offers associated with this model"
@@ -348,7 +349,7 @@ const ModelDetails = () => {
                       <MainTable
                         headers={localApplicationTableHeaders}
                         rows={localApplicationTableRows}
-                        className="model-details__apps p-main-table"
+                        className="entity-details__apps p-main-table"
                         sortable
                         emptyStateMsg={
                           "There are no applications in this model"
@@ -370,7 +371,7 @@ const ModelDetails = () => {
                       <MainTable
                         headers={remoteApplicationTableHeaders}
                         rows={remoteApplicationTableRows}
-                        className="model-details__remote-apps p-main-table"
+                        className="entity-details__remote-apps p-main-table"
                         sortable
                         emptyStateMsg={
                           "There are no remote applications in this model"
@@ -384,7 +385,7 @@ const ModelDetails = () => {
                     <MainTable
                       headers={machineTableHeaders}
                       rows={machinesTableRows}
-                      className="model-details__machines p-main-table"
+                      className="entity-details__machines p-main-table"
                       sortable
                       emptyStateMsg={"There are no machines in this model"}
                     />
@@ -398,7 +399,7 @@ const ModelDetails = () => {
                     <MainTable
                       headers={relationTableHeaders}
                       rows={relationTableRows}
-                      className="model-details__relations p-main-table"
+                      className="entity-details__relations p-main-table"
                       sortable
                       emptyStateMsg={"There are no relations in this model"}
                     />
@@ -419,7 +420,7 @@ const ModelDetails = () => {
                       <MainTable
                         headers={consumedTableHeaders}
                         rows={consumedTableRows}
-                        className="model-details__relations p-main-table"
+                        className="entity-details__relations p-main-table"
                         sortable
                         emptyStateMsg={
                           "There are no remote relations in this model"
@@ -430,7 +431,7 @@ const ModelDetails = () => {
                       <MainTable
                         headers={offersTableHeaders}
                         rows={offersTableRows}
-                        className="model-details__relations p-main-table"
+                        className="entity-details__relations p-main-table"
                         sortable
                         emptyStateMsg={
                           "There are no connected offers in this model"
@@ -488,8 +489,8 @@ const ModelDetails = () => {
           refreshModel={refreshModel}
         />
       )}
-    </Layout>
+    </BaseLayout>
   );
 };
 
-export default ModelDetails;
+export default EntityDetails;

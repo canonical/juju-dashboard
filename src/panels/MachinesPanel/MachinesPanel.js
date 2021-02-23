@@ -164,14 +164,14 @@ export default function MachinesPanel({ entity: machineId, panelRowClick }) {
         <MainTable
           headers={unitTableHeaders}
           rows={unitRows}
-          className="model-details__units p-main-table"
+          className="entity-details__units p-main-table"
           sortable
           emptyStateMsg={"There are no units in this model"}
         />
         <MainTable
           headers={localApplicationTableHeaders}
           rows={applicationRows}
-          className="model-details__apps p-main-table"
+          className="entity-details__apps p-main-table"
           sortable
           emptyStateMsg={"There are no apps in this model"}
         />

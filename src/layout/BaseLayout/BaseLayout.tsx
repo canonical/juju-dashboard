@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 import Logo from "components/Logo/Logo";
 import Banner from "components/Banner/Banner";
@@ -9,16 +9,22 @@ import Panels from "panels/panels";
 
 import useOffline from "hooks/useOffline";
 
-import "./_layout.scss";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 
-const Layout = ({ children }) => {
+import "./_base-layout.scss";
+
+type Props = {
+  children: JSX.Element;
+};
+
+const BaseLayout = ({ children }: Props) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
   const [sideNavCollapsed, setSideNavCollapsed] = useState(false);
-
   const location = useLocation();
 
   // Check if pathname includes a model name - and then always collapse sidebar
-  const modelName = location.pathname.split("/models/")[1];
+  const { modelName } = useParams<EntityDetailsRoute>();
+
   useEffect(() => {
     if (modelName) {
       setSideNavCollapsed(true);
@@ -44,8 +50,8 @@ const Layout = ({ children }) => {
           <p>Your dashboard is offline.</p>
         ) : (
           <p>
-            The dashboard is now online - please{" "}
-            <a href={window.location}>refresh your browser.</a>
+            The dashboard is now online - please
+            <a href={location.pathname}>refresh your browser.</a>
           </p>
         )}
       </Banner>
@@ -82,4 +88,4 @@ const Layout = ({ children }) => {
   );
 };
 
-export default Layout;
+export default BaseLayout;

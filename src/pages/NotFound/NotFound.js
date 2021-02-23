@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import Layout from "components/Layout/Layout";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
 
 import useWindowTitle from "hooks/useWindowTitle";
@@ -8,7 +8,7 @@ import useWindowTitle from "hooks/useWindowTitle";
 export default function NotFound() {
   useWindowTitle("Page not found");
   return (
-    <Layout>
+    <BaseLayout>
       <Header>
         <span style={{ marginLeft: "1rem" }}>404: Page not found</span>
       </Header>
@@ -30,6 +30,6 @@ export default function NotFound() {
           </ul>
         </div>
       </div>
-    </Layout>
+    </BaseLayout>
   );
 }

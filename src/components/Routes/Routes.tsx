@@ -5,17 +5,31 @@ import Login from "components/LogIn/LogIn";
 
 import Controllers from "pages/Controllers/Controllers";
 import Models from "pages/Models/Models";
-import ModelDetails from "pages/ModelDetails/ModelDetails";
+import EntityDetails from "pages/EntityDetails/EntityDetails";
 import Settings from "pages/Settings/Settings";
 import NotFound from "pages/NotFound/NotFound";
 
 import useAnalytics from "hooks/useAnalytics";
 
-export const paths = {
+type Path = {
+  redirect?: string;
+  component?: () => JSX.Element;
+};
+
+type Paths = {
+  [key: string]: Path;
+};
+
+export type EntityDetailsRoute = {
+  userName: string;
+  modelName: string;
+};
+
+export const paths: Paths = {
   "/": { redirect: "/models" },
   "/models": { component: Models },
-  "/models/*": { component: ModelDetails },
-  "/controllers/": { component: Controllers },
+  "/models/:userName/:modelName?": { component: EntityDetails },
+  "/controllers": { component: Controllers },
   "/settings": { component: Settings },
 };
 
@@ -41,9 +55,7 @@ export function Routes() {
     }
     return (
       <Route key={path[0]} path={path[0]} exact>
-        <Login>
-          <Component />
-        </Login>
+        <Login>{Component ? <Component /> : null}</Login>
       </Route>
     );
   });
