@@ -22,13 +22,11 @@ describe("ModelTableList", () => {
     );
     const statusGroup = wrapper.find("StatusGroup");
     expect(statusGroup.length).toBe(1);
-    expect(statusGroup.prop("activeUser")).toBe("user-eggman@external");
     expect(wrapper.find("OwnerGroup").length).toBe(0);
   });
 
   it("displays all data from redux store when grouping by...", () => {
     const store = mockStore(dataDump);
-    const user = "user-eggman@external";
     const tables = [
       ["status", "StatusGroup"],
       ["owner", "OwnerGroup"],
@@ -44,7 +42,6 @@ describe("ModelTableList", () => {
       );
       const Group = wrapper.find(table[1]);
       expect(Group.length).toBe(1);
-      expect(Group.prop("activeUser")).toBe(user);
       tables.forEach((otherTable) => {
         if (otherTable[0] !== table[0]) {
           expect(wrapper.find(otherTable[1]).length).toBe(0); // eslint-disable-line jest/no-conditional-expect
