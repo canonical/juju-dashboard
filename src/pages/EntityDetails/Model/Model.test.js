@@ -151,31 +151,6 @@ describe("Model", () => {
     );
   });
 
-  it("displays correct side panel when app row is clicked", () => {
-    const store = mockStore(dataDump);
-    const testApp = "kibana";
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/user-eggman@external/group-test"]}
-        >
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/:userName/:modelName?">
-              <Model />
-            </TestRoute>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".slide-panel.apps-panel").length).toBe(0);
-    const applicationRow = wrapper.find(`tr[data-app="${testApp}"]`);
-    applicationRow.simulate("click");
-    expect(wrapper.find(".slide-panel.apps-panel").length).toBe(1);
-    expect(
-      wrapper.find(".slide-panel.apps-panel .panel-header .entity-name").text()
-    ).toBe("kibana");
-  });
-
   it("displays correct side panel when machine row is clicked", () => {
     const store = mockStore(dataDump);
     const testMachine = "1";

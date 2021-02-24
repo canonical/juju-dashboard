@@ -30,7 +30,7 @@ import { fetchModelStatus } from "juju/actions";
 
 import "./_entity-details.scss";
 
-const EntityDetails = ({ activeView, setActiveView, children }) => {
+const EntityDetails = ({ activeView, setActiveView, type, children }) => {
   const { modelName } = useParams();
 
   const dispatch = useDispatch();
@@ -115,7 +115,7 @@ const EntityDetails = ({ activeView, setActiveView, children }) => {
             {modelStatusData ? modelStatusData.model.name : "..."}
           </strong>
           <div className="entity-details__view-selector">
-            {modelStatusData && (
+            {modelStatusData && type === "model" && (
               <ButtonGroup
                 buttons={["apps", "integrations", "machines"]}
                 label="View:"

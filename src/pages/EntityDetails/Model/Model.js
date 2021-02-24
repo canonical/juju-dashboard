@@ -1,10 +1,9 @@
-// @ts-nocheck
-
 import { useMemo, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useSelector } from "react-redux";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import { TSFixMe } from "types";
+import { useHistory, useParams } from "react-router-dom";
 
 import {
   appsOffersTableHeaders,
@@ -110,6 +109,8 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
 const Model = () => {
   const { baseAppURL } = useSelector(getConfig);
   const modelStatusData = useModelStatus();
+  const history = useHistory();
+  const { userName, modelName } = useParams();
 
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
@@ -127,9 +128,14 @@ const Model = () => {
 
   const panelRowClick = useCallback(
     (entityName, entityPanel) => {
-      return setQuery({ panel: entityPanel, entity: entityName });
+      // This can be removed when all entities are moved to top level aside panels
+      if (entityPanel === "apps") {
+        history.push(`/models/${userName}/${modelName}/app/${entityName}`);
+      } else {
+        return setQuery({ panel: entityPanel, entity: entityName });
+      }
     },
-    [setQuery]
+    [setQuery, history, modelName, userName]
   );
 
   const localApplicationTableRows = useMemo(() => {
@@ -177,7 +183,11 @@ const Model = () => {
   );
 
   return (
-    <EntityDetails activeView={activeView} setActiveView={setActiveView}>
+    <EntityDetails
+      type="model"
+      activeView={activeView}
+      setActiveView={setActiveView}
+    >
       <div className="entity-details__main u-overflow--scroll">
         {renderCounts(activeView, modelStatusData)}
         {shouldShow("apps", activeView) && (

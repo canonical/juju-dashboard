@@ -27,6 +27,7 @@ type Paths = {
 export type EntityDetailsRoute = {
   userName: string;
   modelName: string;
+  appName: string;
 };
 
 export const paths: Paths = {

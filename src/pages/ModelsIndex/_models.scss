@@ -15,7 +15,7 @@
     grid-template-columns: 1fr;
     opacity: 1;
     padding: 0.15rem;
-    transition: opacity 0.5s;
+    transition: opacity 0.25s;
 
     &[data-disabled="true"] {
       opacity: 0.5;
