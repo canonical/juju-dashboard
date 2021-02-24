@@ -1,7 +1,7 @@
 {
   "extends": [
     "react-app",
-    "prettier/react",
+    "plugin:prettier/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:import/warnings",
     "plugin:jest/recommended"
