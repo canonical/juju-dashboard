@@ -95,7 +95,7 @@ export default function ConfigPanel({
   useEffect(() => {
     sendAnalytics({
       category: "User",
-      action: "Config Panel opened",
+      action: "Config panel opened",
     });
   }, [sendAnalytics]);
 
