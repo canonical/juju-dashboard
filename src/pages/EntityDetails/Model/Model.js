@@ -47,7 +47,7 @@ import {
   generateUnitSecondaryCounts,
 } from "../counts";
 
-const shouldShow = (segment: string, activeView: string) => {
+const shouldShow = (segment, activeView) => {
   switch (activeView) {
     case "apps":
       if (segment === "apps") {
@@ -64,7 +64,7 @@ const shouldShow = (segment: string, activeView: string) => {
   }
 };
 
-const renderCounts = (activeView: string, modelStatusData: TSFixMe) => {
+const renderCounts = (activeView, modelStatusData) => {
   if (!modelStatusData) return null;
   let chips = null;
   switch (activeView) {

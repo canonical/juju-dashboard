@@ -104,7 +104,6 @@ export default function App() {
           // Required to prevent the click from bubbling and
           // closing the slide panel.
           e.stopPropagation();
-          panelRowClick(entity, "config");
         }
       ),
     [modelStatusData, entity, title]
