@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getConfig } from "app/selectors";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
@@ -75,9 +75,10 @@ const generateAppPageHeader = (app, title, showConfig) => {
 };
 
 export default function App() {
-  const { appName: entity } = useParams();
+  const { modelName, userName, appName: entity } = useParams();
   // Get model status info
   const modelStatusData = useModelStatus();
+  const history = useHistory();
 
   const { baseAppURL } = useSelector(getConfig);
 
@@ -101,6 +102,9 @@ export default function App() {
         modelStatusData?.applications[entity],
         title,
         (e) => {
+          history.push(
+            `/models/${userName}/${modelName}/?entity=${entity}&panel=config`
+          );
           // Required to prevent the click from bubbling and
           // closing the slide panel.
           e.stopPropagation();
