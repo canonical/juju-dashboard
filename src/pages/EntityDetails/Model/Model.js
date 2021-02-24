@@ -2,7 +2,6 @@ import { useMemo, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useSelector } from "react-redux";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
-import { TSFixMe } from "types";
 import { useHistory, useParams } from "react-router-dom";
 
 import {
