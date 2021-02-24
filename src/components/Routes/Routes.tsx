@@ -3,7 +3,7 @@ import { Route, Redirect, Switch, useLocation } from "react-router-dom";
 
 import Login from "components/LogIn/LogIn";
 
-import Controllers from "pages/Controllers/Controllers";
+import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
 import Models from "pages/Models/Models";
 
 // Entity Detail pages
@@ -34,7 +34,7 @@ export const paths: Paths = {
   "/models": { component: Models },
   "/models/:userName/:modelName?": { component: Model },
   "/models/:userName/:modelName?/app/:appName?": { component: App },
-  "/controllers": { component: Controllers },
+  "/controllers": { component: ControllersIndex },
   "/settings": { component: Settings },
 };
 
