@@ -4,7 +4,7 @@ import { Route, Redirect, Switch, useLocation } from "react-router-dom";
 import Login from "components/LogIn/LogIn";
 
 import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
-import Models from "pages/Models/Models";
+import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 
 // Entity Detail pages
 import Model from "pages/EntityDetails/Model/Model";
@@ -31,7 +31,7 @@ export type EntityDetailsRoute = {
 
 export const paths: Paths = {
   "/": { redirect: "/models" },
-  "/models": { component: Models },
+  "/models": { component: ModelsIndex },
   "/models/:userName/:modelName?": { component: Model },
   "/models/:userName/:modelName?/app/:appName?": { component: App },
   "/controllers": { component: ControllersIndex },
