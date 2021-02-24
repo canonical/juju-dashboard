@@ -261,7 +261,7 @@ export async function fetchAllModelStatuses(
 ) {
   const getState = reduxStore.getState;
   const dispatch = reduxStore.dispatch;
-  const queue = new Limiter({ concurrency: 5 });
+  const queue = new Limiter({ concurrency: 1 });
   modelUUIDList.forEach((modelUUID) => {
     queue.push(async (done) => {
       if (isLoggedIn(wsControllerURL, getState())) {

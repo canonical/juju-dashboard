@@ -6,8 +6,43 @@
     display: grid;
     grid-template-columns: 1fr;
     margin-bottom: 2rem;
+    max-width: 100%;
+    overflow: hidden;
     padding-bottom: 3rem;
     padding-top: 1rem;
+
+    &__content-header {
+      margin: 0 2rem 2rem 0.5rem;
+
+      @media (min-width: $breakpoint-medium) {
+        display: flex;
+        margin-top: 0.5rem;
+      }
+
+      .entity-name {
+        font-weight: 400;
+        margin-bottom: 0.25rem;
+      }
+
+      .entity-status {
+        left: -3px;
+        position: relative;
+      }
+
+      i[class*="p-icon"] {
+        margin-right: 0.5rem;
+      }
+
+      [class*="panel__id"] {
+        text-transform: capitalize;
+      }
+
+      @media (max-width: $breakpoint-medium) {
+        [class*="col"] {
+          margin-bottom: 1rem;
+        }
+      }
+    }
 
     &__loading {
       align-items: center;
@@ -15,6 +50,20 @@
       justify-content: center;
       min-height: calc(100vh - 48px);
       width: 100%;
+    }
+
+    &__tables {
+      overflow-x: scroll;
+      scrollbar-width: none;
+    }
+
+    &__config-button {
+      margin-top: 1rem;
+      white-space: nowrap;
+
+      i {
+        margin-right: 1rem;
+      }
     }
 
     .chip-group {
