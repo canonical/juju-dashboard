@@ -6,7 +6,6 @@ import { MemoryRouter, Route } from "react-router";
 import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
 
-import EntityDetails from "pages/EntityDetails/EntityDetails";
 import Model from "./Model";
 
 jest.mock("components/Topology/Topology", () => {
@@ -21,7 +20,9 @@ describe("Model", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/group-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
@@ -107,7 +108,9 @@ describe("Model", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/local-test"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/local-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
@@ -153,7 +156,9 @@ describe("Model", () => {
     const testApp = "kibana";
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/new-search-aggregate"]}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
@@ -208,7 +213,7 @@ describe("Model", () => {
       <Provider store={store}>
         <MemoryRouter
           initialEntries={[
-            "/models/canonical-kubernetes?activeView=integrations",
+            "/models/user-eggman@external/canonical-kubernetes?activeView=integrations",
           ]}
         >
           <QueryParamProvider ReactRouterRoute={Route}>

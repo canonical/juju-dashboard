@@ -1,7 +1,5 @@
-type Props = {
-  name: string;
+const App = () => {
+  return <div>App</div>;
 };
 
-export default function App({ name }: Props) {
-  return <div>{name}</div>;
-}
+export default App;

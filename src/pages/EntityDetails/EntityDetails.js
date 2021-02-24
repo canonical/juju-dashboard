@@ -31,7 +31,7 @@ import { fetchModelStatus } from "juju/actions";
 import "./_entity-details.scss";
 
 const EntityDetails = ({ activeView, setActiveView, children }) => {
-  let { modelName } = useParams();
+  const { modelName } = useParams();
 
   const dispatch = useDispatch();
   const store = useStore();
