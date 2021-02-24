@@ -110,7 +110,7 @@ export default function App() {
           e.stopPropagation();
         }
       ),
-    [modelStatusData, entity, title]
+    [modelStatusData, entity, title, history, modelName, userName]
   );
 
   const machinesPanelRows = useMemo(
