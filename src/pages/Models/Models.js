@@ -79,7 +79,7 @@ export default function Models() {
   return (
     <BaseLayout>
       <Header>
-        <div className="models__header">
+        <div className="models__header" data-disabled={modelCount === 0}>
           <div className="models__count">
             {modelCount} {pluralize(modelCount, "model")}
           </div>

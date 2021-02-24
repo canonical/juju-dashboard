@@ -5,7 +5,11 @@ import Login from "components/LogIn/LogIn";
 
 import Controllers from "pages/Controllers/Controllers";
 import Models from "pages/Models/Models";
-import EntityDetails from "pages/EntityDetails/EntityDetails";
+
+// Entity Detail pages
+import Model from "pages/EntityDetails/Model/Model";
+import App from "pages/EntityDetails/App/App";
+
 import Settings from "pages/Settings/Settings";
 import NotFound from "pages/NotFound/NotFound";
 
@@ -28,7 +32,8 @@ export type EntityDetailsRoute = {
 export const paths: Paths = {
   "/": { redirect: "/models" },
   "/models": { component: Models },
-  "/models/:userName/:modelName?": { component: EntityDetails },
+  "/models/:userName/:modelName?": { component: Model },
+  "/models/:userName/:modelName?/app/:appName?": { component: App },
   "/controllers": { component: Controllers },
   "/settings": { component: Settings },
 };
