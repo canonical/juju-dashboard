@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 
-import Controllers from "./Controllers";
+import ControllersIndex from "./ControllersIndex";
 
 import dataDump from "../../testing/complete-redux-store-dump";
 
@@ -26,7 +26,7 @@ describe("Controllers table", () => {
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <Controllers />
+            <ControllersIndex />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
@@ -39,7 +39,7 @@ describe("Controllers table", () => {
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <Controllers />
+            <ControllersIndex />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
@@ -53,7 +53,7 @@ describe("Controllers table", () => {
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <Controllers />
+            <ControllersIndex />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
@@ -70,7 +70,7 @@ describe("Controllers table", () => {
             initialEntries={["/controllers?panel=register-controller"]}
           >
             <QueryParamProvider ReactRouterRoute={Route}>
-              <Controllers />
+              <ControllersIndex />
             </QueryParamProvider>
           </MemoryRouter>
         </Provider>

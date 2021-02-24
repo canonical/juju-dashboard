@@ -6,18 +6,18 @@ import dataDump from "testing/complete-redux-store-dump";
 import { createMemoryHistory } from "history";
 import { QueryParamProvider } from "use-query-params";
 
-import Models from "./Models";
+import ModelsIndex from "./ModelsIndex";
 
 const mockStore = configureStore([]);
 
-describe("Models page", () => {
+describe("Models Index page", () => {
   it("renders without crashing", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <Models />
+            <ModelsIndex />
           </QueryParamProvider>
         </MemoryRouter>
       </Provider>
@@ -34,7 +34,7 @@ describe("Models page", () => {
       <Provider store={store}>
         <Router history={history}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <Models />
+            <ModelsIndex />
           </QueryParamProvider>
         </Router>
       </Provider>
@@ -60,7 +60,7 @@ describe("Models page", () => {
       <Provider store={store}>
         <Router history={history}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <Models />
+            <ModelsIndex />
           </QueryParamProvider>
         </Router>
       </Provider>

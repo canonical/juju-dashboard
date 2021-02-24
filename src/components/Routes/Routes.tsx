@@ -3,9 +3,13 @@ import { Route, Redirect, Switch, useLocation } from "react-router-dom";
 
 import Login from "components/LogIn/LogIn";
 
-import Controllers from "pages/Controllers/Controllers";
-import Models from "pages/Models/Models";
-import EntityDetails from "pages/EntityDetails/EntityDetails";
+import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
+import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
+
+// Entity Detail pages
+import Model from "pages/EntityDetails/Model/Model";
+import App from "pages/EntityDetails/App/App";
+
 import Settings from "pages/Settings/Settings";
 import NotFound from "pages/NotFound/NotFound";
 
@@ -23,13 +27,15 @@ type Paths = {
 export type EntityDetailsRoute = {
   userName: string;
   modelName: string;
+  appName: string;
 };
 
 export const paths: Paths = {
   "/": { redirect: "/models" },
-  "/models": { component: Models },
-  "/models/:userName/:modelName?": { component: EntityDetails },
-  "/controllers": { component: Controllers },
+  "/models": { component: ModelsIndex },
+  "/models/:userName/:modelName?": { component: Model },
+  "/models/:userName/:modelName?/app/:appName?": { component: App },
+  "/controllers": { component: ControllersIndex },
   "/settings": { component: Settings },
 };
 

@@ -162,7 +162,7 @@ function Details() {
   );
 }
 
-export default function Controllers() {
+export default function ControllersIndex() {
   const controllerData = useSelector(getControllerData);
   let controllerCount = 0;
   if (controllerData) {
