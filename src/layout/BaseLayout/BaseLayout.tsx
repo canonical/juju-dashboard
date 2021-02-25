@@ -50,7 +50,7 @@ const BaseLayout = ({ children }: Props) => {
           <p>Your dashboard is offline.</p>
         ) : (
           <p>
-            The dashboard is now online - please{" "}
+            Your dashboard is now back online - please{" "}
             <a href={location.pathname}>refresh your browser.</a>
           </p>
         )}
