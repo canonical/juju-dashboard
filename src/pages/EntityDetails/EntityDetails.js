@@ -6,8 +6,6 @@ import { useParams } from "react-router-dom";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
-import Breadcrumb from "components/Breadcrumb/Breadcrumb";
-import InfoPanel from "components/InfoPanel/InfoPanel";
 
 import WebCLI from "components/WebCLI/WebCLI";
 
@@ -152,10 +150,7 @@ const EntityDetails = ({ activeView, setActiveView, type, children }) => {
       ) : (
         <FadeIn isActive={modelStatusData}>
           <div className="l-content">
-            <div className="entity-details">
-              <InfoPanel />
-              {children}
-            </div>
+            <div className="entity-details">{children}</div>
           </div>
         </FadeIn>
       )}

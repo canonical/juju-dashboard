@@ -260,4 +260,22 @@ describe("Model", () => {
     const machineApp6 = machineAppIconRows.at(6).find("img");
     expect(machineApp6.length).toBe(4);
   });
+
+  it("renders the topology", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/:userName/:modelName?">
+              <Model />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find("Topology").length).toBe(1);
+  });
 });

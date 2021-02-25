@@ -6,7 +6,7 @@ import dataDump from "testing/complete-redux-store-dump";
 
 import TestRoute from "components/Routes/TestRoute";
 
-import InfoPanel from "./InfoPanel";
+import EntityInfo from "./EntityInfo";
 
 const mockStore = configureStore([]);
 
@@ -15,23 +15,7 @@ jest.mock("components/Topology/Topology", () => {
   return Topology;
 });
 
-describe("Info Panel", () => {
-  it("renders the topology", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/user-eggman@external/group-test"]}
-        >
-          <TestRoute path="/models/:userName/:modelName?">
-            <InfoPanel />
-          </TestRoute>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find("Topology").length).toBe(1);
-  });
-
+describe("Entity info", () => {
   it("renders the expanded topology on click", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
@@ -40,15 +24,17 @@ describe("Info Panel", () => {
           initialEntries={["/models/user-eggman@external/group-test"]}
         >
           <TestRoute path="/models/:userName/:modelName?">
-            <InfoPanel />
+            <EntityInfo
+              data={{
+                name: "model1",
+                controller: "controller1",
+                region: "eu1",
+              }}
+            />
           </TestRoute>
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("[data-test='topology-modal']").length).toBe(0);
-    wrapper
-      .find(".info-panel__pictogram .p-icon--fullscreen")
-      .simulate("click");
-    expect(wrapper.find("[data-test='topology-modal']").length).toBe(1);
+    expect(wrapper.find("[data-name='region']").text()).toBe("eu1");
   });
 });

@@ -1,10 +1,7 @@
 import "./_entity-info.scss";
 
 type Props = {
-  data: {
-    label: string;
-    value: string;
-  };
+  data: { [key: string]: string };
 };
 export default function EntityInfo({ data }: Props): JSX.Element {
   return (
