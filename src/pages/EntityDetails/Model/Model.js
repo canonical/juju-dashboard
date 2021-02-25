@@ -189,7 +189,7 @@ const Model = () => {
     ? extractCloudName(modelStatusData.model["cloud-tag"])
     : "";
 
-  const EntityData = {
+  const ModelEntityData = {
     controller: modelStatusData.model.type,
     "Cloud/Region": `${cloudProvider} / ${modelStatusData.model.region}`,
     version: modelStatusData.model.version,
@@ -204,7 +204,7 @@ const Model = () => {
     >
       <div>
         <InfoPanel />
-        {modelStatusData && <EntityInfo data={EntityData} />}
+        {modelStatusData && <EntityInfo data={ModelEntityData} />}
       </div>
       <div className="entity-details__main u-overflow--scroll">
         {renderCounts(activeView, modelStatusData)}
