@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import Topology from "components/Topology/Topology";
 import Modal from "@canonical/react-components/dist/components/Modal";
 
-import { extractCloudName, getViewportWidth } from "app/utils/utils";
+import { getViewportWidth } from "app/utils/utils";
 import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import useEventListener from "hooks/useEventListener";
@@ -14,16 +14,7 @@ import useEventListener from "hooks/useEventListener";
 import type { TSFixMe } from "types";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
-import EntityInfo from "components/EntityInfo/EntityInfo";
-
 import "./_info-panel.scss";
-
-type EntityData = {
-  controller: string;
-  "Cloud/Region": string;
-  version: string;
-  sla: string;
-};
 
 const expandedTopologyDimensions = () => {
   const de = document.documentElement;
@@ -52,10 +43,6 @@ const InfoPanel = () => {
   const applicationsCount = Object.entries(modelStatusData.applications || {})
     .length;
 
-  const cloudProvider = modelStatusData
-    ? extractCloudName(modelStatusData.model["cloud-tag"])
-    : "";
-
   const { width, height } = expandedTopologyDimensions();
   const topologySize = infoPanelDimensions();
 
@@ -76,13 +63,6 @@ const InfoPanel = () => {
       category: "User",
       action: "Opened expanded topology",
     });
-  };
-
-  const EntityData: EntityData = {
-    controller: modelStatusData.model.type,
-    "Cloud/Region": `${cloudProvider} / ${modelStatusData.model.region}`,
-    version: modelStatusData.model.version,
-    sla: modelStatusData.model.sla,
   };
 
   return (
@@ -120,8 +100,6 @@ const InfoPanel = () => {
           )}
         </>
       )}
-
-      {modelStatusData && <EntityInfo data={EntityData} />}
     </div>
   );
 };

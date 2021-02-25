@@ -25,8 +25,9 @@ import {
 } from "tables/tableRows";
 
 import SlidePanel from "components/SlidePanel/SlidePanel";
-import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
+import InfoPanel from "components/InfoPanel/InfoPanel";
 
+import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import LocalAppsPanel from "panels/LocalAppsPanel/LocalAppsPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 import MachinesPanel from "panels/MachinesPanel/MachinesPanel";
@@ -34,12 +35,15 @@ import OffersPanel from "panels/OffersPanel/OffersPanel";
 import UnitsPanel from "panels/UnitsPanel/UnitsPanel";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
+import EntityInfo from "components/EntityInfo/EntityInfo";
 
 import useModelStatus from "hooks/useModelStatus";
 
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
 import { getConfig } from "app/selectors";
+
+import { extractCloudName } from "app/utils/utils";
 
 import {
   generateSecondaryCounts,
@@ -181,12 +185,27 @@ const Model = () => {
     [modelStatusData, panelRowClick, baseAppURL, query]
   );
 
+  const cloudProvider = modelStatusData
+    ? extractCloudName(modelStatusData.model["cloud-tag"])
+    : "";
+
+  const EntityData = {
+    controller: modelStatusData.model.type,
+    "Cloud/Region": `${cloudProvider} / ${modelStatusData.model.region}`,
+    version: modelStatusData.model.version,
+    sla: modelStatusData.model.sla,
+  };
+
   return (
     <EntityDetails
       type="model"
       activeView={activeView}
       setActiveView={setActiveView}
     >
+      <div>
+        <InfoPanel />
+        {modelStatusData && <EntityInfo data={EntityData} />}
+      </div>
       <div className="entity-details__main u-overflow--scroll">
         {renderCounts(activeView, modelStatusData)}
         {shouldShow("apps", activeView) && (
