@@ -2,7 +2,10 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getConfig } from "app/selectors";
 import { useParams, useHistory } from "react-router-dom";
+import { useQueryParam, StringParam, withDefault } from "use-query-params";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+
+import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 
@@ -123,25 +126,39 @@ export default function App() {
     [filteredModelStatusData]
   );
 
+  const [tableView, setTableView] = useQueryParam(
+    "tableview",
+    withDefault(StringParam, "units")
+  );
+
   return (
     <EntityDetails>
       <div className="entity-details__content">
         {appPageHeader}
+        <ButtonGroup
+          buttons={["units", "machines"]}
+          activeButton={tableView}
+          setActiveButton={setTableView}
+        />
         <div className="entity-details__tables">
-          <MainTable
-            headers={unitTableHeaders}
-            rows={unitPanelRows}
-            className="entity-details__units p-main-table panel__table"
-            sortable
-            emptyStateMsg={"There are no units in this model"}
-          />
-          <MainTable
-            headers={machineTableHeaders}
-            rows={machinesPanelRows}
-            className="entity-details__machines p-main-table panel__table"
-            sortable
-            emptyStateMsg={"There are no machines in this model"}
-          />
+          {tableView === "units" && (
+            <MainTable
+              headers={unitTableHeaders}
+              rows={unitPanelRows}
+              className="entity-details__units p-main-table panel__table"
+              sortable
+              emptyStateMsg={"There are no units in this model"}
+            />
+          )}
+          {tableView === "machines" && (
+            <MainTable
+              headers={machineTableHeaders}
+              rows={machinesPanelRows}
+              className="entity-details__machines p-main-table panel__table"
+              sortable
+              emptyStateMsg={"There are no machines in this model"}
+            />
+          )}
         </div>
       </div>
     </EntityDetails>
