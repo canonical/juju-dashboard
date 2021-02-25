@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,7 +14,16 @@ import useEventListener from "hooks/useEventListener";
 import type { TSFixMe } from "types";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
+import EntityInfo from "components/EntityInfo/EntityInfo";
+
 import "./_info-panel.scss";
+
+type EntityData = {
+  controller: string;
+  "Cloud/Region": string;
+  version: string;
+  sla: string;
+};
 
 const expandedTopologyDimensions = () => {
   const de = document.documentElement;
@@ -67,6 +78,13 @@ const InfoPanel = () => {
     });
   };
 
+  const EntityData: EntityData = {
+    controller: modelStatusData.model.type,
+    "Cloud/Region": `${cloudProvider} / ${modelStatusData.model.region}`,
+    version: modelStatusData.model.version,
+    sla: modelStatusData.model.sla,
+  };
+
   return (
     <div className="info-panel">
       {showExpandedTopology ? (
@@ -102,34 +120,8 @@ const InfoPanel = () => {
           )}
         </>
       )}
-      <div className="info-panel__grid">
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Controller</h4>
-          <p data-name="controller">
-            {modelStatusData ? modelStatusData.model.type : ""}
-          </p>
-        </div>
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Cloud/Region</h4>
-          <p data-name="cloud-region">
-            {cloudProvider}
-            {modelStatusData ? "/" : ""}
-            {modelStatusData ? modelStatusData.model.region : ""}
-          </p>
-        </div>
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Version</h4>
-          <p data-name="version">
-            {modelStatusData ? modelStatusData.model.version : ""}
-          </p>
-        </div>
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">SLA</h4>
-          <p data-name="sla">
-            {modelStatusData ? modelStatusData.model.sla : ""}
-          </p>
-        </div>
-      </div>
+
+      {modelStatusData && <EntityInfo data={EntityData} />}
     </div>
   );
 };
