@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
-import Spinner from "@canonical/react-components/dist/components/Spinner";
+import { Spinner, Tabs } from "@canonical/react-components";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
-
-import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
@@ -116,11 +114,33 @@ const EntityDetails = ({ activeView, setActiveView, type, children }) => {
           </strong>
           <div className="entity-details__view-selector">
             {modelStatusData && type === "model" && (
-              <ButtonGroup
-                buttons={["apps", "integrations", "machines"]}
-                label="View:"
-                activeButton={activeView}
-                setActiveButton={setActiveView}
+              <Tabs
+                links={[
+                  {
+                    active: activeView === "apps",
+                    label: "Applications",
+                    onClick: (e) => {
+                      e.preventDefault();
+                      setActiveView("apps");
+                    },
+                  },
+                  {
+                    active: activeView === "integrations",
+                    label: "Integrations",
+                    onClick: (e) => {
+                      e.preventDefault();
+                      setActiveView("integrations");
+                    },
+                  },
+                  {
+                    active: activeView === "machines",
+                    label: "Machines",
+                    onClick: (e) => {
+                      e.preventDefault();
+                      setActiveView("machines");
+                    },
+                  },
+                ]}
               />
             )}
           </div>

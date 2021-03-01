@@ -3,7 +3,7 @@
 
 .slide-panel {
   @include vf-animation(transform, brisk, out);
-  $top-header-height: 40px;
+  $top-header-height: 64px;
 
   background-color: $color-x-light;
   height: calc(100% - #{$top-header-height});
