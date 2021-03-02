@@ -91,33 +91,45 @@
 
 @mixin entity-details-header {
   .entity-details__header {
-    align-items: center;
-    display: grid;
-    grid-template-columns: 1fr;
+    display: block;
+    padding-top: 0.75rem;
 
     @media (min-width: $breakpoint-medium) {
+      align-items: center;
+      display: grid;
       gap: 2rem;
+      grid-template-columns: 1fr;
       grid-template-columns: auto 1fr;
       padding: 0 0.5rem;
     }
 
     // Modified styling of the Vanilla tabbed component. To remove the border
     // bottom as it sits on a border already.
-    .p-tabs__list {
-      margin-bottom: 0;
-
+    .p-tabs {
       &::after {
+        line-height: calc(100% + 1.5rem);
+      }
+
+      .p-tabs__item:last-of-type {
+        padding-right: 2rem;
+      }
+
+      .p-tabs__list {
+        margin-bottom: 0;
+
+        &::after {
+          background-color: transparent;
+        }
+      }
+
+      .p-tabs__link::before {
         background-color: transparent;
       }
-    }
 
-    .p-tabs__link::before {
-      background-color: transparent;
-    }
-
-    .p-tabs__link {
-      padding-bottom: 1.25rem;
-      padding-top: 1.25rem;
+      .p-tabs__link {
+        padding-bottom: 1.25rem;
+        padding-top: 1.25rem;
+      }
     }
   }
 
