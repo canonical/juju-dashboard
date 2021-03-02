@@ -105,13 +105,16 @@
 
     // Modified styling of the Vanilla tabbed component. To remove the border
     // bottom as it sits on a border already.
+    .entity-details__view-selector {
+      @media (max-width: $breakpoint-medium) {
+        margin-left: -1rem;
+        width: calc(100% + 2rem);
+      }
+    }
+
     .p-tabs {
       &::after {
         display: none;
-      }
-
-      .p-tabs__item:last-of-type {
-        padding-right: 2rem;
       }
 
       .p-tabs__list {
@@ -122,9 +125,13 @@
         }
       }
 
-      .p-tabs__link {
+      &__link {
         padding-bottom: 1.25rem;
         padding-top: 1.25rem;
+
+        &::before {
+          background-color: transparent;
+        }
       }
     }
   }
@@ -137,7 +144,7 @@
 
 @mixin entity-details-title {
   .entity-details__title {
-    @media (max-width: $breakpoint-medium) {
+    @media (max-width: $breakpoint-medium - 1) {
       margin-bottom: 0.75rem;
     }
   }
