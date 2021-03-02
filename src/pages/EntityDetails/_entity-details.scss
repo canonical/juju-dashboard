@@ -107,7 +107,7 @@
     // bottom as it sits on a border already.
     .p-tabs {
       &::after {
-        line-height: calc(100% + 1.5rem);
+        display: none;
       }
 
       .p-tabs__item:last-of-type {
