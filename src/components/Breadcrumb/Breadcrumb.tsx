@@ -7,7 +7,7 @@ export type EntityDetailsRoute = {
   appName: string;
 };
 
-const Breadcrumb = (): JSX.Element => {
+export default function Breadcrumb(): JSX.Element {
   const { userName, modelName, appName } = useParams<EntityDetailsRoute>();
 
   return (
@@ -48,6 +48,4 @@ const Breadcrumb = (): JSX.Element => {
       </ol>
     </nav>
   );
-};
-
-export default Breadcrumb;
+}
