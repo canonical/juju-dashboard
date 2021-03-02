@@ -80,9 +80,9 @@ export default function Models() {
     <BaseLayout>
       <Header>
         <div className="models__header" data-disabled={modelCount === 0}>
-          <div className="models__count">
+          <strong className="models__count">
             {modelCount} {pluralize(modelCount, "model")}
-          </div>
+          </strong>
           <ButtonGroup
             activeButton={groupModelsBy}
             buttons={["status", "cloud", "owner"]}

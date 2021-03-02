@@ -50,15 +50,21 @@ describe("Model", () => {
     expect(
       wrapper.find(".entity-details__main > .entity-details__apps").length
     ).toBe(1);
-    wrapper.find("ButtonGroup button[value='machines']").simulate("click");
+    wrapper
+      .find(".p-tabs__link[data-test='tab-link-Machines']")
+      .simulate("click");
     expect(
       wrapper.find(".entity-details__main > .entity-details__machines").length
     ).toBe(1);
-    wrapper.find("ButtonGroup button[value='integrations']").simulate("click");
+    wrapper
+      .find(".p-tabs__link[data-test='tab-link-Integrations']")
+      .simulate("click");
     expect(
       wrapper.find(".entity-details__main > .entity-details__relations").length
     ).toBe(1);
-    wrapper.find("ButtonGroup button[value='apps']").simulate("click");
+    wrapper
+      .find(".p-tabs__link[data-test='tab-link-Applications']")
+      .simulate("click");
     expect(
       wrapper.find(".entity-details__main > .entity-details__apps").length
     ).toBe(1);

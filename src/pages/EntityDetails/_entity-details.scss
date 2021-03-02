@@ -96,13 +96,28 @@
     grid-template-columns: 1fr;
 
     @media (min-width: $breakpoint-medium) {
-      gap: 1rem;
-      grid-template-columns: 240px 1fr;
+      gap: 2rem;
+      grid-template-columns: auto 1fr;
       padding: 0 0.5rem;
     }
 
-    @media (min-width: $breakpoint-m-large) {
-      grid-template-columns: 360px 1fr;
+    // Modified styling of the Vanilla tabbed component. To remove the border
+    // bottom as it sits on a border already.
+    .p-tabs__list {
+      margin-bottom: 0;
+
+      &::after {
+        background-color: transparent;
+      }
+    }
+
+    .p-tabs__link::before {
+      background-color: transparent;
+    }
+
+    .p-tabs__link {
+      padding-bottom: 1.25rem;
+      padding-top: 1.25rem;
     }
   }
 

@@ -3,11 +3,12 @@
 @import "../../scss/functions/z-index";
 
 .header {
+  align-items: center;
   background-color: $color-x-light;
-  box-shadow: 0 1px 5px 1px rgba(51, 51, 51, 0.2);
+  border-bottom: 1px solid $color-mid-light;
   display: grid;
-  min-height: 3rem;
-  padding: 0.5rem;
+  min-height: 4rem;
+  padding: 0 1.5rem;
   position: sticky;
   top: 0;
   z-index: z("gamma");
