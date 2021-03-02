@@ -1,5 +1,7 @@
+import { TSFixMe } from "types";
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 import Logo from "components/Logo/Logo";
 import Banner from "components/Banner/Banner";
@@ -11,6 +13,9 @@ import useOffline from "hooks/useOffline";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
+import { sideNavCollapsed } from "ui/actions";
+import { isSideNavCollapsed } from "ui/selectors";
+
 import "./_base-layout.scss";
 
 type Props = {
@@ -19,20 +24,22 @@ type Props = {
 
 const BaseLayout = ({ children }: Props) => {
   const [menuCollapsed, setMenuCollapsed] = useState(true);
-  const [sideNavCollapsed, setSideNavCollapsed] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
 
   // Check if pathname includes a model name - and then always collapse sidebar
   const { modelName } = useParams<EntityDetailsRoute>();
 
+  // @ts-ignore
+  const collapseSidebar = useSelector<TSFixMe>(isSideNavCollapsed) || false;
+
   useEffect(() => {
-    if (modelName) {
-      setSideNavCollapsed(true);
-    }
+    dispatch(sideNavCollapsed(!!modelName));
+
     return () => {
-      setSideNavCollapsed(false);
+      dispatch(sideNavCollapsed(false));
     };
-  }, [modelName]);
+  }, [modelName, dispatch]);
 
   const isOffline = useOffline();
 
@@ -73,7 +80,7 @@ const BaseLayout = ({ children }: Props) => {
         <header
           className="l-navigation"
           data-collapsed={menuCollapsed}
-          data-side-nav-collapsed={sideNavCollapsed}
+          data-side-nav-collapsed={collapseSidebar}
         >
           <div className="l-navigation__drawer">
             <PrimaryNav />

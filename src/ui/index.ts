@@ -7,6 +7,7 @@ function uiReducer(
   state: UIState = {
     userMenuActive: false,
     confirmationModalActive: false,
+    sideNavCollapsed: false,
   },
   action: ActionType
 ) {
@@ -17,6 +18,9 @@ function uiReducer(
         break;
       case actionsList.confirmationModalActive:
         draftState.confirmationModalActive = action.payload;
+        break;
+      case actionsList.sideNavCollapsed:
+        draftState.sideNavCollapsed = action.payload;
         break;
       default:
         // no default value, fall through.
