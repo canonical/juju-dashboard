@@ -16,7 +16,7 @@ import {
   generateLocalApplicationRows,
 } from "tables/tableRows";
 
-import { generateStatusElement, extractRevisionNumber } from "app/utils/utils";
+import { extractRevisionNumber } from "app/utils/utils";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 import InfoPanel from "components/InfoPanel/InfoPanel";
@@ -62,58 +62,6 @@ export default function Unit() {
     [modelStatusData]
   );
 
-  // Generate panel header for given entity
-  const generateUnitsPanelHeader = useCallback(() => {
-    return (
-      <div className="panel-header">
-        {unit && (
-          <div className="row">
-            <div className="col-4">
-              <div className="units-panel__id">
-                <i className="p-icon--units"></i>
-                <strong>
-                  <span className="entity-name">{unitIdentifier}</span>
-                </strong>
-              </div>
-              <span className="u-capitalise">
-                {generateStatusElement(unit["agent-status"].status)}
-              </span>
-            </div>
-            <div className="col-4">
-              <div className="panel__kv">
-                <span className="panel__label">Charm</span>
-                <span className="panel__value">{app.charm || "-"}</span>
-              </div>
-              <div className="panel__kv">
-                <span className="panel__label">OS</span>
-                <span className="panel__value">{"-"}</span>
-              </div>
-              <div className="panel__kv">
-                <span className="panel__label">Revision</span>
-                <span className="panel__value">
-                  {extractRevisionNumber(app.charm) || "-"}
-                </span>
-              </div>
-              <div className="panel__kv">
-                <span className="panel__label">Version</span>
-                <span className="panel__value">
-                  {app["workload-version"] || "-"}
-                </span>
-              </div>
-            </div>
-            <div className="col-4">{app.status.info}</div>
-          </div>
-        )}
-      </div>
-    );
-  }, [app, unit, unitIdentifier]);
-
-  const unitsPanelHeader = useMemo(
-    () =>
-      generateUnitsPanelHeader(modelStatusData?.applications[unitIdentifier]),
-    [modelStatusData, unitIdentifier, generateUnitsPanelHeader]
-  );
-
   // Generate machines table content
   const machineRows = useMemo(
     () =>
@@ -149,7 +97,6 @@ export default function Unit() {
         <EntityInfo data={UnitEntityData} />
       </div>
       <div className="entity-details__content">
-        {unitsPanelHeader}
         <div className="slide-panel__tables">
           <MainTable
             headers={machineTableHeaders}
