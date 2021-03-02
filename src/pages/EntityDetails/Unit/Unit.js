@@ -1,8 +1,10 @@
 import { useMemo, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import cloneDeep from "clone-deep";
+import { useParams } from "react-router-dom";
 
 import useModelStatus from "hooks/useModelStatus";
+import useTableRowClick from "hooks/useTableRowClick";
 
 import {
   machineTableHeaders,
@@ -16,12 +18,17 @@ import {
 
 import { generateStatusElement, extractRevisionNumber } from "app/utils/utils";
 
-import "../_panels.scss";
+import EntityDetails from "pages/EntityDetails/EntityDetails";
+import InfoPanel from "components/InfoPanel/InfoPanel";
+import EntityInfo from "components/EntityInfo/EntityInfo";
 
-export default function UnitsPanel({ entity: unitId, panelRowClick }) {
+export default function Unit() {
+  const { unitId } = useParams();
+  const unitIdentifier = unitId.replace("-", "/");
   const modelStatusData = useModelStatus();
-  const appName = unitId?.split("/")[0];
-  const unit = modelStatusData?.applications[appName]?.units[unitId];
+  const tableRowClick = useTableRowClick();
+  const appName = unitIdentifier?.split("/")[0];
+  const unit = modelStatusData?.applications[appName]?.units[unitIdentifier];
   const app = modelStatusData?.applications[appName];
 
   const filteredModelStatusDataByMachine = useCallback(
@@ -65,7 +72,7 @@ export default function UnitsPanel({ entity: unitId, panelRowClick }) {
               <div className="units-panel__id">
                 <i className="p-icon--units"></i>
                 <strong>
-                  <span className="entity-name">{unitId}</span>
+                  <span className="entity-name">{unitIdentifier}</span>
                 </strong>
               </div>
               <span className="u-capitalise">
@@ -99,11 +106,12 @@ export default function UnitsPanel({ entity: unitId, panelRowClick }) {
         )}
       </div>
     );
-  }, [app, unit, unitId]);
+  }, [app, unit, unitIdentifier]);
 
   const unitsPanelHeader = useMemo(
-    () => generateUnitsPanelHeader(modelStatusData?.applications[unitId]),
-    [modelStatusData, unitId, generateUnitsPanelHeader]
+    () =>
+      generateUnitsPanelHeader(modelStatusData?.applications[unitIdentifier]),
+    [modelStatusData, unitIdentifier, generateUnitsPanelHeader]
   );
 
   // Generate machines table content
@@ -111,9 +119,9 @@ export default function UnitsPanel({ entity: unitId, panelRowClick }) {
     () =>
       generateMachineRows(
         filteredModelStatusDataByMachine(unit, "machines"),
-        panelRowClick
+        tableRowClick
       ),
-    [filteredModelStatusDataByMachine, panelRowClick, unit]
+    [filteredModelStatusDataByMachine, tableRowClick, unit]
   );
 
   // Generate apps table content
@@ -121,30 +129,44 @@ export default function UnitsPanel({ entity: unitId, panelRowClick }) {
     () =>
       generateLocalApplicationRows(
         filteredModelStatusDataByApp(appName),
-        panelRowClick
+        tableRowClick
       ),
-    [filteredModelStatusDataByApp, panelRowClick, appName]
+    [filteredModelStatusDataByApp, tableRowClick, appName]
   );
 
+  const UnitEntityData = {
+    charm: app.charm || "-",
+    os: "-",
+    revision: extractRevisionNumber(app.charm) || "-",
+    version: app["workload-version"] || "-",
+    info: app.status.info,
+  };
+
   return (
-    <>
-      {unitsPanelHeader}
-      <div className="slide-panel__tables">
-        <MainTable
-          headers={machineTableHeaders}
-          rows={machineRows}
-          className="entity-details__machines p-main-table"
-          sortable
-          emptyStateMsg={"There are no machines in this model"}
-        />
-        <MainTable
-          headers={localApplicationTableHeaders}
-          rows={applicationRows}
-          className="entity-details__apps p-main-table"
-          sortable
-          emptyStateMsg={"There are no apps in this model"}
-        />
+    <EntityDetails>
+      <div>
+        <InfoPanel />
+        <EntityInfo data={UnitEntityData} />
       </div>
-    </>
+      <div className="entity-details__content">
+        {unitsPanelHeader}
+        <div className="slide-panel__tables">
+          <MainTable
+            headers={machineTableHeaders}
+            rows={machineRows}
+            className="entity-details__machines p-main-table"
+            sortable
+            emptyStateMsg={"There are no machines in this model"}
+          />
+          <MainTable
+            headers={localApplicationTableHeaders}
+            rows={applicationRows}
+            className="entity-details__apps p-main-table"
+            sortable
+            emptyStateMsg={"There are no apps in this model"}
+          />
+        </div>
+      </div>
+    </EntityDetails>
   );
 }

@@ -157,37 +157,6 @@ describe("Model", () => {
     );
   });
 
-  it("displays correct side panel when machine row is clicked", () => {
-    const store = mockStore(dataDump);
-    const testMachine = "1";
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/pizza@external/hadoopspark?activeView=machines",
-          ]}
-        >
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/:userName/:modelName?">
-              <Model />
-            </TestRoute>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".slide-panel.machines-panel").length).toBe(0);
-    const machineRow = wrapper.find(
-      `.entity-details__main tr[data-machine="${testMachine}"]`
-    );
-    machineRow.simulate("click");
-    expect(wrapper.find(".slide-panel.machines-panel").length).toBe(1);
-    expect(
-      wrapper
-        .find(".slide-panel.machines-panel .panel-header .entity-name")
-        .text()
-    ).toBe("Machine '1' - xenial");
-  });
-
   it("should show a message if a model has no integrations", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(

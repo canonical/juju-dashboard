@@ -24,20 +24,13 @@ import {
   generateAppOffersRows,
 } from "tables/tableRows";
 
-import SlidePanel from "components/SlidePanel/SlidePanel";
 import InfoPanel from "components/InfoPanel/InfoPanel";
-
-import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
-import LocalAppsPanel from "panels/LocalAppsPanel/LocalAppsPanel";
-import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
-import MachinesPanel from "panels/MachinesPanel/MachinesPanel";
-import OffersPanel from "panels/OffersPanel/OffersPanel";
-import UnitsPanel from "panels/UnitsPanel/UnitsPanel";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 import EntityInfo from "components/EntityInfo/EntityInfo";
 
 import useModelStatus from "hooks/useModelStatus";
+import useTableRowClick from "hooks/useTableRowClick";
 
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
@@ -94,21 +87,6 @@ const renderCounts = (activeView, modelStatusData) => {
   return <ChipGroup chips={chips} />;
 };
 
-function generatePanelContent(activePanel, entity, panelRowClick) {
-  switch (activePanel) {
-    case "apps":
-      return <LocalAppsPanel entity={entity} panelRowClick={panelRowClick} />;
-    case "remoteApps":
-      return <RemoteAppsPanel entity={entity} panelRowClick={panelRowClick} />;
-    case "machines":
-      return <MachinesPanel entity={entity} panelRowClick={panelRowClick} />;
-    case "offers":
-      return <OffersPanel entity={entity} panelRowClick={panelRowClick} />;
-    case "units":
-      return <UnitsPanel entity={entity} panelRowClick={panelRowClick} />;
-  }
-}
-
 const Model = () => {
   const { baseAppURL } = useSelector(getConfig);
   const modelStatusData = useModelStatus();
@@ -121,13 +99,7 @@ const Model = () => {
     activeView: withDefault(StringParam, "apps"),
   });
 
-  const { panel: activePanel, entity, activeView } = query;
-
-  const closePanelConfig = { panel: undefined, entity: undefined };
-
-  const setActiveView = (view) => {
-    setQuery({ activeView: view });
-  };
+  const tableRowClick = useTableRowClick();
 
   const panelRowClick = useCallback(
     (entityName, entityPanel) => {
@@ -144,11 +116,11 @@ const Model = () => {
   const localApplicationTableRows = useMemo(() => {
     return generateLocalApplicationRows(
       modelStatusData,
-      panelRowClick,
+      tableRowClick,
       baseAppURL,
       query
     );
-  }, [modelStatusData, panelRowClick, baseAppURL, query]);
+  }, [modelStatusData, tableRowClick, baseAppURL, query]);
   const remoteApplicationTableRows = useMemo(() => {
     return generateRemoteApplicationRows(
       modelStatusData,
@@ -158,8 +130,8 @@ const Model = () => {
     );
   }, [modelStatusData, panelRowClick, baseAppURL, query]);
   const machinesTableRows = useMemo(() => {
-    return generateMachineRows(modelStatusData, panelRowClick, query?.entity);
-  }, [modelStatusData, panelRowClick, query]);
+    return generateMachineRows(modelStatusData, tableRowClick, query?.entity);
+  }, [modelStatusData, tableRowClick, query]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(modelStatusData, baseAppURL),
@@ -190,25 +162,21 @@ const Model = () => {
     : "";
 
   const ModelEntityData = {
-    controller: modelStatusData.model.type,
-    "Cloud/Region": `${cloudProvider} / ${modelStatusData.model.region}`,
-    version: modelStatusData.model.version,
-    sla: modelStatusData.model.sla,
+    controller: modelStatusData?.model.type,
+    "Cloud/Region": `${cloudProvider} / ${modelStatusData?.model.region}`,
+    version: modelStatusData?.model.version,
+    sla: modelStatusData?.model.sla,
   };
 
   return (
-    <EntityDetails
-      type="model"
-      activeView={activeView}
-      setActiveView={setActiveView}
-    >
+    <EntityDetails type="model">
       <div>
         <InfoPanel />
         {modelStatusData && <EntityInfo data={ModelEntityData} />}
       </div>
       <div className="entity-details__main u-overflow--scroll">
-        {renderCounts(activeView, modelStatusData)}
-        {shouldShow("apps", activeView) && (
+        {renderCounts(query.activeView, modelStatusData)}
+        {shouldShow("apps", query.activeView) && (
           <>
             {appOffersRows.length > 0 && (
               <MainTable
@@ -250,19 +218,20 @@ const Model = () => {
             )}
           </>
         )}
-        {shouldShow("machines", activeView) && machinesTableRows.length > 0 && (
-          <MainTable
-            headers={machineTableHeaders}
-            rows={machinesTableRows}
-            className="entity-details__machines p-main-table"
-            sortable
-            emptyStateMsg={"There are no machines in this model"}
-          />
-        )}
-        {shouldShow("integrations", activeView) &&
+        {shouldShow("machines", query.activeView) &&
+          machinesTableRows.length > 0 && (
+            <MainTable
+              headers={machineTableHeaders}
+              rows={machinesTableRows}
+              className="entity-details__machines p-main-table"
+              sortable
+              emptyStateMsg={"There are no machines in this model"}
+            />
+          )}
+        {shouldShow("integrations", query.activeView) &&
         relationTableRows.length > 0 ? (
           <>
-            {shouldShow("relations-title", activeView) && (
+            {shouldShow("relations-title", query.activeView) && (
               <h5>Relations ({relationTableRows.length})</h5>
             )}
             <MainTable
@@ -272,7 +241,7 @@ const Model = () => {
               sortable
               emptyStateMsg={"There are no relations in this model"}
             />
-            {shouldShow("relations-title", activeView) && (
+            {shouldShow("relations-title", query.activeView) && (
               <>
                 {consumedTableRows.length > 0 ||
                   (offersTableRows.length > 0 && (
@@ -304,7 +273,7 @@ const Model = () => {
           </>
         ) : (
           <>
-            {activeView === "integrations" && (
+            {query.activeView === "integrations" && (
               <span data-testid="no-integrations-msg">
                 There are no integrations associated with this model -{" "}
                 <a
@@ -318,28 +287,6 @@ const Model = () => {
           </>
         )}
       </div>
-      {activePanel === "config" ? (
-        <ConfigPanel
-          appName={entity}
-          charm={modelStatusData.applications[entity].charm}
-          modelUUID={modelStatusData.uuid}
-          onClose={() => setQuery(closePanelConfig)}
-        />
-      ) : (
-        <SlidePanel
-          isActive={activePanel}
-          onClose={() => setQuery(closePanelConfig)}
-          isLoading={!entity}
-          className={`${activePanel}-panel`}
-        >
-          {generatePanelContent(
-            activePanel,
-            entity,
-            panelRowClick,
-            modelStatusData
-          )}
-        </SlidePanel>
-      )}
     </EntityDetails>
   );
 };
