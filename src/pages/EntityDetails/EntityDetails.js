@@ -191,7 +191,7 @@ const EntityDetails = ({ type, children }) => {
       ) : (
         <FadeIn isActive={modelStatusData}>
           <div className="l-content">
-            <div className="entity-details">
+            <div className={`entity-details entity-details__${type}`}>
               <>
                 {children}
                 {activePanel === "config" ? (

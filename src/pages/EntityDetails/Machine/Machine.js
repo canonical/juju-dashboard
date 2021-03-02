@@ -118,30 +118,28 @@ export default function Machine() {
 
   return (
     <EntityDetails>
-      <div className="entity-details__machine">
+      <div>
+        <InfoPanel />
+        <EntityInfo data={MachineEntityData} />
+      </div>
+      <div className="entity-details__content">
         <div>
-          <InfoPanel />
-          <EntityInfo data={MachineEntityData} />
-        </div>
-        <div className="entity-details__content">
-          <>
-            <div className="entity-detail__tables">
-              <MainTable
-                headers={unitTableHeaders}
-                rows={unitRows}
-                className="entity-details__units p-main-table"
-                sortable
-                emptyStateMsg={"There are no units in this model"}
-              />
-              <MainTable
-                headers={localApplicationTableHeaders}
-                rows={applicationRows}
-                className="entity-details__apps p-main-table"
-                sortable
-                emptyStateMsg={"There are no apps in this model"}
-              />
-            </div>
-          </>
+          <div className="entity-detail__tables">
+            <MainTable
+              headers={unitTableHeaders}
+              rows={unitRows}
+              className="entity-details__units p-main-table"
+              sortable
+              emptyStateMsg={"There are no units in this model"}
+            />
+            <MainTable
+              headers={localApplicationTableHeaders}
+              rows={applicationRows}
+              className="entity-details__apps p-main-table"
+              sortable
+              emptyStateMsg={"There are no apps in this model"}
+            />
+          </div>
         </div>
       </div>
     </EntityDetails>
