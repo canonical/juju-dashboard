@@ -41,6 +41,9 @@ describe("Breadcrumb", () => {
         </MemoryRouter>
       </Provider>
     );
+    expect(wrapper.find("[data-test='breadcrumb-items']").text()).toStrictEqual(
+      "group-testApplicationseasyrsa"
+    );
     expect(wrapper.find("[data-test='breadcrumb-model']").text()).toStrictEqual(
       "group-test"
     );

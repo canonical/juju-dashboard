@@ -12,7 +12,7 @@ const Breadcrumb = (): JSX.Element => {
 
   return (
     <nav className="p-breadcrumbs" aria-label="Breadcrumb navigation">
-      <ol className="p-breadcrumbs__items">
+      <ol className="p-breadcrumbs__items" data-test="breadcrumb-items">
         {appName ? (
           <>
             <li className="p-breadcrumbs__item" data-test="breadcrumb-model">
