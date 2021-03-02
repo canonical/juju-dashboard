@@ -82,9 +82,9 @@ export default function App() {
       <div>
         <InfoPanel />
         <>
-          <div className="entity__actions">
+          <div className="entity-details__actions">
             <button
-              className="entity-details__config-button"
+              className="entity-details__action-button"
               onClick={showConfig}
             >
               <i className="p-icon--settings"></i>Configure

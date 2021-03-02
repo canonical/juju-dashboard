@@ -57,17 +57,16 @@
       scrollbar-width: none;
     }
 
-    &__config-button {
-      margin-top: 1rem;
-      white-space: nowrap;
-
-      i {
-        margin-right: 1rem;
-      }
-    }
-
     .chip-group {
       margin-bottom: 1rem;
+    }
+
+    &__counts {
+      display: flex;
+
+      strong {
+        margin-right: 1rem;
+      }
     }
 
     @media (min-width: $breakpoint-medium) {
@@ -316,6 +315,46 @@
   /* stylelint-enable no-descending-specificity */
 }
 
+@mixin entity-details__button-group {
+  .entity-details .p-button-group {
+    .p-button-group__buttons {
+      border-radius: 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .p-button-group__button {
+      padding: 0.5rem 1rem;
+
+      &.is-selected {
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+@mixin entity-details__actions {
+  .entity-details__actions {
+    margin-bottom: 1rem;
+
+    & + div {
+      border-top: 1px solid $color-mid-x-light;
+      padding-top: 1.5rem;
+    }
+
+    .entity-details__action-button {
+      border: none;
+      margin: 0;
+      padding-left: 0.25rem;
+      text-align: left;
+      width: 100%;
+
+      i {
+        margin: 0 0.5rem;
+      }
+    }
+  }
+}
+
 @mixin entity-icons {
   .entity-icon {
     border-radius: 50%;
@@ -332,6 +371,8 @@
 @include entity-details-title;
 @include entity-details-subordinates;
 @include entity-details-tables;
+@include entity-details__actions;
+@include entity-details__button-group;
 @include entity-icons;
 
 .SidebarChannelNavigator {
