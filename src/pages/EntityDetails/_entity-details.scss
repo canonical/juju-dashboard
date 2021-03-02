@@ -101,16 +101,18 @@
       padding: 0 0.5rem;
     }
 
-    @media (min-width: $breakpoint-m-large) {
-      grid-template-columns: 360px 1fr;
-    }
-
+    // Modified styling of the Vanilla tabbed component. To remove the border
+    // bottom as it sits on a border already.
     .p-tabs__list {
       margin-bottom: 0;
 
       &::after {
-        background-color: none;
+        background-color: transparent;
       }
+    }
+
+    .p-tabs__link::before {
+      background-color: transparent;
     }
 
     .p-tabs__link {
