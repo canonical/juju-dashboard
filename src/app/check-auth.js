@@ -20,6 +20,7 @@ const actionWhitelist = [
   "CLEAR_MODEL_DATA",
   "STORE_VISIT_URL",
   "TOGGLE_USER_MENU",
+  "SIDENAV_COLLAPSED",
 ];
 
 const thunkWhitelist = ["connectAndStartPolling", "logOut"];

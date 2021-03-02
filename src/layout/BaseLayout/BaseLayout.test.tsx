@@ -6,6 +6,8 @@ import { MemoryRouter, Route } from "react-router";
 import { QueryParamProvider } from "use-query-params";
 import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
+import cloneDeep from "clone-deep";
+
 import BaseLayout from "./BaseLayout";
 
 const mockStore = configureStore([]);
@@ -45,7 +47,9 @@ describe("Base Layout", () => {
   });
 
   it("should collapse the sidebar on entity details pages", () => {
-    const store = mockStore(dataDump);
+    const clonedDump = cloneDeep(dataDump);
+    clonedDump.ui.sideNavCollapsed = true;
+    const store = mockStore(clonedDump);
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter
