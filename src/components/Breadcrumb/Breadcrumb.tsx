@@ -1,11 +1,7 @@
 import { Link } from "@canonical/react-components";
 import { useParams } from "react-router-dom";
 
-export type EntityDetailsRoute = {
-  userName: string;
-  modelName: string;
-  appName: string;
-};
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 export default function Breadcrumb(): JSX.Element {
   const { userName, modelName, appName } = useParams<EntityDetailsRoute>();
