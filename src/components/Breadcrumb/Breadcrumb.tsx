@@ -1,7 +1,7 @@
-import { Link } from "@canonical/react-components";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import React from "react";
 
 export default function Breadcrumb(): JSX.Element {
   const { userName, modelName, appName } = useParams<EntityDetailsRoute>();
@@ -20,10 +20,10 @@ export default function Breadcrumb(): JSX.Element {
         {appName ? (
           <>
             <li className="p-breadcrumbs__item" data-test="breadcrumb-model">
-              <Link href={generateModelURL()}>{modelName}</Link>
+              <Link to={generateModelURL()}>{modelName}</Link>
             </li>
             <li className="p-breadcrumbs__item" data-test="breadcrumb-section">
-              <Link href={generateModelURL()}>Applications</Link>
+              <Link to={generateModelURL()}>Applications</Link>
             </li>
             <li
               className="p-breadcrumbs__item"
