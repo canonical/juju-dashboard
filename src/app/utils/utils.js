@@ -12,7 +12,7 @@ export function generateEntityIdentifier(
   disableLink = false
 ) {
   if (!namespace) {
-    return [];
+    return null;
   }
   let charmStorePath = "";
   try {
