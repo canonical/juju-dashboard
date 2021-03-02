@@ -1,13 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 
 import { Spinner, Tabs } from "@canonical/react-components";
 import { useDispatch, useSelector, useStore } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
+import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
-import Header from "components/Header/Header";
 
+import Header from "components/Header/Header";
 import WebCLI from "components/WebCLI/WebCLI";
+import SlidePanel from "components/SlidePanel/SlidePanel";
+
+import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
+import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
+import OffersPanel from "panels/OffersPanel/OffersPanel";
 
 import {
   getConfig,
@@ -27,8 +33,31 @@ import { fetchModelStatus } from "juju/actions";
 
 import "./_entity-details.scss";
 
-const EntityDetails = ({ activeView, setActiveView, type, children }) => {
-  const { modelName } = useParams();
+function generatePanelContent(activePanel, entity, panelRowClick) {
+  switch (activePanel) {
+    case "remoteApps":
+      return <RemoteAppsPanel entity={entity} panelRowClick={panelRowClick} />;
+    case "offers":
+      return <OffersPanel entity={entity} panelRowClick={panelRowClick} />;
+  }
+}
+
+const EntityDetails = ({ type, children }) => {
+  const { userName, modelName } = useParams();
+  const history = useHistory();
+
+  const [query, setQuery] = useQueryParams({
+    panel: StringParam,
+    entity: StringParam,
+    activeView: withDefault(StringParam, "apps"),
+  });
+
+  const setActiveView = (view) => {
+    setQuery({ activeView: view });
+  };
+
+  const { panel: activePanel, entity, activeView } = query;
+  const closePanelConfig = { panel: undefined, entity: undefined };
 
   const dispatch = useDispatch();
   const store = useStore();
@@ -104,6 +133,18 @@ const EntityDetails = ({ activeView, setActiveView, type, children }) => {
       : "..."
   );
 
+  const panelRowClick = useCallback(
+    (entityName, entityPanel) => {
+      // This can be removed when all entities are moved to top level aside panels
+      if (entityPanel === "apps") {
+        history.push(`/models/${userName}/${modelName}/app/${entityName}`);
+      } else {
+        return setQuery({ panel: entityPanel, entity: entityName });
+      }
+    },
+    [setQuery, history, modelName, userName]
+  );
+
   return (
     <BaseLayout>
       <Header>
@@ -150,7 +191,33 @@ const EntityDetails = ({ activeView, setActiveView, type, children }) => {
       ) : (
         <FadeIn isActive={modelStatusData}>
           <div className="l-content">
-            <div className="entity-details">{children}</div>
+            <div className="entity-details">
+              <>
+                {children}
+                {activePanel === "config" ? (
+                  <ConfigPanel
+                    appName={entity}
+                    charm={modelStatusData.applications[entity].charm}
+                    modelUUID={modelStatusData.uuid}
+                    onClose={() => setQuery(closePanelConfig)}
+                  />
+                ) : (
+                  <SlidePanel
+                    isActive={activePanel}
+                    onClose={() => setQuery(closePanelConfig)}
+                    isLoading={!entity}
+                    className={`${activePanel}-panel`}
+                  >
+                    {generatePanelContent(
+                      activePanel,
+                      entity,
+                      panelRowClick,
+                      modelStatusData
+                    )}
+                  </SlidePanel>
+                )}
+              </>
+            </div>
           </div>
         </FadeIn>
       )}
