@@ -101,6 +101,17 @@
       padding: 0 0.5rem;
     }
 
+    .p-breadcrumbs {
+      .p-breadcrumbs__items,
+      .p-breadcrumbs__item {
+        margin-bottom: 0;
+      }
+
+      .p-breadcrumbs__item:not(:first-of-type) {
+        text-indent: 1.25rem;
+      }
+    }
+
     // Modified styling of the Vanilla tabbed component. To remove the border
     // bottom as it sits on a border already.
     .p-tabs__list {
