@@ -11,20 +11,20 @@ type Props = {
 
 const ChipGroup = ({ chips }: Props) => {
   return (
-    <div className="chip-group">
-      {chips &&
-        Object.values(chips).map(({ label, count }) => {
-          return (
-            count > 0 && (
-              <div className="p-chip" key={label}>
-                <span
-                  className={`status-icon is-${label.toLowerCase()}`}
-                >{`${count} ${label}`}</span>
-              </div>
-            )
-          );
-        })}
-    </div>
+    chips &&
+    Object.values(chips).map(({ label, count }) => {
+      return (
+        count > 0 && (
+          <div className="chip-group">
+            <div className="p-chip" key={label}>
+              <span
+                className={`status-icon is-${label.toLowerCase()}`}
+              >{`${count} ${label}`}</span>
+            </div>
+          </div>
+        )
+      );
+    })
   );
 };
 
