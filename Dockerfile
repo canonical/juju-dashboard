@@ -24,13 +24,12 @@ FROM ubuntu:focal
 ENV LANG C.UTF-8
 WORKDIR /srv
 
-RUN apt-get update && apt-get install --no-install-recommends --yes python3
+RUN yarn global add serve
 
 # Import code, build assets and mirror list
 ADD . .
-RUN rm -rf package.json yarn.lock .babelrc webpack.config.js
+RUN rm -rf package.json yarn.lock
 COPY --from=build-js /srv/build .
 
 # Setup commands to run server
-ENTRYPOINT ["python3"]
-CMD ["-m", "http.server", "80"]
+ENTRYPOINT ["serve"]
