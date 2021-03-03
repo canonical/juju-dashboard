@@ -4,32 +4,50 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 import React from "react";
 
 export default function Breadcrumb(): JSX.Element {
-  const { userName, modelName, appName } = useParams<EntityDetailsRoute>();
+  const {
+    userName,
+    modelName,
+    appName,
+    unitId,
+    machineId,
+  } = useParams<EntityDetailsRoute>();
 
   const generateModelURL = function (): string {
-    if (userName) {
-      return `/models/${userName}/${modelName}`;
+    if (userName && machineId) {
+      return `/models/${userName}/${modelName}?activeView=machines`;
+    } else if (userName) {
+      return `/models/${modelName}/${modelName}?activeView=apps`;
     } else {
       return `/models/${modelName}`;
     }
   };
 
+  let isNestedEntityPage = !!appName || !!unitId || !!machineId;
+
   return (
     <nav className="p-breadcrumbs" aria-label="Breadcrumb navigation">
       <ol className="p-breadcrumbs__items" data-test="breadcrumb-items">
-        {appName ? (
+        {isNestedEntityPage ? (
           <>
             <li className="p-breadcrumbs__item" data-test="breadcrumb-model">
               <Link to={generateModelURL()}>{modelName}</Link>
             </li>
             <li className="p-breadcrumbs__item" data-test="breadcrumb-section">
-              <Link to={generateModelURL()}>Applications</Link>
+              <Link to={generateModelURL()}>
+                {!!appName && <span>Applications</span>}
+                {!!unitId && <span>Units</span>}
+                {!!machineId && <span>Machines</span>}
+              </Link>
             </li>
             <li
               className="p-breadcrumbs__item"
               data-test="breadcrumb-application"
             >
-              <strong>{appName}</strong>
+              <strong>
+                {!!appName && <span>{appName}</span>}
+                {!!unitId && <span>{unitId}</span>}
+                {!!machineId && <span>{machineId}</span>}
+              </strong>
             </li>
           </>
         ) : (
