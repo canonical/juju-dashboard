@@ -177,10 +177,12 @@ export default function ControllersIndex() {
   return (
     <BaseLayout>
       <Header>
-        <strong className="controllers--count">
-          {controllerCount} controllers,{" "}
-          <Link to="/models">{modelCount} models</Link>
-        </strong>
+        <div className="entity-details__header">
+          <strong className="controllers--count">
+            {controllerCount} controllers,{" "}
+            <Link to="/models">{modelCount} models</Link>
+          </strong>
+        </div>
       </Header>
       <div className="l-content controllers">
         <FadeIn isActive={true}>
