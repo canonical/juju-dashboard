@@ -11,6 +11,9 @@ export function generateEntityIdentifier(
   baseAppURL,
   disableLink = false
 ) {
+  if (!namespace) {
+    return null;
+  }
   let charmStorePath = "";
   try {
     charmStorePath = URL.fromAnyString(namespace).toString().replace("cs:", "");

@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
+import Breadcrumb from "components/Breadcrumb/Breadcrumb";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 
 import WebCLI from "components/WebCLI/WebCLI";
@@ -109,9 +110,7 @@ const EntityDetails = ({ activeView, setActiveView, type, children }) => {
     <BaseLayout>
       <Header>
         <div className="entity-details__header">
-          <strong className="entity-details__title">
-            {modelStatusData ? modelStatusData.model.name : "..."}
-          </strong>
+          <Breadcrumb />
           <div className="entity-details__view-selector">
             {modelStatusData && type === "model" && (
               <Tabs
