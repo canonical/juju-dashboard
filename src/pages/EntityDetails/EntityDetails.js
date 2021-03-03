@@ -10,6 +10,7 @@ import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
 import WebCLI from "components/WebCLI/WebCLI";
 import SlidePanel from "components/SlidePanel/SlidePanel";
+import Breadcrumb from "components/Breadcrumb/Breadcrumb";
 
 import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
