@@ -30,8 +30,8 @@ export type EntityDetailsRoute = {
   userName: string;
   modelName: string;
   appName: string;
-  unitName: string;
-  machineName: string;
+  unitId: string;
+  machineId: string;
 };
 
 export const paths: Paths = {
