@@ -100,7 +100,7 @@ export default function App() {
           <EntityInfo data={AppEntityData} />
         </>
       </div>
-      <div className="entity-details__content">
+      <div className="entity-details__main u-overflow--scroll">
         <ButtonGroup
           buttons={["units", "machines"]}
           activeButton={tableView}
