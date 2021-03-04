@@ -99,14 +99,11 @@ export default function Machine() {
   const getHardwareSpecs = () => {
     if (!machine) return {};
     const hardware = {};
-    console.log(machine);
     const hardwareArr = machine.hardware.split(" ");
     hardwareArr.forEach((spec) => {
       const [name, value] = spec.split("=");
       hardware[name] = value;
     });
-
-    console.log(hardware);
     return hardware;
   };
   const hardware = getHardwareSpecs();

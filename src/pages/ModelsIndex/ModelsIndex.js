@@ -145,13 +145,7 @@ export default function Models() {
         <FadeIn isActive={modelsLoaded}>
           <div className="l-content">
             <div className="models">
-              <ChipGroup
-                chips={[
-                  { label: "Blocked", count: blocked },
-                  { label: "Alert", count: alert },
-                  { label: "Running", count: running },
-                ]}
-              />
+              <ChipGroup chips={{ blocked, alert, running }} />
               <ModelTableList groupedBy={groupModelsBy} filters={filters} />
             </div>
           </div>

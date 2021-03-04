@@ -11,6 +11,7 @@ import MainTable from "@canonical/react-components/dist/components/MainTable";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import EntityInfo from "components/EntityInfo/EntityInfo";
+import ChipGroup from "components/ChipGroup/ChipGroup";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 
@@ -26,6 +27,8 @@ import {
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 
 import { machineTableHeaders, unitTableHeaders } from "tables/tableHeaders";
+
+import { renderCounts } from "../counts";
 
 export default function App() {
   const { appName: entity } = useParams();
@@ -68,14 +71,18 @@ export default function App() {
   };
 
   const AppEntityData = {
-    status: app?.status?.status
-      ? generateStatusElement(app.status.status)
-      : "-",
+    status:
+      app && app.status?.status
+        ? generateStatusElement(app.status.status)
+        : "-",
     charm: app?.charm,
     os: "Ubuntu",
-    revision: extractRevisionNumber(app?.charm) || "-",
+    revision: (app && extractRevisionNumber(app.charm)) || "-",
     message: "-",
   };
+
+  const unitChips = renderCounts("units", modelStatusData);
+  const machineChips = renderCounts("machines", modelStatusData);
 
   return (
     <EntityDetails className="entity-details__app">
@@ -101,22 +108,28 @@ export default function App() {
         />
         <div className="entity-details__tables">
           {tableView === "units" && (
-            <MainTable
-              headers={unitTableHeaders}
-              rows={unitPanelRows}
-              className="entity-details__units p-main-table panel__table"
-              sortable
-              emptyStateMsg={"There are no units in this model"}
-            />
+            <>
+              <ChipGroup chips={unitChips} descriptor="units" />
+              <MainTable
+                headers={unitTableHeaders}
+                rows={unitPanelRows}
+                className="entity-details__units p-main-table panel__table"
+                sortable
+                emptyStateMsg={"There are no units in this model"}
+              />
+            </>
           )}
           {tableView === "machines" && (
-            <MainTable
-              headers={machineTableHeaders}
-              rows={machinesPanelRows}
-              className="entity-details__machines p-main-table panel__table"
-              sortable
-              emptyStateMsg={"There are no machines in this model"}
-            />
+            <>
+              <ChipGroup chips={machineChips} descriptor="machines" />
+              <MainTable
+                headers={machineTableHeaders}
+                rows={machinesPanelRows}
+                className="entity-details__machines p-main-table panel__table"
+                sortable
+                emptyStateMsg={"There are no machines in this model"}
+              />
+            </>
           )}
         </div>
       </div>
