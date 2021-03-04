@@ -20,7 +20,6 @@ export const generateUnitSecondaryCounts = (modelStatusData) => {
   Object.keys(applications).forEach((applicationName) => {
     const units = applications[applicationName].units || [];
     Object.keys(units).forEach((unitId) => {
-      console.log(unitId);
       const status = units[unitId]["agent-status"].status;
       totalUnits += 1;
       return incrementCounts(status, counts);
