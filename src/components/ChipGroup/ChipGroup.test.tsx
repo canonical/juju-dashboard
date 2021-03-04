@@ -24,4 +24,14 @@ describe("Chip Group", () => {
     const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="Chips" />);
     expect(wrapper.find(".is-baz").length).toBe(0);
   });
+
+  it("should display the correct count and descriptor", () => {
+    const fakeChips = {
+      foo: 1,
+      bar: 2,
+      baz: 0,
+    };
+    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="units" />);
+    expect(wrapper.find(".chip-group__descriptor").text()).toBe("3 Units");
+  });
 });
