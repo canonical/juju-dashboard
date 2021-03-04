@@ -44,8 +44,14 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
 }
 
 const EntityDetails = ({ type, children }) => {
+  const modelStatusData = useModelStatus();
   const { userName, modelName } = useParams();
   const history = useHistory();
+
+  // Check if model exists in modelStatusData, else 404
+  if (modelName !== modelStatusData?.model?.name) {
+    history.push("/404");
+  }
 
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
@@ -68,7 +74,6 @@ const EntityDetails = ({ type, children }) => {
 
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   const modelUUID = useSelector(getModelUUIDMemo);
-  const modelStatusData = useModelStatus();
   // In a JAAS environment the controllerUUID will be the sub controller not
   // the primary controller UUID that we connect to.
   const controllerUUID = modelStatusData?.info["controller-uuid"];
