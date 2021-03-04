@@ -1,5 +1,7 @@
 # Juju Dashboard
 
+
+
 The dashboard to monitor your [Juju](https://juju.is) & [JAAS](https://jaas.ai) environments.
 
 Starting with Juju 2.8 this dashboard is installed by default with every bootstrap. To access it simply run `juju dashboard` and visit the link provided and log in using the supplied credentials. It's also available and automatically updated for users of JAAS on [jaas.ai](jaas.ai/models).
