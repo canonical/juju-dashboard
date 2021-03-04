@@ -8,6 +8,8 @@ import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
 import cloneDeep from "clone-deep";
 
+import { TSFixMe, UIState } from "types";
+
 import BaseLayout from "./BaseLayout";
 
 const mockStore = configureStore([]);
@@ -47,9 +49,9 @@ describe("Base Layout", () => {
   });
 
   it("should collapse the sidebar on entity details pages", () => {
-    const clonedDump = cloneDeep(dataDump);
-    // @ts-ignore sideNavCollapsed doesn't appear on type '{ userMenuActive: boolean; }'?
-    clonedDump.ui.sideNavCollapsed = true;
+    const clonedDump: TSFixMe = cloneDeep(dataDump);
+    const ui: UIState = clonedDump.ui;
+    ui.sideNavCollapsed = true;
     const store = mockStore(clonedDump);
     const wrapper = mount(
       <Provider store={store}>
