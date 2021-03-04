@@ -48,6 +48,7 @@ describe("Base Layout", () => {
 
   it("should collapse the sidebar on entity details pages", () => {
     const clonedDump = cloneDeep(dataDump);
+    // @ts-ignore sideNavCollapsed doesn't appear on type '{ userMenuActive: boolean; }'?
     clonedDump.ui.sideNavCollapsed = true;
     const store = mockStore(clonedDump);
     const wrapper = mount(
