@@ -9,7 +9,7 @@ describe("Chip Group", () => {
       bar: 2,
       baz: 3,
     };
-    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="Chips" />);
+    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="units" />);
     expect(wrapper.find(".is-foo").text()).toBe("1 foo");
     expect(wrapper.find(".is-bar").text()).toBe("2 bar");
     expect(wrapper.find(".is-baz").text()).toBe("3 baz");
@@ -21,7 +21,7 @@ describe("Chip Group", () => {
       bar: 2,
       baz: 0,
     };
-    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="Chips" />);
+    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="units" />);
     expect(wrapper.find(".is-baz").length).toBe(0);
   });
 

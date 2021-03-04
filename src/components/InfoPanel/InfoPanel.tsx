@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
