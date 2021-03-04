@@ -10,4 +10,4 @@ ADD . .
 RUN yarn run build
 RUN yarn global add serve
 # The serve.json file contains the configuration options for this server
-ENTRYPOINT ["serve -l 80"]
+ENTRYPOINT ["serve", "-l", "80"]
