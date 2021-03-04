@@ -30,7 +30,6 @@ const BaseLayout = ({ children }: Props) => {
   // Check if pathname includes a model name - and then always collapse sidebar
   const { modelName } = useParams<EntityDetailsRoute>();
 
-  // @ts-ignore
   const collapseSidebar = useSelector<TSFixMe>(isSideNavCollapsed) || false;
 
   useEffect(() => {
