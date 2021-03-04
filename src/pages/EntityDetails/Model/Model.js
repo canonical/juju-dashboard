@@ -38,10 +38,7 @@ import { getConfig } from "app/selectors";
 
 import { extractCloudName } from "app/utils/utils";
 
-import {
-  generateSecondaryCounts,
-  generateUnitSecondaryCounts,
-} from "../counts";
+import { renderCounts } from "../counts";
 
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
@@ -58,33 +55,6 @@ const shouldShow = (segment, activeView) => {
       }
       return segment === activeView;
   }
-};
-
-const renderCounts = (activeView, modelStatusData) => {
-  if (!modelStatusData) return null;
-  let chips = null;
-  switch (activeView) {
-    case "apps":
-      chips = generateSecondaryCounts(
-        modelStatusData,
-        "applications",
-        "status"
-      );
-      break;
-    case "units":
-      [chips] = generateUnitSecondaryCounts(modelStatusData);
-      break;
-    case "machines":
-      chips = generateSecondaryCounts(
-        modelStatusData,
-        "machines",
-        "agent-status"
-      );
-      break;
-    case "relations":
-      return null;
-  }
-  return <ChipGroup chips={chips} />;
 };
 
 const Model = () => {
@@ -168,6 +138,8 @@ const Model = () => {
     sla: modelStatusData?.model.sla,
   };
 
+  const LocalAppChips = renderCounts("localApps", modelStatusData);
+
   return (
     <EntityDetails type="model">
       <div>
@@ -175,7 +147,6 @@ const Model = () => {
         {modelStatusData && <EntityInfo data={ModelEntityData} />}
       </div>
       <div className="entity-details__main u-overflow--scroll">
-        {renderCounts(query.activeView, modelStatusData)}
         {shouldShow("apps", query.activeView) && (
           <>
             {appOffersRows.length > 0 && (
@@ -188,13 +159,18 @@ const Model = () => {
               />
             )}
             {localApplicationTableRows.length > 0 ? (
-              <MainTable
-                headers={localApplicationTableHeaders}
-                rows={localApplicationTableRows}
-                className="entity-details__apps p-main-table"
-                sortable
-                emptyStateMsg={"There are no applications in this model"}
-              />
+              <>
+                <ChipGroup chips={LocalAppChips} descriptor="localApps" />
+                <MainTable
+                  headers={localApplicationTableHeaders}
+                  rows={localApplicationTableRows}
+                  className="entity-details__apps p-main-table"
+                  sortable
+                  emptyStateMsg={
+                    "There are no local applications in this model"
+                  }
+                />
+              </>
             ) : (
               <span>
                 There are no applications associated with this model. Learn
