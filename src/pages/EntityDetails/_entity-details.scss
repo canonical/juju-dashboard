@@ -318,7 +318,8 @@
 @mixin entity-details__button-group {
   .entity-details .p-button-group {
     .p-button-group__buttons {
-      border-radius: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       margin-bottom: 1.5rem;
     }
 
