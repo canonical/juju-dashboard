@@ -96,7 +96,7 @@ export default function Unit() {
         <InfoPanel />
         <EntityInfo data={UnitEntityData} />
       </div>
-      <div className="entity-details__content">
+      <div className="entity-details__main u-overflow--scroll">
         <div className="slide-panel__tables">
           <MainTable
             headers={machineTableHeaders}

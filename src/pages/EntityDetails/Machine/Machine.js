@@ -122,7 +122,7 @@ export default function Machine() {
         <InfoPanel />
         <EntityInfo data={MachineEntityData} />
       </div>
-      <div className="entity-details__content">
+      <div className="entity-details__main u-overflow--scroll">
         <div>
           <div className="entity-detail__tables">
             <MainTable
