@@ -40,9 +40,7 @@ export const renderCounts = (activeView, modelStatusData) => {
       );
       break;
     case "units":
-      console.log("units");
       [chips] = generateUnitSecondaryCounts(modelStatusData);
-
       break;
     case "machines":
       chips = generateSecondaryCounts(
