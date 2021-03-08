@@ -105,6 +105,16 @@ const EntityDetails = ({ type, children }) => {
     );
   };
 
+  const handleNavClick = (e, section) => {
+    e.preventDefault();
+    e.target.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "nearest",
+    });
+    setActiveView(section);
+  };
+
   useEffect(() => {
     // XXX Remove me once we have the 2.9 build.
     if (
@@ -158,41 +168,17 @@ const EntityDetails = ({ type, children }) => {
                   {
                     active: activeView === "apps",
                     label: "Applications",
-                    onClick: (e) => {
-                      e.preventDefault();
-                      e.target.scrollIntoView({
-                        behavior: "smooth",
-                        block: "end",
-                        inline: "nearest",
-                      });
-                      setActiveView("apps");
-                    },
+                    onClick: (e) => handleNavClick(e, "apps"),
                   },
                   {
                     active: activeView === "integrations",
                     label: "Integrations",
-                    onClick: (e) => {
-                      e.preventDefault();
-                      e.target.scrollIntoView({
-                        behavior: "smooth",
-                        block: "end",
-                        inline: "nearest",
-                      });
-                      setActiveView("integrations");
-                    },
+                    onClick: (e) => handleNavClick(e, "integrations"),
                   },
                   {
                     active: activeView === "machines",
                     label: "Machines",
-                    onClick: (e) => {
-                      e.preventDefault();
-                      e.target.scrollIntoView({
-                        behavior: "smooth",
-                        block: "end",
-                        inline: "nearest",
-                      });
-                      setActiveView("machines");
-                    },
+                    onClick: (e) => handleNavClick(e, "machines"),
                   },
                 ]}
               />
