@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import { useHistory, useParams } from "react-router-dom";
 
+import Accordion from "@canonical/react-components/dist/components/Accordion/Accordion";
+
 import {
   appsOffersTableHeaders,
   machineTableHeaders,
@@ -39,6 +41,8 @@ import { getConfig } from "app/selectors";
 import { extractCloudName } from "app/utils/utils";
 
 import { renderCounts } from "../counts";
+
+import "./_model.scss";
 
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
@@ -140,6 +144,84 @@ const Model = () => {
 
   const LocalAppChips = renderCounts("localApps", modelStatusData);
 
+  const LocalAppsTable = () => (
+    <>
+      <ChipGroup chips={LocalAppChips} descriptor="localApps" />
+      <MainTable
+        headers={localApplicationTableHeaders}
+        rows={localApplicationTableRows}
+        className="entity-details__apps p-main-table"
+        sortable
+        emptyStateMsg={"There are no local applications in this model"}
+      />
+    </>
+  );
+
+  const OffersTable = () => (
+    <>
+      {appOffersRows.length > 0 && (
+        <MainTable
+          headers={appsOffersTableHeaders}
+          rows={appOffersRows}
+          className="entity-details__offers p-main-table"
+          sortable
+          emptyStateMsg={"There are no offers associated with this model"}
+        />
+      )}
+    </>
+  );
+
+  const remoteAppsTable = () => {
+    <>
+      {remoteApplicationTableRows.length > 0 && (
+        <MainTable
+          headers={remoteApplicationTableHeaders}
+          rows={remoteApplicationTableRows}
+          className="entity-details__remote-apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no remote applications in this model"}
+        />
+      )}
+    </>;
+  };
+
+  const applicationAccordionSections = [];
+  const getApplicationsAccordion = () => {
+    offersTableRows.length > 0 &&
+      applicationAccordionSections.push({
+        title: "Offers",
+        content: OffersTable(),
+      });
+
+    localApplicationTableRows.length > 0 &&
+      applicationAccordionSections.push({
+        title: "Local applications",
+        content: LocalAppsTable(),
+      });
+
+    remoteApplicationTableRows.length > 0 &&
+      applicationAccordionSections.push({
+        title: "Remote applications",
+        content: remoteAppsTable(),
+      });
+
+    return <Accordion sections={applicationAccordionSections} />;
+  };
+
+  const countVisibleTables = (tablesLengths) => {
+    let numberOfTables = 0;
+    tablesLengths.forEach((tableLength) => {
+      tableLength > 0 && numberOfTables++;
+    });
+    return numberOfTables;
+  };
+
+  const visibleTables = countVisibleTables([
+    localApplicationTableRows.length,
+    remoteApplicationTableRows.length,
+    offersTableRows.length,
+  ]);
+
   return (
     <EntityDetails type="model">
       <div>
@@ -149,27 +231,17 @@ const Model = () => {
       <div className="entity-details__main u-overflow--scroll">
         {shouldShow("apps", query.activeView) && (
           <>
-            {appOffersRows.length > 0 && (
-              <MainTable
-                headers={appsOffersTableHeaders}
-                rows={appOffersRows}
-                className="entity-details__offers p-main-table"
-                sortable
-                emptyStateMsg={"There are no offers associated with this model"}
-              />
-            )}
             {localApplicationTableRows.length > 0 ? (
               <>
-                <ChipGroup chips={LocalAppChips} descriptor="localApps" />
-                <MainTable
-                  headers={localApplicationTableHeaders}
-                  rows={localApplicationTableRows}
-                  className="entity-details__apps p-main-table"
-                  sortable
-                  emptyStateMsg={
-                    "There are no local applications in this model"
-                  }
-                />
+                {visibleTables > 1 ? (
+                  getApplicationsAccordion()
+                ) : (
+                  <>
+                    {LocalAppsTable()}
+                    {OffersTable()}
+                    {remoteAppsTable()}
+                  </>
+                )}
               </>
             ) : (
               <span>
@@ -184,13 +256,7 @@ const Model = () => {
               </span>
             )}
             {remoteApplicationTableRows?.length > 0 && (
-              <MainTable
-                headers={remoteApplicationTableHeaders}
-                rows={remoteApplicationTableRows}
-                className="entity-details__remote-apps p-main-table"
-                sortable
-                emptyStateMsg={"There are no remote applications in this model"}
-              />
+              <p>remote applications table</p>
             )}
           </>
         )}
