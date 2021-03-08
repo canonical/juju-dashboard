@@ -4,6 +4,10 @@
   margin-top: -0.4rem;
   padding-bottom: 0.5rem;
 
+  .chip-group__descriptor {
+    padding: 0 0.5rem;
+  }
+
   .p-chip {
     // Override Vanilla hover state as these chips are not yet actionable
     &:hover,

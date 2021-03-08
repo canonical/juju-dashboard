@@ -1,0 +1,9 @@
+.entity-info {
+  &__grid {
+    display: grid;
+
+    @media (min-width: 1580px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}

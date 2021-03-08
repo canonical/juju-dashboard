@@ -13,7 +13,7 @@ import {
 
 export function generateLocalApplicationRows(
   modelStatusData,
-  onRowClick,
+  tableRowClick,
   baseAppURL,
   query
 ) {
@@ -85,7 +85,7 @@ export function generateLocalApplicationRows(
         os: "Ubuntu",
         notes: "-",
       },
-      onClick: () => onRowClick(key, "apps"),
+      onClick: () => tableRowClick("app", key),
       "data-app": key,
       className:
         query?.panel === "apps" && query?.entity === key ? "is-selected" : "",
@@ -95,7 +95,7 @@ export function generateLocalApplicationRows(
 
 export function generateIntegrationLocalApplicationRows(
   modelStatusData,
-  onRowClick,
+  tableRowClick,
   baseAppURL,
   query
 ) {
@@ -134,7 +134,7 @@ export function generateIntegrationLocalApplicationRows(
         app: key,
         integration: "",
       },
-      onClick: () => onRowClick(key, "integration"),
+      onClick: () => tableRowClick(key, "integration"),
       "data-app": key,
       className:
         query?.panel === "integration" && query?.entity === key
@@ -146,7 +146,7 @@ export function generateIntegrationLocalApplicationRows(
 
 export function generateRemoteApplicationRows(
   modelStatusData,
-  onRowClick,
+  tableRowClick,
   baseAppURL,
   query
 ) {
@@ -199,7 +199,7 @@ export function generateRemoteApplicationRows(
           store: "store",
         },
         "data-app": key,
-        onClick: () => false && onRowClick(key, "remoteApps"), // DISABLED PANEL
+        onClick: () => false && tableRowClick(key, "remoteApps"), // DISABLED PANEL
         className:
           query?.panel === "remoteApps" && query?.entity === key
             ? "is-selected"
@@ -211,7 +211,7 @@ export function generateRemoteApplicationRows(
 
 export function generateIntegrationRemoteApplicationRows(
   modelStatusData,
-  onRowClick,
+  tableRowClick,
   baseAppURL,
   query
 ) {
@@ -244,7 +244,7 @@ export function generateIntegrationRemoteApplicationRows(
           integration: "",
         },
         "data-app": key,
-        onClick: () => false && onRowClick(key, "remoteApps"), // DISABLED PANEL
+        onClick: () => false && tableRowClick(key, "remoteApps"), // DISABLED PANEL
         className:
           query?.panel === "integrations" && query?.entity === key
             ? "is-selected"
@@ -256,7 +256,7 @@ export function generateIntegrationRemoteApplicationRows(
 
 export function generateUnitRows(
   modelStatusData,
-  onRowClick,
+  tableRowClick,
   baseAppURL,
   selectedEntity
 ) {
@@ -314,7 +314,7 @@ export function generateUnitRows(
           port,
           message,
         },
-        onClick: () => onRowClick(unitId, "units"),
+        onClick: () => tableRowClick("unit", unitId),
         "data-unit": unitId,
         className: selectedEntity === unitId ? "is-selected" : "",
       });
@@ -377,7 +377,7 @@ export function generateUnitRows(
 
 export function generateMachineRows(
   modelStatusData,
-  onRowClick,
+  tableRowClick,
   selectedEntity
 ) {
   if (!modelStatusData) {
@@ -448,7 +448,7 @@ export function generateMachineRows(
         instanceId: machine.instanceId,
         message: machine?.agentStatus?.info,
       },
-      onClick: () => onRowClick(machineId, "machines"),
+      onClick: () => tableRowClick("machine", machineId),
       "data-machine": machineId,
       className: selectedEntity === machineId ? "is-selected" : "",
     };
@@ -561,7 +561,7 @@ export function generateOffersRows(modelStatusData, baseAppURL) {
 
 export function generateAppOffersRows(
   modelStatusData,
-  onRowClick,
+  tableRowClick,
   baseAppURL,
   query
 ) {
@@ -604,7 +604,7 @@ export function generateAppOffersRows(
           content: "-", // offer url is not yet available from the API
         },
       ],
-      onClick: () => false && onRowClick(offerId, "offers"), // DISABLED PANEL
+      onClick: () => false && tableRowClick(offerId, "offers"), // DISABLED PANEL
       "data-app": offerId,
       className:
         query.panel === "offers" && query.entity === offerId

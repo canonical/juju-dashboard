@@ -7,12 +7,6 @@ export const incrementCounts = (status, counts) => {
   return counts;
 };
 
-export const formatCounts = (counts) =>
-  Object.entries(counts).map((statusSet) => ({
-    count: statusSet[1],
-    label: statusSet[0],
-  }));
-
 export const generateSecondaryCounts = (modelStatusData, segment, selector) =>
   Object.entries(modelStatusData[segment]).reduce((counts, section) => {
     const status = section[1][selector].status;
@@ -31,5 +25,33 @@ export const generateUnitSecondaryCounts = (modelStatusData) => {
       return incrementCounts(status, counts);
     });
   });
-  return [formatCounts(counts), totalUnits];
+  return [counts, totalUnits];
+};
+
+export const renderCounts = (activeView, modelStatusData) => {
+  if (!modelStatusData) return null;
+  let chips = null;
+  switch (activeView) {
+    case "localApps":
+      chips = generateSecondaryCounts(
+        modelStatusData,
+        "applications",
+        "status"
+      );
+      break;
+    case "units":
+      [chips] = generateUnitSecondaryCounts(modelStatusData);
+      break;
+    case "machines":
+      chips = generateSecondaryCounts(
+        modelStatusData,
+        "machines",
+        "agent-status"
+      );
+      break;
+    case "relations":
+      chips = null;
+      break;
+  }
+  return chips;
 };

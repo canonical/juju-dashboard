@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Topology from "components/Topology/Topology";
 import Modal from "@canonical/react-components/dist/components/Modal";
 
-import { extractCloudName, getViewportWidth } from "app/utils/utils";
+import { getViewportWidth } from "app/utils/utils";
 import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import useEventListener from "hooks/useEventListener";
@@ -40,10 +40,6 @@ const InfoPanel = () => {
   const modelStatusData: TSFixMe = useModelStatus();
   const applicationsCount = Object.entries(modelStatusData.applications || {})
     .length;
-
-  const cloudProvider = modelStatusData
-    ? extractCloudName(modelStatusData.model["cloud-tag"])
-    : "";
 
   const { width, height } = expandedTopologyDimensions();
   const topologySize = infoPanelDimensions();
@@ -102,34 +98,6 @@ const InfoPanel = () => {
           )}
         </>
       )}
-      <div className="info-panel__grid">
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Controller</h4>
-          <p data-name="controller">
-            {modelStatusData ? modelStatusData.model.type : ""}
-          </p>
-        </div>
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Cloud/Region</h4>
-          <p data-name="cloud-region">
-            {cloudProvider}
-            {modelStatusData ? "/" : ""}
-            {modelStatusData ? modelStatusData.model.region : ""}
-          </p>
-        </div>
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">Version</h4>
-          <p data-name="version">
-            {modelStatusData ? modelStatusData.model.version : ""}
-          </p>
-        </div>
-        <div className="info-panel__grid-item">
-          <h4 className="p-muted-heading">SLA</h4>
-          <p data-name="sla">
-            {modelStatusData ? modelStatusData.model.sla : ""}
-          </p>
-        </div>
-      </div>
     </div>
   );
 };
