@@ -48,11 +48,6 @@ const EntityDetails = ({ type, children }) => {
   const { userName, modelName } = useParams();
   const history = useHistory();
 
-  // Check if model exists in modelStatusData, else 404
-  if (modelName !== modelStatusData?.model?.name) {
-    history.push("/404");
-  }
-
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
     entity: StringParam,
