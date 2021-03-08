@@ -56,14 +56,20 @@ export default function Breadcrumb(): JSX.Element {
       <ol className="p-breadcrumbs__items" data-test="breadcrumb-items">
         {isNestedEntityPage ? (
           <>
-            <li className="p-breadcrumbs__item" data-test="breadcrumb-model">
+            <li
+              className="p-breadcrumbs__item u-no-padding--top"
+              data-test="breadcrumb-model"
+            >
               <Link to={generateModelURL()}>{modelName}</Link>
             </li>
-            <li className="p-breadcrumbs__item" data-test="breadcrumb-section">
+            <li
+              className="p-breadcrumbs__item u-no-padding--top"
+              data-test="breadcrumb-section"
+            >
               <Link to={generateModelURL()}>{entityType.title}</Link>
             </li>
             <li
-              className="p-breadcrumbs__item"
+              className="p-breadcrumbs__item u-no-padding--top"
               data-test={`breadcrumb-${entityType.title?.toLowerCase()}`}
             >
               <strong>{entityType.id}</strong>
