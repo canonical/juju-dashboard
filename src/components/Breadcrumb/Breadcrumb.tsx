@@ -81,7 +81,9 @@ export default function Breadcrumb(): JSX.Element {
             data-test="breadcrumb-model"
             title={modelName}
           >
-            <strong>{modelName}</strong>
+            <Link to={generateModelURL()} className="p-link--soft">
+              <strong>{modelName}</strong>
+            </Link>
           </li>
         )}
       </ol>
