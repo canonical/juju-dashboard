@@ -3,6 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import React from "react";
 
+import "./_breadcrumbs.scss";
+
 export default function Breadcrumb(): JSX.Element {
   const {
     userName,
@@ -69,8 +71,9 @@ export default function Breadcrumb(): JSX.Element {
           </>
         ) : (
           <li
-            className="p-breadcrumbs__item u-no-padding--top"
+            className="p-breadcrumbs__item p-breadcrumbs__item--restricted"
             data-test="breadcrumb-model"
+            title={modelName}
           >
             <strong>{modelName}</strong>
           </li>
