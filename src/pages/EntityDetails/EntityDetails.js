@@ -160,6 +160,11 @@ const EntityDetails = ({ type, children }) => {
                     label: "Applications",
                     onClick: (e) => {
                       e.preventDefault();
+                      e.target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "end",
+                        inline: "nearest",
+                      });
                       setActiveView("apps");
                     },
                   },
@@ -168,6 +173,11 @@ const EntityDetails = ({ type, children }) => {
                     label: "Integrations",
                     onClick: (e) => {
                       e.preventDefault();
+                      e.target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "end",
+                        inline: "nearest",
+                      });
                       setActiveView("integrations");
                     },
                   },
@@ -176,6 +186,11 @@ const EntityDetails = ({ type, children }) => {
                     label: "Machines",
                     onClick: (e) => {
                       e.preventDefault();
+                      e.target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "end",
+                        inline: "nearest",
+                      });
                       setActiveView("machines");
                     },
                   },
