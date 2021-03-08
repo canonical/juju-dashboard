@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 
-FROM ubuntu:focal AS base
+FROM ubuntu:focal
 WORKDIR /srv
 RUN apt update && \
     apt install curl --yes && \
@@ -9,8 +9,6 @@ RUN apt update && \
     apt install nodejs --yes
 RUN npm install -g yarn
 RUN yarn global add serve
-
-FROM base
 ADD package.json .
 ADD yarn.lock .
 RUN --mount=type=cache,target=/usr/local/share/.cache/yarn yarn install
