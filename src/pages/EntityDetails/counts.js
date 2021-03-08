@@ -50,7 +50,8 @@ export const renderCounts = (activeView, modelStatusData) => {
       );
       break;
     case "relations":
-      return null;
+      chips = null;
+      break;
   }
   return chips;
 };
