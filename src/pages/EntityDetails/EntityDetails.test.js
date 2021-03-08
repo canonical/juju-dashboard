@@ -16,24 +16,6 @@ jest.mock("components/Topology/Topology", () => {
 const mockStore = configureStore([]);
 
 describe("Entity Details Container", () => {
-  it("renders the topology", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/user-eggman@external/group-test"]}
-        >
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/:userName/:modelName?">
-              <EntityDetails />
-            </TestRoute>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find("Topology").length).toBe(1);
-  });
-
   it("should display the correct window title", () => {
     const store = mockStore(dataDump);
     mount(

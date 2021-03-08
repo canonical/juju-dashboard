@@ -9,6 +9,8 @@ import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 // Entity Detail pages
 import Model from "pages/EntityDetails/Model/Model";
 import App from "pages/EntityDetails/App/App";
+import Unit from "pages/EntityDetails/Unit/Unit";
+import Machine from "pages/EntityDetails/Machine/Machine";
 
 import Settings from "pages/Settings/Settings";
 import NotFound from "pages/NotFound/NotFound";
@@ -28,6 +30,8 @@ export type EntityDetailsRoute = {
   userName: string;
   modelName: string;
   appName: string;
+  unitId: string;
+  machineId: string;
 };
 
 export const paths: Paths = {
@@ -35,6 +39,8 @@ export const paths: Paths = {
   "/models": { component: ModelsIndex },
   "/models/:userName/:modelName?": { component: Model },
   "/models/:userName/:modelName?/app/:appName?": { component: App },
+  "/models/:userName/:modelName?/unit/:unitId?": { component: Unit },
+  "/models/:userName/:modelName?/machine/:machineId?": { component: Machine },
   "/controllers": { component: ControllersIndex },
   "/settings": { component: Settings },
 };

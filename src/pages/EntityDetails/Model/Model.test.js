@@ -47,6 +47,9 @@ describe("Model", () => {
         </MemoryRouter>
       </Provider>
     );
+
+    Element.prototype.scrollIntoView = jest.fn();
+
     expect(
       wrapper.find(".entity-details__main > .entity-details__apps").length
     ).toBe(1);
@@ -157,37 +160,6 @@ describe("Model", () => {
     );
   });
 
-  it("displays correct side panel when machine row is clicked", () => {
-    const store = mockStore(dataDump);
-    const testMachine = "1";
-    const wrapper = mount(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/pizza@external/hadoopspark?activeView=machines",
-          ]}
-        >
-          <QueryParamProvider ReactRouterRoute={Route}>
-            <TestRoute path="/models/:userName/:modelName?">
-              <Model />
-            </TestRoute>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(wrapper.find(".slide-panel.machines-panel").length).toBe(0);
-    const machineRow = wrapper.find(
-      `.entity-details__main tr[data-machine="${testMachine}"]`
-    );
-    machineRow.simulate("click");
-    expect(wrapper.find(".slide-panel.machines-panel").length).toBe(1);
-    expect(
-      wrapper
-        .find(".slide-panel.machines-panel .panel-header .entity-name")
-        .text()
-    ).toBe("Machine '1' - xenial");
-  });
-
   it("should show a message if a model has no integrations", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
@@ -259,5 +231,23 @@ describe("Model", () => {
 
     const machineApp6 = machineAppIconRows.at(6).find("img");
     expect(machineApp6.length).toBe(4);
+  });
+
+  it("renders the topology", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/:userName/:modelName?">
+              <Model />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find("Topology").length).toBe(1);
   });
 });
