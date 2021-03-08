@@ -68,7 +68,10 @@ export default function Breadcrumb(): JSX.Element {
             </li>
           </>
         ) : (
-          <li className="p-breadcrumbs__item" data-test="breadcrumb-model">
+          <li
+            className="p-breadcrumbs__item u-no-padding--top"
+            data-test="breadcrumb-model"
+          >
             <strong>{modelName}</strong>
           </li>
         )}
