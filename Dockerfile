@@ -1,7 +1,13 @@
 # syntax=docker/dockerfile:experimental
 
-FROM node:12-slim
+FROM ubuntu:focal
 WORKDIR /srv
+RUN apt update && \
+    apt install curl --yes && \
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+    apt update && \
+    apt install nodejs --yes
+RUN npm install -g yarn
 ADD package.json .
 ADD yarn.lock .
 RUN --mount=type=cache,target=/usr/local/share/.cache/yarn yarn install
