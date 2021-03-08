@@ -47,6 +47,9 @@ describe("Model", () => {
         </MemoryRouter>
       </Provider>
     );
+
+    Element.prototype.scrollIntoView = jest.fn();
+
     expect(
       wrapper.find(".entity-details__main > .entity-details__apps").length
     ).toBe(1);
