@@ -11,10 +11,10 @@
   z-index: z("gamma");
 
   @media (min-width: $breakpoint-medium) {
-    position: sticky;
-    top: 0;
     align-items: center;
     display: grid;
     padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
   }
 }
