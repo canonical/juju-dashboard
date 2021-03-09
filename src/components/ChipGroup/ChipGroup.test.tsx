@@ -34,4 +34,14 @@ describe("Chip Group", () => {
     const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="units" />);
     expect(wrapper.find(".chip-group__descriptor").text()).toBe("3 Units");
   });
+
+  it("should not display the descriptor when null", () => {
+    const fakeChips = {
+      foo: 1,
+      bar: 2,
+      baz: 0,
+    };
+    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor={null} />);
+    expect(wrapper.find(".chip-group__descriptor").length).toBe(0);
+  });
 });
