@@ -1,7 +1,8 @@
+import { ReactNode } from "react";
 import { useQueryParam, StringParam } from "use-query-params";
 
 type Props = {
-  title: JSX.Element;
+  title: ReactNode;
 };
 
 export default function PanelHeader({ title }: Props): JSX.Element {
