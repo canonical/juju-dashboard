@@ -10,8 +10,9 @@ export const incrementCounts = (status, counts) => {
 const generateOfferCounts = (modelStatusData) => {
   let offerCount = 0;
   Object.entries(modelStatusData["offers"]).forEach((offer) => {
-    if (offer[1]["total-connected-count"] > 0) {
-      offerCount++;
+    const totalConnectedCount = offer[1]["total-connected-count"];
+    if (totalConnectedCount > 0) {
+      offerCount = offerCount + totalConnectedCount;
     }
   });
   return { joined: offerCount };
