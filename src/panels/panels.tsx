@@ -2,7 +2,7 @@ import { useQueryParam, StringParam } from "use-query-params";
 import { AnimatePresence } from "framer-motion";
 
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
-import RegisterController from "components/RegisterController/RegisterController";
+import RegisterController from "panels/RegisterController/RegisterController";
 
 import "./_panels.scss";
 
