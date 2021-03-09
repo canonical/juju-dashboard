@@ -203,21 +203,7 @@ const EntityDetails = ({ type, children }) => {
                     modelUUID={modelStatusData.uuid}
                     onClose={() => setQuery(closePanelConfig)}
                   />
-                ) : (
-                  <SlidePanel
-                    isActive={activePanel}
-                    onClose={() => setQuery(closePanelConfig)}
-                    isLoading={!entity}
-                    className={`${activePanel}-panel`}
-                  >
-                    {generatePanelContent(
-                      activePanel,
-                      entity,
-                      panelRowClick,
-                      modelStatusData
-                    )}
-                  </SlidePanel>
-                )}
+                ) : null}
               </>
             </div>
           </div>
