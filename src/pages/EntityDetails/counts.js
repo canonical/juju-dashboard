@@ -7,13 +7,13 @@ export const incrementCounts = (status, counts) => {
   return counts;
 };
 
-export const generateSecondaryCounts = (modelStatusData, segment, selector) =>
+const generateSecondaryCounts = (modelStatusData, segment, selector) =>
   Object.entries(modelStatusData[segment]).reduce((counts, section) => {
     const status = section[1][selector].status;
     return incrementCounts(status, counts);
   }, {});
 
-export const generateUnitSecondaryCounts = (modelStatusData) => {
+const generateUnitSecondaryCounts = (modelStatusData) => {
   const counts = {};
   let totalUnits = 0;
   const applications = modelStatusData.applications;
@@ -28,7 +28,7 @@ export const generateUnitSecondaryCounts = (modelStatusData) => {
   return [counts, totalUnits];
 };
 
-export const renderCounts = (activeView, modelStatusData) => {
+export const renderCounts = (countType, modelStatusData) => {
   if (!modelStatusData) return null;
   let chips = null;
   switch (activeView) {
