@@ -173,7 +173,7 @@ const Model = () => {
 
   const remoteAppsTable = () => {
     <>
-      {remoteApplicationTableRows.length > 0 && (
+      {remoteApplicationTableRows?.length > 0 && (
         <MainTable
           headers={remoteApplicationTableHeaders}
           rows={remoteApplicationTableRows}
@@ -187,19 +187,19 @@ const Model = () => {
 
   const applicationAccordionSections = [];
   const getApplicationsAccordion = () => {
-    offersTableRows.length > 0 &&
+    offersTableRows?.length > 0 &&
       applicationAccordionSections.push({
         title: "Offers",
         content: OffersTable(),
       });
 
-    localApplicationTableRows.length > 0 &&
+    localApplicationTableRows?.length > 0 &&
       applicationAccordionSections.push({
         title: "Local applications",
         content: LocalAppsTable(),
       });
 
-    remoteApplicationTableRows.length > 0 &&
+    remoteApplicationTableRows?.length > 0 &&
       applicationAccordionSections.push({
         title: "Remote applications",
         content: remoteAppsTable(),
@@ -217,9 +217,9 @@ const Model = () => {
   };
 
   const visibleTables = countVisibleTables([
-    localApplicationTableRows.length,
-    remoteApplicationTableRows.length,
-    offersTableRows.length,
+    localApplicationTableRows?.length,
+    remoteApplicationTableRows?.length,
+    offersTableRows?.length,
   ]);
 
   return (
