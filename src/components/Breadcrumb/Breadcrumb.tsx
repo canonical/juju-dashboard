@@ -3,6 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import React from "react";
 
+import "./_breadcrumbs.scss";
+
 export default function Breadcrumb(): JSX.Element {
   const {
     userName,
@@ -54,22 +56,34 @@ export default function Breadcrumb(): JSX.Element {
       <ol className="p-breadcrumbs__items" data-test="breadcrumb-items">
         {isNestedEntityPage ? (
           <>
-            <li className="p-breadcrumbs__item" data-test="breadcrumb-model">
+            <li
+              className="p-breadcrumbs__item u-no-padding--top"
+              data-test="breadcrumb-model"
+            >
               <Link to={generateModelURL()}>{modelName}</Link>
             </li>
-            <li className="p-breadcrumbs__item" data-test="breadcrumb-section">
+            <li
+              className="p-breadcrumbs__item u-no-padding--top"
+              data-test="breadcrumb-section"
+            >
               <Link to={generateModelURL()}>{entityType.title}</Link>
             </li>
             <li
-              className="p-breadcrumbs__item"
+              className="p-breadcrumbs__item u-no-padding--top"
               data-test={`breadcrumb-${entityType.title?.toLowerCase()}`}
             >
               <strong>{entityType.id}</strong>
             </li>
           </>
         ) : (
-          <li className="p-breadcrumbs__item" data-test="breadcrumb-model">
-            <strong>{modelName}</strong>
+          <li
+            className="p-breadcrumbs__item p-breadcrumbs__item--restricted"
+            data-test="breadcrumb-model"
+            title={modelName}
+          >
+            <Link to={generateModelURL()} className="p-link--soft">
+              <strong>{modelName}</strong>
+            </Link>
           </li>
         )}
       </ol>

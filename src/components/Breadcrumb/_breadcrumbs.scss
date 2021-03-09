@@ -1,0 +1,8 @@
+.p-breadcrumbs {
+  .p-breadcrumbs__item--restricted {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 20ch;
+  }
+}

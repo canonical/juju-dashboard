@@ -14,7 +14,7 @@
     display: grid;
     grid-template-columns: 1fr;
     opacity: 1;
-    padding: 0.15rem;
+    padding: 0.5rem 0.15rem;
     transition: opacity 0.25s;
 
     &[data-disabled="true"] {
@@ -22,16 +22,8 @@
       pointer-events: none;
     }
 
-    .models__count {
-      display: none;
-    }
-
     @media (min-width: $breakpoint-medium) {
       grid-template-columns: 120px 1fr 280px;
-
-      .models__count {
-        display: block;
-      }
     }
 
     .search-and-filter {

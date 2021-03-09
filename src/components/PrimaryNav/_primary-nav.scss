@@ -28,6 +28,11 @@
     grid-template-columns: 1fr 40px;
     padding: 0.75rem 0.5rem 0.35rem;
     position: relative;
+
+    @media (min-width: $breakpoint-medium) {
+      height: 4rem;
+      padding: 0 0.5rem;
+    }
   }
 
   &__toggle {

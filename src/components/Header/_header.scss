@@ -8,13 +8,13 @@
   display: block;
   min-height: 4rem;
   padding: 0 1rem;
-  position: sticky;
-  top: 0;
   z-index: z("gamma");
 
   @media (min-width: $breakpoint-medium) {
     align-items: center;
     display: grid;
     padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
   }
 }
