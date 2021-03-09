@@ -103,6 +103,7 @@ const Model = () => {
       query
     );
   }, [modelStatusData, panelRowClick, baseAppURL, query]);
+
   const machinesTableRows = useMemo(() => {
     return generateMachineRows(modelStatusData, tableRowClick, query?.entity);
   }, [modelStatusData, tableRowClick, query]);
@@ -143,10 +144,12 @@ const Model = () => {
   };
 
   const LocalAppChips = renderCounts("localApps", modelStatusData);
+  const offersChips = renderCounts("offers", modelStatusData);
+  const remoteAppChips = renderCounts("remoteApps", modelStatusData);
 
   const LocalAppsTable = () => (
     <>
-      <ChipGroup chips={LocalAppChips} descriptor="localApps" />
+      <ChipGroup chips={LocalAppChips} descriptor={null} />
       <MainTable
         headers={localApplicationTableHeaders}
         rows={localApplicationTableRows}
@@ -160,33 +163,39 @@ const Model = () => {
   const OffersTable = () => (
     <>
       {appOffersRows.length > 0 && (
-        <MainTable
-          headers={appsOffersTableHeaders}
-          rows={appOffersRows}
-          className="entity-details__offers p-main-table"
-          sortable
-          emptyStateMsg={"There are no offers associated with this model"}
-        />
+        <>
+          <ChipGroup chips={offersChips} descriptor={null} />
+          <MainTable
+            headers={appsOffersTableHeaders}
+            rows={appOffersRows}
+            className="entity-details__offers p-main-table"
+            sortable
+            emptyStateMsg={"There are no offers associated with this model"}
+          />
+        </>
       )}
     </>
   );
 
-  const remoteAppsTable = () => {
+  const remoteAppsTable = () => (
     <>
       {remoteApplicationTableRows?.length > 0 && (
-        <MainTable
-          headers={remoteApplicationTableHeaders}
-          rows={remoteApplicationTableRows}
-          className="entity-details__remote-apps p-main-table"
-          sortable
-          emptyStateMsg={"There are no remote applications in this model"}
-        />
+        <>
+          <ChipGroup chips={remoteAppChips} descriptor={null} />
+          <MainTable
+            headers={remoteApplicationTableHeaders}
+            rows={remoteApplicationTableRows}
+            className="entity-details__remote-apps p-main-table"
+            sortable
+            emptyStateMsg={"There are no remote applications in this model"}
+          />
+        </>
       )}
-    </>;
-  };
+    </>
+  );
 
-  const applicationAccordionSections = [];
   const getApplicationsAccordion = () => {
+    const applicationAccordionSections = [];
     offersTableRows?.length > 0 &&
       applicationAccordionSections.push({
         title: "Offers",
@@ -254,9 +263,6 @@ const Model = () => {
                   deploying applications
                 </a>
               </span>
-            )}
-            {remoteApplicationTableRows?.length > 0 && (
-              <p>remote applications table</p>
             )}
           </>
         )}

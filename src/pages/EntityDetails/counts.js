@@ -7,7 +7,18 @@ export const incrementCounts = (status, counts) => {
   return counts;
 };
 
+const generateOfferCounts = (modelStatusData) => {
+  let offerCount = 0;
+  Object.entries(modelStatusData["offers"]).forEach((offer) => {
+    if (offer[1]["total-connected-count"] > 0) {
+      offerCount++;
+    }
+  });
+  return { joined: offerCount };
+};
+
 const generateSecondaryCounts = (modelStatusData, segment, selector) =>
+  modelStatusData[segment] &&
   Object.entries(modelStatusData[segment]).reduce((counts, section) => {
     const status = section[1][selector].status;
     return incrementCounts(status, counts);
@@ -31,7 +42,7 @@ const generateUnitSecondaryCounts = (modelStatusData) => {
 export const renderCounts = (countType, modelStatusData) => {
   if (!modelStatusData) return null;
   let chips = null;
-  switch (activeView) {
+  switch (countType) {
     case "localApps":
       chips = generateSecondaryCounts(
         modelStatusData,
@@ -51,6 +62,16 @@ export const renderCounts = (countType, modelStatusData) => {
       break;
     case "relations":
       chips = null;
+      break;
+    case "offers":
+      chips = generateOfferCounts(modelStatusData);
+      break;
+    case "remoteApps":
+      chips = generateSecondaryCounts(
+        modelStatusData,
+        "remote-applications",
+        "status"
+      );
       break;
   }
   return chips;
