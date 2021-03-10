@@ -9,8 +9,35 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
+import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 
 import "./_actions-panel.scss";
+
+type ActionData = {
+  [key: string]: ActionItem;
+};
+
+type ActionItem = {
+  description: string;
+  params: ActionParams;
+};
+
+type ActionParams = {
+  description: string;
+  properties: ActionProps;
+  required: string[];
+  title: string;
+  type: string;
+};
+
+type ActionProps = {
+  [key: string]: ActionProp;
+};
+
+type ActionProp = {
+  description: string;
+  type: string;
+};
 
 export default function ActionsPanel(): JSX.Element {
   const appStore = useStore();
@@ -22,9 +49,7 @@ export default function ActionsPanel(): JSX.Element {
   const modelUUID = useSelector(
     getModelUUIDMemo as (state: DefaultRootState) => unknown
   );
-  const [actionData, setActionData] = useState();
-
-  console.log(actionData);
+  const [actionData, setActionData] = useState<ActionData>();
 
   useEffect(() => {
     getActionsForApplication(appName, modelUUID, appStore.getState()).then(
@@ -54,7 +79,21 @@ export default function ActionsPanel(): JSX.Element {
         <div className="actions-panel__unit-list">
           Run action on {appName}: {generateSelectedUnitList()}
         </div>
+        <div className="actions-panel__action-list">
+          {generateActionlist(actionData)}
+        </div>
       </div>
     </Aside>
   );
+}
+
+function generateActionlist(actionData: ActionData | undefined) {
+  if (!actionData) return null;
+  return Object.keys(actionData).map((actionName) => (
+    <RadioInputBox
+      name={actionName}
+      description={actionData[actionName].description}
+      key={actionName}
+    />
+  ));
 }
