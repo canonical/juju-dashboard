@@ -116,6 +116,7 @@ const Model = () => {
     () => generateConsumedRows(modelStatusData, baseAppURL),
     [modelStatusData, baseAppURL]
   );
+
   const offersTableRows = useMemo(
     () =>
       generateOffersRows(
@@ -131,7 +132,6 @@ const Model = () => {
       generateAppOffersRows(modelStatusData, panelRowClick, baseAppURL, query),
     [modelStatusData, panelRowClick, baseAppURL, query]
   );
-
   const cloudProvider = modelStatusData
     ? extractCloudName(modelStatusData.model["cloud-tag"])
     : "";
@@ -147,16 +147,24 @@ const Model = () => {
   const offersChips = renderCounts("offers", modelStatusData);
   const remoteAppChips = renderCounts("remoteApps", modelStatusData);
 
+  const localAppTableLength = localApplicationTableRows.length;
+  const offersTableLength = offersTableRows.length;
+  const remoteAppsTableLength = remoteApplicationTableRows.length;
+
   const LocalAppsTable = () => (
     <>
-      <ChipGroup chips={LocalAppChips} descriptor={null} />
-      <MainTable
-        headers={localApplicationTableHeaders}
-        rows={localApplicationTableRows}
-        className="entity-details__apps p-main-table"
-        sortable
-        emptyStateMsg={"There are no local applications in this model"}
-      />
+      {localAppTableLength && (
+        <>
+          <ChipGroup chips={LocalAppChips} descriptor={null} />
+          <MainTable
+            headers={localApplicationTableHeaders}
+            rows={localApplicationTableRows}
+            className="entity-details__apps p-main-table"
+            sortable
+            emptyStateMsg={"There are no local applications in this model"}
+          />
+        </>
+      )}
     </>
   );
 
@@ -194,27 +202,47 @@ const Model = () => {
     </>
   );
 
+  const expandedKey = () => {
+    if (offersTableLength) {
+      return "offers";
+    }
+    if (localAppTableLength) {
+      return "local-apps";
+    }
+    if (remoteAppsTableLength) {
+      return "remote-app";
+    }
+  };
+
   const getApplicationsAccordion = () => {
     const applicationAccordionSections = [];
-    offersTableRows?.length > 0 &&
+    offersTableLength &&
       applicationAccordionSections.push({
         title: "Offers",
         content: OffersTable(),
+        key: "offers",
       });
 
-    localApplicationTableRows?.length > 0 &&
+    localAppTableLength &&
       applicationAccordionSections.push({
         title: "Local applications",
         content: LocalAppsTable(),
+        key: "local-apps",
       });
 
-    remoteApplicationTableRows?.length > 0 &&
+    remoteAppsTableLength &&
       applicationAccordionSections.push({
         title: "Remote applications",
         content: remoteAppsTable(),
+        key: "remote-apps",
       });
 
-    return <Accordion sections={applicationAccordionSections} />;
+    return (
+      <Accordion
+        sections={applicationAccordionSections}
+        expanded={expandedKey}
+      />
+    );
   };
 
   const countVisibleTables = (tablesLengths) => {
@@ -226,9 +254,9 @@ const Model = () => {
   };
 
   const visibleTables = countVisibleTables([
-    localApplicationTableRows?.length,
-    remoteApplicationTableRows?.length,
-    offersTableRows?.length,
+    localAppTableLength,
+    remoteAppsTableLength,
+    offersTableLength,
   ]);
 
   return (
@@ -240,19 +268,7 @@ const Model = () => {
       <div className="entity-details__main u-overflow--scroll">
         {shouldShow("apps", query.activeView) && (
           <>
-            {localApplicationTableRows.length > 0 ? (
-              <>
-                {visibleTables > 1 ? (
-                  getApplicationsAccordion()
-                ) : (
-                  <>
-                    {LocalAppsTable()}
-                    {OffersTable()}
-                    {remoteAppsTable()}
-                  </>
-                )}
-              </>
-            ) : (
+            {visibleTables === 0 && (
               <span>
                 There are no applications associated with this model. Learn
                 about{" "}
@@ -263,6 +279,15 @@ const Model = () => {
                   deploying applications
                 </a>
               </span>
+            )}
+            {visibleTables > 1 ? (
+              getApplicationsAccordion()
+            ) : (
+              <>
+                {LocalAppsTable()}
+                {OffersTable()}
+                {remoteAppsTable()}
+              </>
             )}
           </>
         )}
