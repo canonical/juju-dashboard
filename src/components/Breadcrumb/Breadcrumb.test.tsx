@@ -61,10 +61,10 @@ describe("Breadcrumb", () => {
       <Provider store={store}>
         <MemoryRouter
           initialEntries={[
-            "/models/eggman@external/group-test/unit/logstash-0",
+            "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
           ]}
         >
-          <TestRoute path="/models/:userName/:modelName?/unit/:unitId?">
+          <TestRoute path="/models/:userName/:modelName?/app/:appName/unit/:unitId?">
             <Breadcrumb />
           </TestRoute>
         </MemoryRouter>
