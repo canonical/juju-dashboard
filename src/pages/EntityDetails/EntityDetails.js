@@ -156,6 +156,35 @@ const EntityDetails = ({ type, children }) => {
     [setQuery, history, modelName, userName]
   );
 
+  const generateActivePanel = () => {
+    if (activePanel === "config") {
+      return (
+        <ConfigPanel
+          appName={entity}
+          charm={modelStatusData.applications[entity].charm}
+          modelUUID={modelStatusData.uuid}
+          onClose={() => setQuery(closePanelConfig)}
+        />
+      );
+    } else if (activePanel === "remoteApps" || activePanel === "offers") {
+      return (
+        <SlidePanel
+          isActive={activePanel}
+          onClose={() => setQuery(closePanelConfig)}
+          isLoading={!entity}
+          className={`${activePanel}-panel`}
+        >
+          {generatePanelContent(
+            activePanel,
+            entity,
+            panelRowClick,
+            modelStatusData
+          )}
+        </SlidePanel>
+      );
+    }
+  };
+
   return (
     <BaseLayout>
       <Header>
@@ -196,14 +225,7 @@ const EntityDetails = ({ type, children }) => {
             <div className={`entity-details entity-details__${type}`}>
               <>
                 {children}
-                {activePanel === "config" ? (
-                  <ConfigPanel
-                    appName={entity}
-                    charm={modelStatusData.applications[entity].charm}
-                    modelUUID={modelStatusData.uuid}
-                    onClose={() => setQuery(closePanelConfig)}
-                  />
-                ) : null}
+                {generateActivePanel()}
               </>
             </div>
           </div>
