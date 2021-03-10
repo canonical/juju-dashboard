@@ -50,7 +50,7 @@ export default function Breadcrumb(): JSX.Element {
                 className="p-breadcrumbs__item u-no-padding--top"
                 data-test="breadcrumb-app"
               >
-                <Link to={`/models/${userName}/${modelName}/${appName}`}>
+                <Link to={`/models/${userName}/${modelName}/app/${appName}`}>
                   {appName}
                 </Link>
               </li>
