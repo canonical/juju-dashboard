@@ -10,5 +10,7 @@
   .p-panel {
     box-shadow: 0 0 2rem 0 rgb(0 0 0 / 20%);
     min-height: 100vh;
+    position: relative;
+    right: -2px;
   }
 }
