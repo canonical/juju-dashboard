@@ -2,6 +2,10 @@
   padding: 0 1.5rem;
 
   .p-panel__header {
-    padding-left: 0;
+    padding: 0;
+  }
+
+  &__unit-list {
+    margin-bottom: 1.125rem;
   }
 }
