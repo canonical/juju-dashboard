@@ -6,16 +6,24 @@ import RegisterController from "components/RegisterController/RegisterController
 
 import "./_panels.scss";
 
+// Close panel if Escape key is pressed when panel active
+export const close = {
+  onEscape: function (
+    e: KeyboardEvent,
+    queryStringSetter: (qs: undefined) => void
+  ) {
+    if (e.code === "Escape") {
+      queryStringSetter(undefined);
+    }
+  },
+};
+
 export default function Panels() {
   const [panelQs, setPanelQs] = useQueryParam("panel", StringParam);
 
-  // Close panel if Escape key is pressed when panel active
-  const closeOnEscape = (e: KeyboardEvent) => {
-    if (e.code === "Escape") {
-      setPanelQs(undefined);
-    }
-  };
-  useEventListener("keydown", closeOnEscape);
+  useEventListener("keydown", (e: KeyboardEvent) =>
+    close.onEscape(e, setPanelQs)
+  );
 
   const generatePanel = () => {
     switch (panelQs) {
