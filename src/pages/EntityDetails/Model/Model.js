@@ -3,6 +3,7 @@ import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useSelector } from "react-redux";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import { useHistory, useParams } from "react-router-dom";
+import { pluralize, extractCloudName } from "app/utils/utils";
 
 import Accordion from "@canonical/react-components/dist/components/Accordion/Accordion";
 
@@ -37,8 +38,6 @@ import useTableRowClick from "hooks/useTableRowClick";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
 import { getConfig } from "app/selectors";
-
-import { extractCloudName } from "app/utils/utils";
 
 import { renderCounts } from "../counts";
 
@@ -147,9 +146,9 @@ const Model = () => {
   const offersChips = renderCounts("offers", modelStatusData);
   const remoteAppChips = renderCounts("remoteApps", modelStatusData);
 
-  const localAppTableLength = localApplicationTableRows.length;
-  const offersTableLength = offersTableRows.length;
-  const remoteAppsTableLength = remoteApplicationTableRows.length;
+  const localAppTableLength = localApplicationTableRows?.length;
+  const appOffersTableLength = appOffersRows?.length;
+  const remoteAppsTableLength = remoteApplicationTableRows?.length;
 
   const LocalAppsTable = () => (
     <>
@@ -168,9 +167,9 @@ const Model = () => {
     </>
   );
 
-  const OffersTable = () => (
+  const AppOffersTable = () => (
     <>
-      {appOffersRows.length > 0 && (
+      {appOffersTableLength && (
         <>
           <ChipGroup chips={offersChips} descriptor={null} />
           <MainTable
@@ -187,7 +186,7 @@ const Model = () => {
 
   const remoteAppsTable = () => (
     <>
-      {remoteApplicationTableRows?.length > 0 && (
+      {remoteAppsTableLength && (
         <>
           <ChipGroup chips={remoteAppChips} descriptor={null} />
           <MainTable
@@ -203,7 +202,7 @@ const Model = () => {
   );
 
   const expandedKey = () => {
-    if (offersTableLength) {
+    if (appOffersTableLength) {
       return "offers";
     }
     if (localAppTableLength) {
@@ -216,23 +215,32 @@ const Model = () => {
 
   const getApplicationsAccordion = () => {
     const applicationAccordionSections = [];
-    offersTableLength &&
+    appOffersTableLength &&
       applicationAccordionSections.push({
-        title: "Offers",
-        content: OffersTable(),
+        title: `${appOffersTableLength} ${pluralize(
+          appOffersTableLength,
+          "Offer"
+        )}`,
+        content: AppOffersTable(),
         key: "offers",
       });
 
     localAppTableLength &&
       applicationAccordionSections.push({
-        title: "Local applications",
+        title: `${localAppTableLength} ${pluralize(
+          localAppTableLength,
+          "Local application"
+        )}`,
         content: LocalAppsTable(),
         key: "local-apps",
       });
 
     remoteAppsTableLength &&
       applicationAccordionSections.push({
-        title: "Remote applications",
+        title: `${remoteAppsTableLength} ${pluralize(
+          remoteAppsTableLength,
+          "Remote application"
+        )}`,
         content: remoteAppsTable(),
         key: "remote-apps",
       });
@@ -256,7 +264,7 @@ const Model = () => {
   const visibleTables = countVisibleTables([
     localAppTableLength,
     remoteAppsTableLength,
-    offersTableLength,
+    appOffersTableLength,
   ]);
 
   return (
@@ -285,7 +293,7 @@ const Model = () => {
             ) : (
               <>
                 {LocalAppsTable()}
-                {OffersTable()}
+                {AppOffersTable()}
                 {remoteAppsTable()}
               </>
             )}
