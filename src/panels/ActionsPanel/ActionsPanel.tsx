@@ -3,6 +3,7 @@ import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getActionsForApplication } from "juju";
 import { getModelUUID } from "app/selectors";
+import { generateIconImg } from "app/utils/utils";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
@@ -11,7 +12,8 @@ import PanelHeader from "components/PanelHeader/PanelHeader";
 
 export default function ActionsPanel(): JSX.Element {
   const appStore = useStore();
-  const { modelName } = useParams<EntityDetailsRoute>();
+  const appState = appStore.getState();
+  const { appName, modelName } = useParams<EntityDetailsRoute>();
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   // Selectors.js is not typescript yet and it complains about the return value
   // of getModelUUID. TSFixMe
@@ -21,16 +23,21 @@ export default function ActionsPanel(): JSX.Element {
   const [actionData, setActionData] = useState();
 
   useEffect(() => {
-    getActionsForApplication("ceph", modelUUID, appStore.getState()).then(
+    getActionsForApplication(appName, modelUUID, appStore.getState()).then(
       (actions) => {
         if (actions?.results?.[0]?.actions) {
           setActionData(actions.results[0].actions);
         }
       }
     );
-  }, [appStore, modelUUID]);
+  }, [appName, appStore, modelUUID]);
 
-  const title = <div>0 3 units selected</div>;
+  // See above note about selectors.js typings TSFixMe
+  const namespace =
+    appState.juju?.modelData?.[modelUUID as string]?.applications?.[appName]
+      ?.charm;
+
+  const title = <h5>{generateIconImg(appName, namespace)} 3 units selected</h5>;
   return (
     <Aside width="narrow">
       <div className="p-panel actions-panel">
