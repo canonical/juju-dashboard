@@ -71,14 +71,14 @@ describe("Breadcrumb", () => {
       </Provider>
     );
     expect(wrapper.find("[data-test='breadcrumb-items']").text()).toStrictEqual(
-      "group-testUnitslogstash-0"
+      "group-testApplicationslogstashlogstash-0"
     );
     expect(wrapper.find("[data-test='breadcrumb-model']").text()).toStrictEqual(
       "group-test"
     );
     expect(
       wrapper.find("[data-test='breadcrumb-section']").text()
-    ).toStrictEqual("Units");
+    ).toStrictEqual("Applications");
     expect(wrapper.find("[data-test='breadcrumb-units']").text()).toStrictEqual(
       "logstash-0"
     );

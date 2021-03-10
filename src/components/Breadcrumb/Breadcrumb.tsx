@@ -14,17 +14,69 @@ export default function Breadcrumb(): JSX.Element {
     machineId,
   } = useParams<EntityDetailsRoute>();
 
-  const generateModelURL = function (): string {
-    if (userName && machineId) {
-      return `/models/${userName}/${modelName}?activeView=machines`;
-    } else if (userName) {
-      return `/models/${modelName}/${modelName}?activeView=apps`;
-    } else {
-      return `/models/${modelName}`;
+  const generateBreadcrumbs = function (): JSX.Element {
+    const view = machineId ? "machines" : "apps";
+    const isNestedEntityPage = !!appName || !!unitId || !!machineId;
+    if (isNestedEntityPage) {
+      return (
+        <>
+          <li
+            className="p-breadcrumbs__item u-no-padding--top"
+            data-test="breadcrumb-model"
+          >
+            <Link to={`/models/${userName}/${modelName}`}>{modelName}</Link>
+          </li>
+          {!unitId && (
+            <li
+              className="p-breadcrumbs__item u-no-padding--top"
+              data-test="breadcrumb-section"
+            >
+              <Link to={`/models/${userName}/${modelName}?activeView=${view}`}>
+                {entityType.title}
+              </Link>
+            </li>
+          )}
+          {unitId && (
+            <>
+              <li
+                className="p-breadcrumbs__item u-no-padding--top"
+                data-test="breadcrumb-section"
+              >
+                <Link to={`/models/${userName}/${modelName}?activeView=apps`}>
+                  Applications
+                </Link>
+              </li>
+              <li
+                className="p-breadcrumbs__item u-no-padding--top"
+                data-test="breadcrumb-app"
+              >
+                <Link to={`/models/${userName}/${modelName}/${appName}`}>
+                  {appName}
+                </Link>
+              </li>
+            </>
+          )}
+          <li
+            className="p-breadcrumbs__item u-no-padding--top"
+            data-test={`breadcrumb-${entityType.title?.toLowerCase()}`}
+          >
+            <strong>{entityType.id}</strong>
+          </li>
+        </>
+      );
     }
+    return (
+      <li
+        className="p-breadcrumbs__item p-breadcrumbs__item--restricted"
+        data-test="breadcrumb-model"
+        title={modelName}
+      >
+        <Link to={`/models/${userName}/${modelName}`} className="p-link--soft">
+          <strong>{modelName}</strong>
+        </Link>
+      </li>
+    );
   };
-
-  let isNestedEntityPage = !!appName || !!unitId || !!machineId;
 
   type EntityType = {
     id: string | undefined;
@@ -54,38 +106,7 @@ export default function Breadcrumb(): JSX.Element {
   return (
     <nav className="p-breadcrumbs" aria-label="Breadcrumb navigation">
       <ol className="p-breadcrumbs__items" data-test="breadcrumb-items">
-        {isNestedEntityPage ? (
-          <>
-            <li
-              className="p-breadcrumbs__item u-no-padding--top"
-              data-test="breadcrumb-model"
-            >
-              <Link to={generateModelURL()}>{modelName}</Link>
-            </li>
-            <li
-              className="p-breadcrumbs__item u-no-padding--top"
-              data-test="breadcrumb-section"
-            >
-              <Link to={generateModelURL()}>{entityType.title}</Link>
-            </li>
-            <li
-              className="p-breadcrumbs__item u-no-padding--top"
-              data-test={`breadcrumb-${entityType.title?.toLowerCase()}`}
-            >
-              <strong>{entityType.id}</strong>
-            </li>
-          </>
-        ) : (
-          <li
-            className="p-breadcrumbs__item p-breadcrumbs__item--restricted"
-            data-test="breadcrumb-model"
-            title={modelName}
-          >
-            <Link to={generateModelURL()} className="p-link--soft">
-              <strong>{modelName}</strong>
-            </Link>
-          </li>
-        )}
+        {generateBreadcrumbs()}
       </ol>
     </nav>
   );
