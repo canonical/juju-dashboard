@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSelector, useStore } from "react-redux";
+import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getActionsForApplication } from "juju";
 import { getModelUUID } from "app/selectors";
@@ -10,20 +10,25 @@ import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 
 export default function ActionsPanel(): JSX.Element {
-  const appState = useStore().getState();
+  const appStore = useStore();
   const { modelName } = useParams<EntityDetailsRoute>();
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
-  // @ts-ignore
-  const modelUUID = useSelector(getModelUUIDMemo);
+  // Selectors.js is not typescript yet and it complains about the return value
+  // of getModelUUID. TSFixMe
+  const modelUUID = useSelector(
+    getModelUUIDMemo as (state: DefaultRootState) => unknown
+  );
   const [actionData, setActionData] = useState();
 
   useEffect(() => {
-    getActionsForApplication("ceph", modelUUID, appState).then((actions) => {
-      if (actions?.results?.[0]?.actions) {
-        setActionData(actions.results[0].actions);
+    getActionsForApplication("ceph", modelUUID, appStore.getState()).then(
+      (actions) => {
+        if (actions?.results?.[0]?.actions) {
+          setActionData(actions.results[0].actions);
+        }
       }
-    });
-  }, [appState, modelUUID]);
+    );
+  }, [appStore, modelUUID]);
 
   const title = <div>0 3 units selected</div>;
   return (
