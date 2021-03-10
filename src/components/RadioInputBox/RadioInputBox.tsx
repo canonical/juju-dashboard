@@ -9,16 +9,17 @@ export default function RadioInputBox({
   name,
   description,
 }: Props): JSX.Element {
+  const labelId = `actionRadio-${name}`;
   return (
     <div className="radio-input-box">
       <label className="p-radio">
         <input
           type="radio"
           className="p-radio__input"
-          name="radioPattern"
-          aria-labelledby="radioExample1"
+          name="actionRadioSelector"
+          aria-labelledby={labelId}
         />
-        <span className="p-radio__label" id="radioExample1">
+        <span className="p-radio__label" id={labelId}>
           {name}
         </span>
       </label>
