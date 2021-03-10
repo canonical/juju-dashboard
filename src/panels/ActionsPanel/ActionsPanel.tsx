@@ -10,6 +10,8 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 
+import "./_actions-panel.scss";
+
 export default function ActionsPanel(): JSX.Element {
   const appStore = useStore();
   const appState = appStore.getState();
@@ -21,6 +23,8 @@ export default function ActionsPanel(): JSX.Element {
     getModelUUIDMemo as (state: DefaultRootState) => unknown
   );
   const [actionData, setActionData] = useState();
+
+  console.log(actionData);
 
   useEffect(() => {
     getActionsForApplication(appName, modelUUID, appStore.getState()).then(
@@ -37,11 +41,19 @@ export default function ActionsPanel(): JSX.Element {
     appState.juju?.modelData?.[modelUUID as string]?.applications?.[appName]
       ?.charm;
 
-  const title = <h5>{generateIconImg(appName, namespace)} 3 units selected</h5>;
+  const generateSelectedUnitList = () => "1, 2, 3";
+
+  const generateTitle = () => (
+    <h5>{generateIconImg(appName, namespace)} 3 units selected</h5>
+  );
+
   return (
     <Aside width="narrow">
       <div className="p-panel actions-panel">
-        <PanelHeader title={title} />
+        <PanelHeader title={generateTitle()} />
+        <div className="actions-panel__unit-list">
+          Run action on {appName}: {generateSelectedUnitList()}
+        </div>
       </div>
     </Aside>
   );
