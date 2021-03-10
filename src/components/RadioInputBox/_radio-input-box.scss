@@ -1,16 +1,32 @@
 @import "vanilla-framework/scss/vanilla";
 
 .radio-input-box {
+  border: 1px solid $color-mid-light;
   margin-bottom: 0.5rem;
+  padding: 0.5rem;
 
   label {
-    border: 1px solid $color-mid-light;
     margin: 0;
-    padding: 0.5rem;
     width: 100%;
+  }
+
+  .p-radio {
+    padding: 0;
   }
 
   &__content {
     display: none;
+    padding-left: 2rem;
+
+    font-size: 0.875rem;
+  }
+
+  &.opened {
+    background-color: rgba(0, 102, 204, 0.05);
+    border-color: $color-information;
+
+    .radio-input-box__content {
+      display: block;
+    }
   }
 }
