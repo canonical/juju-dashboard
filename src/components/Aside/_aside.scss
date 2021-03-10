@@ -3,7 +3,7 @@
   // animating content leaves a hanging shadow if not attached to animating page element
   box-shadow: none !important;
   min-height: 100vh;
-  overflow: visible !important;
+  overflow-y: scroll !important;
   padding: 0;
   position: relative;
 
