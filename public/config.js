@@ -15,4 +15,6 @@ var jujuDashboardConfig = {
   // Development flags below:
   // Show WebCli component if enabled for dev purposes, even if not natively supported.
   showWebCLI: false,
+  // If it should show the Actions panel button.
+  showActionsPanel: false,
 };

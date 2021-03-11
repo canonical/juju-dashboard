@@ -61,24 +61,24 @@ describe("Breadcrumb", () => {
       <Provider store={store}>
         <MemoryRouter
           initialEntries={[
-            "/models/eggman@external/group-test/unit/logstash-0",
+            "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
           ]}
         >
-          <TestRoute path="/models/:userName/:modelName?/unit/:unitId?">
+          <TestRoute path="/models/:userName/:modelName?/app/:appName/unit/:unitId?">
             <Breadcrumb />
           </TestRoute>
         </MemoryRouter>
       </Provider>
     );
     expect(wrapper.find("[data-test='breadcrumb-items']").text()).toStrictEqual(
-      "group-testUnitslogstash-0"
+      "group-testApplicationslogstashlogstash-0"
     );
     expect(wrapper.find("[data-test='breadcrumb-model']").text()).toStrictEqual(
       "group-test"
     );
     expect(
       wrapper.find("[data-test='breadcrumb-section']").text()
-    ).toStrictEqual("Units");
+    ).toStrictEqual("Applications");
     expect(wrapper.find("[data-test='breadcrumb-units']").text()).toStrictEqual(
       "logstash-0"
     );

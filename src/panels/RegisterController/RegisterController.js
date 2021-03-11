@@ -5,13 +5,12 @@ import { useHistory } from "react-router-dom";
 import { getBakery } from "app/selectors";
 import { connectAndStartPolling } from "app/actions";
 
-import { useQueryParam, StringParam } from "use-query-params";
-
 import classNames from "classnames";
 
 import useLocalStorage from "hooks/useLocalStorage";
 
 import Aside from "components/Aside/Aside";
+import PanelHeader from "components/PanelHeader/PanelHeader";
 
 import "./register-controller.scss";
 
@@ -61,22 +60,10 @@ export default function RegisterController() {
     );
   }
 
-  const [panelQs, setPanelQs] = useQueryParam("panel", StringParam);
-
   return (
     <Aside>
       <div className="p-panel register-controller">
-        <div className="p-panel__header">
-          <h4 className="p-panel__title">Register a Controller</h4>
-          <div className="p-panel__controls">
-            <button
-              onClick={() => panelQs && setPanelQs(undefined)}
-              className="p-button--base js-aside-close u-no-margin--bottom has-icon"
-            >
-              <i className="p-icon--close"></i>
-            </button>
-          </div>
-        </div>
+        <PanelHeader title="Register a controller" />
         <div className="p-panel__content">
           <p className="p-form-help-text">
             Information can be retrieved using the{" "}
