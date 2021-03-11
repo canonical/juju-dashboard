@@ -1,5 +1,4 @@
 import { useState } from "react";
-import classnames from "classnames";
 
 import type { ActionOptions } from "panels/ActionsPanel/ActionsPanel";
 
@@ -29,8 +28,8 @@ export default function RadioInputBox({
   };
 
   return (
-    <div className={classnames("radio-input-box", { opened })}>
-      <label className="p-radio">
+    <div className="radio-input-box" aria-expanded={opened}>
+      <label className="p-radio u-no-padding--top radio-input-box__label">
         <input
           type="radio"
           className="p-radio__input"

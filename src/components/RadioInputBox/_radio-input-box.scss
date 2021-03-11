@@ -5,22 +5,18 @@
   margin-bottom: 0.5rem;
   padding: 0.5rem;
 
-  label {
+  &__label {
     margin: 0;
     width: 100%;
   }
 
-  .p-radio {
-    padding: 0;
-  }
-
-  &__content {
+  .radio-input-box__content {
     display: none;
     font-size: 0.875rem;
     padding-left: 2rem;
   }
 
-  &.opened {
+  &[aria-expanded="true"] {
     background-color: rgba(0, 102, 204, 0.05);
     border-color: $color-information;
 

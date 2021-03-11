@@ -75,10 +75,10 @@ export default function ActionsPanel(): JSX.Element {
     appState.juju?.modelData?.[modelUUID as string]?.applications?.[appName]
       ?.charm;
 
-  const generateSelectedUnitList = () => "1, 2, 3";
+  const generateSelectedUnitList = () => "...";
 
   const generateTitle = () => (
-    <h5>{generateIconImg(appName, namespace)} 3 units selected</h5>
+    <h5>{generateIconImg(appName, namespace)} 0 units selected</h5>
   );
 
   return (
