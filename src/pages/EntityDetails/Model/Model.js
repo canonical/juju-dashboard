@@ -5,8 +5,6 @@ import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import { useHistory, useParams } from "react-router-dom";
 import { pluralize, extractCloudName } from "app/utils/utils";
 
-import Accordion from "@canonical/react-components/dist/components/Accordion/Accordion";
-
 import {
   appsOffersTableHeaders,
   machineTableHeaders,
@@ -28,6 +26,7 @@ import {
 } from "tables/tableRows";
 
 import InfoPanel from "components/InfoPanel/InfoPanel";
+import ContentReveal from "components/ContentReveal/ContentReveal";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 import EntityInfo from "components/EntityInfo/EntityInfo";
@@ -40,8 +39,6 @@ import ChipGroup from "components/ChipGroup/ChipGroup";
 import { getConfig } from "app/selectors";
 
 import { renderCounts } from "../counts";
-
-import "./_model.scss";
 
 const shouldShow = (segment, activeView) => {
   switch (activeView) {
@@ -150,28 +147,53 @@ const Model = () => {
   const appOffersTableLength = appOffersRows?.length;
   const remoteAppsTableLength = remoteApplicationTableRows?.length;
 
+  const OffersHeader = () => (
+    <>
+      <span>
+        {appOffersTableLength} {pluralize(appOffersTableLength, "Offer")}
+      </span>
+      <ChipGroup chips={offersChips} descriptor={null} />
+    </>
+  );
+
+  const LocalAppsHeader = () => (
+    <>
+      <span>
+        {localAppTableLength}{" "}
+        {pluralize(localAppTableLength, "Local application")}
+      </span>
+      <ChipGroup chips={LocalAppChips} descriptor={null} />
+    </>
+  );
+
+  const RemoteAppsHeader = () => (
+    <>
+      <span>
+        {remoteAppsTableLength}{" "}
+        {pluralize(remoteAppsTableLength, "Remote application")}
+      </span>
+      <ChipGroup chips={remoteAppChips} descriptor={null} />
+    </>
+  );
+
   const LocalAppsTable = () => (
     <>
-      {localAppTableLength && (
-        <>
-          <ChipGroup chips={LocalAppChips} descriptor={null} />
-          <MainTable
-            headers={localApplicationTableHeaders}
-            rows={localApplicationTableRows}
-            className="entity-details__apps p-main-table"
-            sortable
-            emptyStateMsg={"There are no local applications in this model"}
-          />
-        </>
+      {localAppTableLength > 0 && (
+        <MainTable
+          headers={localApplicationTableHeaders}
+          rows={localApplicationTableRows}
+          className="entity-details__apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no local applications in this model"}
+        />
       )}
     </>
   );
 
   const AppOffersTable = () => (
     <>
-      {appOffersTableLength && (
+      {appOffersTableLength > 0 && (
         <>
-          <ChipGroup chips={offersChips} descriptor={null} />
           <MainTable
             headers={appsOffersTableHeaders}
             rows={appOffersRows}
@@ -184,9 +206,9 @@ const Model = () => {
     </>
   );
 
-  const remoteAppsTable = () => (
+  const RemoteAppsTable = () => (
     <>
-      {remoteAppsTableLength && (
+      {remoteAppsTableLength > 0 && (
         <>
           <ChipGroup chips={remoteAppChips} descriptor={null} />
           <MainTable
@@ -209,47 +231,40 @@ const Model = () => {
       return "local-apps";
     }
     if (remoteAppsTableLength) {
-      return "remote-app";
+      return "remote-apps";
     }
   };
 
-  const getApplicationsAccordion = () => {
-    const applicationAccordionSections = [];
-    appOffersTableLength &&
-      applicationAccordionSections.push({
-        title: `${appOffersTableLength} ${pluralize(
-          appOffersTableLength,
-          "Offer"
-        )}`,
-        content: AppOffersTable(),
-        key: "offers",
-      });
-
-    localAppTableLength &&
-      applicationAccordionSections.push({
-        title: `${localAppTableLength} ${pluralize(
-          localAppTableLength,
-          "Local application"
-        )}`,
-        content: LocalAppsTable(),
-        key: "local-apps",
-      });
-
-    remoteAppsTableLength &&
-      applicationAccordionSections.push({
-        title: `${remoteAppsTableLength} ${pluralize(
-          remoteAppsTableLength,
-          "Remote application"
-        )}`,
-        content: remoteAppsTable(),
-        key: "remote-apps",
-      });
-
+  const getContentReveals = () => {
     return (
-      <Accordion
-        sections={applicationAccordionSections}
-        expanded={expandedKey}
-      />
+      <>
+        {appOffersTableLength > 0 && (
+          <ContentReveal
+            title={OffersHeader()}
+            showContent={expandedKey() === "offers"}
+          >
+            {AppOffersTable()}
+          </ContentReveal>
+        )}
+
+        {localAppTableLength > 0 && (
+          <ContentReveal
+            title={LocalAppsHeader()}
+            showContent={expandedKey() === "local-apps"}
+          >
+            {AppOffersTable()}
+          </ContentReveal>
+        )}
+
+        {remoteAppsTableLength > 0 && (
+          <ContentReveal
+            title={RemoteAppsHeader()}
+            showContent={expandedKey() === "remote-apps"}
+          >
+            {RemoteAppsTable()}
+          </ContentReveal>
+        )}
+      </>
     );
   };
 
@@ -289,12 +304,12 @@ const Model = () => {
               </span>
             )}
             {visibleTables > 1 ? (
-              getApplicationsAccordion()
+              getContentReveals()
             ) : (
               <>
                 {LocalAppsTable()}
                 {AppOffersTable()}
-                {remoteAppsTable()}
+                {RemoteAppsTable()}
               </>
             )}
           </>
