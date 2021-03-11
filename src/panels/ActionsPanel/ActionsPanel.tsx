@@ -39,6 +39,15 @@ type ActionProp = {
   type: string;
 };
 
+export type ActionOptions = ActionOptionDetails[];
+
+type ActionOptionDetails = {
+  name: string;
+  description: string;
+  type: string;
+  required: boolean;
+};
+
 export default function ActionsPanel(): JSX.Element {
   const appStore = useStore();
   const appState = appStore.getState();
@@ -89,11 +98,27 @@ export default function ActionsPanel(): JSX.Element {
 
 function generateActionlist(actionData: ActionData | undefined) {
   if (!actionData) return null;
-  return Object.keys(actionData).map((actionName) => (
-    <RadioInputBox
-      name={actionName}
-      description={actionData[actionName].description}
-      key={actionName}
-    />
-  ));
+  return Object.keys(actionData).map((actionName) => {
+    const action = actionData[actionName];
+    const options: ActionOptions = [];
+
+    Object.keys(action.params.properties).forEach((name) => {
+      const property = action.params.properties[name];
+      options.push({
+        name: name,
+        description: property.description,
+        type: property.type,
+        required: action.params.required.includes(name),
+      });
+    });
+
+    return (
+      <RadioInputBox
+        name={actionName}
+        description={action.description}
+        options={options}
+        key={actionName}
+      />
+    );
+  });
 }
