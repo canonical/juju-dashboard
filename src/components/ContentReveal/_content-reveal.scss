@@ -1,0 +1,43 @@
+.content-reveal {
+  & + & {
+    border-top: 1px solid #ccc;
+  }
+
+  &__header {
+    cursor: pointer;
+    display: flex;
+    font-weight: 400;
+    padding: 0.5rem;
+    place-items: center;
+    width: 100%;
+
+    i {
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__title {
+    display: flex;
+
+    .chip-group {
+      display: flex;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      padding-left: 1rem;
+    }
+  }
+
+  &__content {
+    max-height: 100%;
+    overflow-x: scroll;
+    padding: 1rem 0.5rem 0;
+
+    &[aria-hidden="true"] {
+      max-height: 0;
+      overflow: hidden;
+      padding-bottom: 0;
+      padding-top: 0;
+    }
+  }
+}
