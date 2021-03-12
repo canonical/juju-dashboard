@@ -282,8 +282,6 @@ const Model = () => {
     appOffersTableLength,
   ]);
 
-  console.log(localAppTableLength);
-
   return (
     <EntityDetails type="model">
       <div>
