@@ -6,9 +6,13 @@ type Props = {
 export default function NotFound({ message, children }: Props) {
   return (
     <>
-      <h2>¯\_(ツ)_/¯</h2>
-      <h3>{message}</h3>
-      {children}
+      <h1>
+        <span role="img" aria-label="Shrug">
+          ¯\_(ツ)_/¯
+        </span>
+      </h1>
+      <h2>{message}</h2>
+      <div className="not-found__content">{children}</div>
     </>
   );
 }
