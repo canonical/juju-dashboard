@@ -140,19 +140,19 @@ const Model = () => {
   };
 
   const LocalAppChips = renderCounts("localApps", modelStatusData);
-  const offersChips = renderCounts("offers", modelStatusData);
+  const appOffersChips = renderCounts("offers", modelStatusData);
   const remoteAppChips = renderCounts("remoteApps", modelStatusData);
 
   const localAppTableLength = localApplicationTableRows?.length;
   const appOffersTableLength = appOffersRows?.length;
   const remoteAppsTableLength = remoteApplicationTableRows?.length;
 
-  const OffersHeader = () => (
+  const AppOffersHeader = () => (
     <>
       <span>
         {appOffersTableLength} {pluralize(appOffersTableLength, "Offer")}
       </span>
-      <ChipGroup chips={offersChips} descriptor={null} />
+      <ChipGroup chips={appOffersChips} descriptor={null} />
     </>
   );
 
@@ -176,23 +176,9 @@ const Model = () => {
     </>
   );
 
-  const LocalAppsTable = () => (
-    <>
-      {localAppTableLength > 0 && (
-        <MainTable
-          headers={localApplicationTableHeaders}
-          rows={localApplicationTableRows}
-          className="entity-details__apps p-main-table"
-          sortable
-          emptyStateMsg={"There are no local applications in this model"}
-        />
-      )}
-    </>
-  );
-
   const AppOffersTable = () => (
     <>
-      {appOffersTableLength > 0 && (
+      {!!appOffersTableLength && (
         <>
           <MainTable
             headers={appsOffersTableHeaders}
@@ -206,9 +192,23 @@ const Model = () => {
     </>
   );
 
+  const LocalAppsTable = () => (
+    <>
+      {!!localAppTableLength && (
+        <MainTable
+          headers={localApplicationTableHeaders}
+          rows={localApplicationTableRows}
+          className="entity-details__apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no local applications in this model"}
+        />
+      )}
+    </>
+  );
+
   const RemoteAppsTable = () => (
     <>
-      {remoteAppsTableLength > 0 && (
+      {!!remoteAppsTableLength && (
         <>
           <ChipGroup chips={remoteAppChips} descriptor={null} />
           <MainTable
@@ -238,25 +238,25 @@ const Model = () => {
   const getContentReveals = () => {
     return (
       <>
-        {appOffersTableLength > 0 && (
+        {!!appOffersTableLength && (
           <ContentReveal
-            title={OffersHeader()}
+            title={AppOffersHeader()}
             openByDefault={expandedKey() === "offers"}
           >
             {AppOffersTable()}
           </ContentReveal>
         )}
 
-        {localAppTableLength > 0 && (
+        {!!localAppTableLength && (
           <ContentReveal
             title={LocalAppsHeader()}
             openByDefault={expandedKey() === "local-apps"}
           >
-            {AppOffersTable()}
+            {LocalAppsTable()}
           </ContentReveal>
         )}
 
-        {remoteAppsTableLength > 0 && (
+        {!!remoteAppsTableLength && (
           <ContentReveal
             title={RemoteAppsHeader()}
             openByDefault={expandedKey() === "remote-apps"}
@@ -281,6 +281,8 @@ const Model = () => {
     remoteAppsTableLength,
     appOffersTableLength,
   ]);
+
+  console.log(localAppTableLength);
 
   return (
     <EntityDetails type="model">

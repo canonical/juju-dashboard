@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 import "./_content-reveal.scss";
 
 type Props = {
-  title: string | JSX.Element;
+  title: string | ReactNode;
   children: JSX.Element;
-  openByDefault: boolean;
+  openByDefault: ReactNode;
 };
 
 export default function ContentReveal({
