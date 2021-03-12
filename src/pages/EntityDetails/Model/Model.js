@@ -209,16 +209,13 @@ const Model = () => {
   const RemoteAppsTable = () => (
     <>
       {!!remoteAppsTableLength && (
-        <>
-          <ChipGroup chips={remoteAppChips} descriptor={null} />
-          <MainTable
-            headers={remoteApplicationTableHeaders}
-            rows={remoteApplicationTableRows}
-            className="entity-details__remote-apps p-main-table"
-            sortable
-            emptyStateMsg={"There are no remote applications in this model"}
-          />
-        </>
+        <MainTable
+          headers={remoteApplicationTableHeaders}
+          rows={remoteApplicationTableRows}
+          className="entity-details__remote-apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no remote applications in this model"}
+        />
       )}
     </>
   );
