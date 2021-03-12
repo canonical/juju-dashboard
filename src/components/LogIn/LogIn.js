@@ -50,7 +50,7 @@ export default function LogIn({ children }) {
           </FadeUpIn>
         </div>
       )}
-      <div className="main">{children}</div>
+      <div className="app-content">{children}</div>
     </>
   );
 }

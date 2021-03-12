@@ -27,7 +27,7 @@ describe("LogIn", () => {
     expect(wrapper.find(".p-button--neutral").text().trim()).toBe(
       "Connecting..."
     );
-    expect(wrapper.find("LogIn .main").text()).toBe("App content");
+    expect(wrapper.find("LogIn .app-content").text()).toBe("App content");
   });
 
   it("renders an IdentityProvider login UI if the user is not logged in", () => {
@@ -45,7 +45,7 @@ describe("LogIn", () => {
     expect(wrapper.find(".p-button--positive").text()).toBe(
       "Log in to the dashboard"
     );
-    expect(wrapper.find("LogIn .main").text()).toBe("App content");
+    expect(wrapper.find("LogIn .app-content").text()).toBe("App content");
   });
 
   it("renders a UserPass login UI if the user is not logged in", () => {
@@ -64,7 +64,7 @@ describe("LogIn", () => {
     expect(wrapper.find(".p-button--positive").text()).toBe(
       "Log in to the dashboard"
     );
-    expect(wrapper.find("LogIn .main").text()).toBe("App content");
+    expect(wrapper.find("LogIn .app-content").text()).toBe("App content");
   });
 
   it("renders a login error if one exists", () => {
