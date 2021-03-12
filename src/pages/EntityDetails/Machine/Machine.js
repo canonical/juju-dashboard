@@ -130,14 +130,14 @@ export default function Machine() {
               rows={unitRows}
               className="entity-details__units p-main-table"
               sortable
-              emptyStateMsg={"There are no units in this model"}
+              emptyStateMsg={"There are no units in this machine"}
             />
             <MainTable
               headers={localApplicationTableHeaders}
               rows={applicationRows}
               className="entity-details__apps p-main-table"
               sortable
-              emptyStateMsg={"There are no apps in this model"}
+              emptyStateMsg={"There are no apps in this machine"}
             />
           </div>
         </div>
