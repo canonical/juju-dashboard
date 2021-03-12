@@ -22,7 +22,7 @@ export default function ContentReveal({
   const iconName = isOpen ? "minus" : "plus";
 
   return (
-    <div className="content-reveal">
+    <div className="content-reveal" data-open={isOpen}>
       <div
         className="content-reveal__header"
         onClick={() => handleToggle()}

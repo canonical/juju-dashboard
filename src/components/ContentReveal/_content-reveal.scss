@@ -1,7 +1,7 @@
 @import "vanilla-framework/scss/vanilla";
 
 .content-reveal {
-  & + & {
+  &:not([data-open="true"]) + & {
     border-top: 1px solid $color-mid-x-light;
   }
 
