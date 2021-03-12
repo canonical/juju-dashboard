@@ -24,16 +24,13 @@ describe("Content Reveal", () => {
   });
 
   it("should show correct title if only text and JSX", () => {
-    const Component = () => <div className="component">component content</div>;
-    const getComponent = () => {
-      return Component;
-    };
+    const title = <div>JSX Title</div>;
     const wrapper = mount(
-      <ContentReveal title={`Foo bar ${getComponent()}`} openByDefault={false}>
+      <ContentReveal title={title} openByDefault={false}>
         <p>Banner text</p>
       </ContentReveal>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(".content-reveal__title").contains(title)).toBe(true);
   });
 
   it("should open by default if set", () => {

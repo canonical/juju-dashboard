@@ -1,12 +1,12 @@
 @import "vanilla-framework/scss/vanilla";
 
 .content-reveal {
-  &:not([data-open="true"]):not(:last-child) {
-    border-bottom: 1px solid $color-mid-x-light;
-  }
-
   &:not(:first-child) {
     margin-top: 1rem;
+  }
+
+  &:not([data-open="true"]):not(:last-child) {
+    border-bottom: 1px solid $color-mid-x-light;
   }
 
   &__header {
