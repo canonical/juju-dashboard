@@ -29,7 +29,7 @@ export default function RadioInputBox({
 
   return (
     <div className="radio-input-box" aria-expanded={opened}>
-      <label className="p-radio u-no-padding--top radio-input-box__label">
+      <label className="p-radio radio-input-box__label">
         <input
           type="radio"
           className="p-radio__input"

@@ -9,7 +9,6 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
-import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 
 import "./_actions-panel.scss";
 
@@ -112,13 +111,6 @@ function generateActionlist(actionData: ActionData | undefined) {
       });
     });
 
-    return (
-      <RadioInputBox
-        name={actionName}
-        description={action.description}
-        options={options}
-        key={actionName}
-      />
-    );
+    return <div key={actionName}>{actionName}</div>;
   });
 }
