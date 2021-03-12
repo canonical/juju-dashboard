@@ -3,6 +3,7 @@ import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useSelector } from "react-redux";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import { useHistory, useParams } from "react-router-dom";
+import { pluralize, extractCloudName } from "app/utils/utils";
 
 import {
   appsOffersTableHeaders,
@@ -25,6 +26,7 @@ import {
 } from "tables/tableRows";
 
 import InfoPanel from "components/InfoPanel/InfoPanel";
+import ContentReveal from "components/ContentReveal/ContentReveal";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 import EntityInfo from "components/EntityInfo/EntityInfo";
@@ -35,8 +37,6 @@ import useTableRowClick from "hooks/useTableRowClick";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
 import { getConfig } from "app/selectors";
-
-import { extractCloudName } from "app/utils/utils";
 
 import { renderCounts } from "../counts";
 
@@ -99,6 +99,7 @@ const Model = () => {
       query
     );
   }, [modelStatusData, panelRowClick, baseAppURL, query]);
+
   const machinesTableRows = useMemo(() => {
     return generateMachineRows(modelStatusData, tableRowClick, query?.entity);
   }, [modelStatusData, tableRowClick, query]);
@@ -111,6 +112,7 @@ const Model = () => {
     () => generateConsumedRows(modelStatusData, baseAppURL),
     [modelStatusData, baseAppURL]
   );
+
   const offersTableRows = useMemo(
     () =>
       generateOffersRows(
@@ -126,7 +128,6 @@ const Model = () => {
       generateAppOffersRows(modelStatusData, panelRowClick, baseAppURL, query),
     [modelStatusData, panelRowClick, baseAppURL, query]
   );
-
   const cloudProvider = modelStatusData
     ? extractCloudName(modelStatusData.model["cloud-tag"])
     : "";
@@ -139,6 +140,123 @@ const Model = () => {
   };
 
   const LocalAppChips = renderCounts("localApps", modelStatusData);
+  const appOffersChips = renderCounts("offers", modelStatusData);
+  const remoteAppChips = renderCounts("remoteApps", modelStatusData);
+
+  const localAppTableLength = localApplicationTableRows?.length;
+  const appOffersTableLength = appOffersRows?.length;
+  const remoteAppsTableLength = remoteApplicationTableRows?.length;
+
+  const AppOffersHeader = () => (
+    <>
+      <span>
+        {appOffersTableLength} {pluralize(appOffersTableLength, "Offer")}
+      </span>
+      <ChipGroup chips={appOffersChips} descriptor={null} />
+    </>
+  );
+
+  const LocalAppsHeader = () => (
+    <>
+      <span>
+        {localAppTableLength}{" "}
+        {pluralize(localAppTableLength, "Local application")}
+      </span>
+      <ChipGroup chips={LocalAppChips} descriptor={null} />
+    </>
+  );
+
+  const RemoteAppsHeader = () => (
+    <>
+      <span>
+        {remoteAppsTableLength}{" "}
+        {pluralize(remoteAppsTableLength, "Remote application")}
+      </span>
+      <ChipGroup chips={remoteAppChips} descriptor={null} />
+    </>
+  );
+
+  const AppOffersTable = () => (
+    <>
+      {!!appOffersTableLength && (
+        <>
+          <MainTable
+            headers={appsOffersTableHeaders}
+            rows={appOffersRows}
+            className="entity-details__offers p-main-table"
+            sortable
+            emptyStateMsg={"There are no offers associated with this model"}
+          />
+        </>
+      )}
+    </>
+  );
+
+  const LocalAppsTable = () => (
+    <>
+      {!!localAppTableLength && (
+        <MainTable
+          headers={localApplicationTableHeaders}
+          rows={localApplicationTableRows}
+          className="entity-details__apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no local applications in this model"}
+        />
+      )}
+    </>
+  );
+
+  const RemoteAppsTable = () => (
+    <>
+      {!!remoteAppsTableLength && (
+        <MainTable
+          headers={remoteApplicationTableHeaders}
+          rows={remoteApplicationTableRows}
+          className="entity-details__remote-apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no remote applications in this model"}
+        />
+      )}
+    </>
+  );
+
+  const getContentReveals = () => {
+    return (
+      <>
+        {!!appOffersTableLength && (
+          <ContentReveal title={AppOffersHeader()} openByDefault={true}>
+            {AppOffersTable()}
+          </ContentReveal>
+        )}
+
+        {!!localAppTableLength && (
+          <ContentReveal title={LocalAppsHeader()} openByDefault={true}>
+            {LocalAppsTable()}
+          </ContentReveal>
+        )}
+
+        {!!remoteAppsTableLength && (
+          <ContentReveal title={RemoteAppsHeader()} openByDefault={true}>
+            {RemoteAppsTable()}
+          </ContentReveal>
+        )}
+      </>
+    );
+  };
+
+  const countVisibleTables = (tablesLengths) => {
+    let numberOfTables = 0;
+    tablesLengths.forEach((tableLength) => {
+      tableLength > 0 && numberOfTables++;
+    });
+    return numberOfTables;
+  };
+
+  const visibleTables = countVisibleTables([
+    localAppTableLength,
+    remoteAppsTableLength,
+    appOffersTableLength,
+  ]);
 
   return (
     <EntityDetails type="model">
@@ -149,29 +267,7 @@ const Model = () => {
       <div className="entity-details__main u-overflow--scroll">
         {shouldShow("apps", query.activeView) && (
           <>
-            {appOffersRows.length > 0 && (
-              <MainTable
-                headers={appsOffersTableHeaders}
-                rows={appOffersRows}
-                className="entity-details__offers p-main-table"
-                sortable
-                emptyStateMsg={"There are no offers associated with this model"}
-              />
-            )}
-            {localApplicationTableRows.length > 0 ? (
-              <>
-                <ChipGroup chips={LocalAppChips} descriptor="localApps" />
-                <MainTable
-                  headers={localApplicationTableHeaders}
-                  rows={localApplicationTableRows}
-                  className="entity-details__apps p-main-table"
-                  sortable
-                  emptyStateMsg={
-                    "There are no local applications in this model"
-                  }
-                />
-              </>
-            ) : (
+            {visibleTables === 0 && (
               <span>
                 There are no applications associated with this model. Learn
                 about{" "}
@@ -183,14 +279,14 @@ const Model = () => {
                 </a>
               </span>
             )}
-            {remoteApplicationTableRows?.length > 0 && (
-              <MainTable
-                headers={remoteApplicationTableHeaders}
-                rows={remoteApplicationTableRows}
-                className="entity-details__remote-apps p-main-table"
-                sortable
-                emptyStateMsg={"There are no remote applications in this model"}
-              />
+            {visibleTables > 1 ? (
+              getContentReveals()
+            ) : (
+              <>
+                {LocalAppsTable()}
+                {AppOffersTable()}
+                {RemoteAppsTable()}
+              </>
             )}
           </>
         )}
