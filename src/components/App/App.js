@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
 import ReactGA from "react-ga";
 
-// Components
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 
 import { Routes } from "components/Routes/Routes";

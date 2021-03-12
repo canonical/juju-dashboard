@@ -18,12 +18,23 @@ export default function useTableRowClick() {
 
   useEffect(() => {
     const entityId = entity && entity.id.replace("/", "-");
-    userName &&
-      modelName &&
-      entity &&
-      history.push(
-        `/models/${userName}/${modelName}/${entity.type}/${entityId}`
-      );
+    if (entity?.type === "unit") {
+      const appName = entityId?.split("-").slice(0, -1).join("-");
+      userName &&
+        modelName &&
+        entity &&
+        appName &&
+        history.push(
+          `/models/${userName}/${modelName}/app/${appName}/${entity.type}/${entityId}/`
+        );
+    } else {
+      userName &&
+        modelName &&
+        entity &&
+        history.push(
+          `/models/${userName}/${modelName}/${entity.type}/${entityId}`
+        );
+    }
   }, [entity, history, modelName, userName]);
 
   return (entityType: string, entityId: string) => {

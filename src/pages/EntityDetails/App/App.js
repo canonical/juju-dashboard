@@ -84,6 +84,11 @@ export default function App() {
   const unitChips = renderCounts("units", modelStatusData);
   const machineChips = renderCounts("machines", modelStatusData);
 
+  const setPanel = useQueryParam("panel", StringParam)[1];
+  const showActions = () => {
+    setPanel("execute-action");
+  };
+
   return (
     <EntityDetails className="entity-details__app">
       <div>
@@ -95,6 +100,13 @@ export default function App() {
               onClick={showConfig}
             >
               <i className="p-icon--settings"></i>Configure
+            </button>
+
+            <button
+              className="entity-details__action-button"
+              onClick={showActions}
+            >
+              <i className="p-icon--settings"></i>Actions
             </button>
           </div>
           <EntityInfo data={AppEntityData} />

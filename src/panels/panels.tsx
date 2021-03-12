@@ -3,7 +3,8 @@ import { AnimatePresence } from "framer-motion";
 import useEventListener from "hooks/useEventListener";
 import { TSFixMe } from "types";
 
-import RegisterController from "components/RegisterController/RegisterController";
+import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
+import RegisterController from "panels/RegisterController/RegisterController";
 
 import "./_panels.scss";
 
@@ -38,6 +39,8 @@ export default function Panels() {
     switch (panelQs) {
       case "register-controller":
         return <RegisterController />;
+      case "execute-action":
+        return <ActionsPanel />;
       default:
         return null;
     }

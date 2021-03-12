@@ -1,0 +1,55 @@
+@import "vanilla-framework/scss/vanilla";
+
+.content-reveal {
+  &:not(:first-child) {
+    margin-top: 1rem;
+  }
+
+  &:not([data-open="true"]):not(:last-child) {
+    border-bottom: 1px solid $color-mid-x-light;
+  }
+
+  &__header {
+    cursor: pointer;
+    display: flex;
+    font-weight: 400;
+    padding: 0.5rem;
+    padding-bottom: 0.75rem;
+    place-items: center;
+    width: 100%;
+
+    i {
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__title {
+    display: flex;
+
+    .chip-group {
+      display: flex;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      padding-left: 1rem;
+    }
+  }
+
+  &__content {
+    max-height: 100%;
+    overflow-x: scroll;
+    padding: 0 0.5rem;
+    scrollbar-width: 0;
+
+    &[aria-hidden="true"] {
+      max-height: 0;
+      overflow: hidden;
+      padding-bottom: 0;
+      padding-top: 0;
+    }
+
+    table {
+      margin-bottom: 0;
+    }
+  }
+}

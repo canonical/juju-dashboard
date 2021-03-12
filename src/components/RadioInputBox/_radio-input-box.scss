@@ -1,0 +1,28 @@
+@import "vanilla-framework/scss/vanilla";
+
+.radio-input-box {
+  border: 1px solid $color-mid-light;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+
+  .radio-input-box__label {
+    margin: 0;
+    padding-top: 0;
+    width: 100%;
+  }
+
+  .radio-input-box__content {
+    display: none;
+    font-size: 0.875rem;
+    padding-left: 2rem;
+  }
+
+  &[aria-expanded="true"] {
+    background-color: rgba(0, 102, 204, 0.05);
+    border-color: $color-information;
+
+    .radio-input-box__content {
+      display: block;
+    }
+  }
+}
