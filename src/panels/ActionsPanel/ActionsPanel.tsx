@@ -57,14 +57,18 @@ export default function ActionsPanel(): JSX.Element {
   const modelUUID = useSelector(
     getModelUUIDMemo as (state: DefaultRootState) => unknown
   );
+
   const [actionData, setActionData] = useState<ActionData>();
+  const [fetchingActionData, setFetchingActionData] = useState(false);
 
   useEffect(() => {
+    setFetchingActionData(true);
     getActionsForApplication(appName, modelUUID, appStore.getState()).then(
       (actions) => {
         if (actions?.results?.[0]?.actions) {
           setActionData(actions.results[0].actions);
         }
+        setFetchingActionData(false);
       }
     );
   }, [appName, appStore, modelUUID]);
@@ -88,15 +92,22 @@ export default function ActionsPanel(): JSX.Element {
           Run action on {appName}: {generateSelectedUnitList()}
         </div>
         <div className="actions-panel__action-list">
-          {generateActionlist(actionData)}
+          {generateActionlist(actionData, fetchingActionData)}
         </div>
       </div>
     </Aside>
   );
 }
 
-function generateActionlist(actionData: ActionData | undefined) {
+function generateActionlist(
+  actionData: ActionData | undefined,
+  fetchingActionData: boolean
+) {
+  if (!actionData && fetchingActionData) return null;
+  if (!actionData && !fetchingActionData)
+    return <div>This charm has not provided any actions</div>;
   if (!actionData) return null;
+
   return Object.keys(actionData).map((actionName) => {
     const action = actionData[actionName];
     const options: ActionOptions = [];
