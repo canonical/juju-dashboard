@@ -5,11 +5,15 @@ import "./_content-reveal.scss";
 type Props = {
   title: string | JSX.Element;
   children: JSX.Element;
-  showContent: boolean;
+  openByDefault: boolean;
 };
 
-export default function ContentReveal({ title, showContent, children }: Props) {
-  const [isOpen, setIsOpen] = useState(showContent);
+export default function ContentReveal({
+  title,
+  openByDefault,
+  children,
+}: Props) {
+  const [isOpen, setIsOpen] = useState(openByDefault);
 
   function handleToggle() {
     setIsOpen(!isOpen);

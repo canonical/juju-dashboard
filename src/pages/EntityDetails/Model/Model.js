@@ -241,7 +241,7 @@ const Model = () => {
         {appOffersTableLength > 0 && (
           <ContentReveal
             title={OffersHeader()}
-            showContent={expandedKey() === "offers"}
+            openByDefault={expandedKey() === "offers"}
           >
             {AppOffersTable()}
           </ContentReveal>
@@ -250,7 +250,7 @@ const Model = () => {
         {localAppTableLength > 0 && (
           <ContentReveal
             title={LocalAppsHeader()}
-            showContent={expandedKey() === "local-apps"}
+            openByDefault={expandedKey() === "local-apps"}
           >
             {AppOffersTable()}
           </ContentReveal>
@@ -259,7 +259,7 @@ const Model = () => {
         {remoteAppsTableLength > 0 && (
           <ContentReveal
             title={RemoteAppsHeader()}
-            showContent={expandedKey() === "remote-apps"}
+            openByDefault={expandedKey() === "remote-apps"}
           >
             {RemoteAppsTable()}
           </ContentReveal>

@@ -5,7 +5,7 @@ import ContentReveal from "./ContentReveal";
 describe("Content Reveal", () => {
   it("should show children as content", () => {
     const wrapper = mount(
-      <ContentReveal title="Foo bar" showContent={false}>
+      <ContentReveal title="Foo bar" openByDefault={false}>
         <p>Banner text</p>
       </ContentReveal>
     );
@@ -14,7 +14,7 @@ describe("Content Reveal", () => {
 
   it("should show correct title", () => {
     const wrapper = mount(
-      <ContentReveal title="Foo bar" showContent={false}>
+      <ContentReveal title="Foo bar" openByDefault={false}>
         <p>Banner text</p>
       </ContentReveal>
     );
@@ -25,7 +25,7 @@ describe("Content Reveal", () => {
 
   it("should open by default if set", () => {
     const wrapper = mount(
-      <ContentReveal title="Foo bar" showContent={true}>
+      <ContentReveal title="Foo bar" openByDefault={true}>
         <p>Banner text</p>
       </ContentReveal>
     );
