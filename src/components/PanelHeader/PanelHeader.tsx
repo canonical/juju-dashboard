@@ -10,7 +10,7 @@ export default function PanelHeader({ title }: Props): JSX.Element {
 
   return (
     <div className="p-panel__header">
-      <h4 className="p-panel__title">{title}</h4>
+      <div className="p-panel__title">{title}</div>
       <div className="p-panel__controls">
         <button
           onClick={() => panelQs && setPanelQs(undefined)}

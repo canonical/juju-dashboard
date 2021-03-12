@@ -4,7 +4,6 @@ import { useParams, useHistory } from "react-router-dom";
 type Params = {
   userName: string;
   modelName: string;
-  appName: string;
 };
 
 type Entity = {
@@ -15,11 +14,12 @@ type Entity = {
 export default function useTableRowClick() {
   const history = useHistory();
   const [entity, setEntity] = useState<Entity | null>(null);
-  const { userName, modelName, appName } = useParams<Params>();
+  const { userName, modelName } = useParams<Params>();
 
   useEffect(() => {
     const entityId = entity && entity.id.replace("/", "-");
     if (entity?.type === "unit") {
+      const appName = entityId?.split("-").slice(0, -1).join("-");
       userName &&
         modelName &&
         entity &&
@@ -35,7 +35,7 @@ export default function useTableRowClick() {
           `/models/${userName}/${modelName}/${entity.type}/${entityId}`
         );
     }
-  }, [entity, history, modelName, userName, appName]);
+  }, [entity, history, modelName, userName]);
 
   return (entityType: string, entityId: string) => {
     setEntity({ type: entityType, id: entityId });
