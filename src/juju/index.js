@@ -1,6 +1,7 @@
 import Limiter from "async-limiter";
 import { connect, connectAndLogin } from "@canonical/jujulib";
 
+import actions from "@canonical/jujulib/dist/api/facades/action-v6";
 import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
 import applications from "@canonical/jujulib/dist/api/facades/application-v12";
 import client from "@canonical/jujulib/dist/api/facades/client-v2";
@@ -37,6 +38,7 @@ import {
 function generateConnectionOptions(usePinger = false, bakery, onClose) {
   // The options used when connecting to a Juju controller or model.
   const facades = [
+    actions,
     annotations,
     applications,
     client,
@@ -415,4 +417,12 @@ export async function setApplicationConfig(
     options: setValues,
   });
   return resp;
+}
+
+export async function getActionsForApplication(appName, modelUUID, appState) {
+  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const actionList = await conn.facades.action.applicationsCharmsActions({
+    entities: [{ tag: `application-${appName}` }],
+  });
+  return actionList;
 }

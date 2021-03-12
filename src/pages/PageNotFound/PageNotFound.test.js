@@ -9,7 +9,7 @@ import { Routes } from "components/Routes/Routes";
 
 const mockStore = configureStore([]);
 
-describe("NotFound page", () => {
+describe("PageNotFound page", () => {
   it("should display when unknown route is accessed", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
@@ -21,7 +21,7 @@ describe("NotFound page", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("NotFound").length).toBe(1);
+    expect(wrapper.find("PageNotFound").length).toBe(1);
     // Ensure only one route is rendered
     expect(wrapper.find("main").length).toBe(1);
   });
