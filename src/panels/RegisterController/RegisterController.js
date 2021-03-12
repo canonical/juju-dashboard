@@ -63,7 +63,7 @@ export default function RegisterController() {
   return (
     <Aside>
       <div className="p-panel register-controller">
-        <PanelHeader title="Register a controller" />
+        <PanelHeader title={<h4>Register a controller</h4>} />
         <div className="p-panel__content">
           <p className="p-form-help-text">
             Information can be retrieved using the{" "}
