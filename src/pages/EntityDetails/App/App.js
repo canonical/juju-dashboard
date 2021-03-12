@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
   useQueryParam,
@@ -24,8 +23,6 @@ import {
   generateStatusElement,
   filterModelStatusDataByApp,
 } from "app/utils/utils";
-
-import { getConfig } from "app/selectors";
 
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 
@@ -87,7 +84,6 @@ export default function App() {
   const unitChips = renderCounts("units", modelStatusData);
   const machineChips = renderCounts("machines", modelStatusData);
 
-  const { showActionsPanel } = getConfig(useStore().getState());
   const setPanel = useQueryParam("panel", StringParam)[1];
   const showActions = () => {
     setPanel("execute-action");
@@ -105,14 +101,13 @@ export default function App() {
             >
               <i className="p-icon--settings"></i>Configure
             </button>
-            {showActionsPanel ? (
-              <button
-                className="entity-details__action-button"
-                onClick={showActions}
-              >
-                <i className="p-icon--settings"></i>Actions
-              </button>
-            ) : null}
+
+            <button
+              className="entity-details__action-button"
+              onClick={showActions}
+            >
+              <i className="p-icon--settings"></i>Actions
+            </button>
           </div>
           <EntityInfo data={AppEntityData} />
         </>
