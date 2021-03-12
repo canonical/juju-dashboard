@@ -3,7 +3,7 @@ import { mount } from "enzyme";
 import NotFound from "./NotFound";
 
 describe("NotFound", () => {
-  it("should display corrent text", () => {
+  it("should display correct text", () => {
     const wrapper = mount(
       <NotFound message="Wut?">
         <p>This thing cannot be found</p>
