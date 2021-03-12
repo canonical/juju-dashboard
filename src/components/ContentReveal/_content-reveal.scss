@@ -1,8 +1,12 @@
 @import "vanilla-framework/scss/vanilla";
 
 .content-reveal {
-  &:not([data-open="true"]) + & {
-    border-top: 1px solid $color-mid-x-light;
+  &:not([data-open="true"]):not(:last-child) {
+    border-bottom: 1px solid $color-mid-x-light;
+  }
+
+  &:not(:first-child) {
+    margin-top: 1rem;
   }
 
   &__header {
@@ -10,6 +14,7 @@
     display: flex;
     font-weight: 400;
     padding: 0.5rem;
+    padding-bottom: 0.75rem;
     place-items: center;
     width: 100%;
 
@@ -33,7 +38,7 @@
   &__content {
     max-height: 100%;
     overflow-x: scroll;
-    padding: 1rem 0.5rem 1rem;
+    padding: 0 0.5rem;
     scrollbar-width: 0;
 
     &[aria-hidden="true"] {
@@ -41,6 +46,10 @@
       overflow: hidden;
       padding-bottom: 0;
       padding-top: 0;
+    }
+
+    table {
+      margin-bottom: 0;
     }
   }
 }
