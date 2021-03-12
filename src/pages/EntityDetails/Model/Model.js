@@ -223,44 +223,23 @@ const Model = () => {
     </>
   );
 
-  const expandedKey = () => {
-    if (appOffersTableLength) {
-      return "offers";
-    }
-    if (localAppTableLength) {
-      return "local-apps";
-    }
-    if (remoteAppsTableLength) {
-      return "remote-apps";
-    }
-  };
-
   const getContentReveals = () => {
     return (
       <>
         {!!appOffersTableLength && (
-          <ContentReveal
-            title={AppOffersHeader()}
-            openByDefault={expandedKey() === "offers"}
-          >
+          <ContentReveal title={AppOffersHeader()} openByDefault={true}>
             {AppOffersTable()}
           </ContentReveal>
         )}
 
         {!!localAppTableLength && (
-          <ContentReveal
-            title={LocalAppsHeader()}
-            openByDefault={expandedKey() === "local-apps"}
-          >
+          <ContentReveal title={LocalAppsHeader()} openByDefault={true}>
             {LocalAppsTable()}
           </ContentReveal>
         )}
 
         {!!remoteAppsTableLength && (
-          <ContentReveal
-            title={RemoteAppsHeader()}
-            openByDefault={expandedKey() === "remote-apps"}
-          >
+          <ContentReveal title={RemoteAppsHeader()} openByDefault={true}>
             {RemoteAppsTable()}
           </ContentReveal>
         )}
