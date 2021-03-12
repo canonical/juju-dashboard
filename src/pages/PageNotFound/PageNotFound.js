@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import Header from "components/Header/Header";
+import NotFound from "components/NotFound/NotFound";
 
 import useWindowTitle from "hooks/useWindowTitle";
 
-export default function NotFound() {
+export default function PageNotFound() {
   useWindowTitle("Page not found");
   return (
     <BaseLayout>

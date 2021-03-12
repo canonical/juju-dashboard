@@ -13,7 +13,9 @@ import Unit from "pages/EntityDetails/Unit/Unit";
 import Machine from "pages/EntityDetails/Machine/Machine";
 
 import Settings from "pages/Settings/Settings";
-import NotFound from "pages/NotFound/NotFound";
+
+// Error pages
+import PageNotFound from "pages/PageNotFound/PageNotFound";
 
 import useAnalytics from "hooks/useAnalytics";
 
@@ -78,7 +80,7 @@ export function Routes() {
     <Switch>
       {routes}
       <Route>
-        <NotFound />
+        <PageNotFound />
       </Route>
     </Switch>
   );
