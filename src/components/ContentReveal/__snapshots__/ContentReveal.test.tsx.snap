@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Content Reveal should show correct title if only text and JSX 1`] = `
+<ContentReveal
+  openByDefault={false}
+  title="Foo bar () => /*#__PURE__*/(0, _jsxDevRuntime.jsxDEV)(\\"div\\", {
+      className: \\"component\\",
+      children: \\"component content\\"
+    }, void 0, false, {
+      fileName: _jsxFileName,
+      lineNumber: 27,
+      columnNumber: 29
+    }, void 0)"
+>
+  <div
+    className="content-reveal"
+  >
+    <div
+      className="content-reveal__header"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="button"
+      tabIndex={0}
+    >
+      <i
+        className="p-icon--plus"
+      />
+      <div
+        className="content-reveal__title"
+      >
+        Foo bar () =&gt; /*#__PURE__*/(0, _jsxDevRuntime.jsxDEV)("div", {
+      className: "component",
+      children: "component content"
+    }, void 0, false, {
+      fileName: _jsxFileName,
+      lineNumber: 27,
+      columnNumber: 29
+    }, void 0)
+      </div>
+    </div>
+    <div
+      aria-hidden={true}
+      className="content-reveal__content"
+    >
+      <p>
+        Banner text
+      </p>
+    </div>
+  </div>
+</ContentReveal>
+`;
