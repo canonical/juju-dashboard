@@ -15,14 +15,15 @@ export default function Aside({
   pinned = false,
 }: Props): JSX.Element {
   return (
-    <div
+    <SlideInOut
+      isActive={true}
       className={classnames("l-aside", {
         "is-narrow": width === "narrow",
         "is-wide": width === "wide",
         "is-pinned": pinned === true,
       })}
     >
-      <SlideInOut isActive={true}>{children}</SlideInOut>
-    </div>
+      {children}
+    </SlideInOut>
   );
 }
