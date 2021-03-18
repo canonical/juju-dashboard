@@ -3,12 +3,17 @@
 .radio-input-box {
   border: 1px solid $color-mid-light;
   margin-bottom: 0.5rem;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
 
   .radio-input-box__label {
-    margin: 0;
+    font-size: 1rem;
+    margin-bottom: 0;
     padding-top: 0;
     width: 100%;
+
+    &--required::after {
+      content: "*";
+    }
   }
 
   .radio-input-box__description {
@@ -18,14 +23,16 @@
   .radio-input-box__content {
     display: none;
     font-size: 0.875rem;
+    margin-top: 0.25rem;
     padding-left: 2rem;
-
-    .radio-input-box__label--required::after {
-      content: "*";
-    }
 
     .radio-input-box__input {
       margin-bottom: 0.25rem;
+    }
+
+    .radio-input-box__options .radio-input-box__label {
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
     }
   }
 
