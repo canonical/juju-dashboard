@@ -27,8 +27,17 @@ export default function RadioInputBox({
   const inputBoxRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 40 is a magic number that aligns nicely with the height of 2.5rem;
-  const renderedHeight = 40;
+  // 20, 40 are magic numbers that align nicely with the heights.
+  const initialHeight = 40;
+  const paddingNumber = 20;
+
+  useEffect(() => {
+    if (inputBoxRef.current !== null) {
+      // Due to the 'closed' hook animation running on initial load we cannot
+      // set the initial height in the css but have to do it on the first load.
+      inputBoxRef.current.style.height = initialHeight + "px";
+    }
+  }, [inputBoxRef]);
 
   useEffect(() => {
     setOpened(selectedAction === name);
@@ -43,20 +52,20 @@ export default function RadioInputBox({
     let startHeight = 0;
     let endHeight = 0;
     let duration = 0;
+
     if (opened) {
       startHeight = wrapper.offsetHeight;
       // To be used when we're closing so we know what the original value was.
-      endHeight = container.offsetHeight + 20; // 20 is magic
+      endHeight = container.offsetHeight + paddingNumber;
       duration = endHeight;
       // Set the height of the wrapper element to the end height to
       // override the height set in css for the collapsed size.
       wrapper.style.height = endHeight + "px";
-      // If the element hasn't been opened then we do not want to animate
-      // it closed again. This is to prevent the animation happening on the
-      // panel opening and the elements being initially rendered to the page.
-    } else if (wrapper.offsetHeight > 40) {
-      endHeight = renderedHeight;
-      startHeight = container.offsetHeight + 20; // 20 is magic
+    } else if (wrapper.offsetHeight !== initialHeight) {
+      // Do not animate if the wrapper height is already in the closed state
+      // and this hook runs for the closed state again.
+      endHeight = initialHeight;
+      startHeight = container.offsetHeight + paddingNumber;
       duration = startHeight;
     }
     const animation = wrapper.animate(
@@ -73,10 +82,12 @@ export default function RadioInputBox({
 
     animation.onfinish = () => {
       if (opened === false) {
-        wrapper.style.height = renderedHeight + "px";
+        wrapper.style.height = initialHeight + "px";
+      } else {
+        wrapper.style.height = "";
       }
     };
-  }, [opened, renderedHeight]);
+  }, [opened, initialHeight]);
 
   const handleSelect = () => {
     onSelect(name);
