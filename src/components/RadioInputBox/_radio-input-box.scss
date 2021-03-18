@@ -40,6 +40,7 @@
     overflow: hidden;
 
     summary {
+      cursor: pointer;
       display: block;
       margin-bottom: 0;
       overflow: hidden;
@@ -67,8 +68,14 @@
       }
     }
 
-    &[open] > summary::before {
-      transform: rotate(90deg);
+    &[open] summary {
+      span {
+        display: none;
+      }
+
+      &::before {
+        transform: rotate(90deg);
+      }
     }
   }
 

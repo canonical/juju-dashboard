@@ -56,7 +56,10 @@ export default function RadioInputBox({
                 name={inputKey}
               ></input>
               <details className="radio-input-box__details">
-                <summary>{option.description}</summary>
+                <summary>
+                  <span>{option.description}</span>
+                  &nbsp;
+                </summary>
                 {option.description}
               </details>
             </>
