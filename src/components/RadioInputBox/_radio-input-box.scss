@@ -11,10 +11,22 @@
     width: 100%;
   }
 
+  .radio-input-box__description {
+    margin-bottom: 1.25rem;
+  }
+
   .radio-input-box__content {
     display: none;
     font-size: 0.875rem;
     padding-left: 2rem;
+
+    .radio-input-box__label--required::after {
+      content: "*";
+    }
+
+    .radio-input-box__input {
+      margin-bottom: 0.25rem;
+    }
   }
 
   &[aria-expanded="true"] {

@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import classnames from "classnames";
 
-import type { ActionOptions } from "panels/ActionsPanel/ActionsPanel";
+import type {
+  ActionOptions,
+  SetSelectedAction,
+} from "panels/ActionsPanel/ActionsPanel";
 
 import "./_radio-input-box.scss";
 
@@ -8,23 +12,55 @@ type Props = {
   name: string;
   description: string;
   options: ActionOptions;
+  selectedAction: string | undefined;
+  onSelect: SetSelectedAction;
 };
 
 export default function RadioInputBox({
   name,
   description,
   options,
+  selectedAction,
+  onSelect,
 }: Props): JSX.Element {
   const [opened, setOpened] = useState<boolean>(false);
 
-  const handleSelect = (e: any) => {
-    const bool = e.target.value === "on" ? true : false;
-    setOpened(bool);
+  useEffect(() => {
+    setOpened(selectedAction === name);
+  }, [selectedAction, name]);
+
+  const handleSelect = () => {
+    onSelect(name);
   };
   const labelId = `actionRadio-${name}`;
 
-  const generateOptions = (options: ActionOptions): JSX.Element[] => {
-    return options.map((option) => <input key={option.name} type="text" />);
+  const generateOptions = (options: ActionOptions): JSX.Element => {
+    return (
+      <form>
+        {options.map((option) => {
+          const inputKey = `${option.name}Input`;
+          return (
+            <>
+              <label
+                className={classnames({
+                  "radio-input-box__label--required": option.required,
+                })}
+                htmlFor={inputKey}
+              >
+                {option.name}
+              </label>
+              <input
+                className="radio-input-box__input"
+                type="text"
+                id={inputKey}
+                name={inputKey}
+              ></input>
+              <span>{option.description}</span>
+            </>
+          );
+        })}
+      </form>
+    );
   };
 
   return (
