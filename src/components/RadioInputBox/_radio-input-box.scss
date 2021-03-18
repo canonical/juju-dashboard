@@ -68,7 +68,13 @@
       }
     }
 
+    &[open] span {
+      padding-left: 1.3rem;
+    }
+
     &[open] summary {
+      margin-bottom: -1.5rem;
+
       span {
         display: none;
       }

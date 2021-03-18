@@ -60,7 +60,7 @@ export default function RadioInputBox({
                   <span>{option.description}</span>
                   &nbsp;
                 </summary>
-                {option.description}
+                <span>{option.description}</span>
               </details>
             </>
           );
