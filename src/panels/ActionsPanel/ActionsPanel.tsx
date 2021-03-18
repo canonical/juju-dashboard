@@ -9,6 +9,7 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
+import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 
 import "./_actions-panel.scss";
 
@@ -47,6 +48,8 @@ type ActionOptionDetails = {
   required: boolean;
 };
 
+export type SetSelectedAction = (actionName: string) => void;
+
 export default function ActionsPanel(): JSX.Element {
   const appStore = useStore();
   const appState = appStore.getState();
@@ -60,6 +63,10 @@ export default function ActionsPanel(): JSX.Element {
 
   const [actionData, setActionData] = useState<ActionData>();
   const [fetchingActionData, setFetchingActionData] = useState(false);
+  const [selectedAction, setSelectedAction]: [
+    string | undefined,
+    SetSelectedAction
+  ] = useState<string>();
 
   useEffect(() => {
     setFetchingActionData(true);
@@ -92,7 +99,12 @@ export default function ActionsPanel(): JSX.Element {
           Run action on {appName}: {generateSelectedUnitList()}
         </div>
         <div className="actions-panel__action-list">
-          {generateActionlist(actionData, fetchingActionData)}
+          {generateActionlist(
+            actionData,
+            fetchingActionData,
+            selectedAction,
+            setSelectedAction
+          )}
         </div>
       </div>
     </Aside>
@@ -101,7 +113,9 @@ export default function ActionsPanel(): JSX.Element {
 
 function generateActionlist(
   actionData: ActionData | undefined,
-  fetchingActionData: boolean
+  fetchingActionData: boolean,
+  selectedAction: string | undefined,
+  setSelectedAction: SetSelectedAction
 ) {
   if (!actionData && fetchingActionData) return null;
   if (!actionData && !fetchingActionData)
@@ -122,6 +136,15 @@ function generateActionlist(
       });
     });
 
-    return <div key={actionName}>{actionName}</div>;
+    return (
+      <RadioInputBox
+        name={actionName}
+        description={action.description}
+        options={options}
+        onSelect={setSelectedAction}
+        selectedAction={selectedAction}
+        key={actionName}
+      />
+    );
   });
 }
