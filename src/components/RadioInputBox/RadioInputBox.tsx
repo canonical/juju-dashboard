@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState, ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 
 import type {
   ActionOptions,
   SetSelectedAction,
 } from "panels/ActionsPanel/ActionsPanel";
+
+import DescriptionSummary from "./DescriptionSummary";
 
 import "./_radio-input-box.scss";
 
@@ -95,28 +97,6 @@ export default function RadioInputBox({
 
   const labelId = `actionRadio-${name}`;
 
-  const generateDescription = (description: string): ReactNode => {
-    // 30 is a magic number, the width of the available text area of the field
-    // If the width of the actions area increases then this number will need
-    // to be adjusted accordingly.
-    if (description.length > 30) {
-      return (
-        <details className="radio-input-box__details">
-          <summary className="radio-input-box__summary">
-            <span className="radio-input-box__summary-description">
-              {description}
-            </span>
-            &nbsp;
-          </summary>
-          <span className="radio-input-box__details-description">
-            {description}
-          </span>
-        </details>
-      );
-    }
-    return description;
-  };
-
   const generateOptions = (options: ActionOptions): JSX.Element => {
     return (
       <form>
@@ -141,7 +121,7 @@ export default function RadioInputBox({
                 id={inputKey}
                 name={inputKey}
               ></input>
-              {generateDescription(option.description)}
+              <DescriptionSummary description={option.description} />
             </div>
           );
         })}
