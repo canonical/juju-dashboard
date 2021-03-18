@@ -39,7 +39,7 @@
   .radio-input-box__details {
     overflow: hidden;
 
-    summary {
+    .radio-input-box__summary {
       cursor: pointer;
       display: block;
       margin-bottom: 0;
@@ -68,14 +68,14 @@
       }
     }
 
-    &[open] span {
+    &[open] .radio-input-box__details-description {
       padding-left: 1.3rem;
     }
 
-    &[open] summary {
+    &[open] .radio-input-box__summary {
       margin-bottom: -1.5rem;
 
-      span {
+      &-description {
         display: none;
       }
 

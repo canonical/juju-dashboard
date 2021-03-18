@@ -41,11 +41,15 @@ export default function RadioInputBox({
     if (description.length > 30) {
       return (
         <details className="radio-input-box__details">
-          <summary>
-            <span>{description}</span>
+          <summary className="radio-input-box__summary">
+            <span className="radio-input-box__summary-description">
+              {description}
+            </span>
             &nbsp;
           </summary>
-          <span>{description}</span>
+          <span className="radio-input-box__details-description">
+            {description}
+          </span>
         </details>
       );
     }
