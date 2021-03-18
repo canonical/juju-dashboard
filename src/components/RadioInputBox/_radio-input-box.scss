@@ -25,14 +25,50 @@
     font-size: 0.875rem;
     margin-top: 0.25rem;
     padding-left: 2rem;
+  }
 
-    .radio-input-box__input {
-      margin-bottom: 0.25rem;
+  .radio-input-box__input {
+    margin-bottom: 0.25rem;
+  }
+
+  .radio-input-box__options .radio-input-box__label {
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .radio-input-box__details {
+    overflow: hidden;
+
+    summary {
+      display: block;
+      margin-bottom: 0;
+      overflow: hidden;
+      padding: 0;
+      padding-left: 1.3rem;
+      position: relative;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &::before {
+        border-color: transparent transparent transparent #111;
+        border-style: solid;
+        border-width: 0.3rem;
+        content: "";
+        left: 0.3rem;
+        position: absolute;
+        top: 0.5rem;
+        transform: rotate(0);
+        transform-origin: 0.1rem 50%;
+        transition: 0.25s transform ease;
+      }
+
+      &::marker {
+        display: none;
+      }
     }
 
-    .radio-input-box__options .radio-input-box__label {
-      margin-bottom: 0.5rem;
-      margin-top: 1rem;
+    &[open] > summary::before {
+      transform: rotate(90deg);
     }
   }
 
