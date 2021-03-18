@@ -78,7 +78,7 @@
     "redux-thunk": "2.3.0",
     "reselect": "4.0.0",
     "use-query-params": "1.2.0",
-    "vanilla-framework": "2.24.1"
+    "vanilla-framework": "2.26.0"
   },
   "devDependencies": {
     "@types/classnames": "2.2.11",
