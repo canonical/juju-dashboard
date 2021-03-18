@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import classnames from "classnames";
 
 import type {
@@ -34,6 +34,24 @@ export default function RadioInputBox({
   };
   const labelId = `actionRadio-${name}`;
 
+  const generateDescription = (description: string): ReactNode => {
+    // 30 is a magic number, the width of the available text area of the field
+    // If the width of the actions area increases then this number will need
+    // to be adjusted accordingly.
+    if (description.length > 30) {
+      return (
+        <details className="radio-input-box__details">
+          <summary>
+            <span>{description}</span>
+            &nbsp;
+          </summary>
+          <span>{description}</span>
+        </details>
+      );
+    }
+    return description;
+  };
+
   const generateOptions = (options: ActionOptions): JSX.Element => {
     return (
       <form>
@@ -55,13 +73,7 @@ export default function RadioInputBox({
                 id={inputKey}
                 name={inputKey}
               ></input>
-              <details className="radio-input-box__details">
-                <summary>
-                  <span>{option.description}</span>
-                  &nbsp;
-                </summary>
-                <span>{option.description}</span>
-              </details>
+              {generateDescription(option.description)}
             </>
           );
         })}
