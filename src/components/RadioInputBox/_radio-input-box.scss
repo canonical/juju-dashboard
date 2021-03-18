@@ -3,8 +3,12 @@
 .radio-input-box {
   border: 1px solid $color-mid-light;
   border-radius: 2px;
+  height: 2.5rem;
   margin-bottom: 0.5rem;
+  overflow: hidden;
   padding: 0.5rem 1rem 0.5rem 0.5rem;
+
+  @include vf-animation(#{border, background-color}, sleepy, linear);
 
   .radio-input-box__label {
     font-size: 1rem;
@@ -18,7 +22,6 @@
   }
 
   .radio-input-box__content {
-    display: none;
     font-size: 0.875rem;
     margin-top: 0.25rem;
     padding-left: 2rem;
