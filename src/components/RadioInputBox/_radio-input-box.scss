@@ -35,6 +35,13 @@
     }
   }
 
+  .radio-input-box__description {
+    // Required for Chrome as it does not break long running URLS on slashes
+    // like Firefox does. This doesn't appear to cause any negative side
+    // effects in Firefox.
+    word-wrap: break-word;
+  }
+
   .radio-input-box__details {
     overflow: hidden;
 
