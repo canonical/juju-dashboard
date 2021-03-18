@@ -109,7 +109,7 @@ export default function RadioInputBox({
             >
               <label
                 className={classnames("radio-input-box__label", {
-                  "radio-input-box__label--required": option.required,
+                  "is-required": option.required,
                 })}
                 htmlFor={inputKey}
               >
