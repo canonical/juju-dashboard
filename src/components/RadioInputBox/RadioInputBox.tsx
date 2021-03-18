@@ -58,7 +58,7 @@ export default function RadioInputBox({
         {options.map((option) => {
           const inputKey = `${option.name}Input`;
           return (
-            <>
+            <div key={`${option.name}InputGroup`}>
               <label
                 className={classnames("radio-input-box__label", {
                   "radio-input-box__label--required": option.required,
@@ -74,7 +74,7 @@ export default function RadioInputBox({
                 name={inputKey}
               ></input>
               {generateDescription(option.description)}
-            </>
+            </div>
           );
         })}
       </form>
