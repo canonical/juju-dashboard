@@ -62,7 +62,10 @@ export default function RadioInputBox({
         {options.map((option) => {
           const inputKey = `${option.name}Input`;
           return (
-            <div key={`${option.name}InputGroup`}>
+            <div
+              className="radio-input-box__input-group"
+              key={`${option.name}InputGroup`}
+            >
               <label
                 className={classnames("radio-input-box__label", {
                   "radio-input-box__label--required": option.required,

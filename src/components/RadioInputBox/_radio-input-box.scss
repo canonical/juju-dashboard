@@ -16,10 +16,6 @@
     }
   }
 
-  .radio-input-box__description {
-    margin-bottom: 1.25rem;
-  }
-
   .radio-input-box__content {
     display: none;
     font-size: 0.875rem;
@@ -31,9 +27,11 @@
     margin-bottom: 0.25rem;
   }
 
-  .radio-input-box__options .radio-input-box__label {
-    margin-bottom: 0.5rem;
-    margin-top: 1rem;
+  .radio-input-box__options {
+    .radio-input-box__label {
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+    }
   }
 
   .radio-input-box__details {
@@ -83,6 +81,10 @@
         transform: rotate(90deg);
       }
     }
+  }
+
+  .radio-input-box__input-group:last-child .radio-input-box__details {
+    margin-bottom: 0;
   }
 
   &[aria-expanded="true"] {
