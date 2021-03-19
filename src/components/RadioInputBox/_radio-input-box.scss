@@ -2,19 +2,95 @@
 
 .radio-input-box {
   border: 1px solid $color-mid-light;
+  border-radius: 2px;
   margin-bottom: 0.5rem;
-  padding: 0.5rem;
+  overflow: hidden;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+
+  @include vf-animation(#{border, background-color}, sleepy, linear);
 
   .radio-input-box__label {
-    margin: 0;
+    font-size: 1rem;
+    margin-bottom: 0;
     padding-top: 0;
     width: 100%;
   }
 
   .radio-input-box__content {
-    display: none;
     font-size: 0.875rem;
+    margin-top: 0.25rem;
     padding-left: 2rem;
+  }
+
+  .radio-input-box__input {
+    margin-bottom: 0.25rem;
+  }
+
+  .radio-input-box__options {
+    .radio-input-box__label {
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+    }
+  }
+
+  .radio-input-box__description {
+    // Required for Chrome as it does not break long running URLS on slashes
+    // like Firefox does. This doesn't appear to cause any negative side
+    // effects in Firefox.
+    word-wrap: break-word;
+  }
+
+  .radio-input-box__details {
+    overflow: hidden;
+
+    .radio-input-box__summary {
+      cursor: pointer;
+      display: block;
+      margin-bottom: 0;
+      overflow: hidden;
+      padding: 0;
+      padding-left: 1.3rem;
+      position: relative;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &::before {
+        border-color: transparent transparent transparent #111;
+        border-style: solid;
+        border-width: 0.3rem;
+        content: "";
+        left: 0.3rem;
+        position: absolute;
+        top: 0.5rem;
+        transform: rotate(0);
+        transform-origin: 0.1rem 50%;
+        transition: 0.25s transform ease;
+      }
+
+      &::marker {
+        display: none;
+      }
+    }
+
+    &[open] .radio-input-box__details-description {
+      padding-left: 1.3rem;
+    }
+
+    &[open] .radio-input-box__summary {
+      margin-bottom: -1.5rem;
+
+      &-description {
+        display: none;
+      }
+
+      &::before {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  .radio-input-box__input-group:last-child .radio-input-box__details {
+    margin-bottom: 0;
   }
 
   &[aria-expanded="true"] {
