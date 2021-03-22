@@ -426,3 +426,25 @@ export async function getActionsForApplication(appName, modelUUID, appState) {
   });
   return actionList;
 }
+
+export async function executeActionOnUnits(
+  unitList = [],
+  actionName,
+  actionOptions,
+  modelUUID,
+  appState
+) {
+  const generatedActions = unitList.map((unit) => {
+    return {
+      name: actionName,
+      receiver: `unit-${unit}`, // Juju unit tag in the format "unit-mysql/1"
+      parameters: actionOptions,
+    };
+  });
+  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const actionResult = await conn.facades.action.enqueueOperation({
+    actions: generatedActions,
+  });
+  console.log(actionResult);
+  return actionResult;
+}
