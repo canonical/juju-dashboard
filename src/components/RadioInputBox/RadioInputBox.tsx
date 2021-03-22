@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { useFormikContext, Field } from "formik";
 import classnames from "classnames";
 
 import type {
   ActionOptions,
+  ActionOptionValue,
   SetSelectedAction,
 } from "panels/ActionsPanel/ActionsPanel";
 
@@ -16,6 +18,7 @@ type Props = {
   options: ActionOptions;
   selectedAction: string | undefined;
   onSelect: SetSelectedAction;
+  onValuesChange: (actionName: string, values: ActionOptionValue) => void;
 };
 
 export default function RadioInputBox({
@@ -24,10 +27,13 @@ export default function RadioInputBox({
   options,
   selectedAction,
   onSelect,
+  onValuesChange,
 }: Props): JSX.Element {
   const [opened, setOpened] = useState<boolean>(false);
   const inputBoxRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { values } = useFormikContext<ActionOptionValue>();
 
   // 20, 40 are magic numbers that align nicely with the heights.
   const initialHeight = 40;
@@ -44,6 +50,10 @@ export default function RadioInputBox({
   useEffect(() => {
     setOpened(selectedAction === name);
   }, [selectedAction, name]);
+
+  useEffect(() => {
+    onValuesChange(name, values);
+  }, [onValuesChange, name, values]);
 
   useEffect(() => {
     const wrapper = inputBoxRef.current;
@@ -101,7 +111,7 @@ export default function RadioInputBox({
     return (
       <form>
         {options.map((option) => {
-          const inputKey = `${option.name}Input`;
+          const inputKey = `${name}-${option.name}`;
           return (
             <div
               className="radio-input-box__input-group"
@@ -115,12 +125,12 @@ export default function RadioInputBox({
               >
                 {option.name}
               </label>
-              <input
+              <Field
                 className="radio-input-box__input"
                 type="text"
                 id={inputKey}
                 name={inputKey}
-              ></input>
+              />
               <DescriptionSummary description={option.description} />
             </div>
           );

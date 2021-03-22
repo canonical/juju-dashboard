@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, MutableRefObject } from "react";
 import classNames from "classnames";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getActionsForApplication } from "juju";
+import { Formik } from "formik";
+import { executeActionOnUnits, getActionsForApplication } from "juju";
 import { getModelUUID } from "app/selectors";
 import { generateIconImg } from "app/utils/utils";
 
@@ -49,6 +50,14 @@ type ActionOptionDetails = {
   required: boolean;
 };
 
+type ActionOptionValues = {
+  [key: string]: ActionOptionValue;
+};
+
+export type ActionOptionValue = {
+  [key: string]: string;
+};
+
 export type SetSelectedAction = (actionName: string) => void;
 
 export default function ActionsPanel(): JSX.Element {
@@ -68,6 +77,8 @@ export default function ActionsPanel(): JSX.Element {
     string | undefined,
     SetSelectedAction
   ] = useState<string>();
+
+  const actionOptionsValues = useRef<ActionOptionValues>({});
 
   useEffect(() => {
     setFetchingActionData(true);
@@ -102,6 +113,7 @@ export default function ActionsPanel(): JSX.Element {
         <div className="actions-panel__action-list">
           {generateActionlist(
             actionData,
+            actionOptionsValues,
             fetchingActionData,
             selectedAction,
             setSelectedAction
@@ -125,6 +137,7 @@ export default function ActionsPanel(): JSX.Element {
 
 function generateActionlist(
   actionData: ActionData | undefined,
+  actionOptionValues: MutableRefObject<ActionOptionValues>,
   fetchingActionData: boolean,
   selectedAction: string | undefined,
   setSelectedAction: SetSelectedAction
@@ -133,6 +146,16 @@ function generateActionlist(
   if (!actionData && !fetchingActionData)
     return <div>This charm has not provided any actions</div>;
   if (!actionData) return null;
+
+  const onValuesChange = (actionName: string, values: ActionOptionValue) => {
+    // The keys have the action name as a prefix because of the form field ID's
+    // needing to be unique so we strip them off when storing them.
+    const newValues: ActionOptionValue = {};
+    Object.keys(values).forEach((key) => {
+      newValues[key.replace(`${actionName}-`, "")] = values[key];
+    });
+    actionOptionValues.current[actionName] = newValues;
+  };
 
   return Object.keys(actionData).map((actionName) => {
     const action = actionData[actionName];
@@ -148,15 +171,29 @@ function generateActionlist(
       });
     });
 
+    const generateInitialValues = (name: string, options: ActionOptions) => {
+      const initialValues: { [key: string]: string } = {};
+      options.forEach((option) => {
+        initialValues[`${name}-${option.name}`] = "";
+      });
+      return initialValues;
+    };
+
     return (
-      <RadioInputBox
-        name={actionName}
-        description={action.description}
-        options={options}
-        onSelect={setSelectedAction}
-        selectedAction={selectedAction}
+      <Formik
+        initialValues={generateInitialValues(actionName, options)}
+        onSubmit={() => {}}
         key={actionName}
-      />
+      >
+        <RadioInputBox
+          name={actionName}
+          description={action.description}
+          options={options}
+          onSelect={setSelectedAction}
+          onValuesChange={onValuesChange}
+          selectedAction={selectedAction}
+        />
+      </Formik>
     );
   });
 }
