@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import classNames from "classnames";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getActionsForApplication } from "juju";
@@ -105,6 +106,17 @@ export default function ActionsPanel(): JSX.Element {
             selectedAction,
             setSelectedAction
           )}
+        </div>
+        <div className="actions-panel__drawer">
+          <button
+            className={classNames(
+              "p-button--positive actions-panel__run-action",
+              { "is-active": true }
+            )}
+            disabled={false}
+          >
+            Run action
+          </button>
         </div>
       </div>
     </Aside>

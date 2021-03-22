@@ -1,11 +1,26 @@
-.actions-panel {
-  padding: 0 1.5rem;
+@import "vanilla-framework/scss/vanilla";
 
+.actions-panel {
   .p-panel__header {
-    padding: 0;
+    padding: 0 1.5rem;
   }
 
   &__unit-list {
     margin-bottom: 1.125rem;
+    padding: 0 1.5rem;
+  }
+
+  &__action-list {
+    padding: 0 1.5rem;
+  }
+
+  &__drawer {
+    background-color: white;
+    border-top: 1px solid $color-mid-x-light;
+    bottom: 0;
+    height: 4.75rem;
+    padding: 1rem 1.5rem 0 1.5rem;
+    position: sticky;
+    text-align: right;
   }
 }
