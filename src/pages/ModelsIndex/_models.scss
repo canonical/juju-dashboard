@@ -22,6 +22,7 @@
       pointer-events: none;
     }
 
+    // Wrap the button group mid-breakpoint to fit xisting content
     @media (min-width: 876px) {
       grid-template-columns: 120px 1fr 280px;
     }
