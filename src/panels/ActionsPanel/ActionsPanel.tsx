@@ -103,6 +103,25 @@ export default function ActionsPanel(): JSX.Element {
     <h5>{generateIconImg(appName, namespace)} 0 units selected</h5>
   );
 
+  const executeAction = async () => {
+    await executeActionOnUnits(
+      // XXX These values are only hard coded until the
+      // unit list selection has been implemented.
+      ["ceph/0"],
+      "delete-pool",
+      actionOptionsValues.current["delete-pool"],
+      modelUUID,
+      appStore.getState()
+    );
+  };
+
+  const enableSubmit = () => {
+    // XXX If an action has been selected
+    // XXX If all required fields have been populated
+    // XXX If all fields validate.
+    return false;
+  };
+
   return (
     <Aside width="narrow">
       <div className="p-panel actions-panel">
@@ -122,10 +141,10 @@ export default function ActionsPanel(): JSX.Element {
         <div className="actions-panel__drawer">
           <button
             className={classNames(
-              "p-button--positive actions-panel__run-action",
-              { "is-active": true }
+              "p-button--positive actions-panel__run-action"
             )}
-            disabled={false}
+            disabled={!enableSubmit()}
+            onClick={executeAction}
           >
             Run action
           </button>
