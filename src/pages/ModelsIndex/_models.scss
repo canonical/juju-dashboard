@@ -22,7 +22,7 @@
       pointer-events: none;
     }
 
-    @media (min-width: $breakpoint-medium) {
+    @media (min-width: 876px) {
       grid-template-columns: 120px 1fr 280px;
     }
 
