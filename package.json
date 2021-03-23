@@ -60,7 +60,7 @@
     "classnames": "2.2.6",
     "clone-deep": "4.0.1",
     "d3": "6.6.0",
-    "framer-motion": "3.10.6",
+    "framer-motion": "4.0.2",
     "immer": "8.0.4",
     "mock-socket": "^9.0.3",
     "prop-types": "15.7.2",
