@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { Formik } from "formik";
 
-import ActionOptionInputs from "components/RadioInputBox/ActionOptionInputs";
+import OptionInputs from "components/RadioInputBox/OptionInputs";
 
 import type {
   ActionData,
-  ActionOptions as ActionOptionsType,
+  ActionOptionsType,
   ActionOptionValue,
 } from "panels/ActionsPanel/ActionsPanel";
 
@@ -42,8 +42,8 @@ export default function ActionOptions({ name, data, onValuesChange }: Props) {
 
   return (
     <Formik initialValues={initialValues} onSubmit={() => {}} key={name}>
-      <ActionOptionInputs
-        actionName={name}
+      <OptionInputs
+        name={name}
         options={collectedOptions}
         onValuesChange={onValuesChange}
       />

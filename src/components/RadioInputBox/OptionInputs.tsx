@@ -2,34 +2,38 @@ import { useEffect } from "react";
 import { useFormikContext, Field } from "formik";
 import classnames from "classnames";
 
-import type {
-  ActionOptions,
-  ActionOptionValue,
-} from "panels/ActionsPanel/ActionsPanel";
-
 import DescriptionSummary from "./DescriptionSummary";
 
-type Props = {
-  actionName: string;
-  options: ActionOptions;
-  onValuesChange: (actionName: string, values: ActionOptionValue) => void;
+type Options = OptionDetails[];
+
+type OptionDetails = {
+  name: string;
+  description: string;
+  type: string;
+  required: boolean;
 };
 
-export default function ActionOptionInputs({
-  actionName,
-  options,
-  onValuesChange,
-}: Props) {
-  const { values } = useFormikContext<ActionOptionValue>();
+type OptionValue = {
+  [key: string]: string;
+};
+
+type Props = {
+  name: string;
+  options: Options;
+  onValuesChange: (name: string, values: OptionValue) => void;
+};
+
+export default function OptionInputs({ name, options, onValuesChange }: Props) {
+  const { values } = useFormikContext<OptionValue>();
 
   useEffect(() => {
-    onValuesChange(actionName, values);
-  }, [onValuesChange, actionName, values]);
+    onValuesChange(name, values);
+  }, [onValuesChange, name, values]);
 
   return (
     <form>
       {options.map((option) => {
-        const inputKey = `${actionName}-${option.name}`;
+        const inputKey = `${name}-${option.name}`;
         return (
           <div
             className="radio-input-box__input-group"
