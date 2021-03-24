@@ -6,13 +6,13 @@ import OptionInputs from "components/RadioInputBox/OptionInputs";
 import type {
   ActionData,
   ActionOptionsType,
-  ActionOptionValue,
+  OnValuesChange,
 } from "panels/ActionsPanel/ActionsPanel";
 
 type Props = {
   name: string;
   data: ActionData;
-  onValuesChange: (actionName: string, values: ActionOptionValue) => void;
+  onValuesChange: OnValuesChange;
 };
 
 export default function ActionOptions({ name, data, onValuesChange }: Props) {

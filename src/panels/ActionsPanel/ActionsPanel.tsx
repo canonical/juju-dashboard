@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState, MutableRefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import classNames from "classnames";
+import cloneDeep from "clone-deep";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Formik } from "formik";
 import { executeActionOnUnits, getActionsForApplication } from "juju";
 import { getModelUUID } from "app/selectors";
 import { generateIconImg } from "app/utils/utils";
@@ -11,11 +11,14 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
+import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
+
+import ActionOptions from "./ActionOptions";
 
 import "./_actions-panel.scss";
 
-type ActionData = {
+export type ActionData = {
   [key: string]: ActionItem;
 };
 
@@ -41,7 +44,7 @@ type ActionProp = {
   type: string;
 };
 
-export type ActionOptions = ActionOptionDetails[];
+export type ActionOptionsType = ActionOptionDetails[];
 
 type ActionOptionDetails = {
   name: string;
@@ -54,11 +57,16 @@ type ActionOptionValues = {
   [key: string]: ActionOptionValue;
 };
 
-export type ActionOptionValue = {
+type ActionOptionValue = {
   [key: string]: string;
 };
 
-export type SetSelectedAction = (actionName: string) => void;
+type SetSelectedAction = (actionName: string) => void;
+
+export type OnValuesChange = (
+  actionName: string,
+  options: ActionOptionValue
+) => void;
 
 export default function ActionsPanel(): JSX.Element {
   const appStore = useStore();
@@ -70,8 +78,8 @@ export default function ActionsPanel(): JSX.Element {
   const modelUUID = useSelector(
     getModelUUIDMemo as (state: DefaultRootState) => unknown
   );
-
-  const [actionData, setActionData] = useState<ActionData>();
+  const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
+  const [actionData, setActionData] = useState<ActionData>({});
   const [fetchingActionData, setFetchingActionData] = useState(false);
   const [selectedAction, setSelectedAction]: [
     string | undefined,
@@ -97,7 +105,7 @@ export default function ActionsPanel(): JSX.Element {
     appState.juju?.modelData?.[modelUUID as string]?.applications?.[appName]
       ?.charm;
 
-  const generateSelectedUnitList = () => "...";
+  const generateSelectedUnitList = () => "..."; // XXX req unit list selection
 
   const generateTitle = () => (
     <h5>{generateIconImg(appName, namespace)} 0 units selected</h5>
@@ -115,12 +123,23 @@ export default function ActionsPanel(): JSX.Element {
     );
   };
 
-  const enableSubmit = () => {
-    // XXX If an action has been selected
-    // XXX If all required fields have been populated
-    // XXX If all fields validate.
-    return false;
-  };
+  const onValuesChange = useCallback(
+    (actionName: string, values: ActionOptionValue) => {
+      // The keys have the action name as a prefix because of the form field ID's
+      // needing to be unique so we strip them off when storing them.
+      const newValues: ActionOptionValues = cloneDeep(
+        actionOptionsValues.current
+      );
+      Object.keys(values).forEach((key) => {
+        if (!newValues[actionName]) {
+          newValues[actionName] = {};
+        }
+        newValues[actionName][key.replace(`${actionName}-`, "")] = values[key];
+      });
+      actionOptionsValues.current = newValues;
+    },
+    []
+  );
 
   return (
     <Aside width="narrow">
@@ -130,20 +149,30 @@ export default function ActionsPanel(): JSX.Element {
           Run action on {appName}: {generateSelectedUnitList()}
         </div>
         <div className="actions-panel__action-list">
-          {generateActionlist(
-            actionData,
-            actionOptionsValues,
-            fetchingActionData,
-            selectedAction,
-            setSelectedAction
-          )}
+          <LoadingHandler data={actionData} loading={fetchingActionData}>
+            {Object.keys(actionData).map((actionName) => (
+              <RadioInputBox
+                name={actionName}
+                description={actionData[actionName].description}
+                onSelect={setSelectedAction}
+                selectedInput={selectedAction}
+                key={actionName}
+              >
+                <ActionOptions
+                  name={actionName}
+                  data={actionData}
+                  onValuesChange={onValuesChange}
+                />
+              </RadioInputBox>
+            ))}
+          </LoadingHandler>
         </div>
         <div className="actions-panel__drawer">
           <button
             className={classNames(
               "p-button--positive actions-panel__run-action"
             )}
-            disabled={!enableSubmit()}
+            disabled={disableSubmit}
             onClick={executeAction}
           >
             Run action
@@ -152,67 +181,4 @@ export default function ActionsPanel(): JSX.Element {
       </div>
     </Aside>
   );
-}
-
-function generateActionlist(
-  actionData: ActionData | undefined,
-  actionOptionValues: MutableRefObject<ActionOptionValues>,
-  fetchingActionData: boolean,
-  selectedAction: string | undefined,
-  setSelectedAction: SetSelectedAction
-) {
-  if (!actionData && fetchingActionData) return null;
-  if (!actionData && !fetchingActionData)
-    return <div>This charm has not provided any actions</div>;
-  if (!actionData) return null;
-
-  const onValuesChange = (actionName: string, values: ActionOptionValue) => {
-    // The keys have the action name as a prefix because of the form field ID's
-    // needing to be unique so we strip them off when storing them.
-    const newValues: ActionOptionValue = {};
-    Object.keys(values).forEach((key) => {
-      newValues[key.replace(`${actionName}-`, "")] = values[key];
-    });
-    actionOptionValues.current[actionName] = newValues;
-  };
-
-  return Object.keys(actionData).map((actionName) => {
-    const action = actionData[actionName];
-    const options: ActionOptions = [];
-
-    Object.keys(action.params.properties).forEach((name) => {
-      const property = action.params.properties[name];
-      options.push({
-        name: name,
-        description: property.description,
-        type: property.type,
-        required: action.params.required.includes(name),
-      });
-    });
-
-    const generateInitialValues = (name: string, options: ActionOptions) => {
-      const initialValues: { [key: string]: string } = {};
-      options.forEach((option) => {
-        initialValues[`${name}-${option.name}`] = "";
-      });
-      return initialValues;
-    };
-
-    return (
-      <Formik
-        initialValues={generateInitialValues(actionName, options)}
-        onSubmit={() => {}}
-        key={actionName}
-      >
-        <RadioInputBox
-          name={actionName}
-          description={action.description}
-          options={options}
-          onSelect={setSelectedAction}
-          onValuesChange={onValuesChange}
-          selectedAction={selectedAction}
-        />
-      </Formik>
-    );
-  });
 }
