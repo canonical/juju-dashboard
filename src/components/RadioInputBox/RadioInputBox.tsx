@@ -1,33 +1,21 @@
-import { useEffect, useRef, useState, useMemo } from "react";
-import { Formik } from "formik";
-
-import type {
-  ActionData,
-  ActionOptions,
-  ActionOptionValue,
-  SetSelectedAction,
-} from "panels/ActionsPanel/ActionsPanel";
-
-import ActionOptionInputs from "./ActionOptionInputs";
+import { useEffect, useRef, useState, ReactNode } from "react";
 
 import "./_radio-input-box.scss";
 
 type Props = {
   name: string;
-  data: ActionData;
   description: string;
-  selectedAction: string | undefined;
-  onSelect: SetSelectedAction;
-  onValuesChange: (actionName: string, values: ActionOptionValue) => void;
+  selectedInput: string | undefined;
+  onSelect: (inputName: string) => void;
+  children: ReactNode;
 };
 
 export default function RadioInputBox({
   name,
-  data,
+  children,
   description,
-  selectedAction,
+  selectedInput,
   onSelect,
-  onValuesChange,
 }: Props): JSX.Element {
   const [opened, setOpened] = useState<boolean>(false);
   const inputBoxRef = useRef<HTMLDivElement>(null);
@@ -46,8 +34,8 @@ export default function RadioInputBox({
   }, [inputBoxRef]);
 
   useEffect(() => {
-    setOpened(selectedAction === name);
-  }, [selectedAction, name]);
+    setOpened(selectedInput === name);
+  }, [selectedInput, name]);
 
   useEffect(() => {
     const wrapper = inputBoxRef.current;
@@ -99,31 +87,7 @@ export default function RadioInputBox({
     onSelect(name);
   };
 
-  const action = data[name];
-
-  const collectedOptions = useMemo(() => {
-    const collectOptions: ActionOptions = [];
-    Object.keys(action.params.properties).forEach((name) => {
-      const property = action.params.properties[name];
-      collectOptions.push({
-        name: name,
-        description: property.description,
-        type: property.type,
-        required: action.params.required.includes(name),
-      });
-    });
-    return collectOptions;
-  }, [action.params.properties, action.params.required]);
-
-  const initialValues = useMemo(() => {
-    const initialValues: { [key: string]: string } = {};
-    collectedOptions.forEach((option) => {
-      initialValues[`${name}-${option.name}`] = "";
-    });
-    return initialValues;
-  }, [name, collectedOptions]);
-
-  const labelId = `actionRadio-${name}`;
+  const labelId = `inputRadio-${name}`;
 
   return (
     <div className="radio-input-box" aria-expanded={opened} ref={inputBoxRef}>
@@ -132,7 +96,7 @@ export default function RadioInputBox({
           <input
             type="radio"
             className="p-radio__input"
-            name="actionRadioSelector"
+            name="inputRadioSelector"
             aria-labelledby={labelId}
             onClick={handleSelect}
             onChange={handleSelect}
@@ -143,19 +107,7 @@ export default function RadioInputBox({
         </label>
         <div className="radio-input-box__content">
           <div className="radio-input-box__description">{description}</div>
-          <div className="radio-input-box__options">
-            <Formik
-              initialValues={initialValues}
-              onSubmit={() => {}}
-              key={name}
-            >
-              <ActionOptionInputs
-                actionName={name}
-                options={collectedOptions}
-                onValuesChange={onValuesChange}
-              />
-            </Formik>
-          </div>
+          <div className="radio-input-box__options">{children}</div>
         </div>
       </div>
     </div>
