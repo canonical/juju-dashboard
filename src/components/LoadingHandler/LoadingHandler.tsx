@@ -1,7 +1,8 @@
+import { ReactNode } from "react";
 import Spinner from "@canonical/react-components/dist/components/Spinner/Spinner";
 
 type LoadingHandlerProps = {
-  children?: JSX.Element;
+  children?: ReactNode;
   data: any;
   loading: boolean;
 };
