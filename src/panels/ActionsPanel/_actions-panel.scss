@@ -1,6 +1,9 @@
 @import "vanilla-framework/scss/vanilla";
 
 .actions-panel {
+  $magic-height: 200px;
+  $magic-min-height: calc(100vh - #{$magic-height});
+
   .p-panel__header {
     padding: 0 1.5rem;
   }
@@ -11,6 +14,7 @@
   }
 
   &__action-list {
+    min-height: $magic-min-height;
     padding: 0 1.5rem;
   }
 
