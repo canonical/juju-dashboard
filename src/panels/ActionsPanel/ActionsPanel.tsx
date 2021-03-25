@@ -157,6 +157,8 @@ export default function ActionsPanel(): JSX.Element {
     [actionData]
   );
 
+  const data = Object.keys(actionData).length > 0 ? actionData : null;
+
   return (
     <Aside width="narrow">
       <div className="p-panel actions-panel">
@@ -165,7 +167,11 @@ export default function ActionsPanel(): JSX.Element {
           Run action on {appName}: {generateSelectedUnitList()}
         </div>
         <div className="actions-panel__action-list">
-          <LoadingHandler data={actionData} loading={fetchingActionData}>
+          <LoadingHandler
+            data={data}
+            loading={fetchingActionData}
+            noDataMessage="This charm has not provided any actions."
+          >
             {Object.keys(actionData).map((actionName) => (
               <RadioInputBox
                 name={actionName}
