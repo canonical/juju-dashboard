@@ -445,6 +445,5 @@ export async function executeActionOnUnits(
   const actionResult = await conn.facades.action.enqueueOperation({
     actions: generatedActions,
   });
-  console.log(actionResult);
   return actionResult;
 }
