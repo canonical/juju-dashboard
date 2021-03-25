@@ -268,6 +268,9 @@ const requiredPopulated: RequiredPopulated = (
   optionsValues
 ) => {
   const required = actionData[selected].params.required;
+  if (!required) {
+    return true;
+  }
   if (required.length === 0) {
     return true;
   }
