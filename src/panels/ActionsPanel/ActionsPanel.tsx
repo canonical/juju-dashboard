@@ -118,12 +118,14 @@ export default function ActionsPanel(): JSX.Element {
   );
 
   const executeAction = async () => {
+    // You shouldn't be able to get this far without this defined but jic.
+    if (!selectedAction) return;
     await executeActionOnUnits(
-      // XXX These values are only hard coded until the
+      // XXX The unit list is only hard coded until the
       // unit list selection has been implemented.
       ["ceph/0"],
-      "delete-pool",
-      actionOptionsValues.current["delete-pool"],
+      selectedAction,
+      actionOptionsValues.current[selectedAction],
       modelUUID,
       appStore.getState()
     );
