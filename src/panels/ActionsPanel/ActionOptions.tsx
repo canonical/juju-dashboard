@@ -22,11 +22,12 @@ export default function ActionOptions({ name, data, onValuesChange }: Props) {
     const collectOptions: ActionOptionsType = [];
     Object.keys(action.params.properties).forEach((name) => {
       const property = action.params.properties[name];
+      const required = action.params.required;
       collectOptions.push({
         name: name,
         description: property.description,
         type: property.type,
-        required: action.params.required.includes(name),
+        required: required ? required.includes(name) : false,
       });
     });
     return collectOptions;

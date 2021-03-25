@@ -36,7 +36,7 @@ type ActionItem = {
 type ActionParams = {
   description: string;
   properties: ActionProps;
-  required: string[];
+  required?: string[];
   title: string;
   type: string;
 };
