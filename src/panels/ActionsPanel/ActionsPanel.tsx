@@ -1,6 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import classNames from "classnames";
-import cloneDeep from "clone-deep";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import { executeActionOnUnits, getActionsForApplication } from "juju";
@@ -54,11 +60,11 @@ type ActionOptionDetails = {
 };
 
 type ActionOptionValues = {
-  [key: string]: ActionOptionValue;
+  [actionName: string]: ActionOptionValue;
 };
 
 type ActionOptionValue = {
-  [key: string]: string;
+  [optionName: string]: string;
 };
 
 type SetSelectedAction = (actionName: string) => void;
@@ -123,22 +129,30 @@ export default function ActionsPanel(): JSX.Element {
     );
   };
 
-  const onValuesChange = useCallback(
-    (actionName: string, values: ActionOptionValue) => {
-      // The keys have the action name as a prefix because of the form field ID's
-      // needing to be unique so we strip them off when storing them.
-      const newValues: ActionOptionValues = cloneDeep(
-        actionOptionsValues.current
+  const changeHandler = useCallback(
+    (actionName, values) => {
+      onValuesChange(actionName, values, actionOptionsValues);
+      enableSubmit(
+        selectedAction,
+        actionData,
+        actionOptionsValues,
+        setDisableSubmit
       );
-      Object.keys(values).forEach((key) => {
-        if (!newValues[actionName]) {
-          newValues[actionName] = {};
-        }
-        newValues[actionName][key.replace(`${actionName}-`, "")] = values[key];
-      });
-      actionOptionsValues.current = newValues;
     },
-    []
+    [actionData, selectedAction]
+  );
+
+  const selectHandler = useCallback(
+    (actionName) => {
+      setSelectedAction(actionName);
+      enableSubmit(
+        actionName,
+        actionData,
+        actionOptionsValues,
+        setDisableSubmit
+      );
+    },
+    [actionData]
   );
 
   return (
@@ -154,14 +168,14 @@ export default function ActionsPanel(): JSX.Element {
               <RadioInputBox
                 name={actionName}
                 description={actionData[actionName].description}
-                onSelect={setSelectedAction}
+                onSelect={selectHandler}
                 selectedInput={selectedAction}
                 key={actionName}
               >
                 <ActionOptions
                   name={actionName}
                   data={actionData}
-                  onValuesChange={onValuesChange}
+                  onValuesChange={changeHandler}
                 />
               </RadioInputBox>
             ))}
@@ -182,3 +196,77 @@ export default function ActionsPanel(): JSX.Element {
     </Aside>
   );
 }
+
+function onValuesChange(
+  actionName: string,
+  values: ActionOptionValue,
+  optionValues: MutableRefObject<ActionOptionValues>
+) {
+  const updatedValues: ActionOptionValue = {};
+  Object.keys(values).forEach((key) => {
+    updatedValues[key.replace(`${actionName}-`, "")] = values[key];
+  });
+
+  optionValues.current = {
+    ...optionValues.current,
+    [actionName]: updatedValues,
+  };
+}
+
+function enableSubmit(
+  selectedAction: string | undefined,
+  actionData: ActionData,
+  optionsValues: MutableRefObject<ActionOptionValues>,
+  setDisableSubmit: (disable: boolean) => void
+) {
+  if (selectedAction) {
+    if (hasNoOptions(selectedAction, optionsValues.current)) {
+      setDisableSubmit(false);
+      return;
+    }
+    if (
+      requiredPopulated(selectedAction, actionData, optionsValues.current) &&
+      optionsValidate(selectedAction, optionsValues.current)
+    ) {
+      setDisableSubmit(false);
+      return;
+    }
+  }
+  setDisableSubmit(true);
+}
+
+type ValidationFnProps = (
+  selectedAction: string,
+  optionValues: ActionOptionValues
+) => boolean;
+
+type RequiredPopulated = (
+  selectedAction: string,
+  actionData: ActionData,
+  optionValues: ActionOptionValues
+) => boolean;
+
+const hasNoOptions: ValidationFnProps = (selected, optionValues) => {
+  // If there are no options stored then it doesn't have any.
+  if (!optionValues[selected]) {
+    return true;
+  }
+  return Object.keys(optionValues[selected]).length === 0;
+};
+
+const requiredPopulated: RequiredPopulated = (
+  selected,
+  actionData,
+  optionsValues
+) => {
+  const required = actionData[selected].params.required;
+  if (required.length === 0) {
+    return true;
+  }
+  return !required.some((option) => optionsValues[selected][option] === "");
+};
+
+const optionsValidate: ValidationFnProps = (selected, optionsValues) => {
+  // XXX TODO
+  return true;
+};
