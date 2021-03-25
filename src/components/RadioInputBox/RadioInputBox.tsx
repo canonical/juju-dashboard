@@ -85,6 +85,7 @@ export default function RadioInputBox({
 
   const handleSelect = () => {
     onSelect(name);
+    setOpened(true);
   };
 
   const labelId = `inputRadio-${name}`;
