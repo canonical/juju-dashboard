@@ -3,3 +3,4 @@ node_modules
 .DS_Store
 complete-redux-store-dump.js
 *.svg
+actions-list-api-response.json

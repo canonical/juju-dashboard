@@ -1,0 +1,11 @@
+.loading-handler {
+  &__spinner {
+    display: flex;
+    justify-content: center;
+    min-height: 70vh;
+
+    &-content {
+      align-self: center;
+    }
+  }
+}

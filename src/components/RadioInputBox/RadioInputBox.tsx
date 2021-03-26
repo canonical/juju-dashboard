@@ -1,28 +1,20 @@
-import { useEffect, useRef, useState } from "react";
-import classnames from "classnames";
-
-import type {
-  ActionOptions,
-  SetSelectedAction,
-} from "panels/ActionsPanel/ActionsPanel";
-
-import DescriptionSummary from "./DescriptionSummary";
+import { useEffect, useRef, useState, ReactNode } from "react";
 
 import "./_radio-input-box.scss";
 
 type Props = {
   name: string;
   description: string;
-  options: ActionOptions;
-  selectedAction: string | undefined;
-  onSelect: SetSelectedAction;
+  selectedInput: string | undefined;
+  onSelect: (inputName: string) => void;
+  children: ReactNode;
 };
 
 export default function RadioInputBox({
   name,
+  children,
   description,
-  options,
-  selectedAction,
+  selectedInput,
   onSelect,
 }: Props): JSX.Element {
   const [opened, setOpened] = useState<boolean>(false);
@@ -42,8 +34,8 @@ export default function RadioInputBox({
   }, [inputBoxRef]);
 
   useEffect(() => {
-    setOpened(selectedAction === name);
-  }, [selectedAction, name]);
+    setOpened(selectedInput === name);
+  }, [selectedInput, name]);
 
   useEffect(() => {
     const wrapper = inputBoxRef.current;
@@ -93,41 +85,10 @@ export default function RadioInputBox({
 
   const handleSelect = () => {
     onSelect(name);
+    setOpened(true);
   };
 
-  const labelId = `actionRadio-${name}`;
-
-  const generateOptions = (options: ActionOptions): JSX.Element => {
-    return (
-      <form>
-        {options.map((option) => {
-          const inputKey = `${option.name}Input`;
-          return (
-            <div
-              className="radio-input-box__input-group"
-              key={`${option.name}InputGroup`}
-            >
-              <label
-                className={classnames("radio-input-box__label", {
-                  "is-required": option.required,
-                })}
-                htmlFor={inputKey}
-              >
-                {option.name}
-              </label>
-              <input
-                className="radio-input-box__input"
-                type="text"
-                id={inputKey}
-                name={inputKey}
-              ></input>
-              <DescriptionSummary description={option.description} />
-            </div>
-          );
-        })}
-      </form>
-    );
-  };
+  const labelId = `inputRadio-${name}`;
 
   return (
     <div className="radio-input-box" aria-expanded={opened} ref={inputBoxRef}>
@@ -136,7 +97,7 @@ export default function RadioInputBox({
           <input
             type="radio"
             className="p-radio__input"
-            name="actionRadioSelector"
+            name="inputRadioSelector"
             aria-labelledby={labelId}
             onClick={handleSelect}
             onChange={handleSelect}
@@ -147,9 +108,7 @@ export default function RadioInputBox({
         </label>
         <div className="radio-input-box__content">
           <div className="radio-input-box__description">{description}</div>
-          <div className="radio-input-box__options">
-            {generateOptions(options)}
-          </div>
+          <div className="radio-input-box__options">{children}</div>
         </div>
       </div>
     </div>
