@@ -57,22 +57,16 @@ describe("ActionsPanel", () => {
 
   it("validates that an action is selected before submitting", async () => {
     const wrapper = await generateComponent();
-    expect(wrapper.find(".actions-panel__run-action").prop("disabled")).toBe(
-      true
-    );
+    expect(wrapper.find("Button").prop("disabled")).toBe(true);
   });
 
   it("submits the action request to the api without options", async () => {
     const wrapper = await generateComponent();
-    expect(wrapper.find(".actions-panel__run-action").prop("disabled")).toBe(
-      true
-    );
+    expect(wrapper.find("Button").prop("disabled")).toBe(true);
     wrapper
       .find('input[aria-labelledby="inputRadio-pause"]')
       .simulate("click", {});
-    expect(wrapper.find(".actions-panel__run-action").prop("disabled")).toBe(
-      false
-    );
+    expect(wrapper.find("Button").prop("disabled")).toBe(false);
     wrapper.find(".actions-panel__run-action").simulate("click", {});
     const call = executeActionOnUnits.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0"]);

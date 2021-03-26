@@ -6,12 +6,12 @@ import {
   useRef,
   useState,
 } from "react";
-import classNames from "classnames";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import { executeActionOnUnits, getActionsForApplication } from "juju";
 import { getModelUUID } from "app/selectors";
 import { generateIconImg } from "app/utils/utils";
+import Button from "@canonical/react-components/dist/components/Button/Button";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
@@ -168,7 +168,7 @@ export default function ActionsPanel(): JSX.Element {
         </div>
         <div className="actions-panel__action-list">
           <LoadingHandler
-            data={data}
+            hasData={data ? true : false}
             loading={fetchingActionData}
             noDataMessage="This charm has not provided any actions."
           >
@@ -190,15 +190,14 @@ export default function ActionsPanel(): JSX.Element {
           </LoadingHandler>
         </div>
         <div className="actions-panel__drawer">
-          <button
-            className={classNames(
-              "p-button--positive actions-panel__run-action"
-            )}
+          <Button
+            appearance="positive"
+            className="actions-panel__run-action"
             disabled={disableSubmit}
             onClick={executeAction}
           >
             Run action
-          </button>
+          </Button>
         </div>
       </div>
     </Aside>
