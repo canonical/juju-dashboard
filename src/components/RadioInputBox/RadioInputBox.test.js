@@ -17,13 +17,17 @@ describe("RadioInputBox", () => {
         {child}
       </RadioInputBox>
     );
-    expect(wrapper.find(".radio-input-box[aria-expanded=true]").length).toBe(0);
+    expect(wrapper.find(".radio-input-box[aria-expanded=true]").exists()).toBe(
+      false
+    );
     wrapper.find('input[type="radio"]').simulate("click", {});
     await waitForComponentToPaint(wrapper);
     expect(onSelect.mock.calls.length).toBe(1);
     expect(onSelect.mock.calls[0]).toEqual(["Action"]);
     await waitForComponentToPaint(wrapper);
-    expect(wrapper.find(".radio-input-box[aria-expanded=true]").length).toBe(1);
+    expect(wrapper.find(".radio-input-box[aria-expanded=true]").exists()).toBe(
+      true
+    );
   });
 
   it("opens if the selectedInput matches the name", async () => {
@@ -40,7 +44,9 @@ describe("RadioInputBox", () => {
       </RadioInputBox>
     );
     await waitForComponentToPaint(wrapper);
-    expect(wrapper.find(".radio-input-box[aria-expanded=true]").length).toBe(1);
+    expect(wrapper.find(".radio-input-box[aria-expanded=true]").exists()).toBe(
+      true
+    );
     wrapper.find('input[type="radio"]').simulate("click", {});
   });
 });

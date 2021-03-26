@@ -52,7 +52,7 @@ describe("OptionInputs", () => {
     );
     await waitForComponentToPaint(wrapper);
     // Formik fires a change event for the initialValues set.
-    expect(onValuesChange.mock.calls.length).toBe(1);
+    expect(onValuesChange).toHaveBeenCalledTimes(1);
 
     wrapper.find('input[name="MyAction-fruit"]').simulate("change", {
       target: {
@@ -62,7 +62,7 @@ describe("OptionInputs", () => {
     });
 
     await waitForComponentToPaint(wrapper);
-    expect(onValuesChange.mock.calls.length).toBe(2);
+    expect(onValuesChange).toHaveBeenCalledTimes(2);
     expect(onValuesChange.mock.calls[1]).toEqual([
       "MyAction",
       { "MyAction-fruit": "foo", "MyAction-veg": "" },
