@@ -5,19 +5,19 @@ import "./_loading-handler.scss";
 
 type LoadingHandlerProps = {
   children?: ReactNode;
-  data: any;
+  hasData: boolean;
   noDataMessage: string;
   loading: boolean;
 };
 
 export default function LoadingHandler({
-  data,
+  hasData,
   noDataMessage,
   loading,
   children,
 }: LoadingHandlerProps): JSX.Element {
   const generateContent = () => {
-    if (!data) {
+    if (!hasData) {
       if (loading) {
         return (
           <div className="loading-handler__spinner">
