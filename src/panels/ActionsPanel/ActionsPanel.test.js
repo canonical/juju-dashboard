@@ -67,7 +67,7 @@ describe("ActionsPanel", () => {
       .find('input[aria-labelledby="inputRadio-pause"]')
       .simulate("click", {});
     expect(wrapper.find("Button").prop("disabled")).toBe(false);
-    wrapper.find(".actions-panel__run-action").simulate("click", {});
+    wrapper.find("Button").simulate("click", {});
     const call = executeActionOnUnits.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0"]);
     expect(call[1]).toBe("pause");
@@ -84,10 +84,8 @@ describe("ActionsPanel", () => {
     });
     await waitForComponentToPaint(wrapper);
     await waitForComponentToPaint(wrapper);
-    expect(wrapper.find(".actions-panel__run-action").prop("disabled")).toBe(
-      false
-    );
-    wrapper.find(".actions-panel__run-action").simulate("click", {});
+    expect(wrapper.find("Button").prop("disabled")).toBe(false);
+    wrapper.find("Button").simulate("click", {});
     const call = executeActionOnUnits.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0"]);
     expect(call[1]).toBe("add-disk");
