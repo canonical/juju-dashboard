@@ -27,4 +27,19 @@
     position: sticky;
     text-align: right;
   }
+
+  &__confirmation-modal {
+    &-sub-header {
+      color: $color-mid-dark;
+      font-size: 0.875rem;
+    }
+
+    &-info-group {
+      margin-bottom: 0.875rem;
+
+      &:last-child {
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
 }
