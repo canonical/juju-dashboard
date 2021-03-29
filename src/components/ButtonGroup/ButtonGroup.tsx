@@ -4,7 +4,7 @@ import "./_button-group.scss";
 
 type Props = {
   buttons: string[];
-  label: string;
+  label?: string;
   activeButton: string;
   setActiveButton: (value: string) => void;
 };
@@ -18,7 +18,7 @@ const ButtonGroup = ({
   return (
     <div className="p-button-group">
       <div className="p-button-group__inner">
-        <span className="p-button-group__label">{label}</span>
+        {label ? <span className="p-button-group__label">{label}</span> : null}
         <div className="p-button-group__buttons">
           {buttons.map((label) => (
             <button

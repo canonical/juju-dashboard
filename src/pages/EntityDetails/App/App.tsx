@@ -24,16 +24,19 @@ import {
   filterModelStatusDataByApp,
 } from "app/utils/utils";
 
-import { generateMachineRows, generateUnitRows } from "tables/tableRows";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { TSFixMe } from "types";
 
+import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 import { machineTableHeaders, unitTableHeaders } from "tables/tableHeaders";
 
 import { renderCounts } from "../counts";
 
-export default function App() {
-  const { appName: entity } = useParams();
+export default function App(): JSX.Element {
+  const { appName: entity } = useParams<EntityDetailsRoute>();
+
   // Get model status info
-  const modelStatusData = useModelStatus();
+  const modelStatusData: TSFixMe = useModelStatus();
 
   const tableRowClick = useTableRowClick();
 
@@ -90,7 +93,7 @@ export default function App() {
   };
 
   return (
-    <EntityDetails className="entity-details__app">
+    <EntityDetails type="app" className="entity-details__app">
       <div>
         <InfoPanel />
         <>
