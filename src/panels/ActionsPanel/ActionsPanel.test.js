@@ -60,6 +60,18 @@ describe("ActionsPanel", () => {
     expect(wrapper.find("Button").prop("disabled")).toBe(true);
   });
 
+  it("shows a confirmation dialog on clicking submit", async () => {
+    const wrapper = await generateComponent();
+    expect(wrapper.find("Button").prop("disabled")).toBe(true);
+    wrapper
+      .find('input[aria-labelledby="inputRadio-pause"]')
+      .simulate("click", {});
+    expect(wrapper.find("Button").prop("disabled")).toBe(false);
+    wrapper.find("Button").simulate("click", {});
+    expect(wrapper.find("ConfirmationModal").length).toBe(1);
+    expect(executeActionOnUnits).not.toHaveBeenCalled();
+  });
+
   it("submits the action request to the api without options", async () => {
     const wrapper = await generateComponent();
     expect(wrapper.find("Button").prop("disabled")).toBe(true);
@@ -68,6 +80,9 @@ describe("ActionsPanel", () => {
       .simulate("click", {});
     expect(wrapper.find("Button").prop("disabled")).toBe(false);
     wrapper.find("Button").simulate("click", {});
+    wrapper
+      .find(".p-modal__button-row .p-button--positive")
+      .simulate("click", {});
     const call = executeActionOnUnits.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0"]);
     expect(call[1]).toBe("pause");
@@ -86,6 +101,9 @@ describe("ActionsPanel", () => {
     await waitForComponentToPaint(wrapper);
     expect(wrapper.find("Button").prop("disabled")).toBe(false);
     wrapper.find("Button").simulate("click", {});
+    wrapper
+      .find(".p-modal__button-row .p-button--positive")
+      .simulate("click", {});
     const call = executeActionOnUnits.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0"]);
     expect(call[1]).toBe("add-disk");

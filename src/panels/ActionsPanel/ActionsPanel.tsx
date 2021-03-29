@@ -332,7 +332,7 @@ function SubmitConfirmation(
             key="save"
             onClick={confirmFunction}
           >
-            Yes, apply changes
+            Confirm
           </button>
         </div>
       }
