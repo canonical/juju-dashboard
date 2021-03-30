@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { Formik, Field } from "formik";
 import { useParams } from "react-router-dom";
 import {
   useQueryParam,
@@ -12,6 +13,7 @@ import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import ChipGroup from "components/ChipGroup/ChipGroup";
+import FormikFormData from "components/FormikFormData/FormikFormData";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 
@@ -28,13 +30,16 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { TSFixMe } from "types";
 
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
-import { machineTableHeaders, unitTableHeaders } from "tables/tableHeaders";
+import {
+  machineTableHeaders,
+  generateSelectableUnitTableHeaders,
+} from "tables/tableHeaders";
 
 import { renderCounts } from "../counts";
 
 export default function App(): JSX.Element {
   const { appName: entity } = useParams<EntityDetailsRoute>();
-
+  const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
   // Get model status info
   const modelStatusData: TSFixMe = useModelStatus();
 
@@ -52,6 +57,26 @@ export default function App(): JSX.Element {
     () => generateMachineRows(filteredModelStatusData, tableRowClick),
     [filteredModelStatusData, tableRowClick]
   );
+
+  const unitTableHeaders = useMemo(() => {
+    const fieldID = "unit-list-select-all";
+    return generateSelectableUnitTableHeaders({
+      content: (
+        <label className="p-checkbox" htmlFor={fieldID}>
+          <Field
+            id={fieldID}
+            type="checkbox"
+            aria-labelledby="checkboxLabel0"
+            className="p-checkbox__input"
+            name="selectAll"
+          />
+          <span className="p-checkbox__label" id="checkboxLabel0"></span>
+        </label>
+      ),
+      sortKey: "",
+      className: "select-unit",
+    });
+  }, []);
 
   const unitPanelRows = useMemo(
     () => generateUnitRows(filteredModelStatusData, tableRowClick),
@@ -92,6 +117,10 @@ export default function App(): JSX.Element {
     setPanel("execute-action");
   };
 
+  const onFormChange = (formData: TSFixMe) => {
+    console.log(formData);
+  };
+
   return (
     <EntityDetails type="app" className="entity-details__app">
       <div>
@@ -125,13 +154,23 @@ export default function App(): JSX.Element {
           {tableView === "units" && (
             <>
               <ChipGroup chips={unitChips} descriptor="units" />
-              <MainTable
-                headers={unitTableHeaders}
-                rows={unitPanelRows}
-                className="entity-details__units p-main-table panel__table"
-                sortable
-                emptyStateMsg={"There are no units in this model"}
-              />
+              <Formik
+                initialValues={{
+                  selectAll: false,
+                  selected: [],
+                }}
+                onSubmit={() => {}}
+              >
+                <FormikFormData onFormChange={onFormChange}>
+                  <MainTable
+                    headers={unitTableHeaders}
+                    rows={unitPanelRows}
+                    className="entity-details__units p-main-table panel__table"
+                    sortable
+                    emptyStateMsg={"There are no units in this model"}
+                  />
+                </FormikFormData>
+              </Formik>
             </>
           )}
           {tableView === "machines" && (
