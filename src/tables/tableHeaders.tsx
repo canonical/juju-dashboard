@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import cloneDeep from "clone-deep";
 
 type Header = HeaderRow[];
 
@@ -36,6 +37,14 @@ export const unitTableHeaders: Header = [
   { content: "port", className: "u-align--right", sortKey: "port" },
   { content: "message", sortKey: "message" },
 ];
+
+export const generateSelectableUnitTableHeaders = (
+  selectContent: HeaderRow
+): Header => {
+  const headers = cloneDeep(unitTableHeaders);
+  headers.splice(0, 0, selectContent);
+  return headers;
+};
 
 export const machineTableHeaders: Header = [
   { content: "machine", sortKey: "machine" },
