@@ -320,35 +320,23 @@ function SubmitConfirmation(
     <ConfirmationModal
       buttonRow={
         <div>
-          <button
-            className="p-button--neutral"
-            key="cancel"
-            onClick={cancelFunction}
-          >
+          <Button key="cancel" onClick={cancelFunction}>
             Cancel
-          </button>
-          <button
-            className="p-button--positive"
-            key="save"
-            onClick={confirmFunction}
-          >
+          </Button>
+          <Button appearance="positive" key="save" onClick={confirmFunction}>
             Confirm
-          </button>
+          </Button>
         </div>
       }
     >
-      <div className="actions-panel__confirmation-modal">
+      <div>
         <h4>Run {actionName}?</h4>
-        <div className="actions-panel__confirmation-modal-info-group">
-          <div className="actions-panel__confirmation-modal-sub-header">
-            UNIT COUNT
-          </div>
+        <div className="p-confirmation-modal__info-group">
+          <div className="p-confirmation-modal__sub-header">UNIT COUNT</div>
           <div>{unitCount}</div>
         </div>
-        <div className="actions-panel__confirmation-modal-info-group">
-          <div className="actions-panel__confirmation-modal-sub-header">
-            UNIT NAME
-          </div>
+        <div className="p-confirmation-modal__info-group">
+          <div className="p-confirmation-modal__sub-header">UNIT NAME</div>
           <div>{unitNames}</div>
         </div>
       </div>

@@ -28,14 +28,14 @@
     text-align: right;
   }
 
-  &__confirmation-modal {
-    &-sub-header {
+  .p-confirmation-modal {
+    &__sub-header {
       color: $color-mid-dark;
       font-size: 0.875rem;
     }
 
-    &-info-group {
-      margin-bottom: 0.875rem;
+    &__info-group {
+      margin-bottom: $spv-outer--medium;
 
       &:last-child {
         margin-bottom: 1.5rem;

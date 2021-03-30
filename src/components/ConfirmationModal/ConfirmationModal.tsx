@@ -35,7 +35,7 @@ export default function ConfirmationModal({
   }, []);
 
   return createPortal(
-    <div ref={modalRef}>
+    <div className="p-confirmation-modal" ref={modalRef}>
       <Modal buttonRow={buttonRow}>
         <div>{children}</div>
       </Modal>
