@@ -1,4 +1,14 @@
-export const localApplicationTableHeaders = [
+import type { ReactNode } from "react";
+
+type Header = HeaderRow[];
+
+type HeaderRow = {
+  content: string | ReactNode;
+  sortKey?: string;
+  className?: string;
+};
+
+export const localApplicationTableHeaders: Header = [
   { content: "local apps", sortKey: "local-apps" },
   { content: "status", sortKey: "status" },
   { content: "version", className: "u-align--right", sortKey: "version" },
@@ -9,7 +19,7 @@ export const localApplicationTableHeaders = [
   { content: "notes", sortKey: "notes" },
 ];
 
-export const remoteApplicationTableHeaders = [
+export const remoteApplicationTableHeaders: Header = [
   { content: "remote apps", sortKey: "remote-apps" },
   { content: "status", sortKey: "status" },
   { content: "interface", sortKey: "interface" },
@@ -17,7 +27,7 @@ export const remoteApplicationTableHeaders = [
   { content: "store", sortKey: "store" },
 ];
 
-export const unitTableHeaders = [
+export const unitTableHeaders: Header = [
   { content: "unit", sortKey: "unit" },
   { content: "workload", sortKey: "workload" },
   { content: "agent", sortKey: "agent" },
@@ -27,7 +37,7 @@ export const unitTableHeaders = [
   { content: "message", sortKey: "message" },
 ];
 
-export const machineTableHeaders = [
+export const machineTableHeaders: Header = [
   { content: "machine", sortKey: "machine" },
   { content: "apps", sortKey: "apps" },
   { content: "state", sortKey: "state" },
@@ -36,7 +46,7 @@ export const machineTableHeaders = [
   { content: "message", sortKey: "message" },
 ];
 
-export const relationTableHeaders = [
+export const relationTableHeaders: Header = [
   { content: "relation provider", sortKey: "provider" },
   { content: "requirer", sortKey: "requirer" },
   { content: "interface", sortKey: "interface" },
@@ -44,31 +54,21 @@ export const relationTableHeaders = [
   { content: "message", sortKey: "message" },
 ];
 
-export const consumedTableHeaders = [
+export const consumedTableHeaders: Header = [
   { content: "consumed" },
   { content: "endpoint" },
   { content: "status" },
 ];
 
-export const offersTableHeaders = [
+export const offersTableHeaders: Header = [
   { content: "connected offers" },
   { content: "endpoints" },
   { content: "connections" },
 ];
 
-export const appsOffersTableHeaders = [
+export const appsOffersTableHeaders: Header = [
   { content: "offers" },
   { content: "interface" },
   { content: "connection" },
   { content: "offer url" },
-];
-
-export const integrationLocalAppsHeaders = [
-  { content: "local apps" },
-  { content: "integration" },
-];
-
-export const integrationRemoteAppsHeaders = [
-  { content: "remote apps" },
-  { content: "integration" },
 ];
