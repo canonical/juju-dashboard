@@ -454,15 +454,6 @@ function CancelConfirmation(
 ): JSX.Element {
   return (
     <ConfirmationModal
-      body={
-        <>
-          <h4>Are you sure you wish to cancel?</h4>
-          <p>
-            You have edited the following values to the {appName} configuration:
-          </p>
-          {changedConfigList}
-        </>
-      }
       buttonRow={[
         <button
           className="p-button--neutral"
@@ -479,7 +470,13 @@ function CancelConfirmation(
           Yes, I'm sure
         </button>,
       ]}
-    />
+    >
+      <h4>Are you sure you wish to cancel?</h4>
+      <p>
+        You have edited the following values to the {appName} configuration:
+      </p>
+      {changedConfigList}
+    </ConfirmationModal>
   );
 }
 
@@ -491,15 +488,6 @@ function SaveConfirmation(
 ): JSX.Element {
   return (
     <ConfirmationModal
-      body={
-        <>
-          <h4>Are you sure you wish to apply these changes?</h4>
-          <p>
-            You have edited the following values to the {appName} configuration:
-          </p>
-          {changedConfigList}
-        </>
-      }
       buttonRow={
         <div>
           <div className="config-panel__modal-button-row-hint">
@@ -525,6 +513,12 @@ function SaveConfirmation(
           </div>
         </div>
       }
-    />
+    >
+      <h4>Are you sure you wish to apply these changes?</h4>
+      <p>
+        You have edited the following values to the {appName} configuration:
+      </p>
+      {changedConfigList}
+    </ConfirmationModal>
   );
 }
