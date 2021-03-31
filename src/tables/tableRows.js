@@ -1,4 +1,5 @@
 import cloneDeep from "clone-deep";
+import { Field } from "formik";
 
 import {
   extractRevisionNumber,
@@ -150,7 +151,7 @@ export function generateRemoteApplicationRows(
   );
 }
 
-export function generateUnitRows(modelStatusData, tableRowClick) {
+export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
   if (!modelStatusData) {
     return [];
   }
@@ -166,35 +167,56 @@ export function generateUnitRows(modelStatusData, tableRowClick) {
       const publicAddress = unit["public-address"] || "-";
       const port = unit?.["opened-ports"]?.join(" ") || "-";
       const message = unit["workload-status"].info || "-";
+      const columns = [
+        {
+          content: generateEntityIdentifier(
+            applications[applicationName].charm
+              ? applications[applicationName].charm
+              : "",
+            unitId,
+            false,
+            true // disable link
+          ),
+          className: "u-truncate",
+        },
+        {
+          content: generateStatusElement(workload),
+          className: "u-capitalise",
+        },
+        { content: agent },
+        { content: unit.machine, className: "u-align--right" },
+        { content: publicAddress },
+        {
+          content: port,
+          className: "u-align--right",
+        },
+        {
+          content: <span title={message}>{message}</span>,
+          className: "u-truncate",
+        },
+      ];
+
+      if (showCheckbox) {
+        const fieldID = "something";
+        columns.splice(0, 0, {
+          content: (
+            <label className="p-checkbox" htmlFor={fieldID}>
+              <Field
+                id={fieldID}
+                type="checkbox"
+                aria-labelledby="checkboxLabel0"
+                className="p-checkbox__input"
+                name="selected"
+                value={unitId}
+              />
+              <span className="p-checkbox__label" id="checkboxLabel0"></span>
+            </label>
+          ),
+        });
+      }
+
       unitRows.push({
-        columns: [
-          {
-            content: generateEntityIdentifier(
-              applications[applicationName].charm
-                ? applications[applicationName].charm
-                : "",
-              unitId,
-              false,
-              true // disable link
-            ),
-            className: "u-truncate",
-          },
-          {
-            content: generateStatusElement(workload),
-            className: "u-capitalise",
-          },
-          { content: agent },
-          { content: unit.machine, className: "u-align--right" },
-          { content: publicAddress },
-          {
-            content: port,
-            className: "u-align--right",
-          },
-          {
-            content: <span title={message}>{message}</span>,
-            className: "u-truncate",
-          },
-        ],
+        columns,
         sortData: {
           unit: unitId,
           workload,

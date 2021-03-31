@@ -79,7 +79,7 @@ export default function App(): JSX.Element {
   }, []);
 
   const unitPanelRows = useMemo(
-    () => generateUnitRows(filteredModelStatusData, tableRowClick),
+    () => generateUnitRows(filteredModelStatusData, tableRowClick, true),
     [filteredModelStatusData, tableRowClick]
   );
 
