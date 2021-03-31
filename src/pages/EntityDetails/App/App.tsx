@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Formik, Field } from "formik";
 import { useParams } from "react-router-dom";
 import {
@@ -40,6 +40,10 @@ import { renderCounts } from "../counts";
 export default function App(): JSX.Element {
   const { appName: entity } = useParams<EntityDetailsRoute>();
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
+  const [selectAll, setSelectAll] = useState<boolean>(false);
+
+  const tablesRef = useRef<HTMLDivElement>(null);
+  const setFieldsValues = useRef((name: string, data: string[]) => {});
   // Get model status info
   const modelStatusData: TSFixMe = useModelStatus();
 
@@ -117,8 +121,18 @@ export default function App(): JSX.Element {
     setPanel("execute-action");
   };
 
+  useEffect(() => {
+    if (selectAll && setFieldsValues.current !== null) {
+      setFieldsValues.current("selectedUnits", ["ceph/0"]);
+    }
+  }, [selectAll]);
+
   const onFormChange = (formData: TSFixMe) => {
-    console.log(formData);
+    setSelectAll(formData.selectAll);
+  };
+
+  const onSetup = (setFieldValue: any) => {
+    setFieldsValues.current = setFieldValue;
   };
 
   return (
@@ -150,18 +164,18 @@ export default function App(): JSX.Element {
           activeButton={tableView}
           setActiveButton={setTableView}
         />
-        <div className="entity-details__tables">
+        <div className="entity-details__tables" ref={tablesRef}>
           {tableView === "units" && (
             <>
               <ChipGroup chips={unitChips} descriptor="units" />
               <Formik
                 initialValues={{
                   selectAll: false,
-                  selected: [],
+                  selectedUnits: [],
                 }}
                 onSubmit={() => {}}
               >
-                <FormikFormData onFormChange={onFormChange}>
+                <FormikFormData onFormChange={onFormChange} onSetup={onSetup}>
                   <MainTable
                     headers={unitTableHeaders}
                     rows={unitPanelRows}

@@ -206,7 +206,7 @@ export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
                 type="checkbox"
                 aria-labelledby="checkboxLabel0"
                 className="p-checkbox__input"
-                name="selected"
+                name="selectedUnits"
                 value={unitId}
               />
               <span className="p-checkbox__label" id="checkboxLabel0"></span>
