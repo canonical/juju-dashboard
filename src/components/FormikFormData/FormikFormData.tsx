@@ -10,7 +10,7 @@ type Props = {
   onFormChange: (data: OptionValue) => void;
 };
 
-export default function FormikForm({
+export default function FormikFormData({
   children,
   onFormChange,
 }: Props): JSX.Element {
