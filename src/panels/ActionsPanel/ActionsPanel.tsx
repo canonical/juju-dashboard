@@ -16,6 +16,7 @@ import Button from "@canonical/react-components/dist/components/Button/Button";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Aside from "components/Aside/Aside";
+import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
@@ -87,6 +88,7 @@ export default function ActionsPanel(): JSX.Element {
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});
   const [fetchingActionData, setFetchingActionData] = useState(false);
+  const [confirmType, setConfirmType] = useState<string>("");
   const [selectedAction, setSelectedAction]: [
     string | undefined,
     SetSelectedAction
@@ -131,6 +133,10 @@ export default function ActionsPanel(): JSX.Element {
     );
   };
 
+  const handleSubmit = () => {
+    setConfirmType("submit");
+  };
+
   const changeHandler = useCallback(
     (actionName, values) => {
       onValuesChange(actionName, values, actionOptionsValues);
@@ -156,6 +162,24 @@ export default function ActionsPanel(): JSX.Element {
     },
     [actionData]
   );
+
+  const generateConfirmationModal = () => {
+    if (confirmType && selectedAction) {
+      // Allow for adding more confirmation types, like for cancel
+      // if inputs have been changed.
+      if (confirmType === "submit") {
+        // XXX Temporary until we can select units.
+        const unitList = ["ceph/1", "ceph/3", "ceph/5"];
+        return SubmitConfirmation(
+          selectedAction,
+          unitList.length,
+          unitList,
+          executeAction,
+          () => setConfirmType("")
+        );
+      }
+    }
+  };
 
   const data = Object.keys(actionData).length > 0 ? actionData : null;
 
@@ -189,12 +213,13 @@ export default function ActionsPanel(): JSX.Element {
             ))}
           </LoadingHandler>
         </div>
+        {generateConfirmationModal()}
         <div className="actions-panel__drawer">
           <Button
             appearance="positive"
             className="actions-panel__run-action"
             disabled={disableSubmit}
-            onClick={executeAction}
+            onClick={handleSubmit}
           >
             Run action
           </Button>
@@ -280,3 +305,41 @@ const optionsValidate: ValidationFnProps = (selected, optionsValues) => {
   // XXX TODO
   return true;
 };
+
+function SubmitConfirmation(
+  actionName: string,
+  unitCount: number,
+  unitList: string[],
+  confirmFunction: () => void,
+  cancelFunction: () => void
+): JSX.Element {
+  const unitNames = unitList.reduce((acc, unitName) => {
+    return `${acc}, ${unitName.split("/")[1]}`;
+  });
+  return (
+    <ConfirmationModal
+      buttonRow={
+        <div>
+          <Button key="cancel" onClick={cancelFunction}>
+            Cancel
+          </Button>
+          <Button appearance="positive" key="save" onClick={confirmFunction}>
+            Confirm
+          </Button>
+        </div>
+      }
+    >
+      <div>
+        <h4>Run {actionName}?</h4>
+        <div className="p-confirmation-modal__info-group">
+          <div className="p-confirmation-modal__sub-header">UNIT COUNT</div>
+          <div>{unitCount}</div>
+        </div>
+        <div className="p-confirmation-modal__info-group">
+          <div className="p-confirmation-modal__sub-header">UNIT NAME</div>
+          <div>{unitNames}</div>
+        </div>
+      </div>
+    </ConfirmationModal>
+  );
+}
