@@ -49,7 +49,7 @@ export default function App(): JSX.Element {
   const [selectAll, setSelectAll] = useState<boolean>(false);
 
   const tablesRef = useRef<HTMLDivElement>(null);
-  const setFieldsValues = useRef((name: string, data: string[]) => {});
+  const setFieldsValues = useRef<SetFieldValue>();
   // Get model status info
   const modelStatusData: TSFixMe = useModelStatus();
 
@@ -128,13 +128,27 @@ export default function App(): JSX.Element {
   };
 
   useEffect(() => {
-    if (selectAll && setFieldsValues.current !== null) {
-      setFieldsValues.current("selectedUnits", ["ceph/0"]);
+    if (setFieldsValues.current) {
+      if (selectAll && setFieldsValues.current !== null) {
+        setFieldsValues.current("selectedUnits", ["ceph/0"]);
+      }
     }
   }, [selectAll]);
 
+  useEffect(() => {
+    if (setFieldsValues.current) {
+      const unitCount = app?.units ? Object.keys(app.units).length : null;
+      // If all of the units are selected then setSelectAll true
+      if (selectedUnits.length === unitCount && !selectAll) {
+        setFieldsValues.current("selectAll", true);
+      }
+      // If any of the units aren't selected then setSelectAll false
+    }
+  }, [selectAll, selectedUnits, app]);
+
   const onFormChange = (formData: FormData) => {
     setSelectAll(formData.selectAll);
+    setSelectedUnits(formData.selectedUnits);
   };
 
   const onSetup = (setFieldValue: SetFieldValue) => {
