@@ -78,7 +78,7 @@ export function generateLocalApplicationRows(
         os: "Ubuntu",
         notes: "-",
       },
-      onClick: () => tableRowClick("app", key),
+      onClick: (e) => tableRowClick("app", key, e),
       "data-app": key,
       className:
         query?.panel === "apps" && query?.entity === key ? "is-selected" : "",
@@ -140,7 +140,7 @@ export function generateRemoteApplicationRows(
           store: "store",
         },
         "data-app": key,
-        onClick: () => false && tableRowClick(key, "remoteApps"), // DISABLED PANEL
+        onClick: (e) => false && tableRowClick(key, "remoteApps", e), // DISABLED PANEL
         className:
           query?.panel === "remoteApps" && query?.entity === key
             ? "is-selected"
@@ -204,7 +204,7 @@ export function generateUnitRows(modelStatusData, tableRowClick) {
           port,
           message,
         },
-        onClick: () => tableRowClick("unit", unitId),
+        onClick: (e) => tableRowClick("unit", unitId, e),
         "data-unit": unitId,
       });
 
@@ -336,7 +336,7 @@ export function generateMachineRows(
         instanceId: machine.instanceId,
         message: machine?.agentStatus?.info,
       },
-      onClick: () => tableRowClick("machine", machineId),
+      onClick: (e) => tableRowClick("machine", machineId, e),
       "data-machine": machineId,
       className: selectedEntity === machineId ? "is-selected" : "",
     };
@@ -484,7 +484,7 @@ export function generateAppOffersRows(modelStatusData, tableRowClick, query) {
           content: "-", // offer url is not yet available from the API
         },
       ],
-      onClick: () => false && tableRowClick(offerId, "offers"), // DISABLED PANEL
+      onClick: (e) => false && tableRowClick(offerId, "offers", e), // DISABLED PANEL
       "data-app": offerId,
       className:
         query.panel === "offers" && query.entity === offerId

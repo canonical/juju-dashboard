@@ -37,7 +37,11 @@ export default function useTableRowClick() {
     }
   }, [entity, history, modelName, userName]);
 
-  return (entityType: string, entityId: string) => {
+  return (entityType: string, entityId: string, e: any) => {
+    if (e.target.className.indexOf("p-checkbox") !== -1) {
+      // If the user has clicked the checkbox or its labels then do not navigate
+      return;
+    }
     setEntity({ type: entityType, id: entityId });
   };
 }
