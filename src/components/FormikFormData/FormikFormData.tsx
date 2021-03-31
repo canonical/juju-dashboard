@@ -1,14 +1,12 @@
 import { ReactNode, useEffect } from "react";
 import { Form, useFormikContext } from "formik";
 
-type OptionValue = {
-  [key: string]: string;
-};
+export type SetFieldValue = (fieldName: string, value: any) => void;
 
 type Props = {
   children: ReactNode;
-  onFormChange: (data: OptionValue) => void;
-  onSetup: (setFieldValue: any) => void;
+  onFormChange: (data: any) => void;
+  onSetup: (setFieldValue: SetFieldValue) => void;
 };
 
 export default function FormikFormData({
@@ -16,7 +14,7 @@ export default function FormikFormData({
   onFormChange,
   onSetup,
 }: Props): JSX.Element {
-  const { values, setFieldValue } = useFormikContext<OptionValue>();
+  const { values, setFieldValue } = useFormikContext<any>();
 
   useEffect(() => {
     onSetup(setFieldValue);

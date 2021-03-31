@@ -27,6 +27,7 @@ import {
 } from "app/utils/utils";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
 import type { TSFixMe } from "types";
 
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
@@ -36,6 +37,11 @@ import {
 } from "tables/tableHeaders";
 
 import { renderCounts } from "../counts";
+
+type FormData = {
+  selectAll: boolean;
+  selectedUnits: string[];
+};
 
 export default function App(): JSX.Element {
   const { appName: entity } = useParams<EntityDetailsRoute>();
@@ -127,11 +133,11 @@ export default function App(): JSX.Element {
     }
   }, [selectAll]);
 
-  const onFormChange = (formData: TSFixMe) => {
+  const onFormChange = (formData: FormData) => {
     setSelectAll(formData.selectAll);
   };
 
-  const onSetup = (setFieldValue: any) => {
+  const onSetup = (setFieldValue: SetFieldValue) => {
     setFieldsValues.current = setFieldValue;
   };
 
