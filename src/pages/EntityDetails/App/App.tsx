@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { Formik, Field } from "formik";
 import { useParams } from "react-router-dom";
 import {
@@ -45,11 +45,11 @@ type FormData = {
 
 export default function App(): JSX.Element {
   const { appName: entity } = useParams<EntityDetailsRoute>();
-  const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
-  const [selectAll, setSelectAll] = useState<boolean>(false);
 
   const tablesRef = useRef<HTMLDivElement>(null);
   const setFieldsValues = useRef<SetFieldValue>();
+  const selectedUnits = useRef<string[]>([]);
+  const selectAll = useRef<boolean>(false);
   // Get model status info
   const modelStatusData: TSFixMe = useModelStatus();
 
@@ -127,31 +127,39 @@ export default function App(): JSX.Element {
     setPanel("execute-action");
   };
 
-  useEffect(() => {
-    if (setFieldsValues.current) {
-      if (selectAll) {
-        setFieldsValues.current("selectedUnits", Object.keys(app.units));
-      }
-    }
-  }, [selectAll, app]);
-
-  useEffect(() => {
-    if (setFieldsValues.current) {
-      const unitCount = app?.units ? Object.keys(app.units).length : null;
-      // If all of the units are selected then setSelectAll true
-      if (selectedUnits.length === unitCount && !selectAll) {
-        setFieldsValues.current("selectAll", true);
-      }
-      // If any of the units aren't selected then setSelectAll false
-      if (selectedUnits.length !== unitCount && selectAll) {
-        setFieldsValues.current("selectAll", false);
-      }
-    }
-  }, [selectAll, selectedUnits, app]);
-
   const onFormChange = (formData: FormData) => {
-    setSelectAll(formData.selectAll);
-    setSelectedUnits(formData.selectedUnits);
+    if (!setFieldsValues.current) return;
+    const unitList = Object.keys(app.units);
+
+    // Handle the selectALl checkbox interactions.
+    if (selectAll.current && !formData.selectAll) {
+      if (selectedUnits.current.length === unitList.length) {
+        // Only reset them all to unchecked if they were all checked to
+        // begin with. This is to fix the issue when you uncheck one unit
+        // and it changes the selectAll button.
+        setFieldsValues.current("selectedUnits", []);
+      }
+    } else if (!selectAll.current && formData.selectAll) {
+      // The user has switched the selectAll checkbox from unchecked to checked.
+      setFieldsValues.current("selectedUnits", unitList);
+    }
+    selectAll.current = formData.selectAll;
+
+    // Handle the unit checkbox interactions.
+    if (
+      selectedUnits.current.length !== unitList.length &&
+      formData.selectedUnits.length === unitList.length
+    ) {
+      // If the user has checked all of the unit checkboxes.
+      setFieldsValues.current("selectAll", true);
+    } else if (
+      selectedUnits.current.length === unitList.length &&
+      formData.selectedUnits.length !== unitList.length
+    ) {
+      // If the user has unchecked some of the unit checkboxes.
+      setFieldsValues.current("selectAll", false);
+    }
+    selectedUnits.current = formData.selectedUnits;
   };
 
   const onSetup = (setFieldValue: SetFieldValue) => {
