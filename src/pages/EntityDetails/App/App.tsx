@@ -129,11 +129,11 @@ export default function App(): JSX.Element {
 
   useEffect(() => {
     if (setFieldsValues.current) {
-      if (selectAll && setFieldsValues.current !== null) {
-        setFieldsValues.current("selectedUnits", ["ceph/0"]);
+      if (selectAll) {
+        setFieldsValues.current("selectedUnits", Object.keys(app.units));
       }
     }
-  }, [selectAll]);
+  }, [selectAll, app]);
 
   useEffect(() => {
     if (setFieldsValues.current) {
@@ -143,6 +143,9 @@ export default function App(): JSX.Element {
         setFieldsValues.current("selectAll", true);
       }
       // If any of the units aren't selected then setSelectAll false
+      if (selectedUnits.length !== unitCount && selectAll) {
+        setFieldsValues.current("selectAll", false);
+      }
     }
   }, [selectAll, selectedUnits, app]);
 

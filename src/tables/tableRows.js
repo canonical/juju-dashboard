@@ -197,19 +197,20 @@ export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
       ];
 
       if (showCheckbox) {
-        const fieldID = "something";
+        const fieldID = `table-checkbox-${unitId}`;
+        const ariaLabeledBy = `aria-labeled-${unitId}`;
         columns.splice(0, 0, {
           content: (
             <label className="p-checkbox" htmlFor={fieldID}>
               <Field
                 id={fieldID}
                 type="checkbox"
-                aria-labelledby="checkboxLabel0"
+                aria-labelledby={ariaLabeledBy}
                 className="p-checkbox__input"
                 name="selectedUnits"
                 value={unitId}
               />
-              <span className="p-checkbox__label" id="checkboxLabel0"></span>
+              <span className="p-checkbox__label" id={ariaLabeledBy}></span>
             </label>
           ),
         });
