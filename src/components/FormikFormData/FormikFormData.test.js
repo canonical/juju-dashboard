@@ -8,16 +8,19 @@ describe("FormikFormData", () => {
   function generateComponent() {
     const children = <Field type="checkbox" name="test" />;
     const changeHandler = jest.fn();
+    const setupHandler = jest.fn();
     const wrapper = mount(
       <Formik
         initialValues={{
           test: false,
         }}
       >
-        <FormikFormData onFormChange={changeHandler}>{children}</FormikFormData>
+        <FormikFormData onFormChange={changeHandler} onSetup={setupHandler}>
+          {children}
+        </FormikFormData>
       </Formik>
     );
-    return { children, changeHandler, wrapper };
+    return { children, wrapper, changeHandler, setupHandler };
   }
 
   it("renders the supplied children", () => {
@@ -28,12 +31,19 @@ describe("FormikFormData", () => {
   it("emits change events for the form", async () => {
     const { changeHandler, wrapper } = generateComponent();
     // Gets called once on initial render.
+    await waitForComponentToPaint(wrapper);
     expect(changeHandler).toHaveBeenCalledTimes(1);
     wrapper.find('input[name="test"]').simulate("change", {
       target: { name: "test", checked: true },
     });
     await waitForComponentToPaint(wrapper);
+    await waitForComponentToPaint(wrapper);
     // It gets re-rendered twice so this gets called twice.
     expect(changeHandler).toHaveBeenCalledTimes(3);
+  });
+
+  it("emits a setup event for the form", async () => {
+    const { setupHandler } = generateComponent();
+    expect(setupHandler).toHaveBeenCalledTimes(1);
   });
 });
