@@ -8,12 +8,7 @@ import {
 } from "react";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  useQueryParam,
-  withDefault,
-  ArrayParam,
-  StringParam,
-} from "use-query-params";
+import { useQueryParam, withDefault, ArrayParam } from "use-query-params";
 import { executeActionOnUnits, getActionsForApplication } from "juju";
 import { getModelUUID } from "app/selectors";
 import { generateIconImg, pluralize } from "app/utils/utils";
