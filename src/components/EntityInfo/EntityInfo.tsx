@@ -1,8 +1,9 @@
 import "./_entity-info.scss";
 
 type Props = {
-  data: { [key: string]: string };
+  data: { [key: string]: string | JSX.Element };
 };
+
 export default function EntityInfo({ data }: Props): JSX.Element {
   return (
     <div className="entity-info__grid">

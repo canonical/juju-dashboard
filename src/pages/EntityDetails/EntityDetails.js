@@ -43,7 +43,7 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
   }
 }
 
-const EntityDetails = ({ type, children }) => {
+const EntityDetails = ({ type, children, className }) => {
   const modelStatusData = useModelStatus();
   const { userName, modelName } = useParams();
   const history = useHistory();
@@ -186,7 +186,7 @@ const EntityDetails = ({ type, children }) => {
   };
 
   return (
-    <BaseLayout>
+    <BaseLayout className={className}>
       <Header>
         <div className="entity-details__header">
           <Breadcrumb />

@@ -1,6 +1,5 @@
 import { useMemo, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
-import { useSelector } from "react-redux";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import { useHistory, useParams } from "react-router-dom";
 import { pluralize, extractCloudName } from "app/utils/utils";
@@ -36,8 +35,6 @@ import useTableRowClick from "hooks/useTableRowClick";
 
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
-import { getConfig } from "app/selectors";
-
 import { renderCounts } from "../counts";
 
 const shouldShow = (segment, activeView) => {
@@ -58,7 +55,6 @@ const shouldShow = (segment, activeView) => {
 };
 
 const Model = () => {
-  const { baseAppURL } = useSelector(getConfig);
   const modelStatusData = useModelStatus();
   const history = useHistory();
   const { userName, modelName } = useParams();
@@ -84,49 +80,32 @@ const Model = () => {
   );
 
   const localApplicationTableRows = useMemo(() => {
-    return generateLocalApplicationRows(
-      modelStatusData,
-      tableRowClick,
-      baseAppURL,
-      query
-    );
-  }, [modelStatusData, tableRowClick, baseAppURL, query]);
+    return generateLocalApplicationRows(modelStatusData, tableRowClick, query);
+  }, [modelStatusData, tableRowClick, query]);
   const remoteApplicationTableRows = useMemo(() => {
-    return generateRemoteApplicationRows(
-      modelStatusData,
-      panelRowClick,
-      baseAppURL,
-      query
-    );
-  }, [modelStatusData, panelRowClick, baseAppURL, query]);
+    return generateRemoteApplicationRows(modelStatusData, panelRowClick, query);
+  }, [modelStatusData, panelRowClick, query]);
 
   const machinesTableRows = useMemo(() => {
     return generateMachineRows(modelStatusData, tableRowClick, query?.entity);
   }, [modelStatusData, tableRowClick, query]);
 
   const relationTableRows = useMemo(
-    () => generateRelationRows(modelStatusData, baseAppURL),
-    [modelStatusData, baseAppURL]
+    () => generateRelationRows(modelStatusData),
+    [modelStatusData]
   );
   const consumedTableRows = useMemo(
-    () => generateConsumedRows(modelStatusData, baseAppURL),
-    [modelStatusData, baseAppURL]
+    () => generateConsumedRows(modelStatusData),
+    [modelStatusData]
   );
 
   const offersTableRows = useMemo(
-    () =>
-      generateOffersRows(
-        modelStatusData,
-        panelRowClick,
-        baseAppURL,
-        query?.entity
-      ),
-    [modelStatusData, panelRowClick, baseAppURL, query]
+    () => generateOffersRows(modelStatusData, panelRowClick, query?.entity),
+    [modelStatusData, panelRowClick, query]
   );
   const appOffersRows = useMemo(
-    () =>
-      generateAppOffersRows(modelStatusData, panelRowClick, baseAppURL, query),
-    [modelStatusData, panelRowClick, baseAppURL, query]
+    () => generateAppOffersRows(modelStatusData, panelRowClick, query),
+    [modelStatusData, panelRowClick, query]
   );
   const cloudProvider = modelStatusData
     ? extractCloudName(modelStatusData.model["cloud-tag"])
