@@ -20,11 +20,9 @@ export default function FormikFormData({
     onSetup(setFieldValue);
   }, [onSetup, setFieldValue]);
 
-  // To avoid the error about setting state during render bump the
-  // callback call until the rendering has been completed.
-  setTimeout(() => {
+  useEffect(() => {
     onFormChange(values);
-  });
+  }, [onFormChange, values]);
 
   return <Form>{children}</Form>;
 }

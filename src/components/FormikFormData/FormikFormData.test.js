@@ -34,12 +34,10 @@ describe("FormikFormData", () => {
     await waitForComponentToPaint(wrapper);
     expect(changeHandler).toHaveBeenCalledTimes(1);
     wrapper.find('input[name="test"]').simulate("change", {
-      target: { name: "test", checked: true },
+      target: { name: "test", value: true },
     });
     await waitForComponentToPaint(wrapper);
-    await waitForComponentToPaint(wrapper);
-    // It gets re-rendered twice so this gets called twice.
-    expect(changeHandler).toHaveBeenCalledTimes(3);
+    expect(changeHandler).toHaveBeenCalledTimes(2);
   });
 
   it("emits a setup event for the form", async () => {
