@@ -10,7 +10,6 @@ import { waitForComponentToPaint } from "testing/utils";
 import dataDump from "testing/complete-redux-store-dump";
 
 import App from "./App";
-import { ShallowWrapper } from "enzyme";
 
 const mockStore = configureStore([]);
 
