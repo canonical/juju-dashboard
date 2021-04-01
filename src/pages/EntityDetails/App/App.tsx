@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import {
   useQueryParam,
   useQueryParams,
+  ArrayParam,
   StringParam,
   withDefault,
 } from "use-query-params";
@@ -106,9 +107,9 @@ export default function App(): JSX.Element {
   );
 
   const [query, setQuery] = useQueryParams({
-    panel: StringParam,
-    entity: StringParam,
     activeView: withDefault(StringParam, "apps"),
+    entity: StringParam,
+    panel: StringParam,
   });
 
   const showConfig = () => {
@@ -129,9 +130,12 @@ export default function App(): JSX.Element {
   const unitChips = renderCounts("units", modelStatusData);
   const machineChips = renderCounts("machines", modelStatusData);
 
-  const setPanel = useQueryParam("panel", StringParam)[1];
+  const setPanel = useQueryParams({
+    panel: StringParam,
+    units: ArrayParam,
+  })[1];
   const showActions = () => {
-    setPanel("execute-action");
+    setPanel({ panel: "execute-action", units: selectedUnits.current });
   };
 
   const onFormChange = (formData: FormData) => {

@@ -8,6 +8,7 @@ import {
 } from "react";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
+import { useQueryParam, withDefault, ArrayParam } from "use-query-params";
 import { executeActionOnUnits, getActionsForApplication } from "juju";
 import { getModelUUID } from "app/selectors";
 import { generateIconImg } from "app/utils/utils";
@@ -96,6 +97,12 @@ export default function ActionsPanel(): JSX.Element {
 
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
+  const selectedUnits = useQueryParam(
+    "units",
+    withDefault(ArrayParam, [])
+    // Cast it into an array so it has the proper methods for the reduce below.
+  )[0] as string[];
+
   useEffect(() => {
     setFetchingActionData(true);
     getActionsForApplication(appName, modelUUID, appStore.getState()).then(
@@ -113,7 +120,11 @@ export default function ActionsPanel(): JSX.Element {
     appState.juju?.modelData?.[modelUUID as string]?.applications?.[appName]
       ?.charm;
 
-  const generateSelectedUnitList = () => "..."; // XXX req unit list selection
+  const generateSelectedUnitList = () => {
+    return selectedUnits.reduce((acc, unitName) => {
+      return `${acc}, ${unitName.split("/")[1]}`;
+    });
+  };
 
   const generateTitle = () => (
     <h5>{generateIconImg(appName, namespace)} 0 units selected</h5>
@@ -123,9 +134,7 @@ export default function ActionsPanel(): JSX.Element {
     // You shouldn't be able to get this far without this defined but jic.
     if (!selectedAction) return;
     await executeActionOnUnits(
-      // XXX The unit list is only hard coded until the
-      // unit list selection has been implemented.
-      ["ceph/0"],
+      selectedUnits,
       selectedAction,
       actionOptionsValues.current[selectedAction],
       modelUUID,
@@ -168,12 +177,10 @@ export default function ActionsPanel(): JSX.Element {
       // Allow for adding more confirmation types, like for cancel
       // if inputs have been changed.
       if (confirmType === "submit") {
-        // XXX Temporary until we can select units.
-        const unitList = ["ceph/1", "ceph/3", "ceph/5"];
         return SubmitConfirmation(
           selectedAction,
-          unitList.length,
-          unitList,
+          selectedUnits.length,
+          selectedUnits,
           executeAction,
           () => setConfirmType("")
         );
