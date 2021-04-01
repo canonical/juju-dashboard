@@ -121,6 +121,9 @@ export default function ActionsPanel(): JSX.Element {
       ?.charm;
 
   const generateSelectedUnitList = () => {
+    if (!selectedUnits.length) {
+      return "No units selected";
+    }
     return selectedUnits.reduce((acc, unitName) => {
       return `${acc}, ${unitName.split("/")[1]}`;
     });
@@ -151,12 +154,13 @@ export default function ActionsPanel(): JSX.Element {
       onValuesChange(actionName, values, actionOptionsValues);
       enableSubmit(
         selectedAction,
+        selectedUnits,
         actionData,
         actionOptionsValues,
         setDisableSubmit
       );
     },
-    [actionData, selectedAction]
+    [actionData, selectedAction, selectedUnits]
   );
 
   const selectHandler = useCallback(
@@ -164,12 +168,13 @@ export default function ActionsPanel(): JSX.Element {
       setSelectedAction(actionName);
       enableSubmit(
         actionName,
+        selectedUnits,
         actionData,
         actionOptionsValues,
         setDisableSubmit
       );
     },
-    [actionData]
+    [actionData, selectedUnits]
   );
 
   const generateConfirmationModal = () => {
@@ -195,7 +200,7 @@ export default function ActionsPanel(): JSX.Element {
       <div className="p-panel actions-panel">
         <PanelHeader title={generateTitle()} />
         <div className="actions-panel__unit-list">
-          Run action on {appName}: {generateSelectedUnitList()}
+          Run action on: {generateSelectedUnitList()}
         </div>
         <div className="actions-panel__action-list">
           <LoadingHandler
@@ -254,11 +259,12 @@ function onValuesChange(
 
 function enableSubmit(
   selectedAction: string | undefined,
+  selectedUnits: string[],
   actionData: ActionData,
   optionsValues: MutableRefObject<ActionOptionValues>,
   setDisableSubmit: (disable: boolean) => void
 ) {
-  if (selectedAction) {
+  if (selectedAction && selectedUnits.length > 0) {
     if (hasNoOptions(selectedAction, optionsValues.current)) {
       setDisableSubmit(false);
       return;
