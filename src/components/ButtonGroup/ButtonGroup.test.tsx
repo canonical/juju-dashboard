@@ -61,7 +61,7 @@ describe("ButtonGroup", () => {
         setActiveButton={setActiveButton}
       />
     );
-    expect(wrapper.find(".p-button-group__label").text()).toBe("Foo");
+    expect(wrapper.find('[data-test="label"]').text()).toBe("Foo");
   });
 
   it("allows the label to be optional", () => {
@@ -73,6 +73,6 @@ describe("ButtonGroup", () => {
         setActiveButton={setActiveButton}
       />
     );
-    expect(wrapper.find(".p-button-broup__label")).toEqual({});
+    expect(wrapper.find('[data-test="label"]')).toEqual({});
   });
 });
