@@ -47,14 +47,14 @@ describe("Entity Details App", () => {
 
   it("allows you to switch between a unit and machines view", async () => {
     const wrapper = await generateComponent();
-    expect(wrapper.find("table.entity-details__units").length).toBe(1);
-    expect(wrapper.find("table.entity-details__machines").length).toBe(0);
+    expect(wrapper.find('table[data-test="units-table"]').length).toBe(1);
+    expect(wrapper.find('table[data-test="machines-table"]').length).toBe(0);
     wrapper.find('button[value="machines"]').simulate("click", {});
-    expect(wrapper.find("table.entity-details__units").length).toBe(0);
-    expect(wrapper.find("table.entity-details__machines").length).toBe(1);
+    expect(wrapper.find('table[data-test="units-table"]').length).toBe(0);
+    expect(wrapper.find('table[data-test="machines-table"]').length).toBe(1);
   });
 
-  it("supports selecting all units", async () => {
+  it("supports selecting and deselecting all units", async () => {
     const wrapper = await generateComponent();
 
     const findSelectAll = () => wrapper.find('input[name="selectAll"]');

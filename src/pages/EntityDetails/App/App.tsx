@@ -76,11 +76,11 @@ export default function App(): JSX.Element {
           <Field
             id={fieldID}
             type="checkbox"
-            aria-labelledby="checkboxLabel0"
+            aria-labelledby="select-all-units"
             className="p-checkbox__input"
             name="selectAll"
           />
-          <span className="p-checkbox__label" id="checkboxLabel0"></span>
+          <span className="p-checkbox__label" id="select-all-units"></span>
         </label>
       ),
       sortKey: "",
@@ -131,7 +131,7 @@ export default function App(): JSX.Element {
     if (!setFieldsValues.current) return;
     const unitList = Object.keys(app.units);
 
-    // Handle the selectALl checkbox interactions.
+    // Handle the selectAll checkbox interactions.
     if (selectAll.current && !formData.selectAll) {
       if (selectedUnits.current.length === unitList.length) {
         // Only reset them all to unchecked if they were all checked to
@@ -213,6 +213,7 @@ export default function App(): JSX.Element {
                     className="entity-details__units p-main-table panel__table"
                     sortable
                     emptyStateMsg={"There are no units in this model"}
+                    data-test="units-table"
                   />
                 </FormikFormData>
               </Formik>
@@ -227,6 +228,7 @@ export default function App(): JSX.Element {
                 className="entity-details__machines p-main-table panel__table"
                 sortable
                 emptyStateMsg={"There are no machines in this model"}
+                data-test="machines-table"
               />
             </>
           )}
