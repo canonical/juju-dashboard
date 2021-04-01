@@ -219,6 +219,7 @@ export default function App(): JSX.Element {
                   hasIcon={true}
                   onClick={showActions}
                   disabled={!enableActionButtonRow}
+                  data-test="run-action-button"
                 >
                   <img
                     className="entity-details__action-button-row-icon"
