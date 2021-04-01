@@ -130,10 +130,10 @@ export default function App(): JSX.Element {
   const unitChips = renderCounts("units", modelStatusData);
   const machineChips = renderCounts("machines", modelStatusData);
 
-  const setPanel = useQueryParams({
+  const [panel, setPanel] = useQueryParams({
     panel: StringParam,
     units: ArrayParam,
-  })[1];
+  });
   const showActions = () => {
     setPanel({ panel: "execute-action", units: selectedUnits.current });
   };
@@ -169,6 +169,14 @@ export default function App(): JSX.Element {
     ) {
       // If the user has unchecked some of the unit checkboxes.
       setFieldsValues.current("selectAll", false);
+    }
+    if (selectedUnits.current.length !== formData.selectedUnits.length) {
+      // The user has updated the selected list of units so update the
+      // query param that stores the unit list.
+      if (panel.panel === "execute-action") {
+        selectedUnits.current = formData.selectedUnits;
+        showActions();
+      }
     }
     selectedUnits.current = formData.selectedUnits;
     setEnableActionButtonRow(formData.selectedUnits.length > 0);
