@@ -8,7 +8,12 @@ import {
 } from "react";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useQueryParam, withDefault, ArrayParam } from "use-query-params";
+import {
+  useQueryParam,
+  withDefault,
+  ArrayParam,
+  StringParam,
+} from "use-query-params";
 import { executeActionOnUnits, getActionsForApplication } from "juju";
 import { getModelUUID } from "app/selectors";
 import { generateIconImg, pluralize } from "app/utils/utils";
@@ -103,6 +108,8 @@ export default function ActionsPanel(): JSX.Element {
     // Cast it into an array so it has the proper methods for the reduce below.
   )[0] as string[];
 
+  const closePanel = useQueryParam("panel")[1];
+
   useEffect(() => {
     setFetchingActionData(true);
     getActionsForApplication(appName, modelUUID, appStore.getState()).then(
@@ -192,7 +199,11 @@ export default function ActionsPanel(): JSX.Element {
           selectedAction,
           selectedUnits.length,
           selectedUnits,
-          executeAction,
+          () => {
+            setConfirmType("");
+            executeAction();
+            closePanel("");
+          },
           () => setConfirmType("")
         );
       }
