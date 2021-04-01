@@ -86,12 +86,16 @@ describe("Entity Details App", () => {
     unitsListChecked(false);
 
     // Selecting all units selects the selectAll checkbox
-    findSelectedUnits().forEach(async (input) => {
-      input.simulate("change", {
-        target: { name: "selectedUnits", value: input.prop("value") },
+    const unitIds = findSelectedUnits().map((input) => input.prop("value"));
+    findSelectedUnits()
+      .at(0)
+      .simulate("change", {
+        target: {
+          name: "selectedUnits",
+          value: unitIds,
+        },
       });
-      await waitForComponentToPaint(wrapper);
-    });
+    await waitForComponentToPaint(wrapper);
     selectAllChecked(true);
 
     // De-selecting one unit de-selects the selectAll checkbox
