@@ -358,11 +358,11 @@ function SubmitConfirmation(
         <h4>Run {actionName}?</h4>
         <div className="p-confirmation-modal__info-group">
           <div className="p-confirmation-modal__sub-header">UNIT COUNT</div>
-          <div>{unitCount}</div>
+          <div data-test="confirmation-modal-unit-count">{unitCount}</div>
         </div>
         <div className="p-confirmation-modal__info-group">
           <div className="p-confirmation-modal__sub-header">UNIT NAME</div>
-          <div>{unitNames}</div>
+          <div data-test="confirmation-modal-unit-names">{unitNames}</div>
         </div>
       </div>
     </ConfirmationModal>
