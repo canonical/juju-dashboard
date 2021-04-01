@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 import { useQueryParam, withDefault, ArrayParam } from "use-query-params";
 import { executeActionOnUnits, getActionsForApplication } from "juju";
 import { getModelUUID } from "app/selectors";
-import { generateIconImg } from "app/utils/utils";
+import { generateIconImg, pluralize } from "app/utils/utils";
 import Button from "@canonical/react-components/dist/components/Button/Button";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -122,16 +122,22 @@ export default function ActionsPanel(): JSX.Element {
 
   const generateSelectedUnitList = () => {
     if (!selectedUnits.length) {
-      return "No units selected";
+      return "0 units selected";
     }
     return selectedUnits.reduce((acc, unitName) => {
       return `${acc}, ${unitName.split("/")[1]}`;
     });
   };
 
-  const generateTitle = () => (
-    <h5>{generateIconImg(appName, namespace)} 0 units selected</h5>
-  );
+  const generateTitle = () => {
+    const unitLength = selectedUnits.length;
+    return (
+      <h5>
+        {generateIconImg(appName, namespace)} {unitLength}{" "}
+        {pluralize(unitLength, "unit")} selected
+      </h5>
+    );
+  };
 
   const executeAction = async () => {
     // You shouldn't be able to get this far without this defined but jic.
