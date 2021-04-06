@@ -1,12 +1,14 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Formik, Field } from "formik";
 import { useParams } from "react-router-dom";
 import {
   useQueryParam,
   useQueryParams,
+  ArrayParam,
   StringParam,
   withDefault,
 } from "use-query-params";
+import Button from "@canonical/react-components/dist/components/Button";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
@@ -36,6 +38,8 @@ import {
   generateSelectableUnitTableHeaders,
 } from "tables/tableHeaders";
 
+import runActionImage from "static/images/run-action-icon.svg";
+
 import { renderCounts } from "../counts";
 
 type FormData = {
@@ -45,6 +49,10 @@ type FormData = {
 
 export default function App(): JSX.Element {
   const { appName: entity } = useParams<EntityDetailsRoute>();
+
+  const [enableActionButtonRow, setEnableActionButtonRow] = useState<boolean>(
+    false
+  );
 
   const tablesRef = useRef<HTMLDivElement>(null);
   const setFieldsValues = useRef<SetFieldValue>();
@@ -99,9 +107,9 @@ export default function App(): JSX.Element {
   );
 
   const [query, setQuery] = useQueryParams({
-    panel: StringParam,
-    entity: StringParam,
     activeView: withDefault(StringParam, "apps"),
+    entity: StringParam,
+    panel: StringParam,
   });
 
   const showConfig = () => {
@@ -122,9 +130,12 @@ export default function App(): JSX.Element {
   const unitChips = renderCounts("units", modelStatusData);
   const machineChips = renderCounts("machines", modelStatusData);
 
-  const setPanel = useQueryParam("panel", StringParam)[1];
+  const [panel, setPanel] = useQueryParams({
+    panel: StringParam,
+    units: ArrayParam,
+  });
   const showActions = () => {
-    setPanel("execute-action");
+    setPanel({ panel: "execute-action", units: selectedUnits.current });
   };
 
   const onFormChange = (formData: FormData) => {
@@ -159,7 +170,16 @@ export default function App(): JSX.Element {
       // If the user has unchecked some of the unit checkboxes.
       setFieldsValues.current("selectAll", false);
     }
+    if (selectedUnits.current.length !== formData.selectedUnits.length) {
+      // The user has updated the selected list of units so update the
+      // query param that stores the unit list.
+      if (panel.panel === "execute-action") {
+        selectedUnits.current = formData.selectedUnits;
+        showActions();
+      }
+    }
     selectedUnits.current = formData.selectedUnits;
+    setEnableActionButtonRow(formData.selectedUnits.length > 0);
   };
 
   const onSetup = (setFieldValue: SetFieldValue) => {
@@ -178,13 +198,6 @@ export default function App(): JSX.Element {
             >
               <i className="p-icon--settings"></i>Configure
             </button>
-
-            <button
-              className="entity-details__action-button"
-              onClick={showActions}
-            >
-              <i className="p-icon--settings"></i>Actions
-            </button>
           </div>
           <EntityInfo data={AppEntityData} />
         </>
@@ -199,6 +212,23 @@ export default function App(): JSX.Element {
           {tableView === "units" && (
             <>
               <ChipGroup chips={unitChips} descriptor="units" />
+              <div className="entity-details__action-button-row">
+                <Button
+                  appearance="base"
+                  className="entity-details__action-button"
+                  hasIcon={true}
+                  onClick={showActions}
+                  disabled={!enableActionButtonRow}
+                  data-test="run-action-button"
+                >
+                  <img
+                    className="entity-details__action-button-row-icon"
+                    src={runActionImage}
+                    alt=""
+                  />
+                  Run action
+                </Button>
+              </div>
               <Formik
                 initialValues={{
                   selectAll: false,

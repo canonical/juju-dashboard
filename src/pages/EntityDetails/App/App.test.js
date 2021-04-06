@@ -1,8 +1,9 @@
 import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { MemoryRouter, Route } from "react-router";
+import { MemoryRouter, Router, Route } from "react-router";
 import { QueryParamProvider } from "use-query-params";
+import { createMemoryHistory } from "history";
 
 import TestRoute from "components/Routes/TestRoute";
 
@@ -114,5 +115,75 @@ describe("Entity Details App", () => {
     // De-selecting the selectAll deselects all the units.
     await simulateSelectAllChange(false);
     unitsListChecked(false);
+  });
+
+  it("enable the action button row when a unit is selected", async () => {
+    const wrapper = await generateComponent();
+    const findActionButton = () =>
+      wrapper.find('button[data-test="run-action-button"]');
+    const findSelectedUnits = () => wrapper.find('input[name="selectedUnits"]');
+    expect(findActionButton().prop("disabled")).toBe(true);
+    const firstInput = findSelectedUnits().at(0);
+    firstInput.simulate("change", {
+      target: { name: "selectedUnits", value: firstInput.prop("value") },
+    });
+    await waitForComponentToPaint(wrapper);
+    expect(findActionButton().prop("disabled")).toBe(false);
+  });
+
+  it("updates the url when units are selected and deselected", async () => {
+    const store = mockStore(dataDump);
+    const history = createMemoryHistory({
+      initialEntries: [
+        "/models/user-island@external/canonical-kubernetes/app/etcd",
+      ],
+    });
+
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <TestRoute path="/models/:userName/:modelName?/app/:appName?">
+            <QueryParamProvider ReactRouterRoute={Route}>
+              <App />
+            </QueryParamProvider>
+          </TestRoute>
+        </Router>
+      </Provider>
+    );
+    await waitForComponentToPaint(wrapper);
+
+    const findActionButton = () =>
+      wrapper.find('button[data-test="run-action-button"]');
+    const findSelectedUnits = () => wrapper.find('input[name="selectedUnits"]');
+
+    // Select a single unit.
+    const firstInput = findSelectedUnits().at(0);
+    firstInput.simulate("change", {
+      target: { name: "selectedUnits", value: firstInput.prop("value") },
+    });
+    await waitForComponentToPaint(wrapper);
+
+    // Trigger the action panel to open to enable the auto url pushing.
+    findActionButton().simulate("click", {});
+    await waitForComponentToPaint(wrapper);
+    expect(history.location.query).toEqual({
+      panel: "execute-action",
+      units: "etcd/0",
+    });
+
+    // Select another unit and it should update the url.
+    const secondInput = findSelectedUnits().at(1);
+    secondInput.simulate("change", {
+      target: {
+        name: "selectedUnits",
+        value: [firstInput.prop("value"), secondInput.prop("value")],
+      },
+    });
+    await waitForComponentToPaint(wrapper);
+
+    expect(history.location.query).toEqual({
+      panel: "execute-action",
+      units: ["etcd/0", "etcd/1"],
+    });
   });
 });

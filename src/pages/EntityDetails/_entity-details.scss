@@ -312,8 +312,6 @@
     }
   }
 
-  // .entity-details__offers, // DISABLED PANEL
-  // .entity-details__remote-apps, // DISABLED PANEL
   .entity-details__apps,
   .entity-details__units,
   .entity-details__machines {
@@ -377,6 +375,22 @@
   }
 }
 
+@mixin entity-details__action-button-row {
+  .entity-details__action-button-row {
+    border-bottom: 1px solid $color-mid-x-light;
+    border-top: 1px solid $color-mid-x-light;
+
+    &-icon {
+      margin-bottom: -0.15rem;
+      margin-right: 0.5rem;
+    }
+
+    .entity-details__action-button {
+      margin: 0.3rem 0;
+    }
+  }
+}
+
 @include entity-details-layout;
 @include entity-details-header;
 @include entity-details-title;
@@ -385,6 +399,7 @@
 @include entity-details__actions;
 @include entity-details__button-group;
 @include entity-icons;
+@include entity-details__action-button-row;
 
 .SidebarChannelNavigator {
   display: none;

@@ -27,15 +27,16 @@ jest.mock("juju", () => {
 });
 
 describe("ActionsPanel", () => {
-  async function generateComponent() {
+  async function generateComponent(initialEntries) {
+    if (!initialEntries) {
+      initialEntries = [
+        "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0&units=ceph%2F1",
+      ];
+    }
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action",
-          ]}
-        >
+        <MemoryRouter initialEntries={initialEntries}>
           <TestRoute path="/models/:userName/:modelName?/app/:appName?">
             <QueryParamProvider ReactRouterRoute={Route}>
               <ActionsPanel />
@@ -60,6 +61,37 @@ describe("ActionsPanel", () => {
     expect(wrapper.find("Button").prop("disabled")).toBe(true);
   });
 
+  it("updates the title & unit list based on the number of units selected", async () => {
+    const wrapper = await generateComponent();
+    expect(wrapper.find("PanelHeader").text()).toBe(" 2 units selected");
+    expect(wrapper.find('[data-test="actions-panel-unit-list"]').text()).toBe(
+      "Run action on: ceph/0, 1"
+    );
+  });
+
+  it("successfully handles no units selected", async () => {
+    const wrapper = await generateComponent([
+      "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action",
+    ]);
+    expect(wrapper.find("PanelHeader").text()).toBe(" 0 units selected");
+    expect(wrapper.find('[data-test="actions-panel-unit-list"]').text()).toBe(
+      "Run action on: 0 units selected"
+    );
+  });
+
+  it("disables the submit button if no units are selected", async () => {
+    const wrapper = await generateComponent([
+      "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action",
+    ]);
+    expect(wrapper.find("Button").prop("disabled")).toBe(true);
+    wrapper
+      .find('input[aria-labelledby="inputRadio-pause"]')
+      .simulate("click", {});
+    expect(wrapper.find("Button").prop("disabled")).toBe(true);
+    wrapper.find("Button").simulate("click", {});
+    expect(wrapper.find("ConfirmationModal").exists()).toBe(false);
+  });
+
   it("shows a confirmation dialog on clicking submit", async () => {
     const wrapper = await generateComponent();
     expect(wrapper.find("Button").prop("disabled")).toBe(true);
@@ -69,6 +101,16 @@ describe("ActionsPanel", () => {
     expect(wrapper.find("Button").prop("disabled")).toBe(false);
     wrapper.find("Button").simulate("click", {});
     expect(wrapper.find("ConfirmationModal").length).toBe(1);
+    expect(
+      wrapper
+        .find('ConfirmationModal [data-test="confirmation-modal-unit-count"]')
+        .text()
+    ).toBe("2");
+    expect(
+      wrapper
+        .find('ConfirmationModal [data-test="confirmation-modal-unit-names"]')
+        .text()
+    ).toBe("ceph/0, 1");
     expect(executeActionOnUnits).not.toHaveBeenCalled();
   });
 
@@ -84,7 +126,7 @@ describe("ActionsPanel", () => {
       .find(".p-modal__button-row .p-button--positive")
       .simulate("click", {});
     const call = executeActionOnUnits.mock.calls[0];
-    expect(call[0]).toEqual(["ceph/0"]);
+    expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
     expect(call[1]).toBe("pause");
     expect(call[2]).toEqual({}); // no options
   });
@@ -105,7 +147,7 @@ describe("ActionsPanel", () => {
       .find(".p-modal__button-row .p-button--positive")
       .simulate("click", {});
     const call = executeActionOnUnits.mock.calls[0];
-    expect(call[0]).toEqual(["ceph/0"]);
+    expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
     expect(call[1]).toBe("add-disk");
     expect(call[2]).toEqual({
       bucket: "",
