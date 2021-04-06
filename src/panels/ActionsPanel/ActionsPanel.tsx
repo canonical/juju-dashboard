@@ -211,7 +211,10 @@ export default function ActionsPanel(): JSX.Element {
     <Aside width="narrow">
       <div className="p-panel actions-panel">
         <PanelHeader title={generateTitle()} />
-        <div className="actions-panel__unit-list">
+        <div
+          className="actions-panel__unit-list"
+          data-test="actions-panel-unit-list"
+        >
           Run action on: {generateSelectedUnitList()}
         </div>
         <div className="actions-panel__action-list">

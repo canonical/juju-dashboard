@@ -64,7 +64,7 @@ describe("ActionsPanel", () => {
   it("updates the title & unit list based on the number of units selected", async () => {
     const wrapper = await generateComponent();
     expect(wrapper.find("PanelHeader").text()).toBe(" 2 units selected");
-    expect(wrapper.find(".actions-panel__unit-list").text()).toBe(
+    expect(wrapper.find('[data-test="actions-panel-unit-list"]').text()).toBe(
       "Run action on: ceph/0, 1"
     );
   });
@@ -74,7 +74,7 @@ describe("ActionsPanel", () => {
       "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action",
     ]);
     expect(wrapper.find("PanelHeader").text()).toBe(" 0 units selected");
-    expect(wrapper.find(".actions-panel__unit-list").text()).toBe(
+    expect(wrapper.find('[data-test="actions-panel-unit-list"]').text()).toBe(
       "Run action on: 0 units selected"
     );
   });
