@@ -1820,10 +1820,9 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@canonical/jaaslib@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@canonical/jaaslib/-/jaaslib-0.6.0.tgz#7b77ff0a6899a2e58adc1b2077d8971de019047b"
-  integrity sha512-3x0DmeFP1Fu/JPT9Sn/vJcNbCI5QSMmwF4rHIH7N/3T/KxwI1dK+gjv8djOFAe3UD8wVbFNwlhOpuhdg+2A+VQ==
+"@canonical/jaaslib@juju/jaaslibjs.git#anthonydillon-focal-series":
+  version "0.6.1"
+  resolved "https://codeload.github.com/juju/jaaslibjs/tar.gz/342f579b9334d79b8ec0e81b8519976f4375241f"
 
 "@canonical/jujulib@2.0.0-beta.4":
   version "2.0.0-beta.4"
