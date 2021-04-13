@@ -33,7 +33,7 @@ export function generateLocalApplicationRows(
     const rev = extractRevisionNumber(app.charm) || "-";
     const store = app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub";
     const scale = app.unitsCount;
-    const version = app.workloadVersion || "-";
+    const version = app["workload-version"] || "-";
 
     return {
       columns: [
@@ -50,7 +50,6 @@ export function generateLocalApplicationRows(
         {
           "data-test-column": "version",
           content: version,
-          className: "u-align--right",
         },
         {
           "data-test-column": "scale",
