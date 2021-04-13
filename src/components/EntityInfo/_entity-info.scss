@@ -6,4 +6,8 @@
       grid-template-columns: repeat(2, 1fr);
     }
   }
+
+  &__grid-item {
+    overflow-wrap: anywhere;
+  }
 }

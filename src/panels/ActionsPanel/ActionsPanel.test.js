@@ -122,9 +122,7 @@ describe("ActionsPanel", () => {
       .simulate("click", {});
     expect(wrapper.find("Button").prop("disabled")).toBe(false);
     wrapper.find("Button").simulate("click", {});
-    wrapper
-      .find(".p-modal__button-row .p-button--positive")
-      .simulate("click", {});
+    wrapper.find("footer .p-button--positive").simulate("click", {});
     const call = executeActionOnUnits.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
     expect(call[1]).toBe("pause");
@@ -143,9 +141,7 @@ describe("ActionsPanel", () => {
     await waitForComponentToPaint(wrapper);
     expect(wrapper.find("Button").prop("disabled")).toBe(false);
     wrapper.find("Button").simulate("click", {});
-    wrapper
-      .find(".p-modal__button-row .p-button--positive")
-      .simulate("click", {});
+    wrapper.find("footer .p-button--positive").simulate("click", {});
     const call = executeActionOnUnits.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
     expect(call[1]).toBe("add-disk");
