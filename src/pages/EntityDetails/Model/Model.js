@@ -116,6 +116,7 @@ const Model = () => {
     "Cloud/Region": `${cloudProvider} / ${modelStatusData?.model.region}`,
     version: modelStatusData?.model.version,
     sla: modelStatusData?.model.sla,
+    provider: modelStatusData?.info?.["provider-type"],
   };
 
   const LocalAppChips = renderCounts("localApps", modelStatusData);

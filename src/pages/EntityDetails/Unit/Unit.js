@@ -88,6 +88,7 @@ export default function Unit() {
     revision: extractRevisionNumber(app.charm) || "-",
     version: app["workload-version"] || "-",
     info: app.status.info,
+    provider: modelStatusData?.info?.["provider-type"],
   };
 
   return (
