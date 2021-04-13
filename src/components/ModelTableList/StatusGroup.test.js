@@ -59,4 +59,20 @@ describe("StatusGroup", () => {
     );
     expect(wrapper.find("tbody TableRow").length).toBe(3);
   });
+
+  it("displays the provider type icon", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <StatusGroup />
+        </Provider>
+      </MemoryRouter>
+    );
+    const logo = wrapper
+      .find("MainTable")
+      .find('[data-test="provider-logo"]')
+      .first();
+    expect(logo.prop("src")).toContain("azure");
+  });
 });

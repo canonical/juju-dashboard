@@ -186,6 +186,7 @@
     td {
       padding-left: 1rem;
       padding-right: 1rem;
+      white-space: nowrap;
     }
 
     tr {
@@ -199,6 +200,11 @@
 
     caption {
       margin-top: 0.5rem;
+    }
+
+    .p-table__logo {
+      float: left;
+      margin-right: 0.25rem;
     }
   }
 

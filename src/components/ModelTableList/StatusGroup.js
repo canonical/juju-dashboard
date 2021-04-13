@@ -1,6 +1,11 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
+import awsLogo from "static/images/logo/cloud/aws.svg";
+import gceLogo from "static/images/logo/cloud/azure.svg";
+import azureLogo from "static/images/logo/cloud/gce.svg";
+import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
+
 import {
   generateStatusElement,
   getModelStatusGroupData,
@@ -78,6 +83,67 @@ const generateModelNameCell = (model, groupLabel) => {
 };
 
 /**
+  Generates the cloud adnd region info from model data.
+  @param {Object} model The model data.
+  @returns {Object} The React element for the model cloud and region cell.
+*/
+const generateCloudCell = (model) => {
+  let provider = model?.info?.["provider-type"];
+  let logo = null;
+  switch (provider) {
+    case "aws":
+      logo = (
+        <img
+          src={awsLogo}
+          alt="AWS logo"
+          className="p-table__logo"
+          data-test="provider-logo"
+        />
+      );
+      break;
+    case "gce":
+      logo = (
+        <img
+          src={gceLogo}
+          alt="Google Cloud Platform logo"
+          className="p-table__logo"
+          data-test="provider-logo"
+        />
+      );
+      break;
+    case "azure":
+      logo = (
+        <img
+          src={azureLogo}
+          alt="Azure logo"
+          className="p-table__logo"
+          data-test="provider-logo"
+        />
+      );
+      break;
+    case "kubernetes":
+      logo = (
+        <img
+          src={kubernetesLogo}
+          alt="Kubernetes logo"
+          className="p-table__logo"
+          data-test="provider-logo"
+        />
+      );
+      break;
+  }
+
+  const cloud = (
+    <>
+      {logo}
+      {getStatusValue(model, "cloud-tag")}/{getStatusValue(model, "region")}
+    </>
+  );
+
+  return cloud;
+};
+
+/**
   Returns the model info and statuses in the proper format for the table data.
   @param {Object} groupedModels The models grouped by state
   @returns {Object} The formatted table data.
@@ -96,10 +162,7 @@ function generateModelTableDataByStatus(groupedModels) {
       if (model.info) {
         owner = extractOwnerName(model.info["owner-tag"]);
       }
-      const cloud = `${getStatusValue(model, "cloud-tag")}/${getStatusValue(
-        model,
-        "region"
-      )}`;
+      const cloud = generateCloudCell(model);
       const credential = getStatusValue(model.info, "cloud-credential-tag");
       const controller = getStatusValue(model.info, "controllerName");
       const lastUpdated = getStatusValue(model.info, "status.since");
