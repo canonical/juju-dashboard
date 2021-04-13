@@ -73,6 +73,6 @@ describe("StatusGroup", () => {
       .find("MainTable")
       .find('[data-test="provider-logo"]')
       .first();
-    expect(logo.prop("src")).toContain("azure");
+    expect(logo.prop("src")).toContain("gce");
   });
 });
