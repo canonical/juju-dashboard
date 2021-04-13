@@ -83,7 +83,7 @@ const generateModelNameCell = (model, groupLabel) => {
 };
 
 /**
-  Generates the cloud adnd region info from model data.
+  Generates the cloud and region info from model data.
   @param {Object} model The model data.
   @returns {Object} The React element for the model cloud and region cell.
 */
