@@ -2,8 +2,8 @@ import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
 import awsLogo from "static/images/logo/cloud/aws.svg";
-import gceLogo from "static/images/logo/cloud/azure.svg";
-import azureLogo from "static/images/logo/cloud/gce.svg";
+import azureLogo from "static/images/logo/cloud/azure.svg";
+import gceLogo from "static/images/logo/cloud/gce.svg";
 import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
 
 import {
