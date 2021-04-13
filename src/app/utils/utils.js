@@ -8,7 +8,6 @@ export function generateEntityIdentifier(
   namespace,
   name,
   subordinate,
-  baseAppURL,
   disableLink = false
 ) {
   if (!namespace) {
@@ -24,7 +23,7 @@ export function generateEntityIdentifier(
   return (
     <div className="entity-name">
       {subordinate && <span className="subordinate"></span>}
-      {namespace && generateIconImg(name, namespace, baseAppURL)}
+      {namespace && generateIconImg(name, namespace)}
       {/* Ensure app is not a local charm or disable link is true */}
       {namespace.includes("cs:") && !disableLink ? (
         <a
@@ -194,7 +193,7 @@ export const extractOwnerName = (tag) => {
 
 /**
   Pluralizes the supplied word based on the provided dataset.
-  @param {string} value The integer to be checked
+  @param {number} value The integer to be checked
   @param {string} string The item name to be pluralized
   @returns {string} The item pluralized if required
 */
@@ -400,14 +399,10 @@ export const generateIconImg = (name, namespace) => {
   );
 };
 
-export const generateRelationIconImage = (
-  applicationName,
-  modelStatusData,
-  baseAppURL
-) => {
+export const generateRelationIconImage = (applicationName, modelStatusData) => {
   const application = modelStatusData.applications[applicationName];
   if (!application || !applicationName) {
     return;
   }
-  return generateIconImg(applicationName, application.charm, baseAppURL);
+  return generateIconImg(applicationName, application.charm);
 };

@@ -1,4 +1,5 @@
 import cloneDeep from "clone-deep";
+import { Field } from "formik";
 
 import {
   extractRevisionNumber,
@@ -14,7 +15,6 @@ import {
 export function generateLocalApplicationRows(
   modelStatusData,
   tableRowClick,
-  baseAppURL,
   query
 ) {
   if (!modelStatusData) {
@@ -39,13 +39,7 @@ export function generateLocalApplicationRows(
       columns: [
         {
           "data-test-column": "name",
-          content: generateEntityIdentifier(
-            app.charm || "",
-            key,
-            false,
-            baseAppURL,
-            true
-          ),
+          content: generateEntityIdentifier(app.charm || "", key, false, true),
           className: "u-truncate",
         },
         {
@@ -85,7 +79,7 @@ export function generateLocalApplicationRows(
         os: "Ubuntu",
         notes: "-",
       },
-      onClick: () => tableRowClick("app", key),
+      onClick: (e) => tableRowClick("app", key, e),
       "data-app": key,
       className:
         query?.panel === "apps" && query?.entity === key ? "is-selected" : "",
@@ -93,61 +87,9 @@ export function generateLocalApplicationRows(
   });
 }
 
-export function generateIntegrationLocalApplicationRows(
-  modelStatusData,
-  tableRowClick,
-  baseAppURL,
-  query
-) {
-  if (!modelStatusData) {
-    return [];
-  }
-
-  const applications = cloneDeep(modelStatusData.applications);
-
-  Object.keys(applications).forEach((key) => {
-    const units = applications[key].units || {};
-    applications[key].unitsCount = Object.keys(units).length;
-  });
-
-  return Object.keys(applications).map((key) => {
-    const app = applications[key];
-    return {
-      columns: [
-        {
-          "data-test-column": "name",
-          content: generateEntityIdentifier(
-            app.charm || "",
-            key,
-            false,
-            baseAppURL,
-            true
-          ),
-          className: "u-truncate",
-        },
-        {
-          "data-test-column": "integration",
-          content: "-",
-        },
-      ],
-      sortData: {
-        app: key,
-        integration: "",
-      },
-      onClick: () => tableRowClick(key, "integration"),
-      "data-app": key,
-      className:
-        query?.panel === "integration" && query?.entity === key
-          ? "is-selected"
-          : "",
-    };
-  });
-}
-
 export function generateRemoteApplicationRows(
   modelStatusData,
   tableRowClick,
-  baseAppURL,
   query
 ) {
   if (!modelStatusData) {
@@ -199,7 +141,7 @@ export function generateRemoteApplicationRows(
           store: "store",
         },
         "data-app": key,
-        onClick: () => false && tableRowClick(key, "remoteApps"), // DISABLED PANEL
+        onClick: (e) => false && tableRowClick(key, "remoteApps", e), // DISABLED PANEL
         className:
           query?.panel === "remoteApps" && query?.entity === key
             ? "is-selected"
@@ -209,57 +151,7 @@ export function generateRemoteApplicationRows(
   );
 }
 
-export function generateIntegrationRemoteApplicationRows(
-  modelStatusData,
-  tableRowClick,
-  baseAppURL,
-  query
-) {
-  if (!modelStatusData) {
-    return [];
-  }
-  const applications = cloneDeep(modelStatusData["remote-applications"]);
-  return (
-    applications &&
-    Object.keys(applications).map((key) => {
-      const app = applications[key];
-
-      console.log(app);
-
-      return {
-        columns: [
-          {
-            "data-test-column": "app",
-            content: app["offer-name"], // we cannot access charm name
-            className: "u-truncate",
-          },
-          {
-            "data-test-column": "integration",
-            content: "",
-            className: "u-capitalise u-truncate",
-          },
-        ],
-        sortData: {
-          app: key,
-          integration: "",
-        },
-        "data-app": key,
-        onClick: () => false && tableRowClick(key, "remoteApps"), // DISABLED PANEL
-        className:
-          query?.panel === "integrations" && query?.entity === key
-            ? "is-selected"
-            : "",
-      };
-    })
-  );
-}
-
-export function generateUnitRows(
-  modelStatusData,
-  tableRowClick,
-  baseAppURL,
-  selectedEntity
-) {
+export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
   if (!modelStatusData) {
     return [];
   }
@@ -275,36 +167,57 @@ export function generateUnitRows(
       const publicAddress = unit["public-address"] || "-";
       const port = unit?.["opened-ports"]?.join(" ") || "-";
       const message = unit["workload-status"].info || "-";
+      const columns = [
+        {
+          content: generateEntityIdentifier(
+            applications[applicationName].charm
+              ? applications[applicationName].charm
+              : "",
+            unitId,
+            false,
+            true // disable link
+          ),
+          className: "u-truncate",
+        },
+        {
+          content: generateStatusElement(workload),
+          className: "u-capitalise",
+        },
+        { content: agent },
+        { content: unit.machine, className: "u-align--right" },
+        { content: publicAddress },
+        {
+          content: port,
+          className: "u-align--right",
+        },
+        {
+          content: <span title={message}>{message}</span>,
+          className: "u-truncate",
+        },
+      ];
+
+      if (showCheckbox) {
+        const fieldID = `table-checkbox-${unitId}`;
+        const ariaLabeledBy = `aria-labeled-${unitId}`;
+        columns.splice(0, 0, {
+          content: (
+            <label className="p-checkbox" htmlFor={fieldID}>
+              <Field
+                id={fieldID}
+                type="checkbox"
+                aria-labelledby={ariaLabeledBy}
+                className="p-checkbox__input"
+                name="selectedUnits"
+                value={unitId}
+              />
+              <span className="p-checkbox__label" id={ariaLabeledBy}></span>
+            </label>
+          ),
+        });
+      }
+
       unitRows.push({
-        columns: [
-          {
-            content: generateEntityIdentifier(
-              applications[applicationName].charm
-                ? applications[applicationName].charm
-                : "",
-              unitId,
-              false,
-              baseAppURL,
-              true // disable link
-            ),
-            className: "u-truncate",
-          },
-          {
-            content: generateStatusElement(workload),
-            className: "u-capitalise",
-          },
-          { content: agent },
-          { content: unit.machine, className: "u-align--right" },
-          { content: publicAddress },
-          {
-            content: port,
-            className: "u-align--right",
-          },
-          {
-            content: <span title={message}>{message}</span>,
-            className: "u-truncate",
-          },
-        ],
+        columns,
         sortData: {
           unit: unitId,
           workload,
@@ -314,9 +227,8 @@ export function generateUnitRows(
           port,
           message,
         },
-        onClick: () => tableRowClick("unit", unitId),
+        onClick: (e) => tableRowClick("unit", unitId, e),
         "data-unit": unitId,
-        className: selectedEntity === unitId ? "is-selected" : "",
       });
 
       const subordinates = unit.subordinates;
@@ -331,7 +243,6 @@ export function generateUnitRows(
                   subordinate.charm,
                   key,
                   true,
-                  baseAppURL,
                   true // disable link
                 ),
                 className: "u-truncate",
@@ -448,14 +359,14 @@ export function generateMachineRows(
         instanceId: machine.instanceId,
         message: machine?.agentStatus?.info,
       },
-      onClick: () => tableRowClick("machine", machineId),
+      onClick: (e) => tableRowClick("machine", machineId, e),
       "data-machine": machineId,
       className: selectedEntity === machineId ? "is-selected" : "",
     };
   });
 }
 
-export function generateRelationRows(modelStatusData, baseAppURL) {
+export function generateRelationRows(modelStatusData) {
   if (!modelStatusData) {
     return [];
   }
@@ -480,8 +391,7 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
             <>
               {generateRelationIconImage(
                 providerApplicationName || peerApplicationName,
-                modelStatusData,
-                baseAppURL
+                modelStatusData
               )}
               {providerLabel}
             </>
@@ -493,8 +403,7 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
             <>
               {generateRelationIconImage(
                 requirerApplicationName,
-                modelStatusData,
-                baseAppURL
+                modelStatusData
               )}
               {requirerLabel}
             </>
@@ -522,7 +431,7 @@ export function generateRelationRows(modelStatusData, baseAppURL) {
   });
 }
 
-export function generateOffersRows(modelStatusData, baseAppURL) {
+export function generateOffersRows(modelStatusData) {
   if (!modelStatusData) {
     return [];
   }
@@ -537,8 +446,7 @@ export function generateOffersRows(modelStatusData, baseAppURL) {
             <>
               {generateRelationIconImage(
                 offer.applicationName,
-                modelStatusData,
-                baseAppURL
+                modelStatusData
               )}
               {offer.applicationName}
             </>
@@ -559,12 +467,7 @@ export function generateOffersRows(modelStatusData, baseAppURL) {
   });
 }
 
-export function generateAppOffersRows(
-  modelStatusData,
-  tableRowClick,
-  baseAppURL,
-  query
-) {
+export function generateAppOffersRows(modelStatusData, tableRowClick, query) {
   if (!modelStatusData) {
     return [];
   }
@@ -583,7 +486,7 @@ export function generateAppOffersRows(
         {
           content: (
             <>
-              {generateRelationIconImage(offer, modelStatusData, baseAppURL)}
+              {generateRelationIconImage(offer, modelStatusData)}
               {offer["offer-name"]}
             </>
           ),
@@ -604,7 +507,7 @@ export function generateAppOffersRows(
           content: "-", // offer url is not yet available from the API
         },
       ],
-      onClick: () => false && tableRowClick(offerId, "offers"), // DISABLED PANEL
+      onClick: (e) => false && tableRowClick(offerId, "offers", e), // DISABLED PANEL
       "data-app": offerId,
       className:
         query.panel === "offers" && query.entity === offerId
@@ -614,7 +517,7 @@ export function generateAppOffersRows(
   });
 }
 
-export function generateConsumedRows(modelStatusData, baseAppURL) {
+export function generateConsumedRows(modelStatusData) {
   if (!modelStatusData) {
     return [];
   }
@@ -629,8 +532,7 @@ export function generateConsumedRows(modelStatusData, baseAppURL) {
             <>
               {generateRelationIconImage(
                 application.offerName,
-                modelStatusData,
-                baseAppURL
+                modelStatusData
               )}
               {application.offerName}
             </>

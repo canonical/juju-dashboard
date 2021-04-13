@@ -1,7 +1,7 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
 
-#confirmation-modal-container {
+.p-confirmation-modal {
   .p-modal {
     align-items: flex-end;
     // Vanilla override can be removed once this PR lands.
@@ -14,21 +14,6 @@
       padding: 0;
     }
 
-    h5 {
-      margin-bottom: 0;
-      padding-top: 0 !important;
-    }
-
-    pre {
-      // reset the vanilla pre styling
-      background-color: inherit;
-      border: none;
-      padding: 0;
-      // extra styles
-      white-space: pre-wrap;
-      word-break: keep-all;
-    }
-
     &__dialog {
       flex-grow: 100;
       left: auto;
@@ -39,6 +24,34 @@
       position: relative;
       right: auto;
       top: auto;
+    }
+  }
+
+  h5 {
+    margin-bottom: 0;
+    padding-top: 0 !important;
+  }
+
+  pre {
+    // reset the vanilla pre styling
+    background-color: inherit;
+    border: none;
+    padding: 0;
+    // extra styles
+    white-space: pre-wrap;
+    word-break: keep-all;
+  }
+
+  &__sub-header {
+    color: $color-mid-dark;
+    font-size: 0.875rem;
+  }
+
+  &__info-group {
+    margin-bottom: $spv-outer--medium;
+
+    &:last-child {
+      margin-bottom: 1.5rem;
     }
   }
 }

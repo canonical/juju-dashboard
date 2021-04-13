@@ -50,4 +50,29 @@ describe("ButtonGroup", () => {
     // We don't check that the UI updated because it has no internal state.
     // It requires a parent to re-render it with a new selected group.
   });
+
+  it("renders the supplied label", () => {
+    const setActiveButton = jest.fn();
+    const wrapper = mount(
+      <ButtonGroup
+        label="Foo"
+        buttons={["status", "cloud", "owner"]}
+        activeButton="cloud"
+        setActiveButton={setActiveButton}
+      />
+    );
+    expect(wrapper.find('[data-test="label"]').text()).toBe("Foo");
+  });
+
+  it("allows the label to be optional", () => {
+    const setActiveButton = jest.fn();
+    const wrapper = mount(
+      <ButtonGroup
+        buttons={["status", "cloud", "owner"]}
+        activeButton="cloud"
+        setActiveButton={setActiveButton}
+      />
+    );
+    expect(wrapper.find('[data-test="label"]')).toEqual({});
+  });
 });
