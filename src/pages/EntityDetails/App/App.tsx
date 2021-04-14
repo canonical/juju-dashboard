@@ -125,6 +125,7 @@ export default function App(): JSX.Element {
     os: "Ubuntu",
     revision: (app && extractRevisionNumber(app.charm)) || "-",
     message: "-",
+    provider: modelStatusData?.info?.["provider-type"],
   };
 
   const unitChips = renderCounts("units", modelStatusData);
