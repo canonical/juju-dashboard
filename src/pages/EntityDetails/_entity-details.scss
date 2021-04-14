@@ -377,8 +377,8 @@
 
 @mixin entity-details__action-button-row {
   .entity-details__action-button-row {
-    border-bottom: 1px solid $color-mid-x-light;
-    border-top: 1px solid $color-mid-x-light;
+    border-bottom: 1px solid $color-mid-light;
+    border-top: 1px solid $color-mid-light;
 
     &-icon {
       margin-bottom: -0.15rem;
@@ -387,6 +387,10 @@
 
     .entity-details__action-button {
       margin: 0.3rem 0;
+    }
+
+    .entity-details__action-button-divider {
+      border-right: 1px solid $color-mid-light;
     }
   }
 }
