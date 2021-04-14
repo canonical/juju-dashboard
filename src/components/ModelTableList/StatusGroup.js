@@ -90,8 +90,9 @@ const generateModelNameCell = (model, groupLabel) => {
 const generateCloudCell = (model) => {
   let provider = model?.info?.["provider-type"];
   let logo = null;
+  console.log(provider);
   switch (provider) {
-    case "aws":
+    case "ec2":
       logo = (
         <img
           src={awsLogo}
