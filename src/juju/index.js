@@ -447,3 +447,11 @@ export async function executeActionOnUnits(
   });
   return actionResult;
 }
+
+export async function queryOperationsList(queryArgs, modelUUID, appState) {
+  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const operationListResut = await conn.facades.action.listOperations(
+    queryArgs
+  );
+  return operationListResut;
+}
