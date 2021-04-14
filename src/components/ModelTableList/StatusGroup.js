@@ -185,6 +185,11 @@ function generateModelTableDataByStatus(groupedModels) {
           {
             "data-test-column": "cloud",
             content: cloud,
+            className: "u-truncate",
+            title: `${getStatusValue(model, "cloud-tag")}/${getStatusValue(
+              model,
+              "region"
+            )}`,
           },
           {
             "data-test-column": "credential",
@@ -237,6 +242,7 @@ export default function StatusGroup({ filters }) {
           rows={blockedRows}
           sortable
           emptyStateMsg={emptyStateMsg}
+          className="p-main-table"
         />
       ) : null}
       {alertRows.length ? (
@@ -245,6 +251,7 @@ export default function StatusGroup({ filters }) {
           rows={alertRows}
           sortable
           emptyStateMsg={emptyStateMsg}
+          className="p-main-table"
         />
       ) : null}
       {runningRows.length ? (
@@ -253,6 +260,7 @@ export default function StatusGroup({ filters }) {
           rows={runningRows}
           sortable
           emptyStateMsg={emptyStateMsg}
+          className="p-main-table"
         />
       ) : null}
     </div>
