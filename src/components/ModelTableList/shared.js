@@ -1,3 +1,8 @@
+import awsLogo from "static/images/logo/cloud/aws.svg";
+import azureLogo from "static/images/logo/cloud/azure.svg";
+import gceLogo from "static/images/logo/cloud/gce.svg";
+import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
+
 import { Link } from "react-router-dom";
 import { extractCloudName, extractCredentialName } from "app/utils/utils";
 
@@ -129,3 +134,76 @@ export function getStatusValue(status, key) {
   }
   return returnValue;
 }
+
+/**
+  Generates the cloud and region info from model data.
+  @param {Object} model The model data.
+  @returns {Object} The React element for the model cloud and region cell.
+*/
+export const generateCloudCell = (model) => {
+  let provider = model?.info?.["provider-type"];
+  let logo = null;
+  switch (provider) {
+    case "ec2":
+      logo = (
+        <img
+          src={awsLogo}
+          alt="AWS logo"
+          className="p-table__logo"
+          data-test="provider-logo"
+        />
+      );
+      break;
+    case "gce":
+      logo = (
+        <img
+          src={gceLogo}
+          alt="Google Cloud Platform logo"
+          className="p-table__logo"
+          data-test="provider-logo"
+        />
+      );
+      break;
+    case "azure":
+      logo = (
+        <img
+          src={azureLogo}
+          alt="Azure logo"
+          className="p-table__logo"
+          data-test="provider-logo"
+        />
+      );
+      break;
+    case "kubernetes":
+      logo = (
+        <img
+          src={kubernetesLogo}
+          alt="Kubernetes logo"
+          className="p-table__logo"
+          data-test="provider-logo"
+        />
+      );
+      break;
+  }
+
+  const cloud = (
+    <>
+      {logo}
+      {generateCloudAndRegion(model)}
+    </>
+  );
+
+  return cloud;
+};
+
+/**
+  Returns the model cloud and region data formatted as {cloud}/{region}.
+  @param {Object} model The model data
+  @returns {String} The formatted cloud and region data.
+*/
+export const generateCloudAndRegion = function (model) {
+  return `${getStatusValue(model, "cloud-tag")}/${getStatusValue(
+    model,
+    "region"
+  )}`;
+};

@@ -1,11 +1,6 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 
-import awsLogo from "static/images/logo/cloud/aws.svg";
-import azureLogo from "static/images/logo/cloud/azure.svg";
-import gceLogo from "static/images/logo/cloud/gce.svg";
-import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
-
 import {
   generateStatusElement,
   getModelStatusGroupData,
@@ -14,7 +9,12 @@ import {
 
 import { getGroupedByStatusAndFilteredModelData } from "app/selectors";
 
-import { generateModelDetailsLink, getStatusValue } from "./shared";
+import {
+  generateModelDetailsLink,
+  getStatusValue,
+  generateCloudCell,
+  generateCloudAndRegion,
+} from "./shared";
 
 /**
   Generates the table headers for the supplied table label.
@@ -83,67 +83,6 @@ const generateModelNameCell = (model, groupLabel) => {
 };
 
 /**
-  Generates the cloud and region info from model data.
-  @param {Object} model The model data.
-  @returns {Object} The React element for the model cloud and region cell.
-*/
-const generateCloudCell = (model) => {
-  let provider = model?.info?.["provider-type"];
-  let logo = null;
-  switch (provider) {
-    case "ec2":
-      logo = (
-        <img
-          src={awsLogo}
-          alt="AWS logo"
-          className="p-table__logo"
-          data-test="provider-logo"
-        />
-      );
-      break;
-    case "gce":
-      logo = (
-        <img
-          src={gceLogo}
-          alt="Google Cloud Platform logo"
-          className="p-table__logo"
-          data-test="provider-logo"
-        />
-      );
-      break;
-    case "azure":
-      logo = (
-        <img
-          src={azureLogo}
-          alt="Azure logo"
-          className="p-table__logo"
-          data-test="provider-logo"
-        />
-      );
-      break;
-    case "kubernetes":
-      logo = (
-        <img
-          src={kubernetesLogo}
-          alt="Kubernetes logo"
-          className="p-table__logo"
-          data-test="provider-logo"
-        />
-      );
-      break;
-  }
-
-  const cloud = (
-    <>
-      {logo}
-      {getStatusValue(model, "cloud-tag")}/{getStatusValue(model, "region")}
-    </>
-  );
-
-  return cloud;
-};
-
-/**
   Returns the model info and statuses in the proper format for the table data.
   @param {Object} groupedModels The models grouped by state
   @returns {Object} The formatted table data.
@@ -186,10 +125,7 @@ function generateModelTableDataByStatus(groupedModels) {
             "data-test-column": "cloud",
             content: cloud,
             className: "u-truncate",
-            title: `${getStatusValue(model, "cloud-tag")}/${getStatusValue(
-              model,
-              "region"
-            )}`,
+            title: generateCloudAndRegion(model),
           },
           {
             "data-test-column": "credential",
