@@ -185,6 +185,31 @@ const EntityDetails = ({ type, children, className }) => {
     }
   };
 
+  const generateTabItems = () => {
+    let items = [
+      {
+        active: activeView === "apps",
+        label: "Applications",
+        onClick: (e) => handleNavClick(e, "apps"),
+      },
+      {
+        active: activeView === "integrations",
+        label: "Integrations",
+        onClick: (e) => handleNavClick(e, "integrations"),
+      },
+    ];
+
+    if (modelStatusData.info["provider-type"] !== "kubernetes") {
+      items.push({
+        active: activeView === "machines",
+        label: "Machines",
+        onClick: (e) => handleNavClick(e, "machines"),
+      });
+    }
+
+    return items;
+  };
+
   return (
     <BaseLayout className={className}>
       <Header>
@@ -192,25 +217,7 @@ const EntityDetails = ({ type, children, className }) => {
           <Breadcrumb />
           <div className="entity-details__view-selector">
             {modelStatusData && type === "model" && (
-              <Tabs
-                links={[
-                  {
-                    active: activeView === "apps",
-                    label: "Applications",
-                    onClick: (e) => handleNavClick(e, "apps"),
-                  },
-                  {
-                    active: activeView === "integrations",
-                    label: "Integrations",
-                    onClick: (e) => handleNavClick(e, "integrations"),
-                  },
-                  {
-                    active: activeView === "machines",
-                    label: "Machines",
-                    onClick: (e) => handleNavClick(e, "machines"),
-                  },
-                ]}
-              />
+              <Tabs links={generateTabItems()} />
             )}
           </div>
         </div>
