@@ -204,11 +204,13 @@ export default function App(): JSX.Element {
         </>
       </div>
       <div className="entity-details__main u-overflow--scroll">
-        <ButtonGroup
-          buttons={["units", "machines"]}
-          activeButton={tableView}
-          setActiveButton={setTableView}
-        />
+        {modelStatusData.info["provider-type"] !== "kubernetes" && (
+          <ButtonGroup
+            buttons={["units", "machines"]}
+            activeButton={tableView}
+            setActiveButton={setTableView}
+          />
+        )}
         <div className="entity-details__tables" ref={tablesRef}>
           {tableView === "units" && (
             <>
