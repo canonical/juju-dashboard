@@ -31,7 +31,7 @@ export function generateLocalApplicationRows(
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     const rev = extractRevisionNumber(app.charm) || "-";
-    const store = app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub";
+    const store = app.charm.indexOf("local:") === 0 ? "Local" : "Charmhub";
     const scale = app.unitsCount;
     const version = app["workload-version"] || "-";
 
