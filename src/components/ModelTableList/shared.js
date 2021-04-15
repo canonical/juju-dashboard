@@ -140,7 +140,7 @@ export function getStatusValue(status, key) {
   @param {Object} model The model data.
   @returns {Object} The React element for the model cloud and region cell.
 */
-export const generateCloudCell = (model) => {
+export function generateCloudCell(model) {
   let provider = model?.info?.["provider-type"];
   let logo = null;
   switch (provider) {
@@ -194,16 +194,16 @@ export const generateCloudCell = (model) => {
   );
 
   return cloud;
-};
+}
 
 /**
   Returns the model cloud and region data formatted as {cloud}/{region}.
   @param {Object} model The model data
   @returns {String} The formatted cloud and region data.
 */
-export const generateCloudAndRegion = function (model) {
+export function generateCloudAndRegion(model) {
   return `${getStatusValue(model, "cloud-tag")}/${getStatusValue(
     model,
     "region"
   )}`;
-};
+}
