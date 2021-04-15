@@ -99,13 +99,15 @@ export default function Unit() {
       </div>
       <div className="entity-details__main u-overflow--scroll">
         <div className="slide-panel__tables">
-          <MainTable
-            headers={machineTableHeaders}
-            rows={machineRows}
-            className="entity-details__machines p-main-table"
-            sortable
-            emptyStateMsg={"There are no machines in this model"}
-          />
+          {modelStatusData.info["provider-type"] !== "kubernetes" && (
+            <MainTable
+              headers={machineTableHeaders}
+              rows={machineRows}
+              className="entity-details__machines p-main-table"
+              sortable
+              emptyStateMsg={"There are no machines in this model"}
+            />
+          )}
           <MainTable
             headers={localApplicationTableHeaders}
             rows={applicationRows}
