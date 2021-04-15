@@ -40,11 +40,11 @@ export const paths: Paths = {
   "/": { redirect: "/models" },
   "/models": { component: ModelsIndex },
   "/models/:userName/:modelName?": { component: Model },
-  "/models/:userName/:modelName/app/:appName?": { component: App },
-  "/models/:userName/:modelName/app/:appName/unit/:unitId?": {
+  "/models/:userName/:modelName?/app/:appName?": { component: App },
+  "/models/:userName/:modelName?/app/:appName/unit/:unitId?": {
     component: Unit,
   },
-  "/models/:userName/:modelName/machine/:machineId?": { component: Machine },
+  "/models/:userName/:modelName?/machine/:machineId?": { component: Machine },
   "/controllers": { component: ControllersIndex },
   "/settings": { component: Settings },
 };
