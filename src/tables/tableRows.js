@@ -65,7 +65,7 @@ export function generateLocalApplicationRows(
           content: rev,
           className: "u-align--right",
         },
-        { "data-test-column": "os", content: "Ubuntu" },
+        { "data-test-column": "os", content: app.series },
         { "data-test-column": "notes", content: "-" },
       ],
       sortData: {

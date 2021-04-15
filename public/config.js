@@ -3,15 +3,15 @@
 // eslint-disable-next-line no-unused-vars
 var jujuDashboardConfig = {
   // API host to allow app to connect and retrieve models
-  baseControllerURL: "jimm.jujucharms.com",
+  baseControllerURL: "localhost:17070",
   // Configurable base url to allow deploying to different paths.
   baseAppURL: "/",
   // If true then identity will be provided by a third party provider.
-  identityProviderAvailable: true,
+  identityProviderAvailable: false,
   // Is this application being rendered in Juju and not JAAS. This flag should
   // only be used for superficial updates like logos. Use feature detection
   // for other environment features.
-  isJuju: false,
+  isJuju: true,
   // Development flags below:
   // Show WebCli component if enabled for dev purposes, even if not natively supported.
   showWebCLI: false,
