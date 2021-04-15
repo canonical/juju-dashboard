@@ -245,7 +245,7 @@ export default function App(): JSX.Element {
                   className="entity-details__action-button"
                   hasIcon={true}
                   onClick={navigateActionLogs}
-                  data-test="run-action-button"
+                  data-test="show-action-logs"
                 >
                   <img
                     className="entity-details__action-button-row-icon"

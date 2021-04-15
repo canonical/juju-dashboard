@@ -41,6 +41,29 @@ describe("Entity Details App", () => {
     return wrapper;
   }
 
+  async function generateRoutableComponent() {
+    const store = mockStore(dataDump);
+    const history = createMemoryHistory({
+      initialEntries: [
+        "/models/user-island@external/canonical-kubernetes/app/etcd",
+      ],
+    });
+
+    const wrapper = mount(
+      <Provider store={store}>
+        <Router history={history}>
+          <TestRoute path="/models/:userName/:modelName?/app/:appName?">
+            <QueryParamProvider ReactRouterRoute={Route}>
+              <App />
+            </QueryParamProvider>
+          </TestRoute>
+        </Router>
+      </Provider>
+    );
+    await waitForComponentToPaint(wrapper);
+    return { wrapper, history };
+  }
+
   it("renders the info panel", async () => {
     const wrapper = await generateComponent();
     expect(wrapper.find("InfoPanel").exists()).toBe(true);
@@ -132,25 +155,7 @@ describe("Entity Details App", () => {
   });
 
   it("updates the url when units are selected and deselected", async () => {
-    const store = mockStore(dataDump);
-    const history = createMemoryHistory({
-      initialEntries: [
-        "/models/user-island@external/canonical-kubernetes/app/etcd",
-      ],
-    });
-
-    const wrapper = mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <TestRoute path="/models/:userName/:modelName?/app/:appName?">
-            <QueryParamProvider ReactRouterRoute={Route}>
-              <App />
-            </QueryParamProvider>
-          </TestRoute>
-        </Router>
-      </Provider>
-    );
-    await waitForComponentToPaint(wrapper);
+    const { wrapper, history } = await generateRoutableComponent();
 
     const findActionButton = () =>
       wrapper.find('button[data-test="run-action-button"]');
@@ -185,5 +190,12 @@ describe("Entity Details App", () => {
       panel: "execute-action",
       units: ["etcd/0", "etcd/1"],
     });
+  });
+
+  it("navigates to the actions log when button pressed", async () => {
+    const { wrapper, history } = await generateRoutableComponent();
+    wrapper.find('Button[data-test="show-action-logs"]').simulate("click", {});
+    await waitForComponentToPaint(wrapper);
+    expect(history.location.search).toBe("?activeView=action-logs");
   });
 });
