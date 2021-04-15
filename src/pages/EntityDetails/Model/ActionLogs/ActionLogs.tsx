@@ -11,8 +11,42 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 type ApplicationList = { [key: string]: any };
 
+type Operations = Operation[];
+
+type Operation = {
+  operation: string;
+  actions: Action[];
+};
+
+type TableRows = TableRow[];
+
+type TableRow = {
+  application: string;
+  id: string;
+  status: string;
+  taskId: string;
+  message: string;
+  completed: string;
+};
+
+// https://github.com/juju/js-libjuju/blob/master/api/facades/action-v6.ts#L27
+type Action = {
+  action: ActionData;
+  enqueued: string;
+  started: string;
+  completed: string;
+  status: string;
+  message: string;
+};
+
+type ActionData = {
+  tag: string;
+  receiver: string;
+  name: string;
+};
+
 export default function ActionLogs() {
-  const [operations, setOperations] = useState([]);
+  const [operations, setOperations] = useState<Operations>([]);
   const { modelName } = useParams<EntityDetailsRoute>();
   const appStore = useStore();
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
@@ -48,18 +82,58 @@ export default function ActionLogs() {
   }, [modelUUID]);
 
   const tableData = useMemo(() => {
-    // Group the operation data by application
-    return [
-      {
-        application: "glance",
-        id: "19/openstack-upgrade",
-        status: "running",
-        taskId: "21",
-        message: "openstack-upgrade",
-        completed: "2020-12-30 11:02:55",
-      },
-    ];
-    console.log(operations);
+    const rows: TableRows = [];
+    operations.forEach((operationData) => {
+      const operationId = operationData.operation.split("-")[1];
+      // The action name is being defined like this because the action name is
+      // only contained in the actions array and not on the operation level.
+      // Even though at the current time an operation is the same action
+      // performed across multiple units of the same application. I expect
+      // that the CLI may gain this functionality in the future and we'll have
+      // to update this code to display the correct action name.
+      let actionName = "";
+      operationData.actions.forEach((actionData, index) => {
+        actionName = actionData.action.name;
+        let defaultRow: TableRow = {
+          application: "-",
+          id: "-",
+          status: "-",
+          taskId: "",
+          message: "",
+          completed: "",
+        };
+        let newData = {};
+        if (index === 0) {
+          // If this is the first row then add the application row.
+          newData = {
+            application: actionData.action.receiver.split("-")[1],
+            id: `${operationId}/${actionName}`,
+            status: actionData.status,
+          };
+          rows.push({
+            ...defaultRow,
+            ...newData,
+          });
+        }
+        newData = {
+          application: actionData.action.receiver
+            .replace("unit-", "")
+            .split("-")
+            .join("/"),
+          id: "",
+          status: actionData.status,
+          taskId: actionData.action.tag.split("-")[1],
+          message: actionData.message,
+          completed: actionData.completed,
+        };
+
+        rows.push({
+          ...defaultRow,
+          ...newData,
+        });
+      });
+    });
+    return rows;
   }, [operations]);
 
   return (
