@@ -65,8 +65,17 @@ export function generateLocalApplicationRows(
           content: rev,
           className: "u-align--right",
         },
-        { "data-test-column": "os", content: app.series },
-        { "data-test-column": "notes", content: "-" },
+        {
+          "data-test-column": "os",
+          content: app.series,
+          className: "u-capitalise",
+        },
+        {
+          "data-test-column": "message",
+          content: app.status.info,
+          className: "u-truncate",
+          title: app.status.info,
+        },
       ],
       sortData: {
         app: key,
