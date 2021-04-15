@@ -197,6 +197,7 @@ export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
         {
           content: port,
           className: "u-align--right",
+          title: port,
         },
         {
           content: <span title={message}>{message}</span>,
