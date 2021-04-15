@@ -5,7 +5,12 @@ import {
   getModelStatusGroupData,
 } from "app/utils/utils";
 import { getGroupedByOwnerAndFilteredModelData } from "app/selectors";
-import { generateModelDetailsLink, getStatusValue } from "./shared";
+import {
+  generateModelDetailsLink,
+  getStatusValue,
+  generateCloudCell,
+  generateCloudAndRegion,
+} from "./shared";
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -58,10 +63,7 @@ export default function OwnerGroup({ filters }) {
       ownerModels.rows = [];
       modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
-        const cloud = `${getStatusValue(model, "region")}/${getStatusValue(
-          model,
-          "cloud-tag"
-        )}`;
+        const cloud = generateCloudCell(model);
         const credential = getStatusValue(model.info, "cloud-credential-tag");
         const controller = getStatusValue(model.info, "controllerName");
         const lastUpdated = getStatusValue(model.info, "status.since");
@@ -89,6 +91,8 @@ export default function OwnerGroup({ filters }) {
             {
               "data-test-column": "cloud",
               content: cloud,
+              className: "u-truncate",
+              title: generateCloudAndRegion(model),
             },
             {
               "data-test-column": "credential",
@@ -123,6 +127,7 @@ export default function OwnerGroup({ filters }) {
         headers={generateOwnerTableHeaders(owner, ownerModels.rows.length)}
         rows={ownerModels.rows}
         sortable
+        className="p-main-table"
       />
     );
   }
