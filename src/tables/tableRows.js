@@ -31,7 +31,7 @@ export function generateLocalApplicationRows(
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     const rev = extractRevisionNumber(app.charm) || "-";
-    const store = app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub";
+    const store = app.charm.indexOf("local:") === 0 ? "Local" : "Charmhub";
     const scale = app.unitsCount;
     const version = app["workload-version"] || "-";
 
@@ -65,8 +65,17 @@ export function generateLocalApplicationRows(
           content: rev,
           className: "u-align--right",
         },
-        { "data-test-column": "os", content: "Ubuntu" },
-        { "data-test-column": "notes", content: "-" },
+        {
+          "data-test-column": "os",
+          content: app.series,
+          className: "u-capitalise",
+        },
+        {
+          "data-test-column": "message",
+          content: app.status.info,
+          className: "u-truncate",
+          title: app.status.info,
+        },
       ],
       sortData: {
         app: key,
@@ -193,6 +202,7 @@ export function generateUnitRows(
         {
           content: port,
           className: "u-align--right",
+          title: port,
         },
         {
           content: <span title={message}>{message}</span>,
