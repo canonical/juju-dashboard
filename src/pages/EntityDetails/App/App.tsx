@@ -76,29 +76,41 @@ export default function App(): JSX.Element {
     [filteredModelStatusData, tableRowClick]
   );
 
+  const hideMachines =
+    modelStatusData?.info?.["provider-type"] === "kubernetes";
+
   const unitTableHeaders = useMemo(() => {
     const fieldID = "unit-list-select-all";
-    return generateSelectableUnitTableHeaders({
-      content: (
-        <label className="p-checkbox" htmlFor={fieldID}>
-          <Field
-            id={fieldID}
-            type="checkbox"
-            aria-labelledby="select-all-units"
-            className="p-checkbox__input"
-            name="selectAll"
-          />
-          <span className="p-checkbox__label" id="select-all-units"></span>
-        </label>
-      ),
-      sortKey: "",
-      className: "select-unit",
-    });
-  }, []);
+    return generateSelectableUnitTableHeaders(
+      {
+        content: (
+          <label className="p-checkbox" htmlFor={fieldID}>
+            <Field
+              id={fieldID}
+              type="checkbox"
+              aria-labelledby="select-all-units"
+              className="p-checkbox__input"
+              name="selectAll"
+            />
+            <span className="p-checkbox__label" id="select-all-units"></span>
+          </label>
+        ),
+        sortKey: "",
+        className: "select-unit",
+      },
+      hideMachines
+    );
+  }, [hideMachines]);
 
   const unitPanelRows = useMemo(
-    () => generateUnitRows(filteredModelStatusData, tableRowClick, true),
-    [filteredModelStatusData, tableRowClick]
+    () =>
+      generateUnitRows(
+        filteredModelStatusData,
+        tableRowClick,
+        true,
+        hideMachines
+      ),
+    [filteredModelStatusData, tableRowClick, hideMachines]
   );
 
   const [tableView, setTableView] = useQueryParam(
@@ -204,11 +216,13 @@ export default function App(): JSX.Element {
         </>
       </div>
       <div className="entity-details__main u-overflow--scroll">
-        <ButtonGroup
-          buttons={["units", "machines"]}
-          activeButton={tableView}
-          setActiveButton={setTableView}
-        />
+        {!hideMachines && (
+          <ButtonGroup
+            buttons={["units", "machines"]}
+            activeButton={tableView}
+            setActiveButton={setTableView}
+          />
+        )}
         <div className="entity-details__tables" ref={tablesRef}>
           {tableView === "units" && (
             <>
