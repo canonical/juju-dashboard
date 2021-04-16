@@ -77,7 +77,7 @@ export default function App(): JSX.Element {
   );
 
   const hideMachines =
-    modelStatusData?.info?.["provider-type"] !== "kubernetes";
+    modelStatusData?.info?.["provider-type"] === "kubernetes";
 
   const unitTableHeaders = useMemo(() => {
     const fieldID = "unit-list-select-all";
