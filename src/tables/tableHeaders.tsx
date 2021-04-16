@@ -12,12 +12,12 @@ type HeaderRow = {
 export const localApplicationTableHeaders: Header = [
   { content: "local apps", sortKey: "local-apps" },
   { content: "status", sortKey: "status" },
-  { content: "version", className: "u-align--right", sortKey: "version" },
+  { content: "version", sortKey: "version" },
   { content: "scale", className: "u-align--right", sortKey: "scale" },
   { content: "store", sortKey: "store" },
   { content: "rev", className: "u-align--right", sortKey: "rev" },
   { content: "os", sortKey: "os" },
-  { content: "notes", sortKey: "notes" },
+  { content: "message", sortKey: "message" },
 ];
 
 export const remoteApplicationTableHeaders: Header = [
@@ -39,9 +39,13 @@ export const unitTableHeaders: Header = [
 ];
 
 export const generateSelectableUnitTableHeaders = (
-  selectContent: HeaderRow
+  selectContent: HeaderRow,
+  removeMachines: boolean
 ): Header => {
-  const headers = cloneDeep(unitTableHeaders);
+  let headers = cloneDeep(unitTableHeaders);
+  if (removeMachines) {
+    headers = headers.filter((header) => !(header.sortKey === "machine"));
+  }
   headers.splice(0, 0, selectContent);
   return headers;
 };

@@ -185,6 +185,36 @@ const EntityDetails = ({ type, children, className = "" }) => {
     }
   };
 
+  const generateTabItems = () => {
+    let items = [
+      {
+        active: activeView === "apps",
+        label: "Applications",
+        onClick: (e) => handleNavClick(e, "apps"),
+      },
+      {
+        active: activeView === "integrations",
+        label: "Integrations",
+        onClick: (e) => handleNavClick(e, "integrations"),
+      },
+      {
+        active: activeView === "action-logs",
+        label: "Action Logs",
+        onClick: (e) => handleNavClick(e, "action-logs"),
+      },
+    ];
+
+    if (modelStatusData.info["provider-type"] !== "kubernetes") {
+      items.push({
+        active: activeView === "machines",
+        label: "Machines",
+        onClick: (e) => handleNavClick(e, "machines"),
+      });
+    }
+
+    return items;
+  };
+
   return (
     <BaseLayout className={className}>
       <Header>
@@ -192,30 +222,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
           <Breadcrumb />
           <div className="entity-details__view-selector">
             {modelStatusData && type === "model" && (
-              <Tabs
-                links={[
-                  {
-                    active: activeView === "apps",
-                    label: "Applications",
-                    onClick: (e) => handleNavClick(e, "apps"),
-                  },
-                  {
-                    active: activeView === "integrations",
-                    label: "Integrations",
-                    onClick: (e) => handleNavClick(e, "integrations"),
-                  },
-                  {
-                    active: activeView === "machines",
-                    label: "Machines",
-                    onClick: (e) => handleNavClick(e, "machines"),
-                  },
-                  {
-                    active: activeView === "action-logs",
-                    label: "Action Logs",
-                    onClick: (e) => handleNavClick(e, "action-logs"),
-                  },
-                ]}
-              />
+              <Tabs links={generateTabItems()} />
             )}
           </div>
         </div>

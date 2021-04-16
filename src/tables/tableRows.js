@@ -31,9 +31,9 @@ export function generateLocalApplicationRows(
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     const rev = extractRevisionNumber(app.charm) || "-";
-    const store = app.charm.indexOf("local:") === 0 ? "Local" : "CharmHub";
+    const store = app.charm.indexOf("local:") === 0 ? "Local" : "Charmhub";
     const scale = app.unitsCount;
-    const version = app.workloadVersion || "-";
+    const version = app["workload-version"] || "-";
 
     return {
       columns: [
@@ -50,7 +50,6 @@ export function generateLocalApplicationRows(
         {
           "data-test-column": "version",
           content: version,
-          className: "u-align--right",
         },
         {
           "data-test-column": "scale",
@@ -66,8 +65,17 @@ export function generateLocalApplicationRows(
           content: rev,
           className: "u-align--right",
         },
-        { "data-test-column": "os", content: "Ubuntu" },
-        { "data-test-column": "notes", content: "-" },
+        {
+          "data-test-column": "os",
+          content: app.series,
+          className: "u-capitalise",
+        },
+        {
+          "data-test-column": "message",
+          content: app.status.info,
+          className: "u-truncate",
+          title: app.status.info,
+        },
       ],
       sortData: {
         app: key,
@@ -151,7 +159,12 @@ export function generateRemoteApplicationRows(
   );
 }
 
-export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
+export function generateUnitRows(
+  modelStatusData,
+  tableRowClick,
+  showCheckbox,
+  hideMachines
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -167,7 +180,7 @@ export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
       const publicAddress = unit["public-address"] || "-";
       const port = unit?.["opened-ports"]?.join(" ") || "-";
       const message = unit["workload-status"].info || "-";
-      const columns = [
+      let columns = [
         {
           content: generateEntityIdentifier(
             applications[applicationName].charm
@@ -184,17 +197,22 @@ export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
           className: "u-capitalise",
         },
         { content: agent },
-        { content: unit.machine, className: "u-align--right" },
+        { content: unit.machine, className: "u-align--right", key: "machine" },
         { content: publicAddress },
         {
           content: port,
           className: "u-align--right",
+          title: port,
         },
         {
           content: <span title={message}>{message}</span>,
           className: "u-truncate",
         },
       ];
+
+      if (hideMachines) {
+        columns = columns.filter((column) => !(column.key === "machine"));
+      }
 
       if (showCheckbox) {
         const fieldID = `table-checkbox-${unitId}`;

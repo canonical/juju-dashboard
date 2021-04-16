@@ -9,7 +9,12 @@ import {
 
 import { getGroupedByStatusAndFilteredModelData } from "app/selectors";
 
-import { generateModelDetailsLink, getStatusValue } from "./shared";
+import {
+  generateModelDetailsLink,
+  getStatusValue,
+  generateCloudCell,
+  generateCloudAndRegion,
+} from "./shared";
 
 /**
   Generates the table headers for the supplied table label.
@@ -96,10 +101,7 @@ function generateModelTableDataByStatus(groupedModels) {
       if (model.info) {
         owner = extractOwnerName(model.info["owner-tag"]);
       }
-      const cloud = `${getStatusValue(model, "cloud-tag")}/${getStatusValue(
-        model,
-        "region"
-      )}`;
+      const cloud = generateCloudCell(model);
       const credential = getStatusValue(model.info, "cloud-credential-tag");
       const controller = getStatusValue(model.info, "controllerName");
       const lastUpdated = getStatusValue(model.info, "status.since");
@@ -122,6 +124,8 @@ function generateModelTableDataByStatus(groupedModels) {
           {
             "data-test-column": "cloud",
             content: cloud,
+            className: "u-truncate",
+            title: generateCloudAndRegion(model),
           },
           {
             "data-test-column": "credential",
@@ -174,6 +178,7 @@ export default function StatusGroup({ filters }) {
           rows={blockedRows}
           sortable
           emptyStateMsg={emptyStateMsg}
+          className="p-main-table"
         />
       ) : null}
       {alertRows.length ? (
@@ -182,6 +187,7 @@ export default function StatusGroup({ filters }) {
           rows={alertRows}
           sortable
           emptyStateMsg={emptyStateMsg}
+          className="p-main-table"
         />
       ) : null}
       {runningRows.length ? (
@@ -190,6 +196,7 @@ export default function StatusGroup({ filters }) {
           rows={runningRows}
           sortable
           emptyStateMsg={emptyStateMsg}
+          className="p-main-table"
         />
       ) : null}
     </div>
