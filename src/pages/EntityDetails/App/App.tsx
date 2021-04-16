@@ -216,7 +216,7 @@ export default function App(): JSX.Element {
         </>
       </div>
       <div className="entity-details__main u-overflow--scroll">
-        {modelStatusData?.info?.["provider-type"] !== "kubernetes" && (
+        {hideMachines && (
           <ButtonGroup
             buttons={["units", "machines"]}
             activeButton={tableView}
