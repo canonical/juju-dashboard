@@ -39,9 +39,13 @@ export const unitTableHeaders: Header = [
 ];
 
 export const generateSelectableUnitTableHeaders = (
-  selectContent: HeaderRow
+  selectContent: HeaderRow,
+  removeMachines: boolean
 ): Header => {
   const headers = cloneDeep(unitTableHeaders);
+  if (removeMachines) {
+    headers.splice(3, 1);
+  }
   headers.splice(0, 0, selectContent);
   return headers;
 };
