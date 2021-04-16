@@ -150,7 +150,12 @@ export function generateRemoteApplicationRows(
   );
 }
 
-export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
+export function generateUnitRows(
+  modelStatusData,
+  tableRowClick,
+  showCheckbox,
+  hideMachines
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -166,7 +171,7 @@ export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
       const publicAddress = unit["public-address"] || "-";
       const port = unit?.["opened-ports"]?.join(" ") || "-";
       const message = unit["workload-status"].info || "-";
-      const columns = [
+      let columns = [
         {
           content: generateEntityIdentifier(
             applications[applicationName].charm
@@ -194,6 +199,10 @@ export function generateUnitRows(modelStatusData, tableRowClick, showCheckbox) {
           className: "u-truncate",
         },
       ];
+
+      if (hideMachines) {
+        columns.splice(3, 1);
+      }
 
       if (showCheckbox) {
         const fieldID = `table-checkbox-${unitId}`;
