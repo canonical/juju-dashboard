@@ -42,9 +42,9 @@ export const generateSelectableUnitTableHeaders = (
   selectContent: HeaderRow,
   removeMachines: boolean
 ): Header => {
-  const headers = cloneDeep(unitTableHeaders);
+  let headers = cloneDeep(unitTableHeaders);
   if (removeMachines) {
-    headers.splice(3, 1);
+    headers = headers.filter((header) => !(header.sortKey === "machine"));
   }
   headers.splice(0, 0, selectContent);
   return headers;

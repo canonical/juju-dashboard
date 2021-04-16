@@ -188,7 +188,7 @@ export function generateUnitRows(
           className: "u-capitalise",
         },
         { content: agent },
-        { content: unit.machine, className: "u-align--right" },
+        { content: unit.machine, className: "u-align--right", key: "machine" },
         { content: publicAddress },
         {
           content: port,
@@ -201,7 +201,7 @@ export function generateUnitRows(
       ];
 
       if (hideMachines) {
-        columns.splice(3, 1);
+        columns = columns.filter((column) => !(column.key === "machine"));
       }
 
       if (showCheckbox) {

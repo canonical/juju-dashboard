@@ -76,7 +76,8 @@ export default function App(): JSX.Element {
     [filteredModelStatusData, tableRowClick]
   );
 
-  const hideMachines = modelStatusData.info["provider-type"] === "kubernetes";
+  const hideMachines =
+    modelStatusData?.info?.["provider-type"] === "kubernetes";
 
   const unitTableHeaders = useMemo(() => {
     const fieldID = "unit-list-select-all";
@@ -215,7 +216,7 @@ export default function App(): JSX.Element {
         </>
       </div>
       <div className="entity-details__main u-overflow--scroll">
-        {modelStatusData.info["provider-type"] !== "kubernetes" && (
+        {modelStatusData?.info?.["provider-type"] !== "kubernetes" && (
           <ButtonGroup
             buttons={["units", "machines"]}
             activeButton={tableView}
