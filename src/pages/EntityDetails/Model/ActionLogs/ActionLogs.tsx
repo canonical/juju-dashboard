@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import ModularTable from "@canonical/react-components/dist/components/ModularTable/ModularTable";
 
@@ -46,9 +46,21 @@ type ActionData = {
   name: string;
 };
 
+function generateLinkToApp(
+  appName: string,
+  userName: string,
+  modelName: string
+) {
+  return (
+    <Link to={`/models/${userName}/${modelName}/app/${appName}`}>
+      {appName}
+    </Link>
+  );
+}
+
 export default function ActionLogs() {
   const [operations, setOperations] = useState<Operations>([]);
-  const { modelName } = useParams<EntityDetailsRoute>();
+  const { userName, modelName } = useParams<EntityDetailsRoute>();
   const appStore = useStore();
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   // Selectors.js is not typescript yet and it complains about the return value
@@ -112,7 +124,7 @@ export default function ActionLogs() {
             application: (
               <>
                 {generateIconImg(appName, charm)}
-                {appName}
+                {generateLinkToApp(appName, userName, modelName)}
               </>
             ),
             id: `${operationId}/${actionName}`,
