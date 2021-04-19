@@ -129,8 +129,7 @@ export default function ActionLogs() {
             ),
             id: `${operationId}/${actionName}`,
             status: generateStatusElement(
-              // actionData.status,
-              "running",
+              actionData.status,
               undefined,
               true,
               true
