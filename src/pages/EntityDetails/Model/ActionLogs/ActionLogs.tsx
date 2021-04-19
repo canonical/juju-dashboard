@@ -136,10 +136,17 @@ export default function ActionLogs() {
           });
         }
         newData = {
-          application: actionData.action.receiver
-            .replace("unit-", "")
-            .split("-")
-            .join("/"),
+          application: (
+            <>
+              <span className="entity-details__unit-indent">└</span>
+              <span>
+                {actionData.action.receiver
+                  .replace("unit-", "")
+                  .split("-")
+                  .join("/")}
+              </span>
+            </>
+          ),
           id: "",
           status: actionData.status,
           taskId: actionData.action.tag.split("-")[1],
@@ -157,37 +164,39 @@ export default function ActionLogs() {
   }, [operations, modelStatusData.applications, userName, modelName]);
 
   return (
-    <ModularTable
-      columns={useMemo(
-        () => [
-          {
-            Header: "application",
-            accessor: "application",
-          },
-          {
-            Header: "operation id/name",
-            accessor: "id",
-          },
-          {
-            Header: "status",
-            accessor: "status",
-          },
-          {
-            Header: "task id",
-            accessor: "taskId",
-          },
-          {
-            Header: "action message",
-            accessor: "message",
-          },
-          {
-            Header: "completion time",
-            accessor: "completed",
-          },
-        ],
-        []
-      )}
-      data={tableData}
-    />
+    <div className="entity-details__action-logs">
+      <ModularTable
+        columns={useMemo(
+          () => [
+            {
+              Header: "application",
+              accessor: "application",
+            },
+            {
+              Header: "operation id/name",
+              accessor: "id",
+            },
+            {
+              Header: "status",
+              accessor: "status",
+            },
+            {
+              Header: "task id",
+              accessor: "taskId",
+            },
+            {
+              Header: "action message",
+              accessor: "message",
+            },
+            {
+              Header: "completion time",
+              accessor: "completed",
+            },
+          ],
+          []
+        )}
+        data={tableData}
+      />
+    </div>
   );
 }

@@ -401,6 +401,13 @@
   }
 }
 
+@mixin entity-details__action-logs {
+  .entity-details__unit-indent {
+    margin-left: 0.3rem;
+    margin-right: 0.75rem;
+  }
+}
+
 @include entity-details-layout;
 @include entity-details-header;
 @include entity-details-title;
@@ -410,6 +417,7 @@
 @include entity-details__button-group;
 @include entity-icons;
 @include entity-details__action-button-row;
+@include entity-details__action-logs;
 
 .SidebarChannelNavigator {
   display: none;
