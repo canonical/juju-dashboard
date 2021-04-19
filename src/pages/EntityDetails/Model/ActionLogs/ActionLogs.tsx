@@ -6,6 +6,7 @@ import ModularTable from "@canonical/react-components/dist/components/ModularTab
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { queryOperationsList } from "juju/index";
+import { generateIconImg } from "app/utils/utils";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
@@ -105,8 +106,15 @@ export default function ActionLogs() {
         let newData = {};
         if (index === 0) {
           // If this is the first row then add the application row.
+          const appName = actionData.action.receiver.split("-")[1];
+          const charm = modelStatusData.applications[appName].charm;
           newData = {
-            application: actionData.action.receiver.split("-")[1],
+            application: (
+              <>
+                {generateIconImg(appName, charm)}
+                {appName}
+              </>
+            ),
             id: `${operationId}/${actionName}`,
             status: actionData.status,
           };
@@ -134,7 +142,7 @@ export default function ActionLogs() {
       });
     });
     return rows;
-  }, [operations]);
+  }, [operations, modelStatusData.applications]);
 
   return (
     <ModularTable
