@@ -1,0 +1,39 @@
+{
+  "request-id": 3,
+  "response": {
+    "results": [
+      {
+        "operation": "operation-1",
+        "summary": "list-disks run on unit-ceph/0,unit-ceph/1",
+        "enqueued": "2021-04-14T20:27:56Z",
+        "started": "2021-04-14T20:27:57Z",
+        "completed": "2021-04-14T20:27:57Z",
+        "status": "completed",
+        "actions": [
+          {
+            "action": {
+              "tag": "action-2",
+              "receiver": "unit-ceph-0",
+              "name": "list-disks"
+            },
+            "enqueued": "2021-04-14T20:27:56Z",
+            "started": "2021-04-14T20:27:57Z",
+            "completed": "2021-04-14T20:27:57Z",
+            "status": "completed"
+          },
+          {
+            "action": {
+              "tag": "action-3",
+              "receiver": "unit-ceph-1",
+              "name": "list-disks"
+            },
+            "enqueued": "2021-04-14T20:27:57Z",
+            "started": "2021-04-14T20:27:57Z",
+            "completed": "2021-04-14T20:27:57Z",
+            "status": "completed"
+          }
+        ]
+      }
+    ]
+  }
+}
