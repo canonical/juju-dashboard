@@ -6,7 +6,7 @@ import ModularTable from "@canonical/react-components/dist/components/ModularTab
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { queryOperationsList } from "juju/index";
-import { generateIconImg } from "app/utils/utils";
+import { generateIconImg, generateStatusElement } from "app/utils/utils";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
@@ -128,7 +128,13 @@ export default function ActionLogs() {
               </>
             ),
             id: `${operationId}/${actionName}`,
-            status: actionData.status,
+            status: generateStatusElement(
+              // actionData.status,
+              "running",
+              undefined,
+              true,
+              true
+            ),
           };
           rows.push({
             ...defaultRow,
@@ -148,7 +154,12 @@ export default function ActionLogs() {
             </>
           ),
           id: "",
-          status: actionData.status,
+          status: generateStatusElement(
+            actionData.status,
+            undefined,
+            true,
+            true
+          ),
           taskId: actionData.action.tag.split("-")[1],
           message: actionData.message || "-",
           completed: actionData.completed,
