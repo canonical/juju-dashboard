@@ -45,9 +45,9 @@ describe("Action Logs", () => {
   it("requests the action logs data on load", async () => {
     const wrapper = await generateComponent();
     const expected = [
-      ["ceph", "1/list-disks", "completed", "", "", ""],
-      ["ceph/0", "", "completed", "2", "", "2021-04-14T20:27:57Z"],
-      ["ceph/1", "", "completed", "3", "", "2021-04-14T20:27:57Z"],
+      ["easyrsa", "1/list-disks", "completed", "", "", ""],
+      ["easyrsa/0", "", "completed", "2", "", "2021-04-14T20:27:57Z"],
+      ["easyrsa/1", "", "completed", "3", "", "2021-04-14T20:27:57Z"],
     ];
     const result = [];
     wrapper.find("tbody TableRow").forEach((row, rowIndex) => {

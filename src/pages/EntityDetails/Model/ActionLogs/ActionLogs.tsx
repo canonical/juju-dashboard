@@ -154,7 +154,7 @@ export default function ActionLogs() {
       });
     });
     return rows;
-  }, [operations, modelStatusData.applications]);
+  }, [operations, modelStatusData.applications, userName, modelName]);
 
   return (
     <ModularTable
