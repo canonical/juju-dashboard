@@ -150,7 +150,7 @@ export default function ActionLogs() {
           id: "",
           status: actionData.status,
           taskId: actionData.action.tag.split("-")[1],
-          message: actionData.message || "",
+          message: actionData.message || "-",
           completed: actionData.completed,
         };
 
