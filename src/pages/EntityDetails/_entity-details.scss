@@ -383,8 +383,8 @@
 
 @mixin entity-details__action-button-row {
   .entity-details__action-button-row {
-    border-bottom: 1px solid $color-mid-x-light;
-    border-top: 1px solid $color-mid-x-light;
+    border-bottom: 1px solid $color-mid-light;
+    border-top: 1px solid $color-mid-light;
 
     &-icon {
       margin-bottom: -0.15rem;
@@ -394,6 +394,17 @@
     .entity-details__action-button {
       margin: 0.3rem 0;
     }
+
+    .entity-details__action-button-divider {
+      border-right: 1px solid $color-mid-light;
+    }
+  }
+}
+
+@mixin entity-details__action-logs {
+  .entity-details__unit-indent {
+    margin-left: 0.3rem;
+    margin-right: 0.75rem;
   }
 }
 
@@ -406,6 +417,7 @@
 @include entity-details__button-group;
 @include entity-icons;
 @include entity-details__action-button-row;
+@include entity-details__action-logs;
 
 .SidebarChannelNavigator {
   display: none;

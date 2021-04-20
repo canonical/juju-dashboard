@@ -71,6 +71,10 @@ describe("Model", () => {
     expect(
       wrapper.find(".entity-details__main > .entity-details__apps").length
     ).toBe(1);
+    wrapper
+      .find(".p-tabs__link[data-test='tab-link-Action Logs']")
+      .simulate("click");
+    expect(wrapper.find("ActionLogs").length).toBe(1);
   });
 
   it("renders the details pane for models shared-with-me", () => {

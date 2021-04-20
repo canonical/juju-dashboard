@@ -41,13 +41,28 @@ export function generateEntityIdentifier(
   );
 }
 
-export const generateStatusElement = (status, count, useIcon = true) => {
+export const generateStatusElement = (
+  status,
+  count,
+  useIcon = true,
+  actionsLogs = false
+) => {
   let statusClass = status ? `is-${status.toLowerCase()}` : "";
   let countValue = "";
   if (count !== undefined) {
     countValue = ` (${count})`;
   }
   const className = useIcon ? "status-icon " + statusClass : "";
+  // ActionLogs uses a spinner icon if 'running'
+  if (actionsLogs && statusClass === "is-running") {
+    return (
+      <span className="status-icon is-spinner">
+        <i className="p-icon--spinner u-animation--spin"></i>
+        {status}
+      </span>
+    );
+  }
+
   return (
     <span className={className}>
       {status}

@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { Formik, Field } from "formik";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import {
   useQueryParam,
   useQueryParams,
@@ -39,6 +39,7 @@ import {
 } from "tables/tableHeaders";
 
 import runActionImage from "static/images/run-action-icon.svg";
+import actionLogsImage from "static/images/action-logs-icon.svg";
 
 import { renderCounts } from "../counts";
 
@@ -48,7 +49,12 @@ type FormData = {
 };
 
 export default function App(): JSX.Element {
-  const { appName: entity } = useParams<EntityDetailsRoute>();
+  const history = useHistory();
+  const {
+    appName: entity,
+    userName,
+    modelName,
+  } = useParams<EntityDetailsRoute>();
 
   const [enableActionButtonRow, setEnableActionButtonRow] = useState<boolean>(
     false
@@ -151,6 +157,10 @@ export default function App(): JSX.Element {
     setPanel({ panel: "execute-action", units: selectedUnits.current });
   };
 
+  const navigateActionLogs = () => {
+    history.push(`/models/${userName}/${modelName}?activeView=action-logs`);
+  };
+
   const onFormChange = (formData: FormData) => {
     if (!setFieldsValues.current) return;
     const unitList = Object.keys(app.units);
@@ -242,6 +252,21 @@ export default function App(): JSX.Element {
                     alt=""
                   />
                   Run action
+                </Button>
+                <span className="entity-details__action-button-divider"></span>
+                <Button
+                  appearance="base"
+                  className="entity-details__action-button"
+                  hasIcon={true}
+                  onClick={navigateActionLogs}
+                  data-test="show-action-logs"
+                >
+                  <img
+                    className="entity-details__action-button-row-icon"
+                    src={actionLogsImage}
+                    alt=""
+                  />
+                  View Action Logs
                 </Button>
               </div>
               <Formik

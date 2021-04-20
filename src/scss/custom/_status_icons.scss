@@ -11,6 +11,19 @@
     top: -6px;
   }
 
+  &.is-spinner::before {
+    content: none;
+  }
+
+  &.is-spinner {
+    padding-left: 0;
+
+    .p-icon--spinner {
+      margin-right: 0.5rem;
+    }
+  }
+
+  &.is-failed,
   &.is-provisioning,
   &.is-down,
   &.is-error,
@@ -37,6 +50,7 @@
     }
   }
 
+  &.is-completed,
   &.is-running,
   &.is-joined,
   &.is-active {

@@ -29,6 +29,7 @@ import ContentReveal from "components/ContentReveal/ContentReveal";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 import EntityInfo from "components/EntityInfo/EntityInfo";
+import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 
 import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
@@ -47,6 +48,7 @@ const shouldShow = (segment, activeView) => {
     case "units":
     case "machines":
     case "integrations":
+    case "action-logs":
       if (segment === "relations-title") {
         return true;
       }
@@ -338,6 +340,7 @@ const Model = () => {
             )}
           </>
         )}
+        {shouldShow("action-logs", query.activeView) && <ActionLogs />}
       </div>
     </EntityDetails>
   );

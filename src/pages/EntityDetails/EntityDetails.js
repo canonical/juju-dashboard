@@ -43,7 +43,7 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
   }
 }
 
-const EntityDetails = ({ type, children, className }) => {
+const EntityDetails = ({ type, children, className = "" }) => {
   const modelStatusData = useModelStatus();
   const { userName, modelName } = useParams();
   const history = useHistory();
@@ -196,6 +196,11 @@ const EntityDetails = ({ type, children, className }) => {
         active: activeView === "integrations",
         label: "Integrations",
         onClick: (e) => handleNavClick(e, "integrations"),
+      },
+      {
+        active: activeView === "action-logs",
+        label: "Action Logs",
+        onClick: (e) => handleNavClick(e, "action-logs"),
       },
     ];
 
