@@ -282,7 +282,7 @@ export default function App(): JSX.Element {
                   <MainTable
                     headers={unitTableHeaders}
                     rows={unitPanelRows}
-                    className="entity-details__units p-main-table panel__table"
+                    className="entity-details__units p-main-table panel__table has-checkbox"
                     sortable
                     emptyStateMsg={"There are no units in this model"}
                     data-test="units-table"
