@@ -85,11 +85,11 @@ export default function Unit() {
   );
 
   const UnitEntityData = {
-    charm: app.charm || "-",
+    charm: app?.charm || "-",
     os: "-",
-    revision: extractRevisionNumber(app.charm) || "-",
-    version: app["workload-version"] || "-",
-    info: app.status.info,
+    revision: app?.charm ? extractRevisionNumber(app?.charm) : "-",
+    version: app?.["workload-version"] || "-",
+    info: app?.status.info,
     provider: modelStatusData?.info?.["provider-type"],
   };
 
@@ -101,7 +101,7 @@ export default function Unit() {
       </div>
       <div className="entity-details__main u-overflow--scroll">
         <div className="slide-panel__tables">
-          {modelStatusData.info["provider-type"] !== "kubernetes" && (
+          {modelStatusData?.info["provider-type"] !== "kubernetes" && (
             <MainTable
               headers={machineTableHeaders}
               rows={machineRows}
