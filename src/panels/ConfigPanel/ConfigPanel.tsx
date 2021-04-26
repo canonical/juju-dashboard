@@ -308,7 +308,7 @@ export default function ConfigPanel({
                         }
                       )}
                       onClick={handleSubmit}
-                      disabled={!enableSave}
+                      disabled={!enableSave || savingConfig}
                     >
                       {!savingConfig ? (
                         "Save and apply"
