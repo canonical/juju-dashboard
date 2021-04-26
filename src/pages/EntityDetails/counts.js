@@ -25,22 +25,28 @@ const generateSecondaryCounts = (modelStatusData, segment, selector) =>
     return incrementCounts(status, counts);
   }, {});
 
-const generateUnitSecondaryCounts = (modelStatusData) => {
+const generateUnitSecondaryCounts = (application) => {
   const counts = {};
-  let totalUnits = 0;
-  const applications = modelStatusData.applications;
-  Object.keys(applications).forEach((applicationName) => {
-    const units = applications[applicationName].units || [];
-    Object.keys(units).forEach((unitId) => {
-      const status = units[unitId]["agent-status"].status;
-      totalUnits += 1;
-      return incrementCounts(status, counts);
-    });
+  const units = application.units || [];
+  Object.keys(units).forEach((unitId) => {
+    const status = units[unitId]["agent-status"].status;
+    return incrementCounts(status, counts);
   });
-  return [counts, totalUnits];
+  return counts;
 };
 
-export const renderCounts = (countType, modelStatusData) => {
+/**
+  Generates a list of counts from the modelStatusData.
+  @param {String} countType The type of count to generate
+  @param {Object} modelStatusData The modelStatusData from the redux store.
+  @param {String} filterBy The value to filter the counts by. ex) "grafana" when
+    you only want to view the unit counts for grafana.
+*/
+export const renderCounts = (
+  countType,
+  modelStatusData,
+  filterBy = undefined
+) => {
   if (!modelStatusData) return null;
   let chips = null;
   switch (countType) {
@@ -52,7 +58,9 @@ export const renderCounts = (countType, modelStatusData) => {
       );
       break;
     case "units":
-      [chips] = generateUnitSecondaryCounts(modelStatusData);
+      chips = generateUnitSecondaryCounts(
+        modelStatusData?.applications?.[filterBy]
+      );
       break;
     case "machines":
       chips = generateSecondaryCounts(

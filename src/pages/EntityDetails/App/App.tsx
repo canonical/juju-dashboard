@@ -146,7 +146,7 @@ export default function App(): JSX.Element {
     provider: modelStatusData?.info?.["provider-type"],
   };
 
-  const unitChips = renderCounts("units", modelStatusData);
+  const unitChips = renderCounts("units", modelStatusData, entity);
   const machineChips = renderCounts("machines", modelStatusData);
 
   const [panel, setPanel] = useQueryParams({
