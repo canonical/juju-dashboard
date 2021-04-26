@@ -163,7 +163,9 @@ export default function App(): JSX.Element {
 
   const onFormChange = (formData: FormData) => {
     if (!setFieldsValues.current) return;
-    const unitList = Object.keys(app.units);
+    // If the app is a subordinate and has not been related to any other apps
+    // then its unit list will be `null`.
+    const unitList = app.units ? Object.keys(app.units) : [];
 
     // Handle the selectAll checkbox interactions.
     if (selectAll.current && !formData.selectAll) {
