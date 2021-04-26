@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { MemoryRouter, Router, Route } from "react-router";
 import { QueryParamProvider } from "use-query-params";
 import { createMemoryHistory } from "history";
+import cloneDeep from "clone-deep";
 
 import TestRoute from "components/Routes/TestRoute";
 
@@ -11,7 +12,6 @@ import { waitForComponentToPaint } from "testing/utils";
 import dataDump from "testing/complete-redux-store-dump";
 
 import App from "./App";
-import cloneDeep from "clone-deep";
 
 const mockStore = configureStore([]);
 
