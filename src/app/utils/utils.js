@@ -1,42 +1,17 @@
-import { URL } from "@canonical/jaaslib/lib/urls";
-
 import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 
-export function generateEntityIdentifier(
-  charmId,
-  name,
-  subordinate,
-  disableLink = false
-) {
+export function generateEntityIdentifier(charmId, name, subordinate) {
   if (!charmId) {
     return null;
-  }
-  let charmStorePath = "";
-  try {
-    charmStorePath = URL.fromAnyString(charmId).toString().replace("cs:", "");
-  } catch (e) {
-    console.error("unable to parse charmstore path", e);
   }
 
   return (
     <div className="entity-name">
       {subordinate && <span className="subordinate"></span>}
       {charmId && generateIconImg(name, charmId)}
-      {/* Ensure app is not a local charm or disable link is true */}
-      {charmId.includes("cs:") && !disableLink ? (
-        <a
-          data-test="app-link"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`https://www.jaas.ai/${charmStorePath}`}
-        >
-          {name}
-        </a>
-      ) : (
-        name
-      )}
+      {name}
     </div>
   );
 }
