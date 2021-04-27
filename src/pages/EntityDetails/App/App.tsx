@@ -146,7 +146,7 @@ export default function App(): JSX.Element {
     provider: modelStatusData?.info?.["provider-type"],
   };
 
-  const unitChips = renderCounts("units", modelStatusData);
+  const unitChips = renderCounts("units", modelStatusData, entity);
   const machineChips = renderCounts("machines", modelStatusData);
 
   const [panel, setPanel] = useQueryParams({
@@ -163,7 +163,9 @@ export default function App(): JSX.Element {
 
   const onFormChange = (formData: FormData) => {
     if (!setFieldsValues.current) return;
-    const unitList = Object.keys(app.units);
+    // If the app is a subordinate and has not been related to any other apps
+    // then its unit list will be `null`.
+    const unitList = app.units ? Object.keys(app.units) : [];
 
     // Handle the selectAll checkbox interactions.
     if (selectAll.current && !formData.selectAll) {
@@ -280,7 +282,7 @@ export default function App(): JSX.Element {
                   <MainTable
                     headers={unitTableHeaders}
                     rows={unitPanelRows}
-                    className="entity-details__units p-main-table panel__table"
+                    className="entity-details__units p-main-table panel__table has-checkbox"
                     sortable
                     emptyStateMsg={"There are no units in this model"}
                     data-test="units-table"

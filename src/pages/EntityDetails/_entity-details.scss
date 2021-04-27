@@ -245,7 +245,7 @@
     }
   }
 
-  .entity-details__units {
+  .entity-details__units.has-checkbox {
     th,
     td {
       &:nth-child(1) {

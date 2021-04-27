@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { MemoryRouter, Router, Route } from "react-router";
 import { QueryParamProvider } from "use-query-params";
 import { createMemoryHistory } from "history";
+import cloneDeep from "clone-deep";
 
 import TestRoute from "components/Routes/TestRoute";
 
@@ -20,8 +21,8 @@ jest.mock("components/Topology/Topology", () => {
 });
 
 describe("Entity Details App", () => {
-  async function generateComponent() {
-    const store = mockStore(dataDump);
+  async function generateComponent(data = dataDump) {
+    const store = mockStore(data);
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter
@@ -197,5 +198,16 @@ describe("Entity Details App", () => {
     wrapper.find('Button[data-test="show-action-logs"]').simulate("click", {});
     await waitForComponentToPaint(wrapper);
     expect(history.location.search).toBe("?activeView=action-logs");
+  });
+
+  it("does not fail if a subordiante is not related to another application", async () => {
+    const tweakedData = cloneDeep(dataDump);
+    tweakedData.juju.modelData[
+      "e1e81a64-3385-4779-8643-05e3d5fake23"
+    ].applications.etcd.units = null;
+    const wrapper = await generateComponent(tweakedData);
+    expect(wrapper.find("MainTable caption").text()).toBe(
+      "There are no units in this model"
+    );
   });
 });
