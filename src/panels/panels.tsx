@@ -4,6 +4,7 @@ import useEventListener from "hooks/useEventListener";
 
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import RegisterController from "panels/RegisterController/RegisterController";
+import ShareModel from "panels/ShareModelPanel/ShareModel";
 
 import "./_panels.scss";
 
@@ -32,6 +33,8 @@ export default function Panels() {
         return <RegisterController />;
       case "execute-action":
         return <ActionsPanel />;
+      case "share-model":
+        return <ShareModel />;
       default:
         return null;
     }

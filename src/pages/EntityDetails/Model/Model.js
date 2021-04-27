@@ -1,6 +1,11 @@
 import { useMemo, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
-import { useQueryParams, StringParam, withDefault } from "use-query-params";
+import {
+  useQueryParams,
+  useQueryParam,
+  StringParam,
+  withDefault,
+} from "use-query-params";
 import { useHistory, useParams } from "react-router-dom";
 import { pluralize, extractCloudName } from "app/utils/utils";
 
@@ -240,10 +245,20 @@ const Model = () => {
     appOffersTableLength,
   ]);
 
+  const setPanelQs = useQueryParam("panel", StringParam)[1];
+
   return (
     <EntityDetails type="model">
       <div>
         <InfoPanel />
+        <div className="entity-details__actions">
+          <button
+            className="entity-details__action-button"
+            onClick={() => setPanelQs("share-model")}
+          >
+            <i className="p-icon--share"></i>Share model
+          </button>
+        </div>
         {modelStatusData && <EntityInfo data={ModelEntityData} />}
       </div>
       <div className="entity-details__main u-overflow--scroll">
