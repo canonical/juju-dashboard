@@ -252,9 +252,11 @@ export const generateIconPath = (charmId) => {
     return `https://api.jujucharms.com/charmstore/v5/${charmId}/icon.svg`;
   }
   if (charmId.indexOf("ch:") === 0) {
-    // XXX This is a temporary fix until charmhub.io can provide us with an
-    // icon endpoint.
-    return defaultCharmIcon;
+    // Regex explanation:
+    // "ch:amd64/xenial/content-cache-425".match(/\/(.+)\/(.+)-\d+/)
+    // Array(3) [ "/xenial/content-cache-425", "xenial", "content-cache" ]
+    const charmName = charmId.match(/\/(.+)\/(.+)-\d+/)[2];
+    return `https://charmhub.io/${charmName}/icon`;
   }
   return "";
 };
