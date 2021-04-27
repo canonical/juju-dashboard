@@ -5,17 +5,17 @@ import cloneDeep from "clone-deep";
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 
 export function generateEntityIdentifier(
-  namespace,
+  charmId,
   name,
   subordinate,
   disableLink = false
 ) {
-  if (!namespace) {
+  if (!charmId) {
     return null;
   }
   let charmStorePath = "";
   try {
-    charmStorePath = URL.fromAnyString(namespace).toString().replace("cs:", "");
+    charmStorePath = URL.fromAnyString(charmId).toString().replace("cs:", "");
   } catch (e) {
     console.error("unable to parse charmstore path", e);
   }
@@ -23,9 +23,9 @@ export function generateEntityIdentifier(
   return (
     <div className="entity-name">
       {subordinate && <span className="subordinate"></span>}
-      {namespace && generateIconImg(name, namespace)}
+      {charmId && generateIconImg(name, charmId)}
       {/* Ensure app is not a local charm or disable link is true */}
-      {namespace.includes("cs:") && !disableLink ? (
+      {charmId.includes("cs:") && !disableLink ? (
         <a
           data-test="app-link"
           target="_blank"
@@ -265,16 +265,16 @@ export const extractRevisionNumber = (charmName) => charmName.split("-").pop();
 
 /**
   Returns a link to the charm icon for the provided charm name.
-  @param {String} namespace The fully qualified charm name.
+  @param {String} charmId The fully qualified charm name.
   @returns {String} The link to the charm icon.
 */
-export const generateIconPath = (namespace) => {
-  if (namespace.indexOf("local:") === 0) {
+export const generateIconPath = (charmId) => {
+  if (charmId.indexOf("local:") === 0) {
     return defaultCharmIcon;
   }
-  if (namespace.indexOf("cs:") === 0) {
-    namespace = namespace.replace("cs:", "");
-    return `https://api.jujucharms.com/charmstore/v5/${namespace}/icon.svg`;
+  if (charmId.indexOf("cs:") === 0) {
+    charmId = charmId.replace("cs:", "");
+    return `https://api.jujucharms.com/charmstore/v5/${charmId}/icon.svg`;
   }
   return "";
 };
@@ -396,10 +396,10 @@ export const extractRelationEndpoints = (relation) => {
   return endpoints;
 };
 
-export const generateIconImg = (name, namespace) => {
+export const generateIconImg = (name, charmId) => {
   let iconSrc = defaultCharmIcon;
-  if (namespace.indexOf("local:") !== 0) {
-    iconSrc = generateIconPath(namespace);
+  if (charmId.indexOf("local:") !== 0) {
+    iconSrc = generateIconPath(charmId);
   }
   return (
     <img
