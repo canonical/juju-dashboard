@@ -251,6 +251,11 @@ export const generateIconPath = (charmId) => {
     charmId = charmId.replace("cs:", "");
     return `https://api.jujucharms.com/charmstore/v5/${charmId}/icon.svg`;
   }
+  if (charmId.indexOf("ch:") === 0) {
+    // XXX This is a temporary fix until charmhub.io can provide us with an
+    // icon endpoint.
+    return defaultCharmIcon;
+  }
   return "";
 };
 
