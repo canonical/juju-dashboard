@@ -29,8 +29,10 @@ const generateUnitSecondaryCounts = (application) => {
   const counts = {};
   const units = application.units || [];
   Object.keys(units).forEach((unitId) => {
-    const status = units[unitId]["agent-status"].status;
-    return incrementCounts(status, counts);
+    const status = units[unitId]?.["agent-status"]?.status;
+    if (status) {
+      return incrementCounts(status, counts);
+    }
   });
   return counts;
 };
