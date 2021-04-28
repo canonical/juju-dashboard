@@ -437,7 +437,7 @@ export async function executeActionOnUnits(
   const generatedActions = unitList.map((unit) => {
     return {
       name: actionName,
-      receiver: `unit-${unit}`, // Juju unit tag in the format "unit-mysql/1"
+      receiver: `unit-${unit.replace("/", "-")}`, // Juju unit tag in the format "unit-mysql-1"
       parameters: actionOptions,
     };
   });
