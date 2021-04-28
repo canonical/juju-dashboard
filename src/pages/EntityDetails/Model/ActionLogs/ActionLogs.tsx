@@ -155,7 +155,10 @@ export default function ActionLogs() {
               <>
                 <span className="entity-details__unit-indent">└</span>
                 <span>
-                  {actionData.action.receiver.replace(/unit-(.+)/, "$1")}
+                  {actionData.action.receiver.replace(
+                    /unit-(.+)-(\d+)/,
+                    "$1/$2"
+                  )}
                 </span>
               </>
             ),
