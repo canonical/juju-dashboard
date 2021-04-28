@@ -119,7 +119,16 @@ export default function ActionLogs() {
           let newData = {};
           if (index === 0) {
             // If this is the first row then add the application row.
-            const appName = actionData.action.receiver.split("-")[1];
+            // The reciever is in the format "unit-ceph-mon-0" to "ceph-mon"
+            const parts = actionData.action.receiver.match(/unit-(.+)-\d+/);
+            const appName = parts && parts[1];
+            if (!appName) {
+              console.error(
+                "Unable to parse action receiver",
+                actionData.action.receiver
+              );
+              return;
+            }
             const charm = modelStatusData.applications[appName].charm;
             newData = {
               application: (
@@ -146,10 +155,7 @@ export default function ActionLogs() {
               <>
                 <span className="entity-details__unit-indent">└</span>
                 <span>
-                  {actionData.action.receiver
-                    .replace("unit-", "")
-                    .split("-")
-                    .join("/")}
+                  {actionData.action.receiver.replace(/unit-(.+)/, "$1")}
                 </span>
               </>
             ),
