@@ -39,7 +39,7 @@ export function generateLocalApplicationRows(
       columns: [
         {
           "data-test-column": "name",
-          content: generateEntityIdentifier(app.charm || "", key, false, true),
+          content: generateEntityIdentifier(app.charm || "", key, false),
           className: "u-truncate",
         },
         {
@@ -180,16 +180,10 @@ export function generateUnitRows(
       const publicAddress = unit["public-address"] || "-";
       const port = unit?.["opened-ports"]?.join(" ") || "-";
       const message = unit["workload-status"].info || "-";
+      const charm = applications[applicationName].charm;
       let columns = [
         {
-          content: generateEntityIdentifier(
-            applications[applicationName].charm
-              ? applications[applicationName].charm
-              : "",
-            unitId,
-            false,
-            true // disable link
-          ),
+          content: generateEntityIdentifier(charm ? charm : "", unitId, false),
           className: "u-truncate",
         },
         {
@@ -257,12 +251,7 @@ export function generateUnitRows(
           unitRows.push({
             columns: [
               {
-                content: generateEntityIdentifier(
-                  subordinate.charm,
-                  key,
-                  true,
-                  true // disable link
-                ),
+                content: generateEntityIdentifier(subordinate.charm, key, true),
                 className: "u-truncate",
               },
               {
