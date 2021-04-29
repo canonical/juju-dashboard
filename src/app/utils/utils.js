@@ -1,4 +1,3 @@
-import { URL } from "@canonical/jaaslib/lib/urls";
 import { parseISO, formatDistanceToNow } from "date-fns";
 import cloneDeep from "clone-deep";
 
