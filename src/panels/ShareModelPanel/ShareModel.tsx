@@ -18,7 +18,7 @@ export default function ShareModel() {
   const users = modelStatusData?.info?.users;
 
   const isOwner = (user: string) => {
-    return user === modelStatusData?.info["owner-tag"].split("-")[1];
+    return user === modelStatusData?.info["owner-tag"].replace("user-", "");
   };
 
   type User = {
