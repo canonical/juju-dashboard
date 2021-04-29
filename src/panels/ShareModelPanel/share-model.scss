@@ -13,12 +13,6 @@
 
   .p-panel__content {
     padding: 1rem;
-
-    > div:first-child {
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-    }
   }
 
   &__card {
@@ -28,7 +22,7 @@
     margin-bottom: 1rem;
     padding: 1rem 1rem 0;
 
-    .supplementary-text {
+    .supplementary {
       color: $color-mid-dark;
     }
 

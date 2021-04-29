@@ -141,7 +141,7 @@ const getDecodedMacaroons = (macaroons) => {
 const getModelUUIDByName = (name, modelData) => {
   let owner = null;
   let modelName = null;
-  if (name.includes("/")) {
+  if (name?.includes("/")) {
     [owner, modelName] = name.split("/");
   } else {
     modelName = name;
