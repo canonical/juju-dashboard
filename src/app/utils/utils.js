@@ -1,3 +1,4 @@
+import { parseISO, formatDistanceToNow } from "date-fns";
 import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
@@ -402,4 +403,8 @@ export const generateRelationIconImage = (applicationName, modelStatusData) => {
     return;
   }
   return generateIconImg(applicationName, application.charm);
+};
+
+export const formatFriendlyDateToNow = (date) => {
+  return formatDistanceToNow(parseISO(date), { addSuffix: true });
 };
