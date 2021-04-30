@@ -67,7 +67,7 @@ git pull git://github.com/<pr creators username>/jaas-dashboard.git <pull reques
 This is the preferred approach as it's served by Juju itself which is also generating the configuration files so it's the closest to a production environment.
 
 ```
-./run exec yarn run generate-release-tarball
+yarn && yarn generate-release-tarball
 juju upgrade-dashboard juju-dashboard-<version>.tar.bz2
 juju dashboard
 ```
@@ -84,10 +84,10 @@ see [Developing while connected to a Juju controller](#developing-while-connecte
 The default configuration setting for the Dashboard is to connect to public JAAS so you can simply:
 
 ```
-./run
+yarn && yarn start
 ```
 
-Then connect to the Dashboard from your browser at http://localhost:8036/.
+Then connect to the Dashboard from your browser at http://localhost:3000/.
 
 ### Release tests
 
@@ -100,20 +100,22 @@ Then connect to the Dashboard from your browser at http://localhost:8036/.
 - [ ] Can you view the controllers list?
 - [ ] Is the controllers list hidden if you do not have permission to view it?
 - [ ] Are your model details accurate?
-- [ ] Can you hide and show tables in the model details?
+- [ ] Can you modify an applications config?
+- [ ] Can you execute actions?
+- [ ] Can you view the action logs?
 - [ ] Is the Topology rendered correctly?
 - [ ] Chaos monkey, did anything break?
 - [ ] General observations, was there anything that needs improvement?
 
 ## Developing the Dashboard
 
-Assuming you already have [Docker](https://www.docker.com/) installed, you can simply run;
+You will need the latest [NodeJS LTS](https://nodejs.org/en/) and [yarn](https://yarnpkg.com/) installed. Then run:
 
 ```
-./run
+yarn && yarn start
 ```
 
-...and view the site locally at: http://localhost:8036/. Any changes you make to the code will be automatically recompiled and reloaded in the browser.
+...and view the site locally at: http://localhost:3000/. Any changes you make to the code will be hot reloaded in the browser.
 
 ### Developing while connected to a Juju controller
 
@@ -125,13 +127,13 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
   - `baseControllerURL` should be output from the `juju dashboard` call above with the port `17070`.
   - `identityProviderAvailable` to `false`.
   - `isJuju` to `true`.
-- Start the Dashboard with `./run`.
-- You can now access the dashboard at http://localhost:8036/ and it'll require the log in credentials from the above `juju dashboard` command.
+- Start the Dashboard with `yarn start`.
+- You can now access the dashboard at http://localhost:3000/ and it'll require the log in credentials from the above `juju dashboard` command.
 
 ### Running the tests.
 
 ```
-./run test
+yarn test
 ```
 
 ### Accessing the Dashboard from nested containers
@@ -178,7 +180,8 @@ The Juju Dashboard uses [Vanilla CSS](https://vanillaframework.io/) and [Vanilla
 #### React component conventions
 
 - Components are stored in their own self-named folders using the TitleCase format.
-- Tests and Sass files are stored along side each component with the naming convention of `ComponentName.css` and `ComponentName.test.js` respectively.
+- Components are written using [TypeScript](https://www.typescriptlang.org/).
+- Tests and Sass files are stored along side each component with the naming convention of `ComponentName.css` and `ComponentName.test.ts` respectively.
 - Sub components are nested within subfolders of their parent components if they are not shared among other components.
 - Use functional components.
 - Use hooks.
@@ -196,7 +199,7 @@ This effectively means that we write integration and component tests, not unit t
 
 #### Testing conventions
 
-- The test files are kept along side the library or component file following the naming convention `<component|filename>.test.js`.
+- The test files are kept along side the library or component file following the naming convention `<component|filename>.test.ts`.
 - We limit the use of snapshots except for where the snapshot updates can be easily verified by a reviewer.
 - Add assertions for the explicit content you're expecting. This allows changes to things that may not be relevant to the test like classNames, attributes, etc.
 - When searching for an element, use element selectors where possible and add a data attribute when not. We follow the format of `data-test="..."` or `data-test-<specifier>="..."` e.g. `<a data-test-column="priority">High</a>`.
@@ -296,7 +299,7 @@ To prepare to release:
 
 - Clone a new copy of the repository to remove the chance of any uncommitted artifacts ending up in the release.
 - Thoroughly [QA the Dashboard](#qa'ing-the-dashboard) following the [Release tests](#release-tests)
-- Update the changelog by adding the important commits from the last tag.
+- You can get a list of items for the release notes by running:
 
 ```
   git log `git describe --tags --abbrev=0`..HEAD --format='- %b' --merges | sed '/^- $/d'
