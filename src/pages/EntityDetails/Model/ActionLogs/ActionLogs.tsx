@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { DefaultRootState, useSelector, useStore } from "react-redux";
 import { useParams, Link } from "react-router-dom";
+import classnames from "classnames";
 
 import ModularTable from "@canonical/react-components/dist/components/ModularTable/ModularTable";
+import Spinner from "@canonical/react-components/dist/components/Spinner/Spinner";
 
 import { getModelUUID, getModelStatus } from "app/selectors";
 import { queryOperationsList } from "juju/index";
@@ -60,6 +62,7 @@ function generateLinkToApp(
 
 export default function ActionLogs() {
   const [operations, setOperations] = useState<Operations>([]);
+  const [fetchedOperations, setFetchedOperations] = useState(false);
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const appStore = useStore();
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
@@ -86,6 +89,7 @@ export default function ActionLogs() {
         appStore.getState()
       );
       setOperations(operationList.results);
+      setFetchedOperations(true);
     }
     fetchData();
     // XXX Temporarily disabled.
@@ -183,43 +187,53 @@ export default function ActionLogs() {
     return rows;
   }, [operations, modelStatusData.applications, userName, modelName]);
 
+  const columnData = useMemo(
+    () => [
+      {
+        Header: "application",
+        accessor: "application",
+      },
+      {
+        Header: "operation id/name",
+        accessor: "id",
+      },
+      {
+        Header: "status",
+        accessor: "status",
+      },
+      {
+        Header: "task id",
+        accessor: "taskId",
+      },
+      {
+        Header: "action message",
+        accessor: "message",
+      },
+      {
+        Header: "completion time",
+        accessor: "completed",
+      },
+    ],
+    []
+  );
+
   const emptyMsg = `There are no action logs available yet for ${modelName}`;
 
   return (
-    <div className="entity-details__action-logs">
-      <ModularTable
-        emptyMsg={emptyMsg}
-        columns={useMemo(
-          () => [
-            {
-              Header: "application",
-              accessor: "application",
-            },
-            {
-              Header: "operation id/name",
-              accessor: "id",
-            },
-            {
-              Header: "status",
-              accessor: "status",
-            },
-            {
-              Header: "task id",
-              accessor: "taskId",
-            },
-            {
-              Header: "action message",
-              accessor: "message",
-            },
-            {
-              Header: "completion time",
-              accessor: "completed",
-            },
-          ],
-          []
-        )}
-        data={tableData}
-      />
+    <div
+      className={classnames("entity-details__action-logs", {
+        "is-loading": !fetchedOperations,
+      })}
+    >
+      {!fetchedOperations ? (
+        <Spinner />
+      ) : (
+        <ModularTable
+          emptyMsg={emptyMsg}
+          columns={columnData}
+          data={tableData}
+        />
+      )}
     </div>
   );
 }
