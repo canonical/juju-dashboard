@@ -406,14 +406,6 @@
     margin-left: 0.3rem;
     margin-right: 0.75rem;
   }
-
-  .entity-details__action-logs.is-loading {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    min-height: calc(100vh - 48px);
-    width: 100%;
-  }
 }
 
 @include entity-details-layout;
