@@ -115,7 +115,7 @@ You will need the latest [NodeJS LTS](https://nodejs.org/en/) and [yarn](https:/
 yarn && yarn start
 ```
 
-...and view the site locally at: http://localhost:3000/. Any changes you make to the code will be hotreloaded in the browser.
+...and view the site locally at: http://localhost:3000/. Any changes you make to the code will be hot reloaded in the browser.
 
 ### Developing while connected to a Juju controller
 
