@@ -81,6 +81,44 @@ describe("WebCLI", () => {
     });
   });
 
+  it("trims the command being submitted", () => {
+    clobberConsoleError();
+    // ..until it receives a 'done' message.
+    const server = new WS("ws://localhost:1234/model/abc123/commands", {
+      jsonProtocol: true,
+    });
+    const wrapper = mount(
+      <WebCLI
+        protocol="ws"
+        controllerWSHost="localhost:1234"
+        credentials={{
+          user: "spaceman",
+          password: "somelongpassword",
+        }}
+        modelUUID="abc123"
+      />
+    );
+    return new Promise(async (resolve) => {
+      await act(async () => {
+        await server.connected;
+        wrapper.find(".webcli__input-input").instance().value =
+          "      status       ";
+        wrapper.find("form").simulate("submit", { preventDefault: () => {} });
+        await expect(server).toReceiveMessage({
+          user: "spaceman",
+          credentials: "somelongpassword",
+          commands: ["status"],
+        });
+      });
+      setTimeout(() => {
+        act(() => {
+          WS.clean();
+        });
+        resolve();
+      });
+    });
+  });
+
   describe("WebCLI Output", () => {
     it("displays messages recieved over the websocket", () => {
       clobberConsoleError();
