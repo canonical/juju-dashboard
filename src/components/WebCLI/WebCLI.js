@@ -58,7 +58,7 @@ const WebCLI = ({
       JSON.stringify({
         user: credentials.user,
         credentials: credentials.password,
-        commands: [e.currentTarget.children.command.value],
+        commands: [e.currentTarget.children.command.value.trim()],
       })
     );
     sendAnalytics({
