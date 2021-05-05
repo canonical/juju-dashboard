@@ -10,6 +10,7 @@ type Props = {
   width?: "wide" | "narrow";
   pinned?: boolean;
   loading?: boolean;
+  isSplit?: boolean;
 };
 
 export default function Aside({
@@ -17,6 +18,7 @@ export default function Aside({
   width,
   pinned = false,
   loading = false,
+  isSplit = false,
 }: Props): JSX.Element {
   return (
     <SlideInOut
@@ -25,6 +27,7 @@ export default function Aside({
         "is-narrow": width === "narrow",
         "is-wide": width === "wide",
         "is-pinned": pinned === true,
+        "is-split": isSplit === true,
       })}
     >
       {!loading ? (

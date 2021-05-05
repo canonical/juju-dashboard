@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { Formik, Field, Form } from "formik";
 import useModelStatus from "hooks/useModelStatus";
 import { formatFriendlyDateToNow } from "app/utils/utils";
 
@@ -21,6 +22,17 @@ export default function ShareModel() {
     return user === modelStatusData?.info["owner-tag"].replace("user-", "");
   };
 
+  // const { values, handleChange, handleSubmit } = useFormik({
+  //   initialValues: {
+  //     username: "",
+  //     accessLevel: "read",
+  //   },
+
+  //   onSubmit: (values) => {
+  //     console.log(JSON.stringify(values, null, 2));
+  //   },
+  // });
+
   type User = {
     user: string;
     "display-name": string;
@@ -29,7 +41,7 @@ export default function ShareModel() {
   };
 
   return (
-    <Aside loading={!modelStatusData}>
+    <Aside loading={!modelStatusData} isSplit={true}>
       <div className="p-panel share-model">
         <PanelHeader
           title={
@@ -39,8 +51,8 @@ export default function ShareModel() {
             </div>
           }
         />
-        <div className="p-panel__content">
-          <div>
+        <div className="p-panel__content aside-split-wrapper">
+          <div className="aside-split-col">
             <h5>Sharing with:</h5>
             {users?.map((userObj: User) => {
               return (
@@ -60,6 +72,98 @@ export default function ShareModel() {
                 </div>
               );
             })}
+          </div>
+          <div className="aside-split-col">
+            <h4>Add new user</h4>
+
+            <Formik
+              initialValues={{
+                username: "",
+                accessLevel: "read",
+              }}
+              onSubmit={async (values) => {
+                console.log(JSON.stringify(values, null, 2));
+              }}
+            >
+              <Form>
+                <label className="is-required" htmlFor="username">
+                  Username
+                </label>
+                <Field
+                  required
+                  type="text"
+                  placeholder="Username"
+                  name="username"
+                />
+                <label className="is-required" htmlFor="accessLevel">
+                  Access level
+                </label>
+                <div className="p-radio">
+                  <label htmlFor="accessRead">
+                    <Field
+                      id="accessRead"
+                      type="radio"
+                      className="p-radio__input"
+                      name="accessLevel"
+                      aria-labelledby="Read"
+                      value="read"
+                    />
+                    <span className="p-radio__label" id="accessLevel1">
+                      read
+                      <span className="help-text">
+                        A user can view the state of the model
+                      </span>
+                    </span>
+                  </label>
+                </div>
+
+                <div className="p-radio">
+                  <label htmlFor="accessWrite">
+                    <Field
+                      id="accessWrite"
+                      type="radio"
+                      className="p-radio__input"
+                      name="accessLevel"
+                      aria-labelledby="Write"
+                      value="write"
+                    />
+                    <span className="p-radio__label" id="accessLevel2">
+                      write
+                      <span className="help-text">
+                        In addition to 'read' abilities, a user can
+                        modify/configure models
+                      </span>
+                    </span>
+                  </label>
+                </div>
+
+                <div className="p-radio">
+                  <label htmlFor="accessAdmin">
+                    <Field
+                      id="accessAdmin"
+                      type="radio"
+                      className="p-radio__input"
+                      name="accessLevel"
+                      aria-labelledby="Admin"
+                      value="admin"
+                    />
+                    <span className="p-radio__label" id="accessLevel3">
+                      admin
+                      <span className="help-text">
+                        In addition to 'write' abilities,ys a user can perform
+                        model upgrades and connect to machines via juju ssh.
+                        Makes the user an effective model owner.
+                      </span>
+                    </span>
+                  </label>
+                </div>
+                <div className="action-wrapper">
+                  <button className="p-button--positive" type="submit">
+                    Add user
+                  </button>
+                </div>
+              </Form>
+            </Formik>
           </div>
         </div>
       </div>
