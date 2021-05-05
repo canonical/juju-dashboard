@@ -40,6 +40,10 @@ export default function ShareModel() {
     access: string;
   };
 
+  const handleRemoveUser = (userName: string) => {
+    console.log(`Removing ${userName}`);
+  };
+
   return (
     <Aside loading={!modelStatusData} isSplit={true}>
       <div className="p-panel share-model">
@@ -55,12 +59,25 @@ export default function ShareModel() {
           <div className="aside-split-col">
             <h5>Sharing with:</h5>
             {users?.map((userObj: User) => {
+              const userName = userObj["user"];
               return (
                 <div className="share-model__card" key={userObj.user}>
                   <div className="share-model__card-title">
-                    <strong>{userObj["user"]}</strong>
+                    <strong>{userName}</strong>
                     <span className="secondary">
-                      {isOwner(userObj["user"]) && "Owner"}
+                      {isOwner(userName) ? (
+                        "Owner"
+                      ) : (
+                        <i
+                          className="p-icon--delete"
+                          onClick={() => handleRemoveUser(userName)}
+                          onKeyPress={() => handleRemoveUser(userName)}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          Remove user
+                        </i>
+                      )}
                     </span>
                   </div>
                   <p className="supplementary">
