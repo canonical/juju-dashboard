@@ -272,7 +272,7 @@ export const getViewportWidth = () => {
 
 /**
  * @param {function} fn Function to debounce
- * @param {String} wait Time in milliseconds to wait
+ * @param {number} wait Time in milliseconds to wait
  */
 export const debounce = (fn, wait) => {
   let t;
