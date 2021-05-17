@@ -55,7 +55,7 @@
     "@canonical/jujulib": "2.0.0-beta.4",
     "@canonical/macaroon-bakery": "0.3.0",
     "@canonical/react-components": "0.16.3",
-    "@sentry/browser": "6.3.5",
+    "@sentry/browser": "6.3.6",
     "async-limiter": "2.0.0",
     "classnames": "2.3.1",
     "clone-deep": "4.0.1",
