@@ -24,6 +24,11 @@
 
     .supplementary {
       color: $color-mid-dark;
+
+      form {
+        margin-top: 1rem;
+        max-width: 50%;
+      }
     }
 
     &-title {

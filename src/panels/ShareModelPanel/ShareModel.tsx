@@ -1,10 +1,13 @@
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
+import cloneDeep from "clone-deep";
 import useModelStatus from "hooks/useModelStatus";
 import { formatFriendlyDateToNow } from "app/utils/utils";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
+import FormikFormData from "components/FormikFormData/FormikFormData";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { TSFixMe } from "types";
@@ -17,21 +20,21 @@ export default function ShareModel() {
   const modelStatusData: TSFixMe = useModelStatus() || null;
 
   const users = modelStatusData?.info?.users;
+  const [usersAccess, setUsersAccess] = useState({});
+
+  useEffect(() => {
+    const clonedUserAccess = cloneDeep(usersAccess);
+    users?.forEach((user: TSFixMe) => {
+      const displayName = user["user"];
+      // @ts-ignore
+      clonedUserAccess[displayName] = user["access"];
+    });
+    setUsersAccess(clonedUserAccess);
+  }, [users]);
 
   const isOwner = (user: string) => {
     return user === modelStatusData?.info["owner-tag"].replace("user-", "");
   };
-
-  // const { values, handleChange, handleSubmit } = useFormik({
-  //   initialValues: {
-  //     username: "",
-  //     accessLevel: "read",
-  //   },
-
-  //   onSubmit: (values) => {
-  //     console.log(JSON.stringify(values, null, 2));
-  //   },
-  // });
 
   type User = {
     user: string;
@@ -60,6 +63,8 @@ export default function ShareModel() {
             <h5>Sharing with:</h5>
             {users?.map((userObj: User) => {
               const userName = userObj["user"];
+              const lastConnected = userObj["last-connection"];
+
               return (
                 <div className="share-model__card" key={userObj.user}>
                   <div className="share-model__card-title">
@@ -80,12 +85,47 @@ export default function ShareModel() {
                       )}
                     </span>
                   </div>
-                  <p className="supplementary">
+                  <div className="supplementary">
                     Last connected:{" "}
-                    {userObj["last-connection"]
-                      ? formatFriendlyDateToNow(userObj["last-connection"])
+                    {lastConnected
+                      ? formatFriendlyDateToNow(lastConnected)
                       : `Never connected`}
-                  </p>
+                    <Formik
+                      initialValues={{
+                        selectAll: false,
+                        selectedUnits: [],
+                      }}
+                      onSubmit={() => {
+                        console.log("Submitting form");
+                      }}
+                    >
+                      <FormikFormData
+                        onFormChange={() => {
+                          //console.log("on form change");
+                        }}
+                        onSetup={() => {
+                          //console.log("on set up");
+                        }}
+                      >
+                        <Field
+                          as="select"
+                          name="accessLevel"
+                          onChange={async (e: TSFixMe) => {
+                            const cloneUserAccess = cloneDeep(usersAccess);
+                            // @ts-ignore
+                            cloneUserAccess[userName] = e.target.value;
+                            setUsersAccess(cloneUserAccess);
+                          }}
+                          // @ts-ignore
+                          value={usersAccess?.[userName]}
+                        >
+                          <option value="read">Read</option>
+                          <option value="write">Write</option>
+                          <option value="admin">Admin</option>
+                        </Field>
+                      </FormikFormData>
+                    </Formik>
+                  </div>
                 </div>
               );
             })}

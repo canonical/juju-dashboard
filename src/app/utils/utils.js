@@ -406,5 +406,8 @@ export const generateRelationIconImage = (applicationName, modelStatusData) => {
 };
 
 export const formatFriendlyDateToNow = (date) => {
-  return formatDistanceToNow(parseISO(date), { addSuffix: true });
+  const formattedDate = formatDistanceToNow(parseISO(date), {
+    includeSeconds: true,
+  });
+  return formattedDate.concat(" ago");
 };
