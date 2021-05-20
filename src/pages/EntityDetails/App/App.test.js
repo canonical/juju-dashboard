@@ -207,7 +207,7 @@ describe("Entity Details App", () => {
     ].applications.etcd.units = null;
     const wrapper = await generateComponent(tweakedData);
     expect(wrapper.find("MainTable caption").text()).toBe(
-      "There are no units in this model"
+      "There are no units in this application"
     );
   });
 });
