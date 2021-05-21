@@ -284,7 +284,7 @@ export default function App(): JSX.Element {
                     rows={unitPanelRows}
                     className="entity-details__units p-main-table panel__table has-checkbox"
                     sortable
-                    emptyStateMsg={"There are no units in this model"}
+                    emptyStateMsg={"There are no units in this application"}
                     data-test="units-table"
                   />
                 </FormikFormData>

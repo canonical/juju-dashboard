@@ -251,6 +251,9 @@ export function generateUnitRows(
           unitRows.push({
             columns: [
               {
+                content: "",
+              },
+              {
                 content: generateEntityIdentifier(subordinate.charm, key, true),
                 className: "u-truncate",
               },
