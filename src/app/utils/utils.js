@@ -9,7 +9,7 @@ export function generateEntityIdentifier(charmId, name, subordinate) {
   }
 
   return (
-    <div className="entity-name">
+    <div className="entity-name u-truncate" title={name}>
       {subordinate && <span className="subordinate"></span>}
       {charmId && generateIconImg(name, charmId)}
       {name}
