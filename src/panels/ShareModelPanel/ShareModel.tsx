@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+import { useStore, useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import cloneDeep from "clone-deep";
 import useModelStatus from "hooks/useModelStatus";
 import { formatFriendlyDateToNow } from "app/utils/utils";
+import { setModelSharingPermissions } from "juju";
+
+import { getModelControllerDataByUUID } from "app/selectors";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
@@ -14,23 +18,70 @@ import type { TSFixMe } from "types";
 
 import "./share-model.scss";
 
+type modelControllerData = {
+  additionalController: undefined;
+  path: string;
+  url: string;
+  uuid: string;
+  version: string;
+};
+
+type user = {
+  user: string;
+  "display-name": string;
+  "last-connection": string | null;
+  access: string;
+};
+
+type usersAccess = {
+  [key: string]: string;
+};
+
+type userAccess = {
+  name: string;
+  access: string | null;
+};
+
+type DefaultRootState = {};
+
 export default function ShareModel() {
   const { modelName } = useParams<EntityDetailsRoute>();
+  const dispatch = useDispatch();
+  const store = useStore();
+
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [usersAccess, setUsersAccess] = useState<usersAccess>({});
 
   const modelStatusData: TSFixMe = useModelStatus() || null;
 
+  const controllerUUID = modelStatusData?.info?.["controller-uuid"];
+  const modelUUID = modelStatusData?.info.uuid;
+
+  const modelControllerDataByUUID = getModelControllerDataByUUID(
+    controllerUUID
+  );
+
+  const modelControllerData: modelControllerData = useSelector(
+    modelControllerDataByUUID as (
+      state: DefaultRootState
+    ) => modelControllerData
+  );
+
+  const modelControllerURL = modelControllerData?.url;
   const users = modelStatusData?.info?.users;
-  const [usersAccess, setUsersAccess] = useState({});
 
   useEffect(() => {
-    const clonedUserAccess = cloneDeep(usersAccess);
-    users?.forEach((user: TSFixMe) => {
+    const clonedUserAccess: usersAccess | null = cloneDeep(usersAccess);
+
+    users?.forEach((user: user) => {
       const displayName = user["user"];
-      // @ts-ignore
-      clonedUserAccess[displayName] = user["access"];
+
+      if (clonedUserAccess) {
+        clonedUserAccess[displayName] = user?.["access"];
+        setUsersAccess(clonedUserAccess);
+      }
     });
-    setUsersAccess(clonedUserAccess);
-  }, [users]);
+  }, [users]); // eslint-disable-line
 
   const isOwner = (user: string) => {
     return user === modelStatusData?.info["owner-tag"].replace("user-", "");
@@ -43,8 +94,24 @@ export default function ShareModel() {
     access: string;
   };
 
-  const handleRemoveUser = (userName: string) => {
-    console.log(`Removing ${userName}`);
+  const userAlreadyHasAccess = (userName: string) => {
+    return users.some((userEntry: User) => {
+      return userEntry.user === userName;
+    });
+  };
+
+  const handleRemoveUser = async (userName: string) => {
+    const userAccess: userAccess = { name: userName, access: null };
+
+    await setModelSharingPermissions(
+      modelControllerURL,
+      modelUUID,
+      store.getState,
+      userAccess,
+      usersAccess?.[userName],
+      "revoke",
+      dispatch
+    );
   };
 
   return (
@@ -58,6 +125,24 @@ export default function ShareModel() {
             </div>
           }
         />
+        {errorMsg && (
+          <div className="p-notification--negative">
+            <p className="p-notification__response" role="status">
+              <span className="p-notification__status">Error:</span>
+              {errorMsg}
+            </p>
+            <button
+              className="p-icon--close"
+              aria-label="Close notification"
+              aria-controls="notification"
+              onClick={() => {
+                setErrorMsg(null);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        )}
         <div className="p-panel__content aside-split-wrapper">
           <div className="aside-split-col">
             <h5>Sharing with:</h5>
@@ -95,28 +180,38 @@ export default function ShareModel() {
                         selectAll: false,
                         selectedUnits: [],
                       }}
-                      onSubmit={() => {
-                        console.log("Submitting form");
-                      }}
+                      onSubmit={() => {}}
                     >
-                      <FormikFormData
-                        onFormChange={() => {
-                          //console.log("on form change");
-                        }}
-                        onSetup={() => {
-                          //console.log("on set up");
-                        }}
-                      >
+                      <FormikFormData>
                         <Field
                           as="select"
                           name="accessLevel"
-                          onChange={async (e: TSFixMe) => {
+                          onChange={async (
+                            e: React.ChangeEvent<HTMLInputElement>
+                          ) => {
                             const cloneUserAccess = cloneDeep(usersAccess);
-                            // @ts-ignore
-                            cloneUserAccess[userName] = e.target.value;
+                            if (cloneUserAccess) {
+                              cloneUserAccess[userName] = e.target.value;
+                            }
                             setUsersAccess(cloneUserAccess);
+                            const updatedUserAccess: userAccess = {
+                              name: userName,
+                              access: e.target.value,
+                            };
+                            const response = await setModelSharingPermissions(
+                              modelControllerURL,
+                              modelUUID,
+                              store.getState,
+                              updatedUserAccess,
+                              usersAccess?.[userName],
+                              "grant",
+                              dispatch
+                            );
+                            const error = response?.results[0]?.error?.message;
+                            if (error) {
+                              setErrorMsg(error);
+                            }
                           }}
-                          // @ts-ignore
                           value={usersAccess?.[userName]}
                         >
                           <option value="read">Read</option>
@@ -132,14 +227,36 @@ export default function ShareModel() {
           </div>
           <div className="aside-split-col">
             <h4>Add new user</h4>
-
             <Formik
               initialValues={{
                 username: "",
                 accessLevel: "read",
               }}
-              onSubmit={async (values) => {
-                console.log(JSON.stringify(values, null, 2));
+              onSubmit={async (values, { resetForm }) => {
+                setErrorMsg(null);
+
+                if (userAlreadyHasAccess(values.username)) {
+                  setErrorMsg("User already has access to this model.");
+                }
+
+                const response = await setModelSharingPermissions(
+                  modelControllerURL,
+                  modelUUID,
+                  store.getState,
+                  {
+                    name: values.username,
+                    access: values.accessLevel,
+                  },
+                  undefined,
+                  "grant",
+                  dispatch
+                );
+                const error = response?.results[0]?.error?.message;
+                if (error) {
+                  setErrorMsg(error);
+                } else {
+                  resetForm();
+                }
               }}
             >
               <Form>
@@ -207,7 +324,7 @@ export default function ShareModel() {
                     <span className="p-radio__label" id="accessLevel3">
                       admin
                       <span className="help-text">
-                        In addition to 'write' abilities,ys a user can perform
+                        In addition to 'write' abilities, a user can perform
                         model upgrades and connect to machines via juju ssh.
                         Makes the user an effective model owner.
                       </span>

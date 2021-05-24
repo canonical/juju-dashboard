@@ -228,7 +228,9 @@ export async function fetchAndStoreModelStatus(
   if (status === null) {
     return;
   }
-  dispatch(updateModelStatus(modelUUID, status), { wsControllerURL });
+  dispatch(updateModelStatus(modelUUID, status), {
+    wsControllerURL,
+  });
 }
 
 /**
@@ -247,7 +249,7 @@ async function fetchModelInfo(conn, modelUUID) {
 }
 
 /**
-  Loops through each model UUID to fetch the status. Uppon receiving the status
+  Loops through each model UUID to fetch the status. Upon receiving the status
   dispatches to store that status data.
   @param {Object} conn The connection to the controller.
   @param {Array} modelUUIDList A list of the model uuid's to connect to.
@@ -450,8 +452,59 @@ export async function executeActionOnUnits(
 
 export async function queryOperationsList(queryArgs, modelUUID, appState) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
-  const operationListResut = await conn.facades.action.listOperations(
+  const operationListResult = await conn.facades.action.listOperations(
     queryArgs
   );
-  return operationListResut;
+  return operationListResult;
+}
+
+/**
+  Call the API to grant the sharing permissions for a model
+  @param {String} controllerURL
+  @param {String} modelUUID
+  @param {Function} getState
+  @param {Object} user
+  @param {String | undefined} previousAccess
+  @param {String} action
+  @param {Function} dispatch
+  @returns {Promise} The application set config response
+*/
+export async function setModelSharingPermissions(
+  controllerURL,
+  modelUUID,
+  getState,
+  user,
+  previousAccess,
+  action,
+  dispatch
+) {
+  const conn = await getControllerConnection(controllerURL, getState());
+  const updatedAccess = user?.access;
+
+  const modifyAccess = async (access, action) => {
+    return await conn.facades.modelManager.modifyModelAccess({
+      changes: [
+        {
+          access,
+          action,
+          "model-tag": `model-${modelUUID}`,
+          "user-tag": `user-${user.name}`,
+        },
+      ],
+    });
+  };
+
+  if (previousAccess) {
+    await modifyAccess(previousAccess, "revoke");
+  }
+
+  if (action === "grant") {
+    await modifyAccess(updatedAccess, "grant");
+  }
+
+  if (isLoggedIn(controllerURL, getState())) {
+    const modelInfo = await fetchModelInfo(conn, modelUUID);
+    modelInfo &&
+      dispatch(updateModelInfo(modelInfo), { wsControllerURL: controllerURL });
+  }
 }

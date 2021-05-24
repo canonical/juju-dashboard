@@ -82,6 +82,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
   const modelControllerData = useSelector(
     getModelControllerDataByUUID(controllerUUID)
   );
+
   let credentials = null;
   let controllerWSHost = "";
   if (primaryControllerData) {

@@ -5,14 +5,14 @@ export type SetFieldValue = (fieldName: string, value: any) => void;
 
 type Props = {
   children: ReactNode;
-  onFormChange: (data: any) => void;
-  onSetup: (setFieldValue: SetFieldValue) => void;
+  onFormChange?: (data: any) => void;
+  onSetup?: (setFieldValue: SetFieldValue) => void;
 };
 
 export default function FormikFormData({
   children,
-  onFormChange,
-  onSetup,
+  onFormChange = () => {},
+  onSetup = () => {},
 }: Props): JSX.Element {
   const { values, setFieldValue } = useFormikContext<any>();
 
