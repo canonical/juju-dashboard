@@ -51,6 +51,7 @@ export default function ShareModel() {
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [usersAccess, setUsersAccess] = useState<usersAccess>({});
+  const [newUserFormSubmitActive, setNewUserFormSubmitActive] = useState(false);
 
   const modelStatusData: TSFixMe = useModelStatus() || null;
 
@@ -95,9 +96,7 @@ export default function ShareModel() {
   };
 
   const userAlreadyHasAccess = (userName: string) => {
-    return users.some((userEntry: User) => {
-      return userEntry.user === userName;
-    });
+    return users.some((userEntry: User) => userEntry.user === userName);
   };
 
   const handleRemoveUser = async (userName: string) => {
@@ -232,11 +231,19 @@ export default function ShareModel() {
                 username: "",
                 accessLevel: "read",
               }}
+              // @ts-ignore
+              validate={(values) => {
+                setNewUserFormSubmitActive(
+                  values.username !== "" && values.accessLevel !== null
+                );
+              }}
               onSubmit={async (values, { resetForm }) => {
                 setErrorMsg(null);
 
                 if (userAlreadyHasAccess(values.username)) {
-                  setErrorMsg("User already has access to this model.");
+                  setErrorMsg(
+                    `'${values.username}' already has access to this model.`
+                  );
                 }
 
                 const response = await setModelSharingPermissions(
@@ -332,7 +339,11 @@ export default function ShareModel() {
                   </label>
                 </div>
                 <div className="action-wrapper">
-                  <button className="p-button--positive" type="submit">
+                  <button
+                    className="p-button--positive"
+                    type="submit"
+                    disabled={!newUserFormSubmitActive}
+                  >
                     Add user
                   </button>
                 </div>
