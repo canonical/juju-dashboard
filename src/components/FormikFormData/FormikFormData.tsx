@@ -11,8 +11,8 @@ type Props = {
 
 export default function FormikFormData({
   children,
-  onFormChange,
-  onSetup,
+  onFormChange = () => {},
+  onSetup = () => {},
 }: Props): JSX.Element {
   const { values, setFieldValue } = useFormikContext<any>();
 

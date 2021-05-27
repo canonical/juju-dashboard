@@ -617,6 +617,12 @@ export const getModelControllerDataByUUID = (controllerUUID) => {
       }
       return false;
     });
-    return modelController;
+    // This adds the controller url to existing model controller info so it can be used to access the
+    // write facades on the api
+    const clonedModelController = cloneDeep(modelController);
+    if (clonedModelController) {
+      clonedModelController.url = Object.keys(controllerData)[0];
+    }
+    return clonedModelController;
   });
 };
