@@ -502,9 +502,7 @@ export async function setModelSharingPermissions(
     await modifyAccess(updatedAccess, "grant");
   }
 
-  if (isLoggedIn(controllerURL, getState())) {
-    const modelInfo = await fetchModelInfo(conn, modelUUID);
-    modelInfo &&
-      dispatch(updateModelInfo(modelInfo), { wsControllerURL: controllerURL });
-  }
+  const modelInfo = await fetchModelInfo(conn, modelUUID);
+  modelInfo &&
+    dispatch(updateModelInfo(modelInfo), { wsControllerURL: controllerURL });
 }
