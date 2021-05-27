@@ -24,10 +24,15 @@
     border: solid 1px $color-mid-x-light;
     border-radius: 2px;
     margin-bottom: 1rem;
-    padding: 1rem 1rem 0;
+    padding: 1rem;
+
+    select {
+      margin-bottom: 0;
+    }
 
     .supplementary {
       color: $color-mid-dark;
+      max-width: 80%;
 
       form {
         margin-top: 1rem;

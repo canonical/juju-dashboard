@@ -11,14 +11,13 @@ import { getModelControllerDataByUUID } from "app/selectors";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
-import FormikFormData from "components/FormikFormData/FormikFormData";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { TSFixMe } from "types";
 
 import "./share-model.scss";
 
-type modelControllerData = {
+type ModelControllerData = {
   additionalController: undefined;
   path: string;
   url: string;
@@ -26,18 +25,18 @@ type modelControllerData = {
   version: string;
 };
 
-type user = {
+type User = {
   user: string;
   "display-name": string;
   "last-connection": string | null;
   access: string;
 };
 
-type usersAccess = {
+type UsersAccess = {
   [key: string]: string;
 };
 
-type userAccess = {
+type UserAccess = {
   name: string;
   access: string | null;
 };
@@ -50,7 +49,7 @@ export default function ShareModel() {
   const store = useStore();
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [usersAccess, setUsersAccess] = useState<usersAccess>({});
+  const [usersAccess, setUsersAccess] = useState<UsersAccess>({});
   const [newUserFormSubmitActive, setNewUserFormSubmitActive] = useState(false);
 
   const modelStatusData: TSFixMe = useModelStatus() || null;
@@ -62,19 +61,19 @@ export default function ShareModel() {
     controllerUUID
   );
 
-  const modelControllerData: modelControllerData = useSelector(
+  const modelControllerData: ModelControllerData = useSelector(
     modelControllerDataByUUID as (
       state: DefaultRootState
-    ) => modelControllerData
+    ) => ModelControllerData
   );
 
   const modelControllerURL = modelControllerData?.url;
   const users = modelStatusData?.info?.users;
 
   useEffect(() => {
-    const clonedUserAccess: usersAccess | null = cloneDeep(usersAccess);
+    const clonedUserAccess: UsersAccess | null = cloneDeep(usersAccess);
 
-    users?.forEach((user: user) => {
+    users?.forEach((user: User) => {
       const displayName = user["user"];
 
       if (clonedUserAccess) {
@@ -88,19 +87,46 @@ export default function ShareModel() {
     return user === modelStatusData?.info["owner-tag"].replace("user-", "");
   };
 
-  type User = {
-    user: string;
-    "display-name": string;
-    "last-connection": string;
-    access: string;
-  };
-
-  const userAlreadyHasAccess = (userName: string) => {
+  const userAlreadyHasAccess = (userName: string, users: User[]) => {
     return users.some((userEntry: User) => userEntry.user === userName);
   };
 
+  const handleValidateNewUser = (values: TSFixMe) => {
+    setNewUserFormSubmitActive(
+      values.username !== "" && values.accessLevel !== null
+    );
+  };
+
+  const handleAccessSelectChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    userName: string
+  ) => {
+    const clonedUserAccess = cloneDeep(usersAccess);
+    if (clonedUserAccess) {
+      clonedUserAccess[userName] = e.target.value;
+    }
+    setUsersAccess(clonedUserAccess);
+    const updatedUserAccess: UserAccess = {
+      name: userName,
+      access: e.target.value,
+    };
+    const response = await setModelSharingPermissions(
+      modelControllerURL,
+      modelUUID,
+      store.getState,
+      updatedUserAccess,
+      usersAccess?.[userName],
+      "grant",
+      dispatch
+    );
+    const error = response?.results[0]?.error?.message;
+    if (error) {
+      setErrorMsg(error);
+    }
+  };
+
   const handleRemoveUser = async (userName: string) => {
-    const userAccess: userAccess = { name: userName, access: null };
+    const userAccess: UserAccess = { name: userName, access: null };
 
     await setModelSharingPermissions(
       modelControllerURL,
@@ -111,6 +137,36 @@ export default function ShareModel() {
       "revoke",
       dispatch
     );
+  };
+
+  const handleNewUserFormSubmit = async (
+    values: UserAccess,
+    resetForm: () => void
+  ) => {
+    setErrorMsg(null);
+
+    if (userAlreadyHasAccess(values.name, users)) {
+      setErrorMsg(`'${values.name}' already has access to this model.`);
+    }
+
+    const response = await setModelSharingPermissions(
+      modelControllerURL,
+      modelUUID,
+      store.getState,
+      {
+        name: values.name,
+        access: values.access,
+      },
+      undefined,
+      "grant",
+      dispatch
+    );
+    const error = response?.results[0]?.error?.message;
+    if (error) {
+      setErrorMsg(error);
+    } else {
+      resetForm();
+    }
   };
 
   return (
@@ -174,51 +230,24 @@ export default function ShareModel() {
                     {lastConnected
                       ? formatFriendlyDateToNow(lastConnected)
                       : `Never connected`}
-                    <Formik
-                      initialValues={{
-                        selectAll: false,
-                        selectedUnits: [],
-                      }}
-                      onSubmit={() => {}}
-                    >
-                      <FormikFormData>
-                        <Field
-                          as="select"
-                          name="accessLevel"
-                          onChange={async (
-                            e: React.ChangeEvent<HTMLInputElement>
-                          ) => {
-                            const clonedUserAccess = cloneDeep(usersAccess);
-                            if (clonedUserAccess) {
-                              clonedUserAccess[userName] = e.target.value;
-                            }
-                            setUsersAccess(clonedUserAccess);
-                            const updatedUserAccess: userAccess = {
-                              name: userName,
-                              access: e.target.value,
-                            };
-                            const response = await setModelSharingPermissions(
-                              modelControllerURL,
-                              modelUUID,
-                              store.getState,
-                              updatedUserAccess,
-                              usersAccess?.[userName],
-                              "grant",
-                              dispatch
-                            );
-                            const error = response?.results[0]?.error?.message;
-                            if (error) {
-                              setErrorMsg(error);
-                            }
-                          }}
-                          value={usersAccess?.[userName]}
-                        >
-                          <option value="read">Read</option>
-                          <option value="write">Write</option>
-                          <option value="admin">Admin</option>
-                        </Field>
-                      </FormikFormData>
-                    </Formik>
+                    {!isOwner(userName) && (
+                      <Formik initialValues={{}} onSubmit={() => {}}>
+                        <Form>
+                          <Field
+                            as="select"
+                            name="access"
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>
+                            ) => handleAccessSelectChange(e, userName)}
+                            value={usersAccess?.[userName]}
+                          >
+                            <option value="read">Read</option>
+                            <option value="write">Write</option>
+                            <option value="admin">Admin</option>
+                          </Field>
+                        </Form>
+                      </Formik>
+                    )}
                   </div>
                 </div>
               );
@@ -228,42 +257,13 @@ export default function ShareModel() {
             <h4>Add new user</h4>
             <Formik
               initialValues={{
-                username: "",
-                accessLevel: "read",
+                name: "",
+                access: "read",
               }}
-              validate={(values) => {
-                setNewUserFormSubmitActive(
-                  values.username !== "" && values.accessLevel !== null
-                );
-              }}
-              onSubmit={async (values, { resetForm }) => {
-                setErrorMsg(null);
-
-                if (userAlreadyHasAccess(values.username)) {
-                  setErrorMsg(
-                    `'${values.username}' already has access to this model.`
-                  );
-                }
-
-                const response = await setModelSharingPermissions(
-                  modelControllerURL,
-                  modelUUID,
-                  store.getState,
-                  {
-                    name: values.username,
-                    access: values.accessLevel,
-                  },
-                  undefined,
-                  "grant",
-                  dispatch
-                );
-                const error = response?.results[0]?.error?.message;
-                if (error) {
-                  setErrorMsg(error);
-                } else {
-                  resetForm();
-                }
-              }}
+              validate={(values) => handleValidateNewUser(values)}
+              onSubmit={(values, { resetForm }) =>
+                handleNewUserFormSubmit(values, resetForm)
+              }
             >
               <Form>
                 <label className="is-required" htmlFor="username">
@@ -273,9 +273,9 @@ export default function ShareModel() {
                   required
                   type="text"
                   placeholder="Username"
-                  name="username"
+                  name="name"
                 />
-                <label className="is-required" htmlFor="accessLevel">
+                <label className="is-required" htmlFor=" ">
                   Access level
                 </label>
                 <div className="p-radio">
@@ -284,7 +284,7 @@ export default function ShareModel() {
                       id="accessRead"
                       type="radio"
                       className="p-radio__input"
-                      name="accessLevel"
+                      name="access"
                       aria-labelledby="Read"
                       value="read"
                     />
@@ -303,7 +303,7 @@ export default function ShareModel() {
                       id="accessWrite"
                       type="radio"
                       className="p-radio__input"
-                      name="accessLevel"
+                      name="access"
                       aria-labelledby="Write"
                       value="write"
                     />
@@ -323,7 +323,7 @@ export default function ShareModel() {
                       id="accessAdmin"
                       type="radio"
                       className="p-radio__input"
-                      name="accessLevel"
+                      name="access"
                       aria-labelledby="Admin"
                       value="admin"
                     />
