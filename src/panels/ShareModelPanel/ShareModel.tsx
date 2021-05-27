@@ -18,7 +18,7 @@ import type { TSFixMe } from "types";
 import "./share-model.scss";
 
 type ModelControllerData = {
-  additionalController: undefined;
+  additionalController: boolean;
   path: string;
   url: string;
   uuid: string;
