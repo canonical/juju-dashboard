@@ -231,7 +231,6 @@ export default function ShareModel() {
                 username: "",
                 accessLevel: "read",
               }}
-              // @ts-ignore
               validate={(values) => {
                 setNewUserFormSubmitActive(
                   values.username !== "" && values.accessLevel !== null
