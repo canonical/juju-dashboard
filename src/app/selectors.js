@@ -617,7 +617,7 @@ export const getModelControllerDataByUUID = (controllerUUID) => {
       }
       return false;
     });
-    let clonedModelController = cloneDeep(modelController);
+    const clonedModelController = cloneDeep(modelController);
     if (clonedModelController) {
       clonedModelController.url = Object.keys(controllerData)[0];
     }

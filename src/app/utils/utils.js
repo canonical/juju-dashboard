@@ -184,7 +184,7 @@ export const extractOwnerName = (tag) => {
 
 /**
   Pluralizes the supplied word based on the provided dataset.
-  @param {number} value The integer to be checked
+  @param {Number} value The integer to be checked
   @param {string} string The item name to be pluralized
   @returns {string} The item pluralized if required
 */
@@ -272,7 +272,7 @@ export const getViewportWidth = () => {
 
 /**
  * @param {function} fn Function to debounce
- * @param {number} wait Time in milliseconds to wait
+ * @param {Number} wait Time in milliseconds to wait
  */
 export const debounce = (fn, wait) => {
   let t;

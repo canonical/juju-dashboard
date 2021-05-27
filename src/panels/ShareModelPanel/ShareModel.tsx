@@ -188,11 +188,11 @@ export default function ShareModel() {
                           onChange={async (
                             e: React.ChangeEvent<HTMLInputElement>
                           ) => {
-                            const cloneUserAccess = cloneDeep(usersAccess);
-                            if (cloneUserAccess) {
-                              cloneUserAccess[userName] = e.target.value;
+                            const clonedUserAccess = cloneDeep(usersAccess);
+                            if (clonedUserAccess) {
+                              clonedUserAccess[userName] = e.target.value;
                             }
-                            setUsersAccess(cloneUserAccess);
+                            setUsersAccess(clonedUserAccess);
                             const updatedUserAccess: userAccess = {
                               name: userName,
                               access: e.target.value,
