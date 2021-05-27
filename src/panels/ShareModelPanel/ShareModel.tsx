@@ -82,7 +82,7 @@ export default function ShareModel() {
         setUsersAccess(clonedUserAccess);
       }
     });
-  }, [users]); // eslint-disable-line
+  }, [users]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isOwner = (user: string) => {
     return user === modelStatusData?.info["owner-tag"].replace("user-", "");
