@@ -462,11 +462,11 @@ export async function queryOperationsList(queryArgs, modelUUID, appState) {
   Call the API to grant the sharing permissions for a model
   @param {String} controllerURL
   @param {String} modelUUID
-  @param {Function} getState
-  @param {Object} user
-  @param {String | undefined} previousAccess
-  @param {String} action
-  @param {Function} dispatch
+  @param {Function} getState Function to get current store state
+  @param {Object} user The user obj with name and access info
+  @param {String | undefined} previousAccess The level of access a user previously had (read|write|admin)
+  @param {String} action grant|revoke
+  @param {Function} dispatch Redux dispatch method
   @returns {Promise} The application set config response
 */
 export async function setModelSharingPermissions(
