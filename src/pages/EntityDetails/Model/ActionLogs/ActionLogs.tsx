@@ -72,9 +72,9 @@ export default function ActionLogs() {
     getModelUUIDMemo as (state: DefaultRootState) => string
   );
   const modelStatusData = useSelector(
-    getModelStatus(modelUUID) as (
-      state: DefaultRootState
-    ) => { applications: ApplicationList }
+    getModelStatus(modelUUID) as (state: DefaultRootState) => {
+      applications: ApplicationList;
+    }
   );
 
   const applicationList = () => Object.keys(modelStatusData.applications);

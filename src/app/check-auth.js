@@ -51,31 +51,33 @@ const checkLoggedIn = (state, wsControllerURL) => {
         is stored under in redux in order to determine it's logged in status.
 */
 // eslint-disable-next-line import/no-anonymous-default-export
-export default ({ getState }) => (next) => async (action, options) => {
-  const state = getState();
-  const wsControllerURL = options?.wsControllerURL;
+export default ({ getState }) =>
+  (next) =>
+  async (action, options) => {
+    const state = getState();
+    const wsControllerURL = options?.wsControllerURL;
 
-  // If the action is a function then it's probably a thunk.
-  if (typeof action === "function") {
-    if (
-      thunkWhitelist.includes(action.NAME) ||
-      checkLoggedIn(state, wsControllerURL)
-    ) {
-      // Await the next to support async thunks
-      await next(action);
-      return;
+    // If the action is a function then it's probably a thunk.
+    if (typeof action === "function") {
+      if (
+        thunkWhitelist.includes(action.NAME) ||
+        checkLoggedIn(state, wsControllerURL)
+      ) {
+        // Await the next to support async thunks
+        await next(action);
+        return;
+      } else {
+        error(action.NAME, wsControllerURL);
+      }
     } else {
-      error(action.NAME, wsControllerURL);
+      if (
+        actionWhitelist.includes(action.type) ||
+        checkLoggedIn(state, wsControllerURL)
+      ) {
+        next(action);
+        return;
+      } else {
+        error(action.type, wsControllerURL);
+      }
     }
-  } else {
-    if (
-      actionWhitelist.includes(action.type) ||
-      checkLoggedIn(state, wsControllerURL)
-    ) {
-      next(action);
-      return;
-    } else {
-      error(action.type, wsControllerURL);
-    }
-  }
-};
+  };

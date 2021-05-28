@@ -162,11 +162,8 @@ export default function StatusGroup({ filters }) {
     getGroupedByStatusAndFilteredModelData(filters)
   );
 
-  const {
-    blockedRows,
-    alertRows,
-    runningRows,
-  } = generateModelTableDataByStatus(groupedAndFilteredData);
+  const { blockedRows, alertRows, runningRows } =
+    generateModelTableDataByStatus(groupedAndFilteredData);
 
   const emptyStateMsg = "There are no models with this status";
 

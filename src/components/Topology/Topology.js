@@ -210,10 +210,9 @@ const Topology = ({ modelData, width, height }) => {
       .attr("stroke", "#888888")
       .call((_) => {
         // When ever a new element is added zoom the canvas to fit.
-        const {
-          width: svgWidth,
-          height: svgHeight,
-        } = topo.node().getBoundingClientRect();
+        const { width: svgWidth, height: svgHeight } = topo
+          .node()
+          .getBoundingClientRect();
         if (svgWidth > 0 && svgHeight > 0) {
           // Magic number that presents reasonable padding around the viz.
           const padding = 200;

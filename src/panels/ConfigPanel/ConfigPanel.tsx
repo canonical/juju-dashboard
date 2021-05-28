@@ -63,9 +63,8 @@ export default function ConfigPanel({
 }: Props): JSX.Element {
   const reduxStore = useStore();
   const [config, setConfig] = useState<Config>({});
-  const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
-    undefined
-  );
+  const [selectedConfig, setSelectedConfig] =
+    useState<ConfigData | undefined>(undefined);
   const [enableSave, setEnableSave] = useState<boolean>(false);
   const [showResetAll, setShowResetAll] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);

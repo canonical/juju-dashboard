@@ -88,9 +88,8 @@ describe("ModelTableList", () => {
     // override existing data mock while using as much real content as possible.
     const unknownUUID = "unknown-6245-2134-1325-ee33ee55dd66";
     const testModelUUID = "19b56b55-6373-4286-8c19-957fakee8469";
-    clonedData.juju.modelData[testModelUUID].info[
-      "controller-uuid"
-    ] = unknownUUID;
+    clonedData.juju.modelData[testModelUUID].info["controller-uuid"] =
+      unknownUUID;
     const store = mockStore(clonedData);
     const wrapper = mount(
       <MemoryRouter>
@@ -110,9 +109,8 @@ describe("ModelTableList", () => {
     // override existing data mock while using as much real content as possible.
     const knownUUID = "086f0bf8-da79-4ad4-8d73-890721332c8b";
     const testModelUUID = "19b56b55-6373-4286-8c19-957fakee8469";
-    clonedData.juju.modelData[testModelUUID].info[
-      "controller-uuid"
-    ] = knownUUID;
+    clonedData.juju.modelData[testModelUUID].info["controller-uuid"] =
+      knownUUID;
     const store = mockStore(clonedData);
     const wrapper = mount(
       <MemoryRouter>
