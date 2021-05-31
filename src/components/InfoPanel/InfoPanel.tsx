@@ -38,8 +38,9 @@ const InfoPanel = () => {
 
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
   const modelStatusData: TSFixMe = useModelStatus();
-  const applicationsCount = Object.entries(modelStatusData.applications || {})
-    .length;
+  const applicationsCount = Object.entries(
+    modelStatusData.applications || {}
+  ).length;
 
   const { width, height } = expandedTopologyDimensions();
   const topologySize = infoPanelDimensions();

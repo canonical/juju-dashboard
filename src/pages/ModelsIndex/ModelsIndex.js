@@ -46,9 +46,8 @@ export default function Models() {
 
   // loop model data and pull out filter panel data
   const modelData = useSelector(getModelData);
-  const { clouds, regions, owners, credentials } = useModelAttributes(
-    modelData
-  );
+  const { clouds, regions, owners, credentials } =
+    useModelAttributes(modelData);
 
   // Generate chips from available model data
   const generateChips = (lead, values) => {

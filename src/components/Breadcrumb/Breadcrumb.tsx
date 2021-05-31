@@ -1,18 +1,12 @@
 import { Link, useParams } from "react-router-dom";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import React from "react";
 
 import "./_breadcrumbs.scss";
 
 export default function Breadcrumb(): JSX.Element {
-  const {
-    userName,
-    modelName,
-    appName,
-    unitId,
-    machineId,
-  } = useParams<EntityDetailsRoute>();
+  const { userName, modelName, appName, unitId, machineId } =
+    useParams<EntityDetailsRoute>();
 
   const generateBreadcrumbs = function (): JSX.Element {
     const view = machineId ? "machines" : "apps";

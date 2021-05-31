@@ -56,9 +56,8 @@ export default function App(): JSX.Element {
     modelName,
   } = useParams<EntityDetailsRoute>();
 
-  const [enableActionButtonRow, setEnableActionButtonRow] = useState<boolean>(
-    false
-  );
+  const [enableActionButtonRow, setEnableActionButtonRow] =
+    useState<boolean>(false);
 
   const tablesRef = useRef<HTMLDivElement>(null);
   const setFieldsValues = useRef<SetFieldValue>();

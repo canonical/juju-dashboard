@@ -57,9 +57,8 @@ export default function ShareModel() {
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
   const modelUUID = modelStatusData?.info.uuid;
 
-  const modelControllerDataByUUID = getModelControllerDataByUUID(
-    controllerUUID
-  );
+  const modelControllerDataByUUID =
+    getModelControllerDataByUUID(controllerUUID);
 
   const modelControllerData: ModelControllerData = useSelector(
     modelControllerDataByUUID as (

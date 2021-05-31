@@ -20,9 +20,8 @@ export default function ConfirmationModal({
 
   useEffect(() => {
     if (modalRef.current) {
-      const neutralButton: HTMLButtonElement | null = modalRef?.current?.querySelector(
-        "button.p-button--neutral"
-      );
+      const neutralButton: HTMLButtonElement | null =
+        modalRef?.current?.querySelector("button.p-button--neutral");
       // If the modal has a neutral button then focus on that after opening
       // to make a better keyboard navigation experience.
       if (neutralButton) {
