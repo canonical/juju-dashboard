@@ -80,7 +80,7 @@
     "redux-thunk": "2.3.0",
     "reselect": "4.0.0",
     "use-query-params": "1.2.2",
-    "vanilla-framework": "2.29.0"
+    "vanilla-framework": "2.30.0"
   },
   "devDependencies": {
     "@types/classnames": "2.3.1",
