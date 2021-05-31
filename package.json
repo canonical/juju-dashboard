@@ -62,7 +62,7 @@
     "d3": "6.7.0",
     "date-fns": "2.21.3",
     "formik": "2.2.6",
-    "framer-motion": "4.1.11",
+    "framer-motion": "4.1.17",
     "immer": "9.0.2",
     "mock-socket": "^9.0.3",
     "prop-types": "15.7.2",
