@@ -2,6 +2,7 @@ import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { mount } from "enzyme";
 import { MemoryRouter } from "react-router";
+import cloneDeep from "clone-deep";
 
 import dataDump from "testing/complete-redux-store-dump";
 
@@ -23,8 +24,8 @@ jest.mock("juju", () => {
 const mockStore = configureStore([]);
 
 describe("Action Logs", () => {
-  async function generateComponent() {
-    const store = mockStore(dataDump);
+  async function generateComponent(applicationData = dataDump) {
+    const store = mockStore(applicationData);
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter
@@ -43,6 +44,27 @@ describe("Action Logs", () => {
   }
 
   it("requests the action logs data on load", async () => {
+    const wrapper = await generateComponent();
+    const expected = [
+      ["easyrsa", "1/list-disks", "completed", "", "", ""],
+      ["└easyrsa/0", "", "completed", "2", "-", "2021-04-14T20:27:57Z"],
+      ["└easyrsa/1", "", "completed", "3", "-", "2021-04-14T20:27:57Z"],
+    ];
+    const result = [];
+    wrapper.find("tbody TableRow").forEach((row, rowIndex) => {
+      result.push([]);
+      row.find("TableCell").forEach((cell) => {
+        result[rowIndex].push(cell.text());
+      });
+    });
+    expect(expected).toEqual(result);
+  });
+
+  it("fails gracefully if app does not exist in model data", async () => {
+    const clonedData = cloneDeep(dataDump);
+    delete clonedData.juju.modelData["57650e3c-815f-4540-89df-81fdfakeb7ef"]
+      .easyrsa;
+
     const wrapper = await generateComponent();
     const expected = [
       ["easyrsa", "1/list-disks", "completed", "", "", ""],

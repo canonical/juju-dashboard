@@ -48,6 +48,10 @@ type ActionData = {
   name: string;
 };
 
+type ApplicationData = {
+  charm: string;
+};
+
 function generateLinkToApp(
   appName: string,
   userName: string,
@@ -58,6 +62,26 @@ function generateLinkToApp(
       {appName}
     </Link>
   );
+}
+
+function generateAppIcon(
+  application: ApplicationData | undefined,
+  appName: string,
+  userName: string,
+  modelName: string
+) {
+  // If the user has executed actions with an application and then removed
+  // that application it'll no longer be in the model data so in this
+  // case we need to fail gracefully.
+  if (application) {
+    return (
+      <>
+        {generateIconImg(appName, application.charm)}
+        {generateLinkToApp(appName, userName, modelName)}
+      </>
+    );
+  }
+  return <>{appName}</>;
 }
 
 export default function ActionLogs() {
@@ -133,13 +157,12 @@ export default function ActionLogs() {
               );
               return;
             }
-            const charm = modelStatusData.applications[appName].charm;
             newData = {
-              application: (
-                <>
-                  {generateIconImg(appName, charm)}
-                  {generateLinkToApp(appName, userName, modelName)}
-                </>
+              application: generateAppIcon(
+                modelStatusData.applications[appName],
+                appName,
+                userName,
+                modelName
               ),
               id: `${operationId}/${actionName}`,
               status: generateStatusElement(
