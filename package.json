@@ -61,7 +61,7 @@
     "clone-deep": "4.0.1",
     "d3": "6.7.0",
     "date-fns": "2.22.1",
-    "formik": "2.2.8",
+    "formik": "2.2.9",
     "framer-motion": "4.1.17",
     "immer": "9.0.2",
     "mock-socket": "^9.0.3",
