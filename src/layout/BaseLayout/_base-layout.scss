@@ -120,6 +120,20 @@
       }
     }
   }
+
+  // Close user menu when side nav collapses so it remains active but appears
+  // visually inactive until the user hovers the side nav again
+  &[data-sidenav-initially-collapsed="true"] {
+    .user-menu.is-active {
+      max-height: $user-menu-height--inactive;
+    }
+
+    &:hover {
+      .user-menu.is-active {
+        max-height: $user-menu-height--active;
+      }
+    }
+  }
 }
 
 .l-content {
