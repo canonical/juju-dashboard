@@ -6,19 +6,13 @@
 
   bottom: 0;
   color: $color-light;
-  max-height: 2.5rem;
+  max-height: $user-menu-height--inactive;
   padding: 0;
   position: absolute;
   width: 100%;
 
   &.is-active {
-    max-height: 120px;
-  }
-
-  @at-root {
-    .has-collapsible-sidebar .is-collapsed .user-menu.is-active {
-      max-height: 2.5rem;
-    }
+    max-height: $user-menu-height--active;
   }
 
   &__header {

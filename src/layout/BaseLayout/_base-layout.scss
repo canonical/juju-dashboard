@@ -87,7 +87,7 @@
 
   // Override Vanilla to always collapse navigation sidebar
   @media (min-width: $breakpoint-large - 1) {
-    &[data-side-nav-collapsed="true"] {
+    &[data-sidenav-initially-collapsed="true"] {
       & ~ .l-main {
         padding-left: 3rem;
       }
@@ -117,6 +117,20 @@
         .p-primary-nav__divider {
           opacity: 0.1;
         }
+      }
+    }
+  }
+
+  // Close user menu when side nav collapses so it remains active but appears
+  // visually inactive until the user hovers the side nav again
+  &[data-sidenav-initially-collapsed="true"] {
+    .user-menu.is-active {
+      max-height: $user-menu-height--inactive;
+    }
+
+    &:hover {
+      .user-menu.is-active {
+        max-height: $user-menu-height--active;
       }
     }
   }
