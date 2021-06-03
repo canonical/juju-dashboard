@@ -1,8 +1,15 @@
 import { mount } from "enzyme";
 import { act } from "react-dom/test-utils";
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
 import WS from "jest-websocket-mock";
 
+import { waitForComponentToPaint } from "testing/utils";
+import dataDump from "testing/complete-redux-store-dump";
+
 import WebCLI from "./WebCLI";
+
+const mockStore = configureStore([]);
 
 describe("WebCLI", () => {
   const originalError = console.error;
@@ -25,17 +32,27 @@ describe("WebCLI", () => {
     console.error = jest.fn();
   };
 
-  it("renders correctly", () => {
+  async function generateComponent(
+    props = { controllerWSHost: "jimm.jujucharms.com:443", modelUUID: "abc123" }
+  ) {
+    const store = mockStore(dataDump);
+
     const wrapper = mount(
-      <WebCLI controllerWSHost="jimm.jujucharms.com:443" modelUUID="abc123" />
+      <Provider store={store}>
+        <WebCLI {...props} />
+      </Provider>
     );
-    expect(wrapper).toMatchSnapshot();
+    await waitForComponentToPaint(wrapper);
+    return wrapper;
+  }
+
+  it("renders correctly", async () => {
+    const wrapper = await generateComponent();
+    expect(wrapper.find("WebCLI")).toMatchSnapshot();
   });
 
-  it("shows the help in the output when the ? is clicked", () => {
-    const wrapper = mount(
-      <WebCLI controllerWSHost="jimm.jujucharms.com:443" modelUUID="abc123" />
-    );
+  it("shows the help in the output when the ? is clicked", async () => {
+    const wrapper = await generateComponent();
     act(() => {
       wrapper.find(".webcli__input-help i").simulate("click");
     });
@@ -53,23 +70,21 @@ describe("WebCLI", () => {
     });
   });
 
-  it("calls to refresh the model on command submission", () => {
+  it("calls to refresh the model on command submission", async () => {
     const mockRefreshModel = jest.fn();
     new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
     });
-    const wrapper = mount(
-      <WebCLI
-        protocol="ws"
-        controllerWSHost="localhost:1234"
-        credentials={{
-          user: "spaceman",
-          password: "somelongpassword",
-        }}
-        modelUUID="abc123"
-        refreshModel={mockRefreshModel}
-      />
-    );
+    const wrapper = await generateComponent({
+      protocol: "ws",
+      controllerWSHost: "localhost:1234",
+      modelUUID: "abc123",
+      credentials: {
+        user: "spaceman",
+        password: "somelongpassword",
+      },
+      refreshModel: mockRefreshModel,
+    });
     wrapper.find(".webcli__input-input").instance().value = "status --color";
     wrapper.find("form").simulate("submit", { preventDefault: () => {} });
     return new Promise((resolve) => {
@@ -81,23 +96,21 @@ describe("WebCLI", () => {
     });
   });
 
-  it("trims the command being submitted", () => {
+  it("trims the command being submitted", async () => {
     clobberConsoleError();
     // ..until it receives a 'done' message.
     const server = new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
     });
-    const wrapper = mount(
-      <WebCLI
-        protocol="ws"
-        controllerWSHost="localhost:1234"
-        credentials={{
-          user: "spaceman",
-          password: "somelongpassword",
-        }}
-        modelUUID="abc123"
-      />
-    );
+    const wrapper = await generateComponent({
+      protocol: "ws",
+      controllerWSHost: "localhost:1234",
+      modelUUID: "abc123",
+      credentials: {
+        user: "spaceman",
+        password: "somelongpassword",
+      },
+    });
     return new Promise(async (resolve) => {
       await act(async () => {
         await server.connected;
@@ -120,23 +133,21 @@ describe("WebCLI", () => {
   });
 
   describe("WebCLI Output", () => {
-    it("displays messages recieved over the websocket", () => {
+    it("displays messages recieved over the websocket", async () => {
       clobberConsoleError();
       // ..until it receives a 'done' message.
       const server = new WS("ws://localhost:1234/model/abc123/commands", {
         jsonProtocol: true,
       });
-      const wrapper = mount(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          credentials={{
-            user: "spaceman",
-            password: "somelongpassword",
-          }}
-          modelUUID="abc123"
-        />
-      );
+      const wrapper = await generateComponent({
+        protocol: "ws",
+        controllerWSHost: "localhost:1234",
+        modelUUID: "abc123",
+        credentials: {
+          user: "spaceman",
+          password: "somelongpassword",
+        },
+      });
       return new Promise(async (resolve) => {
         await act(async () => {
           await server.connected;
@@ -202,23 +213,21 @@ describe("WebCLI", () => {
       });
     });
 
-    it("displays ansi colored content colored", () => {
+    it("displays ansi colored content colored", async () => {
       clobberConsoleError();
       // ..until it receives a 'done' message.
       const server = new WS("ws://localhost:1234/model/abc123/commands", {
         jsonProtocol: true,
       });
-      const wrapper = mount(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          credentials={{
-            user: "spaceman",
-            password: "somelongpassword",
-          }}
-          modelUUID="abc123"
-        />
-      );
+      const wrapper = await generateComponent({
+        protocol: "ws",
+        controllerWSHost: "localhost:1234",
+        modelUUID: "abc123",
+        credentials: {
+          user: "spaceman",
+          password: "somelongpassword",
+        },
+      });
       return new Promise(async (resolve) => {
         await act(async () => {
           await server.connected;

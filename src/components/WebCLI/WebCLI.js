@@ -65,7 +65,7 @@ const WebCLI = ({
     let authentication = {};
     if (credentials && credentials.user && credentials.password) {
       authentication.user = credentials.user;
-      authentication.password = credentials.password;
+      authentication.credentials = credentials.password;
     } else {
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
