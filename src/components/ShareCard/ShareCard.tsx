@@ -33,7 +33,7 @@ export default function ShareCard({
       <SlideDownFadeOut isAnimating={hasBeenRemoved}>
         <div className="share__card" data-active={inFocus}>
           <div className="share__card-title">
-            <strong>{userName}</strong>
+            <strong className="share__card-username">{userName}</strong>
             <span className="secondary">
               {isOwner ? (
                 "Owner"
@@ -71,6 +71,7 @@ export default function ShareCard({
                       setInFocus(false);
                     }}
                     value={access}
+                    className="share__card-access"
                   >
                     <option value="read">Read</option>
                     <option value="write">Write</option>
