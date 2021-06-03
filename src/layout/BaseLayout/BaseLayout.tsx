@@ -1,9 +1,8 @@
 import { TSFixMe } from "types";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import Logo from "components/Logo/Logo";
 import Banner from "components/Banner/Banner";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 
@@ -23,7 +22,6 @@ type Props = {
 };
 
 const BaseLayout = ({ children }: Props) => {
-  const [menuCollapsed, setMenuCollapsed] = useState(true);
   const location = useLocation();
   const dispatch = useDispatch();
 
@@ -65,20 +63,8 @@ const BaseLayout = ({ children }: Props) => {
       <div id="confirmation-modal-container"></div>
 
       <div className="l-application">
-        <div className="l-navigation-bar">
-          <Logo />
-          <button
-            className="is-dense toggle-menu"
-            onClick={() => {
-              setMenuCollapsed(!menuCollapsed);
-            }}
-          >
-            {menuCollapsed ? "Open menu" : "Close menu"}
-          </button>
-        </div>
         <header
           className="l-navigation"
-          data-collapsed={menuCollapsed}
           data-side-nav-collapsed={collapseSidebar}
         >
           <div className="l-navigation__drawer">

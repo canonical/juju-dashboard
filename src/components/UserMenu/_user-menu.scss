@@ -15,12 +15,6 @@
     max-height: 120px;
   }
 
-  @at-root {
-    .has-collapsible-sidebar .is-collapsed .user-menu.is-active {
-      max-height: 2.5rem;
-    }
-  }
-
   &__header {
     cursor: pointer;
     display: flex;
