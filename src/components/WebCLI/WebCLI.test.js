@@ -53,13 +53,10 @@ describe("WebCLI", () => {
 
   it("shows the help in the output when the ? is clicked", async () => {
     const wrapper = await generateComponent();
-    act(() => {
-      wrapper.find(".webcli__input-help i").simulate("click");
-    });
+    wrapper.find(".webcli__input-help i").simulate("click");
+    await waitForComponentToPaint(wrapper);
     return new Promise((resolve) => setTimeout(resolve)).then(() => {
-      act(() => {
-        wrapper.update();
-      });
+      wrapper.update();
       expect(
         wrapper
           .find(".webcli__output-content code")
@@ -97,8 +94,6 @@ describe("WebCLI", () => {
   });
 
   it("trims the command being submitted", async () => {
-    clobberConsoleError();
-    // ..until it receives a 'done' message.
     const server = new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
     });
@@ -112,21 +107,18 @@ describe("WebCLI", () => {
       },
     });
     return new Promise(async (resolve) => {
-      await act(async () => {
-        await server.connected;
-        wrapper.find(".webcli__input-input").instance().value =
-          "      status       ";
-        wrapper.find("form").simulate("submit", { preventDefault: () => {} });
-        await expect(server).toReceiveMessage({
-          user: "spaceman",
-          credentials: "somelongpassword",
-          commands: ["status"],
-        });
+      await server.connected;
+      wrapper.find(".webcli__input-input").instance().value =
+        "      status       ";
+      wrapper.find("form").simulate("submit", { preventDefault: () => {} });
+      await waitForComponentToPaint(wrapper);
+      await expect(server).toReceiveMessage({
+        user: "spaceman",
+        credentials: "somelongpassword",
+        commands: ["status"],
       });
       setTimeout(() => {
-        act(() => {
-          WS.clean();
-        });
+        WS.clean();
         resolve();
       });
     });
