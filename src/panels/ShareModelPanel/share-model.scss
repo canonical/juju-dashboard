@@ -53,6 +53,10 @@
     .p-icon--delete {
       cursor: pointer;
     }
+
+    &.is-focussed {
+      border: 1px solid hotpink;
+    }
   }
 
   .p-radio {
