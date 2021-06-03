@@ -87,7 +87,7 @@
 
   // Override Vanilla to always collapse navigation sidebar
   @media (min-width: $breakpoint-large - 1) {
-    &[data-side-nav-collapsed="true"] {
+    &[data-sidenav-initially-collapsed="true"] {
       & ~ .l-main {
         padding-left: 3rem;
       }

@@ -65,7 +65,7 @@ const BaseLayout = ({ children }: Props) => {
       <div className="l-application">
         <header
           className="l-navigation"
-          data-side-nav-collapsed={collapseSidebar}
+          data-sidenav-initially-collapsed={collapseSidebar}
         >
           <div className="l-navigation__drawer">
             <PrimaryNav />
