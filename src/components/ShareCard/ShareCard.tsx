@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { Formik, Field, Form } from "formik";
 import { formatFriendlyDateToNow } from "app/utils/utils";
+
+import "./_share-card.scss";
 
 type Props = {
   userName: string;
@@ -21,9 +24,10 @@ export default function ShareCard({
   removeUser,
   accessSelectChange,
 }: Props) {
+  const [inFocus, setInFocus] = useState(false);
   return (
-    <div className="share-model__card" key={userName}>
-      <div className="share-model__card-title">
+    <div className="share__card" key={userName} data-active={inFocus}>
+      <div className="share__card-title">
         <strong>{userName}</strong>
         <span className="secondary">
           {isOwner ? (
@@ -52,9 +56,12 @@ export default function ShareCard({
               <Field
                 as="select"
                 name="access"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  accessSelectChange(e, userName)
-                }
+                onFocus={() => setInFocus(true)}
+                onBlur={() => setInFocus(false)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  accessSelectChange(e, userName);
+                  setInFocus(false);
+                }}
                 value={access}
               >
                 <option value="read">Read</option>

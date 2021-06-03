@@ -1,0 +1,43 @@
+@import "vanilla-framework/scss/vanilla";
+
+.share__card {
+  background-color: $color-light;
+  border: solid 1px $color-mid-x-light;
+  border-radius: 2px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+
+  select {
+    margin-bottom: 0;
+  }
+
+  .supplementary {
+    color: $color-mid-dark;
+    max-width: 80%;
+
+    form {
+      margin-top: 1rem;
+      max-width: 50%;
+    }
+  }
+
+  &-title {
+    display: flex;
+    margin-left: auto;
+    width: 100%;
+
+    .secondary {
+      margin-left: auto;
+    }
+  }
+
+  .p-icon--delete {
+    cursor: pointer;
+  }
+
+  &[data-active="true"] {
+    background-color: rgba(0, 102, 204, 0.05);
+    border: 1px solid $color-link;
+    transition: background-color 0.5s;
+  }
+}
