@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSelector, useStore } from "react-redux";
+
+import { getActiveUserTag, getBakery } from "app/selectors";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
@@ -21,6 +24,8 @@ const WebCLI = ({
   const wsMessageStore = useRef();
   let [output, setOutput] = useState("");
   const sendAnalytics = useAnalytics();
+  const bakery = useSelector(getBakery);
+  const storeState = useStore().getState();
 
   const clearMessageBuffer = () => {
     wsMessageStore.current = "";
@@ -54,10 +59,36 @@ const WebCLI = ({
     e.preventDefault();
     clearMessageBuffer();
     setShouldShowHelp(false);
+    // We need to get the most up to date connection information in the event
+    // that the original connection was redirected. This typically happens in
+    // a JAAS style environment.
+    let authentication = {};
+    if (credentials && credentials.user && credentials.password) {
+      authentication.user = credentials.user;
+      authentication.password = credentials.password;
+    } else {
+      // A user name and password were not provided so try and get a macaroon.
+      // The macaroon should be already stored as we've already connected to
+      // the model for the model status.
+      const origin = new URL(connection.address).origin;
+      const macaroons = bakery.storage.get(origin);
+      if (macaroons) {
+        const deserialized = JSON.parse(atob(macaroons));
+        const originalWSOrigin = new URL(wsAddress).origin;
+        const activeUser = getActiveUserTag(
+          `${originalWSOrigin}/api`,
+          storeState
+        );
+        authentication.user = activeUser?.replace("user-", "");
+        authentication.macaroons = [deserialized];
+      } else {
+        // XXX Handle failure case.
+      }
+    }
+
     connection.send(
       JSON.stringify({
-        user: credentials.user,
-        credentials: credentials.password,
+        ...authentication,
         commands: [e.currentTarget.children.command.value.trim()],
       })
     );
