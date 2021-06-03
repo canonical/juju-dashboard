@@ -3,6 +3,7 @@ import { act } from "react-dom/test-utils";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import WS from "jest-websocket-mock";
+import cloneDeep from "clone-deep";
 
 import { waitForComponentToPaint } from "testing/utils";
 import dataDump from "testing/complete-redux-store-dump";
@@ -33,9 +34,13 @@ describe("WebCLI", () => {
   };
 
   async function generateComponent(
-    props = { controllerWSHost: "jimm.jujucharms.com:443", modelUUID: "abc123" }
+    props = {
+      controllerWSHost: "jimm.jujucharms.com:443",
+      modelUUID: "abc123",
+    },
+    customDataDump
   ) {
-    const store = mockStore(dataDump);
+    const store = mockStore(customDataDump || dataDump);
 
     const wrapper = mount(
       <Provider store={store}>
@@ -115,6 +120,45 @@ describe("WebCLI", () => {
       await expect(server).toReceiveMessage({
         user: "spaceman",
         credentials: "somelongpassword",
+        commands: ["status"],
+      });
+      setTimeout(() => {
+        WS.clean();
+        resolve();
+      });
+    });
+  });
+
+  it("supports macaroon based authentication", async () => {
+    const clonedDataDump = cloneDeep(dataDump);
+    clonedDataDump.root.controllerConnections["ws://localhost:1234/api"] = {
+      info: { user: { identity: "user-eggman@external" } },
+    };
+    clonedDataDump.root.bakery.storage.get = (key) => {
+      const macaroons = { "ws://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=" };
+      return macaroons[key];
+    };
+
+    const server = new WS("ws://localhost:1234/model/abc123/commands", {
+      jsonProtocol: true,
+    });
+    const wrapper = await generateComponent(
+      {
+        protocol: "ws",
+        controllerWSHost: "localhost:1234",
+        modelUUID: "abc123",
+      },
+      clonedDataDump
+    );
+    return new Promise(async (resolve) => {
+      await server.connected;
+      wrapper.find(".webcli__input-input").instance().value =
+        "      status       ";
+      wrapper.find("form").simulate("submit", { preventDefault: () => {} });
+      await waitForComponentToPaint(wrapper);
+      await expect(server).toReceiveMessage({
+        user: "eggman@external",
+        macaroons: [["mac", "aroon"]],
         commands: ["status"],
       });
       setTimeout(() => {
