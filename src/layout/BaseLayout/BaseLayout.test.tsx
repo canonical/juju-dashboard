@@ -70,7 +70,9 @@ describe("Base Layout", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("header").prop("data-side-nav-collapsed")).toBe(true);
+    expect(
+      wrapper.find("header").prop("data-sidenav-initially-collapsed")
+    ).toBe(true);
   });
 
   it("should not collapse the sidebar when not on entity details pages", () => {
@@ -88,6 +90,8 @@ describe("Base Layout", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("header").prop("data-side-nav-collapsed")).toBe(false);
+    expect(
+      wrapper.find("header").prop("data-sidenav-initially-collapsed")
+    ).toBe(false);
   });
 });
