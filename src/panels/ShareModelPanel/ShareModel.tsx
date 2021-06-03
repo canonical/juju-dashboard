@@ -5,6 +5,7 @@ import { Formik, Field, Form } from "formik";
 import cloneDeep from "clone-deep";
 import useModelStatus from "hooks/useModelStatus";
 import { setModelSharingPermissions } from "juju";
+import { motion } from "framer-motion";
 
 import { getModelControllerDataByUUID } from "app/selectors";
 
@@ -170,7 +171,7 @@ export default function ShareModel() {
 
   return (
     <Aside loading={!modelStatusData} isSplit={true}>
-      <div className="p-panel share-model">
+      <motion.div layout className="p-panel share-model">
         <PanelHeader
           title={
             <div className="title-wrapper">
@@ -205,6 +206,7 @@ export default function ShareModel() {
               const lastConnected = userObj["last-connection"];
               return (
                 <ShareCard
+                  key={userName}
                   userName={userName}
                   lastConnected={lastConnected}
                   access={usersAccess?.[userName]}
@@ -312,7 +314,7 @@ export default function ShareModel() {
             </Formik>
           </div>
         </div>
-      </div>
+      </motion.div>
     </Aside>
   );
 }
