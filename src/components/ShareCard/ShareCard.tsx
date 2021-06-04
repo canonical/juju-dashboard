@@ -31,10 +31,10 @@ export default function ShareCard({
   return (
     <div>
       <SlideDownFadeOut isAnimating={hasBeenRemoved}>
-        <div className="share__card" data-active={inFocus}>
-          <div className="share__card-title">
-            <strong className="share__card-username">{userName}</strong>
-            <span className="secondary">
+        <div className="share-card" data-active={inFocus}>
+          <div className="share-card__title">
+            <strong className="share-card__username">{userName}</strong>
+            <span className="share-card__secondary">
               {isOwner ? (
                 "Owner"
               ) : (
@@ -53,7 +53,7 @@ export default function ShareCard({
               )}
             </span>
           </div>
-          <div className="supplementary">
+          <div className="share-card__supplementary">
             Last connected:{" "}
             {lastConnected
               ? formatFriendlyDateToNow(lastConnected)

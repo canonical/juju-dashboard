@@ -1,6 +1,6 @@
 @import "vanilla-framework/scss/vanilla";
 
-.share__card {
+.share-card {
   background-color: $color-light;
   border: solid 1px $color-mid-x-light;
   border-radius: 2px;
@@ -11,7 +11,7 @@
     margin-bottom: 0;
   }
 
-  .supplementary {
+  &__supplementary {
     color: $color-mid-dark;
     max-width: 80%;
 
@@ -21,14 +21,14 @@
     }
   }
 
-  &-title {
+  &__title {
     display: flex;
     margin-left: auto;
     width: 100%;
+  }
 
-    .secondary {
-      margin-left: auto;
-    }
+  &__secondary {
+    margin-left: auto;
   }
 
   .p-icon--delete {
