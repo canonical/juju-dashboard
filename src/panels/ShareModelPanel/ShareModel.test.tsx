@@ -12,7 +12,7 @@ import ShareModel from "./ShareModel";
 const mockStore = configureStore([]);
 
 describe("Share Model Panel", () => {
-  it("should show users with which a model is shared", () => {
+  it("should show panel", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
@@ -25,8 +25,7 @@ describe("Share Model Panel", () => {
         </Provider>
       </MemoryRouter>
     );
-    const firstUserCard = wrapper.find(".share-model__card").first();
-    const firstUserName = firstUserCard.find(".share-model__card-title strong");
-    expect(firstUserName.text()).toBe("eggman@external");
+    const panelHeader = wrapper.find(".aside-split-col h5");
+    expect(panelHeader.text()).toEqual("Sharing with:");
   });
 });
