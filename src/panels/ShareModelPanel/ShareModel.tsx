@@ -4,13 +4,14 @@ import { useParams } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import cloneDeep from "clone-deep";
 import useModelStatus from "hooks/useModelStatus";
-import { formatFriendlyDateToNow } from "app/utils/utils";
 import { setModelSharingPermissions } from "juju";
+import { motion } from "framer-motion";
 
 import { getModelControllerDataByUUID } from "app/selectors";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
+import ShareCard from "components/ShareCard/ShareCard";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { TSFixMe } from "types";
@@ -170,7 +171,7 @@ export default function ShareModel() {
 
   return (
     <Aside loading={!modelStatusData} isSplit={true}>
-      <div className="p-panel share-model">
+      <motion.div layout className="p-panel share-model">
         <PanelHeader
           title={
             <div className="title-wrapper">
@@ -203,52 +204,16 @@ export default function ShareModel() {
             {users?.map((userObj: User) => {
               const userName = userObj["user"];
               const lastConnected = userObj["last-connection"];
-
               return (
-                <div className="share-model__card" key={userObj.user}>
-                  <div className="share-model__card-title">
-                    <strong>{userName}</strong>
-                    <span className="secondary">
-                      {isOwner(userName) ? (
-                        "Owner"
-                      ) : (
-                        <i
-                          className="p-icon--delete"
-                          onClick={() => handleRemoveUser(userName)}
-                          onKeyPress={() => handleRemoveUser(userName)}
-                          role="button"
-                          tabIndex={0}
-                        >
-                          Remove user
-                        </i>
-                      )}
-                    </span>
-                  </div>
-                  <div className="supplementary">
-                    Last connected:{" "}
-                    {lastConnected
-                      ? formatFriendlyDateToNow(lastConnected)
-                      : `Never connected`}
-                    {!isOwner(userName) && (
-                      <Formik initialValues={{}} onSubmit={() => {}}>
-                        <Form>
-                          <Field
-                            as="select"
-                            name="access"
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => handleAccessSelectChange(e, userName)}
-                            value={usersAccess?.[userName]}
-                          >
-                            <option value="read">Read</option>
-                            <option value="write">Write</option>
-                            <option value="admin">Admin</option>
-                          </Field>
-                        </Form>
-                      </Formik>
-                    )}
-                  </div>
-                </div>
+                <ShareCard
+                  key={userName}
+                  userName={userName}
+                  lastConnected={lastConnected}
+                  access={usersAccess?.[userName]}
+                  isOwner={isOwner(userName)}
+                  removeUser={handleRemoveUser}
+                  accessSelectChange={handleAccessSelectChange}
+                />
               );
             })}
           </div>
@@ -349,7 +314,7 @@ export default function ShareModel() {
             </Formik>
           </div>
         </div>
-      </div>
+      </motion.div>
     </Aside>
   );
 }
