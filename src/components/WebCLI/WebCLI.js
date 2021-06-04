@@ -82,7 +82,8 @@ const WebCLI = ({
         authentication.user = activeUser?.replace("user-", "");
         authentication.macaroons = [deserialized];
       } else {
-        // XXX Handle failure case.
+        // XXX Surface error to the user.
+        console.error("No authentication information available");
       }
     }
 
