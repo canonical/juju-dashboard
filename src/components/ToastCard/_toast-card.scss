@@ -1,0 +1,26 @@
+@import "vanilla-framework/scss/vanilla";
+
+.toast-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 32px 0 rgba(51, 51, 51, 0.2);
+  color: $color-dark;
+  padding: 1rem 0.75rem;
+  width: 14rem;
+
+  &[data-type="positive"] {
+    border-left: 3px solid $color-positive;
+  }
+
+  &[data-type="caution"] {
+    border-left: 3px solid $color-caution;
+  }
+
+  &[data-type="negative"] {
+    border-left: 3px solid $color-negative;
+  }
+}
+
+[data-type="postive"] {
+  border-left: 3px solid $color-positive;
+}

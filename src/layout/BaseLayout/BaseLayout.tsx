@@ -2,6 +2,7 @@ import { TSFixMe } from "types";
 import { useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { Toaster } from "react-hot-toast";
 
 import Banner from "components/Banner/Banner";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
@@ -75,6 +76,27 @@ const BaseLayout = ({ children }: Props) => {
           <div data-test="main-children">{children}</div>
         </main>
         <Panels />
+        <Toaster
+          position="bottom-right"
+          containerClassName="toast-container"
+          toastOptions={{
+            // Define default options
+            className: "toast",
+            duration: 5000,
+            style: {
+              borderRadius: "5px",
+              color: "#111",
+            },
+            // Default options for specific types
+            success: {
+              duration: 3000,
+              theme: {
+                primary: "blue",
+                secondary: "black",
+              },
+            },
+          }}
+        />
       </div>
     </>
   );

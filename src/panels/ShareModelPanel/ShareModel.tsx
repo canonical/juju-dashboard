@@ -6,12 +6,14 @@ import cloneDeep from "clone-deep";
 import useModelStatus from "hooks/useModelStatus";
 import { setModelSharingPermissions } from "juju";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 import { getModelControllerDataByUUID } from "app/selectors";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import ShareCard from "components/ShareCard/ShareCard";
+import ToastCard from "components/ToastCard/ToastCard";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { TSFixMe } from "types";
@@ -48,8 +50,6 @@ export default function ShareModel() {
   const { modelName } = useParams<EntityDetailsRoute>();
   const dispatch = useDispatch();
   const store = useStore();
-
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [usersAccess, setUsersAccess] = useState<UsersAccess>({});
   const [newUserFormSubmitActive, setNewUserFormSubmitActive] = useState(false);
 
@@ -121,7 +121,14 @@ export default function ShareModel() {
     );
     const error = response?.results[0]?.error?.message;
     if (error) {
-      setErrorMsg(error);
+      toast.custom(<ToastCard type="negative" message={error} />);
+    } else {
+      toast.custom(
+        <ToastCard
+          type="positive"
+          message={`Permissions for <strong>${userName}</strong> have been changed to <em>${updatedUserAccess.access}.</em>`}
+        />
+      );
     }
   };
 
@@ -143,29 +150,38 @@ export default function ShareModel() {
     values: UserAccess,
     resetForm: () => void
   ) => {
-    setErrorMsg(null);
-
     if (userAlreadyHasAccess(values.name, users)) {
-      setErrorMsg(`'${values.name}' already has access to this model.`);
-    }
-
-    const response = await setModelSharingPermissions(
-      modelControllerURL,
-      modelUUID,
-      store.getState,
-      {
-        name: values.name,
-        access: values.access,
-      },
-      undefined,
-      "grant",
-      dispatch
-    );
-    const error = response?.results[0]?.error?.message;
-    if (error) {
-      setErrorMsg(error);
+      toast.custom(
+        <ToastCard
+          type="negative"
+          message={`<strong>${values.name}</strong> already has access to this model.`}
+        />
+      );
     } else {
-      resetForm();
+      const response = await setModelSharingPermissions(
+        modelControllerURL,
+        modelUUID,
+        store.getState,
+        {
+          name: values.name,
+          access: values.access,
+        },
+        undefined,
+        "grant",
+        dispatch
+      );
+      const error = response?.results[0]?.error?.message;
+      if (error) {
+        toast.custom(<ToastCard type="negative" message={error} />);
+      } else {
+        resetForm();
+        toast.custom(
+          <ToastCard
+            type="positive"
+            message={`<strong>${values.name}</strong> now has access to this model.`}
+          />
+        );
+      }
     }
   };
 
@@ -180,24 +196,6 @@ export default function ShareModel() {
             </div>
           }
         />
-        {errorMsg && (
-          <div className="p-notification--negative">
-            <p className="p-notification__response" role="status">
-              <span className="p-notification__status">Error:</span>
-              {errorMsg}
-            </p>
-            <button
-              className="p-icon--close"
-              aria-label="Close notification"
-              aria-controls="notification"
-              onClick={() => {
-                setErrorMsg(null);
-              }}
-            >
-              Close
-            </button>
-          </div>
-        )}
         <div className="p-panel__content aside-split-wrapper">
           <div className="aside-split-col">
             <h5>Sharing with:</h5>
