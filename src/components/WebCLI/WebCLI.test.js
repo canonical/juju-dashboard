@@ -61,7 +61,9 @@ describe("WebCLI", () => {
     wrapper.find(".webcli__input-help i").simulate("click");
     await waitForComponentToPaint(wrapper);
     return new Promise((resolve) => setTimeout(resolve)).then(() => {
-      wrapper.update();
+      act(() => {
+        wrapper.update();
+      });
       expect(
         wrapper
           .find(".webcli__output-content code")
@@ -92,7 +94,9 @@ describe("WebCLI", () => {
     return new Promise((resolve) => {
       setTimeout(() => {
         expect(mockRefreshModel).toHaveBeenCalled();
-        WS.clean();
+        act(() => {
+          WS.clean();
+        });
         resolve();
       }, 600); // the timeout is 500ms in the app
     });
@@ -123,7 +127,9 @@ describe("WebCLI", () => {
         commands: ["status"],
       });
       setTimeout(() => {
-        WS.clean();
+        act(() => {
+          WS.clean();
+        });
         resolve();
       });
     });
@@ -162,7 +168,9 @@ describe("WebCLI", () => {
         commands: ["status"],
       });
       setTimeout(() => {
-        WS.clean();
+        act(() => {
+          WS.clean();
+        });
         resolve();
       });
     });
