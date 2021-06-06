@@ -10,7 +10,7 @@ type HeaderRow = {
 };
 
 export const localApplicationTableHeaders: Header = [
-  { content: "local apps", sortKey: "local-apps" },
+  { content: "local app", sortKey: "local-app" },
   { content: "status", sortKey: "status" },
   { content: "version", sortKey: "version" },
   { content: "scale", className: "u-align--right", sortKey: "scale" },
