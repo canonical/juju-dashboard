@@ -80,20 +80,11 @@ const BaseLayout = ({ children }: Props) => {
           position="bottom-right"
           containerClassName="toast-container"
           toastOptions={{
-            // Define default options
             className: "toast",
             duration: 5000,
             style: {
               borderRadius: "5px",
               color: "#111",
-            },
-            // Default options for specific types
-            success: {
-              duration: 3000,
-              theme: {
-                primary: "blue",
-                secondary: "black",
-              },
             },
           }}
         />
