@@ -82,6 +82,7 @@ const BaseLayout = ({ children }: Props) => {
           toastOptions={{
             duration: 5000,
           }}
+          reverseOrder={true}
         />
       </div>
     </>
