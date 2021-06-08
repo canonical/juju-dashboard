@@ -121,14 +121,17 @@ export default function ShareModel() {
     );
     const error = response?.results[0]?.error?.message;
     if (error) {
-      toast.custom(<ToastCard type="negative" message={error} />);
+      toast.custom((t) => (
+        <ToastCard toastInstance={t} type="negative" text={error} />
+      ));
     } else {
-      toast.custom(
+      toast.custom((t) => (
         <ToastCard
+          toastInstance={t}
           type="positive"
-          message={`Permissions for <strong>${userName}</strong> have been changed to <em>${updatedUserAccess.access}.</em>`}
+          text={`Permissions for <strong>${userName}</strong> have been changed to <em>${updatedUserAccess.access}.</em>`}
         />
-      );
+      ));
     }
   };
 
@@ -144,6 +147,14 @@ export default function ShareModel() {
       "revoke",
       dispatch
     );
+
+    toast.custom((t) => (
+      <ToastCard
+        toastInstance={t}
+        type="positive"
+        text={`<strong>${userName}</strong> has been successfully removed.`}
+      />
+    ));
   };
 
   const handleNewUserFormSubmit = async (
@@ -151,12 +162,13 @@ export default function ShareModel() {
     resetForm: () => void
   ) => {
     if (userAlreadyHasAccess(values.name, users)) {
-      toast.custom(
+      toast.custom((t) => (
         <ToastCard
+          toastInstance={t}
           type="negative"
-          message={`<strong>${values.name}</strong> already has access to this model.`}
+          text={`<strong>${values.name}</strong> already has access to this model.`}
         />
-      );
+      ));
     } else {
       const response = await setModelSharingPermissions(
         modelControllerURL,
@@ -172,15 +184,18 @@ export default function ShareModel() {
       );
       const error = response?.results[0]?.error?.message;
       if (error) {
-        toast.custom(<ToastCard type="negative" message={error} />);
+        toast.custom((t) => (
+          <ToastCard toastInstance={t} type="negative" text={error} />
+        ));
       } else {
         resetForm();
-        toast.custom(
+        toast.custom((t) => (
           <ToastCard
+            toastInstance={t}
             type="positive"
-            message={`<strong>${values.name}</strong> now has access to this model.`}
+            text={`<strong>${values.name}</strong> now has access to this model.`}
           />
-        );
+        ));
       }
     }
   };

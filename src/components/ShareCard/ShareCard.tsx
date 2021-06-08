@@ -47,12 +47,13 @@ export default function ShareCard({
                   onClick={() => {
                     removeUser(userName);
                     setHasBeenRemoved(true);
-                    toast.custom(
+                    toast.custom((t) => (
                       <ToastCard
+                        toastInstance={t}
                         type="positive"
-                        message={`<strong>${userName}</strong> has been successfully removed.`}
+                        text={`<strong>${userName}</strong> has been successfully removed.`}
                       />
-                    );
+                    ));
                   }}
                   onKeyPress={() => removeUser(userName)}
                   role="button"

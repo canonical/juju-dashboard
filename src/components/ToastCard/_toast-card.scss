@@ -8,11 +8,16 @@
   color: $color-dark;
   display: grid;
   gap: 0.5rem;
-  grid-template-columns: 1rem 1fr;
+  grid-template-columns: 1rem 1fr 1rem;
   padding: 1rem 0.75rem;
 
   i {
     display: inline-block;
+    padding-top: 1.5rem;
+  }
+
+  .p-icon--close {
+    cursor: pointer;
     padding-top: 1.5rem;
   }
 
