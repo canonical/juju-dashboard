@@ -23,7 +23,7 @@ describe("Toast Card", () => {
     const wrapper = mount(
       <ToastCard type="positive" message="I am a toast message" />
     );
-    expect(wrapper.find("[data-type='positive']").exists()).toBe(true);
+    expect(wrapper.find(".p-icon--success").exists()).toBe(true);
   });
 
   it("should display correct error icon", () => {
