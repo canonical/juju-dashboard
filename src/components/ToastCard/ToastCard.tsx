@@ -1,7 +1,7 @@
 import "./_toast-card.scss";
 
 type Props = {
-  type: string;
+  type: "positive" | "caution" | "negative";
   message: string;
 };
 
@@ -22,7 +22,7 @@ export default function ToastCard({ type, message }: Props) {
   }
   return (
     <div className="toast-card" data-type={type}>
-      <i className={`p-icon--${iconName}`}>Success</i>
+      {iconName && <i className={`p-icon--${iconName}`}>Success</i>}
       <div
         className="toast-card__message"
         dangerouslySetInnerHTML={{ __html: message }}
