@@ -80,13 +80,7 @@ const BaseLayout = ({ children }: Props) => {
           position="bottom-right"
           containerClassName="toast-container"
           toastOptions={{
-            className: "toast",
             duration: 5000,
-            style: {
-              backgroundColor: "#fff",
-              borderRadius: "5px",
-              color: "#111",
-            },
           }}
         />
       </div>
