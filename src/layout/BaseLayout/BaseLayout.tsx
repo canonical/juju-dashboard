@@ -83,6 +83,7 @@ const BaseLayout = ({ children }: Props) => {
             className: "toast",
             duration: 5000,
             style: {
+              backgroundColor: "#fff",
               borderRadius: "5px",
               color: "#111",
             },
