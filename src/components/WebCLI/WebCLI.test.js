@@ -69,7 +69,7 @@ describe("WebCLI", () => {
           .find(".webcli__output-content code")
           .prop("dangerouslySetInnerHTML")["__html"]
       ).toBe(
-        `Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/webcli" class="p-link--inverted" target="_blank">full documentation here</a>.`
+        `Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/olm/using-the-juju-web-cli" class="p-link--inverted" target="_blank">full documentation here</a>.`
       );
     });
   });
