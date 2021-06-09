@@ -94,4 +94,22 @@ describe("Base Layout", () => {
       wrapper.find("header").prop("data-sidenav-initially-collapsed")
     ).toBe(false);
   });
+
+  it("should include mobile navigation bar", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/"]}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models">
+              <BaseLayout>
+                <p>foo</p>
+              </BaseLayout>
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".l-navigation-bar").exists()).toBe(true);
+  });
 });
