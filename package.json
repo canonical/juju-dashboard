@@ -1,6 +1,6 @@
 {
   "name": "juju-dashboard",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "A dashboard for Juju and JAAS (Juju as a service)",
   "bugs": {
     "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
@@ -53,7 +53,7 @@
   "dependencies": {
     "@canonical/jaaslib": "0.6.1",
     "@canonical/jujulib": "2.0.0-beta.6",
-    "@canonical/macaroon-bakery": "0.3.0",
+    "@canonical/macaroon-bakery": "1.0.0",
     "@canonical/react-components": "0.16.3",
     "@sentry/browser": "6.4.1",
     "async-limiter": "2.0.0",
@@ -87,9 +87,9 @@
     "@types/clone-deep": "4.0.1",
     "@types/enzyme": "3.10.8",
     "@types/jest": "26.0.23",
-    "@types/node": "^15.6.1",
+    "@types/node": "15.6.1",
     "@types/react": "17.0.9",
-    "@types/react-dom": "17.0.5",
+    "@types/react-dom": "17.0.6",
     "@types/react-redux": "7.1.16",
     "@types/react-router-dom": "5.1.7",
     "@types/redux-mock-store": "1.0.2",
