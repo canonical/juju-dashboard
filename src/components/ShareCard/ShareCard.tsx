@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Formik, Field, Form } from "formik";
-import toast from "react-hot-toast";
 import { formatFriendlyDateToNow } from "app/utils/utils";
-
-import ToastCard from "components/ToastCard/ToastCard";
 
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
 
@@ -47,13 +44,6 @@ export default function ShareCard({
                   onClick={() => {
                     removeUser(userName);
                     setHasBeenRemoved(true);
-                    toast.custom((t) => (
-                      <ToastCard
-                        toastInstance={t}
-                        type="positive"
-                        text={`<strong>${userName}</strong> has been successfully removed.`}
-                      />
-                    ));
                   }}
                   onKeyPress={() => removeUser(userName)}
                   role="button"
