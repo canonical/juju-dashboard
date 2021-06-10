@@ -4,10 +4,31 @@
   .title-wrapper {
     display: flex;
 
-    i {
+    .p-icon--chevron-up {
+      display: block;
+      padding-right: 1rem;
+      transform: rotate(90deg);
+    }
+
+    .p-icon--share {
       margin-right: 1rem;
       position: relative;
       top: 0.5rem;
+    }
+
+    &__heading {
+      display: flex;
+      margin-bottom: 0;
+    }
+  }
+
+  .p-button--base {
+    display: flex;
+    margin-bottom: 0;
+    padding-left: 0.5rem;
+
+    @media (min-width: $breakpoint-small) {
+      display: none;
     }
   }
 
@@ -35,6 +56,33 @@
 
     button {
       margin-left: auto;
+    }
+  }
+
+  .share-cards {
+    &__heading {
+      display: flex;
+
+      button {
+        margin-bottom: 0.5rem;
+        margin-left: auto;
+        padding-left: 1rem;
+      }
+    }
+  }
+
+  // Toggle the cards and form view on small screens
+  @media (max-width: $breakpoint-small) {
+    [data-mobile-show-add-user="false"] {
+      .add-new-user {
+        display: none;
+      }
+    }
+
+    [data-mobile-show-add-user="true"] {
+      .share-cards {
+        display: none;
+      }
     }
   }
 }
