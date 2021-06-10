@@ -3,8 +3,9 @@
 FROM ubuntu:focal
 WORKDIR /srv
 RUN apt update && \
-    apt install curl --yes && \
-    curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+    # build-essential added for node-gyp in vanilla framework
+    apt install curl build-essential --yes && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt update && \
     apt install nodejs --yes
 RUN npm install -g yarn

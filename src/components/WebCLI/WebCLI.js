@@ -115,7 +115,7 @@ const WebCLI = ({
         content={output}
         showHelp={shouldShowHelp}
         setShouldShowHelp={setShouldShowHelp}
-        helpMessage={`Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/webcli" class="p-link--inverted" target="_blank">full documentation here</a>.`}
+        helpMessage={`Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/olm/using-the-juju-web-cli" class="p-link--inverted" target="_blank">full documentation here</a>.`}
       />
       <div className="webcli__input">
         <div className="webcli__input-prompt">$ juju</div>
