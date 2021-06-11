@@ -53,6 +53,8 @@ export default function ShareModel() {
   const [usersAccess, setUsersAccess] = useState<UsersAccess>({});
   const [newUserFormSubmitActive, setNewUserFormSubmitActive] = useState(false);
 
+  const [showAddNewUser, setShowAddNewUser] = useState(false);
+
   const modelStatusData: TSFixMe = useModelStatus() || null;
 
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
@@ -206,14 +208,41 @@ export default function ShareModel() {
         <PanelHeader
           title={
             <div className="title-wrapper">
-              <i className="p-icon--share"></i>
-              <h4>Share {modelName}</h4>
+              {showAddNewUser ? (
+                <>
+                  <button
+                    className="p-button--base has-icon"
+                    onClick={() => setShowAddNewUser(false)}
+                  >
+                    <i className="p-icon--chevron-up"></i>
+                    <span>Back</span>
+                  </button>
+                </>
+              ) : (
+                <div className="title-wrapper__heading">
+                  <i className="p-icon--share"></i>
+                  <h4>Share {modelName}</h4>{" "}
+                </div>
+              )}
             </div>
           }
         />
-        <div className="p-panel__content aside-split-wrapper">
-          <div className="aside-split-col">
-            <h5>Sharing with:</h5>
+        <div
+          className="p-panel__content aside-split-wrapper"
+          // This attribute toggles between the cards and form on small screens
+          data-mobile-show-add-user={showAddNewUser}
+        >
+          <div className="aside-split-col share-cards">
+            <div className="share-cards__heading">
+              <h5>Sharing with:</h5>
+              <button
+                className="p-button--base has-icon"
+                onClick={() => setShowAddNewUser(true)}
+              >
+                <i className="p-icon--plus"></i>
+                <span>Add new user</span>
+              </button>
+            </div>
             {users?.map((userObj: User) => {
               const userName = userObj["user"];
               const lastConnected = userObj["last-connection"];
@@ -230,7 +259,7 @@ export default function ShareModel() {
               );
             })}
           </div>
-          <div className="aside-split-col">
+          <div className="aside-split-col add-new-user">
             <h4>Add new user</h4>
             <Formik
               initialValues={{
