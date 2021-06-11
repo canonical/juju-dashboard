@@ -2,6 +2,7 @@ import { TSFixMe } from "types";
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { Toaster } from "react-hot-toast";
 
 import Logo from "components/Logo/Logo";
 import Banner from "components/Banner/Banner";
@@ -89,6 +90,14 @@ const BaseLayout = ({ children }: Props) => {
           <div data-test="main-children">{children}</div>
         </main>
         <Panels />
+        <Toaster
+          position="bottom-right"
+          containerClassName="toast-container"
+          toastOptions={{
+            duration: 5000,
+          }}
+          reverseOrder={true}
+        />
       </div>
     </>
   );

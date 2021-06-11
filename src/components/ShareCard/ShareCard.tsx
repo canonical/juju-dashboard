@@ -28,6 +28,7 @@ export default function ShareCard({
 }: Props) {
   const [inFocus, setInFocus] = useState(false);
   const [hasBeenRemoved, setHasBeenRemoved] = useState(false);
+
   return (
     <div>
       <SlideDownFadeOut isAnimating={hasBeenRemoved}>

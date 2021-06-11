@@ -1,0 +1,35 @@
+@import "vanilla-framework/scss/vanilla";
+
+.toast-card {
+  background-color: $color-x-light;
+  border: 1px solid $color-mid-light;
+  border-radius: 5px;
+  box-shadow: $box-shadow;
+  color: $color-dark;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1rem 1fr 1rem;
+  padding: 1rem 0.75rem;
+
+  i {
+    display: inline-block;
+    padding-top: 1.5rem;
+  }
+
+  .p-icon--close {
+    cursor: pointer;
+    padding-top: 1.5rem;
+  }
+
+  &[data-type="positive"] {
+    border-left: 3px solid $color-positive;
+  }
+
+  &[data-type="caution"] {
+    border-left: 3px solid $color-caution;
+  }
+
+  &[data-type="negative"] {
+    border-left: 3px solid $color-negative;
+  }
+}
