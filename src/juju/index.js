@@ -474,12 +474,12 @@ export async function setModelSharingPermissions(
   modelUUID,
   getState,
   user,
+  updatedAccess,
   previousAccess,
   action,
   dispatch
 ) {
   const conn = await getControllerConnection(controllerURL, getState());
-  const updatedAccess = user?.access;
 
   const modifyAccess = async (access, action) => {
     return await conn.facades.modelManager.modifyModelAccess({
@@ -488,7 +488,7 @@ export async function setModelSharingPermissions(
           access,
           action,
           "model-tag": `model-${modelUUID}`,
-          "user-tag": `user-${user.name}`,
+          "user-tag": `user-${user}`,
         },
       ],
     });

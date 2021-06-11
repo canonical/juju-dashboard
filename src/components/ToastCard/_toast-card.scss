@@ -6,10 +6,19 @@
   border-radius: 5px;
   box-shadow: $box-shadow;
   color: $color-dark;
-  display: grid;
-  gap: 0.5rem;
-  grid-template-columns: 1rem 1fr 1rem;
+  max-width: 350px;
   padding: 1rem 0.75rem;
+  width: 100%;
+
+  &__body {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: 1rem 1fr 1rem;
+  }
+
+  &__message {
+    margin-bottom: 2rem;
+  }
 
   i {
     display: inline-block;
@@ -31,5 +40,17 @@
 
   &[data-type="negative"] {
     border-left: 3px solid $color-negative;
+  }
+
+  &__undo {
+    display: flex;
+    width: 100%;
+
+    [class~="p-button"] {
+      color: $color-link;
+      margin-bottom: 0;
+      margin-left: auto;
+      width: auto;
+    }
   }
 }
