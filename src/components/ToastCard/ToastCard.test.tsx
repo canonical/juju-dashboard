@@ -1,9 +1,10 @@
 import { mount } from "enzyme";
+import cloneDeep from "clone-deep";
 
 import ToastCard from "./ToastCard";
 
 describe("Toast Card", () => {
-  const t = {
+  const toastInstanceExample = {
     createdAt: 1623162274616,
     duration: 5000,
     id: "2",
@@ -15,6 +16,7 @@ describe("Toast Card", () => {
   };
 
   it("should display message", () => {
+    const t = cloneDeep(toastInstanceExample);
     const wrapper = mount(
       <ToastCard
         type="positive"
@@ -28,6 +30,7 @@ describe("Toast Card", () => {
   });
 
   it("should display as correct type", () => {
+    const t = cloneDeep(toastInstanceExample);
     const wrapper = mount(
       <ToastCard
         type="positive"
@@ -39,6 +42,7 @@ describe("Toast Card", () => {
   });
 
   it("should display correct success icon", () => {
+    const t = cloneDeep(toastInstanceExample);
     const wrapper = mount(
       <ToastCard
         type="positive"
@@ -50,6 +54,7 @@ describe("Toast Card", () => {
   });
 
   it("should display correct error icon", () => {
+    const t = cloneDeep(toastInstanceExample);
     const wrapper = mount(
       <ToastCard
         type="negative"
@@ -61,6 +66,7 @@ describe("Toast Card", () => {
   });
 
   it("should display close icon", () => {
+    const t = cloneDeep(toastInstanceExample);
     const wrapper = mount(
       <ToastCard
         type="negative"
