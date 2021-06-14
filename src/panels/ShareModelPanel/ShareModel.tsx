@@ -102,16 +102,16 @@ export default function ShareModel() {
   const updatePermissions = async (
     action: string,
     user: string,
-    updatedAccess: any,
-    previousAccess: string | undefined
+    permissionTo: string | undefined,
+    permissionFrom: string | undefined
   ) => {
     const response = await setModelSharingPermissions(
       modelControllerURL,
       modelUUID,
       store.getState,
       user,
-      updatedAccess,
-      previousAccess,
+      permissionTo,
+      permissionFrom,
       action,
       dispatch
     );
@@ -122,19 +122,19 @@ export default function ShareModel() {
     e: React.ChangeEvent<HTMLInputElement>,
     userName: string
   ) => {
-    const updatedAccess = e.target.value;
+    const permissionTo = e.target.value;
     const clonedUserAccess = cloneDeep(usersAccess);
     if (clonedUserAccess) {
-      clonedUserAccess[userName] = updatedAccess;
+      clonedUserAccess[userName] = permissionTo;
     }
     setUsersAccess(clonedUserAccess);
-    const previousAccess = usersAccess?.[userName];
+    const permissionFrom = usersAccess?.[userName];
 
     const response = await updatePermissions(
       "grant",
       userName,
-      updatedAccess,
-      previousAccess
+      permissionTo,
+      permissionFrom
     );
     const error = response?.results[0]?.error?.message;
     if (error) {
@@ -146,14 +146,19 @@ export default function ShareModel() {
         <ToastCard
           toastInstance={t}
           type="positive"
-          text={`Permissions for <strong>${userName}</strong> have been changed to <em>${updatedAccess}.</em>`}
+          text={`Permissions for <strong>${userName}</strong> have been changed to <em>${permissionTo}.</em>`}
         />
       ));
     }
   };
 
   const handleRemoveUser = async (userName: string) => {
-    await updatePermissions("revoke", userName, null, usersAccess?.[userName]);
+    await updatePermissions(
+      "revoke",
+      userName,
+      undefined,
+      usersAccess?.[userName]
+    );
 
     toast.custom((t) => (
       <ToastCard
@@ -187,12 +192,17 @@ export default function ShareModel() {
         />
       ));
     } else {
-      const response = await updatePermissions(
-        "grant",
-        values.name,
-        values.access,
-        undefined
-      );
+      const newUserName = values.name;
+      const newUserPermission = values.access;
+      let response = null;
+      if (newUserName && newUserPermission) {
+        response = await updatePermissions(
+          "grant",
+          newUserName,
+          newUserPermission,
+          undefined
+        );
+      }
 
       const error = response?.results[0]?.error?.message;
       if (error) {

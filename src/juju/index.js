@@ -464,7 +464,8 @@ export async function queryOperationsList(queryArgs, modelUUID, appState) {
   @param {String} modelUUID
   @param {Function} getState Function to get current store state
   @param {Object} user The user obj with name and access info
-  @param {String | undefined} previousAccess The level of access a user previously had (read|write|admin)
+  @param {String | undefined} permissionTo
+  @param {String | undefined} permissionFrom The level of access a user previously had (read|write|admin)
   @param {String} action grant|revoke
   @param {Function} dispatch Redux dispatch method
   @returns {Promise} The application set config response
@@ -474,8 +475,8 @@ export async function setModelSharingPermissions(
   modelUUID,
   getState,
   user,
-  updatedAccess,
-  previousAccess,
+  permissionTo,
+  permissionFrom,
   action,
   dispatch
 ) {
@@ -494,12 +495,12 @@ export async function setModelSharingPermissions(
     });
   };
 
-  if (previousAccess) {
-    await modifyAccess(previousAccess, "revoke");
+  if (permissionFrom) {
+    await modifyAccess(permissionFrom, "revoke");
   }
 
   if (action === "grant") {
-    await modifyAccess(updatedAccess, "grant");
+    await modifyAccess(permissionTo, "grant");
   }
 
   const modelInfo = await fetchModelInfo(conn, modelUUID);
