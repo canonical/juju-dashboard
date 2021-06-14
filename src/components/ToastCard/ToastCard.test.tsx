@@ -76,4 +76,33 @@ describe("Toast Card", () => {
     );
     expect(wrapper.find(".p-icon--close").exists()).toBe(true);
   });
+
+  it("should not display an undo button if an undo function is not passed", () => {
+    const t = cloneDeep(toastInstanceExample);
+    const wrapper = mount(
+      <ToastCard
+        type="negative"
+        text="I am a toast message"
+        toastInstance={t}
+      />
+    );
+    expect(wrapper.find(".toast-card__undo").exists()).toBe(false);
+  });
+
+  it("should display a clickable undo button if an undo function is passed", () => {
+    const undoFn = jest.fn();
+    const t = cloneDeep(toastInstanceExample);
+    const wrapper = mount(
+      <ToastCard
+        type="negative"
+        text="I am a toast message"
+        toastInstance={t}
+        undo={undoFn}
+      />
+    );
+    const undoButton = wrapper.find(".toast-card__undo button");
+    expect(undoButton.exists()).toBe(true);
+    undoButton.simulate("click");
+    expect(undoFn).toBeCalled();
+  });
 });

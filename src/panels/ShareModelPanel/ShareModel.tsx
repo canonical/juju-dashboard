@@ -99,27 +99,42 @@ export default function ShareModel() {
     );
   };
 
-  const handleAccessSelectChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    userName: string
+  const updatePermissions = async (
+    action: string,
+    user: string,
+    permissionTo: string | undefined,
+    permissionFrom: string | undefined
   ) => {
-    const clonedUserAccess = cloneDeep(usersAccess);
-    if (clonedUserAccess) {
-      clonedUserAccess[userName] = e.target.value;
-    }
-    setUsersAccess(clonedUserAccess);
-    const updatedUserAccess: UserAccess = {
-      name: userName,
-      access: e.target.value,
-    };
     const response = await setModelSharingPermissions(
       modelControllerURL,
       modelUUID,
       store.getState,
-      updatedUserAccess,
-      usersAccess?.[userName],
-      "grant",
+      user,
+      permissionTo,
+      permissionFrom,
+      action,
       dispatch
+    );
+    return response;
+  };
+
+  const handleAccessSelectChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    userName: string
+  ) => {
+    const permissionTo = e.target.value;
+    const clonedUserAccess = cloneDeep(usersAccess);
+    if (clonedUserAccess) {
+      clonedUserAccess[userName] = permissionTo;
+    }
+    setUsersAccess(clonedUserAccess);
+    const permissionFrom = usersAccess?.[userName];
+
+    const response = await updatePermissions(
+      "grant",
+      userName,
+      permissionTo,
+      permissionFrom
     );
     const error = response?.results[0]?.error?.message;
     if (error) {
@@ -131,23 +146,18 @@ export default function ShareModel() {
         <ToastCard
           toastInstance={t}
           type="positive"
-          text={`Permissions for <strong>${userName}</strong> have been changed to <em>${updatedUserAccess.access}.</em>`}
+          text={`Permissions for <strong>${userName}</strong> have been changed to <em>${permissionTo}.</em>`}
         />
       ));
     }
   };
 
   const handleRemoveUser = async (userName: string) => {
-    const userAccess: UserAccess = { name: userName, access: null };
-
-    await setModelSharingPermissions(
-      modelControllerURL,
-      modelUUID,
-      store.getState,
-      userAccess,
-      usersAccess?.[userName],
+    await updatePermissions(
       "revoke",
-      dispatch
+      userName,
+      undefined,
+      usersAccess?.[userName]
     );
 
     toast.custom((t) => (
@@ -155,6 +165,16 @@ export default function ShareModel() {
         toastInstance={t}
         type="positive"
         text={`<strong>${userName}</strong> has been successfully removed.`}
+        undo={async () => {
+          const permissionTo = usersAccess?.[userName];
+          const permissionFrom = undefined;
+          await updatePermissions(
+            "grant",
+            userName,
+            permissionTo,
+            permissionFrom
+          );
+        }}
       />
     ));
   };
@@ -172,18 +192,18 @@ export default function ShareModel() {
         />
       ));
     } else {
-      const response = await setModelSharingPermissions(
-        modelControllerURL,
-        modelUUID,
-        store.getState,
-        {
-          name: values.name,
-          access: values.access,
-        },
-        undefined,
-        "grant",
-        dispatch
-      );
+      const newUserName = values.name;
+      const newUserPermission = values.access;
+      let response = null;
+      if (newUserName && newUserPermission) {
+        response = await updatePermissions(
+          "grant",
+          newUserName,
+          newUserPermission,
+          undefined
+        );
+      }
+
       const error = response?.results[0]?.error?.message;
       if (error) {
         toast.custom((t) => (
