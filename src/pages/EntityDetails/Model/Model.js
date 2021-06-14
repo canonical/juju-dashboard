@@ -256,7 +256,7 @@ const Model = () => {
             className="entity-details__action-button"
             onClick={() => setPanelQs("share-model")}
           >
-            <i className="p-icon--share"></i>Share model
+            <i className="p-icon--share"></i>Model access
           </button>
         </div>
         {modelStatusData && <EntityInfo data={ModelEntityData} />}
