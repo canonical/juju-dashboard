@@ -252,6 +252,24 @@ describe("Model", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("Topology").length).toBe(1);
+    expect(wrapper.find("Topology").exists()).toBe(true);
+  });
+
+  it("should have a link for model access panel", () => {
+    const store = mockStore(dataDump);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/models/user-eggman@external/group-test"]}
+        >
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/:userName/:modelName?">
+              <Model />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find("[data-test='model-access-btn']").exists()).toBe(true);
   });
 });
