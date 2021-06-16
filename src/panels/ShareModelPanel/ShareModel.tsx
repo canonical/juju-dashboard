@@ -256,7 +256,7 @@ export default function ShareModel() {
             <div className="share-cards__heading">
               <h5>Sharing with:</h5>
               <button
-                className="p-button--base has-icon"
+                className="add-user-btn p-button--base has-icon"
                 onClick={() => setShowAddNewUser(true)}
               >
                 <i className="p-icon--plus"></i>
