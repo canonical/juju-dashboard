@@ -239,7 +239,7 @@ export default function ShareModel() {
               ) : (
                 <div className="title-wrapper__heading">
                   <i className="p-icon--share"></i>
-                  <h4>Share {modelName}</h4>{" "}
+                  <h4>Model access: {modelName}</h4>{" "}
                 </div>
               )}
             </div>
