@@ -1,7 +1,8 @@
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
+import { QueryParamProvider } from "use-query-params";
 
 import OwnerGroup from "./OwnerGroup";
 
@@ -21,9 +22,13 @@ describe("OwnerGroup", () => {
       },
     });
     const wrapper = mount(
-      <Provider store={store}>
-        <OwnerGroup />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <OwnerGroup />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
     );
     const tables = wrapper.find("MainTable");
     expect(tables.length).toBe(0);
@@ -34,7 +39,9 @@ describe("OwnerGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <OwnerGroup />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <OwnerGroup />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
@@ -54,7 +61,9 @@ describe("OwnerGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <OwnerGroup filters={filters} />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <OwnerGroup filters={filters} />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );

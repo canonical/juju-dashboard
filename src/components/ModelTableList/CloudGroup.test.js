@@ -1,7 +1,8 @@
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
+import { QueryParamProvider } from "use-query-params";
 
 import CloudGroup from "./CloudGroup";
 
@@ -21,9 +22,13 @@ describe("CloudGroup", () => {
       },
     });
     const wrapper = mount(
-      <Provider store={store}>
-        <CloudGroup />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <CloudGroup />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
     );
     const tables = wrapper.find("MainTable");
     expect(tables.length).toBe(0);
@@ -34,7 +39,9 @@ describe("CloudGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <CloudGroup />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <CloudGroup />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
@@ -52,7 +59,9 @@ describe("CloudGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <CloudGroup filters={filters} />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <CloudGroup filters={filters} />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
