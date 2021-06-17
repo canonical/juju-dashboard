@@ -69,4 +69,23 @@ describe("OwnerGroup", () => {
     );
     expect(wrapper.find("tbody TableRow").length).toBe(3);
   });
+
+  it("model access buttons are present in owners group", () => {
+    const store = mockStore(dataDump);
+    const filters = {
+      cloud: ["aws"],
+    };
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <OwnerGroup filters={filters} />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    const firstContentRow = wrapper.find(".owners-group tr").at(1);
+    const modelAccessButton = firstContentRow.find(".model-access");
+    expect(modelAccessButton.length).toBe(2);
+  });
 });

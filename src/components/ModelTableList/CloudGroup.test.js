@@ -69,4 +69,23 @@ describe("CloudGroup", () => {
     expect(tables.length).toBe(1);
     expect(tables.get(0).props.rows.length).toBe(3);
   });
+
+  it("model access buttons are present in cloud group", () => {
+    const store = mockStore(dataDump);
+    const filters = {
+      cloud: ["aws"],
+    };
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <CloudGroup filters={filters} />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    const firstContentRow = wrapper.find(".cloud-group tr").at(1);
+    const modelAccessButton = firstContentRow.find(".model-access");
+    expect(modelAccessButton.length).toBe(2);
+  });
 });

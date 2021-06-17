@@ -77,7 +77,9 @@ export default function OwnerGroup({ filters }) {
         const cloud = generateCloudCell(model);
         const credential = getStatusValue(model.info, "cloud-credential-tag");
         const controller = getStatusValue(model.info, "controllerName");
-        const lastUpdated = getStatusValue(model.info, "status.since");
+        const lastUpdated = getStatusValue(model.info, "status.since")?.slice(
+          2
+        );
         ownerModels.rows.push({
           "data-test-model-uuid": model?.uuid,
           columns: [
@@ -113,15 +115,19 @@ export default function OwnerGroup({ filters }) {
               "data-test-column": "controller",
               content: controller,
             },
-            // We're not currently able to get a last-accessed or updated from JAAS.
             {
               "data-test-column": "updated",
-              content: generateAccessButton(
-                setPanelQs,
-                model.info.name,
-                lastUpdated
+              content: (
+                <>
+                  {generateAccessButton(setPanelQs, model.info.name)}
+                  <span className="model-access-alt">{lastUpdated}</span>
+                </>
               ),
               className: "u-align--right",
+            },
+            {
+              content: generateAccessButton(setPanelQs, model.info.name),
+              className: "sm-screen-access-cell",
             },
           ],
           sortData: {

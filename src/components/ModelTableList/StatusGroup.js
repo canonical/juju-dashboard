@@ -111,7 +111,7 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs) {
       const cloud = generateCloudCell(model);
       const credential = getStatusValue(model.info, "cloud-credential-tag");
       const controller = getStatusValue(model.info, "controllerName");
-      const lastUpdated = getStatusValue(model.info, "status.since");
+      const lastUpdated = getStatusValue(model.info, "status.since")?.slice(2);
       modelData[`${groupLabel}Rows`].push({
         "data-test-model-uuid": model?.uuid,
         columns: [
