@@ -50,6 +50,11 @@ function generateOwnerTableHeaders(owner, count) {
       sortKey: "lastUpdated",
       className: "u-align--right",
     },
+    {
+      content: "",
+      sortKey: "",
+      className: "sm-screen-access-header",
+    },
   ];
 }
 

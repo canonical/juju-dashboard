@@ -214,7 +214,7 @@ export function generateCloudAndRegion(model) {
   @param {String} modelName the name of the model
   @returns {Object} The markup for the table cell
 */
-export function generateAccessButton(setPanelQs, modelName, altValue) {
+export function generateAccessButton(setPanelQs, modelName) {
   return (
     <>
       <button
@@ -228,7 +228,6 @@ export function generateAccessButton(setPanelQs, modelName, altValue) {
       >
         Access
       </button>
-      <span className="model-access-alt">{altValue}</span>
     </>
   );
 }

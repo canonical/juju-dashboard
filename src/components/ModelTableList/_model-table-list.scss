@@ -30,14 +30,18 @@
   }
 
   // model row hover on large screens
-  @media (min-width: $breakpoint-medium - 1) {
-    .p-main-table {
+  @media (max-width: $breakpoint-medium - 1) {
+    .sm-screen-access-cell .model-access {
       display: block;
-      padding-right: 3rem;
     }
   }
 
   @media (min-width: $breakpoint-medium) {
+    .sm-screen-access-cell,
+    .sm-screen-access-header {
+      display: none;
+    }
+
     tr:hover {
       box-shadow: $box-shadow;
 

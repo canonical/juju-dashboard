@@ -40,6 +40,11 @@ function generateStatusTableHeaders(label, count) {
       sortKey: "lastUpdated",
       className: "u-align--right",
     },
+    {
+      content: "",
+      sortKey: "",
+      className: "sm-screen-access-header",
+    },
   ];
 }
 
@@ -140,12 +145,17 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs) {
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
             "data-test-column": "updated",
-            content: generateAccessButton(
-              setPanelQs,
-              model.model.name,
-              lastUpdated
+            content: (
+              <>
+                {generateAccessButton(setPanelQs, model.model.name)}
+                <span className="model-access-alt">{lastUpdated}</span>
+              </>
             ),
             className: "u-align--right",
+          },
+          {
+            content: generateAccessButton(setPanelQs, model.model.name),
+            className: "sm-screen-access-cell",
           },
         ],
         sortData: {

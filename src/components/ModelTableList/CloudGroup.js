@@ -50,6 +50,11 @@ function generateCloudTableHeaders(cloud, count) {
       sortKey: "lastUpdated",
       className: "u-align--right",
     },
+    {
+      content: "",
+      sortKey: "",
+      className: "sm-screen-access-header",
+    },
   ];
 }
 
