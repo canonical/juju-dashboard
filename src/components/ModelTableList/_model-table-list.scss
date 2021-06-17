@@ -23,3 +23,33 @@
     }
   }
 }
+
+.models {
+  .model-access {
+    display: none;
+  }
+
+  // model row hover on large screens
+  @media (min-width: $breakpoint-medium - 1) {
+    .p-main-table {
+      display: block;
+      padding-right: 3rem;
+    }
+  }
+
+  @media (min-width: $breakpoint-medium) {
+    tr:hover {
+      box-shadow: $box-shadow;
+
+      .model-access {
+        display: block;
+        margin: 0;
+        width: 100%;
+      }
+
+      .model-access-alt {
+        display: none;
+      }
+    }
+  }
+}

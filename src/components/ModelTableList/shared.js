@@ -207,3 +207,28 @@ export function generateCloudAndRegion(model) {
     "region"
   )}`;
 }
+
+/**
+  Returns the model access button or an alternative value
+  @param {Function} setPanelQs A function to set query strings
+  @param {String} modelName the name of the model
+  @returns {Object} The markup for the table cell
+*/
+export function generateAccessButton(setPanelQs, modelName, altValue) {
+  return (
+    <>
+      <button
+        onClick={() => {
+          setPanelQs({
+            model: modelName,
+            panel: "share-model",
+          });
+        }}
+        className="model-access"
+      >
+        Access
+      </button>
+      <span className="model-access-alt">{altValue}</span>
+    </>
+  );
+}

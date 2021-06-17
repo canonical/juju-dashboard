@@ -1,12 +1,17 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import {
   generateStatusElement,
   getModelStatusGroupData,
   extractOwnerName,
 } from "app/utils/utils";
 import { getGroupedByCloudAndFilteredModelData } from "app/selectors";
-import { generateModelDetailsLink, getStatusValue } from "./shared";
+import {
+  generateModelDetailsLink,
+  getStatusValue,
+  generateAccessButton,
+} from "./shared";
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -52,6 +57,11 @@ export default function CloudGroup({ filters }) {
   const groupedAndFilteredData = useSelector(
     getGroupedByCloudAndFilteredModelData(filters)
   );
+
+  const setPanelQs = useQueryParams({
+    model: StringParam,
+    panel: withDefault(StringParam, "share-model"),
+  })[1];
 
   const cloudRows = generateModelTableDataByCloud(groupedAndFilteredData);
   let cloudTables = [];
@@ -106,7 +116,11 @@ export default function CloudGroup({ filters }) {
             // We're not currently able to get a last-accessed or updated from JAAS.
             {
               "data-test-column": "updated",
-              content: lastUpdated,
+              content: generateAccessButton(
+                setPanelQs,
+                model.info.name,
+                lastUpdated
+              ),
               className: "u-align--right",
             },
           ],

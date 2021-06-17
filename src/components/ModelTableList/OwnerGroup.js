@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import {
   generateStatusElement,
   getModelStatusGroupData,
@@ -10,6 +11,7 @@ import {
   getStatusValue,
   generateCloudCell,
   generateCloudAndRegion,
+  generateAccessButton,
 } from "./shared";
 
 /**
@@ -56,6 +58,10 @@ export default function OwnerGroup({ filters }) {
     getGroupedByOwnerAndFilteredModelData(filters)
   );
   const ownerRows = generateModelTableDataByOwner(groupedAndFilteredData);
+  const setPanelQs = useQueryParams({
+    model: StringParam,
+    panel: withDefault(StringParam, "share-model"),
+  })[1];
   let ownerTables = [];
   let ownerModels = {};
   for (const owner in ownerRows) {
@@ -105,7 +111,11 @@ export default function OwnerGroup({ filters }) {
             // We're not currently able to get a last-accessed or updated from JAAS.
             {
               "data-test-column": "updated",
-              content: lastUpdated,
+              content: generateAccessButton(
+                setPanelQs,
+                model.info.name,
+                lastUpdated
+              ),
               className: "u-align--right",
             },
           ],

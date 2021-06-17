@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import {
   generateStatusElement,
@@ -14,6 +15,7 @@ import {
   getStatusValue,
   generateCloudCell,
   generateCloudAndRegion,
+  generateAccessButton,
 } from "./shared";
 
 /**
@@ -87,7 +89,7 @@ const generateModelNameCell = (model, groupLabel) => {
   @param {Object} groupedModels The models grouped by state
   @returns {Object} The formatted table data.
 */
-function generateModelTableDataByStatus(groupedModels) {
+function generateModelTableDataByStatus(groupedModels, setPanelQs) {
   const modelData = {
     blockedRows: [],
     alertRows: [],
@@ -138,7 +140,11 @@ function generateModelTableDataByStatus(groupedModels) {
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
             "data-test-column": "updated",
-            content: lastUpdated,
+            content: generateAccessButton(
+              setPanelQs,
+              model.model.name,
+              lastUpdated
+            ),
             className: "u-align--right",
           },
         ],
@@ -161,9 +167,13 @@ export default function StatusGroup({ filters }) {
   const groupedAndFilteredData = useSelector(
     getGroupedByStatusAndFilteredModelData(filters)
   );
+  const setPanelQs = useQueryParams({
+    model: StringParam,
+    panel: withDefault(StringParam, "share-model"),
+  })[1];
 
   const { blockedRows, alertRows, runningRows } =
-    generateModelTableDataByStatus(groupedAndFilteredData);
+    generateModelTableDataByStatus(groupedAndFilteredData, setPanelQs);
 
   const emptyStateMsg = "There are no models with this status";
 
