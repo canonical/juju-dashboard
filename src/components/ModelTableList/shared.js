@@ -224,7 +224,7 @@ export function generateAccessButton(setPanelQs, modelName) {
             panel: "share-model",
           });
         }}
-        className="model-access"
+        className="model-access  p-button--neutral is-dense"
       >
         Access
       </button>

@@ -129,7 +129,7 @@ export default function CloudGroup({ filters }) {
                   <span className="model-access-alt">{lastUpdated}</span>
                 </>
               ),
-              className: "u-align--right",
+              className: "u-align--right lrg-screen-access-cell",
             },
             {
               content: generateAccessButton(setPanelQs, model.info.name),

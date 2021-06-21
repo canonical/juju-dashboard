@@ -27,6 +27,18 @@
 .models {
   .model-access {
     display: none;
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .sm-screen-access-cell,
+  .lrg-screen-access-cell {
+    button {
+      margin-left: auto;
+      margin-right: 0;
+      max-width: 100px;
+      text-align: center;
+    }
   }
 
   // model row hover on large screens
@@ -47,7 +59,7 @@
 
       .model-access {
         display: block;
-        margin: 0;
+        margin-bottom: 0;
         width: 100%;
       }
 
