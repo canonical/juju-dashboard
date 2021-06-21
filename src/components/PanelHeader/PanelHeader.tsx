@@ -1,19 +1,32 @@
 import { ReactNode } from "react";
-import { useQueryParam, StringParam } from "use-query-params";
+import { useQueryParams, StringParam } from "use-query-params";
 
 type Props = {
   title: ReactNode;
 };
 
+type QueryString = {
+  [key: string]: string | undefined;
+};
+
 export default function PanelHeader({ title }: Props): JSX.Element {
-  const [panelQs, setPanelQs] = useQueryParam("panel", StringParam);
+  const [panelQs, setPanelQs] = useQueryParams({
+    panel: StringParam,
+    model: StringParam,
+  });
+
+  // Remove all query strings when close button is clicked
+  const removalObj: QueryString = {};
+  Object.keys(panelQs).forEach((queryString: string) => {
+    removalObj[queryString] = undefined;
+  });
 
   return (
     <div className="p-panel__header">
       <div className="p-panel__title">{title}</div>
       <div className="p-panel__controls">
         <button
-          onClick={() => panelQs && setPanelQs(undefined)}
+          onClick={() => setPanelQs(removalObj)}
           className="p-button--base js-aside-close u-no-margin--bottom has-icon"
         >
           <i className="p-icon--close"></i>
