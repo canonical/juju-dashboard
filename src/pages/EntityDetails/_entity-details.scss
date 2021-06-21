@@ -189,7 +189,7 @@
     }
 
     tr {
-      @include vf-animation(background, brisk, ease-in-out);
+      @include vf-animation(all, brisk, ease-in-out);
 
       &.is-selected,
       &.is-selected:hover {
