@@ -4,6 +4,10 @@
   .title-wrapper {
     display: flex;
 
+    .p-button--base.has-icon {
+      display: flex;
+    }
+
     .p-icon--chevron-up {
       display: block;
       padding-right: 1rem;
