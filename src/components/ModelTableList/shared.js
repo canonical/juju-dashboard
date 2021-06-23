@@ -216,18 +216,16 @@ export function generateCloudAndRegion(model) {
 */
 export function generateAccessButton(setPanelQs, modelName) {
   return (
-    <>
-      <button
-        onClick={() => {
-          setPanelQs({
-            model: modelName,
-            panel: "share-model",
-          });
-        }}
-        className="model-access  p-button--neutral is-dense"
-      >
-        Access
-      </button>
-    </>
+    <button
+      onClick={() => {
+        setPanelQs({
+          model: modelName,
+          panel: "share-model",
+        });
+      }}
+      className="model-access p-button--neutral is-dense"
+    >
+      Access
+    </button>
   );
 }
