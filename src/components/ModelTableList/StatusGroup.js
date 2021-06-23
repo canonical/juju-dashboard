@@ -111,6 +111,8 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs) {
       const cloud = generateCloudCell(model);
       const credential = getStatusValue(model.info, "cloud-credential-tag");
       const controller = getStatusValue(model.info, "controllerName");
+      // .slice(2) here will make the year 2 characters instead of 4
+      // e.g. 2021-01-01 becomes 21-01-01
       const lastUpdated = getStatusValue(model.info, "status.since")?.slice(2);
       modelData[`${groupLabel}Rows`].push({
         "data-test-model-uuid": model?.uuid,
