@@ -13,7 +13,11 @@ const mockStore = configureStore([]);
 describe("StatusGroup", () => {
   it("by default, renders no tables when there is no data", () => {
     const store = mockStore({
-      root: {},
+      root: {
+        config: {
+          baseControllerURL: "jimm.jujucharms.com",
+        },
+      },
       juju: {
         models: {},
         modelData: {},
