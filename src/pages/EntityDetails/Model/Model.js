@@ -1,5 +1,7 @@
 import { useMemo, useCallback } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import { useSelector, useStore } from "react-redux";
+import { getActiveUserTag, getWSControllerURL } from "app/selectors";
 import {
   useQueryParams,
   useQueryParam,
@@ -59,6 +61,18 @@ const shouldShow = (segment, activeView) => {
       }
       return segment === activeView;
   }
+};
+
+const canAdministerAccess = (userName, modelStatusData) => {
+  let hasPermission = false;
+  const modelUsers = modelStatusData?.info?.users;
+  const sharingAccess = ["admin", "write", "owner"];
+  modelUsers.forEach((userObj) => {
+    if (userObj.user === userName && sharingAccess.includes(userObj.access)) {
+      hasPermission = true;
+    }
+  });
+  return hasPermission;
 };
 
 const Model = () => {
@@ -247,18 +261,28 @@ const Model = () => {
 
   const setPanelQs = useQueryParam("panel", StringParam)[1];
 
+  // check user permission to administer model access
+  const store = useStore();
+  const getState = store.getState;
+  const activeUser = getActiveUserTag(
+    useSelector(getWSControllerURL),
+    getState()
+  ).replace("user-", "");
+
   return (
     <EntityDetails type="model">
       <div>
         <InfoPanel />
         <div className="entity-details__actions">
-          <button
-            className="entity-details__action-button"
-            data-test="model-access-btn"
-            onClick={() => setPanelQs("share-model")}
-          >
-            <i className="p-icon--share"></i>Model access
-          </button>
+          {canAdministerAccess(activeUser, modelStatusData) && (
+            <button
+              className="entity-details__action-button"
+              data-test="model-access-btn"
+              onClick={() => setPanelQs("share-model")}
+            >
+              <i className="p-icon--share"></i>Model access
+            </button>
+          )}
         </div>
         {modelStatusData && <EntityInfo data={ModelEntityData} />}
       </div>
