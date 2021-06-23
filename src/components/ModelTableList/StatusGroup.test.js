@@ -104,5 +104,7 @@ describe("StatusGroup", () => {
     const firstContentRow = wrapper.find(".status-group tr").at(1);
     const modelAccessButton = firstContentRow.find(".model-access");
     expect(modelAccessButton.length).toBe(2);
+    expect(firstContentRow.find(".sm-screen-access-cell").exists()).toBe(true);
+    expect(firstContentRow.find(".lrg-screen-access-cell").exists()).toBe(true);
   });
 });
