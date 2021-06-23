@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useStore, useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import cloneDeep from "clone-deep";
 import useModelStatus from "hooks/useModelStatus";
@@ -15,7 +14,6 @@ import PanelHeader from "components/PanelHeader/PanelHeader";
 import ShareCard from "components/ShareCard/ShareCard";
 import ToastCard from "components/ToastCard/ToastCard";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { TSFixMe } from "types";
 
 import "./share-model.scss";
@@ -47,7 +45,6 @@ type UserAccess = {
 type DefaultRootState = {};
 
 export default function ShareModel() {
-  const { modelName } = useParams<EntityDetailsRoute>();
   const dispatch = useDispatch();
   const store = useStore();
   const [usersAccess, setUsersAccess] = useState<UsersAccess>({});
@@ -59,6 +56,7 @@ export default function ShareModel() {
 
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
   const modelUUID = modelStatusData?.info.uuid;
+  const modelName = modelStatusData?.info.name;
 
   const modelControllerDataByUUID =
     getModelControllerDataByUUID(controllerUUID);
@@ -241,7 +239,7 @@ export default function ShareModel() {
               ) : (
                 <div className="title-wrapper__heading">
                   <i className="p-icon--share"></i>
-                  <h4>Share {modelName}</h4>{" "}
+                  <h4>Model access: {modelName}</h4>{" "}
                 </div>
               )}
             </div>

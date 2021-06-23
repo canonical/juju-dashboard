@@ -23,3 +23,51 @@
     }
   }
 }
+
+.models {
+  .model-access {
+    display: none;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .sm-screen-access-cell,
+  .lrg-screen-access-cell {
+    button {
+      margin-left: auto;
+      margin-right: 0;
+      max-width: 100px;
+      text-align: center;
+    }
+  }
+
+  // model row hover on large screens
+  @media (max-width: $breakpoint-medium - 1) {
+    .sm-screen-access-cell .model-access {
+      display: block;
+    }
+  }
+
+  @media (min-width: $breakpoint-medium) {
+    .sm-screen-access-cell,
+    .sm-screen-access-header {
+      display: none;
+    }
+
+    tr:hover {
+      box-shadow: $box-shadow;
+
+      .model-access {
+        display: block;
+        margin-bottom: 0;
+        width: 100%;
+      }
+
+      .model-access-alt {
+        display: none;
+      }
+    }
+  }
+}

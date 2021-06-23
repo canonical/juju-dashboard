@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import {
   generateStatusElement,
@@ -14,6 +15,7 @@ import {
   getStatusValue,
   generateCloudCell,
   generateCloudAndRegion,
+  generateAccessButton,
 } from "./shared";
 
 /**
@@ -37,6 +39,11 @@ function generateStatusTableHeaders(label, count) {
       content: "Last Updated",
       sortKey: "lastUpdated",
       className: "u-align--right",
+    },
+    {
+      content: "",
+      sortKey: "",
+      className: "sm-screen-access-header",
     },
   ];
 }
@@ -87,7 +94,7 @@ const generateModelNameCell = (model, groupLabel) => {
   @param {Object} groupedModels The models grouped by state
   @returns {Object} The formatted table data.
 */
-function generateModelTableDataByStatus(groupedModels) {
+function generateModelTableDataByStatus(groupedModels, setPanelQs) {
   const modelData = {
     blockedRows: [],
     alertRows: [],
@@ -104,7 +111,9 @@ function generateModelTableDataByStatus(groupedModels) {
       const cloud = generateCloudCell(model);
       const credential = getStatusValue(model.info, "cloud-credential-tag");
       const controller = getStatusValue(model.info, "controllerName");
-      const lastUpdated = getStatusValue(model.info, "status.since");
+      // .slice(2) here will make the year 2 characters instead of 4
+      // e.g. 2021-01-01 becomes 21-01-01
+      const lastUpdated = getStatusValue(model.info, "status.since")?.slice(2);
       modelData[`${groupLabel}Rows`].push({
         "data-test-model-uuid": model?.uuid,
         columns: [
@@ -138,8 +147,17 @@ function generateModelTableDataByStatus(groupedModels) {
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
             "data-test-column": "updated",
-            content: lastUpdated,
-            className: "u-align--right",
+            content: (
+              <>
+                {generateAccessButton(setPanelQs, model.model.name)}
+                <span className="model-access-alt">{lastUpdated}</span>
+              </>
+            ),
+            className: "u-align--right lrg-screen-access-cell",
+          },
+          {
+            content: generateAccessButton(setPanelQs, model.model.name),
+            className: "sm-screen-access-cell",
           },
         ],
         sortData: {
@@ -161,9 +179,13 @@ export default function StatusGroup({ filters }) {
   const groupedAndFilteredData = useSelector(
     getGroupedByStatusAndFilteredModelData(filters)
   );
+  const setPanelQs = useQueryParams({
+    model: StringParam,
+    panel: withDefault(StringParam, "share-model"),
+  })[1];
 
   const { blockedRows, alertRows, runningRows } =
-    generateModelTableDataByStatus(groupedAndFilteredData);
+    generateModelTableDataByStatus(groupedAndFilteredData, setPanelQs);
 
   const emptyStateMsg = "There are no models with this status";
 

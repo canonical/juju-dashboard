@@ -1,7 +1,8 @@
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
+import { QueryParamProvider } from "use-query-params";
 
 import StatusGroup from "./StatusGroup";
 
@@ -21,9 +22,13 @@ describe("StatusGroup", () => {
       },
     });
     const wrapper = mount(
-      <Provider store={store}>
-        <StatusGroup />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <StatusGroup />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
     );
     const tables = wrapper.find("MainTable");
     expect(tables.length).toBe(0);
@@ -34,7 +39,9 @@ describe("StatusGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <StatusGroup />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <StatusGroup />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
@@ -53,7 +60,9 @@ describe("StatusGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <StatusGroup filters={filters} />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <StatusGroup filters={filters} />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
@@ -65,7 +74,9 @@ describe("StatusGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <StatusGroup />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <StatusGroup />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
@@ -74,5 +85,26 @@ describe("StatusGroup", () => {
       .find('[data-test="provider-logo"]')
       .first();
     expect(logo.prop("src")).toContain("gce");
+  });
+
+  it("model access buttons are present in status group", () => {
+    const store = mockStore(dataDump);
+    const filters = {
+      cloud: ["aws"],
+    };
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <StatusGroup filters={filters} />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    const firstContentRow = wrapper.find(".status-group tr").at(1);
+    const modelAccessButton = firstContentRow.find(".model-access");
+    expect(modelAccessButton.length).toBe(2);
+    expect(firstContentRow.find(".sm-screen-access-cell").exists()).toBe(true);
+    expect(firstContentRow.find(".lrg-screen-access-cell").exists()).toBe(true);
   });
 });

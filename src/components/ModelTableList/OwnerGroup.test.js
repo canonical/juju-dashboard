@@ -1,7 +1,8 @@
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
+import { QueryParamProvider } from "use-query-params";
 
 import OwnerGroup from "./OwnerGroup";
 
@@ -21,9 +22,13 @@ describe("OwnerGroup", () => {
       },
     });
     const wrapper = mount(
-      <Provider store={store}>
-        <OwnerGroup />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <OwnerGroup />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
     );
     const tables = wrapper.find("MainTable");
     expect(tables.length).toBe(0);
@@ -34,7 +39,9 @@ describe("OwnerGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <OwnerGroup />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <OwnerGroup />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
@@ -54,10 +61,33 @@ describe("OwnerGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <OwnerGroup filters={filters} />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <OwnerGroup filters={filters} />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
     expect(wrapper.find("tbody TableRow").length).toBe(3);
+  });
+
+  it("model access buttons are present in owners group", () => {
+    const store = mockStore(dataDump);
+    const filters = {
+      cloud: ["aws"],
+    };
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <OwnerGroup filters={filters} />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    const firstContentRow = wrapper.find(".owners-group tr").at(1);
+    const modelAccessButton = firstContentRow.find(".model-access");
+    expect(modelAccessButton.length).toBe(2);
+    expect(firstContentRow.find(".sm-screen-access-cell").exists()).toBe(true);
+    expect(firstContentRow.find(".lrg-screen-access-cell").exists()).toBe(true);
   });
 });

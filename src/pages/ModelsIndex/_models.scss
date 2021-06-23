@@ -22,8 +22,18 @@
       pointer-events: none;
     }
 
-    // Wrap the button group mid-breakpoint to fit xisting content
-    @media (min-width: 876px) {
+    @media (max-width: $breakpoint-large) {
+      .models__count {
+        display: none;
+      }
+    }
+
+    @media (min-width: $breakpoint-medium) and (max-width: $breakpoint-large) {
+      gap: 1rem;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (min-width: $breakpoint-large) {
       grid-template-columns: 120px 1fr 280px;
     }
 

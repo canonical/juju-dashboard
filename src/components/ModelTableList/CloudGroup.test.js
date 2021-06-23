@@ -1,7 +1,8 @@
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
+import { QueryParamProvider } from "use-query-params";
 
 import CloudGroup from "./CloudGroup";
 
@@ -21,9 +22,13 @@ describe("CloudGroup", () => {
       },
     });
     const wrapper = mount(
-      <Provider store={store}>
-        <CloudGroup />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <CloudGroup />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
     );
     const tables = wrapper.find("MainTable");
     expect(tables.length).toBe(0);
@@ -34,7 +39,9 @@ describe("CloudGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <CloudGroup />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <CloudGroup />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
@@ -52,12 +59,35 @@ describe("CloudGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <CloudGroup filters={filters} />
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <CloudGroup filters={filters} />
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
     const tables = wrapper.find("MainTable");
     expect(tables.length).toBe(1);
     expect(tables.get(0).props.rows.length).toBe(3);
+  });
+
+  it("model access buttons are present in cloud group", () => {
+    const store = mockStore(dataDump);
+    const filters = {
+      cloud: ["aws"],
+    };
+    const wrapper = mount(
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <CloudGroup filters={filters} />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    const firstContentRow = wrapper.find(".cloud-group tr").at(1);
+    const modelAccessButton = firstContentRow.find(".model-access");
+    expect(modelAccessButton.length).toBe(2);
+    expect(firstContentRow.find(".sm-screen-access-cell").exists()).toBe(true);
+    expect(firstContentRow.find(".lrg-screen-access-cell").exists()).toBe(true);
   });
 });

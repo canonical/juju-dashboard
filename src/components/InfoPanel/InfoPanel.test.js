@@ -1,7 +1,8 @@
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route } from "react-router";
+import { QueryParamProvider } from "use-query-params";
 import dataDump from "testing/complete-redux-store-dump";
 
 import TestRoute from "components/Routes/TestRoute";
@@ -23,9 +24,11 @@ describe("Info Panel", () => {
         <MemoryRouter
           initialEntries={["/models/user-eggman@external/group-test"]}
         >
-          <TestRoute path="/models/:userName/:modelName?">
-            <InfoPanel />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/:userName/:modelName?">
+              <InfoPanel />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -39,9 +42,11 @@ describe("Info Panel", () => {
         <MemoryRouter
           initialEntries={["/models/user-eggman@external/group-test"]}
         >
-          <TestRoute path="/models/:userName/:modelName?">
-            <InfoPanel />
-          </TestRoute>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/:userName/:modelName?">
+              <InfoPanel />
+            </TestRoute>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );

@@ -1,12 +1,17 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
+import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import {
   generateStatusElement,
   getModelStatusGroupData,
   extractOwnerName,
 } from "app/utils/utils";
 import { getGroupedByCloudAndFilteredModelData } from "app/selectors";
-import { generateModelDetailsLink, getStatusValue } from "./shared";
+import {
+  generateModelDetailsLink,
+  getStatusValue,
+  generateAccessButton,
+} from "./shared";
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -45,6 +50,11 @@ function generateCloudTableHeaders(cloud, count) {
       sortKey: "lastUpdated",
       className: "u-align--right",
     },
+    {
+      content: "",
+      sortKey: "",
+      className: "sm-screen-access-header",
+    },
   ];
 }
 
@@ -52,6 +62,11 @@ export default function CloudGroup({ filters }) {
   const groupedAndFilteredData = useSelector(
     getGroupedByCloudAndFilteredModelData(filters)
   );
+
+  const setPanelQs = useQueryParams({
+    model: StringParam,
+    panel: withDefault(StringParam, "share-model"),
+  })[1];
 
   const cloudRows = generateModelTableDataByCloud(groupedAndFilteredData);
   let cloudTables = [];
@@ -65,7 +80,9 @@ export default function CloudGroup({ filters }) {
         const region = getStatusValue(model, "region");
         const credential = getStatusValue(model.info, "cloud-credential-tag");
         const controller = getStatusValue(model.info, "controllerName");
-        const lastUpdated = getStatusValue(model.info, "status.since");
+        const lastUpdated = getStatusValue(model.info, "status.since")?.slice(
+          2
+        );
         cloudModels.rows.push({
           "data-test-model-uuid": model?.uuid,
           columns: [
@@ -106,8 +123,17 @@ export default function CloudGroup({ filters }) {
             // We're not currently able to get a last-accessed or updated from JAAS.
             {
               "data-test-column": "updated",
-              content: lastUpdated,
-              className: "u-align--right",
+              content: (
+                <>
+                  {generateAccessButton(setPanelQs, model.info.name)}
+                  <span className="model-access-alt">{lastUpdated}</span>
+                </>
+              ),
+              className: "u-align--right lrg-screen-access-cell",
+            },
+            {
+              content: generateAccessButton(setPanelQs, model.info.name),
+              className: "sm-screen-access-cell",
             },
           ],
           sortData: {
