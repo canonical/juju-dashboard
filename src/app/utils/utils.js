@@ -416,10 +416,11 @@ export const canAdministerModelAccess = (userName, modelStatusData) => {
   let hasPermission = false;
   const modelUsers = modelStatusData?.info?.users;
   const sharingAccess = ["admin", "write", "owner"];
-  modelUsers.forEach((userObj) => {
-    if (userObj.user === userName && sharingAccess.includes(userObj.access)) {
-      hasPermission = true;
-    }
-  });
+  modelUsers &&
+    modelUsers.forEach((userObj) => {
+      if (userObj.user === userName && sharingAccess.includes(userObj.access)) {
+        hasPermission = true;
+      }
+    });
   return hasPermission;
 };

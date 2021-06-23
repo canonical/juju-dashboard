@@ -1,11 +1,16 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
+import useActiveUser from "hooks/useActiveUser";
+
 import {
   generateStatusElement,
   getModelStatusGroupData,
+  canAdministerModelAccess,
 } from "app/utils/utils";
+
 import { getGroupedByOwnerAndFilteredModelData } from "app/selectors";
+
 import {
   generateModelDetailsLink,
   getStatusValue,
@@ -67,6 +72,8 @@ export default function OwnerGroup({ filters }) {
     model: StringParam,
     panel: withDefault(StringParam, "share-model"),
   })[1];
+  const activeUser = useActiveUser();
+
   let ownerTables = [];
   let ownerModels = {};
   for (const owner in ownerRows) {
@@ -119,14 +126,24 @@ export default function OwnerGroup({ filters }) {
               "data-test-column": "updated",
               content: (
                 <>
-                  {generateAccessButton(setPanelQs, model.info.name)}
+                  {canAdministerModelAccess(activeUser, model) &&
+                    generateAccessButton(setPanelQs, model.info.name)}
                   <span className="model-access-alt">{lastUpdated}</span>
                 </>
               ),
-              className: "u-align--right lrg-screen-access-cell",
+              className: `u-align--right lrg-screen-access-cell ${
+                canAdministerModelAccess(activeUser, model)
+                  ? "has-permission"
+                  : ""
+              }`,
             },
             {
-              content: generateAccessButton(setPanelQs, model.info.name),
+              content: (
+                <>
+                  {canAdministerModelAccess(activeUser, model) &&
+                    generateAccessButton(setPanelQs, model.info.name)}
+                </>
+              ),
               className: "sm-screen-access-cell",
             },
           ],
