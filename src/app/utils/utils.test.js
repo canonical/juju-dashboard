@@ -43,7 +43,7 @@ describe("canAdministerModelAccess", () => {
         ],
       },
     };
-    expect(canAdministerModelAccess(userName, modelData)).toBe(true);
+    expect(canAdministerModelAccess(userName, modelData.info.users)).toBe(true);
   });
 
   it("should return false when user has read access", () => {
@@ -58,6 +58,8 @@ describe("canAdministerModelAccess", () => {
         ],
       },
     };
-    expect(canAdministerModelAccess(userName, modelData)).toBe(false);
+    expect(canAdministerModelAccess(userName, modelData.info.users)).toBe(
+      false
+    );
   });
 });
