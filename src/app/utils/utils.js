@@ -411,3 +411,15 @@ export const formatFriendlyDateToNow = (date) => {
   });
   return formattedDate.concat(" ago");
 };
+
+export const canAdministerModelAccess = (userName, modelUsers) => {
+  let hasPermission = false;
+  const sharingAccess = ["admin", "write", "owner"];
+  modelUsers &&
+    modelUsers.forEach((userObj) => {
+      if (userObj.user === userName && sharingAccess.includes(userObj.access)) {
+        hasPermission = true;
+      }
+    });
+  return hasPermission;
+};

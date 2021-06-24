@@ -1,11 +1,13 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
+import useActiveUser from "hooks/useActiveUser";
 
 import {
   generateStatusElement,
   getModelStatusGroupData,
   extractOwnerName,
+  canAdministerModelAccess,
 } from "app/utils/utils";
 
 import { getGroupedByStatusAndFilteredModelData } from "app/selectors";
@@ -94,7 +96,7 @@ const generateModelNameCell = (model, groupLabel) => {
   @param {Object} groupedModels The models grouped by state
   @returns {Object} The formatted table data.
 */
-function generateModelTableDataByStatus(groupedModels, setPanelQs) {
+function generateModelTableDataByStatus(groupedModels, setPanelQs, activeUser) {
   const modelData = {
     blockedRows: [],
     alertRows: [],
@@ -103,6 +105,7 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs) {
 
   Object.keys(groupedModels).forEach((groupLabel) => {
     const models = groupedModels[groupLabel];
+
     models.forEach((model) => {
       let owner = "";
       if (model.info) {
@@ -149,14 +152,24 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs) {
             "data-test-column": "updated",
             content: (
               <>
-                {generateAccessButton(setPanelQs, model.model.name)}
+                {canAdministerModelAccess(activeUser, model.info.users) &&
+                  generateAccessButton(setPanelQs, model.model.name)}
                 <span className="model-access-alt">{lastUpdated}</span>
               </>
             ),
-            className: "u-align--right lrg-screen-access-cell",
+            className: `u-align--right lrg-screen-access-cell ${
+              canAdministerModelAccess(activeUser, model.info.users)
+                ? "has-permission"
+                : ""
+            }`,
           },
           {
-            content: generateAccessButton(setPanelQs, model.model.name),
+            content: (
+              <>
+                {canAdministerModelAccess(activeUser, model.info.users) &&
+                  generateAccessButton(setPanelQs, model.model.name)}
+              </>
+            ),
             className: "sm-screen-access-cell",
           },
         ],
@@ -183,9 +196,14 @@ export default function StatusGroup({ filters }) {
     model: StringParam,
     panel: withDefault(StringParam, "share-model"),
   })[1];
+  const activeUser = useActiveUser();
 
   const { blockedRows, alertRows, runningRows } =
-    generateModelTableDataByStatus(groupedAndFilteredData, setPanelQs);
+    generateModelTableDataByStatus(
+      groupedAndFilteredData,
+      setPanelQs,
+      activeUser
+    );
 
   const emptyStateMsg = "There are no models with this status";
 

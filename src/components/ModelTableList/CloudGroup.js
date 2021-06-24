@@ -1,12 +1,17 @@
 import { useSelector } from "react-redux";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
+import useActiveUser from "hooks/useActiveUser";
+
 import {
   generateStatusElement,
   getModelStatusGroupData,
   extractOwnerName,
+  canAdministerModelAccess,
 } from "app/utils/utils";
+
 import { getGroupedByCloudAndFilteredModelData } from "app/selectors";
+
 import {
   generateModelDetailsLink,
   getStatusValue,
@@ -59,6 +64,8 @@ function generateCloudTableHeaders(cloud, count) {
 }
 
 export default function CloudGroup({ filters }) {
+  const activeUser = useActiveUser();
+
   const groupedAndFilteredData = useSelector(
     getGroupedByCloudAndFilteredModelData(filters)
   );
@@ -125,14 +132,24 @@ export default function CloudGroup({ filters }) {
               "data-test-column": "updated",
               content: (
                 <>
-                  {generateAccessButton(setPanelQs, model.info.name)}
+                  {canAdministerModelAccess(activeUser, model.info.users) &&
+                    generateAccessButton(setPanelQs, model.info.name)}
                   <span className="model-access-alt">{lastUpdated}</span>
                 </>
               ),
-              className: "u-align--right lrg-screen-access-cell",
+              className: `u-align--right lrg-screen-access-cell ${
+                canAdministerModelAccess(activeUser, model.info.users)
+                  ? "has-permission"
+                  : ""
+              }`,
             },
             {
-              content: generateAccessButton(setPanelQs, model.info.name),
+              content: (
+                <>
+                  {canAdministerModelAccess(activeUser, model.info.users) &&
+                    generateAccessButton(setPanelQs, model.info.name)}
+                </>
+              ),
               className: "sm-screen-access-cell",
             },
           ],
