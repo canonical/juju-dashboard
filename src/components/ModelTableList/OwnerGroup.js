@@ -126,13 +126,13 @@ export default function OwnerGroup({ filters }) {
               "data-test-column": "updated",
               content: (
                 <>
-                  {canAdministerModelAccess(activeUser, model.info.users) &&
+                  {canAdministerModelAccess(activeUser, model?.info?.users) &&
                     generateAccessButton(setPanelQs, model.info.name)}
                   <span className="model-access-alt">{lastUpdated}</span>
                 </>
               ),
               className: `u-align--right lrg-screen-access-cell ${
-                canAdministerModelAccess(activeUser, model.info.users)
+                canAdministerModelAccess(activeUser, model?.info?.users)
                   ? "has-permission"
                   : ""
               }`,
@@ -140,7 +140,7 @@ export default function OwnerGroup({ filters }) {
             {
               content: (
                 <>
-                  {canAdministerModelAccess(activeUser, model.info.users) &&
+                  {canAdministerModelAccess(activeUser, model?.info?.users) &&
                     generateAccessButton(setPanelQs, model.info.name)}
                 </>
               ),
