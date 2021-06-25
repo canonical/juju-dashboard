@@ -292,9 +292,10 @@ export default function ShareModel() {
                 access: "read",
               }}
               validate={(values) => handleValidateNewUser(values)}
-              onSubmit={(values, { resetForm }) =>
-                handleNewUserFormSubmit(values, resetForm)
-              }
+              onSubmit={(values, { resetForm }) => {
+                handleNewUserFormSubmit(values, resetForm);
+                setShowAddNewUser(false);
+              }}
             >
               <Form>
                 <label className="is-required" htmlFor="username">
