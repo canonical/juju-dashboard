@@ -220,6 +220,13 @@ export default function ShareModel() {
     }
   };
 
+  // Ensure user with 'owner' status is always the first card
+  const sortedUsers = cloneDeep(users || null);
+  sortedUsers?.some(
+    (item: User, i: Number) =>
+      isOwner(item.user) && sortedUsers.unshift(sortedUsers.splice(i, 1)[0])
+  );
+
   return (
     <Aside loading={!modelStatusData} isSplit={true}>
       <motion.div layout className="p-panel share-model">
@@ -261,7 +268,7 @@ export default function ShareModel() {
                 <span>Add new user</span>
               </button>
             </div>
-            {users?.map((userObj: User) => {
+            {sortedUsers?.map((userObj: User) => {
               const userName = userObj["user"];
               const lastConnected = userObj["last-connection"];
               return (
