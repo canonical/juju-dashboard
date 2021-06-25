@@ -258,7 +258,10 @@ const Model = () => {
       <div>
         <InfoPanel />
         <div className="entity-details__actions">
-          {canAdministerModelAccess(activeUser, modelStatusData.info.users) && (
+          {canAdministerModelAccess(
+            activeUser,
+            modelStatusData?.info?.users
+          ) && (
             <button
               className="entity-details__action-button"
               data-test="model-access-btn"

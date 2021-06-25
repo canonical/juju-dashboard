@@ -152,13 +152,13 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs, activeUser) {
             "data-test-column": "updated",
             content: (
               <>
-                {canAdministerModelAccess(activeUser, model.info.users) &&
+                {canAdministerModelAccess(activeUser, model?.info?.users) &&
                   generateAccessButton(setPanelQs, model.model.name)}
                 <span className="model-access-alt">{lastUpdated}</span>
               </>
             ),
             className: `u-align--right lrg-screen-access-cell ${
-              canAdministerModelAccess(activeUser, model.info.users)
+              canAdministerModelAccess(activeUser, model?.info?.users)
                 ? "has-permission"
                 : ""
             }`,
@@ -166,7 +166,7 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs, activeUser) {
           {
             content: (
               <>
-                {canAdministerModelAccess(activeUser, model.info.users) &&
+                {canAdministerModelAccess(activeUser, model?.info?.users) &&
                   generateAccessButton(setPanelQs, model.model.name)}
               </>
             ),
