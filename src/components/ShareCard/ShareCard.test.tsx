@@ -71,7 +71,9 @@ describe("Share Card", () => {
       />
     );
     const accessLevelSelect = wrapper.find("select.share__card-access");
-    accessLevelSelect.simulate("change");
+    accessLevelSelect.simulate("change", {
+      target: { value: "write", name: "access" },
+    });
     expect(accessSelectChangeFn).toBeCalled();
   });
 });
