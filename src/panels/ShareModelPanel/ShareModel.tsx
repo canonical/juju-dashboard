@@ -113,8 +113,14 @@ export default function ShareModel() {
       action,
       dispatch
     );
-
-    return response;
+    if (response?.error) {
+      toast.custom((t) => (
+        <ToastCard toastInstance={t} type="negative" text={response.error} />
+      ));
+      return false;
+    } else {
+      return response;
+    }
   };
 
   const handleAccessSelectChange = async (
