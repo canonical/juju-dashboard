@@ -497,17 +497,23 @@ export async function setModelSharingPermissions(
 
   let response = Promise.resolve({ results: [{}] });
 
-  if (permissionFrom) {
-    response = await modifyAccess(permissionFrom, "revoke");
-  }
+  if (conn) {
+    if (permissionFrom) {
+      response = await modifyAccess(permissionFrom, "revoke");
+    }
 
-  if (action === "grant") {
-    response = await modifyAccess(permissionTo, "grant");
-  }
+    if (action === "grant") {
+      response = await modifyAccess(permissionTo, "grant");
+    }
 
-  const modelInfo = await fetchModelInfo(conn, modelUUID);
-  modelInfo &&
-    dispatch(updateModelInfo(modelInfo), { wsControllerURL: controllerURL });
+    const modelInfo = await fetchModelInfo(conn, modelUUID);
+    modelInfo &&
+      dispatch(updateModelInfo(modelInfo), { wsControllerURL: controllerURL });
+  } else {
+    response = Promise.resolve({
+      results: [{ error: true }],
+    });
+  }
 
   return response;
 }
