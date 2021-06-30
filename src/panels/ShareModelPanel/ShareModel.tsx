@@ -113,6 +113,7 @@ export default function ShareModel() {
       action,
       dispatch
     );
+
     return response;
   };
 
@@ -148,6 +149,7 @@ export default function ShareModel() {
         />
       ));
     }
+    return response;
   };
 
   const handleRemoveUser = async (userName: string) => {

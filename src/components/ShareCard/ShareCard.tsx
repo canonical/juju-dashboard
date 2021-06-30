@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Formik, Field, Form } from "formik";
 import { formatFriendlyDateToNow } from "app/utils/utils";
+import type { TSFixMe } from "types";
 
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
 
@@ -15,7 +16,7 @@ type Props = {
   accessSelectChange: (
     e: React.ChangeEvent<HTMLInputElement>,
     userName: string
-  ) => void;
+  ) => TSFixMe;
 };
 
 export default function ShareCard({
@@ -28,6 +29,36 @@ export default function ShareCard({
 }: Props) {
   const [inFocus, setInFocus] = useState(false);
   const [hasBeenRemoved, setHasBeenRemoved] = useState(false);
+  const [showStatus, setShowStatus] = useState(true);
+  const [updateStatus, setUpdateStatus] = useState<null | string>(null);
+
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      setShowStatus(false);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeOut);
+    };
+  }, [showStatus]);
+
+  const getStatusIconClassNames = (status: string | null) => {
+    let classNames = "";
+    switch (status) {
+      case "Updating":
+        classNames = "p-icon--spinner u-animation--spin";
+        break;
+      case "Updated":
+        classNames = "p-icon--success";
+        break;
+      case "Error":
+        classNames = "p-icon--error";
+        break;
+      default:
+        break;
+    }
+    return classNames;
+  };
 
   return (
     <div>
@@ -56,31 +87,57 @@ export default function ShareCard({
           </div>
           <div className="share-card__supplementary">
             Last connected:{" "}
-            {lastConnected
-              ? formatFriendlyDateToNow(lastConnected)
-              : `Never connected`}
-            {!isOwner && (
-              <Formik initialValues={{}} onSubmit={() => {}}>
-                <Form>
-                  <Field
-                    as="select"
-                    name="access"
-                    onFocus={() => setInFocus(true)}
-                    onBlur={() => setInFocus(false)}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      accessSelectChange(e, userName);
-                      setInFocus(false);
-                    }}
-                    value={access}
-                    className="share__card-access"
-                  >
-                    <option value="read">Read</option>
-                    <option value="write">Write</option>
-                    <option value="admin">Admin</option>
-                  </Field>
-                </Form>
-              </Formik>
-            )}
+            {lastConnected ? formatFriendlyDateToNow(lastConnected) : `Never`}
+            <div className="share-card__access-wrapper">
+              {!isOwner && (
+                <>
+                  <Formik initialValues={{}} onSubmit={() => {}}>
+                    <Form>
+                      <Field
+                        as="select"
+                        name="access"
+                        onFocus={() => setInFocus(true)}
+                        onBlur={() => setInFocus(false)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          setShowStatus(true);
+                          setUpdateStatus("Updating");
+                          const accessChange = accessSelectChange(e, userName);
+                          if (accessChange) {
+                            accessChange.then((response: any) => {
+                              if (!response?.results[0]?.error) {
+                                setInFocus(false);
+                                setUpdateStatus("Updated");
+                              } else {
+                                setUpdateStatus("Error");
+                              }
+                            });
+                          }
+                        }}
+                        value={access}
+                        className="share__card-access"
+                      >
+                        <option value="read">Read</option>
+                        <option value="write">Write</option>
+                        <option value="admin">Admin</option>
+                      </Field>
+                    </Form>
+                  </Formik>
+
+                  <div className="share-card__status" data-visible={showStatus}>
+                    <div
+                      className={`share-card__status-wrap ${
+                        updateStatus === "updating" ? "is-spinner" : ""
+                      }`}
+                    >
+                      <span className="share-card__status-text">
+                        {updateStatus}
+                      </span>{" "}
+                      <i className={getStatusIconClassNames(updateStatus)}></i>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </SlideDownFadeOut>

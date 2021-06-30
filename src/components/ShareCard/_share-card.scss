@@ -6,14 +6,51 @@
   border-radius: 2px;
   margin-bottom: 1rem;
   padding: 1rem;
+  position: relative;
+  width: 100%;
 
   select {
     margin-bottom: 0;
   }
 
+  &__access-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+
+    @media (min-width: $breakpoint-small) {
+      grid-template-columns: 1fr;
+
+      .share-card__status-wrap {
+        display: block;
+        padding-top: 0.5rem;
+        right: 0;
+
+        i {
+          top: 0;
+        }
+      }
+
+      .share-card__status-text {
+        display: inline;
+        padding-right: 0.5rem;
+        text-align: left;
+      }
+    }
+
+    @media (min-width: 1170px) {
+      grid-template-columns: 1fr 1fr;
+
+      .share-card__status-wrap {
+        right: -2rem;
+        top: 0.75rem;
+      }
+    }
+  }
+
   &__supplementary {
     color: $color-mid-dark;
-    max-width: 80%;
+    max-width: calc(100% - 1.5rem);
 
     form {
       margin-top: 1rem;
@@ -39,5 +76,36 @@
     background-color: rgba(0, 102, 204, 0.05);
     border: 1px solid $color-link;
     transition: background-color 0.5s;
+  }
+
+  &__status {
+    display: flex;
+    opacity: 0;
+    transition: opacity 0.25s;
+    width: 100%;
+
+    &-wrap {
+      display: grid;
+      gap: 0.5rem;
+      grid-template-columns: 1fr 24px;
+      padding-top: 1.25rem;
+      position: relative;
+      right: -2rem;
+      width: 100%;
+
+      i {
+        position: relative;
+        top: 0.25rem;
+      }
+    }
+
+    &-text {
+      position: relative;
+      text-align: right;
+    }
+
+    &[data-visible="true"] {
+      opacity: 1;
+    }
   }
 }
