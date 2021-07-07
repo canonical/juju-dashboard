@@ -116,9 +116,9 @@ export default function ShareCard({
                         value={access}
                         className="share__card-access"
                       >
-                        <option value="read">Read</option>
-                        <option value="write">Write</option>
-                        <option value="admin">Admin</option>
+                        <option value="read">read</option>
+                        <option value="write">write</option>
+                        <option value="admin">admin</option>
                       </Field>
                     </Form>
                   </Formik>
