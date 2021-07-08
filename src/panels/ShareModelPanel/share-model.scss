@@ -5,10 +5,6 @@
 @include vf-p-icons;
 @include vf-b-placeholders;
 
-@mixin vf-icon-share($color: $color-dark) {
-  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 0a3 3 0 11-2.123 5.12L6.869 7.12a3 3 0 01-.029 1.848l3.058 1.89a3 3 0 11-.774 1.285l-3.109-1.922a3 3 0 11.068-4.381l3.032-2.017A3.002 3.002 0 0112 0zm0 11.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-8-5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm8-5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z' fill='#{vf-url-friendly-color($color)}' fill-rule='nonzero'/%3E%3C/svg%3E");
-}
-
 .share-model {
   .title-wrapper {
     display: flex;
@@ -25,13 +21,9 @@
     }
 
     .p-icon--share {
-      @extend %icon;
-
       @include vf-icon-share($color-dark);
 
       margin-right: 0.5rem;
-      position: relative;
-      top: 0.6rem;
     }
 
     &__heading {
