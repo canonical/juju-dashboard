@@ -50,10 +50,11 @@
 
   &__supplementary {
     color: $color-mid-dark;
+    font-size: 0.875rem;
     max-width: calc(100% - 1.5rem);
 
     form {
-      margin-top: 1rem;
+      margin-top: 0.875rem;
       max-width: 50%;
     }
   }

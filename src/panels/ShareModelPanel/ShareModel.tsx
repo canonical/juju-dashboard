@@ -254,7 +254,7 @@ export default function ShareModel() {
               ) : (
                 <div className="title-wrapper__heading">
                   <i className="p-icon--share"></i>
-                  <h4>Model access: {modelName}</h4>{" "}
+                  <h5>Model access: {modelName}</h5>{" "}
                 </div>
               )}
             </div>
@@ -293,7 +293,7 @@ export default function ShareModel() {
             })}
           </div>
           <div className="aside-split-col add-new-user">
-            <h4>Add new user</h4>
+            <h5>Add new user</h5>
             <Formik
               initialValues={{
                 name: "",

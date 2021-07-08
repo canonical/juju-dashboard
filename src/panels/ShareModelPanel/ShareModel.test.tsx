@@ -25,7 +25,9 @@ describe("Share Model Panel", () => {
         </Provider>
       </MemoryRouter>
     );
-    const panelHeader = wrapper.find(".aside-split-col h5");
+    const panelHeader = wrapper.find(
+      ".aside-split-col .share-cards__heading h5"
+    );
     expect(panelHeader.text()).toEqual("Sharing with:");
   });
 
