@@ -59,7 +59,7 @@
     "async-limiter": "2.0.0",
     "classnames": "2.3.1",
     "clone-deep": "4.0.1",
-    "d3": "6.7.0",
+    "d3": "7.0.0",
     "date-fns": "2.22.1",
     "formik": "2.2.9",
     "framer-motion": "4.1.17",
