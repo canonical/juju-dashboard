@@ -192,7 +192,7 @@ async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
           // a location to notify the user. In the new watcher model that's
           // being implemented we will be able to surface this error in the
           // model details page.
-          console.log(status.error);
+          console.error(status.error);
           return;
         }
       }
