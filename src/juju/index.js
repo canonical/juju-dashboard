@@ -464,7 +464,6 @@ export async function startModelWatcher(modelUUID, appState) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const watcherHandle = await conn.facades.client.watchAll();
   const callback = (data) => {
-    console.log(data);
     conn.facades.allWatcher._transport.write(
       {
         type: "AllWatcher",
@@ -476,6 +475,17 @@ export async function startModelWatcher(modelUUID, appState) {
     );
   };
   callback();
+  return { conn, watcherHandle };
+}
+
+export async function stopModelWatcher(conn, watcherHandleId) {
+  conn.facades.allWatcher._transport.write({
+    type: "AllWatcher",
+    request: "Stop",
+    version: 1,
+    id: watcherHandleId,
+  });
+  conn.transport.close();
 }
 
 /**
