@@ -26,6 +26,12 @@ interface Applications {
   name: string;
 }
 
+// Delta Types
+
+type IPAddress = string;
+type NumberAsString = string;
+type Life = "alive" | string; // xxx what other values for life are there?
+
 interface MachineChangeDelta {
   addresses: AddressData | null;
   "agent-status": Status;
@@ -44,18 +50,14 @@ interface MachineChangeDelta {
   "wants-vote": boolean;
 }
 
-type IPAddress = string;
-type NumberAsString = string;
-type Life = "alive" | string; // xxx what other values for life are there?
-
 interface AddressData {
   value: IPAddress;
   type: "ipv4" | string;
-  scope: "public" | "local-cloud" | string;
+  scope: "public" | "local-cloud" | "local-cloud" | "local-machine" | string;
 }
 
 interface Status {
-  current: "allocating" | "pending" | "running" | string; // xxx what are the other statuses?
+  current: "allocating" | "pending" | "running" | "waiting" | string; // xxx what are the other statuses?
   message: string;
   since: string; // xxx 2021-07-26T20:29:24.018591937Z what date type is this?
   version: string; // xxx typically empty? What can this contain?
@@ -68,4 +70,22 @@ interface HardwareCharacteristics {
   "cpu-cores": number;
   "cpu-power": number;
   "availability-zone": string;
+}
+
+interface UnitChangeDelta {
+  "agent-status": Status;
+  "charm-url": string; // xxx will this no longer be populated with CH?
+  "machine-id": NumberAsString;
+  "model-uuid": string;
+  "port-ranges": null; // xxx what do real values look like?
+  "private-address": string; // xxx  empty? Will these be populated?
+  "public-address": string; // xxx empty? Will these be populated?
+  "workload-status": Status;
+  application: string;
+  life: Life;
+  name: string;
+  ports: string[]; // xxx or is it an array of numbers?
+  principal: string; // xxx possible spelling error? What does this mean?
+  series: string;
+  subordinate: boolean;
 }
