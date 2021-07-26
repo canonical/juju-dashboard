@@ -24,6 +24,7 @@ import {
 } from "app/selectors";
 import {
   addControllerCloudRegion,
+  processAllWatcherDeltas,
   updateControllerList,
   updateModelInfo,
   updateModelStatus,
@@ -460,10 +461,11 @@ export async function queryOperationsList(queryArgs, modelUUID, appState) {
   return operationListResult;
 }
 
-export async function startModelWatcher(modelUUID, appState) {
+export async function startModelWatcher(modelUUID, appState, dispatch) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const watcherHandle = await conn.facades.client.watchAll();
   const callback = (data) => {
+    dispatch(processAllWatcherDeltas(data?.deltas));
     conn.facades.allWatcher._transport.write(
       {
         type: "AllWatcher",

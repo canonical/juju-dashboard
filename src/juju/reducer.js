@@ -2,10 +2,12 @@ import immerProduce from "immer";
 import cloneDeep from "clone-deep";
 
 import { actionsList } from "./actions";
+import { processDeltas } from "./watchers";
 
 const defaultState = {
   models: {},
   modelData: {},
+  modelWatcherData: {},
 };
 
 export default function jujuReducer(state = defaultState, action) {
@@ -80,6 +82,12 @@ export default function jujuReducer(state = defaultState, action) {
         controllers[action.payload.wsControllerURL] =
           action.payload.controllers;
         draftState.controllers = controllers;
+        break;
+      case actionsList.processAllWatcherDeltas:
+        draftState.modelWatcherData = processDeltas(
+          state.modelWatcherData,
+          payload
+        );
         break;
       default:
         // No default value, fall through.

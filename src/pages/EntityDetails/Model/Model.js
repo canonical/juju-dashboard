@@ -12,7 +12,7 @@ import {
   extractCloudName,
   canAdministerModelAccess,
 } from "app/utils/utils";
-import { useStore } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 
 import {
   appsOffersTableHeaders,
@@ -74,6 +74,7 @@ const Model = () => {
   const modelStatusData = useModelStatus();
   const activeUser = useActiveUser();
   const history = useHistory();
+  const dispatch = useDispatch();
   const { userName, modelName } = useParams();
 
   const [query, setQuery] = useQueryParams({
@@ -88,13 +89,19 @@ const Model = () => {
     let watcherHandle = null;
     let conn = null;
     async function startWatcher() {
-      ({ conn, watcherHandle } = await startModelWatcher(uuid, appState));
+      ({ conn, watcherHandle } = await startModelWatcher(
+        uuid,
+        appState,
+        dispatch
+      ));
     }
     if (uuid) {
       startWatcher();
     }
     return () => {
-      stopModelWatcher(conn, watcherHandle["watcher-id"]);
+      if (watcherHandle) {
+        stopModelWatcher(conn, watcherHandle["watcher-id"]);
+      }
     };
     // Skipped as we need appState due to the call to `connectAndLoginToModel`
     // this method will need to be updated to take specific values instead of
