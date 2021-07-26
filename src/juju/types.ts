@@ -1,5 +1,8 @@
 import { TSFixMe } from "types";
 
+// See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
+// for the Juju types for the AllWatcher responses.
+
 export interface ModelWatcherData {
   [uuid: string]: ModelData;
 }
@@ -29,9 +32,29 @@ interface Applications {
 // Delta Types
 
 type IPAddress = string;
+type UnitId = string;
 type NumberAsString = string;
 type Life = "alive" | string; // xxx what other values for life are there?
+type DeprecatedString = string;
 
+interface ActionChangeDelta {
+  "model-uuid": string;
+  id: NumberAsString;
+  receiver: UnitId;
+  name: string;
+  status: "failed" | string; // xxx what are the other values?
+  message: string;
+  results: ActionResult;
+  enqueued: string; // xxx 2021-07-20T16:21:28Z what type?
+  started: string; // xxx 2021-07-20T16:21:28Z what type?
+  completed: string; // xxx 2021-07-20T16:21:28Z what type?
+}
+
+interface ActionResult {
+  Code: NumberAsString;
+  Stderr: string;
+  // xxx what other keys are possible?
+}
 interface MachineChangeDelta {
   addresses: AddressData | null;
   "agent-status": Status;
@@ -78,8 +101,8 @@ interface UnitChangeDelta {
   "machine-id": NumberAsString;
   "model-uuid": string;
   "port-ranges": null; // xxx what do real values look like?
-  "private-address": string; // xxx  empty? Will these be populated?
-  "public-address": string; // xxx empty? Will these be populated?
+  "private-address": DeprecatedString;
+  "public-address": DeprecatedString;
   "workload-status": Status;
   application: string;
   life: Life;
