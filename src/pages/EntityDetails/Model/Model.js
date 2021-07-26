@@ -47,7 +47,7 @@ import useActiveUser from "hooks/useActiveUser";
 
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
-import { startModelWatcher } from "juju/index";
+import { startModelWatcher, stopModelWatcher } from "juju/index";
 
 import { renderCounts } from "../counts";
 
@@ -85,10 +85,21 @@ const Model = () => {
   const uuid = modelStatusData?.info?.uuid;
 
   useEffect(() => {
-    if (uuid) {
-      console.log("starting watcher");
-      startModelWatcher(uuid, appState);
+    let watcherHandle = null;
+    let conn = null;
+    async function startWatcher() {
+      ({ conn, watcherHandle } = await startModelWatcher(uuid, appState));
     }
+    if (uuid) {
+      startWatcher();
+    }
+    return () => {
+      stopModelWatcher(conn, watcherHandle["watcher-id"]);
+    };
+    // Skipped as we need appState due to the call to `connectAndLoginToModel`
+    // this method will need to be updated to take specific values instead of
+    // the entire state.
+    // eslint-disable-next-line
   }, [uuid]);
 
   const tableRowClick = useTableRowClick();
