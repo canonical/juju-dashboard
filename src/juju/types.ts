@@ -15,7 +15,14 @@ export type AllWatcherDelta =
   | ["relation", "change", RelationChangeDelta];
 
 export interface ModelData {
-  model: ModelChangeDelta;
+  model: ModelInfo;
+}
+
+interface ModelInfo extends ModelChangeDelta {
+  "cloud-tag": string;
+  region: string;
+  type: string;
+  version: string;
 }
 
 // Shared Types
