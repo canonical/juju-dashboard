@@ -5,24 +5,28 @@ import type { AllWatcherDelta, ModelData, ModelWatcherData } from "./types";
 function generateModelWatcherBase(): ModelData {
   return {
     model: {
-      "model-uuid": "",
-      name: "",
-      life: "",
-      owner: "",
+      "cloud-tag": "",
       "controller-uuid": "",
       "is-controller": false,
+      "model-uuid": "",
       config: {},
+      constraints: {},
+      life: "",
+      name: "",
+      owner: "",
+      region: "",
+      sla: {
+        level: "",
+        owner: "",
+      },
       status: {
         current: "",
         message: "",
         since: "",
         version: "",
       },
-      constraints: {},
-      sla: {
-        level: "",
-        owner: "",
-      },
+      type: "",
+      version: "",
     },
   };
 }
