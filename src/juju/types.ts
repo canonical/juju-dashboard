@@ -1,5 +1,3 @@
-import { TSFixMe } from "types";
-
 // See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
@@ -7,19 +5,9 @@ export interface ModelWatcherData {
   [uuid: string]: ModelData;
 }
 
-export type AllWatcherDelta = [DeltaEntity, DeltaType, Delta];
-
-type DeltaEntity =
-  | "action"
-  | "application"
-  | "charm"
-  | "machine"
-  | "model"
-  | "relation";
-type DeltaType = "add" | "change" | "remove";
-
-// XXX Type different Delta types based on the values of DeltaEntity/DeltaType.
-type Delta = TSFixMe;
+export type AllWatcherDelta =
+  | ["unit", "change", UnitChangeDelta]
+  | ["machine", "change", MachineChangeDelta];
 
 interface ModelData {
   applications: Applications;
@@ -34,7 +22,9 @@ interface Applications {
 type IPAddress = string;
 type UnitId = string;
 type NumberAsString = string;
-type Life = "alive" | string; // xxx what other values for life are there?
+type Life = "alive" | "dead" | "dying";
+type ISO8601Date = string;
+
 type DeprecatedString = string;
 
 interface ActionChangeDelta {
@@ -45,9 +35,9 @@ interface ActionChangeDelta {
   status: "failed" | string; // xxx what are the other values?
   message: string;
   results: ActionResult;
-  enqueued: string; // xxx 2021-07-20T16:21:28Z what type?
-  started: string; // xxx 2021-07-20T16:21:28Z what type?
-  completed: string; // xxx 2021-07-20T16:21:28Z what type?
+  enqueued: ISO8601Date;
+  started: ISO8601Date;
+  completed: ISO8601Date;
 }
 
 interface ActionResult {
@@ -82,7 +72,7 @@ interface AddressData {
 interface Status {
   current: "allocating" | "pending" | "running" | "waiting" | string; // xxx what are the other statuses?
   message: string;
-  since: string; // xxx 2021-07-26T20:29:24.018591937Z what date type is this?
+  since: ISO8601Date;
   version: string; // xxx typically empty? What can this contain?
 }
 
@@ -93,6 +83,27 @@ interface HardwareCharacteristics {
   "cpu-cores": number;
   "cpu-power": number;
   "availability-zone": string;
+}
+
+interface RelationChangeDelta {
+  "model-uuid": string;
+  key: string;
+  id: number;
+  endpoints: Endpoint[];
+}
+
+interface Endpoint {
+  "application-name": string;
+  relation: Relation;
+}
+
+interface Relation {
+  name: string;
+  role: "peer" | "requirer" | "provider";
+  interface: string;
+  optional: boolean;
+  limit: number;
+  scope: "global" | string; // xxx other possible values? "container"?
 }
 
 interface UnitChangeDelta {
@@ -108,7 +119,7 @@ interface UnitChangeDelta {
   life: Life;
   name: string;
   ports: string[]; // xxx or is it an array of numbers?
-  principal: string; // xxx possible spelling error? What does this mean?
+  principal: string;
   series: string;
   subordinate: boolean;
 }
