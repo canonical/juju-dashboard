@@ -14,12 +14,8 @@ export type AllWatcherDelta =
   | ["model", "change", ModelChangeDelta]
   | ["relation", "change", RelationChangeDelta];
 
-interface ModelData {
-  applications: Applications;
-}
-
-interface Applications {
-  name: string;
+export interface ModelData {
+  model: ModelChangeDelta;
 }
 
 // Shared Types
@@ -27,7 +23,7 @@ interface Applications {
 type IPAddress = string;
 type UnitId = string;
 type NumberAsString = string;
-type Life = "alive" | "dead" | "dying";
+type Life = "alive" | "dead" | "dying" | "";
 type ISO8601Date = string;
 type DeprecatedString = string;
 interface Status {
@@ -38,7 +34,7 @@ interface Status {
   message: string;
   since: ISO8601Date;
   version: string;
-  data: { [key: string]: any };
+  data?: { [key: string]: any };
   err?: string;
 }
 
@@ -146,7 +142,7 @@ interface ModelChangeDelta {
 }
 
 interface ModelAgentStatus extends Status {
-  current: "available" | "busy";
+  current: "available" | "busy" | "";
 }
 
 interface RelationChangeDelta {

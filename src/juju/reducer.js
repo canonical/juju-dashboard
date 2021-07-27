@@ -85,7 +85,7 @@ export default function jujuReducer(state = defaultState, action) {
         break;
       case actionsList.processAllWatcherDeltas:
         draftState.modelWatcherData = processDeltas(
-          state.modelWatcherData,
+          draftState.modelWatcherData,
           payload
         );
         break;

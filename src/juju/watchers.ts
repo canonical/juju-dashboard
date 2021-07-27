@@ -1,24 +1,54 @@
-import { AllWatcherDelta, ModelWatcherData } from "./types";
+import mergeWith from "lodash.mergewith";
+
+import type { AllWatcherDelta, ModelData, ModelWatcherData } from "./types";
+
+function generateModelWatcherBase(): ModelData {
+  return {
+    model: {
+      "model-uuid": "",
+      name: "",
+      life: "",
+      owner: "",
+      "controller-uuid": "",
+      "is-controller": false,
+      config: {},
+      status: {
+        current: "",
+        message: "",
+        since: "",
+        version: "",
+      },
+      constraints: {},
+      sla: {
+        level: "",
+        owner: "",
+      },
+    },
+  };
+}
 
 export function processDeltas(
-  state: ModelWatcherData,
+  modelWatcherData: ModelWatcherData,
   deltas: AllWatcherDelta[]
 ) {
   if (!deltas) {
     return;
   }
-  // console.log(deltas);
+  console.log(deltas);
   deltas.forEach((delta) => {
     const modelUUID = delta[2]["model-uuid"];
     switch (delta[0]) {
-      case "unit":
+      case "model":
         switch (delta[1]) {
           case "change":
-            // Handle unit change delta
-            console.log(modelUUID); // temp quiet the linter for modelUUID :)
+            if (!modelWatcherData[modelUUID]) {
+              modelWatcherData[modelUUID] = generateModelWatcherBase();
+            }
+            mergeWith(modelWatcherData[modelUUID].model, delta[2]);
             break;
         }
         break;
     }
   });
+  return modelWatcherData;
 }
