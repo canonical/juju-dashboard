@@ -175,7 +175,7 @@ async function connectAndLoginWithTimeout(
   @param {Object} getState A function that'll return the app redux state.
   @returns {Object} The full model status.
 */
-async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
+export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   const appState = getState();
   const bakery = getBakery(appState);
   const baseWSControllerURL = getWSControllerURL(appState);

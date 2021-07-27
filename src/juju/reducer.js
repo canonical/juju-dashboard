@@ -1,5 +1,6 @@
 import immerProduce from "immer";
 import cloneDeep from "clone-deep";
+import mergeWith from "lodash.mergewith";
 
 import { actionsList } from "./actions";
 import { processDeltas } from "./watchers";
@@ -82,6 +83,17 @@ export default function jujuReducer(state = defaultState, action) {
         controllers[action.payload.wsControllerURL] =
           action.payload.controllers;
         draftState.controllers = controllers;
+        break;
+      case actionsList.populateMissingAllWatcherData:
+        if (!draftState.modelWatcherData?.[payload.uuid]?.model) {
+          draftState.modelWatcherData[payload.uuid].model = {};
+        }
+        mergeWith(draftState.modelWatcherData[payload.uuid].model, {
+          "cloud-tag": payload.status.model["cloud-tag"],
+          type: payload.status.model.type,
+          region: payload.status.model.region,
+          version: payload.status.model.version,
+        });
         break;
       case actionsList.processAllWatcherDeltas:
         draftState.modelWatcherData = processDeltas(

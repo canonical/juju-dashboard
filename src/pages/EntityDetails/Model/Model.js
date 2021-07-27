@@ -48,6 +48,7 @@ import useActiveUser from "hooks/useActiveUser";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
 import { startModelWatcher, stopModelWatcher } from "juju/index";
+import { populateMissingAllWatcherData } from "juju/actions";
 
 import { renderCounts } from "../counts";
 
@@ -70,7 +71,8 @@ const shouldShow = (segment, activeView) => {
 };
 
 const Model = () => {
-  const appState = useStore().getState();
+  const store = useStore();
+  const appState = store.getState();
   const modelStatusData = useModelStatus();
   const activeUser = useActiveUser();
   const history = useHistory();
@@ -90,15 +92,23 @@ const Model = () => {
     let pingerIntervalId = null;
     let watcherHandle = null;
 
-    async function startWatcher() {
+    async function loadFullData() {
       ({ conn, watcherHandle, pingerIntervalId } = await startModelWatcher(
         uuid,
         appState,
         dispatch
       ));
+      // Fetch the missing model status data. This data should eventually make
+      // its way into the all watcher at which point we can drop this additional
+      // request for data.
+      const status = await conn.facades.client.fullStatus();
+      if (status !== null) {
+        console.log(status);
+        dispatch(populateMissingAllWatcherData(uuid, status));
+      }
     }
     if (uuid) {
-      startWatcher();
+      loadFullData();
     }
     return () => {
       if (watcherHandle) {
