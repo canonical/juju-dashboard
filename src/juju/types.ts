@@ -6,8 +6,11 @@ export interface ModelWatcherData {
 }
 
 export type AllWatcherDelta =
+  | ["action", "change", ActionChangeDelta]
   | ["unit", "change", UnitChangeDelta]
-  | ["machine", "change", MachineChangeDelta];
+  | ["machine", "change", MachineChangeDelta]
+  | ["model", "change", ModelChangeDelta]
+  | ["relation", "change", RelationChangeDelta];
 
 interface ModelData {
   applications: Applications;
@@ -17,15 +20,27 @@ interface Applications {
   name: string;
 }
 
-// Delta Types
+// Shared Types
 
 type IPAddress = string;
 type UnitId = string;
 type NumberAsString = string;
 type Life = "alive" | "dead" | "dying";
 type ISO8601Date = string;
-
 type DeprecatedString = string;
+interface Status {
+  // See https://github.com/juju/juju/blob/develop/core/status/status.go
+  // For the possible status values for `current`.
+  // Possible statuses differ by entity type.
+  current: string;
+  message: string;
+  since: ISO8601Date;
+  version: string;
+  data: { [key: string]: any };
+  err?: string;
+}
+
+// Delta Types
 
 interface ActionChangeDelta {
   "model-uuid": string;
@@ -34,26 +49,25 @@ interface ActionChangeDelta {
   name: string;
   status: "failed" | string; // xxx what are the other values?
   message: string;
-  results: ActionResult;
+  results: {
+    Code: NumberAsString;
+    Stderr: string;
+    // xxx what other keys are possible?
+  };
   enqueued: ISO8601Date;
   started: ISO8601Date;
   completed: ISO8601Date;
 }
 
-interface ActionResult {
-  Code: NumberAsString;
-  Stderr: string;
-  // xxx what other keys are possible?
-}
 interface MachineChangeDelta {
   addresses: AddressData | null;
-  "agent-status": Status;
+  "agent-status": MachineAgentStatus;
   "container-type": string; // xxx typically empty? What can this contain?
   "hardware-characteristics": HardwareCharacteristics | undefined;
   "has-vote": boolean;
   id: NumberAsString;
   "instance-id": string;
-  "instance-status": Status;
+  "instance-status": MachineAgentStatus;
   jobs: string[]; // xxx [ "JobHostUnits" ] what else can this be?
   life: Life;
   "model-uuid": string;
@@ -63,17 +77,14 @@ interface MachineChangeDelta {
   "wants-vote": boolean;
 }
 
+interface MachineAgentStatus extends Status {
+  current: "down" | "error" | "pending" | "started" | "stopped";
+}
+
 interface AddressData {
   value: IPAddress;
   type: "ipv4" | string;
   scope: "public" | "local-cloud" | "local-cloud" | "local-machine" | string;
-}
-
-interface Status {
-  current: "allocating" | "pending" | "running" | "waiting" | string; // xxx what are the other statuses?
-  message: string;
-  since: ISO8601Date;
-  version: string; // xxx typically empty? What can this contain?
 }
 
 interface HardwareCharacteristics {
@@ -85,6 +96,26 @@ interface HardwareCharacteristics {
   "availability-zone": string;
 }
 
+interface ModelChangeDelta {
+  "model-uuid": string;
+  name: string;
+  life: Life;
+  owner: string;
+  "controller-uuid": string;
+  "is-controller": boolean;
+  config: { [key: string]: string | boolean };
+  status: ModelAgentStatus;
+  constraints: { [key: string]: any };
+  sla: {
+    level: string;
+    owner: string;
+  };
+}
+
+interface ModelAgentStatus extends Status {
+  current: "available" | "busy";
+}
+
 interface RelationChangeDelta {
   "model-uuid": string;
   key: string;
@@ -94,27 +125,25 @@ interface RelationChangeDelta {
 
 interface Endpoint {
   "application-name": string;
-  relation: Relation;
-}
-
-interface Relation {
-  name: string;
-  role: "peer" | "requirer" | "provider";
-  interface: string;
-  optional: boolean;
-  limit: number;
-  scope: "global" | string; // xxx other possible values? "container"?
+  relation: {
+    name: string;
+    role: "peer" | "requirer" | "provider";
+    interface: string;
+    optional: boolean;
+    limit: number;
+    scope: "global" | string; // xxx other possible values? "container"?
+  };
 }
 
 interface UnitChangeDelta {
-  "agent-status": Status;
+  "agent-status": UnitAgentStatus;
   "charm-url": string; // xxx will this no longer be populated with CH?
   "machine-id": NumberAsString;
   "model-uuid": string;
   "port-ranges": null; // xxx what do real values look like?
   "private-address": DeprecatedString;
   "public-address": DeprecatedString;
-  "workload-status": Status;
+  "workload-status": WorkloadStatus;
   application: string;
   life: Life;
   name: string;
@@ -122,4 +151,25 @@ interface UnitChangeDelta {
   principal: string;
   series: string;
   subordinate: boolean;
+}
+
+interface UnitAgentStatus extends Status {
+  current:
+    | "allocating"
+    | "executing"
+    | "failed"
+    | "idle"
+    | "lost"
+    | "rebooting";
+}
+
+interface WorkloadStatus extends Status {
+  current:
+    | "active"
+    | "blocked"
+    | "maintenance"
+    | "terminated"
+    | "unknown"
+    | "unset"
+    | "waiting";
 }
