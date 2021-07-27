@@ -49,12 +49,14 @@ interface ActionChangeDelta {
   id: NumberAsString;
   receiver: UnitId;
   name: string;
-  status: "failed" | string; // xxx what are the other values?
+  status: string;
   message: string;
-  results: {
+  parameters?: { [key: string]: string };
+  results?: {
+    // Known values, add more as known.
     Code: NumberAsString;
     Stderr: string;
-    // xxx what other keys are possible?
+    [key: string]: string;
   };
   enqueued: ISO8601Date;
   started: ISO8601Date;
