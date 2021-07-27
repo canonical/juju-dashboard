@@ -7,6 +7,7 @@ export interface ModelWatcherData {
 
 export type AllWatcherDelta =
   | ["action", "change", ActionChangeDelta]
+  | ["application", "change", ApplicationChangeDelta]
   | ["charm", "change", CharmChangeDelta]
   | ["unit", "change", UnitChangeDelta]
   | ["machine", "change", MachineChangeDelta]
@@ -58,6 +59,20 @@ interface ActionChangeDelta {
   enqueued: ISO8601Date;
   started: ISO8601Date;
   completed: ISO8601Date;
+}
+
+interface ApplicationChangeDelta {
+  "workload-version": string;
+  "charm-url": string;
+  "min-units": number;
+  "model-uuid": string;
+  "owner-tag": string;
+  constraints: { [key: string]: string };
+  exposed: boolean;
+  life: Life;
+  name: string;
+  status: WorkloadStatus;
+  subordinate: boolean;
 }
 
 interface CharmChangeDelta {
