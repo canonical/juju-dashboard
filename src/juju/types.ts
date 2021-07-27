@@ -7,6 +7,7 @@ export interface ModelWatcherData {
 
 export type AllWatcherDelta =
   | ["action", "change", ActionChangeDelta]
+  | ["charm", "change", CharmChangeDelta]
   | ["unit", "change", UnitChangeDelta]
   | ["machine", "change", MachineChangeDelta]
   | ["model", "change", ModelChangeDelta]
@@ -57,6 +58,21 @@ interface ActionChangeDelta {
   enqueued: ISO8601Date;
   started: ISO8601Date;
   completed: ISO8601Date;
+}
+
+interface CharmChangeDelta {
+  "model-uuid": string;
+  "charm-url": string;
+  "charm-version": string;
+  life: Life;
+  profile: {
+    config?: { [key: string]: string };
+    description?: string;
+    devices?: {
+      [key: string]: { [key: string]: string };
+    };
+  } | null; // lxdprofile
+  config?: { [key: string]: string | boolean };
 }
 
 interface MachineChangeDelta {
