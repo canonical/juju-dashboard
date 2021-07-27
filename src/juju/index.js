@@ -2,6 +2,7 @@ import Limiter from "async-limiter";
 import { connect, connectAndLogin } from "@canonical/jujulib";
 
 import actions from "@canonical/jujulib/dist/api/facades/action-v6";
+import allWatcher from "@canonical/jujulib/dist/api/facades/all-watcher-v1";
 import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
 import applications from "@canonical/jujulib/dist/api/facades/application-v12";
 import client from "@canonical/jujulib/dist/api/facades/client-v2";
@@ -39,6 +40,7 @@ function generateConnectionOptions(usePinger = false, bakery, onClose) {
   // The options used when connecting to a Juju controller or model.
   const facades = [
     actions,
+    allWatcher,
     annotations,
     applications,
     client,
@@ -456,6 +458,34 @@ export async function queryOperationsList(queryArgs, modelUUID, appState) {
     queryArgs
   );
   return operationListResult;
+}
+
+export async function startModelWatcher(modelUUID, appState) {
+  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const watcherHandle = await conn.facades.client.watchAll();
+  const callback = (data) => {
+    conn.facades.allWatcher._transport.write(
+      {
+        type: "AllWatcher",
+        request: "Next",
+        version: 1,
+        id: watcherHandle["watcher-id"],
+      },
+      callback
+    );
+  };
+  callback();
+  return { conn, watcherHandle };
+}
+
+export async function stopModelWatcher(conn, watcherHandleId) {
+  conn.facades.allWatcher._transport.write({
+    type: "AllWatcher",
+    request: "Stop",
+    version: 1,
+    id: watcherHandleId,
+  });
+  conn.transport.close();
 }
 
 /**
