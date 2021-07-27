@@ -86,10 +86,12 @@ const Model = () => {
   const uuid = modelStatusData?.info?.uuid;
 
   useEffect(() => {
-    let watcherHandle = null;
     let conn = null;
+    let pingerIntervalId = null;
+    let watcherHandle = null;
+
     async function startWatcher() {
-      ({ conn, watcherHandle } = await startModelWatcher(
+      ({ conn, watcherHandle, pingerIntervalId } = await startModelWatcher(
         uuid,
         appState,
         dispatch
@@ -100,7 +102,7 @@ const Model = () => {
     }
     return () => {
       if (watcherHandle) {
-        stopModelWatcher(conn, watcherHandle["watcher-id"]);
+        stopModelWatcher(conn, watcherHandle["watcher-id"], pingerIntervalId);
       }
     };
     // Skipped as we need appState due to the call to `connectAndLoginToModel`
