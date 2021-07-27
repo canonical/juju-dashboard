@@ -95,17 +95,17 @@ interface CharmChangeDelta {
 interface MachineChangeDelta {
   addresses: AddressData | null;
   "agent-status": MachineAgentStatus;
-  "container-type": string; // xxx typically empty? What can this contain?
+  "container-type": string;
   "hardware-characteristics": HardwareCharacteristics | undefined;
   "has-vote": boolean;
   id: NumberAsString;
   "instance-id": string;
   "instance-status": MachineAgentStatus;
-  jobs: string[]; // xxx [ "JobHostUnits" ] what else can this be?
+  jobs: ["JobHostUnits"] | ["JobManageModel"];
   life: Life;
   "model-uuid": string;
   series: string;
-  "supported-containers": null; // xxx what are other valid values for this?
+  "supported-containers": "none" | "lxd" | "kvm" | null;
   "supported-containers-known": boolean;
   "wants-vote": boolean;
 }
@@ -164,23 +164,32 @@ interface Endpoint {
     interface: string;
     optional: boolean;
     limit: number;
-    scope: "global" | string; // xxx other possible values? "container"?
+    scope: "global" | "container";
   };
 }
 
 interface UnitChangeDelta {
   "agent-status": UnitAgentStatus;
-  "charm-url": string; // xxx will this no longer be populated with CH?
+  "charm-url": string;
   "machine-id": NumberAsString;
   "model-uuid": string;
-  "port-ranges": null; // xxx what do real values look like?
+  "port-ranges":
+    | {
+        "from-port": number;
+        "to-port": number;
+        protocol: string;
+      }[]
+    | null;
   "private-address": DeprecatedString;
   "public-address": DeprecatedString;
   "workload-status": WorkloadStatus;
   application: string;
   life: Life;
   name: string;
-  ports: string[]; // xxx or is it an array of numbers?
+  ports: {
+    protocol: string;
+    number: number;
+  }[];
   principal: string;
   series: string;
   subordinate: boolean;
