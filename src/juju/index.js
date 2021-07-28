@@ -24,6 +24,7 @@ import {
 } from "app/selectors";
 import {
   addControllerCloudRegion,
+  processAllWatcherDeltas,
   updateControllerList,
   updateModelInfo,
   updateModelStatus,
@@ -72,6 +73,24 @@ function determineLoginParams(credentials, identityProviderAvailable) {
   return loginParams;
 }
 
+function startPingerLoop(conn) {
+  // Ping to keep the connection alive.
+  const intervalId = setInterval(() => {
+    conn.facades.pinger.ping().catch((e) => {
+      // If the pinger fails for whatever reason then cancel the ping.
+      console.error("pinger stopped,", e);
+      stopPingerLoop(intervalId);
+    });
+  }, 20000);
+  return intervalId;
+}
+
+function stopPingerLoop(intervalId) {
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+}
+
 /**
   Connects to the controller at the url defined in the baseControllerURL
   configuration value.
@@ -107,14 +126,7 @@ export async function loginWithBakery(
     return { error };
   }
 
-  // Ping to keep the connection alive.
-  const intervalId = setInterval(() => {
-    conn.facades.pinger.ping().catch((e) => {
-      // If the pinger fails for whatever reason then cancel the ping.
-      console.error("pinger stopped,", e);
-      clearInterval(intervalId);
-    });
-  }, 20000);
+  const intervalId = startPingerLoop(conn);
 
   return { conn, juju, intervalId };
 }
@@ -375,7 +387,7 @@ async function connectAndLoginToModel(modelUUID, appState) {
   const { conn } = await connectAndLoginWithTimeout(
     modelURL,
     credentials,
-    generateConnectionOptions(false, bakery),
+    generateConnectionOptions(true, bakery),
     identityProviderAvailable
   );
   return conn;
@@ -460,10 +472,11 @@ export async function queryOperationsList(queryArgs, modelUUID, appState) {
   return operationListResult;
 }
 
-export async function startModelWatcher(modelUUID, appState) {
+export async function startModelWatcher(modelUUID, appState, dispatch) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const watcherHandle = await conn.facades.client.watchAll();
   const callback = (data) => {
+    dispatch(processAllWatcherDeltas(data?.deltas));
     conn.facades.allWatcher._transport.write(
       {
         type: "AllWatcher",
@@ -474,17 +487,23 @@ export async function startModelWatcher(modelUUID, appState) {
       callback
     );
   };
+  const pingerIntervalId = startPingerLoop(conn);
   callback();
-  return { conn, watcherHandle };
+  return { conn, watcherHandle, pingerIntervalId };
 }
 
-export async function stopModelWatcher(conn, watcherHandleId) {
+export async function stopModelWatcher(
+  conn,
+  watcherHandleId,
+  pingerIntervalId
+) {
   conn.facades.allWatcher._transport.write({
     type: "AllWatcher",
     request: "Stop",
     version: 1,
     id: watcherHandleId,
   });
+  stopPingerLoop(pingerIntervalId);
   conn.transport.close();
 }
 

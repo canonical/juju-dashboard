@@ -10,6 +10,7 @@ export const actionsList = {
   updateModelInfo: "UPDATE_MODEL_INFO",
   updateModelStatus: "UPDATE_MODEL_STATUS",
   updateModelList: "UPDATE_MODEL_LIST",
+  processAllWatcherDeltas: "PROCESS_ALL_WATCHER_DELTAS",
 };
 
 // Action creators
@@ -72,6 +73,16 @@ export function updateModelInfo(modelInfo) {
   return {
     type: actionsList.updateModelInfo,
     payload: modelInfo,
+  };
+}
+
+/**
+  @param {Array} deltas An array of deltas from the AllWatcher.
+*/
+export function processAllWatcherDeltas(deltas) {
+  return {
+    type: actionsList.processAllWatcherDeltas,
+    payload: deltas,
   };
 }
 
