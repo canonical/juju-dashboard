@@ -38,7 +38,6 @@ export function processDeltas(
   if (!deltas) {
     return;
   }
-  console.log(deltas);
   deltas.forEach((delta) => {
     const modelUUID = delta[2]["model-uuid"];
     switch (delta[0]) {
