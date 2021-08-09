@@ -1,3 +1,5 @@
+import { ModelWatcherData } from "juju/types";
+
 export type TSFixMe = any;
 
 export type UIState = {
@@ -8,6 +10,10 @@ export type UIState = {
 
 export type ReduxState = {
   root: TSFixMe;
-  juju: TSFixMe;
+  juju: {
+    models: TSFixMe;
+    modelData: TSFixMe;
+    modelWatcherData: ModelWatcherData;
+  };
   ui: UIState;
 };

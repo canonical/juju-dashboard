@@ -18,7 +18,7 @@ export interface ModelData {
   model: ModelInfo;
 }
 
-interface ModelInfo extends ModelChangeDelta {
+export interface ModelInfo extends ModelChangeDelta {
   "cloud-tag": string;
   region: string;
   type: string;
@@ -99,7 +99,7 @@ interface MachineChangeDelta {
   addresses: AddressData | null;
   "agent-status": MachineAgentStatus;
   "container-type": string;
-  "hardware-characteristics": HardwareCharacteristics | undefined;
+  "hardware-characteristics"?: HardwareCharacteristics;
   "has-vote": boolean;
   id: NumberAsString;
   "instance-id": string;
