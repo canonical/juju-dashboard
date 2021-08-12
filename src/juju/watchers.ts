@@ -39,6 +39,7 @@ export function processDeltas(
     return;
   }
   deltas.forEach((delta) => {
+    // The delta messages are in the format [entity, action, data].
     const modelUUID = delta[2]["model-uuid"];
     switch (delta[0]) {
       case "model":

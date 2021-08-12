@@ -79,8 +79,7 @@ const generateCloudAndRegion = (cloudTag, region) => {
 };
 
 const Model = () => {
-  const store = useStore();
-  const appState = store.getState();
+  const appState = useStore().getState();
   const modelStatusData = useModelStatus();
   const activeUser = useActiveUser();
   const history = useHistory();
