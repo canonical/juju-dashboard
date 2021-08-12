@@ -312,7 +312,7 @@ const Model = () => {
             </button>
           )}
         </div>
-        {modelStatusData && (
+        {modelInfoData && (
           <EntityInfo
             data={{
               controller: modelInfoData.type,

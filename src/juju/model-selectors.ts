@@ -8,11 +8,11 @@ const getModelWatcherData = (state: ReduxState) => state.juju.modelWatcherData;
 export function getModelInfoByUUID(modelUUID: string) {
   return createSelector(
     getModelWatcherData,
-    (modelWatcherData): ModelInfo | {} => {
+    (modelWatcherData): ModelInfo | null => {
       if (modelWatcherData[modelUUID]) {
         return modelWatcherData[modelUUID].model;
       }
-      return {};
+      return null;
     }
   );
 }
