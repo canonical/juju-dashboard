@@ -8,12 +8,14 @@ export type UIState = {
   sideNavCollapsed: boolean;
 };
 
+export type JujuState = {
+  models: TSFixMe;
+  modelData: TSFixMe;
+  modelWatcherData: ModelWatcherData;
+};
+
 export type ReduxState = {
   root: TSFixMe;
-  juju: {
-    models: TSFixMe;
-    modelData: TSFixMe;
-    modelWatcherData: ModelWatcherData;
-  };
+  juju: JujuState;
   ui: UIState;
 };
