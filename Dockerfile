@@ -8,11 +8,11 @@ RUN apt update && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt update && \
     apt install nodejs --yes
-RUN npm install -g yarn --production
+RUN npm install -g yarn
 RUN yarn global add serve
 ADD package.json .
 ADD yarn.lock .
-RUN --mount=type=cache,target=/usr/local/share/.cache/yarn yarn install
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn yarn install --production
 ADD . .
 RUN yarn run build
 ENTRYPOINT ["serve", "-l", "80", "-s", "build"]
