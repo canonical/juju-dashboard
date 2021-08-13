@@ -1,6 +1,10 @@
 // See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
+export interface ActionData {
+  [id: string]: ActionChangeDelta;
+}
+
 export interface ApplicationData {
   [appName: string]: ApplicationChangeDelta;
 }
@@ -35,6 +39,7 @@ export type AllWatcherDelta =
   | ["relation", "change", RelationChangeDelta];
 
 export interface ModelData {
+  actions: ActionData;
   applications: ApplicationData;
   charms: ModelCharmData;
   machines: MachineData;

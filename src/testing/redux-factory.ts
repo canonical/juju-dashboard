@@ -64,6 +64,25 @@ export function modelWatcherDataFactory() {
   return Factory.define<ModelWatcherData>(({ transientParams }) => {
     return {
       [modelUUID]: {
+        actions: {
+          "0": {
+            "model-uuid": modelUUID,
+            id: "0",
+            receiver: "ceph-mon/0",
+            name: "get-health",
+            status: "failed",
+            message: "Getting health failed, health unknown",
+            parameters: { foo: "bar" }, // XXX Fix me
+            results: {
+              Code: "0",
+              Stderr: "a long stderror message",
+              message: "Getting health failed, health unknown",
+            },
+            enqueued: "2021-05-31T22:57:26Z",
+            started: "2021-05-31T22:57:29Z",
+            completed: "2021-05-31T22:57:30Z",
+          },
+        },
         applications: {
           "ceph-mon": {
             "charm-url": "cs:ceph-mon-55",

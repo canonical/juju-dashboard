@@ -4,6 +4,7 @@ import type { AllWatcherDelta, ModelData, ModelWatcherData } from "./types";
 
 function generateModelWatcherBase(): ModelData {
   return {
+    actions: {},
     applications: {},
     charms: {},
     machines: {},
@@ -36,8 +37,6 @@ function generateModelWatcherBase(): ModelData {
   };
 }
 
-// XXX Outstanding deltas to process:
-// action, machine
 export function processDeltas(
   modelWatcherData: ModelWatcherData,
   deltas: AllWatcherDelta[]
@@ -52,6 +51,16 @@ export function processDeltas(
       modelWatcherData[modelUUID] = generateModelWatcherBase();
     }
     switch (delta[0]) {
+      case "action":
+        switch (delta[1]) {
+          case "change":
+            const formatted = {
+              [delta[2].id]: delta[2],
+            };
+            mergeWith(modelWatcherData[modelUUID].actions, formatted);
+            break;
+        }
+        break;
       case "application":
         switch (delta[1]) {
           case "change":
