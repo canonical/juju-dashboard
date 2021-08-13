@@ -5,6 +5,10 @@ export interface ModelWatcherData {
   [uuid: string]: ModelData;
 }
 
+export interface ModelCharmData {
+  [charmURL: string]: CharmData;
+}
+
 export type AllWatcherDelta =
   | ["action", "change", ActionChangeDelta]
   | ["application", "change", ApplicationChangeDelta]
@@ -16,6 +20,16 @@ export type AllWatcherDelta =
 
 export interface ModelData {
   model: ModelInfo;
+  charms: ModelCharmData;
+}
+
+export interface CharmData {
+  "charm-url": string;
+  "charm-version": string;
+  config: Config;
+  life: Life;
+  "model-uuid": string;
+  profile: LXDProfile;
 }
 
 export interface ModelInfo extends ModelChangeDelta {
@@ -44,6 +58,12 @@ interface Status {
   data?: { [key: string]: any };
   err?: string;
 }
+type Config = { [key: string]: string | boolean };
+type LXDProfile = {
+  config?: Config;
+  description?: string;
+  devices?: { [key: string]: { [key: string]: string } };
+} | null;
 
 // Delta Types
 
@@ -85,14 +105,8 @@ interface CharmChangeDelta {
   "charm-url": string;
   "charm-version": string;
   life: Life;
-  profile: {
-    config?: { [key: string]: string };
-    description?: string;
-    devices?: {
-      [key: string]: { [key: string]: string };
-    };
-  } | null; // lxdprofile
-  config?: { [key: string]: string | boolean };
+  profile: LXDProfile;
+  config?: Config;
 }
 
 interface MachineChangeDelta {
@@ -139,7 +153,7 @@ interface ModelChangeDelta {
   owner: string;
   "controller-uuid": string;
   "is-controller": boolean;
-  config: { [key: string]: string | boolean };
+  config: Config;
   status: ModelAgentStatus;
   constraints: { [key: string]: any };
   sla: {
