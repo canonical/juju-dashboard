@@ -14,12 +14,15 @@ export type AllWatcherDelta =
   | ["model", "change", ModelChangeDelta]
   | ["relation", "change", RelationChangeDelta];
 
-interface ModelData {
-  applications: Applications;
+export interface ModelData {
+  model: ModelInfo;
 }
 
-interface Applications {
-  name: string;
+export interface ModelInfo extends ModelChangeDelta {
+  "cloud-tag": string;
+  region: string;
+  type: string;
+  version: string;
 }
 
 // Shared Types
@@ -27,7 +30,7 @@ interface Applications {
 type IPAddress = string;
 type UnitId = string;
 type NumberAsString = string;
-type Life = "alive" | "dead" | "dying";
+type Life = "alive" | "dead" | "dying" | "";
 type ISO8601Date = string;
 type DeprecatedString = string;
 interface Status {
@@ -38,7 +41,7 @@ interface Status {
   message: string;
   since: ISO8601Date;
   version: string;
-  data: { [key: string]: any };
+  data?: { [key: string]: any };
   err?: string;
 }
 
@@ -96,7 +99,7 @@ interface MachineChangeDelta {
   addresses: AddressData | null;
   "agent-status": MachineAgentStatus;
   "container-type": string;
-  "hardware-characteristics": HardwareCharacteristics | undefined;
+  "hardware-characteristics"?: HardwareCharacteristics;
   "has-vote": boolean;
   id: NumberAsString;
   "instance-id": string;
@@ -146,7 +149,7 @@ interface ModelChangeDelta {
 }
 
 interface ModelAgentStatus extends Status {
-  current: "available" | "busy";
+  current: "available" | "busy" | "";
 }
 
 interface RelationChangeDelta {

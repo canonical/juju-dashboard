@@ -175,7 +175,7 @@ async function connectAndLoginWithTimeout(
   @param {Object} getState A function that'll return the app redux state.
   @returns {Object} The full model status.
 */
-async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
+export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   const appState = getState();
   const bakery = getBakery(appState);
   const baseWSControllerURL = getWSControllerURL(appState);
@@ -476,7 +476,9 @@ export async function startModelWatcher(modelUUID, appState, dispatch) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const watcherHandle = await conn.facades.client.watchAll();
   const callback = (data) => {
-    dispatch(processAllWatcherDeltas(data?.deltas));
+    if (data?.deltas) {
+      dispatch(processAllWatcherDeltas(data?.deltas));
+    }
     conn.facades.allWatcher._transport.write(
       {
         type: "AllWatcher",

@@ -213,7 +213,7 @@ export const pluralize = (value, string) => {
   @param {string} cloudTag The cloudTag identifier returns from the API
   @returns {string} The simplified cloud string
 */
-export const extractCloudName = (tag) => {
+export const extractCloudName = (tag = "") => {
   return tag.replace("cloud-", "");
 };
 
