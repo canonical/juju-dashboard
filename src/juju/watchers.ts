@@ -30,12 +30,13 @@ function generateModelWatcherBase(): ModelData {
       type: "",
       version: "",
     },
+    relations: {},
     units: {},
   };
 }
 
 // XXX Outstanding deltas to process:
-// action, machine, relation
+// action, machine
 export function processDeltas(
   modelWatcherData: ModelWatcherData,
   deltas: AllWatcherDelta[]
@@ -73,6 +74,16 @@ export function processDeltas(
         switch (delta[1]) {
           case "change":
             mergeWith(modelWatcherData[modelUUID].model, delta[2]);
+            break;
+        }
+        break;
+      case "relation":
+        switch (delta[1]) {
+          case "change":
+            const formatted = {
+              [delta[2].key]: delta[2],
+            };
+            mergeWith(modelWatcherData[modelUUID].relations, formatted);
             break;
         }
         break;

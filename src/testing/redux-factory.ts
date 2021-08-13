@@ -115,6 +115,37 @@ export function modelWatcherDataFactory() {
             owner: "",
           },
         },
+        relations: {
+          "wordpress:db mysql:db": {
+            "model-uuid": modelUUID,
+            key: "wordpress:db mysql:db",
+            id: 0,
+            endpoints: [
+              {
+                "application-name": "wordpress",
+                relation: {
+                  interface: "mysql",
+                  limit: 0,
+                  name: "db",
+                  optional: false,
+                  role: "requirer",
+                  scope: "global",
+                },
+              },
+              {
+                "application-name": "mysql",
+                relation: {
+                  interface: "mysql",
+                  limit: 0,
+                  name: "db",
+                  optional: false,
+                  role: "provider",
+                  scope: "global",
+                },
+              },
+            ],
+          },
+        },
         units: {
           "ceph-mon/0": {
             "agent-status": {

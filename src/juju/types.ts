@@ -13,6 +13,10 @@ export interface ModelWatcherData {
   [uuid: string]: ModelData;
 }
 
+export interface RelationData {
+  [key: string]: RelationChangeDelta;
+}
+
 export interface UnitData {
   [unitName: string]: UnitChangeDelta;
 }
@@ -30,6 +34,7 @@ export interface ModelData {
   applications: ApplicationData;
   charms: ModelCharmData;
   model: ModelInfo;
+  relations: RelationData;
   units: UnitData;
 }
 
