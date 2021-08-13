@@ -13,6 +13,10 @@ export interface ModelWatcherData {
   [uuid: string]: ModelData;
 }
 
+export interface UnitData {
+  [unitName: string]: UnitChangeDelta;
+}
+
 export type AllWatcherDelta =
   | ["action", "change", ActionChangeDelta]
   | ["application", "change", ApplicationChangeDelta]
@@ -26,6 +30,7 @@ export interface ModelData {
   applications: ApplicationData;
   charms: ModelCharmData;
   model: ModelInfo;
+  units: UnitData;
 }
 
 export interface ModelInfo extends ModelChangeDelta {
@@ -199,10 +204,12 @@ interface UnitChangeDelta {
   application: string;
   life: Life;
   name: string;
-  ports: {
-    protocol: string;
-    number: number;
-  }[];
+  ports:
+    | {
+        protocol: string;
+        number: number;
+      }[]
+    | [];
   principal: string;
   series: string;
   subordinate: boolean;
