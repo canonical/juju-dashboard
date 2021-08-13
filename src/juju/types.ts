@@ -1,12 +1,16 @@
 // See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
-export interface ModelWatcherData {
-  [uuid: string]: ModelData;
+export interface ApplicationData {
+  [appName: string]: ApplicationChangeDelta;
 }
 
 export interface ModelCharmData {
-  [charmURL: string]: CharmData;
+  [charmURL: string]: CharmChangeDelta;
+}
+
+export interface ModelWatcherData {
+  [uuid: string]: ModelData;
 }
 
 export type AllWatcherDelta =
@@ -19,17 +23,9 @@ export type AllWatcherDelta =
   | ["relation", "change", RelationChangeDelta];
 
 export interface ModelData {
-  model: ModelInfo;
+  applications: ApplicationData;
   charms: ModelCharmData;
-}
-
-export interface CharmData {
-  "charm-url": string;
-  "charm-version": string;
-  config: Config;
-  life: Life;
-  "model-uuid": string;
-  profile: LXDProfile;
+  model: ModelInfo;
 }
 
 export interface ModelInfo extends ModelChangeDelta {
@@ -53,7 +49,7 @@ interface Status {
   // Possible statuses differ by entity type.
   current: string;
   message: string;
-  since: ISO8601Date;
+  since?: ISO8601Date;
   version: string;
   data?: { [key: string]: any };
   err?: string;
