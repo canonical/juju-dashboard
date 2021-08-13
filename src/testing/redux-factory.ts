@@ -90,6 +90,16 @@ export function modelWatcherDataFactory() {
             owner: "",
           },
         },
+        charms: {
+          "cs:apache": {
+            "charm-url": "",
+            "charm-version": "",
+            config: {},
+            life: "alive",
+            "model-uuid": uuid,
+            profile: null,
+          },
+        },
       },
     };
   });

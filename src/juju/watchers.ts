@@ -28,6 +28,7 @@ function generateModelWatcherBase(): ModelData {
       type: "",
       version: "",
     },
+    charms: {},
   };
 }
 
@@ -39,16 +40,26 @@ export function processDeltas(
     return;
   }
   deltas.forEach((delta) => {
-    // The delta messages are in the format [entity, action, data].
+    // Delta is in the format [entityType, actionType, data].
     const modelUUID = delta[2]["model-uuid"];
+    if (!modelWatcherData[modelUUID]) {
+      modelWatcherData[modelUUID] = generateModelWatcherBase();
+    }
     switch (delta[0]) {
       case "model":
         switch (delta[1]) {
           case "change":
-            if (!modelWatcherData[modelUUID]) {
-              modelWatcherData[modelUUID] = generateModelWatcherBase();
-            }
             mergeWith(modelWatcherData[modelUUID].model, delta[2]);
+            break;
+        }
+        break;
+      case "charm":
+        switch (delta[1]) {
+          case "change":
+            const formatted = {
+              [delta[2]["charm-url"]]: delta[2],
+            };
+            mergeWith(modelWatcherData[modelUUID].charms, formatted);
             break;
         }
         break;
