@@ -60,16 +60,41 @@ export function modelWatcherDataFactory() {
     });
   }
 
-  const uuid = generateUUID();
+  const modelUUID = generateUUID();
   return Factory.define<ModelWatcherData>(({ transientParams }) => {
     return {
-      [uuid]: {
+      [modelUUID]: {
+        applications: {
+          "ceph-mon": {
+            "charm-url": "cs:ceph-mon-55",
+            constraints: {},
+            exposed: false,
+            life: "alive",
+            "min-units": 0,
+            "model-uuid": modelUUID,
+            name: "ceph-mon",
+            "owner-tag": "",
+            status: { current: "unset", message: "", version: "" },
+            subordinate: false,
+            "workload-version": "12.2.13",
+          },
+        },
+        charms: {
+          "cs:ceph-mon-55": {
+            "charm-url": "",
+            "charm-version": "",
+            config: {},
+            life: "alive",
+            "model-uuid": modelUUID,
+            profile: null,
+          },
+        },
         model: {
           "cloud-tag": "cloud-aws",
           region: "us-east-1",
           type: "iaas",
           version: "2.8.7",
-          "model-uuid": uuid,
+          "model-uuid": modelUUID,
           name: transientParams.name || "",
           life: "alive",
           owner: transientParams.owner || "",
@@ -88,16 +113,6 @@ export function modelWatcherDataFactory() {
           sla: {
             level: "unsupported",
             owner: "",
-          },
-        },
-        charms: {
-          "cs:apache": {
-            "charm-url": "",
-            "charm-version": "",
-            config: {},
-            life: "alive",
-            "model-uuid": uuid,
-            profile: null,
           },
         },
       },

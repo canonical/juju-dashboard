@@ -4,6 +4,8 @@ import type { AllWatcherDelta, ModelData, ModelWatcherData } from "./types";
 
 function generateModelWatcherBase(): ModelData {
   return {
+    applications: {},
+    charms: {},
     model: {
       "cloud-tag": "",
       "controller-uuid": "",
@@ -28,10 +30,11 @@ function generateModelWatcherBase(): ModelData {
       type: "",
       version: "",
     },
-    charms: {},
   };
 }
 
+// XXX Outstanding deltas to process:
+// action, unit, machine, relation
 export function processDeltas(
   modelWatcherData: ModelWatcherData,
   deltas: AllWatcherDelta[]
@@ -63,6 +66,14 @@ export function processDeltas(
             break;
         }
         break;
+      case "application":
+        switch (delta[1]) {
+          case "change":
+            const formatted = {
+              [delta[2].name]: delta[2],
+            };
+            mergeWith(modelWatcherData[modelUUID].applications, formatted);
+        }
     }
   });
   return modelWatcherData;
