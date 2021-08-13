@@ -115,6 +115,36 @@ export function modelWatcherDataFactory() {
             owner: "",
           },
         },
+        units: {
+          "ceph-mon/0": {
+            "agent-status": {
+              current: "idle",
+              message: "",
+              since: "2021-08-13T19:34:41.247417373Z",
+              version: "2.8.7",
+            },
+            "charm-url": "cs:ceph-mon-55",
+            "machine-id": "0",
+            "model-uuid": modelUUID,
+            "port-ranges": null,
+            "private-address": "172.31.43.84",
+            "public-address": "54.162.156.160",
+            "workload-status": {
+              current: "blocked",
+              message:
+                "Insufficient peer units to bootstrap cluster (require 3)",
+              since: "2021-08-13T19:34:37.747827227Z",
+              version: "",
+            },
+            application: "ceph-mon",
+            life: "alive",
+            name: "ceph-mon/0",
+            ports: [],
+            principal: "",
+            series: "bionic",
+            subordinate: false,
+          },
+        },
       },
     };
   });

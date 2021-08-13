@@ -30,11 +30,12 @@ function generateModelWatcherBase(): ModelData {
       type: "",
       version: "",
     },
+    units: {},
   };
 }
 
 // XXX Outstanding deltas to process:
-// action, unit, machine, relation
+// action, machine, relation
 export function processDeltas(
   modelWatcherData: ModelWatcherData,
   deltas: AllWatcherDelta[]
@@ -49,11 +50,13 @@ export function processDeltas(
       modelWatcherData[modelUUID] = generateModelWatcherBase();
     }
     switch (delta[0]) {
-      case "model":
+      case "application":
         switch (delta[1]) {
           case "change":
-            mergeWith(modelWatcherData[modelUUID].model, delta[2]);
-            break;
+            const formatted = {
+              [delta[2].name]: delta[2],
+            };
+            mergeWith(modelWatcherData[modelUUID].applications, formatted);
         }
         break;
       case "charm":
@@ -66,14 +69,23 @@ export function processDeltas(
             break;
         }
         break;
-      case "application":
+      case "model":
+        switch (delta[1]) {
+          case "change":
+            mergeWith(modelWatcherData[modelUUID].model, delta[2]);
+            break;
+        }
+        break;
+      case "unit":
         switch (delta[1]) {
           case "change":
             const formatted = {
-              [delta[2].name]: delta[2],
+              [delta[2]["name"]]: delta[2],
             };
-            mergeWith(modelWatcherData[modelUUID].applications, formatted);
+            mergeWith(modelWatcherData[modelUUID].units, formatted);
+            break;
         }
+        break;
     }
   });
   return modelWatcherData;
