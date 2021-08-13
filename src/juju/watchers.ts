@@ -6,6 +6,7 @@ function generateModelWatcherBase(): ModelData {
   return {
     applications: {},
     charms: {},
+    machines: {},
     model: {
       "cloud-tag": "",
       "controller-uuid": "",
@@ -58,6 +59,7 @@ export function processDeltas(
               [delta[2].name]: delta[2],
             };
             mergeWith(modelWatcherData[modelUUID].applications, formatted);
+            break;
         }
         break;
       case "charm":
@@ -67,6 +69,16 @@ export function processDeltas(
               [delta[2]["charm-url"]]: delta[2],
             };
             mergeWith(modelWatcherData[modelUUID].charms, formatted);
+            break;
+        }
+        break;
+      case "machine":
+        switch (delta[1]) {
+          case "change":
+            const formatted = {
+              [delta[2].id]: delta[2],
+            };
+            mergeWith(modelWatcherData[modelUUID].machines, formatted);
             break;
         }
         break;

@@ -5,6 +5,10 @@ export interface ApplicationData {
   [appName: string]: ApplicationChangeDelta;
 }
 
+export interface MachineData {
+  [key: string]: MachineChangeDelta;
+}
+
 export interface ModelCharmData {
   [charmURL: string]: CharmChangeDelta;
 }
@@ -33,6 +37,7 @@ export type AllWatcherDelta =
 export interface ModelData {
   applications: ApplicationData;
   charms: ModelCharmData;
+  machines: MachineData;
   model: ModelInfo;
   relations: RelationData;
   units: UnitData;
@@ -116,7 +121,7 @@ interface CharmChangeDelta {
 }
 
 interface MachineChangeDelta {
-  addresses: AddressData | null;
+  addresses: AddressData[] | null;
   "agent-status": MachineAgentStatus;
   "container-type": string;
   "hardware-characteristics"?: HardwareCharacteristics;
@@ -128,19 +133,19 @@ interface MachineChangeDelta {
   life: Life;
   "model-uuid": string;
   series: string;
-  "supported-containers": "none" | "lxd" | "kvm" | null;
+  "supported-containers": ["none" | "lxd" | "kvm"] | null;
   "supported-containers-known": boolean;
   "wants-vote": boolean;
 }
 
 interface MachineAgentStatus extends Status {
-  current: "down" | "error" | "pending" | "started" | "stopped";
+  current: "down" | "error" | "pending" | "running" | "started" | "stopped";
 }
 
 interface AddressData {
   value: IPAddress;
-  type: "ipv4" | string;
-  scope: "public" | "local-cloud" | "local-cloud" | "local-machine" | string;
+  type: "ipv4" | "ipv6";
+  scope: "public" | "local-cloud" | "local-fan" | "local-machine";
 }
 
 interface HardwareCharacteristics {
