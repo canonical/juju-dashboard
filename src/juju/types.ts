@@ -1,8 +1,32 @@
 // See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
+export interface ActionData {
+  [id: string]: ActionChangeDelta;
+}
+
+export interface ApplicationData {
+  [appName: string]: ApplicationChangeDelta;
+}
+
+export interface MachineData {
+  [key: string]: MachineChangeDelta;
+}
+
+export interface ModelCharmData {
+  [charmURL: string]: CharmChangeDelta;
+}
+
 export interface ModelWatcherData {
   [uuid: string]: ModelData;
+}
+
+export interface RelationData {
+  [key: string]: RelationChangeDelta;
+}
+
+export interface UnitData {
+  [unitName: string]: UnitChangeDelta;
 }
 
 export type AllWatcherDelta =
@@ -15,7 +39,13 @@ export type AllWatcherDelta =
   | ["relation", "change", RelationChangeDelta];
 
 export interface ModelData {
+  actions: ActionData;
+  applications: ApplicationData;
+  charms: ModelCharmData;
+  machines: MachineData;
   model: ModelInfo;
+  relations: RelationData;
+  units: UnitData;
 }
 
 export interface ModelInfo extends ModelChangeDelta {
@@ -39,11 +69,17 @@ interface Status {
   // Possible statuses differ by entity type.
   current: string;
   message: string;
-  since: ISO8601Date;
+  since?: ISO8601Date;
   version: string;
   data?: { [key: string]: any };
   err?: string;
 }
+type Config = { [key: string]: string | boolean };
+type LXDProfile = {
+  config?: Config;
+  description?: string;
+  devices?: { [key: string]: { [key: string]: string } };
+} | null;
 
 // Delta Types
 
@@ -85,18 +121,12 @@ interface CharmChangeDelta {
   "charm-url": string;
   "charm-version": string;
   life: Life;
-  profile: {
-    config?: { [key: string]: string };
-    description?: string;
-    devices?: {
-      [key: string]: { [key: string]: string };
-    };
-  } | null; // lxdprofile
-  config?: { [key: string]: string | boolean };
+  profile: LXDProfile;
+  config?: Config;
 }
 
 interface MachineChangeDelta {
-  addresses: AddressData | null;
+  addresses: AddressData[] | null;
   "agent-status": MachineAgentStatus;
   "container-type": string;
   "hardware-characteristics"?: HardwareCharacteristics;
@@ -108,19 +138,19 @@ interface MachineChangeDelta {
   life: Life;
   "model-uuid": string;
   series: string;
-  "supported-containers": "none" | "lxd" | "kvm" | null;
+  "supported-containers": ["none" | "lxd" | "kvm"] | null;
   "supported-containers-known": boolean;
   "wants-vote": boolean;
 }
 
 interface MachineAgentStatus extends Status {
-  current: "down" | "error" | "pending" | "started" | "stopped";
+  current: "down" | "error" | "pending" | "running" | "started" | "stopped";
 }
 
 interface AddressData {
   value: IPAddress;
-  type: "ipv4" | string;
-  scope: "public" | "local-cloud" | "local-cloud" | "local-machine" | string;
+  type: "ipv4" | "ipv6";
+  scope: "public" | "local-cloud" | "local-fan" | "local-machine";
 }
 
 interface HardwareCharacteristics {
@@ -139,7 +169,7 @@ interface ModelChangeDelta {
   owner: string;
   "controller-uuid": string;
   "is-controller": boolean;
-  config: { [key: string]: string | boolean };
+  config: Config;
   status: ModelAgentStatus;
   constraints: { [key: string]: any };
   sla: {
@@ -189,10 +219,12 @@ interface UnitChangeDelta {
   application: string;
   life: Life;
   name: string;
-  ports: {
-    protocol: string;
-    number: number;
-  }[];
+  ports:
+    | {
+        protocol: string;
+        number: number;
+      }[]
+    | [];
   principal: string;
   series: string;
   subordinate: boolean;
