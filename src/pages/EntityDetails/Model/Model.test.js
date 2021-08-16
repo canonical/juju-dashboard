@@ -6,6 +6,8 @@ import { MemoryRouter, Route } from "react-router";
 import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
 
+import { reduxStateFactory } from "testing/redux-factory";
+
 import Model from "./Model";
 
 jest.mock("components/Topology/Topology", () => {
@@ -15,14 +17,36 @@ jest.mock("components/Topology/Topology", () => {
 
 const mockStore = configureStore([]);
 
-describe("Model", () => {
+describe.skip("Model", () => {
+  it("renders the info panel data", () => {
+    const storeData = reduxStateFactory().build(
+      {},
+      {
+        transient: {
+          models: [{ name: "test", owner: "eggman@external" }],
+        },
+      }
+    );
+    const store = mockStore(storeData);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/eggman@external/test"]}>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <TestRoute path="/models/:userName/:modelName?">
+              <Model />
+            </TestRoute>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(".entity-info__grid").length).toBe(1);
+  });
+
   it("renders the main table", () => {
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/user-eggman@external/group-test"]}
-        >
+        <MemoryRouter initialEntries={["/models/eggman@external/test"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
@@ -181,6 +205,7 @@ describe("Model", () => {
         </MemoryRouter>
       </Provider>
     );
+
     const noRelationsMsg = wrapper.find("[data-testid='no-integrations-msg']");
     expect(noRelationsMsg.length).toBe(1);
   });
@@ -202,7 +227,6 @@ describe("Model", () => {
         </MemoryRouter>
       </Provider>
     );
-
     const machineApps = wrapper.find(".machine-app-icons img");
     expect(machineApps.length).toBe(10);
   });

@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useEffect } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
 import {
   useQueryParams,
@@ -12,6 +12,7 @@ import {
   extractCloudName,
   canAdministerModelAccess,
 } from "app/utils/utils";
+import { useDispatch, useSelector, useStore } from "react-redux";
 
 import {
   appsOffersTableHeaders,
@@ -46,6 +47,10 @@ import useActiveUser from "hooks/useActiveUser";
 
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
+import { startModelWatcher, stopModelWatcher } from "juju/index";
+import { populateMissingAllWatcherData } from "juju/actions";
+import { getModelInfoByUUID } from "juju/model-selectors";
+
 import { renderCounts } from "../counts";
 
 const shouldShow = (segment, activeView) => {
@@ -66,10 +71,19 @@ const shouldShow = (segment, activeView) => {
   }
 };
 
+const generateCloudAndRegion = (cloudTag, region) => {
+  if (cloudTag && region) {
+    return `${extractCloudName(cloudTag)} / ${region}`;
+  }
+  return "";
+};
+
 const Model = () => {
+  const appState = useStore().getState();
   const modelStatusData = useModelStatus();
   const activeUser = useActiveUser();
   const history = useHistory();
+  const dispatch = useDispatch();
   const { userName, modelName } = useParams();
 
   const [query, setQuery] = useQueryParams({
@@ -77,6 +91,41 @@ const Model = () => {
     entity: StringParam,
     activeView: withDefault(StringParam, "apps"),
   });
+
+  const uuid = modelStatusData?.info?.uuid;
+
+  useEffect(() => {
+    let conn = null;
+    let pingerIntervalId = null;
+    let watcherHandle = null;
+
+    async function loadFullData() {
+      ({ conn, watcherHandle, pingerIntervalId } = await startModelWatcher(
+        uuid,
+        appState,
+        dispatch
+      ));
+      // Fetch the missing model status data. This data should eventually make
+      // its way into the all watcher at which point we can drop this additional
+      // request for data.
+      const status = await conn.facades.client.fullStatus();
+      if (status !== null) {
+        dispatch(populateMissingAllWatcherData(uuid, status));
+      }
+    }
+    if (uuid) {
+      loadFullData();
+    }
+    return () => {
+      if (watcherHandle) {
+        stopModelWatcher(conn, watcherHandle["watcher-id"], pingerIntervalId);
+      }
+    };
+    // Skipped as we need appState due to the call to `connectAndLoginToModel`
+    // this method will need to be updated to take specific values instead of
+    // the entire state.
+    // eslint-disable-next-line
+  }, [uuid]);
 
   const tableRowClick = useTableRowClick();
 
@@ -120,17 +169,8 @@ const Model = () => {
     () => generateAppOffersRows(modelStatusData, panelRowClick, query),
     [modelStatusData, panelRowClick, query]
   );
-  const cloudProvider = modelStatusData
-    ? extractCloudName(modelStatusData.model["cloud-tag"])
-    : "";
 
-  const ModelEntityData = {
-    controller: modelStatusData?.model.type,
-    "Cloud/Region": `${cloudProvider} / ${modelStatusData?.model.region}`,
-    version: modelStatusData?.model.version,
-    sla: modelStatusData?.model.sla,
-    provider: modelStatusData?.info?.["provider-type"],
-  };
+  const modelInfoData = useSelector(getModelInfoByUUID(uuid));
 
   const LocalAppChips = renderCounts("localApps", modelStatusData);
   const appOffersChips = renderCounts("offers", modelStatusData);
@@ -271,7 +311,19 @@ const Model = () => {
             </button>
           )}
         </div>
-        {modelStatusData && <EntityInfo data={ModelEntityData} />}
+        {modelInfoData && (
+          <EntityInfo
+            data={{
+              controller: modelInfoData.type,
+              "Cloud/Region": generateCloudAndRegion(
+                modelInfoData["cloud-tag"],
+                modelInfoData.region
+              ),
+              version: modelInfoData.version,
+              sla: modelInfoData.sla?.level,
+            }}
+          />
+        )}
       </div>
       <div className="entity-details__main u-overflow--scroll">
         {shouldShow("apps", query.activeView) && (

@@ -10,6 +10,8 @@ export const actionsList = {
   updateModelInfo: "UPDATE_MODEL_INFO",
   updateModelStatus: "UPDATE_MODEL_STATUS",
   updateModelList: "UPDATE_MODEL_LIST",
+  processAllWatcherDeltas: "PROCESS_ALL_WATCHER_DELTAS",
+  populateMissingAllWatcherData: "POPULATE_MISSING_ALLWATCHER_DATA",
 };
 
 // Action creators
@@ -72,6 +74,26 @@ export function updateModelInfo(modelInfo) {
   return {
     type: actionsList.updateModelInfo,
     payload: modelInfo,
+  };
+}
+
+/**
+  @param {Array} deltas An array of deltas from the AllWatcher.
+*/
+export function processAllWatcherDeltas(deltas) {
+  return {
+    type: actionsList.processAllWatcherDeltas,
+    payload: deltas,
+  };
+}
+
+/**
+  @param {Object} status The status data from an `fullStatus` API call.
+*/
+export function populateMissingAllWatcherData(uuid, status) {
+  return {
+    type: actionsList.populateMissingAllWatcherData,
+    payload: { status, uuid },
   };
 }
 
