@@ -6731,7 +6731,7 @@ find-up@^3.0.0:
   dependencies:
     locate-path "^3.0.0"
 
-fishery@^1.4.0:
+fishery@1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/fishery/-/fishery-1.4.0.tgz#5a74f31ebc189cf40bb78a32abdc1e8e6b905468"
   integrity sha512-uzPsEWtoHluyqgk9hC/MzMbm42NPWmDWjbdzMRLuJ+jxmAHo+nDbiI3zk2S+HQFXme/VlNnPsNYZQBryrbCTLw==
