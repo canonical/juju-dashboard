@@ -75,7 +75,7 @@ function determineLoginParams(credentials, identityProviderAvailable) {
 
 function startPingerLoop(conn) {
   // Ping to keep the connection alive.
-  const intervalId = setInterval(() => {
+  const intervalId = window.setInterval(() => {
     conn.facades.pinger.ping().catch((e) => {
       // If the pinger fails for whatever reason then cancel the ping.
       console.error("pinger stopped,", e);
