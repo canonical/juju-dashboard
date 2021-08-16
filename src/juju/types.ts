@@ -43,6 +43,23 @@ export type AllWatcherDelta =
   | ["relation", "change", RelationChangeDelta]
   | ["relation", "remove", RelationChangeDelta];
 
+export type DeltaEntityTypes =
+  | "actions"
+  | "applications"
+  | "charms"
+  | "machines"
+  | "relations"
+  | "units";
+
+export type DeltaMessageData =
+  | ActionChangeDelta
+  | ApplicationChangeDelta
+  | CharmChangeDelta
+  | UnitChangeDelta
+  | MachineChangeDelta
+  | ModelChangeDelta
+  | RelationChangeDelta;
+
 export interface ModelData {
   actions: ActionData;
   applications: ApplicationData;
