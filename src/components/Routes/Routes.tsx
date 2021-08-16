@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Route, Redirect, Switch, useLocation } from "react-router-dom";
 
 import Login from "components/LogIn/LogIn";
+import ModelWatcher from "components/ModelWatcher/ModelWatcher";
 
 import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
@@ -22,6 +23,7 @@ import useAnalytics from "hooks/useAnalytics";
 type Path = {
   redirect?: string;
   component?: () => JSX.Element;
+  useWatcher?: boolean;
 };
 
 type Paths = {
@@ -39,15 +41,36 @@ export type EntityDetailsRoute = {
 export const paths: Paths = {
   "/": { redirect: "/models" },
   "/models": { component: ModelsIndex },
-  "/models/:userName/:modelName?": { component: Model },
-  "/models/:userName/:modelName?/app/:appName?": { component: App },
+  "/models/:userName/:modelName?": { component: Model, useWatcher: true },
+  "/models/:userName/:modelName?/app/:appName?": {
+    component: App,
+    useWatcher: true,
+  },
   "/models/:userName/:modelName?/app/:appName/unit/:unitId?": {
     component: Unit,
+    useWatcher: true,
   },
-  "/models/:userName/:modelName?/machine/:machineId?": { component: Machine },
+  "/models/:userName/:modelName?/machine/:machineId?": {
+    component: Machine,
+    useWatcher: true,
+  },
   "/controllers": { component: ControllersIndex },
   "/settings": { component: Settings },
 };
+
+function generateComponent(path: Path) {
+  if (path.component) {
+    if (path.useWatcher) {
+      return (
+        <ModelWatcher>
+          <path.component />
+        </ModelWatcher>
+      );
+    }
+    return <path.component />;
+  }
+  return null;
+}
 
 export function Routes() {
   const sendAnalytics = useAnalytics();
@@ -61,7 +84,6 @@ export function Routes() {
   }, [location, sendAnalytics]);
 
   const routes = Object.entries(paths).map((path) => {
-    const Component = path[1].component;
     if (path[1].redirect) {
       return (
         <Route key={path[0]} path={path[0]} exact>
@@ -71,7 +93,7 @@ export function Routes() {
     }
     return (
       <Route key={path[0]} path={path[0]} exact>
-        <Login>{Component ? <Component /> : null}</Login>
+        <Login>{generateComponent(path[1])}</Login>
       </Route>
     );
   });
