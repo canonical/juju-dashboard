@@ -34,7 +34,9 @@ export type AllWatcherDelta =
   | ["application", "change", ApplicationChangeDelta]
   | ["charm", "change", CharmChangeDelta]
   | ["unit", "change", UnitChangeDelta]
+  | ["unit", "remove", UnitChangeDelta]
   | ["machine", "change", MachineChangeDelta]
+  | ["machine", "remove", MachineChangeDelta]
   | ["model", "change", ModelChangeDelta]
   | ["relation", "change", RelationChangeDelta];
 

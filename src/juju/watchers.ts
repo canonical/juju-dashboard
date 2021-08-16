@@ -89,6 +89,9 @@ export function processDeltas(
             };
             mergeWith(modelWatcherData[modelUUID].machines, formatted);
             break;
+          case "remove":
+            delete modelWatcherData[modelUUID].machines[delta[2].id];
+            break;
         }
         break;
       case "model":
@@ -115,6 +118,9 @@ export function processDeltas(
               [delta[2]["name"]]: delta[2],
             };
             mergeWith(modelWatcherData[modelUUID].units, formatted);
+            break;
+          case "remove":
+            delete modelWatcherData[modelUUID].units[delta[2].name];
             break;
         }
         break;
