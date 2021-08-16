@@ -45,7 +45,7 @@ export function processDeltas(
     return;
   }
   deltas.forEach((delta) => {
-    // Delta is in the format [entityType, actionType, data].
+    // Delta is in the format of [entityType, actionType, data].
     const modelUUID = delta[2]["model-uuid"];
     if (!modelWatcherData[modelUUID]) {
       modelWatcherData[modelUUID] = generateModelWatcherBase();
