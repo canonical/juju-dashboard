@@ -32,13 +32,16 @@ export interface UnitData {
 export type AllWatcherDelta =
   | ["action", "change", ActionChangeDelta]
   | ["application", "change", ApplicationChangeDelta]
+  | ["application", "remove", ApplicationChangeDelta]
   | ["charm", "change", CharmChangeDelta]
+  | ["charm", "remove", CharmChangeDelta]
   | ["unit", "change", UnitChangeDelta]
   | ["unit", "remove", UnitChangeDelta]
   | ["machine", "change", MachineChangeDelta]
   | ["machine", "remove", MachineChangeDelta]
   | ["model", "change", ModelChangeDelta]
-  | ["relation", "change", RelationChangeDelta];
+  | ["relation", "change", RelationChangeDelta]
+  | ["relation", "remove", RelationChangeDelta];
 
 export interface ModelData {
   actions: ActionData;

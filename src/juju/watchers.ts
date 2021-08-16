@@ -69,6 +69,9 @@ export function processDeltas(
             };
             mergeWith(modelWatcherData[modelUUID].applications, formatted);
             break;
+          case "remove":
+            delete modelWatcherData[modelUUID].applications[delta[2].name];
+            break;
         }
         break;
       case "charm":
@@ -78,6 +81,9 @@ export function processDeltas(
               [delta[2]["charm-url"]]: delta[2],
             };
             mergeWith(modelWatcherData[modelUUID].charms, formatted);
+            break;
+          case "remove":
+            delete modelWatcherData[modelUUID].charms[delta[2]["charm-url"]];
             break;
         }
         break;
@@ -108,6 +114,9 @@ export function processDeltas(
               [delta[2].key]: delta[2],
             };
             mergeWith(modelWatcherData[modelUUID].relations, formatted);
+            break;
+          case "remove":
+            delete modelWatcherData[modelUUID].relations[delta[2].key];
             break;
         }
         break;
