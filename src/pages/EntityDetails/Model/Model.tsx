@@ -49,9 +49,12 @@ import ChipGroup from "components/ChipGroup/ChipGroup";
 
 import { getModelInfoByUUID } from "juju/model-selectors";
 
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { TSFixMe } from "types";
+
 import { renderCounts } from "../counts";
 
-const shouldShow = (segment, activeView) => {
+const shouldShow = (segment: string, activeView: string) => {
   switch (activeView) {
     case "apps":
       if (segment === "apps") {
@@ -69,7 +72,7 @@ const shouldShow = (segment, activeView) => {
   }
 };
 
-const generateCloudAndRegion = (cloudTag, region) => {
+const generateCloudAndRegion = (cloudTag: string, region: string) => {
   if (cloudTag && region) {
     return `${extractCloudName(cloudTag)} / ${region}`;
   }
@@ -77,11 +80,11 @@ const generateCloudAndRegion = (cloudTag, region) => {
 };
 
 const Model = () => {
-  const modelStatusData = useModelStatus();
+  const modelStatusData: TSFixMe = useModelStatus();
   const activeUser = useActiveUser();
   const history = useHistory();
 
-  const { userName, modelName } = useParams();
+  const { userName, modelName } = useParams<EntityDetailsRoute>();
 
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
@@ -126,8 +129,8 @@ const Model = () => {
   );
 
   const offersTableRows = useMemo(
-    () => generateOffersRows(modelStatusData, panelRowClick, query?.entity),
-    [modelStatusData, panelRowClick, query]
+    () => generateOffersRows(modelStatusData),
+    [modelStatusData]
   );
   const appOffersRows = useMemo(
     () => generateAppOffersRows(modelStatusData, panelRowClick, query),
@@ -241,7 +244,7 @@ const Model = () => {
     );
   };
 
-  const countVisibleTables = (tablesLengths) => {
+  const countVisibleTables = (tablesLengths: number[]) => {
     let numberOfTables = 0;
     tablesLengths.forEach((tableLength) => {
       tableLength > 0 && numberOfTables++;
