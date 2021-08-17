@@ -2,10 +2,15 @@ import mergeWith from "lodash.mergewith";
 
 import type {
   AllWatcherDelta,
-  DeltaEntityTypes,
   DeltaMessageData,
   ModelData,
   ModelWatcherData,
+} from "./types";
+
+import {
+  DeltaChangeTypes,
+  DeltaEntityTypes,
+  ReduxDeltaEntityTypes,
 } from "./types";
 
 function generateModelWatcherBase(): ModelData {
@@ -47,15 +52,18 @@ function _processDelta(
   actionType: string,
   delta: DeltaMessageData,
   modelData: ModelData,
-  entityType: DeltaEntityTypes,
+  entityType: ReduxDeltaEntityTypes,
   key: string
 ): void {
-  if (actionType === "change") {
+  if (actionType === DeltaChangeTypes.CHANGE) {
     const formatted = {
       [key]: delta,
     };
     mergeWith(modelData[entityType], formatted);
-  } else if (actionType === "remove") {
+  } else if (
+    actionType === DeltaChangeTypes.REMOVE &&
+    entityType !== ReduxDeltaEntityTypes.MODEL
+  ) {
     delete modelData[entityType][key];
   }
 }
@@ -75,28 +83,22 @@ export function processDeltas(
     }
     const modelData = modelWatcherData[modelUUID];
     const _process = _processDelta.bind(null, delta[1], delta[2], modelData);
-    if (delta[0] === "action") {
-      _process("actions", delta[2].id);
-    }
-    if (delta[0] === "application") {
-      _process("applications", delta[2].name);
-    }
-    if (delta[0] === "charm") {
-      _process("charms", delta[2]["charm-url"]);
-    }
-    if (delta[0] === "machine") {
-      _process("machines", delta[2].id);
-    }
-    if (delta[0] === "model") {
-      if (delta[1] === "change") {
+    if (delta[0] === DeltaEntityTypes.ACTION) {
+      _process(ReduxDeltaEntityTypes.ACTIONS, delta[2].id);
+    } else if (delta[0] === DeltaEntityTypes.APPLICATION) {
+      _process(ReduxDeltaEntityTypes.APPLICATIONS, delta[2].name);
+    } else if (delta[0] === DeltaEntityTypes.CHARM) {
+      _process(ReduxDeltaEntityTypes.CHARMS, delta[2]["charm-url"]);
+    } else if (delta[0] === DeltaEntityTypes.MACHINE) {
+      _process(ReduxDeltaEntityTypes.MACHINES, delta[2].id);
+    } else if (delta[0] === DeltaEntityTypes.MODEL) {
+      if (delta[1] === DeltaChangeTypes.CHANGE) {
         mergeWith(modelWatcherData[modelUUID].model, delta[2]);
       }
-    }
-    if (delta[0] === "relation") {
-      _process("relations", delta[2].key);
-    }
-    if (delta[0] === "unit") {
-      _process("units", delta[2].name);
+    } else if (delta[0] === DeltaEntityTypes.RELATION) {
+      _process(ReduxDeltaEntityTypes.RELATIONS, delta[2].key);
+    } else if (delta[0] === DeltaEntityTypes.UNIT) {
+      _process(ReduxDeltaEntityTypes.UNITS, delta[2].name);
     }
   });
   return modelWatcherData;
