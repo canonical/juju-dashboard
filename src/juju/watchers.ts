@@ -1,6 +1,17 @@
 import mergeWith from "lodash.mergewith";
 
-import type { AllWatcherDelta, ModelData, ModelWatcherData } from "./types";
+import type {
+  AllWatcherDelta,
+  DeltaMessageData,
+  ModelData,
+  ModelWatcherData,
+} from "./types";
+
+import {
+  DeltaChangeTypes,
+  DeltaEntityTypes,
+  ReduxDeltaEntityTypes,
+} from "./types";
 
 function generateModelWatcherBase(): ModelData {
   return {
@@ -37,6 +48,26 @@ function generateModelWatcherBase(): ModelData {
   };
 }
 
+function _processDelta(
+  actionType: string,
+  delta: DeltaMessageData,
+  modelData: ModelData,
+  entityType: ReduxDeltaEntityTypes,
+  key: string
+): void {
+  if (actionType === DeltaChangeTypes.CHANGE) {
+    const formatted = {
+      [key]: delta,
+    };
+    mergeWith(modelData[entityType], formatted);
+  } else if (
+    actionType === DeltaChangeTypes.REMOVE &&
+    entityType !== ReduxDeltaEntityTypes.MODEL
+  ) {
+    delete modelData[entityType][key];
+  }
+}
+
 export function processDeltas(
   modelWatcherData: ModelWatcherData,
   deltas: AllWatcherDelta[]
@@ -50,74 +81,24 @@ export function processDeltas(
     if (!modelWatcherData[modelUUID]) {
       modelWatcherData[modelUUID] = generateModelWatcherBase();
     }
-    switch (delta[0]) {
-      case "action":
-        switch (delta[1]) {
-          case "change":
-            const formatted = {
-              [delta[2].id]: delta[2],
-            };
-            mergeWith(modelWatcherData[modelUUID].actions, formatted);
-            break;
-        }
-        break;
-      case "application":
-        switch (delta[1]) {
-          case "change":
-            const formatted = {
-              [delta[2].name]: delta[2],
-            };
-            mergeWith(modelWatcherData[modelUUID].applications, formatted);
-            break;
-        }
-        break;
-      case "charm":
-        switch (delta[1]) {
-          case "change":
-            const formatted = {
-              [delta[2]["charm-url"]]: delta[2],
-            };
-            mergeWith(modelWatcherData[modelUUID].charms, formatted);
-            break;
-        }
-        break;
-      case "machine":
-        switch (delta[1]) {
-          case "change":
-            const formatted = {
-              [delta[2].id]: delta[2],
-            };
-            mergeWith(modelWatcherData[modelUUID].machines, formatted);
-            break;
-        }
-        break;
-      case "model":
-        switch (delta[1]) {
-          case "change":
-            mergeWith(modelWatcherData[modelUUID].model, delta[2]);
-            break;
-        }
-        break;
-      case "relation":
-        switch (delta[1]) {
-          case "change":
-            const formatted = {
-              [delta[2].key]: delta[2],
-            };
-            mergeWith(modelWatcherData[modelUUID].relations, formatted);
-            break;
-        }
-        break;
-      case "unit":
-        switch (delta[1]) {
-          case "change":
-            const formatted = {
-              [delta[2]["name"]]: delta[2],
-            };
-            mergeWith(modelWatcherData[modelUUID].units, formatted);
-            break;
-        }
-        break;
+    const modelData = modelWatcherData[modelUUID];
+    const _process = _processDelta.bind(null, delta[1], delta[2], modelData);
+    if (delta[0] === DeltaEntityTypes.ACTION) {
+      _process(ReduxDeltaEntityTypes.ACTIONS, delta[2].id);
+    } else if (delta[0] === DeltaEntityTypes.APPLICATION) {
+      _process(ReduxDeltaEntityTypes.APPLICATIONS, delta[2].name);
+    } else if (delta[0] === DeltaEntityTypes.CHARM) {
+      _process(ReduxDeltaEntityTypes.CHARMS, delta[2]["charm-url"]);
+    } else if (delta[0] === DeltaEntityTypes.MACHINE) {
+      _process(ReduxDeltaEntityTypes.MACHINES, delta[2].id);
+    } else if (delta[0] === DeltaEntityTypes.MODEL) {
+      if (delta[1] === DeltaChangeTypes.CHANGE) {
+        mergeWith(modelWatcherData[modelUUID].model, delta[2]);
+      }
+    } else if (delta[0] === DeltaEntityTypes.RELATION) {
+      _process(ReduxDeltaEntityTypes.RELATIONS, delta[2].key);
+    } else if (delta[0] === DeltaEntityTypes.UNIT) {
+      _process(ReduxDeltaEntityTypes.UNITS, delta[2].name);
     }
   });
   return modelWatcherData;
