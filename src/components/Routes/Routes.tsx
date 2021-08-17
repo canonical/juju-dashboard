@@ -45,7 +45,7 @@ export function Routes() {
           <ModelsIndex />
         </Login>
       </Route>
-      <Route path="/models/:userName/:modelname">
+      <Route path="/models/:userName/:modelName">
         <Login>
           <ModelDetails />
         </Login>
