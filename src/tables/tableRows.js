@@ -13,38 +13,31 @@ import {
 } from "app/utils/utils";
 
 export function generateLocalApplicationRows(
-  modelStatusData,
+  applications,
   tableRowClick,
   query
 ) {
-  if (!modelStatusData) {
+  if (!applications) {
     return [];
   }
 
-  const applications = cloneDeep(modelStatusData.applications);
-
-  Object.keys(applications).forEach((key) => {
-    const units = applications[key].units || {};
-    applications[key].unitsCount = Object.keys(units).length;
-  });
-
   return Object.keys(applications).map((key) => {
     const app = applications[key];
-    const rev = extractRevisionNumber(app.charm) || "-";
-    const store = app.charm.indexOf("local:") === 0 ? "Local" : "Charmhub";
-    const scale = app.unitsCount;
+    const rev = extractRevisionNumber(app["charm-url"]) || "-";
+    const store =
+      app["charm-url"].indexOf("local:") === 0 ? "Local" : "Charmhub";
     const version = app["workload-version"] || "-";
 
     return {
       columns: [
         {
           "data-test-column": "name",
-          content: generateEntityIdentifier(app.charm || "", key, false),
+          content: generateEntityIdentifier(app["charm-url"] || "", key, false),
           className: "u-truncate",
         },
         {
           "data-test-column": "status",
-          content: app.status ? generateStatusElement(app.status.status) : "-",
+          content: app.status ? generateStatusElement(app.status.current) : "-",
           className: "u-capitalise u-truncate",
         },
         {
@@ -53,7 +46,7 @@ export function generateLocalApplicationRows(
         },
         {
           "data-test-column": "scale",
-          content: scale,
+          content: app["unit-count"],
           className: "u-align--right",
         },
         {
@@ -81,7 +74,7 @@ export function generateLocalApplicationRows(
         app: key,
         status: app.status?.status,
         version,
-        scale,
+        scale: app["unit-count"],
         store,
         rev,
         os: "Ubuntu",

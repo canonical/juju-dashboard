@@ -6,7 +6,7 @@ import { startModelWatcher, stopModelWatcher } from "juju/index";
 import { populateMissingAllWatcherData } from "juju/actions";
 
 import type { TSFixMe } from "types";
-import { getModelUUIDByName } from "juju/model-selectors";
+import { getModelUUID } from "juju/model-selectors";
 import { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Model from "pages/EntityDetails/Model/Model";
@@ -18,7 +18,7 @@ export default function ModelDetails() {
   const appState = useStore().getState();
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDByName(modelName, userName));
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
 
   useEffect(() => {
     let conn: TSFixMe = null;

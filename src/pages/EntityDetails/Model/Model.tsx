@@ -47,7 +47,11 @@ import useActiveUser from "hooks/useActiveUser";
 
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
-import { getModelInfoByUUID } from "juju/model-selectors";
+import {
+  getModelApplications,
+  getModelInfo,
+  getModelUUID,
+} from "juju/model-selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { TSFixMe } from "types";
@@ -92,7 +96,7 @@ const Model = () => {
     activeView: withDefault(StringParam, "apps"),
   });
 
-  const uuid = modelStatusData?.info?.uuid;
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
 
   const tableRowClick = useTableRowClick();
 
@@ -108,9 +112,12 @@ const Model = () => {
     [setQuery, history, modelName, userName]
   );
 
+  const applications = useSelector(getModelApplications(modelUUID));
+
   const localApplicationTableRows = useMemo(() => {
-    return generateLocalApplicationRows(modelStatusData, tableRowClick, query);
-  }, [modelStatusData, tableRowClick, query]);
+    return generateLocalApplicationRows(applications, tableRowClick, query);
+  }, [applications, tableRowClick, query]);
+
   const remoteApplicationTableRows = useMemo(() => {
     return generateRemoteApplicationRows(modelStatusData, panelRowClick, query);
   }, [modelStatusData, panelRowClick, query]);
@@ -137,13 +144,14 @@ const Model = () => {
     [modelStatusData, panelRowClick, query]
   );
 
-  const modelInfoData = useSelector(getModelInfoByUUID(uuid));
+  const modelInfoData = useSelector(getModelInfo(modelUUID));
 
   const LocalAppChips = renderCounts("localApps", modelStatusData);
   const appOffersChips = renderCounts("offers", modelStatusData);
   const remoteAppChips = renderCounts("remoteApps", modelStatusData);
 
   const localAppTableLength = localApplicationTableRows?.length;
+  console.log(localAppTableLength);
   const appOffersTableLength = appOffersRows?.length;
   const remoteAppsTableLength = remoteApplicationTableRows?.length;
 
