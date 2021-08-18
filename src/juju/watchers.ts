@@ -2,6 +2,7 @@ import mergeWith from "lodash.mergewith";
 
 import type {
   AllWatcherDelta,
+  ApplicationData,
   DeltaMessageData,
   ModelData,
   ModelWatcherData,
@@ -86,7 +87,13 @@ export function processDeltas(
     if (delta[0] === DeltaEntityTypes.ACTION) {
       _process(ReduxDeltaEntityTypes.ACTIONS, delta[2].id);
     } else if (delta[0] === DeltaEntityTypes.APPLICATION) {
-      _process(ReduxDeltaEntityTypes.APPLICATIONS, delta[2].name);
+      const formatted: ApplicationData = {
+        [delta[2].name]: delta[2],
+      };
+      if (formatted[delta[2].name]["unit-count"] === undefined) {
+        formatted[delta[2].name]["unit-count"] = 0;
+      }
+      mergeWith(modelData[ReduxDeltaEntityTypes.APPLICATIONS], formatted);
     } else if (delta[0] === DeltaEntityTypes.CHARM) {
       _process(ReduxDeltaEntityTypes.CHARMS, delta[2]["charm-url"]);
     } else if (delta[0] === DeltaEntityTypes.MACHINE) {
@@ -99,6 +106,24 @@ export function processDeltas(
       _process(ReduxDeltaEntityTypes.RELATIONS, delta[2].key);
     } else if (delta[0] === DeltaEntityTypes.UNIT) {
       _process(ReduxDeltaEntityTypes.UNITS, delta[2].name);
+      const applicationUnitCounts: { [key: string]: number } = {};
+      // We loop through the full modelData units list every time there is a
+      // unit delta so that we don't have to keep reference to the delta type
+      // when adding and removing units to other applications. At the time
+      // of writing this does not appear to be a performance issue but something
+      // to keep an eye on for those with many hundreds of units.
+      Object.entries(modelData.units).forEach(([key, value]) => {
+        const applicationName = key.split("/")[0];
+        if (applicationUnitCounts[applicationName] === undefined) {
+          applicationUnitCounts[applicationName] = 0;
+        }
+        applicationUnitCounts[applicationName] += 1;
+      });
+      Object.entries(applicationUnitCounts).forEach(
+        ([applicationName, count]) => {
+          modelData.applications[applicationName]["unit-count"] = count;
+        }
+      );
     }
   });
   return modelWatcherData;
