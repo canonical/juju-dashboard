@@ -16,7 +16,6 @@ export const localApplicationTableHeaders: Header = [
   { content: "scale", className: "u-align--right", sortKey: "scale" },
   { content: "store", sortKey: "store" },
   { content: "rev", className: "u-align--right", sortKey: "rev" },
-  { content: "os", sortKey: "os" },
   { content: "message", sortKey: "message" },
 ];
 

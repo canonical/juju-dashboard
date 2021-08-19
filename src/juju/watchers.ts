@@ -121,6 +121,10 @@ export function processDeltas(
       });
       Object.entries(applicationUnitCounts).forEach(
         ([applicationName, count]) => {
+          if (!modelData.applications[applicationName]) {
+            // @ts-ignore
+            modelData.applications[applicationName] = {};
+          }
           modelData.applications[applicationName]["unit-count"] = count;
         }
       );

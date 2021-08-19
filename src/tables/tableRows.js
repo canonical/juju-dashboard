@@ -42,7 +42,7 @@ export function generateLocalApplicationRows(
         },
         {
           "data-test-column": "version",
-          content: version,
+          content: app["workload-version"] || "-",
         },
         {
           "data-test-column": "scale",
@@ -59,15 +59,10 @@ export function generateLocalApplicationRows(
           className: "u-align--right",
         },
         {
-          "data-test-column": "os",
-          content: app.series,
-          className: "u-capitalise",
-        },
-        {
           "data-test-column": "message",
-          content: app.status.info,
+          content: app.status.message,
           className: "u-truncate",
-          title: app.status.info,
+          title: app.status.message,
         },
       ],
       sortData: {
@@ -77,7 +72,6 @@ export function generateLocalApplicationRows(
         scale: app["unit-count"],
         store,
         rev,
-        os: "Ubuntu",
         notes: "-",
       },
       onClick: (e) => tableRowClick("app", key, e),

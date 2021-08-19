@@ -151,7 +151,6 @@ const Model = () => {
   const remoteAppChips = renderCounts("remoteApps", modelStatusData);
 
   const localAppTableLength = localApplicationTableRows?.length;
-  console.log(localAppTableLength);
   const appOffersTableLength = appOffersRows?.length;
   const remoteAppsTableLength = remoteApplicationTableRows?.length;
 
