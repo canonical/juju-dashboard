@@ -5,7 +5,6 @@ import {
   extractRevisionNumber,
   generateStatusElement,
   generateRelationIconImage,
-  splitParts,
   extractRelationEndpoints,
   generateIconImg,
   generateEntityIdentifier,

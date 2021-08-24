@@ -1,7 +1,7 @@
 import "./_entity-info.scss";
 
 type Props = {
-  data: { [key: string]: string | JSX.Element };
+  data: { [key: string]: string | number | JSX.Element };
 };
 
 export default function EntityInfo({ data }: Props): JSX.Element {
