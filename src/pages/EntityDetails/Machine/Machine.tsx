@@ -21,9 +21,12 @@ import EntityDetails from "pages/EntityDetails/EntityDetails";
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { TSFixMe } from "types";
+
 export default function Machine() {
-  const modelStatusData = useModelStatus();
-  const { machineId } = useParams();
+  const modelStatusData: TSFixMe = useModelStatus();
+  const { machineId } = useParams<EntityDetailsRoute>();
   const tableRowClick = useTableRowClick();
   const machine = modelStatusData?.machines[machineId];
 
@@ -37,7 +40,7 @@ export default function Machine() {
               filteredModelStatusData.applications[application]?.units || {};
 
             if (Object.entries(units).length) {
-              Object.values(units).forEach((unit) => {
+              Object.values(units).forEach((unit: TSFixMe) => {
                 if (
                   // Delete any app without a unit matching this machineId...
                   unit.machine !== machineId ||
@@ -63,7 +66,7 @@ export default function Machine() {
       filteredModelStatusData &&
         Object.keys(filteredModelStatusData.applications).forEach(
           (application) => {
-            const units =
+            const units: { [key: string]: TSFixMe } =
               filteredModelStatusData.applications[application].units || {};
             for (let [key, unit] of Object.entries(units)) {
               if (unit.machine !== machineId) {
@@ -98,9 +101,9 @@ export default function Machine() {
 
   const getHardwareSpecs = () => {
     if (!machine) return {};
-    const hardware = {};
+    const hardware: TSFixMe = {};
     const hardwareArr = machine.hardware.split(" ");
-    hardwareArr.forEach((spec) => {
+    hardwareArr.forEach((spec: TSFixMe) => {
       const [name, value] = spec.split("=");
       hardware[name] = value;
     });
@@ -117,7 +120,7 @@ export default function Machine() {
   };
 
   return (
-    <EntityDetails>
+    <EntityDetails type="machine">
       <div>
         <InfoPanel />
         <EntityInfo data={MachineEntityData} />
