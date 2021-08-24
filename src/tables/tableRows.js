@@ -145,137 +145,144 @@ export function generateRemoteApplicationRows(
 }
 
 export function generateUnitRows(
-  modelStatusData,
+  units,
   tableRowClick,
   showCheckbox,
   hideMachines
 ) {
-  if (!modelStatusData) {
+  if (!units) {
     return [];
   }
 
-  const applications = modelStatusData.applications;
+  function generatePortsList(ports) {
+    if (ports.length === 0) {
+      return "-";
+    }
+    return ports.map((portData) => portData.number).join(",");
+  }
+
   const unitRows = [];
-  Object.keys(applications).forEach((applicationName) => {
-    const units = applications[applicationName].units || [];
-    Object.keys(units).forEach((unitId) => {
-      const unit = units[unitId];
-      const workload = unit["workload-status"].status || "-";
-      const agent = unit["agent-status"].status || "-";
-      const publicAddress = unit["public-address"] || "-";
-      const port = unit?.["opened-ports"]?.join(" ") || "-";
-      const message = unit["workload-status"].info || "-";
-      const charm = applications[applicationName].charm;
-      let columns = [
-        {
-          content: generateEntityIdentifier(charm ? charm : "", unitId, false),
-          className: "u-truncate",
-        },
-        {
-          content: generateStatusElement(workload),
-          className: "u-capitalise",
-        },
-        { content: agent },
-        { content: unit.machine, className: "u-align--right", key: "machine" },
-        { content: publicAddress },
-        {
-          content: port,
-          className: "u-align--right",
-          title: port,
-        },
-        {
-          content: <span title={message}>{message}</span>,
-          className: "u-truncate",
-        },
-      ];
+  Object.keys(units).forEach((unitId) => {
+    const unit = units[unitId];
+    const workload = unit["workload-status"].current || "-";
+    const agent = unit["agent-status"].current || "-";
+    const publicAddress = unit["public-address"] || "-";
+    const ports = generatePortsList(unit.ports);
+    const message = unit["workload-status"].message || "-";
+    const charm = unit["charm-url"];
+    let columns = [
+      {
+        content: generateEntityIdentifier(charm ? charm : "", unitId, false),
+        className: "u-truncate",
+      },
+      {
+        content: generateStatusElement(workload),
+        className: "u-capitalise",
+      },
+      { content: agent },
+      {
+        content: unit["machine-id"],
+        className: "u-align--right",
+        key: "machine",
+      },
+      { content: publicAddress },
+      {
+        content: ports,
+        className: "u-align--right",
+        title: ports,
+      },
+      {
+        content: <span title={message}>{message}</span>,
+        className: "u-truncate",
+      },
+    ];
 
-      if (hideMachines) {
-        columns = columns.filter((column) => !(column.key === "machine"));
-      }
+    if (hideMachines) {
+      columns = columns.filter((column) => !(column.key === "machine"));
+    }
 
-      if (showCheckbox) {
-        const fieldID = `table-checkbox-${unitId}`;
-        const ariaLabeledBy = `aria-labeled-${unitId}`;
-        columns.splice(0, 0, {
-          content: (
-            <label className="p-checkbox" htmlFor={fieldID}>
-              <Field
-                id={fieldID}
-                type="checkbox"
-                aria-labelledby={ariaLabeledBy}
-                className="p-checkbox__input"
-                name="selectedUnits"
-                value={unitId}
-              />
-              <span className="p-checkbox__label" id={ariaLabeledBy}></span>
-            </label>
-          ),
+    if (showCheckbox) {
+      const fieldID = `table-checkbox-${unitId}`;
+      const ariaLabeledBy = `aria-labeled-${unitId}`;
+      columns.splice(0, 0, {
+        content: (
+          <label className="p-checkbox" htmlFor={fieldID}>
+            <Field
+              id={fieldID}
+              type="checkbox"
+              aria-labelledby={ariaLabeledBy}
+              className="p-checkbox__input"
+              name="selectedUnits"
+              value={unitId}
+            />
+            <span className="p-checkbox__label" id={ariaLabeledBy}></span>
+          </label>
+        ),
+      });
+    }
+
+    unitRows.push({
+      columns,
+      sortData: {
+        unit: unitId,
+        workload,
+        agent,
+        machine: unit.machine,
+        publicAddress,
+        ports,
+        message,
+      },
+      onClick: (e) => tableRowClick("unit", unitId, e),
+      "data-unit": unitId,
+    });
+
+    const subordinates = unit.subordinates;
+
+    if (subordinates) {
+      for (let [key] of Object.entries(subordinates)) {
+        const subordinate = subordinates[key];
+        unitRows.push({
+          columns: [
+            {
+              content: "",
+            },
+            {
+              content: generateEntityIdentifier(subordinate.charm, key, true),
+              className: "u-truncate",
+            },
+            {
+              content: generateStatusElement(
+                subordinate["workload-status"].status
+              ),
+              className: "u-capitalise",
+            },
+            { content: subordinate["agent-status"].status },
+            { content: subordinate.machine, className: "u-align--right" },
+            { content: subordinate["public-address"] },
+            {
+              content: subordinate["public-address"].split(":")[-1] || "-",
+              className: "u-align--right",
+            },
+            {
+              content: subordinate["workload-status"].info,
+              className: "u-truncate",
+            },
+          ],
+          // This is using the parent data for sorting so that they stick to
+          // their parent while being sorted. This isn't fool-proof but it's
+          // the best we have for the current design and table implementation.
+          sortData: {
+            unit: unitId,
+            workload,
+            agent,
+            machine: unit.machine,
+            publicAddress,
+            ports,
+            message,
+          },
         });
       }
-
-      unitRows.push({
-        columns,
-        sortData: {
-          unit: unitId,
-          workload,
-          agent,
-          machine: unit.machine,
-          publicAddress,
-          port,
-          message,
-        },
-        onClick: (e) => tableRowClick("unit", unitId, e),
-        "data-unit": unitId,
-      });
-
-      const subordinates = unit.subordinates;
-
-      if (subordinates) {
-        for (let [key] of Object.entries(subordinates)) {
-          const subordinate = subordinates[key];
-          unitRows.push({
-            columns: [
-              {
-                content: "",
-              },
-              {
-                content: generateEntityIdentifier(subordinate.charm, key, true),
-                className: "u-truncate",
-              },
-              {
-                content: generateStatusElement(
-                  subordinate["workload-status"].status
-                ),
-                className: "u-capitalise",
-              },
-              { content: subordinate["agent-status"].status },
-              { content: subordinate.machine, className: "u-align--right" },
-              { content: subordinate["public-address"] },
-              {
-                content: subordinate["public-address"].split(":")[-1] || "-",
-                className: "u-align--right",
-              },
-              {
-                content: subordinate["workload-status"].info,
-                className: "u-truncate",
-              },
-            ],
-            // This is using the parent data for sorting so that they stick to
-            // their parent while being sorted. This isn't fool-proof but it's
-            // the best we have for the current design and table implementation.
-            sortData: {
-              unit: unitId,
-              workload,
-              agent,
-              machine: unit.machine,
-              publicAddress,
-              port,
-              message,
-            },
-          });
-        }
-      }
-    });
+    }
   });
 
   return unitRows;

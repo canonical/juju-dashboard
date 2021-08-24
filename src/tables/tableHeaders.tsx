@@ -33,7 +33,7 @@ export const unitTableHeaders: Header = [
   { content: "agent", sortKey: "agent" },
   { content: "machine", className: "u-align--right", sortKey: "machine" },
   { content: "public address", sortKey: "publicAddress" },
-  { content: "port", className: "u-align--right", sortKey: "port" },
+  { content: "ports", className: "u-align--right", sortKey: "ports" },
   { content: "message", sortKey: "message" },
 ];
 
