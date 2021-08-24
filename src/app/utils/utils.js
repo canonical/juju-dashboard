@@ -362,14 +362,6 @@ export const filterModelStatusDataByApp = (modelStatusData, appName) => {
 
 export const isSet = (val) => val || val !== undefined;
 
-export const splitParts = (hardware) =>
-  Object.fromEntries(
-    hardware.split(" ").map((item) => {
-      const parts = item.split("=");
-      return [parts[0], parts[1]];
-    })
-  );
-
 export const extractRelationEndpoints = (relation) => {
   const endpoints = {};
   relation.endpoints.forEach((endpoint) => {
