@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import type { ReduxState, ModelsList } from "types";
 import type {
   ApplicationData,
+  MachineData,
   ModelInfo,
   ModelWatcherData,
   RelationData,
@@ -75,9 +76,21 @@ export function getModelUnits(modelUUID: string) {
 export function getModelRelations(modelUUID: string) {
   return createSelector(
     getModelWatcherDataByUUID(modelUUID),
-    (getModelWatcherData): RelationData | null => {
-      if (getModelWatcherData) {
-        return getModelWatcherData.relations;
+    (modelWatcherData): RelationData | null => {
+      if (modelWatcherData) {
+        return modelWatcherData.relations;
+      }
+      return null;
+    }
+  );
+}
+
+export function getModelMachines(modelUUID: string) {
+  return createSelector(
+    getModelWatcherDataByUUID(modelUUID),
+    (modelWatcherData): MachineData | null => {
+      if (modelWatcherData) {
+        return modelWatcherData.machines;
       }
       return null;
     }
