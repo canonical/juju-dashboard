@@ -1,10 +1,16 @@
-import { useMemo, useCallback } from "react";
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
-import cloneDeep from "clone-deep";
+import { useSelector } from "react-redux";
 
-import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
+
+import {
+  getModelApplications,
+  getModelMachines,
+  getModelUnits,
+  getModelUUID,
+} from "juju/model-selectors";
 
 import {
   generateUnitRows,
@@ -22,101 +28,76 @@ import EntityInfo from "components/EntityInfo/EntityInfo";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import type { TSFixMe } from "types";
+import type { ApplicationData } from "juju/types";
 
 export default function Machine() {
-  const modelStatusData: TSFixMe = useModelStatus();
-  const { machineId } = useParams<EntityDetailsRoute>();
+  const { machineId, modelName, userName } = useParams<EntityDetailsRoute>();
   const tableRowClick = useTableRowClick();
-  const machine = modelStatusData?.machines[machineId];
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const applications = useSelector(getModelApplications(modelUUID));
+  const units = useSelector(getModelUnits(modelUUID));
+  const machines = useSelector(getModelMachines(modelUUID));
+  const machine = machines?.[machineId];
 
-  const filteredModelStatusDataByApp = useCallback(
-    (machineId) => {
-      const filteredModelStatusData = cloneDeep(modelStatusData);
-      filteredModelStatusData &&
-        Object.keys(filteredModelStatusData.applications).forEach(
-          (application) => {
-            const units =
-              filteredModelStatusData.applications[application]?.units || {};
+  const filteredApplicationList = useMemo(() => {
+    if (!applications || !units) {
+      return null;
+    }
+    const filteredApps: ApplicationData = {};
+    const appList = new Set<string>();
+    Object.entries(units).forEach(([unitId, unitData]) => {
+      if (unitData["machine-id"] === machineId) {
+        appList.add(unitData.application);
+      }
+    });
+    [...appList].forEach((appName) => {
+      filteredApps[appName] = applications[appName];
+    });
+    return filteredApps;
+  }, [applications, units, machineId]);
 
-            if (Object.entries(units).length) {
-              Object.values(units).forEach((unit: TSFixMe) => {
-                if (
-                  // Delete any app without a unit matching this machineId...
-                  unit.machine !== machineId ||
-                  // ...delete any app without units at all
-                  !Object.entries(units).length
-                ) {
-                  delete filteredModelStatusData.applications[application];
-                }
-              });
-            } else {
-              delete filteredModelStatusData.applications[application];
-            }
-          }
-        );
-      return filteredModelStatusData;
-    },
-    [modelStatusData]
-  );
-
-  const filteredModelStatusDataByUnit = useCallback(
-    (machineId) => {
-      const filteredModelStatusData = cloneDeep(modelStatusData);
-      filteredModelStatusData &&
-        Object.keys(filteredModelStatusData.applications).forEach(
-          (application) => {
-            const units: { [key: string]: TSFixMe } =
-              filteredModelStatusData.applications[application].units || {};
-            for (let [key, unit] of Object.entries(units)) {
-              if (unit.machine !== machineId) {
-                delete filteredModelStatusData.applications[application].units[
-                  key
-                ];
-              }
-            }
-          }
-        );
-      return filteredModelStatusData;
-    },
-    [modelStatusData]
-  );
+  // const filteredModelStatusDataByUnit = useCallback(
+  //   (machineId) => {
+  //     const filteredModelStatusData = cloneDeep(modelStatusData);
+  //     filteredModelStatusData &&
+  //       Object.keys(filteredModelStatusData.applications).forEach(
+  //         (application) => {
+  //           const units: { [key: string]: TSFixMe } =
+  //             filteredModelStatusData.applications[application].units || {};
+  //           for (let [key, unit] of Object.entries(units)) {
+  //             if (unit.machine !== machineId) {
+  //               delete filteredModelStatusData.applications[application].units[
+  //                 key
+  //               ];
+  //             }
+  //           }
+  //         }
+  //       );
+  //     return filteredModelStatusData;
+  //   },
+  //   [modelStatusData]
+  // );
 
   // Generate apps table content
   const applicationRows = useMemo(
-    () =>
-      generateLocalApplicationRows(
-        filteredModelStatusDataByApp(machineId),
-        tableRowClick
-      ),
-    [filteredModelStatusDataByApp, machineId, tableRowClick]
+    () => generateLocalApplicationRows(filteredApplicationList, tableRowClick),
+    [filteredApplicationList, tableRowClick]
   );
 
   // Generate units table content
-  const unitRows = useMemo(
-    () =>
-      generateUnitRows(filteredModelStatusDataByUnit(machineId), tableRowClick),
-    [filteredModelStatusDataByUnit, machineId, tableRowClick]
-  );
+  // const unitRows = useMemo(
+  //   () =>
+  //     generateUnitRows(filteredModelStatusDataByUnit(machineId), tableRowClick),
+  //   [filteredModelStatusDataByUnit, machineId, tableRowClick]
+  // );
 
-  const getHardwareSpecs = () => {
-    if (!machine) return {};
-    const hardware: TSFixMe = {};
-    const hardwareArr = machine.hardware.split(" ");
-    hardwareArr.forEach((spec: TSFixMe) => {
-      const [name, value] = spec.split("=");
-      hardware[name] = value;
-    });
-    return hardware;
-  };
-  const hardware = getHardwareSpecs();
-
+  const hardware = machine?.["hardware-characteristics"];
   const MachineEntityData = {
     memory: hardware?.["mem"] || "-",
     disk: hardware?.["root-disk"] || "-",
     cpu: hardware?.["cpu-power"] || "-",
-    cores: hardware?.["cores"] || "-",
-    message: machine?.["agent-status"].info,
+    cores: hardware?.["cpu-cores"] || "-",
+    message: machine?.["agent-status"].message || "-",
   };
 
   return (
@@ -128,13 +109,13 @@ export default function Machine() {
       <div className="entity-details__main u-overflow--scroll">
         <div>
           <div className="entity-detail__tables">
-            <MainTable
+            {/* <MainTable
               headers={unitTableHeaders}
               rows={unitRows}
               className="entity-details__units p-main-table"
               sortable
               emptyStateMsg={"There are no units in this machine"}
-            />
+            /> */}
             <MainTable
               headers={localApplicationTableHeaders}
               rows={applicationRows}
