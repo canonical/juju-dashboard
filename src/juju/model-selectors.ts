@@ -5,6 +5,7 @@ import type {
   ApplicationData,
   ModelInfo,
   ModelWatcherData,
+  RelationData,
   UnitData,
 } from "./types";
 
@@ -65,6 +66,18 @@ export function getModelUnits(modelUUID: string) {
     (modelWatcherData): UnitData | null => {
       if (modelWatcherData) {
         return modelWatcherData.units;
+      }
+      return null;
+    }
+  );
+}
+
+export function getModelRelations(modelUUID: string) {
+  return createSelector(
+    getModelWatcherDataByUUID(modelUUID),
+    (getModelWatcherData): RelationData | null => {
+      if (getModelWatcherData) {
+        return getModelWatcherData.relations;
       }
       return null;
     }
