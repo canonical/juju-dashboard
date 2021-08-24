@@ -50,6 +50,7 @@ import ChipGroup from "components/ChipGroup/ChipGroup";
 import {
   getModelApplications,
   getModelInfo,
+  getModelRelations,
   getModelUUID,
 } from "juju/model-selectors";
 
@@ -113,6 +114,7 @@ const Model = () => {
   );
 
   const applications = useSelector(getModelApplications(modelUUID));
+  const relations = useSelector(getModelRelations(modelUUID));
 
   const localApplicationTableRows = useMemo(() => {
     return generateLocalApplicationRows(applications, tableRowClick, query);
@@ -127,8 +129,8 @@ const Model = () => {
   }, [modelStatusData, tableRowClick, query]);
 
   const relationTableRows = useMemo(
-    () => generateRelationRows(modelStatusData),
-    [modelStatusData]
+    () => generateRelationRows(relations, applications),
+    [applications, relations]
   );
   const consumedTableRows = useMemo(
     () => generateConsumedRows(modelStatusData),

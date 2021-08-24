@@ -4,7 +4,6 @@ import { Field } from "formik";
 import {
   extractRevisionNumber,
   generateStatusElement,
-  generateSpanClass,
   generateRelationIconImage,
   splitParts,
   extractRelationEndpoints,
@@ -363,13 +362,13 @@ export function generateMachineRows(
   });
 }
 
-export function generateRelationRows(modelStatusData) {
-  if (!modelStatusData) {
+export function generateRelationRows(relationData, applications) {
+  if (!relationData) {
     return [];
   }
-  const relations = modelStatusData.relations || {};
-  return Object.keys(relations).map((relationId) => {
-    const relation = relations[relationId];
+  return Object.keys(relationData).map((relationId) => {
+    const relation = relationData[relationId];
+    console.log(relation);
     const {
       provider,
       requirer,
@@ -378,7 +377,6 @@ export function generateRelationRows(modelStatusData) {
       requirerApplicationName,
       peerApplicationName,
     } = extractRelationEndpoints(relation);
-
     const providerLabel = provider || peer || "-";
     const requirerLabel = requirer || "-";
     return {
@@ -388,7 +386,7 @@ export function generateRelationRows(modelStatusData) {
             <>
               {generateRelationIconImage(
                 providerApplicationName || peerApplicationName,
-                modelStatusData
+                applications
               )}
               {providerLabel}
             </>
@@ -398,31 +396,21 @@ export function generateRelationRows(modelStatusData) {
         {
           content: (
             <>
-              {generateRelationIconImage(
-                requirerApplicationName,
-                modelStatusData
-              )}
+              {generateRelationIconImage(requirerApplicationName, applications)}
               {requirerLabel}
             </>
           ),
           title: requirerLabel,
           className: "u-truncate",
         },
-        { content: relation.interface },
-        { content: relation.endpoints[0].role },
-        {
-          content: generateSpanClass(
-            "u-capitalise--first-letter",
-            relation.status.status
-          ),
-        },
+        { content: relation.endpoints[0].relation.interface },
+        { content: relation.endpoints[0].relation.role },
       ],
       sortData: {
         provider: providerLabel,
         requirer: requirerLabel,
         interface: relation.interface,
-        type: relation?.endpoints[0]?.role,
-        message: relation?.status?.status,
+        type: relation?.endpoints[0]?.relation.role,
       },
     };
   });

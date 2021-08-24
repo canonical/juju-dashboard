@@ -63,7 +63,6 @@ export const relationTableHeaders: Header = [
   { content: "requirer", sortKey: "requirer" },
   { content: "interface", sortKey: "interface" },
   { content: "type", sortKey: "type" },
-  { content: "message", sortKey: "message" },
 ];
 
 export const consumedTableHeaders: Header = [
