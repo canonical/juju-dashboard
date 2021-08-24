@@ -237,7 +237,8 @@ export const extractCredentialName = (tag) => {
   Returns the version of the supplied charm string.
   @param {String} charmName The full path of the charm e.g. cs:foo/bar-123
 */
-export const extractRevisionNumber = (charmName) => charmName.split("-").pop();
+export const extractRevisionNumber = (charmName = "") =>
+  charmName.split("-").pop();
 
 /**
   Returns a link to the charm icon for the provided charm name.
@@ -372,9 +373,10 @@ export const splitParts = (hardware) =>
 export const extractRelationEndpoints = (relation) => {
   const endpoints = {};
   relation.endpoints.forEach((endpoint) => {
-    const role = endpoint.role;
-    endpoints[role] = endpoint.application + ":" + endpoint.name;
-    endpoints[`${role}ApplicationName`] = endpoint.application;
+    const role = endpoint.relation.role;
+    endpoints[role] =
+      endpoint["application-name"] + ":" + endpoint.relation.name;
+    endpoints[`${role}ApplicationName`] = endpoint["application-name"];
   });
   return endpoints;
 };
@@ -397,12 +399,12 @@ export const generateIconImg = (name, charmId) => {
   );
 };
 
-export const generateRelationIconImage = (applicationName, modelStatusData) => {
-  const application = modelStatusData.applications[applicationName];
+export const generateRelationIconImage = (applicationName, applications) => {
+  const application = applications[applicationName];
   if (!application || !applicationName) {
     return;
   }
-  return generateIconImg(applicationName, application.charm);
+  return generateIconImg(applicationName, application["charm-url"]);
 };
 
 export const formatFriendlyDateToNow = (date) => {
