@@ -30,22 +30,69 @@ export interface UnitData {
 }
 
 export type AllWatcherDelta =
-  | ["action", "change", ActionChangeDelta]
-  | ["application", "change", ApplicationChangeDelta]
-  | ["charm", "change", CharmChangeDelta]
-  | ["unit", "change", UnitChangeDelta]
-  | ["machine", "change", MachineChangeDelta]
-  | ["model", "change", ModelChangeDelta]
-  | ["relation", "change", RelationChangeDelta];
+  | [DeltaEntityTypes.ACTION, DeltaChangeTypes.CHANGE, ActionChangeDelta]
+  | [
+      DeltaEntityTypes.APPLICATION,
+      DeltaChangeTypes.CHANGE,
+      ApplicationChangeDelta
+    ]
+  | [
+      DeltaEntityTypes.APPLICATION,
+      DeltaChangeTypes.REMOVE,
+      ApplicationChangeDelta
+    ]
+  | [DeltaEntityTypes.CHARM, DeltaChangeTypes.CHANGE, CharmChangeDelta]
+  | [DeltaEntityTypes.CHARM, DeltaChangeTypes.REMOVE, CharmChangeDelta]
+  | [DeltaEntityTypes.UNIT, DeltaChangeTypes.CHANGE, UnitChangeDelta]
+  | [DeltaEntityTypes.UNIT, DeltaChangeTypes.REMOVE, UnitChangeDelta]
+  | [DeltaEntityTypes.MACHINE, DeltaChangeTypes.CHANGE, MachineChangeDelta]
+  | [DeltaEntityTypes.MACHINE, DeltaChangeTypes.REMOVE, MachineChangeDelta]
+  | [DeltaEntityTypes.MODEL, DeltaChangeTypes.CHANGE, ModelChangeDelta]
+  | [DeltaEntityTypes.RELATION, DeltaChangeTypes.CHANGE, RelationChangeDelta]
+  | [DeltaEntityTypes.RELATION, DeltaChangeTypes.REMOVE, RelationChangeDelta];
+
+export enum DeltaEntityTypes {
+  ACTION = "action",
+  APPLICATION = "application",
+  CHARM = "charm",
+  MACHINE = "machine",
+  MODEL = "model",
+  RELATION = "relation",
+  UNIT = "unit",
+}
+
+export enum DeltaChangeTypes {
+  CHANGE = "change",
+  REMOVE = "remove",
+}
+
+export enum ReduxDeltaEntityTypes {
+  ACTIONS = "actions",
+  APPLICATIONS = "applications",
+  CHARMS = "charms",
+  MACHINES = "machines",
+  MODEL = "model",
+  RELATIONS = "relations",
+  UNITS = "units",
+}
+
+export type DeltaMessageData =
+  | ActionChangeDelta
+  | ApplicationChangeDelta
+  | CharmChangeDelta
+  | UnitChangeDelta
+  | MachineChangeDelta
+  | ModelChangeDelta
+  | RelationChangeDelta;
 
 export interface ModelData {
-  actions: ActionData;
-  applications: ApplicationData;
-  charms: ModelCharmData;
-  machines: MachineData;
-  model: ModelInfo;
-  relations: RelationData;
-  units: UnitData;
+  [ReduxDeltaEntityTypes.ACTIONS]: ActionData;
+  [ReduxDeltaEntityTypes.APPLICATIONS]: ApplicationData;
+  [ReduxDeltaEntityTypes.CHARMS]: ModelCharmData;
+  [ReduxDeltaEntityTypes.MACHINES]: MachineData;
+  [ReduxDeltaEntityTypes.MODEL]: ModelInfo;
+  [ReduxDeltaEntityTypes.RELATIONS]: RelationData;
+  [ReduxDeltaEntityTypes.UNITS]: UnitData;
 }
 
 export interface ModelInfo extends ModelChangeDelta {

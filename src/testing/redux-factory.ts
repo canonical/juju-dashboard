@@ -37,7 +37,14 @@ export function jujuStateFactory(models: ModelData[] = []) {
   return Factory.define<JujuState>(() => ({
     // XXX When the models list is updated the uuids created for the models list
     // will need to be internally consistent with the modelWatcher data.
-    models: null,
+    models: {
+      uuid: {
+        name: "mymodel",
+        ownerTag: "owner-foo",
+        type: "iaas",
+        uuid: "uuid",
+      },
+    },
     modelData: null,
     modelWatcherData: modelWatcherData,
   }));
