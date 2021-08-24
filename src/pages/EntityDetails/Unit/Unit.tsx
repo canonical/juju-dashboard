@@ -22,12 +22,15 @@ import EntityDetails from "pages/EntityDetails/EntityDetails";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import EntityInfo from "components/EntityInfo/EntityInfo";
 
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import { TSFixMe } from "types";
+
 export default function Unit() {
-  const { unitId } = useParams();
+  const { unitId } = useParams<EntityDetailsRoute>();
   // The unit name might have a dash in it so we need to grab only the last one
   // ex) content-cache-0.
   const unitIdentifier = unitId.replace(/-(\d+)$/, "/$1");
-  const modelStatusData = useModelStatus();
+  const modelStatusData: TSFixMe = useModelStatus();
   const tableRowClick = useTableRowClick();
   const appName = unitIdentifier?.split("/")[0];
   const unit = modelStatusData?.applications[appName]?.units[unitIdentifier];
@@ -68,7 +71,7 @@ export default function Unit() {
   const machineRows = useMemo(
     () =>
       generateMachineRows(
-        filteredModelStatusDataByMachine(unit, "machines"),
+        filteredModelStatusDataByMachine(unit),
         tableRowClick
       ),
     [filteredModelStatusDataByMachine, tableRowClick, unit]
@@ -87,14 +90,14 @@ export default function Unit() {
   const UnitEntityData = {
     charm: app?.charm || "-",
     os: "-",
-    revision: app?.charm ? extractRevisionNumber(app?.charm) : "-",
+    revision: app?.charm ? extractRevisionNumber(app?.charm) || "-" : "-",
     version: app?.["workload-version"] || "-",
     info: app?.status.info,
     provider: modelStatusData?.info?.["provider-type"],
   };
 
   return (
-    <EntityDetails>
+    <EntityDetails type="unit">
       <div>
         <InfoPanel />
         <EntityInfo data={UnitEntityData} />
