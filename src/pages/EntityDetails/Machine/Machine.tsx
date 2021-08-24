@@ -28,7 +28,7 @@ import EntityInfo from "components/EntityInfo/EntityInfo";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import type { ApplicationData } from "juju/types";
+import type { ApplicationData, UnitData } from "juju/types";
 
 export default function Machine() {
   const { machineId, modelName, userName } = useParams<EntityDetailsRoute>();
@@ -56,40 +56,28 @@ export default function Machine() {
     return filteredApps;
   }, [applications, units, machineId]);
 
-  // const filteredModelStatusDataByUnit = useCallback(
-  //   (machineId) => {
-  //     const filteredModelStatusData = cloneDeep(modelStatusData);
-  //     filteredModelStatusData &&
-  //       Object.keys(filteredModelStatusData.applications).forEach(
-  //         (application) => {
-  //           const units: { [key: string]: TSFixMe } =
-  //             filteredModelStatusData.applications[application].units || {};
-  //           for (let [key, unit] of Object.entries(units)) {
-  //             if (unit.machine !== machineId) {
-  //               delete filteredModelStatusData.applications[application].units[
-  //                 key
-  //               ];
-  //             }
-  //           }
-  //         }
-  //       );
-  //     return filteredModelStatusData;
-  //   },
-  //   [modelStatusData]
-  // );
+  const filteredUnitList = useMemo(() => {
+    if (!units) {
+      return null;
+    }
+    const filteredUnits: UnitData = {};
+    Object.entries(units).forEach(([unitId, unitData]) => {
+      if (unitData["machine-id"] === machineId) {
+        filteredUnits[unitId] = unitData;
+      }
+    });
+    return filteredUnits;
+  }, [units, machineId]);
 
-  // Generate apps table content
   const applicationRows = useMemo(
     () => generateLocalApplicationRows(filteredApplicationList, tableRowClick),
     [filteredApplicationList, tableRowClick]
   );
 
-  // Generate units table content
-  // const unitRows = useMemo(
-  //   () =>
-  //     generateUnitRows(filteredModelStatusDataByUnit(machineId), tableRowClick),
-  //   [filteredModelStatusDataByUnit, machineId, tableRowClick]
-  // );
+  const unitRows = useMemo(
+    () => generateUnitRows(filteredUnitList, tableRowClick),
+    [filteredUnitList, tableRowClick]
+  );
 
   const hardware = machine?.["hardware-characteristics"];
   const MachineEntityData = {
@@ -109,13 +97,13 @@ export default function Machine() {
       <div className="entity-details__main u-overflow--scroll">
         <div>
           <div className="entity-detail__tables">
-            {/* <MainTable
+            <MainTable
               headers={unitTableHeaders}
               rows={unitRows}
               className="entity-details__units p-main-table"
               sortable
               emptyStateMsg={"There are no units in this machine"}
-            /> */}
+            />
             <MainTable
               headers={localApplicationTableHeaders}
               rows={applicationRows}
