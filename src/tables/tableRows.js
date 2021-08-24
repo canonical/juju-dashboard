@@ -283,27 +283,23 @@ export function generateUnitRows(
 }
 
 export function generateMachineRows(
-  modelStatusData,
+  machines,
+  units,
   tableRowClick,
   selectedEntity
 ) {
-  if (!modelStatusData) {
+  if (!machines) {
     return [];
   }
 
-  const generateMachineApps = (machineId) => {
+  const generateMachineApps = (machineId, units) => {
     const appsOnMachine = [];
-    const modelApplications = modelStatusData?.applications;
-    modelApplications &&
-      Object.entries(modelApplications).forEach(([appName, appInfo]) => {
-        appInfo?.units &&
-          Object.values(appInfo.units).forEach((unitInfo) => {
-            if (machineId === unitInfo.machine) {
-              appsOnMachine.push([appName, appInfo.charm]);
-            }
-          });
+    units &&
+      Object.values(units).forEach((unitInfo) => {
+        if (machineId === unitInfo["machine-id"]) {
+          appsOnMachine.push([unitInfo.application, unitInfo["charm-url"]]);
+        }
       });
-
     const apps = appsOnMachine.length
       ? appsOnMachine.map((app) => {
           return generateIconImg(app[0], app[1]);
@@ -312,10 +308,9 @@ export function generateMachineRows(
     return apps;
   };
 
-  const machines = modelStatusData.machines;
   return Object.keys(machines).map((machineId) => {
     const machine = machines[machineId];
-    const az = splitParts(machine.hardware)["availability-zone"] || "";
+    const az = machine["hardware-characteristics"]["availability-zone"] || "";
     return {
       columns: [
         {
@@ -330,19 +325,19 @@ export function generateMachineRows(
           ),
         },
         {
-          content: generateMachineApps(machineId),
+          content: generateMachineApps(machineId, units),
           className: "machine-app-icons",
         },
         {
-          content: generateStatusElement(machine["agent-status"].status),
+          content: generateStatusElement(machine["agent-status"].current),
           className: "u-capitalise",
         },
         { content: az },
-        { content: machine.instanceId },
+        { content: machine["instance-id"] },
         {
           content: (
-            <span title={machine["agent-status"].info}>
-              {machine["agent-status"].info}
+            <span title={machine["agent-status"].message}>
+              {machine["agent-status"].message}
             </span>
           ),
           className: "u-truncate",
@@ -350,10 +345,10 @@ export function generateMachineRows(
       ],
       sortData: {
         machine: machine.series,
-        state: machine?.["agent-status"]?.status,
+        state: machine?.["agent-status"]?.current,
         az,
-        instanceId: machine.instanceId,
-        message: machine?.agentStatus?.info,
+        instanceId: machine["instance-id"],
+        message: machine?.["agent-status"].message,
       },
       onClick: (e) => tableRowClick("machine", machineId, e),
       "data-machine": machineId,
@@ -368,7 +363,6 @@ export function generateRelationRows(relationData, applications) {
   }
   return Object.keys(relationData).map((relationId) => {
     const relation = relationData[relationId];
-    console.log(relation);
     const {
       provider,
       requirer,
