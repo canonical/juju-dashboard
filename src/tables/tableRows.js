@@ -258,34 +258,43 @@ export function generateUnitRows(
     if (subordinates) {
       for (let [key] of Object.entries(subordinates)) {
         const subordinate = subordinates[key];
+        let columns = [
+          {
+            content: generateEntityIdentifier(
+              subordinate["charm-url"],
+              key,
+              true
+            ),
+            className: "u-truncate",
+          },
+          {
+            content: generateStatusElement(
+              subordinate["workload-status"].current
+            ),
+            className: "u-capitalise",
+          },
+          { content: subordinate["agent-status"].current },
+          { content: subordinate["machine-id"], className: "u-align--right" },
+          { content: subordinate["public-address"] },
+          {
+            content: subordinate["public-address"].split(":")[-1] || "-",
+            className: "u-align--right",
+          },
+          {
+            content: subordinate["workload-status"].current,
+            className: "u-truncate",
+          },
+        ];
+
+        if (showCheckbox) {
+          // Add an extra column if the checkbox is shown on the parent.
+          columns.splice(0, 0, {
+            content: "",
+          });
+        }
+
         unitRows.push({
-          columns: [
-            {
-              content: generateEntityIdentifier(
-                subordinate["charm-url"],
-                key,
-                true
-              ),
-              className: "u-truncate",
-            },
-            {
-              content: generateStatusElement(
-                subordinate["workload-status"].current
-              ),
-              className: "u-capitalise",
-            },
-            { content: subordinate["agent-status"].current },
-            { content: subordinate["machine-id"], className: "u-align--right" },
-            { content: subordinate["public-address"] },
-            {
-              content: subordinate["public-address"].split(":")[-1] || "-",
-              className: "u-align--right",
-            },
-            {
-              content: subordinate["workload-status"].current,
-              className: "u-truncate",
-            },
-          ],
+          columns,
           // This is using the parent data for sorting so that they stick to
           // their parent while being sorted. This isn't fool-proof but it's
           // the best we have for the current design and table implementation.
