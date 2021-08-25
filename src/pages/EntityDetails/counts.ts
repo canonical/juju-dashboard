@@ -1,6 +1,10 @@
-import { TSFixMe } from "types";
+import type { MachineChangeDelta, MachineData, UnitData } from "juju/types";
+import type { TSFixMe } from "types";
 
-export const incrementCounts = (status: string, counts: TSFixMe) => {
+export const incrementCounts = (
+  status: string,
+  counts: { [status: string]: number }
+) => {
   if (counts[status]) {
     counts[status] = counts[status] += 1;
   } else {
@@ -34,17 +38,46 @@ const generateSecondaryCounts = (
     {}
   );
 
-const generateUnitSecondaryCounts = (application: TSFixMe) => {
+export function generateUnitCounts(
+  units: UnitData | null,
+  applicationName: string
+) {
   const counts = {};
-  const units = application.units || [];
-  Object.keys(units).forEach((unitId) => {
-    const status = units[unitId]?.["agent-status"]?.status;
-    if (status) {
-      return incrementCounts(status, counts);
-    }
-  });
+  if (units) {
+    Object.entries(units).forEach(([unitId, unitData]) => {
+      if (unitData.application === applicationName) {
+        const status = unitData["agent-status"].current;
+        if (status) {
+          return incrementCounts(status, counts);
+        }
+      }
+    });
+  }
   return counts;
-};
+}
+
+export function generateMachineCounts(
+  machines: MachineData | null,
+  units: UnitData | null,
+  applicationName: string
+) {
+  const counts = {};
+  if (machines && units) {
+    const machineIds: MachineChangeDelta["id"][] = [];
+    Object.entries(units).forEach(([unitId, unitData]) => {
+      if (unitData.application === applicationName) {
+        machineIds.push(unitData["machine-id"]);
+      }
+    });
+    machineIds.forEach((id) => {
+      const status = machines[id]["agent-status"].current;
+      if (status) {
+        return incrementCounts(status, counts);
+      }
+    });
+  }
+  return counts;
+}
 
 /**
   Generates a list of counts from the modelStatusData.
@@ -66,18 +99,6 @@ export const renderCounts = (
         modelStatusData,
         "applications",
         "status"
-      );
-      break;
-    case "units":
-      chips = generateUnitSecondaryCounts(
-        modelStatusData?.applications?.[filterBy]
-      );
-      break;
-    case "machines":
-      chips = generateSecondaryCounts(
-        modelStatusData,
-        "machines",
-        "agent-status"
       );
       break;
     case "relations":

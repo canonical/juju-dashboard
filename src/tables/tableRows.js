@@ -158,12 +158,29 @@ export function generateUnitRows(
     if (ports.length === 0) {
       return "-";
     }
-    return ports.map((portData) => portData.number).join(",");
+    return ports.map((portData) => portData.number).join(", ");
   }
 
+  const clonedUnits = cloneDeep(units);
+
+  // Restructure the unit list data to allow for the proper subordinate
+  // rendering with the current table setup.
+  Object.entries(clonedUnits).forEach(([unitId, unitData]) => {
+    // The unit list may not have the principal in it because this code is
+    // used to generate the table for the application unit list as well
+    // in which case it'll be the only units in the list.
+    if (unitData.subordinate && clonedUnits[unitData.principal]) {
+      if (!clonedUnits[unitData.principal].subordinates) {
+        clonedUnits[unitData.principal].subordinates = {};
+      }
+      clonedUnits[unitData.principal].subordinates[unitId] = unitData;
+      delete clonedUnits[unitId];
+    }
+  });
+
   const unitRows = [];
-  Object.keys(units).forEach((unitId) => {
-    const unit = units[unitId];
+  Object.keys(clonedUnits).forEach((unitId) => {
+    const unit = clonedUnits[unitId];
     const workload = unit["workload-status"].current || "-";
     const agent = unit["agent-status"].current || "-";
     const publicAddress = unit["public-address"] || "-";
@@ -241,33 +258,43 @@ export function generateUnitRows(
     if (subordinates) {
       for (let [key] of Object.entries(subordinates)) {
         const subordinate = subordinates[key];
+        let columns = [
+          {
+            content: generateEntityIdentifier(
+              subordinate["charm-url"],
+              key,
+              true
+            ),
+            className: "u-truncate",
+          },
+          {
+            content: generateStatusElement(
+              subordinate["workload-status"].current
+            ),
+            className: "u-capitalise",
+          },
+          { content: subordinate["agent-status"].current },
+          { content: subordinate["machine-id"], className: "u-align--right" },
+          { content: subordinate["public-address"] },
+          {
+            content: subordinate["public-address"].split(":")[-1] || "-",
+            className: "u-align--right",
+          },
+          {
+            content: subordinate["workload-status"].current,
+            className: "u-truncate",
+          },
+        ];
+
+        if (showCheckbox) {
+          // Add an extra column if the checkbox is shown on the parent.
+          columns.splice(0, 0, {
+            content: "",
+          });
+        }
+
         unitRows.push({
-          columns: [
-            {
-              content: "",
-            },
-            {
-              content: generateEntityIdentifier(subordinate.charm, key, true),
-              className: "u-truncate",
-            },
-            {
-              content: generateStatusElement(
-                subordinate["workload-status"].status
-              ),
-              className: "u-capitalise",
-            },
-            { content: subordinate["agent-status"].status },
-            { content: subordinate.machine, className: "u-align--right" },
-            { content: subordinate["public-address"] },
-            {
-              content: subordinate["public-address"].split(":")[-1] || "-",
-              className: "u-align--right",
-            },
-            {
-              content: subordinate["workload-status"].info,
-              className: "u-truncate",
-            },
-          ],
+          columns,
           // This is using the parent data for sorting so that they stick to
           // their parent while being sorted. This isn't fool-proof but it's
           // the best we have for the current design and table implementation.
@@ -275,11 +302,13 @@ export function generateUnitRows(
             unit: unitId,
             workload,
             agent,
-            machine: unit.machine,
+            machine: unit["machine-id"],
             publicAddress,
             ports,
             message,
           },
+          onClick: (e) => tableRowClick("unit", unitId, e),
+          "data-unit": unitId,
         });
       }
     }

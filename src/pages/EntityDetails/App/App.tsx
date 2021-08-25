@@ -20,14 +20,12 @@ import FormikFormData from "components/FormikFormData/FormikFormData";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 
-import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
 
 import { extractRevisionNumber, generateStatusElement } from "app/utils/utils";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
-import type { TSFixMe } from "types";
 
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 import {
@@ -48,7 +46,7 @@ import {
 
 import type { MachineData, UnitData } from "juju/types";
 
-import { renderCounts } from "../counts";
+import { generateMachineCounts, generateUnitCounts } from "../counts";
 
 type FormData = {
   selectAll: boolean;
@@ -70,8 +68,6 @@ export default function App(): JSX.Element {
   const setFieldsValues = useRef<SetFieldValue>();
   const selectedUnits = useRef<string[]>([]);
   const selectAll = useRef<boolean>(false);
-  // Get model status info
-  const modelStatusData: TSFixMe = useModelStatus();
 
   const modelUUID = useSelector(getModelUUID(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
@@ -131,7 +127,12 @@ export default function App(): JSX.Element {
     }
     const filteredUnits: UnitData = {};
     Object.entries(units).forEach(([unitId, unitData]) => {
-      if (unitData.application === entity) {
+      if (
+        unitData.application === entity ||
+        // Add any units that are a subordinate to the parent to the list
+        // It will be re-sorted in the unit table generation code.
+        (unitData.subordinate && unitData.principal.split("/")[0] === entity)
+      ) {
         filteredUnits[unitId] = unitData;
       }
     });
@@ -172,8 +173,15 @@ export default function App(): JSX.Element {
     };
   }
 
-  const unitChips = renderCounts("units", modelStatusData, entity);
-  const machineChips = renderCounts("machines", modelStatusData);
+  const unitChipData = useMemo(
+    () => generateUnitCounts(units, entity),
+    [units, entity]
+  );
+
+  const machineChipData = useMemo(
+    () => generateMachineCounts(machines, units, entity),
+    [machines, units, entity]
+  );
 
   const [panel, setPanel] = useQueryParams({
     panel: StringParam,
@@ -191,9 +199,13 @@ export default function App(): JSX.Element {
     if (!setFieldsValues.current) return;
     // If the app is a subordinate and has not been related to any other apps
     // then its unit list will be `null`.
-    const unitList = modelStatusData.applications[entity].units
-      ? Object.keys(modelStatusData.applications[entity].units)
-      : [];
+
+    let unitList: string[] = [];
+    if (units) {
+      unitList = Object.keys(units).filter(
+        (unitId) => units[unitId].application === entity
+      );
+    }
 
     // Handle the selectAll checkbox interactions.
     if (selectAll.current && !formData.selectAll) {
@@ -266,7 +278,7 @@ export default function App(): JSX.Element {
         <div className="entity-details__tables" ref={tablesRef}>
           {tableView === "units" && (
             <>
-              <ChipGroup chips={unitChips} descriptor="units" />
+              <ChipGroup chips={unitChipData} descriptor="units" />
               <div className="entity-details__action-button-row">
                 <Button
                   appearance="base"
@@ -321,7 +333,7 @@ export default function App(): JSX.Element {
           )}
           {tableView === "machines" && (
             <>
-              <ChipGroup chips={machineChips} descriptor="machines" />
+              <ChipGroup chips={machineChipData} descriptor="machines" />
               <MainTable
                 headers={machineTableHeaders}
                 rows={machinesPanelRows}

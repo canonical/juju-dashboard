@@ -176,7 +176,7 @@ interface CharmChangeDelta {
   config?: Config;
 }
 
-interface MachineChangeDelta {
+export interface MachineChangeDelta {
   addresses: AddressData[] | null;
   "agent-status": MachineAgentStatus;
   "container-type": string;
@@ -276,7 +276,7 @@ interface UnitChangeDelta {
         number: number;
       }[]
     | [];
-  principal: string;
+  principal: string; // If subordinate is true this will have the parent.
   series: string;
   subordinate: boolean;
 }
