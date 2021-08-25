@@ -1,9 +1,8 @@
-import { useMemo, useCallback } from "react";
+import { useMemo } from "react";
 import MainTable from "@canonical/react-components/dist/components/MainTable";
-import cloneDeep from "clone-deep";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
 
 import {
@@ -22,89 +21,80 @@ import EntityDetails from "pages/EntityDetails/EntityDetails";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import EntityInfo from "components/EntityInfo/EntityInfo";
 
+import {
+  getModelApplications,
+  getModelInfo,
+  getModelMachines,
+  getModelUnits,
+  getModelUUID,
+} from "juju/model-selectors";
+
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import { TSFixMe } from "types";
+import type { ApplicationData, MachineData } from "juju/types";
 
 export default function Unit() {
-  const { unitId } = useParams<EntityDetailsRoute>();
+  const { modelName, userName, unitId } = useParams<EntityDetailsRoute>();
   // The unit name might have a dash in it so we need to grab only the last one
   // ex) content-cache-0.
   const unitIdentifier = unitId.replace(/-(\d+)$/, "/$1");
-  const modelStatusData: TSFixMe = useModelStatus();
   const tableRowClick = useTableRowClick();
-  const appName = unitIdentifier?.split("/")[0];
-  const unit = modelStatusData?.applications[appName]?.units[unitIdentifier];
-  const app = modelStatusData?.applications[appName];
 
-  const filteredModelStatusDataByMachine = useCallback(
-    (unit) => {
-      const filteredModelStatusData = cloneDeep(modelStatusData);
-      if (unit?.machine) {
-        Object.keys(filteredModelStatusData.machines).forEach((machineId) => {
-          if (machineId !== unit.machine) {
-            delete filteredModelStatusData.machines[machineId];
-          }
-        });
-      }
-      return filteredModelStatusData;
-    },
-    [modelStatusData]
-  );
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const applications = useSelector(getModelApplications(modelUUID));
+  const units = useSelector(getModelUnits(modelUUID));
+  const machines = useSelector(getModelMachines(modelUUID));
+  const modelData = useSelector(getModelInfo(modelUUID));
 
-  const filteredModelStatusDataByApp = useCallback(
-    (appName) => {
-      const filteredModelStatusData = cloneDeep(modelStatusData);
-      filteredModelStatusData &&
-        Object.keys(filteredModelStatusData.applications).forEach(
-          (application) => {
-            if (application !== appName) {
-              delete filteredModelStatusData.applications[application];
-            }
-          }
-        );
-      return filteredModelStatusData;
-    },
-    [modelStatusData]
-  );
+  const filteredMachineList = useMemo(() => {
+    const filteredMachines: MachineData = {};
+    if (machines && units) {
+      const machineId = units[unitIdentifier]["machine-id"];
+      filteredMachines[machineId] = machines[machineId];
+    }
+    return filteredMachines;
+  }, [machines, units, unitIdentifier]);
 
-  // Generate machines table content
+  const filteredApplicationList = useMemo(() => {
+    const filteredApps: ApplicationData = {};
+    if (applications && units) {
+      const appName = units[unitIdentifier].application;
+      filteredApps[appName] = applications[appName];
+    }
+    return filteredApps;
+  }, [applications, units, unitIdentifier]);
+
   const machineRows = useMemo(
-    () =>
-      generateMachineRows(
-        filteredModelStatusDataByMachine(unit),
-        tableRowClick
-      ),
-    [filteredModelStatusDataByMachine, tableRowClick, unit]
+    () => generateMachineRows(filteredMachineList, units, tableRowClick),
+    [filteredMachineList, units, tableRowClick]
   );
 
-  // Generate apps table content
   const applicationRows = useMemo(
-    () =>
-      generateLocalApplicationRows(
-        filteredModelStatusDataByApp(appName),
-        tableRowClick
-      ),
-    [filteredModelStatusDataByApp, tableRowClick, appName]
+    () => generateLocalApplicationRows(filteredApplicationList, tableRowClick),
+    [filteredApplicationList, tableRowClick]
   );
 
-  const UnitEntityData = {
-    charm: app?.charm || "-",
-    os: "-",
-    revision: app?.charm ? extractRevisionNumber(app?.charm) || "-" : "-",
-    version: app?.["workload-version"] || "-",
-    info: app?.status.info,
-    provider: modelStatusData?.info?.["provider-type"],
-  };
+  const unit = units?.[unitIdentifier];
+  let unitEntityData = {};
+  if (unit) {
+    const charm = unit?.["charm-url"] || "-";
+    unitEntityData = {
+      charm,
+      os: "-",
+      revision: extractRevisionNumber(charm) || "-",
+      version: unit?.["workload-status"].version || "-",
+      message: unit?.["workload-status"].message || "-",
+    };
+  }
 
   return (
     <EntityDetails type="unit">
       <div>
         <InfoPanel />
-        <EntityInfo data={UnitEntityData} />
+        <EntityInfo data={unitEntityData} />
       </div>
       <div className="entity-details__main u-overflow--scroll">
         <div className="slide-panel__tables">
-          {modelStatusData?.info["provider-type"] !== "kubernetes" && (
+          {modelData?.type !== "kubernetes" && (
             <MainTable
               headers={machineTableHeaders}
               rows={machineRows}
