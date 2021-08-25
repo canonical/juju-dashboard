@@ -122,7 +122,14 @@ export function processDeltas(
       Object.entries(applicationUnitCounts).forEach(
         ([applicationName, count]) => {
           if (!modelData.applications[applicationName]) {
-            // @ts-ignore
+            // The following line is ignored because the type requires that
+            // the application has a number of pre-defined values.
+            // This is only here because sometimes the unit delta is parsed
+            // before the application delta arrives so it needs somewhere to
+            // store this information.
+            // This can be resolved by computing the unit-count in the
+            // selector instead of when the unit delta arrives.
+            // @ts-ignore TSFixMe XXX
             modelData.applications[applicationName] = {};
           }
           modelData.applications[applicationName]["unit-count"] = count;
