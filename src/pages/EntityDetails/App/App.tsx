@@ -20,14 +20,12 @@ import FormikFormData from "components/FormikFormData/FormikFormData";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 
-import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
 
 import { extractRevisionNumber, generateStatusElement } from "app/utils/utils";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
-import type { TSFixMe } from "types";
 
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 import {
@@ -48,7 +46,7 @@ import {
 
 import type { MachineData, UnitData } from "juju/types";
 
-import { generateUnitCounts, renderCounts } from "../counts";
+import { generateMachineCounts, generateUnitCounts } from "../counts";
 
 type FormData = {
   selectAll: boolean;
@@ -70,8 +68,6 @@ export default function App(): JSX.Element {
   const setFieldsValues = useRef<SetFieldValue>();
   const selectedUnits = useRef<string[]>([]);
   const selectAll = useRef<boolean>(false);
-  // Get model status info
-  const modelStatusData: TSFixMe = useModelStatus();
 
   const modelUUID = useSelector(getModelUUID(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
@@ -182,7 +178,10 @@ export default function App(): JSX.Element {
     [units, entity]
   );
 
-  const machineChips = renderCounts("machines", modelStatusData);
+  const machineChipData = useMemo(
+    () => generateMachineCounts(machines, units, entity),
+    [machines, units, entity]
+  );
 
   const [panel, setPanel] = useQueryParams({
     panel: StringParam,
@@ -334,7 +333,7 @@ export default function App(): JSX.Element {
           )}
           {tableView === "machines" && (
             <>
-              <ChipGroup chips={machineChips} descriptor="machines" />
+              <ChipGroup chips={machineChipData} descriptor="machines" />
               <MainTable
                 headers={machineTableHeaders}
                 rows={machinesPanelRows}

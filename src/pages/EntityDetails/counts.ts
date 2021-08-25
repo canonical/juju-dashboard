@@ -1,4 +1,4 @@
-import type { UnitData } from "juju/types";
+import type { MachineData, UnitData } from "juju/types";
 import type { TSFixMe } from "types";
 
 export const incrementCounts = (
@@ -38,24 +38,46 @@ const generateSecondaryCounts = (
     {}
   );
 
-export const generateUnitCounts = (
+export function generateUnitCounts(
   units: UnitData | null,
   applicationName: string
-) => {
+) {
   const counts = {};
   if (units) {
     Object.entries(units).forEach(([unitId, unitData]) => {
       if (unitData.application === applicationName) {
         const status = unitData["agent-status"].current;
         if (status) {
-          console.log(status, counts);
           return incrementCounts(status, counts);
         }
       }
     });
   }
   return counts;
-};
+}
+
+export function generateMachineCounts(
+  machines: MachineData | null,
+  units: UnitData | null,
+  applicationName: string
+) {
+  const counts = {};
+  if (machines && units) {
+    const machineIds: string[] = [];
+    Object.entries(units).forEach(([unitId, unitData]) => {
+      if (unitData.application === applicationName) {
+        machineIds.push(unitData["machine-id"]);
+      }
+    });
+    machineIds.forEach((id) => {
+      const status = machines[id]["agent-status"].current;
+      if (status) {
+        return incrementCounts(status, counts);
+      }
+    });
+  }
+  return counts;
+}
 
 /**
   Generates a list of counts from the modelStatusData.
@@ -77,13 +99,6 @@ export const renderCounts = (
         modelStatusData,
         "applications",
         "status"
-      );
-      break;
-    case "machines":
-      chips = generateSecondaryCounts(
-        modelStatusData,
-        "machines",
-        "agent-status"
       );
       break;
     case "relations":
