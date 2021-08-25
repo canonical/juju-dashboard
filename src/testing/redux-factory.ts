@@ -102,6 +102,7 @@ export function modelWatcherDataFactory() {
             "owner-tag": "",
             status: { current: "unset", message: "", version: "" },
             subordinate: false,
+            "unit-count": 1,
             "workload-version": "12.2.13",
           },
         },

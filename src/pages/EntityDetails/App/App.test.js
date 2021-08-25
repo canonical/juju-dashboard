@@ -20,7 +20,7 @@ jest.mock("components/Topology/Topology", () => {
   return Topology;
 });
 
-describe("Entity Details App", () => {
+describe.skip("Entity Details App", () => {
   async function generateComponent(data = dataDump) {
     const store = mockStore(data);
     const wrapper = mount(

@@ -47,11 +47,21 @@ import useActiveUser from "hooks/useActiveUser";
 
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
-import { getModelInfoByUUID } from "juju/model-selectors";
+import {
+  getModelApplications,
+  getModelInfo,
+  getModelMachines,
+  getModelRelations,
+  getModelUnits,
+  getModelUUID,
+} from "juju/model-selectors";
+
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { TSFixMe } from "types";
 
 import { renderCounts } from "../counts";
 
-const shouldShow = (segment, activeView) => {
+const shouldShow = (segment: string, activeView: string) => {
   switch (activeView) {
     case "apps":
       if (segment === "apps") {
@@ -69,7 +79,7 @@ const shouldShow = (segment, activeView) => {
   }
 };
 
-const generateCloudAndRegion = (cloudTag, region) => {
+const generateCloudAndRegion = (cloudTag: string, region: string) => {
   if (cloudTag && region) {
     return `${extractCloudName(cloudTag)} / ${region}`;
   }
@@ -77,11 +87,11 @@ const generateCloudAndRegion = (cloudTag, region) => {
 };
 
 const Model = () => {
-  const modelStatusData = useModelStatus();
+  const modelStatusData: TSFixMe = useModelStatus();
   const activeUser = useActiveUser();
   const history = useHistory();
 
-  const { userName, modelName } = useParams();
+  const { userName, modelName } = useParams<EntityDetailsRoute>();
 
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
@@ -89,7 +99,7 @@ const Model = () => {
     activeView: withDefault(StringParam, "apps"),
   });
 
-  const uuid = modelStatusData?.info?.uuid;
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
 
   const tableRowClick = useTableRowClick();
 
@@ -105,20 +115,26 @@ const Model = () => {
     [setQuery, history, modelName, userName]
   );
 
+  const applications = useSelector(getModelApplications(modelUUID));
+  const relations = useSelector(getModelRelations(modelUUID));
+  const machines = useSelector(getModelMachines(modelUUID));
+  const units = useSelector(getModelUnits(modelUUID));
+
   const localApplicationTableRows = useMemo(() => {
-    return generateLocalApplicationRows(modelStatusData, tableRowClick, query);
-  }, [modelStatusData, tableRowClick, query]);
+    return generateLocalApplicationRows(applications, tableRowClick, query);
+  }, [applications, tableRowClick, query]);
+
   const remoteApplicationTableRows = useMemo(() => {
     return generateRemoteApplicationRows(modelStatusData, panelRowClick, query);
   }, [modelStatusData, panelRowClick, query]);
 
   const machinesTableRows = useMemo(() => {
-    return generateMachineRows(modelStatusData, tableRowClick, query?.entity);
-  }, [modelStatusData, tableRowClick, query]);
+    return generateMachineRows(machines, units, tableRowClick, query?.entity);
+  }, [machines, units, tableRowClick, query]);
 
   const relationTableRows = useMemo(
-    () => generateRelationRows(modelStatusData),
-    [modelStatusData]
+    () => generateRelationRows(relations, applications),
+    [applications, relations]
   );
   const consumedTableRows = useMemo(
     () => generateConsumedRows(modelStatusData),
@@ -126,15 +142,15 @@ const Model = () => {
   );
 
   const offersTableRows = useMemo(
-    () => generateOffersRows(modelStatusData, panelRowClick, query?.entity),
-    [modelStatusData, panelRowClick, query]
+    () => generateOffersRows(modelStatusData),
+    [modelStatusData]
   );
   const appOffersRows = useMemo(
     () => generateAppOffersRows(modelStatusData, panelRowClick, query),
     [modelStatusData, panelRowClick, query]
   );
 
-  const modelInfoData = useSelector(getModelInfoByUUID(uuid));
+  const modelInfoData = useSelector(getModelInfo(modelUUID));
 
   const LocalAppChips = renderCounts("localApps", modelStatusData);
   const appOffersChips = renderCounts("offers", modelStatusData);
@@ -241,7 +257,7 @@ const Model = () => {
     );
   };
 
-  const countVisibleTables = (tablesLengths) => {
+  const countVisibleTables = (tablesLengths: number[]) => {
     let numberOfTables = 0;
     tablesLengths.forEach((tableLength) => {
       tableLength > 0 && numberOfTables++;

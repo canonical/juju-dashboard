@@ -16,7 +16,6 @@ export const localApplicationTableHeaders: Header = [
   { content: "scale", className: "u-align--right", sortKey: "scale" },
   { content: "store", sortKey: "store" },
   { content: "rev", className: "u-align--right", sortKey: "rev" },
-  { content: "os", sortKey: "os" },
   { content: "message", sortKey: "message" },
 ];
 
@@ -34,7 +33,7 @@ export const unitTableHeaders: Header = [
   { content: "agent", sortKey: "agent" },
   { content: "machine", className: "u-align--right", sortKey: "machine" },
   { content: "public address", sortKey: "publicAddress" },
-  { content: "port", className: "u-align--right", sortKey: "port" },
+  { content: "ports", className: "u-align--right", sortKey: "ports" },
   { content: "message", sortKey: "message" },
 ];
 
@@ -64,7 +63,6 @@ export const relationTableHeaders: Header = [
   { content: "requirer", sortKey: "requirer" },
   { content: "interface", sortKey: "interface" },
   { content: "type", sortKey: "type" },
-  { content: "message", sortKey: "message" },
 ];
 
 export const consumedTableHeaders: Header = [

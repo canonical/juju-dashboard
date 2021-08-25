@@ -1,7 +1,9 @@
+import type { ReactNode } from "react";
+
 import "./_entity-info.scss";
 
 type Props = {
-  data: { [key: string]: string | JSX.Element };
+  data: { [key: string]: ReactNode };
 };
 
 export default function EntityInfo({ data }: Props): JSX.Element {

@@ -6,7 +6,7 @@ export interface ActionData {
 }
 
 export interface ApplicationData {
-  [appName: string]: ApplicationChangeDelta;
+  [appName: string]: ApplicationInfo;
 }
 
 export interface MachineData {
@@ -102,6 +102,10 @@ export interface ModelInfo extends ModelChangeDelta {
   version: string;
 }
 
+export interface ApplicationInfo extends ApplicationChangeDelta {
+  "unit-count"?: number;
+}
+
 // Shared Types
 
 type IPAddress = string;
@@ -150,17 +154,17 @@ interface ActionChangeDelta {
 }
 
 interface ApplicationChangeDelta {
-  "workload-version": string;
   "charm-url": string;
-  "min-units": number;
-  "model-uuid": string;
-  "owner-tag": string;
   constraints: { [key: string]: string };
   exposed: boolean;
   life: Life;
+  "min-units": number;
+  "model-uuid": string;
   name: string;
+  "owner-tag": string;
   status: WorkloadStatus;
   subordinate: boolean;
+  "workload-version": string;
 }
 
 interface CharmChangeDelta {

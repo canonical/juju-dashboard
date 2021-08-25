@@ -1,5 +1,4 @@
 import { parseISO, formatDistanceToNow } from "date-fns";
-import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 
@@ -237,7 +236,8 @@ export const extractCredentialName = (tag) => {
   Returns the version of the supplied charm string.
   @param {String} charmName The full path of the charm e.g. cs:foo/bar-123
 */
-export const extractRevisionNumber = (charmName) => charmName.split("-").pop();
+export const extractRevisionNumber = (charmName = "") =>
+  charmName.split("-").pop();
 
 /**
   Returns a link to the charm icon for the provided charm name.
@@ -292,89 +292,15 @@ export const userIsControllerAdmin = (conn) => {
   return ["superuser", "admin"].includes(controllerAccess);
 };
 
-/**
-  Returns the modelStatusData filtered by app name.
-  @param {Object} modelStatusData The model status data to filter
-  @param {String} appName The name of the application to filter the data by.
-*/
-export const filterModelStatusDataByApp = (modelStatusData, appName) => {
-  if (modelStatusData) {
-    const filteredData = cloneDeep(modelStatusData);
-
-    if (appName === "") {
-      return filteredData;
-    }
-
-    const application = filteredData.applications[appName];
-    // remove the units from the application objects that are not
-    // the filter-by app.
-    const subordinateTo = application?.subordinateTo || [];
-    Object.keys(filteredData.applications).forEach((key) => {
-      if (key !== appName && !subordinateTo.includes(key)) {
-        filteredData.applications[key].units = {};
-      }
-    });
-    // Loop through all of the units of the remaining applications that are
-    // listed in the subordinateTo list. This is done because although
-    // a subordinate is supposed to be installed on each unit, that's not
-    // always the case.
-    subordinateTo.forEach((parentName) => {
-      const units = filteredData.applications[parentName].units;
-      Object.entries(units).forEach((entry) => {
-        const found = Object.entries(entry[1].subordinates).find(
-          (ele) => ele[0].split("/")[0] === appName
-        );
-        if (!found) {
-          delete units[entry[0]];
-        }
-      });
-    });
-
-    // Remove all the machines that the selected application isn't installed on.
-    const appMachines = new Set();
-    for (let unitId in application?.units) {
-      const unit = application.units[unitId];
-      appMachines.add(unit.machine);
-    }
-    subordinateTo.forEach((subAppName) => {
-      // this will be the parent of the subordinate and grab the machines from it
-      const parent = filteredData.applications[subAppName];
-      for (let unitId in parent.units) {
-        const unit = parent.units[unitId];
-        appMachines.add(unit.machine);
-      }
-    });
-    for (let machineId in filteredData.machines) {
-      if (!appMachines.has(machineId)) delete filteredData.machines[machineId];
-    }
-
-    // Remove all relations that don't involve the selected application.
-    filteredData.relations = modelStatusData?.relations?.filter(
-      (relation) => relation.key.indexOf(appName) > -1
-    );
-
-    return filteredData;
-  }
-
-  return modelStatusData;
-};
-
 export const isSet = (val) => val || val !== undefined;
-
-export const splitParts = (hardware) =>
-  Object.fromEntries(
-    hardware.split(" ").map((item) => {
-      const parts = item.split("=");
-      return [parts[0], parts[1]];
-    })
-  );
 
 export const extractRelationEndpoints = (relation) => {
   const endpoints = {};
   relation.endpoints.forEach((endpoint) => {
-    const role = endpoint.role;
-    endpoints[role] = endpoint.application + ":" + endpoint.name;
-    endpoints[`${role}ApplicationName`] = endpoint.application;
+    const role = endpoint.relation.role;
+    endpoints[role] =
+      endpoint["application-name"] + ":" + endpoint.relation.name;
+    endpoints[`${role}ApplicationName`] = endpoint["application-name"];
   });
   return endpoints;
 };
@@ -397,12 +323,12 @@ export const generateIconImg = (name, charmId) => {
   );
 };
 
-export const generateRelationIconImage = (applicationName, modelStatusData) => {
-  const application = modelStatusData.applications[applicationName];
+export const generateRelationIconImage = (applicationName, applications) => {
+  const application = applications[applicationName];
   if (!application || !applicationName) {
     return;
   }
-  return generateIconImg(applicationName, application.charm);
+  return generateIconImg(applicationName, application["charm-url"]);
 };
 
 export const formatFriendlyDateToNow = (date) => {

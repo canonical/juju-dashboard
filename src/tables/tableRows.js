@@ -4,56 +4,47 @@ import { Field } from "formik";
 import {
   extractRevisionNumber,
   generateStatusElement,
-  generateSpanClass,
   generateRelationIconImage,
-  splitParts,
   extractRelationEndpoints,
   generateIconImg,
   generateEntityIdentifier,
 } from "app/utils/utils";
 
 export function generateLocalApplicationRows(
-  modelStatusData,
+  applications,
   tableRowClick,
   query
 ) {
-  if (!modelStatusData) {
+  if (!applications) {
     return [];
   }
 
-  const applications = cloneDeep(modelStatusData.applications);
-
-  Object.keys(applications).forEach((key) => {
-    const units = applications[key].units || {};
-    applications[key].unitsCount = Object.keys(units).length;
-  });
-
   return Object.keys(applications).map((key) => {
     const app = applications[key];
-    const rev = extractRevisionNumber(app.charm) || "-";
-    const store = app.charm.indexOf("local:") === 0 ? "Local" : "Charmhub";
-    const scale = app.unitsCount;
+    const rev = extractRevisionNumber(app["charm-url"]) || "-";
+    const store =
+      app["charm-url"].indexOf("local:") === 0 ? "Local" : "Charmhub";
     const version = app["workload-version"] || "-";
 
     return {
       columns: [
         {
           "data-test-column": "name",
-          content: generateEntityIdentifier(app.charm || "", key, false),
+          content: generateEntityIdentifier(app["charm-url"] || "", key, false),
           className: "u-truncate",
         },
         {
           "data-test-column": "status",
-          content: app.status ? generateStatusElement(app.status.status) : "-",
+          content: app.status ? generateStatusElement(app.status.current) : "-",
           className: "u-capitalise u-truncate",
         },
         {
           "data-test-column": "version",
-          content: version,
+          content: app["workload-version"] || "-",
         },
         {
           "data-test-column": "scale",
-          content: scale,
+          content: app["unit-count"],
           className: "u-align--right",
         },
         {
@@ -66,25 +57,19 @@ export function generateLocalApplicationRows(
           className: "u-align--right",
         },
         {
-          "data-test-column": "os",
-          content: app.series,
-          className: "u-capitalise",
-        },
-        {
           "data-test-column": "message",
-          content: app.status.info,
+          content: app.status.message,
           className: "u-truncate",
-          title: app.status.info,
+          title: app.status.message,
         },
       ],
       sortData: {
         app: key,
         status: app.status?.status,
         version,
-        scale,
+        scale: app["unit-count"],
         store,
         rev,
-        os: "Ubuntu",
         notes: "-",
       },
       onClick: (e) => tableRowClick("app", key, e),
@@ -160,164 +145,167 @@ export function generateRemoteApplicationRows(
 }
 
 export function generateUnitRows(
-  modelStatusData,
+  units,
   tableRowClick,
   showCheckbox,
   hideMachines
 ) {
-  if (!modelStatusData) {
+  if (!units) {
     return [];
   }
 
-  const applications = modelStatusData.applications;
+  function generatePortsList(ports) {
+    if (ports.length === 0) {
+      return "-";
+    }
+    return ports.map((portData) => portData.number).join(",");
+  }
+
   const unitRows = [];
-  Object.keys(applications).forEach((applicationName) => {
-    const units = applications[applicationName].units || [];
-    Object.keys(units).forEach((unitId) => {
-      const unit = units[unitId];
-      const workload = unit["workload-status"].status || "-";
-      const agent = unit["agent-status"].status || "-";
-      const publicAddress = unit["public-address"] || "-";
-      const port = unit?.["opened-ports"]?.join(" ") || "-";
-      const message = unit["workload-status"].info || "-";
-      const charm = applications[applicationName].charm;
-      let columns = [
-        {
-          content: generateEntityIdentifier(charm ? charm : "", unitId, false),
-          className: "u-truncate",
-        },
-        {
-          content: generateStatusElement(workload),
-          className: "u-capitalise",
-        },
-        { content: agent },
-        { content: unit.machine, className: "u-align--right", key: "machine" },
-        { content: publicAddress },
-        {
-          content: port,
-          className: "u-align--right",
-          title: port,
-        },
-        {
-          content: <span title={message}>{message}</span>,
-          className: "u-truncate",
-        },
-      ];
+  Object.keys(units).forEach((unitId) => {
+    const unit = units[unitId];
+    const workload = unit["workload-status"].current || "-";
+    const agent = unit["agent-status"].current || "-";
+    const publicAddress = unit["public-address"] || "-";
+    const ports = generatePortsList(unit.ports);
+    const message = unit["workload-status"].message || "-";
+    const charm = unit["charm-url"];
+    let columns = [
+      {
+        content: generateEntityIdentifier(charm ? charm : "", unitId, false),
+        className: "u-truncate",
+      },
+      {
+        content: generateStatusElement(workload),
+        className: "u-capitalise",
+      },
+      { content: agent },
+      {
+        content: unit["machine-id"],
+        className: "u-align--right",
+        key: "machine",
+      },
+      { content: publicAddress },
+      {
+        content: ports,
+        className: "u-align--right",
+        title: ports,
+      },
+      {
+        content: <span title={message}>{message}</span>,
+        className: "u-truncate",
+      },
+    ];
 
-      if (hideMachines) {
-        columns = columns.filter((column) => !(column.key === "machine"));
-      }
+    if (hideMachines) {
+      columns = columns.filter((column) => !(column.key === "machine"));
+    }
 
-      if (showCheckbox) {
-        const fieldID = `table-checkbox-${unitId}`;
-        const ariaLabeledBy = `aria-labeled-${unitId}`;
-        columns.splice(0, 0, {
-          content: (
-            <label className="p-checkbox" htmlFor={fieldID}>
-              <Field
-                id={fieldID}
-                type="checkbox"
-                aria-labelledby={ariaLabeledBy}
-                className="p-checkbox__input"
-                name="selectedUnits"
-                value={unitId}
-              />
-              <span className="p-checkbox__label" id={ariaLabeledBy}></span>
-            </label>
-          ),
+    if (showCheckbox) {
+      const fieldID = `table-checkbox-${unitId}`;
+      const ariaLabeledBy = `aria-labeled-${unitId}`;
+      columns.splice(0, 0, {
+        content: (
+          <label className="p-checkbox" htmlFor={fieldID}>
+            <Field
+              id={fieldID}
+              type="checkbox"
+              aria-labelledby={ariaLabeledBy}
+              className="p-checkbox__input"
+              name="selectedUnits"
+              value={unitId}
+            />
+            <span className="p-checkbox__label" id={ariaLabeledBy}></span>
+          </label>
+        ),
+      });
+    }
+
+    unitRows.push({
+      columns,
+      sortData: {
+        unit: unitId,
+        workload,
+        agent,
+        machine: unit.machine,
+        publicAddress,
+        ports,
+        message,
+      },
+      onClick: (e) => tableRowClick("unit", unitId, e),
+      "data-unit": unitId,
+    });
+
+    const subordinates = unit.subordinates;
+
+    if (subordinates) {
+      for (let [key] of Object.entries(subordinates)) {
+        const subordinate = subordinates[key];
+        unitRows.push({
+          columns: [
+            {
+              content: "",
+            },
+            {
+              content: generateEntityIdentifier(subordinate.charm, key, true),
+              className: "u-truncate",
+            },
+            {
+              content: generateStatusElement(
+                subordinate["workload-status"].status
+              ),
+              className: "u-capitalise",
+            },
+            { content: subordinate["agent-status"].status },
+            { content: subordinate.machine, className: "u-align--right" },
+            { content: subordinate["public-address"] },
+            {
+              content: subordinate["public-address"].split(":")[-1] || "-",
+              className: "u-align--right",
+            },
+            {
+              content: subordinate["workload-status"].info,
+              className: "u-truncate",
+            },
+          ],
+          // This is using the parent data for sorting so that they stick to
+          // their parent while being sorted. This isn't fool-proof but it's
+          // the best we have for the current design and table implementation.
+          sortData: {
+            unit: unitId,
+            workload,
+            agent,
+            machine: unit.machine,
+            publicAddress,
+            ports,
+            message,
+          },
         });
       }
-
-      unitRows.push({
-        columns,
-        sortData: {
-          unit: unitId,
-          workload,
-          agent,
-          machine: unit.machine,
-          publicAddress,
-          port,
-          message,
-        },
-        onClick: (e) => tableRowClick("unit", unitId, e),
-        "data-unit": unitId,
-      });
-
-      const subordinates = unit.subordinates;
-
-      if (subordinates) {
-        for (let [key] of Object.entries(subordinates)) {
-          const subordinate = subordinates[key];
-          unitRows.push({
-            columns: [
-              {
-                content: "",
-              },
-              {
-                content: generateEntityIdentifier(subordinate.charm, key, true),
-                className: "u-truncate",
-              },
-              {
-                content: generateStatusElement(
-                  subordinate["workload-status"].status
-                ),
-                className: "u-capitalise",
-              },
-              { content: subordinate["agent-status"].status },
-              { content: subordinate.machine, className: "u-align--right" },
-              { content: subordinate["public-address"] },
-              {
-                content: subordinate["public-address"].split(":")[-1] || "-",
-                className: "u-align--right",
-              },
-              {
-                content: subordinate["workload-status"].info,
-                className: "u-truncate",
-              },
-            ],
-            // This is using the parent data for sorting so that they stick to
-            // their parent while being sorted. This isn't fool-proof but it's
-            // the best we have for the current design and table implementation.
-            sortData: {
-              unit: unitId,
-              workload,
-              agent,
-              machine: unit.machine,
-              publicAddress,
-              port,
-              message,
-            },
-          });
-        }
-      }
-    });
+    }
   });
 
   return unitRows;
 }
 
 export function generateMachineRows(
-  modelStatusData,
+  machines,
+  units,
   tableRowClick,
   selectedEntity
 ) {
-  if (!modelStatusData) {
+  if (!machines) {
     return [];
   }
 
-  const generateMachineApps = (machineId) => {
+  const generateMachineApps = (machineId, units) => {
     const appsOnMachine = [];
-    const modelApplications = modelStatusData?.applications;
-    modelApplications &&
-      Object.entries(modelApplications).forEach(([appName, appInfo]) => {
-        appInfo?.units &&
-          Object.values(appInfo.units).forEach((unitInfo) => {
-            if (machineId === unitInfo.machine) {
-              appsOnMachine.push([appName, appInfo.charm]);
-            }
-          });
+    units &&
+      Object.values(units).forEach((unitInfo) => {
+        if (machineId === unitInfo["machine-id"]) {
+          appsOnMachine.push([unitInfo.application, unitInfo["charm-url"]]);
+        }
       });
-
     const apps = appsOnMachine.length
       ? appsOnMachine.map((app) => {
           return generateIconImg(app[0], app[1]);
@@ -326,10 +314,9 @@ export function generateMachineRows(
     return apps;
   };
 
-  const machines = modelStatusData.machines;
   return Object.keys(machines).map((machineId) => {
     const machine = machines[machineId];
-    const az = splitParts(machine.hardware)["availability-zone"] || "";
+    const az = machine["hardware-characteristics"]["availability-zone"] || "";
     return {
       columns: [
         {
@@ -344,19 +331,19 @@ export function generateMachineRows(
           ),
         },
         {
-          content: generateMachineApps(machineId),
+          content: generateMachineApps(machineId, units),
           className: "machine-app-icons",
         },
         {
-          content: generateStatusElement(machine["agent-status"].status),
+          content: generateStatusElement(machine["agent-status"].current),
           className: "u-capitalise",
         },
         { content: az },
-        { content: machine.instanceId },
+        { content: machine["instance-id"] },
         {
           content: (
-            <span title={machine["agent-status"].info}>
-              {machine["agent-status"].info}
+            <span title={machine["agent-status"].message}>
+              {machine["agent-status"].message}
             </span>
           ),
           className: "u-truncate",
@@ -364,10 +351,10 @@ export function generateMachineRows(
       ],
       sortData: {
         machine: machine.series,
-        state: machine?.["agent-status"]?.status,
+        state: machine?.["agent-status"]?.current,
         az,
-        instanceId: machine.instanceId,
-        message: machine?.agentStatus?.info,
+        instanceId: machine["instance-id"],
+        message: machine?.["agent-status"].message,
       },
       onClick: (e) => tableRowClick("machine", machineId, e),
       "data-machine": machineId,
@@ -376,13 +363,12 @@ export function generateMachineRows(
   });
 }
 
-export function generateRelationRows(modelStatusData) {
-  if (!modelStatusData) {
+export function generateRelationRows(relationData, applications) {
+  if (!relationData) {
     return [];
   }
-  const relations = modelStatusData.relations || {};
-  return Object.keys(relations).map((relationId) => {
-    const relation = relations[relationId];
+  return Object.keys(relationData).map((relationId) => {
+    const relation = relationData[relationId];
     const {
       provider,
       requirer,
@@ -391,7 +377,6 @@ export function generateRelationRows(modelStatusData) {
       requirerApplicationName,
       peerApplicationName,
     } = extractRelationEndpoints(relation);
-
     const providerLabel = provider || peer || "-";
     const requirerLabel = requirer || "-";
     return {
@@ -401,7 +386,7 @@ export function generateRelationRows(modelStatusData) {
             <>
               {generateRelationIconImage(
                 providerApplicationName || peerApplicationName,
-                modelStatusData
+                applications
               )}
               {providerLabel}
             </>
@@ -411,31 +396,21 @@ export function generateRelationRows(modelStatusData) {
         {
           content: (
             <>
-              {generateRelationIconImage(
-                requirerApplicationName,
-                modelStatusData
-              )}
+              {generateRelationIconImage(requirerApplicationName, applications)}
               {requirerLabel}
             </>
           ),
           title: requirerLabel,
           className: "u-truncate",
         },
-        { content: relation.interface },
-        { content: relation.endpoints[0].role },
-        {
-          content: generateSpanClass(
-            "u-capitalise--first-letter",
-            relation.status.status
-          ),
-        },
+        { content: relation.endpoints[0].relation.interface },
+        { content: relation.endpoints[0].relation.role },
       ],
       sortData: {
         provider: providerLabel,
         requirer: requirerLabel,
         interface: relation.interface,
-        type: relation?.endpoints[0]?.role,
-        message: relation?.status?.status,
+        type: relation?.endpoints[0]?.relation.role,
       },
     };
   });
