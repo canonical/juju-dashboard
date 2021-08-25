@@ -276,7 +276,7 @@ interface UnitChangeDelta {
         number: number;
       }[]
     | [];
-  principal: string;
+  principal: string; // If subordinate is true this will have the parent.
   series: string;
   subordinate: boolean;
 }

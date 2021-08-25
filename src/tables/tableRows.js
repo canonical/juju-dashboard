@@ -158,12 +158,29 @@ export function generateUnitRows(
     if (ports.length === 0) {
       return "-";
     }
-    return ports.map((portData) => portData.number).join(",");
+    return ports.map((portData) => portData.number).join(", ");
   }
 
+  const clonedUnits = cloneDeep(units);
+
+  // Restructure the unit list data to allow for the proper subordinate
+  // rendering with the current table setup.
+  Object.entries(clonedUnits).forEach(([unitId, unitData]) => {
+    // The unit list may not have the principal in it because this code is
+    // used to generate the table for the application unit list as well
+    // in which case it'll be the only units in the list.
+    if (unitData.subordinate && clonedUnits[unitData.principal]) {
+      if (!clonedUnits[unitData.principal].subordinates) {
+        clonedUnits[unitData.principal].subordinates = {};
+      }
+      clonedUnits[unitData.principal].subordinates[unitId] = unitData;
+      delete clonedUnits[unitId];
+    }
+  });
+
   const unitRows = [];
-  Object.keys(units).forEach((unitId) => {
-    const unit = units[unitId];
+  Object.keys(clonedUnits).forEach((unitId) => {
+    const unit = clonedUnits[unitId];
     const workload = unit["workload-status"].current || "-";
     const agent = unit["agent-status"].current || "-";
     const publicAddress = unit["public-address"] || "-";
@@ -244,27 +261,28 @@ export function generateUnitRows(
         unitRows.push({
           columns: [
             {
-              content: "",
-            },
-            {
-              content: generateEntityIdentifier(subordinate.charm, key, true),
+              content: generateEntityIdentifier(
+                subordinate["charm-url"],
+                key,
+                true
+              ),
               className: "u-truncate",
             },
             {
               content: generateStatusElement(
-                subordinate["workload-status"].status
+                subordinate["workload-status"].current
               ),
               className: "u-capitalise",
             },
-            { content: subordinate["agent-status"].status },
-            { content: subordinate.machine, className: "u-align--right" },
+            { content: subordinate["agent-status"].current },
+            { content: subordinate["machine-id"], className: "u-align--right" },
             { content: subordinate["public-address"] },
             {
               content: subordinate["public-address"].split(":")[-1] || "-",
               className: "u-align--right",
             },
             {
-              content: subordinate["workload-status"].info,
+              content: subordinate["workload-status"].current,
               className: "u-truncate",
             },
           ],
@@ -275,11 +293,13 @@ export function generateUnitRows(
             unit: unitId,
             workload,
             agent,
-            machine: unit.machine,
+            machine: unit["machine-id"],
             publicAddress,
             ports,
             message,
           },
+          onClick: (e) => tableRowClick("unit", unitId, e),
+          "data-unit": unitId,
         });
       }
     }
