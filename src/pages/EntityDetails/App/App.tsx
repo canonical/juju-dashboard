@@ -196,9 +196,13 @@ export default function App(): JSX.Element {
     if (!setFieldsValues.current) return;
     // If the app is a subordinate and has not been related to any other apps
     // then its unit list will be `null`.
-    const unitList = modelStatusData.applications[entity].units
-      ? Object.keys(modelStatusData.applications[entity].units)
-      : [];
+
+    let unitList: string[] = [];
+    if (units) {
+      unitList = Object.keys(units).filter(
+        (unitId) => units[unitId].application === entity
+      );
+    }
 
     // Handle the selectAll checkbox interactions.
     if (selectAll.current && !formData.selectAll) {
