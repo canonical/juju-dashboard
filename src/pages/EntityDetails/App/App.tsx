@@ -48,7 +48,7 @@ import {
 
 import type { MachineData, UnitData } from "juju/types";
 
-import { renderCounts } from "../counts";
+import { generateUnitCounts, renderCounts } from "../counts";
 
 type FormData = {
   selectAll: boolean;
@@ -177,7 +177,11 @@ export default function App(): JSX.Element {
     };
   }
 
-  const unitChips = renderCounts("units", modelStatusData, entity);
+  const unitChipData = useMemo(
+    () => generateUnitCounts(units, entity),
+    [units, entity]
+  );
+
   const machineChips = renderCounts("machines", modelStatusData);
 
   const [panel, setPanel] = useQueryParams({
@@ -275,7 +279,7 @@ export default function App(): JSX.Element {
         <div className="entity-details__tables" ref={tablesRef}>
           {tableView === "units" && (
             <>
-              <ChipGroup chips={unitChips} descriptor="units" />
+              <ChipGroup chips={unitChipData} descriptor="units" />
               <div className="entity-details__action-button-row">
                 <Button
                   appearance="base"
