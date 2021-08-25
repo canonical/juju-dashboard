@@ -131,7 +131,12 @@ export default function App(): JSX.Element {
     }
     const filteredUnits: UnitData = {};
     Object.entries(units).forEach(([unitId, unitData]) => {
-      if (unitData.application === entity) {
+      if (
+        unitData.application === entity ||
+        // Add any units that are a subordinate to the parent to the list
+        // It will be re-sorted in the unit table generation code.
+        (unitData.subordinate && unitData.principal.split("/")[0] === entity)
+      ) {
         filteredUnits[unitId] = unitData;
       }
     });
