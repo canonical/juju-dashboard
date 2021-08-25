@@ -176,7 +176,7 @@ interface CharmChangeDelta {
   config?: Config;
 }
 
-interface MachineChangeDelta {
+export interface MachineChangeDelta {
   addresses: AddressData[] | null;
   "agent-status": MachineAgentStatus;
   "container-type": string;

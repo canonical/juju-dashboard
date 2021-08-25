@@ -1,4 +1,4 @@
-import type { MachineData, UnitData } from "juju/types";
+import type { MachineChangeDelta, MachineData, UnitData } from "juju/types";
 import type { TSFixMe } from "types";
 
 export const incrementCounts = (
@@ -63,7 +63,7 @@ export function generateMachineCounts(
 ) {
   const counts = {};
   if (machines && units) {
-    const machineIds: string[] = [];
+    const machineIds: MachineChangeDelta["id"][] = [];
     Object.entries(units).forEach(([unitId, unitData]) => {
       if (unitData.application === applicationName) {
         machineIds.push(unitData["machine-id"]);
