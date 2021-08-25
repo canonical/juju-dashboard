@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Formik, Field } from "formik";
 import { useParams, useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   useQueryParam,
   useQueryParams,
@@ -22,11 +23,7 @@ import EntityDetails from "pages/EntityDetails/EntityDetails";
 import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
 
-import {
-  extractRevisionNumber,
-  generateStatusElement,
-  filterModelStatusDataByApp,
-} from "app/utils/utils";
+import { extractRevisionNumber, generateStatusElement } from "app/utils/utils";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
@@ -40,6 +37,16 @@ import {
 
 import runActionImage from "static/images/run-action-icon.svg";
 import actionLogsImage from "static/images/action-logs-icon.svg";
+
+import {
+  getModelApplications,
+  getModelInfo,
+  getModelMachines,
+  getModelUnits,
+  getModelUUID,
+} from "juju/model-selectors";
+
+import type { MachineData, UnitData } from "juju/types";
 
 import { renderCounts } from "../counts";
 
@@ -66,23 +73,34 @@ export default function App(): JSX.Element {
   // Get model status info
   const modelStatusData: TSFixMe = useModelStatus();
 
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const applications = useSelector(getModelApplications(modelUUID));
+  const units = useSelector(getModelUnits(modelUUID));
+  const machines = useSelector(getModelMachines(modelUUID));
+  const modelData = useSelector(getModelInfo(modelUUID));
+
   const tableRowClick = useTableRowClick();
 
-  // Filter model status via selected entity
-  const filteredModelStatusData = filterModelStatusDataByApp(
-    modelStatusData,
-    entity
-  );
-
-  const app = modelStatusData?.applications[entity];
+  const filteredMachineList = useMemo(() => {
+    const filteredMachines: MachineData = {};
+    if (!units || !machines) {
+      return null;
+    }
+    Object.entries(units).forEach(([unitId, unitData]) => {
+      if (unitData.application === entity) {
+        const machineId = unitData["machine-id"];
+        filteredMachines[machineId] = machines[machineId];
+      }
+    });
+    return filteredMachines;
+  }, [units, machines, entity]);
 
   const machinesPanelRows = useMemo(
-    () => generateMachineRows(filteredModelStatusData, tableRowClick),
-    [filteredModelStatusData, tableRowClick]
+    () => generateMachineRows(filteredMachineList, units, tableRowClick),
+    [filteredMachineList, units, tableRowClick]
   );
 
-  const hideMachines =
-    modelStatusData?.info?.["provider-type"] === "kubernetes";
+  const hideMachines = modelData?.type === "kubernetes";
 
   const unitTableHeaders = useMemo(() => {
     const fieldID = "unit-list-select-all";
@@ -107,15 +125,22 @@ export default function App(): JSX.Element {
     );
   }, [hideMachines]);
 
+  const filteredUnitList = useMemo(() => {
+    if (!units) {
+      return null;
+    }
+    const filteredUnits: UnitData = {};
+    Object.entries(units).forEach(([unitId, unitData]) => {
+      if (unitData.application === entity) {
+        filteredUnits[unitId] = unitData;
+      }
+    });
+    return filteredUnits;
+  }, [units, entity]);
+
   const unitPanelRows = useMemo(
-    () =>
-      generateUnitRows(
-        filteredModelStatusData,
-        tableRowClick,
-        true,
-        hideMachines
-      ),
-    [filteredModelStatusData, tableRowClick, hideMachines]
+    () => generateUnitRows(filteredUnitList, tableRowClick, true, hideMachines),
+    [filteredUnitList, tableRowClick, hideMachines]
   );
 
   const [tableView, setTableView] = useQueryParam(
@@ -133,17 +158,19 @@ export default function App(): JSX.Element {
     query && setQuery({ panel: "config", entity: entity });
   };
 
-  const AppEntityData = {
-    status:
-      app && app.status?.status
-        ? generateStatusElement(app.status.status)
-        : "-",
-    charm: app?.charm,
-    os: "Ubuntu",
-    revision: (app && extractRevisionNumber(app.charm)) || "-",
-    message: "-",
-    provider: modelStatusData?.info?.["provider-type"],
-  };
+  const application = applications?.[entity];
+
+  let appEntityData = {};
+  if (application) {
+    appEntityData = {
+      status: generateStatusElement(application.status.current),
+      charm: application["charm-url"],
+      os: "Ubuntu",
+      revision: extractRevisionNumber(application["charm-url"]) || "-",
+      message: "-",
+      provider: modelData?.type || "-",
+    };
+  }
 
   const unitChips = renderCounts("units", modelStatusData, entity);
   const machineChips = renderCounts("machines", modelStatusData);
@@ -164,7 +191,9 @@ export default function App(): JSX.Element {
     if (!setFieldsValues.current) return;
     // If the app is a subordinate and has not been related to any other apps
     // then its unit list will be `null`.
-    const unitList = app.units ? Object.keys(app.units) : [];
+    const unitList = modelStatusData.applications[entity].units
+      ? Object.keys(modelStatusData.applications[entity].units)
+      : [];
 
     // Handle the selectAll checkbox interactions.
     if (selectAll.current && !formData.selectAll) {
@@ -223,7 +252,7 @@ export default function App(): JSX.Element {
               <i className="p-icon--settings"></i>Configure
             </button>
           </div>
-          <EntityInfo data={AppEntityData} />
+          <EntityInfo data={appEntityData} />
         </>
       </div>
       <div className="entity-details__main u-overflow--scroll">
