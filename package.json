@@ -67,7 +67,7 @@
     "d3": "7.0.1",
     "date-fns": "2.23.0",
     "eslint-config-prettier": "8.3.0",
-    "eslint-plugin-prettier": "3.4.0",
+    "eslint-plugin-prettier": "3.4.1",
     "formik": "2.2.9",
     "framer-motion": "4.1.17",
     "immer": "9.0.5",
