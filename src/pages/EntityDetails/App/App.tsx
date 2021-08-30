@@ -164,7 +164,7 @@ export default function App(): JSX.Element {
   let appEntityData = {};
   if (application) {
     appEntityData = {
-      status: generateStatusElement(application.status.current),
+      status: generateStatusElement(application.status?.current),
       charm: application["charm-url"],
       os: "Ubuntu",
       revision: extractRevisionNumber(application["charm-url"]) || "-",

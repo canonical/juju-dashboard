@@ -162,7 +162,7 @@ interface ApplicationChangeDelta {
   "model-uuid": string;
   name: string;
   "owner-tag": string;
-  status: WorkloadStatus;
+  status?: WorkloadStatus;
   subordinate: boolean;
   "workload-version": string;
 }
@@ -275,7 +275,8 @@ interface UnitChangeDelta {
         protocol: string;
         number: number;
       }[]
-    | [];
+    | []
+    | null;
   principal: string; // If subordinate is true this will have the parent.
   series: string;
   subordinate: boolean;

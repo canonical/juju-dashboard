@@ -19,11 +19,17 @@ export function generateLocalApplicationRows(
     return [];
   }
 
+  function getStore(charmURL) {
+    if (charmURL) {
+      return charmURL.indexOf("local:") === 0 ? "Local" : "Charmhub";
+    }
+    return "";
+  }
+
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     const rev = extractRevisionNumber(app["charm-url"]) || "-";
-    const store =
-      app["charm-url"].indexOf("local:") === 0 ? "Local" : "Charmhub";
+    const store = getStore(app["charm-url"]);
     const version = app["workload-version"] || "-";
 
     return {
@@ -58,9 +64,9 @@ export function generateLocalApplicationRows(
         },
         {
           "data-test-column": "message",
-          content: app.status.message,
+          content: app.status?.message,
           className: "u-truncate",
-          title: app.status.message,
+          title: app.status?.message,
         },
       ],
       sortData: {
@@ -155,7 +161,7 @@ export function generateUnitRows(
   }
 
   function generatePortsList(ports) {
-    if (ports.length === 0) {
+    if (!ports || ports.length === 0) {
       return "-";
     }
     return ports.map((portData) => portData.number).join(", ");
@@ -345,7 +351,8 @@ export function generateMachineRows(
 
   return Object.keys(machines).map((machineId) => {
     const machine = machines[machineId];
-    const az = machine["hardware-characteristics"]["availability-zone"] || "";
+    const az =
+      machine?.["hardware-characteristics"]?.["availability-zone"] || "";
     return {
       columns: [
         {
