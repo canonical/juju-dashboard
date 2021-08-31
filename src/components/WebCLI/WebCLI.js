@@ -16,7 +16,6 @@ const WebCLI = ({
   credentials,
   modelUUID,
   protocol = "wss",
-  refreshModel,
 }) => {
   const [connection, setConnection] = useState(null);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
@@ -98,11 +97,6 @@ const WebCLI = ({
       action: "WebCLI command sent",
     });
     inputRef.current.value = ""; // Clear the input after sending the message.
-    setTimeout(() => {
-      // Delay the refresh long enough so that the Juju controller has time to
-      // respond before we request the updated status.
-      refreshModel();
-    }, 500);
   };
 
   const showHelp = () => {
