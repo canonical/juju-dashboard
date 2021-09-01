@@ -86,6 +86,9 @@ export default function jujuReducer(state = defaultState, action) {
         break;
       case actionsList.populateMissingAllWatcherData:
         if (!draftState.modelWatcherData?.[payload.uuid]?.model) {
+          if (!draftState.modelWatcherData?.[payload.uuid]) {
+            draftState.modelWatcherData[payload.uuid] = {};
+          }
           draftState.modelWatcherData[payload.uuid].model = {};
         }
         mergeWith(draftState.modelWatcherData[payload.uuid].model, {
