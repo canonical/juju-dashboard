@@ -7,6 +7,7 @@ import useTableRowClick from "hooks/useTableRowClick";
 
 import {
   getModelApplications,
+  getAllModelApplicationStatus,
   getModelMachines,
   getModelUnits,
   getModelUUID,
@@ -39,6 +40,10 @@ export default function Machine() {
   const machines = useSelector(getModelMachines(modelUUID));
   const machine = machines?.[machineId];
 
+  const applicationStatuses = useSelector(
+    getAllModelApplicationStatus(modelUUID)
+  );
+
   const filteredApplicationList = useMemo(() => {
     if (!applications || !units) {
       return null;
@@ -70,8 +75,13 @@ export default function Machine() {
   }, [units, machineId]);
 
   const applicationRows = useMemo(
-    () => generateLocalApplicationRows(filteredApplicationList, tableRowClick),
-    [filteredApplicationList, tableRowClick]
+    () =>
+      generateLocalApplicationRows(
+        filteredApplicationList,
+        applicationStatuses,
+        tableRowClick
+      ),
+    [filteredApplicationList, applicationStatuses, tableRowClick]
   );
 
   const unitRows = useMemo(

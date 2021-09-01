@@ -12,6 +12,7 @@ import {
 
 export function generateLocalApplicationRows(
   applications,
+  applicationStatuses,
   tableRowClick,
   query
 ) {
@@ -41,7 +42,9 @@ export function generateLocalApplicationRows(
         },
         {
           "data-test-column": "status",
-          content: app.status ? generateStatusElement(app.status.current) : "-",
+          content: app.status
+            ? generateStatusElement(applicationStatuses[app.name])
+            : "-",
           className: "u-capitalise u-truncate",
         },
         {
