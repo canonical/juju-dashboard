@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
@@ -18,8 +18,11 @@ jest.mock("components/Topology/Topology", () => {
 const mockStore = configureStore([]);
 
 describe("Entity Details Container", () => {
-  it("should display the correct window title", () => {
-    const mockState = reduxStateFactory().build();
+  function renderComponent({ type } = {}, mockFactoryData) {
+    const mockState = reduxStateFactory().build(
+      {},
+      { transient: mockFactoryData }
+    );
     const store = mockStore(mockState);
 
     render(
@@ -27,13 +30,37 @@ describe("Entity Details Container", () => {
         <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
-              <EntityDetails />
+              <EntityDetails type={type} />
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
+  }
 
+  it("should display the correct window title", () => {
+    renderComponent();
     expect(document.title).toEqual("Model: enterprise | Juju Dashboard");
+  });
+
+  it("lists the correct tabs", () => {
+    renderComponent({ type: "model" });
+    expect(screen.getByTestId("view-selector").textContent).toBe(
+      "ApplicationsIntegrationsAction LogsMachines"
+    );
+  });
+
+  it("lists the correct tabs for kubernetes", () => {
+    renderComponent(
+      { type: "model" },
+      {
+        models: [
+          { name: "enterprise", owner: "kirk@external", type: "kubernetes" },
+        ],
+      }
+    );
+    expect(screen.getByTestId("view-selector").textContent).toBe(
+      "ApplicationsIntegrationsAction Logs"
+    );
   });
 });

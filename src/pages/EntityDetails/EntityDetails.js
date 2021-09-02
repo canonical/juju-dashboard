@@ -182,7 +182,10 @@ const EntityDetails = ({ type, children, className = "" }) => {
       <Header>
         <div className="entity-details__header">
           <Breadcrumb />
-          <div className="entity-details__view-selector">
+          <div
+            className="entity-details__view-selector"
+            data-testid="view-selector"
+          >
             {modelInfo && type === "model" && (
               <Tabs links={generateTabItems()} />
             )}
@@ -190,7 +193,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
         </div>
       </Header>
       {!modelInfo ? (
-        <div className="entity-details__loading">
+        <div className="entity-details__loading" data-testid="loading-spinner">
           <Spinner />
         </div>
       ) : (
