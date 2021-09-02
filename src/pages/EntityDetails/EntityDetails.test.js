@@ -19,19 +19,12 @@ const mockStore = configureStore([]);
 
 describe("Entity Details Container", () => {
   it("should display the correct window title", () => {
-    const mockState = reduxStateFactory().build(
-      {},
-      {
-        transient: {
-          models: [{ name: "mymodel", owner: "spock@external" }],
-        },
-      }
-    );
+    const mockState = reduxStateFactory().build();
     const store = mockStore(mockState);
 
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/spock@external/mymodel"]}>
+        <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails />
@@ -41,6 +34,6 @@ describe("Entity Details Container", () => {
       </Provider>
     );
 
-    expect(document.title).toEqual("Model: mymodel | Juju Dashboard");
+    expect(document.title).toEqual("Model: enterprise | Juju Dashboard");
   });
 });

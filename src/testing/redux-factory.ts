@@ -21,15 +21,24 @@ function generateUUID() {
   });
 }
 
+const defaultModelData: SetupTransients = {
+  models: [
+    { name: "enterprise", owner: "kirk@external", uuid: generateUUID() },
+  ],
+};
+
 export function reduxStateFactory() {
   return Factory.define<ReduxState, SetupTransients>(({ transientParams }) => {
+    const transientModelData = transientParams.models
+      ? transientParams.models
+      : defaultModelData.models;
     return {
       root: {
         config: {
           baseControllerURL: "jimm.jujucharms.com",
         },
       },
-      juju: jujuStateFactory(transientParams.models).build(),
+      juju: jujuStateFactory(transientModelData).build(),
       ui: uiStateFactory().build(),
     };
   });
@@ -39,7 +48,9 @@ export function jujuStateFactory(models: ModelData[] = []) {
   const modelWatcherData = {};
   const modelsList: ModelsList = {};
   models.forEach((model) => {
-    Object.assign(model, { uuid: generateUUID() });
+    if (!model.uuid) {
+      Object.assign(model, { uuid: generateUUID() });
+    }
 
     modelsList[model.name] = {
       name: model.name,
