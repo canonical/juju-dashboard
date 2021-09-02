@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
 import { MemoryRouter, Route } from "react-router";
 
-import { jujuStateFactory, reduxStateFactory } from "testing/redux-factory";
+import { reduxStateFactory } from "testing/redux-factory";
 
 import TestRoute from "components/Routes/TestRoute";
 
@@ -15,10 +15,19 @@ jest.mock("components/Topology/Topology", () => {
   return Topology;
 });
 
+jest.mock("components/WebCLI/WebCLI", () => {
+  const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
+  return WebCLI;
+});
+
 const mockStore = configureStore([]);
 
 describe("Entity Details Container", () => {
-  function renderComponent({ type } = {}, mockOverrides, mockTransients) {
+  function renderComponent(
+    { children, type } = {},
+    mockOverrides,
+    mockTransients
+  ) {
     let transient;
     if (mockTransients) {
       transient = { transient: mockTransients };
@@ -31,7 +40,7 @@ describe("Entity Details Container", () => {
         <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
-              <EntityDetails type={type} />
+              <EntityDetails type={type}>{children}</EntityDetails>
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -77,5 +86,29 @@ describe("Entity Details Container", () => {
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsAction Logs$/
     );
+  });
+
+  it("shows the supplied child", () => {
+    const children = "Hello I am a child!";
+    renderComponent({ children });
+    expect(screen.getByText(children)).toBeInTheDocument();
+  });
+
+  it("shows the CLI in juju 2.9", () => {
+    renderComponent();
+    expect(screen.queryByTestId("webcli")).toBeInTheDocument();
+  });
+
+  it("does not show the webCLI in juju 2.8", () => {
+    renderComponent(
+      {},
+      {},
+      {
+        models: [
+          { name: "enterprise", owner: "kirk@external", version: "2.8.7" },
+        ],
+      }
+    );
+    expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
   });
 });
