@@ -45,8 +45,8 @@ describe("Entity Details Container", () => {
 
   it("lists the correct tabs", () => {
     renderComponent({ type: "model" });
-    expect(screen.getByTestId("view-selector").textContent).toBe(
-      "ApplicationsIntegrationsAction LogsMachines"
+    expect(screen.getByTestId("view-selector")).toHaveTextContent(
+      /^ApplicationsIntegrationsAction LogsMachines$/
     );
   });
 
@@ -59,8 +59,8 @@ describe("Entity Details Container", () => {
         ],
       }
     );
-    expect(screen.getByTestId("view-selector").textContent).toBe(
-      "ApplicationsIntegrationsAction Logs"
+    expect(screen.getByTestId("view-selector")).toHaveTextContent(
+      /^ApplicationsIntegrationsAction Logs$/
     );
   });
 });
