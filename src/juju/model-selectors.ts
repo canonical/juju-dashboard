@@ -16,7 +16,7 @@ const getModelList = (state: ReduxState): ModelsList => state.juju.models;
 
 export function getModelWatcherDataByUUID(modelUUID: string) {
   return createSelector(getModelWatcherData, (modelWatcherData) => {
-    if (modelWatcherData[modelUUID]) {
+    if (modelWatcherData?.[modelUUID]) {
       return modelWatcherData[modelUUID];
     }
     return null;
@@ -38,6 +38,9 @@ export function getModelInfo(modelUUID: string) {
 export function getModelUUID(modelName: string, ownerName: string) {
   return createSelector(getModelList, (modelList: ModelsList) => {
     let modelUUID = "";
+    if (!modelList) {
+      return modelUUID;
+    }
     Object.entries(modelList).some(([key, { name, ownerTag, uuid }]) => {
       if (name === modelName && ownerTag.replace("user-", "") === ownerName) {
         modelUUID = uuid;
