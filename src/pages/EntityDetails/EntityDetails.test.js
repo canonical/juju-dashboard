@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
 import { MemoryRouter, Route } from "react-router";
 
-import { reduxStateFactory } from "testing/redux-factory";
+import { jujuStateFactory, reduxStateFactory } from "testing/redux-factory";
 
 import TestRoute from "components/Routes/TestRoute";
 
@@ -18,11 +18,12 @@ jest.mock("components/Topology/Topology", () => {
 const mockStore = configureStore([]);
 
 describe("Entity Details Container", () => {
-  function renderComponent({ type } = {}, mockFactoryData) {
-    const mockState = reduxStateFactory().build(
-      {},
-      { transient: mockFactoryData }
-    );
+  function renderComponent({ type } = {}, mockOverrides, mockTransients) {
+    let transient;
+    if (mockTransients) {
+      transient = { transient: mockTransients };
+    }
+    const mockState = reduxStateFactory().build(mockOverrides, transient);
     const store = mockStore(mockState);
 
     render(
@@ -43,6 +44,19 @@ describe("Entity Details Container", () => {
     expect(document.title).toEqual("Model: enterprise | Juju Dashboard");
   });
 
+  it("should show a spinner if waiting on data", () => {
+    renderComponent(
+      {},
+      {
+        juju: {
+          models: null,
+          modelWatcherData: null,
+        },
+      }
+    );
+    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
+  });
+
   it("lists the correct tabs", () => {
     renderComponent({ type: "model" });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
@@ -53,6 +67,7 @@ describe("Entity Details Container", () => {
   it("lists the correct tabs for kubernetes", () => {
     renderComponent(
       { type: "model" },
+      {},
       {
         models: [
           { name: "enterprise", owner: "kirk@external", type: "kubernetes" },
