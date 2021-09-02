@@ -16,13 +16,12 @@ import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
 
+import { getConfig, getControllerDataByUUID, getUserPass } from "app/selectors";
 import {
-  getConfig,
-  getControllerDataByUUID,
+  getModelApplications,
+  getModelInfo,
   getModelUUID,
-  getUserPass,
-} from "app/selectors";
-import { getModelApplications, getModelInfo } from "juju/model-selectors";
+} from "juju/model-selectors";
 
 import useWindowTitle from "hooks/useWindowTitle";
 
@@ -40,9 +39,9 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
 }
 
 const EntityDetails = ({ type, children, className = "" }) => {
-  const { ownerName, modelName } = useParams();
+  const { userName, modelName } = useParams();
   const history = useHistory();
-  const modelUUID = useSelector(getModelUUID(modelName, ownerName));
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const applications = useSelector(getModelApplications(modelUUID));
 
@@ -116,12 +115,12 @@ const EntityDetails = ({ type, children, className = "" }) => {
     (entityName, entityPanel) => {
       // This can be removed when all entities are moved to top level aside panels
       if (entityPanel === "apps") {
-        history.push(`/models/${ownerName}/${modelName}/app/${entityName}`);
+        history.push(`/models/${userName}/${modelName}/app/${entityName}`);
       } else {
         return setQuery({ panel: entityPanel, entity: entityName });
       }
     },
-    [setQuery, history, modelName, ownerName]
+    [setQuery, history, modelName, userName]
   );
 
   const generateActivePanel = () => {
