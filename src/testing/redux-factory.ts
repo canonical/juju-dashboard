@@ -32,6 +32,7 @@ export function reduxStateFactory() {
     const transientModelData = transientParams.models
       ? transientParams.models
       : defaultModelData.models;
+
     return {
       root: {
         config: {
@@ -177,7 +178,7 @@ export function modelWatcherDataFactory() {
         model: {
           "cloud-tag": "cloud-aws",
           region: "us-east-1",
-          type: "iaas",
+          type: transientParams.type || "iaas",
           version: "2.8.7",
           "model-uuid": modelUUID,
           name: transientParams.name || "",
