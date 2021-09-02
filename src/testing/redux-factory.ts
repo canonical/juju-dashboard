@@ -11,6 +11,7 @@ interface ModelData {
   name: string;
   owner: string;
   uuid: string;
+  version?: string;
 }
 
 function generateUUID() {
@@ -179,7 +180,7 @@ export function modelWatcherDataFactory() {
           "cloud-tag": "cloud-aws",
           region: "us-east-1",
           type: transientParams.type || "iaas",
-          version: "2.8.7",
+          version: transientParams.version || "2.9.12",
           "model-uuid": modelUUID,
           name: transientParams.name || "",
           life: "alive",
