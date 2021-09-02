@@ -23,16 +23,8 @@ jest.mock("components/WebCLI/WebCLI", () => {
 const mockStore = configureStore([]);
 
 describe("Entity Details Container", () => {
-  function renderComponent(
-    { children, type } = {},
-    mockOverrides,
-    mockTransients
-  ) {
-    let transient;
-    if (mockTransients) {
-      transient = { transient: mockTransients };
-    }
-    const mockState = reduxStateFactory().build(mockOverrides, transient);
+  function renderComponent({ props, overrides, transient } = {}) {
+    const mockState = reduxStateFactory().build(overrides, { transient });
     const store = mockStore(mockState);
 
     render(
@@ -40,7 +32,9 @@ describe("Entity Details Container", () => {
         <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
-              <EntityDetails type={type}>{children}</EntityDetails>
+              <EntityDetails type={props?.type}>
+                {props?.children}
+              </EntityDetails>
             </TestRoute>
           </QueryParamProvider>
         </MemoryRouter>
@@ -54,35 +48,33 @@ describe("Entity Details Container", () => {
   });
 
   it("should show a spinner if waiting on data", () => {
-    renderComponent(
-      {},
-      {
+    renderComponent({
+      overrides: {
         juju: {
           models: null,
           modelWatcherData: null,
         },
-      }
-    );
+      },
+    });
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("lists the correct tabs", () => {
-    renderComponent({ type: "model" });
+    renderComponent({ props: { type: "model" } });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsAction LogsMachines$/
     );
   });
 
   it("lists the correct tabs for kubernetes", () => {
-    renderComponent(
-      { type: "model" },
-      {},
-      {
+    renderComponent({
+      props: { type: "model" },
+      transient: {
         models: [
           { name: "enterprise", owner: "kirk@external", type: "kubernetes" },
         ],
-      }
-    );
+      },
+    });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsAction Logs$/
     );
@@ -90,7 +82,7 @@ describe("Entity Details Container", () => {
 
   it("shows the supplied child", () => {
     const children = "Hello I am a child!";
-    renderComponent({ children });
+    renderComponent({ props: { children } });
     expect(screen.getByText(children)).toBeInTheDocument();
   });
 
@@ -100,15 +92,13 @@ describe("Entity Details Container", () => {
   });
 
   it("does not show the webCLI in juju 2.8", () => {
-    renderComponent(
-      {},
-      {},
-      {
+    renderComponent({
+      transient: {
         models: [
           { name: "enterprise", owner: "kirk@external", version: "2.8.7" },
         ],
-      }
-    );
+      },
+    });
     expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
   });
 });
