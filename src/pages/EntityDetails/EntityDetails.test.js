@@ -1,10 +1,12 @@
+import { render } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { mount } from "enzyme";
 import { QueryParamProvider } from "use-query-params";
 import { MemoryRouter, Route } from "react-router";
+
+import { reduxStateFactory } from "testing/redux-factory";
+
 import TestRoute from "components/Routes/TestRoute";
-import dataDump from "testing/complete-redux-store-dump";
 
 import EntityDetails from "./EntityDetails";
 
@@ -17,12 +19,19 @@ const mockStore = configureStore([]);
 
 describe("Entity Details Container", () => {
   it("should display the correct window title", () => {
-    const store = mockStore(dataDump);
-    mount(
+    const mockState = reduxStateFactory().build(
+      {},
+      {
+        transient: {
+          models: [{ name: "mymodel", owner: "spock@external" }],
+        },
+      }
+    );
+    const store = mockStore(mockState);
+
+    render(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
-        >
+        <MemoryRouter initialEntries={["/models/spock@external/mymodel"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails />
@@ -31,7 +40,7 @@ describe("Entity Details Container", () => {
         </MemoryRouter>
       </Provider>
     );
-    const pageTitle = document.title;
-    expect(pageTitle).toEqual("Model: new-search-aggregate | Juju Dashboard");
+
+    expect(document.title).toEqual("Model: mymodel | Juju Dashboard");
   });
 });
