@@ -2,7 +2,7 @@ import { mount } from "enzyme";
 import { act } from "react-dom/test-utils";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import WS from "jest-websocket-mock";
+import { WS } from "jest-websocket-mock";
 import cloneDeep from "clone-deep";
 
 import { waitForComponentToPaint } from "testing/utils";
@@ -71,34 +71,6 @@ describe("WebCLI", () => {
       ).toBe(
         `Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/olm/using-the-juju-web-cli" class="p-link--inverted" target="_blank">full documentation here</a>.`
       );
-    });
-  });
-
-  it("calls to refresh the model on command submission", async () => {
-    const mockRefreshModel = jest.fn();
-    new WS("ws://localhost:1234/model/abc123/commands", {
-      jsonProtocol: true,
-    });
-    const wrapper = await generateComponent({
-      protocol: "ws",
-      controllerWSHost: "localhost:1234",
-      modelUUID: "abc123",
-      credentials: {
-        user: "spaceman",
-        password: "somelongpassword",
-      },
-      refreshModel: mockRefreshModel,
-    });
-    wrapper.find(".webcli__input-input").instance().value = "status --color";
-    wrapper.find("form").simulate("submit", { preventDefault: () => {} });
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        expect(mockRefreshModel).toHaveBeenCalled();
-        act(() => {
-          WS.clean();
-        });
-        resolve();
-      }, 600); // the timeout is 500ms in the app
     });
   });
 
