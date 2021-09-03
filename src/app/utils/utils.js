@@ -17,7 +17,7 @@ export function generateEntityIdentifier(charmId, name, subordinate) {
 }
 
 export const generateStatusElement = (
-  status,
+  status = "unknown",
   count,
   useIcon = true,
   actionsLogs = false

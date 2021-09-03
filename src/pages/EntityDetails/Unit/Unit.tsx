@@ -23,6 +23,7 @@ import EntityInfo from "components/EntityInfo/EntityInfo";
 
 import {
   getModelApplications,
+  getAllModelApplicationStatus,
   getModelInfo,
   getModelMachines,
   getModelUnits,
@@ -63,14 +64,23 @@ export default function Unit() {
     return filteredApps;
   }, [applications, units, unitIdentifier]);
 
+  const applicationStatuses = useSelector(
+    getAllModelApplicationStatus(modelUUID)
+  );
+
   const machineRows = useMemo(
     () => generateMachineRows(filteredMachineList, units, tableRowClick),
     [filteredMachineList, units, tableRowClick]
   );
 
   const applicationRows = useMemo(
-    () => generateLocalApplicationRows(filteredApplicationList, tableRowClick),
-    [filteredApplicationList, tableRowClick]
+    () =>
+      generateLocalApplicationRows(
+        filteredApplicationList,
+        applicationStatuses,
+        tableRowClick
+      ),
+    [filteredApplicationList, applicationStatuses, tableRowClick]
   );
 
   const unit = units?.[unitIdentifier];
