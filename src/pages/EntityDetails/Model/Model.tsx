@@ -48,6 +48,7 @@ import useActiveUser from "hooks/useActiveUser";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 
 import {
+  getAllModelApplicationStatus,
   getModelApplications,
   getModelInfo,
   getModelMachines,
@@ -120,9 +121,18 @@ const Model = () => {
   const machines = useSelector(getModelMachines(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
 
+  const applicationStatuses = useSelector(
+    getAllModelApplicationStatus(modelUUID)
+  );
+
   const localApplicationTableRows = useMemo(() => {
-    return generateLocalApplicationRows(applications, tableRowClick, query);
-  }, [applications, tableRowClick, query]);
+    return generateLocalApplicationRows(
+      applications,
+      applicationStatuses,
+      tableRowClick,
+      query
+    );
+  }, [applications, applicationStatuses, tableRowClick, query]);
 
   const remoteApplicationTableRows = useMemo(() => {
     return generateRemoteApplicationRows(modelStatusData, panelRowClick, query);

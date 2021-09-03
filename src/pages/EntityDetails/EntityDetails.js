@@ -29,7 +29,6 @@ import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
 
-import { fetchAndStoreModelStatus } from "juju";
 import { fetchModelStatus } from "juju/actions";
 
 import "./_entity-details.scss";
@@ -93,18 +92,6 @@ const EntityDetails = ({ type, children, className = "" }) => {
   }
 
   const showWebCLIConfig = useSelector(getConfig).showWebCLI;
-
-  // Until we switch to the new lib and watcher model we want to trigger a
-  // refresh of the model data when a user submits a cli command so that it
-  // doesn't look like it did nothing.
-  const refreshModel = () => {
-    fetchAndStoreModelStatus(
-      modelUUID,
-      primaryControllerData[0],
-      dispatch,
-      store.getState
-    );
-  };
 
   const handleNavClick = (e, section) => {
     e.preventDefault();
@@ -249,7 +236,6 @@ const EntityDetails = ({ type, children, className = "" }) => {
           controllerWSHost={controllerWSHost}
           credentials={credentials}
           modelUUID={modelUUID}
-          refreshModel={refreshModel}
         />
       )}
     </BaseLayout>
