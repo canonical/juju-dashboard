@@ -17,6 +17,7 @@ import {
 function generateModelWatcherBase(): ModelData {
   return {
     actions: {},
+    annotations: {},
     applications: {},
     charms: {},
     machines: {},
@@ -86,6 +87,12 @@ export function processDeltas(
     const _process = _processDelta.bind(null, delta[1], delta[2], modelData);
     if (delta[0] === DeltaEntityTypes.ACTION) {
       _process(ReduxDeltaEntityTypes.ACTIONS, delta[2].id);
+    } else if (delta[0] === DeltaEntityTypes.ANNOTATION) {
+      const appName = delta[2].tag.replace("application-", "");
+      const formatted = {
+        [appName]: delta[2].annotations,
+      };
+      mergeWith(modelData[ReduxDeltaEntityTypes.ANNOTATIONS], formatted);
     } else if (delta[0] === DeltaEntityTypes.APPLICATION) {
       const formatted: ApplicationData = {
         [delta[2].name]: delta[2],
