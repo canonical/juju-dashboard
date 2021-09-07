@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 
 import type { ReduxState, ModelsList } from "types";
 import type {
+  AnnotationData,
   ApplicationData,
   MachineData,
   ModelInfo,
@@ -50,6 +51,18 @@ export function getModelUUID(modelName: string, ownerName: string) {
     });
     return modelUUID;
   });
+}
+
+export function getModelAnnotations(modelUUID: string) {
+  return createSelector(
+    getModelWatcherDataByUUID(modelUUID),
+    (modelWatcherData): AnnotationData | null => {
+      if (modelWatcherData) {
+        return modelWatcherData.annotations;
+      }
+      return null;
+    }
+  );
 }
 
 export function getModelApplications(modelUUID: string) {
