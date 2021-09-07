@@ -108,6 +108,12 @@ export function modelWatcherDataFactory() {
             completed: "2021-05-31T22:57:30Z",
           },
         },
+        annotations: {
+          "ceph-mon": {
+            "gui-x": "818",
+            "gui-y": "563",
+          },
+        },
         applications: {
           "ceph-mon": {
             "charm-url": "cs:ceph-mon-55",
