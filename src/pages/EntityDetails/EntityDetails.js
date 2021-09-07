@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { Spinner, Tabs } from "@canonical/react-components";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useSelector, useStore } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
@@ -16,20 +16,16 @@ import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
 
+import { getConfig, getControllerDataByUUID, getUserPass } from "app/selectors";
 import {
-  getConfig,
-  getControllerDataByUUID,
-  getModelControllerDataByUUID,
+  getModelApplications,
+  getModelInfo,
   getModelUUID,
-  getUserPass,
-} from "app/selectors";
+} from "juju/model-selectors";
 
-import useModelStatus from "hooks/useModelStatus";
 import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
-
-import { fetchModelStatus } from "juju/actions";
 
 import "./_entity-details.scss";
 
@@ -43,9 +39,11 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
 }
 
 const EntityDetails = ({ type, children, className = "" }) => {
-  const modelStatusData = useModelStatus();
   const { userName, modelName } = useParams();
   const history = useHistory();
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelInfo = useSelector(getModelInfo(modelUUID));
+  const applications = useSelector(getModelApplications(modelUUID));
 
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
@@ -60,26 +58,20 @@ const EntityDetails = ({ type, children, className = "" }) => {
   const { panel: activePanel, entity, activeView } = query;
   const closePanelConfig = { panel: undefined, entity: undefined };
 
-  const dispatch = useDispatch();
   const store = useStore();
   const storeState = store.getState();
 
   const [showWebCLI, setShowWebCLI] = useState(false);
 
-  const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
-  const modelUUID = useSelector(getModelUUIDMemo);
   // In a JAAS environment the controllerUUID will be the sub controller not
   // the primary controller UUID that we connect to.
-  const controllerUUID = modelStatusData?.info["controller-uuid"];
+  const controllerUUID = modelInfo?.["controller-uuid"];
   // The primary controller data is the controller endpoint we actually connect
   // to. In the case of a normally bootstrapped controller this will be the
   // same as the model controller, however in a JAAS environment, this primary
   // controller will be JAAS and the model controller will be different.
   const primaryControllerData = useSelector(
     getControllerDataByUUID(controllerUUID)
-  );
-  const modelControllerData = useSelector(
-    getModelControllerDataByUUID(controllerUUID)
   );
 
   let credentials = null;
@@ -106,8 +98,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
   useEffect(() => {
     // XXX Remove me once we have the 2.9 build.
     if (
-      (modelControllerData &&
-        modelControllerData.version.indexOf("2.9") !== -1) ||
+      (modelInfo && modelInfo?.version.indexOf("2.9") !== -1) ||
       showWebCLIConfig
     ) {
       // The Web CLI is only available in Juju controller versions 2.9 and
@@ -116,21 +107,9 @@ const EntityDetails = ({ type, children, className = "" }) => {
       // is available.
       setShowWebCLI(true);
     }
-  }, [modelControllerData, showWebCLIConfig]);
+  }, [modelInfo, showWebCLIConfig]);
 
-  useEffect(() => {
-    if (modelUUID !== null && modelStatusData === null) {
-      // This model may not be in the first batch of models that we request
-      // status from in the main loop so update the status now.
-      dispatch(fetchModelStatus(modelUUID));
-    }
-  }, [dispatch, modelUUID, modelStatusData]);
-
-  useWindowTitle(
-    modelStatusData?.model?.name
-      ? `Model: ${modelStatusData.model.name}`
-      : "..."
-  );
+  useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
 
   const panelRowClick = useCallback(
     (entityName, entityPanel) => {
@@ -149,8 +128,8 @@ const EntityDetails = ({ type, children, className = "" }) => {
       return (
         <ConfigPanel
           appName={entity}
-          charm={modelStatusData.applications[entity].charm}
-          modelUUID={modelStatusData.uuid}
+          charm={applications?.[entity]?.["charm-url"]}
+          modelUUID={modelUUID}
           onClose={() => setQuery(closePanelConfig)}
         />
       );
@@ -162,12 +141,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
           isLoading={!entity}
           className={`${activePanel}-panel`}
         >
-          {generatePanelContent(
-            activePanel,
-            entity,
-            panelRowClick,
-            modelStatusData
-          )}
+          {generatePanelContent(activePanel, entity, panelRowClick)}
         </SlidePanel>
       );
     }
@@ -192,7 +166,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
       },
     ];
 
-    if (modelStatusData.info["provider-type"] !== "kubernetes") {
+    if (modelInfo.type !== "kubernetes") {
       items.push({
         active: activeView === "machines",
         label: "Machines",
@@ -208,19 +182,22 @@ const EntityDetails = ({ type, children, className = "" }) => {
       <Header>
         <div className="entity-details__header">
           <Breadcrumb />
-          <div className="entity-details__view-selector">
-            {modelStatusData && type === "model" && (
+          <div
+            className="entity-details__view-selector"
+            data-testid="view-selector"
+          >
+            {modelInfo && type === "model" && (
               <Tabs links={generateTabItems()} />
             )}
           </div>
         </div>
       </Header>
-      {!modelStatusData ? (
-        <div className="entity-details__loading">
+      {!modelInfo ? (
+        <div className="entity-details__loading" data-testid="loading-spinner">
           <Spinner />
         </div>
       ) : (
-        <FadeIn isActive={modelStatusData}>
+        <FadeIn isActive={modelInfo}>
           <div className="l-content">
             <div className={`entity-details entity-details__${type}`}>
               <>

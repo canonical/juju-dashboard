@@ -1,6 +1,6 @@
 import { Factory } from "fishery";
 
-import type { JujuState, UIState, ReduxState } from "types";
+import type { JujuState, UIState, ReduxState, ModelsList } from "types";
 import type { ModelWatcherData } from "juju/types";
 
 interface SetupTransients {
@@ -10,17 +10,37 @@ interface SetupTransients {
 interface ModelData {
   name: string;
   owner: string;
+  uuid: string;
+  version?: string;
 }
+
+function generateUUID() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    var r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+const defaultModelData: SetupTransients = {
+  models: [
+    { name: "enterprise", owner: "kirk@external", uuid: generateUUID() },
+  ],
+};
 
 export function reduxStateFactory() {
   return Factory.define<ReduxState, SetupTransients>(({ transientParams }) => {
+    const transientModelData = transientParams.models
+      ? transientParams.models
+      : defaultModelData.models;
+
     return {
       root: {
         config: {
           baseControllerURL: "jimm.jujucharms.com",
         },
       },
-      juju: jujuStateFactory(transientParams.models).build(),
+      juju: jujuStateFactory(transientModelData).build(),
       ui: uiStateFactory().build(),
     };
   });
@@ -28,23 +48,29 @@ export function reduxStateFactory() {
 
 export function jujuStateFactory(models: ModelData[] = []) {
   const modelWatcherData = {};
+  const modelsList: ModelsList = {};
   models.forEach((model) => {
+    if (!model.uuid) {
+      Object.assign(model, { uuid: generateUUID() });
+    }
+
+    modelsList[model.name] = {
+      name: model.name,
+      ownerTag: `user-${model.owner}`,
+      type: "iaas",
+      uuid: model.uuid,
+    };
+
     Object.assign(
       modelWatcherData,
       modelWatcherDataFactory().build({}, { transient: { ...model } })
     );
   });
+
   return Factory.define<JujuState>(() => ({
     // XXX When the models list is updated the uuids created for the models list
     // will need to be internally consistent with the modelWatcher data.
-    models: {
-      uuid: {
-        name: "mymodel",
-        ownerTag: "owner-foo",
-        type: "iaas",
-        uuid: "uuid",
-      },
-    },
+    models: modelsList,
     modelData: null,
     modelWatcherData: modelWatcherData,
   }));
@@ -59,16 +85,8 @@ export function uiStateFactory() {
 }
 
 export function modelWatcherDataFactory() {
-  function generateUUID() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-      var r = (Math.random() * 16) | 0,
-        v = c === "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
-
-  const modelUUID = generateUUID();
   return Factory.define<ModelWatcherData>(({ transientParams }) => {
+    const modelUUID = transientParams.uuid;
     return {
       [modelUUID]: {
         actions: {
@@ -161,8 +179,8 @@ export function modelWatcherDataFactory() {
         model: {
           "cloud-tag": "cloud-aws",
           region: "us-east-1",
-          type: "iaas",
-          version: "2.8.7",
+          type: transientParams.type || "iaas",
+          version: transientParams.version || "2.9.12",
           "model-uuid": modelUUID,
           name: transientParams.name || "",
           life: "alive",
