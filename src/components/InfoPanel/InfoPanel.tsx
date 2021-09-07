@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import Topology from "components/Topology/Topology";
 import Modal from "@canonical/react-components/dist/components/Modal";
 
 import { getViewportWidth } from "app/utils/utils";
 import useAnalytics from "hooks/useAnalytics";
-import useModelStatus from "hooks/useModelStatus";
 import useEventListener from "hooks/useEventListener";
+import {
+  getModelAnnotations,
+  getModelApplications,
+  getModelRelations,
+  getModelUUID,
+} from "juju/model-selectors";
 
-import type { TSFixMe } from "types";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import "./_info-panel.scss";
@@ -34,13 +39,16 @@ const infoPanelDimensions = () => {
 };
 
 const InfoPanel = () => {
-  const { modelName } = useParams<EntityDetailsRoute>();
+  const { modelName, userName } = useParams<EntityDetailsRoute>();
 
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
-  const modelStatusData: TSFixMe = useModelStatus();
-  const applicationsCount = Object.entries(
-    modelStatusData.applications || {}
-  ).length;
+
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const annotations = useSelector(getModelAnnotations(modelUUID));
+  const applications = useSelector(getModelApplications(modelUUID));
+  const relations = useSelector(getModelRelations(modelUUID));
+
+  const applicationsCount = Object.keys(applications || {}).length;
 
   const { width, height } = expandedTopologyDimensions();
   const topologySize = infoPanelDimensions();
@@ -65,14 +73,20 @@ const InfoPanel = () => {
   };
 
   return (
-    <div className="info-panel">
+    <div className="info-panel" data-testid="info-panel">
       {showExpandedTopology ? (
         <Modal
           close={() => setShowExpandedTopology(false)}
           title={modelName?.split("/")[1] || modelName}
           data-test="topology-modal"
         >
-          <Topology width={width} height={height} modelData={modelStatusData} />
+          <Topology
+            width={width}
+            height={height}
+            annotations={annotations}
+            applications={applications}
+            relations={relations}
+          />
         </Modal>
       ) : (
         <>
@@ -81,7 +95,9 @@ const InfoPanel = () => {
               <Topology
                 width={topologySize}
                 height={topologySize}
-                modelData={modelStatusData}
+                annotations={annotations}
+                applications={applications}
+                relations={relations}
                 data-test="topology"
               />
               {modelName !== undefined && (
