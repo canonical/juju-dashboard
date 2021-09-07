@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import * as d3 from "d3";
+import cloneDeep from "clone-deep";
 
 import { generateIconPath } from "app/utils/utils";
 
@@ -105,38 +106,41 @@ const getRelationPosition = (data) => {
   };
 };
 
-const Topology = ({ modelData, width, height }) => {
+const Topology = ({
+  annotations,
+  applications: applicationData,
+  relations: relationData,
+  width,
+  height,
+}) => {
   const ref = useRef();
 
-  const { deltaX, deltaY } = computePositionDelta(
-    modelData && modelData.annotations
+  const annotationData = cloneDeep(annotations);
+
+  const { deltaX, deltaY } = computePositionDelta(annotationData);
+
+  const applications = Object.entries(applicationData).map(
+    ([appName, application]) => {
+      return {
+        ...application,
+        ...annotationData[appName],
+        name: appName,
+      };
+    }
   );
 
-  // XXX If this is put into a useMemo as it should, it causes the topology to
-  // incorrectly position icons on every render.
-  // https://github.com/canonical-web-and-design/jaas-dashboard/issues/762
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const applications =
-    (modelData &&
-      Object.keys(modelData.applications).map((appName) => ({
-        ...modelData.annotations[appName],
-        ...modelData.applications[appName],
-        name: appName,
-      }))) ||
-    [];
-
   // Apply deltas to the annotations.
-  for (const appName in applications) {
-    const application = applications[appName];
-    if (application["gui-x"]) {
-      application["gui-x"] = applyDelta(application["gui-x"], deltaX);
+  for (const appName in annotationData) {
+    const annotation = annotationData[appName];
+    if (annotation["gui-x"]) {
+      annotation["gui-x"] = applyDelta(annotation["gui-x"], deltaX);
     }
-    if (application["gui-y"]) {
-      application["gui-y"] = applyDelta(application["gui-y"], deltaY);
+    if (annotation["gui-y"]) {
+      annotation["gui-y"] = applyDelta(annotation["gui-y"], deltaY);
     }
   }
 
-  let { maxX, maxY } = computeMaxXY(modelData && modelData.annotations);
+  let { maxX, maxY } = computeMaxXY(annotationData);
   if (maxX === 0) {
     // If there is no maxX then all of the icons are unplaced
     // so set a maximum width.
@@ -145,16 +149,19 @@ const Topology = ({ modelData, width, height }) => {
 
   // Dedupe the relations as we only draw a single line between two
   // applications regardless of how many relations are between them.
-  const endpoints =
-    modelData?.relations &&
-    modelData.relations.reduce((acc, relation) => {
-      const endpoints = relation.endpoints;
+  const extractor = /(.+):(.+)\s(.+):(.+)/;
+  const endpoints = Object.entries(relationData || {}).reduce(
+    (acc, [key, relation]) => {
       // We don't draw peer relations so we can ignore them.
-      if (endpoints.length > 1) {
-        acc.push(`${endpoints[0].application}:${endpoints[1].application}`);
+      if (relation.endpoints.length > 1) {
+        const parts = key.match(extractor);
+        acc.push(`${parts[1]}:${parts[3]}`);
       }
       return acc;
-    }, []);
+    },
+    []
+  );
+
   // Remove any duplicate endpoints and split into pairs.
   const deDupedRelations = [...new Set(endpoints)].map((pair) =>
     pair.split(":")
@@ -163,12 +170,14 @@ const Topology = ({ modelData, width, height }) => {
   // The missing application is likely a cross-model-relation which isn't
   // fully supported yet.
   // https://github.com/canonical-web-and-design/jaas-dashboard/issues/526
-  const applicationNames = applications.map((app) => app.name);
+  const applicationNames = Object.keys(applicationData);
+
   const relations = deDupedRelations.filter(
     (relation) =>
       applicationNames.includes(relation[0]) &&
       applicationNames.includes(relation[1])
   );
+
   useEffect(() => {
     const topo = d3
       .select(ref.current)
@@ -231,7 +240,7 @@ const Topology = ({ modelData, width, height }) => {
 
     appIcon
       .append("image")
-      .attr("xlink:href", (d) => generateIconPath(d.charm))
+      .attr("xlink:href", (d) => generateIconPath(d["charm-url"]))
       .attr("width", (d) => (isSubordinate(d) ? 96 : 126))
       .attr("height", (d) => (isSubordinate(d) ? 96 : 126))
       .attr("transform", (d) =>
