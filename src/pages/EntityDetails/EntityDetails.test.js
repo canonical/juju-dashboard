@@ -1,8 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
-import { MemoryRouter, Route } from "react-router";
+import { Route } from "react-router";
+import { Router } from "react-router-dom";
+import { createMemoryHistory } from "history";
 
 import { reduxStateFactory } from "testing/redux-factory";
 
@@ -24,12 +27,14 @@ const mockStore = configureStore([]);
 
 describe("Entity Details Container", () => {
   function renderComponent({ props, overrides, transient } = {}) {
+    const history = createMemoryHistory();
     const mockState = reduxStateFactory().build(overrides, { transient });
     const store = mockStore(mockState);
 
+    history.push("/models/kirk@external/enterprise");
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
+        <Router history={history}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails type={props?.type}>
@@ -37,9 +42,10 @@ describe("Entity Details Container", () => {
               </EntityDetails>
             </TestRoute>
           </QueryParamProvider>
-        </MemoryRouter>
+        </Router>
       </Provider>
     );
+    return { history };
   }
 
   it("should display the correct window title", () => {
@@ -78,6 +84,45 @@ describe("Entity Details Container", () => {
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsAction Logs$/
     );
+  });
+
+  it("clicking the tabs changes the visible section", () => {
+    const { history } = renderComponent({ props: { type: "model" } });
+    const viewSelector = screen.getByTestId("view-selector");
+    const sections = [
+      {
+        text: "Applications",
+        query: "apps",
+      },
+      {
+        text: "Integrations",
+        query: "integrations",
+      },
+      {
+        text: "Action Logs",
+        query: "action-logs",
+      },
+      {
+        text: "Machines",
+        query: "machines",
+      },
+    ];
+    sections.forEach((section) => {
+      const scrollIntoView = jest.fn();
+      userEvent.click(within(viewSelector).getByText(section.text), {
+        target: {
+          scrollIntoView,
+        },
+      });
+      expect(scrollIntoView.mock.calls[0]).toEqual([
+        {
+          behavior: "smooth",
+          block: "end",
+          inline: "nearest",
+        },
+      ]);
+      expect(history.location.query).toEqual({ activeView: section.query });
+    });
   });
 
   it("shows the supplied child", () => {
