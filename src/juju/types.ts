@@ -5,6 +5,10 @@ export interface ActionData {
   [id: string]: ActionChangeDelta;
 }
 
+export interface AnnotationData {
+  [appName: string]: AnnotationInfo;
+}
+
 export interface ApplicationData {
   [appName: string]: ApplicationInfo;
 }
@@ -32,6 +36,11 @@ export interface UnitData {
 export type AllWatcherDelta =
   | [DeltaEntityTypes.ACTION, DeltaChangeTypes.CHANGE, ActionChangeDelta]
   | [
+      DeltaEntityTypes.ANNOTATION,
+      DeltaChangeTypes.CHANGE,
+      AnnotationChangeDelta
+    ]
+  | [
       DeltaEntityTypes.APPLICATION,
       DeltaChangeTypes.CHANGE,
       ApplicationChangeDelta
@@ -53,6 +62,7 @@ export type AllWatcherDelta =
 
 export enum DeltaEntityTypes {
   ACTION = "action",
+  ANNOTATION = "annotation",
   APPLICATION = "application",
   CHARM = "charm",
   MACHINE = "machine",
@@ -68,6 +78,7 @@ export enum DeltaChangeTypes {
 
 export enum ReduxDeltaEntityTypes {
   ACTIONS = "actions",
+  ANNOTATIONS = "annotations",
   APPLICATIONS = "applications",
   CHARMS = "charms",
   MACHINES = "machines",
@@ -78,6 +89,7 @@ export enum ReduxDeltaEntityTypes {
 
 export type DeltaMessageData =
   | ActionChangeDelta
+  | AnnotationChangeDelta
   | ApplicationChangeDelta
   | CharmChangeDelta
   | UnitChangeDelta
@@ -87,6 +99,7 @@ export type DeltaMessageData =
 
 export interface ModelData {
   [ReduxDeltaEntityTypes.ACTIONS]: ActionData;
+  [ReduxDeltaEntityTypes.ANNOTATIONS]: AnnotationData;
   [ReduxDeltaEntityTypes.APPLICATIONS]: ApplicationData;
   [ReduxDeltaEntityTypes.CHARMS]: ModelCharmData;
   [ReduxDeltaEntityTypes.MACHINES]: MachineData;
@@ -100,6 +113,10 @@ export interface ModelInfo extends ModelChangeDelta {
   region: string;
   type: string;
   version: string;
+}
+
+export interface AnnotationInfo {
+  [annotationName: string]: string;
 }
 
 export interface ApplicationInfo extends ApplicationChangeDelta {
@@ -151,6 +168,12 @@ interface ActionChangeDelta {
   enqueued: ISO8601Date;
   started: ISO8601Date;
   completed: ISO8601Date;
+}
+
+interface AnnotationChangeDelta {
+  "model-uuid": string;
+  tag: string; // application-etcd
+  annotations: { [annotationName: string]: string };
 }
 
 interface ApplicationChangeDelta {

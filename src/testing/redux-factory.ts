@@ -108,6 +108,12 @@ export function modelWatcherDataFactory() {
             completed: "2021-05-31T22:57:30Z",
           },
         },
+        annotations: {
+          "ceph-mon": {
+            "gui-x": "818",
+            "gui-y": "563",
+          },
+        },
         applications: {
           "ceph-mon": {
             "charm-url": "cs:ceph-mon-55",
@@ -182,9 +188,9 @@ export function modelWatcherDataFactory() {
           type: transientParams.type || "iaas",
           version: transientParams.version || "2.9.12",
           "model-uuid": modelUUID,
-          name: transientParams.name || "",
+          name: transientParams.name || "enterprise",
           life: "alive",
-          owner: transientParams.owner || "",
+          owner: transientParams.owner || "kirk@external",
           "controller-uuid": "", // XXX fix me
           "is-controller": false,
           config: {
