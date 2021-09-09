@@ -18,16 +18,7 @@ jest.mock("components/Topology/Topology", () => {
 
 describe("Info Panel", () => {
   it("renders the topology", () => {
-    const mockState = reduxStateFactory().build(
-      {},
-      {
-        transient: {
-          models: [
-            { name: "enterprise", owner: "kirk@external", type: "kubernetes" },
-          ],
-        },
-      }
-    );
+    const mockState = reduxStateFactory().build();
     const store = mockStore(mockState);
     render(
       <Provider store={store}>
@@ -44,16 +35,7 @@ describe("Info Panel", () => {
   });
 
   it("renders the expanded topology on click", () => {
-    const mockState = reduxStateFactory().build(
-      {},
-      {
-        transient: {
-          models: [
-            { name: "enterprise", owner: "kirk@external", type: "kubernetes" },
-          ],
-        },
-      }
-    );
+    const mockState = reduxStateFactory().build();
     const store = mockStore(mockState);
     render(
       <Provider store={store}>

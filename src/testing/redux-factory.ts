@@ -188,9 +188,9 @@ export function modelWatcherDataFactory() {
           type: transientParams.type || "iaas",
           version: transientParams.version || "2.9.12",
           "model-uuid": modelUUID,
-          name: transientParams.name || "",
+          name: transientParams.name || "enterprise",
           life: "alive",
-          owner: transientParams.owner || "",
+          owner: transientParams.owner || "kirk@external",
           "controller-uuid": "", // XXX fix me
           "is-controller": false,
           config: {
