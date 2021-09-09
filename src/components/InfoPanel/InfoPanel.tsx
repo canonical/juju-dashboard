@@ -78,7 +78,7 @@ const InfoPanel = () => {
         <Modal
           close={() => setShowExpandedTopology(false)}
           title={modelName?.split("/")[1] || modelName}
-          data-test="topology-modal"
+          role="dialog"
         >
           <Topology
             width={width}
@@ -98,7 +98,6 @@ const InfoPanel = () => {
                 annotations={annotations}
                 applications={applications}
                 relations={relations}
-                data-test="topology"
               />
               {modelName !== undefined && (
                 <i

@@ -1,10 +1,10 @@
+import { render, screen } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { mount } from "enzyme";
 import { MemoryRouter, Route } from "react-router";
 import { QueryParamProvider } from "use-query-params";
-import dataDump from "testing/complete-redux-store-dump";
 
+import { reduxStateFactory } from "testing/redux-factory";
 import TestRoute from "components/Routes/TestRoute";
 
 import InfoPanel from "./InfoPanel";
@@ -12,18 +12,26 @@ import InfoPanel from "./InfoPanel";
 const mockStore = configureStore([]);
 
 jest.mock("components/Topology/Topology", () => {
-  const Topology = () => <div className="topology"></div>;
+  const Topology = () => <div data-testid="topology"></div>;
   return Topology;
 });
 
 describe("Info Panel", () => {
   it("renders the topology", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
+    const mockState = reduxStateFactory().build(
+      {},
+      {
+        transient: {
+          models: [
+            { name: "enterprise", owner: "kirk@external", type: "kubernetes" },
+          ],
+        },
+      }
+    );
+    const store = mockStore(mockState);
+    render(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/user-eggman@external/group-test"]}
-        >
+        <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <InfoPanel />
@@ -32,16 +40,24 @@ describe("Info Panel", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("Topology").length).toBe(1);
+    expect(screen.getByTestId("topology")).toBeInTheDocument();
   });
 
   it("renders the expanded topology on click", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
+    const mockState = reduxStateFactory().build(
+      {},
+      {
+        transient: {
+          models: [
+            { name: "enterprise", owner: "kirk@external", type: "kubernetes" },
+          ],
+        },
+      }
+    );
+    const store = mockStore(mockState);
+    render(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/user-eggman@external/group-test"]}
-        >
+        <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
           <QueryParamProvider ReactRouterRoute={Route}>
             <TestRoute path="/models/:userName/:modelName?">
               <InfoPanel />
@@ -50,10 +66,8 @@ describe("Info Panel", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("[data-test='topology-modal']").length).toBe(0);
-    wrapper
-      .find(".info-panel__pictogram .p-icon--fullscreen")
-      .simulate("click");
-    expect(wrapper.find("[data-test='topology-modal']").length).toBe(1);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    screen.getByRole("button").click();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 });
