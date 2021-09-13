@@ -78,7 +78,6 @@ const InfoPanel = () => {
         <Modal
           close={() => setShowExpandedTopology(false)}
           title={modelName?.split("/")[1] || modelName}
-          role="dialog"
         >
           <Topology
             width={width}
