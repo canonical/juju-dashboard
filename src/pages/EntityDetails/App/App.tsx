@@ -103,7 +103,7 @@ export default function App(): JSX.Element {
     return generateSelectableUnitTableHeaders(
       {
         content: (
-          <label className="p-checkbox" htmlFor={fieldID}>
+          <label className="p-checkbox--inline" htmlFor={fieldID}>
             <Field
               id={fieldID}
               type="checkbox"
