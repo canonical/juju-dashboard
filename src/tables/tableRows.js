@@ -232,7 +232,7 @@ export function generateUnitRows(
       const ariaLabeledBy = `aria-labeled-${unitId}`;
       columns.splice(0, 0, {
         content: (
-          <label className="p-checkbox" htmlFor={fieldID}>
+          <label className="p-checkbox--inline" htmlFor={fieldID}>
             <Field
               id={fieldID}
               type="checkbox"
