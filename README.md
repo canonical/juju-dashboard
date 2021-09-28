@@ -124,7 +124,7 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
 - Run `juju dashboard` and view the Dashboard using the supplied url.
   - Accept the self-signed cert
 - Open `config.js` and modify the following values:
-  - `baseControllerURL` should be output from the `juju dashboard` call above with the port `17070`.
+  - `controllerAPIEndpoint` should be output from the `juju dashboard` call above with the port `17070`.
   - `identityProviderAvailable` to `false`.
   - `isJuju` to `true`.
 - Start the Dashboard with `yarn start`.
@@ -156,7 +156,7 @@ When you have a Juju controller bootstrapped in an lxd within a `multipass` vm a
 - In the host
   - `multipass info dev | grep IPv4` and take note of the IP address.
   - Open `config.js` and modify the following values:
-    - `baseControllerURL` should be output from the `multipass info` call above with the port `17070`.
+    - `controllerAPIEndpoint` should be output from the `multipass info` call above with the port `17070`.
     - `identityProviderAvailable` to `false`.
     - `isJuju` to `true`.
 

@@ -15,7 +15,7 @@ describe("CloudGroup", () => {
     const store = mockStore({
       root: {
         config: {
-          baseControllerURL: "jimm.jujucharms.com",
+          controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
         },
       },
       juju: {
