@@ -16,7 +16,7 @@ import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
 
-import { getConfig, getControllerDataByUUID, getUserPass } from "app/selectors";
+import { getControllerDataByUUID, getUserPass } from "app/selectors";
 import {
   getModelApplications,
   getModelInfo,
@@ -83,8 +83,6 @@ const EntityDetails = ({ type, children, className = "" }) => {
       .replace("/api", "");
   }
 
-  const showWebCLIConfig = useSelector(getConfig).showWebCLI;
-
   const handleNavClick = (e, section) => {
     e.preventDefault();
     e.target.scrollIntoView({
@@ -97,17 +95,14 @@ const EntityDetails = ({ type, children, className = "" }) => {
 
   useEffect(() => {
     // XXX Remove me once we have the 2.9 build.
-    if (
-      (modelInfo && modelInfo?.version.indexOf("2.9") !== -1) ||
-      showWebCLIConfig
-    ) {
+    if (modelInfo && modelInfo?.version.indexOf("2.9") !== -1) {
       // The Web CLI is only available in Juju controller versions 2.9 and
       // above. This will allow us to only show the shell on multi-controller
       // setups with different versions where the correct controller version
       // is available.
       setShowWebCLI(true);
     }
-  }, [modelInfo, showWebCLIConfig]);
+  }, [modelInfo]);
 
   useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
 

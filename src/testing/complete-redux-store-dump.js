@@ -6,7 +6,7 @@
 export default {
   root: {
     config: {
-      baseControllerURL: 'jimm.jujucharms.com',
+      controllerAPIEndpoint: 'wss://jimm.jujucharms.com/api',
       baseAppURL: '/',
       identityProviderAvailable: true,
       isJuju: false,

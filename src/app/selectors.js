@@ -572,7 +572,7 @@ export const getGroupedModelStatusCounts = createSelector(
 */
 export const getWSControllerURL = createSelector(
   getConfig,
-  (config) => `wss://${config.baseControllerURL}/api`
+  (config) => config.controllerAPIEndpoint
 );
 
 /**

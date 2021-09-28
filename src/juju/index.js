@@ -92,7 +92,7 @@ function stopPingerLoop(intervalId) {
 }
 
 /**
-  Connects to the controller at the url defined in the baseControllerURL
+  Connects to the controller at the url defined in the controllerAPIEndpoint
   configuration value.
   @param {String} wsControllerURL The fully qualified URL of the controller api.
   @param {Object|null} credentials The users credentials in the format

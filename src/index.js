@@ -54,15 +54,7 @@ const checkConfigExists = () => {
 checkConfigExists();
 
 function bootstrap() {
-  // If the baseControllerURL is `null` then set it's value to the
-  // hostname:port of the server serving the application. This is done as the
-  // hostname:port is not always provided by the Juju webserver but in which
-  // case we can reliably connect to the API using the same hostname:port as
-  // the dashboard assets are served from.
   const config = window.jujuDashboardConfig;
-  if (config.baseControllerURL === null) {
-    config.baseControllerURL = window.location.host;
-  }
 
   if (process.env.NODE_ENV === "production") {
     Sentry.setTag("isJuju", config.isJuju);

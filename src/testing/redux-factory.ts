@@ -37,7 +37,7 @@ export function reduxStateFactory() {
     return {
       root: {
         config: {
-          baseControllerURL: "jimm.jujucharms.com",
+          controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
         },
       },
       juju: jujuStateFactory(transientModelData).build(),
