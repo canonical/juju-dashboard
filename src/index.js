@@ -55,6 +55,16 @@ checkConfigExists();
 
 function bootstrap() {
   const config = window.jujuDashboardConfig;
+  // It's possible that the charm is generating a relative path for the
+  // websocket because it is providing the API on the same host as the
+  // application assets.
+  // If we were provided with a relative path for the endpoint then we need
+  // to build the full correct path for the websocket to connect to.
+  const controllerAPIEndpoint = config.controllerAPIEndpoint;
+  if (controllerAPIEndpoint.includes("://")) {
+    const protocol = window.location.protocol.includes("https") ? "ws" : "wss";
+    config.controllerAPIEndpoint = `${protocol}://${window.location.host}${controllerAPIEndpoint}`;
+  }
 
   if (process.env.NODE_ENV === "production") {
     Sentry.setTag("isJuju", config.isJuju);
