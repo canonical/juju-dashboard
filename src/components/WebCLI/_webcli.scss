@@ -7,7 +7,7 @@ $row-height: 2.5rem;
 .webcli {
   bottom: 0;
   position: fixed;
-  // https://github.com/canonical-web-and-design/vanilla-framework/blob/master/scss/_layouts_application.scss#L45
+  // https://github.com/canonical-web-and-design/vanilla-framework/blob/main/scss/_layouts_application.scss#L45
   // These variables aren't made available to the rest of the application so
   // their values are hardcoded here.
   width: calc(100vw - 3rem);
