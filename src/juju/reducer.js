@@ -40,7 +40,7 @@ export default function jujuReducer(state = defaultState, action) {
         }
         // There is some data that we don't want to store because it changes
         // to often causing needless re-renders and is currently irrelevent
-        // like controllerTimestamp so we have a whitelist for top level keys.
+        // like controllerTimestamp so we have a allowlist for top level keys.
         const allowedKeys = [
           "annotations",
           "applications",

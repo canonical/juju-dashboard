@@ -1,11 +1,11 @@
 /*
   Redux middleware that gates every request on authentication unless an action
-  has been whitelisted.
+  has been allowed.
 */
 
 import { isLoggedIn } from "app/selectors";
 
-const actionWhitelist = [
+const actionAllowlist = [
   "POPULATE_MISSING_ALLWATCHER_DATA",
   "PROCESS_ALL_WATCHER_DELTAS",
   "STORE_BAKERY",
@@ -25,7 +25,7 @@ const actionWhitelist = [
   "SIDENAV_COLLAPSED",
 ];
 
-const thunkWhitelist = ["connectAndStartPolling", "logOut"];
+const thunkAllowlist = ["connectAndStartPolling", "logOut"];
 
 function error(name, wsControllerURL) {
   console.log(
@@ -62,7 +62,7 @@ export default ({ getState }) =>
     // If the action is a function then it's probably a thunk.
     if (typeof action === "function") {
       if (
-        thunkWhitelist.includes(action.NAME) ||
+        thunkAllowlist.includes(action.NAME) ||
         checkLoggedIn(state, wsControllerURL)
       ) {
         // Await the next to support async thunks
@@ -73,7 +73,7 @@ export default ({ getState }) =>
       }
     } else {
       if (
-        actionWhitelist.includes(action.type) ||
+        actionAllowlist.includes(action.type) ||
         checkLoggedIn(state, wsControllerURL)
       ) {
         next(action);

@@ -56,7 +56,7 @@ For both environments you'll want to pull down the code locally from the appropr
 
 ```
 git clone git@github.com:canonical-web-and-design/jaas-dashboard.git
-git checkout -b branch-name-for-the-pr master
+git checkout -b branch-name-for-the-pr main
 git pull git://github.com/<pr creators username>/jaas-dashboard.git <pull request branch name>
 ```
 
