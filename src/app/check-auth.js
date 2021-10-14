@@ -1,6 +1,6 @@
 /*
   Redux middleware that gates every request on authentication unless an action
-  has been allowlisted.
+  has been allowed.
 */
 
 import { isLoggedIn } from "app/selectors";
