@@ -1,0 +1,32 @@
+# Logs
+*.log
+
+# Documentation
+README.md
+
+# Version control
+.git*
+.github
+
+# Local development tooling
+run
+env*
+.env*
+.*.hash
+.docker-project
+.vscode
+.editorconfig
+
+# Cache files
+cache.sqlite
+.webcache*
+
+# Testing
+tests
+
+# Node
+node_modules
+
+# Docker
+.dockerignore
+Dockerfile

@@ -1,18 +1,30 @@
 # syntax=docker/dockerfile:experimental
 
-FROM ubuntu:focal
+# Build stage: Install yarn dependencies
+# ===
+FROM node:16 AS yarn-dependencies
+
 WORKDIR /srv
-RUN apt update && \
-    # build-essential added for node-gyp in vanilla framework
-    apt install curl build-essential --yes && \
-    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt update && \
-    apt install nodejs --yes
-RUN npm install -g yarn
-RUN yarn global add serve
-ADD package.json .
-ADD yarn.lock .
+
+ADD package.json yarn.lock .
 RUN --mount=type=cache,target=/usr/local/share/.cache/yarn yarn install
+
+
+# Build stage: Run "yarn run build-js"
+# ===
+FROM yarn-dependencies AS build-js
 ADD . .
 RUN yarn run build
-ENTRYPOINT ["serve", "-l", "80", "-s", "build"]
+
+
+FROM ubuntu:focal
+
+RUN apt update && apt install --yes nginx
+
+WORKDIR /srv
+
+COPY nginx.conf /etc/nginx/sites-available/default
+COPY entrypoint entrypoint
+COPY --from=build-js /srv/build .
+
+ENTRYPOINT ["./entrypoint"]
