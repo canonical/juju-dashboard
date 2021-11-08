@@ -1,15 +1,16 @@
 {
-  "extends": ["config:base"],
-  "labels": ["maintenance"],
+  "extends": ["config:base", "group:allNonMajor", "schedule:weekly"],
+  "labels": ["Maintenance"],
   "packageRules": [
     {
-      "packagePatterns": ["*"],
-      "excludePackagePatterns": ["vanilla-framework"],
-      "extends": ["schedule:weekly"],
-      "minor": {
-        "groupName": "all non-major dependencies",
-        "groupSlug": "all-minor-patch"
-      }
+      "groupName": "internal dependencies",
+      "groupSlug": "internal",
+      "packagePatterns": [
+        "^@canonical",
+        "^canonicalwebteam",
+        "^vanilla-framework"
+      ],
+      "schedule": ["at any time"]
     }
   ]
 }
