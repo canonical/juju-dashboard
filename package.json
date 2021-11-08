@@ -58,7 +58,7 @@
     "@sentry/browser": "6.13.3",
     "@types/clone-deep": "4.0.1",
     "@types/lodash.mergewith": "^4.6.6",
-    "@types/react": "17.0.27",
+    "@types/react": "17.0.34",
     "@types/react-redux": "7.1.19",
     "@types/react-router-dom": "5.3.1",
     "async-limiter": "2.0.0",
