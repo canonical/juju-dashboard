@@ -39,6 +39,10 @@ const WebCLI = ({
   }, [controllerWSHost, modelUUID, protocol]);
 
   useEffect(() => {
+    if (!wsAddress) {
+      console.error("no websocket address provided");
+      return;
+    }
     const conn = new Connection({
       address: wsAddress,
       onopen: () => {},
@@ -102,6 +106,11 @@ const WebCLI = ({
   const showHelp = () => {
     setShouldShowHelp(true);
   };
+
+  // If we do not have an address then do not try and render the UI.
+  if (!wsAddress) {
+    return null;
+  }
 
   return (
     <div className="webcli">
