@@ -11,30 +11,20 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - yarn-{{ checksum "yarn.lock" }}
       - run: yarn
       - run:
           name: Run tests
           command: yarn test
-      - save_cache:
-          key: yarn-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
   check-prettier:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - yarn-{{ checksum "yarn.lock" }}
       - run: yarn
       - run:
           name: Run tests
           command: yarn prettier --check 'src/**/*'
-      - save_cache:
-          key: yarn-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
   check-eslint:
@@ -51,30 +41,20 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - yarn-{{ checksum "yarn.lock" }}
       - run: yarn
       - run:
           name: Run linter
           command: yarn run stylelint-check
-      - save_cache:
-          key: yarn-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
   check-types:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - yarn-{{ checksum "yarn.lock" }}
       - run: yarn
       - run:
           name: Run Typescript build
           command: yarn run typescript-build
-      - save_cache:
-          key: yarn-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
 workflows:
