@@ -54,7 +54,7 @@
     "@canonical/jaaslib": "0.6.1",
     "@canonical/jujulib": "2.0.0-beta.6",
     "@canonical/macaroon-bakery": "1.0.0",
-    "@canonical/react-components": "0.23.0",
+    "@canonical/react-components": "0.24.0",
     "@sentry/browser": "6.15.0",
     "@types/clone-deep": "4.0.1",
     "@types/lodash.mergewith": "^4.6.6",
@@ -90,7 +90,7 @@
     "redux-thunk": "2.4.0",
     "reselect": "4.1.5",
     "use-query-params": "1.2.3",
-    "vanilla-framework": "2.37.0"
+    "vanilla-framework": "2.37.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.15.1",
