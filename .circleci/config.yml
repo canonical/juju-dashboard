@@ -1,7 +1,7 @@
 ---
 defaults: &defaults
   docker:
-    - image: canonicalwebteam/dev:1.6.8
+    - image: cimg/node:lts
   environment:
   working_directory: ~/project
 
