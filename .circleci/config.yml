@@ -41,15 +41,10 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - yarn-{{ checksum "yarn.lock" }}
       - run: yarn
       - run:
           name: Run linter
           command: yarn run eslint-check
-      - save_cache:
-          key: yarn-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
   check-stylelint:
