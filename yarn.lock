@@ -6860,10 +6860,10 @@ find-up@^3.0.0:
   dependencies:
     locate-path "^3.0.0"
 
-fishery@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/fishery/-/fishery-1.4.0.tgz#5a74f31ebc189cf40bb78a32abdc1e8e6b905468"
-  integrity sha512-uzPsEWtoHluyqgk9hC/MzMbm42NPWmDWjbdzMRLuJ+jxmAHo+nDbiI3zk2S+HQFXme/VlNnPsNYZQBryrbCTLw==
+fishery@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/fishery/-/fishery-2.1.0.tgz#6472582fd0f305530f789ef291adf2e550ef7704"
+  integrity sha512-CGXNmOkth/Je/oIM5UqB4TKz2p9A/GrappTw8nEOCy50vqx18S51jp4OARRPfxofhSx3ihZwI6t3wh+SA5mz4A==
   dependencies:
     lodash.mergewith "^4.6.2"
 
