@@ -2,9 +2,10 @@ type Props = {
   description: string;
 };
 
-export default function DescriptionSummary({
-  description,
-}: Props): JSX.Element {
+export default function DescriptionSummary({ description }: Props) {
+  if (!description) {
+    return null;
+  }
   // 30 is a magic number, the width of the available text area of the field
   // If the width of the actions area increases then this number will need
   // to be adjusted accordingly.
