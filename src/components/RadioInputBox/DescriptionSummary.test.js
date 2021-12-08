@@ -15,4 +15,9 @@ describe("DescriptionSummary", () => {
     const wrapper = mount(<DescriptionSummary description={description} />);
     expect(wrapper.children().equals(<span>{description}</span>)).toBe(true);
   });
+
+  it("returns null if no description is provided", () => {
+    const wrapper = mount(<DescriptionSummary description={undefined} />);
+    expect(wrapper.children().length).toBe(0);
+  });
 });
