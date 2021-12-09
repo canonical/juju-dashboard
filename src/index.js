@@ -61,9 +61,19 @@ function bootstrap() {
   // If we were provided with a relative path for the endpoint then we need
   // to build the full correct path for the websocket to connect to.
   const controllerAPIEndpoint = config.controllerAPIEndpoint;
-  if (!controllerAPIEndpoint.includes("://")) {
+  if (controllerAPIEndpoint) {
+    if (!controllerAPIEndpoint.includes("://")) {
+      const protocol = window.location.protocol.includes("https")
+        ? "wss"
+        : "ws";
+      config.controllerAPIEndpoint = `${protocol}://${window.location.host}${controllerAPIEndpoint}`;
+    }
+  }
+  // Support Juju 2.9 deployments with the old configuration values.
+  // XXX This can be removed once we drop support for 2.9 with the 3.0 release.
+  if (config.baseControllerURL === null) {
     const protocol = window.location.protocol.includes("https") ? "wss" : "ws";
-    config.controllerAPIEndpoint = `${protocol}://${window.location.host}${controllerAPIEndpoint}`;
+    config.controllerAPIEndpoint = `${protocol}://${window.location.host}/api`;
   }
 
   if (process.env.NODE_ENV === "production") {
