@@ -69,7 +69,7 @@
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.1",
     "formik": "2.2.9",
-    "framer-motion": "4.1.17",
+    "framer-motion": "5.6.0",
     "immer": "9.0.7",
     "lodash.mergewith": "^4.6.2",
     "mock-socket": "^9.0.3",
