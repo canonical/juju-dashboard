@@ -267,7 +267,7 @@ export default function App(): JSX.Element {
           <EntityInfo data={appEntityData} />
         </>
       </div>
-      <div className="entity-details__main u-overflow--scroll">
+      <div className="entity-details__main u-overflow--auto">
         {!hideMachines && (
           <ButtonGroup
             buttons={["units", "machines"]}
