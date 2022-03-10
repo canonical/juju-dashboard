@@ -315,7 +315,7 @@ const Model = () => {
           />
         )}
       </div>
-      <div className="entity-details__main u-overflow--scroll">
+      <div className="entity-details__main u-overflow--auto">
         {shouldShow("apps", query.activeView) && (
           <>
             {visibleTables === 0 && (

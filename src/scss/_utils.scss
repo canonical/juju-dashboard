@@ -18,6 +18,10 @@
     overflow: scroll;
   }
 
+  &--auto {
+    overflow: auto;
+  }
+
   &--visible {
     overflow: visible;
   }
