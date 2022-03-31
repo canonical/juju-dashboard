@@ -249,8 +249,32 @@ export const generateIconPath = (charmId) => {
     return defaultCharmIcon;
   }
   if (charmId.indexOf("cs:") === 0) {
+    // Strip unnessesary prefixes
+    // before: cs:~containers/lxd-container-47
+    // after:  containers/lxd-container-47
+    charmId = charmId.replace("cs:~", "");
     charmId = charmId.replace("cs:", "");
-    return `https://api.jujucharms.com/charmstore/v5/${charmId}/icon.svg`;
+
+    // Remove release from the charmId
+    // before: containers/trusty/lxd-container-47
+    // after:  containers/lxd-container-47
+    charmId = charmId.replace("precise/", "");
+    charmId = charmId.replace("trusty/", "");
+    charmId = charmId.replace("xenial/", "");
+    charmId = charmId.replace("bionic/", "");
+    charmId = charmId.replace("focal/", "");
+
+    // Combine owner and charm name
+    // before: containers/lxd-container-47
+    // after:  containers-lxd-container-47
+    charmId = charmId.replace("/", "-");
+
+    // Strip the revision number from the end
+    // before: containers-lxd-container-47
+    // after:  containers-lxd-container
+    charmId = charmId.substr(0, charmId.lastIndexOf("-", charmId.length));
+
+    return `https://charmhub.io/${charmId}/icon`;
   }
   if (charmId.indexOf("ch:") === 0) {
     // Regex explanation:

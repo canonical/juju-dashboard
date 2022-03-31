@@ -2,6 +2,7 @@ import {
   pluralize,
   formatFriendlyDateToNow,
   canAdministerModelAccess,
+  generateIconPath,
 } from "./utils";
 
 describe("pluralize", () => {
@@ -61,5 +62,45 @@ describe("canAdministerModelAccess", () => {
     expect(canAdministerModelAccess(userName, modelData.info.users)).toBe(
       false
     );
+  });
+});
+
+describe("generateIconPath", () => {
+  it("should return a icon URI for a promulated charm", () => {
+    const charmId = "cs:mysql-12";
+    const iconPath = generateIconPath(charmId);
+    expect(iconPath).toBe("https://charmhub.io/mysql/icon");
+  });
+
+  it("should return a icon URI for a promulated charm with dash", () => {
+    const charmId = "cs:hadoop-client-12";
+    const iconPath = generateIconPath(charmId);
+    expect(iconPath).toBe("https://charmhub.io/hadoop-client/icon");
+  });
+
+  it("should return a icon URI for a none promulated charm", () => {
+    const charmId = "cs:~containers/kubernetes-master-1106";
+    const iconPath = generateIconPath(charmId);
+    expect(iconPath).toBe(
+      "https://charmhub.io/containers-kubernetes-master/icon"
+    );
+  });
+
+  it("should return a icon URI for a none promulated charm with release", () => {
+    const charmId = "cs:~hatch/precise/failtester-7";
+    const iconPath = generateIconPath(charmId);
+    expect(iconPath).toBe("https://charmhub.io/hatch-failtester/icon");
+  });
+
+  it("should return default charm icon if the charm is local", () => {
+    const charmId = "local:my-charm";
+    const iconPath = generateIconPath(charmId);
+    expect(iconPath).toBe("default-charm-icon.svg");
+  });
+
+  it("should return a icon URI for a charmhub charm path", () => {
+    const charmId = "ch:amd64/xenial/content-cache-425";
+    const iconPath = generateIconPath(charmId);
+    expect(iconPath).toBe("https://charmhub.io/content-cache/icon");
   });
 });
