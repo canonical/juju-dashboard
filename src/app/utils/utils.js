@@ -1,5 +1,5 @@
 import { parseISO, formatDistanceToNow } from "date-fns";
-
+import { useState } from "react";
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 
 export function generateEntityIdentifier(charmId, name, subordinate) {
@@ -329,13 +329,32 @@ export const extractRelationEndpoints = (relation) => {
   return endpoints;
 };
 
+const ImgWithFallback = ({
+  src,
+  fallback = defaultCharmIcon,
+  alt,
+  ...props
+}) => {
+  const [imgSrc, setImgSrc] = useState(src);
+  const onError = () => setImgSrc(fallback);
+
+  return (
+    <img
+      alt={alt}
+      src={imgSrc ? imgSrc : fallback}
+      onError={onError}
+      {...props}
+    />
+  );
+};
+
 export const generateIconImg = (name, charmId) => {
   let iconSrc = defaultCharmIcon;
   if (charmId.indexOf("local:") !== 0) {
     iconSrc = generateIconPath(charmId);
   }
   return (
-    <img
+    <ImgWithFallback
       alt={name + " icon"}
       key={name}
       title={name}
