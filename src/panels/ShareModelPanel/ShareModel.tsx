@@ -5,7 +5,7 @@ import cloneDeep from "clone-deep";
 import useModelStatus from "hooks/useModelStatus";
 import { setModelSharingPermissions } from "juju";
 import { motion } from "framer-motion";
-import toast from "react-hot-toast";
+import reactHotToast from "react-hot-toast";
 
 import { getModelControllerDataByUUID } from "app/selectors";
 
@@ -114,7 +114,7 @@ export default function ShareModel() {
       dispatch
     );
     if (response?.error) {
-      toast.custom((t) => (
+      reactHotToast.custom((t) => (
         <ToastCard toastInstance={t} type="negative" text={response.error} />
       ));
       return false;
@@ -143,11 +143,11 @@ export default function ShareModel() {
     );
     const error = response?.results[0]?.error?.message;
     if (error) {
-      toast.custom((t) => (
+      reactHotToast.custom((t) => (
         <ToastCard toastInstance={t} type="negative" text={error} />
       ));
     } else {
-      toast.custom((t) => (
+      reactHotToast.custom((t) => (
         <ToastCard
           toastInstance={t}
           type="positive"
@@ -166,7 +166,7 @@ export default function ShareModel() {
       usersAccess?.[userName]
     );
 
-    toast.custom((t) => (
+    reactHotToast.custom((t) => (
       <ToastCard
         toastInstance={t}
         type="positive"
@@ -190,7 +190,7 @@ export default function ShareModel() {
     resetForm: () => void
   ) => {
     if (userAlreadyHasAccess(values.name, users)) {
-      toast.custom((t) => (
+      reactHotToast.custom((t) => (
         <ToastCard
           toastInstance={t}
           type="negative"
@@ -212,12 +212,12 @@ export default function ShareModel() {
 
       const error = response?.results[0]?.error?.message;
       if (error) {
-        toast.custom((t) => (
+        reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="negative" text={error} />
         ));
       } else {
         resetForm();
-        toast.custom((t) => (
+        reactHotToast.custom((t) => (
           <ToastCard
             toastInstance={t}
             type="positive"

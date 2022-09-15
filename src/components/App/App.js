@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
-import ReactGA from "react-ga";
+import { initialize, pageview } from "react-ga";
 
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 
@@ -17,8 +17,8 @@ function App() {
   const { baseAppURL } = useSelector(getConfig);
   const [disableAnalytics] = useLocalStorage("disableAnalytics", false);
   if (isProduction && (!disableAnalytics || disableAnalytics === "false")) {
-    ReactGA.initialize("UA-1018242-68");
-    ReactGA.pageview(window.location.href.replace(window.location.origin, ""));
+    initialize("UA-1018242-68");
+    pageview(window.location.href.replace(window.location.origin, ""));
   }
 
   return (

@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+import reactHotToast from "react-hot-toast";
 
 import "./_toast-card.scss";
 
@@ -36,7 +36,7 @@ export default function ToastCard({ toastInstance, type, text, undo }: Props) {
   }
 
   const handleClose = (id: string) => {
-    toast.remove(id);
+    reactHotToast.remove(id);
   };
 
   return (
