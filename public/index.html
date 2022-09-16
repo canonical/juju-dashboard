@@ -13,6 +13,9 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/app-icon.png" />
     <script src="/config.js"></script>
+    <% if (process.env.REACT_APP_USE_LOCAL_CONFIG) { %>
+    <script src="/config.local.js"></script>
+    <% } %>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.

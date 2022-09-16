@@ -123,11 +123,12 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
 
 - Run `juju dashboard` and view the Dashboard using the supplied url.
   - Accept the self-signed cert
-- Open `config.js` and modify the following values:
+- Copy `config.js` to `config.local.js` and modify the following values:
   - `controllerAPIEndpoint` should be output from the `juju dashboard` call above with the port `17070`.
   - `identityProviderAvailable` to `false`.
   - `isJuju` to `true`.
-- Start the Dashboard with `yarn start`.
+- Create a new file named `.env.local`
+- Start the Dashboard with `REACT_APP_USE_LOCAL_CONFIG=true yarn start` (or add `REACT_APP_USE_LOCAL_CONFIG=true` to an `.env.local` file).
 - You can now access the dashboard at http://localhost:3000/ and it'll require the log in credentials from the above `juju dashboard` command.
 
 ### Running the tests.
