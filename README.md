@@ -123,7 +123,7 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
 
 - Run `juju dashboard` and view the Dashboard using the supplied url.
   - Accept the self-signed cert
-- Open `config.js` and modify the following values:
+- Copy `config.js` to `config.local.js` and modify the following values:
   - `controllerAPIEndpoint` should be output from the `juju dashboard` call above with the port `17070`.
   - `identityProviderAvailable` to `false`.
   - `isJuju` to `true`.
