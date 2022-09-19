@@ -1,4 +1,4 @@
-import ReactGA from "react-ga";
+import { pageview, event } from "react-ga";
 
 type AnalyticMessage = {
   path?: string;
@@ -15,9 +15,9 @@ export default function useAnalytics() {
     }
 
     if (path) {
-      ReactGA.pageview(path);
+      pageview(path);
     } else {
-      ReactGA.event({
+      event({
         category,
         action,
       });
