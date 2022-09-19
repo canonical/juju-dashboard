@@ -1,5 +1,16 @@
 {
-  "extends": [
-    "github>canonical-web-and-design/renovate-websites"
+  "extends": ["config:base", "group:allNonMajor", "schedule:monthly"],
+  "labels": ["Maintenance"],
+  "packageRules": [
+    {
+      "groupName": "internal dependencies",
+      "groupSlug": "internal",
+      "packagePatterns": [
+        "^@canonical",
+        "^canonicalwebteam",
+        "^vanilla-framework"
+      ],
+      "schedule": ["at any time"]
+    }
   ]
 }
