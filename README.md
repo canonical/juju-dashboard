@@ -127,8 +127,7 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
   - `controllerAPIEndpoint` should be output from the `juju dashboard` call above with the port `17070`.
   - `identityProviderAvailable` to `false`.
   - `isJuju` to `true`.
-- Create a new file named `.env.local`
-- Start the Dashboard with `REACT_APP_USE_LOCAL_CONFIG=true yarn start` (or add `REACT_APP_USE_LOCAL_CONFIG=true` to an `.env.local` file).
+- Start the Dashboard with `yarn start`.
 - You can now access the dashboard at http://localhost:3000/ and it'll require the log in credentials from the above `juju dashboard` command.
 
 ### Running the tests.

@@ -13,7 +13,8 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/app-icon.png" />
     <script src="/config.js"></script>
-    <% if (process.env.REACT_APP_USE_LOCAL_CONFIG) { %>
+    <% if (process.env.NODE_ENV === "development" &&
+    require("fs").existsSync("public/config.local.js")) { %>
     <script src="/config.local.js"></script>
     <% } %>
     <!--

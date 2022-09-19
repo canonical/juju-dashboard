@@ -11,5 +11,4 @@ coverage/
 /.eslintcache
 .vscode/
 pkg/
-.env.local
 public/config.local.js
