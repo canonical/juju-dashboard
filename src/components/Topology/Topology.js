@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import * as d3 from "d3";
 import cloneDeep from "clone-deep";
 
+import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { generateIconPath } from "app/utils/utils";
 
 /**
@@ -241,6 +242,10 @@ const Topology = ({
     appIcon
       .append("image")
       .attr("xlink:href", (d) => generateIconPath(d["charm-url"]))
+      // use a fallback image if the icon is not found
+      .on("error", function () {
+        d3.select(this).attr("xlink:href", () => defaultCharmIcon);
+      })
       .attr("width", (d) => (isSubordinate(d) ? 96 : 126))
       .attr("height", (d) => (isSubordinate(d) ? 96 : 126))
       .attr("transform", (d) =>
