@@ -35,6 +35,6 @@ describe("Panels", () => {
     outerNode.dispatchEvent(
       new KeyboardEvent("keydown", { code: "Escape", bubbles: true })
     );
-    expect(closeSpy).toBeCalled();
+    expect(closeSpy).toHaveBeenCalled();
   });
 });

@@ -54,7 +54,7 @@ describe("Share Card", () => {
     );
     const removeIcon = wrapper.find(".p-icon--delete");
     removeIcon.simulate("click");
-    expect(removeUserFn).toBeCalled();
+    expect(removeUserFn).toHaveBeenCalled();
   });
 
   it("should call access change function when select value clicked", () => {
@@ -74,6 +74,6 @@ describe("Share Card", () => {
     accessLevelSelect.simulate("change", {
       target: { value: "write", name: "access" },
     });
-    expect(accessSelectChangeFn).toBeCalled();
+    expect(accessSelectChangeFn).toHaveBeenCalled();
   });
 });

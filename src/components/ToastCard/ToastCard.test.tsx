@@ -103,6 +103,6 @@ describe("Toast Card", () => {
     const undoButton = wrapper.find(".toast-card__undo button");
     expect(undoButton.exists()).toBe(true);
     undoButton.simulate("click");
-    expect(undoFn).toBeCalled();
+    expect(undoFn).toHaveBeenCalled();
   });
 });
