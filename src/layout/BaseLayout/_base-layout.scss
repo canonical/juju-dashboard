@@ -97,14 +97,13 @@
       max-width: 3rem;
       position: fixed;
       top: 0;
+      transition: all 0.25s;
 
       .logo__text,
       .p-primary-nav__bottom,
       .p-primary-nav__divider {
         opacity: 0;
       }
-
-      transition: all 0.25s;
 
       &:hover {
         max-width: 15rem;

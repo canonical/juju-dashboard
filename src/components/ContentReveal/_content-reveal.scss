@@ -5,7 +5,7 @@
     margin-top: 1rem;
   }
 
-  &:not([data-open="true"]):not(:last-child) {
+  &:not([data-open="true"], :last-child) {
     border-bottom: 1px solid $color-mid-x-light;
   }
 

@@ -12,7 +12,7 @@
     // Override Vanilla hover state as these chips are not yet actionable
     &:hover,
     &:active {
-      background-color: rgba(0, 0, 0, 0.05);
+      background-color: rgb(0 0 0 / 5%);
     }
   }
 
