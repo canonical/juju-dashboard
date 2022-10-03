@@ -16,6 +16,6 @@ describe("Button", () => {
       <Button onClick={() => handleClick()}>Button text</Button>
     );
     wrapper.find("button").simulate("click");
-    expect(handleClick).toBeCalledTimes(1);
+    expect(handleClick).toHaveBeenCalledTimes(1);
   });
 });
