@@ -2,7 +2,8 @@ import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
 import { QueryParamProvider } from "use-query-params";
-import { MemoryRouter, Route } from "react-router";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
+import { MemoryRouter } from "react-router";
 import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
 
@@ -31,7 +32,7 @@ describe.skip("Model", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -47,7 +48,7 @@ describe.skip("Model", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -63,7 +64,7 @@ describe.skip("Model", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -106,7 +107,7 @@ describe.skip("Model", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -126,7 +127,7 @@ describe.skip("Model", () => {
             "/models/pizza@external/mymodel?activeView=machines",
           ]}
         >
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -148,7 +149,7 @@ describe.skip("Model", () => {
         <MemoryRouter
           initialEntries={["/models/user-eggman@external/local-test"]}
         >
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -174,7 +175,7 @@ describe.skip("Model", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -197,7 +198,7 @@ describe.skip("Model", () => {
             "/models/user-eggman@external/canonical-kubernetes?activeView=integrations",
           ]}
         >
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -219,7 +220,7 @@ describe.skip("Model", () => {
             "/models/pizza@external/hadoopspark?activeView=machines",
           ]}
         >
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -240,7 +241,7 @@ describe.skip("Model", () => {
             "/models/pizza@external/hadoopspark?activeView=machines",
           ]}
         >
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -268,7 +269,7 @@ describe.skip("Model", () => {
         <MemoryRouter
           initialEntries={["/models/user-eggman@external/group-test"]}
         >
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>
@@ -286,7 +287,7 @@ describe.skip("Model", () => {
         <MemoryRouter
           initialEntries={["/models/user-eggman@external/group-test"]}
         >
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <Model />
             </TestRoute>

@@ -1,6 +1,7 @@
 import { mount } from "enzyme";
 import { QueryParamProvider } from "use-query-params";
-import { MemoryRouter, Router, Route } from "react-router";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
+import { MemoryRouter, Router } from "react-router";
 import { createMemoryHistory } from "history";
 
 import PanelHeader from "./PanelHeader";
@@ -12,7 +13,7 @@ describe("PanelHeader", () => {
       <MemoryRouter
         initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
       >
-        <QueryParamProvider ReactRouterRoute={Route}>
+        <QueryParamProvider adapter={ReactRouter5Adapter}>
           <PanelHeader title={title} />
         </QueryParamProvider>
       </MemoryRouter>
@@ -26,7 +27,7 @@ describe("PanelHeader", () => {
 
     const wrapper = mount(
       <Router history={history}>
-        <QueryParamProvider ReactRouterRoute={Route}>
+        <QueryParamProvider adapter={ReactRouter5Adapter}>
           <PanelHeader title="Title" />
         </QueryParamProvider>
       </Router>

@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { MemoryRouter, Route } from "react-router";
+import { MemoryRouter } from "react-router";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 
 import { reduxStateFactory } from "testing/redux-factory";
 import TestRoute from "components/Routes/TestRoute";
@@ -23,7 +24,7 @@ describe("Info Panel", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <InfoPanel />
             </TestRoute>
@@ -40,7 +41,7 @@ describe("Info Panel", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <InfoPanel />
             </TestRoute>

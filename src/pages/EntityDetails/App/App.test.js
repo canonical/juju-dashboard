@@ -1,8 +1,9 @@
 import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { MemoryRouter, Router, Route } from "react-router";
+import { MemoryRouter, Router } from "react-router";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 import { createMemoryHistory } from "history";
 import cloneDeep from "clone-deep";
 
@@ -31,7 +32,7 @@ describe.skip("Entity Details App", () => {
           ]}
         >
           <TestRoute path="/models/:userName/:modelName?/app/:appName?">
-            <QueryParamProvider ReactRouterRoute={Route}>
+            <QueryParamProvider adapter={ReactRouter5Adapter}>
               <App />
             </QueryParamProvider>
           </TestRoute>
@@ -54,7 +55,7 @@ describe.skip("Entity Details App", () => {
       <Provider store={store}>
         <Router history={history}>
           <TestRoute path="/models/:userName/:modelName?/app/:appName?">
-            <QueryParamProvider ReactRouterRoute={Route}>
+            <QueryParamProvider adapter={ReactRouter5Adapter}>
               <App />
             </QueryParamProvider>
           </TestRoute>

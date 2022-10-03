@@ -1,8 +1,9 @@
-import { MemoryRouter, Route } from "react-router";
+import { MemoryRouter } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 
 import StatusGroup from "./StatusGroup";
 
@@ -28,7 +29,7 @@ describe("StatusGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <StatusGroup />
           </QueryParamProvider>
         </Provider>
@@ -43,7 +44,7 @@ describe("StatusGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <StatusGroup />
           </QueryParamProvider>
         </Provider>
@@ -64,7 +65,7 @@ describe("StatusGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <StatusGroup filters={filters} />
           </QueryParamProvider>
         </Provider>
@@ -78,7 +79,7 @@ describe("StatusGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <StatusGroup />
           </QueryParamProvider>
         </Provider>
@@ -99,7 +100,7 @@ describe("StatusGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <StatusGroup filters={filters} />
           </QueryParamProvider>
         </Provider>

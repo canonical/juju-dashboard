@@ -1,8 +1,9 @@
-import { MemoryRouter, Route } from "react-router";
+import { MemoryRouter } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 
 import CloudGroup from "./CloudGroup";
 
@@ -28,7 +29,7 @@ describe("CloudGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <CloudGroup />
           </QueryParamProvider>
         </Provider>
@@ -43,7 +44,7 @@ describe("CloudGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <CloudGroup />
           </QueryParamProvider>
         </Provider>
@@ -63,7 +64,7 @@ describe("CloudGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <CloudGroup filters={filters} />
           </QueryParamProvider>
         </Provider>
@@ -82,7 +83,7 @@ describe("CloudGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <CloudGroup filters={filters} />
           </QueryParamProvider>
         </Provider>
