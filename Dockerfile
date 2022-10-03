@@ -17,7 +17,7 @@ ADD . .
 RUN yarn run build
 
 
-FROM ubuntu:focal
+FROM ubuntu:jammy
 
 RUN apt update && apt install --yes nginx
 
