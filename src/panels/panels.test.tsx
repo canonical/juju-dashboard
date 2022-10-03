@@ -1,8 +1,9 @@
 import { mount } from "enzyme";
-import { MemoryRouter, Route } from "react-router";
+import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 import dataDump from "./../../src/testing/complete-redux-store-dump";
 
 import Panels, { close } from "./panels";
@@ -17,7 +18,7 @@ describe("Panels", () => {
     mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/foo"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <Panels />
           </QueryParamProvider>
         </MemoryRouter>

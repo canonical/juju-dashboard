@@ -1,8 +1,9 @@
 import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { MemoryRouter, Route } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 import dataDump from "testing/complete-redux-store-dump";
 
 import TestRoute from "components/Routes/TestRoute";
@@ -18,7 +19,7 @@ describe("Share Model Panel", () => {
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
           <TestRoute path="/models/:userName/:modelName?">
-            <QueryParamProvider ReactRouterRoute={Route}>
+            <QueryParamProvider adapter={ReactRouter5Adapter}>
               <ShareModel />
             </QueryParamProvider>
           </TestRoute>
@@ -37,7 +38,7 @@ describe("Share Model Panel", () => {
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
           <TestRoute path="/models/:userName/:modelName?">
-            <QueryParamProvider ReactRouterRoute={Route}>
+            <QueryParamProvider adapter={ReactRouter5Adapter}>
               <ShareModel />
             </QueryParamProvider>
           </TestRoute>

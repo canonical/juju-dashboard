@@ -1,10 +1,11 @@
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import { MemoryRouter, Router, Route } from "react-router";
+import { MemoryRouter, Router } from "react-router";
 import dataDump from "testing/complete-redux-store-dump";
 import { createMemoryHistory } from "history";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 
 import ModelsIndex from "./ModelsIndex";
 
@@ -16,7 +17,7 @@ describe("Models Index page", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ModelsIndex />
           </QueryParamProvider>
         </MemoryRouter>
@@ -33,7 +34,7 @@ describe("Models Index page", () => {
     const wrapper = mount(
       <Provider store={store}>
         <Router history={history}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ModelsIndex />
           </QueryParamProvider>
         </Router>
@@ -59,7 +60,7 @@ describe("Models Index page", () => {
     mount(
       <Provider store={store}>
         <Router history={history}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ModelsIndex />
           </QueryParamProvider>
         </Router>

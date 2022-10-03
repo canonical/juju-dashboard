@@ -1,9 +1,10 @@
 import cloneDeep from "clone-deep";
 import { mount } from "enzyme";
-import { MemoryRouter, Route } from "react-router";
+import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 
 import ControllersIndex from "./ControllersIndex";
 
@@ -25,7 +26,7 @@ describe("Controllers table", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ControllersIndex />
           </QueryParamProvider>
         </Provider>
@@ -38,7 +39,7 @@ describe("Controllers table", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ControllersIndex />
           </QueryParamProvider>
         </Provider>
@@ -52,7 +53,7 @@ describe("Controllers table", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ControllersIndex />
           </QueryParamProvider>
         </Provider>
@@ -69,7 +70,7 @@ describe("Controllers table", () => {
           <MemoryRouter
             initialEntries={["/controllers?panel=register-controller"]}
           >
-            <QueryParamProvider ReactRouterRoute={Route}>
+            <QueryParamProvider adapter={ReactRouter5Adapter}>
               <ControllersIndex />
             </QueryParamProvider>
           </MemoryRouter>

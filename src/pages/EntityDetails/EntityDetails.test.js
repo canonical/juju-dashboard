@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
-import { Route } from "react-router";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 
@@ -35,7 +35,7 @@ describe("Entity Details Container", () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <EntityDetails type={props?.type}>
                 {props?.children}
@@ -121,7 +121,7 @@ describe("Entity Details Container", () => {
           inline: "nearest",
         },
       ]);
-      expect(history.location.query).toEqual({ activeView: section.query });
+      expect(history.location.search).toEqual(`?activeView=${section.query}`);
     });
   });
 

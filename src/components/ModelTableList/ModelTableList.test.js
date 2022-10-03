@@ -1,9 +1,10 @@
 import cloneDeep from "clone-deep";
-import { MemoryRouter, Route } from "react-router";
+import { MemoryRouter } from "react-router";
 import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 
 import ModelTableList from "./ModelTableList";
 
@@ -17,7 +18,7 @@ describe("ModelTableList", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ModelTableList />
           </QueryParamProvider>
         </Provider>
@@ -38,7 +39,7 @@ describe("ModelTableList", () => {
     tables.forEach((table) => {
       const wrapper = mount(
         <MemoryRouter>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <Provider store={store}>
               <ModelTableList groupedBy={table[0]} />
             </Provider>
@@ -67,7 +68,7 @@ describe("ModelTableList", () => {
       const wrapper = mount(
         <MemoryRouter>
           <Provider store={store}>
-            <QueryParamProvider ReactRouterRoute={Route}>
+            <QueryParamProvider adapter={ReactRouter5Adapter}>
               <ModelTableList groupedBy={table.groupedBy} filters={filters} />
             </QueryParamProvider>
           </Provider>
@@ -82,7 +83,7 @@ describe("ModelTableList", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ModelTableList />
           </QueryParamProvider>
         </Provider>
@@ -103,7 +104,7 @@ describe("ModelTableList", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ModelTableList />
           </QueryParamProvider>
         </Provider>
@@ -126,7 +127,7 @@ describe("ModelTableList", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <ModelTableList />
           </QueryParamProvider>
         </Provider>

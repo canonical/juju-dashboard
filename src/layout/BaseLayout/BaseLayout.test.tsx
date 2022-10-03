@@ -2,8 +2,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { MemoryRouter, Route } from "react-router";
+import { MemoryRouter } from "react-router";
 import { QueryParamProvider } from "use-query-params";
+import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
 import TestRoute from "components/Routes/TestRoute";
 import dataDump from "testing/complete-redux-store-dump";
 import cloneDeep from "clone-deep";
@@ -19,7 +20,7 @@ describe("Base Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <Router>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <BaseLayout>
               <p>foo</p>
             </BaseLayout>
@@ -35,7 +36,7 @@ describe("Base Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <Router>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <BaseLayout>
               <p>foo</p>
             </BaseLayout>
@@ -60,7 +61,7 @@ describe("Base Layout", () => {
             "/models/pizza@external/hadoopspark?activeView=machines",
           ]}
         >
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models/:userName/:modelName?">
               <BaseLayout>
                 <p>foo</p>
@@ -80,7 +81,7 @@ describe("Base Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models">
               <BaseLayout>
                 <p>foo</p>
@@ -100,7 +101,7 @@ describe("Base Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
-          <QueryParamProvider ReactRouterRoute={Route}>
+          <QueryParamProvider adapter={ReactRouter5Adapter}>
             <TestRoute path="/models">
               <BaseLayout>
                 <p>foo</p>
