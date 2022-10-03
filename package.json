@@ -55,7 +55,7 @@
     "@canonical/jujulib": "2.0.0-beta.6",
     "@canonical/macaroon-bakery": "1.0.0",
     "@canonical/react-components": "0.24.0",
-    "@sentry/browser": "6.18.2",
+    "@sentry/browser": "7.14.0",
     "@types/clone-deep": "4.0.1",
     "@types/lodash.mergewith": "^4.6.6",
     "@types/react": "17.0.40",
