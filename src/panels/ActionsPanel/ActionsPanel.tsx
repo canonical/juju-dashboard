@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { DefaultRootState, useSelector, useStore } from "react-redux";
+import { useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useQueryParam, withDefault, ArrayParam } from "use-query-params";
 import { executeActionOnUnits, getActionsForApplication } from "juju";
@@ -21,6 +21,7 @@ import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
+import { TSFixMe } from "types";
 
 import ActionOptions from "./ActionOptions";
 
@@ -84,7 +85,7 @@ export default function ActionsPanel(): JSX.Element {
   // Selectors.js is not typescript yet and it complains about the return value
   // of getModelUUID. TSFixMe
   const modelUUID = useSelector(
-    getModelUUIDMemo as (state: DefaultRootState) => unknown
+    getModelUUIDMemo as (state: TSFixMe) => unknown
   );
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});
@@ -118,9 +119,8 @@ export default function ActionsPanel(): JSX.Element {
   }, [appName, appStore, modelUUID]);
 
   // See above note about selectors.js typings TSFixMe
-  const namespace =
-    appState.juju?.modelData?.[modelUUID as string]?.applications?.[appName]
-      ?.charm;
+  const namespace = (appState as TSFixMe).juju?.modelData?.[modelUUID as string]
+    ?.applications?.[appName]?.charm;
 
   const generateSelectedUnitList = () => {
     if (!selectedUnits.length) {
