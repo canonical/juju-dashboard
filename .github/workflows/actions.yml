@@ -117,7 +117,7 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: CYPRESS_INSTALL_BINARY=0 yarn install
       - run: yarn typescript-build
-  types:
+  build:
     name: Build
     runs-on: ubuntu-latest
     strategy:
