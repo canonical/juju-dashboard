@@ -42,8 +42,6 @@ type UserAccess = {
   access: string | null;
 };
 
-type DefaultRootState = {};
-
 export default function ShareModel() {
   const dispatch = useDispatch();
   const store = useStore();
@@ -62,9 +60,7 @@ export default function ShareModel() {
     getModelControllerDataByUUID(controllerUUID);
 
   const modelControllerData: ModelControllerData = useSelector(
-    modelControllerDataByUUID as (
-      state: DefaultRootState
-    ) => ModelControllerData
+    modelControllerDataByUUID as (state: TSFixMe) => ModelControllerData
   );
 
   const modelControllerURL = modelControllerData?.url;

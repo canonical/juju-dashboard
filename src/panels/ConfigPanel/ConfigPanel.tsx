@@ -17,6 +17,7 @@ import useEventListener from "hooks/useEventListener";
 
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
+import { TSFixMe } from "types";
 
 import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
@@ -173,7 +174,7 @@ export default function ConfigPanel({
       modelUUID,
       appName,
       config,
-      reduxStore.getState()
+      reduxStore.getState() as TSFixMe
     );
     // It returns an empty object if it's successful.
     if (typeof error === "string") {

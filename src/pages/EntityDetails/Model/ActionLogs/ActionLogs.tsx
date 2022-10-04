@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { DefaultRootState, useSelector, useStore } from "react-redux";
+import { useSelector, useStore } from "react-redux";
 import { useParams, Link } from "react-router-dom";
 import classnames from "classnames";
 
@@ -11,6 +11,7 @@ import { queryOperationsList } from "juju/index";
 import { generateIconImg, generateStatusElement } from "app/utils/utils";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import { TSFixMe } from "types";
 
 type ApplicationList = { [key: string]: any };
 
@@ -92,11 +93,9 @@ export default function ActionLogs() {
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   // Selectors.js is not typescript yet and it complains about the return value
   // of getModelUUID. TSFixMe
-  const modelUUID = useSelector(
-    getModelUUIDMemo as (state: DefaultRootState) => string
-  );
+  const modelUUID = useSelector(getModelUUIDMemo as (state: TSFixMe) => string);
   const modelStatusData = useSelector(
-    getModelStatus(modelUUID) as (state: DefaultRootState) => {
+    getModelStatus(modelUUID) as (state: TSFixMe) => {
       applications: ApplicationList;
     }
   );
