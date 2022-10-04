@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
+import process from "process";
 import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 import * as Sentry from "@sentry/browser";
 import App from "components/App/App";
@@ -21,9 +22,18 @@ import {
 
 import jujuReducer from "juju/reducer";
 
-import { version as appVersion } from "../package.json";
+import packageJSON from "../package.json";
 
 import * as serviceWorker from "./serviceWorker";
+
+const appVersion = packageJSON.version;
+
+// Webpack 5 no longer makes node variables available at runtime so we need to
+// attach `process` to the window:
+// https://github.com/facebook/create-react-app/issues/12212
+if (!window.process) {
+  window.process = process;
+}
 
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
