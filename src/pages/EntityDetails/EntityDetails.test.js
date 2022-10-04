@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
@@ -107,9 +107,9 @@ describe("Entity Details Container", () => {
         query: "machines",
       },
     ];
-    sections.forEach((section) => {
+    sections.forEach(async (section) => {
       const scrollIntoView = jest.fn();
-      userEvent.click(within(viewSelector).getByText(section.text), {
+      await userEvent.click(within(viewSelector).getByText(section.text), {
         target: {
           scrollIntoView,
         },
@@ -133,7 +133,9 @@ describe("Entity Details Container", () => {
 
   it("shows the CLI in juju 2.9", () => {
     renderComponent();
-    expect(screen.queryByTestId("webcli")).toBeInTheDocument();
+    waitFor(() => {
+      expect(screen.queryByTestId("webcli")).toBeInTheDocument();
+    });
   });
 
   it("does not show the webCLI in juju 2.8", () => {
@@ -144,6 +146,8 @@ describe("Entity Details Container", () => {
         ],
       },
     });
-    expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
+    waitFor(() => {
+      expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
+    });
   });
 });
