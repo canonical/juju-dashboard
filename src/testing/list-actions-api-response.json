@@ -1,0 +1,53 @@
+{
+  "request-id": 3,
+  "response": {
+    "results": [
+      {
+        "action": {
+          "tag": "action-2",
+          "receiver": "unit-easyrsa-0",
+          "name": "list-disks"
+        },
+        "enqueued": "2021-04-14T20:27:56Z",
+        "started": "2021-04-14T20:27:57Z",
+        "completed": "2021-04-14T20:27:57Z",
+        "status": "completed",
+        "log": [
+          {
+            "timestamp": "2021-04-14T20:27:57Z",
+            "message": "log message 1"
+          }
+        ],
+        "output": {
+          "return-code": 0
+        }
+      },
+      {
+        "action": {
+          "tag": "action-3",
+          "receiver": "unit-easyrsa-1",
+          "name": "list-disks"
+        },
+        "enqueued": "2021-04-14T20:27:57Z",
+        "started": "2021-04-14T20:27:57Z",
+        "completed": "2021-04-14T20:27:57Z",
+        "status": "failed",
+        "message": "error message",
+        "log": [
+          {
+            "timestamp": "2021-04-14T20:27:57Z",
+            "message": "log message 1"
+          },
+          {
+            "timestamp": "2021-04-14T20:27:57Z",
+            "message": "log message 2"
+          }
+        ],
+        "output": {
+          "return-code": 0,
+          "fortune": "custom message"
+        }
+      }
+    ]
+  }
+}
