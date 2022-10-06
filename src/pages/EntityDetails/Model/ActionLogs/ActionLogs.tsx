@@ -1,21 +1,24 @@
+import classnames from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector, useStore } from "react-redux";
-import { useParams, Link } from "react-router-dom";
-import classnames from "classnames";
+import { Link, useParams } from "react-router-dom";
 
 import ModularTable from "@canonical/react-components/dist/components/ModularTable/ModularTable";
 import Spinner from "@canonical/react-components/dist/components/Spinner/Spinner";
 
-import { getModelUUID, getModelStatus } from "app/selectors";
-import { queryOperationsList } from "juju/index";
+import { getModelStatus, getModelUUID } from "app/selectors";
 import { generateIconImg, generateStatusElement } from "app/utils/utils";
+import { queryActionsList, queryOperationsList } from "juju/index";
 
+import { ContextualMenu } from "@canonical/react-components";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { TSFixMe } from "types";
+import "./_action-logs.scss";
 
 type ApplicationList = { [key: string]: any };
 
 type Operations = Operation[];
+type Actions = Action[];
 
 type Operation = {
   operation: string;
@@ -33,25 +36,47 @@ type TableRow = {
   completed: string;
 };
 
-// https://github.com/juju/js-libjuju/blob/master/api/facades/action-v6.ts#L27
+// https://github.com/juju/js-libjuju/blob/master/api/facades/action-v7.ts#L29
 type Action = {
   action: ActionData;
-  enqueued: string;
-  started: string;
   completed: string;
-  status: string;
+  enqueued: string;
+  error: Error;
+  log: ActionMessage[];
   message: string;
+  output: AdditionalProperties;
+  started: string;
+  status: string;
+};
+
+type ActionMessage = {
+  message: string;
+  timestamp: string;
 };
 
 type ActionData = {
-  tag: string;
-  receiver: string;
+  "execution-group"?: string;
   name: string;
+  parallel?: boolean;
+  parameters?: AdditionalProperties;
+  receiver: string;
+  tag: string;
+};
+
+// custom entries that are set with `event.set_results`
+type AdditionalProperties = {
+  [key: string]: any;
 };
 
 type ApplicationData = {
   charm: string;
 };
+
+enum Output {
+  ALL = "STDOUT/STDERR",
+  STDERR = "STDERR",
+  STDOUT = "STDOUT",
+}
 
 function generateLinkToApp(
   appName: string,
@@ -87,8 +112,12 @@ function generateAppIcon(
 
 export default function ActionLogs() {
   const [operations, setOperations] = useState<Operations>([]);
+  const [actions, setActions] = useState<Actions>([]);
   const [fetchedOperations, setFetchedOperations] = useState(false);
   const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const [selectedOutput, setSelectedOutput] = useState<{
+    [key: string]: Output;
+  }>({});
   const appStore = useStore();
   const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
   // Selectors.js is not typescript yet and it complains about the return value
@@ -112,6 +141,17 @@ export default function ActionLogs() {
         appStore.getState()
       );
       setOperations(operationList.results);
+      const actionsTags = operationList.results
+        ?.flatMap((operation: Operation) =>
+          operation.actions.map((action) => action.action.tag)
+        )
+        .map((actionTag: string) => ({ tag: actionTag }));
+      const actionsList = await queryActionsList(
+        { entities: actionsTags },
+        modelUUID,
+        appStore.getState()
+      );
+      setActions(actionsList.results);
       setFetchedOperations(true);
     }
     fetchData();
@@ -122,6 +162,11 @@ export default function ActionLogs() {
   }, [modelUUID]);
 
   const tableData = useMemo(() => {
+    const handleOutputSelect = (actionTag: string, output: Output) => {
+      selectedOutput[actionTag] = output;
+      setSelectedOutput({ ...selectedOutput });
+    };
+
     const rows: TableRows = [];
     operations &&
       operations.forEach((operationData) => {
@@ -135,6 +180,26 @@ export default function ActionLogs() {
         let actionName = "";
         operationData.actions.forEach((actionData, index) => {
           actionName = actionData.action.name;
+          const outputType =
+            selectedOutput[actionData.action.tag] || Output.ALL;
+
+          const actionFullDetails = actions.find(
+            (action) => action.action.tag === actionData.action.tag
+          );
+          if (!actionFullDetails) return;
+          const stdout = (actionFullDetails.log || []).map((m, i) => (
+            <span className="action-logs__stdout" key={i}>
+              {m.message}
+            </span>
+          ));
+          const stderr =
+            actionFullDetails.status === "failed"
+              ? actionFullDetails.message
+              : "";
+          const StdOut = () => <span>{stdout}</span>;
+          const StdErr = () => (
+            <span className="action-logs__stderr">{stderr}</span>
+          );
           let defaultRow: TableRow = {
             application: "-",
             id: "-",
@@ -196,8 +261,56 @@ export default function ActionLogs() {
               true
             ),
             taskId: actionData.action.tag.split("-")[1],
-            message: actionData.message || "-",
-            completed: actionData.completed,
+            message: (
+              <>
+                {outputType === Output.STDOUT ? (
+                  <StdOut />
+                ) : outputType === Output.STDERR ? (
+                  <StdErr />
+                ) : (
+                  <>
+                    <StdOut />
+                    <StdErr />
+                  </>
+                )}
+              </>
+            ),
+            completed: new Date(actionData.completed).toLocaleString(),
+            controls: (
+              <>
+                <ContextualMenu
+                  hasToggleIcon
+                  toggleLabel={
+                    outputType === Output.ALL ? "Output" : outputType
+                  }
+                  links={[
+                    {
+                      children: Output.ALL,
+                      onClick: () =>
+                        handleOutputSelect(actionData.action.tag, Output.ALL),
+                    },
+                    {
+                      children: Output.STDOUT,
+                      onClick: () =>
+                        handleOutputSelect(
+                          actionData.action.tag,
+                          Output.STDOUT
+                        ),
+                      disabled: !stdout.length,
+                    },
+                    {
+                      children: Output.STDERR,
+                      onClick: () =>
+                        handleOutputSelect(
+                          actionData.action.tag,
+                          Output.STDERR
+                        ),
+                      disabled: !stderr.length,
+                    },
+                  ]}
+                />
+              </>
+            ),
           };
 
           rows.push({
@@ -207,7 +320,14 @@ export default function ActionLogs() {
         });
       });
     return rows;
-  }, [operations, modelStatusData.applications, userName, modelName]);
+  }, [
+    operations,
+    modelStatusData?.applications,
+    userName,
+    modelName,
+    actions,
+    selectedOutput,
+  ]);
 
   const columnData = useMemo(
     () => [
@@ -234,6 +354,9 @@ export default function ActionLogs() {
       {
         Header: "completion time",
         accessor: "completed",
+      },
+      {
+        accessor: "controls",
       },
     ],
     []

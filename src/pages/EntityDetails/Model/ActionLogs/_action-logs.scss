@@ -1,0 +1,14 @@
+@import "../../../../scss/settings";
+@import "vanilla-framework/scss/vanilla";
+
+@mixin action-logs {
+  .action-logs__stdout {
+    display: block;
+  }
+
+  .action-logs__stderr {
+    color: $color-negative;
+  }
+}
+
+@include action-logs;

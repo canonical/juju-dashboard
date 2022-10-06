@@ -1,5 +1,5 @@
-import Limiter from "async-limiter";
 import { connect, connectAndLogin } from "@canonical/jujulib";
+import Limiter from "async-limiter";
 
 import actions from "@canonical/jujulib/dist/api/facades/action-v6";
 import allWatcher from "@canonical/jujulib/dist/api/facades/all-watcher-v1";
@@ -18,9 +18,9 @@ import {
   getBakery,
   getConfig,
   getControllerConnection,
-  isLoggedIn,
   getUserPass,
   getWSControllerURL,
+  isLoggedIn,
 } from "app/selectors";
 import {
   addControllerCloudRegion,
@@ -479,6 +479,12 @@ export async function queryOperationsList(queryArgs, modelUUID, appState) {
     queryArgs
   );
   return operationListResult;
+}
+
+export async function queryActionsList(queryArgs, modelUUID, appState) {
+  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const actionsListResult = await conn.facades.action.actions(queryArgs);
+  return actionsListResult;
 }
 
 export async function startModelWatcher(modelUUID, appState, dispatch) {
