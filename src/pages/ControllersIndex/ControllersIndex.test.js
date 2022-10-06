@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import ControllersIndex from "./ControllersIndex";
 
@@ -26,7 +26,7 @@ describe("Controllers table", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <ControllersIndex />
           </QueryParamProvider>
         </Provider>
@@ -39,7 +39,7 @@ describe("Controllers table", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <ControllersIndex />
           </QueryParamProvider>
         </Provider>
@@ -53,7 +53,7 @@ describe("Controllers table", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <ControllersIndex />
           </QueryParamProvider>
         </Provider>
@@ -65,17 +65,15 @@ describe("Controllers table", () => {
     const clonedData = cloneDeep(dataDump);
     const store = mockStore(clonedData);
     const wrapper = mount(
-      <MemoryRouter>
-        <Provider store={store}>
-          <MemoryRouter
-            initialEntries={["/controllers?panel=register-controller"]}
-          >
-            <QueryParamProvider adapter={ReactRouter5Adapter}>
-              <ControllersIndex />
-            </QueryParamProvider>
-          </MemoryRouter>
-        </Provider>
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/controllers?panel=register-controller"]}
+        >
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <ControllersIndex />
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
     );
     expect(wrapper.find(".p-panel.register-controller").length).toBe(1);
   });

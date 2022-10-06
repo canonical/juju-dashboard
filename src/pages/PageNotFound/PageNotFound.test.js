@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import { mount } from "enzyme";
 import { MemoryRouter } from "react-router";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import dataDump from "testing/complete-redux-store-dump";
 
 import { Routes } from "components/Routes/Routes";
@@ -16,7 +16,7 @@ describe("PageNotFound page", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/foobar11"]}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes />
           </QueryParamProvider>
         </MemoryRouter>

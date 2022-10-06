@@ -1,8 +1,7 @@
 import { mount } from "enzyme";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
-import { MemoryRouter, Router } from "react-router";
-import { createMemoryHistory } from "history";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 
 import PanelHeader from "./PanelHeader";
 
@@ -13,7 +12,7 @@ describe("PanelHeader", () => {
       <MemoryRouter
         initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
       >
-        <QueryParamProvider adapter={ReactRouter5Adapter}>
+        <QueryParamProvider adapter={ReactRouter6Adapter}>
           <PanelHeader title={title} />
         </QueryParamProvider>
       </MemoryRouter>
@@ -22,21 +21,19 @@ describe("PanelHeader", () => {
   });
 
   it("Removes all query params when close button clicked", () => {
-    const history = createMemoryHistory();
-    history.push("/models?model=cmr&panel=share-model");
-
+    window.history.pushState({}, "", "/models?model=cmr&panel=share-model");
     const wrapper = mount(
-      <Router history={history}>
-        <QueryParamProvider adapter={ReactRouter5Adapter}>
+      <BrowserRouter>
+        <QueryParamProvider adapter={ReactRouter6Adapter}>
           <PanelHeader title="Title" />
         </QueryParamProvider>
-      </Router>
+      </BrowserRouter>
     );
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     expect(searchParams.get("panel")).toEqual("share-model");
     expect(searchParams.get("model")).toEqual("cmr");
     wrapper.find(".js-aside-close").simulate("click");
-    const searchParamsAfterClose = new URLSearchParams(history.location.search);
+    const searchParamsAfterClose = new URLSearchParams(window.location.search);
     expect(searchParamsAfterClose.get("panel")).toEqual(null);
     expect(searchParamsAfterClose.get("model")).toEqual(null);
   });

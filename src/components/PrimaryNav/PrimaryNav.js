@@ -5,6 +5,7 @@ import { getGroupedModelStatusCounts, getAppVersion } from "app/selectors";
 
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
+import classNames from "classnames";
 
 // Style imports
 import "./_primary-nav.scss";
@@ -36,14 +37,12 @@ const PrimaryNav = () => {
         {pages.map((navItem) => (
           <li key={navItem.path} className="p-list__item">
             <NavLink
-              className="p-list__link"
-              isActive={(match) => {
-                if (match && match.url.includes(navItem.path)) {
-                  return true;
-                }
-              }}
+              className={({ isActive }) =>
+                classNames("p-list__link", {
+                  "is-selected": isActive,
+                })
+              }
               to={navItem.path}
-              activeClassName="is-selected"
             >
               <i className={`p-icon--${navItem.icon} is-light`}></i>
               {navItem.label}

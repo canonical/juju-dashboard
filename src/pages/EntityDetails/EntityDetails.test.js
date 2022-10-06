@@ -3,13 +3,10 @@ import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
-import { Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { reduxStateFactory } from "testing/redux-factory";
-
-import TestRoute from "components/Routes/TestRoute";
 
 import EntityDetails from "./EntityDetails";
 
@@ -27,25 +24,28 @@ const mockStore = configureStore([]);
 
 describe("Entity Details Container", () => {
   function renderComponent({ props, overrides, transient } = {}) {
-    const history = createMemoryHistory();
     const mockState = reduxStateFactory().build(overrides, { transient });
     const store = mockStore(mockState);
 
-    history.push("/models/kirk@external/enterprise");
+    window.history.pushState({}, "", "/models/kirk@external/enterprise");
     render(
       <Provider store={store}>
-        <Router history={history}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
-            <TestRoute path="/models/:userName/:modelName?">
-              <EntityDetails type={props?.type}>
-                {props?.children}
-              </EntityDetails>
-            </TestRoute>
+        <BrowserRouter>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route
+                path="/models/:userName/:modelName"
+                element={
+                  <EntityDetails type={props?.type}>
+                    {props?.children}
+                  </EntityDetails>
+                }
+              />
+            </Routes>
           </QueryParamProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
-    return { history };
   }
 
   it("should display the correct window title", () => {
@@ -87,7 +87,7 @@ describe("Entity Details Container", () => {
   });
 
   it("clicking the tabs changes the visible section", () => {
-    const { history } = renderComponent({ props: { type: "model" } });
+    renderComponent({ props: { type: "model" } });
     const viewSelector = screen.getByTestId("view-selector");
     const sections = [
       {
@@ -121,7 +121,7 @@ describe("Entity Details Container", () => {
           inline: "nearest",
         },
       ]);
-      expect(history.location.search).toEqual(`?activeView=${section.query}`);
+      expect(window.location.search).toEqual(`?activeView=${section.query}`);
     });
   });
 
@@ -131,9 +131,9 @@ describe("Entity Details Container", () => {
     expect(screen.getByText(children)).toBeInTheDocument();
   });
 
-  it("shows the CLI in juju 2.9", () => {
+  it("shows the CLI in juju 2.9", async () => {
     renderComponent();
-    waitFor(() => {
+    await waitFor(() => {
       expect(screen.queryByTestId("webcli")).toBeInTheDocument();
     });
   });

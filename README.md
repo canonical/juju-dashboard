@@ -267,20 +267,6 @@ const wrapper = mount(
 );
 ```
 
-We have a [special component](src/components/Routes/TestRoute.js) for routing to be used with testing. It ensures that the routes that are used in the test are valid within the application by comparing them to the real routes.
-
-```
-const wrapper = mount(
-  <Provider store={store}>
-    <MemoryRouter initialEntries={["/models/group-test"]}>
-      <TestRoute path="/models/*">
-        <InfoPanel />
-      </TestRoute>
-    </MemoryRouter>
-  </Provider>
-);
-```
-
 ### Developer notes
 
 ## Releasing the Dashboard

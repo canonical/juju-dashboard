@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import { initialize, pageview } from "react-ga";
 
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
@@ -25,7 +25,7 @@ function App() {
   return (
     <Router basename={baseAppURL}>
       <ErrorBoundary>
-        <QueryParamProvider adapter={ReactRouter5Adapter}>
+        <QueryParamProvider adapter={ReactRouter6Adapter}>
           <Routes />
         </QueryParamProvider>
       </ErrorBoundary>

@@ -1,13 +1,10 @@
 import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { MemoryRouter, Router } from "react-router";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
-import { createMemoryHistory } from "history";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import cloneDeep from "clone-deep";
-
-import TestRoute from "components/Routes/TestRoute";
 
 import { waitForComponentToPaint } from "testing/utils";
 import dataDump from "testing/complete-redux-store-dump";
@@ -31,11 +28,14 @@ describe.skip("Entity Details App", () => {
             "/models/user-island@external/canonical-kubernetes/app/etcd",
           ]}
         >
-          <TestRoute path="/models/:userName/:modelName?/app/:appName?">
-            <QueryParamProvider adapter={ReactRouter5Adapter}>
-              <App />
-            </QueryParamProvider>
-          </TestRoute>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route
+                path="/models/:userName/:modelName/app/:appName"
+                element={<App />}
+              />
+            </Routes>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );
@@ -45,25 +45,27 @@ describe.skip("Entity Details App", () => {
 
   async function generateRoutableComponent() {
     const store = mockStore(dataDump);
-    const history = createMemoryHistory({
-      initialEntries: [
-        "/models/user-island@external/canonical-kubernetes/app/etcd",
-      ],
-    });
 
     const wrapper = mount(
       <Provider store={store}>
-        <Router history={history}>
-          <TestRoute path="/models/:userName/:modelName?/app/:appName?">
-            <QueryParamProvider adapter={ReactRouter5Adapter}>
-              <App />
-            </QueryParamProvider>
-          </TestRoute>
-        </Router>
+        <MemoryRouter
+          initialEntries={[
+            "/models/user-island@external/canonical-kubernetes/app/etcd",
+          ]}
+        >
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route
+                path="/models/:userName/:modelName/app/:appName"
+                element={<App />}
+              />
+            </Routes>
+          </QueryParamProvider>
+        </MemoryRouter>
       </Provider>
     );
     await waitForComponentToPaint(wrapper);
-    return { wrapper, history };
+    return { wrapper };
   }
 
   it("renders the info panel", async () => {

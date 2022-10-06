@@ -37,7 +37,7 @@ export default function Unit() {
   const { modelName, userName, unitId } = useParams<EntityDetailsRoute>();
   // The unit name might have a dash in it so we need to grab only the last one
   // ex) content-cache-0.
-  const unitIdentifier = unitId.replace(/-(\d+)$/, "/$1");
+  const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1");
   const tableRowClick = useTableRowClick();
 
   const modelUUID = useSelector(getModelUUID(modelName, userName));
@@ -48,7 +48,7 @@ export default function Unit() {
 
   const filteredMachineList = useMemo(() => {
     const filteredMachines: MachineData = {};
-    if (machines && units) {
+    if (machines && units && unitIdentifier) {
       const machineId = units[unitIdentifier]["machine-id"];
       filteredMachines[machineId] = machines[machineId];
     }
@@ -57,7 +57,7 @@ export default function Unit() {
 
   const filteredApplicationList = useMemo(() => {
     const filteredApps: ApplicationData = {};
-    if (applications && units) {
+    if (applications && units && unitIdentifier) {
       const appName = units[unitIdentifier].application;
       filteredApps[appName] = applications[appName];
     }
@@ -83,7 +83,7 @@ export default function Unit() {
     [filteredApplicationList, applicationStatuses, tableRowClick]
   );
 
-  const unit = units?.[unitIdentifier];
+  const unit = unitIdentifier ? units?.[unitIdentifier] : null;
   let unitEntityData = {};
   if (unit) {
     const charm = unit?.["charm-url"] || "-";

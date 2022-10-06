@@ -1,9 +1,8 @@
 import configureStore from "redux-mock-store";
-import TestRoute from "components/Routes/TestRoute";
 import { mount } from "enzyme";
 import React from "react";
 import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import dataDump from "testing/complete-redux-store-dump";
 
 import Breadcrumb from "./Breadcrumb";
@@ -16,9 +15,12 @@ describe("Breadcrumb", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>
-          <TestRoute path="/models/:userName/:modelName?">
-            <Breadcrumb />
-          </TestRoute>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<Breadcrumb />}
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -35,9 +37,12 @@ describe("Breadcrumb", () => {
         <MemoryRouter
           initialEntries={["/models/eggman@external/group-test/app/easyrsa"]}
         >
-          <TestRoute path="/models/:userName/:modelName?/app/:appName?">
-            <Breadcrumb />
-          </TestRoute>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName/app/:appName"
+              element={<Breadcrumb />}
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -64,9 +69,12 @@ describe("Breadcrumb", () => {
             "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
           ]}
         >
-          <TestRoute path="/models/:userName/:modelName?/app/:appName/unit/:unitId?">
-            <Breadcrumb />
-          </TestRoute>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName/app/:appName/unit/:unitId"
+              element={<Breadcrumb />}
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -91,9 +99,12 @@ describe("Breadcrumb", () => {
         <MemoryRouter
           initialEntries={["/models/eggman@external/group-test/machine/0"]}
         >
-          <TestRoute path="/models/:userName/:modelName?/machine/:machineId?">
-            <Breadcrumb />
-          </TestRoute>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName/machine/:machineId"
+              element={<Breadcrumb />}
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );

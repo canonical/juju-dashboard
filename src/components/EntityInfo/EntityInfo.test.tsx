@@ -1,10 +1,8 @@
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import dataDump from "testing/complete-redux-store-dump";
-
-import TestRoute from "components/Routes/TestRoute";
 
 import EntityInfo from "./EntityInfo";
 
@@ -23,15 +21,20 @@ describe("Entity info", () => {
         <MemoryRouter
           initialEntries={["/models/user-eggman@external/group-test"]}
         >
-          <TestRoute path="/models/:userName/:modelName?">
-            <EntityInfo
-              data={{
-                name: "model1",
-                controller: "controller1",
-                region: "eu1",
-              }}
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={
+                <EntityInfo
+                  data={{
+                    name: "model1",
+                    controller: "controller1",
+                    region: "eu1",
+                  }}
+                />
+              }
             />
-          </TestRoute>
+          </Routes>
         </MemoryRouter>
       </Provider>
     );

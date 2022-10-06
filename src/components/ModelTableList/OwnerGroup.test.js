@@ -3,7 +3,7 @@ import { mount } from "enzyme";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import OwnerGroup from "./OwnerGroup";
 
@@ -29,7 +29,7 @@ describe("OwnerGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <OwnerGroup />
           </QueryParamProvider>
         </Provider>
@@ -44,7 +44,7 @@ describe("OwnerGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <OwnerGroup />
           </QueryParamProvider>
         </Provider>
@@ -66,7 +66,7 @@ describe("OwnerGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <OwnerGroup filters={filters} />
           </QueryParamProvider>
         </Provider>
@@ -83,7 +83,7 @@ describe("OwnerGroup", () => {
     const wrapper = mount(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <OwnerGroup filters={filters} />
           </QueryParamProvider>
         </Provider>

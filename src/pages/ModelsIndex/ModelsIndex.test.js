@@ -1,11 +1,10 @@
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { mount } from "enzyme";
-import { MemoryRouter, Router } from "react-router";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import dataDump from "testing/complete-redux-store-dump";
-import { createMemoryHistory } from "history";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import ModelsIndex from "./ModelsIndex";
 
@@ -17,7 +16,7 @@ describe("Models Index page", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <ModelsIndex />
           </QueryParamProvider>
         </MemoryRouter>
@@ -29,15 +28,14 @@ describe("Models Index page", () => {
   });
 
   it("displays correct grouping view", () => {
-    const history = createMemoryHistory();
     const store = mockStore(dataDump);
     const wrapper = mount(
       <Provider store={store}>
-        <Router history={history}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+        <BrowserRouter>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <ModelsIndex />
           </QueryParamProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
     expect(wrapper.find(".p-button-group__button.is-selected").text()).toBe(
@@ -49,21 +47,20 @@ describe("Models Index page", () => {
     expect(wrapper.find(".p-button-group__button.is-selected").text()).toBe(
       "owner"
     );
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     expect(searchParams.get("groupedby")).toEqual("owner");
     expect(wrapper.find(".owners-group")).toBeDefined();
   });
 
   it("should display the correct window title", () => {
     const store = mockStore(dataDump);
-    const history = createMemoryHistory();
     mount(
       <Provider store={store}>
-        <Router history={history}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+        <BrowserRouter>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <ModelsIndex />
           </QueryParamProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
     const pageTitle = document.title;

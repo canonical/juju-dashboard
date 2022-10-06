@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { Formik, Field } from "formik";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   useQueryParam,
@@ -54,7 +54,7 @@ type FormData = {
 };
 
 export default function App(): JSX.Element {
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     appName: entity,
     userName,
@@ -159,7 +159,7 @@ export default function App(): JSX.Element {
     query && setQuery({ panel: "config", entity: entity });
   };
 
-  const application = applications?.[entity];
+  const application = entity ? applications?.[entity] : null;
 
   let appEntityData = {};
   if (application) {
@@ -192,7 +192,7 @@ export default function App(): JSX.Element {
   };
 
   const navigateActionLogs = () => {
-    history.push(`/models/${userName}/${modelName}?activeView=action-logs`);
+    navigate(`/models/${userName}/${modelName}?activeView=action-logs`);
   };
 
   const onFormChange = (formData: FormData) => {

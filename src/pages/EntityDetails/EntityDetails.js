@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 
 import { Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
@@ -40,7 +40,7 @@ function generatePanelContent(activePanel, entity, panelRowClick) {
 
 const EntityDetails = ({ type, children, className = "" }) => {
   const { userName, modelName } = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const modelUUID = useSelector(getModelUUID(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const applications = useSelector(getModelApplications(modelUUID));
@@ -110,12 +110,12 @@ const EntityDetails = ({ type, children, className = "" }) => {
     (entityName, entityPanel) => {
       // This can be removed when all entities are moved to top level aside panels
       if (entityPanel === "apps") {
-        history.push(`/models/${userName}/${modelName}/app/${entityName}`);
+        navigate(`/models/${userName}/${modelName}/app/${entityName}`);
       } else {
         return setQuery({ panel: entityPanel, entity: entityName });
       }
     },
-    [setQuery, history, modelName, userName]
+    [setQuery, navigate, modelName, userName]
   );
 
   const generateActivePanel = () => {

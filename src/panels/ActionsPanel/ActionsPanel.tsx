@@ -81,7 +81,10 @@ export default function ActionsPanel(): JSX.Element {
   const appStore = useStore();
   const appState = appStore.getState();
   const { appName, modelName } = useParams<EntityDetailsRoute>();
-  const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
+  const getModelUUIDMemo = useMemo(
+    () => (modelName ? getModelUUID(modelName) : null),
+    [modelName]
+  );
   // Selectors.js is not typescript yet and it complains about the return value
   // of getModelUUID. TSFixMe
   const modelUUID = useSelector(
@@ -119,8 +122,10 @@ export default function ActionsPanel(): JSX.Element {
   }, [appName, appStore, modelUUID]);
 
   // See above note about selectors.js typings TSFixMe
-  const namespace = (appState as TSFixMe).juju?.modelData?.[modelUUID as string]
-    ?.applications?.[appName]?.charm;
+  const namespace = appName
+    ? (appState as TSFixMe).juju?.modelData?.[modelUUID as string]
+        ?.applications?.[appName]?.charm
+    : null;
 
   const generateSelectedUnitList = () => {
     if (!selectedUnits.length) {

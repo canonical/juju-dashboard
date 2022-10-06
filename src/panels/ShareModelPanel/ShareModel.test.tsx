@@ -1,12 +1,10 @@
 import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import dataDump from "testing/complete-redux-store-dump";
-
-import TestRoute from "components/Routes/TestRoute";
 
 import ShareModel from "./ShareModel";
 
@@ -18,11 +16,14 @@ describe("Share Model Panel", () => {
     const wrapper = mount(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
-          <TestRoute path="/models/:userName/:modelName?">
-            <QueryParamProvider adapter={ReactRouter5Adapter}>
-              <ShareModel />
-            </QueryParamProvider>
-          </TestRoute>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route
+                path="/models/:userName/:modelName"
+                element={<ShareModel />}
+              />
+            </Routes>
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
@@ -37,11 +38,14 @@ describe("Share Model Panel", () => {
     const wrapper = mount(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
-          <TestRoute path="/models/:userName/:modelName?">
-            <QueryParamProvider adapter={ReactRouter5Adapter}>
-              <ShareModel />
-            </QueryParamProvider>
-          </TestRoute>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route
+                path="/models/:userName/:modelName"
+                element={<ShareModel />}
+              />
+            </Routes>
+          </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
