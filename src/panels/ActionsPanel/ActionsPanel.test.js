@@ -1,16 +1,15 @@
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { mount } from "enzyme";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import dataDump from "testing/complete-redux-store-dump";
 
 import { executeActionOnUnits } from "juju/index";
 import { waitForComponentToPaint } from "testing/utils";
 
-import TestRoute from "components/Routes/TestRoute";
 import ActionsPanel from "./ActionsPanel";
 
 const mockStore = configureStore([]);
@@ -38,11 +37,14 @@ describe("ActionsPanel", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={initialEntries}>
-          <TestRoute path="/models/:userName/:modelName?/app/:appName?">
-            <QueryParamProvider adapter={ReactRouter5Adapter}>
-              <ActionsPanel />
-            </QueryParamProvider>
-          </TestRoute>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route
+                path="/models/:userName/:modelName/app/:appName"
+                element={<ActionsPanel />}
+              />
+            </Routes>
+          </QueryParamProvider>
         </MemoryRouter>
       </Provider>
     );

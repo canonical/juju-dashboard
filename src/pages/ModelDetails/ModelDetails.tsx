@@ -1,4 +1,4 @@
-import { Route, Switch, useParams } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 
@@ -55,22 +55,11 @@ export default function ModelDetails() {
   }, [modelUUID]);
 
   return (
-    <Switch>
-      <Route path="/models/:userName/:modelName" exact>
-        <Model />
-      </Route>
-      <Route path="/models/:userName/:modelName/app/:appName" exact>
-        <App />
-      </Route>
-      <Route
-        path="/models/:userName/:modelName/app/:appName/unit/:unitId"
-        exact
-      >
-        <Unit />
-      </Route>
-      <Route path="/models/:userName/:modelName/machine/:machineId" exact>
-        <Machine />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route path="/" element={<Model />} />
+      <Route path="app/:appName" element={<App />} />
+      <Route path="app/:appName/unit/:unitId" element={<Unit />} />
+      <Route path="machine/:machineId" element={<Machine />} />
+    </Routes>
   );
 }

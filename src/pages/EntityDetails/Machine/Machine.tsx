@@ -38,7 +38,7 @@ export default function Machine() {
   const applications = useSelector(getModelApplications(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));
-  const machine = machines?.[machineId];
+  const machine = machineId ? machines?.[machineId] : null;
 
   const applicationStatuses = useSelector(
     getAllModelApplicationStatus(modelUUID)

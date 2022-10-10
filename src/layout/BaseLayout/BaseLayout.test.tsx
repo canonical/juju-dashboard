@@ -1,11 +1,14 @@
-import { BrowserRouter as Router } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  MemoryRouter,
+  Route,
+  Routes,
+} from "react-router-dom";
 import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router";
 import { QueryParamProvider } from "use-query-params";
-import { ReactRouter5Adapter } from "use-query-params/adapters/react-router-5";
-import TestRoute from "components/Routes/TestRoute";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import dataDump from "testing/complete-redux-store-dump";
 import cloneDeep from "clone-deep";
 
@@ -20,7 +23,7 @@ describe("Base Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <Router>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <BaseLayout>
               <p>foo</p>
             </BaseLayout>
@@ -36,7 +39,7 @@ describe("Base Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <Router>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
             <BaseLayout>
               <p>foo</p>
             </BaseLayout>
@@ -61,12 +64,17 @@ describe("Base Layout", () => {
             "/models/pizza@external/hadoopspark?activeView=machines",
           ]}
         >
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
-            <TestRoute path="/models/:userName/:modelName?">
-              <BaseLayout>
-                <p>foo</p>
-              </BaseLayout>
-            </TestRoute>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route
+                path="/models/:userName/:modelName"
+                element={
+                  <BaseLayout>
+                    <p>foo</p>
+                  </BaseLayout>
+                }
+              />
+            </Routes>
           </QueryParamProvider>
         </MemoryRouter>
       </Provider>
@@ -81,12 +89,17 @@ describe("Base Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
-            <TestRoute path="/models">
-              <BaseLayout>
-                <p>foo</p>
-              </BaseLayout>
-            </TestRoute>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route
+                path="/models"
+                element={
+                  <BaseLayout>
+                    <p>foo</p>
+                  </BaseLayout>
+                }
+              />
+            </Routes>
           </QueryParamProvider>
         </MemoryRouter>
       </Provider>
@@ -101,12 +114,17 @@ describe("Base Layout", () => {
     const wrapper = mount(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
-          <QueryParamProvider adapter={ReactRouter5Adapter}>
-            <TestRoute path="/models">
-              <BaseLayout>
-                <p>foo</p>
-              </BaseLayout>
-            </TestRoute>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route
+                path="/models"
+                element={
+                  <BaseLayout>
+                    <p>foo</p>
+                  </BaseLayout>
+                }
+              />
+            </Routes>
           </QueryParamProvider>
         </MemoryRouter>
       </Provider>

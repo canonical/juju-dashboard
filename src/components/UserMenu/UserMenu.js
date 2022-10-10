@@ -59,14 +59,12 @@ const UserMenu = () => {
           <ul className="p-list user-menu__options">
             <li className="p-list__item">
               <NavLink
-                className="user-menu__link p-list__link"
-                isActive={(match) => {
-                  if (match && match.url.includes("settings")) {
-                    return true;
-                  }
-                }}
+                className={({ isActive }) =>
+                  classNames("user-menu__link p-list__link", {
+                    "is-selected": isActive,
+                  })
+                }
                 to="/settings"
-                activeClassName="is-selected"
               >
                 Settings
               </NavLink>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch, useStore } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { getBakery } from "app/selectors";
 import { connectAndStartPolling } from "app/actions";
@@ -23,7 +23,7 @@ export default function RegisterController() {
     "additionalControllers",
     []
   );
-  const history = useHistory();
+  const navigate = useNavigate();
 
   function handleRegisterAController(e) {
     e.preventDefault();
@@ -38,7 +38,7 @@ export default function RegisterController() {
     setAdditionalControllers(additionalControllers);
     dispatch(connectAndStartPolling(reduxStore, bakery));
     // Close the panel
-    history.push("/controllers");
+    navigate("/controllers");
   }
 
   function handleInputChange(e) {

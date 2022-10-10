@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import { Route, Redirect, Switch, useLocation } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes as ReactRouterRoutes,
+  useLocation,
+} from "react-router-dom";
 
 import Login from "components/LogIn/LogIn";
 
@@ -36,33 +41,41 @@ export function Routes() {
   }, [location, sendAnalytics]);
 
   return (
-    <Switch>
-      <Route path="/" exact>
-        <Redirect to="/models" />
-      </Route>
-      <Route path="/models" exact>
-        <Login>
-          <ModelsIndex />
-        </Login>
-      </Route>
-      <Route path="/models/:userName/:modelName">
-        <Login>
-          <ModelDetails />
-        </Login>
-      </Route>
-      <Route path="/controllers" exact>
-        <Login>
-          <ControllersIndex />
-        </Login>
-      </Route>
-      <Route path="/settings" exact>
-        <Login>
-          <Settings />
-        </Login>
-      </Route>
-      <Route>
-        <PageNotFound />
-      </Route>
-    </Switch>
+    <ReactRouterRoutes>
+      <Route path="/" element={<Navigate to="/models" />} />
+      <Route
+        path="/models"
+        element={
+          <Login>
+            <ModelsIndex />
+          </Login>
+        }
+      />
+      <Route
+        path="/models/:userName/:modelName/*"
+        element={
+          <Login>
+            <ModelDetails />
+          </Login>
+        }
+      />
+      <Route
+        path="/controllers"
+        element={
+          <Login>
+            <ControllersIndex />
+          </Login>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <Login>
+            <Settings />
+          </Login>
+        }
+      />
+      <Route path="*" element={<PageNotFound />} />
+    </ReactRouterRoutes>
   );
 }

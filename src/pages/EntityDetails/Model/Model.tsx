@@ -6,7 +6,7 @@ import {
   StringParam,
   withDefault,
 } from "use-query-params";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   pluralize,
   extractCloudName,
@@ -90,7 +90,7 @@ const generateCloudAndRegion = (cloudTag: string, region: string) => {
 const Model = () => {
   const modelStatusData: TSFixMe = useModelStatus();
   const activeUser = useActiveUser();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { userName, modelName } = useParams<EntityDetailsRoute>();
 
@@ -108,12 +108,12 @@ const Model = () => {
     (entityName, entityPanel) => {
       // This can be removed when all entities are moved to top level aside panels
       if (entityPanel === "apps") {
-        history.push(`/models/${userName}/${modelName}/app/${entityName}`);
+        navigate(`/models/${userName}/${modelName}/app/${entityName}`);
       } else {
         return setQuery({ panel: entityPanel, entity: entityName });
       }
     },
-    [setQuery, history, modelName, userName]
+    [setQuery, navigate, modelName, userName]
   );
 
   const applications = useSelector(getModelApplications(modelUUID));

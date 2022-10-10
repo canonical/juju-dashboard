@@ -40,10 +40,10 @@ const generateSecondaryCounts = (
 
 export function generateUnitCounts(
   units: UnitData | null,
-  applicationName: string
+  applicationName?: string | null
 ) {
   const counts = {};
-  if (units) {
+  if (units && applicationName) {
     Object.entries(units).forEach(([unitId, unitData]) => {
       if (unitData.application === applicationName) {
         const status = unitData["agent-status"].current;
@@ -59,10 +59,10 @@ export function generateUnitCounts(
 export function generateMachineCounts(
   machines: MachineData | null,
   units: UnitData | null,
-  applicationName: string
+  applicationName?: string | null
 ) {
   const counts = {};
-  if (machines && units) {
+  if (machines && units && applicationName) {
     const machineIds: MachineChangeDelta["id"][] = [];
     Object.entries(units).forEach(([unitId, unitData]) => {
       if (unitData.application === applicationName) {

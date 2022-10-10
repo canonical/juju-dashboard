@@ -93,13 +93,13 @@ function generateLinkToApp(
 function generateAppIcon(
   application: ApplicationData | undefined,
   appName: string,
-  userName: string,
-  modelName: string
+  userName?: string,
+  modelName?: string
 ) {
   // If the user has executed actions with an application and then removed
   // that application it'll no longer be in the model data so in this
   // case we need to fail gracefully.
-  if (application) {
+  if (application && userName && modelName) {
     return (
       <>
         {generateIconImg(appName, application.charm)}
@@ -119,7 +119,10 @@ export default function ActionLogs() {
     [key: string]: Output;
   }>({});
   const appStore = useStore();
-  const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
+  const getModelUUIDMemo = useMemo(
+    () => (modelName ? getModelUUID(modelName) : null),
+    [modelName]
+  );
   // Selectors.js is not typescript yet and it complains about the return value
   // of getModelUUID. TSFixMe
   const modelUUID = useSelector(getModelUUIDMemo as (state: TSFixMe) => string);

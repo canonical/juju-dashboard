@@ -36,10 +36,13 @@ export function getModelInfo(modelUUID: string) {
   );
 }
 
-export function getModelUUID(modelName: string, ownerName: string) {
+export function getModelUUID(
+  modelName?: string | null,
+  ownerName?: string | null
+) {
   return createSelector(getModelList, (modelList: ModelsList) => {
     let modelUUID = "";
-    if (!modelList) {
+    if (!modelList || !modelName || !ownerName) {
       return modelUUID;
     }
     Object.entries(modelList).some(([key, { name, ownerTag, uuid }]) => {

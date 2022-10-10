@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 type Params = {
   userName: string;
@@ -12,7 +12,7 @@ type Entity = {
 };
 
 export default function useTableRowClick() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [entity, setEntity] = useState<Entity | null>(null);
   const { userName, modelName } = useParams<Params>();
 
@@ -24,18 +24,16 @@ export default function useTableRowClick() {
         modelName &&
         entity &&
         appName &&
-        history.push(
+        navigate(
           `/models/${userName}/${modelName}/app/${appName}/${entity.type}/${entityId}/`
         );
     } else {
       userName &&
         modelName &&
         entity &&
-        history.push(
-          `/models/${userName}/${modelName}/${entity.type}/${entityId}`
-        );
+        navigate(`/models/${userName}/${modelName}/${entity.type}/${entityId}`);
     }
-  }, [entity, history, modelName, userName]);
+  }, [entity, navigate, modelName, userName]);
 
   return (entityType: string, entityId: string, e: MouseEvent) => {
     const target = e.target as HTMLDivElement;
