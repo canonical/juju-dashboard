@@ -1087,22 +1087,15 @@
   resolved "https://registry.yarnpkg.com/@canonical/jaaslib/-/jaaslib-0.6.1.tgz#11eb43ba05e6e0c69e44a6947bd66fa1397ecefb"
   integrity sha512-Ts7TziwN3ZkB7bNpAnPoiSJQaDr9becHHx5AXaTl1uq/WKvscO0vtoa1QsBtksh5QMMuFlWn3Z2PmnfT4IVwmg==
 
-"@canonical/jujulib@2.0.0-beta.6":
-  version "2.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-2.0.0-beta.6.tgz#b3ba9c83278a9abca98a7f20245736409505710b"
-  integrity sha512-TLY9t8gi4n+BihAgk4LAF3gJ4JRKDUZPURB940sujeZs6fyvy7ovm+izElGKJGLWawFnJARuOe4SJKzht5WqtA==
+"@canonical/jujulib@2.0.0-beta.8":
+  version "2.0.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-2.0.0-beta.8.tgz#600850a436adffd04664af99bcc3e2b123c4edc3"
+  integrity sha512-agSqwh0Ll3se9g1fFxUW4/atwEDupKjgyeQugZCzJMd0BLEkmOYh3od5IATkfO/gVzcu562GiDRZNGoO98/nsQ==
   dependencies:
-    "@canonical/macaroon-bakery" "0.3.0"
+    "@canonical/macaroon-bakery" "1.2.2"
     btoa "1.2.1"
-    websocket "1.0.33"
+    websocket "1.0.34"
     xhr2 "0.2.1"
-
-"@canonical/macaroon-bakery@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@canonical/macaroon-bakery/-/macaroon-bakery-0.3.0.tgz#59ec07ad31f392bea2364e81dd6b63ac78b32e6c"
-  integrity sha512-JtMXxasIMLMIVsqIfLMm6VObUcV5itq3WnEt02rV+39j7Z4wNDUM+HuiHQhcmUuogmMOgoyqfLuUHE0Wkk7F4A==
-  dependencies:
-    macaroon "^3.0.4"
 
 "@canonical/macaroon-bakery@1.2.2":
   version "1.2.2"
@@ -6974,7 +6967,7 @@ lz-string@^1.4.4:
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha512-0ckx7ZHRPqb0oUm8zNr+90mtf9DQB60H1wMCjBtfi62Kl3a7JbHob6gA2bC+xRvZoOL+1hzUK8jeuEIQE8svEQ==
 
-macaroon@3.0.4, macaroon@^3.0.4:
+macaroon@3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/macaroon/-/macaroon-3.0.4.tgz#dac1a4b17cd973c1000703f40b19bdbb1d6191ce"
   integrity sha512-Tja2jvupseKxltPZbu5RPSz2Pgh6peYA3O46YCTcYL8PI1VqtGwDqRhGfP8pows26xx9wTiygk+en62Bq+Y8JA==
@@ -10400,10 +10393,10 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-websocket@1.0.33:
-  version "1.0.33"
-  resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.33.tgz#407f763fc58e74a3fa41ca3ae5d78d3f5e3b82a5"
-  integrity sha512-XwNqM2rN5eh3G2CUQE3OHZj+0xfdH42+OFK6LdC2yqiC0YU8e5UK0nYre220T0IyyN031V/XOvtHvXozvJYFWA==
+websocket@1.0.34:
+  version "1.0.34"
+  resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.34.tgz#2bdc2602c08bf2c82253b730655c0ef7dcab3111"
+  integrity sha512-PRDso2sGwF6kM75QykIesBijKSVceR6jL2G8NGYyq2XrItNC2P5/qL5XeR056GhA+Ly7JMFvJb9I312mJfmqnQ==
   dependencies:
     bufferutil "^4.0.1"
     debug "^2.2.0"

@@ -1,14 +1,14 @@
 import { connect, connectAndLogin } from "@canonical/jujulib";
 import Limiter from "async-limiter";
 
-import actions from "@canonical/jujulib/dist/api/facades/action-v6";
-import allWatcher from "@canonical/jujulib/dist/api/facades/all-watcher-v1";
+import actions from "@canonical/jujulib/dist/api/facades/action-v7";
+import allWatcher from "@canonical/jujulib/dist/api/facades/all-watcher-v2";
 import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
-import applications from "@canonical/jujulib/dist/api/facades/application-v12";
-import client from "@canonical/jujulib/dist/api/facades/client-v2";
-import cloud from "@canonical/jujulib/dist/api/facades/cloud-v3";
-import controller from "@canonical/jujulib/dist/api/facades/controller-v5";
-import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v5";
+import applications from "@canonical/jujulib/dist/api/facades/application-v14";
+import client from "@canonical/jujulib/dist/api/facades/client-v5";
+import cloud from "@canonical/jujulib/dist/api/facades/cloud-v7";
+import controller from "@canonical/jujulib/dist/api/facades/controller-v11";
+import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v9";
 import pinger from "@canonical/jujulib/dist/api/facades/pinger-v1";
 
 import jimm from "app/jimm-facade";
