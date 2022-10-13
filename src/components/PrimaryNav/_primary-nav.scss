@@ -1,6 +1,7 @@
 @import "../../scss/settings";
 @import "../../scss/functions/z-index";
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
 
 .p-primary-nav {
   display: flex;
@@ -20,7 +21,6 @@
     box-sizing: border-box;
     margin: 0 1rem 1rem;
     max-width: calc(100% - 2rem);
-    opacity: 0;
   }
 
   &__header {
@@ -29,7 +29,7 @@
     padding: 0.75rem 0.5rem 0.35rem;
     position: relative;
 
-    @media (min-width: $breakpoint-medium) {
+    @include desktop {
       height: 4rem;
       padding: 0 0.5rem;
     }
@@ -98,21 +98,13 @@
   .p-primary-nav__bottom {
     margin-top: 0;
 
-    @media (min-width: $breakpoint-medium) {
-      opacity: 0;
-    }
-
     .p-list {
       &__item {
         color: $color-x-light;
         display: flex;
         font-size: 0.875rem;
-
-        .p-label--new {
-          height: 1.5rem;
-          margin-left: auto;
-          margin-right: 1rem;
-        }
+        justify-content: space-between;
+        margin-right: 1rem;
 
         .version {
           color: $color-light;
@@ -136,33 +128,7 @@
     width: 1.5rem;
   }
 
-  .logo__text {
-    @media (min-width: $breakpoint-medium) {
-      opacity: 0;
-    }
-  }
-
-  .p-primary-nav__bottom,
-  .logo__text {
-    @include vf-animation(opacity, brisk, ease-in-out);
-
-    @media (min-width: $breakpoint-large) {
-      opacity: 1;
-    }
-  }
-
   .p-primary-nav__divider {
-    @include vf-animation(opacity, brisk, ease-in-out);
-
-    @media (min-width: $breakpoint-large) {
-      opacity: 0.1;
-    }
-  }
-
-  &:hover {
-    .p-primary-nav__bottom,
-    .logo__text {
-      opacity: 1;
-    }
+    opacity: 0.1;
   }
 }

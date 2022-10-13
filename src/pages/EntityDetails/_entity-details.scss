@@ -1,5 +1,6 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
 
 @mixin entity-details-layout {
   .entity-details {
@@ -14,7 +15,7 @@
     &__content-header {
       margin: 0 2rem 2rem 0.5rem;
 
-      @media (min-width: $breakpoint-medium) {
+      @include desktop {
         display: flex;
         margin-top: 0.5rem;
       }
@@ -37,7 +38,7 @@
         text-transform: capitalize;
       }
 
-      @media (max-width: $breakpoint-medium) {
+      @include mobile {
         [class*="col"] {
           margin-bottom: 1rem;
         }
@@ -57,10 +58,6 @@
       scrollbar-width: none;
     }
 
-    .chip-group {
-      margin-bottom: 1rem;
-    }
-
     &__counts {
       display: flex;
 
@@ -69,7 +66,7 @@
       }
     }
 
-    @media (min-width: $breakpoint-medium) {
+    @include desktop {
       gap: 1rem;
       grid-template-columns: 230px 1fr;
     }
@@ -78,7 +75,7 @@
       grid-template-columns: 350px 1fr;
     }
 
-    @media (max-width: $breakpoint-medium - 1) {
+    @include mobile {
       & + .slide-panel {
         .p-modal__close {
           margin-top: 7rem !important;
@@ -93,7 +90,7 @@
     display: block;
     padding-top: 0.75rem;
 
-    @media (min-width: $breakpoint-medium) {
+    @include desktop {
       align-items: center;
       display: grid;
       gap: 2rem;
@@ -116,7 +113,7 @@
     // Modified styling of the Vanilla tabbed component. To remove the border
     // bottom as it sits on a border already.
     .entity-details__view-selector {
-      @media (max-width: $breakpoint-medium) {
+      @include mobile {
         margin-left: -1rem;
         width: calc(100% + 2rem);
       }
@@ -154,7 +151,7 @@
 
 @mixin entity-details-title {
   .entity-details__title {
-    @media (max-width: $breakpoint-medium - 1) {
+    @include mobile {
       margin-bottom: 0.75rem;
     }
   }
@@ -334,7 +331,6 @@
     .p-button-group__buttons {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      margin-bottom: 1.5rem;
     }
 
     .p-button-group__button {

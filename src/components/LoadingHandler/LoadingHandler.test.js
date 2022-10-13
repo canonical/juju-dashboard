@@ -1,6 +1,6 @@
 import { mount } from "enzyme";
 
-import Spinner from "@canonical/react-components/dist/components/Spinner/Spinner";
+import { Spinner } from "@canonical/react-components";
 import LoadingHandler from "./LoadingHandler";
 
 describe("LoadingHandler", () => {

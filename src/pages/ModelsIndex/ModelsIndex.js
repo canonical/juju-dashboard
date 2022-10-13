@@ -1,13 +1,12 @@
+import { SearchAndFilter, Spinner } from "@canonical/react-components";
 import { useSelector } from "react-redux";
-import Spinner from "@canonical/react-components/dist/components/Spinner";
 
-import BaseLayout from "layout/BaseLayout/BaseLayout";
-import Header from "components/Header/Header";
-import ModelTableList from "components/ModelTableList/ModelTableList";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import ChipGroup from "components/ChipGroup/ChipGroup";
+import Header from "components/Header/Header";
+import ModelTableList from "components/ModelTableList/ModelTableList";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 
-import { SearchAndFilter } from "@canonical/react-components";
 import useModelAttributes from "hooks/useModelAttributes";
 
 import useWindowTitle from "hooks/useWindowTitle";
@@ -17,10 +16,10 @@ import FadeIn from "animations/FadeIn";
 import { pluralize } from "app/utils/utils";
 
 import {
+  ArrayParam,
+  StringParam,
   useQueryParam,
   useQueryParams,
-  StringParam,
-  ArrayParam,
   withDefault,
 } from "use-query-params";
 

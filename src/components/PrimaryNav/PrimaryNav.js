@@ -1,13 +1,14 @@
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
-import { getGroupedModelStatusCounts, getAppVersion } from "app/selectors";
+import { getAppVersion, getGroupedModelStatusCounts } from "app/selectors";
 
+import classNames from "classnames";
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
-import classNames from "classnames";
 
 // Style imports
+import { StatusLabel } from "@canonical/react-components";
 import "./_primary-nav.scss";
 
 const pages = [
@@ -45,7 +46,7 @@ const PrimaryNav = () => {
               to={navItem.path}
             >
               <i className={`p-icon--${navItem.icon} is-light`}></i>
-              {navItem.label}
+              <span className="hide-collapsed">{navItem.label}</span>
               {navItem.label === "Models" && blocked > 0 ? (
                 <span className="entity-count">{blocked}</span>
               ) : (
@@ -55,8 +56,8 @@ const PrimaryNav = () => {
           </li>
         ))}
       </ul>
-      <hr className="p-primary-nav__divider" />
-      <div className="p-primary-nav__bottom">
+      <hr className="p-primary-nav__divider hide-collapsed" />
+      <div className="p-primary-nav__bottom hide-collapsed">
         <ul className="p-list">
           <li className="p-list__item">
             <a
@@ -70,12 +71,12 @@ const PrimaryNav = () => {
           </li>
         </ul>
       </div>
-      <hr className="p-primary-nav__divider" />
-      <div className="p-primary-nav__bottom">
+      <hr className="p-primary-nav__divider hide-collapsed" />
+      <div className="p-primary-nav__bottom hide-collapsed">
         <ul className="p-list">
           <li className="p-list__item">
             <span className="version">Version {appVersion}</span>
-            <span className="p-label--new">Beta</span>
+            <StatusLabel appearance="positive">Beta</StatusLabel>
           </li>
         </ul>
       </div>

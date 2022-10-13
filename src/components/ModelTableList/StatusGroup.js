@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import MainTable from "@canonical/react-components/dist/components/MainTable";
+import { MainTable } from "@canonical/react-components";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import useActiveUser from "hooks/useActiveUser";
 
@@ -208,7 +208,7 @@ export default function StatusGroup({ filters }) {
   const emptyStateMsg = "There are no models with this status";
 
   return (
-    <div className="status-group u-overflow--scroll">
+    <div className="status-group u-overflow--auto">
       {blockedRows.length ? (
         <MainTable
           headers={generateStatusTableHeaders("Blocked", blockedRows.length)}

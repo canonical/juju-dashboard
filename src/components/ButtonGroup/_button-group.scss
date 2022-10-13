@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
 
 .p-button-group {
   align-content: center;
@@ -22,8 +23,10 @@
     overflow: hidden;
     width: 100%;
 
-    @media (min-width: $breakpoint-medium) {
+    @include desktop {
       margin-bottom: 0;
+    }
+    @include large {
       width: auto;
     }
   }

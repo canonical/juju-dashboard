@@ -1,11 +1,11 @@
-import { TSFixMe } from "types";
-import { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
+import { TSFixMe } from "types";
 
-import Logo from "components/Logo/Logo";
 import Banner from "components/Banner/Banner";
+import Logo from "components/Logo/Logo";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 
 import Panels from "panels/panels";
@@ -17,6 +17,7 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { sideNavCollapsed } from "ui/actions";
 import { isSideNavCollapsed } from "ui/selectors";
 
+import classNames from "classnames";
 import "./_base-layout.scss";
 
 type Props = {
@@ -78,7 +79,9 @@ const BaseLayout = ({ children }: Props) => {
           </button>
         </div>
         <header
-          className="l-navigation"
+          className={classNames("l-navigation", {
+            "is-pinned": !collapseSidebar,
+          })}
           data-collapsed={mobileMenuCollapsed}
           data-sidenav-initially-collapsed={collapseSidebar}
         >

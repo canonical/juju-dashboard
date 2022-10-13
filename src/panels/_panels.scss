@@ -1,5 +1,6 @@
 @import "vanilla-framework/scss/vanilla";
 @import "./../scss/functions/z-index";
+@import "../scss/breakpoints";
 
 .panel-container {
   min-height: 100vh;
@@ -13,7 +14,7 @@
   &-header {
     margin: 3.5rem 2rem 2rem 0.5rem;
 
-    @media (min-width: $breakpoint-medium) {
+    @include desktop {
       margin-top: 0.5rem;
       padding-top: 2.85rem;
     }
@@ -40,7 +41,7 @@
       text-transform: capitalize;
     }
 
-    @media (max-width: $breakpoint-medium) {
+    @include mobile {
       [class*="col"] {
         margin-bottom: 1rem;
       }
@@ -51,7 +52,7 @@
     color: $color-mid-dark;
     display: inline-block;
 
-    @media (min-width: $breakpoint-medium) {
+    @include desktop {
       text-align: right;
     }
   }
@@ -68,7 +69,7 @@
     grid-template-columns: 100px 1fr;
     margin-bottom: 0.25rem;
 
-    @media (min-width: $breakpoint-medium) {
+    @include desktop {
       grid-template-columns: repeat(2, 1fr);
     }
   }

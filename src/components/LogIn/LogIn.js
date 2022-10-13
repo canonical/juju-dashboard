@@ -1,16 +1,16 @@
-import { useEffect, useRef } from "react";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { connectAndStartPolling, storeUserPass } from "app/actions";
 import {
-  isLoggedIn,
   getBakery,
   getConfig,
-  getLoginError,
   getControllerConnections,
+  getLoginError,
   getWSControllerURL,
+  isLoggedIn,
 } from "app/selectors";
-import { connectAndStartPolling, storeUserPass } from "app/actions";
+import { useEffect, useRef } from "react";
+import { useDispatch, useSelector, useStore } from "react-redux";
 
-import Spinner from "@canonical/react-components/dist/components/Spinner";
+import { Spinner } from "@canonical/react-components";
 
 import FadeUpIn from "animations/FadeUpIn";
 

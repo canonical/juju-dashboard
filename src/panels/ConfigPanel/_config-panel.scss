@@ -1,5 +1,6 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/settings";
+@import "../../scss/breakpoints";
 
 .slide-panel.config-panel .slide-panel__content {
   padding: 1.5rem 0 0;
@@ -63,7 +64,7 @@
   &__message {
     padding-top: 6rem;
 
-    @media (min-width: $breakpoint-medium) {
+    @include desktop {
       padding-top: 3rem;
     }
 
@@ -87,7 +88,7 @@
       flex-direction: column;
     }
 
-    @media screen and (max-width: $breakpoint-medium) {
+    @include mobile {
       margin-top: 4rem;
       padding-right: 4rem; // Spacing for the close X
       padding-top: 1rem;

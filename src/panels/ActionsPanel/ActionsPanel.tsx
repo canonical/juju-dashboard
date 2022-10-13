@@ -1,3 +1,7 @@
+import { Button } from "@canonical/react-components";
+import { getModelUUID } from "app/selectors";
+import { generateIconImg, pluralize } from "app/utils/utils";
+import { executeActionOnUnits, getActionsForApplication } from "juju";
 import {
   MutableRefObject,
   useCallback,
@@ -8,18 +12,14 @@ import {
 } from "react";
 import { useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useQueryParam, withDefault, ArrayParam } from "use-query-params";
-import { executeActionOnUnits, getActionsForApplication } from "juju";
-import { getModelUUID } from "app/selectors";
-import { generateIconImg, pluralize } from "app/utils/utils";
-import Button from "@canonical/react-components/dist/components/Button/Button";
+import { ArrayParam, useQueryParam, withDefault } from "use-query-params";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Aside from "components/Aside/Aside";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
-import PanelHeader from "components/PanelHeader/PanelHeader";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
+import PanelHeader from "components/PanelHeader/PanelHeader";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import { TSFixMe } from "types";
 

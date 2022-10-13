@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Spinner from "@canonical/react-components/dist/components/Spinner/Spinner";
+import { Spinner } from "@canonical/react-components";
 
 import "./_loading-handler.scss";
 

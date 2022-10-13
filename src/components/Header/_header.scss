@@ -1,6 +1,7 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
+@import "../../scss/breakpoints";
 
 .header {
   background-color: $color-x-light;
@@ -10,7 +11,7 @@
   padding: 0 1rem;
   z-index: z("gamma");
 
-  @media (min-width: $breakpoint-medium) {
+  @include desktop {
     align-items: center;
     display: grid;
     padding: 0 1.5rem;

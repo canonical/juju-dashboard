@@ -1,22 +1,21 @@
+import { Button, MainTable } from "@canonical/react-components";
+import { Field, Formik } from "formik";
 import { useMemo, useRef, useState } from "react";
-import { Formik, Field } from "formik";
-import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  useQueryParam,
-  useQueryParams,
   ArrayParam,
   StringParam,
+  useQueryParam,
+  useQueryParams,
   withDefault,
 } from "use-query-params";
-import Button from "@canonical/react-components/dist/components/Button";
-import MainTable from "@canonical/react-components/dist/components/MainTable";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
-import InfoPanel from "components/InfoPanel/InfoPanel";
-import EntityInfo from "components/EntityInfo/EntityInfo";
 import ChipGroup from "components/ChipGroup/ChipGroup";
+import EntityInfo from "components/EntityInfo/EntityInfo";
 import FormikFormData from "components/FormikFormData/FormikFormData";
+import InfoPanel from "components/InfoPanel/InfoPanel";
 
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 
@@ -24,17 +23,17 @@ import useTableRowClick from "hooks/useTableRowClick";
 
 import { extractRevisionNumber, generateStatusElement } from "app/utils/utils";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 
-import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 import {
-  machineTableHeaders,
   generateSelectableUnitTableHeaders,
+  machineTableHeaders,
 } from "tables/tableHeaders";
+import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 
-import runActionImage from "static/images/run-action-icon.svg";
 import actionLogsImage from "static/images/action-logs-icon.svg";
+import runActionImage from "static/images/run-action-icon.svg";
 
 import {
   getModelApplications,

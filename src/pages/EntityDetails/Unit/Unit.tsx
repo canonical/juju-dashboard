@@ -1,29 +1,29 @@
+import { MainTable } from "@canonical/react-components";
 import { useMemo } from "react";
-import MainTable from "@canonical/react-components/dist/components/MainTable";
-import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import useTableRowClick from "hooks/useTableRowClick";
 
 import {
-  machineTableHeaders,
   localApplicationTableHeaders,
+  machineTableHeaders,
 } from "tables/tableHeaders";
 
 import {
-  generateMachineRows,
   generateLocalApplicationRows,
+  generateMachineRows,
 } from "tables/tableRows";
 
 import { extractRevisionNumber } from "app/utils/utils";
 
-import EntityDetails from "pages/EntityDetails/EntityDetails";
-import InfoPanel from "components/InfoPanel/InfoPanel";
 import EntityInfo from "components/EntityInfo/EntityInfo";
+import InfoPanel from "components/InfoPanel/InfoPanel";
+import EntityDetails from "pages/EntityDetails/EntityDetails";
 
 import {
-  getModelApplications,
   getAllModelApplicationStatus,
+  getModelApplications,
   getModelInfo,
   getModelMachines,
   getModelUnits,

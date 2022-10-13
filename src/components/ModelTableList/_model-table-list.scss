@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
 
 .models .p-main-table caption {
   margin-top: 0.5rem;
@@ -44,13 +45,13 @@
   }
 
   // model row hover on large screens
-  @media (max-width: $breakpoint-medium - 1) {
+  @include mobile {
     .sm-screen-access-cell .model-access {
       display: block;
     }
   }
 
-  @media (min-width: $breakpoint-medium) {
+  @include desktop {
     .sm-screen-access-cell,
     .sm-screen-access-header {
       display: none;
@@ -62,6 +63,7 @@
       .model-access {
         display: block;
         margin-bottom: 0;
+        padding: 0;
         width: 100%;
       }
 
