@@ -1,4 +1,5 @@
 @import "../../scss/settings";
+@import "../../scss/breakpoints";
 @import "vanilla-framework/scss/vanilla";
 
 $canonical-purple: #2c001e;
@@ -11,6 +12,10 @@ $row-height: 2.5rem;
   // These variables aren't made available to the rest of the application so
   // their values are hardcoded here.
   width: calc(100vw - 3rem);
+
+  @include mobile {
+    width: 100vw;
+  }
 
   &__input {
     background-color: $color-x-dark;

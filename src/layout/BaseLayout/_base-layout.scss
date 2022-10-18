@@ -1,6 +1,13 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
+@import "../../scss/breakpoints";
+
+@mixin collapsed {
+  &[data-collapsed="true"][data-sidenav-initially-collapsed="true"]:not(:hover, :focus-within, .is-pinned) {
+    @content;
+  }
+}
 
 .skip-main {
   height: 1px;
@@ -34,12 +41,8 @@
 .l-main {
   background-color: $color-x-light;
 
-  @media (min-width: $breakpoint-medium) {
+  @include large {
     padding-left: 3rem;
-  }
-
-  @media (min-width: $breakpoint-large) {
-    padding-left: 0;
   }
 
   > .p-notification--information {
@@ -64,7 +67,7 @@
     padding: 0.5rem;
     z-index: z("zelda");
 
-    @media (min-width: $breakpoint-medium) {
+    @include large {
       display: none;
     }
 
@@ -79,50 +82,25 @@
     }
   }
 
-  @media (max-width: $breakpoint-medium - 1) {
+  @include mobile {
     &[data-collapsed="true"] {
       transform: translateX(-100%);
     }
   }
 
-  // Override Vanilla to always collapse navigation sidebar
-  @media (min-width: $breakpoint-large - 1) {
-    &[data-sidenav-initially-collapsed="true"] {
-      & ~ .l-main {
-        padding-left: 3rem;
-      }
-
-      height: 100vh;
-      left: 0;
-      max-width: 3rem;
-      position: fixed;
-      top: 0;
-      transition: all 0.25s;
-
-      .logo__text,
-      .p-primary-nav__bottom,
-      .p-primary-nav__divider {
-        opacity: 0;
-      }
-
-      &:hover {
-        max-width: 15rem;
-
-        .logo__text,
-        .p-primary-nav__bottom {
-          opacity: 1;
-        }
-
-        .p-primary-nav__divider {
-          opacity: 0.1;
-        }
-      }
+  .hide-collapsed {
+    @include vf-animation(opacity, brisk, ease-in-out);
+  }
+  // When the navbar is collapsed on desktop or mobile view and menu is closed, hide the text
+  @include collapsed {
+    .hide-collapsed {
+      opacity: 0;
     }
   }
-
   // Close user menu when side nav collapses so it remains active but appears
   // visually inactive until the user hovers the side nav again
-  &[data-sidenav-initially-collapsed="true"] {
+  &[data-sidenav-initially-collapsed="true"],
+  .p-primary-nav:hover {
     .user-menu.is-active {
       max-height: $user-menu-height--inactive;
     }
@@ -141,4 +119,8 @@
 
 .l-application {
   overflow-x: hidden;
+
+  .l-navigation.is-pinned + .l-main {
+    padding-left: 0;
+  }
 }

@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import MainTable from "@canonical/react-components/dist/components/MainTable";
+import { MainTable } from "@canonical/react-components";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import useActiveUser from "hooks/useActiveUser";
 
@@ -175,5 +175,5 @@ export default function CloudGroup({ filters }) {
       />
     );
   }
-  return <div className="cloud-group u-overflow--scroll">{cloudTables}</div>;
+  return <div className="cloud-group u-overflow--auto">{cloudTables}</div>;
 }

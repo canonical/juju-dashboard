@@ -3,14 +3,16 @@ import { useEffect, useMemo, useState } from "react";
 import { useSelector, useStore } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
-import ModularTable from "@canonical/react-components/dist/components/ModularTable/ModularTable";
-import Spinner from "@canonical/react-components/dist/components/Spinner/Spinner";
+import {
+  ContextualMenu,
+  ModularTable,
+  Spinner,
+} from "@canonical/react-components";
 
 import { getModelStatus, getModelUUID } from "app/selectors";
 import { generateIconImg, generateStatusElement } from "app/utils/utils";
 import { queryActionsList, queryOperationsList } from "juju/index";
 
-import { ContextualMenu } from "@canonical/react-components";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { TSFixMe } from "types";
 import "./_action-logs.scss";

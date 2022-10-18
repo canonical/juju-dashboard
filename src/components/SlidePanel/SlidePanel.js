@@ -1,5 +1,5 @@
+import { Spinner } from "@canonical/react-components";
 import classnames from "classnames";
-import Spinner from "@canonical/react-components/dist/components/Spinner";
 
 import useEventListener from "hooks/useEventListener";
 

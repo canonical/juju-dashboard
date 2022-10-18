@@ -6,6 +6,7 @@ import FadeIn from "animations/FadeIn";
 import useLocalStorage from "hooks/useLocalStorage";
 import useWindowTitle from "hooks/useWindowTitle";
 
+import { Switch } from "@canonical/react-components";
 import "./settings.scss";
 
 export default function Settings() {
@@ -25,18 +26,13 @@ export default function Settings() {
         <div className="l-content settings">
           <div className="settings__toggles">
             <div className="settings__toggles-group">
-              <label>
-                Disable analytics
-                <input
-                  type="checkbox"
-                  className="p-switch"
-                  defaultChecked={disableAnalytics}
-                  onChange={() => {
-                    setDisableAnalytics(!disableAnalytics);
-                  }}
-                />
-                <div className="p-switch__slider"></div>
-              </label>
+              <Switch
+                label="Disable analytics"
+                defaultChecked={disableAnalytics}
+                onChange={() => {
+                  setDisableAnalytics(!disableAnalytics);
+                }}
+              />
               <div className="settings__toggles-info">
                 You will need to refresh your browser for this setting to take
                 effect.

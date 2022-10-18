@@ -1,13 +1,6 @@
 // Site-wide Vanilla table overrides
 table {
   min-width: 900px;
-
-  // XXX Ant: 21.05.2020 - Unset the thead after which is causing a gap on
-  // first render. Can be removed when the following issue is resolved:
-  // https://github.com/canonical-web-and-design/vanilla-framework/issues/3087
-  thead::after {
-    content: none;
-  }
 }
 
 th,

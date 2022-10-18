@@ -7,18 +7,6 @@
     width: 100%;
   }
 
-  &__toggles-group {
-    margin-bottom: 2rem;
-    position: relative;
-    width: 100%;
-
-    .p-switch__slider {
-      position: absolute;
-      right: 0;
-      top: 0.25rem;
-    }
-  }
-
   &__toggles-info {
     color: $color-mid-dark;
     font-size: 0.875rem;

@@ -1,22 +1,22 @@
-import { useSelector } from "react-redux";
-import MainTable from "@canonical/react-components/dist/components/MainTable";
-import { useQueryParams, StringParam, withDefault } from "use-query-params";
+import { MainTable } from "@canonical/react-components";
 import useActiveUser from "hooks/useActiveUser";
+import { useSelector } from "react-redux";
+import { StringParam, useQueryParams, withDefault } from "use-query-params";
 
 import {
+  canAdministerModelAccess,
   generateStatusElement,
   getModelStatusGroupData,
-  canAdministerModelAccess,
 } from "app/utils/utils";
 
 import { getGroupedByOwnerAndFilteredModelData } from "app/selectors";
 
 import {
+  generateAccessButton,
+  generateCloudAndRegion,
+  generateCloudCell,
   generateModelDetailsLink,
   getStatusValue,
-  generateCloudCell,
-  generateCloudAndRegion,
-  generateAccessButton,
 } from "./shared";
 
 /**
@@ -169,5 +169,5 @@ export default function OwnerGroup({ filters }) {
       />
     );
   }
-  return <div className="owners-group u-overflow--scroll">{ownerTables}</div>;
+  return <div className="owners-group u-overflow--auto">{ownerTables}</div>;
 }

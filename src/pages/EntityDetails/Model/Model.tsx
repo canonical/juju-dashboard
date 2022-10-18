@@ -1,49 +1,49 @@
-import { useMemo, useCallback } from "react";
-import MainTable from "@canonical/react-components/dist/components/MainTable";
+import { MainTable } from "@canonical/react-components";
 import {
-  useQueryParams,
-  useQueryParam,
-  StringParam,
-  withDefault,
-} from "use-query-params";
+  canAdministerModelAccess,
+  extractCloudName,
+  pluralize,
+} from "app/utils/utils";
+import { useCallback, useMemo } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  pluralize,
-  extractCloudName,
-  canAdministerModelAccess,
-} from "app/utils/utils";
-import { useSelector } from "react-redux";
+  StringParam,
+  useQueryParam,
+  useQueryParams,
+  withDefault,
+} from "use-query-params";
 
 import {
   appsOffersTableHeaders,
-  machineTableHeaders,
-  relationTableHeaders,
-  offersTableHeaders,
   consumedTableHeaders,
   localApplicationTableHeaders,
+  machineTableHeaders,
+  offersTableHeaders,
+  relationTableHeaders,
   remoteApplicationTableHeaders,
 } from "tables/tableHeaders";
 
 import {
-  generateLocalApplicationRows,
-  generateRemoteApplicationRows,
-  generateConsumedRows,
-  generateMachineRows,
-  generateRelationRows,
-  generateOffersRows,
   generateAppOffersRows,
+  generateConsumedRows,
+  generateLocalApplicationRows,
+  generateMachineRows,
+  generateOffersRows,
+  generateRelationRows,
+  generateRemoteApplicationRows,
 } from "tables/tableRows";
 
-import InfoPanel from "components/InfoPanel/InfoPanel";
 import ContentReveal from "components/ContentReveal/ContentReveal";
+import InfoPanel from "components/InfoPanel/InfoPanel";
 
-import EntityDetails from "pages/EntityDetails/EntityDetails";
 import EntityInfo from "components/EntityInfo/EntityInfo";
+import EntityDetails from "pages/EntityDetails/EntityDetails";
 import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 
+import useActiveUser from "hooks/useActiveUser";
 import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
-import useActiveUser from "hooks/useActiveUser";
 
 import ChipGroup from "components/ChipGroup/ChipGroup";
 

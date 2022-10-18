@@ -16,7 +16,7 @@ export default function Logo() {
     <a href={isJuju ? "https://juju.is" : "https://jaas.ai"} className="logo">
       <img src={logoMark} alt="Juju logo mark" height="20" width="20" />
       <img
-        className="logo__text"
+        className="logo__text hide-collapsed"
         src={isJuju ? jujuText : jaasText}
         height="20"
         alt="Juju logo"

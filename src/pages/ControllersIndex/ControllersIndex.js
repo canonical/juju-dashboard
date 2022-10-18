@@ -1,10 +1,10 @@
+import cloneDeep from "clone-deep";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import cloneDeep from "clone-deep";
 
-import BaseLayout from "layout/BaseLayout/BaseLayout";
+import { MainTable } from "@canonical/react-components";
 import Header from "components/Header/Header";
-import MainTable from "@canonical/react-components/dist/components/MainTable/MainTable";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 
 import FadeIn from "animations/FadeIn";
 
@@ -12,7 +12,7 @@ import useWindowTitle from "hooks/useWindowTitle";
 
 import { getControllerData, getModelData } from "app/selectors";
 
-import { useQueryParam, StringParam } from "use-query-params";
+import { StringParam, useQueryParam } from "use-query-params";
 
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 
@@ -152,7 +152,7 @@ function Details() {
         </div>
       </div>
       <ControllersOverview />
-      <div className="l-controllers-table u-overflow--scroll">
+      <div className="l-controllers-table u-overflow--auto">
         {rows.length > 0 && <MainTable headers={headers} rows={rows} />}
         {additionalRows.length > 0 && (
           <MainTable headers={additionalHeaders} rows={additionalRows} />

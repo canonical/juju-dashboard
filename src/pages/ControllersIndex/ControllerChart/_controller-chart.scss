@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../../scss/breakpoints";
 
 .p-chart {
   .is-disabled {
@@ -25,11 +26,11 @@
       flex: 1;
     }
   }
+}
 
-  @media (max-width: $breakpoint-medium) {
-    &__chart {
-      display: none;
-    }
+@include mobile {
+  .p-chart__chart {
+    display: none;
   }
 }
 

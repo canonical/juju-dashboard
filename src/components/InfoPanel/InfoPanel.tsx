@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import Topology from "components/Topology/Topology";
-import Modal from "@canonical/react-components/dist/components/Modal";
+import { Modal } from "@canonical/react-components";
 
 import { getViewportWidth } from "app/utils/utils";
 import useAnalytics from "hooks/useAnalytics";

@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
-import { Modal } from "@canonical/react-components/dist/components/Modal/Modal";
+import { Modal } from "@canonical/react-components";
 
 import "./_confirmation-modal.scss";
 

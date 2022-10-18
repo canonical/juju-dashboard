@@ -1,5 +1,6 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
+@import "../../scss/breakpoints";
 
 .slide-panel {
   @include vf-animation(transform, brisk, out);
@@ -9,7 +10,6 @@
   background-color: $color-x-light;
   height: calc(100% - #{$top-header-height});
   max-width: 100vw;
-  overflow: scroll;
   position: fixed;
   right: 0;
   top: $top-header-height;
@@ -17,7 +17,7 @@
   width: 100%;
   z-index: z("beta");
 
-  @media (min-width: $breakpoint-medium) {
+  @include desktop {
     box-shadow: $box-shadow;
     width: 60vw;
   }
@@ -35,7 +35,7 @@
   .p-modal__close {
     margin: 1.5rem 1rem 1rem;
 
-    @media (max-width: $breakpoint-medium - 1) {
+    @include mobile {
       margin-top: 4rem;
     }
   }
@@ -43,7 +43,7 @@
   &__content {
     padding: 1.5rem 1rem 1rem;
 
-    @media (max-width: $breakpoint-medium - 1) {
+    @include mobile {
       padding-top: 4rem;
     }
   }

@@ -1,15 +1,10 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
+@import "../../scss/breakpoints";
 
 .info-panel {
-  @media (min-width: $breakpoint-small) {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: $breakpoint-medium) {
+  @include desktop {
     display: block;
   }
 
@@ -47,7 +42,7 @@
     // This needs to be kept in sync with the 1580px breakpoint in
     // InfoPanel.js:infoPanelDimensions.
 
-    @media (min-width: 1580px) {
+    @include large {
       grid-template-columns: repeat(2, 1fr);
     }
   }

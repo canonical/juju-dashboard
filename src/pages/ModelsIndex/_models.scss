@@ -1,14 +1,7 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
 
 .models {
-  .chip-group {
-    margin: 1.5rem 0 1rem;
-
-    @media (min-width: $breakpoint-medium) {
-      margin: 1rem 0;
-    }
-  }
-
   &__header {
     align-items: center;
     display: grid;
@@ -28,7 +21,7 @@
       }
     }
 
-    @media (min-width: $breakpoint-medium) and (max-width: $breakpoint-large) {
+    @include desktop {
       gap: 1rem;
       grid-template-columns: 1fr 1fr;
     }
@@ -38,7 +31,7 @@
     }
 
     .search-and-filter {
-      @media (min-width: $breakpoint-medium) {
+      @include desktop {
         max-width: 270px;
         position: absolute;
         right: 0.75rem;

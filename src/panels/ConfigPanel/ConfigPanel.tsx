@@ -1,14 +1,14 @@
-import { ReactNode, useEffect, useState } from "react";
-import { getApplicationConfig, setApplicationConfig } from "juju";
-import { useStore } from "react-redux";
-import type { Store } from "redux";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
+import { getApplicationConfig, setApplicationConfig } from "juju";
+import { ReactNode, useEffect, useState } from "react";
+import { useStore } from "react-redux";
+import type { Store } from "redux";
 
-import Spinner from "@canonical/react-components/dist/components/Spinner";
+import { Spinner } from "@canonical/react-components";
 
-import { generateIconImg, isSet } from "app/utils/utils";
 import FadeIn from "animations/FadeIn";
+import { generateIconImg, isSet } from "app/utils/utils";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 

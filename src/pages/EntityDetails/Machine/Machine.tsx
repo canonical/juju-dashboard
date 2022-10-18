@@ -1,21 +1,21 @@
+import { MainTable } from "@canonical/react-components";
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
-import MainTable from "@canonical/react-components/dist/components/MainTable";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import useTableRowClick from "hooks/useTableRowClick";
 
 import {
-  getModelApplications,
   getAllModelApplicationStatus,
+  getModelApplications,
   getModelMachines,
   getModelUnits,
   getModelUUID,
 } from "juju/model-selectors";
 
 import {
-  generateUnitRows,
   generateLocalApplicationRows,
+  generateUnitRows,
 } from "tables/tableRows";
 
 import {

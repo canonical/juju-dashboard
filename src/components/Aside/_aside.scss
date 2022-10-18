@@ -1,16 +1,7 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
 
 .l-aside {
-  min-height: 100vh;
-  overflow-y: scroll !important;
-  padding: 0;
-  position: relative;
-
-  .p-panel {
-    min-height: 100vh;
-    position: relative;
-  }
-
   .loading {
     align-items: center;
     background-color: $color-x-light;
@@ -21,7 +12,7 @@
   }
 
   &.is-split {
-    @media (min-width: $breakpoint-medium) {
+    @include desktop {
       max-width: 768px;
       width: 66%;
     }
@@ -29,7 +20,7 @@
     .aside-split-wrapper {
       padding-bottom: 4rem;
 
-      @media (min-width: $breakpoint-small) {
+      @include desktop {
         display: flex;
         padding-bottom: 1rem;
       }
@@ -37,7 +28,7 @@
       .aside-split-col {
         width: 100%;
 
-        @media (min-width: $breakpoint-small) {
+        @include desktop {
           width: calc(50% - 1rem);
 
           &:first-child {
