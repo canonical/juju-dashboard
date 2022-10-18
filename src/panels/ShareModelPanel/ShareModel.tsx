@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useStore, useSelector, useDispatch } from "react-redux";
-import { Formik, Field, Form } from "formik";
 import cloneDeep from "clone-deep";
+import { Field, Form, Formik } from "formik";
+import { motion } from "framer-motion";
 import useModelStatus from "hooks/useModelStatus";
 import { setModelSharingPermissions } from "juju";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import reactHotToast from "react-hot-toast";
+import { useDispatch, useSelector, useStore } from "react-redux";
 
 import { getModelControllerDataByUUID } from "app/selectors";
 
@@ -16,6 +16,7 @@ import ToastCard from "components/ToastCard/ToastCard";
 
 import type { TSFixMe } from "types";
 
+import { RadioInput } from "@canonical/react-components";
 import "./share-model.scss";
 
 type ModelControllerData = {
@@ -316,65 +317,55 @@ export default function ShareModel() {
                 <label className="is-required" htmlFor=" ">
                   Access level
                 </label>
-                <div className="p-radio">
-                  <label htmlFor="accessRead">
-                    <Field
-                      id="accessRead"
-                      type="radio"
-                      className="p-radio__input"
-                      name="access"
-                      aria-labelledby="Read"
-                      value="read"
-                    />
-                    <span className="p-radio__label" id="accessLevel1">
-                      read
-                      <span className="help-text">
-                        A user can view the state of the model
-                      </span>
-                    </span>
-                  </label>
-                </div>
 
-                <div className="p-radio">
-                  <label htmlFor="accessWrite">
-                    <Field
-                      id="accessWrite"
-                      type="radio"
-                      className="p-radio__input"
-                      name="access"
-                      aria-labelledby="Write"
-                      value="write"
+                <Field
+                  component={() => (
+                    <RadioInput
+                      label={
+                        <>
+                          read
+                          <span className="help-text">
+                            A user can view the state of the model
+                          </span>
+                        </>
+                      }
                     />
-                    <span className="p-radio__label" id="accessLevel2">
-                      write
-                      <span className="help-text">
-                        In addition to 'read' abilities, a user can
-                        modify/configure models
-                      </span>
-                    </span>
-                  </label>
-                </div>
-
-                <div className="p-radio">
-                  <label htmlFor="accessAdmin">
-                    <Field
-                      id="accessAdmin"
-                      type="radio"
-                      className="p-radio__input"
-                      name="access"
-                      aria-labelledby="Admin"
-                      value="admin"
+                  )}
+                  name="access"
+                />
+                <Field
+                  component={() => (
+                    <RadioInput
+                      label={
+                        <>
+                          write
+                          <span className="help-text">
+                            In addition to 'read' abilities, a user can
+                            modify/configure models
+                          </span>
+                        </>
+                      }
                     />
-                    <span className="p-radio__label" id="accessLevel3">
-                      admin
-                      <span className="help-text">
-                        In addition to 'write' abilities, a user can perform
-                        model upgrades and connect to machines via juju ssh.
-                        Makes the user an effective model owner.
-                      </span>
-                    </span>
-                  </label>
-                </div>
+                  )}
+                  name="write"
+                />
+                <Field
+                  component={() => (
+                    <RadioInput
+                      label={
+                        <>
+                          admin
+                          <span className="help-text">
+                            In addition to 'write' abilities, a user can perform
+                            model upgrades and connect to machines via juju ssh.
+                            Makes the user an effective model owner.
+                          </span>
+                        </>
+                      }
+                    />
+                  )}
+                  name="admin"
+                />
                 <div className="action-wrapper">
                   <button
                     className="p-button--positive"
