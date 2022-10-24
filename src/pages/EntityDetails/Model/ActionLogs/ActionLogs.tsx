@@ -7,10 +7,15 @@ import {
   ContextualMenu,
   ModularTable,
   Spinner,
+  Tooltip,
 } from "@canonical/react-components";
 
 import { getModelStatus, getModelUUID } from "app/selectors";
-import { generateIconImg, generateStatusElement } from "app/utils/utils";
+import {
+  generateIconImg,
+  generateStatusElement,
+  formatFriendlyDateToNow,
+} from "app/utils/utils";
 import { queryActionsList, queryOperationsList } from "juju/index";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -74,7 +79,11 @@ type ApplicationData = {
   charm: string;
 };
 
-enum Output {
+export enum Label {
+  OUTPUT = "Output",
+}
+
+export enum Output {
   ALL = "STDOUT/STDERR",
   STDERR = "STDERR",
   STDOUT = "STDOUT",
@@ -280,13 +289,20 @@ export default function ActionLogs() {
                 )}
               </>
             ),
-            completed: new Date(actionData.completed).toLocaleString(),
+            completed: (
+              <Tooltip
+                message={new Date(actionData.completed).toLocaleString()}
+                position="top-center"
+              >
+                {formatFriendlyDateToNow(actionData.completed)}
+              </Tooltip>
+            ),
             controls: (
               <>
                 <ContextualMenu
                   hasToggleIcon
                   toggleLabel={
-                    outputType === Output.ALL ? "Output" : outputType
+                    outputType === Output.ALL ? Label.OUTPUT : outputType
                   }
                   links={[
                     {
