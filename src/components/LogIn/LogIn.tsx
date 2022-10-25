@@ -7,24 +7,31 @@ import {
   getWSControllerURL,
   isLoggedIn,
 } from "app/selectors";
-import { useEffect, useRef } from "react";
+import React, {
+  FormEvent,
+  PropsWithChildren,
+  ReactNode,
+  useEffect,
+  useRef,
+} from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 
 import { Spinner } from "@canonical/react-components";
 
+import { Config, ReduxState, TSFixMe } from "types";
 import FadeUpIn from "animations/FadeUpIn";
 
 import logo from "static/images/logo/logo-black-on-white.svg";
 
 import "./_login.scss";
 
-export default function LogIn({ children }) {
-  const { identityProviderAvailable } = useSelector(getConfig);
+export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
+  const config = useSelector<ReduxState, Config | null>(getConfig);
 
   const controllerConnections = useSelector(getControllerConnections) || {};
   const wsControllerURLs = Object.keys(controllerConnections);
 
-  const store = useStore();
+  const store = useStore<ReduxState>();
   // Loop through all of the available controller connections to see
   // if we're logged in.
   const userIsLoggedIn = wsControllerURLs.some((wsControllerURL) =>
@@ -40,7 +47,7 @@ export default function LogIn({ children }) {
           <FadeUpIn isActive={!userIsLoggedIn}>
             <div className="login__inner p-card--highlighted">
               <img className="login__logo" src={logo} alt="JAAS logo" />
-              {identityProviderAvailable ? (
+              {config?.identityProviderAvailable ? (
                 <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />
               ) : (
                 <UserPassForm />
@@ -57,10 +64,11 @@ export default function LogIn({ children }) {
 
 /**
   Generates the necessary elements to render the error message.
-  @param {String} loginError The error message from the store.
-  @returns {Object} A component for the error message.
+  @param loginError The error message from the store.
+  @returns A component for the error message.
 */
-function generateErrorMessage(loginError) {
+function generateErrorMessage(loginError?: string) {
+  console.log("loginError", loginError);
   if (!loginError) {
     return null;
   }
@@ -83,8 +91,8 @@ function generateErrorMessage(loginError) {
   );
 }
 
-function IdentityProviderForm({ userIsLoggedIn }) {
-  const visitURL = useSelector((state) => {
+function IdentityProviderForm({ userIsLoggedIn }: { userIsLoggedIn: boolean }) {
+  const visitURL = useSelector((state: ReduxState) => {
     if (!userIsLoggedIn) {
       return state?.root?.visitURL;
     }
@@ -93,13 +101,20 @@ function IdentityProviderForm({ userIsLoggedIn }) {
   return <Button visitURL={visitURL}></Button>;
 }
 
+interface LoginElements extends HTMLFormControlsCollection {
+  username: HTMLInputElement;
+  password: HTMLInputElement;
+}
+
 function UserPassForm() {
   const dispatch = useDispatch();
-  const store = useStore();
+  const store = useStore<ReduxState>();
   const bakery = useSelector(getBakery);
-  const focus = useRef();
+  const focus = useRef<HTMLInputElement>(null);
 
-  function handleSubmit(e) {
+  function handleSubmit(
+    e: FormEvent<HTMLFormElement & { elements: LoginElements }>
+  ) {
     e.preventDefault();
     const elements = e.currentTarget.elements;
     const user = elements.username.value;
@@ -107,11 +122,15 @@ function UserPassForm() {
     dispatch(
       storeUserPass(getWSControllerURL(store.getState()), { user, password })
     );
-    dispatch(connectAndStartPolling(store, bakery));
+    if (bakery) {
+      // TSFixMe - this override can be removed once the selectors have been
+      // migrated to TypeScript.
+      dispatch(connectAndStartPolling(store, bakery) as TSFixMe);
+    }
   }
 
   useEffect(() => {
-    focus.current.focus();
+    focus.current?.focus();
   }, []);
 
   return (
@@ -127,7 +146,7 @@ function UserPassForm() {
   );
 }
 
-function Button({ visitURL }) {
+function Button({ visitURL }: { visitURL?: string }) {
   if (visitURL) {
     return (
       <a

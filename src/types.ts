@@ -14,6 +14,14 @@ export type JujuState = {
   modelWatcherData: ModelWatcherData;
 };
 
+export type Config = {
+  controllerAPIEndpoint: string;
+  baseAppURL: string;
+  identityProviderAvailable: boolean;
+  identityProviderURL: string;
+  isJuju: boolean;
+};
+
 export type ReduxState = {
   root: TSFixMe;
   juju: JujuState;
