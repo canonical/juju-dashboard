@@ -62,6 +62,10 @@ import type { TSFixMe } from "types";
 
 import { renderCounts } from "../counts";
 
+export enum Label {
+  ACCESS_BUTTON = "Model access",
+}
+
 const shouldShow = (segment: string, activeView: string) => {
   switch (activeView) {
     case "apps":
@@ -294,10 +298,10 @@ const Model = () => {
           ) && (
             <button
               className="entity-details__action-button"
-              data-test="model-access-btn"
               onClick={() => setPanelQs("share-model")}
             >
-              <i className="p-icon--share"></i>Model access
+              <i className="p-icon--share"></i>
+              {Label.ACCESS_BUTTON}
             </button>
           )}
         </div>
@@ -342,15 +346,24 @@ const Model = () => {
           </>
         )}
         {shouldShow("machines", query.activeView) &&
-          machinesTableRows.length > 0 && (
+          (machinesTableRows.length > 0 ? (
             <MainTable
               headers={machineTableHeaders}
               rows={machinesTableRows}
               className="entity-details__machines p-main-table"
               sortable
-              emptyStateMsg={"There are no machines in this model"}
             />
-          )}
+          ) : (
+            <span data-testid="no-machines-msg">
+              There are no machines in this model -{" "}
+              <a
+                className="p-link--external"
+                href="https://juju.is/docs/olm/machines"
+              >
+                learn more about machines
+              </a>
+            </span>
+          ))}
         {shouldShow("integrations", query.activeView) &&
         relationTableRows.length > 0 ? (
           <>
