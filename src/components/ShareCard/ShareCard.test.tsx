@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import ShareCard from "./ShareCard";
+
+import ShareCard, { Label } from "./ShareCard";
 
 describe("Share Card", () => {
   it("should display appropriate text", () => {
@@ -15,9 +16,9 @@ describe("Share Card", () => {
       />
     );
     expect(screen.getByText("janedoe")).toHaveClass("share-card__username");
-    expect(
-      screen.getByRole("button", { name: "Remove user" })
-    ).toBeInTheDocument();
+    const remove = screen.getByRole("button", { name: Label.REMOVE });
+    expect(remove).toBeInTheDocument();
+    expect(remove).toHaveClass("p-icon--delete");
   });
 
   it("should not allow owners to change access", () => {
@@ -31,8 +32,9 @@ describe("Share Card", () => {
         accessSelectChange={jest.fn()}
       />
     );
-    expect(screen.getByText("Owner")).toHaveClass("share-card__secondary");
+    expect(screen.getByText(Label.OWNER)).toHaveClass("share-card__secondary");
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(screen.queryByText(Label.REMOVE)).not.toBeInTheDocument();
   });
 
   it("should call remove function when icon clicked", async () => {
@@ -48,7 +50,7 @@ describe("Share Card", () => {
         accessSelectChange={accessSelectChangeFn}
       />
     );
-    await userEvent.click(screen.getByRole("button", { name: "Remove user" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.REMOVE }));
     expect(removeUserFn).toHaveBeenCalled();
   });
 
