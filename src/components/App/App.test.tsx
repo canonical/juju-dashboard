@@ -14,7 +14,7 @@ jest.mock("react-router-dom", () => ({
 const mockStore = configureStore([]);
 
 describe("App", () => {
-  it.only("properly sets up Router", () => {
+  it("properly sets up Router", () => {
     const BrowserRouterSpy = jest
       .spyOn(reactRouterDOM, "BrowserRouter")
       .mockImplementation(() => <div></div>);
