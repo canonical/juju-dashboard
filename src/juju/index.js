@@ -437,9 +437,13 @@ export async function setApplicationConfig(
       setValues[key] = `${config[key].newValue}`;
     }
   });
-  const resp = await conn.facades.application.set({
-    application: appName,
-    options: setValues,
+  const resp = await conn.facades.application.setConfigs({
+    Args: [
+      {
+        application: appName,
+        config: setValues,
+      },
+    ],
   });
   return resp;
 }
