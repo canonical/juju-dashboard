@@ -1,12 +1,12 @@
-import { mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
 
 import ConfirmationModal from "./ConfirmationModal";
 
 describe("ConfirmationModal", () => {
   it("displays supplied children", () => {
     const children = <div>I am a child, wahhh</div>;
-    const wrapper = mount(<ConfirmationModal>{children}</ConfirmationModal>);
-    expect(wrapper.contains(children)).toBe(true);
+    render(<ConfirmationModal buttonRow>{children}</ConfirmationModal>);
+    expect(screen.getByText("I am a child, wahhh")).toBeInTheDocument();
   });
 
   it("renders the supplied button row content", () => {
@@ -18,9 +18,14 @@ describe("ConfirmationModal", () => {
         Yes, I'm sure
       </button>,
     ];
-    const wrapper = mount(
+    render(
       <ConfirmationModal buttonRow={buttonRow}>Content</ConfirmationModal>
     );
-    expect(wrapper.contains(buttonRow)).toBe(true);
+    expect(
+      screen.getByRole("button", { name: "Continue editing" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Yes, I'm sure" })
+    ).toBeInTheDocument();
   });
 });

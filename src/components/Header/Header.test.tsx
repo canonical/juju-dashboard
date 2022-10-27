@@ -1,14 +1,14 @@
-import { mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
 
 import Header from "./Header";
 
 describe("Header", () => {
   it("renders supplied children", () => {
-    const wrapper = mount(
+    render(
       <Header>
-        <div className="child"></div>
+        <div data-testid="child"></div>
       </Header>
     );
-    expect(wrapper.find(".child").length).toBe(1);
+    expect(screen.getByTestId("child")).toBeInTheDocument();
   });
 });
