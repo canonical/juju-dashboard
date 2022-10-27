@@ -1,53 +1,57 @@
-import { shallow, mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
 
 import Aside from "./Aside";
 
 describe("Aside", () => {
   it("should display children", () => {
-    const wrapper = mount(
+    render(
       <Aside>
-        <p className="l-aside__content">Aside content</p>
+        <p data-testid="aside-content">Aside content</p>
       </Aside>
     );
-    expect(wrapper.find(".l-aside__content").length).toBe(1);
+    expect(screen.getByTestId("aside-content")).toBeInTheDocument();
   });
 
   it("should display without width or pinned status", () => {
-    const wrapper = shallow(
-      <Aside>
+    render(
+      <Aside data-testid="aside">
         <p>Aside content</p>
       </Aside>
     );
-    expect(wrapper.find(".l-aside").length).toBe(1);
-    expect(wrapper.find(".is-narrow").length).toBe(0);
-    expect(wrapper.find(".is-wide").length).toBe(0);
-    expect(wrapper.find(".is-pinned").length).toBe(0);
+    const aside = screen.getByTestId("aside");
+    expect(aside).toHaveClass("l-aside");
+    expect(aside).not.toHaveClass(".is-narrow");
+    expect(aside).not.toHaveClass(".is-wide");
+    expect(aside).not.toHaveClass(".is-pinned");
   });
 
   it("should display correct narrow width", () => {
-    const wrapper = shallow(
-      <Aside width="narrow">
+    render(
+      <Aside data-testid="aside" width="narrow">
         <p>Aside content</p>
       </Aside>
     );
-    expect(wrapper.find(".is-narrow").length).toBe(1);
+    const aside = screen.getByTestId("aside");
+    expect(aside).toHaveClass("is-narrow");
   });
 
   it("should display correct wide width", () => {
-    const wrapper = shallow(
-      <Aside width="wide">
+    render(
+      <Aside data-testid="aside" width="wide">
         <p>Aside content</p>
       </Aside>
     );
-    expect(wrapper.find(".is-wide").length).toBe(1);
+    const aside = screen.getByTestId("aside");
+    expect(aside).toHaveClass("is-wide");
   });
 
   it("should display correct pinned status", () => {
-    const wrapper = shallow(
-      <Aside pinned={true}>
+    render(
+      <Aside data-testid="aside" pinned={true}>
         <p>Aside content</p>
       </Aside>
     );
-    expect(wrapper.find(".is-pinned").length).toBe(1);
+    const aside = screen.getByTestId("aside");
+    expect(aside).toHaveClass("is-pinned");
   });
 });

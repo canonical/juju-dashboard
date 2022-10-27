@@ -10,6 +10,7 @@ export default function SlideInOut({
   isActive = true,
   children,
   className,
+  ...props
 }: Props): JSX.Element {
   return (
     <>
@@ -20,6 +21,7 @@ export default function SlideInOut({
           animate={{ x: 0 }}
           exit={{ x: "100%" }}
           transition={{ type: "tween" }}
+          {...props}
         >
           {children}
         </motion.div>
