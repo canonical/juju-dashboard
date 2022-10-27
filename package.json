@@ -58,7 +58,7 @@
     "@sentry/browser": "7.14.1",
     "@types/clone-deep": "4.0.1",
     "@types/lodash.mergewith": "^4.6.6",
-    "@types/react": "17.0.50",
+    "@types/react": "18.0.24",
     "async-limiter": "2.0.0",
     "classnames": "2.3.2",
     "clone-deep": "4.0.1",
