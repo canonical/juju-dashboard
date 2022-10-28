@@ -1,46 +1,44 @@
-import { mount } from "enzyme";
-
+import { render, screen } from "@testing-library/react";
 import ContentReveal from "./ContentReveal";
 
 describe("Content Reveal", () => {
   it("should show children as content", () => {
-    const wrapper = mount(
+    render(
       <ContentReveal title="Foo bar" openByDefault={false}>
         <p>Banner text</p>
       </ContentReveal>
     );
-    expect(wrapper.find("p").text()).toStrictEqual("Banner text");
+    expect(screen.getByText("Banner text")).toBeInTheDocument();
   });
 
   it("should show correct title if only text", () => {
-    const wrapper = mount(
+    render(
       <ContentReveal title="Foo bar" openByDefault={false}>
         <p>Banner text</p>
       </ContentReveal>
     );
-    expect(wrapper.find(".content-reveal__title").text()).toStrictEqual(
-      "Foo bar"
-    );
+    expect(screen.getByText("Foo bar")).toHaveClass("content-reveal__title");
   });
 
   it("should show correct title if only text and JSX", () => {
-    const title = <div>JSX Title</div>;
-    const wrapper = mount(
+    const title = <div data-testid="jsx-title">JSX Title</div>;
+    render(
       <ContentReveal title={title} openByDefault={false}>
         <p>Banner text</p>
       </ContentReveal>
     );
-    expect(wrapper.find(".content-reveal__title").contains(title)).toBe(true);
+    expect(screen.getByTestId("jsx-title")).toBeInTheDocument();
   });
 
   it("should open by default if set", () => {
-    const wrapper = mount(
+    render(
       <ContentReveal title="Foo bar" openByDefault={true}>
         <p>Banner text</p>
       </ContentReveal>
     );
-    expect(
-      wrapper.find(".content-reveal__content").prop("aria-hidden")
-    ).toStrictEqual(false);
+    expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
+      "aria-hidden",
+      "false"
+    );
   });
 });
