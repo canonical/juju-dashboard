@@ -1,5 +1,4 @@
-import { mount } from "enzyme";
-
+import { render, screen } from "@testing-library/react";
 import ChipGroup from "./ChipGroup";
 
 describe("Chip Group", () => {
@@ -9,10 +8,10 @@ describe("Chip Group", () => {
       bar: 2,
       baz: 3,
     };
-    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="units" />);
-    expect(wrapper.find(".is-foo").text()).toBe("1 foo");
-    expect(wrapper.find(".is-bar").text()).toBe("2 bar");
-    expect(wrapper.find(".is-baz").text()).toBe("3 baz");
+    render(<ChipGroup chips={fakeChips} descriptor="units" />);
+    expect(screen.getByText("1 foo")).toHaveClass("is-foo");
+    expect(screen.getByText("2 bar")).toHaveClass("is-bar");
+    expect(screen.getByText("3 baz")).toHaveClass("is-baz");
   });
 
   it("should not show chips with zero count", () => {
@@ -21,8 +20,8 @@ describe("Chip Group", () => {
       bar: 2,
       baz: 0,
     };
-    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="units" />);
-    expect(wrapper.find(".is-baz").length).toBe(0);
+    render(<ChipGroup chips={fakeChips} descriptor="units" />);
+    expect(document.querySelector(".is-baz")).not.toBeInTheDocument();
   });
 
   it("should display the correct count and descriptor", () => {
@@ -31,8 +30,8 @@ describe("Chip Group", () => {
       bar: 2,
       baz: 0,
     };
-    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor="units" />);
-    expect(wrapper.find(".chip-group__descriptor").text()).toBe("3 Units");
+    render(<ChipGroup chips={fakeChips} descriptor="units" />);
+    expect(screen.getByText("3 Units")).toHaveClass("chip-group__descriptor");
   });
 
   it("should not display the descriptor when null", () => {
@@ -41,7 +40,9 @@ describe("Chip Group", () => {
       bar: 2,
       baz: 0,
     };
-    const wrapper = mount(<ChipGroup chips={fakeChips} descriptor={null} />);
-    expect(wrapper.find(".chip-group__descriptor").length).toBe(0);
+    render(<ChipGroup chips={fakeChips} descriptor={null} />);
+    expect(
+      document.querySelector(".chip-group__descriptor")
+    ).not.toBeInTheDocument();
   });
 });
