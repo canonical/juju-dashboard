@@ -1,42 +1,39 @@
-import { mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Formik, Field } from "formik";
-import { waitForComponentToPaint } from "testing/utils";
 
 import FormikFormData from "./FormikFormData";
 
 describe("FormikFormData", () => {
   function generateComponent() {
-    const children = <Field type="checkbox" name="test" />;
+    const children = <Field type="checkbox" name="test" data-testid="field" />;
     const changeHandler = jest.fn();
     const setupHandler = jest.fn();
-    const wrapper = mount(
+    render(
       <Formik
         initialValues={{
           test: false,
         }}
+        onSubmit={jest.fn()}
       >
         <FormikFormData onFormChange={changeHandler} onSetup={setupHandler}>
           {children}
         </FormikFormData>
       </Formik>
     );
-    return { children, wrapper, changeHandler, setupHandler };
+    return { changeHandler, setupHandler };
   }
 
   it("renders the supplied children", () => {
-    const { wrapper, children } = generateComponent();
-    expect(wrapper.contains(children)).toBe(true);
+    generateComponent();
+    expect(screen.getByTestId("field")).toBeInTheDocument();
   });
 
   it("emits change events for the form", async () => {
-    const { changeHandler, wrapper } = generateComponent();
+    const { changeHandler } = generateComponent();
     // Gets called once on initial render.
-    await waitForComponentToPaint(wrapper);
     expect(changeHandler).toHaveBeenCalledTimes(1);
-    wrapper.find('input[name="test"]').simulate("change", {
-      target: { name: "test", value: true },
-    });
-    await waitForComponentToPaint(wrapper);
+    await userEvent.type(screen.getByRole("checkbox"), "test");
     expect(changeHandler).toHaveBeenCalledTimes(2);
   });
 
