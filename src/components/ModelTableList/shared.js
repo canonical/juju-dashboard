@@ -150,7 +150,7 @@ export function generateCloudCell(model) {
           src={awsLogo}
           alt="AWS logo"
           className="p-table__logo"
-          data-test="provider-logo"
+          data-testid="provider-logo"
         />
       );
       break;
@@ -160,7 +160,7 @@ export function generateCloudCell(model) {
           src={gceLogo}
           alt="Google Cloud Platform logo"
           className="p-table__logo"
-          data-test="provider-logo"
+          data-testid="provider-logo"
         />
       );
       break;
@@ -170,7 +170,7 @@ export function generateCloudCell(model) {
           src={azureLogo}
           alt="Azure logo"
           className="p-table__logo"
-          data-test="provider-logo"
+          data-testid="provider-logo"
         />
       );
       break;
@@ -180,7 +180,7 @@ export function generateCloudCell(model) {
           src={kubernetesLogo}
           alt="Kubernetes logo"
           className="p-table__logo"
-          data-test="provider-logo"
+          data-testid="provider-logo"
         />
       );
       break;

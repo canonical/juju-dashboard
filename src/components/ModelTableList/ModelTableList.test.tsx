@@ -1,71 +1,89 @@
 import cloneDeep from "clone-deep";
 import { MemoryRouter } from "react-router";
-import { mount } from "enzyme";
+import { render, RenderResult, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
+import * as appSelectors from "app/selectors";
 import ModelTableList from "./ModelTableList";
 
 import dataDump from "../../testing/complete-redux-store-dump";
+import { TestId as CloudTestId } from "./CloudGroup";
+import { TestId as OwnerTestId } from "./OwnerGroup";
+import { TestId as StatusTestId } from "./StatusGroup";
 
 const mockStore = configureStore([]);
 
 describe("ModelTableList", () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it("by default, renders the status table", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelTableList />
+            <ModelTableList filters={[]} groupedBy="" />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
-    const statusGroup = wrapper.find("StatusGroup");
-    expect(statusGroup.length).toBe(1);
-    expect(wrapper.find("OwnerGroup").length).toBe(0);
+    expect(screen.getByTestId(StatusTestId.STATUS_GROUP)).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(OwnerTestId.OWNER_GROUP)
+    ).not.toBeInTheDocument();
   });
 
   it("displays all data from redux store when grouping by...", () => {
     const store = mockStore(dataDump);
     const tables = [
-      ["status", "StatusGroup"],
-      ["owner", "OwnerGroup"],
-      ["cloud", "CloudGroup"],
+      ["status", StatusTestId.STATUS_GROUP],
+      ["owner", OwnerTestId.OWNER_GROUP],
+      ["cloud", CloudTestId.CLOUD_GROUP],
     ];
+    const generateComponent = (groupedBy: string) => (
+      <MemoryRouter>
+        <QueryParamProvider adapter={ReactRouter6Adapter}>
+          <Provider store={store}>
+            <ModelTableList filters={[]} groupedBy={groupedBy} />
+          </Provider>
+        </QueryParamProvider>
+      </MemoryRouter>
+    );
+    let result: RenderResult;
     tables.forEach((table) => {
-      const wrapper = mount(
-        <MemoryRouter>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Provider store={store}>
-              <ModelTableList groupedBy={table[0]} />
-            </Provider>
-          </QueryParamProvider>
-        </MemoryRouter>
-      );
-      const Group = wrapper.find(table[1]);
-      expect(Group.length).toBe(1);
+      if (result) {
+        result.rerender(generateComponent(table[0]));
+      } else {
+        result = render(generateComponent(table[0]));
+      }
+      expect(screen.getByTestId(table[1])).toBeInTheDocument();
       tables.forEach((otherTable) => {
         if (otherTable[0] !== table[0]) {
-          expect(wrapper.find(otherTable[1]).length).toBe(0); // eslint-disable-line jest/no-conditional-expect
+          expect(screen.queryByTestId(otherTable[1])).not.toBeInTheDocument(); // eslint-disable-line jest/no-conditional-expect
         }
       });
     });
   });
 
   it("passes the filters to the group components", () => {
+    const getGroupedByStatusAndFilteredModelData = jest.spyOn(
+      appSelectors,
+      "getGroupedByStatusAndFilteredModelData"
+    );
     const store = mockStore(dataDump);
     const tables = [
-      { groupedBy: "status", component: "StatusGroup" },
-      { groupedBy: "status", component: "StatusGroup" },
-      { groupedBy: "status", component: "StatusGroup" },
+      { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
+      { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
+      { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
     ];
     const filters = ["cloud:aws"];
     tables.forEach((table) => {
-      const wrapper = mount(
+      render(
         <MemoryRouter>
           <Provider store={store}>
             <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -74,23 +92,26 @@ describe("ModelTableList", () => {
           </Provider>
         </MemoryRouter>
       );
-      expect(wrapper.find(table.component).prop("filters")).toBe(filters);
+      expect(getGroupedByStatusAndFilteredModelData).toHaveBeenCalledWith(
+        filters
+      );
     });
   });
 
   it("renders the controller name as JAAS", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelTableList />
+            <ModelTableList filters={[]} groupedBy="" />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
-    const controllerNames = wrapper.find('td[data-test-column="controller"]');
-    expect(controllerNames.first().text()).toStrictEqual("JAAS");
+    expect(screen.getAllByTestId("column-controller")[0]).toHaveTextContent(
+      "JAAS"
+    );
   });
 
   it("renders the controller name as UUID if unknown", () => {
@@ -101,19 +122,19 @@ describe("ModelTableList", () => {
     clonedData.juju.modelData[testModelUUID].info["controller-uuid"] =
       unknownUUID;
     const store = mockStore(clonedData);
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelTableList />
+            <ModelTableList filters={[]} groupedBy="" />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
-    const controllerName = wrapper.find(
-      `[data-test-model-uuid="${testModelUUID}"] td[data-test-column="controller"]`
+    const row = screen.getByTestId(`model-uuid-${testModelUUID}`);
+    expect(within(row).getByTestId("column-controller")).toHaveTextContent(
+      unknownUUID
     );
-    expect(controllerName.text()).toStrictEqual(unknownUUID);
   });
 
   it("renders the controller name if known controller", () => {
@@ -124,18 +145,18 @@ describe("ModelTableList", () => {
     clonedData.juju.modelData[testModelUUID].info["controller-uuid"] =
       knownUUID;
     const store = mockStore(clonedData);
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelTableList />
+            <ModelTableList filters={[]} groupedBy="" />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
-    const controllerNames = wrapper.find(
-      `[data-test-model-uuid="${testModelUUID}"] td[data-test-column="controller"]`
+    const row = screen.getByTestId(`model-uuid-${testModelUUID}`);
+    expect(within(row).getByTestId("column-controller")).toHaveTextContent(
+      "admins/1-eu-west-1-aws-jaas"
     );
-    expect(controllerNames.text()).toStrictEqual("admins/1-eu-west-1-aws-jaas");
   });
 });
