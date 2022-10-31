@@ -20,6 +20,10 @@ import { isSideNavCollapsed } from "ui/selectors";
 import classNames from "classnames";
 import "./_base-layout.scss";
 
+export enum TestId {
+  MAIN = "main-children",
+}
+
 type Props = {
   children: JSX.Element;
 };
@@ -90,7 +94,7 @@ const BaseLayout = ({ children }: Props) => {
           </div>
         </header>
         <main className="l-main" id="main-content">
-          <div data-test="main-children">{children}</div>
+          <div data-testid={TestId.MAIN}>{children}</div>
         </main>
         <Panels />
         <Toaster
