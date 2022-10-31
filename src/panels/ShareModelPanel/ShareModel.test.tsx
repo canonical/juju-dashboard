@@ -1,4 +1,5 @@
-import { mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -13,7 +14,7 @@ const mockStore = configureStore([]);
 describe("Share Model Panel", () => {
   it("should show panel", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -27,15 +28,14 @@ describe("Share Model Panel", () => {
         </Provider>
       </MemoryRouter>
     );
-    const panelHeader = wrapper.find(
-      ".aside-split-col .share-cards__heading h5"
-    );
-    expect(panelHeader.text()).toEqual("Sharing with:");
+    expect(
+      screen.getByRole("heading", { name: "Sharing with:" })
+    ).toBeInTheDocument();
   });
 
-  it("should show small screen view toggles", () => {
+  it("should show small screen view toggles", async () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -49,10 +49,14 @@ describe("Share Model Panel", () => {
         </Provider>
       </MemoryRouter>
     );
-    const addNewUserButton = wrapper.find(".share-cards__heading button");
-    expect(addNewUserButton.exists()).toBe(true);
-    addNewUserButton.simulate("click");
-    const backToCardsButton = wrapper.find(".title-wrapper button");
-    expect(backToCardsButton.exists()).toBe(true);
+    const addNewUserButton = screen.getByRole("button", {
+      name: "Add new user",
+    });
+    expect(addNewUserButton).toBeInTheDocument();
+    await userEvent.click(addNewUserButton);
+    const backToCardsButton = screen.getByRole("button", {
+      name: "Back",
+    });
+    expect(backToCardsButton).toBeInTheDocument();
   });
 });
