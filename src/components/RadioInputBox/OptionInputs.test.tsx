@@ -1,6 +1,6 @@
-import { mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
-import { waitForComponentToPaint } from "testing/utils";
 
 import OptionInputs from "./OptionInputs";
 
@@ -22,8 +22,8 @@ describe("OptionInputs", () => {
 
   it("renders the supplied list of options", () => {
     const onValuesChange = jest.fn();
-    const wrapper = mount(
-      <Formik>
+    const { container } = render(
+      <Formik initialValues={{}} onSubmit={jest.fn()}>
         <OptionInputs
           name="MyAction"
           options={options}
@@ -31,17 +31,18 @@ describe("OptionInputs", () => {
         />
       </Formik>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it("On input value change calls the onValuesChange handler", async () => {
     const onValuesChange = jest.fn();
-    const wrapper = mount(
+    render(
       <Formik
         initialValues={{
           "MyAction-fruit": "",
           "MyAction-veg": "",
         }}
+        onSubmit={jest.fn()}
       >
         <OptionInputs
           name="MyAction"
@@ -50,20 +51,12 @@ describe("OptionInputs", () => {
         />
       </Formik>
     );
-    await waitForComponentToPaint(wrapper);
     // Formik fires a change event for the initialValues set.
     expect(onValuesChange).toHaveBeenCalledTimes(1);
-
-    wrapper.find('input[name="MyAction-fruit"]').simulate("change", {
-      target: {
-        name: "MyAction-fruit",
-        value: "foo",
-      },
-    });
-
-    await waitForComponentToPaint(wrapper);
-    expect(onValuesChange).toHaveBeenCalledTimes(2);
-    expect(onValuesChange.mock.calls[1]).toEqual([
+    await userEvent.type(screen.getByRole("textbox", { name: "fruit" }), "foo");
+    // On change gets called for each letter that is typed into the textbox.
+    expect(onValuesChange).toHaveBeenCalledTimes(4);
+    expect(onValuesChange.mock.calls[3]).toEqual([
       "MyAction",
       { "MyAction-fruit": "foo", "MyAction-veg": "" },
     ]);

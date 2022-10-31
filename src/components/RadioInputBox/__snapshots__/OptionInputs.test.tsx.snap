@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OptionInputs renders the supplied list of options 1`] = `
+<div>
+  <form>
+    <div
+      class="radio-input-box__input-group"
+    >
+      <label
+        class="radio-input-box__label is-required"
+        for="MyAction-fruit"
+      >
+        fruit
+      </label>
+      <input
+        class="radio-input-box__input"
+        id="MyAction-fruit"
+        name="MyAction-fruit"
+        type="text"
+        value=""
+      />
+      <span>
+        yum
+      </span>
+    </div>
+    <div
+      class="radio-input-box__input-group"
+    >
+      <label
+        class="radio-input-box__label"
+        for="MyAction-veg"
+      >
+        veg
+      </label>
+      <input
+        class="radio-input-box__input"
+        id="MyAction-veg"
+        name="MyAction-veg"
+        type="text"
+        value=""
+      />
+      <span>
+        ehhh
+      </span>
+    </div>
+  </form>
+</div>
+`;
