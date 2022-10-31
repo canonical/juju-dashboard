@@ -1,5 +1,5 @@
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import dataDump from "testing/complete-redux-store-dump";
@@ -11,65 +11,77 @@ const mockStore = configureStore([]);
 describe("Primary Nav", () => {
   it("applies is-selected state correctly", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/controllers"]}>
           <PrimaryNav />
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("a.is-selected").text()).toStrictEqual("Controllers");
+    expect(screen.getByRole("link", { name: "Controllers" })).toHaveClass(
+      "is-selected"
+    );
   });
 
   it("displays correct number of blocked models", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
           <PrimaryNav />
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".entity-count").text()).toStrictEqual("4");
+    expect(screen.getByText("4")).toHaveClass("entity-count");
   });
 
   it("displays the JAAS logo under JAAS", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
           <PrimaryNav />
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".logo__text").prop("src")).toBe("jaas-text.svg");
-    expect(wrapper.find(".logo").prop("href")).toBe("https://jaas.ai");
+    const logo = screen.getByAltText("Juju logo");
+    expect(logo).toHaveAttribute("src", "jaas-text.svg");
+    expect(logo).toHaveClass("logo__text");
+    expect(document.querySelector(".logo")).toHaveAttribute(
+      "href",
+      "https://jaas.ai"
+    );
   });
 
   it("displays the Juju logo under Juju", () => {
     const clonedDump = cloneDeep(dataDump);
     clonedDump.root.config.isJuju = true;
     const store = mockStore(clonedDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
           <PrimaryNav />
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".logo__text").prop("src")).toBe("juju-text.svg");
-    expect(wrapper.find(".logo").prop("href")).toBe("https://juju.is");
+    const logo = screen.getByAltText("Juju logo");
+    expect(logo).toHaveAttribute("src", "juju-text.svg");
+    expect(logo).toHaveClass("logo__text");
+    expect(document.querySelector(".logo")).toHaveAttribute(
+      "href",
+      "https://juju.is"
+    );
   });
 
   it("displays the version number", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
           <PrimaryNav />
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".version").text()).toBe("Version 0.4.0");
+    expect(screen.getByText("Version 0.4.0")).toHaveClass("version");
   });
 });
