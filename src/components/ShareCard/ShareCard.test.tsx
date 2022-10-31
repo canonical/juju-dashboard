@@ -1,10 +1,10 @@
-import { mount } from "enzyme";
-
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import ShareCard from "./ShareCard";
 
 describe("Share Card", () => {
   it("should display appropriate text", () => {
-    const wrapper = mount(
+    render(
       <ShareCard
         userName="janedoe"
         lastConnected="2021-06-03T16:03:15Z"
@@ -14,16 +14,14 @@ describe("Share Card", () => {
         accessSelectChange={jest.fn()}
       />
     );
-    expect(wrapper.find(".share-card__username").text()).toStrictEqual(
-      "janedoe"
-    );
-    expect(wrapper.find(".share-card__secondary").text()).toStrictEqual(
-      "Remove user"
-    );
+    expect(screen.getByText("janedoe")).toHaveClass("share-card__username");
+    expect(
+      screen.getByRole("button", { name: "Remove user" })
+    ).toBeInTheDocument();
   });
 
   it("should not allow owners to change access", () => {
-    const wrapper = mount(
+    render(
       <ShareCard
         userName="janedoe"
         lastConnected="2021-06-03T16:03:15Z"
@@ -33,16 +31,14 @@ describe("Share Card", () => {
         accessSelectChange={jest.fn()}
       />
     );
-    expect(wrapper.find(".share-card__secondary").text()).toStrictEqual(
-      "Owner"
-    );
-    expect(wrapper.find(".share__card-access").length).toBe(0);
+    expect(screen.getByText("Owner")).toHaveClass("share-card__secondary");
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
   });
 
-  it("should call remove function when icon clicked", () => {
+  it("should call remove function when icon clicked", async () => {
     const removeUserFn = jest.fn();
     const accessSelectChangeFn = jest.fn();
-    const wrapper = mount(
+    render(
       <ShareCard
         userName="janedoe"
         lastConnected="2021-06-03T16:03:15Z"
@@ -52,15 +48,14 @@ describe("Share Card", () => {
         accessSelectChange={accessSelectChangeFn}
       />
     );
-    const removeIcon = wrapper.find(".p-icon--delete");
-    removeIcon.simulate("click");
+    await userEvent.click(screen.getByRole("button", { name: "Remove user" }));
     expect(removeUserFn).toHaveBeenCalled();
   });
 
-  it("should call access change function when select value clicked", () => {
+  it("should call access change function when select value clicked", async () => {
     const removeUserFn = jest.fn();
     const accessSelectChangeFn = jest.fn();
-    const wrapper = mount(
+    render(
       <ShareCard
         userName="janedoe"
         lastConnected="2021-06-03T16:03:15Z"
@@ -70,10 +65,7 @@ describe("Share Card", () => {
         accessSelectChange={accessSelectChangeFn}
       />
     );
-    const accessLevelSelect = wrapper.find("select.share__card-access");
-    accessLevelSelect.simulate("change", {
-      target: { value: "write", name: "access" },
-    });
+    await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(accessSelectChangeFn).toHaveBeenCalled();
   });
 });
