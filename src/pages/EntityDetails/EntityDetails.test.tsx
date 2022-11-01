@@ -1,5 +1,12 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { TSFixMe } from "@canonical/react-components";
+import { ReactNode } from "react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
@@ -22,8 +29,18 @@ jest.mock("components/WebCLI/WebCLI", () => {
 
 const mockStore = configureStore([]);
 
+type Props = {
+  children?: ReactNode;
+  type?: string;
+};
+
 describe("Entity Details Container", () => {
-  function renderComponent({ props, overrides, transient } = {}) {
+  // TSFixMe factories need to use Juju types.
+  function renderComponent({
+    props,
+    overrides,
+    transient,
+  }: { props?: Props; overrides?: TSFixMe; transient?: TSFixMe } = {}) {
     const mockState = reduxStateFactory().build(overrides, { transient });
     const store = mockStore(mockState);
 
@@ -109,7 +126,7 @@ describe("Entity Details Container", () => {
     ];
     sections.forEach(async (section) => {
       const scrollIntoView = jest.fn();
-      await userEvent.click(within(viewSelector).getByText(section.text), {
+      fireEvent.click(within(viewSelector).getByText(section.text), {
         target: {
           scrollIntoView,
         },
@@ -138,7 +155,7 @@ describe("Entity Details Container", () => {
     });
   });
 
-  it("does not show the webCLI in juju 2.8", () => {
+  it("does not show the webCLI in juju 2.8", async () => {
     renderComponent({
       transient: {
         models: [
@@ -146,7 +163,7 @@ describe("Entity Details Container", () => {
         ],
       },
     });
-    waitFor(() => {
+    await waitFor(() => {
       expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
     });
   });
