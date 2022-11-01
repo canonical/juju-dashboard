@@ -1,13 +1,13 @@
-import { mount } from "enzyme";
+import { render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import dataDump from "testing/complete-redux-store-dump";
 import configResponse from "testing/config-response";
 
-import { waitForComponentToPaint } from "testing/utils";
 import { getApplicationConfig } from "juju";
 
-import ConfigPanel from "./ConfigPanel";
+import ConfigPanel, { Label } from "./ConfigPanel";
 
 const mockStore = configureStore([]);
 
@@ -23,7 +23,7 @@ describe("ConfigPanel", () => {
       return Promise.resolve({ config: {} });
     });
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <ConfigPanel
           appName="easyrsa"
@@ -33,9 +33,9 @@ describe("ConfigPanel", () => {
         />
       </Provider>
     );
-
-    await waitForComponentToPaint(wrapper);
-    expect(wrapper.find("NoConfigMessage")).toMatchSnapshot();
+    // Use findBy to wait for the async events to finish
+    await screen.findByText(Label.NONE);
+    expect(document.querySelector(".config-panel__message")).toMatchSnapshot();
   });
 
   it("highlights changed fields before save", async () => {
@@ -43,7 +43,7 @@ describe("ConfigPanel", () => {
       return Promise.resolve(configResponse);
     });
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <ConfigPanel
           appName="easyrsa"
@@ -54,16 +54,10 @@ describe("ConfigPanel", () => {
       </Provider>
     );
 
-    await waitForComponentToPaint(wrapper);
-    const getWrapper = () =>
-      wrapper.find("[data-config-name='custom-registry-ca']");
-    const getInput = () => getWrapper().find("textarea");
-    getInput().simulate("change", { target: { value: "new value" } });
-
-    await waitForComponentToPaint(wrapper);
-    expect(getInput().prop("value")).toBe("new value");
-    expect(getWrapper().prop("className")).toBe(
-      "config-input config-input--changed"
-    );
+    const wrapper = await screen.findByTestId("custom-registry-ca");
+    const input = within(wrapper).getByRole("textbox");
+    await userEvent.type(input, "new value");
+    expect(input).toHaveTextContent("new value");
+    expect(wrapper).toHaveClass("config-input--changed");
   });
 });
