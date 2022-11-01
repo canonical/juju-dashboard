@@ -30,29 +30,29 @@ export default function ControllerChart({ chartData, totalLabel }) {
         <ul className="p-list p-legend">
           <li
             className="p-list__item p-legend__item label"
-            data-test="legend-label"
+            data-testid="legend-label"
           >
-            <strong data-test="total-count">
+            <strong data-testid="total-count">
               {totalCount} {pluralize(totalCount, totalLabel)}
             </strong>
           </li>
           <li
             className="p-list__item p-legend__item is-blocked"
-            data-test="legend-blocked"
+            data-testid="legend-blocked"
           >
             Blocked: {getPercentage(totalCount, chartData.blocked)}%,{" "}
             {chartData.blocked || 0}
           </li>
           <li
             className="p-list__item p-legend__item is-alert"
-            data-test="legend-alert"
+            data-testid="legend-alert"
           >
             Alerts: {getPercentage(totalCount, chartData.alert)}%,{" "}
             {chartData.alert || 0}
           </li>
           <li
             className="p-list__item p-legend__item is-running"
-            data-test="legend-running"
+            data-testid="legend-running"
           >
             Running: {getPercentage(totalCount, chartData.running)}%,{" "}
             {chartData.running || 0}
