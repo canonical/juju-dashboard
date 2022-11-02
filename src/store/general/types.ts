@@ -3,6 +3,8 @@ import { TSFixMe } from "types";
 export type Config = {
   controllerAPIEndpoint: string;
   baseAppURL: string;
+  // Support for 2.9 configuration.
+  baseControllerURL?: string;
   identityProviderAvailable: boolean;
   identityProviderURL: string;
   isJuju: boolean;

@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import process from "process";
 import * as Sentry from "@sentry/browser";
@@ -54,6 +54,10 @@ checkConfigExists();
 
 function bootstrap() {
   const config = window.jujuDashboardConfig;
+  if (!config) {
+    console.error("No configuration found.");
+    return;
+  }
   // It's possible that the charm is generating a relative path for the
   // websocket because it is providing the API on the same host as the
   // application assets.
@@ -89,15 +93,16 @@ function bootstrap() {
   }
 
   const rootElement = document.getElementById("root");
-
-  ReactDOM.render(
-    <Provider store={reduxStore}>
-      <StrictMode>
-        <App />
-      </StrictMode>
-    </Provider>,
-    rootElement
-  );
+  if (rootElement) {
+    const root = createRoot(rootElement);
+    root.render(
+      <Provider store={reduxStore}>
+        <StrictMode>
+          <App />
+        </StrictMode>
+      </Provider>
+    );
+  }
 }
 
 // If you want your app to work offline and load faster, you can change
