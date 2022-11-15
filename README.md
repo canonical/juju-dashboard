@@ -87,7 +87,7 @@ The default configuration setting for the Dashboard is to connect to public JAAS
 yarn && yarn start
 ```
 
-Then connect to the Dashboard from your browser at http://localhost:3000/.
+Then connect to the Dashboard from your browser at http://localhost:8036/.
 
 ### Release tests
 
@@ -115,7 +115,7 @@ You will need the latest [NodeJS LTS](https://nodejs.org/en/) and [yarn](https:/
 yarn && yarn start
 ```
 
-...and view the site locally at: http://localhost:3000/. Any changes you make to the code will be hot reloaded in the browser.
+...and view the site locally at: http://localhost:8036/. Any changes you make to the code will be hot reloaded in the browser.
 
 ### Developing while connected to a Juju controller
 
@@ -128,7 +128,7 @@ Assuming you already have a [Juju controller created](https://juju.is/docs/getti
   - `identityProviderAvailable` to `false`.
   - `isJuju` to `true`.
 - Start the Dashboard with `yarn start`.
-- You can now access the dashboard at http://localhost:3000/ and it'll require the log in credentials from the above `juju dashboard` command.
+- You can now access the dashboard at http://localhost:8036/ and it'll require the log in credentials from the above `juju dashboard` command.
 
 ### Running the tests.
 
