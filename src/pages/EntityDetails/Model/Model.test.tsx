@@ -7,9 +7,9 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import dataDump from "testing/complete-redux-store-dump";
 
-import { reduxStateFactory } from "testing/redux-factory";
-import { ReduxState } from "types";
+import { rootStateFactory } from "testing/factories";
 import { ModelData } from "juju/types";
+import { RootState } from "store/store";
 
 import Model, { Label } from "./Model";
 import { TestId } from "../../../components/InfoPanel/InfoPanel";
@@ -44,10 +44,10 @@ jest.mock("juju", () => {
 const mockStore = configureStore([]);
 
 describe("Model", () => {
-  let storeData: ReduxState;
+  let storeData: RootState;
 
   beforeEach(() => {
-    storeData = reduxStateFactory().build(
+    storeData = rootStateFactory.build(
       {},
       {
         transient: {

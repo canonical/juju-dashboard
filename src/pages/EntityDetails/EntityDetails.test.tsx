@@ -12,8 +12,9 @@ import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import mergeWith from "lodash.mergewith";
 
-import { reduxStateFactory } from "testing/redux-factory";
+import { jujuStateFactory, rootStateFactory } from "testing/factories";
 
 import EntityDetails from "./EntityDetails";
 
@@ -39,9 +40,25 @@ describe("Entity Details Container", () => {
   function renderComponent({
     props,
     overrides,
-    transient,
-  }: { props?: Props; overrides?: TSFixMe; transient?: TSFixMe } = {}) {
-    const mockState = reduxStateFactory().build(overrides, { transient });
+  }: { props?: Props; overrides?: TSFixMe } = {}) {
+    if (!overrides?.juju) {
+      overrides = mergeWith(
+        {
+          juju: jujuStateFactory.build(null, {
+            transient: {
+              models: [
+                {
+                  name: "enterprise",
+                  owner: "kirk@external",
+                },
+              ],
+            },
+          }),
+        },
+        overrides ?? {}
+      );
+    }
+    const mockState = rootStateFactory.build(overrides);
     const store = mockStore(mockState);
 
     window.history.pushState({}, "", "/models/kirk@external/enterprise");
@@ -92,10 +109,18 @@ describe("Entity Details Container", () => {
   it("lists the correct tabs for kubernetes", () => {
     renderComponent({
       props: { type: "model" },
-      transient: {
-        models: [
-          { name: "enterprise", owner: "kirk@external", type: "kubernetes" },
-        ],
+      overrides: {
+        juju: jujuStateFactory.build(null, {
+          transient: {
+            models: [
+              {
+                name: "enterprise",
+                owner: "kirk@external",
+                type: "kubernetes",
+              },
+            ],
+          },
+        }),
       },
     });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
@@ -157,10 +182,14 @@ describe("Entity Details Container", () => {
 
   it("does not show the webCLI in juju 2.8", async () => {
     renderComponent({
-      transient: {
-        models: [
-          { name: "enterprise", owner: "kirk@external", version: "2.8.7" },
-        ],
+      overrides: {
+        juju: jujuStateFactory.build(null, {
+          transient: {
+            models: [
+              { name: "enterprise", owner: "kirk@external", version: "2.8.7" },
+            ],
+          },
+        }),
       },
     });
     await waitFor(() => {

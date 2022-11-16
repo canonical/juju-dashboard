@@ -5,7 +5,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
-import { reduxStateFactory } from "testing/redux-factory";
+import { jujuStateFactory, rootStateFactory } from "testing/factories";
 
 import InfoPanel from "./InfoPanel";
 
@@ -18,7 +18,18 @@ jest.mock("components/Topology/Topology", () => {
 
 describe("Info Panel", () => {
   it("renders the topology", () => {
-    const mockState = reduxStateFactory().build();
+    const mockState = rootStateFactory.build({
+      juju: jujuStateFactory.build(null, {
+        transient: {
+          models: [
+            {
+              name: "enterprise",
+              owner: "kirk@external",
+            },
+          ],
+        },
+      }),
+    });
     const store = mockStore(mockState);
     render(
       <Provider store={store}>
@@ -38,7 +49,18 @@ describe("Info Panel", () => {
   });
 
   it("renders the expanded topology on click", () => {
-    const mockState = reduxStateFactory().build();
+    const mockState = rootStateFactory.build({
+      juju: jujuStateFactory.build(null, {
+        transient: {
+          models: [
+            {
+              name: "enterprise",
+              owner: "kirk@external",
+            },
+          ],
+        },
+      }),
+    });
     const store = mockStore(mockState);
     render(
       <Provider store={store}>

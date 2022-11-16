@@ -2,12 +2,6 @@ import { ModelWatcherData } from "juju/types";
 
 export type TSFixMe = any;
 
-export type UIState = {
-  confirmationModalActive: boolean;
-  userMenuActive: boolean;
-  sideNavCollapsed: boolean;
-};
-
 export type JujuState = {
   models: ModelsList;
   modelData: TSFixMe;
@@ -36,12 +30,6 @@ export type GeneralState = {
   credentials?: TSFixMe;
   pingerIntervalIds?: PingerIntervalIds;
   visitURL?: string;
-};
-
-export type ReduxState = {
-  general: GeneralState;
-  juju: JujuState;
-  ui: UIState;
 };
 
 export type ModelsList = {
