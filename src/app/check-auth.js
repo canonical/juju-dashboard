@@ -9,7 +9,6 @@ import { isLoggedIn } from "app/selectors";
 const actionAllowlist = [
   "POPULATE_MISSING_ALLWATCHER_DATA",
   "PROCESS_ALL_WATCHER_DELTAS",
-  "STORE_BAKERY",
   "STORE_LOGIN_ERROR",
   "STORE_CONFIG",
   "STORE_USER_PASS",

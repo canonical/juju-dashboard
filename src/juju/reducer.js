@@ -2,7 +2,7 @@ import immerProduce from "immer";
 import cloneDeep from "clone-deep";
 import mergeWith from "lodash.mergewith";
 
-import { actionsList } from "./actions";
+import { actionsList } from "./action-types";
 import { processDeltas } from "./watchers";
 
 const defaultState = {

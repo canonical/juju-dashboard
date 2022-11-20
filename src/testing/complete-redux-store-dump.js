@@ -13,18 +13,6 @@ export default {
       showWebCLI: false
     },
     appVersion: '0.4.0',
-    bakery: {
-      storage: {
-        _store: {
-          'https://api.staging.jujucharms.com/identity': 'W3siYyI6W3sJpZCB1c3NvU9aTmVmWHlzIn1d',
-          identity: 'W3siYyI6W3siaSaWRlbnRpdWRnpGQVpCV3BTcDRWLUl1UzF1SzgifV0=',
-          'https://api.jujucharms.com/identity': 'W3siYyI6W3siaSI6InRpbWUtYcDRWLUl1UzF1SzgifV0='
-        },
-        _services: {},
-        _charmstoreCookieSetter: null
-      },
-      _dischargeDisabled: false
-    },
     controllerConnections: {
       'wss://jimm.jujucharms.com/api': {
         controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',

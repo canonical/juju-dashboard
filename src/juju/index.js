@@ -11,11 +11,11 @@ import controller from "@canonical/jujulib/dist/api/facades/controller-v11";
 import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v9";
 import pinger from "@canonical/jujulib/dist/api/facades/pinger-v1";
 
+import bakery from "app/bakery";
 import jimm from "app/jimm-facade";
 import { isSet } from "app/utils/utils";
 
 import {
-  getBakery,
   getConfig,
   getControllerConnection,
   getUserPass,
@@ -177,7 +177,6 @@ async function connectAndLoginWithTimeout(
 */
 export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   const appState = getState();
-  const bakery = getBakery(appState);
   const baseWSControllerURL = getWSControllerURL(appState);
   const { identityProviderAvailable } = getConfig(appState);
   let useIdentityProvider = false;
@@ -379,7 +378,6 @@ export function disableControllerUUIDMasking(conn) {
   @returns {Object} conn The connection.
 */
 async function connectAndLoginToModel(modelUUID, appState) {
-  const bakery = getBakery(appState);
   const baseWSControllerURL = getWSControllerURL(appState);
   const { identityProviderAvailable } = getConfig(appState);
   const credentials = getUserPass(baseWSControllerURL, appState);

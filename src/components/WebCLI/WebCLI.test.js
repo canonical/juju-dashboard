@@ -5,6 +5,7 @@ import configureStore from "redux-mock-store";
 import { WS } from "jest-websocket-mock";
 import cloneDeep from "clone-deep";
 
+import bakery from "app/bakery";
 import { waitForComponentToPaint } from "testing/utils";
 import dataDump from "testing/complete-redux-store-dump";
 
@@ -12,10 +13,25 @@ import WebCLI from "./WebCLI";
 
 const mockStore = configureStore([]);
 
+jest.mock("app/bakery", () => ({
+  __esModule: true,
+  default: {
+    storage: {
+      get: jest.fn(),
+    },
+  },
+}));
+
 describe("WebCLI", () => {
   const originalError = console.error;
+  let bakerySpy;
+
+  beforeEach(() => {
+    bakerySpy = jest.spyOn(bakery.storage, "get");
+  });
 
   afterEach(() => {
+    bakerySpy.mockClear();
     // Reset the console.error to the original console.error in case
     // it was cobbered in a test.
     console.error = originalError;
@@ -112,10 +128,10 @@ describe("WebCLI", () => {
     clonedDataDump.root.controllerConnections["ws://localhost:1234/api"] = {
       user: { identity: "user-eggman@external" },
     };
-    clonedDataDump.root.bakery.storage.get = (key) => {
+    bakerySpy.mockImplementation((key) => {
       const macaroons = { "ws://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=" };
       return macaroons[key];
-    };
+    });
 
     const server = new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
