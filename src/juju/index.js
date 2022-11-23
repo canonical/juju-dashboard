@@ -99,7 +99,7 @@ function stopPingerLoop(intervalId) {
     {user: ..., password: ...}
   @param {Object} bakery A bakery instance.
   @param {Boolean} identityProviderAvailable Whether an identity provider is available.
-  @returns {Object}
+  @returns
     conn The controller connection instance.
     juju The juju api instance.
 */
@@ -251,9 +251,7 @@ export async function fetchAndStoreModelStatus(
   if (status === null) {
     return;
   }
-  dispatch(updateModelStatus(modelUUID, status), {
-    wsControllerURL,
-  });
+  dispatch(updateModelStatus(modelUUID, status, wsControllerURL));
 }
 
 /**
@@ -301,13 +299,11 @@ export async function fetchAllModelStatuses(
       }
       if (isLoggedIn(wsControllerURL, getState())) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
-        dispatch(updateModelInfo(modelInfo), { wsControllerURL });
+        dispatch(updateModelInfo(modelInfo, wsControllerURL));
         if (modelInfo.results[0].result.isController) {
           // If this is a controller model then update the
           // controller data with this model data.
-          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo), {
-            wsControllerURL,
-          });
+          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo));
         }
       }
       done();
@@ -353,9 +349,7 @@ export async function fetchControllerList(
       },
     ];
   }
-  reduxStore.dispatch(updateControllerList(wsControllerURL, controllers), {
-    wsControllerURL,
-  });
+  reduxStore.dispatch(updateControllerList(wsControllerURL, controllers));
 }
 
 /**
@@ -573,8 +567,7 @@ export async function setModelSharingPermissions(
     }
 
     const modelInfo = await fetchModelInfo(conn, modelUUID);
-    modelInfo &&
-      dispatch(updateModelInfo(modelInfo), { wsControllerURL: controllerURL });
+    modelInfo && dispatch(updateModelInfo(modelInfo, controllerURL));
   } else {
     response = Promise.resolve({
       results: [{ error: true }],

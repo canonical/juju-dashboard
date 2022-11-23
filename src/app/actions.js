@@ -3,18 +3,23 @@ import {
   getJujuAPIInstances,
   getPingerIntervalIds,
 } from "app/selectors";
-
-import connectAndListModels from "app/model-poller";
-
 import {
   clearControllerData,
   clearModelData,
   updateControllerList,
 } from "juju/actions";
 
+import {
+  getConfig,
+  getControllerConnections,
+  getUserPass,
+  getWSControllerURL,
+} from "./selectors";
+
 // Action labels
 export const actionsList = {
   logOut: "LOG_OUT",
+  connectAndPollControllers: "CONNECT_AND_POLL_CONTROLLERS",
   storeBakery: "STORE_BAKERY",
   storeConfig: "STORE_CONFIG",
   storeLoginError: "STORE_LOGIN_ERROR",
@@ -205,3 +210,49 @@ export function connectAndStartPolling(reduxStore, bakery) {
   connectAndStartPolling.NAME = "connectAndStartPolling";
   return connectAndStartPolling;
 }
+
+export async function connectAndListModels(
+  reduxStore,
+  bakery,
+  additionalControllers
+) {
+  try {
+    const storeState = reduxStore.getState();
+    const { identityProviderAvailable, isJuju } = getConfig(storeState);
+    const wsControllerURL = getWSControllerURL(storeState);
+    const credentials = getUserPass(wsControllerURL, storeState);
+    const controllerConnections = getControllerConnections(storeState) || {};
+    const defaultControllerData = [
+      wsControllerURL,
+      credentials,
+      bakery,
+      identityProviderAvailable,
+    ];
+    let controllerList = [defaultControllerData];
+    if (additionalControllers) {
+      controllerList = controllerList.concat(additionalControllers);
+    }
+    const connectedControllers = Object.keys(controllerConnections);
+    controllerList = controllerList.filter((controllerData) => {
+      // remove controllers we're already connected to.
+      return !connectedControllers.includes(controllerData[0]);
+    });
+    reduxStore.dispatch(connectAndPollControllers(controllerList, isJuju));
+  } catch (error) {
+    // XXX Surface error to UI.
+    // XXX Send to sentry if it's an error that's not connection related
+    // a common error returned by this is:
+    // Something went wrong:  cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
+    console.error("Something went wrong: ", error);
+  }
+}
+
+export const connectAndPollControllers = (controllers, isJuju) => {
+  return {
+    type: actionsList.connectAndPollControllers,
+    payload: {
+      controllers,
+      isJuju,
+    },
+  };
+};

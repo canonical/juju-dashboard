@@ -21,6 +21,7 @@ import {
 } from "app/actions";
 
 import jujuReducer from "juju/reducer";
+import { modelPollerMiddleware } from "store/middleware/model-poller";
 
 import packageJSON from "../package.json";
 
@@ -97,7 +98,9 @@ function bootstrap() {
       ui: uiReducer,
     }),
     // Order of the middleware is important
-    composeWithDevTools(applyMiddleware(checkAuth, thunk))
+    composeWithDevTools(
+      applyMiddleware(checkAuth, thunk, modelPollerMiddleware)
+    )
   );
 
   reduxStore.dispatch(storeConfig(config));
