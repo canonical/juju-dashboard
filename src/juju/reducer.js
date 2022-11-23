@@ -17,7 +17,7 @@ export default function jujuReducer(state = defaultState, action) {
     switch (action.type) {
       case actionsList.updateModelList:
         const modelList = cloneDeep(state.models || {});
-        let userModels = action.payload["user-models"];
+        let userModels = action.payload.models["user-models"];
         if (!userModels) {
           userModels = [];
         }
@@ -59,7 +59,7 @@ export default function jujuReducer(state = defaultState, action) {
         draftState.modelData[modelUUID].uuid = modelUUID;
         break;
       case actionsList.updateModelInfo:
-        const modelInfo = payload.results[0].result;
+        const modelInfo = payload.modelInfo.results[0].result;
         // There don't appear to be any irrelevent data in the modelInfo so
         // we overwrite the whole object every time it changes even though
         // mostly that'll just be status timestamps.

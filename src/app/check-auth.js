@@ -3,6 +3,7 @@
   has been allowed.
 */
 
+import { actionsList } from "app/actions";
 import { isLoggedIn } from "app/selectors";
 
 const actionAllowlist = [
@@ -23,6 +24,7 @@ const actionAllowlist = [
   "STORE_VISIT_URL",
   "TOGGLE_USER_MENU",
   "SIDENAV_COLLAPSED",
+  actionsList.connectAndPollControllers,
 ];
 
 const thunkAllowlist = ["connectAndStartPolling", "logOut"];
@@ -55,9 +57,9 @@ const checkLoggedIn = (state, wsControllerURL) => {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default ({ getState }) =>
   (next) =>
-  async (action, options) => {
+  async (action) => {
     const state = getState();
-    const wsControllerURL = options?.wsControllerURL;
+    const wsControllerURL = action.payload?.wsControllerURL;
 
     // If the action is a function then it's probably a thunk.
     if (typeof action === "function") {

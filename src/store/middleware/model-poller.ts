@@ -1,0 +1,138 @@
+import { Middleware } from "redux";
+import * as Sentry from "@sentry/browser";
+
+import {
+  actionsList,
+  storeLoginError,
+  updateControllerConnection,
+  updateJujuAPIInstance,
+  updatePingerIntervalId,
+} from "app/actions";
+import { isLoggedIn } from "app/selectors";
+import {
+  disableControllerUUIDMasking,
+  fetchAllModelStatuses,
+  fetchControllerList,
+  loginWithBakery,
+} from "juju";
+import { updateModelList } from "juju/actions";
+import { TSFixMe } from "@canonical/react-components";
+import { PayloadAction } from "@reduxjs/toolkit";
+
+// TODO: provide these types when the types are available from bakeryjs.
+// TODO: Import bakery instead of passing it as a param.
+type ControllerOptions = [
+  string,
+  TSFixMe,
+  TSFixMe,
+  boolean,
+  boolean | undefined
+];
+
+export const modelPollerMiddleware: Middleware = (reduxStore) => {
+  return (next) =>
+    async (
+      action: PayloadAction<{
+        controllers: ControllerOptions[];
+        isJuju: boolean;
+      }>
+    ) => {
+      if (action.type === actionsList.connectAndPollControllers) {
+        action.payload.controllers.forEach(async (controllerData) => {
+          const [
+            wsControllerURL,
+            credentials,
+            bakery,
+            identityProviderAvailable,
+            isAdditionalController,
+          ] = controllerData;
+          let conn, error, juju, intervalId;
+          try {
+            ({ conn, error, juju, intervalId } = await loginWithBakery(
+              wsControllerURL,
+              credentials,
+              bakery,
+              identityProviderAvailable
+            ));
+            if (error) {
+              // TODO: this error should not be cast once loginWithBakery has
+              // been migrated to TypeScript.
+              reduxStore.dispatch(storeLoginError(error as string));
+              return;
+            }
+          } catch (e) {
+            return console.log(
+              "unable to log into controller",
+              e,
+              controllerData
+            );
+          }
+
+          // XXX Now that we can register multiple controllers this needs
+          // to be sent per controller.
+          if (process.env.NODE_ENV === "production") {
+            Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
+          }
+
+          reduxStore.dispatch(
+            updateControllerConnection(wsControllerURL, conn)
+          );
+          reduxStore.dispatch(updateJujuAPIInstance(wsControllerURL, juju));
+          if (intervalId) {
+            reduxStore.dispatch(
+              updatePingerIntervalId(wsControllerURL, intervalId)
+            );
+          }
+
+          fetchControllerList(
+            wsControllerURL,
+            conn,
+            isAdditionalController ?? false,
+            reduxStore
+          );
+          // XXX the isJuju Check needs to be done on a per-controller basis
+          if (!action.payload.isJuju) {
+            // This call will be a noop if the user isn't an administrator
+            // on the JIMM controller we're connected to.
+            try {
+              await disableControllerUUIDMasking(conn);
+            } catch (e) {
+              // Silently fail, if this doesn't work then the user isn't authorized
+              // to perform the action.
+            }
+          }
+
+          do {
+            try {
+              const models = await conn.facades.modelManager.listModels({
+                tag: conn.info.user.identity,
+              });
+              reduxStore.dispatch(updateModelList(models, wsControllerURL));
+              // TODO: this error should not be cast once the types are
+              // available from bakeryjs.
+              const modelUUIDList = models["user-models"].map(
+                (item: TSFixMe) => item.model.uuid
+              );
+              await fetchAllModelStatuses(
+                wsControllerURL,
+                modelUUIDList,
+                conn,
+                reduxStore
+              );
+            } catch (e) {
+              console.log(e);
+            }
+
+            // Wait 30s then start again.
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                resolve(true);
+              }, 30000);
+            });
+          } while (isLoggedIn(wsControllerURL, reduxStore.getState()));
+        });
+        return;
+      }
+      return next(action);
+    };
+};
