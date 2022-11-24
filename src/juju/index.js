@@ -2,10 +2,10 @@ import { connect, connectAndLogin } from "@canonical/jujulib";
 import Limiter from "async-limiter";
 
 import actions from "@canonical/jujulib/dist/api/facades/action-v7";
-import allWatcher from "@canonical/jujulib/dist/api/facades/all-watcher-v2";
+import allWatcher from "@canonical/jujulib/dist/api/facades/all-watcher-v3";
 import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
-import applications from "@canonical/jujulib/dist/api/facades/application-v14";
-import client from "@canonical/jujulib/dist/api/facades/client-v5";
+import applications from "@canonical/jujulib/dist/api/facades/application-v15";
+import client from "@canonical/jujulib/dist/api/facades/client-v6";
 import cloud from "@canonical/jujulib/dist/api/facades/cloud-v7";
 import controller from "@canonical/jujulib/dist/api/facades/controller-v11";
 import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v9";
@@ -492,7 +492,7 @@ export async function startModelWatcher(modelUUID, appState, dispatch) {
       {
         type: "AllWatcher",
         request: "Next",
-        version: 1,
+        version: conn.facades.allWatcher.version,
         id: watcherHandle["watcher-id"],
       },
       callback
@@ -511,7 +511,7 @@ export async function stopModelWatcher(
   conn.facades.allWatcher._transport.write({
     type: "AllWatcher",
     request: "Stop",
-    version: 1,
+    version: conn.facades.allWatcher.version,
     id: watcherHandleId,
   });
   stopPingerLoop(pingerIntervalId);
