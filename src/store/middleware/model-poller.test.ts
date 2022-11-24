@@ -9,7 +9,7 @@ import * as jujuModule from "juju";
 import { updateModelList } from "juju/actions";
 import { AnyAction, MiddlewareAPI } from "redux";
 
-import { modelPollerMiddleware } from "./model-poller";
+import { modelPollerMiddleware, LoginError } from "./model-poller";
 
 type Conn = {
   facades: {
@@ -52,10 +52,8 @@ describe("model poller", () => {
     root: {
       controllerConnections: {
         [wsControllerURL]: {
-          info: {
-            user: {
-              identity: { this: "is" },
-            },
+          user: {
+            identity: { this: "is" },
           },
         },
       },
@@ -132,7 +130,7 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(console.log).toHaveBeenCalledWith(
-      "unable to log into controller",
+      LoginError.LOG,
       new Error("Uh oh!"),
       ["wss://example.com", {}, {}, false]
     );
@@ -151,7 +149,7 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      updateControllerConnection(wsControllerURL, conn)
+      updateControllerConnection(wsControllerURL, conn.info)
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       updateJujuAPIInstance(wsControllerURL, juju)
@@ -164,6 +162,19 @@ describe("model poller", () => {
       conn,
       false,
       fakeStore
+    );
+  });
+
+  it("dispatches an error if the info is not returned", async () => {
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn: { info: null },
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(next).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      storeLoginError(LoginError.NO_INFO)
     );
   });
 
@@ -286,10 +297,8 @@ describe("model poller", () => {
       root: {
         controllerConnections: {
           [wsControllerURL]: {
-            info: {
-              user: {
-                identity: null,
-              },
+            user: {
+              identity: null,
             },
           },
         },

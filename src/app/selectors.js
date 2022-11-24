@@ -466,8 +466,7 @@ export const getMacaroons = createSelector(
   @returns {Boolean} If the user is logged in.
 */
 export const isLoggedIn = (wsControllerURL, state) => {
-  return state.root.controllerConnections?.[wsControllerURL]?.info?.user
-    ?.identity;
+  return state.root.controllerConnections?.[wsControllerURL]?.user?.identity;
 };
 
 export const getControllerConnection = (wsControllerURL, state) =>
@@ -484,7 +483,7 @@ export const isConnecting = (state) => !!state.root.visitURL;
   @returns {String} The users userTag.
 */
 export const getActiveUserTag = (wsControllerURL, state) =>
-  state?.root?.controllerConnections?.[wsControllerURL]?.info.user.identity;
+  state?.root?.controllerConnections?.[wsControllerURL]?.user.identity;
 
 /**
   Returns a model status for the supplied modelUUID.

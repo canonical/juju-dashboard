@@ -110,7 +110,7 @@ describe("WebCLI", () => {
   it("supports macaroon based authentication", async () => {
     const clonedDataDump = cloneDeep(dataDump);
     clonedDataDump.root.controllerConnections["ws://localhost:1234/api"] = {
-      info: { user: { identity: "user-eggman@external" } },
+      user: { identity: "user-eggman@external" },
     };
     clonedDataDump.root.bakery.storage.get = (key) => {
       const macaroons = { "ws://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=" };

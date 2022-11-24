@@ -8,7 +8,7 @@ function rootReducer(state = {}, action) {
     switch (action.type) {
       case actionsList.updateControllerConnection:
         const connections = cloneDeep(state.controllerConnections || {});
-        connections[action.payload.wsControllerURL] = action.payload.conn;
+        connections[action.payload.wsControllerURL] = action.payload.info;
         draftState.controllerConnections = connections;
         break;
       case actionsList.storeBakery:

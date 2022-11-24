@@ -27,118 +27,13 @@ export default {
     },
     controllerConnections: {
       'wss://jimm.jujucharms.com/api': {
-        transport: {
-          _ws: {},
-          _counter: 20,
-          _callbacks: {},
-          _debug: false
-        },
-        info: {
-          controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
-          serverVersion: '2.8.3',
-          user: {
-            'display-name': 'eggman',
-            identity: 'user-eggman@external',
-            'controller-access': '',
-            'model-access': ''
-          }
-        },
-        facades: {
-          cloud: {
-            version: 3,
-            _transport: {
-              _ws: {},
-              _counter: 20,
-              _callbacks: {},
-              _debug: false
-            },
-            _info: {
-              controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
-              serverVersion: '2.8.3',
-              user: {
-                'display-name': 'eggman',
-                identity: 'user-eggman@external',
-                'controller-access': '',
-                'model-access': ''
-              }
-            }
-          },
-          controller: {
-            version: 5,
-            _transport: {
-              _ws: {},
-              _counter: 20,
-              _callbacks: {},
-              _debug: false
-            },
-            _info: {
-              controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
-              serverVersion: '2.8.3',
-              user: {
-                'display-name': 'eggman',
-                identity: 'user-eggman@external',
-                'controller-access': '',
-                'model-access': ''
-              }
-            }
-          },
-          jimM: {
-            _transport: {
-              _ws: {},
-              _counter: 20,
-              _callbacks: {},
-              _debug: false
-            },
-            _info: {
-              controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
-              serverVersion: '2.8.3',
-              user: {
-                'display-name': 'eggman',
-                identity: 'user-eggman@external',
-                'controller-access': '',
-                'model-access': ''
-              }
-            },
-            version: 2
-          },
-          modelManager: {
-            version: 5,
-            _transport: {
-              _ws: {},
-              _counter: 20,
-              _callbacks: {},
-              _debug: false
-            },
-            _info: {
-              controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
-              serverVersion: '2.8.3',
-              user: {
-                'display-name': 'eggman',
-                identity: 'user-eggman@external',
-                'controller-access': '',
-                'model-access': ''
-              }
-            }
-          },
-          pinger: {
-            version: 1,
-            _transport: {
-              _ws: {},
-              _counter: 20,
-              _callbacks: {},
-              _debug: false
-            },
-            _info: {
-              controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
-              serverVersion: '2.8.3',
-              user: {
-                'display-name': 'eggman',
-                identity: 'user-eggman@external',
-                'controller-access': '',
-                'model-access': ''
-              }
-            }
-          }
+        controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
+        serverVersion: '2.8.3',
+        user: {
+          'display-name': 'eggman',
+          identity: 'user-eggman@external',
+          'controller-access': '',
+          'model-access': ''
         }
       }
     },
