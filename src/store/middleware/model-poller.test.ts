@@ -1,9 +1,9 @@
 import {
-  actionsList,
   storeLoginError,
   updateControllerConnection,
   updatePingerIntervalId,
 } from "app/actions";
+import { actionsList } from "app/action-types";
 import * as jujuModule from "juju";
 import { updateModelList } from "juju/actions";
 import { AnyAction, MiddlewareAPI } from "redux";
