@@ -19,6 +19,10 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import "./_info-panel.scss";
 
+export enum TestId {
+  INFO_PANEL = "info-panel",
+}
+
 const expandedTopologyDimensions = () => {
   const de = document.documentElement;
   const vw = Math.max(de.clientWidth, window.innerWidth || 0);
@@ -73,7 +77,7 @@ const InfoPanel = () => {
   };
 
   return (
-    <div className="info-panel" data-testid="info-panel">
+    <div className="info-panel" data-testid={TestId.INFO_PANEL}>
       {showExpandedTopology ? (
         <Modal
           close={() => setShowExpandedTopology(false)}
