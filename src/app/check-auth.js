@@ -3,7 +3,7 @@
   has been allowed.
 */
 
-import { actionsList } from "app/actions";
+import { actionsList } from "app/action-types";
 import { isLoggedIn } from "app/selectors";
 
 const actionAllowlist = [
