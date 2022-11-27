@@ -41,7 +41,7 @@ export const getBakery = (state) => state?.root?.bakery;
 /**
   Fetches the application config from state.
   @param {Object} state The application state.
-  @returns {Object|Null} The config object or null if none found.
+  @returns {Config|Null} The config object or null if none found.
 */
 export const getConfig = (state) => state?.root?.config;
 

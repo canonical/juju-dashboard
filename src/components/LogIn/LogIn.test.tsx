@@ -1,6 +1,6 @@
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { mount } from "enzyme";
+import { render, screen, within } from "@testing-library/react";
 
 import LogIn from "./LogIn";
 
@@ -17,17 +17,17 @@ describe("LogIn", () => {
         },
       },
     });
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <LogIn>App content</LogIn>
       </Provider>
     );
-    // The `trim()` is required here because the Spinner component uses an
-    // &ensp; for a space and jsdom appears to get confused.
-    expect(wrapper.find(".p-button--neutral").text().trim()).toBe(
-      "Connecting..."
-    );
-    expect(wrapper.find("LogIn .app-content").text()).toBe("App content");
+    expect(
+      within(screen.getByRole("button")).getByText("Connecting...")
+    ).toBeInTheDocument();
+    const content = screen.getByText("App content");
+    expect(content).toBeInTheDocument();
+    expect(content).toHaveClass("app-content");
   });
 
   it("renders an IdentityProvider login UI if the user is not logged in", () => {
@@ -37,15 +37,17 @@ describe("LogIn", () => {
         config: dataDump.root.config,
       },
     });
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <LogIn>App content</LogIn>
       </Provider>
     );
-    expect(wrapper.find(".p-button--positive").text()).toBe(
+    expect(screen.getByRole("link")).toHaveTextContent(
       "Log in to the dashboard"
     );
-    expect(wrapper.find("LogIn .app-content").text()).toBe("App content");
+    const content = screen.getByText("App content");
+    expect(content).toBeInTheDocument();
+    expect(content).toHaveClass("app-content");
   });
 
   it("renders a UserPass login UI if the user is not logged in", () => {
@@ -56,15 +58,17 @@ describe("LogIn", () => {
         },
       },
     });
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <LogIn>App content</LogIn>
       </Provider>
     );
-    expect(wrapper.find(".p-button--positive").text()).toBe(
+    expect(screen.getByRole("button")).toHaveTextContent(
       "Log in to the dashboard"
     );
-    expect(wrapper.find("LogIn .app-content").text()).toBe("App content");
+    const content = screen.getByText("App content");
+    expect(content).toBeInTheDocument();
+    expect(content).toHaveClass("app-content");
   });
 
   it("renders a login error if one exists", () => {
@@ -76,13 +80,13 @@ describe("LogIn", () => {
         },
       },
     });
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <LogIn>App content</LogIn>
       </Provider>
     );
-    expect(wrapper.find("LogIn .error-message").text()).toBe(
-      "Invalid user name"
-    );
+    const error = screen.getByText("Invalid user name");
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("error-message");
   });
 });

@@ -61,6 +61,11 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
               return;
             }
           } catch (e) {
+            reduxStore.dispatch(
+              storeLoginError(
+                "Unable to log into the controller, check that you've configured the controller address correctly and that it is online."
+              )
+            );
             return console.log(
               "unable to log into controller",
               e,
