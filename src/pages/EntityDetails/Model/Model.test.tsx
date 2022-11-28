@@ -7,7 +7,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import dataDump from "testing/complete-redux-store-dump";
 
-import { rootStateFactory } from "testing/factories";
+import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { ModelData } from "juju/types";
 import { RootState } from "store/store";
 
@@ -47,18 +47,20 @@ describe("Model", () => {
   let storeData: RootState;
 
   beforeEach(() => {
-    storeData = rootStateFactory.build(
-      {},
-      {
-        transient: {
-          models: Object.values(dataDump.juju.modelData).map((model) => ({
-            name: model.info.name,
-            owner: model.info["owner-tag"].replace("user-", ""),
-            uuid: model.uuid,
-          })),
-        },
-      }
-    );
+    storeData = rootStateFactory.build({
+      juju: jujuStateFactory.build(
+        {},
+        {
+          transient: {
+            models: Object.values(dataDump.juju.modelData).map((model) => ({
+              name: model.info.name,
+              owner: model.info["owner-tag"].replace("user-", ""),
+              uuid: model.uuid,
+            })),
+          },
+        }
+      ),
+    });
     storeData.general.controllerConnections = {
       "wss://jimm.jujucharms.com/api": {
         user: { identity: "user-eggman@external" },
