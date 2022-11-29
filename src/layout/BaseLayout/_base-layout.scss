@@ -4,6 +4,9 @@
 @import "../../scss/breakpoints";
 
 @mixin collapsed {
+  // Disable stylelint rules that are conflicting with prettier.
+  /* stylelint-disable indentation */
+  /* stylelint-disable selector-pseudo-class-parentheses-space-inside */
   &[data-collapsed="true"][data-sidenav-initially-collapsed="true"]:not(
       :hover,
       :focus-within,
