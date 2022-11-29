@@ -5,7 +5,6 @@ import {
   actionsList,
   storeLoginError,
   updateControllerConnection,
-  updateJujuAPIInstance,
   updatePingerIntervalId,
 } from "app/actions";
 import { isLoggedIn } from "app/selectors";
@@ -30,6 +29,8 @@ type ControllerOptions = [
 ];
 
 export const modelPollerMiddleware: Middleware = (reduxStore) => {
+  // TODO: provide the connection when the types are available from jujulib.
+  const jujus = new Map<string, TSFixMe>();
   return (next) =>
     async (
       action: PayloadAction<{
@@ -82,7 +83,7 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
           reduxStore.dispatch(
             updateControllerConnection(wsControllerURL, conn)
           );
-          reduxStore.dispatch(updateJujuAPIInstance(wsControllerURL, juju));
+          jujus.set(wsControllerURL, juju);
           if (intervalId) {
             reduxStore.dispatch(
               updatePingerIntervalId(wsControllerURL, intervalId)
@@ -137,6 +138,10 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
           } while (isLoggedIn(wsControllerURL, reduxStore.getState()));
         });
         return;
+      } else if (action.type === actionsList.logOut) {
+        jujus.forEach((juju) => {
+          juju.logout();
+        });
       }
       return next(action);
     };

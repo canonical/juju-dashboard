@@ -36,11 +36,6 @@ function rootReducer(state = {}, action) {
         delete draftState.controllerConnections;
         delete draftState.visitURL;
         break;
-      case actionsList.updateJujuAPIInstance:
-        const jujus = cloneDeep(state.jujus || {});
-        jujus[action.payload.wsControllerURL] = action.payload.juju;
-        draftState.jujus = jujus;
-        break;
       case actionsList.updatePingerIntervalId:
         const intervals = cloneDeep(state.pingerIntervalIds || {});
         intervals[action.payload.wsControllerURL] = action.payload.intervalId;

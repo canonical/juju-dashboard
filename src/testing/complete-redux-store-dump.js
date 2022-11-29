@@ -142,47 +142,6 @@ export default {
         }
       }
     },
-    jujus: {
-      'wss://jimm.jujucharms.com/api': {
-        _transport: {
-          _ws: {},
-          _counter: 20,
-          _callbacks: {},
-          _debug: false
-        },
-        _facades: [
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null
-        ],
-        _bakery: {
-          storage: {
-            _store: {
-              'https://api.staging.jujucharms.com/identity': 'W3siYyI6W3siaSI6InRpFh1NWtPNHdNY2paeGd3MU9aTmVmWHlzIn1d',
-              identity: 'W3siYyI6W3siaSI6InRpbCV3BTcDRWLUl1UzF1SzgifV0=',
-              'https://api.jujucharms.com/identity': 'W3siYyI6W3siaSI6InRpbWUGQVpCV3BTcDRWLUl1UzF1SzgifV0='
-            },
-            _services: {},
-            _charmstoreCookieSetter: null
-          },
-          _dischargeDisabled: false
-        },
-        _admin: {
-          version: 3,
-          _transport: {
-            _ws: {},
-            _counter: 20,
-            _callbacks: {},
-            _debug: false
-          },
-          _info: {}
-        }
-      }
-    },
     pingerIntervalIds: {
       'wss://jimm.jujucharms.com/api': 18
     }
