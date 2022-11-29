@@ -52,9 +52,9 @@
   },
   "dependencies": {
     "@canonical/jaaslib": "0.6.1",
-    "@canonical/jujulib": "2.0.0-beta.8",
+    "@canonical/jujulib": "2.0.0",
     "@canonical/macaroon-bakery": "1.2.2",
-    "@canonical/react-components": "0.37.6",
+    "@canonical/react-components": "0.37.8",
     "@reduxjs/toolkit": "1.9.0",
     "@sentry/browser": "7.21.1",
     "@types/clone-deep": "4.0.1",
@@ -89,7 +89,7 @@
     "redux-thunk": "2.4.2",
     "reselect": "4.1.7",
     "use-query-params": "2.1.2",
-    "vanilla-framework": "3.8.0"
+    "vanilla-framework": "3.8.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.16.5",
