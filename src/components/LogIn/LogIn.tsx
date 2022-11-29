@@ -68,7 +68,6 @@ export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
   @returns A component for the error message.
 */
 function generateErrorMessage(loginError?: string) {
-  console.log("loginError", loginError);
   if (!loginError) {
     return null;
   }
