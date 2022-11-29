@@ -4,7 +4,11 @@
 @import "../../scss/breakpoints";
 
 @mixin collapsed {
-  &[data-collapsed="true"][data-sidenav-initially-collapsed="true"]:not(:hover, :focus-within, .is-pinned) {
+  &[data-collapsed="true"][data-sidenav-initially-collapsed="true"]:not(
+      :hover,
+      :focus-within,
+      .is-pinned
+    ) {
     @content;
   }
 }
