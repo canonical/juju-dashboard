@@ -1,8 +1,4 @@
-import {
-  getBakery,
-  getJujuAPIInstances,
-  getPingerIntervalIds,
-} from "app/selectors";
+import { getBakery, getPingerIntervalIds } from "app/selectors";
 import {
   clearControllerData,
   clearModelData,
@@ -27,7 +23,6 @@ export const actionsList = {
   storeVersion: "STORE_VERSION",
   storeVisitURL: "STORE_VISIT_URL",
   updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
-  updateJujuAPIInstance: "UPDATE_JUJU_API_INSTANCE",
   updatePingerIntervalId: "UPDATE_PINGER_INTERVAL_ID",
 };
 
@@ -104,20 +99,6 @@ export function updateControllerConnection(wsControllerURL, info) {
 
 /**
   @param {String} wsControllerURL The URL of the websocket connection.
-  @param {Object} juju The active Juju api instance.
-*/
-export function updateJujuAPIInstance(wsControllerURL, juju) {
-  return {
-    type: actionsList.updateJujuAPIInstance,
-    payload: {
-      wsControllerURL,
-      juju,
-    },
-  };
-}
-
-/**
-  @param {String} wsControllerURL The URL of the websocket connection.
   @param {Object} intervalId The intervalId for the request timeout.
 */
 export function updatePingerIntervalId(wsControllerURL, intervalId) {
@@ -151,12 +132,10 @@ export function logOut(store) {
     const identityProviderAvailable =
       state?.root?.config?.identityProviderAvailable;
     const bakery = getBakery(state);
-    const jujus = getJujuAPIInstances(state);
     const pingerIntervalIds = getPingerIntervalIds(state);
     bakery.storage._store.removeItem("identity");
     bakery.storage._store.removeItem("https://api.jujucharms.com/identity");
     localStorage.removeItem("additionalControllers");
-    Object.entries(jujus).forEach((juju) => juju[1].logout());
     Object.entries(pingerIntervalIds).forEach((pingerIntervalId) =>
       clearInterval(pingerIntervalId[1])
     );

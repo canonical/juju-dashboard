@@ -63,13 +63,6 @@ export const getUserPass = (wsControllerURL, state) =>
 export const getLoginError = (state) => state?.root?.loginError;
 
 /**
-  Fetches the juju api instance from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The juju api instance or null if none found.
-*/
-export const getJujuAPIInstances = (state) => state?.root?.jujus;
-
-/**
   Fetches the pinger intervalId from state.
   @param {Object} state The application state.
   @returns {Object|Null} The pinger intervalId or null if none found.

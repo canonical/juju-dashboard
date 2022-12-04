@@ -2,7 +2,6 @@ import {
   actionsList,
   storeLoginError,
   updateControllerConnection,
-  updateJujuAPIInstance,
   updatePingerIntervalId,
 } from "app/actions";
 import * as jujuModule from "juju";
@@ -20,6 +19,11 @@ type Conn = {
   info: {
     user: {};
   };
+};
+
+// TODO: Import this from jujulib once it has been migrated to TypeScript.
+type Juju = {
+  logout: () => void;
 };
 
 jest.mock("juju", () => ({
@@ -40,7 +44,7 @@ describe("model poller", () => {
   const wsControllerURL = "wss://example.com";
   const controllers = [[wsControllerURL, {}, {}, false]];
   const models = [{ model: { uuid: "abc123" } }];
-  const juju = { is: "juju" };
+  let juju: Juju;
   const intervalId = 99;
   let conn: Conn;
   const storeState = {
@@ -77,6 +81,9 @@ describe("model poller", () => {
         user: {},
       },
     };
+    juju = {
+      logout: jest.fn(),
+    };
   });
 
   const runMiddleware = async (actionOverrides?: Partial<AnyAction>) => {
@@ -88,7 +95,9 @@ describe("model poller", () => {
       },
       ...(actionOverrides ?? {}),
     };
-    await modelPollerMiddleware(fakeStore)(next)(action);
+    const middleware = modelPollerMiddleware(fakeStore);
+    await middleware(next)(action);
+    return middleware;
   };
 
   afterEach(() => {
@@ -150,9 +159,6 @@ describe("model poller", () => {
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       updateControllerConnection(wsControllerURL, conn.info)
-    );
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      updateJujuAPIInstance(wsControllerURL, juju)
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       updatePingerIntervalId(wsControllerURL, intervalId)
@@ -268,7 +274,6 @@ describe("model poller", () => {
       jujuModule,
       "fetchAllModelStatuses"
     );
-    const models = [{ model: { uuid: "abc123" } }];
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
@@ -282,12 +287,6 @@ describe("model poller", () => {
     // Resolve the async calls again.
     await new Promise(jest.requireActual("timers").setImmediate);
     expect(next).not.toHaveBeenCalled();
-    const updateModels = updateModelList(
-      { "user-models": models },
-      wsControllerURL
-    );
-    expect(fakeStore.dispatch).toHaveBeenNthCalledWith(4, updateModels);
-    expect(fakeStore.dispatch).toHaveBeenNthCalledWith(5, updateModels);
     expect(fetchAllModelStatuses).toHaveBeenCalledTimes(2);
   });
 
@@ -308,7 +307,6 @@ describe("model poller", () => {
       jujuModule,
       "fetchAllModelStatuses"
     );
-    const models = [{ model: { uuid: "abc123" } }];
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
@@ -322,12 +320,23 @@ describe("model poller", () => {
     // Resolve the async calls again.
     await new Promise(jest.requireActual("timers").setImmediate);
     expect(next).not.toHaveBeenCalled();
-    const updateModels = updateModelList(
-      { "user-models": models },
-      wsControllerURL
-    );
-    expect(fakeStore.dispatch).toHaveBeenNthCalledWith(4, updateModels);
-    expect(fakeStore.dispatch).toHaveBeenCalledTimes(4);
     expect(fetchAllModelStatuses).toHaveBeenCalledTimes(1);
+  });
+
+  it("handles logging out of models", async () => {
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    const middleware = await runMiddleware();
+    const action = {
+      type: actionsList.logOut,
+      payload: null,
+    };
+    await middleware(next)(action);
+    expect(juju.logout).toHaveBeenCalled();
+    // The action should be passed along to the reducers.
+    expect(next).toHaveBeenCalled();
   });
 });
