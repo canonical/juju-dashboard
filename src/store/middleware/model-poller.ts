@@ -2,11 +2,11 @@ import { Middleware } from "redux";
 import * as Sentry from "@sentry/browser";
 
 import {
-  actionsList,
   storeLoginError,
   updateControllerConnection,
   updatePingerIntervalId,
 } from "app/actions";
+import { actionsList } from "app/action-types";
 import { isLoggedIn } from "app/selectors";
 import {
   disableControllerUUIDMasking,

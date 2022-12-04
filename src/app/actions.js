@@ -1,4 +1,6 @@
-import { getBakery, getPingerIntervalIds } from "app/selectors";
+import { getPingerIntervalIds } from "app/selectors";
+import bakery from "app/bakery";
+
 import {
   clearControllerData,
   clearModelData,
@@ -11,34 +13,9 @@ import {
   getUserPass,
   getWSControllerURL,
 } from "./selectors";
-
-// Action labels
-export const actionsList = {
-  logOut: "LOG_OUT",
-  connectAndPollControllers: "CONNECT_AND_POLL_CONTROLLERS",
-  storeBakery: "STORE_BAKERY",
-  storeConfig: "STORE_CONFIG",
-  storeLoginError: "STORE_LOGIN_ERROR",
-  storeUserPass: "STORE_USER_PASS",
-  storeVersion: "STORE_VERSION",
-  storeVisitURL: "STORE_VISIT_URL",
-  updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
-  updatePingerIntervalId: "UPDATE_PINGER_INTERVAL_ID",
-};
+import { actionsList } from "./action-types";
 
 // Action creators
-/**
-  @param {Bakery} bakery The instance of the bakery that's to be used for the
-  application to interact as the active user. This bakery contains private data
-  and should not be dumped wholesale from the redux store.
-*/
-export function storeBakery(bakery) {
-  return {
-    type: actionsList.storeBakery,
-    payload: bakery,
-  };
-}
-
 /**
   @param {Object} config The configuration values for the application.
 */
@@ -131,7 +108,6 @@ export function logOut(store) {
     const state = store.getState();
     const identityProviderAvailable =
       state?.root?.config?.identityProviderAvailable;
-    const bakery = getBakery(state);
     const pingerIntervalIds = getPingerIntervalIds(state);
     bakery.storage._store.removeItem("identity");
     bakery.storage._store.removeItem("https://api.jujucharms.com/identity");

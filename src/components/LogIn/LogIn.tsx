@@ -1,6 +1,5 @@
 import { connectAndStartPolling, storeUserPass } from "app/actions";
 import {
-  getBakery,
   getConfig,
   getControllerConnections,
   getLoginError,
@@ -20,6 +19,7 @@ import { Spinner } from "@canonical/react-components";
 
 import { Config, ReduxState, TSFixMe } from "types";
 import FadeUpIn from "animations/FadeUpIn";
+import bakery from "app/bakery";
 
 import logo from "static/images/logo/logo-black-on-white.svg";
 
@@ -108,7 +108,6 @@ interface LoginElements extends HTMLFormControlsCollection {
 function UserPassForm() {
   const dispatch = useDispatch();
   const store = useStore<ReduxState>();
-  const bakery = useSelector(getBakery);
   const focus = useRef<HTMLInputElement>(null);
 
   function handleSubmit(

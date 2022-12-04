@@ -1,4 +1,5 @@
 import * as actions from "./actions";
+import { actionsList } from "./action-types";
 
 describe("action creators", () => {
   it("updateModelList", () => {
@@ -6,7 +7,7 @@ describe("action creators", () => {
     expect(
       actions.updateModelList(models, "wss://test.example.com")
     ).toStrictEqual({
-      type: actions.actionsList.updateModelList,
+      type: actionsList.updateModelList,
       payload: {
         models,
         wsControllerURL: "wss://test.example.com",

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useSelector, useDispatch, useStore } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { getBakery } from "app/selectors";
 import { connectAndStartPolling } from "app/actions";
+import bakery from "app/bakery";
 
 import classNames from "classnames";
 
@@ -18,7 +18,6 @@ export default function RegisterController() {
   const [formValues, setFormValues] = useState({});
   const dispatch = useDispatch();
   const reduxStore = useStore();
-  const bakery = useSelector(getBakery);
   const [additionalControllers, setAdditionalControllers] = useLocalStorage(
     "additionalControllers",
     []

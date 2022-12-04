@@ -32,13 +32,6 @@ export const getModelData = (state) => {
 export const getControllerData = (state) => state?.juju?.controllers;
 
 /**
-  Fetches the bakery from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The bakery instance or null if none found.
-*/
-export const getBakery = (state) => state?.root?.bakery;
-
-/**
   Fetches the application config from state.
   @param {Object} state The application state.
   @returns {Config|Null} The config object or null if none found.

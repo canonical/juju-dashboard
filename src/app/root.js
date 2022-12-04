@@ -1,7 +1,7 @@
 import immerProduce from "immer";
 import cloneDeep from "clone-deep";
 
-import { actionsList } from "./actions";
+import { actionsList } from "./action-types";
 
 function rootReducer(state = {}, action) {
   return immerProduce(state, (draftState) => {
@@ -10,9 +10,6 @@ function rootReducer(state = {}, action) {
         const connections = cloneDeep(state.controllerConnections || {});
         connections[action.payload.wsControllerURL] = action.payload.info;
         draftState.controllerConnections = connections;
-        break;
-      case actionsList.storeBakery:
-        draftState.bakery = action.payload;
         break;
       case actionsList.storeConfig:
         draftState.config = action.payload;
@@ -32,7 +29,6 @@ function rootReducer(state = {}, action) {
         draftState.visitURL = action.payload;
         break;
       case actionsList.logOut:
-        delete draftState.bakery.storage._store.identity;
         delete draftState.controllerConnections;
         delete draftState.visitURL;
         break;
