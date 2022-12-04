@@ -1,8 +1,6 @@
 import immerProduce from "immer";
 import cloneDeep from "clone-deep";
 
-import bakery from "app/bakery";
-
 import { actionsList } from "./action-types";
 
 function rootReducer(state = {}, action) {
@@ -31,7 +29,6 @@ function rootReducer(state = {}, action) {
         draftState.visitURL = action.payload;
         break;
       case actionsList.logOut:
-        delete bakery.storage._store.identity;
         delete draftState.controllerConnections;
         delete draftState.visitURL;
         break;
