@@ -21,6 +21,7 @@ type Conn = {
   };
 };
 
+// TODO: Import this from jujulib once it has been migrated to TypeScript.
 type Juju = {
   logout: () => void;
 };
