@@ -19,6 +19,11 @@ import { updateModelList } from "juju/actions";
 import { TSFixMe } from "@canonical/react-components";
 import { PayloadAction } from "@reduxjs/toolkit";
 
+export enum LoginError {
+  LOG = "unable to log into controller",
+  NO_INFO = "Unable to retrieve controller details",
+}
+
 // TODO: provide these types when the types are available from bakeryjs.
 // TODO: Import bakery instead of passing it as a param.
 type ControllerOptions = [
@@ -66,21 +71,24 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
                 "Unable to log into the controller, check that you've configured the controller address correctly and that it is online."
               )
             );
-            return console.log(
-              "unable to log into controller",
-              e,
-              controllerData
-            );
+            return console.log(LoginError.LOG, e, controllerData);
+          }
+
+          if (!conn?.info) {
+            reduxStore.dispatch(storeLoginError(LoginError.NO_INFO));
+            return;
           }
 
           // XXX Now that we can register multiple controllers this needs
           // to be sent per controller.
           if (process.env.NODE_ENV === "production") {
-            Sentry.setTag("jujuVersion", conn?.info?.serverVersion);
+            Sentry.setTag("jujuVersion", conn.info.serverVersion);
           }
 
+          // Store the controller info. The transport and facades are not used
+          // (or available by other means) so no need to store them.
           reduxStore.dispatch(
-            updateControllerConnection(wsControllerURL, conn)
+            updateControllerConnection(wsControllerURL, conn.info)
           );
           reduxStore.dispatch(updateJujuAPIInstance(wsControllerURL, juju));
           if (intervalId) {

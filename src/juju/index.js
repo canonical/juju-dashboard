@@ -344,7 +344,7 @@ export async function fetchControllerList(
         path: controllerConfig.config["controller-name"],
         uuid: controllerConfig.config["controller-uuid"],
         version: getControllerConnection(wsControllerURL, reduxStore.getState())
-          ?.info?.serverVersion,
+          ?.serverVersion,
         additionalController,
       },
     ];

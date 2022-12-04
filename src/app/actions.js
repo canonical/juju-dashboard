@@ -90,14 +90,14 @@ export function storeUserPass(wsControllerURL, credential) {
 
 /**
   @param {String} wsControllerURL The URL of the websocket connection.
-  @param {Object} conn The active controller connection.
+  @param {Object} info The controller connection info.
 */
-export function updateControllerConnection(wsControllerURL, conn) {
+export function updateControllerConnection(wsControllerURL, info) {
   return {
     type: actionsList.updateControllerConnection,
     payload: {
       wsControllerURL,
-      conn,
+      info,
     },
   };
 }

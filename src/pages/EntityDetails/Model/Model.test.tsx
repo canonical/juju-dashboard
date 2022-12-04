@@ -61,7 +61,7 @@ describe("Model", () => {
     );
     storeData.root.controllerConnections = {
       "wss://jimm.jujucharms.com/api": {
-        info: { user: { identity: "user-eggman@external" } },
+        user: { identity: "user-eggman@external" },
       },
     };
     storeData.juju.modelData = dataDump.juju.modelData;
