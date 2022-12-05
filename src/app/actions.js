@@ -180,7 +180,6 @@ export async function connectAndListModels(
     const defaultControllerData = [
       wsControllerURL,
       credentials,
-      bakery,
       identityProviderAvailable,
     ];
     let controllerList = [defaultControllerData];
