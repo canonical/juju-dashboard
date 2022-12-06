@@ -1,4 +1,6 @@
-import { mount } from "enzyme";
+import type { TSFixMe } from "@canonical/react-components";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -6,12 +8,22 @@ import { WS } from "jest-websocket-mock";
 import cloneDeep from "clone-deep";
 
 import bakery from "app/bakery";
-import { waitForComponentToPaint } from "testing/utils";
+import { ReduxState } from "types";
 import dataDump from "testing/complete-redux-store-dump";
 
 import WebCLI from "./WebCLI";
 
 const mockStore = configureStore([]);
+
+type Props = {
+  protocol?: string;
+  controllerWSHost: string;
+  modelUUID: string;
+  credentials: {
+    user: string;
+    password: string;
+  } | null;
+};
 
 jest.mock("app/bakery", () => ({
   __esModule: true,
@@ -24,7 +36,7 @@ jest.mock("app/bakery", () => ({
 
 describe("WebCLI", () => {
   const originalError = console.error;
-  let bakerySpy;
+  let bakerySpy: jest.SpyInstance;
 
   beforeEach(() => {
     bakerySpy = jest.spyOn(bakery.storage, "get");
@@ -50,42 +62,35 @@ describe("WebCLI", () => {
   };
 
   async function generateComponent(
-    props = {
+    props: Props = {
       controllerWSHost: "jimm.jujucharms.com:443",
       modelUUID: "abc123",
+      credentials: null,
     },
-    customDataDump
+    customDataDump?: ReduxState
   ) {
     const store = mockStore(customDataDump || dataDump);
 
-    const wrapper = mount(
+    return render(
       <Provider store={store}>
         <WebCLI {...props} />
       </Provider>
     );
-    await waitForComponentToPaint(wrapper);
-    return wrapper;
   }
 
   it("renders correctly", async () => {
-    const wrapper = await generateComponent();
-    expect(wrapper.find("WebCLI")).toMatchSnapshot();
+    const { container } = await generateComponent();
+    expect(container).toMatchSnapshot();
   });
 
   it("shows the help in the output when the ? is clicked", async () => {
-    const wrapper = await generateComponent();
-    wrapper.find(".webcli__input-help i").simulate("click");
-    await waitForComponentToPaint(wrapper);
+    await generateComponent();
+    await userEvent.click(screen.getByRole("button"));
     return new Promise((resolve) => setTimeout(resolve)).then(() => {
-      act(() => {
-        wrapper.update();
-      });
       expect(
-        wrapper
-          .find(".webcli__output-content code")
-          .prop("dangerouslySetInnerHTML")["__html"]
-      ).toBe(
-        `Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/olm/using-the-juju-web-cli" class="p-link--inverted" target="_blank">full documentation here</a>.`
+        document.querySelector(".webcli__output-content code")
+      ).toHaveTextContent(
+        `Welcome to the Juju Web CLI - see the full documentation here.`
       );
     });
   });
@@ -94,7 +99,7 @@ describe("WebCLI", () => {
     const server = new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
     });
-    const wrapper = await generateComponent({
+    await generateComponent({
       protocol: "ws",
       controllerWSHost: "localhost:1234",
       modelUUID: "abc123",
@@ -103,12 +108,10 @@ describe("WebCLI", () => {
         password: "somelongpassword",
       },
     });
-    return new Promise(async (resolve) => {
+    return new Promise<void>(async (resolve) => {
       await server.connected;
-      wrapper.find(".webcli__input-input").instance().value =
-        "      status       ";
-      wrapper.find("form").simulate("submit", { preventDefault: () => {} });
-      await waitForComponentToPaint(wrapper);
+      const input = screen.getByRole("textbox");
+      await userEvent.type(input, "      status       {enter}");
       await expect(server).toReceiveMessage({
         user: "spaceman",
         credentials: "somelongpassword",
@@ -124,32 +127,34 @@ describe("WebCLI", () => {
   });
 
   it("supports macaroon based authentication", async () => {
-    const clonedDataDump = cloneDeep(dataDump);
+    // TSFixMe: root is not currently typed.
+    const clonedDataDump: TSFixMe = cloneDeep(dataDump);
     clonedDataDump.root.controllerConnections["ws://localhost:1234/api"] = {
       user: { identity: "user-eggman@external" },
     };
     bakerySpy.mockImplementation((key) => {
-      const macaroons = { "ws://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=" };
+      const macaroons: Record<string, string> = {
+        "ws://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=",
+      };
       return macaroons[key];
     });
 
     const server = new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
     });
-    const wrapper = await generateComponent(
+    await generateComponent(
       {
         protocol: "ws",
         controllerWSHost: "localhost:1234",
         modelUUID: "abc123",
+        credentials: null,
       },
       clonedDataDump
     );
-    return new Promise(async (resolve) => {
+    return new Promise<void>(async (resolve) => {
       await server.connected;
-      wrapper.find(".webcli__input-input").instance().value =
-        "      status       ";
-      wrapper.find("form").simulate("submit", { preventDefault: () => {} });
-      await waitForComponentToPaint(wrapper);
+      const input = screen.getByRole("textbox");
+      await userEvent.type(input, "      status       {enter}");
       await expect(server).toReceiveMessage({
         user: "eggman@external",
         macaroons: [["mac", "aroon"]],
@@ -171,7 +176,7 @@ describe("WebCLI", () => {
       const server = new WS("ws://localhost:1234/model/abc123/commands", {
         jsonProtocol: true,
       });
-      const wrapper = await generateComponent({
+      await generateComponent({
         protocol: "ws",
         controllerWSHost: "localhost:1234",
         modelUUID: "abc123",
@@ -180,12 +185,11 @@ describe("WebCLI", () => {
           password: "somelongpassword",
         },
       });
-      return new Promise(async (resolve) => {
+      return new Promise<void>(async (resolve) => {
         await act(async () => {
           await server.connected;
-          wrapper.find(".webcli__input-input").instance().value =
-            "status --color";
-          wrapper.find("form").simulate("submit", { preventDefault: () => {} });
+          const input = screen.getByRole("textbox");
+          await userEvent.type(input, "status --color{enter}");
           await expect(server).toReceiveMessage({
             user: "spaceman",
             credentials: "somelongpassword",
@@ -226,17 +230,12 @@ describe("WebCLI", () => {
         });
 
         setTimeout(() => {
-          wrapper.update();
           expect(
-            wrapper
-              .find(".webcli__output-content code")
-              .prop("dangerouslySetInnerHTML")
+            document.querySelector(".webcli__output-content code")?.textContent
           ).toMatchSnapshot();
           expect(
-            wrapper.find(".webcli__output-content").prop("style")
-          ).toStrictEqual({
-            height: "300px",
-          });
+            document.querySelector(".webcli__output-content")
+          ).toHaveAttribute("style", "height: 300px;");
           act(() => {
             WS.clean();
           });
@@ -251,7 +250,7 @@ describe("WebCLI", () => {
       const server = new WS("ws://localhost:1234/model/abc123/commands", {
         jsonProtocol: true,
       });
-      const wrapper = await generateComponent({
+      await generateComponent({
         protocol: "ws",
         controllerWSHost: "localhost:1234",
         modelUUID: "abc123",
@@ -260,12 +259,11 @@ describe("WebCLI", () => {
           password: "somelongpassword",
         },
       });
-      return new Promise(async (resolve) => {
+      return new Promise<void>(async (resolve) => {
         await act(async () => {
           await server.connected;
-          wrapper.find(".webcli__input-input").instance().value =
-            "status --color";
-          wrapper.find("form").simulate("submit", { preventDefault: () => {} });
+          const input = screen.getByRole("textbox");
+          await userEvent.type(input, "status --color{enter}");
           await expect(server).toReceiveMessage({
             user: "spaceman",
             credentials: "somelongpassword",
@@ -306,17 +304,12 @@ describe("WebCLI", () => {
         });
 
         setTimeout(() => {
-          wrapper.update();
           expect(
-            wrapper
-              .find(".webcli__output-content code")
-              .prop("dangerouslySetInnerHTML")
+            document.querySelector(".webcli__output-content code")?.textContent
           ).toMatchSnapshot();
           expect(
-            wrapper.find(".webcli__output-content").prop("style")
-          ).toStrictEqual({
-            height: "300px",
-          });
+            document.querySelector(".webcli__output-content")
+          ).toHaveAttribute("style", "height: 300px;");
           act(() => {
             WS.clean();
           });
