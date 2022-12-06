@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Error Boundary renders without crashing and matches snapshot 1`] = `
-<ErrorBoundary>
+<div>
   <div
-    className="p-notification--negative"
+    class="p-notification--negative"
   >
     <p
-      className="p-notification__response"
+      class="p-notification__response"
     >
       <span
-        className="p-notification__status"
+        class="p-notification__status"
       >
         Error: 
       </span>
@@ -22,5 +22,5 @@ exports[`Error Boundary renders without crashing and matches snapshot 1`] = `
       </a>
     </p>
   </div>
-</ErrorBoundary>
+</div>
 `;

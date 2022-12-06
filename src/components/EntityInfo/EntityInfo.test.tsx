@@ -1,6 +1,6 @@
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import dataDump from "testing/complete-redux-store-dump";
 
@@ -16,7 +16,7 @@ jest.mock("components/Topology/Topology", () => {
 describe("Entity info", () => {
   it("renders the expanded topology on click", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter
           initialEntries={["/models/user-eggman@external/group-test"]}
@@ -38,6 +38,6 @@ describe("Entity info", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("[data-name='region']").text()).toBe("eu1");
+    expect(screen.getByText("eu1")).toHaveAttribute("data-name", "region");
   });
 });

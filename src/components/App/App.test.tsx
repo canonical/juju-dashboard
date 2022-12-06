@@ -1,20 +1,29 @@
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import { mount } from "enzyme";
+import * as reactRouterDOM from "react-router-dom";
+import { render } from "@testing-library/react";
+
 import App from "./App";
 
 import dataDump from "../../testing/complete-redux-store-dump";
+
+jest.mock("react-router-dom", () => ({
+  BrowserRouter: jest.fn(),
+}));
 
 const mockStore = configureStore([]);
 
 describe("App", () => {
   it("properly sets up Router", () => {
+    const BrowserRouterSpy = jest
+      .spyOn(reactRouterDOM, "BrowserRouter")
+      .mockImplementation(() => <div></div>);
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <App />
       </Provider>
     );
-    expect(wrapper.find("BrowserRouter").prop("basename")).toBe("/");
+    expect(BrowserRouterSpy.mock.calls[0][0].basename).toBe("/");
   });
 });
