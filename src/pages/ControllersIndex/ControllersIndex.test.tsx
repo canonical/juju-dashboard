@@ -1,5 +1,5 @@
 import cloneDeep from "clone-deep";
-import { mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -23,7 +23,7 @@ describe("Controllers table", () => {
         userMenuActive: false,
       },
     });
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -32,11 +32,11 @@ describe("Controllers table", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find("tbody tr").length).toBe(0);
+    expect(screen.queryByRole("row")).not.toBeInTheDocument();
   });
   it("renders the correct number of rows", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -45,12 +45,12 @@ describe("Controllers table", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find("tbody tr").length).toBe(2);
+    expect(screen.getAllByRole("row")).toHaveLength(3);
   });
   it("counts models, machines, apps, and units", () => {
     const clonedData = cloneDeep(dataDump);
     const store = mockStore(clonedData);
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -59,12 +59,12 @@ describe("Controllers table", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find("tbody tr").get(0)).toMatchSnapshot();
+    expect(screen.getAllByRole("row")[1]).toMatchSnapshot();
   });
   it("shows 'Register new controller' panel", () => {
     const clonedData = cloneDeep(dataDump);
     const store = mockStore(clonedData);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter
           initialEntries={["/controllers?panel=register-controller"]}
@@ -75,6 +75,8 @@ describe("Controllers table", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".p-panel.register-controller").length).toBe(1);
+    expect(
+      document.querySelector(".p-panel.register-controller")
+    ).toBeInTheDocument();
   });
 });
