@@ -3,14 +3,14 @@ import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import checkAuth from "app/check-auth";
-import rootReducer from "app/root";
+import generalReducer from "app/general";
 import jujuReducer from "juju/reducer";
 import { modelPollerMiddleware } from "store/middleware/model-poller";
 import uiReducer from "ui";
 
 const reduxStore = createStore(
   combineReducers({
-    root: rootReducer,
+    general: generalReducer,
     juju: jujuReducer,
     ui: uiReducer,
   }),

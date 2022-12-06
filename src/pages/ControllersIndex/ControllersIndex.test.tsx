@@ -16,7 +16,7 @@ describe("Controllers table", () => {
   it("renders a blank page if no data", () => {
     const store = mockStore({
       juju: {},
-      root: {
+      general: {
         config: {},
       },
       ui: {

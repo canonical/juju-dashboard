@@ -4,7 +4,7 @@
 // across the top level keys.
 
 export default {
-  root: {
+  general: {
     config: {
       controllerAPIEndpoint: 'wss://jimm.jujucharms.com/api',
       baseAppURL: '/',

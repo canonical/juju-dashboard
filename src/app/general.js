@@ -3,7 +3,7 @@ import cloneDeep from "clone-deep";
 
 import { actionsList } from "./action-types";
 
-function rootReducer(state = {}, action) {
+function generalReducer(state = {}, action) {
   return immerProduce(state, (draftState) => {
     switch (action.type) {
       case actionsList.updateControllerConnection:
@@ -44,4 +44,4 @@ function rootReducer(state = {}, action) {
   });
 }
 
-export default rootReducer;
+export default generalReducer;

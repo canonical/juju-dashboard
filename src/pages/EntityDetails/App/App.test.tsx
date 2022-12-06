@@ -43,7 +43,7 @@ describe("Entity Details App", () => {
         },
       }
     );
-    storeData.root.credentials = {
+    storeData.general.credentials = {
       "wss://jimm.jujucharms.com/api": {
         info: { user: { identity: "user-eggman@external" } },
       },

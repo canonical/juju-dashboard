@@ -93,7 +93,7 @@ function generateErrorMessage(loginError?: string) {
 function IdentityProviderForm({ userIsLoggedIn }: { userIsLoggedIn: boolean }) {
   const visitURL = useSelector((state: ReduxState) => {
     if (!userIsLoggedIn) {
-      return state?.root?.visitURL;
+      return state?.general?.visitURL;
     }
   });
 

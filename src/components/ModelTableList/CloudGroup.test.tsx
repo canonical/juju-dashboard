@@ -14,7 +14,7 @@ const mockStore = configureStore([]);
 describe("CloudGroup", () => {
   it("by default, renders no tables with no data", () => {
     const store = mockStore({
-      root: {
+      general: {
         config: {
           controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
         },

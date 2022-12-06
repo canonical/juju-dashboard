@@ -11,7 +11,7 @@ const mockStore = configureStore([]);
 describe("LogIn", () => {
   it("renders a 'connecting' message while connecting", () => {
     const store = mockStore({
-      root: {
+      general: {
         config: {
           identityProviderAvailable: true,
         },
@@ -32,9 +32,9 @@ describe("LogIn", () => {
 
   it("renders an IdentityProvider login UI if the user is not logged in", () => {
     const store = mockStore({
-      root: {
+      general: {
         visitURL: "I am a url",
-        config: dataDump.root.config,
+        config: dataDump.general.config,
       },
     });
     render(
@@ -52,7 +52,7 @@ describe("LogIn", () => {
 
   it("renders a UserPass login UI if the user is not logged in", () => {
     const store = mockStore({
-      root: {
+      general: {
         config: {
           identityProviderAvailable: false,
         },
@@ -73,7 +73,7 @@ describe("LogIn", () => {
 
   it("renders a login error if one exists", () => {
     const store = mockStore({
-      root: {
+      general: {
         loginError: "Invalid user name",
         config: {
           identityProviderAvailable: false,

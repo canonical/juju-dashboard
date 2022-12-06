@@ -53,7 +53,7 @@ describe("model poller", () => {
         [wsControllerURL]: [{ uuid: "abc123" }],
       },
     },
-    root: {
+    general: {
       controllerConnections: {
         [wsControllerURL]: {
           user: {
@@ -293,7 +293,7 @@ describe("model poller", () => {
   it("does not update models if the user logs out", async () => {
     jest.spyOn(fakeStore, "getState").mockReturnValue({
       ...storeState,
-      root: {
+      general: {
         controllerConnections: {
           [wsControllerURL]: {
             user: {

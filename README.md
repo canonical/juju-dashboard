@@ -256,7 +256,7 @@ If you need to modify the data used in the application, clone the data dump in e
 
 ```
 const clonedData = cloneDeep(dataDump);
-clonedData.root.appVersion = "0.1.8";
+clonedData.general.appVersion = "0.1.8";
 const store = mockStore(clonedData);
 const wrapper = mount(
   <MemoryRouter>
