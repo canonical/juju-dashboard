@@ -19,6 +19,7 @@ export default function Aside({
   pinned = false,
   loading = false,
   isSplit = false,
+  ...props
 }: Props): JSX.Element {
   return (
     <SlideInOut
@@ -29,6 +30,7 @@ export default function Aside({
         "is-pinned": pinned === true,
         "is-split": isSplit === true,
       })}
+      {...props}
     >
       {!loading ? (
         children
