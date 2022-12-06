@@ -19,7 +19,7 @@ import {
 } from "./shared";
 
 export const TestId = {
-  CLOUD_GROUP: "cloud group",
+  CLOUD_GROUP: "cloud-group",
 };
 
 /**

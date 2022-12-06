@@ -21,7 +21,7 @@ import {
 } from "./shared";
 
 export const TestId = {
-  STATUS_GROUP: "status group",
+  STATUS_GROUP: "status-group",
 };
 
 /**

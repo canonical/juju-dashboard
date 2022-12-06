@@ -20,7 +20,7 @@ import {
 } from "./shared";
 
 export const TestId = {
-  OWNER_GROUP: "owner group",
+  OWNER_GROUP: "owner-group",
 };
 
 /**
