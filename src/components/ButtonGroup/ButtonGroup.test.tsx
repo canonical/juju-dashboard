@@ -1,11 +1,11 @@
-import { mount } from "enzyme";
-
-import ButtonGroup from "./ButtonGroup";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import ButtonGroup, { TestId } from "./ButtonGroup";
 
 describe("ButtonGroup", () => {
   it("shows active button", () => {
     const setActiveButton = jest.fn();
-    const wrapper = mount(
+    render(
       <ButtonGroup
         label="Foo"
         buttons={["status", "cloud", "owner"]}
@@ -13,25 +13,27 @@ describe("ButtonGroup", () => {
         setActiveButton={setActiveButton}
       />
     );
-    expect(wrapper.find(".is-selected").length).toBe(1);
+    expect(screen.getByRole("button", { name: "view by cloud" })).toHaveClass(
+      "is-selected"
+    );
   });
 
   it("if no active button is defined then none is selected", () => {
     const setActiveButton = jest.fn();
-    const wrapper = mount(
+    render(
       <ButtonGroup
         label="Foo"
         buttons={["status", "cloud", "owner"]}
-        activeButton="cloud"
+        activeButton=""
         setActiveButton={setActiveButton}
       />
     );
-    expect(wrapper.find(".is-selected")).toEqual({});
+    expect(document.querySelector(".is-selected")).not.toBeInTheDocument();
   });
 
-  it("calls to set active button on click", () => {
+  it("calls to set active button on click", async () => {
     const setActiveButton = jest.fn();
-    const wrapper = mount(
+    render(
       <ButtonGroup
         label="Foo"
         buttons={["status", "cloud", "owner"]}
@@ -39,12 +41,12 @@ describe("ButtonGroup", () => {
         setActiveButton={setActiveButton}
       />
     );
-    expect(wrapper.find(".p-button-group__button.is-selected").text()).toBe(
-      "cloud"
+    expect(screen.getByRole("button", { name: "view by cloud" })).toHaveClass(
+      "is-selected"
     );
-    wrapper.find("button[value='owner']").simulate("click", {
-      target: { value: "owner" },
-    });
+    await userEvent.click(
+      screen.getByRole("button", { name: "view by owner" })
+    );
     expect(setActiveButton.mock.calls.length).toBe(1);
     expect(setActiveButton.mock.calls[0]).toEqual(["owner"]);
     // We don't check that the UI updated because it has no internal state.
@@ -53,7 +55,7 @@ describe("ButtonGroup", () => {
 
   it("renders the supplied label", () => {
     const setActiveButton = jest.fn();
-    const wrapper = mount(
+    render(
       <ButtonGroup
         label="Foo"
         buttons={["status", "cloud", "owner"]}
@@ -61,18 +63,18 @@ describe("ButtonGroup", () => {
         setActiveButton={setActiveButton}
       />
     );
-    expect(wrapper.find('[data-test="label"]').text()).toBe("Foo");
+    expect(screen.getByTestId(TestId.LABEL)).toHaveTextContent("Foo");
   });
 
   it("allows the label to be optional", () => {
     const setActiveButton = jest.fn();
-    const wrapper = mount(
+    render(
       <ButtonGroup
         buttons={["status", "cloud", "owner"]}
         activeButton="cloud"
         setActiveButton={setActiveButton}
       />
     );
-    expect(wrapper.find('[data-test="label"]')).toEqual({});
+    expect(screen.queryByTestId(TestId.LABEL)).not.toBeInTheDocument();
   });
 });

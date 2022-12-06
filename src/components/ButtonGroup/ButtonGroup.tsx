@@ -2,6 +2,10 @@ import classNames from "classnames";
 
 import "./_button-group.scss";
 
+export enum TestId {
+  LABEL = "label",
+}
+
 type Props = {
   buttons: string[];
   label?: string;
@@ -19,7 +23,7 @@ const ButtonGroup = ({
     <div className="p-button-group">
       <div className="p-button-group__inner">
         {label ? (
-          <span className="p-button-group__label" data-test="label">
+          <span className="p-button-group__label" data-testid={TestId.LABEL}>
             {label}
           </span>
         ) : null}
