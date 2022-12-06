@@ -5,7 +5,7 @@ import "./_radio-input-box.scss";
 type Props = {
   name: string;
   description: string;
-  selectedInput: string | undefined;
+  selectedInput?: string | undefined;
   onSelect: (inputName: string) => void;
   children: ReactNode;
 };
