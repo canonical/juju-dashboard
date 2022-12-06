@@ -47,8 +47,8 @@ describe("Base Layout", () => {
         </Router>
       </Provider>
     );
-    expect(wrapper.find("[data-test='main-children']").html()).toStrictEqual(
-      `<div data-test="main-children"><p>foo</p></div>`
+    expect(wrapper.find("[data-testid='main-children']").html()).toStrictEqual(
+      `<div data-testid="main-children"><p>foo</p></div>`
     );
   });
 
