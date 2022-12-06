@@ -18,6 +18,10 @@ import {
   generateAccessButton,
 } from "./shared";
 
+export const TestId = {
+  CLOUD_GROUP: "cloud-group",
+};
+
 /**
   Returns the model info and statuses in the proper format for the table data.
   @param {Object} groupedModels The models grouped by state
@@ -91,10 +95,10 @@ export default function CloudGroup({ filters }) {
           2
         );
         cloudModels.rows.push({
-          "data-test-model-uuid": model?.uuid,
+          "data-testid": `model-uuid-${model?.uuid}`,
           columns: [
             {
-              "data-test-column": "name",
+              "data-testid": "column-name",
               content: generateModelDetailsLink(
                 model.info.name,
                 model.info && model.info["owner-tag"],
@@ -102,34 +106,34 @@ export default function CloudGroup({ filters }) {
               ),
             },
             {
-              "data-test-column": "summary",
+              "data-testid": "column-summary",
               content: getStatusValue(model, "summary"),
               className: "u-overflow--visible",
             },
             {
-              "data-test-column": "owner",
+              "data-testid": "column-owner",
               content: owner,
             },
             {
-              "data-test-column": "status",
+              "data-testid": "column-status",
               content: generateStatusElement(highestStatus),
               className: "u-capitalise",
             },
             {
-              "data-test-column": "region",
+              "data-testid": "column-region",
               content: region,
             },
             {
-              "data-test-column": "credential",
+              "data-testid": "column-credential",
               content: credential,
             },
             {
-              "data-test-column": "controller",
+              "data-testid": "column-controller",
               content: controller,
             },
             // We're not currently able to get a last-accessed or updated from JAAS.
             {
-              "data-test-column": "updated",
+              "data-testid": "column-updated",
               content: (
                 <>
                   {canAdministerModelAccess(activeUser, model?.info?.users) &&
@@ -175,5 +179,12 @@ export default function CloudGroup({ filters }) {
       />
     );
   }
-  return <div className="cloud-group u-overflow--auto">{cloudTables}</div>;
+  return (
+    <div
+      className="cloud-group u-overflow--auto"
+      data-testid={TestId.CLOUD_GROUP}
+    >
+      {cloudTables}
+    </div>
+  );
 }

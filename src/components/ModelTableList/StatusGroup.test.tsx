@@ -1,5 +1,5 @@
 import { MemoryRouter } from "react-router";
-import { mount } from "enzyme";
+import { render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
@@ -26,35 +26,34 @@ describe("StatusGroup", () => {
         modelStatuses: {},
       },
     });
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup />
+            <StatusGroup filters={[]} />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
-    const tables = wrapper.find("MainTable");
-    expect(tables.length).toBe(0);
+    expect(screen.queryByRole("grid")).not.toBeInTheDocument();
   });
 
   it("displays model data grouped by status from the redux store", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup />
+            <StatusGroup filters={[]} />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
-    const tables = wrapper.find("MainTable");
+    const tables = screen.getAllByRole("grid");
     expect(tables.length).toBe(3);
-    expect(tables.get(0).props.rows.length).toEqual(4);
-    expect(tables.get(1).props.rows.length).toEqual(7);
-    expect(tables.get(2).props.rows.length).toEqual(5);
+    expect(within(tables[0]).getAllByRole("row")).toHaveLength(5);
+    expect(within(tables[1]).getAllByRole("row")).toHaveLength(8);
+    expect(within(tables[2]).getAllByRole("row")).toHaveLength(6);
   });
 
   it("fetches filtered data if filters supplied", () => {
@@ -62,7 +61,7 @@ describe("StatusGroup", () => {
     const filters = {
       cloud: ["aws"],
     };
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -71,25 +70,24 @@ describe("StatusGroup", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(wrapper.find("tbody TableRow").length).toBe(3);
+    expect(screen.getAllByRole("row").length).toBe(5);
   });
 
   it("displays the provider type icon", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup />
+            <StatusGroup filters={[]} />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
     );
-    const logo = wrapper
-      .find("MainTable")
-      .find('[data-test="provider-logo"]')
-      .first();
-    expect(logo.prop("src")).toContain("gce");
+    expect(screen.getAllByTestId("provider-logo")[0]).toHaveAttribute(
+      "src",
+      "gce.svg"
+    );
   });
 
   it("model access buttons are present in status group", () => {
@@ -97,7 +95,7 @@ describe("StatusGroup", () => {
     const filters = {
       cloud: ["aws"],
     };
-    const wrapper = mount(
+    render(
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -106,10 +104,16 @@ describe("StatusGroup", () => {
         </Provider>
       </MemoryRouter>
     );
-    const firstContentRow = wrapper.find(".status-group tr").at(1);
-    const modelAccessButton = firstContentRow.find(".model-access");
+    const firstContentRow = screen.getAllByRole("row")[1];
+    const modelAccessButton = within(firstContentRow).getAllByRole("button", {
+      name: "Access",
+    });
     expect(modelAccessButton.length).toBe(2);
-    expect(firstContentRow.find(".sm-screen-access-cell").exists()).toBe(true);
-    expect(firstContentRow.find(".lrg-screen-access-cell").exists()).toBe(true);
+    expect(within(firstContentRow).getAllByRole("gridcell")[7]).toHaveClass(
+      "sm-screen-access-cell"
+    );
+    expect(within(firstContentRow).getAllByRole("gridcell")[6]).toHaveClass(
+      "lrg-screen-access-cell"
+    );
   });
 });
