@@ -107,7 +107,7 @@ export function logOut(store) {
   async function logOut(dispatch) {
     const state = store.getState();
     const identityProviderAvailable =
-      state?.root?.config?.identityProviderAvailable;
+      state?.general?.config?.identityProviderAvailable;
     const pingerIntervalIds = getPingerIntervalIds(state);
     bakery.storage._store.removeItem("identity");
     bakery.storage._store.removeItem("https://api.jujucharms.com/identity");

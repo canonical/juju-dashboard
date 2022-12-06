@@ -14,7 +14,7 @@ const mockStore = configureStore([]);
 describe("StatusGroup", () => {
   it("by default, renders no tables when there is no data", () => {
     const store = mockStore({
-      root: {
+      general: {
         config: {
           controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
         },

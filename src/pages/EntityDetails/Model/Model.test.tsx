@@ -59,7 +59,7 @@ describe("Model", () => {
         },
       }
     );
-    storeData.root.controllerConnections = {
+    storeData.general.controllerConnections = {
       "wss://jimm.jujucharms.com/api": {
         user: { identity: "user-eggman@external" },
       },

@@ -35,9 +35,13 @@ export function reduxStateFactory() {
       : defaultModelData.models;
 
     return {
-      root: {
+      general: {
         config: {
           controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
+          baseAppURL: "/",
+          identityProviderAvailable: false,
+          identityProviderURL: "",
+          isJuju: false,
         },
       },
       juju: jujuStateFactory(transientModelData).build(),

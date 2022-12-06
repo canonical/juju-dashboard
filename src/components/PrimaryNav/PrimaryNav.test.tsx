@@ -55,7 +55,7 @@ describe("Primary Nav", () => {
 
   it("displays the Juju logo under Juju", () => {
     const clonedDump = cloneDeep(dataDump);
-    clonedDump.root.config.isJuju = true;
+    clonedDump.general.config.isJuju = true;
     const store = mockStore(clonedDump);
     render(
       <Provider store={store}>

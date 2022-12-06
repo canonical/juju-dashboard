@@ -129,7 +129,7 @@ describe("WebCLI", () => {
   it("supports macaroon based authentication", async () => {
     // TSFixMe: root is not currently typed.
     const clonedDataDump: TSFixMe = cloneDeep(dataDump);
-    clonedDataDump.root.controllerConnections["ws://localhost:1234/api"] = {
+    clonedDataDump.general.controllerConnections["ws://localhost:1234/api"] = {
       user: { identity: "user-eggman@external" },
     };
     bakerySpy.mockImplementation((key) => {
