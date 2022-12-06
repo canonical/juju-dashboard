@@ -23,7 +23,7 @@ export enum LoginError {
   NO_INFO = "Unable to retrieve controller details",
 }
 
-// TODO: provide these types when the types are available from bakeryjs.
+// TODO: provide these types when the types are available from jujulib.
 // TODO: Import bakery instead of passing it as a param.
 type ControllerOptions = [
   string,
@@ -123,7 +123,7 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
               });
               reduxStore.dispatch(updateModelList(models, wsControllerURL));
               // TODO: this error should not be cast once the types are
-              // available from bakeryjs.
+              // available from jujulib.
               const modelUUIDList = models["user-models"].map(
                 (item: TSFixMe) => item.model.uuid
               );
