@@ -240,6 +240,7 @@ export function generateUnitRows(
               className="p-checkbox__input"
               name="selectedUnits"
               value={unitId}
+              data-testid={fieldID}
             />
             <span className="p-checkbox__label" id={ariaLabeledBy}></span>
           </label>
