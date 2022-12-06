@@ -218,7 +218,7 @@ export default function ActionsPanel(): JSX.Element {
         <PanelHeader title={generateTitle()} />
         <div
           className="actions-panel__unit-list"
-          data-test="actions-panel-unit-list"
+          data-testid="actions-panel-unit-list"
         >
           Run action on: {generateSelectedUnitList()}
         </div>
@@ -366,11 +366,11 @@ function SubmitConfirmation(
         <h4>Run {actionName}?</h4>
         <div className="p-confirmation-modal__info-group">
           <div className="p-confirmation-modal__sub-header">UNIT COUNT</div>
-          <div data-test="confirmation-modal-unit-count">{unitCount}</div>
+          <div data-testid="confirmation-modal-unit-count">{unitCount}</div>
         </div>
         <div className="p-confirmation-modal__info-group">
           <div className="p-confirmation-modal__sub-header">UNIT NAME</div>
-          <div data-test="confirmation-modal-unit-names">{unitNames}</div>
+          <div data-testid="confirmation-modal-unit-names">{unitNames}</div>
         </div>
       </div>
     </ConfirmationModal>
