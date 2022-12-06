@@ -1,4 +1,5 @@
-import { mount } from "enzyme";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import cloneDeep from "clone-deep";
 
 import ToastCard from "./ToastCard";
@@ -17,82 +18,86 @@ describe("Toast Card", () => {
 
   it("should display message", () => {
     const t = cloneDeep(toastInstanceExample);
-    const wrapper = mount(
+    render(
       <ToastCard
         type="positive"
         text="I am a toast message"
         toastInstance={t}
       />
     );
-    expect(wrapper.find(".toast-card__message").text()).toStrictEqual(
-      "I am a toast message"
+    expect(screen.getByText("I am a toast message")).toHaveClass(
+      "toast-card__message"
     );
   });
 
   it("should display as correct type", () => {
     const t = cloneDeep(toastInstanceExample);
-    const wrapper = mount(
+    const { container } = render(
       <ToastCard
         type="positive"
         text="I am a toast message"
         toastInstance={t}
       />
     );
-    expect(wrapper.find("[data-type='positive']").exists()).toBe(true);
+    expect(container.firstChild).toHaveAttribute("data-type", "positive");
   });
 
   it("should display correct success icon", () => {
     const t = cloneDeep(toastInstanceExample);
-    const wrapper = mount(
+    render(
       <ToastCard
         type="positive"
         text="I am a toast message"
         toastInstance={t}
       />
     );
-    expect(wrapper.find(".p-icon--success").exists()).toBe(true);
+    expect(document.querySelector(".p-icon--success")).toBeInTheDocument();
   });
 
   it("should display correct error icon", () => {
     const t = cloneDeep(toastInstanceExample);
-    const wrapper = mount(
+    render(
       <ToastCard
         type="negative"
         text="I am a toast message"
         toastInstance={t}
       />
     );
-    expect(wrapper.find(".p-icon--error").exists()).toBe(true);
+    expect(document.querySelector(".p-icon--error")).toBeInTheDocument();
   });
 
   it("should display close icon", () => {
     const t = cloneDeep(toastInstanceExample);
-    const wrapper = mount(
+    render(
       <ToastCard
         type="negative"
         text="I am a toast message"
         toastInstance={t}
       />
     );
-    expect(wrapper.find(".p-icon--close").exists()).toBe(true);
+    expect(screen.getByRole("button", { name: "Close" })).toHaveClass(
+      "p-icon--close"
+    );
   });
 
   it("should not display an undo button if an undo function is not passed", () => {
     const t = cloneDeep(toastInstanceExample);
-    const wrapper = mount(
+    render(
       <ToastCard
         type="negative"
         text="I am a toast message"
         toastInstance={t}
       />
     );
-    expect(wrapper.find(".toast-card__undo").exists()).toBe(false);
+    expect(
+      screen.queryByRole("button", { name: "Undo" })
+    ).not.toBeInTheDocument();
   });
 
-  it("should display a clickable undo button if an undo function is passed", () => {
+  it("should display a clickable undo button if an undo function is passed", async () => {
     const undoFn = jest.fn();
     const t = cloneDeep(toastInstanceExample);
-    const wrapper = mount(
+    render(
       <ToastCard
         type="negative"
         text="I am a toast message"
@@ -100,9 +105,9 @@ describe("Toast Card", () => {
         undo={undoFn}
       />
     );
-    const undoButton = wrapper.find(".toast-card__undo button");
-    expect(undoButton.exists()).toBe(true);
-    undoButton.simulate("click");
+    const undoButton = screen.getByRole("button", { name: "Undo" });
+    expect(undoButton).toBeInTheDocument();
+    await userEvent.click(undoButton);
     expect(undoFn).toHaveBeenCalled();
   });
 });
