@@ -1,8 +1,8 @@
 import configureStore from "redux-mock-store";
-import { mount } from "enzyme";
 import React from "react";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { render, screen } from "@testing-library/react";
 import dataDump from "testing/complete-redux-store-dump";
 
 import Breadcrumb from "./Breadcrumb";
@@ -12,7 +12,7 @@ const mockStore = configureStore([]);
 describe("Breadcrumb", () => {
   it("displays correctly on model details", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>
           <Routes>
@@ -24,15 +24,17 @@ describe("Breadcrumb", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("[data-test='breadcrumb-application']").length).toBe(0);
-    expect(wrapper.find("[data-test='breadcrumb-model']").text()).toStrictEqual(
+    expect(
+      screen.queryByTestId("breadcrumb-application")
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
       "group-test"
     );
   });
 
   it("displays correctly on application details", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter
           initialEntries={["/models/eggman@external/group-test/app/easyrsa"]}
@@ -46,23 +48,23 @@ describe("Breadcrumb", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("[data-test='breadcrumb-items']").text()).toStrictEqual(
+    expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
       "group-testApplicationseasyrsa"
     );
-    expect(wrapper.find("[data-test='breadcrumb-model']").text()).toStrictEqual(
+    expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
       "group-test"
     );
-    expect(
-      wrapper.find("[data-test='breadcrumb-section']").text()
-    ).toStrictEqual("Applications");
-    expect(
-      wrapper.find("[data-test='breadcrumb-applications']").text()
-    ).toStrictEqual("easyrsa");
+    expect(screen.getByTestId("breadcrumb-section")).toHaveTextContent(
+      "Applications"
+    );
+    expect(screen.getByTestId("breadcrumb-applications")).toHaveTextContent(
+      "easyrsa"
+    );
   });
 
   it("displays correctly on unit details", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter
           initialEntries={[
@@ -78,23 +80,23 @@ describe("Breadcrumb", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("[data-test='breadcrumb-items']").text()).toStrictEqual(
+    expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
       "group-testApplicationslogstashlogstash-0"
     );
-    expect(wrapper.find("[data-test='breadcrumb-model']").text()).toStrictEqual(
+    expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
       "group-test"
     );
-    expect(
-      wrapper.find("[data-test='breadcrumb-section']").text()
-    ).toStrictEqual("Applications");
-    expect(wrapper.find("[data-test='breadcrumb-units']").text()).toStrictEqual(
+    expect(screen.getByTestId("breadcrumb-section")).toHaveTextContent(
+      "Applications"
+    );
+    expect(screen.getByTestId("breadcrumb-units")).toHaveTextContent(
       "logstash-0"
     );
   });
 
   it("displays correctly on machine details", () => {
     const store = mockStore(dataDump);
-    const wrapper = mount(
+    render(
       <Provider store={store}>
         <MemoryRouter
           initialEntries={["/models/eggman@external/group-test/machine/0"]}
@@ -108,17 +110,15 @@ describe("Breadcrumb", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find("[data-test='breadcrumb-items']").text()).toStrictEqual(
+    expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
       "group-testMachines0"
     );
-    expect(wrapper.find("[data-test='breadcrumb-model']").text()).toStrictEqual(
+    expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
       "group-test"
     );
-    expect(
-      wrapper.find("[data-test='breadcrumb-section']").text()
-    ).toStrictEqual("Machines");
-    expect(
-      wrapper.find("[data-test='breadcrumb-machines']").text()
-    ).toStrictEqual("0");
+    expect(screen.getByTestId("breadcrumb-section")).toHaveTextContent(
+      "Machines"
+    );
+    expect(screen.getByTestId("breadcrumb-machines")).toHaveTextContent("0");
   });
 });

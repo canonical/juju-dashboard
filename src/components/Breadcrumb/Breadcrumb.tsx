@@ -16,14 +16,14 @@ export default function Breadcrumb(): JSX.Element {
         <>
           <li
             className="p-breadcrumbs__item u-no-padding--top"
-            data-test="breadcrumb-model"
+            data-testid="breadcrumb-model"
           >
             <Link to={`/models/${userName}/${modelName}`}>{modelName}</Link>
           </li>
           {!unitId && (
             <li
               className="p-breadcrumbs__item u-no-padding--top"
-              data-test="breadcrumb-section"
+              data-testid="breadcrumb-section"
             >
               <Link to={`/models/${userName}/${modelName}?activeView=${view}`}>
                 {entityType.title}
@@ -34,7 +34,7 @@ export default function Breadcrumb(): JSX.Element {
             <>
               <li
                 className="p-breadcrumbs__item u-no-padding--top"
-                data-test="breadcrumb-section"
+                data-testid="breadcrumb-section"
               >
                 <Link to={`/models/${userName}/${modelName}?activeView=apps`}>
                   Applications
@@ -42,7 +42,7 @@ export default function Breadcrumb(): JSX.Element {
               </li>
               <li
                 className="p-breadcrumbs__item u-no-padding--top"
-                data-test="breadcrumb-app"
+                data-testid="breadcrumb-app"
               >
                 <Link to={`/models/${userName}/${modelName}/app/${appName}`}>
                   {appName}
@@ -52,7 +52,7 @@ export default function Breadcrumb(): JSX.Element {
           )}
           <li
             className="p-breadcrumbs__item u-no-padding--top"
-            data-test={`breadcrumb-${entityType.title?.toLowerCase()}`}
+            data-testid={`breadcrumb-${entityType.title?.toLowerCase()}`}
           >
             <strong>{entityType.id}</strong>
           </li>
@@ -62,7 +62,7 @@ export default function Breadcrumb(): JSX.Element {
     return (
       <li
         className="p-breadcrumbs__item p-breadcrumbs__item--restricted"
-        data-test="breadcrumb-model"
+        data-testid="breadcrumb-model"
         title={modelName}
       >
         <Link to={`/models/${userName}/${modelName}`} className="p-link--soft">
@@ -99,7 +99,7 @@ export default function Breadcrumb(): JSX.Element {
 
   return (
     <nav className="p-breadcrumbs" aria-label="Breadcrumb navigation">
-      <ol className="p-breadcrumbs__items" data-test="breadcrumb-items">
+      <ol className="p-breadcrumbs__items" data-testid="breadcrumb-items">
         {generateBreadcrumbs()}
       </ol>
     </nav>
