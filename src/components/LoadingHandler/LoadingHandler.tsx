@@ -3,6 +3,10 @@ import { Spinner } from "@canonical/react-components";
 
 import "./_loading-handler.scss";
 
+export enum TestId {
+  LOADING = "loading",
+}
+
 type LoadingHandlerProps = {
   children?: ReactNode;
   hasData: boolean;
@@ -22,7 +26,7 @@ export default function LoadingHandler({
         return (
           <div className="loading-handler__spinner">
             <div className="loading-handler__spinner-content">
-              <Spinner />
+              <Spinner data-testid={TestId.LOADING} />
             </div>
           </div>
         );
