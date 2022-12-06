@@ -86,7 +86,7 @@ export default function TextAreaConfig({
         "config-input--focused": inputFocused,
         "config-input--changed": inputChanged,
       })}
-      data-config-name={config.name}
+      data-testid={config.name}
       onClick={() => setSelectedConfig(config)}
     >
       <h5 className="u-float-left">

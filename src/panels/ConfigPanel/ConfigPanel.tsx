@@ -24,6 +24,10 @@ import TextAreaConfig from "./TextAreaConfig";
 
 import "./_config-panel.scss";
 
+export enum Label {
+  NONE = "This application doesn't have any configuration parameters",
+}
+
 type Props = {
   appName: string;
   charm: string;
@@ -430,7 +434,7 @@ function NoConfigMessage() {
   return (
     <div className="config-panel__message">
       <img src={boxImage} alt="" className="config-panel--center-img" />
-      <h4>This application doesn't have any configuration parameters</h4>
+      <h4>{Label.NONE}</h4>
     </div>
   );
 }
