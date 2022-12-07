@@ -19,16 +19,19 @@ jest.mock("components/Topology/Topology", () => {
 describe("Info Panel", () => {
   it("renders the topology", () => {
     const mockState = rootStateFactory.build({
-      juju: jujuStateFactory.build(null, {
-        transient: {
-          models: [
-            {
-              name: "enterprise",
-              owner: "kirk@external",
-            },
-          ],
-        },
-      }),
+      juju: jujuStateFactory.build(
+        {},
+        {
+          transient: {
+            models: [
+              {
+                name: "enterprise",
+                owner: "kirk@external",
+              },
+            ],
+          },
+        }
+      ),
     });
     const store = mockStore(mockState);
     render(
@@ -50,16 +53,19 @@ describe("Info Panel", () => {
 
   it("renders the expanded topology on click", () => {
     const mockState = rootStateFactory.build({
-      juju: jujuStateFactory.build(null, {
-        transient: {
-          models: [
-            {
-              name: "enterprise",
-              owner: "kirk@external",
-            },
-          ],
-        },
-      }),
+      juju: jujuStateFactory.build(
+        {},
+        {
+          transient: {
+            models: [
+              {
+                name: "enterprise",
+                owner: "kirk@external",
+              },
+            ],
+          },
+        }
+      ),
     });
     const store = mockStore(mockState);
     render(

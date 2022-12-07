@@ -21,14 +21,15 @@ function generateUUID() {
 
 export const jujuStateFactory = Factory.define<
   JujuState,
-  { models: ModelData[] }
+  { models: (Omit<ModelData, "uuid"> & { uuid?: ModelData["uuid"] })[] }
 >(({ transientParams }) => {
   const modelWatcherData = {};
   const modelsList: ModelsList = {};
-  transientParams.models?.forEach((model) => {
-    if (!model.uuid) {
-      Object.assign(model, { uuid: generateUUID() });
-    }
+  transientParams.models?.forEach((modelParams) => {
+    const model = {
+      ...modelParams,
+      uuid: modelParams.uuid ?? generateUUID(),
+    };
 
     modelsList[model.name] = {
       name: model.name,

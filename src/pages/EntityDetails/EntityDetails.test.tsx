@@ -44,16 +44,19 @@ describe("Entity Details Container", () => {
     if (!overrides?.juju) {
       overrides = mergeWith(
         {
-          juju: jujuStateFactory.build(null, {
-            transient: {
-              models: [
-                {
-                  name: "enterprise",
-                  owner: "kirk@external",
-                },
-              ],
-            },
-          }),
+          juju: jujuStateFactory.build(
+            {},
+            {
+              transient: {
+                models: [
+                  {
+                    name: "enterprise",
+                    owner: "kirk@external",
+                  },
+                ],
+              },
+            }
+          ),
         },
         overrides ?? {}
       );
@@ -110,17 +113,20 @@ describe("Entity Details Container", () => {
     renderComponent({
       props: { type: "model" },
       overrides: {
-        juju: jujuStateFactory.build(null, {
-          transient: {
-            models: [
-              {
-                name: "enterprise",
-                owner: "kirk@external",
-                type: "kubernetes",
-              },
-            ],
-          },
-        }),
+        juju: jujuStateFactory.build(
+          {},
+          {
+            transient: {
+              models: [
+                {
+                  name: "enterprise",
+                  owner: "kirk@external",
+                  type: "kubernetes",
+                },
+              ],
+            },
+          }
+        ),
       },
     });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
@@ -183,13 +189,20 @@ describe("Entity Details Container", () => {
   it("does not show the webCLI in juju 2.8", async () => {
     renderComponent({
       overrides: {
-        juju: jujuStateFactory.build(null, {
-          transient: {
-            models: [
-              { name: "enterprise", owner: "kirk@external", version: "2.8.7" },
-            ],
-          },
-        }),
+        juju: jujuStateFactory.build(
+          {},
+          {
+            transient: {
+              models: [
+                {
+                  name: "enterprise",
+                  owner: "kirk@external",
+                  version: "2.8.7",
+                },
+              ],
+            },
+          }
+        ),
       },
     });
     await waitFor(() => {
