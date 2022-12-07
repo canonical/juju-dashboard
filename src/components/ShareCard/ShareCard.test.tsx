@@ -15,7 +15,9 @@ describe("Share Card", () => {
         accessSelectChange={jest.fn()}
       />
     );
-    expect(screen.getByText("janedoe")).toHaveClass("share-card__username");
+    expect(screen.getAllByText("janedoe")[0]).toHaveClass(
+      "share-card__username"
+    );
     const remove = screen.getByRole("button", { name: Label.REMOVE });
     expect(remove).toBeInTheDocument();
     expect(remove).toHaveClass("p-icon--delete");
