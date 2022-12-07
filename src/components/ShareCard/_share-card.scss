@@ -111,6 +111,7 @@
   }
 
   &__tooltip-wrapper {
-    display: inline;
+    // Override to allow long usernames to truncate.
+    display: inline !important;
   }
 }
