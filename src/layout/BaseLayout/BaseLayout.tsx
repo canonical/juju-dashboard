@@ -14,8 +14,8 @@ import useOffline from "hooks/useOffline";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
-import { sideNavCollapsed } from "ui/actions";
-import { isSideNavCollapsed } from "ui/selectors";
+import { actions } from "store/ui";
+import { isSideNavCollapsed } from "store/ui/selectors";
 
 import classNames from "classnames";
 import "./_base-layout.scss";
@@ -39,10 +39,10 @@ const BaseLayout = ({ children }: Props) => {
   const collapseSidebar = useSelector<TSFixMe>(isSideNavCollapsed) || false;
 
   useEffect(() => {
-    dispatch(sideNavCollapsed(!!modelName));
+    dispatch(actions.sideNavCollapsed(!!modelName));
 
     return () => {
-      dispatch(sideNavCollapsed(false));
+      dispatch(actions.sideNavCollapsed(false));
     };
   }, [modelName, dispatch]);
 

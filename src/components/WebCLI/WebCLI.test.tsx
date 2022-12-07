@@ -8,7 +8,7 @@ import { WS } from "jest-websocket-mock";
 import cloneDeep from "clone-deep";
 
 import bakery from "app/bakery";
-import { ReduxState } from "types";
+import { RootState } from "store/store";
 import dataDump from "testing/complete-redux-store-dump";
 
 import WebCLI from "./WebCLI";
@@ -67,7 +67,7 @@ describe("WebCLI", () => {
       modelUUID: "abc123",
       credentials: null,
     },
-    customDataDump?: ReduxState
+    customDataDump?: RootState
   ) {
     const store = mockStore(customDataDump || dataDump);
 

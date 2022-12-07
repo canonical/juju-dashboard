@@ -356,7 +356,7 @@ export const generateIconImg = (name, charmId) => {
   return (
     <ImgWithFallback
       alt={name + " icon"}
-      key={name}
+      key={`${name}-${charmId}`}
       title={name}
       width="24"
       height="24"

@@ -3,10 +3,10 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import process from "process";
 import * as Sentry from "@sentry/browser";
-import App from "components/App/App";
 
+import App from "components/App/App";
 import bakery from "app/bakery";
-import reduxStore from "store/store";
+import reduxStore from "store";
 
 import { connectAndStartPolling, storeConfig, storeVersion } from "app/actions";
 

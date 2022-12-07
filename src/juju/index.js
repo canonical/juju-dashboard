@@ -34,10 +34,9 @@ import {
   Return a common connection option config.
   @param {Boolean} usePinger If the connection will be long lived then use the
     pinger. Defaults to false.
-  @param {Object} bakery A bakery instance.
   @returns {Object} The configuration options.
 */
-function generateConnectionOptions(usePinger = false, bakery, onClose) {
+function generateConnectionOptions(usePinger = false, onClose) {
   // The options used when connecting to a Juju controller or model.
   const facades = [
     actions,
@@ -97,7 +96,6 @@ function stopPingerLoop(intervalId) {
   @param {String} wsControllerURL The fully qualified URL of the controller api.
   @param {Object|null} credentials The users credentials in the format
     {user: ..., password: ...}
-  @param {Object} bakery A bakery instance.
   @param {Boolean} identityProviderAvailable Whether an identity provider is available.
   @returns
     conn The controller connection instance.
@@ -106,14 +104,11 @@ function stopPingerLoop(intervalId) {
 export async function loginWithBakery(
   wsControllerURL,
   credentials,
-  bakery,
   identityProviderAvailable
 ) {
   const juju = await connect(
     wsControllerURL,
-    generateConnectionOptions(true, bakery, (e) =>
-      console.log("controller closed", e)
-    )
+    generateConnectionOptions(true, (e) => console.log("controller closed", e))
   );
   const loginParams = determineLoginParams(
     credentials,
@@ -194,7 +189,7 @@ export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,
-        generateConnectionOptions(false, bakery),
+        generateConnectionOptions(false),
         useIdentityProvider
       );
       if (isLoggedIn(wsControllerURL, getState())) {
@@ -388,7 +383,7 @@ async function connectAndLoginToModel(modelUUID, appState) {
   const { conn } = await connectAndLoginWithTimeout(
     modelURL,
     credentials,
-    generateConnectionOptions(true, bakery),
+    generateConnectionOptions(true),
     identityProviderAvailable
   );
   return conn;

@@ -5,6 +5,7 @@
 
 import { actionsList } from "app/action-types";
 import { isLoggedIn } from "app/selectors";
+import { actions } from "store/ui";
 
 const actionAllowlist = [
   "POPULATE_MISSING_ALLWATCHER_DATA",
@@ -24,6 +25,8 @@ const actionAllowlist = [
   "TOGGLE_USER_MENU",
   "SIDENAV_COLLAPSED",
   actionsList.connectAndPollControllers,
+  actions.userMenuActive.type,
+  actions.sideNavCollapsed.type,
 ];
 
 const thunkAllowlist = ["connectAndStartPolling", "logOut"];

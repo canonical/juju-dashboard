@@ -25,13 +25,7 @@ export enum LoginError {
 
 // TODO: provide these types when the types are available from jujulib.
 // TODO: Import bakery instead of passing it as a param.
-type ControllerOptions = [
-  string,
-  TSFixMe,
-  TSFixMe,
-  boolean,
-  boolean | undefined
-];
+type ControllerOptions = [string, TSFixMe, boolean, boolean | undefined];
 
 export const modelPollerMiddleware: Middleware = (reduxStore) => {
   // TODO: provide the connection when the types are available from jujulib.
@@ -48,7 +42,6 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
           const [
             wsControllerURL,
             credentials,
-            bakery,
             identityProviderAvailable,
             isAdditionalController,
           ] = controllerData;
@@ -57,7 +50,6 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
             ({ conn, error, juju, intervalId } = await loginWithBakery(
               wsControllerURL,
               credentials,
-              bakery,
               identityProviderAvailable
             ));
             if (error) {
@@ -86,6 +78,8 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
             Sentry.setTag("jujuVersion", conn.info.serverVersion);
           }
 
+          // Remove the getFacade function as this doesn't need to be stored in Redux.
+          delete conn.info.getFacade;
           // Store the controller info. The transport and facades are not used
           // (or available by other means) so no need to store them.
           reduxStore.dispatch(

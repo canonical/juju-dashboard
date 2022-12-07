@@ -1,6 +1,8 @@
 import { createSelector } from "reselect";
 
-import type { ReduxState, ModelsList } from "types";
+import { RootState } from "store/store";
+
+import type { ModelsList } from "types";
 import type {
   AnnotationData,
   ApplicationData,
@@ -11,9 +13,9 @@ import type {
   UnitData,
 } from "./types";
 
-const getModelWatcherData = (state: ReduxState): ModelWatcherData =>
+const getModelWatcherData = (state: RootState): ModelWatcherData =>
   state.juju.modelWatcherData;
-const getModelList = (state: ReduxState): ModelsList => state.juju.models;
+const getModelList = (state: RootState): ModelsList => state.juju.models;
 
 export function getModelWatcherDataByUUID(modelUUID: string) {
   return createSelector(getModelWatcherData, (modelWatcherData) => {

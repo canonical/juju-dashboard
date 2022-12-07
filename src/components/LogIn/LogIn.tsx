@@ -17,21 +17,22 @@ import { useDispatch, useSelector, useStore } from "react-redux";
 
 import { Spinner } from "@canonical/react-components";
 
-import { Config, ReduxState, TSFixMe } from "types";
+import { Config, TSFixMe } from "types";
 import FadeUpIn from "animations/FadeUpIn";
 import bakery from "app/bakery";
+import { RootState } from "store/store";
 
 import logo from "static/images/logo/logo-black-on-white.svg";
 
 import "./_login.scss";
 
 export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
-  const config = useSelector<ReduxState, Config | null>(getConfig);
+  const config = useSelector<RootState, Config | null>(getConfig);
 
   const controllerConnections = useSelector(getControllerConnections) || {};
   const wsControllerURLs = Object.keys(controllerConnections);
 
-  const store = useStore<ReduxState>();
+  const store = useStore<RootState>();
   // Loop through all of the available controller connections to see
   // if we're logged in.
   const userIsLoggedIn = wsControllerURLs.some((wsControllerURL) =>
@@ -91,7 +92,7 @@ function generateErrorMessage(loginError?: string) {
 }
 
 function IdentityProviderForm({ userIsLoggedIn }: { userIsLoggedIn: boolean }) {
-  const visitURL = useSelector((state: ReduxState) => {
+  const visitURL = useSelector((state: RootState) => {
     if (!userIsLoggedIn) {
       return state?.general?.visitURL;
     }
@@ -107,7 +108,7 @@ interface LoginElements extends HTMLFormControlsCollection {
 
 function UserPassForm() {
   const dispatch = useDispatch();
-  const store = useStore<ReduxState>();
+  const store = useStore<RootState>();
   const focus = useRef<HTMLInputElement>(null);
 
   function handleSubmit(

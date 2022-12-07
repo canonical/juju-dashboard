@@ -60,7 +60,7 @@ describe("User Menu", () => {
     );
     await userEvent.click(screen.getByRole("button"));
     const actions = store.getActions();
-    const expectedPayload = { payload: true, type: "TOGGLE_USER_MENU" };
+    const expectedPayload = { payload: true, type: "ui/userMenuActive" };
     expect(actions).toEqual([expectedPayload]);
   });
 });

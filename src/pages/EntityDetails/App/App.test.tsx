@@ -9,9 +9,9 @@ import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import cloneDeep from "clone-deep";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
+import { RootState } from "store/store";
 import dataDump from "testing/complete-redux-store-dump";
-import { ReduxState } from "types";
-import { reduxStateFactory } from "testing/redux-factory";
+import { rootStateFactory, jujuStateFactory } from "testing/factories";
 
 import App, { Label, TestId } from "./App";
 
@@ -28,21 +28,23 @@ jest.mock("components/WebCLI/WebCLI", () => {
 });
 
 describe("Entity Details App", () => {
-  let storeData: ReduxState;
+  let storeData: RootState;
 
   beforeEach(() => {
-    storeData = reduxStateFactory().build(
-      {},
-      {
-        transient: {
-          models: Object.values(dataDump.juju.modelData).map((model) => ({
-            name: model.info.name,
-            owner: model.info["owner-tag"].replace("user-", ""),
-            uuid: model.uuid,
-          })),
-        },
-      }
-    );
+    storeData = rootStateFactory.build({
+      juju: jujuStateFactory.build(
+        {},
+        {
+          transient: {
+            models: Object.values(dataDump.juju.modelData).map((model) => ({
+              name: model.info.name,
+              owner: model.info["owner-tag"].replace("user-", ""),
+              uuid: model.uuid,
+            })),
+          },
+        }
+      ),
+    });
     storeData.general.credentials = {
       "wss://jimm.jujucharms.com/api": {
         info: { user: { identity: "user-eggman@external" } },
@@ -62,7 +64,7 @@ describe("Entity Details App", () => {
             since: "2021-08-13T19:34:41.247417373Z",
             version: "2.8.7",
           },
-          "charm-url": "cs:etcd-55",
+          "charm-url": `cs:etcd-5${index}`,
           "machine-id": "0",
           "model-uuid": "abc123",
           "port-ranges": null,
@@ -102,6 +104,8 @@ describe("Entity Details App", () => {
                 path="/models/:userName/:modelName/app/:appName"
                 element={<App />}
               />
+              {/* Capture other paths to prevent warnings when navigating in the tests. */}
+              <Route path="*" element={<span />} />
             </Routes>
           </QueryParamProvider>
         </BrowserRouter>
@@ -211,7 +215,7 @@ describe("Entity Details App", () => {
   it("navigates to the actions log when button pressed", async () => {
     generateComponent();
     await userEvent.click(screen.getByTestId(TestId.SHOW_ACTION_LOGS));
-    expect(window.location.search).toBe("?activeView=action-logs");
+    expect(window.location.search).toEqual("?activeView=action-logs");
   });
 
   it("does not fail if a subordinate is not related to another application", async () => {

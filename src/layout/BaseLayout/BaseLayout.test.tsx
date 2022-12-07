@@ -12,7 +12,8 @@ import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import dataDump from "testing/complete-redux-store-dump";
 import cloneDeep from "clone-deep";
 
-import { TSFixMe, UIState } from "types";
+import { TSFixMe } from "types";
+import { UIState } from "store/ui/types";
 
 import BaseLayout from "./BaseLayout";
 

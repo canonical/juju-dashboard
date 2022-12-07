@@ -8,8 +8,8 @@ import { logOut } from "app/actions";
 import useAnalytics from "hooks/useAnalytics";
 import { extractOwnerName } from "app/utils/utils";
 
-import { userMenuActive } from "ui/actions";
-import { isUserMenuActive } from "ui/selectors";
+import { actions } from "store/ui";
+import { isUserMenuActive } from "store/ui/selectors";
 
 import "./_user-menu.scss";
 
@@ -33,7 +33,8 @@ const UserMenu = () => {
     }
   }, [isActive, sendAnalytics]);
 
-  const toggleUserMenuActive = () => dispatch(userMenuActive(!isActive));
+  const toggleUserMenuActive = () =>
+    dispatch(actions.userMenuActive(!isActive));
 
   return (
     <>
