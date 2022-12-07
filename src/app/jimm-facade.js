@@ -3,7 +3,7 @@ const { autoBind } = require("@canonical/jujulib/dist/api/utils.js");
 /**
   pinger describes a resource that can be pinged and stopped.
 */
-class JIMMV1 {
+class JIMMV2 {
   constructor(transport, info) {
     this._transport = transport;
     this._info = info;
@@ -40,6 +40,6 @@ class JIMMV1 {
   }
 }
 
-JIMMV1.NAME = "JIMM";
-JIMMV1.VERSION = 2;
-export default JIMMV1;
+JIMMV2.NAME = "JIMM";
+JIMMV2.VERSION = 2;
+export default JIMMV2;
