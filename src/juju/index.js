@@ -1,18 +1,18 @@
 import { connect, connectAndLogin } from "@canonical/jujulib";
 import Limiter from "async-limiter";
 
-import actions from "@canonical/jujulib/dist/api/facades/action-v7";
-import allWatcher from "@canonical/jujulib/dist/api/facades/all-watcher-v2";
-import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
-import applications from "@canonical/jujulib/dist/api/facades/application-v14";
-import client from "@canonical/jujulib/dist/api/facades/client-v5";
-import cloud from "@canonical/jujulib/dist/api/facades/cloud-v7";
-import controller from "@canonical/jujulib/dist/api/facades/controller-v11";
-import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v9";
-import pinger from "@canonical/jujulib/dist/api/facades/pinger-v1";
+import Action from "@canonical/jujulib/dist/api/facades/action";
+import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
+import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
+import Applications from "@canonical/jujulib/dist/api/facades/application";
+import Client from "@canonical/jujulib/dist/api/facades/client";
+import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
+import Controller from "@canonical/jujulib/dist/api/facades/controller";
+import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
+import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 
 import bakery from "app/bakery";
-import jimm from "app/jimm-facade";
+import JIMMV2 from "app/jimm-facade";
 import { isSet } from "app/utils/utils";
 
 import {
@@ -39,18 +39,18 @@ import {
 function generateConnectionOptions(usePinger = false, onClose) {
   // The options used when connecting to a Juju controller or model.
   const facades = [
-    actions,
-    allWatcher,
-    annotations,
-    applications,
-    client,
-    cloud,
-    controller,
-    jimm,
-    modelManager,
+    Action,
+    AllWatcher,
+    Annotations,
+    Applications,
+    Client,
+    Cloud,
+    Controller,
+    ModelManager,
+    JIMMV2,
   ];
   if (usePinger) {
-    facades.push(pinger);
+    facades.push(Pinger);
   }
   return {
     bakery,
@@ -212,7 +212,7 @@ export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
         // It will return an entry for every entity even if there are no
         // annotations so we have to inspect them and strip out the empty.
         const annotations = {};
-        response.results.forEach((item) => {
+        response.results?.forEach((item) => {
           if (Object.keys(item.annotations).length > 0) {
             const appName = item.entity.replace("application-", "");
             annotations[appName] = item.annotations;
@@ -481,22 +481,9 @@ export async function queryActionsList(queryArgs, modelUUID, appState) {
 export async function startModelWatcher(modelUUID, appState, dispatch) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const watcherHandle = await conn.facades.client.watchAll();
-  const callback = (data) => {
-    if (data?.deltas) {
-      dispatch(processAllWatcherDeltas(data?.deltas));
-    }
-    conn.facades.allWatcher._transport.write(
-      {
-        type: "AllWatcher",
-        request: "Next",
-        version: 1,
-        id: watcherHandle["watcher-id"],
-      },
-      callback
-    );
-  };
   const pingerIntervalId = startPingerLoop(conn);
-  callback();
+  const data = await conn.facades.allWatcher.next(watcherHandle["watcher-id"]);
+  if (data?.deltas) dispatch(processAllWatcherDeltas(data?.deltas));
   return { conn, watcherHandle, pingerIntervalId };
 }
 
@@ -505,12 +492,8 @@ export async function stopModelWatcher(
   watcherHandleId,
   pingerIntervalId
 ) {
-  conn.facades.allWatcher._transport.write({
-    type: "AllWatcher",
-    request: "Stop",
-    version: 1,
-    id: watcherHandleId,
-  });
+  // TODO: use allWatcher.stop(...)
+  await conn.facades.allWatcher.stop(watcherHandleId);
   stopPingerLoop(pingerIntervalId);
   conn.transport.close();
 }
