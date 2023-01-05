@@ -2,7 +2,7 @@ import { Factory } from "fishery";
 
 import { RootState } from "store/store";
 
-import { jujuStateFactory } from "./juju";
+import { jujuStateFactory } from "./juju/juju";
 import { uiStateFactory } from "./ui";
 
 export const rootStateFactory = Factory.define<RootState>(() => ({

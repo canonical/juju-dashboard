@@ -8,11 +8,18 @@ import userEvent from "@testing-library/user-event";
 import dataDump from "testing/complete-redux-store-dump";
 
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import {
+  operationResultsFactory,
+  actionResultsFactory,
+} from "testing/factories/juju/ActionV7";
 import { ModelData } from "juju/types";
 import { RootState } from "store/store";
 
 import Model, { Label } from "./Model";
 import { TestId } from "../../../components/InfoPanel/InfoPanel";
+
+const mockOperationResults = operationResultsFactory.build();
+const mockActionResults = actionResultsFactory.build();
 
 jest.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
@@ -28,14 +35,12 @@ jest.mock("juju", () => {
   return {
     queryOperationsList: () => {
       return new Promise((resolve) => {
-        const apiData = require("testing/list-operations-api-response.json");
-        resolve(apiData.response);
+        resolve(mockOperationResults);
       });
     },
     queryActionsList: () => {
       return new Promise((resolve) => {
-        const apiData = require("testing/list-actions-api-response.json");
-        resolve(apiData.response);
+        resolve(mockActionResults);
       });
     },
   };

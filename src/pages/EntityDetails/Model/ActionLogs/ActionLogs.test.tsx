@@ -1,28 +1,92 @@
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import dataDump from "testing/complete-redux-store-dump";
+import {
+  actionFactory,
+  actionMessageFactory,
+  actionResultFactory,
+  actionResultsFactory,
+  operationResultFactory,
+  operationResultsFactory,
+} from "testing/factories/juju/ActionV7";
 
 import ActionLogs, {
   Label,
 } from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
-import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+
 import { Output } from "./ActionLogs";
+
+const mockOperationResults = operationResultsFactory.build({
+  results: [
+    operationResultFactory.build({
+      actions: [
+        actionResultFactory.build({
+          action: actionFactory.build({
+            tag: "action-2",
+            receiver: "unit-easyrsa-0",
+            name: "list-disks",
+          }),
+        }),
+        actionResultFactory.build({
+          action: actionFactory.build({
+            tag: "action-3",
+            receiver: "unit-easyrsa-1",
+            name: "list-disks",
+          }),
+        }),
+      ],
+    }),
+  ],
+});
+
+const mockActionResults = actionResultsFactory.build({
+  results: [
+    actionResultFactory.build({
+      action: actionFactory.build({
+        tag: "action-2",
+        receiver: "unit-easyrsa-0",
+        name: "list-disks",
+      }),
+      log: [
+        actionMessageFactory.build({
+          message: "log message 1",
+        }),
+      ],
+    }),
+    actionResultFactory.build({
+      action: actionFactory.build({
+        tag: "action-3",
+        receiver: "unit-easyrsa-1",
+        name: "list-disks",
+      }),
+      log: [
+        actionMessageFactory.build({
+          message: "log message 1",
+        }),
+        actionMessageFactory.build({
+          message: "log message 2",
+        }),
+      ],
+      status: "failed",
+      message: "error message",
+    }),
+  ],
+});
 
 jest.mock("juju", () => {
   return {
     queryOperationsList: () => {
       return new Promise((resolve) => {
-        const apiData = require("testing/list-operations-api-response.json");
-        resolve(apiData.response);
+        resolve(mockOperationResults);
       });
     },
     queryActionsList: () => {
       return new Promise((resolve) => {
-        const apiData = require("testing/list-actions-api-response.json");
-        resolve(apiData.response);
+        resolve(mockActionResults);
       });
     },
   };
