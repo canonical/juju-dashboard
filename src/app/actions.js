@@ -16,6 +16,25 @@ import {
 
 import { actionsList } from "./action-types";
 
+export const updatePermissions = (
+  wsControllerURL,
+  modelUUID,
+  user,
+  permissionTo,
+  permissionFrom,
+  action
+) => ({
+  type: actionsList.updatePermissions,
+  payload: {
+    action,
+    modelUUID,
+    permissionFrom,
+    permissionTo,
+    user,
+    wsControllerURL,
+  },
+});
+
 // Thunks
 /**
   Flush bakery from redux store

@@ -1,5 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { useStore } from "react-redux";
+import { AnyAction, configureStore } from "@reduxjs/toolkit";
+import {
+  TypedUseSelectorHook,
+  useDispatch,
+  useSelector,
+  useStore,
+} from "react-redux";
 
 import generalReducer from "store/general";
 import checkAuth from "store/middleware/check-auth";
@@ -37,8 +42,20 @@ export type RootState = {
   ui: UIState;
 };
 
-export const useAppStore = useStore<RootState>;
-
 export type Store = typeof store;
+export type AppDispatch = typeof store.dispatch;
+export const useAppStore = useStore<RootState>;
+// This hook can be used in place of useDispatch to get correctly typed dispatches using thunks or
+// action objects as suggested by the docs:
+// https://redux-toolkit.js.org/usage/usage-with-typescript#correct-typings-for-the-dispatch-type
+export const useAppDispatch: () => AppDispatch = useDispatch;
+// This hook can be used in place of useDispatch to get correctly typed dispatches that return promises.
+export const usePromiseDispatch = () => {
+  const dispatch = useAppDispatch();
+  return <Result>(action: AnyAction) =>
+    (dispatch as (action: AnyAction) => Promise<Result>)(action);
+};
+// This hook annotates the selectors using the store state.
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export default store;

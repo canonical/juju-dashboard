@@ -71,8 +71,7 @@ export default ({ getState }) =>
         checkLoggedIn(state, wsControllerURL)
       ) {
         // Await the next to support async thunks
-        await next(action);
-        return;
+        return await next(action);
       } else {
         error(action.NAME, wsControllerURL);
       }
@@ -81,8 +80,7 @@ export default ({ getState }) =>
         actionAllowlist.includes(action.type) ||
         checkLoggedIn(state, wsControllerURL)
       ) {
-        next(action);
-        return;
+        return next(action);
       } else {
         error(action.type, wsControllerURL);
       }
