@@ -1,12 +1,11 @@
 import { useSelector, useStore } from "react-redux";
-import { getActiveUserTag, getWSControllerURL } from "app/selectors";
-import { TSFixMe } from "types";
+import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 
 export default function useActiveUser() {
   const store = useStore();
   const getState = store.getState;
-  return getActiveUserTag(
-    useSelector(getWSControllerURL),
-    getState() as TSFixMe
-  )?.replace("user-", "");
+  return getActiveUserTag(getState(), useSelector(getWSControllerURL))?.replace(
+    "user-",
+    ""
+  );
 }

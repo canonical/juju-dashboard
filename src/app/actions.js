@@ -1,4 +1,3 @@
-import { getPingerIntervalIds } from "app/selectors";
 import bakery from "app/bakery";
 
 import {
@@ -6,98 +5,16 @@ import {
   clearModelData,
   updateControllerList,
 } from "juju/actions";
-
+import { actions as generalActions } from "store/general";
 import {
   getConfig,
   getControllerConnections,
+  getPingerIntervalIds,
   getUserPass,
   getWSControllerURL,
-} from "./selectors";
+} from "store/general/selectors";
+
 import { actionsList } from "./action-types";
-
-// Action creators
-/**
-  @param {Object} config The configuration values for the application.
-*/
-export function storeConfig(config) {
-  return {
-    type: actionsList.storeConfig,
-    payload: config,
-  };
-}
-
-/**
-  @param {String} error The error message to store.
-*/
-export function storeLoginError(error) {
-  return {
-    type: actionsList.storeLoginError,
-    payload: error,
-  };
-}
-
-/**
-  @param {String} version The version of the application.
-*/
-export function storeVersion(version) {
-  return {
-    type: actionsList.storeVersion,
-    payload: version,
-  };
-}
-
-/**
-  @param {Object} credentials The users credentials in the format
-    {user: ..., password: ...}
-*/
-export function storeUserPass(wsControllerURL, credential) {
-  return {
-    type: actionsList.storeUserPass,
-    payload: {
-      wsControllerURL,
-      credential,
-    },
-  };
-}
-
-/**
-  @param {String} wsControllerURL The URL of the websocket connection.
-  @param {Object} info The controller connection info.
-*/
-export function updateControllerConnection(wsControllerURL, info) {
-  return {
-    type: actionsList.updateControllerConnection,
-    payload: {
-      wsControllerURL,
-      info,
-    },
-  };
-}
-
-/**
-  @param {String} wsControllerURL The URL of the websocket connection.
-  @param {Object} intervalId The intervalId for the request timeout.
-*/
-export function updatePingerIntervalId(wsControllerURL, intervalId) {
-  return {
-    type: actionsList.updatePingerIntervalId,
-    payload: {
-      wsControllerURL,
-      intervalId,
-    },
-  };
-}
-
-/**
-  @param {String} visitURL The url the user needs to connect to to complete the
-    bakery login.
-*/
-export function storeVisitURL(visitURL) {
-  return {
-    type: actionsList.storeVisitURL,
-    payload: visitURL,
-  };
-}
 
 // Thunks
 /**
@@ -146,7 +63,12 @@ export function connectAndStartPolling(reduxStore, bakery) {
       if (data) {
         additionalControllers = JSON.parse(data);
         additionalControllers.forEach((controller) => {
-          dispatch(storeUserPass(controller[0], controller[1]));
+          dispatch(
+            generalActions.storeUserPass({
+              wsControllerURL: controller[0],
+              credential: controller[1],
+            })
+          );
           dispatch(
             updateControllerList(controller[0], [
               { additionalController: true },
@@ -175,7 +97,7 @@ export async function connectAndListModels(
     const storeState = reduxStore.getState();
     const { identityProviderAvailable, isJuju } = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
-    const credentials = getUserPass(wsControllerURL, storeState);
+    const credentials = getUserPass(storeState, wsControllerURL);
     const controllerConnections = getControllerConnections(storeState) || {};
     const defaultControllerData = [
       wsControllerURL,

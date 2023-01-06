@@ -8,7 +8,8 @@ import App from "components/App/App";
 import bakery from "app/bakery";
 import reduxStore from "store";
 
-import { connectAndStartPolling, storeConfig, storeVersion } from "app/actions";
+import { connectAndStartPolling } from "app/actions";
+import { actions as generalActions } from "store/general";
 
 import packageJSON from "../package.json";
 
@@ -78,8 +79,8 @@ function bootstrap() {
     Sentry.setTag("isJuju", config.isJuju);
   }
 
-  reduxStore.dispatch(storeConfig(config));
-  reduxStore.dispatch(storeVersion(appVersion));
+  reduxStore.dispatch(generalActions.storeConfig(config));
+  reduxStore.dispatch(generalActions.storeVersion(appVersion));
 
   if (config.identityProviderAvailable) {
     // If an identity provider is available then try and connect automatically

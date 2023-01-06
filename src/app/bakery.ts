@@ -1,11 +1,11 @@
 import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 
-import { storeVisitURL } from "app/actions";
+import { actions as generalActions } from "store/general";
 import reduxStore from "store/store";
 
 const bakery = new Bakery({
   visitPage: (resp) => {
-    reduxStore.dispatch(storeVisitURL(resp.Info.VisitURL));
+    reduxStore.dispatch(generalActions.storeVisitURL(resp.Info.VisitURL));
   },
   storage: new BakeryStorage(localStorage, {}),
 });

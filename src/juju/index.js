@@ -21,7 +21,7 @@ import {
   getUserPass,
   getWSControllerURL,
   isLoggedIn,
-} from "app/selectors";
+} from "store/general/selectors";
 import {
   addControllerCloudRegion,
   processAllWatcherDeltas,
@@ -183,16 +183,16 @@ export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   let status = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
-  if (isLoggedIn(wsControllerURL, getState())) {
+  if (isLoggedIn(getState(), wsControllerURL)) {
     try {
-      const controllerCredentials = getUserPass(wsControllerURL, getState());
+      const controllerCredentials = getUserPass(getState(), wsControllerURL);
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,
         generateConnectionOptions(false),
         useIdentityProvider
       );
-      if (isLoggedIn(wsControllerURL, getState())) {
+      if (isLoggedIn(getState(), wsControllerURL)) {
         status = await conn.facades.client.fullStatus();
         if (status.error) {
           // XXX If there is an error fetching the full status it's likely that
@@ -204,7 +204,7 @@ export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
           return;
         }
       }
-      if (isLoggedIn(wsControllerURL, getState())) {
+      if (isLoggedIn(getState(), wsControllerURL)) {
         const entities = Object.keys(status.applications).map((name) => ({
           tag: `application-${name}`,
         }));
@@ -283,7 +283,7 @@ export async function fetchAllModelStatuses(
   const queue = new Limiter({ concurrency: 1 });
   modelUUIDList.forEach((modelUUID) => {
     queue.push(async (done) => {
-      if (isLoggedIn(wsControllerURL, getState())) {
+      if (isLoggedIn(getState(), wsControllerURL)) {
         await fetchAndStoreModelStatus(
           modelUUID,
           wsControllerURL,
@@ -291,7 +291,7 @@ export async function fetchAllModelStatuses(
           getState
         );
       }
-      if (isLoggedIn(wsControllerURL, getState())) {
+      if (isLoggedIn(getState(), wsControllerURL)) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         dispatch(updateModelInfo(modelInfo, wsControllerURL));
         if (modelInfo.results[0].result.isController) {
@@ -337,7 +337,7 @@ export async function fetchControllerList(
       {
         path: controllerConfig.config["controller-name"],
         uuid: controllerConfig.config["controller-uuid"],
-        version: getControllerConnection(wsControllerURL, reduxStore.getState())
+        version: getControllerConnection(reduxStore.getState(), wsControllerURL)
           ?.serverVersion,
         additionalController,
       },
@@ -375,7 +375,7 @@ export function disableControllerUUIDMasking(conn) {
 async function connectAndLoginToModel(modelUUID, appState) {
   const baseWSControllerURL = getWSControllerURL(appState);
   const { identityProviderAvailable } = getConfig(appState);
-  const credentials = getUserPass(baseWSControllerURL, appState);
+  const credentials = getUserPass(appState, baseWSControllerURL);
   const modelURL = baseWSControllerURL.replace(
     "/api",
     `/model/${modelUUID}/api`
@@ -520,7 +520,7 @@ export async function setModelSharingPermissions(
   action,
   dispatch
 ) {
-  const conn = await getControllerConnection(controllerURL, getState());
+  const conn = await getControllerConnection(getState(), controllerURL);
 
   const modifyAccess = async (access, action) => {
     return await conn.facades.modelManager.modifyModelAccess({

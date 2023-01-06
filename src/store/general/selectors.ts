@@ -1,0 +1,105 @@
+import { createSelector } from "@reduxjs/toolkit";
+
+import { RootState } from "store/store";
+
+const slice = (state: RootState) => state.general;
+
+/**
+  Fetches the application config from state.
+  @param state The application state.
+  @returns The config object or null if none found.
+*/
+export const getConfig = createSelector(
+  [slice],
+  (sliceState) => sliceState?.config
+);
+
+/**
+  Fetches the username and password from state.
+  @param state The application state.
+  @param wsControllerURL The fully qualified wsController URL to
+    retrieve the credentials from.
+  @returns The username and password or null if none found.
+*/
+export const getUserPass = createSelector(
+  [slice, (_state, wsControllerURL) => wsControllerURL],
+  (sliceState, wsControllerURL) => sliceState?.credentials?.[wsControllerURL]
+);
+
+/**
+  Fetches a login error from state
+  @param state The application state.
+  @returns The error message if any.
+*/
+export const getLoginError = createSelector(
+  [slice],
+  (sliceState) => sliceState?.loginError
+);
+
+/**
+  Fetches the pinger intervalId from state.
+  @param state The application state.
+  @returns The pinger intervalId or null if none found.
+*/
+export const getPingerIntervalIds = createSelector(
+  [slice],
+  (sliceState) => sliceState?.pingerIntervalIds
+);
+
+/**
+  Fetches the application version.
+  @param state The application state.
+  @returns The application version or undefined
+*/
+export const getAppVersion = createSelector(
+  [slice],
+  (sliceState) => sliceState?.appVersion
+);
+
+export const getControllerConnections = createSelector(
+  [slice],
+  (sliceState) => sliceState?.controllerConnections
+);
+
+export const getControllerConnection = createSelector(
+  [getControllerConnections, (_state, wsControllerURL) => wsControllerURL],
+  (controllerConnections, wsControllerURL) =>
+    controllerConnections?.[wsControllerURL]
+);
+
+export const isConnecting = createSelector(
+  [slice],
+  (sliceState) => !!sliceState?.visitURL
+);
+/**
+    Returns the users current controller logged in identity
+    @param wsControllerURL The controller url to make the query on.
+    @param state The application state.
+    @returns The users userTag.
+  */
+export const getActiveUserTag = createSelector(
+  [
+    slice,
+    (state, wsControllerURL) => getControllerConnection(state, wsControllerURL),
+  ],
+  (_sliceState, controllerConnection) => controllerConnection?.user.identity
+);
+
+/**
+  Checks state to see if the user is logged in.
+  @param state The application state.
+  @returns If the user is logged in.
+*/
+export const isLoggedIn = createSelector(
+  [slice, (state, wsControllerURL) => getActiveUserTag(state, wsControllerURL)],
+  (_sliceState, userTag) => !!userTag
+);
+
+/**
+  Returns the fully qualified websocket controller API URL.
+  @returns The memoized selector to return the controller websocket api url.
+*/
+export const getWSControllerURL = createSelector(
+  getConfig,
+  (config) => config?.controllerAPIEndpoint
+);

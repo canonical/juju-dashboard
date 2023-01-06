@@ -4,29 +4,30 @@
 */
 
 import { actionsList } from "app/action-types";
-import { isLoggedIn } from "app/selectors";
-import { actions } from "store/ui";
+import { isLoggedIn } from "store/general/selectors";
+import { actions as uiActions } from "store/ui";
+import { actions as generalActions } from "store/general";
 
 const actionAllowlist = [
   "POPULATE_MISSING_ALLWATCHER_DATA",
   "PROCESS_ALL_WATCHER_DELTAS",
-  "STORE_LOGIN_ERROR",
-  "STORE_CONFIG",
-  "STORE_USER_PASS",
-  "STORE_VERSION",
-  "UPDATE_CONTROLLER_CONNECTION",
   "UPDATE_CONTROLLER_LIST",
   "UPDATE_JUJU_API_INSTANCE",
-  "UPDATE_PINGER_INTERVAL_ID",
   "LOG_OUT",
   "CLEAR_CONTROLLER_DATA",
   "CLEAR_MODEL_DATA",
-  "STORE_VISIT_URL",
   "TOGGLE_USER_MENU",
   "SIDENAV_COLLAPSED",
   actionsList.connectAndPollControllers,
-  actions.userMenuActive.type,
-  actions.sideNavCollapsed.type,
+  generalActions.storeConfig.type,
+  generalActions.storeLoginError.type,
+  generalActions.storeUserPass.type,
+  generalActions.storeVersion.type,
+  generalActions.storeVisitURL.type,
+  generalActions.updateControllerConnection.type,
+  generalActions.updatePingerIntervalId.type,
+  uiActions.userMenuActive.type,
+  uiActions.sideNavCollapsed.type,
 ];
 
 const thunkAllowlist = ["connectAndStartPolling", "logOut"];
@@ -44,7 +45,7 @@ const checkLoggedIn = (state, wsControllerURL) => {
   if (!wsControllerURL) {
     console.error("unable to determine logged in status");
   }
-  return isLoggedIn(wsControllerURL, state);
+  return isLoggedIn(state, wsControllerURL);
 };
 
 /**

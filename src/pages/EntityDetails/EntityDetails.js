@@ -16,7 +16,8 @@ import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
 
-import { getControllerDataByUUID, getUserPass } from "app/selectors";
+import { getControllerDataByUUID } from "app/selectors";
+import { getUserPass } from "store/general/selectors";
 import {
   getModelApplications,
   getModelInfo,
@@ -77,7 +78,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
   let credentials = null;
   let controllerWSHost = "";
   if (primaryControllerData) {
-    credentials = getUserPass(primaryControllerData[0], storeState);
+    credentials = getUserPass(storeState, primaryControllerData[0]);
     controllerWSHost = primaryControllerData[0]
       .replace("wss://", "")
       .replace("/api", "");
