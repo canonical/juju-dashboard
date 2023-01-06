@@ -10,7 +10,7 @@ const defaultState = {
   visitURL: null,
 };
 
-describe("selectors", () => {
+describe("reducers", () => {
   it("default", () => {
     expect(reducer(undefined, { type: "", payload: true })).toStrictEqual(
       defaultState

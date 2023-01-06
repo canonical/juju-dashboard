@@ -1,6 +1,6 @@
 import { actions } from "./slice";
 
-describe("selectors", () => {
+describe("actions", () => {
   it("updateControllerConnection", () => {
     expect(
       actions.updateControllerConnection({
