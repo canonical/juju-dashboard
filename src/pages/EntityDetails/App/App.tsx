@@ -47,6 +47,18 @@ import type { MachineData, UnitData } from "juju/types";
 
 import { generateMachineCounts, generateUnitCounts } from "../counts";
 
+export enum TestId {
+  MACHINES_TABLE = "machines-table",
+  RUN_ACTION_BUTTON = "run-action-button",
+  SELECT_ALL = "select-all",
+  SHOW_ACTION_LOGS = "show-action-logs",
+  UNITS_TABLE = "units-table",
+}
+
+export enum Label {
+  NO_UNITS = "There are no units in this application",
+}
+
 type FormData = {
   selectAll: boolean;
   selectedUnits: string[];
@@ -109,6 +121,7 @@ export default function App(): JSX.Element {
               aria-labelledby="select-all-units"
               className="p-checkbox__input"
               name="selectAll"
+              data-testid={TestId.SELECT_ALL}
             />
             <span className="p-checkbox__label" id="select-all-units"></span>
           </label>
@@ -285,7 +298,7 @@ export default function App(): JSX.Element {
                   hasIcon={true}
                   onClick={showActions}
                   disabled={!enableActionButtonRow}
-                  data-test="run-action-button"
+                  data-testid={TestId.RUN_ACTION_BUTTON}
                 >
                   <img
                     className="entity-details__action-button-row-icon"
@@ -300,7 +313,7 @@ export default function App(): JSX.Element {
                   className="entity-details__action-button"
                   hasIcon={true}
                   onClick={navigateActionLogs}
-                  data-test="show-action-logs"
+                  data-testid={TestId.SHOW_ACTION_LOGS}
                 >
                   <img
                     className="entity-details__action-button-row-icon"
@@ -323,8 +336,8 @@ export default function App(): JSX.Element {
                     rows={unitPanelRows}
                     className="entity-details__units p-main-table panel__table has-checkbox"
                     sortable
-                    emptyStateMsg={"There are no units in this application"}
-                    data-test="units-table"
+                    emptyStateMsg={Label.NO_UNITS}
+                    data-testid={TestId.UNITS_TABLE}
                   />
                 </FormikFormData>
               </Formik>
@@ -339,7 +352,7 @@ export default function App(): JSX.Element {
                 className="entity-details__machines p-main-table panel__table"
                 sortable
                 emptyStateMsg={"There are no machines in this model"}
-                data-test="machines-table"
+                data-testid={TestId.MACHINES_TABLE}
               />
             </>
           )}

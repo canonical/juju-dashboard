@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Controllers table counts models, machines, apps, and units 1`] = `
+<tr
+  role="row"
+>
+  <td
+    aria-hidden="false"
+    class=""
+    role="gridcell"
+  >
+    JAAS
+  </td>
+  <td
+    aria-hidden="false"
+    class=""
+    role="gridcell"
+  >
+    unknown/unknown
+  </td>
+  <td
+    aria-hidden="false"
+    class="u-align--right"
+    role="gridcell"
+  >
+    16
+  </td>
+  <td
+    aria-hidden="false"
+    class="u-align--right"
+    role="gridcell"
+  >
+    50
+  </td>
+  <td
+    aria-hidden="false"
+    class="u-align--right"
+    role="gridcell"
+  >
+    66
+  </td>
+  <td
+    aria-hidden="false"
+    class="u-align--right"
+    role="gridcell"
+  >
+    51
+  </td>
+  <td
+    aria-hidden="false"
+    class="u-align--right"
+    role="gridcell"
+  >
+    2.8.3
+  </td>
+  <td
+    aria-hidden="false"
+    class="u-align--right u-capitalise"
+    role="gridcell"
+  >
+    true
+  </td>
+</tr>
+`;

@@ -1,4 +1,4 @@
-import { mount } from "enzyme";
+import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -13,9 +13,8 @@ const mockStore = configureStore([]);
 describe("Panels", () => {
   it("should call close function when escape key is pressed", () => {
     const outerNode = document.createElement("div");
-    document.body.appendChild(outerNode);
     const store = mockStore(dataDump);
-    mount(
+    render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/foo"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -24,7 +23,7 @@ describe("Panels", () => {
         </MemoryRouter>
       </Provider>,
       {
-        attachTo: outerNode,
+        container: document.body.appendChild(outerNode),
       }
     );
     outerNode.dispatchEvent(

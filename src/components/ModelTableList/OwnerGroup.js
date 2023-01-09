@@ -19,6 +19,10 @@ import {
   getStatusValue,
 } from "./shared";
 
+export const TestId = {
+  OWNER_GROUP: "owner-group",
+};
+
 /**
   Returns the model info and statuses in the proper format for the table data.
   @param {Object} groupedModels The models grouped by state
@@ -88,10 +92,10 @@ export default function OwnerGroup({ filters }) {
           2
         );
         ownerModels.rows.push({
-          "data-test-model-uuid": model?.uuid,
+          "data-testid": `model-uuid-${model?.uuid}`,
           columns: [
             {
-              "data-test-column": "name",
+              "data-testid": "column-name",
               content: generateModelDetailsLink(
                 model.info.name,
                 model.info && model.info["owner-tag"],
@@ -99,31 +103,31 @@ export default function OwnerGroup({ filters }) {
               ),
             },
             {
-              "data-test-column": "summary",
+              "data-testid": "column-summary",
               content: getStatusValue(model, "summary"),
               className: "u-overflow--visible",
             },
             {
-              "data-test-column": "status",
+              "data-testid": "column-status",
               content: generateStatusElement(highestStatus),
               className: "u-capitalise",
             },
             {
-              "data-test-column": "cloud",
+              "data-testid": "column-cloud",
               content: cloud,
               className: "u-truncate",
               title: generateCloudAndRegion(model),
             },
             {
-              "data-test-column": "credential",
+              "data-testid": "column-credential",
               content: credential,
             },
             {
-              "data-test-column": "controller",
+              "data-testid": "column-controller",
               content: controller,
             },
             {
-              "data-test-column": "updated",
+              "data-testid": "column-updated",
               content: (
                 <>
                   {canAdministerModelAccess(activeUser, model?.info?.users) &&
@@ -169,5 +173,12 @@ export default function OwnerGroup({ filters }) {
       />
     );
   }
-  return <div className="owners-group u-overflow--auto">{ownerTables}</div>;
+  return (
+    <div
+      className="owners-group u-overflow--auto"
+      data-testid={TestId.OWNER_GROUP}
+    >
+      {ownerTables}
+    </div>
+  );
 }

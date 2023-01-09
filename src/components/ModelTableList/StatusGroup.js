@@ -20,6 +20,10 @@ import {
   generateAccessButton,
 } from "./shared";
 
+export const TestId = {
+  STATUS_GROUP: "status-group",
+};
+
 /**
   Generates the table headers for the supplied table label.
   @param {String} label The title of the table.
@@ -118,38 +122,38 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs, activeUser) {
       // e.g. 2021-01-01 becomes 21-01-01
       const lastUpdated = getStatusValue(model.info, "status.since")?.slice(2);
       modelData[`${groupLabel}Rows`].push({
-        "data-test-model-uuid": model?.uuid,
+        "data-testid": `model-uuid-${model?.uuid}`,
         columns: [
           {
-            "data-test-column": "name",
+            "data-testid": "column-name",
             content: generateModelNameCell(model, groupLabel),
           },
           {
-            "data-test-column": "summary",
+            "data-testid": "column-summary",
             content: getStatusValue(model, "summary"),
             className: "u-overflow--visible",
           },
           {
-            "data-test-column": "owner",
+            "data-testid": "column-owner",
             content: <>{owner}</>,
           },
           {
-            "data-test-column": "cloud",
+            "data-testid": "column-cloud",
             content: cloud,
             className: "u-truncate",
             title: generateCloudAndRegion(model),
           },
           {
-            "data-test-column": "credential",
+            "data-testid": "column-credential",
             content: credential,
           },
           {
-            "data-test-column": "controller",
+            "data-testid": "column-controller",
             content: controller,
           },
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
-            "data-test-column": "updated",
+            "data-testid": "column-updated",
             content: (
               <>
                 {canAdministerModelAccess(activeUser, model?.info?.users) &&
@@ -208,7 +212,10 @@ export default function StatusGroup({ filters }) {
   const emptyStateMsg = "There are no models with this status";
 
   return (
-    <div className="status-group u-overflow--auto">
+    <div
+      className="status-group u-overflow--auto"
+      data-testid={TestId.STATUS_GROUP}
+    >
       {blockedRows.length ? (
         <MainTable
           headers={generateStatusTableHeaders("Blocked", blockedRows.length)}

@@ -1,10 +1,5 @@
-import {
-  getBakery,
-  getJujuAPIInstances,
-  getPingerIntervalIds,
-} from "app/selectors";
-
-import connectAndListModels from "app/model-poller";
+import { getPingerIntervalIds } from "app/selectors";
+import bakery from "app/bakery";
 
 import {
   clearControllerData,
@@ -12,33 +7,15 @@ import {
   updateControllerList,
 } from "juju/actions";
 
-// Action labels
-export const actionsList = {
-  logOut: "LOG_OUT",
-  storeBakery: "STORE_BAKERY",
-  storeConfig: "STORE_CONFIG",
-  storeLoginError: "STORE_LOGIN_ERROR",
-  storeUserPass: "STORE_USER_PASS",
-  storeVersion: "STORE_VERSION",
-  storeVisitURL: "STORE_VISIT_URL",
-  updateControllerConnection: "UPDATE_CONTROLLER_CONNECTION",
-  updateJujuAPIInstance: "UPDATE_JUJU_API_INSTANCE",
-  updatePingerIntervalId: "UPDATE_PINGER_INTERVAL_ID",
-};
+import {
+  getConfig,
+  getControllerConnections,
+  getUserPass,
+  getWSControllerURL,
+} from "./selectors";
+import { actionsList } from "./action-types";
 
 // Action creators
-/**
-  @param {Bakery} bakery The instance of the bakery that's to be used for the
-  application to interact as the active user. This bakery contains private data
-  and should not be dumped wholesale from the redux store.
-*/
-export function storeBakery(bakery) {
-  return {
-    type: actionsList.storeBakery,
-    payload: bakery,
-  };
-}
-
 /**
   @param {Object} config The configuration values for the application.
 */
@@ -85,28 +62,14 @@ export function storeUserPass(wsControllerURL, credential) {
 
 /**
   @param {String} wsControllerURL The URL of the websocket connection.
-  @param {Object} conn The active controller connection.
+  @param {Object} info The controller connection info.
 */
-export function updateControllerConnection(wsControllerURL, conn) {
+export function updateControllerConnection(wsControllerURL, info) {
   return {
     type: actionsList.updateControllerConnection,
     payload: {
       wsControllerURL,
-      conn,
-    },
-  };
-}
-
-/**
-  @param {String} wsControllerURL The URL of the websocket connection.
-  @param {Object} juju The active Juju api instance.
-*/
-export function updateJujuAPIInstance(wsControllerURL, juju) {
-  return {
-    type: actionsList.updateJujuAPIInstance,
-    payload: {
-      wsControllerURL,
-      juju,
+      info,
     },
   };
 }
@@ -144,14 +107,11 @@ export function logOut(store) {
   async function logOut(dispatch) {
     const state = store.getState();
     const identityProviderAvailable =
-      state?.root?.config?.identityProviderAvailable;
-    const bakery = getBakery(state);
-    const jujus = getJujuAPIInstances(state);
+      state?.general?.config?.identityProviderAvailable;
     const pingerIntervalIds = getPingerIntervalIds(state);
     bakery.storage._store.removeItem("identity");
     bakery.storage._store.removeItem("https://api.jujucharms.com/identity");
     localStorage.removeItem("additionalControllers");
-    Object.entries(jujus).forEach((juju) => juju[1].logout());
     Object.entries(pingerIntervalIds).forEach((pingerIntervalId) =>
       clearInterval(pingerIntervalId[1])
     );
@@ -205,3 +165,48 @@ export function connectAndStartPolling(reduxStore, bakery) {
   connectAndStartPolling.NAME = "connectAndStartPolling";
   return connectAndStartPolling;
 }
+
+export async function connectAndListModels(
+  reduxStore,
+  bakery,
+  additionalControllers
+) {
+  try {
+    const storeState = reduxStore.getState();
+    const { identityProviderAvailable, isJuju } = getConfig(storeState);
+    const wsControllerURL = getWSControllerURL(storeState);
+    const credentials = getUserPass(wsControllerURL, storeState);
+    const controllerConnections = getControllerConnections(storeState) || {};
+    const defaultControllerData = [
+      wsControllerURL,
+      credentials,
+      identityProviderAvailable,
+    ];
+    let controllerList = [defaultControllerData];
+    if (additionalControllers) {
+      controllerList = controllerList.concat(additionalControllers);
+    }
+    const connectedControllers = Object.keys(controllerConnections);
+    controllerList = controllerList.filter((controllerData) => {
+      // remove controllers we're already connected to.
+      return !connectedControllers.includes(controllerData[0]);
+    });
+    reduxStore.dispatch(connectAndPollControllers(controllerList, isJuju));
+  } catch (error) {
+    // XXX Surface error to UI.
+    // XXX Send to sentry if it's an error that's not connection related
+    // a common error returned by this is:
+    // Something went wrong:  cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
+    console.error("Something went wrong: ", error);
+  }
+}
+
+export const connectAndPollControllers = (controllers, isJuju) => {
+  return {
+    type: actionsList.connectAndPollControllers,
+    payload: {
+      controllers,
+      isJuju,
+    },
+  };
+};

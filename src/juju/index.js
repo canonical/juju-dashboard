@@ -1,21 +1,21 @@
 import { connect, connectAndLogin } from "@canonical/jujulib";
 import Limiter from "async-limiter";
 
-import actions from "@canonical/jujulib/dist/api/facades/action-v7";
-import allWatcher from "@canonical/jujulib/dist/api/facades/all-watcher-v2";
-import annotations from "@canonical/jujulib/dist/api/facades/annotations-v2";
-import applications from "@canonical/jujulib/dist/api/facades/application-v14";
-import client from "@canonical/jujulib/dist/api/facades/client-v5";
-import cloud from "@canonical/jujulib/dist/api/facades/cloud-v7";
-import controller from "@canonical/jujulib/dist/api/facades/controller-v11";
-import modelManager from "@canonical/jujulib/dist/api/facades/model-manager-v9";
-import pinger from "@canonical/jujulib/dist/api/facades/pinger-v1";
+import Action from "@canonical/jujulib/dist/api/facades/action";
+import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
+import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
+import Applications from "@canonical/jujulib/dist/api/facades/application";
+import Client from "@canonical/jujulib/dist/api/facades/client";
+import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
+import Controller from "@canonical/jujulib/dist/api/facades/controller";
+import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
+import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 
-import jimm from "app/jimm-facade";
+import bakery from "app/bakery";
+import JIMMV2 from "app/jimm-facade";
 import { isSet } from "app/utils/utils";
 
 import {
-  getBakery,
   getConfig,
   getControllerConnection,
   getUserPass,
@@ -34,24 +34,23 @@ import {
   Return a common connection option config.
   @param {Boolean} usePinger If the connection will be long lived then use the
     pinger. Defaults to false.
-  @param {Object} bakery A bakery instance.
   @returns {Object} The configuration options.
 */
-function generateConnectionOptions(usePinger = false, bakery, onClose) {
+function generateConnectionOptions(usePinger = false, onClose) {
   // The options used when connecting to a Juju controller or model.
   const facades = [
-    actions,
-    allWatcher,
-    annotations,
-    applications,
-    client,
-    cloud,
-    controller,
-    jimm,
-    modelManager,
+    Action,
+    AllWatcher,
+    Annotations,
+    Applications,
+    Client,
+    Cloud,
+    Controller,
+    ModelManager,
+    JIMMV2,
   ];
   if (usePinger) {
-    facades.push(pinger);
+    facades.push(Pinger);
   }
   return {
     bakery,
@@ -97,23 +96,19 @@ function stopPingerLoop(intervalId) {
   @param {String} wsControllerURL The fully qualified URL of the controller api.
   @param {Object|null} credentials The users credentials in the format
     {user: ..., password: ...}
-  @param {Object} bakery A bakery instance.
   @param {Boolean} identityProviderAvailable Whether an identity provider is available.
-  @returns {Object}
+  @returns
     conn The controller connection instance.
     juju The juju api instance.
 */
 export async function loginWithBakery(
   wsControllerURL,
   credentials,
-  bakery,
   identityProviderAvailable
 ) {
   const juju = await connect(
     wsControllerURL,
-    generateConnectionOptions(true, bakery, (e) =>
-      console.log("controller closed", e)
-    )
+    generateConnectionOptions(true, (e) => console.log("controller closed", e))
   );
   const loginParams = determineLoginParams(
     credentials,
@@ -177,7 +172,6 @@ async function connectAndLoginWithTimeout(
 */
 export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   const appState = getState();
-  const bakery = getBakery(appState);
   const baseWSControllerURL = getWSControllerURL(appState);
   const { identityProviderAvailable } = getConfig(appState);
   let useIdentityProvider = false;
@@ -195,7 +189,7 @@ export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,
-        generateConnectionOptions(false, bakery),
+        generateConnectionOptions(false),
         useIdentityProvider
       );
       if (isLoggedIn(wsControllerURL, getState())) {
@@ -218,7 +212,7 @@ export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
         // It will return an entry for every entity even if there are no
         // annotations so we have to inspect them and strip out the empty.
         const annotations = {};
-        response.results.forEach((item) => {
+        response.results?.forEach((item) => {
           if (Object.keys(item.annotations).length > 0) {
             const appName = item.entity.replace("application-", "");
             annotations[appName] = item.annotations;
@@ -251,9 +245,7 @@ export async function fetchAndStoreModelStatus(
   if (status === null) {
     return;
   }
-  dispatch(updateModelStatus(modelUUID, status), {
-    wsControllerURL,
-  });
+  dispatch(updateModelStatus(modelUUID, status, wsControllerURL));
 }
 
 /**
@@ -301,13 +293,11 @@ export async function fetchAllModelStatuses(
       }
       if (isLoggedIn(wsControllerURL, getState())) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
-        dispatch(updateModelInfo(modelInfo), { wsControllerURL });
+        dispatch(updateModelInfo(modelInfo, wsControllerURL));
         if (modelInfo.results[0].result.isController) {
           // If this is a controller model then update the
           // controller data with this model data.
-          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo), {
-            wsControllerURL,
-          });
+          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo));
         }
       }
       done();
@@ -348,14 +338,12 @@ export async function fetchControllerList(
         path: controllerConfig.config["controller-name"],
         uuid: controllerConfig.config["controller-uuid"],
         version: getControllerConnection(wsControllerURL, reduxStore.getState())
-          ?.info?.serverVersion,
+          ?.serverVersion,
         additionalController,
       },
     ];
   }
-  reduxStore.dispatch(updateControllerList(wsControllerURL, controllers), {
-    wsControllerURL,
-  });
+  reduxStore.dispatch(updateControllerList(wsControllerURL, controllers));
 }
 
 /**
@@ -385,7 +373,6 @@ export function disableControllerUUIDMasking(conn) {
   @returns {Object} conn The connection.
 */
 async function connectAndLoginToModel(modelUUID, appState) {
-  const bakery = getBakery(appState);
   const baseWSControllerURL = getWSControllerURL(appState);
   const { identityProviderAvailable } = getConfig(appState);
   const credentials = getUserPass(baseWSControllerURL, appState);
@@ -396,7 +383,7 @@ async function connectAndLoginToModel(modelUUID, appState) {
   const { conn } = await connectAndLoginWithTimeout(
     modelURL,
     credentials,
-    generateConnectionOptions(true, bakery),
+    generateConnectionOptions(true),
     identityProviderAvailable
   );
   return conn;
@@ -437,9 +424,13 @@ export async function setApplicationConfig(
       setValues[key] = `${config[key].newValue}`;
     }
   });
-  const resp = await conn.facades.application.set({
-    application: appName,
-    options: setValues,
+  const resp = await conn.facades.application.setConfigs({
+    Args: [
+      {
+        application: appName,
+        config: setValues,
+      },
+    ],
   });
   return resp;
 }
@@ -490,22 +481,9 @@ export async function queryActionsList(queryArgs, modelUUID, appState) {
 export async function startModelWatcher(modelUUID, appState, dispatch) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const watcherHandle = await conn.facades.client.watchAll();
-  const callback = (data) => {
-    if (data?.deltas) {
-      dispatch(processAllWatcherDeltas(data?.deltas));
-    }
-    conn.facades.allWatcher._transport.write(
-      {
-        type: "AllWatcher",
-        request: "Next",
-        version: 1,
-        id: watcherHandle["watcher-id"],
-      },
-      callback
-    );
-  };
   const pingerIntervalId = startPingerLoop(conn);
-  callback();
+  const data = await conn.facades.allWatcher.next(watcherHandle["watcher-id"]);
+  if (data?.deltas) dispatch(processAllWatcherDeltas(data?.deltas));
   return { conn, watcherHandle, pingerIntervalId };
 }
 
@@ -514,12 +492,8 @@ export async function stopModelWatcher(
   watcherHandleId,
   pingerIntervalId
 ) {
-  conn.facades.allWatcher._transport.write({
-    type: "AllWatcher",
-    request: "Stop",
-    version: 1,
-    id: watcherHandleId,
-  });
+  // TODO: use allWatcher.stop(...)
+  await conn.facades.allWatcher.stop(watcherHandleId);
   stopPingerLoop(pingerIntervalId);
   conn.transport.close();
 }
@@ -573,8 +547,7 @@ export async function setModelSharingPermissions(
     }
 
     const modelInfo = await fetchModelInfo(conn, modelUUID);
-    modelInfo &&
-      dispatch(updateModelInfo(modelInfo), { wsControllerURL: controllerURL });
+    modelInfo && dispatch(updateModelInfo(modelInfo, controllerURL));
   } else {
     response = Promise.resolve({
       results: [{ error: true }],

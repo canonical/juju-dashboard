@@ -4,7 +4,14 @@
 @import "../../scss/breakpoints";
 
 @mixin collapsed {
-  &[data-collapsed="true"][data-sidenav-initially-collapsed="true"]:not(:hover, :focus-within, .is-pinned) {
+  // Disable stylelint rules that are conflicting with prettier.
+  /* stylelint-disable indentation */
+  /* stylelint-disable selector-pseudo-class-parentheses-space-inside */
+  &[data-collapsed="true"][data-sidenav-initially-collapsed="true"]:not(
+      :hover,
+      :focus-within,
+      .is-pinned
+    ) {
     @content;
   }
 }

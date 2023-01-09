@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSelector, useStore } from "react-redux";
+import { useStore } from "react-redux";
 
-import { getActiveUserTag, getBakery } from "app/selectors";
+import bakery from "app/bakery";
+import { getActiveUserTag } from "app/selectors";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
@@ -23,7 +24,6 @@ const WebCLI = ({
   const wsMessageStore = useRef();
   let [output, setOutput] = useState("");
   const sendAnalytics = useAnalytics();
-  const bakery = useSelector(getBakery);
   const storeState = useStore().getState();
 
   const clearMessageBuffer = () => {

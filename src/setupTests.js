@@ -1,6 +1,8 @@
 import { configure } from "enzyme";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 import "@testing-library/jest-dom";
+import util from "util";
+import crypto from "crypto";
 
 configure({ adapter: new Adapter() });
 
@@ -19,3 +21,8 @@ if (!window.HTMLDivElement.prototype.animate) {
     "you may now remove the mock"
   );
 }
+
+// Provide node modules that are required by bakeryjs.
+global.TextDecoder = util.TextDecoder;
+global.TextEncoder = util.TextEncoder;
+global.crypto = crypto;

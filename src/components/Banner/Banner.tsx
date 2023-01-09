@@ -3,6 +3,10 @@ import classnames from "classnames";
 
 import "./_banner.scss";
 
+export enum Label {
+  CLOSE = "Close banner",
+}
+
 type Props = {
   isActive: boolean;
   children: any;
@@ -13,6 +17,7 @@ export default function Banner({
   isActive,
   children,
   variant,
+  ...props
 }: Props): JSX.Element {
   const [bannerClosed, setBannerClosed] = useState(false);
 
@@ -26,6 +31,7 @@ export default function Banner({
       className="banner"
       data-active={isActive && !bannerClosed}
       data-variant={variant}
+      {...props}
     >
       {children}
       <button
@@ -39,7 +45,7 @@ export default function Banner({
             "is-light": variant === "positive",
           })}
         >
-          Close banner
+          {Label.CLOSE}
         </i>
       </button>
     </div>

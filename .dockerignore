@@ -16,6 +16,7 @@ env*
 .docker-project
 .vscode
 .editorconfig
+public/config.local.js
 
 # Cache files
 cache.sqlite

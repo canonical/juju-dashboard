@@ -32,18 +32,11 @@ export const getModelData = (state) => {
 export const getControllerData = (state) => state?.juju?.controllers;
 
 /**
-  Fetches the bakery from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The bakery instance or null if none found.
-*/
-export const getBakery = (state) => state?.root?.bakery;
-
-/**
   Fetches the application config from state.
   @param {Object} state The application state.
-  @returns {Object|Null} The config object or null if none found.
+  @returns {Config|Null} The config object or null if none found.
 */
-export const getConfig = (state) => state?.root?.config;
+export const getConfig = (state) => state?.general?.config;
 
 /**
   Fetches the username and password from state.
@@ -53,35 +46,29 @@ export const getConfig = (state) => state?.root?.config;
   @returns {Object|Null} The username and password or null if none found.
 */
 export const getUserPass = (wsControllerURL, state) =>
-  state?.root?.credentials?.[wsControllerURL];
+  state?.general?.credentials?.[wsControllerURL];
 
 /**
   Fetches a login error from state
   @param {Object} state The application state.
   @returns {String|Undefined} The error message if any.
 */
-export const getLoginError = (state) => state?.root?.loginError;
-
-/**
-  Fetches the juju api instance from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The juju api instance or null if none found.
-*/
-export const getJujuAPIInstances = (state) => state?.root?.jujus;
+export const getLoginError = (state) => state?.general?.loginError;
 
 /**
   Fetches the pinger intervalId from state.
   @param {Object} state The application state.
   @returns {Object|Null} The pinger intervalId or null if none found.
 */
-export const getPingerIntervalIds = (state) => state?.root?.pingerIntervalIds;
+export const getPingerIntervalIds = (state) =>
+  state?.general?.pingerIntervalIds;
 
 /**
   Fetches the application version.
   @param {Object} state The application state.
   @returns {Object|Undefined} The application version or undefined
 */
-export const getAppVersion = (state) => state?.root?.appVersion;
+export const getAppVersion = (state) => state?.general?.appVersion;
 
 // ---- Utility selectors
 
@@ -98,39 +85,6 @@ const getFilteredModelData = (filters) =>
   );
 
 // ---- Utility functions
-
-/**
-  Pull the users macaroon credentials from state.
-  @param {Object} state The application state.
-  @returns {Object} The macaroons extracted from the bakery in state.
-*/
-const getUserCredentials = (state) => {
-  let storedMacaroons = null;
-  if (state?.root?.bakery) {
-    storedMacaroons = state.root.bakery.storage._store;
-  }
-  return storedMacaroons;
-};
-
-/**
-  Base64 decode and json parse the supplied macaroons from the bakery.
-  @param {Object} macaroons The macaroons data from the bakery.
-  @returns {Object} The users decoded macaroons.
-*/
-const getDecodedMacaroons = (macaroons) => {
-  if (!macaroons) {
-    return null;
-  }
-  let decodedMacaroons = {};
-  Object.keys(macaroons).forEach((key) => {
-    try {
-      decodedMacaroons[key] = JSON.parse(atob(macaroons[key]));
-    } catch (err) {
-      console.error("Unable to decode macaroons", err);
-    }
-  });
-  return decodedMacaroons;
-};
 
 /**
   Gets the model UUID from the supplied name.
@@ -446,18 +400,6 @@ export const getModelUUID = (modelName) => {
 };
 
 /**
-  Gets the model UUID from the supplied name using a memoized selector
-  Usage:
-    const macaroons = useSelector(getMacaroons);
-
-  @returns {Function} The memoized selector to return the users macaroons.
-*/
-export const getMacaroons = createSelector(
-  getUserCredentials,
-  getDecodedMacaroons
-);
-
-/**
   Checks state to see if the user is logged in.
   Usage:
     const userIsLoggedIn = useSelector(isLoggedIn);
@@ -466,17 +408,16 @@ export const getMacaroons = createSelector(
   @returns {Boolean} If the user is logged in.
 */
 export const isLoggedIn = (wsControllerURL, state) => {
-  return state.root.controllerConnections?.[wsControllerURL]?.info?.user
-    ?.identity;
+  return state.general.controllerConnections?.[wsControllerURL]?.user?.identity;
 };
 
 export const getControllerConnection = (wsControllerURL, state) =>
-  state?.root?.controllerConnections?.[wsControllerURL];
+  state?.general?.controllerConnections?.[wsControllerURL];
 
 export const getControllerConnections = (state) =>
-  state?.root?.controllerConnections;
+  state?.general?.controllerConnections;
 
-export const isConnecting = (state) => !!state.root.visitURL;
+export const isConnecting = (state) => !!state.general.visitURL;
 /**
   Returns the users current controller logged in identity
   @param {String} wsControllerURL The controller url to make the query on.
@@ -484,7 +425,7 @@ export const isConnecting = (state) => !!state.root.visitURL;
   @returns {String} The users userTag.
 */
 export const getActiveUserTag = (wsControllerURL, state) =>
-  state?.root?.controllerConnections?.[wsControllerURL]?.info.user.identity;
+  state?.general?.controllerConnections?.[wsControllerURL]?.user.identity;
 
 /**
   Returns a model status for the supplied modelUUID.

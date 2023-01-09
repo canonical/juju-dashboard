@@ -1,26 +1,14 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { applyMiddleware, combineReducers, createStore } from "redux";
-import thunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
 import process from "process";
-import { Bakery, BakeryStorage } from "@canonical/macaroon-bakery";
 import * as Sentry from "@sentry/browser";
+
 import App from "components/App/App";
-import checkAuth from "app/check-auth";
-import rootReducer from "app/root";
-import uiReducer from "ui";
+import bakery from "app/bakery";
+import reduxStore from "store";
 
-import {
-  connectAndStartPolling,
-  storeBakery,
-  storeConfig,
-  storeVersion,
-  storeVisitURL,
-} from "app/actions";
-
-import jujuReducer from "juju/reducer";
+import { connectAndStartPolling, storeConfig, storeVersion } from "app/actions";
 
 import packageJSON from "../package.json";
 
@@ -90,26 +78,9 @@ function bootstrap() {
     Sentry.setTag("isJuju", config.isJuju);
   }
 
-  const reduxStore = createStore(
-    combineReducers({
-      root: rootReducer,
-      juju: jujuReducer,
-      ui: uiReducer,
-    }),
-    // Order of the middleware is important
-    composeWithDevTools(applyMiddleware(checkAuth, thunk))
-  );
-
   reduxStore.dispatch(storeConfig(config));
   reduxStore.dispatch(storeVersion(appVersion));
 
-  const bakery = new Bakery({
-    visitPage: (resp) => {
-      reduxStore.dispatch(storeVisitURL(resp.Info.VisitURL));
-    },
-    storage: new BakeryStorage(localStorage, {}),
-  });
-  reduxStore.dispatch(storeBakery(bakery));
   if (config.identityProviderAvailable) {
     // If an identity provider is available then try and connect automatically
     // If not then wait for the login UI to trigger this

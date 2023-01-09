@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DescriptionSummary returns a details component if the description is longer than 30 characters 1`] = `
+<div>
+  <details
+    class="radio-input-box__details"
+  >
+    <summary
+      class="radio-input-box__summary"
+    >
+      <span
+        class="radio-input-box__summary-description"
+      >
+        The number of coding chunks, i.e. the number of additional chunks computed by the encoding functions. If there are 2 coding chunks, it means 2 OSDs can be out without losing data. 
+      </span>
+       
+    </summary>
+    <span
+      class="radio-input-box__details-description"
+    >
+      The number of coding chunks, i.e. the number of additional chunks computed by the encoding functions. If there are 2 coding chunks, it means 2 OSDs can be out without losing data. 
+    </span>
+  </details>
+</div>
+`;

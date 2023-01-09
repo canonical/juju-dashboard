@@ -2,17 +2,7 @@ import cloneDeep from "clone-deep";
 
 import { fetchAndStoreModelStatus } from "juju";
 
-// Action labels
-export const actionsList = {
-  clearControllerData: "CLEAR_CONTROLLER_DATA",
-  clearModelData: "CLEAR_MODEL_DATA",
-  updateControllerList: "UPDATE_CONTROLLER_LIST",
-  updateModelInfo: "UPDATE_MODEL_INFO",
-  updateModelStatus: "UPDATE_MODEL_STATUS",
-  updateModelList: "UPDATE_MODEL_LIST",
-  processAllWatcherDeltas: "PROCESS_ALL_WATCHER_DELTAS",
-  populateMissingAllWatcherData: "POPULATE_MISSING_ALLWATCHER_DATA",
-};
+import { actionsList } from "./action-types";
 
 // Action creators
 
@@ -43,12 +33,15 @@ export function updateControllerList(wsControllerURL, controllers) {
 }
 
 /**
-  @param {Array} models The list of models to store.
+  @param models The list of models to store.
 */
-export function updateModelList(models) {
+export function updateModelList(models, wsControllerURL) {
   return {
     type: actionsList.updateModelList,
-    payload: models,
+    payload: {
+      models,
+      wsControllerURL,
+    },
   };
 }
 
@@ -57,12 +50,13 @@ export function updateModelList(models) {
     status under.
   @param {Object} status The status data as returned from the API.
  */
-export function updateModelStatus(modelUUID, status) {
+export function updateModelStatus(modelUUID, status, wsControllerURL) {
   return {
     type: actionsList.updateModelStatus,
     payload: {
       modelUUID,
       status,
+      wsControllerURL,
     },
   };
 }
@@ -70,10 +64,13 @@ export function updateModelStatus(modelUUID, status) {
 /**
   @param {Object} modelInfo The model info data as returned from the API.
  */
-export function updateModelInfo(modelInfo) {
+export function updateModelInfo(modelInfo, wsControllerURL) {
   return {
     type: actionsList.updateModelInfo,
-    payload: modelInfo,
+    payload: {
+      modelInfo,
+      wsControllerURL,
+    },
   };
 }
 
@@ -135,9 +132,7 @@ export function addControllerCloudRegion(wsControllerURL, modelInfo) {
         }
         return controller;
       });
-      dispatch(updateControllerList(wsControllerURL, updatedControllers), {
-        wsControllerURL,
-      });
+      dispatch(updateControllerList(wsControllerURL, updatedControllers));
     } else {
       console.log(
         "attempting to update non-existent controller:",

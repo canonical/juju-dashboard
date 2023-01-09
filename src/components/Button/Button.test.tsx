@@ -1,21 +1,18 @@
-import { shallow } from "enzyme";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import Button from "./Button";
 
 describe("Button", () => {
   it("should display button text", () => {
-    const wrapper = shallow(
-      <Button onClick={() => jest.fn()}>Button text</Button>
-    );
-    expect(wrapper.find("button").text()).toStrictEqual("Button text");
+    render(<Button onClick={() => jest.fn()}>Button text</Button>);
+    expect(screen.getByRole("button")).toHaveTextContent("Button text");
   });
 
-  it("should call handler when clicked", () => {
+  it("should call handler when clicked", async () => {
     const handleClick = jest.fn();
-    const wrapper = shallow(
-      <Button onClick={() => handleClick()}>Button text</Button>
-    );
-    wrapper.find("button").simulate("click");
+    render(<Button onClick={() => handleClick()}>Button text</Button>);
+    await userEvent.click(screen.getByRole("button"));
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 });
