@@ -9,6 +9,7 @@ import {
   generateIconImg,
   generateEntityIdentifier,
 } from "app/utils/utils";
+import { Tooltip } from "@canonical/react-components";
 
 export function generateLocalApplicationRows(
   applications,
@@ -375,8 +376,23 @@ export function generateMachineRows(
           className: "machine-app-icons",
         },
         {
-          content: generateStatusElement(machine["agent-status"].current),
-          className: "u-capitalise",
+          content: (
+            <Tooltip
+              className="u-truncate"
+              message={machine["agent-status"].current}
+              position="top-center"
+              positionElementClassName="entity-details__machines-status-icon"
+            >
+              {generateStatusElement(
+                machine["agent-status"].current,
+                null,
+                true,
+                false,
+                "p-icon u-truncate"
+              )}
+            </Tooltip>
+          ),
+          className: "u-capitalise u-truncate",
         },
         { content: az },
         { content: machine["instance-id"] },
