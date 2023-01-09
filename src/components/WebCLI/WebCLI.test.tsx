@@ -1,5 +1,5 @@
 import type { TSFixMe } from "@canonical/react-components";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
 import { Provider } from "react-redux";
@@ -181,7 +181,7 @@ describe("WebCLI", () => {
         controllerWSHost: "localhost:1234",
         modelUUID: "abc123",
         credentials: {
-          user: "spaceman",
+          user: "eggman@external",
           password: "somelongpassword",
         },
       });
@@ -191,7 +191,7 @@ describe("WebCLI", () => {
           const input = screen.getByRole("textbox");
           await userEvent.type(input, "status --color{enter}");
           await expect(server).toReceiveMessage({
-            user: "spaceman",
+            user: "eggman@external",
             credentials: "somelongpassword",
             commands: ["status --color"],
           });
@@ -229,18 +229,18 @@ describe("WebCLI", () => {
           server.send(message);
         });
 
-        setTimeout(() => {
-          expect(
-            document.querySelector(".webcli__output-content code")?.textContent
-          ).toMatchSnapshot();
-          expect(
-            document.querySelector(".webcli__output-content")
-          ).toHaveAttribute("style", "height: 300px;");
-          act(() => {
-            WS.clean();
-          });
-          resolve();
+        // Force the test to wait for the content to be rendered.
+        await screen.findByText(/google-us-east1/);
+        expect(
+          document.querySelector(".webcli__output-content code")?.textContent
+        ).toMatchSnapshot();
+        expect(
+          document.querySelector(".webcli__output-content")
+        ).toHaveAttribute("style", "height: 300px;");
+        act(() => {
+          WS.clean();
         });
+        resolve();
       });
     });
 
@@ -303,18 +303,18 @@ describe("WebCLI", () => {
           server.send(message);
         });
 
-        setTimeout(() => {
-          expect(
-            document.querySelector(".webcli__output-content code")?.textContent
-          ).toMatchSnapshot();
-          expect(
-            document.querySelector(".webcli__output-content")
-          ).toHaveAttribute("style", "height: 300px;");
-          act(() => {
-            WS.clean();
-          });
-          resolve();
+        // Force the test to wait for the content to be rendered.
+        await screen.findByText(/google-us-east1/);
+        expect(
+          document.querySelector(".webcli__output-content code")?.textContent
+        ).toMatchSnapshot();
+        expect(
+          document.querySelector(".webcli__output-content")
+        ).toHaveAttribute("style", "height: 300px;");
+        act(() => {
+          WS.clean();
         });
+        resolve();
       });
     });
   });

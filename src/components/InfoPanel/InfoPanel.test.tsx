@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -51,7 +51,7 @@ describe("Info Panel", () => {
     expect(screen.getByTestId("topology")).toBeInTheDocument();
   });
 
-  it("renders the expanded topology on click", () => {
+  it("renders the expanded topology on click", async () => {
     const mockState = rootStateFactory.build({
       juju: jujuStateFactory.build(
         {},
@@ -83,7 +83,7 @@ describe("Info Panel", () => {
       </Provider>
     );
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    screen.getByRole("button").click();
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    act(() => screen.getByRole("button").click());
+    await waitFor(() => expect(screen.getByRole("dialog")).toBeInTheDocument());
   });
 });
