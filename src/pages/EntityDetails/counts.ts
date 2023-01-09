@@ -70,7 +70,7 @@ export function generateMachineCounts(
       }
     });
     machineIds.forEach((id) => {
-      const status = machines[id]["agent-status"].current;
+      const status = machines[id]?.["agent-status"]?.current;
       if (status) {
         return incrementCounts(status, counts);
       }
