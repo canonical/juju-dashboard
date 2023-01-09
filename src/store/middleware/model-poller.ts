@@ -1,13 +1,9 @@
 import { Middleware } from "redux";
 import * as Sentry from "@sentry/browser";
 
-import {
-  storeLoginError,
-  updateControllerConnection,
-  updatePingerIntervalId,
-} from "app/actions";
 import { actionsList } from "app/action-types";
-import { isLoggedIn } from "app/selectors";
+import { isLoggedIn } from "store/general/selectors";
+import { actions as generalActions } from "store/general";
 import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
@@ -55,12 +51,14 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
             if (error) {
               // TODO: this error should not be cast once loginWithBakery has
               // been migrated to TypeScript.
-              reduxStore.dispatch(storeLoginError(error as string));
+              reduxStore.dispatch(
+                generalActions.storeLoginError(error as string)
+              );
               return;
             }
           } catch (e) {
             reduxStore.dispatch(
-              storeLoginError(
+              generalActions.storeLoginError(
                 "Unable to log into the controller, check that you've configured the controller address correctly and that it is online."
               )
             );
@@ -68,7 +66,9 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
           }
 
           if (!conn?.info) {
-            reduxStore.dispatch(storeLoginError(LoginError.NO_INFO));
+            reduxStore.dispatch(
+              generalActions.storeLoginError(LoginError.NO_INFO)
+            );
             return;
           }
 
@@ -83,12 +83,18 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
           // Store the controller info. The transport and facades are not used
           // (or available by other means) so no need to store them.
           reduxStore.dispatch(
-            updateControllerConnection(wsControllerURL, conn.info)
+            generalActions.updateControllerConnection({
+              wsControllerURL,
+              info: conn.info,
+            })
           );
           jujus.set(wsControllerURL, juju);
           if (intervalId) {
             reduxStore.dispatch(
-              updatePingerIntervalId(wsControllerURL, intervalId)
+              generalActions.updatePingerIntervalId({
+                wsControllerURL,
+                intervalId,
+              })
             );
           }
 
@@ -137,7 +143,7 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
                 resolve(true);
               }, 30000);
             });
-          } while (isLoggedIn(wsControllerURL, reduxStore.getState()));
+          } while (isLoggedIn(reduxStore.getState(), wsControllerURL));
         });
         return;
       } else if (action.type === actionsList.logOut) {

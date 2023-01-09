@@ -1,12 +1,9 @@
-import {
-  storeLoginError,
-  updateControllerConnection,
-  updatePingerIntervalId,
-} from "app/actions";
+import { AnyAction, MiddlewareAPI } from "redux";
+
 import { actionsList } from "app/action-types";
 import * as jujuModule from "juju";
 import { updateModelList } from "juju/actions";
-import { AnyAction, MiddlewareAPI } from "redux";
+import { actions as generalActions } from "store/general";
 
 import { modelPollerMiddleware, LoginError } from "./model-poller";
 
@@ -128,7 +125,9 @@ describe("model poller", () => {
       .mockImplementation(async () => ({ error: "Uh oh!" }));
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(storeLoginError("Uh oh!"));
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.storeLoginError("Uh oh!")
+    );
   });
 
   it("logs login exceptions", async () => {
@@ -158,10 +157,13 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      updateControllerConnection(wsControllerURL, conn.info)
+      generalActions.updateControllerConnection({
+        wsControllerURL,
+        info: conn.info,
+      })
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      updatePingerIntervalId(wsControllerURL, intervalId)
+      generalActions.updatePingerIntervalId({ wsControllerURL, intervalId })
     );
     expect(fetchControllerList).toHaveBeenCalledWith(
       wsControllerURL,
@@ -180,7 +182,7 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      storeLoginError(LoginError.NO_INFO)
+      generalActions.storeLoginError(LoginError.NO_INFO)
     );
   });
 

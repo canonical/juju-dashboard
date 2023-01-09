@@ -1,11 +1,12 @@
-import { connectAndStartPolling, storeUserPass } from "app/actions";
+import { connectAndStartPolling } from "app/actions";
+import { actions as generalActions } from "store/general";
 import {
   getConfig,
   getControllerConnections,
   getLoginError,
   getWSControllerURL,
   isLoggedIn,
-} from "app/selectors";
+} from "store/general/selectors";
 import React, {
   FormEvent,
   PropsWithChildren,
@@ -17,7 +18,7 @@ import { useDispatch, useSelector, useStore } from "react-redux";
 
 import { Spinner } from "@canonical/react-components";
 
-import { Config, TSFixMe } from "types";
+import { TSFixMe } from "types";
 import FadeUpIn from "animations/FadeUpIn";
 import bakery from "app/bakery";
 import { RootState } from "store/store";
@@ -27,7 +28,7 @@ import logo from "static/images/logo/logo-black-on-white.svg";
 import "./_login.scss";
 
 export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
-  const config = useSelector<RootState, Config | null>(getConfig);
+  const config = useSelector(getConfig);
 
   const controllerConnections = useSelector(getControllerConnections) || {};
   const wsControllerURLs = Object.keys(controllerConnections);
@@ -36,7 +37,7 @@ export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
   // Loop through all of the available controller connections to see
   // if we're logged in.
   const userIsLoggedIn = wsControllerURLs.some((wsControllerURL) =>
-    isLoggedIn(wsControllerURL, store.getState())
+    isLoggedIn(store.getState(), wsControllerURL)
   );
 
   const loginError = useSelector(getLoginError);
@@ -68,7 +69,7 @@ export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
   @param loginError The error message from the store.
   @returns A component for the error message.
 */
-function generateErrorMessage(loginError?: string) {
+function generateErrorMessage(loginError?: string | null) {
   if (!loginError) {
     return null;
   }
@@ -119,7 +120,10 @@ function UserPassForm() {
     const user = elements.username.value;
     const password = elements.password.value;
     dispatch(
-      storeUserPass(getWSControllerURL(store.getState()), { user, password })
+      generalActions.storeUserPass({
+        wsControllerURL: getWSControllerURL(store.getState()),
+        credential: { user, password },
+      })
     );
     if (bakery) {
       // TSFixMe - this override can be removed once the selectors have been
@@ -145,7 +149,7 @@ function UserPassForm() {
   );
 }
 
-function Button({ visitURL }: { visitURL?: string }) {
+function Button({ visitURL }: { visitURL?: string | null }) {
   if (visitURL) {
     return (
       <a

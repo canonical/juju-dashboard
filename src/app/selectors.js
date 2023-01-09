@@ -31,45 +31,6 @@ export const getModelData = (state) => {
 */
 export const getControllerData = (state) => state?.juju?.controllers;
 
-/**
-  Fetches the application config from state.
-  @param {Object} state The application state.
-  @returns {Config|Null} The config object or null if none found.
-*/
-export const getConfig = (state) => state?.general?.config;
-
-/**
-  Fetches the username and password from state.
-  @param {String} wsControllerURL The fully qualified wsController URL to
-    retrieve the credentials from.
-  @param {Object} state The application state.
-  @returns {Object|Null} The username and password or null if none found.
-*/
-export const getUserPass = (wsControllerURL, state) =>
-  state?.general?.credentials?.[wsControllerURL];
-
-/**
-  Fetches a login error from state
-  @param {Object} state The application state.
-  @returns {String|Undefined} The error message if any.
-*/
-export const getLoginError = (state) => state?.general?.loginError;
-
-/**
-  Fetches the pinger intervalId from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The pinger intervalId or null if none found.
-*/
-export const getPingerIntervalIds = (state) =>
-  state?.general?.pingerIntervalIds;
-
-/**
-  Fetches the application version.
-  @param {Object} state The application state.
-  @returns {Object|Undefined} The application version or undefined
-*/
-export const getAppVersion = (state) => state?.general?.appVersion;
-
 // ---- Utility selectors
 
 /**
@@ -400,34 +361,6 @@ export const getModelUUID = (modelName) => {
 };
 
 /**
-  Checks state to see if the user is logged in.
-  Usage:
-    const userIsLoggedIn = useSelector(isLoggedIn);
-
-  @param {Object} state The application state.
-  @returns {Boolean} If the user is logged in.
-*/
-export const isLoggedIn = (wsControllerURL, state) => {
-  return state.general.controllerConnections?.[wsControllerURL]?.user?.identity;
-};
-
-export const getControllerConnection = (wsControllerURL, state) =>
-  state?.general?.controllerConnections?.[wsControllerURL];
-
-export const getControllerConnections = (state) =>
-  state?.general?.controllerConnections;
-
-export const isConnecting = (state) => !!state.general.visitURL;
-/**
-  Returns the users current controller logged in identity
-  @param {String} wsControllerURL The controller url to make the query on.
-  @param {Object} state The application state.
-  @returns {String} The users userTag.
-*/
-export const getActiveUserTag = (wsControllerURL, state) =>
-  state?.general?.controllerConnections?.[wsControllerURL]?.user.identity;
-
-/**
   Returns a model status for the supplied modelUUID.
   @param {String} modelUUID The model UUID to fetch the status for
   @returns {Function} The memoized selector to return the model status.
@@ -505,15 +438,6 @@ export const getGroupedApplicationsDataByStatus = createSelector(
 export const getGroupedModelStatusCounts = createSelector(
   getGroupedModelDataByStatus,
   countModelStatusGroups
-);
-
-/**
-  Returns the fully qualified websocket controller API URL.
-  @returns {Function} The memoized selector to return the controller websocket api url.
-*/
-export const getWSControllerURL = createSelector(
-  getConfig,
-  (config) => config.controllerAPIEndpoint
 );
 
 /**

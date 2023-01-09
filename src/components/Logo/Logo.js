@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import { getConfig } from "app/selectors";
+import { getConfig } from "store/general/selectors";
 
 // Image imports
 import logoMark from "static/images/logo/logo-mark.svg";

@@ -8,7 +8,7 @@ import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 
 import { Routes } from "components/Routes/Routes";
 
-import { getConfig } from "app/selectors";
+import { getConfig } from "store/general/selectors";
 import useLocalStorage from "hooks/useLocalStorage";
 
 import "../../scss/index.scss";
