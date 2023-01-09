@@ -12,3 +12,4 @@ coverage/
 .vscode/
 pkg/
 public/config.local.js
+.nfs.*
