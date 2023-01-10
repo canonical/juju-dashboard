@@ -1,7 +1,7 @@
 import { AnyAction, MiddlewareAPI } from "redux";
 
 import { actionsList } from "app/action-types";
-import * as jujuModule from "juju";
+import * as jujuModule from "juju/api";
 import { updateModelList } from "juju/actions";
 import { actions as generalActions } from "store/general";
 
@@ -23,7 +23,7 @@ type Juju = {
   logout: () => void;
 };
 
-jest.mock("juju", () => ({
+jest.mock("juju/api", () => ({
   disableControllerUUIDMasking: jest
     .fn()
     .mockImplementation(async () => await Promise.resolve()),
@@ -169,7 +169,8 @@ describe("model poller", () => {
       wsControllerURL,
       conn,
       false,
-      fakeStore
+      fakeStore.dispatch,
+      fakeStore.getState
     );
   });
 
@@ -266,7 +267,8 @@ describe("model poller", () => {
       wsControllerURL,
       ["abc123"],
       conn,
-      fakeStore
+      fakeStore.dispatch,
+      fakeStore.getState
     );
   });
 

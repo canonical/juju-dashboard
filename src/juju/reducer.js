@@ -6,6 +6,7 @@ import { actionsList } from "./action-types";
 import { processDeltas } from "./watchers";
 
 const defaultState = {
+  controllers: null,
   models: {},
   modelData: {},
   modelWatcherData: {},

@@ -6,17 +6,17 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import { InitialEntry } from "@remix-run/router";
-import * as juju from "juju";
+import * as juju from "juju/api";
 
 import dataDump from "testing/complete-redux-store-dump";
 
-import { executeActionOnUnits } from "juju/index";
+import { executeActionOnUnits } from "juju/api";
 
 import ActionsPanel from "./ActionsPanel";
 
 const mockStore = configureStore([]);
 
-jest.mock("juju", () => {
+jest.mock("juju/api", () => {
   return {
     executeActionOnUnits: jest.fn(),
     getActionsForApplication: () => {

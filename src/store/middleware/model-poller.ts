@@ -9,10 +9,11 @@ import {
   fetchAllModelStatuses,
   fetchControllerList,
   loginWithBakery,
-} from "juju";
+} from "juju/api";
 import { updateModelList } from "juju/actions";
 import { TSFixMe } from "@canonical/react-components";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { RootState, Store } from "store/store";
 
 export enum LoginError {
   LOG = "unable to log into controller",
@@ -23,7 +24,11 @@ export enum LoginError {
 // TODO: Import bakery instead of passing it as a param.
 type ControllerOptions = [string, TSFixMe, boolean, boolean | undefined];
 
-export const modelPollerMiddleware: Middleware = (reduxStore) => {
+export const modelPollerMiddleware: Middleware<
+  {},
+  RootState,
+  Store["dispatch"]
+> = (reduxStore) => {
   // TODO: provide the connection when the types are available from jujulib.
   const jujus = new Map<string, TSFixMe>();
   return (next) =>
@@ -102,7 +107,8 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
             wsControllerURL,
             conn,
             isAdditionalController ?? false,
-            reduxStore
+            reduxStore.dispatch,
+            reduxStore.getState
           );
           // XXX the isJuju Check needs to be done on a per-controller basis
           if (!action.payload.isJuju) {
@@ -131,7 +137,8 @@ export const modelPollerMiddleware: Middleware = (reduxStore) => {
                 wsControllerURL,
                 modelUUIDList,
                 conn,
-                reduxStore
+                reduxStore.dispatch,
+                reduxStore.getState
               );
             } catch (e) {
               console.log(e);

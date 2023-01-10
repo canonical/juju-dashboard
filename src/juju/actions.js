@@ -1,6 +1,6 @@
 import cloneDeep from "clone-deep";
 
-import { fetchAndStoreModelStatus } from "juju";
+import { fetchAndStoreModelStatus } from "juju/api";
 
 import { actionsList } from "./action-types";
 

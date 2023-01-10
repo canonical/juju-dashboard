@@ -77,7 +77,7 @@ const mockActionResults = actionResultsFactory.build({
   ],
 });
 
-jest.mock("juju", () => {
+jest.mock("juju/api", () => {
   return {
     queryOperationsList: () => {
       return new Promise((resolve) => {

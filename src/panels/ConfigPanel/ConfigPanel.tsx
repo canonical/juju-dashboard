@@ -1,6 +1,11 @@
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
-import { getApplicationConfig, setApplicationConfig } from "juju";
+import {
+  Config,
+  ConfigData,
+  getApplicationConfig,
+  setApplicationConfig,
+} from "juju/api";
 import { ReactNode, useEffect, useState } from "react";
 import { useStore } from "react-redux";
 import type { Store } from "redux";
@@ -33,20 +38,6 @@ type Props = {
   charm: string;
   modelUUID: string;
   onClose: () => void;
-};
-
-type ConfigData = {
-  name: string;
-  default: any;
-  description: string;
-  source: "default" | "user";
-  type: "string" | "int" | "float" | "boolean";
-  value: any;
-  newValue: any;
-};
-
-type Config = {
-  [key: string]: ConfigData;
 };
 
 export type ConfigProps = {

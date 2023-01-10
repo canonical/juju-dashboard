@@ -52,13 +52,19 @@ describe("selectors", () => {
           general: {
             ...defaultState,
             credentials: {
-              "wss://example.com": "credentials",
+              "wss://example.com": {
+                user: "user-eggman@external",
+                password: "verysecure123",
+              },
             },
           },
         }),
         "wss://example.com"
       )
-    ).toBe("credentials");
+    ).toStrictEqual({
+      user: "user-eggman@external",
+      password: "verysecure123",
+    });
   });
 
   it("getLoginError", () => {
