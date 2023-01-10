@@ -1,7 +1,7 @@
 import { Button } from "@canonical/react-components";
 import { getModelUUID } from "app/selectors";
 import { generateIconImg, pluralize } from "app/utils/utils";
-import { executeActionOnUnits, getActionsForApplication } from "juju";
+import { executeActionOnUnits, getActionsForApplication } from "juju/api";
 import {
   MutableRefObject,
   useCallback,
@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useSelector, useStore } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ArrayParam, useQueryParam, withDefault } from "use-query-params";
 
@@ -21,6 +21,7 @@ import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
+import { useAppStore } from "store/store";
 import { TSFixMe } from "types";
 
 import ActionOptions from "./ActionOptions";
@@ -78,7 +79,7 @@ export type OnValuesChange = (
 ) => void;
 
 export default function ActionsPanel(): JSX.Element {
-  const appStore = useStore();
+  const appStore = useAppStore();
   const appState = appStore.getState();
   const { appName, modelName } = useParams<EntityDetailsRoute>();
   const getModelUUIDMemo = useMemo(
@@ -87,9 +88,7 @@ export default function ActionsPanel(): JSX.Element {
   );
   // Selectors.js is not typescript yet and it complains about the return value
   // of getModelUUID. TSFixMe
-  const modelUUID = useSelector(
-    getModelUUIDMemo as (state: TSFixMe) => unknown
-  );
+  const modelUUID = useSelector(getModelUUIDMemo as (state: TSFixMe) => string);
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});
   const [fetchingActionData, setFetchingActionData] = useState(false);
@@ -111,20 +110,22 @@ export default function ActionsPanel(): JSX.Element {
 
   useEffect(() => {
     setFetchingActionData(true);
-    getActionsForApplication(appName, modelUUID, appStore.getState()).then(
-      (actions) => {
-        if (actions?.results?.[0]?.actions) {
-          setActionData(actions.results[0].actions);
+    if (appName) {
+      getActionsForApplication(appName, modelUUID, appStore.getState()).then(
+        (actions) => {
+          if (actions?.results?.[0]?.actions) {
+            setActionData(actions.results[0].actions);
+          }
+          setFetchingActionData(false);
         }
-        setFetchingActionData(false);
-      }
-    );
+      );
+    }
   }, [appName, appStore, modelUUID]);
 
-  // See above note about selectors.js typings TSFixMe
   const namespace = appName
-    ? (appState as TSFixMe).juju?.modelData?.[modelUUID as string]
-        ?.applications?.[appName]?.charm
+    ? (appState as TSFixMe).juju?.modelData?.[modelUUID]?.applications?.[
+        appName
+      ]?.charm
     : null;
 
   const generateSelectedUnitList = () => {
@@ -163,7 +164,7 @@ export default function ActionsPanel(): JSX.Element {
   };
 
   const changeHandler = useCallback(
-    (actionName, values) => {
+    (actionName: string, values: ActionOptionValue) => {
       onValuesChange(actionName, values, actionOptionsValues);
       enableSubmit(
         selectedAction,
@@ -177,7 +178,7 @@ export default function ActionsPanel(): JSX.Element {
   );
 
   const selectHandler = useCallback(
-    (actionName) => {
+    (actionName: string) => {
       setSelectedAction(actionName);
       enableSubmit(
         actionName,

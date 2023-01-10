@@ -47,7 +47,8 @@ describe("Entity Details App", () => {
     });
     storeData.general.credentials = {
       "wss://jimm.jujucharms.com/api": {
-        info: { user: { identity: "user-eggman@external" } },
+        user: "user-eggman@external",
+        password: "verysecure123",
       },
     };
     storeData.juju.modelData = dataDump.juju.modelData;

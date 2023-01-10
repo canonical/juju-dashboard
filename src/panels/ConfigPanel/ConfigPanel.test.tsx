@@ -5,13 +5,13 @@ import { Provider } from "react-redux";
 import dataDump from "testing/complete-redux-store-dump";
 import configResponse from "testing/config-response";
 
-import { getApplicationConfig } from "juju";
+import { getApplicationConfig } from "juju/api";
 
 import ConfigPanel, { Label } from "./ConfigPanel";
 
 const mockStore = configureStore([]);
 
-jest.mock("juju/index", () => ({
+jest.mock("juju/api", () => ({
   getApplicationConfig: jest.fn(),
 }));
 

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useStore, useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Formik, Field, Form } from "formik";
 import cloneDeep from "clone-deep";
 import useModelStatus from "hooks/useModelStatus";
-import { setModelSharingPermissions } from "juju";
+import { setModelSharingPermissions } from "juju/api";
 import { motion } from "framer-motion";
 import reactHotToast from "react-hot-toast";
 
@@ -13,7 +13,7 @@ import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import ShareCard from "components/ShareCard/ShareCard";
 import ToastCard from "components/ToastCard/ToastCard";
-
+import { useAppStore } from "store/store";
 import type { TSFixMe } from "types";
 
 import "./share-model.scss";
@@ -44,7 +44,7 @@ type UserAccess = {
 
 export default function ShareModel() {
   const dispatch = useDispatch();
-  const store = useStore();
+  const store = useAppStore();
   const [usersAccess, setUsersAccess] = useState<UsersAccess>({});
   const [newUserFormSubmitActive, setNewUserFormSubmitActive] = useState(false);
 
@@ -99,7 +99,12 @@ export default function ShareModel() {
     permissionTo: string | undefined,
     permissionFrom: string | undefined
   ) => {
-    const response = await setModelSharingPermissions(
+    // Temprorarily manipulate the types to please the compiler. The correct
+    // types are introduced in: https://github.com/canonical/jaas-dashboard/pull/1360.
+    const response: {
+      error?: string;
+      results?: { error?: { message: string } }[];
+    } = await setModelSharingPermissions(
       modelControllerURL,
       modelUUID,
       store.getState,
@@ -111,9 +116,13 @@ export default function ShareModel() {
     );
     if (response?.error) {
       reactHotToast.custom((t) => (
-        <ToastCard toastInstance={t} type="negative" text={response.error} />
+        <ToastCard
+          toastInstance={t}
+          type="negative"
+          text={response.error ?? ""}
+        />
       ));
-      return false;
+      return null;
     } else {
       return response;
     }
@@ -137,7 +146,7 @@ export default function ShareModel() {
       permissionTo,
       permissionFrom
     );
-    const error = response?.results[0]?.error?.message;
+    const error = response?.results?.[0]?.error?.message;
     if (error) {
       reactHotToast.custom((t) => (
         <ToastCard toastInstance={t} type="negative" text={error} />
@@ -206,7 +215,7 @@ export default function ShareModel() {
         );
       }
 
-      const error = response?.results[0]?.error?.message;
+      const error = response?.results?.[0]?.error?.message;
       if (error) {
         reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="negative" text={error} />

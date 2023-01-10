@@ -79,7 +79,10 @@ describe("reducers", () => {
     const state = {
       ...defaultState,
       credentials: {
-        "wss://example.com": "default creds",
+        "wss://example.com": {
+          user: "user-eggman@external",
+          password: "verysecure123",
+        },
       },
     };
     expect(
@@ -87,13 +90,19 @@ describe("reducers", () => {
         state,
         actions.storeUserPass({
           wsControllerURL: "wss://example.com",
-          credential: "new creds",
+          credential: {
+            user: "user-eggman2@external",
+            password: "verysecure123",
+          },
         })
       )
     ).toStrictEqual({
       ...state,
       credentials: {
-        "wss://example.com": "new creds",
+        "wss://example.com": {
+          user: "user-eggman2@external",
+          password: "verysecure123",
+        },
       },
     });
   });

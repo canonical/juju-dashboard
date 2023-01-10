@@ -1,5 +1,15 @@
-import { connect, connectAndLogin } from "@canonical/jujulib";
+import { connect, connectAndLogin, ConnectOptions } from "@canonical/jujulib";
+import {
+  AdditionalProperties as AnnotationsAdditionalProperties,
+  AnnotationsGetResults,
+} from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
+import {
+  AdditionalProperties as ActionAdditionalProperties,
+  Entities,
+  OperationQueryArgs,
+} from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import Limiter from "async-limiter";
+import { Dispatch } from "redux";
 
 import Action from "@canonical/jujulib/dist/api/facades/action";
 import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
@@ -22,6 +32,10 @@ import {
   getWSControllerURL,
   isLoggedIn,
 } from "store/general/selectors";
+import { RootState, Store } from "store/store";
+import { Credential } from "store/general/types";
+import { Controller as JujuController, TSFixMe } from "types";
+
 import {
   addControllerCloudRegion,
   processAllWatcherDeltas,
@@ -30,13 +44,19 @@ import {
   updateModelStatus,
 } from "./actions";
 
+// TSFixMe: substitute for the connection type when it is available from jujulib.
+type Connection = TSFixMe;
+
 /**
   Return a common connection option config.
-  @param {Boolean} usePinger If the connection will be long lived then use the
+  @param usePinger If the connection will be long lived then use the
     pinger. Defaults to false.
-  @returns {Object} The configuration options.
+  @returns The configuration options.
 */
-function generateConnectionOptions(usePinger = false, onClose) {
+function generateConnectionOptions(
+  usePinger = false,
+  onClose: ConnectOptions["closeCallback"] = () => null
+) {
   // The options used when connecting to a Juju controller or model.
   const facades = [
     Action,
@@ -61,7 +81,10 @@ function generateConnectionOptions(usePinger = false, onClose) {
   };
 }
 
-function determineLoginParams(credentials, identityProviderAvailable) {
+function determineLoginParams(
+  credentials: Credential,
+  identityProviderAvailable: boolean
+) {
   let loginParams = {};
   if (!identityProviderAvailable) {
     loginParams = {
@@ -72,10 +95,10 @@ function determineLoginParams(credentials, identityProviderAvailable) {
   return loginParams;
 }
 
-function startPingerLoop(conn) {
+function startPingerLoop(conn: Connection) {
   // Ping to keep the connection alive.
   const intervalId = window.setInterval(() => {
-    conn.facades.pinger.ping().catch((e) => {
+    conn.facades.pinger.ping().catch((e: unknown) => {
       // If the pinger fails for whatever reason then cancel the ping.
       console.error("pinger stopped,", e);
       stopPingerLoop(intervalId);
@@ -84,7 +107,7 @@ function startPingerLoop(conn) {
   return intervalId;
 }
 
-function stopPingerLoop(intervalId) {
+function stopPingerLoop(intervalId: number) {
   if (intervalId) {
     clearInterval(intervalId);
   }
@@ -93,18 +116,18 @@ function stopPingerLoop(intervalId) {
 /**
   Connects to the controller at the url defined in the controllerAPIEndpoint
   configuration value.
-  @param {String} wsControllerURL The fully qualified URL of the controller api.
-  @param {Object|null} credentials The users credentials in the format
+  @param wsControllerURL The fully qualified URL of the controller api.
+  @param credentials The users credentials in the format
     {user: ..., password: ...}
-  @param {Boolean} identityProviderAvailable Whether an identity provider is available.
+  @param identityProviderAvailable Whether an identity provider is available.
   @returns
     conn The controller connection instance.
     juju The juju api instance.
 */
 export async function loginWithBakery(
-  wsControllerURL,
-  credentials,
-  identityProviderAvailable
+  wsControllerURL: string,
+  credentials: Credential,
+  identityProviderAvailable: boolean
 ) {
   const juju = await connect(
     wsControllerURL,
@@ -129,21 +152,21 @@ export async function loginWithBakery(
 /**
   Connects and logs in to the supplied modelURL. If the connection takes longer
   than the allowed timeout it gives up.
-  @param {String} modelURL The fully qualified url of the model api.
-  @param {Object|Null} credentials The users credentials in the format
+  @param modelURL The fully qualified url of the model api.
+  @param credentials The users credentials in the format
     {user: ..., password: ...}
-  @param {Object} options The options for the connection.
-  @param {Boolean} identityProviderAvailable If an identity provider is available.
-  @returns {Object} The full model status.
+  @param options The options for the connection.
+  @param identityProviderAvailable If an identity provider is available.
+  @returns The full model status.
 */
 async function connectAndLoginWithTimeout(
-  modelURL,
-  credentials,
-  options,
-  identityProviderAvailable
-) {
+  modelURL: string,
+  credentials: Credential,
+  options: ConnectOptions,
+  identityProviderAvailable: boolean
+): Promise<string | Awaited<ReturnType<typeof connectAndLogin>>> {
   const duration = 5000;
-  const timeout = new Promise((resolve) => {
+  const timeout: Promise<string> = new Promise((resolve) => {
     setTimeout(resolve, duration, "timeout");
   });
   const loginParams = determineLoginParams(
@@ -165,19 +188,23 @@ async function connectAndLoginWithTimeout(
 /**
   Connects to the model url by doing a replacement on the controller url and
   fetches it's full status then logs out of the model and closes the connection.
-  @param {String} modelUUID The UUID of the model to connect to. Must be on the
+  @param modelUUID The UUID of the model to connect to. Must be on the
     same controller as provided by the wsControllerURL`.
-  @param {Object} getState A function that'll return the app redux state.
-  @returns {Object} The full model status.
+  @param getState A function that'll return the app redux state.
+  @returns The full model status.
 */
-export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
+export async function fetchModelStatus(
+  modelUUID: string,
+  wsControllerURL: string,
+  getState: () => RootState
+) {
   const appState = getState();
   const baseWSControllerURL = getWSControllerURL(appState);
-  const { identityProviderAvailable } = getConfig(appState);
+  const config = getConfig(appState);
   let useIdentityProvider = false;
 
   if (baseWSControllerURL === wsControllerURL) {
-    useIdentityProvider = identityProviderAvailable;
+    useIdentityProvider = config?.identityProviderAvailable ?? false;
   }
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status = null;
@@ -185,15 +212,25 @@ export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
   // between requests.
   if (isLoggedIn(getState(), wsControllerURL)) {
     try {
-      const controllerCredentials = getUserPass(getState(), wsControllerURL);
-      const { conn, logout } = await connectAndLoginWithTimeout(
+      // TSFixMe: this cast can be removed once the app selectors have been
+      // migrated to TypeScript.
+      const controllerCredentials = getUserPass(
+        getState(),
+        wsControllerURL
+      ) as Credential;
+      const response = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,
         generateConnectionOptions(false),
         useIdentityProvider
       );
+      if (typeof response === "string") {
+        console.error("error connecting to model:", modelUUID);
+        return;
+      }
+      const { conn, logout } = response;
       if (isLoggedIn(getState(), wsControllerURL)) {
-        status = await conn.facades.client.fullStatus();
+        status = await conn?.facades.client.fullStatus();
         if (status.error) {
           // XXX If there is an error fetching the full status it's likely that
           // Juju can no longer access this model. At this moment we don't have
@@ -208,10 +245,11 @@ export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
         const entities = Object.keys(status.applications).map((name) => ({
           tag: `application-${name}`,
         }));
-        const response = await conn.facades.annotations.get({ entities });
+        const response: AnnotationsGetResults =
+          await conn?.facades.annotations.get({ entities });
         // It will return an entry for every entity even if there are no
         // annotations so we have to inspect them and strip out the empty.
-        const annotations = {};
+        const annotations: Record<string, AnnotationsAdditionalProperties> = {};
         response.results?.forEach((item) => {
           if (Object.keys(item.annotations).length > 0) {
             const appName = item.entity.replace("application-", "");
@@ -231,15 +269,15 @@ export async function fetchModelStatus(modelUUID, wsControllerURL, getState) {
 /**
   Calls the fetchModelStatus method with the UUID and then dispatches the
   action to store it in the redux store.
-  @param {String} modelUUID The model UUID to fetch the model status of.
-  @param {Function} dispatch The redux store hook method.
-  @param {Object} getState A function that'll return the app redux state.
+  @param modelUUID The model UUID to fetch the model status of.
+  @param dispatch The redux store hook method.
+  @param getState A function that'll return the app redux state.
  */
 export async function fetchAndStoreModelStatus(
-  modelUUID,
-  wsControllerURL,
-  dispatch,
-  getState
+  modelUUID: string,
+  wsControllerURL: string,
+  dispatch: Dispatch,
+  getState: () => RootState
 ) {
   const status = await fetchModelStatus(modelUUID, wsControllerURL, getState);
   if (status === null) {
@@ -251,12 +289,12 @@ export async function fetchAndStoreModelStatus(
 /**
   Requests the model information for the supplied UUID from the supplied
   controller connection.
-  @param {Object} conn The active controller connection.
-  @param {String} modelUUID The UUID of the model to connect to. Must be on the
+  @param conn The active controller connection.
+  @param modelUUID The UUID of the model to connect to. Must be on the
     same controller as provided by the wsControllerURL`.
-  @returns {Object} The full modelInfo.
+  @returns The full modelInfo.
 */
-async function fetchModelInfo(conn, modelUUID) {
+async function fetchModelInfo(conn: Connection, modelUUID: string) {
   const modelInfo = await conn.facades.modelManager.modelInfo({
     entities: [{ tag: `model-${modelUUID}` }],
   });
@@ -266,20 +304,19 @@ async function fetchModelInfo(conn, modelUUID) {
 /**
   Loops through each model UUID to fetch the status. Upon receiving the status
   dispatches to store that status data.
-  @param {Object} conn The connection to the controller.
-  @param {Array} modelUUIDList A list of the model uuid's to connect to.
-  @param {Object} reduxStore The applications reduxStore.
-  @returns {Promise} Resolves when the queue fetching the model statuses has
+  @param conn The connection to the controller.
+  @param modelUUIDList A list of the model uuid's to connect to.
+  @param reduxStore The applications reduxStore.
+  @returns Resolves when the queue fetching the model statuses has
     completed. Does not reject.
 */
 export async function fetchAllModelStatuses(
-  wsControllerURL,
-  modelUUIDList,
-  conn,
-  reduxStore
+  wsControllerURL: string,
+  modelUUIDList: string[],
+  conn: Connection,
+  dispatch: Store["dispatch"],
+  getState: () => RootState
 ) {
-  const getState = reduxStore.getState;
-  const dispatch = reduxStore.dispatch;
   const queue = new Limiter({ concurrency: 1 });
   modelUUIDList.forEach((modelUUID) => {
     queue.push(async (done) => {
@@ -303,7 +340,7 @@ export async function fetchAllModelStatuses(
       done();
     });
   });
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     queue.onDone(() => {
       resolve();
     });
@@ -313,20 +350,25 @@ export async function fetchAllModelStatuses(
 /**
   Performs an HTTP request to the controller to fetch the controller list.
   Will fail with a console error message if the user doesn't have access.
-  @param {String} wsControllerURL The URL of the controller.
-  @param {Object} conn The Juju controller connection.
-  @param {Object} reduxStore The applications reduxStore.
-  @param {Boolean} additionalController If this is an additional controller.
+  @param wsControllerURL The URL of the controller.
+  @param conn The Juju controller connection.
+  @param reduxStore The applications reduxStore.
+  @param additionalController If this is an additional controller.
 */
 export async function fetchControllerList(
-  wsControllerURL,
-  conn,
-  additionalController,
-  reduxStore
+  wsControllerURL: string,
+  conn: Connection,
+  additionalController: boolean,
+  dispatch: Store["dispatch"],
+  getState: () => RootState
 ) {
-  let controllers = null;
+  let controllers: JujuController[] | null = null;
   if (conn.facades.jimM) {
-    const response = await conn.facades.jimM.listControllers();
+    // TSFixMe: this cast can be removed when jimm-facade.js has been migrated
+    // to TypeScript.
+    const response = (await conn.facades.jimM.listControllers()) as {
+      controllers: JujuController[];
+    };
     controllers = response.controllers;
     controllers.forEach((c) => (c.additionalController = additionalController));
   } else {
@@ -337,22 +379,22 @@ export async function fetchControllerList(
       {
         path: controllerConfig.config["controller-name"],
         uuid: controllerConfig.config["controller-uuid"],
-        version: getControllerConnection(reduxStore.getState(), wsControllerURL)
+        version: getControllerConnection(getState(), wsControllerURL)
           ?.serverVersion,
         additionalController,
       },
     ];
   }
-  reduxStore.dispatch(updateControllerList(wsControllerURL, controllers));
+  dispatch(updateControllerList(wsControllerURL, controllers));
 }
 
 /**
   Calls to disable the controller UUID masking on JIMM. This will be a noop
   if the user is not an administrator on the controller.
-  @param {Object} conn The controller connection instance.
+  @param conn The controller connection instance.
 */
-export function disableControllerUUIDMasking(conn) {
-  return new Promise(async (resolve, reject) => {
+export function disableControllerUUIDMasking(conn: Connection) {
+  return new Promise<void>(async (resolve, reject) => {
     if (conn?.facades?.jimM) {
       try {
         await conn.facades.jimM.disableControllerUUIDMasking();
@@ -368,63 +410,85 @@ export function disableControllerUUIDMasking(conn) {
 
 /**
   Connect to the model representing the supplied modelUUID.
-  @param {*} modelUUID
-  @param {*} appState
-  @returns {Object} conn The connection.
+  @param modelUUID
+  @param appState
+  @returns conn The connection.
 */
-async function connectAndLoginToModel(modelUUID, appState) {
+async function connectAndLoginToModel(modelUUID: string, appState: RootState) {
   const baseWSControllerURL = getWSControllerURL(appState);
-  const { identityProviderAvailable } = getConfig(appState);
-  const credentials = getUserPass(appState, baseWSControllerURL);
+  if (!baseWSControllerURL) {
+    return null;
+  }
+  const config = getConfig(appState);
+  // TSFixMe: Remove this cast once the general selectors have been migrated to TypeScript.
+  const credentials = getUserPass(appState, baseWSControllerURL) as Credential;
   const modelURL = baseWSControllerURL.replace(
     "/api",
     `/model/${modelUUID}/api`
   );
-  const { conn } = await connectAndLoginWithTimeout(
+  const response = await connectAndLoginWithTimeout(
     modelURL,
     credentials,
     generateConnectionOptions(true),
-    identityProviderAvailable
+    config?.identityProviderAvailable ?? false
   );
-  return conn;
+  return typeof response === "string" ? null : response.conn;
 }
 
 /**
   Call the API to fetch the application config data.
-  @param {String} modelUUID
-  @param {String} appName
-  @param {Object} appState
-  @returns {Promise} The application config.
+  @param modelUUID
+  @param appName
+  @param appState
+  @returns The application config.
 */
-export async function getApplicationConfig(modelUUID, appName, appState) {
+export async function getApplicationConfig(
+  modelUUID: string,
+  appName: string,
+  appState: RootState
+) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
-  const config = await conn.facades.application.get({ application: appName });
+  const config = await conn?.facades.application.get({ application: appName });
   return config;
 }
 
+export type ConfigData = {
+  name: string;
+  default: any;
+  description: string;
+  source: "default" | "user";
+  type: "string" | "int" | "float" | "boolean";
+  value: any;
+  newValue: any;
+};
+
+export type Config = {
+  [key: string]: ConfigData;
+};
+
 /**
   Call the API to set the application config data.
-  @param {String} modelUUID
-  @param {String} appName
-  @param {Object} config
-  @param {Object} appState
-  @returns {Promise} The application set config response
+  @param modelUUID
+  @param appName
+  @param config
+  @param appState
+  @returns The application set config response
 */
 export async function setApplicationConfig(
-  modelUUID,
-  appName,
-  config,
-  appState
+  modelUUID: string,
+  appName: string,
+  config: Config,
+  appState: RootState
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
-  const setValues = {};
+  const setValues: Record<string, string> = {};
   Object.keys(config).forEach((key) => {
     if (isSet(config[key].newValue)) {
       // Juju requires that the value be a string, even if the field is a bool.
       setValues[key] = `${config[key].newValue}`;
     }
   });
-  const resp = await conn.facades.application.setConfigs({
+  const resp = await conn?.facades.application.setConfigs({
     Args: [
       {
         application: appName,
@@ -435,20 +499,24 @@ export async function setApplicationConfig(
   return resp;
 }
 
-export async function getActionsForApplication(appName, modelUUID, appState) {
+export async function getActionsForApplication(
+  appName: string,
+  modelUUID: string,
+  appState: RootState
+) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
-  const actionList = await conn.facades.action.applicationsCharmsActions({
+  const actionList = await conn?.facades.action.applicationsCharmsActions({
     entities: [{ tag: `application-${appName}` }],
   });
   return actionList;
 }
 
 export async function executeActionOnUnits(
-  unitList = [],
-  actionName,
-  actionOptions,
-  modelUUID,
-  appState
+  unitList: string[] = [],
+  actionName: string,
+  actionOptions: ActionAdditionalProperties,
+  modelUUID: string,
+  appState: RootState
 ) {
   const generatedActions = unitList.map((unit) => {
     return {
@@ -458,39 +526,51 @@ export async function executeActionOnUnits(
     };
   });
   const conn = await connectAndLoginToModel(modelUUID, appState);
-  const actionResult = await conn.facades.action.enqueueOperation({
+  const actionResult = await conn?.facades.action.enqueueOperation({
     actions: generatedActions,
   });
   return actionResult;
 }
 
-export async function queryOperationsList(queryArgs, modelUUID, appState) {
+export async function queryOperationsList(
+  queryArgs: Partial<OperationQueryArgs>,
+  modelUUID: string,
+  appState: RootState
+) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
-  const operationListResult = await conn.facades.action.listOperations(
+  const operationListResult = await conn?.facades.action.listOperations(
     queryArgs
   );
   return operationListResult;
 }
 
-export async function queryActionsList(queryArgs, modelUUID, appState) {
+export async function queryActionsList(
+  queryArgs: Entities,
+  modelUUID: string,
+  appState: RootState
+) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
-  const actionsListResult = await conn.facades.action.actions(queryArgs);
+  const actionsListResult = await conn?.facades.action.actions(queryArgs);
   return actionsListResult;
 }
 
-export async function startModelWatcher(modelUUID, appState, dispatch) {
+export async function startModelWatcher(
+  modelUUID: string,
+  appState: RootState,
+  dispatch: Dispatch
+) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
-  const watcherHandle = await conn.facades.client.watchAll();
+  const watcherHandle = await conn?.facades.client.watchAll();
   const pingerIntervalId = startPingerLoop(conn);
-  const data = await conn.facades.allWatcher.next(watcherHandle["watcher-id"]);
+  const data = await conn?.facades.allWatcher.next(watcherHandle["watcher-id"]);
   if (data?.deltas) dispatch(processAllWatcherDeltas(data?.deltas));
   return { conn, watcherHandle, pingerIntervalId };
 }
 
 export async function stopModelWatcher(
-  conn,
-  watcherHandleId,
-  pingerIntervalId
+  conn: Connection,
+  watcherHandleId: number,
+  pingerIntervalId: number
 ) {
   // TODO: use allWatcher.stop(...)
   await conn.facades.allWatcher.stop(watcherHandleId);
@@ -500,29 +580,29 @@ export async function stopModelWatcher(
 
 /**
   Call the API to grant the sharing permissions for a model
-  @param {String} controllerURL
-  @param {String} modelUUID
-  @param {Function} getState Function to get current store state
-  @param {Object} user The user obj with name and access info
-  @param {String | undefined} permissionTo
-  @param {String | undefined} permissionFrom The level of access a user previously had (read|write|admin)
-  @param {String} action grant|revoke
-  @param {Function} dispatch Redux dispatch method
-  @returns {Promise} The application set config response
+  @param controllerURL
+  @param modelUUID
+  @param getState Function to get current store state
+  @param user The user obj with name and access info
+  @param permissionTo
+  @param permissionFrom The level of access a user previously had (read|write|admin)
+  @param action grant|revoke
+  @param dispatch Redux dispatch method
+  @returns The application set config response
 */
 export async function setModelSharingPermissions(
-  controllerURL,
-  modelUUID,
-  getState,
-  user,
-  permissionTo,
-  permissionFrom,
-  action,
-  dispatch
+  controllerURL: string,
+  modelUUID: string,
+  getState: () => RootState,
+  user: string | undefined,
+  permissionTo: string | undefined,
+  permissionFrom: string | undefined,
+  action: string,
+  dispatch: Dispatch
 ) {
   const conn = await getControllerConnection(getState(), controllerURL);
 
-  const modifyAccess = async (access, action) => {
+  const modifyAccess = async (access: string, action: string) => {
     return await conn.facades.modelManager.modifyModelAccess({
       changes: [
         {
@@ -542,7 +622,7 @@ export async function setModelSharingPermissions(
       response = await modifyAccess(permissionFrom, "revoke");
     }
 
-    if (action === "grant") {
+    if (action === "grant" && permissionTo) {
       response = await modifyAccess(permissionTo, "grant");
     }
 

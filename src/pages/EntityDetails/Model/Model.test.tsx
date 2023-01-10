@@ -31,7 +31,7 @@ jest.mock("components/WebCLI/WebCLI", () => {
   return WebCLI;
 });
 
-jest.mock("juju", () => {
+jest.mock("juju/api", () => {
   return {
     queryOperationsList: () => {
       return new Promise((resolve) => {

@@ -1,8 +1,8 @@
 import { Route, Routes, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { startModelWatcher, stopModelWatcher } from "juju/index";
+import { startModelWatcher, stopModelWatcher } from "juju/api";
 import { populateMissingAllWatcherData } from "juju/actions";
 
 import type { TSFixMe } from "types";
@@ -13,9 +13,10 @@ import Model from "pages/EntityDetails/Model/Model";
 import App from "pages/EntityDetails/App/App";
 import Unit from "pages/EntityDetails/Unit/Unit";
 import Machine from "pages/EntityDetails/Machine/Machine";
+import { useAppStore } from "store/store";
 
 export default function ModelDetails() {
-  const appState = useStore().getState();
+  const appState = useAppStore().getState();
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUID(modelName, userName));
@@ -44,7 +45,7 @@ export default function ModelDetails() {
       loadFullData();
     }
     return () => {
-      if (watcherHandle) {
+      if (watcherHandle && pingerIntervalId) {
         stopModelWatcher(conn, watcherHandle["watcher-id"], pingerIntervalId);
       }
     };
