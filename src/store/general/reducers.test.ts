@@ -1,29 +1,24 @@
-import { actions, reducer } from "./slice";
+import {
+  configFactory,
+  credentialFactory,
+  generalStateFactory,
+} from "testing/factories/general";
 
-const defaultState = {
-  appVersion: null,
-  config: null,
-  controllerConnections: null,
-  credentials: null,
-  loginError: null,
-  pingerIntervalIds: null,
-  visitURL: null,
-};
+import { actions, reducer } from "./slice";
 
 describe("reducers", () => {
   it("default", () => {
     expect(reducer(undefined, { type: "", payload: true })).toStrictEqual(
-      defaultState
+      generalStateFactory.build()
     );
   });
 
   it("updateControllerConnection", () => {
-    const state = {
-      ...defaultState,
+    const state = generalStateFactory.build({
       controllerConnections: {
         "wss://example.com": "default info",
       },
-    };
+    });
     expect(
       reducer(
         state,
@@ -41,23 +36,10 @@ describe("reducers", () => {
   });
 
   it("storeConfig", () => {
-    const state = {
-      ...defaultState,
-      config: {
-        controllerAPIEndpoint: "wss://controller.example.com",
-        baseAppURL: "/",
-        identityProviderAvailable: false,
-        identityProviderURL: "",
-        isJuju: true,
-      },
-    };
-    const newConfig = {
+    const state = generalStateFactory.build();
+    const newConfig = configFactory.build({
       controllerAPIEndpoint: "wss://new.example.com",
-      baseAppURL: "/",
-      identityProviderAvailable: false,
-      identityProviderURL: "",
-      isJuju: true,
-    };
+    });
     expect(reducer(state, actions.storeConfig(newConfig))).toStrictEqual({
       ...state,
       config: newConfig,
@@ -65,10 +47,9 @@ describe("reducers", () => {
   });
 
   it("storeLoginError", () => {
-    const state = {
-      ...defaultState,
+    const state = generalStateFactory.build({
       loginError: "old error",
-    };
+    });
     expect(reducer(state, actions.storeLoginError("new error"))).toStrictEqual({
       ...state,
       loginError: "new error",
@@ -76,42 +57,30 @@ describe("reducers", () => {
   });
 
   it("storeUserPass", () => {
-    const state = {
-      ...defaultState,
-      credentials: {
-        "wss://example.com": {
-          user: "user-eggman@external",
-          password: "verysecure123",
-        },
-      },
-    };
+    const state = generalStateFactory.build();
+    const credential = credentialFactory.build({
+      user: "user-eggman2@external",
+    });
     expect(
       reducer(
         state,
         actions.storeUserPass({
           wsControllerURL: "wss://example.com",
-          credential: {
-            user: "user-eggman2@external",
-            password: "verysecure123",
-          },
+          credential,
         })
       )
     ).toStrictEqual({
       ...state,
       credentials: {
-        "wss://example.com": {
-          user: "user-eggman2@external",
-          password: "verysecure123",
-        },
+        "wss://example.com": credential,
       },
     });
   });
 
   it("storeVersion", () => {
-    const state = {
-      ...defaultState,
+    const state = generalStateFactory.build({
       appVersion: "0.1",
-    };
+    });
     expect(reducer(state, actions.storeVersion("1.2"))).toStrictEqual({
       ...state,
       appVersion: "1.2",
@@ -119,10 +88,9 @@ describe("reducers", () => {
   });
 
   it("storeVisitURL", () => {
-    const state = {
-      ...defaultState,
+    const state = generalStateFactory.build({
       visitURL: "/visit",
-    };
+    });
     expect(reducer(state, actions.storeVisitURL("/welcome"))).toStrictEqual({
       ...state,
       visitURL: "/welcome",
@@ -130,13 +98,12 @@ describe("reducers", () => {
   });
 
   it("logOut", () => {
-    const state = {
-      ...defaultState,
+    const state = generalStateFactory.build({
       controllerConnections: {
         "wss://example.com": "default info",
       },
       visitURL: "/visit",
-    };
+    });
     expect(reducer(state, actions.logOut())).toStrictEqual({
       ...state,
       controllerConnections: null,
@@ -145,12 +112,11 @@ describe("reducers", () => {
   });
 
   it("updatePingerIntervalId", () => {
-    const state = {
-      ...defaultState,
+    const state = generalStateFactory.build({
       pingerIntervalIds: {
         "wss://example.com": 5,
       },
-    };
+    });
     expect(
       reducer(
         state,

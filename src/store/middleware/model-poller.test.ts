@@ -5,6 +5,8 @@ import { actionsList } from "app/action-types";
 import * as jujuModule from "juju/api";
 import { updateModelList } from "juju/actions";
 import { actions as generalActions } from "store/general";
+import { rootStateFactory } from "testing/factories";
+import { generalStateFactory } from "testing/factories/general";
 
 import { modelPollerMiddleware, LoginError } from "./model-poller";
 
@@ -46,10 +48,12 @@ describe("model poller", () => {
   let juju: Juju;
   const intervalId = 99;
   let conn: Conn;
-  const storeState = {
+  const storeState = rootStateFactory.build({
     juju: {
       controllers: {
-        [wsControllerURL]: [{ uuid: "abc123" }],
+        [wsControllerURL]: {
+          uuid: "abc123",
+        },
       },
     },
     general: {
@@ -61,7 +65,7 @@ describe("model poller", () => {
         },
       },
     },
-  };
+  });
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -299,7 +303,7 @@ describe("model poller", () => {
   it("does not update models if the user logs out", async () => {
     jest.spyOn(fakeStore, "getState").mockReturnValue({
       ...storeState,
-      general: {
+      general: generalStateFactory.build({
         controllerConnections: {
           [wsControllerURL]: {
             user: {
@@ -307,7 +311,7 @@ describe("model poller", () => {
             },
           },
         },
-      },
+      }),
     });
     const fetchAllModelStatuses = jest.spyOn(
       jujuModule,

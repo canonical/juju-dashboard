@@ -14,6 +14,11 @@ import {
 } from "testing/factories/juju/ActionV7";
 import { ModelData } from "juju/types";
 import { RootState } from "store/store";
+import {
+  credentialFactory,
+  generalStateFactory,
+  configFactory,
+} from "testing/factories/general";
 
 import Model, { Label } from "./Model";
 import { TestId } from "../../../components/InfoPanel/InfoPanel";
@@ -53,6 +58,24 @@ describe("Model", () => {
 
   beforeEach(() => {
     storeData = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
+        }),
+        controllerConnections: {
+          "wss://jimm.jujucharms.com/api": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
+        credentials: {
+          "wss://jimm.jujucharms.com/api": credentialFactory.build(),
+        },
+      }),
       juju: jujuStateFactory.build(
         {},
         {
@@ -66,11 +89,6 @@ describe("Model", () => {
         }
       ),
     });
-    storeData.general.controllerConnections = {
-      "wss://jimm.jujucharms.com/api": {
-        user: { identity: "user-eggman@external" },
-      },
-    };
     storeData.juju.modelData = dataDump.juju.modelData;
   });
 

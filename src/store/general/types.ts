@@ -20,6 +20,7 @@ export type Credential = {
   user: string;
   password: string;
 };
+
 export type Credentials = Record<string, Credential>;
 
 export type GeneralState = {
