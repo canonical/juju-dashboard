@@ -9,10 +9,10 @@ import {
   fetchAllModelStatuses,
   fetchControllerList,
   loginWithBakery,
+  setModelSharingPermissions,
 } from "juju/api";
 import { updateModelList } from "juju/actions";
 import { TSFixMe } from "@canonical/react-components";
-import { PayloadAction } from "@reduxjs/toolkit";
 import { RootState, Store } from "store/store";
 
 export enum LoginError {
@@ -21,38 +21,45 @@ export enum LoginError {
 }
 
 // TODO: provide these types when the types are available from jujulib.
-// TODO: Import bakery instead of passing it as a param.
 type ControllerOptions = [string, TSFixMe, boolean, boolean | undefined];
+
+// TSFixMe: substitute for the connection type when it is available from jujulib.
+type Connection = TSFixMe;
+
+// TSFixMe: substitute for the juju client type when it is available from jujulib.
+type Client = TSFixMe;
 
 export const modelPollerMiddleware: Middleware<
   {},
   RootState,
   Store["dispatch"]
 > = (reduxStore) => {
-  // TODO: provide the connection when the types are available from jujulib.
-  const jujus = new Map<string, TSFixMe>();
-  return (next) =>
-    async (
-      action: PayloadAction<{
-        controllers: ControllerOptions[];
-        isJuju: boolean;
-      }>
-    ) => {
-      if (action.type === actionsList.connectAndPollControllers) {
-        action.payload.controllers.forEach(async (controllerData) => {
+  const controllers = new Map<string, Connection>();
+  // TSFixMe: substitute the connection type when it is available from jujulib.
+  const jujus = new Map<string, Client>();
+  return (next) => async (action) => {
+    if (action.type === actionsList.connectAndPollControllers) {
+      action.payload.controllers.forEach(
+        async (controllerData: ControllerOptions) => {
           const [
             wsControllerURL,
             credentials,
             identityProviderAvailable,
             isAdditionalController,
           ] = controllerData;
-          let conn, error, juju, intervalId;
+          let conn: Connection;
+          let juju: Client;
+          // TSFixMe: substitute the correct types once available from jujlib
+          // and once src/juju/index.js has been migrated to TypeScript.
+          let error: TSFixMe;
+          let intervalId: TSFixMe;
           try {
             ({ conn, error, juju, intervalId } = await loginWithBakery(
               wsControllerURL,
               credentials,
               identityProviderAvailable
             ));
+            controllers.set(wsControllerURL, conn);
             if (error) {
               // TODO: this error should not be cast once loginWithBakery has
               // been migrated to TypeScript.
@@ -151,13 +158,29 @@ export const modelPollerMiddleware: Middleware<
               }, 30000);
             });
           } while (isLoggedIn(reduxStore.getState(), wsControllerURL));
-        });
-        return;
-      } else if (action.type === actionsList.logOut) {
-        jujus.forEach((juju) => {
-          juju.logout();
-        });
-      }
+        }
+      );
+      return;
+    } else if (action.type === actionsList.logOut) {
+      jujus.forEach((juju) => {
+        juju.logout();
+      });
       return next(action);
-    };
+    } else if (action.type === actionsList.updatePermissions) {
+      const { payload } = action;
+      const conn = controllers.get(payload.wsControllerURL);
+      const response = await setModelSharingPermissions(
+        payload.wsControllerURL,
+        payload.modelUUID,
+        conn,
+        payload.user,
+        payload.permissionTo,
+        payload.permissionFrom,
+        payload.action,
+        reduxStore.dispatch
+      );
+      return response;
+    }
+    return next(action);
+  };
 };

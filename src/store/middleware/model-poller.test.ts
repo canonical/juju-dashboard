@@ -1,5 +1,6 @@
 import { AnyAction, MiddlewareAPI } from "redux";
 
+import { updatePermissions } from "app/actions";
 import { actionsList } from "app/action-types";
 import * as jujuModule from "juju/api";
 import { updateModelList } from "juju/actions";
@@ -32,6 +33,7 @@ jest.mock("juju/api", () => ({
     .mockImplementation(async () => await Promise.resolve()),
   loginWithBakery: jest.fn(),
   fetchAllModelStatuses: jest.fn(),
+  setModelSharingPermissions: jest.fn(),
 }));
 
 describe("model poller", () => {
@@ -342,5 +344,29 @@ describe("model poller", () => {
     expect(juju.logout).toHaveBeenCalled();
     // The action should be passed along to the reducers.
     expect(next).toHaveBeenCalled();
+  });
+
+  it("handles updating permissions", async () => {
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "setModelSharingPermissions")
+      .mockImplementation(() => Promise.resolve("response"));
+    const middleware = await runMiddleware();
+    const action = updatePermissions(
+      "wss://example.com",
+      "abc123",
+      "admin",
+      "read",
+      "write",
+      "grant"
+    );
+    const response = middleware(next)(action);
+    expect(jujuModule.setModelSharingPermissions).toHaveBeenCalled();
+    expect(next).not.toHaveBeenCalled();
+    return expect(response).resolves.toEqual("response");
   });
 });

@@ -24,7 +24,6 @@ import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 import bakery from "app/bakery";
 import JIMMV2 from "app/jimm-facade";
 import { isSet } from "app/utils/utils";
-
 import {
   getConfig,
   getControllerConnection,
@@ -582,7 +581,7 @@ export async function stopModelWatcher(
   Call the API to grant the sharing permissions for a model
   @param controllerURL
   @param modelUUID
-  @param getState Function to get current store state
+  @param conn The controller connection.
   @param user The user obj with name and access info
   @param permissionTo
   @param permissionFrom The level of access a user previously had (read|write|admin)
@@ -593,15 +592,13 @@ export async function stopModelWatcher(
 export async function setModelSharingPermissions(
   controllerURL: string,
   modelUUID: string,
-  getState: () => RootState,
+  conn: Connection,
   user: string | undefined,
   permissionTo: string | undefined,
   permissionFrom: string | undefined,
   action: string,
   dispatch: Dispatch
 ) {
-  const conn = await getControllerConnection(getState(), controllerURL);
-
   const modifyAccess = async (access: string, action: string) => {
     return await conn.facades.modelManager.modifyModelAccess({
       changes: [
@@ -615,7 +612,7 @@ export async function setModelSharingPermissions(
     });
   };
 
-  let response = Promise.resolve({ results: [{}] });
+  let response;
 
   if (conn) {
     if (permissionFrom) {
@@ -629,10 +626,10 @@ export async function setModelSharingPermissions(
     const modelInfo = await fetchModelInfo(conn, modelUUID);
     modelInfo && dispatch(updateModelInfo(modelInfo, controllerURL));
   } else {
-    response = Promise.resolve({
-      results: [{ error: true }],
-    });
+    response = Promise.reject(
+      `Unable to connect to controller: ${controllerURL}`
+    );
   }
 
-  return response;
+  return response ?? Promise.reject("Incorrect options given.");
 }

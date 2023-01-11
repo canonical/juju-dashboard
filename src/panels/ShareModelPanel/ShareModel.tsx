@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Formik, Field, Form } from "formik";
 import cloneDeep from "clone-deep";
 import useModelStatus from "hooks/useModelStatus";
-import { setModelSharingPermissions } from "juju/api";
 import { motion } from "framer-motion";
 import reactHotToast from "react-hot-toast";
+import { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
+import { updatePermissions } from "app/actions";
 import { getModelControllerDataByUUID } from "app/selectors";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import ShareCard from "components/ShareCard/ShareCard";
 import ToastCard from "components/ToastCard/ToastCard";
-import { useAppStore } from "store/store";
+import { usePromiseDispatch } from "store/store";
 import type { TSFixMe } from "types";
 
 import "./share-model.scss";
@@ -43,8 +44,7 @@ type UserAccess = {
 };
 
 export default function ShareModel() {
-  const dispatch = useDispatch();
-  const store = useAppStore();
+  const promiseDispatch = usePromiseDispatch();
   const [usersAccess, setUsersAccess] = useState<UsersAccess>({});
   const [newUserFormSubmitActive, setNewUserFormSubmitActive] = useState(false);
 
@@ -93,39 +93,39 @@ export default function ShareModel() {
     );
   };
 
-  const updatePermissions = async (
+  const updateModelPermissions = async (
     action: string,
     user: string,
     permissionTo: string | undefined,
     permissionFrom: string | undefined
   ) => {
-    // Temprorarily manipulate the types to please the compiler. The correct
-    // types are introduced in: https://github.com/canonical/jaas-dashboard/pull/1360.
-    const response: {
-      error?: string;
-      results?: { error?: { message: string } }[];
-    } = await setModelSharingPermissions(
-      modelControllerURL,
-      modelUUID,
-      store.getState,
-      user,
-      permissionTo,
-      permissionFrom,
-      action,
-      dispatch
-    );
-    if (response?.error) {
+    let response: ErrorResults | null;
+    try {
+      response = await promiseDispatch<ErrorResults>(
+        updatePermissions(
+          modelControllerURL,
+          modelUUID,
+          user,
+          permissionTo,
+          permissionFrom,
+          action
+        )
+      );
+    } catch (error) {
       reactHotToast.custom((t) => (
         <ToastCard
           toastInstance={t}
           type="negative"
-          text={response.error ?? ""}
+          text={
+            typeof error === "string"
+              ? error
+              : "Unable to update model permissions"
+          }
         />
       ));
-      return null;
-    } else {
-      return response;
+      response = null;
     }
+    return response;
   };
 
   const handleAccessSelectChange = async (
@@ -140,7 +140,7 @@ export default function ShareModel() {
     setUsersAccess(clonedUserAccess);
     const permissionFrom = usersAccess?.[userName];
 
-    const response = await updatePermissions(
+    const response = await updateModelPermissions(
       "grant",
       userName,
       permissionTo,
@@ -164,7 +164,7 @@ export default function ShareModel() {
   };
 
   const handleRemoveUser = async (userName: string) => {
-    await updatePermissions(
+    await updateModelPermissions(
       "revoke",
       userName,
       undefined,
@@ -179,7 +179,7 @@ export default function ShareModel() {
         undo={async () => {
           const permissionTo = usersAccess?.[userName];
           const permissionFrom = undefined;
-          await updatePermissions(
+          await updateModelPermissions(
             "grant",
             userName,
             permissionTo,
@@ -207,7 +207,7 @@ export default function ShareModel() {
       const newUserPermission = values.access;
       let response = null;
       if (newUserName && newUserPermission) {
-        response = await updatePermissions(
+        response = await updateModelPermissions(
           "grant",
           newUserName,
           newUserPermission,
