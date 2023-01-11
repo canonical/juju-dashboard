@@ -55,8 +55,8 @@ describe("OptionInputs", () => {
     expect(onValuesChange).toHaveBeenCalledTimes(1);
     await userEvent.type(screen.getByRole("textbox", { name: "fruit" }), "foo");
     // On change gets called for each letter that is typed into the textbox.
-    expect(onValuesChange).toHaveBeenCalledTimes(4);
-    expect(onValuesChange.mock.calls[3]).toEqual([
+    expect(onValuesChange).toHaveBeenCalledTimes(5);
+    expect(onValuesChange.mock.calls[4]).toEqual([
       "MyAction",
       { "MyAction-fruit": "foo", "MyAction-veg": "" },
     ]);

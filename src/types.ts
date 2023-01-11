@@ -1,6 +1,13 @@
 import { ModelWatcherData } from "juju/types";
+import { Config } from "store/general/types";
 
 export type TSFixMe = any;
+
+declare global {
+  interface Window {
+    jujuDashboardConfig?: Config;
+  }
+}
 
 export type Controller = {
   additionalController?: boolean;

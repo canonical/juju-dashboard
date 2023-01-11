@@ -7,13 +7,7 @@ import {
   getWSControllerURL,
   isLoggedIn,
 } from "store/general/selectors";
-import React, {
-  FormEvent,
-  PropsWithChildren,
-  ReactNode,
-  useEffect,
-  useRef,
-} from "react";
+import React, { FormEvent, ReactNode, useEffect, useRef } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 
 import { Spinner } from "@canonical/react-components";
@@ -27,7 +21,9 @@ import logo from "static/images/logo/logo-black-on-white.svg";
 
 import "./_login.scss";
 
-export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
+type Props = { children: ReactNode };
+
+export default function LogIn({ children }: Props) {
   const config = useSelector(getConfig);
 
   const controllerConnections = useSelector(getControllerConnections) || {};

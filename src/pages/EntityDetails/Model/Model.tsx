@@ -109,7 +109,7 @@ const Model = () => {
   const tableRowClick = useTableRowClick();
 
   const panelRowClick = useCallback(
-    (entityName, entityPanel) => {
+    (entityName: string, entityPanel: string) => {
       // This can be removed when all entities are moved to top level aside panels
       if (entityPanel === "apps") {
         navigate(`/models/${userName}/${modelName}/app/${entityName}`);
