@@ -2,21 +2,24 @@ import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { render, screen, within } from "@testing-library/react";
 
-import LogIn from "./LogIn";
+import { configFactory, generalStateFactory } from "testing/factories/general";
+import { rootStateFactory } from "testing/factories/root";
 
-import dataDump from "../../testing/complete-redux-store-dump";
+import LogIn from "./LogIn";
 
 const mockStore = configureStore([]);
 
 describe("LogIn", () => {
   it("renders a 'connecting' message while connecting", () => {
-    const store = mockStore({
-      general: {
-        config: {
-          identityProviderAvailable: true,
-        },
-      },
-    });
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            identityProviderAvailable: true,
+          }),
+        }),
+      })
+    );
     render(
       <Provider store={store}>
         <LogIn>App content</LogIn>
@@ -31,12 +34,16 @@ describe("LogIn", () => {
   });
 
   it("renders an IdentityProvider login UI if the user is not logged in", () => {
-    const store = mockStore({
-      general: {
-        visitURL: "I am a url",
-        config: dataDump.general.config,
-      },
-    });
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          visitURL: "I am a url",
+          config: configFactory.build({
+            identityProviderAvailable: true,
+          }),
+        }),
+      })
+    );
     render(
       <Provider store={store}>
         <LogIn>App content</LogIn>
@@ -51,13 +58,15 @@ describe("LogIn", () => {
   });
 
   it("renders a UserPass login UI if the user is not logged in", () => {
-    const store = mockStore({
-      general: {
-        config: {
-          identityProviderAvailable: false,
-        },
-      },
-    });
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            identityProviderAvailable: false,
+          }),
+        }),
+      })
+    );
     render(
       <Provider store={store}>
         <LogIn>App content</LogIn>
@@ -72,14 +81,16 @@ describe("LogIn", () => {
   });
 
   it("renders a login error if one exists", () => {
-    const store = mockStore({
-      general: {
-        loginError: "Invalid user name",
-        config: {
-          identityProviderAvailable: false,
-        },
-      },
-    });
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          loginError: "Invalid user name",
+          config: configFactory.build({
+            identityProviderAvailable: false,
+          }),
+        }),
+      })
+    );
     render(
       <Provider store={store}>
         <LogIn>App content</LogIn>

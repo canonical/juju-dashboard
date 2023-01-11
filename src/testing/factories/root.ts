@@ -2,25 +2,20 @@ import { Factory } from "fishery";
 
 import { RootState } from "store/store";
 
+import { generalStateFactory } from "./general";
 import { jujuStateFactory } from "./juju/juju";
 import { uiStateFactory } from "./ui";
 
-export const rootStateFactory = Factory.define<RootState>(() => ({
-  general: {
-    appVersion: null,
-    controllerConnections: null,
-    credentials: null,
-    loginError: null,
-    pingerIntervalIds: null,
-    visitURL: null,
-    config: {
-      controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
-      baseAppURL: "/",
-      identityProviderAvailable: false,
-      identityProviderURL: "",
-      isJuju: false,
-    },
-  },
+class RootStateFactory extends Factory<RootState> {
+  withGeneralConfig() {
+    return this.params({
+      general: generalStateFactory.withConfig().build(),
+    });
+  }
+}
+
+export const rootStateFactory = RootStateFactory.define(() => ({
+  general: generalStateFactory.build(),
   juju: jujuStateFactory.build(),
   ui: uiStateFactory.build(),
 }));

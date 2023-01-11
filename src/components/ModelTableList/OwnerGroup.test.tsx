@@ -5,6 +5,8 @@ import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
+import { rootStateFactory } from "testing/factories/root";
+
 import OwnerGroup from "./OwnerGroup";
 
 import dataDump from "../../testing/complete-redux-store-dump";
@@ -13,19 +15,14 @@ const mockStore = configureStore([]);
 
 describe("OwnerGroup", () => {
   it("by default, renders no tables with no data", () => {
-    const store = mockStore({
-      general: {
-        config: {
-          controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
+    const store = mockStore(
+      rootStateFactory.build({
+        juju: {
+          models: {},
+          modelData: {},
         },
-      },
-      juju: {
-        models: {},
-        modelData: {},
-        modelInfo: {},
-        modelStatuses: {},
-      },
-    });
+      })
+    );
     render(
       <MemoryRouter>
         <Provider store={store}>

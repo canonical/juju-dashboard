@@ -6,6 +6,8 @@ import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
+import { rootStateFactory } from "testing/factories/root";
+
 import ControllersIndex from "./ControllersIndex";
 
 import dataDump from "../../testing/complete-redux-store-dump";
@@ -14,15 +16,17 @@ const mockStore = configureStore([]);
 
 describe("Controllers table", () => {
   it("renders a blank page if no data", () => {
-    const store = mockStore({
-      juju: {},
-      general: {
-        config: {},
-      },
-      ui: {
-        userMenuActive: false,
-      },
-    });
+    const store = mockStore(
+      rootStateFactory.build({
+        juju: {},
+        general: {
+          config: {},
+        },
+        ui: {
+          userMenuActive: false,
+        },
+      })
+    );
     render(
       <MemoryRouter>
         <Provider store={store}>

@@ -61,7 +61,7 @@ describe("Entity Details Container", () => {
         overrides ?? {}
       );
     }
-    const mockState = rootStateFactory.build(overrides);
+    const mockState = rootStateFactory.withGeneralConfig().build(overrides);
     const store = mockStore(mockState);
 
     window.history.pushState({}, "", "/models/kirk@external/enterprise");

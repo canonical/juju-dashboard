@@ -82,11 +82,11 @@ function generateConnectionOptions(
 }
 
 function determineLoginParams(
-  credentials: Credential,
+  credentials: Credential | null | undefined,
   identityProviderAvailable: boolean
 ) {
   let loginParams = {};
-  if (!identityProviderAvailable) {
+  if (credentials && !identityProviderAvailable) {
     loginParams = {
       username: credentials.user,
       password: credentials.password,
@@ -161,7 +161,7 @@ export async function loginWithBakery(
 */
 async function connectAndLoginWithTimeout(
   modelURL: string,
-  credentials: Credential,
+  credentials: Credential | null | undefined,
   options: ConnectOptions,
   identityProviderAvailable: boolean
 ): Promise<string | Awaited<ReturnType<typeof connectAndLogin>>> {
@@ -420,8 +420,7 @@ async function connectAndLoginToModel(modelUUID: string, appState: RootState) {
     return null;
   }
   const config = getConfig(appState);
-  // TSFixMe: Remove this cast once the general selectors have been migrated to TypeScript.
-  const credentials = getUserPass(appState, baseWSControllerURL) as Credential;
+  const credentials = getUserPass(appState, baseWSControllerURL);
   const modelURL = baseWSControllerURL.replace(
     "/api",
     `/model/${modelUUID}/api`

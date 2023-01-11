@@ -1,3 +1,8 @@
+import {
+  configFactory,
+  credentialFactory,
+  generalStateFactory,
+} from "testing/factories/general";
 import { rootStateFactory } from "testing/factories";
 
 import {
@@ -14,67 +19,43 @@ import {
   isLoggedIn,
 } from "./selectors";
 
-const defaultState = {
-  appVersion: null,
-  config: null,
-  controllerConnections: null,
-  credentials: null,
-  loginError: null,
-  pingerIntervalIds: null,
-  visitURL: null,
-};
-
 describe("selectors", () => {
   it("getConfig", () => {
-    const config = {
-      controllerAPIEndpoint: "wss://controller.example.com",
-      baseAppURL: "/",
-      identityProviderAvailable: false,
-      identityProviderURL: "",
-      isJuju: true,
-    };
+    const config = configFactory.build();
     expect(
       getConfig(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             config,
-          },
+          }),
         })
       )
     ).toStrictEqual(config);
   });
 
   it("getUserPass", () => {
+    const credential = credentialFactory.build();
     expect(
       getUserPass(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             credentials: {
-              "wss://example.com": {
-                user: "user-eggman@external",
-                password: "verysecure123",
-              },
+              "wss://example.com": credential,
             },
-          },
+          }),
         }),
         "wss://example.com"
       )
-    ).toStrictEqual({
-      user: "user-eggman@external",
-      password: "verysecure123",
-    });
+    ).toStrictEqual(credential);
   });
 
   it("getLoginError", () => {
     expect(
       getLoginError(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             loginError: "error",
-          },
+          }),
         })
       )
     ).toBe("error");
@@ -87,10 +68,9 @@ describe("selectors", () => {
     expect(
       getPingerIntervalIds(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             pingerIntervalIds,
-          },
+          }),
         })
       )
     ).toStrictEqual(pingerIntervalIds);
@@ -100,10 +80,9 @@ describe("selectors", () => {
     expect(
       getAppVersion(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             appVersion: "5",
-          },
+          }),
         })
       )
     ).toBe("5");
@@ -116,10 +95,9 @@ describe("selectors", () => {
     expect(
       getControllerConnections(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             controllerConnections,
-          },
+          }),
         })
       )
     ).toStrictEqual(controllerConnections);
@@ -132,10 +110,9 @@ describe("selectors", () => {
     expect(
       getControllerConnection(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             controllerConnections,
-          },
+          }),
         }),
         "wss://example.com"
       )
@@ -146,10 +123,9 @@ describe("selectors", () => {
     expect(
       isConnecting(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             visitURL: "/visit",
-          },
+          }),
         })
       )
     ).toBe(true);
@@ -159,8 +135,7 @@ describe("selectors", () => {
     expect(
       getActiveUserTag(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             controllerConnections: {
               "wss://example.com": {
                 user: {
@@ -168,7 +143,7 @@ describe("selectors", () => {
                 },
               },
             },
-          },
+          }),
         }),
         "wss://example.com"
       )
@@ -179,8 +154,7 @@ describe("selectors", () => {
     expect(
       isLoggedIn(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
+          general: generalStateFactory.build({
             controllerConnections: {
               "wss://example.com": {
                 user: {
@@ -188,7 +162,7 @@ describe("selectors", () => {
                 },
               },
             },
-          },
+          }),
         }),
         "wss://example.com"
       )
@@ -199,16 +173,11 @@ describe("selectors", () => {
     expect(
       getWSControllerURL(
         rootStateFactory.build({
-          general: {
-            ...defaultState,
-            config: {
+          general: generalStateFactory.build({
+            config: configFactory.build({
               controllerAPIEndpoint: "wss://controller.example.com",
-              baseAppURL: "/",
-              identityProviderAvailable: false,
-              identityProviderURL: "",
-              isJuju: true,
-            },
-          },
+            }),
+          }),
         })
       )
     ).toBe("wss://controller.example.com");
