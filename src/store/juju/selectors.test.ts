@@ -11,6 +11,8 @@ import {
   getModelRelations,
   getModelMachines,
   getAllModelApplicationStatus,
+  getModelData,
+  getControllerData,
 } from "./selectors";
 
 const defaultState = {
@@ -21,6 +23,53 @@ const defaultState = {
 };
 
 describe("selectors", () => {
+  it("getModelData", () => {
+    const modelData = {
+      "wss://example.com": {
+        uuid: "abc123",
+        annotations: undefined,
+        applications: {},
+        machines: {},
+        model: {},
+        offers: {},
+        relations: [],
+        "remote-applications": {},
+      },
+    };
+    expect(
+      getModelData(
+        rootStateFactory.build({
+          juju: {
+            ...defaultState,
+            modelData,
+          },
+        })
+      )
+    ).toStrictEqual(modelData);
+  });
+
+  it("getControllerData", () => {
+    const controllers = {
+      "wss://example.com": [
+        {
+          path: "/",
+          uuid: "abc123",
+          version: "1",
+        },
+      ],
+    };
+    expect(
+      getControllerData(
+        rootStateFactory.build({
+          juju: {
+            ...defaultState,
+            controllers,
+          },
+        })
+      )
+    ).toStrictEqual(controllers);
+  });
+
   it("getModelWatcherDataByUUID", () => {
     const modelWatcherData = modelWatcherDataFactory.build(undefined, {
       transient: { uuid: "abc123" },

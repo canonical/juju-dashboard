@@ -14,7 +14,7 @@ import FadeIn from "animations/FadeIn";
 
 import useWindowTitle from "hooks/useWindowTitle";
 
-import { getControllerData, getModelData } from "app/selectors";
+import { getControllerData, getModelData } from "store/juju/selectors";
 
 import { StringParam, useQueryParam } from "use-query-params";
 

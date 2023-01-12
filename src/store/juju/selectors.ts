@@ -15,6 +15,26 @@ import type { ModelsList } from "./types";
 
 const slice = (state: RootState) => state.juju;
 
+/**
+  Fetches the model data from state.
+  @param state The application state.
+  @returns The list of model data or null if none found.
+*/
+export const getModelData = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelData ?? null
+);
+
+/**
+  Fetches the controller data from state.
+  @param state The application state.
+  @returns The list of controller data or null if none found.
+*/
+export const getControllerData = createSelector(
+  [slice],
+  (sliceState) => sliceState.controllers
+);
+
 const getModelWatcherData = createSelector(
   [slice],
   (sliceState) => sliceState.modelWatcherData
