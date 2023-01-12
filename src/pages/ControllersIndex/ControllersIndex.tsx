@@ -18,11 +18,10 @@ import { getControllerData, getModelData } from "app/selectors";
 
 import { StringParam, useQueryParam } from "use-query-params";
 
+import { Controller, Controllers, ModelsList } from "store/juju/types";
 import { RootState } from "store/store";
-import { Controllers } from "types";
 
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
-import { Controller, ModelDataList } from "../../types";
 
 import "./_controllers.scss";
 
@@ -43,7 +42,7 @@ function Details() {
   );
   // TSFixme: these generics can be removed when the selectors have been
   // migrated to TypeScript.
-  const modelData = useSelector<RootState, ModelDataList>(getModelData);
+  const modelData = useSelector<RootState, ModelsList>(getModelData);
 
   const controllerMap: Record<string, AnnotatedController> = {};
   const additionalControllers: string[] = [];

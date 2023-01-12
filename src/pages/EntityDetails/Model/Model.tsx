@@ -55,7 +55,7 @@ import {
   getModelRelations,
   getModelUnits,
   getModelUUID,
-} from "juju/model-selectors";
+} from "store/juju/selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { ModelData } from "types";
@@ -84,7 +84,7 @@ const shouldShow = (segment: string, activeView: string) => {
   }
 };
 
-const generateCloudAndRegion = (cloudTag: string, region: string) => {
+const generateCloudAndRegion = (cloudTag: string, region?: string) => {
   if (cloudTag && region) {
     return `${extractCloudName(cloudTag)} / ${region}`;
   }

@@ -7,6 +7,7 @@ import { isLoggedIn } from "store/general/selectors";
 import { actions as uiActions } from "store/ui";
 import { actions as generalActions } from "store/general";
 import { actions as appActions, thunks as appThunks } from "store/app";
+import { actions as jujuActions } from "store/juju";
 
 function error(name, wsControllerURL) {
   console.log(
@@ -39,14 +40,6 @@ export default ({ getState }) =>
   async (action) => {
     // These lists need to be generated at run time to prevent circular imports.
     const actionAllowlist = [
-      "POPULATE_MISSING_ALLWATCHER_DATA",
-      "PROCESS_ALL_WATCHER_DELTAS",
-      "UPDATE_CONTROLLER_LIST",
-      "UPDATE_JUJU_API_INSTANCE",
-      "CLEAR_CONTROLLER_DATA",
-      "CLEAR_MODEL_DATA",
-      "TOGGLE_USER_MENU",
-      "SIDENAV_COLLAPSED",
       appActions.connectAndPollControllers.type,
       generalActions.storeConfig.type,
       generalActions.storeLoginError.type,
@@ -55,6 +48,11 @@ export default ({ getState }) =>
       generalActions.storeVisitURL.type,
       generalActions.updateControllerConnection.type,
       generalActions.updatePingerIntervalId.type,
+      jujuActions.populateMissingAllWatcherData.type,
+      jujuActions.processAllWatcherDeltas.type,
+      jujuActions.updateControllerList.type,
+      jujuActions.clearControllerData.type,
+      jujuActions.clearModelData.type,
       uiActions.userMenuActive.type,
       uiActions.sideNavCollapsed.type,
     ];

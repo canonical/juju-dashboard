@@ -2,20 +2,25 @@ import { createSelector } from "reselect";
 
 import { RootState } from "store/store";
 
-import type { ModelsList } from "types";
 import type {
   AnnotationData,
   ApplicationData,
   MachineData,
   ModelInfo,
-  ModelWatcherData,
   RelationData,
   UnitData,
-} from "./types";
+} from "juju/types";
 
-const getModelWatcherData = (state: RootState): ModelWatcherData =>
-  state.juju.modelWatcherData;
-const getModelList = (state: RootState): ModelsList => state.juju.models;
+import type { ModelsList } from "./types";
+
+const slice = (state: RootState) => state.juju;
+
+const getModelWatcherData = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelWatcherData
+);
+
+const getModelList = createSelector([slice], (sliceState) => sliceState.models);
 
 export function getModelWatcherDataByUUID(modelUUID: string) {
   return createSelector(getModelWatcherData, (modelWatcherData) => {
@@ -47,7 +52,7 @@ export function getModelUUID(
     if (!modelList || !modelName || !ownerName) {
       return modelUUID;
     }
-    Object.entries(modelList).some(([key, { name, ownerTag, uuid }]) => {
+    Object.entries(modelList).some(([_key, { name, ownerTag, uuid }]) => {
       if (name === modelName && ownerTag.replace("user-", "") === ownerName) {
         modelUUID = uuid;
         return true;
@@ -120,7 +125,7 @@ export function getModelMachines(modelUUID: string) {
 
 // The order of this enum is important. It needs to be organized in order of
 // best to worst status.
-enum Statuses {
+export enum Statuses {
   running,
   alert,
   blocked,
@@ -147,7 +152,7 @@ export function getAllModelApplicationStatus(modelUUID: string) {
       const applicationStatuses: StatusData = {};
       // Convert the various unit statuses into our three current
       // status types "blocked", "alert", "running".
-      Object.entries(units).forEach(([unitId, unitData]) => {
+      Object.entries(units).forEach(([_unitId, unitData]) => {
         let workloadStatus = Statuses.running;
         switch (unitData["workload-status"].current) {
           case "maintenance":

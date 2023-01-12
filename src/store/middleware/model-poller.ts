@@ -11,7 +11,7 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
-import { updateModelList } from "juju/actions";
+import { actions as jujuActions } from "store/juju";
 import { TSFixMe } from "@canonical/react-components";
 import { RootState, Store } from "store/store";
 
@@ -134,7 +134,9 @@ export const modelPollerMiddleware: Middleware<
               const models = await conn.facades.modelManager.listModels({
                 tag: conn.info.user.identity,
               });
-              reduxStore.dispatch(updateModelList(models, wsControllerURL));
+              reduxStore.dispatch(
+                jujuActions.updateModelList({ models, wsControllerURL })
+              );
               // TODO: this error should not be cast once the types are
               // available from jujulib.
               const modelUUIDList = models["user-models"].map(

@@ -22,7 +22,7 @@ import {
   getModelApplications,
   getModelInfo,
   getModelUUID,
-} from "juju/model-selectors";
+} from "store/juju/selectors";
 
 import useWindowTitle from "hooks/useWindowTitle";
 
