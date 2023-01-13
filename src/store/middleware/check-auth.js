@@ -18,7 +18,7 @@ function error(name, wsControllerURL) {
   );
 }
 
-const checkLoggedIn = (state, wsControllerURL) => {
+export const checkLoggedIn = (state, wsControllerURL) => {
   if (!wsControllerURL) {
     console.error("unable to determine logged in status");
   }

@@ -3,6 +3,7 @@ import { ModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-mana
 
 import { actions as jujuActions } from "store/juju";
 import { RootState } from "store/store";
+import { checkLoggedIn } from "store/middleware/check-auth";
 
 /**
   Updates the correct controller entry with a cloud and region fetched from
@@ -45,5 +46,10 @@ export const addControllerCloudRegion = createAsyncThunk<
         wsControllerURL
       );
     }
+  },
+  {
+    condition: ({ wsControllerURL }, thunkAPI) => {
+      return checkLoggedIn(thunkAPI.getState(), wsControllerURL);
+    },
   }
 );
