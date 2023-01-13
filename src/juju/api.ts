@@ -21,8 +21,8 @@ import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 
-import bakery from "app/bakery";
-import JIMMV2 from "app/jimm-facade";
+import bakery from "juju/bakery";
+import JIMMV2 from "juju/jimm-facade";
 import { isSet } from "app/utils/utils";
 import {
   getConfig,

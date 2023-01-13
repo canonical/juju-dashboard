@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { useDispatch, useStore } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-import { connectAndStartPolling } from "app/actions";
-import bakery from "app/bakery";
-
 import classNames from "classnames";
 
 import useLocalStorage from "hooks/useLocalStorage";
+import { thunks as appThunks } from "store/app";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
@@ -17,7 +14,6 @@ import "./register-controller.scss";
 export default function RegisterController() {
   const [formValues, setFormValues] = useState({});
   const dispatch = useDispatch();
-  const reduxStore = useStore();
   const [additionalControllers, setAdditionalControllers] = useLocalStorage(
     "additionalControllers",
     []
@@ -35,7 +31,7 @@ export default function RegisterController() {
       true, // additional controller
     ]);
     setAdditionalControllers(additionalControllers);
-    dispatch(connectAndStartPolling(reduxStore, bakery));
+    dispatch(appThunks.connectAndStartPolling());
     // Close the panel
     navigate("/controllers");
   }

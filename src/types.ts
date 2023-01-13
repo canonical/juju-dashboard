@@ -17,7 +17,7 @@ export type Controller = {
   version: string;
 };
 
-export type Controllers = Record<string, Controller>;
+export type Controllers = Record<string, Controller[]>;
 
 export type JujuState = {
   controllers: Controllers | null;

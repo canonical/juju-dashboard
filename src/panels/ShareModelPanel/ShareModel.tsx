@@ -7,8 +7,8 @@ import { motion } from "framer-motion";
 import reactHotToast from "react-hot-toast";
 import { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
-import { updatePermissions } from "app/actions";
 import { getModelControllerDataByUUID } from "app/selectors";
+import { actions as appActions } from "store/app";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
@@ -102,14 +102,14 @@ export default function ShareModel() {
     let response: ErrorResults | null;
     try {
       response = await promiseDispatch<ErrorResults>(
-        updatePermissions(
-          modelControllerURL,
+        appActions.updatePermissions({
+          wsControllerURL: modelControllerURL,
           modelUUID,
           user,
           permissionTo,
           permissionFrom,
-          action
-        )
+          action,
+        })
       );
     } catch (error) {
       reactHotToast.custom((t) => (

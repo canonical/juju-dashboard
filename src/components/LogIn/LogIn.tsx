@@ -1,4 +1,4 @@
-import { connectAndStartPolling } from "app/actions";
+import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import {
   getConfig,
@@ -8,14 +8,13 @@ import {
   isLoggedIn,
 } from "store/general/selectors";
 import React, { FormEvent, ReactNode, useEffect, useRef } from "react";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useSelector, useStore } from "react-redux";
 
 import { Spinner } from "@canonical/react-components";
 
-import { TSFixMe } from "types";
 import FadeUpIn from "animations/FadeUpIn";
-import bakery from "app/bakery";
-import { RootState } from "store/store";
+import bakery from "juju/bakery";
+import { RootState, useAppDispatch } from "store/store";
 
 import logo from "static/images/logo/logo-black-on-white.svg";
 
@@ -104,7 +103,7 @@ interface LoginElements extends HTMLFormControlsCollection {
 }
 
 function UserPassForm() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const store = useStore<RootState>();
   const focus = useRef<HTMLInputElement>(null);
 
@@ -122,9 +121,7 @@ function UserPassForm() {
       })
     );
     if (bakery) {
-      // TSFixMe - this override can be removed once the selectors have been
-      // migrated to TypeScript.
-      dispatch(connectAndStartPolling(store, bakery) as TSFixMe);
+      dispatch(appThunks.connectAndStartPolling());
     }
   }
 
