@@ -16,12 +16,12 @@ import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
 
-import { getControllerDataByUUID } from "app/selectors";
 import { getUserPass } from "store/general/selectors";
 import {
+  getControllerDataByUUID,
   getModelApplications,
   getModelInfo,
-  getModelUUID,
+  getModelUUIDFromList,
 } from "store/juju/selectors";
 
 import useWindowTitle from "hooks/useWindowTitle";
@@ -45,7 +45,7 @@ function generatePanelContent(activePanel: string, entity: string) {
 
 const EntityDetails = ({ type, children }: PropsWithChildren<Props>) => {
   const { userName, modelName } = useParams();
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const applications = useSelector(getModelApplications(modelUUID));
 

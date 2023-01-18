@@ -2,7 +2,7 @@ import {
   extractCloudName,
   extractOwnerName,
   extractCredentialName,
-} from "app/utils/utils";
+} from "store/juju/utils/models";
 import { ModelData } from "store/juju/types";
 
 export default function useModelAttributes(modelData: ModelData) {

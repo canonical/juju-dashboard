@@ -6,7 +6,7 @@ import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
-import * as appSelectors from "app/selectors";
+import * as appSelectors from "store/juju/selectors";
 import ModelTableList from "./ModelTableList";
 
 import dataDump from "../../testing/complete-redux-store-dump";

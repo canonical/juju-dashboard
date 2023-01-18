@@ -1,6 +1,7 @@
 import { Button } from "@canonical/react-components";
-import { getModelUUID } from "app/selectors";
-import { generateIconImg, pluralize } from "app/utils/utils";
+import { getModelUUID } from "store/juju/selectors";
+import { pluralize } from "store/juju/utils/models";
+import { generateIconImg } from "components/utils";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
 import {
   MutableRefObject,
@@ -21,8 +22,7 @@ import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
-import { useAppStore } from "store/store";
-import { TSFixMe } from "types";
+import { RootState, useAppStore } from "store/store";
 
 import ActionOptions from "./ActionOptions";
 
@@ -88,7 +88,9 @@ export default function ActionsPanel(): JSX.Element {
   );
   // Selectors.js is not typescript yet and it complains about the return value
   // of getModelUUID. TSFixMe
-  const modelUUID = useSelector(getModelUUIDMemo as (state: TSFixMe) => string);
+  const modelUUID = useSelector((state: RootState) =>
+    getModelUUIDMemo?.(state)
+  );
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});
   const [fetchingActionData, setFetchingActionData] = useState(false);
@@ -110,7 +112,7 @@ export default function ActionsPanel(): JSX.Element {
 
   useEffect(() => {
     setFetchingActionData(true);
-    if (appName) {
+    if (appName && modelUUID) {
       getActionsForApplication(appName, modelUUID, appStore.getState()).then(
         (actions) => {
           if (actions?.results?.[0]?.actions) {
@@ -122,11 +124,10 @@ export default function ActionsPanel(): JSX.Element {
     }
   }, [appName, appStore, modelUUID]);
 
-  const namespace = appName
-    ? (appState as TSFixMe).juju?.modelData?.[modelUUID]?.applications?.[
-        appName
-      ]?.charm
-    : null;
+  const namespace =
+    appName && modelUUID
+      ? appState.juju?.modelData?.[modelUUID]?.applications?.[appName]?.charm
+      : null;
 
   const generateSelectedUnitList = () => {
     if (!selectedUnits.length) {
@@ -141,15 +142,15 @@ export default function ActionsPanel(): JSX.Element {
     const unitLength = selectedUnits.length;
     return (
       <h5>
-        {generateIconImg(appName, namespace)} {unitLength}{" "}
-        {pluralize(unitLength, "unit")} selected
+        {appName && namespace ? generateIconImg(appName, namespace) : null}{" "}
+        {unitLength} {pluralize(unitLength, "unit")} selected
       </h5>
     );
   };
 
   const executeAction = async () => {
     // You shouldn't be able to get this far without this defined but jic.
-    if (!selectedAction) return;
+    if (!selectedAction || !modelUUID) return;
     await executeActionOnUnits(
       selectedUnits,
       selectedAction,

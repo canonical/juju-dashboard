@@ -2,19 +2,21 @@ import cloneDeep from "clone-deep";
 import { Field } from "formik";
 
 import { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import {
+  extractRevisionNumber,
+  extractRelationEndpoints,
+} from "store/juju/utils/models";
+import {
+  generateEntityIdentifier,
+  generateRelationIconImage,
+  generateStatusElement,
+  generateIconImg,
+} from "components/utils";
 import { Tooltip } from "@canonical/react-components";
 import {
   MainTableCell,
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import {
-  extractRelationEndpoints,
-  extractRevisionNumber,
-  generateEntityIdentifier,
-  generateIconImg,
-  generateRelationIconImage,
-  generateStatusElement,
-} from "app/utils/utils";
 import { ApplicationData, RelationData, UnitData } from "juju/types";
 import { MouseEvent } from "react";
 import { TSFixMe } from "types";

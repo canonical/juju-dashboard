@@ -4,7 +4,7 @@ import {
   getGroupedMachinesDataByStatus,
   getGroupedApplicationsDataByStatus,
   getGroupedUnitsDataByStatus,
-} from "app/selectors";
+} from "store/juju/selectors";
 
 import { ModelData } from "store/juju/types";
 import { RootState } from "store/store";

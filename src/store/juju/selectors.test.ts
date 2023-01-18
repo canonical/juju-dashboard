@@ -4,7 +4,7 @@ import { rootStateFactory } from "testing/factories";
 import {
   getModelWatcherDataByUUID,
   getModelInfo,
-  getModelUUID,
+  getModelUUIDFromList,
   getModelAnnotations,
   getModelApplications,
   getModelUnits,
@@ -104,7 +104,7 @@ describe("selectors", () => {
 
   it("getModelUUID", () => {
     expect(
-      getModelUUID(
+      getModelUUIDFromList(
         "a model",
         "eggman@external"
       )(

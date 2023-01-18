@@ -1,9 +1,8 @@
 import {
-  pluralize,
-  formatFriendlyDateToNow,
   canAdministerModelAccess,
   generateIconPath,
-} from "./utils";
+  pluralize,
+} from "./models";
 
 describe("pluralize", () => {
   it("should correctly handle a single item", () => {
@@ -23,14 +22,6 @@ describe("pluralize", () => {
   });
 });
 
-describe("formatFriendlyDateToNow", () => {
-  it("should return a human friendly time string", () => {
-    const timeOneHourAgo = new Date(Date.now() - 3600000).toISOString();
-    const friendlyDate = formatFriendlyDateToNow(timeOneHourAgo);
-    expect(friendlyDate).toBe("about 1 hour ago");
-  });
-});
-
 describe("canAdministerModelAccess", () => {
   it("should return true when user has admin access", () => {
     const userName = "john-smith@external";
@@ -40,6 +31,9 @@ describe("canAdministerModelAccess", () => {
           {
             user: "john-smith@external",
             access: "admin",
+            "display-name": "",
+            "last-connection": "",
+            "model-tag": "",
           },
         ],
       },
@@ -55,6 +49,9 @@ describe("canAdministerModelAccess", () => {
           {
             user: "joan-smith@external",
             access: "read",
+            "display-name": "",
+            "last-connection": "",
+            "model-tag": "",
           },
         ],
       },

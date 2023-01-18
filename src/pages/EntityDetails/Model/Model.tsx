@@ -3,7 +3,7 @@ import {
   canAdministerModelAccess,
   extractCloudName,
   pluralize,
-} from "app/utils/utils";
+} from "store/juju/utils/models";
 import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -54,7 +54,7 @@ import {
   getModelMachines,
   getModelRelations,
   getModelUnits,
-  getModelUUID,
+  getModelUUIDFromList,
 } from "store/juju/selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -103,7 +103,7 @@ const Model = () => {
     activeView: withDefault(StringParam, "apps"),
   });
 
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
   const tableRowClick = useTableRowClick();
 

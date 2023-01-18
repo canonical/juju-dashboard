@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { getModelUUID, getModelStatus } from "app/selectors";
+import { getModelUUID, getModelStatus } from "store/juju/selectors";
 import { useSelector } from "react-redux";
 import { useQueryParams, StringParam } from "use-query-params";
 

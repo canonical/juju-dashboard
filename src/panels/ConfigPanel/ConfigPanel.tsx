@@ -7,13 +7,12 @@ import {
   setApplicationConfig,
 } from "juju/api";
 import { ReactNode, useEffect, useState } from "react";
-import { useStore } from "react-redux";
 import type { Store } from "redux";
 
 import { Spinner, useListener } from "@canonical/react-components";
 
 import FadeIn from "animations/FadeIn";
-import { generateIconImg, isSet } from "app/utils/utils";
+import { generateIconImg, isSet } from "components/utils";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 
@@ -21,7 +20,7 @@ import useAnalytics from "hooks/useAnalytics";
 
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
-import { TSFixMe } from "types";
+import { useAppStore } from "store/store";
 
 import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
@@ -56,7 +55,7 @@ export default function ConfigPanel({
   modelUUID,
   onClose,
 }: Props): JSX.Element {
-  const reduxStore = useStore();
+  const reduxStore = useAppStore();
   const [config, setConfig] = useState<Config>({});
   const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
     undefined
@@ -172,7 +171,7 @@ export default function ConfigPanel({
       modelUUID,
       appName,
       config,
-      reduxStore.getState() as TSFixMe
+      reduxStore.getState()
     );
     // It returns an empty object if it's successful.
     if (typeof error === "string") {

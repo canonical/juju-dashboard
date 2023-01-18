@@ -21,7 +21,8 @@ export default {
           'display-name': 'eggman',
           identity: 'user-eggman@external',
           'controller-access': '',
-          'model-access': ''
+          'model-access': '',
+          "model-tag": ''
         }
       }
     },
@@ -594,6 +595,8 @@ export default {
           'cloud-credential-tag': 'cloudcred-google_eggman@external_juju',
           'owner-tag': 'user-eggman@external',
           life: 'alive',
+          'is-controller': false,
+          sla: {level: 'unsupported', owner: ''},
           status: {
             status: 'available',
             info: '',
@@ -605,13 +608,15 @@ export default {
               user: 'user-eggman@external',
               'display-name': 'eggman',
               'last-connection': '2019-11-15T18:31:36Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             },
             {
               user: 'design-it@external',
               'display-name': '',
               'last-connection': '2019-11-15T17:19:35Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             },
           ],
           machines: [
@@ -645,7 +650,8 @@ export default {
             }
           ],
           'agent-version': '2.6.10'
-        }
+        },
+        'remote-applications': {},
       },
       '19b56b55-6373-4286-8c19-957fakee8469': {
         annotations: {
@@ -782,8 +788,8 @@ export default {
           'model-status': {
             status: 'suspended',
             info: 'suspended since cloud credential is not valid',
-            data: null,
-            since: null,
+            data: {},
+            since: '',
             kind: '',
             version: '',
             life: ''
@@ -792,7 +798,7 @@ export default {
             color: '',
             message: ''
           },
-          sla: 'unsupported'
+          sla: 'unsupported',
         },
         offers: {},
         relations: null,
@@ -820,7 +826,8 @@ export default {
               user: 'eggman@external',
               'display-name': '',
               'last-connection': '2020-11-19T18:44:35Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [
@@ -832,7 +839,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-a'
+                'availability-zone': 'us-central1-a',
+                tags: []
               },
               'instance-id': 'juju-1e8469-0',
               status: 'started'
@@ -845,15 +853,17 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-a'
+                'availability-zone': 'us-central1-a',
+                tags: []
               },
               'instance-id': 'juju-1e8469-0',
               status: 'started'
             }
           ],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.2.6'
-        }
+        },
+        'remote-applications': {},
       },
       'e1e81a64-3385-4779-8643-05e3d5fake23': {
         annotations: {
@@ -1905,7 +1915,8 @@ export default {
               user: 'eggman@external',
               'display-name': '',
               'last-connection': '2020-11-19T18:44:35Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [
@@ -1990,9 +2001,10 @@ export default {
               status: 'error'
             }
           ],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.3.8'
-        }
+        },
+        'remote-applications': {},
       },
       '348932aa-ac01-46d5-862b-d50fakee5fb7': {
         annotations: {},
@@ -2404,13 +2416,15 @@ export default {
               user: 'island@external',
               'display-name': 'island',
               'last-connection': '2020-11-19T16:45:13Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             },
             {
               user: 'eggman@external',
               'display-name': '',
               'last-connection': '2020-11-19T18:44:35Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             }
           ],
           machines: [
@@ -2422,7 +2436,8 @@ export default {
                 'root-disk': 8192,
                 cores: 2,
                 'cpu-power': 700,
-                'availability-zone': 'eu-west-1a'
+                'availability-zone': 'eu-west-1a',
+                tags: []
               },
               'instance-id': 'i-017cb0cc36ef1b9ae',
               status: 'started'
@@ -2435,15 +2450,17 @@ export default {
                 'root-disk': 8192,
                 cores: 2,
                 'cpu-power': 700,
-                'availability-zone': 'eu-west-1b'
+                'availability-zone': 'eu-west-1b',
+                tags: []
               },
               'instance-id': 'i-0a047ba153766f994',
               status: 'started'
             }
           ],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.8.3'
-        }
+        },
+        'remote-applications': {},
       },
       '2f995dee-392e-4459-8eb9-839c5fake0af': {
         annotations: {
@@ -4082,7 +4099,8 @@ export default {
               user: 'eggman@external',
               'display-name': '',
               'last-connection': '2020-11-19T18:44:36Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [
@@ -4094,7 +4112,8 @@ export default {
                 'root-disk': 32768,
                 cores: 8,
                 'cpu-power': 2200,
-                'availability-zone': 'us-east1-b'
+                'availability-zone': 'us-east1-b',
+                tags: []
               },
               'instance-id': 'juju-1590af-0',
               status: 'started'
@@ -4120,9 +4139,10 @@ export default {
               status: 'error'
             }
           ],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.5.4'
-        }
+        },
+        'remote-applications': {},
       },
       '7ffe956a-06ac-4ae9-8aac-04ebafakeda5': {
         annotations: {
@@ -5546,7 +5566,8 @@ export default {
               user: 'eggman@external',
               'display-name': '',
               'last-connection': '2020-11-19T18:44:36Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [
@@ -5591,9 +5612,10 @@ export default {
               status: 'error'
             }
           ],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.3.8'
-        }
+        },
+        'remote-applications': {},
       },
       'd291b9ed-1e66-4023-84fe-57130e1fake2': {
         annotations: {
@@ -7538,7 +7560,8 @@ export default {
               user: 'eggman@external',
               'display-name': '',
               'last-connection': '2020-11-19T18:44:37Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [
@@ -7550,7 +7573,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-a'
+                'availability-zone': 'us-central1-a',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-0',
               status: 'started'
@@ -7563,7 +7587,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-a'
+                'availability-zone': 'us-central1-a',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-1',
               status: 'started'
@@ -7580,7 +7605,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-b'
+                'availability-zone': 'us-central1-b',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-2',
               status: 'started'
@@ -7593,7 +7619,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-b'
+                'availability-zone': 'us-central1-b',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-3',
               status: 'started'
@@ -7606,7 +7633,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-c'
+                'availability-zone': 'us-central1-c',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-4',
               status: 'started'
@@ -7619,7 +7647,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-a'
+                'availability-zone': 'us-central1-a',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-5',
               status: 'started'
@@ -7632,7 +7661,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-a'
+                'availability-zone': 'us-central1-a',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-6',
               status: 'started'
@@ -7645,7 +7675,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-b'
+                'availability-zone': 'us-central1-b',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-7',
               status: 'started'
@@ -7658,7 +7689,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-b'
+                'availability-zone': 'us-central1-b',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-8',
               status: 'started'
@@ -7671,15 +7703,17 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-central1-c'
+                'availability-zone': 'us-central1-c',
+                tags: []
               },
               'instance-id': 'juju-17a0b2-9',
               status: 'started'
             }
           ],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.4.3'
-        }
+        },
+        'remote-applications': {},
       },
       '5f612488-b60b-4256-814a-ba1fake7db23': {
         annotations: {
@@ -8181,7 +8215,8 @@ export default {
               user: 'eggman@external',
               'display-name': '',
               'last-connection': '2020-11-19T18:44:37Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [
@@ -8193,7 +8228,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'europe-west1-d'
+                'availability-zone': 'europe-west1-d',
+                tags: []
               },
               'instance-id': 'juju-a7db23-1',
               status: 'started'
@@ -8206,7 +8242,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'europe-west1-b'
+                'availability-zone': 'europe-west1-b',
+                tags: []
               },
               'instance-id': 'juju-a7db23-2',
               status: 'started'
@@ -8219,7 +8256,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'europe-west1-c'
+                'availability-zone': 'europe-west1-c',
+                tags: []
               },
               'instance-id': 'juju-a7db23-3',
               status: 'started'
@@ -8232,15 +8270,17 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'europe-west1-b'
+                'availability-zone': 'europe-west1-b',
+                tags: []
               },
               'instance-id': 'juju-a7db23-4',
               status: 'started'
             }
           ],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.4.5'
-        }
+        },
+        'remote-applications': {},
       },
       'fb7f06ff-2144-4be3-86c9-6fe44fake1b9': {
         annotations: {},
@@ -8610,19 +8650,22 @@ export default {
               user: 'eggman@external',
               'display-name': 'eggman',
               'last-connection': '2020-11-19T18:44:37Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             },
             {
               user: 'dots@external',
               'display-name': '',
               'last-connection': '2020-11-19T16:30:25Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.8.3'
-        }
+        },
+        'remote-applications': {},
       },
       '57650e3c-815f-4540-89df-81fdfakeb7ef': {
         annotations: {
@@ -9531,37 +9574,43 @@ export default {
               user: 'cristinadresch@external',
               'display-name': '',
               'last-connection': '2020-11-18T15:06:16Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             },
             {
               user: 'eggman@external',
               'display-name': 'eggman',
               'last-connection': '2020-11-19T18:44:38Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             },
             {
               user: 'lyubomir-popov@external',
               'display-name': '',
               'last-connection': '2020-11-19T11:22:04Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             },
             {
               user: 'spencerbygraves@external',
               'display-name': '',
               'last-connection': '2020-11-19T16:10:58Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             },
             {
               user: 'dots@external',
               'display-name': '',
               'last-connection': '2020-11-19T16:30:25Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.8.3'
-        }
+        },
+        'remote-applications': {},
       },
       'eb211d71-d838-4e7f-8828-8cb5fake217e': {
         annotations: {},
@@ -9615,13 +9664,15 @@ export default {
               user: 'eggman@external',
               'display-name': 'eggman',
               'last-connection': '2020-11-19T18:44:39Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             }
           ],
           machines: [],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.8.3'
-        }
+        },
+        'remote-applications': {},
       },
       'c2d8a696-e2eb-4021-8ab0-12220fake62a': {
         annotations: {},
@@ -9735,19 +9786,22 @@ export default {
               user: 'island@external',
               'display-name': '',
               'last-connection': '2020-11-19T16:43:56Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             },
             {
               user: 'eggman@external',
               'display-name': 'eggman',
               'last-connection': '2020-11-19T18:44:39Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             }
           ],
           machines: [],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.8.3'
-        }
+        },
+        'remote-applications': {},
       },
       'e6782960-fb0b-460e-82a1-64eefakea39b': {
         annotations: {
@@ -9940,37 +9994,43 @@ export default {
               user: 'island@external',
               'display-name': '',
               'last-connection': '2020-11-19T16:43:56Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             },
             {
               user: 'blr@external',
               'display-name': '',
               'last-connection': '2020-04-23T21:29:28Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             },
             {
               user: 'pizza@external',
               'display-name': '',
               'last-connection': '2020-11-18T15:46:02Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             },
             {
               user: 'eggman@external',
               'display-name': 'eggman',
               'last-connection': '2020-11-19T18:44:39Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             },
             {
               user: 'dots@external',
               'display-name': '',
               'last-connection': '2020-11-19T16:30:25Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.8.3'
-        }
+        },
+        'remote-applications': {},
       },
       '2446d278-7928-4c50-811b-563efaked991': {
         annotations: {},
@@ -10024,13 +10084,15 @@ export default {
               user: 'eggman@external',
               'display-name': 'eggman',
               'last-connection': '2020-11-19T18:44:40Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             }
           ],
           machines: [],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.8.3'
-        }
+        },
+        'remote-applications': {},
       },
       '930f4bb0-070a-462a-8d4e-19d97fake8f2': {
         annotations: {
@@ -10287,19 +10349,22 @@ export default {
               user: 'eggman@external',
               'display-name': 'eggman',
               'last-connection': '2020-11-19T18:44:40Z',
-              access: 'admin'
+              access: 'admin',
+              "model-tag": ''
             },
             {
               user: 'lyubomir-popov@external',
               'display-name': '',
               'last-connection': '2020-11-19T11:22:04Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.8.3'
-        }
+        },
+        'remote-applications': {},
       },
       '06b11eb5-abd6-48f3-8910-b54cfake5e60': {
         annotations: {
@@ -10846,7 +10911,8 @@ export default {
               user: 'eggman@external',
               'display-name': '',
               'last-connection': '2020-11-19T18:44:41Z',
-              access: 'read'
+              access: 'read',
+              "model-tag": ''
             }
           ],
           machines: [
@@ -10858,7 +10924,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-east1-c'
+                'availability-zone': 'us-east1-c',
+                tags: []
               },
               'instance-id': 'juju-905e60-1',
               status: 'started'
@@ -10871,7 +10938,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-east1-b'
+                'availability-zone': 'us-east1-b',
+                tags: []
               },
               'instance-id': 'juju-905e60-6',
               status: 'started'
@@ -10884,7 +10952,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-east1-d'
+                'availability-zone': 'us-east1-d',
+                tags: []
               },
               'instance-id': 'juju-905e60-9',
               status: 'started'
@@ -10897,7 +10966,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-east1-c'
+                'availability-zone': 'us-east1-c',
+                tags: []
               },
               'instance-id': 'juju-905e60-1',
               status: 'started'
@@ -10910,7 +10980,8 @@ export default {
                 'root-disk': 10240,
                 cores: 4,
                 'cpu-power': 1100,
-                'availability-zone': 'us-east1-b'
+                'availability-zone': 'us-east1-b',
+                tags: []
               },
               'instance-id': 'juju-905e60-10',
               status: 'started'
@@ -10923,7 +10994,8 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-east1-b'
+                'availability-zone': 'us-east1-b',
+                tags: []
               },
               'instance-id': 'juju-905e60-6',
               status: 'started'
@@ -10936,15 +11008,17 @@ export default {
                 'root-disk': 10240,
                 cores: 1,
                 'cpu-power': 138,
-                'availability-zone': 'us-east1-d'
+                'availability-zone': 'us-east1-d',
+                tags: []
               },
               'instance-id': 'juju-905e60-9',
               status: 'started'
             }
           ],
-          sla: null,
+          sla: {level: 'unsupported', owner: ''},
           'agent-version': '2.8.3'
-        }
+        },
+        'remote-applications': {},
       }
     },
     controllers: {
