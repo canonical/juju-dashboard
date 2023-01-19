@@ -3,11 +3,10 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import Topology from "components/Topology/Topology";
-import { Modal } from "@canonical/react-components";
+import { Modal, useListener } from "@canonical/react-components";
 
 import { getViewportWidth } from "app/utils/utils";
 import useAnalytics from "hooks/useAnalytics";
-import useEventListener from "hooks/useEventListener";
 import {
   getModelAnnotations,
   getModelApplications,
@@ -65,7 +64,7 @@ const InfoPanel = () => {
       setShowExpandedTopology(false);
     }
   };
-  useEventListener("keydown", closeOnEscape);
+  useListener(window, closeOnEscape, "keydown");
 
   const handleExpandTopology = () => {
     setShowExpandedTopology(!showExpandedTopology);
