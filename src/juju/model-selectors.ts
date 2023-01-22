@@ -126,7 +126,7 @@ enum Statuses {
   blocked,
 }
 
-interface StatusData {
+export interface StatusData {
   // keyof typeof returns the list of string keys in the Statuses enum
   // not the numeric indexes generated at compile time.
   [applicationName: string]: keyof typeof Statuses;
