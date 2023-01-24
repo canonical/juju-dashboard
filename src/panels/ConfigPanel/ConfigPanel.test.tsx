@@ -2,10 +2,10 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import dataDump from "testing/complete-redux-store-dump";
 import configResponse from "testing/config-response";
 
 import { getApplicationConfig } from "juju/api";
+import { rootStateFactory } from "testing/factories/root";
 
 import ConfigPanel, { Label } from "./ConfigPanel";
 
@@ -22,7 +22,7 @@ describe("ConfigPanel", () => {
     (getApplicationConfig as jest.Mock).mockImplementation(() => {
       return Promise.resolve({ config: {} });
     });
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <ConfigPanel
@@ -42,7 +42,7 @@ describe("ConfigPanel", () => {
     (getApplicationConfig as jest.Mock).mockImplementation(() => {
       return Promise.resolve(configResponse);
     });
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <ConfigPanel

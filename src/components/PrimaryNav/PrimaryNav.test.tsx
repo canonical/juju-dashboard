@@ -3,14 +3,16 @@ import { MemoryRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import dataDump from "testing/complete-redux-store-dump";
-import cloneDeep from "clone-deep";
+
+import { configFactory, generalStateFactory } from "testing/factories/general";
+import { rootStateFactory } from "testing/factories/root";
 
 import PrimaryNav from "./PrimaryNav";
 
 const mockStore = configureStore([]);
 describe("Primary Nav", () => {
   it("applies is-selected state correctly", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.withGeneralConfig().build());
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/controllers"]}>
@@ -36,7 +38,7 @@ describe("Primary Nav", () => {
   });
 
   it("displays the JAAS logo under JAAS", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.withGeneralConfig().build());
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
@@ -54,9 +56,15 @@ describe("Primary Nav", () => {
   });
 
   it("displays the Juju logo under Juju", () => {
-    const clonedDump = cloneDeep(dataDump);
-    clonedDump.general.config.isJuju = true;
-    const store = mockStore(clonedDump);
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            isJuju: true,
+          }),
+        }),
+      })
+    );
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
@@ -74,7 +82,14 @@ describe("Primary Nav", () => {
   });
 
   it("displays the version number", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          appVersion: "0.4.0",
+          config: configFactory.build(),
+        }),
+      })
+    );
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>

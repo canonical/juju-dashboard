@@ -3,9 +3,9 @@ import configureStore from "redux-mock-store";
 import * as reactRouterDOM from "react-router-dom";
 import { render } from "@testing-library/react";
 
-import App from "./App";
+import { rootStateFactory } from "testing/factories/root";
 
-import dataDump from "../../testing/complete-redux-store-dump";
+import App from "./App";
 
 jest.mock("react-router-dom", () => ({
   BrowserRouter: jest.fn(),
@@ -18,7 +18,7 @@ describe("App", () => {
     const BrowserRouterSpy = jest
       .spyOn(reactRouterDOM, "BrowserRouter")
       .mockImplementation(() => <div></div>);
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.withGeneralConfig().build());
     render(
       <Provider store={store}>
         <App />
