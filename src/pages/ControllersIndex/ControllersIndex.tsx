@@ -3,6 +3,10 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { MainTable } from "@canonical/react-components";
+import {
+  MainTableCell,
+  MainTableHeader,
+} from "@canonical/react-components/dist/components/MainTable/MainTable";
 import Header from "components/Header/Header";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
@@ -14,17 +18,35 @@ import { getControllerData, getModelData } from "app/selectors";
 
 import { StringParam, useQueryParam } from "use-query-params";
 
+import { RootState } from "store/store";
+import { Controllers } from "types";
+
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
+import { Controller, ModelDataList } from "../../types";
 
 import "./_controllers.scss";
 
+type AnnotatedController = Controller & {
+  models: number;
+  machines: number;
+  applications: number;
+  units: number;
+  wsControllerURL: string;
+};
+
 function Details() {
   useWindowTitle("Controllers");
-  const controllerData = useSelector(getControllerData);
-  const modelData = useSelector(getModelData);
+  // TSFixme: these generics can be removed when the selectors have been
+  // migrated to TypeScript.
+  const controllerData = useSelector<RootState, Controllers | null>(
+    getControllerData
+  );
+  // TSFixme: these generics can be removed when the selectors have been
+  // migrated to TypeScript.
+  const modelData = useSelector<RootState, ModelDataList>(getModelData);
 
-  const controllerMap = {};
-  const additionalControllers = [];
+  const controllerMap: Record<string, AnnotatedController> = {};
+  const additionalControllers: string[] = [];
   if (controllerData) {
     Object.entries(controllerData).forEach((controllerData) => {
       controllerData[1].forEach((controller) => {
@@ -45,11 +67,11 @@ function Details() {
       for (const modelUUID in modelData) {
         const model = modelData[modelUUID];
         if (model.info) {
-          const controllerUUID = model.info["controller-uuid"];
+          const controllerUUID = model?.info["controller-uuid"];
           if (controllerMap[controllerUUID]) {
             controllerMap[controllerUUID].models += 1;
             controllerMap[controllerUUID].machines += Object.keys(
-              model.machines
+              model?.machines
             ).length;
             const applicationKeys = Object.keys(model.applications);
             controllerMap[controllerUUID].applications +=
@@ -65,7 +87,7 @@ function Details() {
     }
   }
 
-  const headers = [
+  const headers: MainTableHeader[] = [
     { content: "Default", sortKey: "name" },
     { content: "cloud/region", sortKey: "cloud/region" },
     { content: "models", sortKey: "models", className: "u-align--right" },
@@ -91,8 +113,8 @@ function Details() {
     </span>
   );
 
-  function generatePathValue(controllerData) {
-    const column = { content: "" };
+  function generatePathValue(controllerData: AnnotatedController) {
+    const column: MainTableCell = { content: "" };
     if (controllerData?.path === "admin/jaas") {
       column.content = "JAAS";
     } else if (controllerData?.path) {
@@ -105,7 +127,7 @@ function Details() {
     return column;
   }
 
-  function generateRow(c) {
+  function generateRow(c: AnnotatedController) {
     const cloud = c?.location?.cloud || "unknown";
     const region = c?.location?.region || "unknown";
     const cloudRegion = `${cloud}/${region}`;

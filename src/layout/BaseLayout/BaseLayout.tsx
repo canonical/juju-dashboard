@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
@@ -24,11 +24,7 @@ export enum TestId {
   MAIN = "main-children",
 }
 
-type Props = {
-  children: JSX.Element;
-};
-
-const BaseLayout = ({ children }: Props) => {
+const BaseLayout = ({ children }: PropsWithChildren) => {
   const [mobileMenuCollapsed, setMobileMenuCollapsed] = useState(true);
   const location = useLocation();
   const dispatch = useDispatch();

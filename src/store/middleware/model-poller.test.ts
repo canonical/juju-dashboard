@@ -51,9 +51,13 @@ describe("model poller", () => {
   const storeState = rootStateFactory.build({
     juju: {
       controllers: {
-        [wsControllerURL]: {
-          uuid: "abc123",
-        },
+        [wsControllerURL]: [
+          {
+            path: "/",
+            uuid: "abc123",
+            version: "1.0",
+          },
+        ],
       },
     },
     general: {
