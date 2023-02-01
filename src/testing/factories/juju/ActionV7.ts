@@ -3,6 +3,9 @@ import {
   ActionMessage,
   ActionResult,
   ActionResults,
+  AdditionalProperties,
+  ApplicationCharmActionsResult,
+  ApplicationsCharmActionsResults,
   Error as ActionError,
   OperationResult,
   OperationResults,
@@ -55,3 +58,31 @@ export const operationResultsFactory = Factory.define<OperationResults>(() => ({
   results: [],
   truncated: false,
 }));
+
+export const applicationCharmActionParamsFactory =
+  Factory.define<AdditionalProperties>(() => ({
+    additionalProperties: false,
+    description: "Add disk(s) to Ceph",
+    properties: {},
+    required: [],
+    title: "add-disk",
+    type: "object",
+  }));
+
+export const applicationCharmActionFactory =
+  Factory.define<AdditionalProperties>(() => ({
+    description: "Add disk(s) to Ceph",
+    params: {},
+  }));
+
+export const applicationCharmActionsResultFactory =
+  Factory.define<ApplicationCharmActionsResult>(() => ({
+    actions: {},
+    "application-tag": "application-ceph",
+    error: errorFactory.build(),
+  }));
+
+export const applicationsCharmActionsResultsFactory =
+  Factory.define<ApplicationsCharmActionsResults>(() => ({
+    results: [],
+  }));

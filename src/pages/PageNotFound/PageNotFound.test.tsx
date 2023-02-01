@@ -4,7 +4,8 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-import dataDump from "testing/complete-redux-store-dump";
+
+import { rootStateFactory } from "testing/factories/root";
 
 import { Routes } from "components/Routes/Routes";
 import { Label } from "./PageNotFound";
@@ -14,7 +15,7 @@ const mockStore = configureStore([]);
 
 describe("PageNotFound page", () => {
   it("should display when unknown route is accessed", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.withGeneralConfig().build());
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/foobar11"]}>

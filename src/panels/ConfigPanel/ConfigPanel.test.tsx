@@ -1,11 +1,14 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import dataDump from "testing/complete-redux-store-dump";
-import configResponse from "testing/config-response";
+import configureStore from "redux-mock-store";
+import {
+  applicationGetFactory,
+  configFactory,
+} from "testing/factories/juju/Applicationv15";
+import { rootStateFactory } from "testing/factories/root";
 
-import { getApplicationConfig } from "juju/api";
+import * as apiModule from "juju/api";
 
 import ConfigPanel, { Label } from "./ConfigPanel";
 
@@ -19,10 +22,10 @@ describe("ConfigPanel", () => {
   beforeEach(() => jest.resetModules());
 
   it("displays a message if the app has no config", async () => {
-    (getApplicationConfig as jest.Mock).mockImplementation(() => {
-      return Promise.resolve({ config: {} });
+    jest.spyOn(apiModule, "getApplicationConfig").mockImplementation(() => {
+      return Promise.resolve(applicationGetFactory.build({ config: {} }));
     });
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <ConfigPanel
@@ -39,10 +42,16 @@ describe("ConfigPanel", () => {
   });
 
   it("highlights changed fields before save", async () => {
-    (getApplicationConfig as jest.Mock).mockImplementation(() => {
-      return Promise.resolve(configResponse);
+    jest.spyOn(apiModule, "getApplicationConfig").mockImplementation(() => {
+      return Promise.resolve(
+        applicationGetFactory.build({
+          config: {
+            "custom-registry-ca": configFactory.build(),
+          },
+        })
+      );
     });
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <ConfigPanel
