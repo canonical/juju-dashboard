@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { Formik, Field, Form } from "formik";
+import { Tooltip } from "@canonical/react-components";
+
 import { formatFriendlyDateToNow } from "app/utils/utils";
 import type { TSFixMe } from "types";
 
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
 
 import "./_share-card.scss";
+
+export enum Label {
+  OWNER = "Owner",
+  REMOVE = "Remove user",
+}
 
 type Props = {
   userName: string;
@@ -64,11 +71,17 @@ export default function ShareCard({
     <div>
       <SlideDownFadeOut isAnimating={hasBeenRemoved}>
         <div className="share-card" data-active={inFocus}>
-          <div className="share-card__title">
-            <strong className="share-card__username">{userName}</strong>
+          <div className="share-card__title u-truncate">
+            <Tooltip
+              message={userName}
+              className="u-truncate"
+              positionElementClassName="share-card__tooltip-wrapper"
+            >
+              <strong className="share-card__username">{userName}</strong>
+            </Tooltip>
             <span className="share-card__secondary">
               {isOwner ? (
-                "Owner"
+                Label.OWNER
               ) : (
                 <i
                   className="p-icon--delete"
@@ -80,7 +93,7 @@ export default function ShareCard({
                   role="button"
                   tabIndex={0}
                 >
-                  Remove user
+                  {Label.REMOVE}
                 </i>
               )}
             </span>

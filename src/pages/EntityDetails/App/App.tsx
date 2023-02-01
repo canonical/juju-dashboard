@@ -96,7 +96,9 @@ export default function App(): JSX.Element {
     Object.entries(units).forEach(([unitId, unitData]) => {
       if (unitData.application === entity) {
         const machineId = unitData["machine-id"];
-        filteredMachines[machineId] = machines[machineId];
+        if (machineId && machines[machineId]) {
+          filteredMachines[machineId] = machines[machineId];
+        }
       }
     });
     return filteredMachines;
