@@ -2,7 +2,7 @@
 
 # Build stage: Install yarn dependencies
 # ===
-FROM node:19 AS yarn-dependencies
+FROM node:18 AS yarn-dependencies
 
 WORKDIR /srv
 

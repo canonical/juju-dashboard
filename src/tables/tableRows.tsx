@@ -1,24 +1,24 @@
 import cloneDeep from "clone-deep";
 import { Field } from "formik";
 
-import {
-  extractRevisionNumber,
-  generateStatusElement,
-  generateRelationIconImage,
-  extractRelationEndpoints,
-  generateIconImg,
-  generateEntityIdentifier,
-} from "app/utils/utils";
+import { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { Tooltip } from "@canonical/react-components";
-import { ApplicationData, RelationData, UnitData } from "juju/types";
-import { StatusData } from "juju/model-selectors";
-import { MouseEvent } from "react";
-import { ModelData, TSFixMe } from "types";
 import {
   MainTableCell,
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import {
+  extractRelationEndpoints,
+  extractRevisionNumber,
+  generateEntityIdentifier,
+  generateIconImg,
+  generateRelationIconImage,
+  generateStatusElement,
+} from "app/utils/utils";
+import { StatusData } from "juju/model-selectors";
+import { ApplicationData, RelationData, UnitData } from "juju/types";
+import { MouseEvent } from "react";
+import { ModelData, TSFixMe } from "types";
 
 export type TableRowClick = (
   entityType: string,
@@ -384,71 +384,73 @@ export function generateMachineRows(
     return apps;
   };
 
-  return Object.keys(machines).map((machineId) => {
-    const machine = machines[machineId];
-    const az =
-      machine?.["hardware-characteristics"]?.["availability-zone"] || "";
-    return {
-      columns: [
-        {
-          content: (
-            <>
-              <div>
-                {machineId}
-                <span className="u-capitalise">. {machine.series}</span>
-              </div>
-              {machine.dnsName}
-            </>
-          ),
+  return Object.keys(machines)
+    .filter((machineId) => Boolean(machines[machineId]))
+    .map((machineId) => {
+      const machine = machines[machineId];
+      const az =
+        machine?.["hardware-characteristics"]?.["availability-zone"] || "";
+      return {
+        columns: [
+          {
+            content: (
+              <>
+                <div>
+                  {machineId}
+                  <span className="u-capitalise">. {machine.series}</span>
+                </div>
+                {machine.dnsName}
+              </>
+            ),
+          },
+          {
+            content: generateMachineApps(machineId, units),
+            className: "machine-app-icons",
+          },
+          {
+            content: (
+              <Tooltip
+                className="u-truncate"
+                message={machine["agent-status"].current}
+                position="top-center"
+                positionElementClassName="entity-details__machines-status-icon"
+              >
+                {generateStatusElement(
+                  machine["agent-status"].current,
+                  null,
+                  true,
+                  false,
+                  // TSFixMe: this can be removed once this util has been migrated
+                  // to TypeScript.
+                  "p-icon u-truncate" as TSFixMe
+                )}
+              </Tooltip>
+            ),
+            className: "u-capitalise u-truncate",
+          },
+          { content: az },
+          { content: machine["instance-id"] },
+          {
+            content: (
+              <span title={machine["agent-status"].message}>
+                {machine["agent-status"].message}
+              </span>
+            ),
+            className: "u-truncate",
+          },
+        ],
+        sortData: {
+          machine: machine.series,
+          state: machine?.["agent-status"]?.current,
+          az,
+          instanceId: machine["instance-id"],
+          message: machine?.["agent-status"].message,
         },
-        {
-          content: generateMachineApps(machineId, units),
-          className: "machine-app-icons",
-        },
-        {
-          content: (
-            <Tooltip
-              className="u-truncate"
-              message={machine["agent-status"].current}
-              position="top-center"
-              positionElementClassName="entity-details__machines-status-icon"
-            >
-              {generateStatusElement(
-                machine["agent-status"].current,
-                null,
-                true,
-                false,
-                // TSFixMe: this can be removed once this util has been migrated
-                // to TypeScript.
-                "p-icon u-truncate" as TSFixMe
-              )}
-            </Tooltip>
-          ),
-          className: "u-capitalise u-truncate",
-        },
-        { content: az },
-        { content: machine["instance-id"] },
-        {
-          content: (
-            <span title={machine["agent-status"].message}>
-              {machine["agent-status"].message}
-            </span>
-          ),
-          className: "u-truncate",
-        },
-      ],
-      sortData: {
-        machine: machine.series,
-        state: machine?.["agent-status"]?.current,
-        az,
-        instanceId: machine["instance-id"],
-        message: machine?.["agent-status"].message,
-      },
-      onClick: (e: MouseEvent) => tableRowClick("machine", machineId, e),
-      "data-machine": machineId,
-      className: selectedEntity === machineId ? "is-selected" : "",
-    };
-  });
+        onClick: (e: MouseEvent) => tableRowClick("machine", machineId, e),
+        "data-machine": machineId,
+        className: selectedEntity === machineId ? "is-selected" : "",
+      };
+    });
 }
 
 export function generateRelationRows(

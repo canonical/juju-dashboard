@@ -1,16 +1,8 @@
 {
-  "extends": ["config:base", "group:allNonMajor", "schedule:monthly"],
-  "labels": ["Maintenance"],
-  "packageRules": [
-    {
-      "groupName": "internal dependencies",
-      "groupSlug": "internal",
-      "packagePatterns": [
-        "^@canonical",
-        "^canonicalwebteam",
-        "^vanilla-framework"
-      ],
-      "schedule": ["at any time"]
-    }
-  ]
+  "extends": ["github>canonical/renovate-websites"],
+  "packageRules": {
+    "matchDatasources": ["docker"],
+    "matchPackageNames": ["node"],
+    "allowedVersions": "^18 || ^20 || ^22"
+  }
 }
