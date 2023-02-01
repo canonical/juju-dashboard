@@ -1,6 +1,6 @@
+import { useListener } from "@canonical/react-components";
 import { useQueryParam, StringParam } from "use-query-params";
 import { AnimatePresence } from "framer-motion";
-import useEventListener from "hooks/useEventListener";
 
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import RegisterController from "panels/RegisterController/RegisterController";
@@ -23,8 +23,10 @@ export const close = {
 export default function Panels() {
   const [panelQs, setPanelQs] = useQueryParam("panel", StringParam);
 
-  useEventListener("keydown", (e: KeyboardEvent) =>
-    close.onEscape(e, setPanelQs)
+  useListener(
+    window,
+    (e: KeyboardEvent) => close.onEscape(e, setPanelQs),
+    "keydown"
   );
 
   const generatePanel = () => {

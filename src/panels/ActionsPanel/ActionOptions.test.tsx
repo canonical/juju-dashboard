@@ -1,8 +1,14 @@
+import { TSFixMe } from "@canonical/react-components";
 import { render } from "@testing-library/react";
-import apiData from "testing/actions-list-api-response.json";
 import * as OptionsInputModule from "components/RadioInputBox/OptionInputs";
 
+import {
+  applicationCharmActionFactory,
+  applicationCharmActionParamsFactory,
+} from "testing/factories/juju/ActionV7";
+
 import ActionOptions from "./ActionOptions";
+import { ActionData } from "./ActionsPanel";
 
 describe("ActionOptions", () => {
   afterEach(() => {
@@ -11,12 +17,39 @@ describe("ActionOptions", () => {
 
   it("generates a list of options from the provided data", () => {
     const OptionsInputSpy = jest.spyOn(OptionsInputModule, "default");
-    const actionData = apiData.response.results[0].actions;
     const onValuesChange = jest.fn();
+    // TSFixMe: The jujulib types for the actions are `AdditionalProperties`
+    // while the component is more strongly typed.
+    const actionData: TSFixMe = {
+      "add-disk": applicationCharmActionFactory.build({
+        params: applicationCharmActionParamsFactory.build({
+          properties: {
+            bucket: {
+              description:
+                "The name of the bucket in Ceph to add these devices into",
+              type: "string",
+            },
+            "osd-devices": {
+              description: "The devices to format and set up as osd volumes.",
+              type: "string",
+            },
+          },
+          required: ["osd-devices"],
+          title: "add-disk",
+          type: "object",
+        }),
+      }),
+      pause: applicationCharmActionFactory.build({
+        params: applicationCharmActionParamsFactory.build({
+          title: "pause",
+          type: "object",
+        }),
+      }),
+    };
     render(
       <ActionOptions
         name="add-disk"
-        data={actionData}
+        data={actionData as ActionData}
         onValuesChange={onValuesChange}
       />
     );

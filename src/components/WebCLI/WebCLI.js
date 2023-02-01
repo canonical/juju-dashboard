@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "react-redux";
 
-import bakery from "app/bakery";
+import bakery from "juju/bakery";
 import { getActiveUserTag } from "store/general/selectors";
 
 import useAnalytics from "../../hooks/useAnalytics";

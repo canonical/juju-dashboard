@@ -1,9 +1,9 @@
 import { Middleware } from "redux";
 import * as Sentry from "@sentry/browser";
 
-import { actionsList } from "app/action-types";
 import { isLoggedIn } from "store/general/selectors";
 import { actions as generalActions } from "store/general";
+import { actions as appActions, thunks as appThunks } from "store/app";
 import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
@@ -38,7 +38,7 @@ export const modelPollerMiddleware: Middleware<
   // TSFixMe: substitute the connection type when it is available from jujulib.
   const jujus = new Map<string, Client>();
   return (next) => async (action) => {
-    if (action.type === actionsList.connectAndPollControllers) {
+    if (action.type === appActions.connectAndPollControllers.type) {
       action.payload.controllers.forEach(
         async (controllerData: ControllerOptions) => {
           const [
@@ -161,12 +161,12 @@ export const modelPollerMiddleware: Middleware<
         }
       );
       return;
-    } else if (action.type === actionsList.logOut) {
+    } else if (action.type === appThunks.logOut.pending.type) {
       jujus.forEach((juju) => {
         juju.logout();
       });
       return next(action);
-    } else if (action.type === actionsList.updatePermissions) {
+    } else if (action.type === appActions.updatePermissions.type) {
       const { payload } = action;
       const conn = controllers.get(payload.wsControllerURL);
       const response = await setModelSharingPermissions(

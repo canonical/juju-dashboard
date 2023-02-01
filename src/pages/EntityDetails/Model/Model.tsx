@@ -58,7 +58,7 @@ import {
 } from "juju/model-selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import type { TSFixMe } from "types";
+import type { ModelData } from "types";
 
 import { renderCounts } from "../counts";
 
@@ -92,7 +92,7 @@ const generateCloudAndRegion = (cloudTag: string, region: string) => {
 };
 
 const Model = () => {
-  const modelStatusData: TSFixMe = useModelStatus();
+  const modelStatusData = useModelStatus() as ModelData;
   const activeUser = useActiveUser();
   const navigate = useNavigate();
 

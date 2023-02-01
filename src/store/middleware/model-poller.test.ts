@@ -1,9 +1,9 @@
 import { AnyAction, MiddlewareAPI } from "redux";
 
-import { updatePermissions } from "app/actions";
-import { actionsList } from "app/action-types";
 import * as jujuModule from "juju/api";
 import { updateModelList } from "juju/actions";
+import { actions as appActions, thunks as appThunks } from "store/app";
+import { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
@@ -43,7 +43,9 @@ describe("model poller", () => {
   let next: jest.Mock;
   const originalLog = console.log;
   const wsControllerURL = "wss://example.com";
-  const controllers = [[wsControllerURL, {}, {}, false]];
+  const controllers: ControllerArgs[] = [
+    [wsControllerURL, { user: "eggman@external", password: "test" }, false],
+  ];
   const models = [{ model: { uuid: "abc123" } }];
   let juju: Juju;
   const intervalId = 99;
@@ -51,9 +53,13 @@ describe("model poller", () => {
   const storeState = rootStateFactory.build({
     juju: {
       controllers: {
-        [wsControllerURL]: {
-          uuid: "abc123",
-        },
+        [wsControllerURL]: [
+          {
+            path: "/",
+            uuid: "uuid123",
+            version: "1",
+          },
+        ],
       },
     },
     general: {
@@ -91,11 +97,10 @@ describe("model poller", () => {
 
   const runMiddleware = async (actionOverrides?: Partial<AnyAction>) => {
     const action = {
-      type: actionsList.connectAndPollControllers,
-      payload: {
+      ...appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-      },
+      }),
       ...(actionOverrides ?? {}),
     };
     const middleware = modelPollerMiddleware(fakeStore);
@@ -146,7 +151,14 @@ describe("model poller", () => {
     expect(console.log).toHaveBeenCalledWith(
       LoginError.LOG,
       new Error("Uh oh!"),
-      ["wss://example.com", {}, {}, false]
+      [
+        "wss://example.com",
+        {
+          password: "test",
+          user: "eggman@external",
+        },
+        false,
+      ]
     );
   });
 
@@ -341,7 +353,7 @@ describe("model poller", () => {
     }));
     const middleware = await runMiddleware();
     const action = {
-      type: actionsList.logOut,
+      type: appThunks.logOut.pending.type,
       payload: null,
     };
     await middleware(next)(action);
@@ -360,14 +372,14 @@ describe("model poller", () => {
       .spyOn(jujuModule, "setModelSharingPermissions")
       .mockImplementation(() => Promise.resolve("response"));
     const middleware = await runMiddleware();
-    const action = updatePermissions(
-      "wss://example.com",
-      "abc123",
-      "admin",
-      "read",
-      "write",
-      "grant"
-    );
+    const action = appActions.updatePermissions({
+      action: "grant",
+      modelUUID: "abc123",
+      permissionFrom: "read",
+      permissionTo: "write",
+      user: "admin",
+      wsControllerURL: "wss://example.com",
+    });
     const response = middleware(next)(action);
     expect(jujuModule.setModelSharingPermissions).toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();

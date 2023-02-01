@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { WS } from "jest-websocket-mock";
 
-import bakery from "app/bakery";
+import bakery from "juju/bakery";
 import { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories/root";
 import { generalStateFactory, configFactory } from "testing/factories/general";
@@ -24,7 +24,7 @@ type Props = {
   } | null;
 };
 
-jest.mock("app/bakery", () => ({
+jest.mock("juju/bakery", () => ({
   __esModule: true,
   default: {
     storage: {

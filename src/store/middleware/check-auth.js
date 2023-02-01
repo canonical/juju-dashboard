@@ -3,34 +3,10 @@
   has been allowed.
 */
 
-import { actionsList } from "app/action-types";
 import { isLoggedIn } from "store/general/selectors";
 import { actions as uiActions } from "store/ui";
 import { actions as generalActions } from "store/general";
-
-const actionAllowlist = [
-  "POPULATE_MISSING_ALLWATCHER_DATA",
-  "PROCESS_ALL_WATCHER_DELTAS",
-  "UPDATE_CONTROLLER_LIST",
-  "UPDATE_JUJU_API_INSTANCE",
-  "LOG_OUT",
-  "CLEAR_CONTROLLER_DATA",
-  "CLEAR_MODEL_DATA",
-  "TOGGLE_USER_MENU",
-  "SIDENAV_COLLAPSED",
-  actionsList.connectAndPollControllers,
-  generalActions.storeConfig.type,
-  generalActions.storeLoginError.type,
-  generalActions.storeUserPass.type,
-  generalActions.storeVersion.type,
-  generalActions.storeVisitURL.type,
-  generalActions.updateControllerConnection.type,
-  generalActions.updatePingerIntervalId.type,
-  uiActions.userMenuActive.type,
-  uiActions.sideNavCollapsed.type,
-];
-
-const thunkAllowlist = ["connectAndStartPolling", "logOut"];
+import { actions as appActions, thunks as appThunks } from "store/app";
 
 function error(name, wsControllerURL) {
   console.log(
@@ -61,23 +37,51 @@ const checkLoggedIn = (state, wsControllerURL) => {
 export default ({ getState }) =>
   (next) =>
   async (action) => {
+    // These lists need to be generated at run time to prevent circular imports.
+    const actionAllowlist = [
+      "POPULATE_MISSING_ALLWATCHER_DATA",
+      "PROCESS_ALL_WATCHER_DELTAS",
+      "UPDATE_CONTROLLER_LIST",
+      "UPDATE_JUJU_API_INSTANCE",
+      "CLEAR_CONTROLLER_DATA",
+      "CLEAR_MODEL_DATA",
+      "TOGGLE_USER_MENU",
+      "SIDENAV_COLLAPSED",
+      appActions.connectAndPollControllers.type,
+      generalActions.storeConfig.type,
+      generalActions.storeLoginError.type,
+      generalActions.storeUserPass.type,
+      generalActions.storeVersion.type,
+      generalActions.storeVisitURL.type,
+      generalActions.updateControllerConnection.type,
+      generalActions.updatePingerIntervalId.type,
+      uiActions.userMenuActive.type,
+      uiActions.sideNavCollapsed.type,
+    ];
+
+    const thunkAllowlist = [
+      appThunks.connectAndListModels.fulfilled.type,
+      appThunks.connectAndListModels.pending.type,
+      appThunks.connectAndListModels.rejected.type,
+      appThunks.connectAndStartPolling.fulfilled.type,
+      appThunks.connectAndStartPolling.pending.type,
+      appThunks.connectAndStartPolling.rejected.type,
+      appThunks.logOut.fulfilled.type,
+      appThunks.logOut.pending.type,
+      appThunks.logOut.rejected.type,
+    ];
+
     const state = getState();
     const wsControllerURL = action.payload?.wsControllerURL;
 
     // If the action is a function then it's probably a thunk.
     if (typeof action === "function") {
-      if (
-        thunkAllowlist.includes(action.NAME) ||
-        checkLoggedIn(state, wsControllerURL)
-      ) {
-        // Await the next to support async thunks
-        return await next(action);
-      } else {
-        error(action.NAME, wsControllerURL);
-      }
+      // Authentication checks are done by the thunks.
+      return await next(action);
     } else {
       if (
         actionAllowlist.includes(action.type) ||
+        thunkAllowlist.includes(action.type) ||
         checkLoggedIn(state, wsControllerURL)
       ) {
         return next(action);

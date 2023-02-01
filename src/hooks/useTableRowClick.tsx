@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 type Params = {
