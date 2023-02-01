@@ -4,7 +4,12 @@ import { pluralize } from "app/utils/utils";
 
 import "./_controller-chart.scss";
 
-function getPercentage(denominator, numerator) {
+type Props = {
+  chartData: Record<string, number>;
+  totalLabel: string;
+};
+
+function getPercentage(denominator: number, numerator: number) {
   if (denominator === 0 || numerator === 0) {
     return 0;
   }
@@ -15,7 +20,7 @@ function getPercentage(denominator, numerator) {
   return trunc;
 }
 
-export default function ControllerChart({ chartData, totalLabel }) {
+export default function ControllerChart({ chartData, totalLabel }: Props) {
   const totalCount =
     (chartData.blocked || 0) +
     (chartData.alert || 0) +

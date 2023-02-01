@@ -264,7 +264,7 @@ export default function App(): JSX.Element {
   };
 
   return (
-    <EntityDetails type="app" className="entity-details__app">
+    <EntityDetails type="app">
       <div>
         <InfoPanel />
         <>

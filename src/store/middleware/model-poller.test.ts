@@ -56,8 +56,8 @@ describe("model poller", () => {
         [wsControllerURL]: [
           {
             path: "/",
-            uuid: "uuid123",
-            version: "1",
+            uuid: "abc123",
+            version: "1.0",
           },
         ],
       },

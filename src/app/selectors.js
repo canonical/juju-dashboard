@@ -14,8 +14,8 @@ import {
 
 /**
   Fetches the model data from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The list of model data or null if none found.
+  @param state The application state.
+  @returns The list of model data or null if none found.
 */
 export const getModelData = (state) => {
   if (state?.juju?.modelData) {
@@ -26,8 +26,8 @@ export const getModelData = (state) => {
 
 /**
   Fetches the controller data from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The list of controller data or null if none found.
+  @param state The application state.
+  @returns The list of controller data or null if none found.
 */
 export const getControllerData = (state) => state?.juju?.controllers;
 
@@ -116,8 +116,8 @@ const groupModelsByStatus = (modelData) => {
 
 /**
   Returns a grouped collection of machine instances.
-  @param {Object} modelData
-  @returns {Object} The grouped machine instances.
+  @param modelData
+  @returns The grouped machine instances.
 */
 const groupMachinesByStatus = (modelData) => {
   const grouped = {
@@ -140,8 +140,8 @@ const groupMachinesByStatus = (modelData) => {
 
 /**
   Returns a grouped collection of unit instances.
-  @param {Object} modelData
-  @returns {Function} The grouped unit instances.
+  @param modelData
+  @returns The grouped unit instances.
 */
 const groupUnitsByStatus = (modelData) => {
   const grouped = {
@@ -167,8 +167,8 @@ const groupUnitsByStatus = (modelData) => {
 
 /**
   Returns a grouped collection of machine instances.
-  @param {Object} modelData
-  @returns {Object} The grouped machine instances.
+  @param modelData
+  @returns The grouped machine instances.
 */
 const groupApplicationsByStatus = (modelData) => {
   const grouped = {
@@ -406,7 +406,7 @@ export const getGroupedModelDataByStatus = createSelector(
 
 /**
   Returns the machine instances sorted by status.
-  @returns {Function} The memoized selector to return the sorted machine instances.
+  @returns The memoized selector to return the sorted machine instances.
 */
 export const getGroupedMachinesDataByStatus = createSelector(
   getModelData,
@@ -415,7 +415,7 @@ export const getGroupedMachinesDataByStatus = createSelector(
 
 /**
   Returns the unit instances sorted by status.
-  @returns {Function} The memoized selector to return the sorted unit instances.
+  @returns The memoized selector to return the sorted unit instances.
 */
 export const getGroupedUnitsDataByStatus = createSelector(
   getModelData,
@@ -424,7 +424,7 @@ export const getGroupedUnitsDataByStatus = createSelector(
 
 /**
   Returns the application instances sorted by status.
-  @returns {Function} The memoized selector to return the sorted application instances.
+  @returns The memoized selector to return the sorted application instances.
 */
 export const getGroupedApplicationsDataByStatus = createSelector(
   getModelData,
@@ -443,8 +443,8 @@ export const getGroupedModelStatusCounts = createSelector(
 /**
   Returns the controller data in the format of an Object.entries output.
   [wsControllerURL, [data]]
-  @param {String} controllerUUID The full controller UUID.
-  @returns {Array} The controller data in the format of an Object.entries output.
+  @param controllerUUID The full controller UUID.
+  @returns The controller data in the format of an Object.entries output.
 */
 export const getControllerDataByUUID = (controllerUUID) => {
   return createSelector(getControllerData, (controllerData) => {

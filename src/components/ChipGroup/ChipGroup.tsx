@@ -6,11 +6,11 @@ type Chip = {
 
 type Props = {
   chips: Chip;
-  descriptor: string | null;
+  descriptor?: string | null;
 };
 
 const ChipGroup = ({ chips, descriptor }: Props) => {
-  const getLabelType = (descriptor: string | null) => {
+  const getLabelType = (descriptor?: string | null) => {
     let label;
     switch (descriptor) {
       case "localApps":
