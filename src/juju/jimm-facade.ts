@@ -1,10 +1,17 @@
-const { autoBind } = require("@canonical/jujulib/dist/api/utils.js");
+import { ConnectionInfo, Transport } from "@canonical/jujulib";
+import { autoBind } from "@canonical/jujulib/dist/api/utils";
 
 /**
   pinger describes a resource that can be pinged and stopped.
 */
 class JIMMV2 {
-  constructor(transport, info) {
+  static NAME: string;
+  static VERSION: number;
+  version: number;
+  _transport: Transport;
+  _info: ConnectionInfo;
+
+  constructor(transport: Transport, info: ConnectionInfo) {
     this._transport = transport;
     this._info = info;
     this.version = 2;

@@ -1,18 +1,15 @@
+import classNames from "classnames";
 import { ChangeEvent, FormEventHandler, useState } from "react";
-import { useStore } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { connectAndStartPolling } from "app/actions";
-import bakery from "app/bakery";
-
-import classNames from "classnames";
-
 import useLocalStorage from "hooks/useLocalStorage";
+import { thunks as appThunks } from "store/app";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import { useAppDispatch } from "store/store";
 
+import { ControllerArgs } from "../../store/app/actions";
 import "./register-controller.scss";
 
 type FormValues = {
@@ -27,11 +24,9 @@ type FormValues = {
 export default function RegisterController() {
   const [formValues, setFormValues] = useState<FormValues>({});
   const dispatch = useAppDispatch();
-  const reduxStore = useStore();
-  const [additionalControllers, setAdditionalControllers] = useLocalStorage(
-    "additionalControllers",
-    []
-  );
+  const [additionalControllers, setAdditionalControllers] = useLocalStorage<
+    ControllerArgs[]
+  >("additionalControllers", []);
   const navigate = useNavigate();
 
   const handleRegisterAController: FormEventHandler<HTMLFormElement> = (e) => {
@@ -42,12 +37,12 @@ export default function RegisterController() {
     // XXX Validate form values
     additionalControllers.push([
       `wss://${formValues.wsControllerHost}/api`, // wsControllerURL
-      { user: formValues.username, password: formValues.password }, // credentials
+      { user: formValues.username || "", password: formValues.password || "" }, // credentials
       formValues.identityProvider, // identityProviderAvailable
       true, // additional controller
     ]);
     setAdditionalControllers(additionalControllers);
-    dispatch(connectAndStartPolling(reduxStore, bakery));
+    dispatch(appThunks.connectAndStartPolling());
     // Close the panel
     navigate("/controllers");
   };
