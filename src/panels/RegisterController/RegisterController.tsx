@@ -1,53 +1,61 @@
-import { useState } from "react";
-import { useDispatch, useStore } from "react-redux";
+import classNames from "classnames";
+import { ChangeEvent, FormEventHandler, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { connectAndStartPolling } from "app/actions";
-import bakery from "app/bakery";
-
-import classNames from "classnames";
-
 import useLocalStorage from "hooks/useLocalStorage";
+import { thunks as appThunks } from "store/app";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
+import { useAppDispatch } from "store/store";
 
+import { ControllerArgs } from "../../store/app/actions";
 import "./register-controller.scss";
 
+type FormValues = {
+  controllerName?: string;
+  wsControllerHost?: string;
+  username?: string;
+  password?: string;
+  identityProvider?: boolean;
+  certificateAccepted?: boolean;
+};
+
 export default function RegisterController() {
-  const [formValues, setFormValues] = useState({});
-  const dispatch = useDispatch();
-  const reduxStore = useStore();
-  const [additionalControllers, setAdditionalControllers] = useLocalStorage(
-    "additionalControllers",
-    []
-  );
+  const [formValues, setFormValues] = useState<FormValues>({});
+  const dispatch = useAppDispatch();
+  const [additionalControllers, setAdditionalControllers] = useLocalStorage<
+    ControllerArgs[]
+  >("additionalControllers", []);
   const navigate = useNavigate();
 
-  function handleRegisterAController(e) {
+  const handleRegisterAController: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    if (!formValues) {
+      return;
+    }
     // XXX Validate form values
     additionalControllers.push([
       `wss://${formValues.wsControllerHost}/api`, // wsControllerURL
-      { user: formValues.username, password: formValues.password }, // credentials
-      null, // bakery
-      formValues.identityProviderAvailable, // identityProviderAvailable
+      { user: formValues.username || "", password: formValues.password || "" }, // credentials
+      formValues.identityProvider, // identityProviderAvailable
       true, // additional controller
     ]);
     setAdditionalControllers(additionalControllers);
-    dispatch(connectAndStartPolling(reduxStore, bakery));
+    dispatch(appThunks.connectAndStartPolling());
     // Close the panel
     navigate("/controllers");
+  };
+
+  function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setFormValues({
+      ...formValues,
+      [e.target.name]:
+        e.target.type === "checkbox" ? e.target.checked : e.target.value,
+    });
   }
 
-  function handleInputChange(e) {
-    const newFormValues = { ...formValues };
-    newFormValues[e.target.name] =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
-    setFormValues(newFormValues);
-  }
-
-  function generateTheControllerLink(controllerIP) {
+  function generateTheControllerLink(controllerIP?: string) {
     if (!controllerIP) {
       return "the controller";
     }

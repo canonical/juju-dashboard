@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, PropsWithChildren } from "react";
 
 import { Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
@@ -30,18 +30,21 @@ import FadeIn from "animations/FadeIn";
 
 import "./_entity-details.scss";
 
-function generatePanelContent(activePanel, entity, panelRowClick) {
+type Props = {
+  type?: string;
+};
+
+function generatePanelContent(activePanel: string, entity: string) {
   switch (activePanel) {
     case "remoteApps":
-      return <RemoteAppsPanel entity={entity} panelRowClick={panelRowClick} />;
+      return <RemoteAppsPanel entity={entity} />;
     case "offers":
-      return <OffersPanel entity={entity} panelRowClick={panelRowClick} />;
+      return <OffersPanel entity={entity} />;
   }
 }
 
-const EntityDetails = ({ type, children, className = "" }) => {
+const EntityDetails = ({ type, children }: PropsWithChildren<Props>) => {
   const { userName, modelName } = useParams();
-  const navigate = useNavigate();
   const modelUUID = useSelector(getModelUUID(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const applications = useSelector(getModelApplications(modelUUID));
@@ -52,7 +55,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
     activeView: withDefault(StringParam, "apps"),
   });
 
-  const setActiveView = (view) => {
+  const setActiveView = (view?: string) => {
     setQuery({ activeView: view });
   };
 
@@ -84,9 +87,9 @@ const EntityDetails = ({ type, children, className = "" }) => {
       .replace("/api", "");
   }
 
-  const handleNavClick = (e, section) => {
+  const handleNavClick = (e: MouseEvent, section: string) => {
     e.preventDefault();
-    e.target.scrollIntoView({
+    (e.target as HTMLAnchorElement)?.scrollIntoView({
       behavior: "smooth",
       block: "end",
       inline: "nearest",
@@ -107,24 +110,16 @@ const EntityDetails = ({ type, children, className = "" }) => {
 
   useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
 
-  const panelRowClick = useCallback(
-    (entityName, entityPanel) => {
-      // This can be removed when all entities are moved to top level aside panels
-      if (entityPanel === "apps") {
-        navigate(`/models/${userName}/${modelName}/app/${entityName}`);
-      } else {
-        return setQuery({ panel: entityPanel, entity: entityName });
-      }
-    },
-    [setQuery, navigate, modelName, userName]
-  );
-
   const generateActivePanel = () => {
     if (activePanel === "config") {
+      const charm = entity ? applications?.[entity]?.["charm-url"] : null;
+      if (!entity || !charm) {
+        return null;
+      }
       return (
         <ConfigPanel
           appName={entity}
-          charm={applications?.[entity]?.["charm-url"]}
+          charm={charm}
           modelUUID={modelUUID}
           onClose={() => setQuery(closePanelConfig)}
         />
@@ -137,7 +132,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
           isLoading={!entity}
           className={`${activePanel}-panel`}
         >
-          {generatePanelContent(activePanel, entity, panelRowClick)}
+          {entity ? generatePanelContent(activePanel, entity) : null}
         </SlidePanel>
       );
     }
@@ -148,25 +143,25 @@ const EntityDetails = ({ type, children, className = "" }) => {
       {
         active: activeView === "apps",
         label: "Applications",
-        onClick: (e) => handleNavClick(e, "apps"),
+        onClick: (e: MouseEvent) => handleNavClick(e, "apps"),
       },
       {
         active: activeView === "integrations",
         label: "Integrations",
-        onClick: (e) => handleNavClick(e, "integrations"),
+        onClick: (e: MouseEvent) => handleNavClick(e, "integrations"),
       },
       {
         active: activeView === "action-logs",
         label: "Action Logs",
-        onClick: (e) => handleNavClick(e, "action-logs"),
+        onClick: (e: MouseEvent) => handleNavClick(e, "action-logs"),
       },
     ];
 
-    if (modelInfo.type !== "kubernetes") {
+    if (modelInfo?.type !== "kubernetes") {
       items.push({
         active: activeView === "machines",
         label: "Machines",
-        onClick: (e) => handleNavClick(e, "machines"),
+        onClick: (e: MouseEvent) => handleNavClick(e, "machines"),
       });
     }
 
@@ -174,7 +169,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
   };
 
   return (
-    <BaseLayout className={className}>
+    <BaseLayout>
       <Header>
         <div className="entity-details__header">
           <Breadcrumb />
@@ -193,7 +188,7 @@ const EntityDetails = ({ type, children, className = "" }) => {
           <Spinner />
         </div>
       ) : (
-        <FadeIn isActive={modelInfo}>
+        <FadeIn isActive={!!modelInfo}>
           <div className="l-content">
             <div className={`entity-details entity-details__${type}`}>
               <>

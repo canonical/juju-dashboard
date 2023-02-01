@@ -1,4 +1,5 @@
 import { SearchAndFilter, Spinner } from "@canonical/react-components";
+import { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import { useSelector } from "react-redux";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
@@ -49,25 +50,31 @@ export default function Models() {
     useModelAttributes(modelData);
 
   // Generate chips from available model data
-  const generateChips = (lead, values) => {
-    let chipValues = [];
+  const generateChips = (lead: string, values: string[]) => {
+    let chipValues: SearchAndFilterChip[] = [];
     values.forEach((value) => {
       chipValues.push({ lead, value });
     });
     return chipValues;
   };
 
-  const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
+  const { blocked, alert, running } = useSelector(
+    getGroupedModelStatusCounts
+  ) as Record<string, number>;
 
-  let activeFilters = {};
+  let activeFilters: Record<string, string[]> = {};
 
-  const isObjectsEqual = (obj1, obj2) =>
-    JSON.stringify(obj1) === JSON.stringify(obj2);
+  const isObjectsEqual = (
+    obj1: Record<string, unknown>,
+    obj2: Record<string, unknown>
+  ) => JSON.stringify(obj1) === JSON.stringify(obj2);
 
-  const existingSearchData = [];
+  const existingSearchData: SearchAndFilterChip[] = [];
   for (const [lead, values] of Object.entries(filters)) {
     values.forEach((value) => {
-      existingSearchData.push({ lead, value });
+      if (value) {
+        existingSearchData.push({ lead, value });
+      }
     });
   }
 
@@ -125,7 +132,7 @@ export default function Models() {
               searchData.length &&
                 searchData.forEach(({ lead, value }) => {
                   const chipLead = lead ? lead.toLowerCase() : "custom";
-                  if (!activeFilters[chipLead]) {
+                  if (!(chipLead in activeFilters)) {
                     activeFilters[chipLead] = [];
                   }
                   activeFilters[chipLead].push(value);

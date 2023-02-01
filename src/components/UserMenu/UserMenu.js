@@ -4,8 +4,8 @@ import { Link, NavLink } from "react-router-dom";
 import classNames from "classnames";
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 
-import { logOut } from "app/actions";
 import useAnalytics from "hooks/useAnalytics";
+import { thunks as appThunks } from "store/app";
 import { extractOwnerName } from "app/utils/utils";
 
 import { actions } from "store/ui";
@@ -74,7 +74,7 @@ const UserMenu = () => {
               <Link
                 className="user-menu__link"
                 to="/"
-                onClick={() => dispatch(logOut(store))}
+                onClick={() => dispatch(appThunks.logOut())}
               >
                 Log out
               </Link>

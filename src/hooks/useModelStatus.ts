@@ -6,7 +6,8 @@ import { useQueryParams, StringParam } from "use-query-params";
 
 // Return model status data based on model name in URL
 export default function useModelStatus() {
-  let { modelName } = useParams();
+  let modelName: string | null | undefined;
+  ({ modelName } = useParams());
 
   // if model name cannot be derived from URL params, fallback and check for
   // query string value.
@@ -18,12 +19,15 @@ export default function useModelStatus() {
     modelName = queryParams[0].model;
   }
 
-  const getModelUUIDMemo = useMemo(() => getModelUUID(modelName), [modelName]);
-  const modelUUID = useSelector(getModelUUIDMemo);
+  const getModelUUIDMemo = useMemo(
+    () => (modelName ? getModelUUID(modelName) : null),
+    [modelName]
+  );
+  const modelUUID = useSelector((state) => getModelUUIDMemo?.(state));
   const getModelStatusMemo = useMemo(
     () => getModelStatus(modelUUID),
     [modelUUID]
   );
 
-  return useSelector(getModelStatusMemo);
+  return useSelector((state) => getModelStatusMemo?.(state));
 }

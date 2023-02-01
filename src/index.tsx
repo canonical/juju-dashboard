@@ -5,10 +5,9 @@ import process from "process";
 import * as Sentry from "@sentry/browser";
 
 import App from "components/App/App";
-import bakery from "app/bakery";
 import reduxStore from "store";
 
-import { connectAndStartPolling } from "app/actions";
+import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 
 import packageJSON from "../package.json";
@@ -89,7 +88,7 @@ function bootstrap() {
   if (config.identityProviderAvailable) {
     // If an identity provider is available then try and connect automatically
     // If not then wait for the login UI to trigger this
-    reduxStore.dispatch(connectAndStartPolling(reduxStore, bakery));
+    reduxStore.dispatch(appThunks.connectAndStartPolling());
   }
 
   const rootElement = document.getElementById("root");

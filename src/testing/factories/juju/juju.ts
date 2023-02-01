@@ -184,6 +184,7 @@ export const modelWatcherDataFactory = Factory.define<
           "model-uuid": modelUUID,
           key: "wordpress:db mysql:db",
           id: 0,
+          interface: "mysql",
           endpoints: [
             {
               "application-name": "wordpress",
@@ -232,6 +233,7 @@ export const modelWatcherDataFactory = Factory.define<
           },
           application: "ceph-mon",
           life: "alive",
+          machine: "5",
           name: "ceph-mon/0",
           ports: [],
           principal: "",

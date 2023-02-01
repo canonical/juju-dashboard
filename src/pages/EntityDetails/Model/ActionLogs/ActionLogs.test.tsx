@@ -20,6 +20,9 @@ import ActionLogs, {
 
 import { Output } from "./ActionLogs";
 
+var completed = new Date();
+completed.setMonth(completed.getMonth() - 18);
+
 const mockOperationResults = operationResultsFactory.build({
   results: [
     operationResultFactory.build({
@@ -30,6 +33,7 @@ const mockOperationResults = operationResultsFactory.build({
             receiver: "unit-easyrsa-0",
             name: "list-disks",
           }),
+          completed: completed.toISOString(),
         }),
         actionResultFactory.build({
           action: actionFactory.build({
@@ -37,6 +41,7 @@ const mockOperationResults = operationResultsFactory.build({
             receiver: "unit-easyrsa-1",
             name: "list-disks",
           }),
+          completed: completed.toISOString(),
         }),
       ],
     }),
@@ -51,6 +56,7 @@ const mockActionResults = actionResultsFactory.build({
         receiver: "unit-easyrsa-0",
         name: "list-disks",
       }),
+      completed: completed.toISOString(),
       log: [
         actionMessageFactory.build({
           message: "log message 1",
@@ -63,6 +69,7 @@ const mockActionResults = actionResultsFactory.build({
         receiver: "unit-easyrsa-1",
         name: "list-disks",
       }),
+      completed: completed.toISOString(),
       log: [
         actionMessageFactory.build({
           message: "log message 1",
