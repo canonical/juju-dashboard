@@ -1,6 +1,6 @@
 import classnames from "classnames";
 import { useEffect, useMemo, useState } from "react";
-import { useSelector, useStore } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
 import {
@@ -16,9 +16,10 @@ import {
   generateStatusElement,
   formatFriendlyDateToNow,
 } from "app/utils/utils";
-import { queryActionsList, queryOperationsList } from "juju/index";
+import { queryActionsList, queryOperationsList } from "juju/api";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import { useAppStore } from "store/store";
 import { TSFixMe } from "types";
 import "./_action-logs.scss";
 
@@ -129,7 +130,7 @@ export default function ActionLogs() {
   const [selectedOutput, setSelectedOutput] = useState<{
     [key: string]: Output;
   }>({});
-  const appStore = useStore();
+  const appStore = useAppStore();
   const getModelUUIDMemo = useMemo(
     () => (modelName ? getModelUUID(modelName) : null),
     [modelName]
@@ -143,7 +144,7 @@ export default function ActionLogs() {
     }
   );
 
-  const applicationList = () => Object.keys(modelStatusData.applications);
+  const applicationList = Object.keys(modelStatusData?.applications ?? {});
 
   useEffect(() => {
     async function fetchData() {

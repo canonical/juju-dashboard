@@ -6,23 +6,59 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import { InitialEntry } from "@remix-run/router";
-import * as juju from "juju";
+import * as juju from "juju/api";
 
 import dataDump from "testing/complete-redux-store-dump";
+import {
+  applicationCharmActionsResultFactory,
+  applicationsCharmActionsResultsFactory,
+  applicationCharmActionFactory,
+  applicationCharmActionParamsFactory,
+} from "testing/factories/juju/ActionV7";
 
-import { executeActionOnUnits } from "juju/index";
+import { executeActionOnUnits } from "juju/api";
 
 import ActionsPanel from "./ActionsPanel";
 
 const mockStore = configureStore([]);
 
-jest.mock("juju", () => {
+const mockResponse = applicationsCharmActionsResultsFactory.build({
+  results: [
+    applicationCharmActionsResultFactory.build({
+      "application-tag": "application-ceph",
+      actions: {
+        "add-disk": applicationCharmActionFactory.build({
+          params: applicationCharmActionParamsFactory.build({
+            properties: {
+              bucket: {
+                type: "string",
+              },
+              "osd-devices": {
+                type: "string",
+              },
+            },
+            required: ["osd-devices"],
+            title: "add-disk",
+            type: "object",
+          }),
+        }),
+        pause: applicationCharmActionFactory.build({
+          params: applicationCharmActionParamsFactory.build({
+            title: "pause",
+            type: "object",
+          }),
+        }),
+      },
+    }),
+  ],
+});
+
+jest.mock("juju/api", () => {
   return {
     executeActionOnUnits: jest.fn(),
     getActionsForApplication: () => {
       return new Promise(async (resolve) => {
-        const apiData = require("testing/actions-list-api-response.json");
-        resolve(apiData.response);
+        resolve(mockResponse);
       });
     },
   };
@@ -54,7 +90,7 @@ describe("ActionsPanel", () => {
 
   it("Renders the list of available actions", async () => {
     generateComponent();
-    expect(await screen.findAllByRole("radio")).toHaveLength(20);
+    expect(await screen.findAllByRole("radio")).toHaveLength(2);
   });
 
   it("validates that an action is selected before submitting", async () => {

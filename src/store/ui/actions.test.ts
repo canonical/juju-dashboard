@@ -1,6 +1,6 @@
 import { actions } from "./slice";
 
-describe("selectors", () => {
+describe("actions", () => {
   it("userMenuActive", () => {
     expect(actions.userMenuActive(true)).toStrictEqual({
       type: "ui/userMenuActive",

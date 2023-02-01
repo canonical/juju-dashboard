@@ -179,12 +179,6 @@
 @mixin entity-details-tables {
   /* stylelint-disable no-descending-specificity */
   .p-main-table {
-    th,
-    td {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-
     tr {
       @include vf-animation(all, brisk, ease-in-out);
 
@@ -324,6 +318,12 @@
     }
   }
   /* stylelint-enable no-descending-specificity */
+
+  // Override the status icon so that it truncates inside the tooltip wrapper.
+  .entity-details__machines .status-icon,
+  .entity-details__machines-status-icon {
+    display: inline !important;
+  }
 }
 
 @mixin entity-details__button-group {

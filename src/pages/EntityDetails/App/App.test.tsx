@@ -12,6 +12,11 @@ import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import { RootState } from "store/store";
 import dataDump from "testing/complete-redux-store-dump";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
+import {
+  credentialFactory,
+  generalStateFactory,
+  configFactory,
+} from "testing/factories/general";
 
 import App, { Label, TestId } from "./App";
 
@@ -32,6 +37,14 @@ describe("Entity Details App", () => {
 
   beforeEach(() => {
     storeData = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
+        }),
+        credentials: {
+          "wss://jimm.jujucharms.com/api": credentialFactory.build(),
+        },
+      }),
       juju: jujuStateFactory.build(
         {},
         {
@@ -45,11 +58,6 @@ describe("Entity Details App", () => {
         }
       ),
     });
-    storeData.general.credentials = {
-      "wss://jimm.jujucharms.com/api": {
-        info: { user: { identity: "user-eggman@external" } },
-      },
-    };
     storeData.juju.modelData = dataDump.juju.modelData;
 
     const model = Object.values(storeData.juju.modelWatcherData).find(

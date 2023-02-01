@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "react-redux";
 
-import bakery from "app/bakery";
-import { getActiveUserTag } from "app/selectors";
+import bakery from "juju/bakery";
+import { getActiveUserTag } from "store/general/selectors";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
@@ -79,8 +79,8 @@ const WebCLI = ({
         const deserialized = JSON.parse(atob(macaroons));
         const originalWSOrigin = new URL(wsAddress).origin;
         const activeUser = getActiveUserTag(
-          `${originalWSOrigin}/api`,
-          storeState
+          storeState,
+          `${originalWSOrigin}/api`
         );
         authentication.user = activeUser?.replace("user-", "");
         authentication.macaroons = [deserialized];

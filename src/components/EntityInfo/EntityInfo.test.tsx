@@ -2,7 +2,8 @@ import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import dataDump from "testing/complete-redux-store-dump";
+
+import { rootStateFactory } from "testing/factories/root";
 
 import EntityInfo from "./EntityInfo";
 
@@ -15,7 +16,7 @@ jest.mock("components/Topology/Topology", () => {
 
 describe("Entity info", () => {
   it("renders the expanded topology on click", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <MemoryRouter

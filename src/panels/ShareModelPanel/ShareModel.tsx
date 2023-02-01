@@ -1,19 +1,20 @@
+import { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import cloneDeep from "clone-deep";
 import { Field, Form, Formik } from "formik";
 import { motion } from "framer-motion";
 import useModelStatus from "hooks/useModelStatus";
-import { setModelSharingPermissions } from "juju";
 import { useEffect, useState } from "react";
 import reactHotToast from "react-hot-toast";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { getModelControllerDataByUUID } from "app/selectors";
+import { actions as appActions } from "store/app";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import ShareCard from "components/ShareCard/ShareCard";
 import ToastCard from "components/ToastCard/ToastCard";
-
+import { usePromiseDispatch } from "store/store";
 import type { TSFixMe } from "types";
 
 import { RadioInput } from "@canonical/react-components";
@@ -44,8 +45,7 @@ type UserAccess = {
 };
 
 export default function ShareModel() {
-  const dispatch = useDispatch();
-  const store = useStore();
+  const promiseDispatch = usePromiseDispatch();
   const [usersAccess, setUsersAccess] = useState<UsersAccess>({});
   const [newUserFormSubmitActive, setNewUserFormSubmitActive] = useState(false);
 
@@ -94,30 +94,39 @@ export default function ShareModel() {
     );
   };
 
-  const updatePermissions = async (
+  const updateModelPermissions = async (
     action: string,
     user: string,
     permissionTo: string | undefined,
     permissionFrom: string | undefined
   ) => {
-    const response = await setModelSharingPermissions(
-      modelControllerURL,
-      modelUUID,
-      store.getState,
-      user,
-      permissionTo,
-      permissionFrom,
-      action,
-      dispatch
-    );
-    if (response?.error) {
+    let response: ErrorResults | null;
+    try {
+      response = await promiseDispatch<ErrorResults>(
+        appActions.updatePermissions({
+          wsControllerURL: modelControllerURL,
+          modelUUID,
+          user,
+          permissionTo,
+          permissionFrom,
+          action,
+        })
+      );
+    } catch (error) {
       reactHotToast.custom((t) => (
-        <ToastCard toastInstance={t} type="negative" text={response.error} />
+        <ToastCard
+          toastInstance={t}
+          type="negative"
+          text={
+            typeof error === "string"
+              ? error
+              : "Unable to update model permissions"
+          }
+        />
       ));
-      return false;
-    } else {
-      return response;
+      response = null;
     }
+    return response;
   };
 
   const handleAccessSelectChange = async (
@@ -132,13 +141,13 @@ export default function ShareModel() {
     setUsersAccess(clonedUserAccess);
     const permissionFrom = usersAccess?.[userName];
 
-    const response = await updatePermissions(
+    const response = await updateModelPermissions(
       "grant",
       userName,
       permissionTo,
       permissionFrom
     );
-    const error = response?.results[0]?.error?.message;
+    const error = response?.results?.[0]?.error?.message;
     if (error) {
       reactHotToast.custom((t) => (
         <ToastCard toastInstance={t} type="negative" text={error} />
@@ -156,7 +165,7 @@ export default function ShareModel() {
   };
 
   const handleRemoveUser = async (userName: string) => {
-    await updatePermissions(
+    await updateModelPermissions(
       "revoke",
       userName,
       undefined,
@@ -171,7 +180,7 @@ export default function ShareModel() {
         undo={async () => {
           const permissionTo = usersAccess?.[userName];
           const permissionFrom = undefined;
-          await updatePermissions(
+          await updateModelPermissions(
             "grant",
             userName,
             permissionTo,
@@ -199,7 +208,7 @@ export default function ShareModel() {
       const newUserPermission = values.access;
       let response = null;
       if (newUserName && newUserPermission) {
-        response = await updatePermissions(
+        response = await updateModelPermissions(
           "grant",
           newUserName,
           newUserPermission,
@@ -207,7 +216,7 @@ export default function ShareModel() {
         );
       }
 
-      const error = response?.results[0]?.error?.message;
+      const error = response?.results?.[0]?.error?.message;
       if (error) {
         reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="negative" text={error} />

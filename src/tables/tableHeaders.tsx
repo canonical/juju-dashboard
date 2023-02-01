@@ -52,7 +52,11 @@ export const generateSelectableUnitTableHeaders = (
 export const machineTableHeaders: Header = [
   { content: "machine", sortKey: "machine" },
   { content: "apps", sortKey: "apps" },
-  { content: "state", sortKey: "state" },
+  {
+    className: "p-table__cell--icon-placeholder",
+    content: "state",
+    sortKey: "state",
+  },
   { content: "az", sortKey: "az" },
   { content: "instance id", sortKey: "instanceId" },
   { content: "message", sortKey: "message" },

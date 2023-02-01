@@ -1,33 +1,29 @@
-import { connectAndStartPolling, storeUserPass } from "app/actions";
+import { thunks as appThunks } from "store/app";
+import { actions as generalActions } from "store/general";
 import {
   getConfig,
   getControllerConnections,
   getLoginError,
   getWSControllerURL,
   isLoggedIn,
-} from "app/selectors";
-import React, {
-  FormEvent,
-  PropsWithChildren,
-  ReactNode,
-  useEffect,
-  useRef,
-} from "react";
-import { useDispatch, useSelector, useStore } from "react-redux";
+} from "store/general/selectors";
+import React, { FormEvent, ReactNode, useEffect, useRef } from "react";
+import { useSelector, useStore } from "react-redux";
 
 import { Spinner } from "@canonical/react-components";
 
-import { Config, TSFixMe } from "types";
 import FadeUpIn from "animations/FadeUpIn";
-import bakery from "app/bakery";
-import { RootState } from "store/store";
+import bakery from "juju/bakery";
+import { RootState, useAppDispatch } from "store/store";
 
 import logo from "static/images/logo/logo-black-on-white.svg";
 
 import "./_login.scss";
 
-export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
-  const config = useSelector<RootState, Config | null>(getConfig);
+type Props = { children: ReactNode };
+
+export default function LogIn({ children }: Props) {
+  const config = useSelector(getConfig);
 
   const controllerConnections = useSelector(getControllerConnections) || {};
   const wsControllerURLs = Object.keys(controllerConnections);
@@ -36,7 +32,7 @@ export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
   // Loop through all of the available controller connections to see
   // if we're logged in.
   const userIsLoggedIn = wsControllerURLs.some((wsControllerURL) =>
-    isLoggedIn(wsControllerURL, store.getState())
+    isLoggedIn(store.getState(), wsControllerURL)
   );
 
   const loginError = useSelector(getLoginError);
@@ -68,7 +64,7 @@ export default function LogIn({ children }: PropsWithChildren<ReactNode>) {
   @param loginError The error message from the store.
   @returns A component for the error message.
 */
-function generateErrorMessage(loginError?: string) {
+function generateErrorMessage(loginError?: string | null) {
   if (!loginError) {
     return null;
   }
@@ -107,7 +103,7 @@ interface LoginElements extends HTMLFormControlsCollection {
 }
 
 function UserPassForm() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const store = useStore<RootState>();
   const focus = useRef<HTMLInputElement>(null);
 
@@ -119,12 +115,13 @@ function UserPassForm() {
     const user = elements.username.value;
     const password = elements.password.value;
     dispatch(
-      storeUserPass(getWSControllerURL(store.getState()), { user, password })
+      generalActions.storeUserPass({
+        wsControllerURL: getWSControllerURL(store.getState()),
+        credential: { user, password },
+      })
     );
     if (bakery) {
-      // TSFixMe - this override can be removed once the selectors have been
-      // migrated to TypeScript.
-      dispatch(connectAndStartPolling(store, bakery) as TSFixMe);
+      dispatch(appThunks.connectAndStartPolling());
     }
   }
 
@@ -145,7 +142,7 @@ function UserPassForm() {
   );
 }
 
-function Button({ visitURL }: { visitURL?: string }) {
+function Button({ visitURL }: { visitURL?: string | null }) {
   if (visitURL) {
     return (
       <a

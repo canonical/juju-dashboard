@@ -4,7 +4,8 @@ import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-import dataDump from "./../../src/testing/complete-redux-store-dump";
+
+import { rootStateFactory } from "testing/factories/root";
 
 import Panels, { close } from "./panels";
 
@@ -13,7 +14,7 @@ const mockStore = configureStore([]);
 describe("Panels", () => {
   it("should call close function when escape key is pressed", () => {
     const outerNode = document.createElement("div");
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/foo"]}>

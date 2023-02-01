@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { UIState } from "./types";
+
 const slice = createSlice({
   name: "ui",
   initialState: {
     userMenuActive: false,
     confirmationModalActive: false,
     sideNavCollapsed: false,
-  },
+  } as UIState,
   reducers: {
     userMenuActive: (state, action) => {
       state.userMenuActive = action.payload;

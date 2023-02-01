@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { parseISO, formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
@@ -20,14 +21,15 @@ export const generateStatusElement = (
   status = "unknown",
   count,
   useIcon = true,
-  actionsLogs = false
+  actionsLogs = false,
+  className = null
 ) => {
   let statusClass = status ? `is-${status.toLowerCase()}` : "";
   let countValue = "";
-  if (count !== undefined) {
+  if (count || count === 0) {
     countValue = ` (${count})`;
   }
-  const className = useIcon ? "status-icon " + statusClass : "";
+  const iconClasses = useIcon ? "status-icon " + statusClass : "";
   // ActionLogs uses a spinner icon if 'running'
   if (actionsLogs && statusClass === "is-running") {
     return (
@@ -39,7 +41,7 @@ export const generateStatusElement = (
   }
 
   return (
-    <span className={className}>
+    <span className={classNames(iconClasses, className)}>
       {status}
       {countValue}
     </span>

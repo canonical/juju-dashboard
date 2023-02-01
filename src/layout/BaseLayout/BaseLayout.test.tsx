@@ -1,27 +1,31 @@
+import { render, screen, within } from "@testing-library/react";
 import {
   BrowserRouter as Router,
   MemoryRouter,
   Route,
   Routes,
 } from "react-router-dom";
-import { mount } from "enzyme";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-import dataDump from "testing/complete-redux-store-dump";
-import cloneDeep from "clone-deep";
 
-import { TSFixMe } from "types";
-import { UIState } from "store/ui/types";
+import { rootStateFactory } from "testing/factories/root";
+import { RootState } from "store/store";
 
 import BaseLayout from "./BaseLayout";
 
 const mockStore = configureStore([]);
 describe("Base Layout", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.withGeneralConfig().build();
+  });
+
   it("renders with a sidebar", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
+    const store = mockStore(state);
+    render(
       <Provider store={store}>
         <Router>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -32,12 +36,12 @@ describe("Base Layout", () => {
         </Router>
       </Provider>
     );
-    expect(wrapper.find(".l-navigation")).toHaveLength(1);
+    expect(document.querySelector(".l-navigation")).toBeInTheDocument();
   });
 
   it("should display the children", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
+    const store = mockStore(state);
+    render(
       <Provider store={store}>
         <Router>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -48,17 +52,14 @@ describe("Base Layout", () => {
         </Router>
       </Provider>
     );
-    expect(wrapper.find("[data-testid='main-children']").html()).toStrictEqual(
-      `<div data-testid="main-children"><p>foo</p></div>`
-    );
+    const main = screen.getByTestId("main-children");
+    expect(within(main).getByText("foo")).toBeInTheDocument();
   });
 
   it("should collapse the sidebar on entity details pages", () => {
-    const clonedDump: TSFixMe = cloneDeep(dataDump);
-    const ui: UIState = clonedDump.ui;
-    ui.sideNavCollapsed = true;
-    const store = mockStore(clonedDump);
-    const wrapper = mount(
+    state.ui.sideNavCollapsed = true;
+    const store = mockStore(state);
+    render(
       <Provider store={store}>
         <MemoryRouter
           initialEntries={[
@@ -80,14 +81,15 @@ describe("Base Layout", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(
-      wrapper.find("header").prop("data-sidenav-initially-collapsed")
-    ).toBe(true);
+    expect(document.querySelector(".l-navigation")).toHaveAttribute(
+      "data-sidenav-initially-collapsed",
+      "true"
+    );
   });
 
   it("should not collapse the sidebar when not on entity details pages", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
+    const store = mockStore(state);
+    render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -105,14 +107,15 @@ describe("Base Layout", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(
-      wrapper.find("header").prop("data-sidenav-initially-collapsed")
-    ).toBe(false);
+    expect(document.querySelector(".l-navigation")).toHaveAttribute(
+      "data-sidenav-initially-collapsed",
+      "false"
+    );
   });
 
   it("should include mobile navigation bar", () => {
-    const store = mockStore(dataDump);
-    const wrapper = mount(
+    const store = mockStore(state);
+    render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
@@ -130,6 +133,6 @@ describe("Base Layout", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(wrapper.find(".l-navigation-bar").exists()).toBe(true);
+    expect(document.querySelector(".l-navigation-bar")).toBeInTheDocument();
   });
 });

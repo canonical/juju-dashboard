@@ -14,8 +14,8 @@ import {
 
 /**
   Fetches the model data from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The list of model data or null if none found.
+  @param state The application state.
+  @returns The list of model data or null if none found.
 */
 export const getModelData = (state) => {
   if (state?.juju?.modelData) {
@@ -26,49 +26,10 @@ export const getModelData = (state) => {
 
 /**
   Fetches the controller data from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The list of controller data or null if none found.
+  @param state The application state.
+  @returns The list of controller data or null if none found.
 */
 export const getControllerData = (state) => state?.juju?.controllers;
-
-/**
-  Fetches the application config from state.
-  @param {Object} state The application state.
-  @returns {Config|Null} The config object or null if none found.
-*/
-export const getConfig = (state) => state?.general?.config;
-
-/**
-  Fetches the username and password from state.
-  @param {String} wsControllerURL The fully qualified wsController URL to
-    retrieve the credentials from.
-  @param {Object} state The application state.
-  @returns {Object|Null} The username and password or null if none found.
-*/
-export const getUserPass = (wsControllerURL, state) =>
-  state?.general?.credentials?.[wsControllerURL];
-
-/**
-  Fetches a login error from state
-  @param {Object} state The application state.
-  @returns {String|Undefined} The error message if any.
-*/
-export const getLoginError = (state) => state?.general?.loginError;
-
-/**
-  Fetches the pinger intervalId from state.
-  @param {Object} state The application state.
-  @returns {Object|Null} The pinger intervalId or null if none found.
-*/
-export const getPingerIntervalIds = (state) =>
-  state?.general?.pingerIntervalIds;
-
-/**
-  Fetches the application version.
-  @param {Object} state The application state.
-  @returns {Object|Undefined} The application version or undefined
-*/
-export const getAppVersion = (state) => state?.general?.appVersion;
 
 // ---- Utility selectors
 
@@ -155,8 +116,8 @@ const groupModelsByStatus = (modelData) => {
 
 /**
   Returns a grouped collection of machine instances.
-  @param {Object} modelData
-  @returns {Object} The grouped machine instances.
+  @param modelData
+  @returns The grouped machine instances.
 */
 const groupMachinesByStatus = (modelData) => {
   const grouped = {
@@ -179,8 +140,8 @@ const groupMachinesByStatus = (modelData) => {
 
 /**
   Returns a grouped collection of unit instances.
-  @param {Object} modelData
-  @returns {Function} The grouped unit instances.
+  @param modelData
+  @returns The grouped unit instances.
 */
 const groupUnitsByStatus = (modelData) => {
   const grouped = {
@@ -206,8 +167,8 @@ const groupUnitsByStatus = (modelData) => {
 
 /**
   Returns a grouped collection of machine instances.
-  @param {Object} modelData
-  @returns {Object} The grouped machine instances.
+  @param modelData
+  @returns The grouped machine instances.
 */
 const groupApplicationsByStatus = (modelData) => {
   const grouped = {
@@ -400,34 +361,6 @@ export const getModelUUID = (modelName) => {
 };
 
 /**
-  Checks state to see if the user is logged in.
-  Usage:
-    const userIsLoggedIn = useSelector(isLoggedIn);
-
-  @param {Object} state The application state.
-  @returns {Boolean} If the user is logged in.
-*/
-export const isLoggedIn = (wsControllerURL, state) => {
-  return state.general.controllerConnections?.[wsControllerURL]?.user?.identity;
-};
-
-export const getControllerConnection = (wsControllerURL, state) =>
-  state?.general?.controllerConnections?.[wsControllerURL];
-
-export const getControllerConnections = (state) =>
-  state?.general?.controllerConnections;
-
-export const isConnecting = (state) => !!state.general.visitURL;
-/**
-  Returns the users current controller logged in identity
-  @param {String} wsControllerURL The controller url to make the query on.
-  @param {Object} state The application state.
-  @returns {String} The users userTag.
-*/
-export const getActiveUserTag = (wsControllerURL, state) =>
-  state?.general?.controllerConnections?.[wsControllerURL]?.user.identity;
-
-/**
   Returns a model status for the supplied modelUUID.
   @param {String} modelUUID The model UUID to fetch the status for
   @returns {Function} The memoized selector to return the model status.
@@ -473,7 +406,7 @@ export const getGroupedModelDataByStatus = createSelector(
 
 /**
   Returns the machine instances sorted by status.
-  @returns {Function} The memoized selector to return the sorted machine instances.
+  @returns The memoized selector to return the sorted machine instances.
 */
 export const getGroupedMachinesDataByStatus = createSelector(
   getModelData,
@@ -482,7 +415,7 @@ export const getGroupedMachinesDataByStatus = createSelector(
 
 /**
   Returns the unit instances sorted by status.
-  @returns {Function} The memoized selector to return the sorted unit instances.
+  @returns The memoized selector to return the sorted unit instances.
 */
 export const getGroupedUnitsDataByStatus = createSelector(
   getModelData,
@@ -491,7 +424,7 @@ export const getGroupedUnitsDataByStatus = createSelector(
 
 /**
   Returns the application instances sorted by status.
-  @returns {Function} The memoized selector to return the sorted application instances.
+  @returns The memoized selector to return the sorted application instances.
 */
 export const getGroupedApplicationsDataByStatus = createSelector(
   getModelData,
@@ -508,19 +441,10 @@ export const getGroupedModelStatusCounts = createSelector(
 );
 
 /**
-  Returns the fully qualified websocket controller API URL.
-  @returns {Function} The memoized selector to return the controller websocket api url.
-*/
-export const getWSControllerURL = createSelector(
-  getConfig,
-  (config) => config.controllerAPIEndpoint
-);
-
-/**
   Returns the controller data in the format of an Object.entries output.
   [wsControllerURL, [data]]
-  @param {String} controllerUUID The full controller UUID.
-  @returns {Array} The controller data in the format of an Object.entries output.
+  @param controllerUUID The full controller UUID.
+  @returns The controller data in the format of an Object.entries output.
 */
 export const getControllerDataByUUID = (controllerUUID) => {
   return createSelector(getControllerData, (controllerData) => {
