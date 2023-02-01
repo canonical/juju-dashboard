@@ -10,7 +10,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { useStore } from "react-redux";
 import type { Store } from "redux";
 
-import { Spinner } from "@canonical/react-components";
+import { Spinner, useListener } from "@canonical/react-components";
 
 import FadeIn from "animations/FadeIn";
 import { generateIconImg, isSet } from "app/utils/utils";
@@ -18,7 +18,6 @@ import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 
 import useAnalytics from "hooks/useAnalytics";
-import useEventListener from "hooks/useEventListener";
 
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
@@ -70,11 +69,15 @@ export default function ConfigPanel({
 
   const sendAnalytics = useAnalytics();
 
-  useEventListener("keydown", (e: KeyboardEvent) => {
-    if (e.code === "Escape" && confirmType !== null) {
-      setConfirmType(null);
-    }
-  });
+  useListener(
+    window,
+    (e: KeyboardEvent) => {
+      if (e.code === "Escape" && confirmType !== null) {
+        setConfirmType(null);
+      }
+    },
+    "keydown"
+  );
 
   useEffect(() => {
     setIsLoading(true);

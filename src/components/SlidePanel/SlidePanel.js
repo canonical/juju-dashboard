@@ -1,7 +1,5 @@
-import { Spinner } from "@canonical/react-components";
+import { Spinner, useListener } from "@canonical/react-components";
 import classnames from "classnames";
-
-import useEventListener from "hooks/useEventListener";
 
 import "./_slide-panel.scss";
 
@@ -18,7 +16,7 @@ function SlidePanel({
       onClose();
     }
   };
-  useEventListener("keydown", closeOnEscape);
+  useListener(window, closeOnEscape, "keydown");
 
   // Close panel if click is detected outside when panel is active
   const closeOnClickOutside = (e) => {
@@ -32,7 +30,7 @@ function SlidePanel({
       onClose();
     }
   };
-  useEventListener("click", closeOnClickOutside);
+  useListener(window, closeOnClickOutside, "click");
 
   return (
     <div

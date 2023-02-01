@@ -3,16 +3,17 @@ import {
   extractOwnerName,
   extractCredentialName,
 } from "app/utils/utils";
+import { ModelData } from "types";
 
-export default function useModelAttributes(modelData) {
-  const clouds = [];
-  const regions = [];
-  const owners = [];
-  const credentials = [];
+export default function useModelAttributes(modelData: ModelData) {
+  const clouds: string[] = [];
+  const regions: string[] = [];
+  const owners: string[] = [];
+  const credentials: string[] = [];
 
   // Loop the model data and pull out the available filters
   Object.values(modelData).forEach((model) => {
-    if (!model.info) {
+    if (!model || typeof model !== "object" || !("info" in model)) {
       return;
     }
     // Extract cloud filters
