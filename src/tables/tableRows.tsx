@@ -10,18 +10,39 @@ import {
   generateEntityIdentifier,
 } from "app/utils/utils";
 import { Tooltip } from "@canonical/react-components";
+import { ApplicationData, RelationData, UnitData } from "juju/types";
+import { StatusData } from "juju/model-selectors";
+import { MouseEvent } from "react";
+import { ModelData, TSFixMe } from "types";
+import {
+  MainTableCell,
+  MainTableRow,
+} from "@canonical/react-components/dist/components/MainTable/MainTable";
+import { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+
+export type TableRowClick = (
+  entityType: string,
+  entityId: string,
+  e: MouseEvent
+) => void;
+
+export type Query = {
+  panel?: string | null;
+  entity?: string | null;
+  activeView?: string | null;
+};
 
 export function generateLocalApplicationRows(
-  applications,
-  applicationStatuses,
-  tableRowClick,
-  query
+  applications: ApplicationData | null,
+  applicationStatuses: StatusData | null,
+  tableRowClick: TableRowClick,
+  query?: Query
 ) {
-  if (!applications) {
+  if (!applications || !applicationStatuses) {
     return [];
   }
 
-  function getStore(charmURL) {
+  function getStore(charmURL: string) {
     if (charmURL) {
       return charmURL.indexOf("local:") === 0 ? "Local" : "Charmhub";
     }
@@ -33,6 +54,9 @@ export function generateLocalApplicationRows(
     const rev = extractRevisionNumber(app["charm-url"]) || "-";
     const store = getStore(app["charm-url"]);
     const version = app["workload-version"] || "-";
+    const status = app.status
+      ? generateStatusElement(applicationStatuses[app.name])
+      : "-";
 
     return {
       columns: [
@@ -43,9 +67,7 @@ export function generateLocalApplicationRows(
         },
         {
           "data-test-column": "status",
-          content: app.status
-            ? generateStatusElement(applicationStatuses[app.name])
-            : "-",
+          content: status,
           className: "u-capitalise u-truncate",
         },
         {
@@ -75,14 +97,14 @@ export function generateLocalApplicationRows(
       ],
       sortData: {
         app: key,
-        status: app.status?.status,
+        status,
         version,
         scale: app["unit-count"],
         store,
         rev,
         notes: "-",
       },
-      onClick: (e) => tableRowClick("app", key, e),
+      onClick: (e: MouseEvent) => tableRowClick("app", key, e),
       "data-app": key,
       className:
         query?.panel === "apps" && query?.entity === key ? "is-selected" : "",
@@ -91,9 +113,9 @@ export function generateLocalApplicationRows(
 }
 
 export function generateRemoteApplicationRows(
-  modelStatusData,
-  tableRowClick,
-  query
+  modelStatusData: ModelData,
+  tableRowClick: TableRowClick,
+  query?: Query
 ) {
   if (!modelStatusData) {
     return [];
@@ -144,7 +166,8 @@ export function generateRemoteApplicationRows(
           store: "store",
         },
         "data-app": key,
-        onClick: (e) => false && tableRowClick(key, "remoteApps", e), // DISABLED PANEL
+        onClick: (e: MouseEvent) =>
+          false && tableRowClick(key, "remoteApps", e), // DISABLED PANEL
         className:
           query?.panel === "remoteApps" && query?.entity === key
             ? "is-selected"
@@ -155,23 +178,27 @@ export function generateRemoteApplicationRows(
 }
 
 export function generateUnitRows(
-  units,
-  tableRowClick,
-  showCheckbox,
-  hideMachines
+  units: UnitData | null,
+  tableRowClick: TableRowClick,
+  showCheckbox?: boolean,
+  hideMachines?: boolean
 ) {
   if (!units) {
     return [];
   }
 
-  function generatePortsList(ports) {
+  function generatePortsList(ports: UnitData[0]["ports"]) {
     if (!ports || ports.length === 0) {
       return "-";
     }
     return ports.map((portData) => portData.number).join(", ");
   }
 
-  const clonedUnits = cloneDeep(units);
+  const clonedUnits: {
+    [unitName: string]: UnitData[0] & {
+      subordinates?: { [unitId: string]: UnitData[0] };
+    };
+  } = cloneDeep(units);
 
   // Restructure the unit list data to allow for the proper subordinate
   // rendering with the current table setup.
@@ -183,12 +210,15 @@ export function generateUnitRows(
       if (!clonedUnits[unitData.principal].subordinates) {
         clonedUnits[unitData.principal].subordinates = {};
       }
-      clonedUnits[unitData.principal].subordinates[unitId] = unitData;
+      const subordinates = clonedUnits[unitData.principal].subordinates;
+      if (subordinates) {
+        subordinates[unitId] = unitData;
+      }
       delete clonedUnits[unitId];
     }
   });
 
-  const unitRows = [];
+  const unitRows: (MainTableRow & { "data-unit": string })[] = [];
   Object.keys(clonedUnits).forEach((unitId) => {
     const unit = clonedUnits[unitId];
     const workload = unit["workload-status"].current || "-";
@@ -197,7 +227,7 @@ export function generateUnitRows(
     const ports = generatePortsList(unit.ports);
     const message = unit["workload-status"].message || "-";
     const charm = unit["charm-url"];
-    let columns = [
+    let columns: MainTableCell[] = [
       {
         content: generateEntityIdentifier(charm ? charm : "", unitId, false),
         className: "u-truncate",
@@ -255,7 +285,7 @@ export function generateUnitRows(
         unit: unitId,
         workload,
         agent,
-        machine: unit.machine,
+        machine: unit["machine-id"],
         publicAddress,
         ports,
         message,
@@ -329,17 +359,17 @@ export function generateUnitRows(
 }
 
 export function generateMachineRows(
-  machines,
-  units,
-  tableRowClick,
-  selectedEntity
+  machines: ModelData["machines"] | null,
+  units: UnitData | null,
+  tableRowClick: TableRowClick,
+  selectedEntity?: string | null
 ) {
   if (!machines) {
     return [];
   }
 
-  const generateMachineApps = (machineId, units) => {
-    const appsOnMachine = [];
+  const generateMachineApps = (machineId: string, units: UnitData | null) => {
+    const appsOnMachine: [string, string][] = [];
     units &&
       Object.values(units).forEach((unitInfo) => {
         if (machineId === unitInfo["machine-id"]) {
@@ -388,7 +418,9 @@ export function generateMachineRows(
                 null,
                 true,
                 false,
-                "p-icon u-truncate"
+                // TSFixMe: this can be removed once this util has been migrated
+                // to TypeScript.
+                "p-icon u-truncate" as TSFixMe
               )}
             </Tooltip>
           ),
@@ -412,14 +444,17 @@ export function generateMachineRows(
         instanceId: machine["instance-id"],
         message: machine?.["agent-status"].message,
       },
-      onClick: (e) => tableRowClick("machine", machineId, e),
+      onClick: (e: MouseEvent) => tableRowClick("machine", machineId, e),
       "data-machine": machineId,
       className: selectedEntity === machineId ? "is-selected" : "",
     };
   });
 }
 
-export function generateRelationRows(relationData, applications) {
+export function generateRelationRows(
+  relationData: RelationData | null,
+  applications: ApplicationData | null
+) {
   if (!relationData) {
     return [];
   }
@@ -432,7 +467,8 @@ export function generateRelationRows(relationData, applications) {
       providerApplicationName,
       requirerApplicationName,
       peerApplicationName,
-    } = extractRelationEndpoints(relation);
+      // TSFixMe: this cast can be removed once the util has been migrated to TypeScript.
+    } = extractRelationEndpoints(relation) as Record<string, string>;
     const providerLabel = provider || peer || "-";
     const requirerLabel = requirer || "-";
     return {
@@ -465,14 +501,14 @@ export function generateRelationRows(relationData, applications) {
       sortData: {
         provider: providerLabel,
         requirer: requirerLabel,
-        interface: relation.interface,
+        interface: relation.endpoints[0].relation.interface,
         type: relation?.endpoints[0]?.relation.role,
       },
     };
   });
 }
 
-export function generateOffersRows(modelStatusData) {
+export function generateOffersRows(modelStatusData: ModelData) {
   if (!modelStatusData) {
     return [];
   }
@@ -495,7 +531,7 @@ export function generateOffersRows(modelStatusData) {
           className: "u-truncate",
         },
         {
-          content: Object.entries(offer.endpoints)
+          content: Object.entries<RemoteEndpoint>(offer.endpoints)
             .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
             .join("/n"),
           className: "u-truncate",
@@ -508,7 +544,11 @@ export function generateOffersRows(modelStatusData) {
   });
 }
 
-export function generateAppOffersRows(modelStatusData, tableRowClick, query) {
+export function generateAppOffersRows(
+  modelStatusData: ModelData,
+  tableRowClick: TableRowClick,
+  query: Query
+) {
   if (!modelStatusData) {
     return [];
   }
@@ -548,7 +588,7 @@ export function generateAppOffersRows(modelStatusData, tableRowClick, query) {
           content: "-", // offer url is not yet available from the API
         },
       ],
-      onClick: (e) => false && tableRowClick(offerId, "offers", e), // DISABLED PANEL
+      onClick: (e: MouseEvent) => false && tableRowClick(offerId, "offers", e), // DISABLED PANEL
       "data-app": offerId,
       className:
         query.panel === "offers" && query.entity === offerId
@@ -558,7 +598,7 @@ export function generateAppOffersRows(modelStatusData, tableRowClick, query) {
   });
 }
 
-export function generateConsumedRows(modelStatusData) {
+export function generateConsumedRows(modelStatusData?: ModelData) {
   if (!modelStatusData) {
     return [];
   }
@@ -581,7 +621,7 @@ export function generateConsumedRows(modelStatusData) {
           className: "u-truncate",
         },
         {
-          content: Object.entries(application.endpoints)
+          content: Object.entries<RemoteEndpoint>(application.endpoints)
             .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
             .join("/n"),
           className: "u-truncate",
