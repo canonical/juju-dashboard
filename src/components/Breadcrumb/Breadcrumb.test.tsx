@@ -1,9 +1,9 @@
 import configureStore from "redux-mock-store";
-import React from "react";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { render, screen } from "@testing-library/react";
-import dataDump from "testing/complete-redux-store-dump";
+
+import { rootStateFactory } from "testing/factories/root";
 
 import Breadcrumb from "./Breadcrumb";
 
@@ -11,7 +11,7 @@ const mockStore = configureStore([]);
 
 describe("Breadcrumb", () => {
   it("displays correctly on model details", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>
@@ -33,7 +33,7 @@ describe("Breadcrumb", () => {
   });
 
   it("displays correctly on application details", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <MemoryRouter
@@ -63,7 +63,7 @@ describe("Breadcrumb", () => {
   });
 
   it("displays correctly on unit details", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <MemoryRouter
@@ -95,7 +95,7 @@ describe("Breadcrumb", () => {
   });
 
   it("displays correctly on machine details", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <MemoryRouter

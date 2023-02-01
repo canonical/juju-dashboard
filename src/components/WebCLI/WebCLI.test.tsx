@@ -1,15 +1,14 @@
-import type { TSFixMe } from "@canonical/react-components";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { WS } from "jest-websocket-mock";
-import cloneDeep from "clone-deep";
 
 import bakery from "juju/bakery";
 import { RootState } from "store/store";
-import dataDump from "testing/complete-redux-store-dump";
+import { rootStateFactory } from "testing/factories/root";
+import { generalStateFactory, configFactory } from "testing/factories/general";
 
 import WebCLI from "./WebCLI";
 
@@ -67,9 +66,9 @@ describe("WebCLI", () => {
       modelUUID: "abc123",
       credentials: null,
     },
-    customDataDump?: RootState
+    state?: RootState
   ) {
-    const store = mockStore(customDataDump || dataDump);
+    const store = mockStore(state || rootStateFactory.build());
 
     return render(
       <Provider store={store}>
@@ -127,11 +126,23 @@ describe("WebCLI", () => {
   });
 
   it("supports macaroon based authentication", async () => {
-    // TSFixMe: root is not currently typed.
-    const clonedDataDump: TSFixMe = cloneDeep(dataDump);
-    clonedDataDump.general.controllerConnections["ws://localhost:1234/api"] = {
-      user: { identity: "user-eggman@external" },
-    };
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "ws://localhost:1234/api",
+        }),
+        controllerConnections: {
+          "ws://localhost:1234/api": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
+      }),
+    });
     bakerySpy.mockImplementation((key) => {
       const macaroons: Record<string, string> = {
         "ws://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=",
@@ -149,7 +160,7 @@ describe("WebCLI", () => {
         modelUUID: "abc123",
         credentials: null,
       },
-      clonedDataDump
+      state
     );
     return new Promise<void>(async (resolve) => {
       await server.connected;

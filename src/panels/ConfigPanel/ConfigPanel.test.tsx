@@ -1,12 +1,12 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import dataDump from "testing/complete-redux-store-dump";
+import configureStore from "redux-mock-store";
 import {
   applicationGetFactory,
   configFactory,
 } from "testing/factories/juju/Applicationv15";
+import { rootStateFactory } from "testing/factories/root";
 
 import * as apiModule from "juju/api";
 
@@ -25,7 +25,7 @@ describe("ConfigPanel", () => {
     jest.spyOn(apiModule, "getApplicationConfig").mockImplementation(() => {
       return Promise.resolve(applicationGetFactory.build({ config: {} }));
     });
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <ConfigPanel
@@ -51,7 +51,7 @@ describe("ConfigPanel", () => {
         })
       );
     });
-    const store = mockStore(dataDump);
+    const store = mockStore(rootStateFactory.build());
     render(
       <Provider store={store}>
         <ConfigPanel

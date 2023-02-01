@@ -32,17 +32,6 @@ export type ModelData = {
   uuid: string;
 };
 
-export type ModelData = {
-  applications: FullStatus["applications"];
-  info: ModelInfo;
-  machines: FullStatus["machines"];
-  model: FullStatus["model"];
-  offers: FullStatus["offers"];
-  relations: FullStatus["relations"] | null;
-  "remote-applications": FullStatus["remote-applications"];
-  uuid: string;
-};
-
 export type JujuState = {
   controllers: Controllers | null;
   models: ModelsList;
