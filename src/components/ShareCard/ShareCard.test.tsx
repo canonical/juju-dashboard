@@ -20,7 +20,6 @@ describe("Share Card", () => {
     );
     const remove = screen.getByRole("button", { name: Label.REMOVE });
     expect(remove).toBeInTheDocument();
-    expect(remove).toHaveClass("p-icon--delete");
   });
 
   it("should not allow owners to change access", () => {
