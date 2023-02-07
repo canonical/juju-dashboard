@@ -1,3 +1,6 @@
+import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import { ModelInfo as JujuModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+
 import { ModelWatcherData } from "juju/types";
 import { TSFixMe } from "types";
 
@@ -15,10 +18,26 @@ export type Controller = {
   version: string;
 };
 
-export type Controllers = Record<string, Controller[]>;
+export type AdditionalController = {
+  additionalController: true;
+};
 
-export type ModelsList = {
-  [uuid: string]: ModelListInfo;
+export type Controllers = Record<string, (Controller | AdditionalController)[]>;
+
+export type ModelInfo =
+  | Omit<JujuModelInfo, "agent-version"> & {
+      "agent-version": string;
+    };
+
+export type ModelData = {
+  applications: FullStatus["applications"];
+  info: ModelInfo;
+  machines: FullStatus["machines"];
+  model: FullStatus["model"];
+  offers: FullStatus["offers"];
+  relations: FullStatus["relations"] | null;
+  "remote-applications": FullStatus["remote-applications"];
+  uuid: string;
 };
 
 export type ModelListInfo = {
@@ -26,6 +45,10 @@ export type ModelListInfo = {
   ownerTag: string;
   type: string;
   uuid: string;
+};
+
+export type ModelsList = {
+  [uuid: string]: ModelListInfo;
 };
 
 export type JujuState = {

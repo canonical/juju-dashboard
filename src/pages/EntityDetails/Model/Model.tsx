@@ -58,7 +58,6 @@ import {
 } from "store/juju/selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import type { ModelData } from "types";
 
 import { renderCounts } from "../counts";
 
@@ -92,7 +91,7 @@ const generateCloudAndRegion = (cloudTag: string, region?: string) => {
 };
 
 const Model = () => {
-  const modelStatusData = useModelStatus() as ModelData;
+  const modelStatusData = useModelStatus();
   const activeUser = useActiveUser();
   const navigate = useNavigate();
 

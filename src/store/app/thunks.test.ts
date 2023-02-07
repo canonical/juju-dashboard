@@ -1,10 +1,6 @@
-import {
-  clearControllerData,
-  clearModelData,
-  updateControllerList,
-} from "juju/actions";
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
+import { actions as jujuActions } from "store/juju";
 import { rootStateFactory } from "testing/factories";
 import {
   credentialFactory,
@@ -29,8 +25,8 @@ describe("thunks", () => {
       })
     );
     await action(dispatch, getState, null);
-    expect(dispatch).toHaveBeenCalledWith(clearModelData());
-    expect(dispatch).toHaveBeenCalledWith(clearControllerData());
+    expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
+    expect(dispatch).toHaveBeenCalledWith(jujuActions.clearControllerData());
     const dispatchedThunk = await dispatch.mock.calls[3][0](
       dispatch,
       getState,
@@ -76,9 +72,10 @@ describe("thunks", () => {
       })
     );
     expect(dispatch).toHaveBeenCalledWith(
-      updateControllerList(additionalController[0], [
-        { additionalController: true },
-      ])
+      jujuActions.updateControllerList({
+        wsControllerURL: additionalController[0],
+        controllers: [{ additionalController: true }],
+      })
     );
     localStorage.removeItem("additionalControllers");
   });

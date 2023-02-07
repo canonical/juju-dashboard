@@ -2,11 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import bakery from "juju/bakery";
 import { actions as appActions } from "store/app";
-import {
-  clearControllerData,
-  clearModelData,
-  updateControllerList,
-} from "juju/actions";
+import { actions as jujuActions } from "store/juju";
 import { actions as generalActions } from "store/general";
 import {
   getConfig,
@@ -35,8 +31,8 @@ export const logOut = createAsyncThunk<
   Object.entries(pingerIntervalIds ?? {}).forEach((pingerIntervalId) =>
     clearInterval(pingerIntervalId[1])
   );
-  thunkAPI.dispatch(clearModelData());
-  thunkAPI.dispatch(clearControllerData());
+  thunkAPI.dispatch(jujuActions.clearModelData());
+  thunkAPI.dispatch(jujuActions.clearControllerData());
   if (identityProviderAvailable) {
     // To enable users to log back in after logging out we have to re-connect
     // to the controller to get another wait url and start polling on it
@@ -68,7 +64,10 @@ export const connectAndStartPolling = createAsyncThunk<
           })
         );
         thunkAPI.dispatch(
-          updateControllerList(controller[0], [{ additionalController: true }])
+          jujuActions.updateControllerList({
+            wsControllerURL: controller[0],
+            controllers: [{ additionalController: true }],
+          })
         );
       });
     }

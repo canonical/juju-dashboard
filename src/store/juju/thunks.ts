@@ -26,7 +26,10 @@ export const addControllerCloudRegion = createAsyncThunk<
     const model = modelInfo.results[0].result;
     if (controllers) {
       const updatedControllers = controllers.map((controller) => {
-        if (controller.uuid === model["controller-uuid"]) {
+        if (
+          "uuid" in controller &&
+          controller.uuid === model["controller-uuid"]
+        ) {
           controller.location = {
             cloud: model["cloud-region"],
             region: model["cloud-tag"].replace("cloud-", ""),

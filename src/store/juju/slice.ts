@@ -6,7 +6,7 @@ import {
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AllWatcherDelta } from "juju/types";
 import { processDeltas } from "juju/watchers";
-import { Controller, JujuState } from "./types";
+import { Controllers, JujuState } from "./types";
 
 const slice = createSlice({
   name: "juju",
@@ -99,7 +99,7 @@ const slice = createSlice({
     updateControllerList: (
       state,
       action: PayloadAction<{
-        controllers: Controller[];
+        controllers: Controllers[0];
         wsControllerURL: string;
       }>
     ) => {

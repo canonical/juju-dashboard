@@ -7,6 +7,9 @@ import {
 import { addControllerCloudRegion } from "./thunks";
 import { actions } from "./slice";
 
+// Prevent setting up the bakery instance.
+jest.mock("juju/bakery");
+
 const modelInfo = {
   results: [
     {
