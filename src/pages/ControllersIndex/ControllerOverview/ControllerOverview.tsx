@@ -6,8 +6,8 @@ import {
   getGroupedUnitsDataByStatus,
 } from "app/selectors";
 
+import { ModelData } from "store/juju/types";
 import { RootState } from "store/store";
-import { ModelData } from "types";
 
 import ControllerChart from "../ControllerChart/ControllerChart";
 

@@ -208,7 +208,7 @@ describe("Model", () => {
   });
 
   it("supports local charms", () => {
-    const model = Object.values(storeData.juju.modelWatcherData).find(
+    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
       (model) => model.model.name === "local-test"
     );
     if (model && "applications" in model) {
@@ -253,7 +253,7 @@ describe("Model", () => {
   });
 
   it("displays the correct scale value", () => {
-    const model = Object.values(storeData.juju.modelWatcherData).find(
+    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
       (model) => model.model.name === "hadoopspark"
     );
     if (model && "applications" in model) {
@@ -295,7 +295,7 @@ describe("Model", () => {
 
   it("should show a message if a model has no integrations", () => {
     const model: Partial<ModelData> | undefined = Object.values(
-      storeData.juju.modelWatcherData
+      storeData.juju.modelWatcherData ?? {}
     ).find((model) => model.model.name === "test1");
     delete model?.relations;
     delete model?.applications;
@@ -324,7 +324,7 @@ describe("Model", () => {
 
   it("should show a message if a model has no machines", () => {
     const model: Partial<ModelData> | undefined = Object.values(
-      storeData.juju.modelWatcherData
+      storeData.juju.modelWatcherData ?? {}
     ).find((model) => model.model.name === "test1");
     delete model?.machines;
     const store = mockStore(storeData);
@@ -349,7 +349,7 @@ describe("Model", () => {
   });
 
   it("should show apps appropriate number of apps on machine in hadoopspark model", () => {
-    const model = Object.values(storeData.juju.modelWatcherData).find(
+    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
       (model) => model.model.name === "hadoopspark"
     );
     if (model && "units" in model) {
@@ -404,7 +404,7 @@ describe("Model", () => {
   });
 
   it("should show apps appropriate number of apps on machine in canonical-kubernetes model", () => {
-    const model = Object.values(storeData.juju.modelWatcherData).find(
+    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
       (model) => model.model.name === "hadoopspark"
     );
     const counts = [1, 2, 4];

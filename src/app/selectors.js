@@ -1,5 +1,8 @@
 import { createSelector } from "reselect";
 import cloneDeep from "clone-deep";
+
+import { getControllerData, getModelData } from "store/juju/selectors";
+
 import {
   getModelStatusGroupData,
   extractOwnerName,
@@ -9,27 +12,6 @@ import {
   getUnitStatusGroup,
   extractCredentialName,
 } from "./utils/utils";
-
-// ---- Selectors for top level keys
-
-/**
-  Fetches the model data from state.
-  @param state The application state.
-  @returns The list of model data or null if none found.
-*/
-export const getModelData = (state) => {
-  if (state?.juju?.modelData) {
-    return state.juju.modelData;
-  }
-  return null;
-};
-
-/**
-  Fetches the controller data from state.
-  @param state The application state.
-  @returns The list of controller data or null if none found.
-*/
-export const getControllerData = (state) => state?.juju?.controllers;
 
 // ---- Utility selectors
 

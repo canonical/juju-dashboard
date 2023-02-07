@@ -55,10 +55,9 @@ import {
   getModelRelations,
   getModelUnits,
   getModelUUID,
-} from "juju/model-selectors";
+} from "store/juju/selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import type { ModelData } from "types";
 
 import { renderCounts } from "../counts";
 
@@ -84,7 +83,7 @@ const shouldShow = (segment: string, activeView: string) => {
   }
 };
 
-const generateCloudAndRegion = (cloudTag: string, region: string) => {
+const generateCloudAndRegion = (cloudTag: string, region?: string) => {
   if (cloudTag && region) {
     return `${extractCloudName(cloudTag)} / ${region}`;
   }
@@ -92,7 +91,7 @@ const generateCloudAndRegion = (cloudTag: string, region: string) => {
 };
 
 const Model = () => {
-  const modelStatusData = useModelStatus() as ModelData;
+  const modelStatusData = useModelStatus();
   const activeUser = useActiveUser();
   const navigate = useNavigate();
 

@@ -71,10 +71,10 @@ function _processDelta(
 }
 
 export function processDeltas(
-  modelWatcherData: ModelWatcherData,
-  deltas: AllWatcherDelta[]
+  modelWatcherData?: ModelWatcherData,
+  deltas?: AllWatcherDelta[]
 ) {
-  if (!deltas) {
+  if (!modelWatcherData || !deltas) {
     return;
   }
   deltas.forEach((delta) => {

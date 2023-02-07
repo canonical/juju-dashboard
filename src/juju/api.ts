@@ -33,15 +33,10 @@ import {
 } from "store/general/selectors";
 import { RootState, Store } from "store/store";
 import { Credential } from "store/general/types";
-import { Controller as JujuController, TSFixMe } from "types";
-
-import {
-  addControllerCloudRegion,
-  processAllWatcherDeltas,
-  updateControllerList,
-  updateModelInfo,
-  updateModelStatus,
-} from "./actions";
+import { Controller as JujuController } from "store/juju/types";
+import { actions as jujuActions } from "store/juju";
+import { TSFixMe } from "types";
+import { addControllerCloudRegion } from "store/juju/thunks";
 
 // TSFixMe: substitute for the connection type when it is available from jujulib.
 type Connection = TSFixMe;
@@ -282,7 +277,9 @@ export async function fetchAndStoreModelStatus(
   if (status === null) {
     return;
   }
-  dispatch(updateModelStatus(modelUUID, status, wsControllerURL));
+  dispatch(
+    jujuActions.updateModelStatus({ modelUUID, status, wsControllerURL })
+  );
 }
 
 /**
@@ -329,11 +326,11 @@ export async function fetchAllModelStatuses(
       }
       if (isLoggedIn(getState(), wsControllerURL)) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
-        dispatch(updateModelInfo(modelInfo, wsControllerURL));
+        dispatch(jujuActions.updateModelInfo({ modelInfo, wsControllerURL }));
         if (modelInfo.results[0].result.isController) {
           // If this is a controller model then update the
           // controller data with this model data.
-          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo));
+          dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }));
         }
       }
       done();
@@ -384,7 +381,7 @@ export async function fetchControllerList(
       },
     ];
   }
-  dispatch(updateControllerList(wsControllerURL, controllers));
+  dispatch(jujuActions.updateControllerList({ wsControllerURL, controllers }));
 }
 
 /**
@@ -561,7 +558,7 @@ export async function startModelWatcher(
   const watcherHandle = await conn?.facades.client.watchAll();
   const pingerIntervalId = startPingerLoop(conn);
   const data = await conn?.facades.allWatcher.next(watcherHandle["watcher-id"]);
-  if (data?.deltas) dispatch(processAllWatcherDeltas(data?.deltas));
+  if (data?.deltas) dispatch(jujuActions.processAllWatcherDeltas(data?.deltas));
   return { conn, watcherHandle, pingerIntervalId };
 }
 
@@ -623,7 +620,13 @@ export async function setModelSharingPermissions(
     }
 
     const modelInfo = await fetchModelInfo(conn, modelUUID);
-    modelInfo && dispatch(updateModelInfo(modelInfo, controllerURL));
+    modelInfo &&
+      dispatch(
+        jujuActions.updateModelInfo({
+          modelInfo,
+          wsControllerURL: controllerURL,
+        })
+      );
   } else {
     response = Promise.reject(
       `Unable to connect to controller: ${controllerURL}`

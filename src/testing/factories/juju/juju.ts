@@ -1,6 +1,6 @@
 import { Factory } from "fishery";
 
-import type { JujuState, ModelsList } from "types";
+import type { JujuState, ModelsList } from "store/juju/types";
 import type { ModelWatcherData } from "juju/types";
 
 interface ModelData {

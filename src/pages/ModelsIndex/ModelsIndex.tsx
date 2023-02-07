@@ -24,7 +24,8 @@ import {
   withDefault,
 } from "use-query-params";
 
-import { getGroupedModelStatusCounts, getModelData } from "app/selectors";
+import { getGroupedModelStatusCounts } from "app/selectors";
+import { getModelData } from "store/juju/selectors";
 
 import "./_models.scss";
 

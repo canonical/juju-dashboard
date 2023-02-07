@@ -1,7 +1,7 @@
 import { AnyAction, MiddlewareAPI } from "redux";
 
 import * as jujuModule from "juju/api";
-import { updateModelList } from "juju/actions";
+import { actions as jujuActions } from "store/juju";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
@@ -46,7 +46,17 @@ describe("model poller", () => {
   const controllers: ControllerArgs[] = [
     [wsControllerURL, { user: "eggman@external", password: "test" }, false],
   ];
-  const models = [{ model: { uuid: "abc123" } }];
+  const models = [
+    {
+      model: {
+        uuid: "abc123",
+        name: "a model",
+        "owner-tag": "user-eggman@external",
+        type: "model",
+      },
+      "last-connection": "today",
+    },
+  ];
   let juju: Juju;
   const intervalId = 99;
   let conn: Conn;
@@ -279,7 +289,10 @@ describe("model poller", () => {
     await new Promise(jest.requireActual("timers").setImmediate);
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      updateModelList({ "user-models": models }, wsControllerURL)
+      jujuActions.updateModelList({
+        models: { "user-models": models },
+        wsControllerURL,
+      })
     );
     expect(fetchAllModelStatuses).toHaveBeenCalledWith(
       wsControllerURL,

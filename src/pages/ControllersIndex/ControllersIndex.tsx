@@ -14,19 +14,17 @@ import FadeIn from "animations/FadeIn";
 
 import useWindowTitle from "hooks/useWindowTitle";
 
-import { getControllerData, getModelData } from "app/selectors";
+import { getControllerData, getModelData } from "store/juju/selectors";
 
 import { StringParam, useQueryParam } from "use-query-params";
 
-import { RootState } from "store/store";
-import { Controllers } from "types";
+import { AdditionalController, Controller } from "store/juju/types";
 
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
-import { Controller, ModelDataList } from "../../types";
 
 import "./_controllers.scss";
 
-type AnnotatedController = Controller & {
+type AnnotatedController = (Controller | AdditionalController) & {
   models: number;
   machines: number;
   applications: number;
@@ -36,33 +34,31 @@ type AnnotatedController = Controller & {
 
 function Details() {
   useWindowTitle("Controllers");
-  // TSFixme: these generics can be removed when the selectors have been
-  // migrated to TypeScript.
-  const controllerData = useSelector<RootState, Controllers | null>(
-    getControllerData
-  );
-  // TSFixme: these generics can be removed when the selectors have been
-  // migrated to TypeScript.
-  const modelData = useSelector<RootState, ModelDataList>(getModelData);
+  const controllerData = useSelector(getControllerData);
+  const modelData = useSelector(getModelData);
 
   const controllerMap: Record<string, AnnotatedController> = {};
   const additionalControllers: string[] = [];
   if (controllerData) {
-    Object.entries(controllerData).forEach((controllerData) => {
-      controllerData[1].forEach((controller) => {
-        if (controller.additionalController) {
-          additionalControllers.push(controller.uuid);
-        }
-        controllerMap[controller.uuid] = {
-          ...controller,
-          models: 0,
-          machines: 0,
-          applications: 0,
-          units: 0,
-          wsControllerURL: controllerData[0],
-        };
-      });
-    });
+    Object.entries(controllerData).forEach(
+      ([wsControllerURL, controllers], i) => {
+        controllers.forEach((controller) => {
+          const id =
+            "uuid" in controller ? controller.uuid : `${wsControllerURL}-${i}`;
+          if (controller.additionalController) {
+            additionalControllers.push(id);
+          }
+          controllerMap[id] = {
+            ...controller,
+            models: 0,
+            machines: 0,
+            applications: 0,
+            units: 0,
+            wsControllerURL,
+          };
+        });
+      }
+    );
     if (modelData) {
       for (const modelUUID in modelData) {
         const model = modelData[modelUUID];
@@ -115,9 +111,9 @@ function Details() {
 
   function generatePathValue(controllerData: AnnotatedController) {
     const column: MainTableCell = { content: "" };
-    if (controllerData?.path === "admin/jaas") {
+    if ("path" in controllerData && controllerData?.path === "admin/jaas") {
       column.content = "JAAS";
-    } else if (controllerData?.path) {
+    } else if ("path" in controllerData && controllerData.path) {
       column.content = controllerData.path;
     } else {
       column.content = controllerData?.wsControllerURL;
@@ -128,10 +124,12 @@ function Details() {
   }
 
   function generateRow(c: AnnotatedController) {
-    const cloud = c?.location?.cloud || "unknown";
-    const region = c?.location?.region || "unknown";
+    const cloud =
+      "location" in c && c?.location?.cloud ? c.location.cloud : "unknown";
+    const region =
+      "location" in c && c?.location?.region ? c.location.region : "unknown";
     const cloudRegion = `${cloud}/${region}`;
-    const publicAccess = `${c?.Public}` || "False";
+    const publicAccess = "Public" in c && c.Public ? `${c?.Public}` : "False";
 
     return {
       columns: [
@@ -141,7 +139,10 @@ function Details() {
         { content: c.machines, className: "u-align--right" },
         { content: c.applications, className: "u-align--right" },
         { content: c.units, className: "u-align--right" },
-        { content: c.version, className: "u-align--right" },
+        {
+          content: "version" in c ? c.version : null,
+          className: "u-align--right",
+        },
         { content: publicAccess, className: "u-align--right u-capitalise" },
       ],
     };

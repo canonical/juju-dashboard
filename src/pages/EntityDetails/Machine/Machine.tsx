@@ -11,7 +11,7 @@ import {
   getModelMachines,
   getModelUnits,
   getModelUUID,
-} from "juju/model-selectors";
+} from "store/juju/selectors";
 
 import {
   generateLocalApplicationRows,

@@ -3,7 +3,7 @@ import {
   extractOwnerName,
   extractCredentialName,
 } from "app/utils/utils";
-import { ModelData } from "types";
+import { ModelData } from "store/juju/types";
 
 export default function useModelAttributes(modelData: ModelData) {
   const clouds: string[] = [];
