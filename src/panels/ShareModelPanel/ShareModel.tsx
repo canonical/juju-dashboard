@@ -100,6 +100,9 @@ export default function ShareModel() {
     permissionTo: string | undefined,
     permissionFrom: string | undefined
   ) => {
+    if (!modelControllerURL || !modelUUID) {
+      return;
+    }
     let response: ErrorResults | null;
     if (!modelControllerURL || !modelUUID) {
       return;

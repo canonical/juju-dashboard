@@ -6,32 +6,18 @@ import {
   getGroupedUnitsDataByStatus,
 } from "store/juju/selectors";
 
-import { ModelData } from "store/juju/types";
-import { RootState } from "store/store";
-
 import ControllerChart from "../ControllerChart/ControllerChart";
 
 import "./_controller-overview.scss";
 
 export default function ControllersOverview() {
-  // TSFixme: these generics can be removed when the selectors have been
-  // migrated to TypeScript.
-  const groupedMachinesDataByStatus = useSelector<
-    RootState,
-    Record<string, ModelData["machines"][0][]>
-  >(getGroupedMachinesDataByStatus);
-  // TSFixme: these generics can be removed when the selectors have been
-  // migrated to TypeScript.
-  const groupedApplicationsDataByStatus = useSelector<
-    RootState,
-    Record<string, ModelData["applications"][0][]>
-  >(getGroupedApplicationsDataByStatus);
-  // TSFixme: these generics can be removed when the selectors have been
-  // migrated to TypeScript.
-  const groupedUnitsDataByStatus = useSelector<
-    RootState,
-    Record<string, ModelData["applications"][0]["units"][0][]>
-  >(getGroupedUnitsDataByStatus);
+  const groupedMachinesDataByStatus = useSelector(
+    getGroupedMachinesDataByStatus
+  );
+  const groupedApplicationsDataByStatus = useSelector(
+    getGroupedApplicationsDataByStatus
+  );
+  const groupedUnitsDataByStatus = useSelector(getGroupedUnitsDataByStatus);
 
   let machinesChartData = {
     blocked: groupedMachinesDataByStatus.blocked.length,

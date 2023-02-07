@@ -8,7 +8,7 @@ import { ModelData } from "../juju/types";
 export function generateEntityIdentifier(
   charmId: string,
   name: string,
-  subordinate: string
+  subordinate: boolean
 ) {
   if (!charmId) {
     return null;
@@ -25,7 +25,7 @@ export function generateEntityIdentifier(
 
 export const generateStatusElement = (
   status = "unknown",
-  count?: number,
+  count?: number | null,
   useIcon = true,
   actionsLogs = false,
   className = null

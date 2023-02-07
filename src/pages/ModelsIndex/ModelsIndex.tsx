@@ -61,9 +61,7 @@ export default function Models() {
     return chipValues;
   };
 
-  const { blocked, alert, running } = useSelector(
-    getGroupedModelStatusCounts
-  ) as Record<string, number>;
+  const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
 
   let activeFilters: Record<string, string[]> = {};
 

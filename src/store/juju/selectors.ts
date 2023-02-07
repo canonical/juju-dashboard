@@ -235,7 +235,7 @@ export const getFilteredModelData = (filters: Filters) =>
       const clonedModelData = cloneDeep(modelData);
       // Add the controller name to the model data where we have a valid name.
       Object.entries(clonedModelData ?? {}).forEach((model) => {
-        if ("info" in model[1]) {
+        if (model[1].info) {
           let controllerName = null;
           const modelInfo:
             | (ModelData["info"] & {
@@ -294,10 +294,9 @@ export const getFilteredModelData = (filters: Filters) =>
             ? extractCredentialName(data.info?.["cloud-credential-tag"])
             : null;
         const region = "model" in data ? data.model.region : null;
-        const owner =
-          "info" in data && data.info
-            ? extractOwnerName(data.info?.["owner-tag"])
-            : null;
+        const owner = data.info
+          ? extractOwnerName(data.info["owner-tag"])
+          : null;
         // Combine all of the above to create string for fuzzy custom search
         const combinedModelAttributes = `${modelName} ${cloud} ${credential} ${region} ${owner}`;
 
@@ -552,7 +551,7 @@ export const getGroupedModelStatusCounts = createSelector(
     @param controllerUUID The full controller UUID.
     @returns The controller data in the format of an Object.entries output.
   */
-export const getControllerDataByUUID = (controllerUUID: string) => {
+export const getControllerDataByUUID = (controllerUUID?: string) => {
   return createSelector(getControllerData, (controllerData) => {
     if (!controllerData) return null;
     const found = Object.entries(controllerData).find((controller) => {
