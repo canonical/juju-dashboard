@@ -50,6 +50,7 @@ export const jujuStateFactory = Factory.define<
     models: modelsList,
     modelData: null,
     modelWatcherData: modelWatcherData,
+    charms: [],
   };
 });
 

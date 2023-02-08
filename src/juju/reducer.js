@@ -1,5 +1,5 @@
-import immerProduce from "immer";
 import cloneDeep from "clone-deep";
+import immerProduce from "immer";
 import mergeWith from "lodash.mergewith";
 
 import { actionsList } from "./action-types";
@@ -10,6 +10,7 @@ const defaultState = {
   models: {},
   modelData: {},
   modelWatcherData: {},
+  charms: [],
 };
 
 export default function jujuReducer(state = defaultState, action) {
@@ -104,6 +105,15 @@ export default function jujuReducer(state = defaultState, action) {
           draftState.modelWatcherData,
           payload
         );
+        break;
+      case actionsList.updateCharms:
+        if (!draftState.charms) {
+          draftState.charms = [];
+        }
+        payload.charms = payload.charms.filter((charm) => {
+          return !draftState.charms.some((c) => c.url === charm.url);
+        });
+        draftState.charms = [...draftState.charms, ...payload.charms];
         break;
       default:
         // No default value, fall through.

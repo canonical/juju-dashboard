@@ -1,3 +1,4 @@
+import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { ModelInfo as JujuModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
@@ -51,6 +52,7 @@ export type JujuState = {
   models: ModelsList;
   modelData: TSFixMe;
   modelWatcherData: ModelWatcherData;
+  charms: Charm[];
 };
 
 export type ModelsList = {

@@ -141,3 +141,10 @@ export function addControllerCloudRegion(wsControllerURL, modelInfo) {
     }
   };
 }
+
+export function updateCharms(charms, wsControllerURL) {
+  return {
+    type: actionsList.updateCharms,
+    payload: { charms, wsControllerURL },
+  };
+}

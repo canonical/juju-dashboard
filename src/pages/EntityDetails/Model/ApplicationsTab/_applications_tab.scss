@@ -1,0 +1,6 @@
+@mixin applications-search {
+  .applications-search-results__actions-row {
+  }
+}
+
+@include applications-search();

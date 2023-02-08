@@ -1,13 +1,13 @@
 import { connect, connectAndLogin, ConnectOptions } from "@canonical/jujulib";
 import {
-  AdditionalProperties as AnnotationsAdditionalProperties,
-  AnnotationsGetResults,
-} from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
-import {
   AdditionalProperties as ActionAdditionalProperties,
   Entities,
   OperationQueryArgs,
 } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
+import {
+  AdditionalProperties as AnnotationsAdditionalProperties,
+  AnnotationsGetResults,
+} from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
 import Limiter from "async-limiter";
 import { Dispatch } from "redux";
 
@@ -15,15 +15,16 @@ import Action from "@canonical/jujulib/dist/api/facades/action";
 import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
 import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
 import Applications from "@canonical/jujulib/dist/api/facades/application";
+import Charms from "@canonical/jujulib/dist/api/facades/charms";
 import Client from "@canonical/jujulib/dist/api/facades/client";
 import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 
+import { isSet } from "app/utils/utils";
 import bakery from "juju/bakery";
 import JIMMV2 from "juju/jimm-facade";
-import { isSet } from "app/utils/utils";
 import {
   getConfig,
   getControllerConnection,
@@ -31,17 +32,20 @@ import {
   getWSControllerURL,
   isLoggedIn,
 } from "store/general/selectors";
-import { RootState, Store } from "store/store";
 import { Credential } from "store/general/types";
+import { RootState, Store } from "store/store";
 import { Controller as JujuController, TSFixMe } from "types";
 
+import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import {
   addControllerCloudRegion,
   processAllWatcherDeltas,
+  updateCharms,
   updateControllerList,
   updateModelInfo,
   updateModelStatus,
 } from "./actions";
+import { ApplicationInfo } from "./types";
 
 // TSFixMe: substitute for the connection type when it is available from jujulib.
 type Connection = TSFixMe;
@@ -62,6 +66,7 @@ function generateConnectionOptions(
     AllWatcher,
     Annotations,
     Applications,
+    Charms,
     Client,
     Cloud,
     Controller,
@@ -631,4 +636,35 @@ export async function setModelSharingPermissions(
   }
 
   return response ?? Promise.reject("Incorrect options given.");
+}
+
+export async function getCharmInfo(
+  charmURL: string,
+  modelUUID: string,
+  appState: RootState
+) {
+  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const charmDetails = await conn?.facades.charms.charmInfo({
+    url: charmURL,
+  });
+  return charmDetails;
+}
+
+export async function getCharmsFromApplications(
+  applications: ApplicationInfo[],
+  modelUUID: string,
+  appState: RootState,
+  dispatch: Dispatch
+) {
+  const uniqueCharmURLs = new Set<string>();
+  applications.forEach((app) => uniqueCharmURLs.add(app["charm-url"]));
+  const charms: Charm[] = await Promise.all(
+    [...uniqueCharmURLs].map((charmURL) =>
+      getCharmInfo(charmURL, modelUUID, appState)
+    )
+  );
+  const baseWSControllerURL = getWSControllerURL(appState);
+
+  dispatch(updateCharms(charms, baseWSControllerURL));
+  return charms;
 }

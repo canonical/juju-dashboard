@@ -1,6 +1,6 @@
 import { useEffect, useState, PropsWithChildren } from "react";
 
-import { Spinner, Tabs } from "@canonical/react-components";
+import { SearchBox, Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
@@ -32,6 +32,7 @@ import "./_entity-details.scss";
 
 type Props = {
   type?: string;
+  onApplicationsFilter?: (query: string) => void;
 };
 
 function generatePanelContent(activePanel: string, entity: string) {
@@ -43,7 +44,11 @@ function generatePanelContent(activePanel: string, entity: string) {
   }
 }
 
-const EntityDetails = ({ type, children }: PropsWithChildren<Props>) => {
+const EntityDetails = ({
+  type,
+  onApplicationsFilter,
+  children,
+}: PropsWithChildren<Props>) => {
   const { userName, modelName } = useParams();
   const modelUUID = useSelector(getModelUUID(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
@@ -168,6 +173,11 @@ const EntityDetails = ({ type, children }: PropsWithChildren<Props>) => {
     return items;
   };
 
+  const [applicationsFilterQuery, setApplicationsFilterQuery] =
+    useState<string>("");
+  const handleFilterSubmit = () => {
+    onApplicationsFilter?.(applicationsFilterQuery);
+  };
   return (
     <BaseLayout>
       <Header>
@@ -181,6 +191,19 @@ const EntityDetails = ({ type, children }: PropsWithChildren<Props>) => {
               <Tabs links={generateTabItems()} />
             )}
           </div>
+          {activeView === "apps" && (
+            <SearchBox
+              className="u-no-margin"
+              placeholder="Filter applications"
+              onKeyDown={(e) => {
+                if (e.code === "Enter") handleFilterSubmit();
+              }}
+              onSearch={handleFilterSubmit}
+              externallyControlled
+              value={applicationsFilterQuery}
+              onChange={(v) => setApplicationsFilterQuery(v)}
+            />
+          )}
         </div>
       </Header>
       {!modelInfo ? (

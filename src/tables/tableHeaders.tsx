@@ -1,7 +1,7 @@
-import type { ReactNode } from "react";
 import cloneDeep from "clone-deep";
+import type { ReactNode } from "react";
 
-type Header = HeaderRow[];
+export type Header = HeaderRow[];
 
 type HeaderRow = {
   content: string | ReactNode;

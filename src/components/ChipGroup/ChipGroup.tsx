@@ -1,6 +1,6 @@
 import "./_chip-group.scss";
 
-type Chip = {
+export type Chip = {
   [key: string]: number;
 };
 

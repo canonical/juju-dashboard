@@ -1,3 +1,4 @@
+import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV4";
 import { createSelector } from "reselect";
 
 import { RootState } from "store/store";
@@ -16,6 +17,7 @@ import type {
 const getModelWatcherData = (state: RootState): ModelWatcherData =>
   state.juju.modelWatcherData;
 const getModelList = (state: RootState): ModelsList => state.juju.models;
+const getCharmList = (state: RootState): Charm[] => state.juju.charms;
 
 export function getModelWatcherDataByUUID(modelUUID: string) {
   return createSelector(getModelWatcherData, (modelWatcherData) => {
@@ -186,4 +188,8 @@ export function getAllModelApplicationStatus(modelUUID: string) {
       return applicationStatuses;
     }
   );
+}
+
+export function getCharms() {
+  return createSelector(getCharmList, (charms) => charms);
 }
