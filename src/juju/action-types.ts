@@ -9,4 +9,5 @@ export const actionsList = {
   processAllWatcherDeltas: "PROCESS_ALL_WATCHER_DELTAS",
   populateMissingAllWatcherData: "POPULATE_MISSING_ALLWATCHER_DATA",
   updateCharms: "UPDATE_CHARMS",
+  updateSelectedApplications: "UPDATE_SELECTED_APPLICATIONS",
 };

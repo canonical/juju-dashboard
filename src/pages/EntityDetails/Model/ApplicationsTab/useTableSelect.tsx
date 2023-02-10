@@ -1,6 +1,8 @@
 import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import { updateSelectedApplications } from "juju/actions";
 import { ApplicationData, ApplicationInfo } from "juju/types";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Header } from "tables/tableHeaders";
 
 export const useTableSelect = (applications: ApplicationInfo[]) => {
@@ -8,6 +10,19 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
     ApplicationInfo[]
   >([]);
   const [selectAll, setSelectAll] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(updateSelectedApplications(selectedApplications));
+  }, [dispatch, selectedApplications]);
+
+  useEffect(() => {
+    if (selectedApplications.length === applications.length) {
+      setSelectAll(true);
+    } else if (selectAll) {
+      setSelectAll(false);
+    }
+  }, [applications.length, selectAll, selectedApplications]);
 
   const handleSelectAll = () => {
     if (selectAll) {
@@ -27,14 +42,6 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
       setSelectedApplications([...selectedApplications, application]);
     }
   };
-
-  useEffect(() => {
-    if (selectedApplications.length === applications.length) {
-      setSelectAll(true);
-    } else if (selectAll) {
-      setSelectAll(false);
-    }
-  }, [applications.length, selectAll, selectedApplications]);
 
   return {
     selectedApplications,

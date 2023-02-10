@@ -1,7 +1,7 @@
 import { Factory } from "fishery";
 
-import type { JujuState, ModelsList } from "types";
 import type { ModelWatcherData } from "juju/types";
+import type { JujuState, ModelsList } from "types";
 
 interface ModelData {
   name: string;
@@ -51,6 +51,7 @@ export const jujuStateFactory = Factory.define<
     modelData: null,
     modelWatcherData: modelWatcherData,
     charms: [],
+    selectedApplications: [],
   };
 });
 

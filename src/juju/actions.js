@@ -148,3 +148,10 @@ export function updateCharms(charms, wsControllerURL) {
     payload: { charms, wsControllerURL },
   };
 }
+
+export function updateSelectedApplications(applications) {
+  return {
+    type: actionsList.updateSelectedApplications,
+    payload: { selectedApplications: applications },
+  };
+}

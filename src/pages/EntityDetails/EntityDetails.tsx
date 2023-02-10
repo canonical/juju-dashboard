@@ -1,28 +1,28 @@
-import { useEffect, useState, PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 
 import { SearchBox, Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useQueryParams, StringParam, withDefault } from "use-query-params";
+import { StringParam, useQueryParams, withDefault } from "use-query-params";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
-import Header from "components/Header/Header";
-import WebCLI from "components/WebCLI/WebCLI";
-import SlidePanel from "components/SlidePanel/SlidePanel";
 import Breadcrumb from "components/Breadcrumb/Breadcrumb";
+import Header from "components/Header/Header";
+import SlidePanel from "components/SlidePanel/SlidePanel";
+import WebCLI from "components/WebCLI/WebCLI";
 
 import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
-import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
+import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 
 import { getControllerDataByUUID } from "app/selectors";
-import { getUserPass } from "store/general/selectors";
 import {
   getModelApplications,
   getModelInfo,
   getModelUUID,
 } from "juju/model-selectors";
+import { getUserPass } from "store/general/selectors";
 
 import useWindowTitle from "hooks/useWindowTitle";
 
@@ -58,7 +58,10 @@ const EntityDetails = ({
     panel: StringParam,
     entity: StringParam,
     activeView: withDefault(StringParam, "apps"),
+    filterQuery: StringParam,
   });
+  const [applicationsFilterQuery, setApplicationsFilterQuery] =
+    useState<string>(query.filterQuery || "");
 
   const setActiveView = (view?: string) => {
     setQuery({ activeView: view });
@@ -82,6 +85,13 @@ const EntityDetails = ({
   const primaryControllerData = useSelector(
     getControllerDataByUUID(controllerUUID)
   );
+
+  useEffect(() => {
+    // perform applications search when filter query has an initial value
+    if (applicationsFilterQuery) {
+      onApplicationsFilter?.(applicationsFilterQuery);
+    }
+  }, []);
 
   let credentials = null;
   let controllerWSHost = "";
@@ -173,9 +183,8 @@ const EntityDetails = ({
     return items;
   };
 
-  const [applicationsFilterQuery, setApplicationsFilterQuery] =
-    useState<string>("");
   const handleFilterSubmit = () => {
+    setQuery({ filterQuery: applicationsFilterQuery });
     onApplicationsFilter?.(applicationsFilterQuery);
   };
   return (

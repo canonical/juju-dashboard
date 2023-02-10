@@ -2,7 +2,7 @@ import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { ModelInfo as JujuModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
-import { ModelWatcherData } from "juju/types";
+import { ApplicationInfo, ModelWatcherData } from "juju/types";
 import { Config } from "store/general/types";
 
 export type TSFixMe = any;
@@ -53,6 +53,7 @@ export type JujuState = {
   modelData: TSFixMe;
   modelWatcherData: ModelWatcherData;
   charms: Charm[];
+  selectedApplications: ApplicationInfo[];
 };
 
 export type ModelsList = {

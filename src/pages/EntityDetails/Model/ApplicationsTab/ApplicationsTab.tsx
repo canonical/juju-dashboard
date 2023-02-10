@@ -43,7 +43,6 @@ import {
   addSelectColumn,
   useTableSelect,
 } from "./useTableSelect";
-import "./_applications_tab.scss";
 
 const ContentRevealTitle = ({
   count,

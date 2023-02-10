@@ -11,6 +11,7 @@ const defaultState = {
   modelData: {},
   modelWatcherData: {},
   charms: [],
+  selectedApplications: [],
 };
 
 export default function jujuReducer(state = defaultState, action) {
@@ -114,6 +115,10 @@ export default function jujuReducer(state = defaultState, action) {
           return !draftState.charms.some((c) => c.url === charm.url);
         });
         draftState.charms = [...draftState.charms, ...payload.charms];
+        break;
+      case actionsList.updateSelectedApplications:
+        if (payload.selectedApplications?.length)
+          draftState.selectedApplications = payload.selectedApplications;
         break;
       default:
         // No default value, fall through.

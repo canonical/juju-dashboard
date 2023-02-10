@@ -3,10 +3,11 @@
   has been allowed.
 */
 
+import { actions as appActions, thunks as appThunks } from "store/app";
+import { actions as generalActions } from "store/general";
 import { isLoggedIn } from "store/general/selectors";
 import { actions as uiActions } from "store/ui";
-import { actions as generalActions } from "store/general";
-import { actions as appActions, thunks as appThunks } from "store/app";
+import { actionsList as jujuActions } from "../../juju/action-types";
 
 function error(name, wsControllerURL) {
   console.log(
@@ -57,6 +58,7 @@ export default ({ getState }) =>
       generalActions.updatePingerIntervalId.type,
       uiActions.userMenuActive.type,
       uiActions.sideNavCollapsed.type,
+      jujuActions.updateSelectedApplications,
     ];
 
     const thunkAllowlist = [

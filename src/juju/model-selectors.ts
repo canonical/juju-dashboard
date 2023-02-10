@@ -7,6 +7,7 @@ import type { ModelsList } from "types";
 import type {
   AnnotationData,
   ApplicationData,
+  ApplicationInfo,
   MachineData,
   ModelInfo,
   ModelWatcherData,
@@ -18,6 +19,8 @@ const getModelWatcherData = (state: RootState): ModelWatcherData =>
   state.juju.modelWatcherData;
 const getModelList = (state: RootState): ModelsList => state.juju.models;
 const getCharmList = (state: RootState): Charm[] => state.juju.charms;
+const getSelectedApplicationList = (state: RootState): ApplicationInfo[] =>
+  state.juju.selectedApplications;
 
 export function getModelWatcherDataByUUID(modelUUID: string) {
   return createSelector(getModelWatcherData, (modelWatcherData) => {
@@ -190,6 +193,44 @@ export function getAllModelApplicationStatus(modelUUID: string) {
   );
 }
 
+/**
+ * @returns A list of charms that are used by the selected applications.
+ */
 export function getCharms() {
-  return createSelector(getCharmList, (charms) => charms);
+  return createSelector(
+    getCharmList,
+    getSelectedApplicationList,
+    (charms, selectedApplications) => {
+      return charms.filter((charm) => {
+        return selectedApplications.some(
+          (application) => application["charm-url"] === charm.url
+        );
+      });
+    }
+  );
+}
+
+/**
+ * @param charmURL The charm URL to filter by.
+ * @returns A list of applications that are selected.
+ */
+export function getSelectedApplications(charmURL?: string) {
+  return createSelector(getSelectedApplicationList, (selectedApplications) => {
+    if (!charmURL) {
+      return selectedApplications;
+    }
+    return selectedApplications.filter(
+      (application) => application["charm-url"] === charmURL
+    );
+  });
+}
+
+/**
+ * @param charmURL The charm URL to filter by.
+ * @returns The charm object that matches the charm URL.
+ */
+export function getSelectedCharm(charmURL: string) {
+  return createSelector(getCharmList, (charms) => {
+    return charms.find((charm) => charm.url === charmURL);
+  });
 }
