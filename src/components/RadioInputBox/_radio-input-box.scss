@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/settings";
 
 .radio-input-box {
   border: 1px solid $color-mid-light;
@@ -94,8 +95,8 @@
   }
 
   &[aria-expanded="true"] {
-    background-color: rgb(0 102 204 / 5%);
-    border-color: $color-information;
+    background-color: $color-blue-highlight-background;
+    border-color: $color-blue-highlight-border;
 
     .radio-input-box__content {
       display: block;
