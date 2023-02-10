@@ -15,7 +15,7 @@ export type Controller = {
   path: string;
   Public?: boolean;
   uuid: string;
-  version: string;
+  version?: string;
 };
 
 export type AdditionalController = {

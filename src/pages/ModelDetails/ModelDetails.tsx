@@ -27,11 +27,10 @@ export default function ModelDetails() {
     let watcherHandle: TSFixMe = null;
 
     async function loadFullData() {
-      ({ conn, watcherHandle, pingerIntervalId } = await startModelWatcher(
-        modelUUID,
-        appState,
-        dispatch
-      ));
+      const response = await startModelWatcher(modelUUID, appState, dispatch);
+      conn = response?.conn ?? null;
+      watcherHandle = response?.watcherHandle ?? null;
+      pingerIntervalId = response?.pingerIntervalId ?? null;
       // Fetch the missing model status data. This data should eventually make
       // its way into the all watcher at which point we can drop this additional
       // request for data.
