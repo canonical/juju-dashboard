@@ -91,6 +91,7 @@ const EntityDetails = ({
     if (applicationsFilterQuery) {
       onApplicationsFilter?.(applicationsFilterQuery);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let credentials = null;

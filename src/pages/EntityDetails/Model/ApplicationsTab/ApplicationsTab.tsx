@@ -86,6 +86,15 @@ export default function ApplicationsTab({ filterQuery }: Props) {
   const [filteredApplications, setFilteredApplications] =
     useState<ApplicationData>({});
   const [fuse, setFuse] = useState<Fuse<ApplicationInfo>>(new Fuse([]));
+
+  const {
+    handleSelect,
+    handleSelectAll,
+    selectAll,
+    selectedApplications,
+    reset,
+  } = useTableSelect(Object.values(filteredApplications));
+
   useMemo(() => {
     if (applications)
       setFuse(
@@ -112,6 +121,7 @@ export default function ApplicationsTab({ filterQuery }: Props) {
       // on new search, reset applications selection
       reset();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fuse, filterQuery, applications]);
 
   const localApplicationTableRows: MainTableRow[] = useMemo(() => {
@@ -154,14 +164,6 @@ export default function ApplicationsTab({ filterQuery }: Props) {
   const localAppTableLength = localApplicationTableRows?.length;
   const appOffersTableLength = appOffersRows?.length;
   const remoteAppsTableLength = remoteApplicationTableRows?.length;
-
-  const {
-    handleSelect,
-    handleSelectAll,
-    selectAll,
-    selectedApplications,
-    reset,
-  } = useTableSelect(Object.values(filteredApplications));
 
   const countVisibleTables = (tablesLengths: number[]) =>
     tablesLengths.filter((rowLength) => rowLength > 0).length;

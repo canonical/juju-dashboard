@@ -1,4 +1,5 @@
 import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import useAnalytics from "hooks/useAnalytics";
 import { updateSelectedApplications } from "juju/actions";
 import { ApplicationData, ApplicationInfo } from "juju/types";
 import { useEffect, useState } from "react";
@@ -9,6 +10,8 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
   const [selectedApplications, setSelectedApplications] = useState<
     ApplicationInfo[]
   >([]);
+  const sendAnalytics = useAnalytics();
+
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const dispatch = useDispatch();
 
@@ -25,6 +28,10 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
   }, [applications.length, selectAll, selectedApplications]);
 
   const handleSelectAll = () => {
+    sendAnalytics({
+      category: "ApplicationSearch",
+      action: "Select all applications",
+    });
     if (selectAll) {
       setSelectedApplications([]);
     } else {
@@ -34,6 +41,10 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
   };
 
   const handleSelect = (application: ApplicationInfo) => {
+    sendAnalytics({
+      category: "ApplicationSearch",
+      action: "Select application",
+    });
     if (selectedApplications.includes(application)) {
       setSelectedApplications(
         selectedApplications.filter((a) => a !== application)

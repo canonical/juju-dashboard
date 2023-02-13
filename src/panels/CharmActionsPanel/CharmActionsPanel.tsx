@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "@canonical/react-components";
 import {
   MutableRefObject,
@@ -19,6 +20,7 @@ import { EnqueuedActions } from "@canonical/jujulib/dist/api/facades/action/Acti
 import { generateIconImg, pluralize } from "app/utils/utils";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import ToastCard from "components/ToastCard/ToastCard";
+import useAnalytics from "hooks/useAnalytics";
 import { executeActionOnUnits } from "juju/api";
 import {
   getModelUUID,
@@ -38,6 +40,7 @@ import { useAppStore } from "store/store";
 import "../ActionsPanel/_actions-panel.scss";
 
 export default function CharmActionsPanel(): JSX.Element {
+  const sendAnalytics = useAnalytics();
   const { userName, modelName } = useParams();
 
   const modelUUID = useSelector(getModelUUID(modelName, userName));
@@ -78,6 +81,11 @@ export default function CharmActionsPanel(): JSX.Element {
   };
 
   const executeAction = () => {
+    sendAnalytics({
+      category: "ApplicationSearch",
+      action: "Run action (final step)",
+    });
+
     if (!selectedAction) return;
     executeActionOnUnits(
       // transform applications to unit list for the API
