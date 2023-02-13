@@ -3,13 +3,15 @@
   has been allowed.
 */
 
+import { Middleware } from "redux";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import { isLoggedIn } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
+import { RootState, Store } from "store/store";
 import { actions as uiActions } from "store/ui";
-import { actionsList as jujuActions } from "../../juju/action-types";
 
-function error(name, wsControllerURL) {
+function error(name: string, wsControllerURL: string) {
   console.log(
     "unable to perform action:",
     name,
@@ -18,7 +20,7 @@ function error(name, wsControllerURL) {
   );
 }
 
-const checkLoggedIn = (state, wsControllerURL) => {
+export const checkLoggedIn = (state: RootState, wsControllerURL: string) => {
   if (!wsControllerURL) {
     console.error("unable to determine logged in status");
   }
@@ -28,26 +30,23 @@ const checkLoggedIn = (state, wsControllerURL) => {
 /**
   Redux middleware to enable gating actions on the respective controller
   authentication.
-  @param {Object} action The typical Redux action or thunk to execute
-  @param {Object} options Any options that this checker needs to perform an
+  @param action The typical Redux action or thunk to execute
+  @param options Any options that this checker needs to perform an
     appropriate auth check.
       wsControllerURL: The full controller websocket url that the controller
         is stored under in redux in order to determine it's logged in status.
 */
 // eslint-disable-next-line import/no-anonymous-default-export
-export default ({ getState }) =>
+export const checkAuthMiddleware: Middleware<
+  {},
+  RootState,
+  Store["dispatch"]
+> =
+  ({ getState }) =>
   (next) =>
   async (action) => {
     // These lists need to be generated at run time to prevent circular imports.
     const actionAllowlist = [
-      "POPULATE_MISSING_ALLWATCHER_DATA",
-      "PROCESS_ALL_WATCHER_DELTAS",
-      "UPDATE_CONTROLLER_LIST",
-      "UPDATE_JUJU_API_INSTANCE",
-      "CLEAR_CONTROLLER_DATA",
-      "CLEAR_MODEL_DATA",
-      "TOGGLE_USER_MENU",
-      "SIDENAV_COLLAPSED",
       appActions.connectAndPollControllers.type,
       generalActions.storeConfig.type,
       generalActions.storeLoginError.type,
@@ -56,9 +55,14 @@ export default ({ getState }) =>
       generalActions.storeVisitURL.type,
       generalActions.updateControllerConnection.type,
       generalActions.updatePingerIntervalId.type,
+      jujuActions.populateMissingAllWatcherData.type,
+      jujuActions.processAllWatcherDeltas.type,
+      jujuActions.updateControllerList.type,
+      jujuActions.clearControllerData.type,
+      jujuActions.clearModelData.type,
+      jujuActions.updateSelectedApplications.type,
       uiActions.userMenuActive.type,
       uiActions.sideNavCollapsed.type,
-      jujuActions.updateSelectedApplications,
     ];
 
     const thunkAllowlist = [
@@ -92,3 +96,5 @@ export default ({ getState }) =>
       }
     }
   };
+
+export default checkAuthMiddleware;

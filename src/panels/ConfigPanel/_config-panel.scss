@@ -186,22 +186,22 @@
 }
 
 .config-input {
+  border: 1px solid transparent;
   border-radius: 2px;
+  border-radius: $border-radius;
   cursor: pointer;
+  margin-bottom: $spv--small;
   padding: 0 0.5rem;
 
   &--focused {
-    @include vf-animation(background-color, brisk, out);
+    @include vf-animation(#{background-color, border-color}, brisk, out);
 
-    background-color: #ddedfe;
+    background-color: $color-blue-highlight-background;
+    border-color: $color-blue-highlight-border;
   }
 
-  &--changed {
+  &--changed:not(.config-input--focused) {
     background-color: $color-light;
-  }
-
-  &.config-input--focused.config-input--changed {
-    background-color: $color-blue-highlight;
   }
 
   .p-icon--plus.config-input--view-description,

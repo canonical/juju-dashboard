@@ -90,7 +90,7 @@ describe("selectors", () => {
 
   it("getControllerConnections", () => {
     const controllerConnections = {
-      "wss://example.com": "connection",
+      "wss://example.com": { controllerTag: "controller" },
     };
     expect(
       getControllerConnections(
@@ -105,7 +105,7 @@ describe("selectors", () => {
 
   it("getControllerConnection", () => {
     const controllerConnections = {
-      "wss://example.com": "connection",
+      "wss://example.com": { controllerTag: "controller" },
     };
     expect(
       getControllerConnection(
@@ -116,7 +116,7 @@ describe("selectors", () => {
         }),
         "wss://example.com"
       )
-    ).toBe("connection");
+    ).toStrictEqual({ controllerTag: "controller" });
   });
 
   it("isConnecting", () => {

@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
-import { Formik, Field, Form } from "formik";
-import { Tooltip } from "@canonical/react-components";
+import { Button, Select, Tooltip } from "@canonical/react-components";
+import { useEffect, useState } from "react";
 
 import { formatFriendlyDateToNow } from "app/utils/utils";
-import type { TSFixMe } from "types";
 
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
 
+import { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import "./_share-card.scss";
 
 export enum Label {
@@ -21,9 +20,9 @@ type Props = {
   isOwner: boolean;
   removeUser: (userName: string) => void;
   accessSelectChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
+    permissionTo: string,
     userName: string
-  ) => TSFixMe;
+  ) => Promise<ErrorResults | null>;
 };
 
 export default function ShareCard({
@@ -83,18 +82,18 @@ export default function ShareCard({
               {isOwner ? (
                 Label.OWNER
               ) : (
-                <i
-                  className="p-icon--delete"
+                <Button
+                  hasIcon
+                  small
+                  appearance="base"
                   onClick={() => {
                     removeUser(userName);
                     setHasBeenRemoved(true);
                   }}
-                  onKeyPress={() => removeUser(userName)}
-                  role="button"
-                  tabIndex={0}
+                  name={Label.REMOVE}
                 >
-                  {Label.REMOVE}
-                </i>
+                  <i className="p-icon--delete">{Label.REMOVE}</i>
+                </Button>
               )}
             </span>
           </div>
@@ -104,37 +103,36 @@ export default function ShareCard({
             <div className="share-card__access-wrapper">
               {!isOwner && (
                 <>
-                  <Formik initialValues={{}} onSubmit={() => {}}>
-                    <Form>
-                      <Field
-                        as="select"
-                        name="access"
-                        onFocus={() => setInFocus(true)}
-                        onBlur={() => setInFocus(false)}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          setShowStatus(true);
-                          setUpdateStatus("Updating");
-                          const accessChange = accessSelectChange(e, userName);
-                          if (accessChange) {
-                            accessChange.then((response: any) => {
-                              if (!response?.results[0]?.error) {
-                                setInFocus(false);
-                                setUpdateStatus("Updated");
-                              } else {
-                                setUpdateStatus("Error");
-                              }
-                            });
+                  <Select
+                    name="access"
+                    onFocus={() => setInFocus(true)}
+                    onBlur={() => setInFocus(false)}
+                    onChange={(e) => {
+                      setShowStatus(true);
+                      setUpdateStatus("Updating");
+                      const accessChange = accessSelectChange(
+                        e.target.value,
+                        userName
+                      );
+                      if (accessChange) {
+                        accessChange.then((response) => {
+                          if (!response?.results[0]?.error) {
+                            setInFocus(false);
+                            setUpdateStatus("Updated");
+                          } else {
+                            setUpdateStatus("Error");
                           }
-                        }}
-                        value={access}
-                        className="share__card-access"
-                      >
-                        <option value="read">read</option>
-                        <option value="write">write</option>
-                        <option value="admin">admin</option>
-                      </Field>
-                    </Form>
-                  </Formik>
+                        });
+                      }
+                    }}
+                    value={access}
+                    className="share__card-access"
+                    options={[
+                      { value: "read", label: "read" },
+                      { value: "write", label: "write" },
+                      { value: "admin", label: "admin" },
+                    ]}
+                  />
 
                   <div className="share-card__status" data-visible={showStatus}>
                     <div

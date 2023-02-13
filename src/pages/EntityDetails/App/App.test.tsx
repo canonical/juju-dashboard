@@ -60,7 +60,7 @@ describe("Entity Details App", () => {
     });
     storeData.juju.modelData = dataDump.juju.modelData;
 
-    const model = Object.values(storeData.juju.modelWatcherData).find(
+    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
       (model) => model.model.name === "canonical-kubernetes"
     );
     if (model && "units" in model) {

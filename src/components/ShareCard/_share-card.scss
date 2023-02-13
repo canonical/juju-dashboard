@@ -9,10 +9,6 @@
   position: relative;
   width: 100%;
 
-  select {
-    margin-bottom: 0;
-  }
-
   &__access-wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -53,7 +49,8 @@
     font-size: 0.875rem;
     max-width: calc(100% - 1.5rem);
 
-    form {
+    select {
+      margin-bottom: 0;
       margin-top: 0.875rem;
       max-width: 50%;
     }
@@ -67,10 +64,6 @@
 
   &__secondary {
     margin-left: auto;
-  }
-
-  .p-icon--delete {
-    cursor: pointer;
   }
 
   &[data-active="true"] {

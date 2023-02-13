@@ -15,10 +15,11 @@ import {
   generateRelationIconImage,
   generateStatusElement,
 } from "app/utils/utils";
-import { StatusData } from "juju/model-selectors";
 import { ApplicationData, RelationData, UnitData } from "juju/types";
 import { MouseEvent } from "react";
-import { ModelData, TSFixMe } from "types";
+import { TSFixMe } from "types";
+import { StatusData } from "store/juju/selectors";
+import { ModelData } from "store/juju/types";
 
 export type TableRowClick = (
   entityType: string,

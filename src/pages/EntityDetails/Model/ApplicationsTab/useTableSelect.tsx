@@ -1,9 +1,9 @@
 import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import useAnalytics from "hooks/useAnalytics";
-import { updateSelectedApplications } from "juju/actions";
 import { ApplicationData, ApplicationInfo } from "juju/types";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { actions as jujuActions } from "store/juju";
 import { Header } from "tables/tableHeaders";
 
 export const useTableSelect = (applications: ApplicationInfo[]) => {
@@ -16,7 +16,7 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(updateSelectedApplications(selectedApplications));
+    dispatch(jujuActions.updateSelectedApplications({ selectedApplications }));
   }, [dispatch, selectedApplications]);
 
   useEffect(() => {

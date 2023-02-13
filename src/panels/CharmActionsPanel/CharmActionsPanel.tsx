@@ -22,11 +22,6 @@ import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import ToastCard from "components/ToastCard/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
 import { executeActionOnUnits } from "juju/api";
-import {
-  getModelUUID,
-  getSelectedApplications,
-  getSelectedCharm,
-} from "juju/model-selectors";
 import { ApplicationInfo } from "juju/types";
 import ActionOptions from "panels/ActionsPanel/ActionOptions";
 import {
@@ -36,6 +31,11 @@ import {
   enableSubmit,
 } from "panels/ActionsPanel/ActionsPanel";
 import { useParams } from "react-router-dom";
+import {
+  getModelUUID,
+  getSelectedApplications,
+  getSelectedCharm,
+} from "store/juju/selectors";
 import { useAppStore } from "store/store";
 import "../ActionsPanel/_actions-panel.scss";
 

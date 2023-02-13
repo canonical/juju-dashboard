@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Formik, Field, Form } from "formik";
-import cloneDeep from "clone-deep";
-import useModelStatus from "hooks/useModelStatus";
-import { motion } from "framer-motion";
-import reactHotToast from "react-hot-toast";
 import { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import cloneDeep from "clone-deep";
+import { useFormik } from "formik";
+import { motion } from "framer-motion";
+import useModelStatus from "hooks/useModelStatus";
+import { useEffect, useState } from "react";
+import reactHotToast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 import { getModelControllerDataByUUID } from "app/selectors";
 import { actions as appActions } from "store/app";
@@ -17,6 +17,7 @@ import ToastCard from "components/ToastCard/ToastCard";
 import { usePromiseDispatch } from "store/store";
 import type { TSFixMe } from "types";
 
+import { Input, RadioInput } from "@canonical/react-components";
 import "./share-model.scss";
 
 type ModelControllerData = {
@@ -39,7 +40,7 @@ type UsersAccess = {
 };
 
 type UserAccess = {
-  name: string;
+  username: string;
   access: string | null;
 };
 
@@ -51,6 +52,17 @@ export default function ShareModel() {
   const [showAddNewUser, setShowAddNewUser] = useState(false);
 
   const modelStatusData: TSFixMe = useModelStatus() || null;
+  const newUserFormik = useFormik({
+    initialValues: {
+      username: "",
+      access: "read",
+    },
+    validate: (values) => handleValidateNewUser(values),
+    onSubmit: (values, { resetForm }) => {
+      handleNewUserFormSubmit(values, resetForm);
+      setShowAddNewUser(false);
+    },
+  });
 
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
   const modelUUID = modelStatusData?.info.uuid;
@@ -83,13 +95,13 @@ export default function ShareModel() {
     return user === modelStatusData?.info["owner-tag"].replace("user-", "");
   };
 
-  const userAlreadyHasAccess = (userName: string, users: User[]) => {
-    return users.some((userEntry: User) => userEntry.user === userName);
+  const userAlreadyHasAccess = (username: string, users: User[]) => {
+    return users.some((userEntry: User) => userEntry.user === username);
   };
 
-  const handleValidateNewUser = (values: TSFixMe) => {
+  const handleValidateNewUser = (values: UserAccess) => {
     setNewUserFormSubmitActive(
-      values.username !== "" && values.accessLevel !== null
+      Boolean(values.username) && Boolean(values.access)
     );
   };
 
@@ -129,59 +141,64 @@ export default function ShareModel() {
   };
 
   const handleAccessSelectChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    userName: string
+    permissionTo: string,
+    username: string
   ) => {
-    const permissionTo = e.target.value;
     const clonedUserAccess = cloneDeep(usersAccess);
     if (clonedUserAccess) {
-      clonedUserAccess[userName] = permissionTo;
+      clonedUserAccess[username] = permissionTo;
     }
     setUsersAccess(clonedUserAccess);
-    const permissionFrom = usersAccess?.[userName];
+    const permissionFrom = usersAccess?.[username];
 
     const response = await updateModelPermissions(
       "grant",
-      userName,
+      username,
       permissionTo,
       permissionFrom
     );
-    const error = response?.results?.[0]?.error?.message;
+    let error = response?.results?.[0]?.error?.message;
+    // ignore this error as it means that it's a success
+    if (error && error.match(/user already has .+ access or greater/i)) {
+      delete response?.results[0];
+      error = undefined;
+    }
+
     if (error) {
       reactHotToast.custom((t) => (
-        <ToastCard toastInstance={t} type="negative" text={error} />
+        <ToastCard toastInstance={t} type="negative" text={error!} />
       ));
     } else {
       reactHotToast.custom((t) => (
         <ToastCard
           toastInstance={t}
           type="positive"
-          text={`Permissions for <strong>${userName}</strong> have been changed to <em>${permissionTo}.</em>`}
+          text={`Permissions for <strong>${username}</strong> have been changed to <em>${permissionTo}.</em>`}
         />
       ));
     }
     return response;
   };
 
-  const handleRemoveUser = async (userName: string) => {
+  const handleRemoveUser = async (username: string) => {
     await updateModelPermissions(
       "revoke",
-      userName,
+      username,
       undefined,
-      usersAccess?.[userName]
+      usersAccess?.[username]
     );
 
     reactHotToast.custom((t) => (
       <ToastCard
         toastInstance={t}
         type="positive"
-        text={`<strong>${userName}</strong> has been successfully removed.`}
+        text={`<strong>${username}</strong> has been successfully removed.`}
         undo={async () => {
-          const permissionTo = usersAccess?.[userName];
+          const permissionTo = usersAccess?.[username];
           const permissionFrom = undefined;
           await updateModelPermissions(
             "grant",
-            userName,
+            username,
             permissionTo,
             permissionFrom
           );
@@ -194,16 +211,16 @@ export default function ShareModel() {
     values: UserAccess,
     resetForm: () => void
   ) => {
-    if (userAlreadyHasAccess(values.name, users)) {
+    if (userAlreadyHasAccess(values.username, users)) {
       reactHotToast.custom((t) => (
         <ToastCard
           toastInstance={t}
           type="negative"
-          text={`<strong>${values.name}</strong> already has access to this model.`}
+          text={`<strong>${values.username}</strong> already has access to this model.`}
         />
       ));
     } else {
-      const newUserName = values.name;
+      const newUserName = values.username;
       const newUserPermission = values.access;
       let response = null;
       if (newUserName && newUserPermission) {
@@ -226,7 +243,7 @@ export default function ShareModel() {
           <ToastCard
             toastInstance={t}
             type="positive"
-            text={`<strong>${values.name}</strong> now has access to this model.`}
+            text={`<strong>${values.username}</strong> now has access to this model.`}
           />
         ));
       }
@@ -261,7 +278,7 @@ export default function ShareModel() {
                   <h5>
                     <i className="p-icon--share is-inline"></i> Model access:{" "}
                     {modelName}
-                  </h5>{" "}
+                  </h5>
                 </div>
               )}
             </div>
@@ -284,15 +301,15 @@ export default function ShareModel() {
               </button>
             </div>
             {sortedUsers?.map((userObj: User) => {
-              const userName = userObj["user"];
+              const username = userObj["user"];
               const lastConnected = userObj["last-connection"];
               return (
                 <ShareCard
-                  key={userName}
-                  userName={userName}
+                  key={username}
+                  userName={username}
                   lastConnected={lastConnected}
-                  access={usersAccess?.[userName]}
-                  isOwner={isOwner(userName)}
+                  access={usersAccess?.[username]}
+                  isOwner={isOwner(username)}
                   removeUser={handleRemoveUser}
                   accessSelectChange={handleAccessSelectChange}
                 />
@@ -301,100 +318,71 @@ export default function ShareModel() {
           </div>
           <div className="aside-split-col add-new-user">
             <h5>Add new user</h5>
-            <Formik
-              initialValues={{
-                name: "",
-                access: "read",
-              }}
-              validate={(values) => handleValidateNewUser(values)}
-              onSubmit={(values, { resetForm }) => {
-                handleNewUserFormSubmit(values, resetForm);
-                setShowAddNewUser(false);
-              }}
-            >
-              <Form>
-                <label className="is-required" htmlFor="username">
-                  Username
-                </label>
-                <Field
-                  required
-                  type="text"
-                  placeholder="Username"
-                  name="name"
-                />
-                <label className="is-required" htmlFor=" ">
-                  Access level
-                </label>
-                <div className="p-radio">
-                  <label htmlFor="accessRead">
-                    <Field
-                      id="accessRead"
-                      type="radio"
-                      className="p-radio__input"
-                      name="access"
-                      aria-labelledby="Read"
-                      value="read"
-                    />
-                    <span className="p-radio__label" id="accessLevel1">
-                      read
-                      <span className="help-text">
-                        A user can view the state of the model
-                      </span>
+            <form onSubmit={newUserFormik.handleSubmit}>
+              <Input
+                name="username"
+                type="text"
+                label="Username"
+                required
+                value={newUserFormik.values.username}
+                onChange={newUserFormik.handleChange}
+              />
+              <label className="is-required" htmlFor="access">
+                Access level
+              </label>
+              <RadioInput
+                label={
+                  <>
+                    read
+                    <span className="help-text">
+                      A user can view the state of the model
                     </span>
-                  </label>
-                </div>
-
-                <div className="p-radio">
-                  <label htmlFor="accessWrite">
-                    <Field
-                      id="accessWrite"
-                      type="radio"
-                      className="p-radio__input"
-                      name="access"
-                      aria-labelledby="Write"
-                      value="write"
-                    />
-                    <span className="p-radio__label" id="accessLevel2">
-                      write
-                      <span className="help-text">
-                        In addition to 'read' abilities, a user can
-                        modify/configure models
-                      </span>
+                  </>
+                }
+                value="read"
+                name="access"
+                onChange={newUserFormik.handleChange}
+                defaultChecked
+              />
+              <RadioInput
+                label={
+                  <>
+                    write
+                    <span className="help-text">
+                      In addition to 'read' abilities, a user can
+                      modify/configure models
                     </span>
-                  </label>
-                </div>
-
-                <div className="p-radio">
-                  <label htmlFor="accessAdmin">
-                    <Field
-                      id="accessAdmin"
-                      type="radio"
-                      className="p-radio__input"
-                      name="access"
-                      aria-labelledby="Admin"
-                      value="admin"
-                    />
-                    <span className="p-radio__label" id="accessLevel3">
-                      admin
-                      <span className="help-text">
-                        In addition to 'write' abilities, a user can perform
-                        model upgrades and connect to machines via juju ssh.
-                        Makes the user an effective model owner.
-                      </span>
+                  </>
+                }
+                value="write"
+                name="access"
+                onChange={newUserFormik.handleChange}
+              />
+              <RadioInput
+                label={
+                  <>
+                    admin
+                    <span className="help-text">
+                      In addition to 'write' abilities, a user can perform model
+                      upgrades and connect to machines via juju ssh. Makes the
+                      user an effective model owner.
                     </span>
-                  </label>
-                </div>
-                <div className="action-wrapper">
-                  <button
-                    className="p-button--positive"
-                    type="submit"
-                    disabled={!newUserFormSubmitActive}
-                  >
-                    Add user
-                  </button>
-                </div>
-              </Form>
-            </Formik>
+                  </>
+                }
+                value="admin"
+                name="access"
+                onChange={newUserFormik.handleChange}
+              />
+              <div className="action-wrapper">
+                <button
+                  className="p-button--positive"
+                  type="submit"
+                  disabled={!newUserFormSubmitActive}
+                >
+                  Add user
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </motion.div>

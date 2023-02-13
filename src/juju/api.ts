@@ -1,4 +1,9 @@
-import { connect, connectAndLogin, ConnectOptions } from "@canonical/jujulib";
+import {
+  connect,
+  connectAndLogin,
+  Connection,
+  ConnectOptions,
+} from "@canonical/jujulib";
 import {
   AdditionalProperties as ActionAdditionalProperties,
   Entities,
@@ -22,6 +27,7 @@ import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 
+import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
 import { isSet } from "app/utils/utils";
 import bakery from "juju/bakery";
 import JIMMV2 from "juju/jimm-facade";
@@ -33,22 +39,11 @@ import {
   isLoggedIn,
 } from "store/general/selectors";
 import { Credential } from "store/general/types";
+import { actions as jujuActions } from "store/juju";
+import { addControllerCloudRegion } from "store/juju/thunks";
+import { Controller as JujuController } from "store/juju/types";
 import { RootState, Store } from "store/store";
-import { Controller as JujuController, TSFixMe } from "types";
-
-import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
-import {
-  addControllerCloudRegion,
-  processAllWatcherDeltas,
-  updateCharms,
-  updateControllerList,
-  updateModelInfo,
-  updateModelStatus,
-} from "./actions";
 import { ApplicationInfo } from "./types";
-
-// TSFixMe: substitute for the connection type when it is available from jujulib.
-type Connection = TSFixMe;
 
 /**
   Return a common connection option config.
@@ -216,12 +211,7 @@ export async function fetchModelStatus(
   // between requests.
   if (isLoggedIn(getState(), wsControllerURL)) {
     try {
-      // TSFixMe: this cast can be removed once the app selectors have been
-      // migrated to TypeScript.
-      const controllerCredentials = getUserPass(
-        getState(),
-        wsControllerURL
-      ) as Credential;
+      const controllerCredentials = getUserPass(getState(), wsControllerURL);
       const response = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,
@@ -287,7 +277,9 @@ export async function fetchAndStoreModelStatus(
   if (status === null) {
     return;
   }
-  dispatch(updateModelStatus(modelUUID, status, wsControllerURL));
+  dispatch(
+    jujuActions.updateModelStatus({ modelUUID, status, wsControllerURL })
+  );
 }
 
 /**
@@ -334,11 +326,11 @@ export async function fetchAllModelStatuses(
       }
       if (isLoggedIn(getState(), wsControllerURL)) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
-        dispatch(updateModelInfo(modelInfo, wsControllerURL));
+        dispatch(jujuActions.updateModelInfo({ modelInfo, wsControllerURL }));
         if (modelInfo.results[0].result.isController) {
           // If this is a controller model then update the
           // controller data with this model data.
-          dispatch(addControllerCloudRegion(wsControllerURL, modelInfo));
+          dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }));
         }
       }
       done();
@@ -368,13 +360,11 @@ export async function fetchControllerList(
 ) {
   let controllers: JujuController[] | null = null;
   if (conn.facades.jimM) {
-    // TSFixMe: this cast can be removed when jimm-facade.js has been migrated
-    // to TypeScript.
-    const response = (await conn.facades.jimM.listControllers()) as {
-      controllers: JujuController[];
-    };
+    const response = await conn.facades.jimM.listControllers();
     controllers = response.controllers;
-    controllers.forEach((c) => (c.additionalController = additionalController));
+    controllers?.forEach(
+      (c) => (c.additionalController = additionalController)
+    );
   } else {
     // If we're not connected to a JIMM then call to get the controller config
     // and generate a fake controller list.
@@ -389,7 +379,11 @@ export async function fetchControllerList(
       },
     ];
   }
-  dispatch(updateControllerList(wsControllerURL, controllers));
+  if (controllers) {
+    dispatch(
+      jujuActions.updateControllerList({ wsControllerURL, controllers })
+    );
+  }
 }
 
 /**
@@ -563,10 +557,13 @@ export async function startModelWatcher(
   dispatch: Dispatch
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
+  if (!conn) {
+    return null;
+  }
   const watcherHandle = await conn?.facades.client.watchAll();
   const pingerIntervalId = startPingerLoop(conn);
   const data = await conn?.facades.allWatcher.next(watcherHandle["watcher-id"]);
-  if (data?.deltas) dispatch(processAllWatcherDeltas(data?.deltas));
+  if (data?.deltas) dispatch(jujuActions.processAllWatcherDeltas(data?.deltas));
   return { conn, watcherHandle, pingerIntervalId };
 }
 
@@ -596,7 +593,7 @@ export async function stopModelWatcher(
 export async function setModelSharingPermissions(
   controllerURL: string,
   modelUUID: string,
-  conn: Connection,
+  conn: Connection | undefined,
   user: string | undefined,
   permissionTo: string | undefined,
   permissionFrom: string | undefined,
@@ -604,7 +601,7 @@ export async function setModelSharingPermissions(
   dispatch: Dispatch
 ) {
   const modifyAccess = async (access: string, action: string) => {
-    return await conn.facades.modelManager.modifyModelAccess({
+    return await conn?.facades.modelManager.modifyModelAccess({
       changes: [
         {
           access,
@@ -628,7 +625,13 @@ export async function setModelSharingPermissions(
     }
 
     const modelInfo = await fetchModelInfo(conn, modelUUID);
-    modelInfo && dispatch(updateModelInfo(modelInfo, controllerURL));
+    modelInfo &&
+      dispatch(
+        jujuActions.updateModelInfo({
+          modelInfo,
+          wsControllerURL: controllerURL,
+        })
+      );
   } else {
     response = Promise.reject(
       `Unable to connect to controller: ${controllerURL}`
@@ -665,6 +668,8 @@ export async function getCharmsFromApplications(
   );
   const baseWSControllerURL = getWSControllerURL(appState);
 
-  dispatch(updateCharms(charms, baseWSControllerURL));
+  dispatch(
+    jujuActions.updateCharms({ charms, wsControllerURL: baseWSControllerURL })
+  );
   return charms;
 }

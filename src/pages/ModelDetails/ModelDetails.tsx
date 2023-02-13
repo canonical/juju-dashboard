@@ -3,10 +3,10 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { startModelWatcher, stopModelWatcher } from "juju/api";
-import { populateMissingAllWatcherData } from "juju/actions";
+import { actions as jujuActions } from "store/juju";
 
 import type { TSFixMe } from "types";
-import { getModelUUID } from "juju/model-selectors";
+import { getModelUUID } from "store/juju/selectors";
 import { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Model from "pages/EntityDetails/Model/Model";
@@ -27,18 +27,19 @@ export default function ModelDetails() {
     let watcherHandle: TSFixMe = null;
 
     async function loadFullData() {
-      ({ conn, watcherHandle, pingerIntervalId } = await startModelWatcher(
-        modelUUID,
-        appState,
-        dispatch
-      ));
+      const response = await startModelWatcher(modelUUID, appState, dispatch);
+      conn = response?.conn ?? null;
+      watcherHandle = response?.watcherHandle ?? null;
+      pingerIntervalId = response?.pingerIntervalId ?? null;
       // Fetch the missing model status data. This data should eventually make
       // its way into the all watcher at which point we can drop this additional
       // request for data.
       // https://bugs.launchpad.net/juju/+bug/1939341
       const status = await conn.facades.client.fullStatus();
       if (status !== null) {
-        dispatch(populateMissingAllWatcherData(modelUUID, status));
+        dispatch(
+          jujuActions.populateMissingAllWatcherData({ uuid: modelUUID, status })
+        );
       }
     }
     if (modelUUID) {

@@ -1092,12 +1092,12 @@
   resolved "https://registry.yarnpkg.com/@canonical/jaaslib/-/jaaslib-0.6.1.tgz#11eb43ba05e6e0c69e44a6947bd66fa1397ecefb"
   integrity sha512-Ts7TziwN3ZkB7bNpAnPoiSJQaDr9becHHx5AXaTl1uq/WKvscO0vtoa1QsBtksh5QMMuFlWn3Z2PmnfT4IVwmg==
 
-"@canonical/jujulib@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-3.0.2.tgz#2e923b13fe3a494b5232a1f4676f9b0f3a9b0a1b"
-  integrity sha512-z88x5uDzeDq1x0ohR/q8/p+69ts7UuIqeiobpWjhuwGFWYiyEFiGpJnTUFxH6shegeumd6ra9fesoE3s7rI/YA==
+"@canonical/jujulib@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-3.1.0.tgz#1d027f5dbb561ebcf07310701ce63e18c77f1920"
+  integrity sha512-+BLL6scInNODTRDhUu94If0fsMGR6pCxQZY9jLQq7h/0457CIzDsp1iq2nb3ceNzSlmmAu1dINu3qkLnbtsQaA==
   dependencies:
-    "@canonical/macaroon-bakery" "1.2.2"
+    "@canonical/macaroon-bakery" "1.3.2"
     btoa "1.2.1"
     websocket "1.0.34"
     xhr2 "0.2.1"
@@ -1107,24 +1107,18 @@
   resolved "https://registry.yarnpkg.com/@canonical/latest-news/-/latest-news-1.4.1.tgz#dcdd445ac2268a54cf60f2f8c725b6bdeb285d71"
   integrity sha512-lwrikCj0Y11X8Ln8D+elp6Ri3mYjMjsAOJtadNEFzhBrgmg8TVGYJjOdwy8TvRaxy7fHnvVajIKAYWX44Tfj6w==
 
-"@canonical/macaroon-bakery@1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@canonical/macaroon-bakery/-/macaroon-bakery-1.2.2.tgz#bba6ff4f9212f0a3c301edfb7af864ff9b9773ee"
-  integrity sha512-wiY9L4DMdff8uLgrABKzQVUQy92mYVApz2ffpvRdNw/G0U9p3H7HouIEQsWHQwSKJC+gLIT/fE5o+hUDoF5Ixw==
+"@canonical/macaroon-bakery@1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@canonical/macaroon-bakery/-/macaroon-bakery-1.3.2.tgz#14b81154c247eb9b59fb9d7b5d167d1c2dec4d4f"
+  integrity sha512-3VtI9L9m8EPxmddIF4ed+s5KL+QK0pXnHNYaRqiTwOSnwGuJz/TdVwubrtE//hbt9jj/UoYnAlZp5caNUaKjfA==
   dependencies:
+    "@types/sjcl" "1.0.30"
     macaroon "3.0.4"
 
-"@canonical/macaroon-bakery@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@canonical/macaroon-bakery/-/macaroon-bakery-1.3.0.tgz#9ef021733b5564d64929d3f82f36351cd7b1dd1e"
-  integrity sha512-gDv+ScuBxMgQQREHj0s2JdNxni/FJtzvyTUEnJoboISWC3gh6tpou2AlsUaU4dQCNwlbJn2dbDecv2gu7GopMA==
-  dependencies:
-    macaroon "3.0.4"
-
-"@canonical/react-components@0.37.8":
-  version "0.37.8"
-  resolved "https://registry.yarnpkg.com/@canonical/react-components/-/react-components-0.37.8.tgz#69fceb80a299737dbe864a5b50eeee766f78717b"
-  integrity sha512-Uvggt0aYro0Ymp/4SdPxpGYjE3i7ZfB6cs6/y4Ktx+9gyLxkxd0qaMkRlRA68lUMkSk4+0daElMQq7+ohEq+Pw==
+"@canonical/react-components@0.38.0":
+  version "0.38.0"
+  resolved "https://registry.yarnpkg.com/@canonical/react-components/-/react-components-0.38.0.tgz#180eb0412d62e29002a724386d08d5bea959b58b"
+  integrity sha512-0t20yrHamxCPCxlJu7ZjXMFexrfZXUSTZvVL+dSoTF8ZHTTi/NUnvgLMak8NWzVht9nOkVb6ltAA8pPSmMr8rg==
   dependencies:
     "@types/jest" "27.5.2"
     "@types/node" "16.11.47"
@@ -2368,6 +2362,11 @@
   dependencies:
     "@types/mime" "*"
     "@types/node" "*"
+
+"@types/sjcl@1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@types/sjcl/-/sjcl-1.0.30.tgz#c1db866622ef4da56af081fa2e258d76fb255b89"
+  integrity sha512-4ebBtj1rx3Kh3To5RnPua+U4JzVwH2MxUmHQvAlxWpzmfmupBRyyXAIEQceon+e5tW9aBeOApTYA6EXfBysRyQ==
 
 "@types/sockjs@^0.3.33":
   version "0.3.33"
@@ -8273,7 +8272,12 @@ postcss-safe-parser@^6.0.0:
   resolved "https://registry.yarnpkg.com/postcss-safe-parser/-/postcss-safe-parser-6.0.0.tgz#bb4c29894171a94bc5c996b9a30317ef402adaa1"
   integrity sha512-FARHN8pwH+WiS2OPCxJI8FuRJpTVnn6ZNFiqAM2aeW2LwTHWWmWgIyKC6cUo0L8aeKiF/14MNvnpls6R2PBeMQ==
 
-postcss-scss@4.0.5, postcss-scss@^4.0.2:
+postcss-scss@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/postcss-scss/-/postcss-scss-4.0.6.tgz#5d62a574b950a6ae12f2aa89b60d63d9e4432bfd"
+  integrity sha512-rLDPhJY4z/i4nVFZ27j9GqLxj1pwxE80eAzUNRMXtcpipFYIeowerzBgG3yJhMtObGEXidtIgbUpQ3eLDsf5OQ==
+
+postcss-scss@^4.0.2:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/postcss-scss/-/postcss-scss-4.0.5.tgz#8ee33c1dda8d9d4753b565ec79014803dc6edabf"
   integrity sha512-F7xpB6TrXyqUh3GKdyB4Gkp3QL3DDW1+uI+gxx/oJnUt/qXI4trj5OGlp9rOKdoABGULuqtqeG+3HEVQk4DjmA==
@@ -8325,15 +8329,6 @@ postcss-value-parser@^4.0.0, postcss-value-parser@^4.1.0, postcss-value-parser@^
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz#723c09920836ba6d3e5af019f92bc0971c02e514"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
-
-postcss@8.4.18:
-  version "8.4.18"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.18.tgz#6d50046ea7d3d66a85e0e782074e7203bc7fbca2"
-  integrity sha512-Wi8mWhncLJm11GATDaQKobXSNEYGUHeQLiQqDFG1qQ5UTDPTEvKw0Xt5NsTpktGTwLps3ByrWsBrG0rB8YQ9oA==
-  dependencies:
-    nanoid "^3.3.4"
-    picocolors "^1.0.0"
-    source-map-js "^1.0.2"
 
 postcss@8.4.21:
   version "8.4.21"
@@ -9097,15 +9092,6 @@ sass-loader@^12.3.0:
   dependencies:
     klona "^2.0.4"
     neo-async "^2.6.2"
-
-sass@1.56.0:
-  version "1.56.0"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.56.0.tgz#134032075a3223c8d49cb5c35e091e5ba1de8e0a"
-  integrity sha512-WFJ9XrpkcnqZcYuLRJh5qiV6ibQOR4AezleeEjTjMsCocYW59dEG19U3fwTTXxzi2Ed3yjPBp727hbbj53pHFw==
-  dependencies:
-    chokidar ">=3.0.0 <4.0.0"
-    immutable "^4.0.0"
-    source-map-js ">=0.6.2 <2.0.0"
 
 sass@1.57.1:
   version "1.57.1"
@@ -10309,18 +10295,18 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vanilla-framework@3.8.2:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/vanilla-framework/-/vanilla-framework-3.8.2.tgz#fce498fecf06d67a0eeb31571dd21e3e73eb539a"
-  integrity sha512-5WxnmXoJYbocTZF3ypCkuzuWING0/ilmB7C5XP8xMP3dHShVnXxtNTjlYEc/bx3et6BwyqXMlBKkIwyzkoYqxw==
+vanilla-framework@3.11.0:
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/vanilla-framework/-/vanilla-framework-3.11.0.tgz#dc78723aacac878d48d988ea3e26579326db6fe2"
+  integrity sha512-JEw6/GAlEHut7Ivdh5gcSwuGZuQBoUC3Hl+xV8evIBCs3QcUIyhIn3irXzl8qOBTAVlxcENFoxfLyiKB1a3rGA==
   dependencies:
     "@canonical/cookie-policy" "3.4.0"
     "@canonical/latest-news" "1.4.1"
     autoprefixer "10.4.13"
-    postcss "8.4.18"
+    postcss "8.4.21"
     postcss-cli "9.1.0"
-    postcss-scss "4.0.5"
-    sass "1.56.0"
+    postcss-scss "4.0.6"
+    sass "1.57.1"
     yaml "1.10.2"
 
 vary@~1.1.2:

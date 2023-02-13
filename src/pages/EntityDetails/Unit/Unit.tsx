@@ -28,7 +28,7 @@ import {
   getModelMachines,
   getModelUnits,
   getModelUUID,
-} from "juju/model-selectors";
+} from "store/juju/selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import type { ApplicationData, MachineData } from "juju/types";

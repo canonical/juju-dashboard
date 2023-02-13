@@ -1,26 +1,46 @@
-import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV4";
 import { createSelector } from "reselect";
 
 import { RootState } from "store/store";
 
-import type { ModelsList } from "types";
 import type {
   AnnotationData,
   ApplicationData,
-  ApplicationInfo,
   MachineData,
   ModelInfo,
-  ModelWatcherData,
   RelationData,
   UnitData,
-} from "./types";
+} from "juju/types";
 
-const getModelWatcherData = (state: RootState): ModelWatcherData =>
-  state.juju.modelWatcherData;
-const getModelList = (state: RootState): ModelsList => state.juju.models;
-const getCharmList = (state: RootState): Charm[] => state.juju.charms;
-const getSelectedApplicationList = (state: RootState): ApplicationInfo[] =>
-  state.juju.selectedApplications;
+import type { ModelsList } from "./types";
+
+const slice = (state: RootState) => state.juju;
+
+/**
+  Fetches the model data from state.
+  @param state The application state.
+  @returns The list of model data or null if none found.
+*/
+export const getModelData = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelData ?? null
+);
+
+/**
+  Fetches the controller data from state.
+  @param state The application state.
+  @returns The list of controller data or null if none found.
+*/
+export const getControllerData = createSelector(
+  [slice],
+  (sliceState) => sliceState.controllers
+);
+
+const getModelWatcherData = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelWatcherData
+);
+
+const getModelList = createSelector([slice], (sliceState) => sliceState.models);
 
 export function getModelWatcherDataByUUID(modelUUID: string) {
   return createSelector(getModelWatcherData, (modelWatcherData) => {
@@ -52,7 +72,7 @@ export function getModelUUID(
     if (!modelList || !modelName || !ownerName) {
       return modelUUID;
     }
-    Object.entries(modelList).some(([key, { name, ownerTag, uuid }]) => {
+    Object.entries(modelList).some(([_key, { name, ownerTag, uuid }]) => {
       if (name === modelName && ownerTag.replace("user-", "") === ownerName) {
         modelUUID = uuid;
         return true;
@@ -125,7 +145,7 @@ export function getModelMachines(modelUUID: string) {
 
 // The order of this enum is important. It needs to be organized in order of
 // best to worst status.
-enum Statuses {
+export enum Statuses {
   running,
   alert,
   blocked,
@@ -152,7 +172,7 @@ export function getAllModelApplicationStatus(modelUUID: string) {
       const applicationStatuses: StatusData = {};
       // Convert the various unit statuses into our three current
       // status types "blocked", "alert", "running".
-      Object.entries(units).forEach(([unitId, unitData]) => {
+      Object.entries(units).forEach(([_unitId, unitData]) => {
         let workloadStatus = Statuses.running;
         switch (unitData["workload-status"].current) {
           case "maintenance":
@@ -197,17 +217,13 @@ export function getAllModelApplicationStatus(modelUUID: string) {
  * @returns A list of charms that are used by the selected applications.
  */
 export function getCharms() {
-  return createSelector(
-    getCharmList,
-    getSelectedApplicationList,
-    (charms, selectedApplications) => {
-      return charms.filter((charm) => {
-        return selectedApplications.some(
-          (application) => application["charm-url"] === charm.url
-        );
-      });
-    }
-  );
+  return createSelector([slice], (sliceState) => {
+    return sliceState.charms.filter((charm) => {
+      return sliceState.selectedApplications.some(
+        (application) => application["charm-url"] === charm.url
+      );
+    });
+  });
 }
 
 /**
@@ -215,11 +231,11 @@ export function getCharms() {
  * @returns A list of applications that are selected.
  */
 export function getSelectedApplications(charmURL?: string) {
-  return createSelector(getSelectedApplicationList, (selectedApplications) => {
+  return createSelector([slice], (sliceState) => {
     if (!charmURL) {
-      return selectedApplications;
+      return sliceState.selectedApplications;
     }
-    return selectedApplications.filter(
+    return sliceState.selectedApplications.filter(
       (application) => application["charm-url"] === charmURL
     );
   });
@@ -230,7 +246,7 @@ export function getSelectedApplications(charmURL?: string) {
  * @returns The charm object that matches the charm URL.
  */
 export function getSelectedCharm(charmURL: string) {
-  return createSelector(getCharmList, (charms) => {
-    return charms.find((charm) => charm.url === charmURL);
+  return createSelector([slice], (sliceState) => {
+    return sliceState.charms.find((charm) => charm.url === charmURL);
   });
 }

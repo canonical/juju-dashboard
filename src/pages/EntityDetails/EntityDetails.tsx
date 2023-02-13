@@ -21,13 +21,13 @@ import {
   getModelApplications,
   getModelInfo,
   getModelUUID,
-} from "juju/model-selectors";
-import { getUserPass } from "store/general/selectors";
+} from "store/juju/selectors";
 
 import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
 
+import { getUserPass } from "store/general/selectors";
 import "./_entity-details.scss";
 
 type Props = {

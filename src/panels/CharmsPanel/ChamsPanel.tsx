@@ -1,9 +1,9 @@
 import { Button, RadioInput } from "@canonical/react-components";
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
-import { getCharms } from "juju/model-selectors";
 import { FormEventHandler, useState } from "react";
 import { useSelector } from "react-redux";
+import { getCharms } from "store/juju/selectors";
 import { StringParam, useQueryParams } from "use-query-params";
 import "./_charms-panel.scss";
 

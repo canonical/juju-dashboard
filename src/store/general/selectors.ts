@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 
 import { RootState } from "store/store";
+import { TSFixMe } from "types";
 
 const slice = (state: RootState) => state.general;
 
@@ -82,7 +83,9 @@ export const getActiveUserTag = createSelector(
     slice,
     (state, wsControllerURL) => getControllerConnection(state, wsControllerURL),
   ],
-  (_sliceState, controllerConnection) => controllerConnection?.user.identity
+  (_sliceState, controllerConnection) =>
+    // TSFixMe: jujulib types user as `object`.
+    (controllerConnection?.user as TSFixMe)?.identity
 );
 
 /**

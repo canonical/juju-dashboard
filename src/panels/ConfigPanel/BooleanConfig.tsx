@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
+import { useEffect, useRef, useState } from "react";
 
 import { isSet } from "app/utils/utils";
 
+import { RadioInput } from "@canonical/react-components";
 import type { ConfigProps } from "./ConfigPanel";
 
 export default function BooleanConfig({
@@ -17,8 +18,6 @@ export default function BooleanConfig({
   const [showUseDefault, setShowUseDefault] = useState(
     config.value !== config.default
   );
-  const trueRef = useRef<HTMLInputElement>(null);
-  const falseRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const [maxDescriptionHeight, setMaxDescriptionHeight] = useState("0px");
 
@@ -127,34 +126,28 @@ export default function BooleanConfig({
         </pre>
       </div>
       <div className="row">
-        <label className=".p-radio--inline col-2">
-          <input
-            type="radio"
-            className="p-radio__input"
+        <div className="col-2">
+          <RadioInput
+            label="true"
             name={config.name}
             aria-labelledby={config.name}
             checked={inputValue === true}
             value="true"
             onClick={handleOptionChange}
             onChange={handleOptionChange}
-            ref={trueRef}
           />
-          <span className="p-radio__label">true</span>
-        </label>
-        <label className="p-radio--inline col-2">
-          <input
-            type="radio"
-            className="p-radio__input"
+        </div>
+        <div className="col-2">
+          <RadioInput
+            label="false"
             name={config.name}
             aria-labelledby={config.name}
             checked={inputValue === false}
             value="false"
             onClick={handleOptionChange}
             onChange={handleOptionChange}
-            ref={falseRef}
           />
-          <span className="p-radio__label">false</span>
-        </label>
+        </div>
       </div>
     </div>
   );

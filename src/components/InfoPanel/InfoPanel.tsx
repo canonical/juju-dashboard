@@ -12,7 +12,7 @@ import {
   getModelApplications,
   getModelRelations,
   getModelUUID,
-} from "juju/model-selectors";
+} from "store/juju/selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 

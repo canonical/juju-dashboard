@@ -110,7 +110,7 @@ export interface ModelData {
 
 export interface ModelInfo extends ModelChangeDelta {
   "cloud-tag": string;
-  region: string;
+  region?: string;
   type: string;
   version: string;
 }

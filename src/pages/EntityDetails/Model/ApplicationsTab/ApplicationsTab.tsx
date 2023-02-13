@@ -21,12 +21,6 @@ import ContentReveal from "components/ContentReveal/ContentReveal";
 
 import ChipGroup, { Chip } from "components/ChipGroup/ChipGroup";
 
-import {
-  getAllModelApplicationStatus,
-  getModelApplications,
-  getModelUUID,
-} from "juju/model-selectors";
-
 import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import classnames from "classnames";
 import { EntityDetailsRoute } from "components/Routes/Routes";
@@ -34,8 +28,13 @@ import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
 import { getCharmsFromApplications } from "juju/api";
 import { ApplicationData, ApplicationInfo } from "juju/types";
+import {
+  getAllModelApplicationStatus,
+  getModelApplications,
+  getModelUUID,
+} from "store/juju/selectors";
+import { ModelData } from "store/juju/types";
 import { useAppStore } from "store/store";
-import { ModelData } from "types";
 import { renderCounts } from "../../counts";
 import SearchResultsActionsRow from "./SearchResultsActionsRow";
 import {
