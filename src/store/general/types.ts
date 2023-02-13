@@ -1,4 +1,4 @@
-import { TSFixMe } from "types";
+import { ConnectionInfo } from "@canonical/jujulib";
 
 export type Config = {
   controllerAPIEndpoint: string;
@@ -10,9 +10,7 @@ export type Config = {
   isJuju: boolean;
 };
 
-// TSFixMe: This should use the ConnectionInfo type once it has been exported
-// from jujulib.
-export type ControllerConnections = Record<string, TSFixMe>;
+export type ControllerConnections = Record<string, ConnectionInfo>;
 
 export type PingerIntervalIds = Record<string, number>;
 

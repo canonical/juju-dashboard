@@ -1,4 +1,9 @@
-import { connect, connectAndLogin, ConnectOptions } from "@canonical/jujulib";
+import {
+  connect,
+  connectAndLogin,
+  Connection,
+  ConnectOptions,
+} from "@canonical/jujulib";
 import {
   AdditionalProperties as AnnotationsAdditionalProperties,
   AnnotationsGetResults,
@@ -35,11 +40,7 @@ import { RootState, Store } from "store/store";
 import { Credential } from "store/general/types";
 import { Controller as JujuController } from "store/juju/types";
 import { actions as jujuActions } from "store/juju";
-import { TSFixMe } from "types";
 import { addControllerCloudRegion } from "store/juju/thunks";
-
-// TSFixMe: substitute for the connection type when it is available from jujulib.
-type Connection = TSFixMe;
 
 /**
   Return a common connection option config.
@@ -206,12 +207,7 @@ export async function fetchModelStatus(
   // between requests.
   if (isLoggedIn(getState(), wsControllerURL)) {
     try {
-      // TSFixMe: this cast can be removed once the app selectors have been
-      // migrated to TypeScript.
-      const controllerCredentials = getUserPass(
-        getState(),
-        wsControllerURL
-      ) as Credential;
+      const controllerCredentials = getUserPass(getState(), wsControllerURL);
       const response = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,
@@ -360,13 +356,11 @@ export async function fetchControllerList(
 ) {
   let controllers: JujuController[] | null = null;
   if (conn.facades.jimM) {
-    // TSFixMe: this cast can be removed when jimm-facade.js has been migrated
-    // to TypeScript.
-    const response = (await conn.facades.jimM.listControllers()) as {
-      controllers: JujuController[];
-    };
+    const response = await conn.facades.jimM.listControllers();
     controllers = response.controllers;
-    controllers.forEach((c) => (c.additionalController = additionalController));
+    controllers?.forEach(
+      (c) => (c.additionalController = additionalController)
+    );
   } else {
     // If we're not connected to a JIMM then call to get the controller config
     // and generate a fake controller list.
@@ -381,7 +375,11 @@ export async function fetchControllerList(
       },
     ];
   }
-  dispatch(jujuActions.updateControllerList({ wsControllerURL, controllers }));
+  if (controllers) {
+    dispatch(
+      jujuActions.updateControllerList({ wsControllerURL, controllers })
+    );
+  }
 }
 
 /**
@@ -555,6 +553,9 @@ export async function startModelWatcher(
   dispatch: Dispatch
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
+  if (!conn) {
+    return null;
+  }
   const watcherHandle = await conn?.facades.client.watchAll();
   const pingerIntervalId = startPingerLoop(conn);
   const data = await conn?.facades.allWatcher.next(watcherHandle["watcher-id"]);
@@ -588,7 +589,7 @@ export async function stopModelWatcher(
 export async function setModelSharingPermissions(
   controllerURL: string,
   modelUUID: string,
-  conn: Connection,
+  conn: Connection | undefined,
   user: string | undefined,
   permissionTo: string | undefined,
   permissionFrom: string | undefined,
@@ -596,7 +597,7 @@ export async function setModelSharingPermissions(
   dispatch: Dispatch
 ) {
   const modifyAccess = async (access: string, action: string) => {
-    return await conn.facades.modelManager.modifyModelAccess({
+    return await conn?.facades.modelManager.modifyModelAccess({
       changes: [
         {
           access,

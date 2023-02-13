@@ -16,7 +16,7 @@ describe("reducers", () => {
   it("updateControllerConnection", () => {
     const state = generalStateFactory.build({
       controllerConnections: {
-        "wss://example.com": "default info",
+        "wss://example.com": { controllerTag: "default-info" },
       },
     });
     expect(
@@ -24,13 +24,13 @@ describe("reducers", () => {
         state,
         actions.updateControllerConnection({
           wsControllerURL: "wss://example.com",
-          info: "new info",
+          info: { controllerTag: "new-info" },
         })
       )
     ).toStrictEqual({
       ...state,
       controllerConnections: {
-        "wss://example.com": "new info",
+        "wss://example.com": { controllerTag: "new-info" },
       },
     });
   });
@@ -100,7 +100,7 @@ describe("reducers", () => {
   it("logOut", () => {
     const state = generalStateFactory.build({
       controllerConnections: {
-        "wss://example.com": "default info",
+        "wss://example.com": { controllerTag: "default-info" },
       },
       visitURL: "/visit",
     });
