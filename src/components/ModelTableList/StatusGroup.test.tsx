@@ -6,6 +6,7 @@ import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { rootStateFactory } from "testing/factories";
+import { generalStateFactory, configFactory } from "testing/factories/general";
 
 import StatusGroup from "./StatusGroup";
 
@@ -88,7 +89,26 @@ describe("StatusGroup", () => {
   });
 
   it("model access buttons are present in status group", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
+          }),
+          controllerConnections: {
+            "wss://jimm.jujucharms.com/api": {
+              user: {
+                "display-name": "eggman",
+                identity: "user-eggman@external",
+                "controller-access": "",
+                "model-access": "",
+              },
+            },
+          },
+        }),
+        juju: dataDump.juju,
+      })
+    );
     const filters = {
       cloud: ["aws"],
     };

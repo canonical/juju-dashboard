@@ -3,9 +3,11 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
+import { controllerFactory } from "testing/factories/juju/juju";
 
 import { addControllerCloudRegion } from "./thunks";
 import { actions } from "./slice";
+import { controllerLocationFactory } from "../../testing/factories/juju/juju";
 
 // Prevent setting up the bakery instance.
 jest.mock("juju/bakery");
@@ -80,11 +82,9 @@ describe("thunks", () => {
         juju: {
           controllers: {
             "wss://example.com": [
-              {
-                path: "/",
+              controllerFactory.build({
                 uuid: "uuid123",
-                version: "1",
-              },
+              }),
             ],
           },
         },
@@ -94,15 +94,13 @@ describe("thunks", () => {
     expect(dispatch).toHaveBeenCalledWith(
       actions.updateControllerList({
         controllers: [
-          {
-            path: "/",
+          controllerFactory.build({
             uuid: "uuid123",
-            version: "1",
-            location: {
+            location: controllerLocationFactory.build({
               cloud: "west",
               region: "aws",
-            },
-          },
+            }),
+          }),
         ],
         wsControllerURL: "wss://example.com",
       })
@@ -120,13 +118,7 @@ describe("thunks", () => {
         general: {},
         juju: {
           controllers: {
-            "wss://example.com": [
-              {
-                path: "/",
-                uuid: "uuid123",
-                version: "1",
-              },
-            ],
+            "wss://example.com": [controllerFactory.build()],
           },
         },
       })

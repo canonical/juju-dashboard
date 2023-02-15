@@ -1,6 +1,10 @@
+import { DeltaEntityTypes, DeltaChangeTypes } from "juju/types";
+import {
+  controllerFactory,
+  modelWatcherDataFactory,
+} from "testing/factories/juju/juju";
+
 import { actions, reducer } from "./slice";
-import { modelWatcherDataFactory } from "../../testing/factories/juju/juju";
-import { DeltaEntityTypes, DeltaChangeTypes } from "../../juju/types";
 
 const defaultState = {
   controllers: null,
@@ -201,13 +205,7 @@ describe("reducers", () => {
     const state = {
       ...defaultState,
       controllers: {
-        "wss://example.com": [
-          {
-            path: "/",
-            uuid: "abc123",
-            version: "1",
-          },
-        ],
+        "wss://example.com": [controllerFactory.build()],
       },
     };
     expect(reducer(state, actions.clearControllerData())).toStrictEqual({
@@ -218,13 +216,7 @@ describe("reducers", () => {
 
   it("updateControllerList", () => {
     const state = defaultState;
-    const controllers = [
-      {
-        path: "/",
-        uuid: "abc123",
-        version: "1",
-      },
-    ];
+    const controllers = [controllerFactory.build()];
     expect(
       reducer(
         state,

@@ -7,6 +7,7 @@ import { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
+import { controllerFactory } from "testing/factories/juju/juju";
 
 import { modelPollerMiddleware, LoginError } from "./model-poller";
 
@@ -63,13 +64,7 @@ describe("model poller", () => {
   const storeState = rootStateFactory.build({
     juju: {
       controllers: {
-        [wsControllerURL]: [
-          {
-            path: "/",
-            uuid: "abc123",
-            version: "1.0",
-          },
-        ],
+        [wsControllerURL]: [controllerFactory.build()],
       },
     },
     general: {

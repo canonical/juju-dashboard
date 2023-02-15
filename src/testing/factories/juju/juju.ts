@@ -1,7 +1,13 @@
 import { Factory } from "fishery";
 
-import type { JujuState, ModelsList } from "store/juju/types";
+import type {
+  AdditionalController,
+  Controller,
+  JujuState,
+  ModelsList,
+} from "store/juju/types";
 import type { ModelWatcherData } from "juju/types";
+import { ControllerLocation } from "../../../store/juju/types";
 
 interface ModelData {
   name: string;
@@ -18,6 +24,23 @@ function generateUUID() {
     return v.toString(16);
   });
 }
+
+export const additionalControllerFactory = Factory.define<AdditionalController>(
+  () => ({
+    additionalController: true,
+  })
+);
+
+export const controllerLocationFactory = Factory.define<ControllerLocation>(
+  () => ({
+    region: "aws",
+  })
+);
+
+export const controllerFactory = Factory.define<Controller>(() => ({
+  path: "admin/jaas",
+  uuid: "a030379a-940f-4760-8fcf-3062b41a04e7",
+}));
 
 export const jujuStateFactory = Factory.define<
   JujuState,

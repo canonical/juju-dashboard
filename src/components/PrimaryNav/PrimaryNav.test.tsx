@@ -26,7 +26,10 @@ describe("Primary Nav", () => {
   });
 
   it("displays correct number of blocked models", () => {
-    const store = mockStore(dataDump);
+    const state = rootStateFactory.withGeneralConfig().build({
+      juju: dataDump.juju,
+    });
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/"]}>
