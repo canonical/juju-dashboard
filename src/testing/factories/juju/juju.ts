@@ -1,6 +1,11 @@
+import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
 import { Factory } from "fishery";
 
-import type { ModelWatcherData } from "juju/types";
+import type {
+  ApplicationInfo,
+  ModelData as JujuModelData,
+  ModelWatcherData,
+} from "juju/types";
 import type { JujuState, ModelsList } from "store/juju/types";
 
 interface ModelData {
@@ -9,6 +14,9 @@ interface ModelData {
   uuid: string;
   version?: string;
   type?: string;
+  annotations?: JujuModelData["annotations"];
+  applications?: JujuModelData["applications"];
+  charms?: JujuModelData["charms"];
 }
 
 function generateUUID() {
@@ -21,7 +29,11 @@ function generateUUID() {
 
 export const jujuStateFactory = Factory.define<
   JujuState,
-  { models: (Omit<ModelData, "uuid"> & { uuid?: ModelData["uuid"] })[] }
+  {
+    models: (Omit<ModelData, "uuid"> & { uuid?: ModelData["uuid"] })[];
+    charms?: Charm[];
+    selectedApplications?: ApplicationInfo[];
+  }
 >(({ transientParams }) => {
   const modelWatcherData = {};
   const modelsList: ModelsList = {};
@@ -50,8 +62,8 @@ export const jujuStateFactory = Factory.define<
     models: modelsList,
     modelData: null,
     modelWatcherData: modelWatcherData,
-    charms: [],
-    selectedApplications: [],
+    charms: transientParams.charms || [],
+    selectedApplications: transientParams.selectedApplications || [],
   };
 });
 
@@ -81,13 +93,13 @@ export const modelWatcherDataFactory = Factory.define<
           completed: "2021-05-31T22:57:30Z",
         },
       },
-      annotations: {
+      annotations: transientParams.annotations || {
         "ceph-mon": {
           "gui-x": "818",
           "gui-y": "563",
         },
       },
-      applications: {
+      applications: transientParams.applications || {
         "ceph-mon": {
           "charm-url": "cs:ceph-mon-55",
           constraints: {},
@@ -103,7 +115,7 @@ export const modelWatcherDataFactory = Factory.define<
           "workload-version": "12.2.13",
         },
       },
-      charms: {
+      charms: transientParams.charms || {
         "cs:ceph-mon-55": {
           "charm-url": "",
           "charm-version": "",

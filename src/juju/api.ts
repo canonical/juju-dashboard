@@ -647,7 +647,7 @@ export async function getCharmInfo(
   appState: RootState
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
-  const charmDetails = await conn?.facades.charms.charmInfo({
+  const charmDetails: Charm = await conn?.facades.charms.charmInfo({
     url: charmURL,
   });
   return charmDetails;

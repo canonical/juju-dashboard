@@ -1,9 +1,10 @@
-import { MainTable } from "@canonical/react-components";
+import { Button, MainTable } from "@canonical/react-components";
 import { pluralize } from "app/utils/utils";
 import Fuse from "fuse.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import runActionImage from "static/images/run-action-icon.svg";
 import { StringParam, useQueryParams, withDefault } from "use-query-params";
 
 import {
@@ -24,6 +25,7 @@ import ChipGroup, { Chip } from "components/ChipGroup/ChipGroup";
 import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import classnames from "classnames";
 import { EntityDetailsRoute } from "components/Routes/Routes";
+import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
 import { getCharmsFromApplications } from "juju/api";
@@ -36,7 +38,6 @@ import {
 import { ModelData } from "store/juju/types";
 import { useAppStore } from "store/store";
 import { renderCounts } from "../../counts";
-import SearchResultsActionsRow from "./SearchResultsActionsRow";
 import {
   addSelectAllColumn,
   addSelectColumn,
@@ -59,6 +60,43 @@ const ContentRevealTitle = ({
     <ChipGroup chips={chips} descriptor={null} />
   </>
 );
+
+function SearchResultsActionsRow({
+  runActionDisabled,
+  onRunActionsRun,
+}: {
+  runActionDisabled: boolean;
+  onRunActionsRun: () => void;
+}) {
+  const sendAnalytics = useAnalytics();
+
+  const handleRunAction = () => {
+    sendAnalytics({
+      category: "ApplicationSearch",
+      action: "Run action (button)",
+    });
+    onRunActionsRun();
+  };
+
+  return (
+    <div className="applications-search-results__actions-row">
+      <Button
+        appearance="base"
+        className="entity-details__action-button"
+        hasIcon={true}
+        onClick={handleRunAction}
+        disabled={runActionDisabled}
+      >
+        <img
+          className="entity-details__action-button-row-icon"
+          src={runActionImage}
+          alt=""
+        />
+        Run action
+      </Button>
+    </div>
+  );
+}
 
 type Props = {
   filterQuery?: string;

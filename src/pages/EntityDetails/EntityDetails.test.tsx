@@ -1,5 +1,4 @@
 import { TSFixMe } from "@canonical/react-components";
-import { ReactNode } from "react";
 import {
   fireEvent,
   render,
@@ -7,12 +6,13 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
-import configureStore from "redux-mock-store";
+import mergeWith from "lodash.mergewith";
+import { ReactNode } from "react";
 import { Provider } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import mergeWith from "lodash.mergewith";
 
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 
@@ -33,6 +33,7 @@ const mockStore = configureStore([]);
 type Props = {
   children?: ReactNode;
   type?: string;
+  onApplicationsFilter?: (query: string) => void;
 };
 
 describe("Entity Details Container", () => {
@@ -73,7 +74,10 @@ describe("Entity Details Container", () => {
               <Route
                 path="/models/:userName/:modelName"
                 element={
-                  <EntityDetails type={props?.type}>
+                  <EntityDetails
+                    type={props?.type}
+                    onApplicationsFilter={props?.onApplicationsFilter}
+                  >
                     {props?.children}
                   </EntityDetails>
                 }
@@ -208,5 +212,33 @@ describe("Entity Details Container", () => {
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
     });
+  });
+
+  it("shows the search & filter box in the apps tab", async () => {
+    renderComponent({ props: { type: "model" } });
+    expect(screen.getByTestId("filter-applications")).toBeInTheDocument();
+  });
+
+  it("does not show the search & filter box in the integrations tab", async () => {
+    renderComponent({ props: { type: "model" } });
+    const viewSelector = screen.getByTestId("view-selector");
+    fireEvent.click(within(viewSelector).getByText("Integrations"), {
+      target: {
+        scrollIntoView: jest.fn(),
+      },
+    });
+    expect(screen.queryByTestId("filter-applications")).not.toBeInTheDocument();
+  });
+
+  it("calls the onApplicationsFilter only when the user submit the input value", async () => {
+    const onApplicationsFilter = jest.fn();
+    renderComponent({
+      props: { type: "model", onApplicationsFilter },
+    });
+    const input = screen.getByTestId("filter-applications");
+    fireEvent.change(input, { target: { value: "test" } });
+    expect(onApplicationsFilter).not.toHaveBeenCalled();
+    fireEvent.keyDown(input, { key: "Enter", code: "Enter" });
+    expect(onApplicationsFilter).toHaveBeenCalledWith("test");
   });
 });

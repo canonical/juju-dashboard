@@ -81,6 +81,7 @@ export const addSelectAllColumn = (
             name="selectAll"
             onChange={handleSelectAll}
             checked={selectAll}
+            data-testid="select-all-apps"
           />
           <span className="p-checkbox__label"></span>
         </label>
@@ -113,6 +114,7 @@ export const addSelectColumn = (
                 name="selectApp"
                 onChange={() => handleSelect(app)}
                 checked={selectedApplications.includes(app)}
+                data-testid={`select-app-${app.name}`}
               />
               <span className="p-checkbox__label"></span>
             </label>

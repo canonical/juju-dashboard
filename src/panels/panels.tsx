@@ -6,7 +6,7 @@ import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import RegisterController from "panels/RegisterController/RegisterController";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 
-import CharmActionsPanel from "./CharmActionsPanel/CharmActionsPanel";
+import CharmActionsPanel from "./ActionsPanel/CharmActionsPanel";
 import CharmsPanel from "./CharmsPanel/ChamsPanel";
 import "./_panels.scss";
 

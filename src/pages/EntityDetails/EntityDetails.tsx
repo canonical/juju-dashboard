@@ -212,6 +212,7 @@ const EntityDetails = ({
               externallyControlled
               value={applicationsFilterQuery}
               onChange={(v) => setApplicationsFilterQuery(v)}
+              data-testid="filter-applications"
             />
           )}
         </div>

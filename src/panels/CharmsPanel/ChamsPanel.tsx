@@ -41,7 +41,11 @@ export default function CharmsPanel() {
               ))}
             </div>
             <div className="actions-panel__drawer u-float">
-              <Button type="submit" className="u-float-right">
+              <Button
+                type="submit"
+                className="u-float-right"
+                disabled={!selectedCharm}
+              >
                 Next
               </Button>
             </div>
