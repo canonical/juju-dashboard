@@ -5,6 +5,7 @@ import type {
   Controller,
   JujuState,
   ModelsList,
+  ModelListInfo,
 } from "store/juju/types";
 import type { ModelWatcherData } from "juju/types";
 import { ControllerLocation } from "../../../store/juju/types";
@@ -42,6 +43,13 @@ export const controllerFactory = Factory.define<Controller>(() => ({
   uuid: "a030379a-940f-4760-8fcf-3062b41a04e7",
 }));
 
+export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
+  name: "test-model",
+  ownerTag: "user-eggman@external",
+  type: "iaas",
+  uuid: "84e872ff-9171-46be-829b-70f0ffake18d",
+}));
+
 export const jujuStateFactory = Factory.define<
   JujuState,
   { models: (Omit<ModelData, "uuid"> & { uuid?: ModelData["uuid"] })[] }
@@ -54,12 +62,11 @@ export const jujuStateFactory = Factory.define<
       uuid: modelParams.uuid ?? generateUUID(),
     };
 
-    modelsList[model.name] = {
+    modelsList[model.name] = modelListInfoFactory.build({
       name: model.name,
       ownerTag: `user-${model.owner}`,
-      type: "iaas",
       uuid: model.uuid,
-    };
+    });
 
     Object.assign(
       modelWatcherData,

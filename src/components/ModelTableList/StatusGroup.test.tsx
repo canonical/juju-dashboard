@@ -19,7 +19,6 @@ describe("StatusGroup", () => {
     const store = mockStore(
       rootStateFactory.build({
         juju: {
-          models: {},
           modelData: {},
         },
       })
