@@ -6,6 +6,10 @@ import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import {
+  modelWatcherModelDataFactory,
+  applicationInfoFactory,
+} from "testing/factories/juju/model-watcher";
 
 import InfoPanel from "./InfoPanel";
 
@@ -20,13 +24,22 @@ describe("Info Panel", () => {
   it("renders the topology", () => {
     const mockState = rootStateFactory.build({
       juju: jujuStateFactory.build(
-        {},
+        {
+          modelWatcherData: {
+            abc123: modelWatcherModelDataFactory.build({
+              applications: {
+                "ceph-mon": applicationInfoFactory.build(),
+              },
+            }),
+          },
+        },
         {
           transient: {
             models: [
               {
                 name: "enterprise",
                 owner: "kirk@external",
+                uuid: "abc123",
               },
             ],
           },
@@ -54,13 +67,22 @@ describe("Info Panel", () => {
   it("renders the expanded topology on click", async () => {
     const mockState = rootStateFactory.build({
       juju: jujuStateFactory.build(
-        {},
+        {
+          modelWatcherData: {
+            abc123: modelWatcherModelDataFactory.build({
+              applications: {
+                "ceph-mon": applicationInfoFactory.build(),
+              },
+            }),
+          },
+        },
         {
           transient: {
             models: [
               {
                 name: "enterprise",
                 owner: "kirk@external",
+                uuid: "abc123",
               },
             ],
           },

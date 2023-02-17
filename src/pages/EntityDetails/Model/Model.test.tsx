@@ -12,13 +12,20 @@ import {
   operationResultsFactory,
   actionResultsFactory,
 } from "testing/factories/juju/ActionV7";
-import { ModelData } from "juju/types";
 import { RootState } from "store/store";
 import {
   credentialFactory,
   generalStateFactory,
   configFactory,
 } from "testing/factories/general";
+import {
+  applicationInfoFactory,
+  machineChangeDeltaFactory,
+  modelWatcherModelDataFactory,
+  modelWatcherModelInfoFactory,
+  relationChangeDeltaFactory,
+  unitChangeDeltaFactory,
+} from "testing/factories/juju/model-watcher";
 
 import Model, { Label } from "./Model";
 import { TestId } from "../../../components/InfoPanel/InfoPanel";
@@ -109,6 +116,14 @@ describe("Model", () => {
   });
 
   it("renders the main table", () => {
+    storeData.juju.modelWatcherData = {
+      "2446d278-7928-4c50-811b-563efaked991":
+        modelWatcherModelDataFactory.build({
+          applications: {
+            "ceph-mon": applicationInfoFactory.build(),
+          },
+        }),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
@@ -127,6 +142,20 @@ describe("Model", () => {
   });
 
   it("view toggles hide and show tables", async () => {
+    storeData.juju.modelWatcherData = {
+      "2f995dee-392e-4459-8eb9-839c5fake0af":
+        modelWatcherModelDataFactory.build({
+          applications: {
+            "ceph-mon": applicationInfoFactory.build(),
+          },
+          machines: {
+            "0": machineChangeDeltaFactory.build(),
+          },
+          relations: {
+            "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+          },
+        }),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
@@ -168,6 +197,14 @@ describe("Model", () => {
   });
 
   it("renders the details pane for models shared-with-me", () => {
+    storeData.juju.modelWatcherData = {
+      "2f995dee-392e-4459-8eb9-839c5fake0af":
+        modelWatcherModelDataFactory.build({
+          applications: {
+            "ceph-mon": applicationInfoFactory.build(),
+          },
+        }),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
@@ -186,6 +223,14 @@ describe("Model", () => {
   });
 
   it("renders the machine details section", () => {
+    storeData.juju.modelWatcherData = {
+      "7ffe956a-06ac-4ae9-8aac-04ebafakeda5":
+        modelWatcherModelDataFactory.build({
+          machines: {
+            "0": machineChangeDeltaFactory.build(),
+          },
+        }),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
@@ -208,27 +253,16 @@ describe("Model", () => {
   });
 
   it("supports local charms", () => {
-    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
-      (model) => model.model.name === "local-test"
-    );
-    if (model && "applications" in model) {
-      model.applications = {
-        cockroachdb: {
-          "charm-url": "local:cockroachdb-55",
-          constraints: {},
-          exposed: false,
-          life: "alive",
-          "min-units": 0,
-          "model-uuid": "abc123",
-          name: "cockroachdb",
-          "owner-tag": "",
-          status: { current: "unset", message: "", version: "" },
-          subordinate: false,
-          "unit-count": 1,
-          "workload-version": "12.2.13",
-        },
-      };
-    }
+    storeData.juju.modelWatcherData = {
+      "c2d8a696-e2eb-4021-8ab0-12220fake62a":
+        modelWatcherModelDataFactory.build({
+          applications: {
+            cockroachdb: applicationInfoFactory.build({
+              "charm-url": "local:cockroachdb-55",
+            }),
+          },
+        }),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
@@ -253,27 +287,16 @@ describe("Model", () => {
   });
 
   it("displays the correct scale value", () => {
-    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
-      (model) => model.model.name === "hadoopspark"
-    );
-    if (model && "applications" in model) {
-      model.applications = {
-        client: {
-          "charm-url": "cs:client-55",
-          constraints: {},
-          exposed: false,
-          life: "alive",
-          "min-units": 0,
-          "model-uuid": "abc123",
-          name: "client",
-          "owner-tag": "",
-          status: { current: "unset", message: "", version: "" },
-          subordinate: false,
-          "unit-count": 1,
-          "workload-version": "12.2.13",
-        },
-      };
-    }
+    storeData.juju.modelWatcherData = {
+      "2f995dee-392e-4459-8eb9-839c5fake0af":
+        modelWatcherModelDataFactory.build({
+          applications: {
+            client: applicationInfoFactory.build({
+              "unit-count": 1,
+            }),
+          },
+        }),
+    };
     const store = mockStore(storeData);
     const testApp = "client";
     render(
@@ -294,11 +317,10 @@ describe("Model", () => {
   });
 
   it("should show a message if a model has no integrations", () => {
-    const model: Partial<ModelData> | undefined = Object.values(
-      storeData.juju.modelWatcherData ?? {}
-    ).find((model) => model.model.name === "test1");
-    delete model?.relations;
-    delete model?.applications;
+    storeData.juju.modelWatcherData = {
+      "2446d278-7928-4c50-811b-563efaked991":
+        modelWatcherModelDataFactory.build(),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
@@ -323,10 +345,10 @@ describe("Model", () => {
   });
 
   it("should show a message if a model has no machines", () => {
-    const model: Partial<ModelData> | undefined = Object.values(
-      storeData.juju.modelWatcherData ?? {}
-    ).find((model) => model.model.name === "test1");
-    delete model?.machines;
+    storeData.juju.modelWatcherData = {
+      "2446d278-7928-4c50-811b-563efaked991":
+        modelWatcherModelDataFactory.build(),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
@@ -349,40 +371,30 @@ describe("Model", () => {
   });
 
   it("should show apps appropriate number of apps on machine in hadoopspark model", () => {
-    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
-      (model) => model.model.name === "hadoopspark"
-    );
-    if (model && "units" in model) {
-      for (let index = 0; index < 9; index++) {
-        model.units[index] = {
-          "agent-status": {
-            current: "idle",
-            message: "",
-            since: "2021-08-13T19:34:41.247417373Z",
-            version: "2.8.7",
+    storeData.juju.modelWatcherData = {
+      "2f995dee-392e-4459-8eb9-839c5fake0af":
+        modelWatcherModelDataFactory.build({
+          applications: {
+            "ceph-mon": applicationInfoFactory.build(),
           },
-          "charm-url": "cs:ceph-mon-55",
-          "machine-id": "0",
-          "model-uuid": "abc123",
-          "port-ranges": null,
-          "private-address": "172.31.43.84",
-          "public-address": "54.162.156.160",
-          "workload-status": {
-            current: "blocked",
-            message: "Insufficient peer units to bootstrap cluster (require 3)",
-            since: "2021-08-13T19:34:37.747827227Z",
-            version: "",
+          model: modelWatcherModelInfoFactory.build({ name: "hadoopspark" }),
+          machines: {
+            "0": machineChangeDeltaFactory.build(),
           },
-          application: `ceph-mon-${index}`,
-          life: "alive",
-          name: `ceph-mon-${index}/0`,
-          ports: [],
-          principal: "",
-          series: "bionic",
-          subordinate: false,
-        };
-      }
-    }
+          units: {
+            "0": unitChangeDeltaFactory.build({ application: "ceph-mon-0" }),
+            "1": unitChangeDeltaFactory.build({ application: "ceph-mon-1" }),
+            "2": unitChangeDeltaFactory.build({ application: "ceph-mon-2" }),
+            "3": unitChangeDeltaFactory.build({ application: "ceph-mon-3" }),
+            "4": unitChangeDeltaFactory.build({ application: "ceph-mon-4" }),
+            "5": unitChangeDeltaFactory.build({ application: "ceph-mon-5" }),
+            "6": unitChangeDeltaFactory.build({ application: "ceph-mon-6" }),
+            "7": unitChangeDeltaFactory.build({ application: "ceph-mon-7" }),
+            "8": unitChangeDeltaFactory.build({ application: "ceph-mon-8" }),
+            "9": unitChangeDeltaFactory.build({ application: "ceph-mon-9" }),
+          },
+        }),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
@@ -404,77 +416,37 @@ describe("Model", () => {
   });
 
   it("should show apps appropriate number of apps on machine in canonical-kubernetes model", () => {
-    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
-      (model) => model.model.name === "hadoopspark"
-    );
-    const counts = [1, 2, 4];
-    let unitIndex = 0;
-    if (model && "units" in model) {
-      for (let machineIndex = 0; machineIndex < 9; machineIndex++) {
-        model.machines[machineIndex] = {
-          addresses: [],
-          "agent-status": {
-            current: "started",
-            message: "",
-            since: "2021-08-13T19:32:59.800842177Z",
-            version: "2.8.7",
+    storeData.juju.modelWatcherData = {
+      "2f995dee-392e-4459-8eb9-839c5fake0af":
+        modelWatcherModelDataFactory.build({
+          applications: {
+            "ceph-mon": applicationInfoFactory.build(),
           },
-          "container-type": "",
-          "has-vote": false,
-          id: machineIndex.toString(),
-          "instance-id": "i-0a195974d9fdd9d16",
-          "instance-status": {
-            current: "running",
-            message: "running",
-            since: "2021-08-13T19:31:34.099184348Z",
-            version: "",
+          model: modelWatcherModelInfoFactory.build({ name: "hadoopspark" }),
+          machines: {
+            "0": machineChangeDeltaFactory.build({ id: "0" }),
+            "1": machineChangeDeltaFactory.build({ id: "1" }),
           },
-          jobs: ["JobHostUnits"],
-          life: "alive",
-          "model-uuid": "abc123",
-          series: "bionic",
-          "supported-containers": ["lxd"],
-          "supported-containers-known": true,
-          "wants-vote": false,
-        };
-
-        for (
-          let machineUnitIndex = 0;
-          machineUnitIndex < counts[machineIndex];
-          machineUnitIndex++
-        ) {
-          model.units[unitIndex] = {
-            "agent-status": {
-              current: "idle",
-              message: "",
-              since: "2021-08-13T19:34:41.247417373Z",
-              version: "2.8.7",
-            },
-            "charm-url": "cs:ceph-mon-55",
-            "machine-id": machineIndex.toString(),
-            "model-uuid": "abc123",
-            "port-ranges": null,
-            "private-address": "172.31.43.84",
-            "public-address": "54.162.156.160",
-            "workload-status": {
-              current: "blocked",
-              message:
-                "Insufficient peer units to bootstrap cluster (require 3)",
-              since: "2021-08-13T19:34:37.747827227Z",
-              version: "",
-            },
-            application: `ceph-mon-${unitIndex}`,
-            life: "alive",
-            name: `ceph-mon-${unitIndex}/0`,
-            ports: [],
-            principal: "",
-            series: "bionic",
-            subordinate: false,
-          };
-          unitIndex++;
-        }
-      }
-    }
+          units: {
+            "0": unitChangeDeltaFactory.build({
+              "machine-id": "0",
+              application: "ceph-mon",
+            }),
+            "1": unitChangeDeltaFactory.build({
+              "machine-id": "0",
+              application: "ceph-mon-0",
+            }),
+            "2": unitChangeDeltaFactory.build({
+              "machine-id": "1",
+              application: "ceph-mon-1",
+            }),
+            "3": unitChangeDeltaFactory.build({
+              "machine-id": "1",
+              application: "ceph-mon-2",
+            }),
+          },
+        }),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
@@ -509,6 +481,14 @@ describe("Model", () => {
   });
 
   it("renders the topology", () => {
+    storeData.juju.modelWatcherData = {
+      "57650e3c-815f-4540-89df-81fdfakeb7ef":
+        modelWatcherModelDataFactory.build({
+          applications: {
+            "ceph-mon": applicationInfoFactory.build(),
+          },
+        }),
+    };
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
