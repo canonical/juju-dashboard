@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 
-import { SearchBox, Spinner, Tabs } from "@canonical/react-components";
+import { Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
 import { useParams } from "react-router-dom";
 import { StringParam, useQueryParams, withDefault } from "use-query-params";
@@ -32,6 +32,7 @@ import "./_entity-details.scss";
 
 type Props = {
   type?: string;
+  additionalHeaderContent?: JSX.Element;
   onApplicationsFilter?: (query: string) => void;
 };
 
@@ -46,7 +47,7 @@ function generatePanelContent(activePanel: string, entity: string) {
 
 const EntityDetails = ({
   type,
-  onApplicationsFilter,
+  additionalHeaderContent,
   children,
 }: PropsWithChildren<Props>) => {
   const { userName, modelName } = useParams();
@@ -58,11 +59,7 @@ const EntityDetails = ({
     panel: StringParam,
     entity: StringParam,
     activeView: withDefault(StringParam, "apps"),
-    filterQuery: StringParam,
   });
-  const [applicationsFilterQuery, setApplicationsFilterQuery] =
-    useState<string>(query.filterQuery || "");
-
   const setActiveView = (view?: string) => {
     setQuery({ activeView: view });
   };
@@ -85,14 +82,6 @@ const EntityDetails = ({
   const primaryControllerData = useSelector(
     getControllerDataByUUID(controllerUUID)
   );
-
-  useEffect(() => {
-    // perform applications search when filter query has an initial value
-    if (applicationsFilterQuery) {
-      onApplicationsFilter?.(applicationsFilterQuery);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   let credentials = null;
   let controllerWSHost = "";
@@ -184,10 +173,6 @@ const EntityDetails = ({
     return items;
   };
 
-  const handleFilterSubmit = () => {
-    setQuery({ filterQuery: applicationsFilterQuery });
-    onApplicationsFilter?.(applicationsFilterQuery);
-  };
   return (
     <BaseLayout>
       <Header>
@@ -201,20 +186,7 @@ const EntityDetails = ({
               <Tabs links={generateTabItems()} />
             )}
           </div>
-          {activeView === "apps" && (
-            <SearchBox
-              className="u-no-margin"
-              placeholder="Filter applications"
-              onKeyDown={(e) => {
-                if (e.code === "Enter") handleFilterSubmit();
-              }}
-              onSearch={handleFilterSubmit}
-              externallyControlled
-              value={applicationsFilterQuery}
-              onChange={(v) => setApplicationsFilterQuery(v)}
-              data-testid="filter-applications"
-            />
-          )}
+          {additionalHeaderContent}
         </div>
       </Header>
       {!modelInfo ? (

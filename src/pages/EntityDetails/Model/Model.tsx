@@ -1,6 +1,6 @@
 import { MainTable } from "@canonical/react-components";
 import { canAdministerModelAccess, extractCloudName } from "app/utils/utils";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
@@ -45,6 +45,7 @@ import {
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
+import SearchBox from "components/SearchBox/SearchBox";
 import ApplicationsTab from "./ApplicationsTab/ApplicationsTab";
 
 export enum Label {
@@ -82,10 +83,11 @@ const Model = () => {
 
   const { userName, modelName } = useParams<EntityDetailsRoute>();
 
-  const [query] = useQueryParams({
+  const [query, setQuery] = useQueryParams({
     panel: StringParam,
     entity: StringParam,
     activeView: withDefault(StringParam, "apps"),
+    filterQuery: withDefault(StringParam, ""),
   });
 
   const tableRowClick = useTableRowClick();
@@ -117,12 +119,40 @@ const Model = () => {
   const modelInfoData = useSelector(getModelInfo(modelUUID));
 
   const setPanelQs = useQueryParam("panel", StringParam)[1];
-  const [applicationsFilterQuery, setApplicationsFilterQuery] = useState<
-    string | undefined
-  >();
+  const searchBoxRef = useRef<HTMLInputElement>(null);
+  const [applicationsFilterQuery, setApplicationsFilterQuery] =
+    useState<string>(query.filterQuery || "");
+
+  useEffect(() => {
+    setApplicationsFilterQuery(query.filterQuery);
+    // set value
+    if (searchBoxRef.current) searchBoxRef.current.value = query.filterQuery;
+  }, [query.filterQuery]);
+
+  const handleFilterSubmit = () => {
+    const filterQuery = searchBoxRef.current?.value || "";
+    setQuery({ filterQuery });
+  };
+
   return (
     <EntityDetails
       type="model"
+      additionalHeaderContent={
+        shouldShow("apps", query.activeView) ? (
+          <SearchBox
+            className="u-no-margin"
+            placeholder="Filter applications"
+            onKeyDown={(e) => {
+              if (e.code === "Enter") handleFilterSubmit();
+            }}
+            onSearch={handleFilterSubmit}
+            onClear={handleFilterSubmit}
+            externallyControlled
+            ref={searchBoxRef}
+            data-testid="filter-applications"
+          />
+        ) : undefined
+      }
       onApplicationsFilter={(q) => setApplicationsFilterQuery(q)}
     >
       <div>
