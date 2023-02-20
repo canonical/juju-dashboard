@@ -1,31 +1,21 @@
 import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import useAnalytics from "hooks/useAnalytics";
 import { ApplicationData, ApplicationInfo } from "juju/types";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { actions as jujuActions } from "store/juju";
+import { getSelectedApplications } from "store/juju/selectors";
 import { Header } from "tables/tableHeaders";
 
 export const useTableSelect = (applications: ApplicationInfo[]) => {
-  const [selectedApplications, setSelectedApplications] = useState<
-    ApplicationInfo[]
-  >([]);
+  const selectedApplications = useRef<ApplicationInfo[]>([]);
+
   const sendAnalytics = useAnalytics();
 
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(jujuActions.updateSelectedApplications({ selectedApplications }));
-  }, [dispatch, selectedApplications]);
-
-  useEffect(() => {
-    if (selectedApplications.length === applications.length) {
-      setSelectAll(true);
-    } else if (selectAll) {
-      setSelectAll(false);
-    }
-  }, [applications.length, selectAll, selectedApplications]);
+  useEffect(() => {}, [dispatch, selectedApplications]);
 
   const handleSelectAll = () => {
     sendAnalytics({
@@ -33,11 +23,16 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
       action: "Select all applications",
     });
     if (selectAll) {
-      setSelectedApplications([]);
+      selectedApplications.current = [];
     } else {
-      setSelectedApplications(applications);
+      selectedApplications.current = applications;
     }
     setSelectAll(!selectAll);
+    dispatch(
+      jujuActions.updateSelectedApplications({
+        selectedApplications: selectedApplications.current,
+      })
+    );
   };
 
   const handleSelect = (application: ApplicationInfo) => {
@@ -45,22 +40,32 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
       category: "ApplicationSearch",
       action: "Select application",
     });
-    if (selectedApplications.includes(application)) {
-      setSelectedApplications(
-        selectedApplications.filter((a) => a !== application)
-      );
+    let apps = selectedApplications.current;
+    if (apps.includes(application)) {
+      apps = apps.filter((a) => a !== application);
     } else {
-      setSelectedApplications([...selectedApplications, application]);
+      apps = [...apps, application];
     }
+    if (apps.length === applications.length) {
+      setSelectAll(true);
+    } else if (selectAll) {
+      setSelectAll(false);
+    }
+    console.log("apps", apps);
+    selectedApplications.current = apps;
+    dispatch(
+      jujuActions.updateSelectedApplications({
+        selectedApplications: apps,
+      })
+    );
   };
 
   return {
-    selectedApplications,
     selectAll,
     handleSelectAll,
     handleSelect,
     reset: () => {
-      setSelectedApplications([]);
+      selectedApplications.current = [];
       setSelectAll(false);
     },
   };
@@ -90,35 +95,48 @@ export const addSelectAllColumn = (
     ...header,
   ];
 };
+
+const Checkbox = ({
+  onSelect,
+  app,
+}: {
+  onSelect: (app: ApplicationInfo) => void;
+  app: ApplicationInfo;
+}) => {
+  const selectedApplications = useSelector(getSelectedApplications());
+  const fieldID = `select-app-${app.name}`;
+  const handleSelect = () => {
+    onSelect(app);
+  };
+  return (
+    <label className="p-checkbox--inline" htmlFor={fieldID}>
+      <input
+        type="checkbox"
+        className="p-checkbox__input"
+        id={fieldID}
+        name="selectApp"
+        onChange={handleSelect}
+        checked={selectedApplications.includes(app)}
+        data-testid={`select-app-${app.name}`}
+      />
+      <span className="p-checkbox__label"></span>
+    </label>
+  );
+};
+
 export const addSelectColumn = (
   rows: MainTableRow[],
   applications: ApplicationData,
-  selectedApplications: ApplicationInfo[],
   handleSelect: (application: ApplicationInfo) => void
 ) => {
   const apps = Object.values(applications);
   return rows.map((row, i) => {
     const app = apps[i];
-    const fieldID = `select-app-${app.name}`;
-
     return {
       ...row,
       columns: [
         {
-          content: (
-            <label className="p-checkbox--inline" htmlFor={fieldID}>
-              <input
-                type="checkbox"
-                className="p-checkbox__input"
-                id={fieldID}
-                name="selectApp"
-                onChange={() => handleSelect(app)}
-                checked={selectedApplications.includes(app)}
-                data-testid={`select-app-${app.name}`}
-              />
-              <span className="p-checkbox__label"></span>
-            </label>
-          ),
+          content: <Checkbox app={app} onSelect={handleSelect} />,
         },
         ...(row.columns || []),
       ],

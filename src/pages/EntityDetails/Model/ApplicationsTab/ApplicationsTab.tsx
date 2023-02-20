@@ -5,7 +5,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import runActionImage from "static/images/run-action-icon.svg";
-import { StringParam, useQueryParams, withDefault } from "use-query-params";
+import {
+  StringParam,
+  useQueryParam,
+  useQueryParams,
+  withDefault,
+} from "use-query-params";
 
 import {
   appsOffersTableHeaders,
@@ -34,6 +39,7 @@ import {
   getAllModelApplicationStatus,
   getModelApplications,
   getModelUUID,
+  getSelectedApplications,
 } from "store/juju/selectors";
 import { ModelData } from "store/juju/types";
 import { useAppStore } from "store/store";
@@ -61,21 +67,27 @@ const ContentRevealTitle = ({
   </>
 );
 
-function SearchResultsActionsRow({
-  runActionDisabled,
-  onRunActionsRun,
-}: {
-  runActionDisabled: boolean;
-  onRunActionsRun: () => void;
-}) {
+function SearchResultsActionsRow() {
+  const selectedApplications = useSelector(getSelectedApplications());
   const sendAnalytics = useAnalytics();
+  const appState = useAppStore().getState();
+  const dispatch = useDispatch();
+  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const [, setPanel] = useQueryParam("panel", StringParam);
 
-  const handleRunAction = () => {
+  const handleRunAction = async () => {
     sendAnalytics({
       category: "ApplicationSearch",
       action: "Run action (button)",
     });
-    onRunActionsRun();
+    await getCharmsFromApplications(
+      selectedApplications,
+      modelUUID,
+      appState,
+      dispatch
+    );
+    setPanel("choose-charm");
   };
 
   return (
@@ -85,7 +97,7 @@ function SearchResultsActionsRow({
         className="entity-details__action-button"
         hasIcon={true}
         onClick={handleRunAction}
-        disabled={runActionDisabled}
+        disabled={!selectedApplications.length}
       >
         <img
           className="entity-details__action-button-row-icon"
@@ -110,8 +122,6 @@ export default function ApplicationsTab({ filterQuery }: Props) {
     activeView: withDefault(StringParam, "apps"),
   });
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const appState = useAppStore().getState();
-  const dispatch = useDispatch();
 
   const modelStatusData = useModelStatus() as ModelData;
   const tableRowClick = useTableRowClick();
@@ -124,13 +134,9 @@ export default function ApplicationsTab({ filterQuery }: Props) {
     useState<ApplicationData>({});
   const [fuse, setFuse] = useState<Fuse<ApplicationInfo>>(new Fuse([]));
 
-  const {
-    handleSelect,
-    handleSelectAll,
-    selectAll,
-    selectedApplications,
-    reset,
-  } = useTableSelect(Object.values(filteredApplications));
+  const { handleSelect, handleSelectAll, selectAll, reset } = useTableSelect(
+    Object.values(filteredApplications)
+  );
 
   useMemo(() => {
     if (applications)
@@ -227,35 +233,16 @@ export default function ApplicationsTab({ filterQuery }: Props) {
     </>
   );
 
-  const handleActionsRun = async () => {
-    await getCharmsFromApplications(
-      selectedApplications,
-      modelUUID,
-      appState,
-      dispatch
-    );
-    setQueryParams({ panel: "choose-charm" });
-  };
   const LocalAppsTable = () => {
     let headers = localApplicationTableHeaders;
     let rows = localApplicationTableRows;
     if (filterQuery) {
       headers = addSelectAllColumn(headers, selectAll, handleSelectAll);
-      rows = addSelectColumn(
-        rows,
-        filteredApplications,
-        selectedApplications,
-        handleSelect
-      );
+      rows = addSelectColumn(rows, filteredApplications, handleSelect);
     }
     return (
       <>
-        {filterQuery && (
-          <SearchResultsActionsRow
-            runActionDisabled={!selectedApplications.length}
-            onRunActionsRun={handleActionsRun}
-          />
-        )}
+        {filterQuery && <SearchResultsActionsRow />}
         <MainTable
           headers={headers}
           rows={rows}

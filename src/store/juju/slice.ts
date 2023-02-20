@@ -145,11 +145,9 @@ const slice = createSlice({
     },
     updateSelectedApplications: (
       state,
-      action: PayloadAction<{ selectedApplications?: ApplicationInfo[] }>
+      action: PayloadAction<{ selectedApplications: ApplicationInfo[] }>
     ) => {
-      if (action.payload.selectedApplications?.length) {
-        state.selectedApplications = action.payload.selectedApplications;
-      }
+      state.selectedApplications = action.payload.selectedApplications;
     },
   },
 });

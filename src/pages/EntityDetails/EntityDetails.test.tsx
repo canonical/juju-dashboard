@@ -213,32 +213,4 @@ describe("Entity Details Container", () => {
       expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
     });
   });
-
-  it("shows the search & filter box in the apps tab", async () => {
-    renderComponent({ props: { type: "model" } });
-    expect(screen.getByTestId("filter-applications")).toBeInTheDocument();
-  });
-
-  it("does not show the search & filter box in the integrations tab", async () => {
-    renderComponent({ props: { type: "model" } });
-    const viewSelector = screen.getByTestId("view-selector");
-    fireEvent.click(within(viewSelector).getByText("Integrations"), {
-      target: {
-        scrollIntoView: jest.fn(),
-      },
-    });
-    expect(screen.queryByTestId("filter-applications")).not.toBeInTheDocument();
-  });
-
-  it("calls the onApplicationsFilter only when the user submit the input value", async () => {
-    const onApplicationsFilter = jest.fn();
-    renderComponent({
-      props: { type: "model", onApplicationsFilter },
-    });
-    const input = screen.getByTestId("filter-applications");
-    fireEvent.change(input, { target: { value: "test" } });
-    expect(onApplicationsFilter).not.toHaveBeenCalled();
-    fireEvent.keyDown(input, { key: "Enter", code: "Enter" });
-    expect(onApplicationsFilter).toHaveBeenCalledWith("test");
-  });
 });

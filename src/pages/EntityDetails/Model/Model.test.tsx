@@ -543,4 +543,19 @@ describe("Model", () => {
       screen.getByRole("button", { name: Label.ACCESS_BUTTON })
     ).toBeInTheDocument();
   });
+  it("shows the search & filter box in the apps tab", async () => {
+    const store = mockStore(storeData);
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route path="/models/:userName/:modelName" element={<Model />} />
+            </Routes>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(screen.getByTestId("filter-applications")).toBeInTheDocument();
+  });
 });
