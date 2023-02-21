@@ -43,7 +43,6 @@ const status = {
 
 const model = {
   uuid: "abc123",
-  annotations: undefined,
   applications: status.applications,
   machines: status.machines,
   model: status.model,
@@ -129,13 +128,7 @@ describe("reducers", () => {
             message: "",
           },
           result: {
-            "agent-version": {
-              Build: 1,
-              Major: 1,
-              Minor: 1,
-              Patch: 1,
-              Tag: "",
-            },
+            "agent-version": "5",
             "controller-uuid": "controller1",
             "cloud-region": "west",
             machines: [],

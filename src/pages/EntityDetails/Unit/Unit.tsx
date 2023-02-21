@@ -15,7 +15,7 @@ import {
   generateMachineRows,
 } from "tables/tableRows";
 
-import { extractRevisionNumber } from "app/utils/utils";
+import { extractRevisionNumber } from "store/juju/utils/models";
 
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import InfoPanel from "components/InfoPanel/InfoPanel";
@@ -27,7 +27,7 @@ import {
   getModelInfo,
   getModelMachines,
   getModelUnits,
-  getModelUUID,
+  getModelUUIDFromList,
 } from "store/juju/selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -40,7 +40,7 @@ export default function Unit() {
   const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1");
   const tableRowClick = useTableRowClick();
 
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));

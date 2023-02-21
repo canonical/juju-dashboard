@@ -1,3 +1,6 @@
+import { Error as JujuError } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+
+import { ModelInfo as StoreModelInfo } from "store/juju/types";
 // See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
@@ -324,4 +327,12 @@ interface WorkloadStatus extends Status {
     | "unknown"
     | "unset"
     | "waiting";
+}
+
+export interface ModelInfoResult {
+  error: JujuError;
+  result: StoreModelInfo;
+}
+export interface ModelInfoResults {
+  results: ModelInfoResult[];
 }

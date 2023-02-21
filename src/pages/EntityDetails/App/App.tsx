@@ -21,7 +21,8 @@ import EntityDetails from "pages/EntityDetails/EntityDetails";
 
 import useTableRowClick from "hooks/useTableRowClick";
 
-import { extractRevisionNumber, generateStatusElement } from "app/utils/utils";
+import { extractRevisionNumber } from "store/juju/utils/models";
+import { generateStatusElement } from "components/utils";
 
 import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -40,7 +41,7 @@ import {
   getModelInfo,
   getModelMachines,
   getModelUnits,
-  getModelUUID,
+  getModelUUIDFromList,
 } from "store/juju/selectors";
 
 import type { MachineData, UnitData } from "juju/types";
@@ -80,7 +81,7 @@ export default function App(): JSX.Element {
   const selectedUnits = useRef<string[]>([]);
   const selectAll = useRef<boolean>(false);
 
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));

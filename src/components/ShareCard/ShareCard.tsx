@@ -1,7 +1,7 @@
 import { Button, Select, Tooltip } from "@canonical/react-components";
 import { useEffect, useState } from "react";
 
-import { formatFriendlyDateToNow } from "app/utils/utils";
+import { formatFriendlyDateToNow } from "components/utils";
 
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
 

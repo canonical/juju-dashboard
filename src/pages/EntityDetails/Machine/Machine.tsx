@@ -10,7 +10,7 @@ import {
   getModelApplications,
   getModelMachines,
   getModelUnits,
-  getModelUUID,
+  getModelUUIDFromList,
 } from "store/juju/selectors";
 
 import {
@@ -34,7 +34,7 @@ import type { ApplicationData, UnitData } from "juju/types";
 export default function Machine() {
   const { machineId, modelName, userName } = useParams<EntityDetailsRoute>();
   const tableRowClick = useTableRowClick();
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));

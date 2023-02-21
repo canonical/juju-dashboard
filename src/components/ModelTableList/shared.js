@@ -4,7 +4,10 @@ import gceLogo from "static/images/logo/cloud/gce.svg";
 import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
 
 import { Link } from "react-router-dom";
-import { extractCloudName, extractCredentialName } from "app/utils/utils";
+import {
+  extractCloudName,
+  extractCredentialName,
+} from "store/juju/utils/models";
 
 /**
   Generates the model details link for the table cell. If no ownerTag can be

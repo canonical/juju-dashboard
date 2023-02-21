@@ -7,26 +7,17 @@ import { useEffect, useState } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
-import { getModelControllerDataByUUID } from "app/selectors";
 import { actions as appActions } from "store/app";
+import { getModelControllerDataByUUID } from "store/juju/selectors";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import ShareCard from "components/ShareCard/ShareCard";
 import ToastCard from "components/ToastCard/ToastCard";
 import { usePromiseDispatch } from "store/store";
-import type { TSFixMe } from "types";
 
 import { Input, RadioInput } from "@canonical/react-components";
 import "./share-model.scss";
-
-type ModelControllerData = {
-  additionalController: boolean;
-  path: string;
-  url: string;
-  uuid: string;
-  version: string;
-};
 
 type User = {
   user: string;
@@ -51,7 +42,7 @@ export default function ShareModel() {
 
   const [showAddNewUser, setShowAddNewUser] = useState(false);
 
-  const modelStatusData: TSFixMe = useModelStatus() || null;
+  const modelStatusData = useModelStatus() || null;
   const newUserFormik = useFormik({
     initialValues: {
       username: "",
@@ -65,15 +56,13 @@ export default function ShareModel() {
   });
 
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
-  const modelUUID = modelStatusData?.info.uuid;
-  const modelName = modelStatusData?.info.name;
+  const modelUUID = modelStatusData?.info?.uuid;
+  const modelName = modelStatusData?.info?.name;
 
   const modelControllerDataByUUID =
     getModelControllerDataByUUID(controllerUUID);
 
-  const modelControllerData: ModelControllerData = useSelector(
-    modelControllerDataByUUID as (state: TSFixMe) => ModelControllerData
-  );
+  const modelControllerData = useSelector(modelControllerDataByUUID);
 
   const modelControllerURL = modelControllerData?.url;
   const users = modelStatusData?.info?.users;
@@ -92,11 +81,11 @@ export default function ShareModel() {
   }, [users]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isOwner = (user: string) => {
-    return user === modelStatusData?.info["owner-tag"].replace("user-", "");
+    return user === modelStatusData?.info?.["owner-tag"].replace("user-", "");
   };
 
-  const userAlreadyHasAccess = (username: string, users: User[]) => {
-    return users.some((userEntry: User) => userEntry.user === username);
+  const userAlreadyHasAccess = (username: string, users?: User[]) => {
+    return users?.some((userEntry: User) => userEntry.user === username);
   };
 
   const handleValidateNewUser = (values: UserAccess) => {
@@ -111,7 +100,13 @@ export default function ShareModel() {
     permissionTo: string | undefined,
     permissionFrom: string | undefined
   ) => {
+    if (!modelControllerURL || !modelUUID) {
+      return;
+    }
     let response: ErrorResults | null;
+    if (!modelControllerURL || !modelUUID) {
+      return;
+    }
     try {
       response = await promiseDispatch<ErrorResults>(
         appActions.updatePermissions({
@@ -157,11 +152,11 @@ export default function ShareModel() {
       permissionTo,
       permissionFrom
     );
-    let error = response?.results?.[0]?.error?.message;
+    let error = response?.results?.[0]?.error?.message ?? null;
     // ignore this error as it means that it's a success
     if (error && error.match(/user already has .+ access or greater/i)) {
       delete response?.results[0];
-      error = undefined;
+      error = null;
     }
 
     if (error) {
@@ -177,7 +172,7 @@ export default function ShareModel() {
         />
       ));
     }
-    return response;
+    return response ?? null;
   };
 
   const handleRemoveUser = async (username: string) => {
@@ -253,7 +248,7 @@ export default function ShareModel() {
   // Ensure user with 'owner' status is always the first card
   const sortedUsers = cloneDeep(users || null);
   sortedUsers?.some(
-    (item: User, i: Number) =>
+    (item: User, i: number) =>
       isOwner(item.user) && sortedUsers.unshift(sortedUsers.splice(i, 1)[0])
   );
 

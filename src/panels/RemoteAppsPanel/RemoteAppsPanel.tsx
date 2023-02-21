@@ -1,5 +1,4 @@
 import useModelStatus from "hooks/useModelStatus";
-import type { TSFixMe } from "types";
 
 import { generatePanelTableRows } from "../shared";
 
@@ -16,9 +15,9 @@ type tableData = {
 
 export default function RemoteAppsPanel({ entity: appId }: Props): JSX.Element {
   // Get model status info
-  const modelStatusData: TSFixMe = useModelStatus();
+  const modelStatusData = useModelStatus();
 
-  const remoteApp = modelStatusData["remote-applications"]?.[appId];
+  const remoteApp = modelStatusData?.["remote-applications"]?.[appId];
 
   const tableDataArr: tableData[] = [
     { th: "Offer name", td: remoteApp["offer-name"] || "-" },

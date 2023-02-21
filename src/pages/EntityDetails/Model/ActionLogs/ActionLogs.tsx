@@ -10,20 +10,17 @@ import {
   Tooltip,
 } from "@canonical/react-components";
 
-import { getModelStatus, getModelUUID } from "app/selectors";
+import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import {
   generateIconImg,
   generateStatusElement,
   formatFriendlyDateToNow,
-} from "app/utils/utils";
+} from "components/utils";
 import { queryActionsList, queryOperationsList } from "juju/api";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import { useAppStore } from "store/store";
-import { TSFixMe } from "types";
+import { RootState, useAppStore } from "store/store";
 import "./_action-logs.scss";
-
-type ApplicationList = { [key: string]: any };
 
 type Operations = Operation[];
 type Actions = Action[];
@@ -135,39 +132,37 @@ export default function ActionLogs() {
     () => (modelName ? getModelUUID(modelName) : null),
     [modelName]
   );
-  // Selectors.js is not typescript yet and it complains about the return value
-  // of getModelUUID. TSFixMe
-  const modelUUID = useSelector(getModelUUIDMemo as (state: TSFixMe) => string);
-  const modelStatusData = useSelector(
-    getModelStatus(modelUUID) as (state: TSFixMe) => {
-      applications: ApplicationList;
-    }
+  const modelUUID = useSelector((state: RootState) =>
+    getModelUUIDMemo?.(state)
   );
+  const modelStatusData = useSelector(getModelStatus(modelUUID));
 
   const applicationList = Object.keys(modelStatusData?.applications ?? {});
 
   useEffect(() => {
     async function fetchData() {
-      const operationList = await queryOperationsList(
-        {
-          applications: applicationList,
-        },
-        modelUUID,
-        appStore.getState()
-      );
-      setOperations(operationList.results);
-      const actionsTags = operationList.results
-        ?.flatMap((operation: Operation) =>
-          operation.actions.map((action) => action.action.tag)
-        )
-        .map((actionTag: string) => ({ tag: actionTag }));
-      const actionsList = await queryActionsList(
-        { entities: actionsTags },
-        modelUUID,
-        appStore.getState()
-      );
-      setActions(actionsList.results);
-      setFetchedOperations(true);
+      if (modelUUID) {
+        const operationList = await queryOperationsList(
+          {
+            applications: applicationList,
+          },
+          modelUUID,
+          appStore.getState()
+        );
+        setOperations(operationList.results);
+        const actionsTags = operationList.results
+          ?.flatMap((operation: Operation) =>
+            operation.actions.map((action) => action.action.tag)
+          )
+          .map((actionTag: string) => ({ tag: actionTag }));
+        const actionsList = await queryActionsList(
+          { entities: actionsTags },
+          modelUUID,
+          appStore.getState()
+        );
+        setActions(actionsList.results);
+        setFetchedOperations(true);
+      }
     }
     fetchData();
     // XXX Temporarily disabled.
@@ -238,7 +233,7 @@ export default function ActionLogs() {
             }
             newData = {
               application: generateAppIcon(
-                modelStatusData.applications[appName],
+                modelStatusData?.applications[appName],
                 appName,
                 userName,
                 modelName

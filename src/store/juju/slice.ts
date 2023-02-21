@@ -1,10 +1,7 @@
 import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import {
-  ModelInfoResults,
-  UserModelList,
-} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import { UserModelList } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AllWatcherDelta } from "juju/types";
+import { AllWatcherDelta, ModelInfoResults } from "juju/types";
 import { processDeltas } from "juju/watchers";
 import { Controllers, JujuState } from "./types";
 
@@ -45,30 +42,25 @@ const slice = createSlice({
       }>
     ) => {
       const modelUUID = action.payload.modelUUID;
-
-      if (!state.modelData[modelUUID]) {
-        state.modelData[modelUUID] = {};
+      if (!state.modelData) {
+        state.modelData = {};
       }
       // There is some data that we don't want to store because it changes
       // to often causing needless re-renders and is currently irrelevent
-      // like controllerTimestamp so we have a allowlist for top level keys.
-      const allowedKeys = [
-        "annotations",
-        "applications",
-        "machines",
-        "model",
-        "offers",
-        "relations",
-        "remote-applications",
-      ];
-
-      allowedKeys.forEach((key) => {
-        state.modelData[modelUUID][key] =
-          action.payload.status[key as keyof FullStatus];
-      });
+      // like controllerTimestamp.
+      let model = {
+        ...(state.modelData[modelUUID] ?? {}),
+        applications: action.payload.status.applications,
+        machines: action.payload.status.machines,
+        model: action.payload.status.model,
+        offers: action.payload.status.offers,
+        relations: action.payload.status.relations,
+        "remote-applications": action.payload.status["remote-applications"],
+      };
       // The status doesn't contain a top level uuid and when this data is
       // fetched it doesn't contain the UUID.
-      state.modelData[modelUUID].uuid = modelUUID;
+      model.uuid = modelUUID;
+      state.modelData[modelUUID] = model;
     },
     updateModelInfo: (
       state,
@@ -81,11 +73,11 @@ const slice = createSlice({
       // There don't appear to be any irrelevent data in the modelInfo so
       // we overwrite the whole object every time it changes even though
       // mostly that'll just be status timestamps.
-      const modelData = state.modelData[modelInfo.uuid];
+      const modelData = state.modelData?.[modelInfo.uuid];
       // If any of the status requests timeout then it's possible the data
       // won't be available. Just abandon saving any data in that case.
       // This will go away with the new API.
-      if (modelData) {
+      if (state.modelData && modelData) {
         state.modelData[modelInfo.uuid].info = modelInfo;
       }
     },
