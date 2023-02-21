@@ -1,9 +1,12 @@
 import { DeltaEntityTypes, DeltaChangeTypes } from "juju/types";
 import {
   controllerFactory,
-  modelWatcherDataFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
+import {
+  modelWatcherModelDataFactory,
+  modelWatcherModelInfoFactory,
+} from "testing/factories/juju/model-watcher";
 
 import { actions, reducer } from "./slice";
 
@@ -232,9 +235,7 @@ describe("reducers", () => {
   it("populateMissingAllWatcherData", () => {
     const state = {
       ...defaultState,
-      modelWatcherData: modelWatcherDataFactory.build(undefined, {
-        transient: { uuid: "abc123" },
-      }),
+      modelWatcherData: { abc123: modelWatcherModelDataFactory.build() },
     };
     expect(
       reducer(
@@ -247,16 +248,16 @@ describe("reducers", () => {
     ).toStrictEqual({
       ...state,
       modelWatcherData: {
-        abc123: {
+        abc123: modelWatcherModelDataFactory.build({
           ...state.modelWatcherData.abc123,
-          model: {
+          model: modelWatcherModelInfoFactory.build({
             ...state.modelWatcherData.abc123.model,
             "cloud-tag": status.model["cloud-tag"],
             type: status.model.type,
             region: status.model.region,
             version: status.model.version,
-          },
-        },
+          }),
+        }),
       },
     });
   });
@@ -264,9 +265,16 @@ describe("reducers", () => {
   it("processAllWatcherDeltas", () => {
     const state = {
       ...defaultState,
-      modelWatcherData: modelWatcherDataFactory.build(undefined, {
-        transient: { uuid: "abc123" },
-      }),
+      modelWatcherData: {
+        abc123: modelWatcherModelDataFactory.build({
+          annotations: {
+            "ceph-mon": {
+              "gui-x": "818",
+              "gui-y": "563",
+            },
+          },
+        }),
+      },
     };
     expect(state.modelWatcherData.abc123.annotations).toStrictEqual({
       "ceph-mon": {

@@ -1,4 +1,3 @@
-import { TSFixMe } from "@canonical/react-components";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
@@ -6,7 +5,6 @@ import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-import cloneDeep from "clone-deep";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import { RootState } from "store/store";
@@ -17,6 +15,11 @@ import {
   generalStateFactory,
   configFactory,
 } from "testing/factories/general";
+import {
+  modelWatcherModelDataFactory,
+  applicationInfoFactory,
+  unitChangeDeltaFactory,
+} from "testing/factories/juju/model-watcher";
 
 import App, { Label, TestId } from "./App";
 
@@ -46,7 +49,28 @@ describe("Entity Details App", () => {
         },
       }),
       juju: jujuStateFactory.build(
-        {},
+        {
+          modelWatcherData: {
+            "e1e81a64-3385-4779-8643-05e3d5fake23":
+              modelWatcherModelDataFactory.build({
+                applications: {
+                  etcd: applicationInfoFactory.build(),
+                },
+                units: {
+                  "0": unitChangeDeltaFactory.build({
+                    application: "etcd",
+                    name: "etcd/0",
+                    "charm-url": "cs:etcd-50",
+                  }),
+                  "1": unitChangeDeltaFactory.build({
+                    application: "etcd",
+                    name: "etcd/1",
+                    "charm-url": "cs:etcd-51",
+                  }),
+                },
+              }),
+          },
+        },
         {
           transient: {
             models: Object.values(dataDump.juju.modelData).map((model) => ({
@@ -59,41 +83,6 @@ describe("Entity Details App", () => {
       ),
     });
     storeData.juju.modelData = dataDump.juju.modelData;
-
-    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
-      (model) => model.model.name === "canonical-kubernetes"
-    );
-    if (model && "units" in model) {
-      for (let index = 0; index < 2; index++) {
-        model.units[index] = {
-          "agent-status": {
-            current: "idle",
-            message: "",
-            since: "2021-08-13T19:34:41.247417373Z",
-            version: "2.8.7",
-          },
-          "charm-url": `cs:etcd-5${index}`,
-          "machine-id": "0",
-          "model-uuid": "abc123",
-          "port-ranges": null,
-          "private-address": "172.31.43.84",
-          "public-address": "54.162.156.160",
-          "workload-status": {
-            current: "blocked",
-            message: "Insufficient peer units to bootstrap cluster (require 3)",
-            since: "2021-08-13T19:34:37.747827227Z",
-            version: "",
-          },
-          application: "etcd",
-          life: "alive",
-          name: `etcd/${index}`,
-          ports: [],
-          principal: "",
-          series: "bionic",
-          subordinate: false,
-        };
-      }
-    }
   });
 
   function generateComponent(data = storeData) {
@@ -227,12 +216,14 @@ describe("Entity Details App", () => {
   });
 
   it("does not fail if a subordinate is not related to another application", async () => {
-    const tweakedData: TSFixMe = cloneDeep(storeData);
-    const model: TSFixMe = Object.values(
-      tweakedData.juju.modelWatcherData
-    ).find((model: TSFixMe) => model.model.name === "canonical-kubernetes");
-    model.units = null;
-    generateComponent(tweakedData);
+    const modelWatcherData = storeData.juju.modelWatcherData;
+    if (
+      modelWatcherData &&
+      "e1e81a64-3385-4779-8643-05e3d5fake23" in modelWatcherData
+    ) {
+      modelWatcherData["e1e81a64-3385-4779-8643-05e3d5fake23"].units = {};
+    }
+    generateComponent(storeData);
     expect(screen.getByText(Label.NO_UNITS)).toBeInTheDocument();
   });
 });
