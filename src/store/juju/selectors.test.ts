@@ -32,7 +32,16 @@ const defaultState = {
 describe("selectors", () => {
   it("getModelData", () => {
     const modelData = {
-      "wss://example.com": modelWatcherModelDataFactory.build(),
+      "wss://example.com": {
+        uuid: "abc123",
+        annotations: undefined,
+        applications: {},
+        machines: {},
+        model: {},
+        offers: {},
+        relations: [],
+        "remote-applications": {},
+      },
     };
     expect(
       getModelData(
