@@ -72,6 +72,7 @@ describe("Controllers table", () => {
           controllerFactory.build({ path: "admin/jaas2", uuid: "456" }),
         ],
       },
+      models: {},
     };
     const store = mockStore(state);
     render(

@@ -19,7 +19,6 @@ describe("OwnerGroup", () => {
     const store = mockStore(
       rootStateFactory.build({
         juju: {
-          models: {},
           modelData: {},
         },
       })

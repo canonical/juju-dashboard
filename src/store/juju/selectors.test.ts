@@ -14,6 +14,7 @@ import {
   getModelData,
   getControllerData,
 } from "./selectors";
+import { modelListInfoFactory } from "../../testing/factories/juju/juju";
 
 const defaultState = {
   controllers: null,
@@ -112,12 +113,11 @@ describe("selectors", () => {
           juju: {
             ...defaultState,
             models: {
-              abc123: {
+              abc123: modelListInfoFactory.build({
                 uuid: "abc123",
                 name: "a model",
                 ownerTag: "user-eggman@external",
-                type: "model",
-              },
+              }),
             },
           },
         })

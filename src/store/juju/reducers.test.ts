@@ -2,6 +2,7 @@ import { DeltaEntityTypes, DeltaChangeTypes } from "juju/types";
 import {
   controllerFactory,
   modelWatcherDataFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 
 import { actions, reducer } from "./slice";
@@ -85,12 +86,12 @@ describe("reducers", () => {
     ).toStrictEqual({
       ...state,
       models: {
-        abc123: {
+        abc123: modelListInfoFactory.build({
           uuid: "abc123",
           name: "a model",
           ownerTag: "user-eggman@external",
           type: "model",
-        },
+        }),
       },
     });
   });
@@ -186,12 +187,7 @@ describe("reducers", () => {
         abc123: model,
       },
       models: {
-        abc123: {
-          name: "name",
-          ownerTag: "eggman@external",
-          type: "iaas",
-          uuid: "abc123",
-        },
+        abc123: modelListInfoFactory.build(),
       },
     };
     expect(reducer(state, actions.clearModelData())).toStrictEqual({
