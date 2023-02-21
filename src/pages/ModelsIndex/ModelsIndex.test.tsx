@@ -7,13 +7,24 @@ import dataDump from "testing/complete-redux-store-dump";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
+import { rootStateFactory } from "testing/factories/root";
+import { RootState } from "store/store";
+
 import ModelsIndex from "./ModelsIndex";
 
 const mockStore = configureStore([]);
 
 describe("Models Index page", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.withGeneralConfig().build({
+      juju: dataDump.juju,
+    });
+  });
+
   it("renders without crashing", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter>
@@ -29,7 +40,7 @@ describe("Models Index page", () => {
   });
 
   it("displays correct grouping view", async () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <BrowserRouter>
@@ -52,7 +63,7 @@ describe("Models Index page", () => {
   });
 
   it("should display the correct window title", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <BrowserRouter>

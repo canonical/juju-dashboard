@@ -1,35 +1,7 @@
 /* eslint-disable */
-// Internally consistent mock data.
-// When generating additional mock data make sure that it's internally consistent
-// across the top level keys.
+// This file has been modified to only contain data that hasn't been replaced by factories.
 
 export default {
-  general: {
-    config: {
-      controllerAPIEndpoint: 'wss://jimm.jujucharms.com/api',
-      baseAppURL: '/',
-      identityProviderAvailable: true,
-      isJuju: false,
-      showWebCLI: false
-    },
-    appVersion: '0.4.0',
-    controllerConnections: {
-      'wss://jimm.jujucharms.com/api': {
-        controllerTag: 'controller-a030379a-940f-4760-8fcf-3062b41a04e7',
-        serverVersion: '2.8.3',
-        user: {
-          'display-name': 'eggman',
-          identity: 'user-eggman@external',
-          'controller-access': '',
-          'model-access': '',
-          "model-tag": ''
-        }
-      }
-    },
-    pingerIntervalIds: {
-      'wss://jimm.jujucharms.com/api': 18
-    }
-  },
   juju: {
     models: {
       '84e872ff-9171-46be-829b-70f0ffake18d': {
@@ -11021,28 +10993,5 @@ export default {
         'remote-applications': {},
       }
     },
-    controllers: {
-      'wss://jimm.jujucharms.com/api': [
-        {
-          path: 'admin/jaas',
-          Public: true,
-          uuid: 'a030379a-940f-4760-8fcf-3062b41a04e7',
-          version: '2.8.3'
-        },
-        {
-          path: 'admins/1-eu-west-1-aws-jaas',
-          location: {
-            cloud: 'aws',
-            region: 'eu-west-1'
-          },
-          Public: true,
-          uuid: '086f0bf8-da79-4ad4-8d73-890721332c8b',
-          version: '2.6.10'
-        },
-      ]
-    }
   },
-  ui: {
-    userMenuActive: false
-  }
 }

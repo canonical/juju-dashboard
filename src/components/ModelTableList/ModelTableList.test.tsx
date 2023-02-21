@@ -7,8 +7,10 @@ import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import * as appSelectors from "store/juju/selectors";
-import ModelTableList from "./ModelTableList";
+import { controllerFactory } from "testing/factories/juju/juju";
+import { rootStateFactory } from "testing/factories/root";
 
+import ModelTableList from "./ModelTableList";
 import dataDump from "../../testing/complete-redux-store-dump";
 import { TestId as CloudTestId } from "./CloudGroup";
 import { TestId as OwnerTestId } from "./OwnerGroup";
@@ -142,9 +144,24 @@ describe("ModelTableList", () => {
     // override existing data mock while using as much real content as possible.
     const knownUUID = "086f0bf8-da79-4ad4-8d73-890721332c8b";
     const testModelUUID = "19b56b55-6373-4286-8c19-957fakee8469";
-    clonedData.juju.modelData[testModelUUID].info["controller-uuid"] =
-      knownUUID;
-    const store = mockStore(clonedData);
+    const state = rootStateFactory.build({
+      juju: {
+        ...clonedData.juju,
+        controllers: {
+          "wss://jimm.jujucharms.com/api": [
+            controllerFactory.build({
+              path: "admins/1-eu-west-1-aws-jaas",
+              uuid: knownUUID,
+            }),
+          ],
+        },
+      },
+    });
+    const modelDataInfo = state.juju.modelData?.[testModelUUID].info;
+    if (modelDataInfo) {
+      modelDataInfo["controller-uuid"] = knownUUID;
+    }
+    const store = mockStore(state);
     render(
       <MemoryRouter>
         <Provider store={store}>
