@@ -7,22 +7,60 @@ import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { rootStateFactory } from "testing/factories/root";
 import { generalStateFactory, configFactory } from "testing/factories/general";
+import {
+  modelDataInfoFactory,
+  jujuStateFactory,
+  modelDataFactory,
+  modelStatusInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/juju";
+import { RootState } from "store/store";
 
 import OwnerGroup from "./OwnerGroup";
-
-import dataDump from "../../testing/complete-redux-store-dump";
 
 const mockStore = configureStore([]);
 
 describe("OwnerGroup", () => {
-  it("by default, renders no tables with no data", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        juju: {
-          modelData: {},
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+              "owner-tag": "user-eggman@external",
+            }),
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+            }),
+          }),
+          def456: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+              "owner-tag": "user-pizza@external",
+            }),
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+            }),
+          }),
+          ghi789: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              "cloud-tag": "cloud-google",
+              "owner-tag": "user-eggman@external",
+            }),
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-google",
+            }),
+          }),
         },
-      })
-    );
+      }),
+    });
+  });
+
+  it("by default, renders no tables with no data", () => {
+    const store = mockStore(rootStateFactory.build());
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -36,7 +74,7 @@ describe("OwnerGroup", () => {
   });
 
   it("displays model data grouped by owner from the redux store", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -47,15 +85,13 @@ describe("OwnerGroup", () => {
       </MemoryRouter>
     );
     const tables = screen.getAllByRole("grid");
-    expect(tables.length).toBe(4);
-    expect(within(tables[0]).getAllByRole("row").length).toEqual(9);
-    expect(within(tables[1]).getAllByRole("row").length).toEqual(3);
-    expect(within(tables[2]).getAllByRole("row").length).toEqual(6);
-    expect(within(tables[3]).getAllByRole("row").length).toEqual(2);
+    expect(tables.length).toBe(2);
+    expect(within(tables[0]).getAllByRole("row").length).toEqual(3);
+    expect(within(tables[1]).getAllByRole("row").length).toEqual(2);
   });
 
   it("fetches filtered data if filters supplied", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };
@@ -68,30 +104,35 @@ describe("OwnerGroup", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(screen.getAllByRole("row").length).toBe(5);
+    expect(screen.getAllByRole("row").length).toBe(4);
   });
 
   it("model access buttons are present in owners group", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
-          }),
-          controllerConnections: {
-            "wss://jimm.jujucharms.com/api": {
-              user: {
-                "display-name": "eggman",
-                identity: "user-eggman@external",
-                "controller-access": "",
-                "model-access": "",
-              },
-            },
+    state.general = generalStateFactory.build({
+      config: configFactory.build({
+        controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
+      }),
+      controllerConnections: {
+        "wss://jimm.jujucharms.com/api": {
+          user: {
+            "display-name": "eggman",
+            identity: "user-eggman@external",
+            "controller-access": "",
+            "model-access": "",
           },
+        },
+      },
+    });
+    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+      "cloud-tag": "cloud-aws",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "admin",
         }),
-        juju: dataDump.juju,
-      })
-    );
+      ],
+    });
+    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };

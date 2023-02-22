@@ -7,7 +7,10 @@ import { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
-import { controllerFactory } from "testing/factories/juju/juju";
+import {
+  controllerFactory,
+  jujuStateFactory,
+} from "testing/factories/juju/juju";
 
 import { modelPollerMiddleware, LoginError } from "./model-poller";
 
@@ -62,11 +65,11 @@ describe("model poller", () => {
   const intervalId = 99;
   let conn: Conn;
   const storeState = rootStateFactory.build({
-    juju: {
+    juju: jujuStateFactory.build({
       controllers: {
         [wsControllerURL]: [controllerFactory.build()],
       },
-    },
+    }),
     general: {
       controllerConnections: {
         [wsControllerURL]: {

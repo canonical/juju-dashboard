@@ -8,7 +8,6 @@ import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import { InitialEntry } from "@remix-run/router";
 import * as juju from "juju/api";
 
-import dataDump from "testing/complete-redux-store-dump";
 import {
   applicationCharmActionsResultFactory,
   applicationsCharmActionsResultsFactory,
@@ -17,6 +16,13 @@ import {
 } from "testing/factories/juju/ActionV7";
 
 import { executeActionOnUnits } from "juju/api";
+import { RootState } from "store/store";
+import { rootStateFactory } from "testing/factories";
+import {
+  jujuStateFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
+} from "testing/factories/juju/juju";
 
 import ActionsPanel from "./ActionsPanel";
 
@@ -65,13 +71,15 @@ jest.mock("juju/api", () => {
 });
 
 describe("ActionsPanel", () => {
+  let state: RootState;
+
   function generateComponent(initialEntries?: InitialEntry[]) {
     if (!initialEntries) {
       initialEntries = [
         "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0&units=ceph%2F1",
       ];
     }
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={initialEntries}>
@@ -87,6 +95,20 @@ describe("ActionsPanel", () => {
       </Provider>
     );
   }
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              name: "group-test",
+            }),
+          }),
+        },
+      }),
+    });
+  });
 
   it("Renders the list of available actions", async () => {
     generateComponent();

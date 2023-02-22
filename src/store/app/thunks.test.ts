@@ -10,6 +10,7 @@ import {
 import {
   additionalControllerFactory,
   controllerFactory,
+  jujuStateFactory,
 } from "testing/factories/juju/juju";
 
 import { ControllerArgs } from "./actions";
@@ -108,7 +109,7 @@ describe("thunks", () => {
             "wss://example.com": credentialFactory.build(),
           },
         }),
-        juju: {
+        juju: jujuStateFactory.build({
           controllers: {
             "wss://example.com": [
               controllerFactory.build({
@@ -118,7 +119,7 @@ describe("thunks", () => {
               }),
             ],
           },
-        },
+        }),
       })
     );
     const action = connectAndListModels([additionalController]);

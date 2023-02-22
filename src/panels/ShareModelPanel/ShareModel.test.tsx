@@ -5,15 +5,38 @@ import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-import dataDump from "testing/complete-redux-store-dump";
+
+import { RootState } from "store/store";
+import { rootStateFactory } from "testing/factories";
+import {
+  jujuStateFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
+} from "testing/factories/juju/juju";
 
 import ShareModel from "./ShareModel";
 
 const mockStore = configureStore([]);
 
 describe("Share Model Panel", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              name: "hadoopspark",
+            }),
+          }),
+        },
+      }),
+    });
+  });
+
   it("should show panel", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
@@ -34,7 +57,7 @@ describe("Share Model Panel", () => {
   });
 
   it("should show small screen view toggles", async () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>

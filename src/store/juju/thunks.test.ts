@@ -3,7 +3,10 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import { controllerFactory } from "testing/factories/juju/juju";
+import {
+  controllerFactory,
+  jujuStateFactory,
+} from "testing/factories/juju/juju";
 
 import { addControllerCloudRegion } from "./thunks";
 import { actions } from "./slice";
@@ -79,7 +82,7 @@ describe("thunks", () => {
             "wss://example.com": credentialFactory.build(),
           },
         }),
-        juju: {
+        juju: jujuStateFactory.build({
           controllers: {
             "wss://example.com": [
               controllerFactory.build({
@@ -87,7 +90,7 @@ describe("thunks", () => {
               }),
             ],
           },
-        },
+        }),
       })
     );
     await action(dispatch, getState, null);
@@ -116,11 +119,11 @@ describe("thunks", () => {
     const getState = jest.fn(() =>
       rootStateFactory.build({
         general: {},
-        juju: {
+        juju: jujuStateFactory.build({
           controllers: {
             "wss://example.com": [controllerFactory.build()],
           },
-        },
+        }),
       })
     );
     await action(dispatch, getState, null);

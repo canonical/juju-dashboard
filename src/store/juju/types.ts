@@ -55,6 +55,6 @@ export type ModelsList = {
 export type JujuState = {
   controllers: Controllers | null;
   models: ModelsList;
-  modelData: ModelDataList | null;
+  modelData: ModelDataList;
   modelWatcherData?: ModelWatcherData;
 };

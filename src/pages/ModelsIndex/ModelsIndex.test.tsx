@@ -3,12 +3,17 @@ import { Provider } from "react-redux";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
-import dataDump from "testing/complete-redux-store-dump";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { rootStateFactory } from "testing/factories/root";
 import { RootState } from "store/store";
+import {
+  jujuStateFactory,
+  modelDataFactory,
+  modelDataApplicationFactory,
+  modelDataStatusFactory,
+} from "testing/factories/juju/juju";
 
 import ModelsIndex from "./ModelsIndex";
 
@@ -19,7 +24,37 @@ describe("Models Index page", () => {
 
   beforeEach(() => {
     state = rootStateFactory.withGeneralConfig().build({
-      juju: dataDump.juju,
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications: {
+              easyrsa: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "blocked",
+                }),
+              }),
+            },
+          }),
+          def456: modelDataFactory.build({
+            applications: {
+              cockroachdb: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "running",
+                }),
+              }),
+            },
+          }),
+          ghi789: modelDataFactory.build({
+            applications: {
+              elasticsearch: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "unknown",
+                }),
+              }),
+            },
+          }),
+        },
+      }),
     });
   });
 

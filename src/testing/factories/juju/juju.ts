@@ -15,18 +15,7 @@ import type {
   ModelData,
   ModelInfo,
   ModelListInfo,
-  ModelsList,
 } from "store/juju/types";
-import type { ModelWatcherData } from "juju/types";
-import { modelWatcherModelDataFactory } from "./model-watcher";
-
-interface ModelFactoryData {
-  name: string;
-  owner: string;
-  uuid: string;
-  version?: string;
-  type?: string;
-}
 
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -207,38 +196,9 @@ export const modelDataFactory = Factory.define<ModelData>(() => ({
   "remote-applications": {},
 }));
 
-export const jujuStateFactory = Factory.define<
-  JujuState,
-  {
-    models: (Omit<ModelFactoryData, "uuid"> & {
-      uuid?: ModelFactoryData["uuid"];
-    })[];
-  }
->(({ transientParams }) => {
-  const modelWatcherData: ModelWatcherData = {};
-  const modelsList: ModelsList = {};
-  transientParams.models?.forEach((modelParams) => {
-    const model = {
-      ...modelParams,
-      uuid: modelParams.uuid ?? generateUUID(),
-    };
-
-    modelsList[model.name] = modelListInfoFactory.build({
-      name: model.name,
-      ownerTag: `user-${model.owner}`,
-      uuid: model.uuid,
-    });
-
-    modelWatcherData[model.uuid] = modelWatcherModelDataFactory.build({
-      model,
-    });
-  });
-  return {
-    controllers: null,
-    // XXX When the models list is updated the uuids created for the models list
-    // will need to be internally consistent with the modelWatcher data.
-    models: modelsList,
-    modelData: null,
-    modelWatcherData: modelWatcherData,
-  };
-});
+export const jujuStateFactory = Factory.define<JujuState>(() => ({
+  controllers: null,
+  models: {},
+  modelData: {},
+  modelWatcherData: {},
+}));
