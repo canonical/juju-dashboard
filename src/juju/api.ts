@@ -41,6 +41,7 @@ import { Credential } from "store/general/types";
 import { Controller as JujuController } from "store/juju/types";
 import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
+import { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 
 /**
   Return a common connection option config.
@@ -556,7 +557,7 @@ export async function startModelWatcher(
   if (!conn) {
     return null;
   }
-  const watcherHandle = await conn?.facades.client.watchAll();
+  const watcherHandle: AllWatcherId = await conn?.facades.client.watchAll();
   const pingerIntervalId = startPingerLoop(conn);
   const data = await conn?.facades.allWatcher.next(watcherHandle["watcher-id"]);
   if (data?.deltas) dispatch(jujuActions.processAllWatcherDeltas(data?.deltas));
@@ -565,7 +566,7 @@ export async function startModelWatcher(
 
 export async function stopModelWatcher(
   conn: Connection,
-  watcherHandleId: number,
+  watcherHandleId: string,
   pingerIntervalId: number
 ) {
   // TODO: use allWatcher.stop(...)

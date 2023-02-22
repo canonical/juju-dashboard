@@ -19,7 +19,6 @@ import {
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { ApplicationData, RelationData, UnitData } from "juju/types";
 import { MouseEvent } from "react";
-import { TSFixMe } from "types";
 import { StatusData } from "store/juju/selectors";
 import { ModelData } from "store/juju/types";
 
@@ -423,9 +422,7 @@ export function generateMachineRows(
                   null,
                   true,
                   false,
-                  // TSFixMe: this can be removed once this util has been migrated
-                  // to TypeScript.
-                  "p-icon u-truncate" as TSFixMe
+                  "p-icon u-truncate"
                 )}
               </Tooltip>
             ),
@@ -472,8 +469,7 @@ export function generateRelationRows(
       providerApplicationName,
       requirerApplicationName,
       peerApplicationName,
-      // TSFixMe: this cast can be removed once the util has been migrated to TypeScript.
-    } = extractRelationEndpoints(relation) as Record<string, string>;
+    } = extractRelationEndpoints(relation);
     const providerLabel = provider || peer || "-";
     const requirerLabel = requirer || "-";
     return {

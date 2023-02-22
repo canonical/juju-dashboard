@@ -86,8 +86,6 @@ export default function ActionsPanel(): JSX.Element {
     () => (modelName ? getModelUUID(modelName) : null),
     [modelName]
   );
-  // Selectors.js is not typescript yet and it complains about the return value
-  // of getModelUUID. TSFixMe
   const modelUUID = useSelector((state: RootState) =>
     getModelUUIDMemo?.(state)
   );
