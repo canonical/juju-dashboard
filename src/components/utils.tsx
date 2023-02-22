@@ -28,7 +28,7 @@ export const generateStatusElement = (
   count?: number | null,
   useIcon = true,
   actionsLogs = false,
-  className = null
+  className: string | null = null
 ) => {
   let statusClass = status ? `is-${status.toLowerCase()}` : "";
   let countValue = "";

@@ -1,5 +1,6 @@
 import { Middleware } from "redux";
 import * as Sentry from "@sentry/browser";
+import { UserModelList } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
 import { isLoggedIn } from "store/general/selectors";
 import { actions as generalActions } from "store/general";
@@ -119,17 +120,16 @@ export const modelPollerMiddleware: Middleware<
 
           do {
             try {
-              const models = await conn.facades.modelManager.listModels({
-                // TSFixMe: jujulib types user as `object`.
-                tag: (conn.info.user as TSFixMe).identity,
-              });
+              const models: UserModelList =
+                await conn.facades.modelManager.listModels({
+                  // TSFixMe: jujulib types user as `object`.
+                  tag: (conn.info.user as TSFixMe).identity,
+                });
               reduxStore.dispatch(
                 jujuActions.updateModelList({ models, wsControllerURL })
               );
-              // TODO: this error should not be cast once the types are
-              // available from jujulib.
               const modelUUIDList = models["user-models"].map(
-                (item: TSFixMe) => item.model.uuid
+                (item) => item.model.uuid
               );
               await fetchAllModelStatuses(
                 wsControllerURL,
