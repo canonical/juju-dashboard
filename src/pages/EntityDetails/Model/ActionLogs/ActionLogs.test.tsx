@@ -4,7 +4,6 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import dataDump from "testing/complete-redux-store-dump";
 import {
   actionFactory,
   actionMessageFactory,
@@ -17,6 +16,13 @@ import {
 import ActionLogs, {
   Label,
 } from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
+import { rootStateFactory } from "testing/factories";
+import {
+  jujuStateFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
+} from "testing/factories/juju/juju";
+import { RootState } from "store/store";
 
 import { Output } from "./ActionLogs";
 
@@ -102,8 +108,10 @@ jest.mock("juju/api", () => {
 const mockStore = configureStore([]);
 
 describe("Action Logs", () => {
-  function generateComponent(applicationData = dataDump) {
-    const store = mockStore(applicationData);
+  let state: RootState;
+
+  function generateComponent() {
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter
@@ -121,6 +129,20 @@ describe("Action Logs", () => {
       </Provider>
     );
   }
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              name: "group-test",
+            }),
+          }),
+        },
+      }),
+    });
+  });
 
   it("requests the action logs data on load", async () => {
     generateComponent();

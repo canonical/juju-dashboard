@@ -8,13 +8,13 @@ import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import { RootState } from "store/store";
-import dataDump from "testing/complete-redux-store-dump";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import {
   credentialFactory,
   generalStateFactory,
   configFactory,
 } from "testing/factories/general";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
   applicationInfoFactory,
@@ -48,41 +48,34 @@ describe("Entity Details App", () => {
           "wss://jimm.jujucharms.com/api": credentialFactory.build(),
         },
       }),
-      juju: jujuStateFactory.build(
-        {
-          modelWatcherData: {
-            "e1e81a64-3385-4779-8643-05e3d5fake23":
-              modelWatcherModelDataFactory.build({
-                applications: {
-                  etcd: applicationInfoFactory.build(),
-                },
-                units: {
-                  "0": unitChangeDeltaFactory.build({
-                    application: "etcd",
-                    name: "etcd/0",
-                    "charm-url": "cs:etcd-50",
-                  }),
-                  "1": unitChangeDeltaFactory.build({
-                    application: "etcd",
-                    name: "etcd/1",
-                    "charm-url": "cs:etcd-51",
-                  }),
-                },
-              }),
-          },
+      juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            name: "canonical-kubernetes",
+          }),
         },
-        {
-          transient: {
-            models: Object.values(dataDump.juju.modelData).map((model) => ({
-              name: model.info.name,
-              owner: model.info["owner-tag"].replace("user-", ""),
-              uuid: model.uuid,
-            })),
-          },
-        }
-      ),
+        modelWatcherData: {
+          abc123: modelWatcherModelDataFactory.build({
+            applications: {
+              etcd: applicationInfoFactory.build(),
+            },
+            units: {
+              "0": unitChangeDeltaFactory.build({
+                application: "etcd",
+                name: "etcd/0",
+                "charm-url": "cs:etcd-50",
+              }),
+              "1": unitChangeDeltaFactory.build({
+                application: "etcd",
+                name: "etcd/1",
+                "charm-url": "cs:etcd-51",
+              }),
+            },
+          }),
+        },
+      }),
     });
-    storeData.juju.modelData = dataDump.juju.modelData;
   });
 
   function generateComponent(data = storeData) {
@@ -90,7 +83,7 @@ describe("Entity Details App", () => {
     window.history.pushState(
       {},
       "",
-      "/models/pizza@external/canonical-kubernetes/app/etcd"
+      "/models/eggman@external/canonical-kubernetes/app/etcd"
     );
     render(
       <Provider store={store}>
@@ -217,11 +210,8 @@ describe("Entity Details App", () => {
 
   it("does not fail if a subordinate is not related to another application", async () => {
     const modelWatcherData = storeData.juju.modelWatcherData;
-    if (
-      modelWatcherData &&
-      "e1e81a64-3385-4779-8643-05e3d5fake23" in modelWatcherData
-    ) {
-      modelWatcherData["e1e81a64-3385-4779-8643-05e3d5fake23"].units = {};
+    if (modelWatcherData && "abc123" in modelWatcherData) {
+      modelWatcherData["abc123"].units = {};
     }
     generateComponent(storeData);
     expect(screen.getByText(Label.NO_UNITS)).toBeInTheDocument();

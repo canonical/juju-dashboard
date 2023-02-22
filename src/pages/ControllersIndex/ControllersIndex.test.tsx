@@ -1,4 +1,3 @@
-import cloneDeep from "clone-deep";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
@@ -14,8 +13,6 @@ import {
 } from "testing/factories/juju/juju";
 
 import ControllersIndex from "./ControllersIndex";
-
-import dataDump from "../../testing/complete-redux-store-dump";
 
 const mockStore = configureStore([]);
 
@@ -63,9 +60,7 @@ describe("Controllers table", () => {
   });
 
   it("counts models, machines, apps, and units", () => {
-    const clonedData = cloneDeep(dataDump);
-    state.juju = {
-      ...clonedData.juju,
+    state.juju = jujuStateFactory.build({
       controllers: {
         "wss://jimm.jujucharms.com/api": [
           controllerFactory.build({ path: "admin/jaas", uuid: "123" }),
@@ -73,7 +68,7 @@ describe("Controllers table", () => {
         ],
       },
       models: {},
-    };
+    });
     const store = mockStore(state);
     render(
       <MemoryRouter>

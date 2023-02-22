@@ -1,4 +1,3 @@
-import { TSFixMe } from "@canonical/react-components";
 import { ReactNode } from "react";
 import {
   fireEvent,
@@ -12,9 +11,15 @@ import { Provider } from "react-redux";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import mergeWith from "lodash.mergewith";
 
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import {
+  applicationInfoFactory,
+  modelWatcherModelDataFactory,
+  modelWatcherModelInfoFactory,
+} from "testing/factories/juju/model-watcher";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
+import { RootState } from "store/store";
 
 import EntityDetails from "./EntityDetails";
 
@@ -36,33 +41,12 @@ type Props = {
 };
 
 describe("Entity Details Container", () => {
-  // TSFixMe factories need to use Juju types.
+  let state: RootState;
   function renderComponent({
     props,
-    overrides,
-  }: { props?: Props; overrides?: TSFixMe } = {}) {
-    if (!overrides?.juju) {
-      overrides = mergeWith(
-        {
-          juju: jujuStateFactory.build(
-            {},
-            {
-              transient: {
-                models: [
-                  {
-                    name: "enterprise",
-                    owner: "kirk@external",
-                  },
-                ],
-              },
-            }
-          ),
-        },
-        overrides ?? {}
-      );
-    }
-    const mockState = rootStateFactory.withGeneralConfig().build(overrides);
-    const store = mockStore(mockState);
+    storeState = state,
+  }: { props?: Props; storeState?: RootState } = {}) {
+    const store = mockStore(storeState);
 
     window.history.pushState({}, "", "/models/kirk@external/enterprise");
     render(
@@ -85,19 +69,41 @@ describe("Entity Details Container", () => {
     );
   }
 
+  beforeEach(() => {
+    state = rootStateFactory.withGeneralConfig().build({
+      juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            name: "enterprise",
+            ownerTag: "user-kirk@external",
+          }),
+        },
+        modelWatcherData: {
+          abc123: modelWatcherModelDataFactory.build({
+            applications: {
+              "ceph-mon": applicationInfoFactory.build(),
+            },
+            model: modelWatcherModelInfoFactory.build({
+              name: "enterprise",
+              owner: "kirk@external",
+            }),
+          }),
+        },
+      }),
+    });
+  });
+
   it("should display the correct window title", () => {
     renderComponent();
     expect(document.title).toEqual("Model: enterprise | Juju Dashboard");
   });
 
   it("should show a spinner if waiting on data", () => {
+    state.juju.models = {};
+    state.juju.modelWatcherData = {};
     renderComponent({
-      overrides: {
-        juju: {
-          models: null,
-          modelWatcherData: null,
-        },
-      },
+      storeState: state,
     });
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
@@ -110,24 +116,21 @@ describe("Entity Details Container", () => {
   });
 
   it("lists the correct tabs for kubernetes", () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        model: modelWatcherModelInfoFactory.build({
+          name: "enterprise",
+          owner: "kirk@external",
+          type: "kubernetes",
+        }),
+      }),
+    };
     renderComponent({
       props: { type: "model" },
-      overrides: {
-        juju: jujuStateFactory.build(
-          {},
-          {
-            transient: {
-              models: [
-                {
-                  name: "enterprise",
-                  owner: "kirk@external",
-                  type: "kubernetes",
-                },
-              ],
-            },
-          }
-        ),
-      },
+      storeState: state,
     });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsAction Logs$/
@@ -187,23 +190,20 @@ describe("Entity Details Container", () => {
   });
 
   it("does not show the webCLI in juju 2.8", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        model: modelWatcherModelInfoFactory.build({
+          name: "enterprise",
+          owner: "kirk@external",
+          version: "2.8.7",
+        }),
+      }),
+    };
     renderComponent({
-      overrides: {
-        juju: jujuStateFactory.build(
-          {},
-          {
-            transient: {
-              models: [
-                {
-                  name: "enterprise",
-                  owner: "kirk@external",
-                  version: "2.8.7",
-                },
-              ],
-            },
-          }
-        ),
-      },
+      storeState: state,
     });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();

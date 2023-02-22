@@ -5,24 +5,85 @@ import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
+import { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
+import {
+  jujuStateFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
+  modelStatusInfoFactory,
+  modelDataApplicationFactory,
+  modelDataStatusFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/juju";
 
 import StatusGroup from "./StatusGroup";
-
-import dataDump from "../../testing/complete-redux-store-dump";
 
 const mockStore = configureStore([]);
 
 describe("StatusGroup", () => {
-  it("by default, renders no tables when there is no data", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        juju: {
-          modelData: {},
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications: {
+              easyrsa: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "blocked",
+                }),
+              }),
+            },
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+            }),
+          }),
+          def456: modelDataFactory.build({
+            applications: {
+              cockroachdb: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "blocked",
+                }),
+              }),
+            },
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+            }),
+          }),
+          ghi789: modelDataFactory.build({
+            applications: {
+              elasticsearch: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "unknown",
+                }),
+              }),
+            },
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-google",
+            }),
+          }),
+          jkl101112: modelDataFactory.build({
+            applications: {
+              kibana: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "running",
+                }),
+              }),
+            },
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-google",
+            }),
+          }),
         },
-      })
-    );
+      }),
+    });
+  });
+
+  it("by default, renders no tables when there is no data", () => {
+    const store = mockStore(rootStateFactory.build());
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -36,7 +97,7 @@ describe("StatusGroup", () => {
   });
 
   it("displays model data grouped by status from the redux store", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -48,13 +109,13 @@ describe("StatusGroup", () => {
     );
     const tables = screen.getAllByRole("grid");
     expect(tables.length).toBe(3);
-    expect(within(tables[0]).getAllByRole("row")).toHaveLength(5);
-    expect(within(tables[1]).getAllByRole("row")).toHaveLength(8);
-    expect(within(tables[2]).getAllByRole("row")).toHaveLength(6);
+    expect(within(tables[0]).getAllByRole("row")).toHaveLength(3);
+    expect(within(tables[1]).getAllByRole("row")).toHaveLength(2);
+    expect(within(tables[2]).getAllByRole("row")).toHaveLength(2);
   });
 
   it("fetches filtered data if filters supplied", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };
@@ -67,11 +128,11 @@ describe("StatusGroup", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(screen.getAllByRole("row").length).toBe(5);
+    expect(screen.getAllByRole("row").length).toBe(3);
   });
 
   it("displays the provider type icon", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -88,26 +149,31 @@ describe("StatusGroup", () => {
   });
 
   it("model access buttons are present in status group", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
-          }),
-          controllerConnections: {
-            "wss://jimm.jujucharms.com/api": {
-              user: {
-                "display-name": "eggman",
-                identity: "user-eggman@external",
-                "controller-access": "",
-                "model-access": "",
-              },
-            },
+    state.general = generalStateFactory.build({
+      config: configFactory.build({
+        controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
+      }),
+      controllerConnections: {
+        "wss://jimm.jujucharms.com/api": {
+          user: {
+            "display-name": "eggman",
+            identity: "user-eggman@external",
+            "controller-access": "",
+            "model-access": "",
           },
+        },
+      },
+    });
+    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+      "cloud-tag": "cloud-aws",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "admin",
         }),
-        juju: dataDump.juju,
-      })
-    );
+      ],
+    });
+    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };

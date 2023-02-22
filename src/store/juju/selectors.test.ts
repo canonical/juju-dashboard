@@ -1,4 +1,8 @@
 import {
+  jujuStateFactory,
+  modelListInfoFactory,
+} from "testing/factories/juju/juju";
+import {
   modelWatcherModelDataFactory,
   applicationInfoFactory,
   unitChangeDeltaFactory,
@@ -20,14 +24,6 @@ import {
   getModelData,
   getControllerData,
 } from "./selectors";
-import { modelListInfoFactory } from "../../testing/factories/juju/juju";
-
-const defaultState = {
-  controllers: null,
-  models: {},
-  modelData: {},
-  modelWatcherData: {},
-};
 
 describe("selectors", () => {
   it("getModelData", () => {
@@ -46,10 +42,9 @@ describe("selectors", () => {
     expect(
       getModelData(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             modelData,
-          },
+          }),
         })
       )
     ).toStrictEqual(modelData);
@@ -68,10 +63,9 @@ describe("selectors", () => {
     expect(
       getControllerData(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             controllers,
-          },
+          }),
         })
       )
     ).toStrictEqual(controllers);
@@ -84,10 +78,9 @@ describe("selectors", () => {
     expect(
       getModelWatcherDataByUUID("abc123")(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             modelWatcherData,
-          },
+          }),
         })
       )
     ).toStrictEqual(modelWatcherData.abc123);
@@ -100,10 +93,9 @@ describe("selectors", () => {
     expect(
       getModelInfo("abc123")(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             modelWatcherData,
-          },
+          }),
         })
       )
     ).toStrictEqual(modelWatcherData.abc123.model);
@@ -116,8 +108,7 @@ describe("selectors", () => {
         "eggman@external"
       )(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             models: {
               abc123: modelListInfoFactory.build({
                 uuid: "abc123",
@@ -125,7 +116,7 @@ describe("selectors", () => {
                 ownerTag: "user-eggman@external",
               }),
             },
-          },
+          }),
         })
       )
     ).toStrictEqual("abc123");
@@ -145,10 +136,9 @@ describe("selectors", () => {
     expect(
       getModelAnnotations("abc123")(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             modelWatcherData,
-          },
+          }),
         })
       )
     ).toStrictEqual(modelWatcherData.abc123.annotations);
@@ -165,10 +155,9 @@ describe("selectors", () => {
     expect(
       getModelApplications("abc123")(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             modelWatcherData,
-          },
+          }),
         })
       )
     ).toStrictEqual(modelWatcherData.abc123.applications);
@@ -185,10 +174,9 @@ describe("selectors", () => {
     expect(
       getModelUnits("abc123")(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             modelWatcherData,
-          },
+          }),
         })
       )
     ).toStrictEqual(modelWatcherData.abc123.units);
@@ -205,10 +193,9 @@ describe("selectors", () => {
     expect(
       getModelRelations("abc123")(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             modelWatcherData,
-          },
+          }),
         })
       )
     ).toStrictEqual(modelWatcherData.abc123.relations);
@@ -223,10 +210,9 @@ describe("selectors", () => {
     expect(
       getModelMachines("abc123")(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             modelWatcherData,
-          },
+          }),
         })
       )
     ).toStrictEqual(modelWatcherData.abc123.machines);
@@ -258,10 +244,9 @@ describe("selectors", () => {
     expect(
       getAllModelApplicationStatus("abc123")(
         rootStateFactory.build({
-          juju: {
-            ...defaultState,
+          juju: jujuStateFactory.build({
             modelWatcherData,
-          },
+          }),
         })
       )
     ).toStrictEqual({ "ceph-mon": "blocked" });

@@ -2,9 +2,14 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import dataDump from "testing/complete-redux-store-dump";
 
 import { configFactory, generalStateFactory } from "testing/factories/general";
+import {
+  jujuStateFactory,
+  modelDataFactory,
+  modelDataApplicationFactory,
+  modelDataStatusFactory,
+} from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 
 import PrimaryNav from "./PrimaryNav";
@@ -27,7 +32,28 @@ describe("Primary Nav", () => {
 
   it("displays correct number of blocked models", () => {
     const state = rootStateFactory.withGeneralConfig().build({
-      juju: dataDump.juju,
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications: {
+              easyrsa: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "blocked",
+                }),
+              }),
+            },
+          }),
+          def456: modelDataFactory.build({
+            applications: {
+              cockroachdb: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "blocked",
+                }),
+              }),
+            },
+          }),
+        },
+      }),
     });
     const store = mockStore(state);
     render(
@@ -37,7 +63,7 @@ describe("Primary Nav", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(screen.getByText("4")).toHaveClass("entity-count");
+    expect(screen.getByText("2")).toHaveClass("entity-count");
   });
 
   it("displays the JAAS logo under JAAS", () => {
