@@ -1,4 +1,3 @@
-import cloneDeep from "clone-deep";
 import { MemoryRouter } from "react-router";
 import { render, RenderResult, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
@@ -6,10 +5,16 @@ import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
-import * as appSelectors from "app/selectors";
-import ModelTableList from "./ModelTableList";
+import * as appSelectors from "store/juju/selectors";
+import { RootState } from "store/store";
+import {
+  controllerFactory,
+  jujuStateFactory,
+  modelDataFactory,
+} from "testing/factories/juju/juju";
+import { rootStateFactory } from "testing/factories/root";
 
-import dataDump from "../../testing/complete-redux-store-dump";
+import ModelTableList from "./ModelTableList";
 import { TestId as CloudTestId } from "./CloudGroup";
 import { TestId as OwnerTestId } from "./OwnerGroup";
 import { TestId as StatusTestId } from "./StatusGroup";
@@ -17,12 +22,26 @@ import { TestId as StatusTestId } from "./StatusGroup";
 const mockStore = configureStore([]);
 
 describe("ModelTableList", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            uuid: "abc123",
+          }),
+        },
+      }),
+    });
+  });
+
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
   it("by default, renders the status table", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -39,7 +58,7 @@ describe("ModelTableList", () => {
   });
 
   it("displays all data from redux store when grouping by...", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     const tables = [
       ["status", StatusTestId.STATUS_GROUP],
       ["owner", OwnerTestId.OWNER_GROUP],
@@ -75,7 +94,7 @@ describe("ModelTableList", () => {
       appSelectors,
       "getGroupedByStatusAndFilteredModelData"
     );
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     const tables = [
       { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
       { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
@@ -99,7 +118,7 @@ describe("ModelTableList", () => {
   });
 
   it("renders the controller name as JAAS", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -115,13 +134,13 @@ describe("ModelTableList", () => {
   });
 
   it("renders the controller name as UUID if unknown", () => {
-    const clonedData = cloneDeep(dataDump);
-    // override existing data mock while using as much real content as possible.
     const unknownUUID = "unknown-6245-2134-1325-ee33ee55dd66";
-    const testModelUUID = "19b56b55-6373-4286-8c19-957fakee8469";
-    clonedData.juju.modelData[testModelUUID].info["controller-uuid"] =
-      unknownUUID;
-    const store = mockStore(clonedData);
+    const testModelUUID = "abc123";
+    const modelInfo = state.juju.modelData[testModelUUID].info;
+    if (modelInfo) {
+      modelInfo["controller-uuid"] = unknownUUID;
+    }
+    const store = mockStore(state);
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -138,13 +157,22 @@ describe("ModelTableList", () => {
   });
 
   it("renders the controller name if known controller", () => {
-    const clonedData = cloneDeep(dataDump);
     // override existing data mock while using as much real content as possible.
     const knownUUID = "086f0bf8-da79-4ad4-8d73-890721332c8b";
-    const testModelUUID = "19b56b55-6373-4286-8c19-957fakee8469";
-    clonedData.juju.modelData[testModelUUID].info["controller-uuid"] =
-      knownUUID;
-    const store = mockStore(clonedData);
+    const testModelUUID = "abc123";
+    state.juju.controllers = {
+      "wss://jimm.jujucharms.com/api": [
+        controllerFactory.build({
+          path: "admins/1-eu-west-1-aws-jaas",
+          uuid: knownUUID,
+        }),
+      ],
+    };
+    const modelDataInfo = state.juju.modelData?.[testModelUUID].info;
+    if (modelDataInfo) {
+      modelDataInfo["controller-uuid"] = knownUUID;
+    }
+    const store = mockStore(state);
     render(
       <MemoryRouter>
         <Provider store={store}>

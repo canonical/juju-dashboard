@@ -23,42 +23,40 @@ exports[`Controllers table counts models, machines, apps, and units 1`] = `
     class="u-align--right"
     role="gridcell"
   >
-    16
+    0
   </td>
   <td
     aria-hidden="false"
     class="u-align--right"
     role="gridcell"
   >
-    50
+    0
   </td>
   <td
     aria-hidden="false"
     class="u-align--right"
     role="gridcell"
   >
-    66
+    0
   </td>
   <td
     aria-hidden="false"
     class="u-align--right"
     role="gridcell"
   >
-    51
+    0
   </td>
   <td
     aria-hidden="false"
     class="u-align--right"
     role="gridcell"
-  >
-    2.8.3
-  </td>
+  />
   <td
     aria-hidden="false"
     class="u-align--right u-capitalise"
     role="gridcell"
   >
-    true
+    False
   </td>
 </tr>
 `;

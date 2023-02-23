@@ -1,3 +1,6 @@
+import { Error as JujuError } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+
+import { ModelInfo as StoreModelInfo } from "store/juju/types";
 // See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
@@ -131,7 +134,7 @@ type NumberAsString = string;
 type Life = "alive" | "dead" | "dying" | "";
 type ISO8601Date = string;
 type DeprecatedString = string;
-interface Status {
+export interface Status {
   // See https://github.com/juju/juju/blob/develop/core/status/status.go
   // For the possible status values for `current`.
   // Possible statuses differ by entity type.
@@ -151,7 +154,7 @@ type LXDProfile = {
 
 // Delta Types
 
-interface ActionChangeDelta {
+export interface ActionChangeDelta {
   "model-uuid": string;
   id: NumberAsString;
   receiver: UnitId;
@@ -170,13 +173,13 @@ interface ActionChangeDelta {
   completed: ISO8601Date;
 }
 
-interface AnnotationChangeDelta {
+export interface AnnotationChangeDelta {
   "model-uuid": string;
   tag: string; // application-etcd
   annotations: { [annotationName: string]: string };
 }
 
-interface ApplicationChangeDelta {
+export interface ApplicationChangeDelta {
   "charm-url": string;
   constraints: { [key: string]: string };
   exposed: boolean;
@@ -190,7 +193,7 @@ interface ApplicationChangeDelta {
   "workload-version": string;
 }
 
-interface CharmChangeDelta {
+export interface CharmChangeDelta {
   "model-uuid": string;
   "charm-url": string;
   "charm-version": string;
@@ -217,17 +220,17 @@ export interface MachineChangeDelta {
   "wants-vote": boolean;
 }
 
-interface MachineAgentStatus extends Status {
+export interface MachineAgentStatus extends Status {
   current: "down" | "error" | "pending" | "running" | "started" | "stopped";
 }
 
-interface AddressData {
+export interface AddressData {
   value: IPAddress;
   type: "ipv4" | "ipv6";
   scope: "public" | "local-cloud" | "local-fan" | "local-machine";
 }
 
-interface HardwareCharacteristics {
+export interface HardwareCharacteristics {
   arch: string;
   mem: number;
   "root-disk": number;
@@ -236,7 +239,12 @@ interface HardwareCharacteristics {
   "availability-zone": string;
 }
 
-interface ModelChangeDelta {
+export interface ModelDeltaSLA {
+  level: string;
+  owner: string;
+}
+
+export interface ModelChangeDelta {
   "model-uuid": string;
   name: string;
   life: Life;
@@ -246,36 +254,35 @@ interface ModelChangeDelta {
   config: Config;
   status: ModelAgentStatus;
   constraints: { [key: string]: any };
-  sla: {
-    level: string;
-    owner: string;
-  };
+  sla: ModelDeltaSLA;
 }
 
-interface ModelAgentStatus extends Status {
+export interface ModelAgentStatus extends Status {
   current: "available" | "busy" | "";
 }
 
-interface RelationChangeDelta {
+export interface RelationChangeDelta {
   "model-uuid": string;
   key: string;
   id: number;
   endpoints: Endpoint[];
 }
 
-interface Endpoint {
-  "application-name": string;
-  relation: {
-    name: string;
-    role: "peer" | "requirer" | "provider";
-    interface: string;
-    optional: boolean;
-    limit: number;
-    scope: "global" | "container";
-  };
+export interface EndpointRelation {
+  name: string;
+  role: "peer" | "requirer" | "provider";
+  interface: string;
+  optional: boolean;
+  limit: number;
+  scope: "global" | "container";
 }
 
-interface UnitChangeDelta {
+export interface Endpoint {
+  "application-name": string;
+  relation: EndpointRelation;
+}
+
+export interface UnitChangeDelta {
   "agent-status": UnitAgentStatus;
   "charm-url": string;
   "machine-id": NumberAsString;
@@ -305,7 +312,7 @@ interface UnitChangeDelta {
   subordinate: boolean;
 }
 
-interface UnitAgentStatus extends Status {
+export interface UnitAgentStatus extends Status {
   current:
     | "allocating"
     | "executing"
@@ -315,7 +322,7 @@ interface UnitAgentStatus extends Status {
     | "rebooting";
 }
 
-interface WorkloadStatus extends Status {
+export interface WorkloadStatus extends Status {
   current:
     | "active"
     | "blocked"
@@ -324,4 +331,12 @@ interface WorkloadStatus extends Status {
     | "unknown"
     | "unset"
     | "waiting";
+}
+
+export interface ModelInfoResult {
+  error: JujuError;
+  result: StoreModelInfo;
+}
+export interface ModelInfoResults {
+  results: ModelInfoResult[];
 }

@@ -28,7 +28,8 @@ import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 
 import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
-import { isSet } from "app/utils/utils";
+import { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import { isSet } from "components/utils";
 import bakery from "juju/bakery";
 import JIMMV2 from "juju/jimm-facade";
 import {
@@ -560,7 +561,7 @@ export async function startModelWatcher(
   if (!conn) {
     return null;
   }
-  const watcherHandle = await conn?.facades.client.watchAll();
+  const watcherHandle: AllWatcherId = await conn?.facades.client.watchAll();
   const pingerIntervalId = startPingerLoop(conn);
   const data = await conn?.facades.allWatcher.next(watcherHandle["watcher-id"]);
   if (data?.deltas) dispatch(jujuActions.processAllWatcherDeltas(data?.deltas));
@@ -569,7 +570,7 @@ export async function startModelWatcher(
 
 export async function stopModelWatcher(
   conn: Connection,
-  watcherHandleId: number,
+  watcherHandleId: string,
   pingerIntervalId: number
 ) {
   // TODO: use allWatcher.stop(...)

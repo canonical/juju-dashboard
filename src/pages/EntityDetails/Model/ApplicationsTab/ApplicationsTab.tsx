@@ -1,5 +1,4 @@
 import { Button, MainTable } from "@canonical/react-components";
-import { pluralize } from "app/utils/utils";
 import Fuse from "fuse.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,10 +37,11 @@ import { ApplicationData, ApplicationInfo } from "juju/types";
 import {
   getAllModelApplicationStatus,
   getModelApplications,
-  getModelUUID,
+  getModelUUIDFromList,
   getSelectedApplications,
 } from "store/juju/selectors";
 import { ModelData } from "store/juju/types";
+import { pluralize } from "store/juju/utils/models";
 import { useAppStore } from "store/store";
 import { renderCounts } from "../../counts";
 import {
@@ -57,7 +57,7 @@ const ContentRevealTitle = ({
 }: {
   count: number;
   subject: "Offer" | "Local application" | "Remote application";
-  chips: Chip;
+  chips: Chip | null;
 }) => (
   <>
     <span>
@@ -73,7 +73,8 @@ function SearchResultsActionsRow() {
   const appState = useAppStore().getState();
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+
   const [, setPanel] = useQueryParam("panel", StringParam);
 
   const handleRunAction = async () => {
@@ -125,7 +126,7 @@ export default function ApplicationsTab({ filterQuery }: Props) {
 
   const modelStatusData = useModelStatus() as ModelData;
   const tableRowClick = useTableRowClick();
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
   const applicationStatuses = useSelector(
     getAllModelApplicationStatus(modelUUID)
@@ -175,7 +176,6 @@ export default function ApplicationsTab({ filterQuery }: Props) {
       queryParams
     );
   }, [filteredApplications, applicationStatuses, tableRowClick, queryParams]);
-
   const panelRowClick = useCallback(
     (entityName: string, entityPanel: string) => {
       // This can be removed when all entities are moved to top level aside panels

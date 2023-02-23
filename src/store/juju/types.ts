@@ -3,7 +3,6 @@ import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6"
 import { ModelInfo as JujuModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
 import { ApplicationInfo, ModelWatcherData } from "juju/types";
-import { TSFixMe } from "types";
 
 export type ControllerLocation = {
   cloud?: string;
@@ -32,7 +31,7 @@ export type ModelInfo =
 
 export type ModelData = {
   applications: FullStatus["applications"];
-  info: ModelInfo;
+  info?: ModelInfo;
   machines: FullStatus["machines"];
   model: FullStatus["model"];
   offers: FullStatus["offers"];
@@ -40,6 +39,8 @@ export type ModelData = {
   "remote-applications": FullStatus["remote-applications"];
   uuid: string;
 };
+
+export type ModelDataList = Record<string, ModelData>;
 
 export type ModelListInfo = {
   name: string;
@@ -55,7 +56,7 @@ export type ModelsList = {
 export type JujuState = {
   controllers: Controllers | null;
   models: ModelsList;
-  modelData: TSFixMe;
+  modelData: ModelDataList;
   modelWatcherData?: ModelWatcherData;
   charms: Charm[];
   selectedApplications: ApplicationInfo[];

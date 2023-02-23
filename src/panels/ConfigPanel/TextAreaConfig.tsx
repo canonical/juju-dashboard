@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 
-import { isSet } from "app/utils/utils";
+import { isSet } from "components/utils";
 
 import type { ConfigProps } from "./ConfigPanel";
 

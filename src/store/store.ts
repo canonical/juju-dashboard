@@ -11,9 +11,6 @@ import checkAuth from "store/middleware/check-auth";
 import jujuReducer from "store/juju";
 import { modelPollerMiddleware } from "store/middleware/model-poller";
 import uiReducer from "store/ui";
-import { UIState } from "./ui/types";
-import { GeneralState } from "./general/types";
-import { JujuState } from "./juju/types";
 
 const store = configureStore({
   // Order of the middleware is important
@@ -34,13 +31,7 @@ const store = configureStore({
   },
 });
 
-// This can be replaced with the returned store type once each slice has been
-// migrated to TypeScript.
-export type RootState = {
-  general: GeneralState;
-  juju: JujuState;
-  ui: UIState;
-};
+export type RootState = ReturnType<typeof store.getState>;
 
 export type Store = typeof store;
 export type AppDispatch = typeof store.dispatch;

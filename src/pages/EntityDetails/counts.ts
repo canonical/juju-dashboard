@@ -1,5 +1,6 @@
+import { Chip } from "components/ChipGroup/ChipGroup";
 import type { MachineChangeDelta, MachineData, UnitData } from "juju/types";
-import type { TSFixMe } from "types";
+import { ModelData } from "store/juju/types";
 
 export const incrementCounts = (
   status: string,
@@ -13,9 +14,9 @@ export const incrementCounts = (
   return counts;
 };
 
-const generateOfferCounts = (modelStatusData: TSFixMe) => {
+const generateOfferCounts = (modelStatusData: ModelData) => {
   let offerCount = 0;
-  Object.entries(modelStatusData["offers"]).forEach((offer: TSFixMe) => {
+  Object.entries(modelStatusData["offers"]).forEach((offer) => {
     const totalConnectedCount = offer[1]["total-connected-count"];
     if (totalConnectedCount > 0) {
       offerCount = offerCount + totalConnectedCount;
@@ -24,19 +25,19 @@ const generateOfferCounts = (modelStatusData: TSFixMe) => {
   return { joined: offerCount };
 };
 
-const generateSecondaryCounts = (
-  modelStatusData: TSFixMe,
-  segment: string,
+const generateSecondaryCounts = <M = ModelData>(
+  modelStatusData: M,
+  segment: keyof M,
   selector: string
-) =>
-  modelStatusData[segment] &&
-  Object.entries(modelStatusData[segment]).reduce(
-    (counts, section: TSFixMe) => {
+) => {
+  const data = modelStatusData[segment];
+  if (data && typeof data === "object") {
+    return Object.entries(data).reduce((counts, section) => {
       const status = section[1][selector].status;
       return incrementCounts(status, counts);
-    },
-    {}
-  );
+    }, {});
+  }
+};
 
 export function generateUnitCounts(
   units: UnitData | null,
@@ -88,7 +89,7 @@ export function generateMachineCounts(
 */
 export const renderCounts = (
   countType: string,
-  modelStatusData: TSFixMe,
+  modelStatusData?: ModelData | null,
   filterBy = ""
 ) => {
   if (!modelStatusData) return null;
@@ -115,5 +116,5 @@ export const renderCounts = (
       );
       break;
   }
-  return chips;
+  return chips as Chip;
 };

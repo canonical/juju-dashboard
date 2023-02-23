@@ -5,8 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { startModelWatcher, stopModelWatcher } from "juju/api";
 import { actions as jujuActions } from "store/juju";
 
-import type { TSFixMe } from "types";
-import { getModelUUID } from "store/juju/selectors";
+import { getModelUUIDFromList } from "store/juju/selectors";
 import { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Model from "pages/EntityDetails/Model/Model";
@@ -14,17 +13,19 @@ import App from "pages/EntityDetails/App/App";
 import Unit from "pages/EntityDetails/Unit/Unit";
 import Machine from "pages/EntityDetails/Machine/Machine";
 import { useAppStore } from "store/store";
+import { Connection } from "@canonical/jujulib";
+import { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 
 export default function ModelDetails() {
   const appState = useAppStore().getState();
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
   useEffect(() => {
-    let conn: TSFixMe = null;
+    let conn: Connection | null = null;
     let pingerIntervalId: number | null = null;
-    let watcherHandle: TSFixMe = null;
+    let watcherHandle: AllWatcherId | null = null;
 
     async function loadFullData() {
       const response = await startModelWatcher(modelUUID, appState, dispatch);
@@ -35,7 +36,7 @@ export default function ModelDetails() {
       // its way into the all watcher at which point we can drop this additional
       // request for data.
       // https://bugs.launchpad.net/juju/+bug/1939341
-      const status = await conn.facades.client.fullStatus();
+      const status = await conn?.facades.client.fullStatus();
       if (status !== null) {
         dispatch(
           jujuActions.populateMissingAllWatcherData({ uuid: modelUUID, status })
@@ -46,7 +47,7 @@ export default function ModelDetails() {
       loadFullData();
     }
     return () => {
-      if (watcherHandle && pingerIntervalId) {
+      if (watcherHandle && pingerIntervalId && conn) {
         stopModelWatcher(conn, watcherHandle["watcher-id"], pingerIntervalId);
       }
     };

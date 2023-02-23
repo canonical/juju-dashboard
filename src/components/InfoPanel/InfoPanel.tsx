@@ -5,13 +5,13 @@ import { useSelector } from "react-redux";
 import Topology from "components/Topology/Topology";
 import { Modal, useListener } from "@canonical/react-components";
 
-import { getViewportWidth } from "app/utils/utils";
+import { getViewportWidth } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import {
   getModelAnnotations,
   getModelApplications,
   getModelRelations,
-  getModelUUID,
+  getModelUUIDFromList,
 } from "store/juju/selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -46,7 +46,7 @@ const InfoPanel = () => {
 
   const [showExpandedTopology, setShowExpandedTopology] = useState(false);
 
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const annotations = useSelector(getModelAnnotations(modelUUID));
   const applications = useSelector(getModelApplications(modelUUID));
   const relations = useSelector(getModelRelations(modelUUID));

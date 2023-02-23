@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
-import { getGroupedModelStatusCounts } from "app/selectors";
+import { getGroupedModelStatusCounts } from "store/juju/selectors";
 import { getAppVersion } from "store/general/selectors";
 
 import classNames from "classnames";

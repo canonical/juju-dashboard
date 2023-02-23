@@ -21,26 +21,21 @@ describe("CharmsPanel", () => {
   beforeEach(() => {
     storeData = rootStateFactory.build({
       general: generalStateFactory.build({}),
-      juju: jujuStateFactory.build(
-        {},
-        {
-          transient: {
-            charms: [
-              charmInfoFactory.build(),
-              charmInfoFactory.build({
-                meta: { name: "Redis k8s" },
-                url: "ch:amd64/focal/redis-k8s",
-              }),
-            ],
-            selectedApplications: [
-              charmApplicationFactory.build(),
-              charmApplicationFactory.build({
-                "charm-url": "ch:amd64/focal/redis-k8s",
-              }),
-            ],
-          },
-        }
-      ),
+      juju: jujuStateFactory.build({
+        charms: [
+          charmInfoFactory.build(),
+          charmInfoFactory.build({
+            meta: { name: "Redis k8s" },
+            url: "ch:amd64/focal/redis-k8s",
+          }),
+        ],
+        selectedApplications: [
+          charmApplicationFactory.build(),
+          charmApplicationFactory.build({
+            "charm-url": "ch:amd64/focal/redis-k8s",
+          }),
+        ],
+      }),
     });
   });
   function generateComponent() {

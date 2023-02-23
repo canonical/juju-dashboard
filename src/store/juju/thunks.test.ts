@@ -3,9 +3,14 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
+import {
+  controllerFactory,
+  jujuStateFactory,
+} from "testing/factories/juju/juju";
 
 import { addControllerCloudRegion } from "./thunks";
 import { actions } from "./slice";
+import { controllerLocationFactory } from "../../testing/factories/juju/juju";
 
 // Prevent setting up the bakery instance.
 jest.mock("juju/bakery");
@@ -77,32 +82,28 @@ describe("thunks", () => {
             "wss://example.com": credentialFactory.build(),
           },
         }),
-        juju: {
+        juju: jujuStateFactory.build({
           controllers: {
             "wss://example.com": [
-              {
-                path: "/",
+              controllerFactory.build({
                 uuid: "uuid123",
-                version: "1",
-              },
+              }),
             ],
           },
-        },
+        }),
       })
     );
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       actions.updateControllerList({
         controllers: [
-          {
-            path: "/",
+          controllerFactory.build({
             uuid: "uuid123",
-            version: "1",
-            location: {
+            location: controllerLocationFactory.build({
               cloud: "west",
               region: "aws",
-            },
-          },
+            }),
+          }),
         ],
         wsControllerURL: "wss://example.com",
       })
@@ -118,17 +119,11 @@ describe("thunks", () => {
     const getState = jest.fn(() =>
       rootStateFactory.build({
         general: {},
-        juju: {
+        juju: jujuStateFactory.build({
           controllers: {
-            "wss://example.com": [
-              {
-                path: "/",
-                uuid: "uuid123",
-                version: "1",
-              },
-            ],
+            "wss://example.com": [controllerFactory.build()],
           },
-        },
+        }),
       })
     );
     await action(dispatch, getState, null);

@@ -6,6 +6,14 @@ import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import {
+  applicationInfoFactory,
+  modelWatcherModelDataFactory,
+  modelWatcherModelInfoFactory,
+} from "testing/factories/juju/model-watcher";
+
+import { modelListInfoFactory } from "testing/factories/juju/juju";
+import { RootState } from "store/store";
 
 import InfoPanel from "./InfoPanel";
 
@@ -17,23 +25,35 @@ jest.mock("components/Topology/Topology", () => {
 });
 
 describe("Info Panel", () => {
-  it("renders the topology", () => {
-    const mockState = rootStateFactory.build({
-      juju: jujuStateFactory.build(
-        {},
-        {
-          transient: {
-            models: [
-              {
-                name: "enterprise",
-                owner: "kirk@external",
-              },
-            ],
-          },
-        }
-      ),
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            name: "enterprise",
+            ownerTag: "user-kirk@external",
+          }),
+        },
+        modelWatcherData: {
+          abc123: modelWatcherModelDataFactory.build({
+            applications: {
+              "ceph-mon": applicationInfoFactory.build(),
+            },
+            model: modelWatcherModelInfoFactory.build({
+              name: "enterprise",
+              owner: "kirk@external",
+            }),
+          }),
+        },
+      }),
     });
-    const store = mockStore(mockState);
+  });
+
+  it("renders the topology", () => {
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
@@ -52,22 +72,7 @@ describe("Info Panel", () => {
   });
 
   it("renders the expanded topology on click", async () => {
-    const mockState = rootStateFactory.build({
-      juju: jujuStateFactory.build(
-        {},
-        {
-          transient: {
-            models: [
-              {
-                name: "enterprise",
-                owner: "kirk@external",
-              },
-            ],
-          },
-        }
-      ),
-    });
-    const store = mockStore(mockState);
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>

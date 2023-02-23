@@ -5,7 +5,7 @@ export type Chip = {
 };
 
 type Props = {
-  chips: Chip;
+  chips?: Chip | null;
   descriptor?: string | null;
 };
 
@@ -28,7 +28,7 @@ const ChipGroup = ({ chips, descriptor }: Props) => {
     return label;
   };
 
-  const getSumTotal = (chips: Chip) => {
+  const getSumTotal = (chips?: Chip | null) => {
     let total = 0;
     chips &&
       Object.values(chips).forEach((chipValue) => {
@@ -49,7 +49,7 @@ const ChipGroup = ({ chips, descriptor }: Props) => {
               {`${numberOfChips} ${labelType}`}
             </strong>
           )}
-          {Object.entries(chips).map(([label, count]) => {
+          {Object.entries(chips ?? {}).map(([label, count]) => {
             return (
               count > 0 && (
                 <div className="p-chip" key={label}>

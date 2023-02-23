@@ -5,24 +5,59 @@ import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
+import {
+  jujuStateFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
+  modelStatusInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/juju";
+import { generalStateFactory, configFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
+import { RootState } from "store/store";
 
 import CloudGroup from "./CloudGroup";
-
-import dataDump from "../../testing/complete-redux-store-dump";
 
 const mockStore = configureStore([]);
 
 describe("CloudGroup", () => {
-  it("by default, renders no tables with no data", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        juju: {
-          models: {},
-          modelData: {},
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+            }),
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+            }),
+          }),
+          def456: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+            }),
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+            }),
+          }),
+          ghi789: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              "cloud-tag": "cloud-google",
+            }),
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-google",
+            }),
+          }),
         },
-      })
-    );
+      }),
+    });
+  });
+
+  it("by default, renders no tables with no data", () => {
+    const store = mockStore(rootStateFactory.build());
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -36,7 +71,7 @@ describe("CloudGroup", () => {
   });
 
   it("displays model data grouped by cloud from the redux store", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     render(
       <MemoryRouter>
         <Provider store={store}>
@@ -48,12 +83,12 @@ describe("CloudGroup", () => {
     );
     const tables = screen.getAllByRole("grid");
     expect(tables.length).toBe(2);
-    expect(within(tables[0]).getAllByRole("row")).toHaveLength(14);
-    expect(within(tables[1]).getAllByRole("row")).toHaveLength(4);
+    expect(within(tables[0]).getAllByRole("row")).toHaveLength(3);
+    expect(within(tables[1]).getAllByRole("row")).toHaveLength(2);
   });
 
   it("fetches filtered data if filters supplied", () => {
-    const store = mockStore(dataDump);
+    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };
@@ -68,11 +103,35 @@ describe("CloudGroup", () => {
     );
     const tables = screen.getAllByRole("grid");
     expect(tables.length).toBe(1);
-    expect(within(tables[0]).getAllByRole("row")).toHaveLength(4);
+    expect(within(tables[0]).getAllByRole("row")).toHaveLength(3);
   });
 
   it("model access buttons are present in cloud group", () => {
-    const store = mockStore(dataDump);
+    state.general = generalStateFactory.build({
+      config: configFactory.build({
+        controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
+      }),
+      controllerConnections: {
+        "wss://jimm.jujucharms.com/api": {
+          user: {
+            "display-name": "eggman",
+            identity: "user-eggman@external",
+            "controller-access": "",
+            "model-access": "",
+          },
+        },
+      },
+    });
+    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+      "cloud-tag": "cloud-aws",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "admin",
+        }),
+      ],
+    });
+    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };

@@ -1,15 +1,16 @@
-import { DeltaChangeTypes, DeltaEntityTypes } from "../../juju/types";
-import { modelWatcherDataFactory } from "../../testing/factories/juju/juju";
-import { actions, reducer } from "./slice";
+import { DeltaChangeTypes, DeltaEntityTypes } from "juju/types";
+import {
+  controllerFactory,
+  jujuStateFactory,
+  modelDataFactory,
+  modelListInfoFactory,
+} from "testing/factories/juju/juju";
+import {
+  modelWatcherModelDataFactory,
+  modelWatcherModelInfoFactory,
+} from "testing/factories/juju/model-watcher";
 
-const defaultState = {
-  controllers: null,
-  models: {},
-  modelData: {},
-  modelWatcherData: {},
-  charms: [],
-  selectedApplications: [],
-};
+import { actions, reducer } from "./slice";
 
 const status = {
   applications: {},
@@ -43,24 +44,25 @@ const status = {
   "remote-applications": {},
 };
 
-const model = {
+const model = modelDataFactory.build({
   uuid: "abc123",
-  annotations: undefined,
   applications: status.applications,
   machines: status.machines,
   model: status.model,
   offers: status.offers,
   relations: status.relations,
   "remote-applications": status["remote-applications"],
-};
+});
 
 describe("reducers", () => {
   it("default", () => {
-    expect(reducer(undefined, { type: "" })).toStrictEqual(defaultState);
+    expect(reducer(undefined, { type: "" })).toStrictEqual(
+      jujuStateFactory.build()
+    );
   });
 
   it("updateModelList", () => {
-    const state = defaultState;
+    const state = jujuStateFactory.build();
     expect(
       reducer(
         state,
@@ -84,18 +86,23 @@ describe("reducers", () => {
     ).toStrictEqual({
       ...state,
       models: {
-        abc123: {
+        abc123: modelListInfoFactory.build({
           uuid: "abc123",
           name: "a model",
           ownerTag: "user-eggman@external",
           type: "model",
-        },
+        }),
       },
     });
   });
 
   it("updateModelStatus", () => {
-    const state = defaultState;
+    let updatedModel = {
+      ...model,
+      uuid: "abc123",
+    };
+    delete updatedModel.info;
+    const state = jujuStateFactory.build();
     expect(
       reducer(
         state,
@@ -108,21 +115,17 @@ describe("reducers", () => {
     ).toStrictEqual({
       ...state,
       modelData: {
-        abc123: {
-          ...model,
-          uuid: "abc123",
-        },
+        abc123: updatedModel,
       },
     });
   });
 
   it("updateModelInfo", () => {
-    const state = {
-      ...defaultState,
+    const state = jujuStateFactory.build({
       modelData: {
         abc123: model,
       },
-    };
+    });
     const modelInfo = {
       results: [
         {
@@ -131,13 +134,7 @@ describe("reducers", () => {
             message: "",
           },
           result: {
-            "agent-version": {
-              Build: 1,
-              Major: 1,
-              Minor: 1,
-              Patch: 1,
-              Tag: "",
-            },
+            "agent-version": "5",
             "controller-uuid": "controller1",
             "cloud-region": "west",
             machines: [],
@@ -185,40 +182,25 @@ describe("reducers", () => {
   });
 
   it("clearModelData", () => {
-    const state = {
-      ...defaultState,
+    const state = jujuStateFactory.build({
       modelData: {
         abc123: model,
       },
       models: {
-        abc123: {
-          name: "name",
-          ownerTag: "eggman@external",
-          type: "iaas",
-          uuid: "abc123",
-        },
+        abc123: modelListInfoFactory.build(),
       },
-    };
-    expect(reducer(state, actions.clearModelData())).toStrictEqual({
-      ...state,
-      modelData: {},
-      models: {},
     });
+    expect(reducer(state, actions.clearModelData())).toStrictEqual(
+      jujuStateFactory.build()
+    );
   });
 
   it("clearControllerData", () => {
-    const state = {
-      ...defaultState,
+    const state = jujuStateFactory.build({
       controllers: {
-        "wss://example.com": [
-          {
-            path: "/",
-            uuid: "abc123",
-            version: "1",
-          },
-        ],
+        "wss://example.com": [controllerFactory.build()],
       },
-    };
+    });
     expect(reducer(state, actions.clearControllerData())).toStrictEqual({
       ...state,
       controllers: {},
@@ -226,14 +208,8 @@ describe("reducers", () => {
   });
 
   it("updateControllerList", () => {
-    const state = defaultState;
-    const controllers = [
-      {
-        path: "/",
-        uuid: "abc123",
-        version: "1",
-      },
-    ];
+    const state = jujuStateFactory.build();
+    const controllers = [controllerFactory.build()];
     expect(
       reducer(
         state,
@@ -251,12 +227,9 @@ describe("reducers", () => {
   });
 
   it("populateMissingAllWatcherData", () => {
-    const state = {
-      ...defaultState,
-      modelWatcherData: modelWatcherDataFactory.build(undefined, {
-        transient: { uuid: "abc123" },
-      }),
-    };
+    const state = jujuStateFactory.build({
+      modelWatcherData: { abc123: modelWatcherModelDataFactory.build() },
+    });
     expect(
       reducer(
         state,
@@ -268,28 +241,34 @@ describe("reducers", () => {
     ).toStrictEqual({
       ...state,
       modelWatcherData: {
-        abc123: {
-          ...state.modelWatcherData.abc123,
-          model: {
-            ...state.modelWatcherData.abc123.model,
+        abc123: modelWatcherModelDataFactory.build({
+          ...state.modelWatcherData?.abc123,
+          model: modelWatcherModelInfoFactory.build({
+            ...state.modelWatcherData?.abc123.model,
             "cloud-tag": status.model["cloud-tag"],
             type: status.model.type,
             region: status.model.region,
             version: status.model.version,
-          },
-        },
+          }),
+        }),
       },
     });
   });
 
   it("processAllWatcherDeltas", () => {
-    const state = {
-      ...defaultState,
-      modelWatcherData: modelWatcherDataFactory.build(undefined, {
-        transient: { uuid: "abc123" },
-      }),
-    };
-    expect(state.modelWatcherData.abc123.annotations).toStrictEqual({
+    const state = jujuStateFactory.build({
+      modelWatcherData: {
+        abc123: modelWatcherModelDataFactory.build({
+          annotations: {
+            "ceph-mon": {
+              "gui-x": "818",
+              "gui-y": "563",
+            },
+          },
+        }),
+      },
+    });
+    expect(state.modelWatcherData?.abc123.annotations).toStrictEqual({
       "ceph-mon": {
         "gui-x": "818",
         "gui-y": "563",

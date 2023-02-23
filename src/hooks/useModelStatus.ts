@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { getModelUUID, getModelStatus } from "app/selectors";
-import { useSelector } from "react-redux";
+import { getModelUUID, getModelStatus } from "store/juju/selectors";
 import { useQueryParams, StringParam } from "use-query-params";
+import { useAppSelector } from "store/store";
 
 // Return model status data based on model name in URL
 export default function useModelStatus() {
@@ -23,11 +23,11 @@ export default function useModelStatus() {
     () => (modelName ? getModelUUID(modelName) : null),
     [modelName]
   );
-  const modelUUID = useSelector((state) => getModelUUIDMemo?.(state));
+  const modelUUID = useAppSelector((state) => getModelUUIDMemo?.(state));
   const getModelStatusMemo = useMemo(
     () => getModelStatus(modelUUID),
     [modelUUID]
   );
 
-  return useSelector((state) => getModelStatusMemo?.(state));
+  return useAppSelector((state) => getModelStatusMemo?.(state));
 }

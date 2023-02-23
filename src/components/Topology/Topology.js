@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
-import { generateIconPath } from "app/utils/utils";
+import { generateIconPath } from "store/juju/utils/models";
 
 /**
   Returns whether the application is a subordinate.

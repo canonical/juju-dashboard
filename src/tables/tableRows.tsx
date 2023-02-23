@@ -2,22 +2,23 @@ import cloneDeep from "clone-deep";
 import { Field } from "formik";
 
 import { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import {
+  extractRevisionNumber,
+  extractRelationEndpoints,
+} from "store/juju/utils/models";
+import {
+  generateEntityIdentifier,
+  generateRelationIconImage,
+  generateStatusElement,
+  generateIconImg,
+} from "components/utils";
 import { Tooltip } from "@canonical/react-components";
 import {
   MainTableCell,
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import {
-  extractRelationEndpoints,
-  extractRevisionNumber,
-  generateEntityIdentifier,
-  generateIconImg,
-  generateRelationIconImage,
-  generateStatusElement,
-} from "app/utils/utils";
 import { ApplicationData, RelationData, UnitData } from "juju/types";
 import { MouseEvent } from "react";
-import { TSFixMe } from "types";
 import { StatusData } from "store/juju/selectors";
 import { ModelData } from "store/juju/types";
 
@@ -114,7 +115,7 @@ export function generateLocalApplicationRows(
 }
 
 export function generateRemoteApplicationRows(
-  modelStatusData: ModelData,
+  modelStatusData: ModelData | null,
   tableRowClick: TableRowClick,
   query?: Query
 ) {
@@ -421,9 +422,7 @@ export function generateMachineRows(
                   null,
                   true,
                   false,
-                  // TSFixMe: this can be removed once this util has been migrated
-                  // to TypeScript.
-                  "p-icon u-truncate" as TSFixMe
+                  "p-icon u-truncate"
                 )}
               </Tooltip>
             ),
@@ -470,8 +469,7 @@ export function generateRelationRows(
       providerApplicationName,
       requirerApplicationName,
       peerApplicationName,
-      // TSFixMe: this cast can be removed once the util has been migrated to TypeScript.
-    } = extractRelationEndpoints(relation) as Record<string, string>;
+    } = extractRelationEndpoints(relation);
     const providerLabel = provider || peer || "-";
     const requirerLabel = requirer || "-";
     return {
@@ -479,10 +477,12 @@ export function generateRelationRows(
         {
           content: (
             <>
-              {generateRelationIconImage(
-                providerApplicationName || peerApplicationName,
-                applications
-              )}
+              {applications
+                ? generateRelationIconImage(
+                    providerApplicationName || peerApplicationName,
+                    applications
+                  )
+                : null}
               {providerLabel}
             </>
           ),
@@ -491,7 +491,12 @@ export function generateRelationRows(
         {
           content: (
             <>
-              {generateRelationIconImage(requirerApplicationName, applications)}
+              {applications
+                ? generateRelationIconImage(
+                    requirerApplicationName,
+                    applications
+                  )
+                : null}
               {requirerLabel}
             </>
           ),
@@ -511,7 +516,7 @@ export function generateRelationRows(
   });
 }
 
-export function generateOffersRows(modelStatusData: ModelData) {
+export function generateOffersRows(modelStatusData: ModelData | null) {
   if (!modelStatusData) {
     return [];
   }
@@ -526,7 +531,7 @@ export function generateOffersRows(modelStatusData: ModelData) {
             <>
               {generateRelationIconImage(
                 offer.applicationName,
-                modelStatusData
+                modelStatusData.applications
               )}
               {offer.applicationName}
             </>
@@ -548,7 +553,7 @@ export function generateOffersRows(modelStatusData: ModelData) {
 }
 
 export function generateAppOffersRows(
-  modelStatusData: ModelData,
+  modelStatusData: ModelData | null,
   tableRowClick: TableRowClick,
   query: Query
 ) {
@@ -570,7 +575,7 @@ export function generateAppOffersRows(
         {
           content: (
             <>
-              {generateRelationIconImage(offer, modelStatusData)}
+              {generateRelationIconImage(offer, modelStatusData.applications)}
               {offer["offer-name"]}
             </>
           ),
@@ -601,7 +606,7 @@ export function generateAppOffersRows(
   });
 }
 
-export function generateConsumedRows(modelStatusData?: ModelData) {
+export function generateConsumedRows(modelStatusData?: ModelData | null) {
   if (!modelStatusData) {
     return [];
   }
@@ -616,7 +621,7 @@ export function generateConsumedRows(modelStatusData?: ModelData) {
             <>
               {generateRelationIconImage(
                 application.offerName,
-                modelStatusData
+                modelStatusData.applications
               )}
               {application.offerName}
             </>

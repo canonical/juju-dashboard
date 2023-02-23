@@ -5,11 +5,11 @@ import { StringParam, useQueryParams, withDefault } from "use-query-params";
 
 import {
   canAdministerModelAccess,
-  generateStatusElement,
   getModelStatusGroupData,
-} from "app/utils/utils";
+} from "store/juju/utils/models";
+import { generateStatusElement } from "components/utils";
 
-import { getGroupedByOwnerAndFilteredModelData } from "app/selectors";
+import { getGroupedByOwnerAndFilteredModelData } from "store/juju/selectors";
 
 import {
   generateAccessButton,

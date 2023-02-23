@@ -51,7 +51,6 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
     } else if (selectAll) {
       setSelectAll(false);
     }
-    console.log("apps", apps);
     selectedApplications.current = apps;
     dispatch(
       jujuActions.updateSelectedApplications({

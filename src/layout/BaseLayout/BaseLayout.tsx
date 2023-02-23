@@ -2,7 +2,6 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import { TSFixMe } from "types";
 
 import Banner from "components/Banner/Banner";
 import Logo from "components/Logo/Logo";
@@ -32,7 +31,7 @@ const BaseLayout = ({ children }: PropsWithChildren) => {
   // Check if pathname includes a model name - and then always collapse sidebar
   const { modelName } = useParams<EntityDetailsRoute>();
 
-  const collapseSidebar = useSelector<TSFixMe>(isSideNavCollapsed) || false;
+  const collapseSidebar = useSelector(isSideNavCollapsed) || false;
 
   useEffect(() => {
     dispatch(actions.sideNavCollapsed(!!modelName));

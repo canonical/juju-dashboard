@@ -1,8 +1,11 @@
 import { MainTable } from "@canonical/react-components";
-import { canAdministerModelAccess, extractCloudName } from "app/utils/utils";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import {
+  canAdministerModelAccess,
+  extractCloudName,
+} from "store/juju/utils/models";
 import {
   StringParam,
   useQueryParam,
@@ -40,7 +43,7 @@ import {
   getModelMachines,
   getModelRelations,
   getModelUnits,
-  getModelUUID,
+  getModelUUIDFromList,
 } from "store/juju/selectors";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -91,8 +94,7 @@ const Model = () => {
   });
 
   const tableRowClick = useTableRowClick();
-
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
   const relations = useSelector(getModelRelations(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));

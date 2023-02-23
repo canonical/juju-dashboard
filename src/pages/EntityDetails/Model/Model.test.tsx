@@ -1,27 +1,39 @@
-import configureStore from "redux-mock-store";
-import { Provider } from "react-redux";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import dataDump from "testing/complete-redux-store-dump";
+import { Provider } from "react-redux";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import configureStore from "redux-mock-store";
+import { QueryParamProvider } from "use-query-params";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
+import { TestId } from "components/InfoPanel/InfoPanel";
+import { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
-  operationResultsFactory,
-  actionResultsFactory,
-} from "testing/factories/juju/ActionV7";
-import { ModelData } from "juju/types";
-import { RootState } from "store/store";
-import {
+  configFactory,
   credentialFactory,
   generalStateFactory,
-  configFactory,
 } from "testing/factories/general";
+import {
+  actionResultsFactory,
+  operationResultsFactory,
+} from "testing/factories/juju/ActionV7";
+import {
+  modelDataFactory,
+  modelDataInfoFactory,
+  modelListInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/juju";
+import {
+  applicationInfoFactory,
+  machineChangeDeltaFactory,
+  modelWatcherModelDataFactory,
+  modelWatcherModelInfoFactory,
+  relationChangeDeltaFactory,
+  unitChangeDeltaFactory,
+} from "testing/factories/juju/model-watcher";
 
 import Model, { Label } from "./Model";
-import { TestId } from "../../../components/InfoPanel/InfoPanel";
 
 const mockOperationResults = operationResultsFactory.build();
 const mockActionResults = actionResultsFactory.build();
@@ -54,10 +66,10 @@ jest.mock("juju/api", () => {
 const mockStore = configureStore([]);
 
 describe("Model", () => {
-  let storeData: RootState;
+  let state: RootState;
 
   beforeEach(() => {
-    storeData = rootStateFactory.build({
+    state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
           controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
@@ -76,24 +88,25 @@ describe("Model", () => {
           "wss://jimm.jujucharms.com/api": credentialFactory.build(),
         },
       }),
-      juju: jujuStateFactory.build(
-        {},
-        {
-          transient: {
-            models: Object.values(dataDump.juju.modelData).map((model) => ({
-              name: model.info.name,
-              owner: model.info["owner-tag"].replace("user-", ""),
-              uuid: model.uuid,
-            })),
-          },
-        }
-      ),
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build(),
+        },
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            name: "test1",
+          }),
+        },
+        modelWatcherData: {
+          abc123: modelWatcherModelDataFactory.build(),
+        },
+      }),
     });
-    storeData.juju.modelData = dataDump.juju.modelData;
   });
 
   it("renders the info panel data", () => {
-    const store = mockStore(storeData);
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
@@ -109,7 +122,14 @@ describe("Model", () => {
   });
 
   it("renders the main table", () => {
-    const store = mockStore(storeData);
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
@@ -127,10 +147,23 @@ describe("Model", () => {
   });
 
   it("view toggles hide and show tables", async () => {
-    const store = mockStore(storeData);
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        relations: {
+          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
+        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
               <Route path="/models/:userName/:modelName" element={<Model />} />
@@ -168,10 +201,17 @@ describe("Model", () => {
   });
 
   it("renders the details pane for models shared-with-me", () => {
-    const store = mockStore(storeData);
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
+        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
               <Route path="/models/:userName/:modelName" element={<Model />} />
@@ -186,13 +226,18 @@ describe("Model", () => {
   });
 
   it("renders the machine details section", () => {
-    const store = mockStore(storeData);
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter
-          initialEntries={[
-            "/models/pizza@external/mymodel?activeView=machines",
-          ]}
+          initialEntries={["/models/eggman@external/test1?activeView=machines"]}
         >
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
@@ -208,32 +253,20 @@ describe("Model", () => {
   });
 
   it("supports local charms", () => {
-    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
-      (model) => model.model.name === "local-test"
-    );
-    if (model && "applications" in model) {
-      model.applications = {
-        cockroachdb: {
-          "charm-url": "local:cockroachdb-55",
-          constraints: {},
-          exposed: false,
-          life: "alive",
-          "min-units": 0,
-          "model-uuid": "abc123",
-          name: "cockroachdb",
-          "owner-tag": "",
-          status: { current: "unset", message: "", version: "" },
-          subordinate: false,
-          "unit-count": 1,
-          "workload-version": "12.2.13",
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          cockroachdb: applicationInfoFactory.build({
+            "charm-url": "local:cockroachdb-55",
+          }),
         },
-      };
-    }
-    const store = mockStore(storeData);
+      }),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         cockroachdb
-        <MemoryRouter initialEntries={["/models/eggman@external/local-test"]}>
+        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
               <Route path="/models/:userName/:modelName" element={<Model />} />
@@ -253,32 +286,20 @@ describe("Model", () => {
   });
 
   it("displays the correct scale value", () => {
-    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
-      (model) => model.model.name === "hadoopspark"
-    );
-    if (model && "applications" in model) {
-      model.applications = {
-        client: {
-          "charm-url": "cs:client-55",
-          constraints: {},
-          exposed: false,
-          life: "alive",
-          "min-units": 0,
-          "model-uuid": "abc123",
-          name: "client",
-          "owner-tag": "",
-          status: { current: "unset", message: "", version: "" },
-          subordinate: false,
-          "unit-count": 1,
-          "workload-version": "12.2.13",
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          client: applicationInfoFactory.build({
+            "unit-count": 1,
+          }),
         },
-      };
-    }
-    const store = mockStore(storeData);
+      }),
+    };
+    const store = mockStore(state);
     const testApp = "client";
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/pizza@external/hadoopspark"]}>
+        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
               <Route path="/models/:userName/:modelName" element={<Model />} />
@@ -294,12 +315,10 @@ describe("Model", () => {
   });
 
   it("should show a message if a model has no integrations", () => {
-    const model: Partial<ModelData> | undefined = Object.values(
-      storeData.juju.modelWatcherData ?? {}
-    ).find((model) => model.model.name === "test1");
-    delete model?.relations;
-    delete model?.applications;
-    const store = mockStore(storeData);
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build(),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter
@@ -323,11 +342,10 @@ describe("Model", () => {
   });
 
   it("should show a message if a model has no machines", () => {
-    const model: Partial<ModelData> | undefined = Object.values(
-      storeData.juju.modelWatcherData ?? {}
-    ).find((model) => model.model.name === "test1");
-    delete model?.machines;
-    const store = mockStore(storeData);
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build(),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter
@@ -349,47 +367,34 @@ describe("Model", () => {
   });
 
   it("should show apps appropriate number of apps on machine in hadoopspark model", () => {
-    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
-      (model) => model.model.name === "hadoopspark"
-    );
-    if (model && "units" in model) {
-      for (let index = 0; index < 9; index++) {
-        model.units[index] = {
-          "agent-status": {
-            current: "idle",
-            message: "",
-            since: "2021-08-13T19:34:41.247417373Z",
-            version: "2.8.7",
-          },
-          "charm-url": "cs:ceph-mon-55",
-          "machine-id": "0",
-          "model-uuid": "abc123",
-          "port-ranges": null,
-          "private-address": "172.31.43.84",
-          "public-address": "54.162.156.160",
-          "workload-status": {
-            current: "blocked",
-            message: "Insufficient peer units to bootstrap cluster (require 3)",
-            since: "2021-08-13T19:34:37.747827227Z",
-            version: "",
-          },
-          application: `ceph-mon-${index}`,
-          life: "alive",
-          name: `ceph-mon-${index}/0`,
-          ports: [],
-          principal: "",
-          series: "bionic",
-          subordinate: false,
-        };
-      }
-    }
-    const store = mockStore(storeData);
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        model: modelWatcherModelInfoFactory.build({ name: "hadoopspark" }),
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        units: {
+          "0": unitChangeDeltaFactory.build({ application: "ceph-mon-0" }),
+          "1": unitChangeDeltaFactory.build({ application: "ceph-mon-1" }),
+          "2": unitChangeDeltaFactory.build({ application: "ceph-mon-2" }),
+          "3": unitChangeDeltaFactory.build({ application: "ceph-mon-3" }),
+          "4": unitChangeDeltaFactory.build({ application: "ceph-mon-4" }),
+          "5": unitChangeDeltaFactory.build({ application: "ceph-mon-5" }),
+          "6": unitChangeDeltaFactory.build({ application: "ceph-mon-6" }),
+          "7": unitChangeDeltaFactory.build({ application: "ceph-mon-7" }),
+          "8": unitChangeDeltaFactory.build({ application: "ceph-mon-8" }),
+          "9": unitChangeDeltaFactory.build({ application: "ceph-mon-9" }),
+        },
+      }),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter
-          initialEntries={[
-            "/models/pizza@external/hadoopspark?activeView=machines",
-          ]}
+          initialEntries={["/models/eggman@external/test1?activeView=machines"]}
         >
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
@@ -404,84 +409,41 @@ describe("Model", () => {
   });
 
   it("should show apps appropriate number of apps on machine in canonical-kubernetes model", () => {
-    const model = Object.values(storeData.juju.modelWatcherData ?? {}).find(
-      (model) => model.model.name === "hadoopspark"
-    );
-    const counts = [1, 2, 4];
-    let unitIndex = 0;
-    if (model && "units" in model) {
-      for (let machineIndex = 0; machineIndex < 9; machineIndex++) {
-        model.machines[machineIndex] = {
-          addresses: [],
-          "agent-status": {
-            current: "started",
-            message: "",
-            since: "2021-08-13T19:32:59.800842177Z",
-            version: "2.8.7",
-          },
-          "container-type": "",
-          "has-vote": false,
-          id: machineIndex.toString(),
-          "instance-id": "i-0a195974d9fdd9d16",
-          "instance-status": {
-            current: "running",
-            message: "running",
-            since: "2021-08-13T19:31:34.099184348Z",
-            version: "",
-          },
-          jobs: ["JobHostUnits"],
-          life: "alive",
-          "model-uuid": "abc123",
-          series: "bionic",
-          "supported-containers": ["lxd"],
-          "supported-containers-known": true,
-          "wants-vote": false,
-        };
-
-        for (
-          let machineUnitIndex = 0;
-          machineUnitIndex < counts[machineIndex];
-          machineUnitIndex++
-        ) {
-          model.units[unitIndex] = {
-            "agent-status": {
-              current: "idle",
-              message: "",
-              since: "2021-08-13T19:34:41.247417373Z",
-              version: "2.8.7",
-            },
-            "charm-url": "cs:ceph-mon-55",
-            "machine-id": machineIndex.toString(),
-            "model-uuid": "abc123",
-            "port-ranges": null,
-            "private-address": "172.31.43.84",
-            "public-address": "54.162.156.160",
-            "workload-status": {
-              current: "blocked",
-              message:
-                "Insufficient peer units to bootstrap cluster (require 3)",
-              since: "2021-08-13T19:34:37.747827227Z",
-              version: "",
-            },
-            application: `ceph-mon-${unitIndex}`,
-            life: "alive",
-            name: `ceph-mon-${unitIndex}/0`,
-            ports: [],
-            principal: "",
-            series: "bionic",
-            subordinate: false,
-          };
-          unitIndex++;
-        }
-      }
-    }
-    const store = mockStore(storeData);
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        model: modelWatcherModelInfoFactory.build({ name: "hadoopspark" }),
+        machines: {
+          "0": machineChangeDeltaFactory.build({ id: "0" }),
+          "1": machineChangeDeltaFactory.build({ id: "1" }),
+        },
+        units: {
+          "0": unitChangeDeltaFactory.build({
+            "machine-id": "0",
+            application: "ceph-mon",
+          }),
+          "1": unitChangeDeltaFactory.build({
+            "machine-id": "0",
+            application: "ceph-mon-0",
+          }),
+          "2": unitChangeDeltaFactory.build({
+            "machine-id": "1",
+            application: "ceph-mon-1",
+          }),
+          "3": unitChangeDeltaFactory.build({
+            "machine-id": "1",
+            application: "ceph-mon-2",
+          }),
+        },
+      }),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter
-          initialEntries={[
-            "/models/pizza@external/hadoopspark?activeView=machines",
-          ]}
+          initialEntries={["/models/eggman@external/test1?activeView=machines"]}
         >
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
@@ -509,10 +471,17 @@ describe("Model", () => {
   });
 
   it("renders the topology", () => {
-    const store = mockStore(storeData);
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>
+        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
               <Route path="/models/:userName/:modelName" element={<Model />} />
@@ -527,10 +496,20 @@ describe("Model", () => {
   });
 
   it("should have a link for model access panel", () => {
-    const store = mockStore(storeData);
+    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+      uuid: "abc123",
+      name: "test1",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "admin",
+        }),
+      ],
+    });
+    const store = mockStore(state);
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>
+        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
               <Route path="/models/:userName/:modelName" element={<Model />} />
@@ -544,7 +523,7 @@ describe("Model", () => {
     ).toBeInTheDocument();
   });
   it("shows the search & filter box in the apps tab", async () => {
-    const store = mockStore(storeData);
+    const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>

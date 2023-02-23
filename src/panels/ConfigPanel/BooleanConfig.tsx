@@ -1,7 +1,7 @@
 import classnames from "classnames";
 import { useEffect, useRef, useState } from "react";
 
-import { isSet } from "app/utils/utils";
+import { isSet } from "components/utils";
 
 import { RadioInput } from "@canonical/react-components";
 import type { ConfigProps } from "./ConfigPanel";

@@ -7,6 +7,11 @@ import {
   generalStateFactory,
   configFactory,
 } from "testing/factories/general";
+import {
+  additionalControllerFactory,
+  controllerFactory,
+  jujuStateFactory,
+} from "testing/factories/juju/juju";
 
 import { ControllerArgs } from "./actions";
 import { logOut, connectAndStartPolling, connectAndListModels } from "./thunks";
@@ -62,9 +67,6 @@ describe("thunks", () => {
     const dispatch = jest.fn();
     const getState = jest.fn(() => rootStateFactory.build());
     await action(dispatch, getState, null);
-    // expect(dispatch).toHaveBeenCalledWith(
-    //   connectAndListModels([additionalController])
-    // );
     expect(dispatch).toHaveBeenCalledWith(
       generalActions.storeUserPass({
         wsControllerURL: additionalController[0],
@@ -74,7 +76,7 @@ describe("thunks", () => {
     expect(dispatch).toHaveBeenCalledWith(
       jujuActions.updateControllerList({
         wsControllerURL: additionalController[0],
-        controllers: [{ additionalController: true }],
+        controllers: [additionalControllerFactory.build()],
       })
     );
     localStorage.removeItem("additionalControllers");
@@ -107,17 +109,17 @@ describe("thunks", () => {
             "wss://example.com": credentialFactory.build(),
           },
         }),
-        juju: {
+        juju: jujuStateFactory.build({
           controllers: {
             "wss://example.com": [
-              {
+              controllerFactory.build({
                 path: "/",
                 uuid: "uuid123",
                 version: "1",
-              },
+              }),
             ],
           },
-        },
+        }),
       })
     );
     const action = connectAndListModels([additionalController]);

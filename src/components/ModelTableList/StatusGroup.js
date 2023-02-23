@@ -4,13 +4,13 @@ import { useQueryParams, StringParam, withDefault } from "use-query-params";
 import useActiveUser from "hooks/useActiveUser";
 
 import {
-  generateStatusElement,
   getModelStatusGroupData,
   extractOwnerName,
   canAdministerModelAccess,
-} from "app/utils/utils";
+} from "store/juju/utils/models";
+import { generateStatusElement } from "components/utils";
 
-import { getGroupedByStatusAndFilteredModelData } from "app/selectors";
+import { getGroupedByStatusAndFilteredModelData } from "store/juju/selectors";
 
 import {
   generateModelDetailsLink,

@@ -14,7 +14,7 @@ import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
 
-import { pluralize } from "app/utils/utils";
+import { pluralize } from "store/juju/utils/models";
 
 import {
   ArrayParam,
@@ -24,8 +24,10 @@ import {
   withDefault,
 } from "use-query-params";
 
-import { getGroupedModelStatusCounts } from "app/selectors";
-import { getModelData } from "store/juju/selectors";
+import {
+  getGroupedModelStatusCounts,
+  getModelData,
+} from "store/juju/selectors";
 
 import "./_models.scss";
 
@@ -59,9 +61,7 @@ export default function Models() {
     return chipValues;
   };
 
-  const { blocked, alert, running } = useSelector(
-    getGroupedModelStatusCounts
-  ) as Record<string, number>;
+  const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
 
   let activeFilters: Record<string, string[]> = {};
 

@@ -17,9 +17,9 @@ import PanelHeader from "components/PanelHeader/PanelHeader";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 
 import { EnqueuedActions } from "@canonical/jujulib/dist/api/facades/action/ActionV6";
-import { generateIconImg, pluralize } from "app/utils/utils";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import ToastCard from "components/ToastCard/ToastCard";
+import { generateIconImg } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import { executeActionOnUnits } from "juju/api";
 import { ApplicationInfo } from "juju/types";
@@ -32,10 +32,11 @@ import {
 } from "panels/ActionsPanel/ActionsPanel";
 import { useParams } from "react-router-dom";
 import {
-  getModelUUID,
+  getModelUUIDFromList,
   getSelectedApplications,
   getSelectedCharm,
 } from "store/juju/selectors";
+import { pluralize } from "store/juju/utils/models";
 import { useAppStore } from "store/store";
 import "../ActionsPanel/_actions-panel.scss";
 
@@ -43,7 +44,7 @@ export default function CharmActionsPanel(): JSX.Element {
   const sendAnalytics = useAnalytics();
   const { userName, modelName } = useParams();
 
-  const modelUUID = useSelector(getModelUUID(modelName, userName));
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const appState = useAppStore().getState();
 
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
@@ -72,7 +73,7 @@ export default function CharmActionsPanel(): JSX.Element {
 
     return (
       <h5>
-        {generateIconImg(selectedCharm?.meta?.name, selectedCharm?.url)}{" "}
+        {generateIconImg(selectedCharm?.meta?.name || "", selectedCharm?.url)}{" "}
         {selectedApplications.length}{" "}
         {pluralize(selectedApplications.length, "application")} ({totalUnits}{" "}
         {pluralize(selectedApplications.length, "unit")}) selected

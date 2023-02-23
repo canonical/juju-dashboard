@@ -6,6 +6,7 @@ import { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import { charmApplicationFactory } from "testing/factories/juju/Charms";
+import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import ApplicationsTab from "./ApplicationsTab";
@@ -28,53 +29,52 @@ describe("ApplicationsTab", () => {
   beforeEach(() => {
     storeData = rootStateFactory.build({
       general: generalStateFactory.build({}),
-      juju: jujuStateFactory.build(
-        {},
-        {
-          transient: {
-            models: [
-              {
-                name: "test-model",
-                uuid: "816d67b1-4942-4420-8be2-07df30f7a1ce",
-                owner: "user-kirk@external",
-                type: "iaas",
-                applications: {
-                  mysql1: charmApplicationFactory.build({
-                    name: "mysql1",
-                  }),
-                  mysql2: charmApplicationFactory.build({
-                    name: "mysql2",
-                  }),
-                  db2: charmApplicationFactory.build({
-                    name: "db2",
-                  }),
-                  db1: charmApplicationFactory.build({
-                    name: "db1",
-                  }),
-                  "jupyter-controller": charmApplicationFactory.build({
-                    name: "jupyter-controller",
-                  }),
-                  "jupyter-ui": charmApplicationFactory.build({
-                    name: "jupyter-ui",
-                  }),
-                  redis1: charmApplicationFactory.build({
-                    name: "redis1",
-                  }),
-                },
-                charms: {
-                  "ch:amd64/focal/postgresql-k8s-20": {
-                    "model-uuid": "816d67b1-4942-4420-8be2-07df30f7a1ce",
-                    "charm-url": "ch:amd64/focal/postgresql-k8s-20",
-                    "charm-version": "",
-                    life: "alive",
-                    profile: null,
-                  },
-                },
-              },
-            ],
+      juju: jujuStateFactory.build({
+        models: {
+          test123: {
+            name: "test-model",
+            uuid: "test123",
+            ownerTag: "test@external",
+            type: "iaas",
           },
-        }
-      ),
+        },
+        modelWatcherData: {
+          test123: modelWatcherModelDataFactory.build({
+            applications: {
+              mysql1: charmApplicationFactory.build({
+                name: "mysql1",
+              }),
+              mysql2: charmApplicationFactory.build({
+                name: "mysql2",
+              }),
+              db2: charmApplicationFactory.build({
+                name: "db2",
+              }),
+              db1: charmApplicationFactory.build({
+                name: "db1",
+              }),
+              "jupyter-controller": charmApplicationFactory.build({
+                name: "jupyter-controller",
+              }),
+              "jupyter-ui": charmApplicationFactory.build({
+                name: "jupyter-ui",
+              }),
+              redis1: charmApplicationFactory.build({
+                name: "redis1",
+              }),
+            },
+            charms: {
+              "ch:amd64/focal/postgresql-k8s-20": {
+                "model-uuid": "test123",
+                "charm-url": "ch:amd64/focal/postgresql-k8s-20",
+                "charm-version": "",
+                life: "alive",
+                profile: null,
+              },
+            },
+          }),
+        },
+      }),
     });
   });
 
@@ -96,9 +96,7 @@ describe("ApplicationsTab", () => {
     const store = mockStore(storeData);
     render(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/user-kirk@external/test-model"]}
-        >
+        <MemoryRouter initialEntries={["/models/test@external/test-model"]}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
               <Route
