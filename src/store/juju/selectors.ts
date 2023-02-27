@@ -53,6 +53,15 @@ const getModelWatcherData = createSelector(
 
 const getModelList = createSelector([slice], (sliceState) => sliceState.models);
 
+/**
+  Get the loaded state of the model list.
+  @returns Whether the model list has been loaded.
+*/
+export const getModelListLoaded = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelsLoaded
+);
+
 export function getModelWatcherDataByUUID(modelUUID: string) {
   return createSelector(getModelWatcherData, (modelWatcherData) => {
     if (modelWatcherData?.[modelUUID]) {

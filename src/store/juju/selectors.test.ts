@@ -23,6 +23,7 @@ import {
   getAllModelApplicationStatus,
   getModelData,
   getControllerData,
+  getModelListLoaded,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -161,6 +162,18 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual(modelWatcherData.abc123.applications);
+  });
+
+  it("getModelListLoaded", () => {
+    expect(
+      getModelListLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelsLoaded: true,
+          }),
+        })
+      )
+    ).toBe(true);
   });
 
   it("getModelUnits", () => {
