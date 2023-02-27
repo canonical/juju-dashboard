@@ -13,6 +13,9 @@ const slice = createSlice({
     visitURL: null,
   } as GeneralState,
   reducers: {
+    cleanupLoginErrors: (state) => {
+      state.loginError = null;
+    },
     updateControllerConnection: (state, action) => {
       const connections = state.controllerConnections ?? {};
       connections[action.payload.wsControllerURL] = action.payload.info;
@@ -37,6 +40,8 @@ const slice = createSlice({
     },
     logOut: (state) => {
       state.controllerConnections = null;
+      state.credentials = null;
+      state.pingerIntervalIds = null;
       state.visitURL = null;
     },
     updatePingerIntervalId: (state, action) => {
