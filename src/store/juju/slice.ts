@@ -11,6 +11,7 @@ const slice = createSlice({
   initialState: {
     controllers: null,
     models: {},
+    modelsLoaded: false,
     modelData: {},
     modelWatcherData: {},
     charms: [],
@@ -35,6 +36,7 @@ const slice = createSlice({
         };
       });
       state.models = modelList;
+      state.modelsLoaded = true;
     },
     updateModelStatus: (
       state,
@@ -87,6 +89,7 @@ const slice = createSlice({
     clearModelData: (state) => {
       state.modelData = {};
       state.models = {};
+      state.modelsLoaded = false;
     },
     clearControllerData: (state) => {
       state.controllers = {};

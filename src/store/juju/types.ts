@@ -56,6 +56,7 @@ export type ModelsList = {
 export type JujuState = {
   controllers: Controllers | null;
   models: ModelsList;
+  modelsLoaded: boolean;
   modelData: ModelDataList;
   modelWatcherData?: ModelWatcherData;
   charms: Charm[];

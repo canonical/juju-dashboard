@@ -62,7 +62,7 @@ describe("reducers", () => {
   });
 
   it("updateModelList", () => {
-    const state = jujuStateFactory.build();
+    const state = jujuStateFactory.build({ modelsLoaded: false });
     expect(
       reducer(
         state,
@@ -93,6 +93,7 @@ describe("reducers", () => {
           type: "model",
         }),
       },
+      modelsLoaded: true,
     });
   });
 
@@ -189,9 +190,10 @@ describe("reducers", () => {
       models: {
         abc123: modelListInfoFactory.build(),
       },
+      modelsLoaded: true,
     });
     expect(reducer(state, actions.clearModelData())).toStrictEqual(
-      jujuStateFactory.build()
+      jujuStateFactory.build({ modelsLoaded: false })
     );
   });
 

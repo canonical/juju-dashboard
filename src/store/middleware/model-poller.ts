@@ -128,9 +128,8 @@ export const modelPollerMiddleware: Middleware<
               reduxStore.dispatch(
                 jujuActions.updateModelList({ models, wsControllerURL })
               );
-              const modelUUIDList = models["user-models"].map(
-                (item) => item.model.uuid
-              );
+              const modelUUIDList =
+                models["user-models"]?.map((item) => item.model.uuid) ?? [];
               await fetchAllModelStatuses(
                 wsControllerURL,
                 modelUUIDList,
