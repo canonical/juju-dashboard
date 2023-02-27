@@ -111,6 +111,16 @@ describe("reducers", () => {
     });
   });
 
+  it("cleanupLoginErrors", () => {
+    const state = generalStateFactory.build({
+      loginError: "Uh oh!",
+    });
+    expect(reducer(state, actions.cleanupLoginErrors())).toStrictEqual({
+      ...state,
+      loginError: null,
+    });
+  });
+
   it("updatePingerIntervalId", () => {
     const state = generalStateFactory.build({
       pingerIntervalIds: {
