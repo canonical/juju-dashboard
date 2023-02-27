@@ -5,7 +5,7 @@ import configureStore from "redux-mock-store";
 import {
   applicationGetFactory,
   configFactory,
-} from "testing/factories/juju/Applicationv15";
+} from "testing/factories/juju/ApplicationV15";
 import { rootStateFactory } from "testing/factories/root";
 
 import * as apiModule from "juju/api";

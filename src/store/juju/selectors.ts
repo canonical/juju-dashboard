@@ -1,8 +1,7 @@
-import { createSelector } from "reselect";
 import { AdditionalProperties } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import cloneDeep from "clone-deep";
+import { createSelector } from "reselect";
 
-import { RootState } from "store/store";
 import type {
   AnnotationData,
   ApplicationData,
@@ -11,17 +10,18 @@ import type {
   RelationData,
   UnitData,
 } from "juju/types";
+import { RootState } from "store/store";
 
 import type { Controllers, ModelData, ModelsList } from "./types";
 import {
-  Filters,
-  extractOwnerName,
   extractCloudName,
   extractCredentialName,
-  groupModelsByStatus,
+  extractOwnerName,
+  Filters,
+  getApplicationStatusGroup,
   getMachineStatusGroup,
   getUnitStatusGroup,
-  getApplicationStatusGroup,
+  groupModelsByStatus,
 } from "./utils/models";
 
 const slice = (state: RootState) => state.juju;
@@ -598,3 +598,40 @@ export const getModelControllerDataByUUID = (controllerUUID?: string) => {
     return clonedModelController;
   });
 };
+/**
+ * @returns A list of charms that are used by the selected applications.
+ */
+export function getCharms() {
+  return createSelector([slice], (sliceState) => {
+    return sliceState.charms.filter((charm) => {
+      return sliceState.selectedApplications.some(
+        (application) => application["charm-url"] === charm.url
+      );
+    });
+  });
+}
+
+/**
+ * @param charmURL The charm URL to filter by.
+ * @returns A list of applications that are selected.
+ */
+export function getSelectedApplications(charmURL?: string) {
+  return createSelector([slice], (sliceState) => {
+    if (!charmURL) {
+      return sliceState.selectedApplications;
+    }
+    return sliceState.selectedApplications.filter(
+      (application) => application["charm-url"] === charmURL
+    );
+  });
+}
+
+/**
+ * @param charmURL The charm URL to filter by.
+ * @returns The charm object that matches the charm URL.
+ */
+export function getSelectedCharm(charmURL: string) {
+  return createSelector([slice], (sliceState) => {
+    return sliceState.charms.find((charm) => charm.url === charmURL);
+  });
+}

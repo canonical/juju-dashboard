@@ -1,11 +1,13 @@
 import { useListener } from "@canonical/react-components";
-import { useQueryParam, StringParam } from "use-query-params";
 import { AnimatePresence } from "framer-motion";
+import { StringParam, useQueryParam } from "use-query-params";
 
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import RegisterController from "panels/RegisterController/RegisterController";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 
+import CharmActionsPanel from "./ActionsPanel/CharmActionsPanel";
+import CharmsPanel from "./CharmsPanel/ChamsPanel";
 import "./_panels.scss";
 
 // Close panel if Escape key is pressed when panel active
@@ -37,6 +39,10 @@ export default function Panels() {
         return <ActionsPanel />;
       case "share-model":
         return <ShareModel />;
+      case "choose-charm":
+        return <CharmsPanel />;
+      case "charm-actions":
+        return <CharmActionsPanel />;
       default:
         return null;
     }

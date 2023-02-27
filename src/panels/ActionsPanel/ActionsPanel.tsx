@@ -63,11 +63,11 @@ type ActionOptionDetails = {
   required: boolean;
 };
 
-type ActionOptionValues = {
+export type ActionOptionValues = {
   [actionName: string]: ActionOptionValue;
 };
 
-type ActionOptionValue = {
+export type ActionOptionValue = {
   [optionName: string]: string;
 };
 
@@ -277,7 +277,7 @@ function onValuesChange(
   };
 }
 
-function enableSubmit(
+export function enableSubmit(
   selectedAction: string | undefined,
   selectedUnits: string[],
   actionData: ActionData,

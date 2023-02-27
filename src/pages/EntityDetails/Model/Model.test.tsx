@@ -1,23 +1,29 @@
-import configureStore from "redux-mock-store";
-import { Provider } from "react-redux";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import configureStore from "redux-mock-store";
+import { QueryParamProvider } from "use-query-params";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { TestId } from "components/InfoPanel/InfoPanel";
+import { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
-  operationResultsFactory,
-  actionResultsFactory,
-} from "testing/factories/juju/ActionV7";
-import { RootState } from "store/store";
-import {
+  configFactory,
   credentialFactory,
   generalStateFactory,
-  configFactory,
 } from "testing/factories/general";
+import {
+  actionResultsFactory,
+  operationResultsFactory,
+} from "testing/factories/juju/ActionV7";
+import {
+  modelDataFactory,
+  modelDataInfoFactory,
+  modelListInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
   machineChangeDeltaFactory,
@@ -26,12 +32,6 @@ import {
   relationChangeDeltaFactory,
   unitChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
-import {
-  modelDataFactory,
-  modelDataInfoFactory,
-  modelListInfoFactory,
-  modelUserInfoFactory,
-} from "testing/factories/juju/juju";
 
 import Model, { Label } from "./Model";
 
@@ -521,5 +521,20 @@ describe("Model", () => {
     expect(
       screen.getByRole("button", { name: Label.ACCESS_BUTTON })
     ).toBeInTheDocument();
+  });
+  it("shows the search & filter box in the apps tab", async () => {
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route path="/models/:userName/:modelName" element={<Model />} />
+            </Routes>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(screen.getByTestId("filter-applications")).toBeInTheDocument();
   });
 });

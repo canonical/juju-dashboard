@@ -1,0 +1,26 @@
+.l-aside {
+  max-height: 100vh;
+}
+
+.charms-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .p-panel__content {
+    flex: 1;
+  }
+}
+
+.charm-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__items {
+    flex: 1;
+    overflow-y: auto;
+    // radio buttons are too close to the edge
+    padding-left: 4px;
+  }
+}

@@ -1,7 +1,8 @@
+import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV4";
 import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { ModelInfo as JujuModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
-import { ModelWatcherData } from "juju/types";
+import { ApplicationInfo, ModelWatcherData } from "juju/types";
 
 export type ControllerLocation = {
   cloud?: string;
@@ -57,4 +58,6 @@ export type JujuState = {
   models: ModelsList;
   modelData: ModelDataList;
   modelWatcherData?: ModelWatcherData;
+  charms: Charm[];
+  selectedApplications: ApplicationInfo[];
 };

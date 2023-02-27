@@ -1,7 +1,8 @@
+import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { UserModelList } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AllWatcherDelta, ModelInfoResults } from "juju/types";
+import { AllWatcherDelta, ApplicationInfo, ModelInfoResults } from "juju/types";
 import { processDeltas } from "juju/watchers";
 import { Controllers, JujuState } from "./types";
 
@@ -12,6 +13,8 @@ const slice = createSlice({
     models: {},
     modelData: {},
     modelWatcherData: {},
+    charms: [],
+    selectedApplications: [],
   } as JujuState,
   reducers: {
     updateModelList: (
@@ -122,6 +125,21 @@ const slice = createSlice({
         state.modelWatcherData,
         action.payload
       );
+    },
+    updateCharms: (
+      state,
+      action: PayloadAction<{ charms: Charm[]; wsControllerURL?: string }>
+    ) => {
+      action.payload.charms = action.payload.charms.filter((charm) => {
+        return !state.charms.some((c) => c.url === charm.url);
+      });
+      state.charms = [...state.charms, ...action.payload.charms];
+    },
+    updateSelectedApplications: (
+      state,
+      action: PayloadAction<{ selectedApplications: ApplicationInfo[] }>
+    ) => {
+      state.selectedApplications = action.payload.selectedApplications;
     },
   },
 });

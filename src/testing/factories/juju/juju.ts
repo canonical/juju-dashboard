@@ -201,4 +201,6 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   models: {},
   modelData: {},
   modelWatcherData: {},
+  charms: [],
+  selectedApplications: [],
 }));

@@ -1,9 +1,9 @@
-import { DeltaEntityTypes, DeltaChangeTypes } from "juju/types";
+import { DeltaChangeTypes, DeltaEntityTypes } from "juju/types";
 import {
   controllerFactory,
   jujuStateFactory,
-  modelListInfoFactory,
   modelDataFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,

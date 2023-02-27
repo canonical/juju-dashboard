@@ -1,3 +1,4 @@
+import { Chip } from "components/ChipGroup/ChipGroup";
 import type { MachineChangeDelta, MachineData, UnitData } from "juju/types";
 import { ModelData } from "store/juju/types";
 
@@ -115,5 +116,5 @@ export const renderCounts = (
       );
       break;
   }
-  return chips;
+  return chips as Chip;
 };

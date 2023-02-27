@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import {
   fireEvent,
   render,
@@ -6,20 +5,21 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
-import configureStore from "redux-mock-store";
+import { ReactNode } from "react";
 import { Provider } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
   modelWatcherModelDataFactory,
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
-import { modelListInfoFactory } from "testing/factories/juju/juju";
-import { RootState } from "store/store";
 
 import EntityDetails from "./EntityDetails";
 
@@ -38,6 +38,7 @@ const mockStore = configureStore([]);
 type Props = {
   children?: ReactNode;
   type?: string;
+  onApplicationsFilter?: (query: string) => void;
 };
 
 describe("Entity Details Container", () => {
@@ -57,7 +58,10 @@ describe("Entity Details Container", () => {
               <Route
                 path="/models/:userName/:modelName"
                 element={
-                  <EntityDetails type={props?.type}>
+                  <EntityDetails
+                    type={props?.type}
+                    onApplicationsFilter={props?.onApplicationsFilter}
+                  >
                     {props?.children}
                   </EntityDetails>
                 }

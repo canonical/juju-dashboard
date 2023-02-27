@@ -3,13 +3,13 @@
   has been allowed.
 */
 
-import { isLoggedIn } from "store/general/selectors";
-import { actions as uiActions } from "store/ui";
-import { actions as generalActions } from "store/general";
-import { actions as appActions, thunks as appThunks } from "store/app";
-import { actions as jujuActions } from "store/juju";
 import { Middleware } from "redux";
+import { actions as appActions, thunks as appThunks } from "store/app";
+import { actions as generalActions } from "store/general";
+import { isLoggedIn } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
 import { RootState, Store } from "store/store";
+import { actions as uiActions } from "store/ui";
 
 function error(name: string, wsControllerURL: string) {
   console.log(
@@ -60,6 +60,7 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.updateControllerList.type,
       jujuActions.clearControllerData.type,
       jujuActions.clearModelData.type,
+      jujuActions.updateSelectedApplications.type,
       uiActions.userMenuActive.type,
       uiActions.sideNavCollapsed.type,
     ];
