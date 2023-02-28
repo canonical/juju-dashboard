@@ -1,5 +1,6 @@
 var jujuDashboardConfig = {
-  // API host to allow app to connect and retrieve models
+  // API host to allow app to connect and retrieve models. This address should
+  // begin with `ws://` or `wss://` and end with `/api`
   baseControllerURL: null,
   // Configurable base url to allow deploying to different paths.
   baseAppURL: "{{.baseAppURL}}",
