@@ -94,6 +94,17 @@ describe("WebCLI", () => {
     });
   });
 
+  it("shows the help when there is no output", async () => {
+    await generateComponent();
+    return new Promise((resolve) => setTimeout(resolve)).then(() => {
+      expect(
+        document.querySelector(".webcli__output-content code")
+      ).toHaveTextContent(
+        `Welcome to the Juju Web CLI - see the full documentation here.`
+      );
+    });
+  });
+
   it("trims the command being submitted", async () => {
     const server = new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,

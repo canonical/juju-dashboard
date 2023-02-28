@@ -39,7 +39,9 @@ $row-height: 2.5rem;
       flex-grow: 1;
     }
 
-    &-input[type="text"] {
+    &-input[type="text"],
+    &-input[type="text"]:focus,
+    &-input[type="text"]:hover {
       background-color: $color-x-dark;
       color: $color-mid-light;
       // https://github.com/canonical-web-and-design/vanilla-framework/pull/3370

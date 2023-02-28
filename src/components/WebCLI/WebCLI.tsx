@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Macaroon } from "@canonical/macaroon-bakery/dist/macaroon";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "react-redux";
 
 import bakery from "juju/bakery";
 import { getActiveUserTag } from "store/general/selectors";
+import { Credential } from "store/general/types";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
@@ -12,16 +14,29 @@ import Connection from "./connection";
 
 import "./_webcli.scss";
 
+type Props = {
+  controllerWSHost: string;
+  credentials?: Credential | null;
+  modelUUID: string;
+  protocol?: string;
+};
+
+type Authentication = {
+  user?: string;
+  credentials?: string;
+  macaroons?: Macaroon[];
+};
+
 const WebCLI = ({
   controllerWSHost,
   credentials,
   modelUUID,
   protocol = "wss",
-}) => {
-  const [connection, setConnection] = useState(null);
+}: Props) => {
+  const [connection, setConnection] = useState<Connection | null>(null);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
-  const inputRef = useRef();
-  const wsMessageStore = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const wsMessageStore = useRef<string>("");
   let [output, setOutput] = useState("");
   const sendAnalytics = useAnalytics();
   const storeState = useStore().getState();
@@ -47,7 +62,7 @@ const WebCLI = ({
       address: wsAddress,
       onopen: () => {},
       onclose: () => {},
-      messageCallback: (message) => {
+      messageCallback: (message: string) => {
         wsMessageStore.current = wsMessageStore.current + message;
         setOutput(wsMessageStore.current);
       },
@@ -58,14 +73,14 @@ const WebCLI = ({
     };
   }, [wsAddress]);
 
-  const handleCommandSubmit = (e) => {
+  const handleCommandSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     clearMessageBuffer();
     setShouldShowHelp(false);
     // We need to get the most up to date connection information in the event
     // that the original connection was redirected. This typically happens in
     // a JAAS style environment.
-    let authentication = {};
+    let authentication: Authentication = {};
     if (credentials && credentials.user && credentials.password) {
       authentication.user = credentials.user;
       authentication.credentials = credentials.password;
@@ -73,11 +88,11 @@ const WebCLI = ({
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
       // the model for the model status.
-      const origin = new URL(connection.address).origin;
+      const origin = new URL(connection?.address).origin;
       const macaroons = bakery.storage.get(origin);
       if (macaroons) {
         const deserialized = JSON.parse(atob(macaroons));
-        const originalWSOrigin = new URL(wsAddress).origin;
+        const originalWSOrigin = wsAddress ? new URL(wsAddress).origin : null;
         const activeUser = getActiveUserTag(
           storeState,
           `${originalWSOrigin}/api`
@@ -90,21 +105,29 @@ const WebCLI = ({
       }
     }
 
-    connection.send(
+    let command;
+    const formFields = e.currentTarget.children;
+    if ("command" in formFields) {
+      command = (formFields.command as HTMLInputElement).value.trim();
+    }
+
+    connection?.send(
       JSON.stringify({
         ...authentication,
-        commands: [e.currentTarget.children.command.value.trim()],
+        commands: [command],
       })
     );
     sendAnalytics({
       category: "User",
       action: "WebCLI command sent",
     });
-    inputRef.current.value = ""; // Clear the input after sending the message.
+    if (inputRef.current) {
+      inputRef.current.value = ""; // Clear the input after sending the message.
+    }
   };
 
   const showHelp = () => {
-    setShouldShowHelp(true);
+    setShouldShowHelp(!shouldShowHelp);
   };
 
   // If we do not have an address then do not try and render the UI.
@@ -141,7 +164,7 @@ const WebCLI = ({
             onClick={showHelp}
             onKeyDown={showHelp}
             role="button"
-            tabIndex="0"
+            tabIndex={0}
           />
         </div>
       </div>
