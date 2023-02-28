@@ -212,6 +212,25 @@ describe("Entity Details Container", () => {
     });
   });
 
+  it("shows the CLI in juju higher than 2.9", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        model: modelWatcherModelInfoFactory.build({
+          name: "enterprise",
+          owner: "kirk@external",
+          version: "3.0.7",
+        }),
+      }),
+    };
+    renderComponent();
+    await waitFor(() => {
+      expect(screen.queryByTestId("webcli")).toBeInTheDocument();
+    });
+  });
+
   it("does not show the webCLI in juju 2.8", async () => {
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
