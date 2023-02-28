@@ -13,6 +13,7 @@ import {
   modelDataFactory,
   modelDataApplicationFactory,
   modelDataStatusFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 
 import ModelsIndex, { Label, TestId } from "./ModelsIndex";
@@ -25,6 +26,9 @@ describe("Models Index page", () => {
   beforeEach(() => {
     state = rootStateFactory.withGeneralConfig().build({
       juju: jujuStateFactory.build({
+        models: {
+          abc124: modelListInfoFactory.build(),
+        },
         modelData: {
           abc123: modelDataFactory.build({
             applications: {
@@ -91,7 +95,7 @@ describe("Models Index page", () => {
   });
 
   it("displays a message if there are no models", () => {
-    state.juju.modelData = {};
+    state.juju.models = {};
     const store = mockStore(state);
     render(
       <Provider store={store}>

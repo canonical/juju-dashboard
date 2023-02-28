@@ -29,6 +29,7 @@ import {
   getGroupedModelStatusCounts,
   getModelData,
   getModelListLoaded,
+  hasModels,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
@@ -59,6 +60,7 @@ export default function Models() {
   });
 
   const modelsLoaded = useAppSelector(getModelListLoaded);
+  const hasSomeModels = useSelector(hasModels);
   // loop model data and pull out filter panel data
   const modelData = useSelector(getModelData);
   const { clouds, regions, owners, credentials } =
@@ -100,7 +102,7 @@ export default function Models() {
         <Spinner />
       </div>
     );
-  } else if (modelCount === 0) {
+  } else if (!hasSomeModels) {
     content = (
       <div className="l-content">
         <div className="models">
