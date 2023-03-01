@@ -268,7 +268,8 @@ function onValuesChange(
 ) {
   const updatedValues: ActionOptionValue = {};
   Object.keys(values).forEach((key) => {
-    updatedValues[key.replace(`${actionName}-`, "")] = values[key];
+    // Use toString to convert booleans to strings as this is what the API requires.
+    updatedValues[key.replace(`${actionName}-`, "")] = values[key].toString();
   });
 
   optionValues.current = {
@@ -331,7 +332,11 @@ const requiredPopulated: RequiredPopulated = (
   if (required.length === 0) {
     return true;
   }
-  return !required.some((option) => optionsValues[selected][option] === "");
+  return !required.some((option) => {
+    const optionType = actionData[selected].params.properties[option].type;
+    const value = optionsValues[selected][option];
+    return optionType === "boolean" ? value !== "true" : value === "";
+  });
 };
 
 const optionsValidate: ValidationFnProps = (selected, optionsValues) => {

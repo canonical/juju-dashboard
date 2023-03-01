@@ -34,6 +34,41 @@ describe("OptionInputs", () => {
     expect(container).toMatchSnapshot();
   });
 
+  it("can display a text input", () => {
+    const onValuesChange = jest.fn();
+    render(
+      <Formik initialValues={{}} onSubmit={jest.fn()}>
+        <OptionInputs
+          name="MyAction"
+          options={options}
+          onValuesChange={onValuesChange}
+        />
+      </Formik>
+    );
+    expect(screen.getByRole("textbox", { name: "fruit" })).toBeInTheDocument();
+  });
+
+  it("can display a checkbox", () => {
+    const onValuesChange = jest.fn();
+    render(
+      <Formik initialValues={{}} onSubmit={jest.fn()}>
+        <OptionInputs
+          name="MyAction"
+          options={[
+            {
+              name: "fruit",
+              description: "yum",
+              type: "boolean",
+              required: true,
+            },
+          ]}
+          onValuesChange={onValuesChange}
+        />
+      </Formik>
+    );
+    expect(screen.getByRole("checkbox", { name: "fruit" })).toBeInTheDocument();
+  });
+
   it("On input value change calls the onValuesChange handler", async () => {
     const onValuesChange = jest.fn();
     render(
