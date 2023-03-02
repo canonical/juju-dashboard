@@ -225,7 +225,8 @@ function onValuesChange(
 ) {
   const updatedValues: ActionOptionValue = {};
   Object.keys(values).forEach((key) => {
-    updatedValues[key.replace(`${actionName}-`, "")] = values[key];
+    // Use toString to convert booleans to strings as this is what the API requires.
+    updatedValues[key.replace(`${actionName}-`, "")] = values[key].toString();
   });
 
   optionValues.current = {
