@@ -1,27 +1,20 @@
-import cloneDeep from "clone-deep";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-
-import { MainTable } from "@canonical/react-components";
+import { checkForJujuUpdate } from "@canonical/jujulib";
+import { Chip, MainTable } from "@canonical/react-components";
 import {
   MainTableCell,
   MainTableHeader,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import Header from "components/Header/Header";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
-
 import FadeIn from "animations/FadeIn";
-
+import cloneDeep from "clone-deep";
+import Header from "components/Header/Header";
 import useWindowTitle from "hooks/useWindowTitle";
-
+import BaseLayout from "layout/BaseLayout/BaseLayout";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { getControllerData, getModelData } from "store/juju/selectors";
-
-import { StringParam, useQueryParam } from "use-query-params";
-
 import { AdditionalController, Controller } from "store/juju/types";
-
+import { StringParam, useQueryParam } from "use-query-params";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
-
 import "./_controllers.scss";
 
 type AnnotatedController = (Controller | AdditionalController) & {
@@ -84,18 +77,18 @@ function Details() {
   }
 
   const headers: MainTableHeader[] = [
-    { content: "Default", sortKey: "name" },
+    { content: "default", sortKey: "name" },
     { content: "cloud/region", sortKey: "cloud/region" },
-    { content: "models", sortKey: "models", className: "u-align--right" },
-    { content: "machines", sortKey: "machines", className: "u-align--right" },
+    { content: "models", sortKey: "models" },
+    { content: "machines", sortKey: "machines" },
     {
       content: "applications",
       sortKey: "applications",
-      className: "u-align--right",
     },
-    { content: "units", sortKey: "units", className: "u-align--right" },
-    { content: "version", sortKey: "version", className: "u-align--right" },
-    { content: "public", sortKey: "public", className: "u-align--right" },
+    { content: "units", sortKey: "units" },
+    { content: "version", sortKey: "version" },
+    { content: "access", sortKey: "public" },
+    { content: "" },
   ];
 
   const additionalHeaders = cloneDeep(headers);
@@ -129,22 +122,35 @@ function Details() {
     const region =
       "location" in c && c?.location?.region ? c.location.region : "unknown";
     const cloudRegion = `${cloud}/${region}`;
-    const publicAccess = "Public" in c && c.Public ? `${c?.Public}` : "False";
-
+    const access = "Public" in c && c.Public ? "Public" : "Private";
+    let columns = [
+      generatePathValue(c),
+      { content: cloudRegion },
+      { content: c.models },
+      { content: c.machines },
+      { content: c.applications },
+      { content: c.units },
+      {
+        content: "version" in c ? c.version : null,
+      },
+      { content: access, className: "u-capitalise" },
+    ];
+    if ("version" in c && c.version && checkForJujuUpdate(c.version)) {
+      columns.push({
+        content: (
+          <Chip
+            appearance="caution"
+            value="Update available"
+            data-testid="update-available"
+            onClick={() =>
+              window.open("https://juju.is/docs/olm/upgrading", "_blank")
+            }
+          />
+        ),
+      });
+    }
     return {
-      columns: [
-        generatePathValue(c),
-        { content: cloudRegion },
-        { content: c.models, className: "u-align--right" },
-        { content: c.machines, className: "u-align--right" },
-        { content: c.applications, className: "u-align--right" },
-        { content: c.units, className: "u-align--right" },
-        {
-          content: "version" in c ? c.version : null,
-          className: "u-align--right",
-        },
-        { content: publicAccess, className: "u-align--right u-capitalise" },
-      ],
+      columns,
     };
   }
 

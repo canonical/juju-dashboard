@@ -52,4 +52,23 @@
 
     margin-left: 0.4rem;
   }
+  .l-controllers-table {
+    td,
+    th {
+      &:nth-child(1),
+      &:nth-child(2) {
+        width: 15%;
+      }
+
+      &:nth-child(3),
+      &:nth-child(4),
+      &:nth-child(5),
+      &:nth-child(6),
+      &:nth-child(7),
+      &:nth-child(8),
+      &:nth-child(9) {
+        width: 12%;
+      }
+    }
+  }
 }
