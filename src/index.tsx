@@ -1,4 +1,5 @@
-import { StrictMode } from "react";
+import { Notification, Strip } from "@canonical/react-components";
+import { ReactNode, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import process from "process";
@@ -30,6 +31,14 @@ if (process.env.NODE_ENV === "production") {
   Sentry.setTag("dashboardVersion", appVersion);
 }
 
+const renderRoot = (content: ReactNode) => {
+  const rootElement = document.getElementById("root");
+  if (rootElement) {
+    const root = createRoot(rootElement);
+    root.render(content);
+  }
+};
+
 // Sometimes the config.js file hasn't been parsed by the time this code is
 // executed. This is a simple debounce so that in the event it's not it'll wait
 // a few cycles before trying again.
@@ -53,8 +62,32 @@ checkConfigExists();
 
 function bootstrap() {
   const config = window.jujuDashboardConfig;
+  let error: string | null = null;
   if (!config) {
-    console.error("No configuration found.");
+    error = "No configuration found.";
+  }
+  const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\/api$/);
+  if (!config?.controllerAPIEndpoint) {
+    error = `controllerAPIEndpoint is not set.`;
+  } else if (!config?.controllerAPIEndpoint.endsWith("/api")) {
+    error = `controllerAPIEndpoint (${config?.controllerAPIEndpoint}) must end with /api.`;
+  } else if (
+    !config?.controllerAPIEndpoint.startsWith("wss://") &&
+    !config?.controllerAPIEndpoint.startsWith("ws://")
+  ) {
+    error = `controllerAPIEndpoint (${config?.controllerAPIEndpoint}) must begin with ws:// or wss://.`;
+  } else if (!addressRegex.test(config?.controllerAPIEndpoint)) {
+    error = `controllerAPIEndpoint (${config?.controllerAPIEndpoint}) must contain a hostname or IP.`;
+  }
+  if (error || !config) {
+    renderRoot(
+      <Strip>
+        <Notification severity="negative" title="Error">
+          The dashboard is not configured correctly. {error}
+        </Notification>
+      </Strip>
+    );
+    console.error(error);
     return;
   }
   // It's possible that the charm is generating a relative path for the
@@ -91,17 +124,13 @@ function bootstrap() {
     reduxStore.dispatch(appThunks.connectAndStartPolling());
   }
 
-  const rootElement = document.getElementById("root");
-  if (rootElement) {
-    const root = createRoot(rootElement);
-    root.render(
-      <Provider store={reduxStore}>
-        <StrictMode>
-          <App />
-        </StrictMode>
-      </Provider>
-    );
-  }
+  renderRoot(
+    <Provider store={reduxStore}>
+      <StrictMode>
+        <App />
+      </StrictMode>
+    </Provider>
+  );
 }
 
 // If you want your app to work offline and load faster, you can change
