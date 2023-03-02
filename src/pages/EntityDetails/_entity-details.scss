@@ -1,6 +1,8 @@
 @import "../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/breakpoints";
+@import "../../scss/custom/icons";
+@include vf-b-placeholders;
 
 @mixin entity-details-layout {
   .entity-details {
@@ -168,10 +170,13 @@
     position: relative;
 
     &::before {
-      content: url("../../static/images/unit-tree.svg");
-      left: 0.75rem;
+      @extend %icon;
+      @include vf-icon-unit-tree($color-mid-dark);
+
+      background-size: auto;
+      content: "";
+      left: 0.5rem;
       position: absolute;
-      top: -0.25rem;
     }
   }
 }
@@ -422,11 +427,6 @@
   .entity-details__action-button-row {
     border-bottom: 1px solid $color-mid-light;
     border-top: 1px solid $color-mid-light;
-
-    &-icon {
-      margin-bottom: -0.15rem;
-      margin-right: 0.5rem;
-    }
 
     .entity-details__action-button {
       margin: 0.3rem 0;
