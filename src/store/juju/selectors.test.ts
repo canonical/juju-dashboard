@@ -24,6 +24,7 @@ import {
   getModelData,
   getControllerData,
   getModelListLoaded,
+  hasModels,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -263,5 +264,19 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual({ "ceph-mon": "blocked" });
+  });
+
+  it("hasModels", () => {
+    expect(
+      hasModels(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            models: {
+              abc123: modelListInfoFactory.build(),
+            },
+          }),
+        })
+      )
+    ).toBe(true);
   });
 });

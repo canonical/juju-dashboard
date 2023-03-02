@@ -62,6 +62,15 @@ export const getModelListLoaded = createSelector(
   (sliceState) => sliceState.modelsLoaded
 );
 
+/**
+  Whether there are any models in the model list.
+  @returns Whether the model list has been loaded.
+*/
+export const hasModels = createSelector(
+  [getModelList],
+  (modelList) => Object.keys(modelList).length > 0
+);
+
 export function getModelWatcherDataByUUID(modelUUID: string) {
   return createSelector(getModelWatcherData, (modelWatcherData) => {
     if (modelWatcherData?.[modelUUID]) {
