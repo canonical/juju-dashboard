@@ -13,6 +13,7 @@ import type {
 import { RootState } from "store/store";
 
 import type { Controllers, ModelData, ModelsList } from "./types";
+import { countUpdates } from "./utils/controllers";
 import {
   extractCloudName,
   extractCredentialName,
@@ -544,6 +545,24 @@ export const getGroupedModelStatusCounts = createSelector(
     return counts;
   }
 );
+/**
+ * Check for updates to the Juju controller
+ * @param controllerURL A specific controller to check for updates. If **not** specified, check all controllers.
+ * @returns The number of controllers that have updates available
+ */
+export const getControllersUpdateCount = (controllerURL?: string) =>
+  createSelector(getControllerData, (controllerData) => {
+    if (!controllerData) {
+      return 0;
+    }
+    if (!controllerURL) {
+      return Object.values(controllerData).reduce((count, controllers) => {
+        return count + countUpdates(controllers);
+      }, 0);
+    } else {
+      return countUpdates(controllerData[controllerURL]);
+    }
+  });
 
 /**
     Returns the controller data in the format of an Object.entries output.
