@@ -34,6 +34,23 @@ export type Query = {
   activeView?: string | null;
 };
 
+const generateLink = (address?: string | null) =>
+  address ? (
+    <a
+      href={`http://${address}`}
+      onClick={(event) => {
+        // Prevent navigating to the details page:
+        event.stopPropagation();
+      }}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      {address}
+    </a>
+  ) : (
+    "-"
+  );
+
 export function generateLocalApplicationRows(
   applications: ApplicationData | null,
   applicationStatuses: StatusData | null,
@@ -225,7 +242,7 @@ export function generateUnitRows(
     const unit = clonedUnits[unitId];
     const workload = unit["workload-status"].current || "-";
     const agent = unit["agent-status"].current || "-";
-    const publicAddress = unit["public-address"] || "-";
+    const publicAddress = unit["public-address"];
     const ports = generatePortsList(unit.ports);
     const message = unit["workload-status"].message || "-";
     const charm = unit["charm-url"];
@@ -244,7 +261,9 @@ export function generateUnitRows(
         className: "u-align--right",
         key: "machine",
       },
-      { content: publicAddress },
+      {
+        content: generateLink(publicAddress),
+      },
       {
         content: ports,
         className: "u-align--right",
@@ -301,6 +320,7 @@ export function generateUnitRows(
     if (subordinates) {
       for (let [key] of Object.entries(subordinates)) {
         const subordinate = subordinates[key];
+        const address = subordinate["public-address"];
         let columns = [
           {
             content: generateEntityIdentifier(
@@ -318,7 +338,7 @@ export function generateUnitRows(
           },
           { content: subordinate["agent-status"].current },
           { content: subordinate["machine-id"], className: "u-align--right" },
-          { content: subordinate["public-address"] },
+          { content: generateLink(address) },
           {
             content: subordinate["public-address"].split(":")[-1] || "-",
             className: "u-align--right",
