@@ -95,6 +95,7 @@ const EntityDetails = ({
   if (primaryControllerData) {
     credentials = getUserPass(storeState, primaryControllerData[0]);
     controllerWSHost = primaryControllerData[0]
+      .replace("ws://", "")
       .replace("wss://", "")
       .replace("/api", "");
   }
