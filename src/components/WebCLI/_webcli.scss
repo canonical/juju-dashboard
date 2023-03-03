@@ -1,9 +1,9 @@
 @import "../../scss/settings";
 @import "../../scss/breakpoints";
+@import "../../scss/variables";
 @import "vanilla-framework/scss/vanilla";
 
 $canonical-purple: #2c001e;
-$row-height: 2.5rem;
 
 .webcli {
   bottom: 0;
@@ -20,7 +20,7 @@ $row-height: 2.5rem;
   &__input {
     background-color: $color-x-dark;
     display: flex;
-    height: $row-height;
+    height: $webcli-input-height;
     padding: 0 1rem;
 
     &-prompt {
@@ -31,7 +31,7 @@ $row-height: 2.5rem;
       // XXX The unquote will need to be removed with the next vanilla release
       font-family: unquote($font-monospace);
       font-weight: bold;
-      line-height: $row-height;
+      line-height: $webcli-input-height;
       padding-right: 0.5rem;
     }
 
@@ -45,14 +45,14 @@ $row-height: 2.5rem;
       // https://github.com/canonical-web-and-design/vanilla-framework/pull/3370
       // XXX The unquote will need to be removed with the next vanilla release
       font-family: unquote($font-monospace);
-      height: $row-height;
+      height: $webcli-input-height;
       margin-bottom: 0;
       padding: 0 0.5rem;
     }
 
     &-help {
       flex-grow: 0;
-      line-height: $row-height;
+      line-height: $webcli-input-height;
       margin-left: 1rem;
 
       i {
@@ -64,7 +64,7 @@ $row-height: 2.5rem;
   &__output {
     background-color: $canonical-purple;
     height: 300px;
-    min-height: 10px;
+    min-height: $webcli-drag-height;
     overflow: hidden;
 
     a {
@@ -89,7 +89,7 @@ $row-height: 2.5rem;
 
     &-dragarea {
       cursor: row-resize;
-      height: 10px;
+      height: $webcli-drag-height;
       user-select: none;
       width: 100%;
     }

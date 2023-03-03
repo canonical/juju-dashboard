@@ -232,4 +232,13 @@ describe("Entity Details Container", () => {
       expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
     });
   });
+
+  it("gives the content a class when the webCLI is shown", async () => {
+    renderComponent();
+    await waitFor(() => {
+      expect(document.querySelector(".l-content")).toHaveClass(
+        "l-content--has-webcli"
+      );
+    });
+  });
 });
