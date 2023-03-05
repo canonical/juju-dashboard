@@ -92,12 +92,14 @@ const EntityDetails = ({
 
   let credentials = null;
   let controllerWSHost = "";
+  let wsProtocol: string | null = null;
   if (primaryControllerData) {
     credentials = getUserPass(storeState, primaryControllerData[0]);
     controllerWSHost = primaryControllerData[0]
       .replace("ws://", "")
       .replace("wss://", "")
       .replace("/api", "");
+    wsProtocol = primaryControllerData[0].split("://")[0];
   }
 
   const handleNavClick = (e: MouseEvent, section: string) => {
@@ -251,6 +253,7 @@ const EntityDetails = ({
           controllerWSHost={controllerWSHost}
           credentials={credentials}
           modelUUID={modelUUID}
+          protocol={wsProtocol ?? "wss"}
         />
       )}
     </BaseLayout>
