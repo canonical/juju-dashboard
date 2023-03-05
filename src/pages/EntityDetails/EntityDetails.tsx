@@ -1,5 +1,5 @@
 import { useEffect, useState, PropsWithChildren, ReactNode } from "react";
-
+import classNames from "classnames";
 import { Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
 import { useParams, Link } from "react-router-dom";
@@ -184,7 +184,11 @@ const EntityDetails = ({
   if (modelInfo) {
     content = (
       <FadeIn isActive={!!modelInfo}>
-        <div className="l-content">
+        <div
+          className={classNames("l-content", {
+            "l-content--has-webcli": showWebCLI,
+          })}
+        >
           <div className={`entity-details entity-details__${type}`}>
             <>
               {children}
