@@ -251,6 +251,7 @@ export default function ActionLogs() {
               ...newData,
             });
           }
+          const completedDate = new Date(actionData.completed);
           newData = {
             application: (
               <>
@@ -285,14 +286,18 @@ export default function ActionLogs() {
                 )}
               </>
             ),
-            completed: (
-              <Tooltip
-                message={new Date(actionData.completed).toLocaleString()}
-                position="top-center"
-              >
-                {formatFriendlyDateToNow(actionData.completed)}
-              </Tooltip>
-            ),
+            completed:
+              // Sometimes the log gets returned with a date of "0001-01-01T00:00:00Z".
+              completedDate.getFullYear() === 1 ? (
+                "Unknown"
+              ) : (
+                <Tooltip
+                  message={completedDate.toLocaleString()}
+                  position="top-center"
+                >
+                  {formatFriendlyDateToNow(actionData.completed)}
+                </Tooltip>
+              ),
             controls: (
               <>
                 <ContextualMenu
