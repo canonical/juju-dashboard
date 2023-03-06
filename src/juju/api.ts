@@ -328,7 +328,7 @@ export async function fetchAllModelStatuses(
       if (isLoggedIn(getState(), wsControllerURL)) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         dispatch(jujuActions.updateModelInfo({ modelInfo, wsControllerURL }));
-        if (modelInfo.results[0].result.isController) {
+        if (modelInfo.results[0].result["is-controller"]) {
           // If this is a controller model then update the
           // controller data with this model data.
           dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }));
