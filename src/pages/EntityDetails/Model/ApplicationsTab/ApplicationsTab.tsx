@@ -12,7 +12,7 @@ import {
 
 import {
   appsOffersTableHeaders,
-  localApplicationTableHeaders,
+  generateLocalApplicationTableHeaders,
   remoteApplicationTableHeaders,
 } from "tables/tableHeaders";
 import {
@@ -229,7 +229,7 @@ export default function ApplicationsTab({ filterQuery }: Props) {
   );
 
   const LocalAppsTable = () => {
-    let headers = localApplicationTableHeaders;
+    let headers = generateLocalApplicationTableHeaders();
     let rows = localApplicationTableRows;
     if (filterQuery) {
       headers = addSelectAllColumn(headers, selectAll, handleSelectAll);

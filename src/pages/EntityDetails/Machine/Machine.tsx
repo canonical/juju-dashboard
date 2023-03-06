@@ -19,7 +19,7 @@ import {
 } from "tables/tableRows";
 
 import {
-  localApplicationTableHeaders,
+  generateLocalApplicationTableHeaders,
   unitTableHeaders,
 } from "tables/tableHeaders";
 
@@ -115,7 +115,7 @@ export default function Machine() {
               emptyStateMsg={"There are no units in this machine"}
             />
             <MainTable
-              headers={localApplicationTableHeaders}
+              headers={generateLocalApplicationTableHeaders()}
               rows={applicationRows}
               className="entity-details__apps p-main-table"
               sortable
