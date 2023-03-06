@@ -92,11 +92,14 @@ const EntityDetails = ({
 
   let credentials = null;
   let controllerWSHost = "";
+  let wsProtocol: string | null = null;
   if (primaryControllerData) {
     credentials = getUserPass(storeState, primaryControllerData[0]);
     controllerWSHost = primaryControllerData[0]
+      .replace("ws://", "")
       .replace("wss://", "")
       .replace("/api", "");
+    wsProtocol = primaryControllerData[0].split("://")[0];
   }
 
   const handleNavClick = (e: MouseEvent, section: string) => {
@@ -110,8 +113,10 @@ const EntityDetails = ({
   };
 
   useEffect(() => {
-    // XXX Remove me once we have the 2.9 build.
-    if (modelInfo && modelInfo?.version.indexOf("2.9") !== -1) {
+    // Regex to extract the first two numbers:
+    const versionRegex = /^\d+\.\d+/g;
+    const version = Number(versionRegex.exec(modelInfo?.version ?? "")?.[0]);
+    if (version >= 2.9) {
       // The Web CLI is only available in Juju controller versions 2.9 and
       // above. This will allow us to only show the shell on multi-controller
       // setups with different versions where the correct controller version
@@ -252,6 +257,7 @@ const EntityDetails = ({
           controllerWSHost={controllerWSHost}
           credentials={credentials}
           modelUUID={modelUUID}
+          protocol={wsProtocol ?? "wss"}
         />
       )}
     </BaseLayout>
