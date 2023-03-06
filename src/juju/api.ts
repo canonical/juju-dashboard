@@ -246,7 +246,8 @@ export async function fetchModelStatus(
         // annotations so we have to inspect them and strip out the empty.
         const annotations: Record<string, AnnotationsAdditionalProperties> = {};
         response.results?.forEach((item) => {
-          if (Object.keys(item.annotations).length > 0) {
+          // Despite what the type says, the annotations property can be null.
+          if (Object.keys(item.annotations ?? {}).length > 0) {
             const appName = item.entity.replace("application-", "");
             annotations[appName] = item.annotations;
           }
