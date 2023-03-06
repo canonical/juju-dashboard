@@ -1,11 +1,6 @@
 @import "vanilla-framework/scss/vanilla";
 
 .controllers {
-  th {
-    padding-bottom: 6px;
-    padding-top: 6px;
-  }
-
   td,
   th {
     &:first-child {
