@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import * as juju from "juju/api";
 import {
   actionFactory,
   actionMessageFactory,
@@ -92,16 +93,8 @@ const mockActionResults = actionResultsFactory.build({
 
 jest.mock("juju/api", () => {
   return {
-    queryOperationsList: () => {
-      return new Promise((resolve) => {
-        resolve(mockOperationResults);
-      });
-    },
-    queryActionsList: () => {
-      return new Promise((resolve) => {
-        resolve(mockActionResults);
-      });
-    },
+    queryOperationsList: jest.fn(),
+    queryActionsList: jest.fn(),
   };
 });
 
@@ -131,6 +124,10 @@ describe("Action Logs", () => {
   }
 
   beforeEach(() => {
+    jest
+      .spyOn(juju, "queryOperationsList")
+      .mockResolvedValue(mockOperationResults);
+    jest.spyOn(juju, "queryActionsList").mockResolvedValue(mockActionResults);
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         modelData: {
@@ -142,6 +139,10 @@ describe("Action Logs", () => {
         },
       }),
     });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
   });
 
   it("requests the action logs data on load", async () => {
@@ -202,6 +203,44 @@ describe("Action Logs", () => {
     expect(rows[1].textContent).toEqual(expected[0].join(""));
     expect(rows[2].textContent).toEqual(expected[1].join(""));
     expect(rows[3].textContent).toEqual(expected[2].join(""));
+  });
+
+  it("handles unkown dates", async () => {
+    var completed = new Date("0001-01-01T00:00:00Z");
+    const mockActionResults = actionResultsFactory.build({
+      results: [
+        actionResultFactory.build({
+          action: actionFactory.build({
+            tag: "action-2",
+            receiver: "unit-easyrsa-0",
+            name: "list-disks",
+          }),
+          completed: completed.toISOString(),
+          log: [
+            actionMessageFactory.build({
+              message: "log message 1",
+            }),
+          ],
+        }),
+      ],
+    });
+    jest.spyOn(juju, "queryActionsList").mockResolvedValue(mockActionResults);
+    generateComponent();
+    const expected = [
+      ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
+      [
+        "└easyrsa/0",
+        "",
+        "completed",
+        "2",
+        "log message 1",
+        "Unknown",
+        "Output",
+      ],
+    ];
+    const rows = await screen.findAllByRole("row");
+    // Start at row 1 because row 0 is the header row.
+    expect(rows[1].textContent).toEqual(expected[0].join(""));
   });
 
   it("Only shows messages of selected type", async () => {
