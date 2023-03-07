@@ -222,6 +222,8 @@ export default function ActionLogs() {
           completed: "",
         };
         let newData = {};
+        const completedDate = new Date(actionData.completed);
+
         if (index === 0) {
           // If this is the first row then add the application row.
           // The reciever is in the format "unit-ceph-mon-0" to "ceph-mon"
@@ -285,14 +287,18 @@ export default function ActionLogs() {
               )}
             </>
           ),
-          completed: (
-            <Tooltip
-              message={new Date(actionData.completed).toLocaleString()}
-              position="top-center"
-            >
-              {formatFriendlyDateToNow(actionData.completed)}
-            </Tooltip>
-          ),
+          completed:
+            // Sometimes the log gets returned with a date of "0001-01-01T00:00:00Z".
+            completedDate.getFullYear() === 1 ? (
+              "Unknown"
+            ) : (
+              <Tooltip
+                message={completedDate.toLocaleString()}
+                position="top-center"
+              >
+                {formatFriendlyDateToNow(actionData.completed)}
+              </Tooltip>
+            ),
           controls: (
             <div className="entity-details__action-buttons">
               <ContextualMenu

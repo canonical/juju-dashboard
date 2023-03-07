@@ -9,8 +9,10 @@ type HeaderRow = {
   className?: string;
 };
 
-export const localApplicationTableHeaders: Header = [
-  { content: "local apps", sortKey: "local-apps" },
+export const generateLocalApplicationTableHeaders = (
+  multipleApps = true
+): Header => [
+  { content: `local app${multipleApps ? "s" : ""}`, sortKey: "local-apps" },
   { content: "status", sortKey: "status" },
   { content: "version", sortKey: "version" },
   { content: "scale", className: "u-align--right", sortKey: "scale" },
