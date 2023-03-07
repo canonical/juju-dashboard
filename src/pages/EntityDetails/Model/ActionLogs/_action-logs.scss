@@ -9,6 +9,12 @@
   .action-logs__stderr {
     color: $color-negative;
   }
+
+  .entity-details__action-buttons {
+    & > * {
+      margin-right: $sp-small !important;
+    }
+  }
 }
 
 @include action-logs;

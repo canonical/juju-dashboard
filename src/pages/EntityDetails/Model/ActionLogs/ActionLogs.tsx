@@ -1,34 +1,37 @@
-import classnames from "classnames";
-import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
-
 import {
+  ActionResult,
+  AdditionalProperties,
+  OperationResult,
+} from "@canonical/jujulib/dist/api/facades/action/ActionV7";
+import {
+  Button,
+  CodeSnippet,
+  CodeSnippetBlockAppearance,
   ContextualMenu,
+  Modal,
   ModularTable,
   Spinner,
   Tooltip,
 } from "@canonical/react-components";
-
-import { getModelStatus, getModelUUID } from "store/juju/selectors";
+import FadeIn from "animations/FadeIn";
+import classnames from "classnames";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 import {
+  copyToClipboard,
+  formatFriendlyDateToNow,
   generateIconImg,
   generateStatusElement,
-  formatFriendlyDateToNow,
 } from "components/utils";
 import { queryActionsList, queryOperationsList } from "juju/api";
-
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import { RootState, useAppStore } from "store/store";
 import "./_action-logs.scss";
 
-type Operations = Operation[];
-type Actions = Action[];
-
-type Operation = {
-  operation: string;
-  actions: Action[];
-};
+type Operations = OperationResult[];
+type Actions = ActionResult[];
 
 type TableRows = TableRow[];
 
@@ -39,38 +42,6 @@ type TableRow = {
   taskId: string;
   message: string;
   completed: string;
-};
-
-// https://github.com/juju/js-libjuju/blob/master/api/facades/action-v7.ts#L29
-type Action = {
-  action: ActionData;
-  completed: string;
-  enqueued: string;
-  error: Error;
-  log: ActionMessage[];
-  message: string;
-  output: AdditionalProperties;
-  started: string;
-  status: string;
-};
-
-type ActionMessage = {
-  message: string;
-  timestamp: string;
-};
-
-type ActionData = {
-  "execution-group"?: string;
-  name: string;
-  parallel?: boolean;
-  parameters?: AdditionalProperties;
-  receiver: string;
-  tag: string;
-};
-
-// custom entries that are set with `event.set_results`
-type AdditionalProperties = {
-  [key: string]: any;
 };
 
 type ApplicationData = {
@@ -119,10 +90,43 @@ function generateAppIcon(
   return <>{appName}</>;
 }
 
+function ActionPayloadModal(props: {
+  payload: AdditionalProperties | null;
+  onClose: () => void;
+}) {
+  if (!props.payload) return <></>;
+  const json = JSON.stringify(props.payload, null, 2);
+  return (
+    <Modal
+      close={props.onClose}
+      title="Action result payload"
+      buttonRow={
+        <Button appearance="neutral" onClick={() => copyToClipboard(json)}>
+          Copy to clipboard
+        </Button>
+      }
+      data-testid="action-payload-modal"
+    >
+      <CodeSnippet
+        blocks={[
+          {
+            appearance: CodeSnippetBlockAppearance.NUMBERED,
+            wrapLines: true,
+            code: json,
+          },
+        ]}
+      />
+    </Modal>
+  );
+}
+
 export default function ActionLogs() {
   const [operations, setOperations] = useState<Operations>([]);
   const [actions, setActions] = useState<Actions>([]);
   const [fetchedOperations, setFetchedOperations] = useState(false);
+  const [modalDetails, setModalDetails] = useState<AdditionalProperties | null>(
+    null
+  );
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const [selectedOutput, setSelectedOutput] = useState<{
     [key: string]: Output;
@@ -151,8 +155,8 @@ export default function ActionLogs() {
         );
         setOperations(operationList.results);
         const actionsTags = operationList.results
-          ?.flatMap((operation: Operation) =>
-            operation.actions.map((action) => action.action.tag)
+          ?.flatMap((operation: OperationResult) =>
+            operation.actions?.map((action) => action.action.tag)
           )
           .map((actionTag: string) => ({ tag: actionTag }));
         const actionsList = await queryActionsList(
@@ -178,164 +182,162 @@ export default function ActionLogs() {
     };
 
     const rows: TableRows = [];
-    operations &&
-      operations.forEach((operationData) => {
-        const operationId = operationData.operation.split("-")[1];
-        // The action name is being defined like this because the action name is
-        // only contained in the actions array and not on the operation level.
-        // Even though at the current time an operation is the same action
-        // performed across multiple units of the same application. I expect
-        // that the CLI may gain this functionality in the future and we'll have
-        // to update this code to display the correct action name.
-        let actionName = "";
-        operationData.actions.forEach((actionData, index) => {
-          actionName = actionData.action.name;
-          const outputType =
-            selectedOutput[actionData.action.tag] || Output.ALL;
+    operations?.forEach((operationData) => {
+      const operationId = operationData.operation.split("-")[1];
+      // The action name is being defined like this because the action name is
+      // only contained in the actions array and not on the operation level.
+      // Even though at the current time an operation is the same action
+      // performed across multiple units of the same application. I expect
+      // that the CLI may gain this functionality in the future and we'll have
+      // to update this code to display the correct action name.
+      let actionName = "";
+      operationData.actions?.forEach((actionData, index) => {
+        actionName = actionData.action.name;
+        const outputType = selectedOutput[actionData.action.tag] || Output.ALL;
 
-          const actionFullDetails = actions.find(
-            (action) => action.action.tag === actionData.action.tag
-          );
-          if (!actionFullDetails) return;
-          const stdout = (actionFullDetails.log || []).map((m, i) => (
-            <span className="action-logs__stdout" key={i}>
-              {m.message}
-            </span>
-          ));
-          const stderr =
-            actionFullDetails.status === "failed"
-              ? actionFullDetails.message
-              : "";
-          const StdOut = () => <span>{stdout}</span>;
-          const StdErr = () => (
-            <span className="action-logs__stderr">{stderr}</span>
-          );
-          let defaultRow: TableRow = {
-            application: "-",
-            id: "-",
-            status: "-",
-            taskId: "",
-            message: "",
-            completed: "",
-          };
-          let newData = {};
-          if (index === 0) {
-            // If this is the first row then add the application row.
-            // The reciever is in the format "unit-ceph-mon-0" to "ceph-mon"
-            const parts = actionData.action.receiver.match(/unit-(.+)-\d+/);
-            const appName = parts && parts[1];
-            if (!appName) {
-              console.error(
-                "Unable to parse action receiver",
-                actionData.action.receiver
-              );
-              return;
-            }
-            newData = {
-              application: generateAppIcon(
-                modelStatusData?.applications[appName],
-                appName,
-                userName,
-                modelName
-              ),
-              id: `${operationId}/${actionName}`,
-              status: generateStatusElement(
-                actionData.status,
-                undefined,
-                true,
-                true
-              ),
-            };
-            rows.push({
-              ...defaultRow,
-              ...newData,
-            });
+        const actionFullDetails = actions.find(
+          (action) => action.action.tag === actionData.action.tag
+        );
+        delete actionFullDetails?.output["return-code"];
+        if (!actionFullDetails) return;
+        const stdout = (actionFullDetails.log || []).map((m, i) => (
+          <span className="action-logs__stdout" key={i}>
+            {m.message}
+          </span>
+        ));
+        const stderr =
+          actionFullDetails.status === "failed"
+            ? actionFullDetails.message
+            : "";
+        const StdOut = () => <span>{stdout}</span>;
+        const StdErr = () => (
+          <span className="action-logs__stderr">{stderr}</span>
+        );
+        let defaultRow: TableRow = {
+          application: "-",
+          id: "-",
+          status: "-",
+          taskId: "",
+          message: "",
+          completed: "",
+        };
+        let newData = {};
+        if (index === 0) {
+          // If this is the first row then add the application row.
+          // The reciever is in the format "unit-ceph-mon-0" to "ceph-mon"
+          const parts = actionData.action.receiver.match(/unit-(.+)-\d+/);
+          const appName = parts && parts[1];
+          if (!appName) {
+            console.error(
+              "Unable to parse action receiver",
+              actionData.action.receiver
+            );
+            return;
           }
           newData = {
-            application: (
-              <>
-                <span className="entity-details__unit-indent">└</span>
-                <span>
-                  {actionData.action.receiver.replace(
-                    /unit-(.+)-(\d+)/,
-                    "$1/$2"
-                  )}
-                </span>
-              </>
+            application: generateAppIcon(
+              modelStatusData?.applications[appName],
+              appName,
+              userName,
+              modelName
             ),
-            id: "",
+            id: `${operationId}/${actionName}`,
             status: generateStatusElement(
               actionData.status,
               undefined,
               true,
               true
             ),
-            taskId: actionData.action.tag.split("-")[1],
-            message: (
-              <>
-                {outputType === Output.STDOUT ? (
-                  <StdOut />
-                ) : outputType === Output.STDERR ? (
-                  <StdErr />
-                ) : (
-                  <>
-                    <StdOut />
-                    <StdErr />
-                  </>
-                )}
-              </>
-            ),
-            completed: (
-              <Tooltip
-                message={new Date(actionData.completed).toLocaleString()}
-                position="top-center"
-              >
-                {formatFriendlyDateToNow(actionData.completed)}
-              </Tooltip>
-            ),
-            controls: (
-              <>
-                <ContextualMenu
-                  hasToggleIcon
-                  toggleLabel={
-                    outputType === Output.ALL ? Label.OUTPUT : outputType
-                  }
-                  links={[
-                    {
-                      children: Output.ALL,
-                      onClick: () =>
-                        handleOutputSelect(actionData.action.tag, Output.ALL),
-                    },
-                    {
-                      children: Output.STDOUT,
-                      onClick: () =>
-                        handleOutputSelect(
-                          actionData.action.tag,
-                          Output.STDOUT
-                        ),
-                      disabled: !stdout.length,
-                    },
-                    {
-                      children: Output.STDERR,
-                      onClick: () =>
-                        handleOutputSelect(
-                          actionData.action.tag,
-                          Output.STDERR
-                        ),
-                      disabled: !stderr.length,
-                    },
-                  ]}
-                />
-              </>
-            ),
           };
-
           rows.push({
             ...defaultRow,
             ...newData,
           });
+        }
+        newData = {
+          application: (
+            <>
+              <span className="entity-details__unit-indent">└</span>
+              <span>
+                {actionData.action.receiver.replace(/unit-(.+)-(\d+)/, "$1/$2")}
+              </span>
+            </>
+          ),
+          id: "",
+          status: generateStatusElement(
+            actionData.status,
+            undefined,
+            true,
+            true
+          ),
+          taskId: actionData.action.tag.split("-")[1],
+          message: (
+            <>
+              {outputType === Output.STDOUT ? (
+                <StdOut />
+              ) : outputType === Output.STDERR ? (
+                <StdErr />
+              ) : (
+                <>
+                  <StdOut />
+                  <StdErr />
+                </>
+              )}
+            </>
+          ),
+          completed: (
+            <Tooltip
+              message={new Date(actionData.completed).toLocaleString()}
+              position="top-center"
+            >
+              {formatFriendlyDateToNow(actionData.completed)}
+            </Tooltip>
+          ),
+          controls: (
+            <div className="entity-details__action-buttons">
+              <ContextualMenu
+                hasToggleIcon
+                toggleLabel={
+                  outputType === Output.ALL ? Label.OUTPUT : outputType
+                }
+                links={[
+                  {
+                    children: Output.ALL,
+                    onClick: () =>
+                      handleOutputSelect(actionData.action.tag, Output.ALL),
+                  },
+                  {
+                    children: Output.STDOUT,
+                    onClick: () =>
+                      handleOutputSelect(actionData.action.tag, Output.STDOUT),
+                    disabled: !stdout.length,
+                  },
+                  {
+                    children: Output.STDERR,
+                    onClick: () =>
+                      handleOutputSelect(actionData.action.tag, Output.STDERR),
+                    disabled: !stderr.length,
+                  },
+                ]}
+              />
+              {Object.keys(actionFullDetails.output).length > 0 && (
+                <Button
+                  onClick={() => setModalDetails(actionFullDetails.output)}
+                  data-testid="show-output"
+                >
+                  Result
+                </Button>
+              )}
+            </div>
+          ),
+        };
+
+        rows.push({
+          ...defaultRow,
+          ...newData,
         });
       });
+    });
     return rows;
   }, [
     operations,
@@ -396,6 +398,12 @@ export default function ActionLogs() {
           data={tableData}
         />
       )}
+      <FadeIn isActive={Boolean(modalDetails)}>
+        <ActionPayloadModal
+          payload={modalDetails}
+          onClose={() => setModalDetails(null)}
+        />
+      </FadeIn>
     </div>
   );
 }
