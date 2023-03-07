@@ -243,7 +243,7 @@ export default function ConfigPanel({
       isLoading={!appName}
       className="config-panel"
     >
-      <div className="config-panel">
+      <div>
         {isLoading ? (
           <div className="full-size u-vertically-center">
             <Spinner />
@@ -359,7 +359,8 @@ async function getConfig(
     (result) => {
       // Add the key to the config object to make for easier use later.
       const config: Config = {};
-      Object.keys(result.config).forEach((key) => {
+      // The config param can be null.
+      Object.keys(result.config ?? {}).forEach((key) => {
         config[key] = result.config[key];
         config[key].name = key;
       });
