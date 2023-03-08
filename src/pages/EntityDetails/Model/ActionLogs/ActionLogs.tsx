@@ -303,6 +303,7 @@ export default function ActionLogs() {
             <div className="entity-details__action-buttons">
               <ContextualMenu
                 hasToggleIcon
+                toggleProps={{ dense: true }}
                 toggleLabel={
                   outputType === Output.ALL ? Label.OUTPUT : outputType
                 }
@@ -330,6 +331,7 @@ export default function ActionLogs() {
                 <Button
                   onClick={() => setModalDetails(actionFullDetails.output)}
                   data-testid="show-output"
+                  dense
                 >
                   Result
                 </Button>

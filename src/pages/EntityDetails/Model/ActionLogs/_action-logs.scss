@@ -2,6 +2,17 @@
 @import "vanilla-framework/scss/vanilla";
 
 @mixin action-logs {
+  .entity-details__action-logs {
+    table {
+      // log messages column
+      th:nth-child(5),
+      // control buttons column
+      th:nth-child(7) {
+        width: 20%;
+      }
+    }
+  }
+
   .action-logs__stdout {
     display: block;
   }
