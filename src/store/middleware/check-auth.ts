@@ -5,6 +5,7 @@
 
 import { Middleware } from "redux";
 import { actions as appActions, thunks as appThunks } from "store/app";
+import { addControllerCloudRegion } from "store/juju/thunks";
 import { actions as generalActions } from "store/general";
 import { isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
@@ -77,6 +78,9 @@ export const checkAuthMiddleware: Middleware<
       appThunks.logOut.fulfilled.type,
       appThunks.logOut.pending.type,
       appThunks.logOut.rejected.type,
+      addControllerCloudRegion.fulfilled.type,
+      addControllerCloudRegion.pending.type,
+      addControllerCloudRegion.rejected.type,
     ];
 
     const state = getState();

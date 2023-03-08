@@ -4,6 +4,7 @@ import { ModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-mana
 import { actions as jujuActions } from "store/juju";
 import { RootState } from "store/store";
 import { checkLoggedIn } from "store/middleware/check-auth";
+import cloneDeep from "clone-deep";
 
 /**
   Updates the correct controller entry with a cloud and region fetched from
@@ -21,8 +22,12 @@ export const addControllerCloudRegion = createAsyncThunk<
 >(
   "juju/addControllerCloudRegion",
   async ({ wsControllerURL, modelInfo }, thunkAPI) => {
-    const controllers =
-      thunkAPI.getState()?.juju?.controllers?.[wsControllerURL];
+    // Get a copy of the store data so it can be manipulated before dispatching
+    // the update. Without this the modifications were silently failing,
+    // possibly because the data was being made immutable by Immer.
+    const controllers = cloneDeep(
+      thunkAPI.getState()?.juju?.controllers?.[wsControllerURL]
+    );
     const model = modelInfo.results[0].result;
     if (controllers) {
       const updatedControllers = controllers.map((controller) => {
