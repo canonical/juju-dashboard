@@ -1,14 +1,23 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/settings";
 @import "../../scss/breakpoints";
+@import "../../scss/variables";
+
+$panel-padding: 1.5rem;
 
 .slide-panel.config-panel .slide-panel__content {
-  padding: 1.5rem 0 0;
+  padding: $panel-padding 0 0;
 }
 
 .config-panel {
-  $magic-height: 200px;
-  $magic-min-height: calc(100vh - #{$magic-height});
+  $magic-title-height: 4.7rem;
+  $magic-drawer-height: 5rem;
+
+  /* prettier-ignore */
+  $magic-non-content-height: ($panel-padding * 2) + $top-header-height + $magic-drawer-height + $magic-title-height;
+  $magic-min-height: calc(100vh - #{$magic-non-content-height});
+
+  overflow-y: auto;
 
   &__modal-button-row-hint {
     font-size: 0.875rem;

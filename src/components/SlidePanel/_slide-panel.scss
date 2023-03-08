@@ -1,11 +1,10 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
 @import "../../scss/breakpoints";
+@import "../../scss/variables";
 
 .slide-panel {
   @include vf-animation(transform, brisk, out);
-
-  $top-header-height: 64px;
 
   background-color: $color-x-light;
   height: calc(100% - #{$top-header-height});
