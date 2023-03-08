@@ -359,8 +359,8 @@ export default function ShareModel() {
                     admin
                     <span className="help-text">
                       In addition to 'write' abilities, a user can perform model
-                      upgrades and connect to machines via juju ssh. Makes the
-                      user an effective model owner.
+                      upgrades, execute actions and connect to machines via juju
+                      ssh. Makes the user an effective model owner.
                     </span>
                   </>
                 }
