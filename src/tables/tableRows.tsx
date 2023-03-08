@@ -11,8 +11,9 @@ import {
   generateRelationIconImage,
   generateStatusElement,
   generateIconImg,
+  copyToClipboard,
 } from "components/utils";
-import { Tooltip } from "@canonical/react-components";
+import { Button, Icon, Tooltip } from "@canonical/react-components";
 import {
   MainTableCell,
   MainTableRow,
@@ -34,19 +35,23 @@ export type Query = {
   activeView?: string | null;
 };
 
-const generateLink = (address?: string | null) =>
+const generateAddress = (address?: string | null) =>
   address ? (
-    <a
-      href={`http://${address}`}
-      onClick={(event) => {
-        // Prevent navigating to the details page:
-        event.stopPropagation();
-      }}
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      {address}
-    </a>
+    <>
+      {address}{" "}
+      <Button
+        appearance="base"
+        className="has-hover__hover-state is-small"
+        onClick={(event) => {
+          // Prevent navigating to the details page:
+          event.stopPropagation();
+          copyToClipboard(address);
+        }}
+        hasIcon
+      >
+        <Icon name="copy" />
+      </Button>
+    </>
   ) : (
     "-"
   );
@@ -262,7 +267,8 @@ export function generateUnitRows(
         key: "machine",
       },
       {
-        content: generateLink(publicAddress),
+        content: generateAddress(publicAddress),
+        className: "u-flex has-hover",
       },
       {
         content: ports,
@@ -321,7 +327,7 @@ export function generateUnitRows(
       for (let [key] of Object.entries(subordinates)) {
         const subordinate = subordinates[key];
         const address = subordinate["public-address"];
-        let columns = [
+        let columns: MainTableCell[] = [
           {
             content: generateEntityIdentifier(
               subordinate["charm-url"],
@@ -338,7 +344,7 @@ export function generateUnitRows(
           },
           { content: subordinate["agent-status"].current },
           { content: subordinate["machine-id"], className: "u-align--right" },
-          { content: generateLink(address) },
+          { content: generateAddress(address), className: "u-flex has-hover" },
           {
             content: subordinate["public-address"].split(":")[-1] || "-",
             className: "u-align--right",

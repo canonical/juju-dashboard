@@ -7,3 +7,19 @@ th,
 td {
   min-width: 150px;
 }
+
+td.has-hover {
+  .has-hover__hover-state {
+    display: none;
+  }
+
+  &:hover .has-hover__hover-state {
+    display: block;
+  }
+}
+
+td {
+  [class^="p-button"].is-small {
+    margin: -$input-border-thickness 0 0;
+  }
+}
