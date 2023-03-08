@@ -58,7 +58,15 @@
   }
 
   &__reset-all {
+    flex: 1 0 auto;
     margin-left: auto;
+
+    &.config-panel__hide-button {
+      overflow: hidden;
+      position: absolute;
+      right: 1.5rem;
+      top: 0;
+    }
   }
 
   &__message {
@@ -78,11 +86,11 @@
   }
 
   &__list-header {
-    align-items: baseline;
     display: flex;
     justify-content: space-between;
     margin: 2rem 0 1rem;
     padding: 0 1.5rem;
+    position: relative;
 
     @media (max-width: $breakpoint-x-small) {
       flex-direction: column;
@@ -107,11 +115,13 @@
     }
 
     .entity-name {
-      font-size: 1.3rem;
-      margin-top: 0.3rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+
+      .entity-icon {
+        vertical-align: text-bottom;
+      }
     }
   }
 

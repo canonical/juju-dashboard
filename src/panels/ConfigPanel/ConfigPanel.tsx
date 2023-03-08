@@ -259,17 +259,17 @@ export default function ConfigPanel({
             <>
               <div className="config-panel__config-list col-6">
                 <div className="config-panel__list-header">
-                  <div className="entity-name">
+                  <h4 className="entity-name">
                     {generateIconImg(appName, charm)} {appName}
-                  </div>
-                  <div className="config-panel__reset-all">
+                  </h4>
+                  <div
+                    className={classnames("config-panel__reset-all", {
+                      "config-panel__hide-button": !showResetAll,
+                      "config-panel__show-button": showResetAll,
+                    })}
+                  >
                     <button
-                      className={classnames(
-                        "u-button-neutral config-panel__hide-button",
-                        {
-                          "config-panel__show-button": showResetAll,
-                        }
-                      )}
+                      className="u-button-neutral"
                       onClick={allFieldsToDefault}
                     >
                       Reset all values
