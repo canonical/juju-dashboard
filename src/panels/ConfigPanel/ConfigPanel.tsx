@@ -9,7 +9,11 @@ import {
 import { ReactNode, useEffect, useState } from "react";
 import type { Store } from "redux";
 
-import { Spinner, useListener } from "@canonical/react-components";
+import {
+  Notification,
+  Spinner,
+  useListener,
+} from "@canonical/react-components";
 
 import FadeIn from "animations/FadeIn";
 import { generateIconImg, isSet } from "components/utils";
@@ -26,6 +30,8 @@ import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
 
 import "./_config-panel.scss";
+import { SetNewValue } from "./ConfigField";
+import NumberConfig from "./NumberConfig";
 
 export enum Label {
   NONE = "This application doesn't have any configuration parameters",
@@ -38,16 +44,14 @@ type Props = {
   onClose: () => void;
 };
 
-export type ConfigProps = {
-  config: ConfigData;
-  selectedConfig: ConfigData | undefined;
-  setSelectedConfig: Function;
-  setNewValue: SetNewValue;
-};
-
-type SetNewValue = (name: string, value: any) => void;
-
 type ConfirmTypes = "apply" | "cancel" | null;
+
+const generateErrors = (errors: string[]) =>
+  errors.map((error) => (
+    <Notification key={error} severity="negative">
+      {error}
+    </Notification>
+  ));
 
 export default function ConfigPanel({
   appName,
@@ -65,6 +69,7 @@ export default function ConfigPanel({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [savingConfig, setSavingConfig] = useState<boolean>(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
+  const [formErrors, setFormErrors] = useState<string[] | null>(null);
 
   const sendAnalytics = useAnalytics();
 
@@ -167,16 +172,24 @@ export default function ConfigPanel({
 
   async function _submitToJuju() {
     setSavingConfig(true);
-    const error = await setApplicationConfig(
+    const response = await setApplicationConfig(
       modelUUID,
       appName,
       config,
       reduxStore.getState()
     );
-    // It returns an empty object if it's successful.
-    if (typeof error === "string") {
-      // XXX Surface this to the user.
-      console.error("error setting config", error);
+    let errors = response?.results?.reduce<string[]>((collection, result) => {
+      if (result.error) {
+        collection.push(result.error.message);
+      }
+      return collection;
+    }, []);
+    setSavingConfig(false);
+    setEnableSave(false);
+    setConfirmType(null);
+    if (errors.length) {
+      setFormErrors(errors);
+      return;
     }
     await getConfig(
       modelUUID,
@@ -186,9 +199,6 @@ export default function ConfigPanel({
       setConfig,
       checkAllDefaults
     );
-    setSavingConfig(false);
-    setEnableSave(false);
-    setConfirmType(null);
     sendAnalytics({
       category: "User",
       action: "Config values updated",
@@ -205,6 +215,8 @@ export default function ConfigPanel({
           changedConfigList,
           () => {
             setConfirmType(null);
+            // Clear the form errors if there were any from a previous submit.
+            setFormErrors(null);
             _submitToJuju();
           },
           () => setConfirmType(null)
@@ -278,6 +290,7 @@ export default function ConfigPanel({
                 </div>
 
                 <div className="config-panel__list">
+                  {formErrors ? generateErrors(formErrors) : null}
                   {generateConfigElementList(
                     config,
                     selectedConfig,
@@ -381,6 +394,16 @@ function generateConfigElementList(
     if (config.type === "boolean") {
       return (
         <BooleanConfig
+          key={config.name}
+          config={config}
+          selectedConfig={selectedConfig}
+          setSelectedConfig={setSelectedConfig}
+          setNewValue={setNewValue}
+        />
+      );
+    } else if (config.type === "int") {
+      return (
+        <NumberConfig
           key={config.name}
           config={config}
           selectedConfig={selectedConfig}

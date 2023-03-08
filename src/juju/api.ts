@@ -26,6 +26,7 @@ import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
+import { ErrorResults } from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
 
 import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
 import { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
@@ -478,7 +479,7 @@ export async function setApplicationConfig(
   appName: string,
   config: Config,
   appState: RootState
-) {
+): Promise<ErrorResults> {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const setValues: Record<string, string> = {};
   Object.keys(config).forEach((key) => {
