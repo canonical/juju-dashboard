@@ -1,8 +1,8 @@
-import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import configureStore from "redux-mock-store";
 
 import * as juju from "juju/api";
 import {
@@ -17,13 +17,13 @@ import {
 import ActionLogs, {
   Label,
 } from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
+import { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
   jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
-import { RootState } from "store/store";
 
 import { Output } from "./ActionLogs";
 
@@ -69,6 +69,10 @@ const mockActionResults = actionResultsFactory.build({
           message: "log message 1",
         }),
       ],
+      output: {
+        key1: "value1",
+        test: 123,
+      },
     }),
     actionResultFactory.build({
       action: actionFactory.build({
@@ -85,6 +89,7 @@ const mockActionResults = actionResultsFactory.build({
           message: "log message 2",
         }),
       ],
+      output: { "return-code": "1" },
       status: "failed",
       message: "error message",
     }),
@@ -157,6 +162,7 @@ describe("Action Logs", () => {
         "log message 1",
         "over 1 year ago",
         "Output",
+        "Result",
       ],
       [
         "└easyrsa/1",
@@ -187,6 +193,7 @@ describe("Action Logs", () => {
         "log message 1",
         "over 1 year ago",
         "Output",
+        "Result",
       ],
       [
         "└easyrsa/1",
@@ -256,5 +263,29 @@ describe("Action Logs", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: Output.STDERR }));
     expect(within(rows[3]).getByText("error message")).toBeInTheDocument();
+  });
+
+  it("only shows the action result button when there is a result", async () => {
+    generateComponent();
+    const showOutputBtns = await screen.findAllByTestId("show-output");
+    expect(showOutputBtns.length).toBe(1);
+  });
+
+  it("shows the payload when the action result button is clicked", async () => {
+    generateComponent();
+    const showOutputBtn = await screen.findByTestId("show-output");
+    await userEvent.click(showOutputBtn);
+    const modal = await screen.findByTestId("action-payload-modal");
+    expect(modal).toBeInTheDocument();
+  });
+
+  it("closes the payload modal when the close button is clicked", async () => {
+    generateComponent();
+    const showOutputBtn = await screen.findByTestId("show-output");
+    await userEvent.click(showOutputBtn);
+    const modal = await screen.findByTestId("action-payload-modal");
+    expect(modal).toBeInTheDocument();
+    await userEvent.click(screen.getByLabelText("Close active modal"));
+    expect(modal).not.toBeInTheDocument();
   });
 });
