@@ -66,8 +66,12 @@ $canonical-purple: #2c001e;
   &__output {
     background-color: $canonical-purple;
     height: 300px;
-    min-height: $webcli-drag-height;
+    min-height: $webcli-desktop-drag-height;
     overflow: hidden;
+
+    @media (max-width: $breakpoint-large) {
+      min-height: $webcli-mobile-drag-height;
+    }
 
     a {
       text-decoration: underline;
@@ -91,7 +95,7 @@ $canonical-purple: #2c001e;
 
     &-dragarea {
       cursor: row-resize;
-      height: $webcli-drag-height;
+      height: $webcli-desktop-drag-height;
       user-select: none;
       width: 100%;
     }
@@ -104,6 +108,12 @@ $canonical-purple: #2c001e;
       right: 50%;
       top: 0;
       width: 2rem;
+    }
+  }
+
+  .webcli__output-dragarea {
+    @media (max-width: $breakpoint-large) {
+      height: $webcli-mobile-drag-height;
     }
   }
 }
