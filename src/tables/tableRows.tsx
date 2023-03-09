@@ -11,8 +11,9 @@ import {
   generateRelationIconImage,
   generateStatusElement,
   generateIconImg,
+  copyToClipboard,
 } from "components/utils";
-import { Tooltip } from "@canonical/react-components";
+import { Button, Icon, Tooltip } from "@canonical/react-components";
 import {
   MainTableCell,
   MainTableRow,
@@ -33,6 +34,27 @@ export type Query = {
   entity?: string | null;
   activeView?: string | null;
 };
+
+const generateAddress = (address?: string | null) =>
+  address ? (
+    <>
+      {address}{" "}
+      <Button
+        appearance="base"
+        className="has-hover__hover-state is-small"
+        onClick={(event) => {
+          // Prevent navigating to the details page:
+          event.stopPropagation();
+          copyToClipboard(address);
+        }}
+        hasIcon
+      >
+        <Icon name="copy" />
+      </Button>
+    </>
+  ) : (
+    "-"
+  );
 
 export function generateLocalApplicationRows(
   applications: ApplicationData | null,
@@ -225,7 +247,7 @@ export function generateUnitRows(
     const unit = clonedUnits[unitId];
     const workload = unit["workload-status"].current || "-";
     const agent = unit["agent-status"].current || "-";
-    const publicAddress = unit["public-address"] || "-";
+    const publicAddress = unit["public-address"];
     const ports = generatePortsList(unit.ports);
     const message = unit["workload-status"].message || "-";
     const charm = unit["charm-url"];
@@ -244,7 +266,10 @@ export function generateUnitRows(
         className: "u-align--right",
         key: "machine",
       },
-      { content: publicAddress },
+      {
+        content: generateAddress(publicAddress),
+        className: "u-flex has-hover",
+      },
       {
         content: ports,
         className: "u-align--right",
@@ -301,7 +326,8 @@ export function generateUnitRows(
     if (subordinates) {
       for (let [key] of Object.entries(subordinates)) {
         const subordinate = subordinates[key];
-        let columns = [
+        const address = subordinate["public-address"];
+        let columns: MainTableCell[] = [
           {
             content: generateEntityIdentifier(
               subordinate["charm-url"],
@@ -318,7 +344,7 @@ export function generateUnitRows(
           },
           { content: subordinate["agent-status"].current },
           { content: subordinate["machine-id"], className: "u-align--right" },
-          { content: subordinate["public-address"] },
+          { content: generateAddress(address), className: "u-flex has-hover" },
           {
             content: subordinate["public-address"].split(":")[-1] || "-",
             className: "u-align--right",
