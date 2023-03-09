@@ -345,7 +345,7 @@ export default function ShareModel() {
                     write
                     <span className="help-text">
                       In addition to 'read' abilities, a user can
-                      modify/configure models
+                      modify/configure models and execute actions.
                     </span>
                   </>
                 }
@@ -359,8 +359,8 @@ export default function ShareModel() {
                     admin
                     <span className="help-text">
                       In addition to 'write' abilities, a user can perform model
-                      upgrades, execute actions and connect to machines via juju
-                      ssh. Makes the user an effective model owner.
+                      upgrades and connect to machines via juju ssh. Makes the
+                      user an effective model owner.
                     </span>
                   </>
                 }
