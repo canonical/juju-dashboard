@@ -101,23 +101,27 @@ describe("Controllers table", () => {
   });
 
   it("Indicates if a controller has an update available", () => {
+    jest.mock("@canonical/jujulib/dist/api/versions", () => ({
+      jujuUpdateAvailable: jest.fn().mockResolvedValue(true),
+    }));
+
     state.juju = jujuStateFactory.build({
       controllers: {
         "wss://jimm.jujucharms.com/api": [
           controllerFactory.build({
-            path: "admin/jaas",
             uuid: "123",
-            version: "2.8.0",
+            version: "1.0.0",
+            updateAvailable: true,
           }),
           controllerFactory.build({
-            path: "admin/jaas2",
-            uuid: "456",
-            version: "9.99.0",
+            uuid: "234",
+            version: "1.0.0",
+            updateAvailable: true,
           }),
           controllerFactory.build({
-            path: "admin/jaas3",
-            uuid: "789",
-            version: "9.99.0",
+            uuid: "345",
+            version: "0.9.9",
+            updateAvailable: false,
           }),
         ],
       },
@@ -132,6 +136,6 @@ describe("Controllers table", () => {
         </Provider>
       </MemoryRouter>
     );
-    expect(screen.getAllByTestId("update-available")).toHaveLength(1);
+    expect(screen.getAllByTestId("update-available")).toHaveLength(2);
   });
 });

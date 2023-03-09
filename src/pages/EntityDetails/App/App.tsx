@@ -1,4 +1,4 @@
-import { Button, MainTable } from "@canonical/react-components";
+import { Button, MainTable, Icon } from "@canonical/react-components";
 import { Field, Formik } from "formik";
 import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -32,9 +32,6 @@ import {
   machineTableHeaders,
 } from "tables/tableHeaders";
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
-
-import actionLogsImage from "static/images/action-logs-icon.svg";
-import runActionImage from "static/images/run-action-icon.svg";
 
 import {
   getModelApplications,
@@ -303,12 +300,8 @@ export default function App(): JSX.Element {
                   disabled={!enableActionButtonRow}
                   data-testid={TestId.RUN_ACTION_BUTTON}
                 >
-                  <img
-                    className="entity-details__action-button-row-icon"
-                    src={runActionImage}
-                    alt=""
-                  />
-                  Run action
+                  <Icon name="run-action" />
+                  <span>Run action</span>
                 </Button>
                 <span className="entity-details__action-button-divider"></span>
                 <Button
@@ -318,12 +311,8 @@ export default function App(): JSX.Element {
                   onClick={navigateActionLogs}
                   data-testid={TestId.SHOW_ACTION_LOGS}
                 >
-                  <img
-                    className="entity-details__action-button-row-icon"
-                    src={actionLogsImage}
-                    alt=""
-                  />
-                  View Action Logs
+                  <Icon name="action-logs" />
+                  <span>View Action Logs</span>
                 </Button>
               </div>
               <Formik

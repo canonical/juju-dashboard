@@ -32,7 +32,8 @@ describe("thunks", () => {
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearControllerData());
-    const dispatchedThunk = await dispatch.mock.calls[3][0](
+    expect(dispatch).toHaveBeenCalledWith(generalActions.logOut());
+    const dispatchedThunk = await dispatch.mock.calls[4][0](
       dispatch,
       getState,
       null

@@ -23,6 +23,8 @@ import {
   getAllModelApplicationStatus,
   getModelData,
   getControllerData,
+  getModelListLoaded,
+  hasModels,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -163,6 +165,18 @@ describe("selectors", () => {
     ).toStrictEqual(modelWatcherData.abc123.applications);
   });
 
+  it("getModelListLoaded", () => {
+    expect(
+      getModelListLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelsLoaded: true,
+          }),
+        })
+      )
+    ).toBe(true);
+  });
+
   it("getModelUnits", () => {
     const modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
@@ -250,5 +264,19 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual({ "ceph-mon": "blocked" });
+  });
+
+  it("hasModels", () => {
+    expect(
+      hasModels(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            models: {
+              abc123: modelListInfoFactory.build(),
+            },
+          }),
+        })
+      )
+    ).toBe(true);
   });
 });

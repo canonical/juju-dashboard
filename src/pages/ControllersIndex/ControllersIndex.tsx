@@ -1,4 +1,3 @@
-import { checkForJujuUpdate } from "@canonical/jujulib";
 import { Chip, MainTable } from "@canonical/react-components";
 import {
   MainTableCell,
@@ -135,7 +134,7 @@ function Details() {
       },
       { content: access, className: "u-capitalise" },
     ];
-    if ("version" in c && c.version && checkForJujuUpdate(c.version)) {
+    if ("version" in c && c.updateAvailable) {
       columns.push({
         content: (
           <Chip

@@ -1,9 +1,9 @@
-import { PropsWithChildren, useEffect, useState } from "react";
-
+import { useEffect, useState, PropsWithChildren, ReactNode } from "react";
+import classNames from "classnames";
 import { Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
-import { useParams } from "react-router-dom";
-import { StringParam, useQueryParams, withDefault } from "use-query-params";
+import { useParams, Link } from "react-router-dom";
+import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
@@ -11,6 +11,7 @@ import Breadcrumb from "components/Breadcrumb/Breadcrumb";
 import Header from "components/Header/Header";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import WebCLI from "components/WebCLI/WebCLI";
+import NotFound from "components/NotFound/NotFound";
 
 import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
@@ -21,14 +22,19 @@ import {
   getControllerDataByUUID,
   getModelApplications,
   getModelInfo,
+  getModelListLoaded,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-
+import { useAppSelector } from "store/store";
 import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
 
 import "./_entity-details.scss";
+
+export enum Label {
+  NOT_FOUND = "Model not found",
+}
 
 type Props = {
   type?: string;
@@ -51,6 +57,7 @@ const EntityDetails = ({
   children,
 }: PropsWithChildren<Props>) => {
   const { userName, modelName } = useParams();
+  const modelsLoaded = useAppSelector(getModelListLoaded);
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const applications = useSelector(getModelApplications(modelUUID));
@@ -85,11 +92,14 @@ const EntityDetails = ({
 
   let credentials = null;
   let controllerWSHost = "";
+  let wsProtocol: string | null = null;
   if (primaryControllerData) {
     credentials = getUserPass(storeState, primaryControllerData[0]);
     controllerWSHost = primaryControllerData[0]
+      .replace("ws://", "")
       .replace("wss://", "")
       .replace("/api", "");
+    wsProtocol = primaryControllerData[0].split("://")[0];
   }
 
   const handleNavClick = (e: MouseEvent, section: string) => {
@@ -103,8 +113,10 @@ const EntityDetails = ({
   };
 
   useEffect(() => {
-    // XXX Remove me once we have the 2.9 build.
-    if (modelInfo && modelInfo?.version.indexOf("2.9") !== -1) {
+    // Regex to extract the first two numbers:
+    const versionRegex = /^\d+\.\d+/g;
+    const version = Number(versionRegex.exec(modelInfo?.version ?? "")?.[0]);
+    if (version >= 2.9) {
       // The Web CLI is only available in Juju controller versions 2.9 and
       // above. This will allow us to only show the shell on multi-controller
       // setups with different versions where the correct controller version
@@ -173,6 +185,56 @@ const EntityDetails = ({
     return items;
   };
 
+  let content: ReactNode;
+  if (modelInfo) {
+    content = (
+      <FadeIn isActive={!!modelInfo}>
+        <div
+          className={classNames("l-content", {
+            "l-content--has-webcli": showWebCLI,
+          })}
+        >
+          <div className={`entity-details entity-details__${type}`}>
+            <>
+              {children}
+              {generateActivePanel()}
+            </>
+          </div>
+        </div>
+      </FadeIn>
+    );
+  } else if (modelsLoaded && !modelUUID) {
+    content = (
+      <div className="p-strip">
+        <div className="row">
+          <NotFound message={Label.NOT_FOUND}>
+            <>
+              <p>
+                Could not find a model named "{modelName}" for the user "
+                {userName}
+                ". If this is a model that belongs to another user then check
+                that you have been{" "}
+                <a href="https://juju.is/docs/olm/manage-users#heading--model-access">
+                  granted access
+                </a>
+                .
+              </p>
+              <p>
+                <Link to="/models">View all models</Link>
+              </p>
+            </>
+          </NotFound>
+        </div>
+      </div>
+    );
+  } else {
+    content = (
+      <div className="entity-details__loading" data-testid="loading-spinner">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <BaseLayout>
       <Header>
@@ -189,27 +251,13 @@ const EntityDetails = ({
           {additionalHeaderContent}
         </div>
       </Header>
-      {!modelInfo ? (
-        <div className="entity-details__loading" data-testid="loading-spinner">
-          <Spinner />
-        </div>
-      ) : (
-        <FadeIn isActive={!!modelInfo}>
-          <div className="l-content">
-            <div className={`entity-details entity-details__${type}`}>
-              <>
-                {children}
-                {generateActivePanel()}
-              </>
-            </div>
-          </div>
-        </FadeIn>
-      )}
+      {content}
       {showWebCLI && (
         <WebCLI
           controllerWSHost={controllerWSHost}
           credentials={credentials}
           modelUUID={modelUUID}
+          protocol={wsProtocol ?? "wss"}
         />
       )}
     </BaseLayout>

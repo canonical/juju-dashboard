@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { SearchAndFilter, Spinner } from "@canonical/react-components";
 import { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import { useSelector } from "react-redux";
@@ -27,9 +28,20 @@ import {
 import {
   getGroupedModelStatusCounts,
   getModelData,
+  getModelListLoaded,
+  hasModels,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import "./_models.scss";
+
+export enum Label {
+  NOT_FOUND = "No models found",
+}
+
+export enum TestId {
+  LOADING = "loading-spinner",
+}
 
 export default function Models() {
   useWindowTitle("Models");
@@ -47,6 +59,8 @@ export default function Models() {
     custom: withDefault(ArrayParam, []),
   });
 
+  const modelsLoaded = useAppSelector(getModelListLoaded);
+  const hasSomeModels = useSelector(hasModels);
   // loop model data and pull out filter panel data
   const modelData = useSelector(getModelData);
   const { clouds, regions, owners, credentials } =
@@ -80,7 +94,45 @@ export default function Models() {
   }
 
   const modelCount = blocked + alert + running;
-  const modelsLoaded = modelCount > 0;
+
+  let content: ReactNode;
+  if (!modelsLoaded) {
+    return (
+      <div className="entity-details__loading" data-testid={TestId.LOADING}>
+        <Spinner />
+      </div>
+    );
+  } else if (!hasSomeModels) {
+    content = (
+      <div className="l-content">
+        <div className="models">
+          <h3>{Label.NOT_FOUND}</h3>
+          <p>
+            Learn about{" "}
+            <a href="https://juju.is/docs/olm/manage-models#heading--add-a-model">
+              adding models
+            </a>{" "}
+            or{" "}
+            <a href="https://juju.is/docs/olm/manage-users#heading--model-access">
+              granting access
+            </a>{" "}
+            to existing models.
+          </p>
+        </div>
+      </div>
+    );
+  } else {
+    content = (
+      <FadeIn isActive={modelsLoaded}>
+        <div className="l-content">
+          <div className="models">
+            <ChipGroup chips={{ blocked, alert, running }} />
+            <ModelTableList groupedBy={groupModelsBy} filters={filters} />
+          </div>
+        </div>
+      </FadeIn>
+    );
+  }
 
   return (
     <BaseLayout>
@@ -147,20 +199,7 @@ export default function Models() {
         </div>
       </Header>
 
-      {modelsLoaded ? (
-        <FadeIn isActive={modelsLoaded}>
-          <div className="l-content">
-            <div className="models">
-              <ChipGroup chips={{ blocked, alert, running }} />
-              <ModelTableList groupedBy={groupModelsBy} filters={filters} />
-            </div>
-          </div>
-        </FadeIn>
-      ) : (
-        <div className="entity-details__loading">
-          <Spinner />
-        </div>
-      )}
+      {content}
     </BaseLayout>
   );
 }

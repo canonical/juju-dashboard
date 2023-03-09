@@ -1,6 +1,13 @@
 import { actions } from "./slice";
 
 describe("actions", () => {
+  it("cleanupLoginErrors", () => {
+    expect(actions.cleanupLoginErrors()).toStrictEqual({
+      type: "general/cleanupLoginErrors",
+      payload: undefined,
+    });
+  });
+
   it("updateControllerConnection", () => {
     expect(
       actions.updateControllerConnection({

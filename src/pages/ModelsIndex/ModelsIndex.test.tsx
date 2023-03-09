@@ -13,9 +13,10 @@ import {
   modelDataFactory,
   modelDataApplicationFactory,
   modelDataStatusFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 
-import ModelsIndex from "./ModelsIndex";
+import ModelsIndex, { Label, TestId } from "./ModelsIndex";
 
 const mockStore = configureStore([]);
 
@@ -25,6 +26,9 @@ describe("Models Index page", () => {
   beforeEach(() => {
     state = rootStateFactory.withGeneralConfig().build({
       juju: jujuStateFactory.build({
+        models: {
+          abc124: modelListInfoFactory.build(),
+        },
         modelData: {
           abc123: modelDataFactory.build({
             applications: {
@@ -54,6 +58,7 @@ describe("Models Index page", () => {
             },
           }),
         },
+        modelsLoaded: true,
       }),
     });
   });
@@ -72,6 +77,38 @@ describe("Models Index page", () => {
     expect(document.querySelector(".header")).toBeInTheDocument();
     expect(screen.getAllByRole("grid")).toHaveLength(3);
     expect(document.querySelector(".chip-group")).toBeInTheDocument();
+  });
+
+  it("displays a spinner while loading models", () => {
+    state.juju.modelsLoaded = false;
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <ModelsIndex />
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(screen.getByTestId(TestId.LOADING)).toBeInTheDocument();
+  });
+
+  it("displays a message if there are no models", () => {
+    state.juju.models = {};
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <ModelsIndex />
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      screen.getByRole("heading", { name: Label.NOT_FOUND })
+    ).toBeInTheDocument();
   });
 
   it("displays correct grouping view", async () => {

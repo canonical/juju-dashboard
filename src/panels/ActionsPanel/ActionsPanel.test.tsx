@@ -1,6 +1,6 @@
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
@@ -62,11 +62,7 @@ const mockResponse = applicationsCharmActionsResultsFactory.build({
 jest.mock("juju/api", () => {
   return {
     executeActionOnUnits: jest.fn(),
-    getActionsForApplication: () => {
-      return new Promise(async (resolve) => {
-        resolve(mockResponse);
-      });
-    },
+    getActionsForApplication: jest.fn(),
   };
 });
 
@@ -97,6 +93,11 @@ describe("ActionsPanel", () => {
   }
 
   beforeEach(() => {
+    const getActionsForApplicationSpy = jest.spyOn(
+      juju,
+      "getActionsForApplication"
+    );
+    getActionsForApplicationSpy.mockResolvedValue(mockResponse);
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         modelData: {
@@ -108,6 +109,10 @@ describe("ActionsPanel", () => {
         },
       }),
     });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
   });
 
   it("Renders the list of available actions", async () => {
@@ -159,6 +164,72 @@ describe("ActionsPanel", () => {
     expect(
       document.querySelector(".p-confirmation-modal")
     ).not.toBeInTheDocument();
+  });
+
+  it("disables the submit button if a required text field is empty", async () => {
+    generateComponent();
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).toBeDisabled();
+    await userEvent.click(
+      await screen.findByRole("radio", { name: "add-disk" })
+    );
+    await userEvent.type(
+      await screen.findByRole("textbox", { name: "osd-devices" }),
+      "some content"
+    );
+    await waitFor(async () =>
+      expect(
+        await screen.findByRole("button", { name: "Run action" })
+      ).not.toBeDisabled()
+    );
+  });
+
+  it("disables the submit button if a required boolean field is not ticked", async () => {
+    const mockResponse = applicationsCharmActionsResultsFactory.build({
+      results: [
+        applicationCharmActionsResultFactory.build({
+          "application-tag": "application-ceph",
+          actions: {
+            "add-disk": applicationCharmActionFactory.build({
+              params: applicationCharmActionParamsFactory.build({
+                properties: {
+                  bucket: {
+                    type: "string",
+                  },
+                  "osd-devices": {
+                    type: "boolean",
+                  },
+                },
+                required: ["osd-devices"],
+                title: "add-disk",
+                type: "object",
+              }),
+            }),
+          },
+        }),
+      ],
+    });
+    const getActionsForApplicationSpy = jest.spyOn(
+      juju,
+      "getActionsForApplication"
+    );
+    getActionsForApplicationSpy.mockResolvedValue(mockResponse);
+    generateComponent();
+    await userEvent.click(
+      await screen.findByRole("radio", { name: "add-disk" })
+    );
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).toBeDisabled();
+    await userEvent.click(
+      await screen.findByRole("checkbox", { name: "osd-devices" })
+    );
+    await waitFor(async () =>
+      expect(
+        await screen.findByRole("button", { name: "Run action" })
+      ).not.toBeDisabled()
+    );
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {

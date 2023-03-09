@@ -13,7 +13,6 @@ import type {
 import { RootState } from "store/store";
 
 import type { Controllers, ModelData, ModelsList } from "./types";
-import { countUpdates } from "./utils/controllers";
 import {
   extractCloudName,
   extractCredentialName,
@@ -53,6 +52,24 @@ const getModelWatcherData = createSelector(
 );
 
 const getModelList = createSelector([slice], (sliceState) => sliceState.models);
+
+/**
+  Get the loaded state of the model list.
+  @returns Whether the model list has been loaded.
+*/
+export const getModelListLoaded = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelsLoaded
+);
+
+/**
+  Whether there are any models in the model list.
+  @returns Whether the model list has been loaded.
+*/
+export const hasModels = createSelector(
+  [getModelList],
+  (modelList) => Object.keys(modelList).length > 0
+);
 
 export function getModelWatcherDataByUUID(modelUUID: string) {
   return createSelector(getModelWatcherData, (modelWatcherData) => {
@@ -545,24 +562,6 @@ export const getGroupedModelStatusCounts = createSelector(
     return counts;
   }
 );
-/**
- * Check for updates to the Juju controller
- * @param controllerURL A specific controller to check for updates. If **not** specified, check all controllers.
- * @returns The number of controllers that have updates available
- */
-export const getControllersUpdateCount = (controllerURL?: string) =>
-  createSelector(getControllerData, (controllerData) => {
-    if (!controllerData) {
-      return 0;
-    }
-    if (!controllerURL) {
-      return Object.values(controllerData).reduce((count, controllers) => {
-        return count + countUpdates(controllers);
-      }, 0);
-    } else {
-      return countUpdates(controllerData[controllerURL]);
-    }
-  });
 
 /**
     Returns the controller data in the format of an Object.entries output.

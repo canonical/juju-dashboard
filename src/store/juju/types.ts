@@ -16,6 +16,7 @@ export type Controller = {
   Public?: boolean;
   uuid: string;
   version?: string;
+  updateAvailable?: boolean;
 };
 
 export type AdditionalController = {
@@ -56,6 +57,7 @@ export type ModelsList = {
 export type JujuState = {
   controllers: Controllers | null;
   models: ModelsList;
+  modelsLoaded: boolean;
   modelData: ModelDataList;
   modelWatcherData?: ModelWatcherData;
   charms: Charm[];

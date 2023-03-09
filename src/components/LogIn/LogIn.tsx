@@ -114,6 +114,7 @@ function UserPassForm() {
     const elements = e.currentTarget.elements;
     const user = elements.username.value;
     const password = elements.password.value;
+    dispatch(generalActions.cleanupLoginErrors());
     dispatch(
       generalActions.storeUserPass({
         wsControllerURL: getWSControllerURL(store.getState()),

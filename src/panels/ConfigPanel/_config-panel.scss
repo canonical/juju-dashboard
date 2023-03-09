@@ -1,14 +1,23 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/settings";
 @import "../../scss/breakpoints";
+@import "../../scss/variables";
+
+$panel-padding: 1.5rem;
 
 .slide-panel.config-panel .slide-panel__content {
-  padding: 1.5rem 0 0;
+  padding: $panel-padding 0 0;
 }
 
 .config-panel {
-  $magic-height: 200px;
-  $magic-min-height: calc(100vh - #{$magic-height});
+  $magic-title-height: 4.7rem;
+  $magic-drawer-height: 5rem;
+
+  /* prettier-ignore */
+  $magic-non-content-height: ($panel-padding * 2) + $top-header-height + $magic-drawer-height + $magic-title-height;
+  $magic-min-height: calc(100vh - #{$magic-non-content-height});
+
+  overflow-y: auto;
 
   &__modal-button-row-hint {
     font-size: 0.875rem;
@@ -58,7 +67,15 @@
   }
 
   &__reset-all {
+    flex: 1 0 auto;
     margin-left: auto;
+
+    &.config-panel__hide-button {
+      overflow: hidden;
+      position: absolute;
+      right: 1.5rem;
+      top: 0;
+    }
   }
 
   &__message {
@@ -78,11 +95,11 @@
   }
 
   &__list-header {
-    align-items: baseline;
     display: flex;
     justify-content: space-between;
     margin: 2rem 0 1rem;
     padding: 0 1.5rem;
+    position: relative;
 
     @media (max-width: $breakpoint-x-small) {
       flex-direction: column;
@@ -107,11 +124,13 @@
     }
 
     .entity-name {
-      font-size: 1.3rem;
-      margin-top: 0.3rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+
+      .entity-icon {
+        vertical-align: text-bottom;
+      }
     }
   }
 

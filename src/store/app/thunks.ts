@@ -33,6 +33,7 @@ export const logOut = createAsyncThunk<
   );
   thunkAPI.dispatch(jujuActions.clearModelData());
   thunkAPI.dispatch(jujuActions.clearControllerData());
+  thunkAPI.dispatch(generalActions.logOut());
   if (identityProviderAvailable) {
     // To enable users to log back in after logging out we have to re-connect
     // to the controller to get another wait url and start polling on it

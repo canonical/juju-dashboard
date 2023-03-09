@@ -1,7 +1,10 @@
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
+import { actions as generalActions } from "store/general";
+import { thunks as appThunks } from "store/app";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 
@@ -10,6 +13,10 @@ import LogIn from "./LogIn";
 const mockStore = configureStore([]);
 
 describe("LogIn", () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it("renders a 'connecting' message while connecting", () => {
     const store = mockStore(
       rootStateFactory.build({
@@ -99,5 +106,53 @@ describe("LogIn", () => {
     const error = screen.getByText("Invalid user name");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("error-message");
+  });
+
+  it("logs in", async () => {
+    // Mock the result of the thunk a normal action so that it can be tested
+    // for. This is necessary because we don't have a full store set up which
+    // can dispatch thunks (and we don't need to handle the thunk, just know it
+    // was dispatched).
+    jest
+      .spyOn(appThunks, "connectAndStartPolling")
+      .mockImplementation(
+        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+      );
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            identityProviderAvailable: false,
+          }),
+        }),
+      })
+    );
+    render(
+      <Provider store={store}>
+        <LogIn>App content</LogIn>
+      </Provider>
+    );
+    await userEvent.type(
+      screen.getByRole("textbox", { name: "Username" }),
+      "eggman"
+    );
+    await userEvent.type(screen.getByLabelText("Password"), "verysecure123");
+    await userEvent.click(screen.getByRole("button"));
+    const actions = store.getActions();
+    const storeAction = generalActions.storeUserPass({
+      wsControllerURL: "wss://controller.example.com",
+      credential: { user: "eggman", password: "verysecure123" },
+    });
+    expect(
+      actions.find((action) => action.type === storeAction.type)
+    ).toStrictEqual(storeAction);
+    expect(
+      actions.find(
+        (action) => action.type === generalActions.cleanupLoginErrors().type
+      )
+    ).toBeTruthy();
+    expect(
+      actions.find((action) => action.type === "connectAndStartPolling")
+    ).toBeTruthy();
   });
 });

@@ -2,13 +2,15 @@ import { StatusLabel } from "@canonical/react-components";
 import classNames from "classnames";
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { getAppVersion } from "store/general/selectors";
 import {
-  getControllersUpdateCount,
+  getControllerData,
   getGroupedModelStatusCounts,
 } from "store/juju/selectors";
+import { Controllers } from "store/juju/types";
 import "./_primary-nav.scss";
 
 const ModelsLink = () => {
@@ -32,7 +34,31 @@ const ModelsLink = () => {
 };
 
 const ControllersLink = () => {
-  const controllersUpdateCount = useSelector(getControllersUpdateCount());
+  const controllers: Controllers | null = useSelector(getControllerData);
+
+  const controllersUpdateCount = useMemo(() => {
+    if (!controllers) return 0;
+    let count = 0;
+    Object.values(controllers).forEach((controller) => {
+      controller.forEach((controller) => {
+        if ("version" in controller && controller.updateAvailable) {
+          count += 1;
+        }
+      });
+    });
+    return count;
+  }, [controllers]);
+  //   (acc, controller) => {
+  //     if (!("version" in controller)) return acc;
+  //     return (
+  //       acc +
+  //       controller.reduce((acc, controller: Controller) => {
+  //         return acc + (controller.updateAvailable ? 1 : 0);
+  //       }, 0)
+  //     );
+  //   },
+  //   0
+  // );
   return (
     <NavLink
       className={({ isActive }) =>

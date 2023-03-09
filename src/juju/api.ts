@@ -1,3 +1,4 @@
+import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import {
   connect,
   connectAndLogin,
@@ -26,6 +27,7 @@ import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
+import { ErrorResults } from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
 
 import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
 import { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
@@ -246,7 +248,8 @@ export async function fetchModelStatus(
         // annotations so we have to inspect them and strip out the empty.
         const annotations: Record<string, AnnotationsAdditionalProperties> = {};
         response.results?.forEach((item) => {
-          if (Object.keys(item.annotations).length > 0) {
+          // Despite what the type says, the annotations property can be null.
+          if (Object.keys(item.annotations ?? {}).length > 0) {
             const appName = item.entity.replace("application-", "");
             annotations[appName] = item.annotations;
           }
@@ -328,7 +331,7 @@ export async function fetchAllModelStatuses(
       if (isLoggedIn(getState(), wsControllerURL)) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         dispatch(jujuActions.updateModelInfo({ modelInfo, wsControllerURL }));
-        if (modelInfo.results[0].result.isController) {
+        if (modelInfo.results[0].result["is-controller"]) {
           // If this is a controller model then update the
           // controller data with this model data.
           dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }));
@@ -380,7 +383,16 @@ export async function fetchControllerList(
       },
     ];
   }
+
   if (controllers) {
+    // check for updates
+    await Promise.all(
+      controllers.map(async (controller) => {
+        controller.updateAvailable = await jujuUpdateAvailable(
+          controller.version || ""
+        );
+      })
+    );
     dispatch(
       jujuActions.updateControllerList({ wsControllerURL, controllers })
     );
@@ -477,7 +489,7 @@ export async function setApplicationConfig(
   appName: string,
   config: Config,
   appState: RootState
-) {
+): Promise<ErrorResults> {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const setValues: Record<string, string> = {};
   Object.keys(config).forEach((key) => {

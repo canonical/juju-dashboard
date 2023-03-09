@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import useTableRowClick from "hooks/useTableRowClick";
 
 import {
-  localApplicationTableHeaders,
+  generateLocalApplicationTableHeaders,
   machineTableHeaders,
 } from "tables/tableHeaders";
 
@@ -114,7 +114,7 @@ export default function Unit() {
             />
           )}
           <MainTable
-            headers={localApplicationTableHeaders}
+            headers={generateLocalApplicationTableHeaders(false)}
             rows={applicationRows}
             className="entity-details__apps p-main-table"
             sortable

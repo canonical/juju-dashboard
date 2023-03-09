@@ -1,0 +1,4 @@
+$top-header-height: 4rem;
+$webcli-input-height: 2.5rem;
+$webcli-drag-height: 10px;
+$webcli-height: calc(#{$webcli-input-height} + #{$webcli-drag-height});

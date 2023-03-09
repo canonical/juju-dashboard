@@ -1,9 +1,8 @@
-import { Button, MainTable } from "@canonical/react-components";
+import { Button, MainTable, Icon } from "@canonical/react-components";
 import Fuse from "fuse.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import runActionImage from "static/images/run-action-icon.svg";
 import {
   StringParam,
   useQueryParam,
@@ -13,7 +12,7 @@ import {
 
 import {
   appsOffersTableHeaders,
-  localApplicationTableHeaders,
+  generateLocalApplicationTableHeaders,
   remoteApplicationTableHeaders,
 } from "tables/tableHeaders";
 import {
@@ -100,12 +99,8 @@ function SearchResultsActionsRow() {
         onClick={handleRunAction}
         disabled={!selectedApplications.length}
       >
-        <img
-          className="entity-details__action-button-row-icon"
-          src={runActionImage}
-          alt=""
-        />
-        Run action
+        <Icon name="run-action" />
+        <span>Run action</span>
       </Button>
     </div>
   );
@@ -234,7 +229,7 @@ export default function ApplicationsTab({ filterQuery }: Props) {
   );
 
   const LocalAppsTable = () => {
-    let headers = localApplicationTableHeaders;
+    let headers = generateLocalApplicationTableHeaders();
     let rows = localApplicationTableRows;
     if (filterQuery) {
       headers = addSelectAllColumn(headers, selectAll, handleSelectAll);

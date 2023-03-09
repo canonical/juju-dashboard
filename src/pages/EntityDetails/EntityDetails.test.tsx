@@ -21,7 +21,7 @@ import {
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
 
-import EntityDetails from "./EntityDetails";
+import EntityDetails, { Label } from "./EntityDetails";
 
 jest.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
@@ -83,6 +83,7 @@ describe("Entity Details Container", () => {
             ownerTag: "user-kirk@external",
           }),
         },
+        modelsLoaded: true,
         modelWatcherData: {
           abc123: modelWatcherModelDataFactory.build({
             applications: {
@@ -103,13 +104,31 @@ describe("Entity Details Container", () => {
     expect(document.title).toEqual("Model: enterprise | Juju Dashboard");
   });
 
-  it("should show a spinner if waiting on data", () => {
-    state.juju.models = {};
+  it("should show a spinner if waiting on model list data", () => {
+    state.juju.modelsLoaded = false;
     state.juju.modelWatcherData = {};
     renderComponent({
       storeState: state,
     });
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
+  });
+
+  it("should show a spinner if waiting on model data", () => {
+    state.juju.modelWatcherData = {};
+    renderComponent({
+      storeState: state,
+    });
+    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
+  });
+
+  it("should show a not found message if the model does not exist", () => {
+    state.juju.models = {};
+    renderComponent({
+      storeState: state,
+    });
+    expect(
+      screen.getByRole("heading", { name: Label.NOT_FOUND })
+    ).toBeInTheDocument();
   });
 
   it("lists the correct tabs", () => {
@@ -193,6 +212,25 @@ describe("Entity Details Container", () => {
     });
   });
 
+  it("shows the CLI in juju higher than 2.9", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        model: modelWatcherModelInfoFactory.build({
+          name: "enterprise",
+          owner: "kirk@external",
+          version: "3.0.7",
+        }),
+      }),
+    };
+    renderComponent();
+    await waitFor(() => {
+      expect(screen.queryByTestId("webcli")).toBeInTheDocument();
+    });
+  });
+
   it("does not show the webCLI in juju 2.8", async () => {
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
@@ -211,6 +249,15 @@ describe("Entity Details Container", () => {
     });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
+    });
+  });
+
+  it("gives the content a class when the webCLI is shown", async () => {
+    renderComponent();
+    await waitFor(() => {
+      expect(document.querySelector(".l-content")).toHaveClass(
+        "l-content--has-webcli"
+      );
     });
   });
 });

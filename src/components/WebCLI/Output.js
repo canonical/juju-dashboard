@@ -150,7 +150,7 @@ const WebCLIOutput = ({
   // Strip any color escape codes from the content.
   content = content.replace(/\\u001b/gi, "");
   const colorizedContent = useMemo(() => {
-    if (showHelp) {
+    if (showHelp || !content) {
       return helpMessage;
     }
     return colorize(content);

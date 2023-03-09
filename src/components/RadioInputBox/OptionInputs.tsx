@@ -34,6 +34,14 @@ export default function OptionInputs({ name, options, onValuesChange }: Props) {
     <form>
       {options.map((option) => {
         const inputKey = `${name}-${option.name}`;
+        const field = (
+          <Field
+            className="radio-input-box__input"
+            type={option.type === "boolean" ? "checkbox" : "text"}
+            id={inputKey}
+            name={inputKey}
+          />
+        );
         return (
           <div
             className="radio-input-box__input-group"
@@ -45,14 +53,10 @@ export default function OptionInputs({ name, options, onValuesChange }: Props) {
               })}
               htmlFor={inputKey}
             >
+              {option.type === "boolean" ? field : null}
               {option.name}
             </label>
-            <Field
-              className="radio-input-box__input"
-              type="text"
-              id={inputKey}
-              name={inputKey}
-            />
+            {option.type === "boolean" ? null : field}
             <DescriptionSummary description={option.description} />
           </div>
         );

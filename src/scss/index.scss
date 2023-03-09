@@ -23,6 +23,7 @@ $application-layout--breakpoint-side-nav-expanded: -1;
 // Import custom patterns
 @import "custom/status_icons";
 @import "custom/tables";
+@import "custom/icons";
 
 // Settings
 $grid-max-width: 100%;
@@ -40,6 +41,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-icon-pin;
 @include vf-p-icon-units;
 @include vf-p-icon-user;
+@include vf-p-icon-video-play;
 
 // Overrides for Vanilla. This needs to be after the Vanilla includes.
 @import "vanilla-overrides";

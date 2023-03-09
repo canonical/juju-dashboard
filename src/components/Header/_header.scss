@@ -2,12 +2,13 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/functions/z-index";
 @import "../../scss/breakpoints";
+@import "../../scss/variables";
 
 .header {
   background-color: $color-x-light;
   border-bottom: 1px solid $color-mid-light;
   display: block;
-  min-height: 4rem;
+  min-height: $top-header-height;
   padding: 0 1rem;
   z-index: z("gamma");
 

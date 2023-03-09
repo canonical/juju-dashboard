@@ -131,6 +131,9 @@ describe("Primary Nav", () => {
   });
 
   it("displays the count of the controllers with old versions", () => {
+    jest.mock("@canonical/jujulib/dist/api/versions", () => ({
+      jujuUpdateAvailable: jest.fn().mockResolvedValue(true),
+    }));
     const store = mockStore(
       rootStateFactory.build({
         general: generalStateFactory.build({
@@ -143,6 +146,13 @@ describe("Primary Nav", () => {
             abc123: [
               controllerFactory.build({
                 version: "2.7.0",
+                updateAvailable: true,
+              }),
+            ],
+            456: [
+              controllerFactory.build({
+                version: "2.8.0",
+                updateAvailable: false,
               }),
             ],
           },
