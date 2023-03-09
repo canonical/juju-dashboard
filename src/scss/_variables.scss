@@ -1,6 +1,8 @@
 $top-header-height: 4rem;
 $webcli-input-height: 2.5rem;
 $webcli-desktop-drag-height: 10px;
+// The mobile drag element needs to be large so that it is not covered by the
+// input hit area.
 $webcli-mobile-drag-height: 25px;
 $webcli-desktop-height: calc(
   #{$webcli-input-height} + #{$webcli-desktop-drag-height}
