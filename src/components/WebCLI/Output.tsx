@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
+type Props = {
+  content: string;
+  helpMessage: string;
+  showHelp: boolean;
+  setShouldShowHelp: (showHelp: boolean) => void;
+};
+
 // Colors taken from the VSCode section of
 // https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
 const ansiColors = {
@@ -24,19 +31,19 @@ const ansiColors = {
 
 const findANSICode = /\[\d{1,3}m/g;
 
-const getStyle = (ansiCode) => {
-  const fgColor = ansiColors[ansiCode];
+const getStyle = (ansiCode: number) => {
+  const fgColor = ansiColors[ansiCode as keyof typeof ansiColors];
   if (fgColor) {
     return `color: rgb(${fgColor})`;
   }
   // We may have been provided a background color.
-  const bgColor = ansiColors[ansiCode - 10];
+  const bgColor = ansiColors[(ansiCode - 10) as keyof typeof ansiColors];
   if (bgColor) {
     return `color: rgb(${bgColor})`;
   }
 };
 
-const colorize = (content) => {
+const colorize = (content: string) => {
   const colors = Array.from(content.matchAll(findANSICode));
   if (colors.length === 0) {
     return content;
@@ -52,16 +59,18 @@ const colorize = (content) => {
       // Add the content up until the first colour without wrapping it.
       colorizedContent =
         colorizedContent + content.substring(previousIndex, color.index);
-      previousIndex = color.index;
+      previousIndex = color.index ?? 0;
     }
     const endIndex = colors[index + 1]?.index || content.length;
-    let part = content.substring(color.index, endIndex).replace(ansiCode, "");
-    const style = getStyle(ansiCodeNumber);
+    let part = content
+      .substring(color.index ?? 0, endIndex)
+      .replace(ansiCode, "");
+    const style = getStyle(Number(ansiCodeNumber));
     if (style) {
       part = `<span style="${style}">${part}</span>`;
     }
     colorizedContent = colorizedContent + part;
-    previousIndex = color.index;
+    previousIndex = color.index ?? 0;
   });
   return colorizedContent;
 };
@@ -71,20 +80,21 @@ const DEFAULT_HEIGHT = 300;
 // an inoportune time and the element isn't left completely closed.
 const CONSIDER_CLOSED = 20;
 const HELP_HEIGHT = 50;
+const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 
 const WebCLIOutput = ({
   content,
   helpMessage,
   showHelp,
   setShouldShowHelp,
-}) => {
+}: Props) => {
   const resizeDeltaY = useRef(0);
   const [height, setHeight] = useState(1);
 
   useEffect(() => {
-    const resize = (e) => {
+    const resize = (clientY: number) => {
       const viewPortHeight = window.innerHeight;
-      const mousePosition = e.clientY + 40; // magic number
+      const mousePosition = clientY + 40; // magic number
       const newHeight = viewPortHeight - mousePosition + resizeDeltaY.current;
 
       const maximumOutputHeight = viewPortHeight - 100; // magic number.
@@ -93,30 +103,53 @@ const WebCLIOutput = ({
       }
     };
 
-    const addResizeListener = (e) => {
-      const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
-      if (!dragHandles.includes(e.target.classList.value)) {
+    const resizeMouse = (e: MouseEvent) => {
+      e.preventDefault();
+      resize(e.clientY);
+    };
+
+    const resizeTouch = (e: TouchEvent) => {
+      e.preventDefault();
+      resize(e.touches[0].clientY);
+    };
+
+    const addMouseResizeListener = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!dragHandles.includes(target?.classList.value)) {
         return;
       }
-      resizeDeltaY.current = e.layerY;
-      document.addEventListener("mousemove", resize);
-      document.addEventListener("ontouchmove", resize);
+      resizeDeltaY.current = e.offsetY;
+      document.addEventListener("mousemove", resizeMouse);
     };
 
-    const removeResizeListener = () => {
-      document.removeEventListener("mousemove", resize);
-      document.removeEventListener("ontouchmove", resize);
+    const addTouchResizeListener = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      if (!dragHandles.includes(target?.classList.value)) {
+        return;
+      }
+      var rect = target.getBoundingClientRect();
+      resizeDeltaY.current = e.targetTouches[0].pageY - rect.top;
+      document.addEventListener("touchmove", resizeTouch, { passive: false });
     };
 
-    window.addEventListener("mousedown", addResizeListener);
-    window.addEventListener("mouseup", removeResizeListener);
-    window.addEventListener("ontouchstart", addResizeListener);
-    window.addEventListener("ontouchend", removeResizeListener);
+    const removeListener = () => {
+      document.removeEventListener("mousemove", resizeMouse);
+      document.removeEventListener("touchmove", resizeTouch);
+    };
+
+    window.addEventListener("mousedown", addMouseResizeListener);
+    window.addEventListener("mouseup", removeListener);
+    window.addEventListener("touchstart", addTouchResizeListener, {
+      passive: false,
+    });
+    window.addEventListener("touchend", removeListener, {
+      passive: false,
+    });
     return () => {
-      window.removeEventListener("mousedown", addResizeListener);
-      window.removeEventListener("mouseup", removeResizeListener);
-      window.removeEventListener("ontouchstart", addResizeListener);
-      window.removeEventListener("ontouchend", removeResizeListener);
+      window.removeEventListener("mousedown", addMouseResizeListener);
+      window.removeEventListener("mouseup", removeListener);
+      window.removeEventListener("touchstart", addTouchResizeListener);
+      window.removeEventListener("touchend", removeListener);
     };
   }, []);
 

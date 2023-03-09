@@ -126,7 +126,11 @@
 }
 
 .l-content--has-webcli {
-  margin-bottom: calc(1rem + #{$webcli-height});
+  margin-bottom: calc(1rem + #{$webcli-desktop-height});
+
+  @media (max-width: $breakpoint-large) {
+    margin-bottom: calc(1rem + #{$webcli-mobile-height});
+  }
 }
 
 .l-application {

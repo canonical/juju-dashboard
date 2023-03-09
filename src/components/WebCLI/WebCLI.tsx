@@ -8,7 +8,7 @@ import { Credential } from "store/general/types";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
-import WebCLIOutput from "./Output.js";
+import WebCLIOutput from "./Output";
 
 import Connection from "./connection";
 
