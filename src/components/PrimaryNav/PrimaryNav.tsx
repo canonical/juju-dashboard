@@ -48,17 +48,7 @@ const ControllersLink = () => {
     });
     return count;
   }, [controllers]);
-  //   (acc, controller) => {
-  //     if (!("version" in controller)) return acc;
-  //     return (
-  //       acc +
-  //       controller.reduce((acc, controller: Controller) => {
-  //         return acc + (controller.updateAvailable ? 1 : 0);
-  //       }, 0)
-  //     );
-  //   },
-  //   0
-  // );
+
   return (
     <NavLink
       className={({ isActive }) =>

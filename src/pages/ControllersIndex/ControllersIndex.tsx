@@ -1,4 +1,4 @@
-import { Chip, MainTable } from "@canonical/react-components";
+import { Icon, MainTable, Tooltip } from "@canonical/react-components";
 import {
   MainTableCell,
   MainTableHeader,
@@ -87,7 +87,6 @@ function Details() {
     { content: "units", sortKey: "units" },
     { content: "version", sortKey: "version" },
     { content: "access", sortKey: "public" },
-    { content: "" },
   ];
 
   const additionalHeaders = cloneDeep(headers);
@@ -129,30 +128,42 @@ function Details() {
       { content: c.machines },
       { content: c.applications },
       { content: c.units },
-      {
-        content: "version" in c ? c.version : null,
-      },
+      { content: "" },
       { content: access, className: "u-capitalise" },
     ];
-    if ("version" in c && c.updateAvailable) {
-      columns.push({
+    if ("version" in c && c.version) {
+      columns[columns.length - 2] = {
         content: (
-          <Chip
-            appearance="caution"
-            value="Update available"
-            data-testid="update-available"
-            onClick={() =>
-              window.open("https://juju.is/docs/olm/upgrading", "_blank")
-            }
-          />
+          <>
+            {c.version}{" "}
+            {c.updateAvailable ? (
+              <Tooltip
+                message={
+                  <>
+                    There is an update or migration available for this
+                    controller.{" "}
+                    <a
+                      className="p-list__link"
+                      href="https://juju.is/docs/olm/upgrading"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Read more
+                    </a>
+                  </>
+                }
+              >
+                <Icon name="warning" data-testid="update-available" />
+              </Tooltip>
+            ) : null}
+          </>
         ),
-      });
+      };
     }
     return {
       columns,
     };
   }
-
   // XXX this isn't a great way of doing this.
   const additionalRows = additionalControllers.map((uuid) => {
     const row = generateRow(controllerMap[uuid]);
