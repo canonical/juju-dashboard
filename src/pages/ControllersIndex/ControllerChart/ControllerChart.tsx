@@ -5,7 +5,9 @@ import { pluralize } from "store/juju/utils/models";
 import "./_controller-chart.scss";
 
 type Props = {
-  chartData: Record<string, number>;
+  alert?: number;
+  blocked?: number;
+  running?: number;
   totalLabel: string;
 };
 
@@ -20,16 +22,18 @@ function getPercentage(denominator: number, numerator: number) {
   return trunc;
 }
 
-export default function ControllerChart({ chartData, totalLabel }: Props) {
-  const totalCount =
-    (chartData.blocked || 0) +
-    (chartData.alert || 0) +
-    (chartData.running || 0);
+export default function ControllerChart({
+  alert = 0,
+  blocked = 0,
+  running = 0,
+  totalLabel,
+}: Props) {
+  const totalCount = blocked + alert + running;
 
   return (
     <div className="p-chart">
       <div className="p-chart__chart">
-        <DonutChart chartData={chartData} />
+        <DonutChart alert={alert} blocked={blocked} running={running} />
       </div>
       <div className="p-chart__legend">
         <ul className="p-list p-legend">
@@ -45,22 +49,19 @@ export default function ControllerChart({ chartData, totalLabel }: Props) {
             className="p-list__item p-legend__item is-blocked"
             data-testid="legend-blocked"
           >
-            Blocked: {getPercentage(totalCount, chartData.blocked)}%,{" "}
-            {chartData.blocked || 0}
+            Blocked: {getPercentage(totalCount, blocked)}%, {blocked}
           </li>
           <li
             className="p-list__item p-legend__item is-alert"
             data-testid="legend-alert"
           >
-            Alerts: {getPercentage(totalCount, chartData.alert)}%,{" "}
-            {chartData.alert || 0}
+            Alerts: {getPercentage(totalCount, alert)}%, {alert}
           </li>
           <li
             className="p-list__item p-legend__item is-running"
             data-testid="legend-running"
           >
-            Running: {getPercentage(totalCount, chartData.running)}%,{" "}
-            {chartData.running || 0}
+            Running: {getPercentage(totalCount, running)}%, {running}
           </li>
         </ul>
       </div>
