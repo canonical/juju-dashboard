@@ -1,23 +1,34 @@
+import { Icon, Tooltip } from "@canonical/react-components";
+import { ReactNode } from "react";
+import { Link } from "react-router-dom";
+
 import awsLogo from "static/images/logo/cloud/aws.svg";
 import azureLogo from "static/images/logo/cloud/azure.svg";
 import gceLogo from "static/images/logo/cloud/gce.svg";
 import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
+import { ModelData, ModelDataWithControllerName } from "store/juju/types";
 
-import { Link } from "react-router-dom";
 import {
   extractCloudName,
   extractCredentialName,
 } from "store/juju/utils/models";
+import { QueryParamConfig, SetQuery } from "use-query-params";
 
 /**
   Generates the model details link for the table cell. If no ownerTag can be
   provided then it'll return raw text for the model name.
-  @param {String} modelName The name of the model.
-  @param {String} ownerTag The ownerTag of the model.
-  @param {String} label The contents of the link.
-  @returns {Object} The React component for the link.
+  @param modelName The name of the model.
+  @param ownerTag The ownerTag of the model.
+  @param label The contents of the link.
+  @returns The React component for the link.
 */
-export function generateModelDetailsLink(modelName, ownerTag, label) {
+export function generateModelDetailsLink(
+  modelName: string,
+  ownerTag: string,
+  label: ReactNode,
+  view?: string,
+  className?: string
+) {
   // Because we get some data at different times based on the multiple API calls
   // we need to check for their existence and supply reasonable fallbacks if it
   // isn't available. Once we have a single API call for all the data this check
@@ -29,23 +40,34 @@ export function generateModelDetailsLink(modelName, ownerTag, label) {
   }
   // If the owner isn't the logged in user then we need to use the
   // fully qualified path name.
-  const modelDetailsPath = `/models/${ownerTag.replace(
+  let modelDetailsPath = `/models/${ownerTag.replace(
     "user-",
     ""
   )}/${modelName}`;
-  return <Link to={modelDetailsPath}>{label}</Link>;
+  if (view) {
+    modelDetailsPath = `${modelDetailsPath}?activeView=${view}`;
+  }
+  return (
+    <Link to={modelDetailsPath} className={className}>
+      {label}
+    </Link>
+  );
 }
 
 /**
   Used to fetch the values from status as it won't be defined when the
   modelInfo data is.
-  @param {Object|undefined} status The status for the model.
-  @param {String} key The key to fetch.
-  @returns {String} The computed value for the requested field if defined, or
+  @param status The status for the model.
+  @param key The key to fetch.
+  @returns The computed value for the requested field if defined, or
     an empty string.
 */
-export function getStatusValue(status, key) {
-  let returnValue = "";
+export function getStatusValue(
+  status: ModelDataWithControllerName,
+  key: string,
+  extra?: string
+) {
+  let returnValue: ReactNode = "";
   if (typeof status === "object" && status !== null) {
     switch (key) {
       case "summary":
@@ -60,54 +82,50 @@ export function getStatusValue(status, key) {
         returnValue = (
           <>
             <div className="u-flex">
-              <div
-                className="u-flex--block p-tooltip--top-center"
-                aria-describedby="tp-cntr"
+              <Tooltip
+                message="See applications"
+                position="top-center"
+                className="u-flex--block has-icon"
               >
-                <div className="has-icon">
-                  <i className="p-icon--applications"></i>
-                  <span>{applicationCount}</span>
-                </div>
-                <span
-                  className="p-tooltip__message"
-                  role="tooltip"
-                  id="tp-cntr"
-                >
-                  Applications
-                </span>
-              </div>
-              <div
-                className="u-flex--block p-tooltip--top-center"
-                aria-describedby="tp-cntr"
+                {extra
+                  ? generateModelDetailsLink(
+                      status.model.name,
+                      extra,
+                      <>
+                        <Icon name="applications" />
+                        <span>{applicationCount}</span>
+                      </>,
+                      "apps",
+                      "p-link--soft"
+                    )
+                  : null}
+              </Tooltip>
+              <Tooltip
+                message="Units"
+                position="top-center"
+                className="u-flex--block has-icon"
               >
-                <div className="has-icon">
-                  <i className="p-icon--units"></i>
-                  <span>{unitCount}</span>
-                </div>
-                <span
-                  className="p-tooltip__message"
-                  role="tooltip"
-                  id="tp-cntr"
-                >
-                  Units
-                </span>
-              </div>
-              <div
-                className="u-flex--block p-tooltip--top-center"
-                aria-describedby="tp-cntr"
+                <Icon name="units" />
+                <span>{unitCount}</span>
+              </Tooltip>
+              <Tooltip
+                message="See machines"
+                position="top-center"
+                className="u-flex--block has-icon"
               >
-                <div className="has-icon">
-                  <i className="p-icon--machines"></i>
-                  <span>{machineCount}</span>
-                </div>
-                <span
-                  className="p-tooltip__message"
-                  role="tooltip"
-                  id="tp-cntr"
-                >
-                  Machines
-                </span>
-              </div>
+                {extra
+                  ? generateModelDetailsLink(
+                      status.model.name,
+                      extra,
+                      <>
+                        <Icon name="machines" />
+                        <span>{machineCount}</span>
+                      </>,
+                      "machines",
+                      "p-link--soft"
+                    )
+                  : null}
+              </Tooltip>
             </div>
           </>
         );
@@ -119,16 +137,18 @@ export function getStatusValue(status, key) {
         returnValue = status.model.region;
         break;
       case "cloud-credential-tag":
-        returnValue = extractCredentialName(status["cloud-credential-tag"]);
+        returnValue = extractCredentialName(
+          status.info?.["cloud-credential-tag"]
+        );
         break;
       case "controllerUuid":
-        returnValue = status["controller-uuid"];
+        returnValue = status.info?.["controller-uuid"];
         break;
       case "controllerName":
-        returnValue = status.controllerName;
+        returnValue = status.info?.controllerName;
         break;
       case "status.since":
-        returnValue = status.status.since?.split("T")[0];
+        returnValue = status.info?.status?.since?.split("T")[0];
         break;
       default:
         console.log(`unsupported status value key: ${key}`);
@@ -140,10 +160,10 @@ export function getStatusValue(status, key) {
 
 /**
   Generates the cloud and region info from model data.
-  @param {Object} model The model data.
-  @returns {Object} The React element for the model cloud and region cell.
+  @param model The model data.
+  @returns The React element for the model cloud and region cell.
 */
-export function generateCloudCell(model) {
+export function generateCloudCell(model: ModelData) {
   let provider = model?.info?.["provider-type"];
   let logo = null;
   switch (provider) {
@@ -201,10 +221,10 @@ export function generateCloudCell(model) {
 
 /**
   Returns the model cloud and region data formatted as {cloud}/{region}.
-  @param {Object} model The model data
-  @returns {String} The formatted cloud and region data.
+  @param model The model data
+  @returns The formatted cloud and region data.
 */
-export function generateCloudAndRegion(model) {
+export function generateCloudAndRegion(model: ModelData) {
   return `${getStatusValue(model, "cloud-tag")}/${getStatusValue(
     model,
     "region"
@@ -214,10 +234,18 @@ export function generateCloudAndRegion(model) {
 /**
   Returns the model access button or an alternative value
   @param {Function} setPanelQs A function to set query strings
-  @param {String} modelName the name of the model
-  @returns {Object} The markup for the table cell
+  @param modelName the name of the model
+  @returns The markup for the table cell
 */
-export function generateAccessButton(setPanelQs, modelName) {
+export function generateAccessButton(
+  setPanelQs: SetQuery<
+    Record<
+      string,
+      QueryParamConfig<string | null | undefined, string | null | undefined>
+    >
+  >,
+  modelName: string
+) {
   return (
     <button
       onClick={() => {

@@ -86,11 +86,9 @@ export default function OwnerGroup({ filters }) {
       modelGroup.forEach((model) => {
         const { highestStatus } = getModelStatusGroupData(model);
         const cloud = generateCloudCell(model);
-        const credential = getStatusValue(model.info, "cloud-credential-tag");
-        const controller = getStatusValue(model.info, "controllerName");
-        const lastUpdated = getStatusValue(model.info, "status.since")?.slice(
-          2
-        );
+        const credential = getStatusValue(model, "cloud-credential-tag");
+        const controller = getStatusValue(model, "controllerName");
+        const lastUpdated = getStatusValue(model, "status.since")?.slice(2);
         ownerModels.rows.push({
           "data-testid": `model-uuid-${model?.uuid}`,
           columns: [
@@ -104,7 +102,11 @@ export default function OwnerGroup({ filters }) {
             },
             {
               "data-testid": "column-summary",
-              content: getStatusValue(model, "summary"),
+              content: getStatusValue(
+                model,
+                "summary",
+                model.info?.["owner-tag"]
+              ),
               className: "u-overflow--visible",
             },
             {

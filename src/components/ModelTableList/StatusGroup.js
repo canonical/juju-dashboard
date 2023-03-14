@@ -116,11 +116,11 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs, activeUser) {
         owner = extractOwnerName(model.info["owner-tag"]);
       }
       const cloud = generateCloudCell(model);
-      const credential = getStatusValue(model.info, "cloud-credential-tag");
-      const controller = getStatusValue(model.info, "controllerName");
+      const credential = getStatusValue(model, "cloud-credential-tag");
+      const controller = getStatusValue(model, "controllerName");
       // .slice(2) here will make the year 2 characters instead of 4
       // e.g. 2021-01-01 becomes 21-01-01
-      const lastUpdated = getStatusValue(model.info, "status.since")?.slice(2);
+      const lastUpdated = getStatusValue(model, "status.since")?.slice(2);
       modelData[`${groupLabel}Rows`].push({
         "data-testid": `model-uuid-${model?.uuid}`,
         columns: [
@@ -130,7 +130,11 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs, activeUser) {
           },
           {
             "data-testid": "column-summary",
-            content: getStatusValue(model, "summary"),
+            content: getStatusValue(
+              model,
+              "summary",
+              model.info?.["owner-tag"]
+            ),
             className: "u-overflow--visible",
           },
           {
