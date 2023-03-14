@@ -1,3 +1,4 @@
+import { Icon, Tooltip } from "@canonical/react-components";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
@@ -81,70 +82,50 @@ export function getStatusValue(
         returnValue = (
           <>
             <div className="u-flex">
-              <div
-                className="u-flex--block p-tooltip--top-center"
-                aria-describedby="tp-cntr"
+              <Tooltip
+                message="See applications"
+                position="top-center"
+                className="u-flex--block has-icon"
               >
                 {extra
                   ? generateModelDetailsLink(
                       status.model.name,
                       extra,
-                      <div className="has-icon">
-                        <i className="p-icon--applications"></i>
+                      <>
+                        <Icon name="applications" />
                         <span>{applicationCount}</span>
-                      </div>,
+                      </>,
                       "apps",
                       "p-link--soft"
                     )
                   : null}
-                <span
-                  className="p-tooltip__message"
-                  role="tooltip"
-                  id="tp-cntr"
-                >
-                  See applications
-                </span>
-              </div>
-              <div
-                className="u-flex--block p-tooltip--top-center"
-                aria-describedby="tp-cntr"
+              </Tooltip>
+              <Tooltip
+                message="Units"
+                position="top-center"
+                className="u-flex--block has-icon"
               >
-                <div className="has-icon">
-                  <i className="p-icon--units"></i>
-                  <span>{unitCount}</span>
-                </div>
-                <span
-                  className="p-tooltip__message"
-                  role="tooltip"
-                  id="tp-cntr"
-                >
-                  Units
-                </span>
-              </div>
-              <div
-                className="u-flex--block p-tooltip--top-center"
-                aria-describedby="tp-cntr"
+                <Icon name="units" />
+                <span>{unitCount}</span>
+              </Tooltip>
+              <Tooltip
+                message="See machines"
+                position="top-center"
+                className="u-flex--block has-icon"
               >
                 {extra
                   ? generateModelDetailsLink(
                       status.model.name,
                       extra,
-                      <div className="has-icon">
-                        <i className="p-icon--machines"></i>
+                      <>
+                        <Icon name="machines" />
                         <span>{machineCount}</span>
-                      </div>,
+                      </>,
                       "machines",
                       "p-link--soft"
                     )
                   : null}
-                <span
-                  className="p-tooltip__message"
-                  role="tooltip"
-                  id="tp-cntr"
-                >
-                  See machines
-                </span>
-              </div>
+              </Tooltip>
             </div>
           </>
         );
