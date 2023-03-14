@@ -101,10 +101,6 @@ describe("Controllers table", () => {
   });
 
   it("Indicates if a controller has an update available", () => {
-    jest.mock("@canonical/jujulib/dist/api/versions", () => ({
-      jujuUpdateAvailable: jest.fn().mockResolvedValue(true),
-    }));
-
     state.juju = jujuStateFactory.build({
       controllers: {
         "wss://jimm.jujucharms.com/api": [

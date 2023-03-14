@@ -1,8 +1,9 @@
-import { StatusLabel } from "@canonical/react-components";
+import { dashboardUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
+import { Icon, StatusLabel, Tooltip } from "@canonical/react-components";
 import classNames from "classnames";
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { getAppVersion } from "store/general/selectors";
@@ -71,6 +72,12 @@ const ControllersLink = () => {
 
 const PrimaryNav = () => {
   const appVersion = useSelector(getAppVersion);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
+
+  dashboardUpdateAvailable(appVersion || "").then((e) => {
+    setUpdateAvailable(e);
+  });
+
   return (
     <nav className="p-primary-nav">
       <div className="p-primary-nav__header">
@@ -104,7 +111,14 @@ const PrimaryNav = () => {
       <div className="p-primary-nav__bottom hide-collapsed">
         <ul className="p-list">
           <li className="p-list__item">
-            <span className="version">Version {appVersion}</span>
+            <span className="version">
+              Version {appVersion}{" "}
+              {updateAvailable && (
+                <Tooltip message="A new version of the dashboard is available.">
+                  <Icon name="warning" data-testid="dashboard-update" />
+                </Tooltip>
+              )}
+            </span>
             <StatusLabel appearance="positive">Beta</StatusLabel>
           </li>
         </ul>

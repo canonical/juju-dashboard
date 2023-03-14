@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
@@ -131,9 +131,6 @@ describe("Primary Nav", () => {
   });
 
   it("displays the count of the controllers with old versions", () => {
-    jest.mock("@canonical/jujulib/dist/api/versions", () => ({
-      jujuUpdateAvailable: jest.fn().mockResolvedValue(true),
-    }));
     const store = mockStore(
       rootStateFactory.build({
         general: generalStateFactory.build({
@@ -167,5 +164,43 @@ describe("Primary Nav", () => {
       </Provider>
     );
     expect(screen.getByText("1")).toHaveClass("entity-count");
+  });
+
+  it("shows an update available message if there is an update available for the dashboard", async () => {
+    const store = mockStore(
+      rootStateFactory
+        .withGeneralConfig()
+        .build({ general: { appVersion: "0.8.0" } })
+    );
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <PrimaryNav />
+        </MemoryRouter>
+      </Provider>
+    );
+    const notification = await waitFor(() =>
+      screen.getByTestId("dashboard-update")
+    );
+    expect(notification).toBeInTheDocument();
+  });
+  it("doesn't show an update available message if there is no update available for the dashboard", async () => {
+    const store = mockStore(
+      rootStateFactory
+        .withGeneralConfig()
+        .build({ general: { appVersion: "9.9.0" } })
+    );
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <PrimaryNav />
+        </MemoryRouter>
+      </Provider>
+    );
+    const notification = await waitFor(() =>
+      screen.queryByTestId("dashboard-update")
+    );
+    expect(notification).not.toBeInTheDocument();
   });
 });
