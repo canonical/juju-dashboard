@@ -3,24 +3,301 @@
 exports[`Error Boundary renders without crashing and matches snapshot 1`] = `
 <div>
   <div
-    class="p-notification--negative"
+    class="p-strip"
   >
-    <p
-      class="p-notification__response"
+    <div
+      class="row"
     >
-      <span
-        class="p-notification__status"
+      <div
+        class="col-12"
       >
-        Error: 
-      </span>
-      Something has gone wrong. If this issue persists,
-       
-      <a
-        href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new?assignees=&labels=&template=bug_report.md&title="
-      >
-        please raise an issue on GitHub.
-      </a>
-    </p>
+        <div
+          class="p-notification--negative"
+        >
+          <div
+            class="p-notification__content"
+          >
+            <h5
+              class="p-notification__title"
+              data-testid="notification-title"
+            >
+              Error
+            </h5>
+            <p
+              class="p-notification__message"
+            >
+              Something has gone wrong. If this issue persists,
+               
+              <a
+                href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new?assignees=&labels=&template=bug_report.md&title=Dashboard error: Oh%20noes!&body=%60%60%60%0AError%3A%20Oh%20noes!%0A%20%20%20%20at%20Component%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fsrc%2Fcomponents%2FErrorBoundary%2FErrorBoundary.test.tsx%3A6%3A9)%0A%20%20%20%20at%20renderWithHooks%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact-dom%2Fcjs%2Freact-dom.development.js%3A16305%3A18)%0A%20%20%20%20at%20mountIndeterminateComponent%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact-dom%2Fcjs%2Freact-dom.development.js%3A20074%3A13)%0A%20%20%20%20at%20beginWork%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact-dom%2Fcjs%2Freact-dom.development.js%3A21587%3A16)%0A%20%20%20%20at%20beginWork%241%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact-dom%2Fcjs%2Freact-dom.development.js%3A27426%3A14)%0A%20%20%20%20at%20performUnitOfWork%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact-dom%2Fcjs%2Freact-dom.development.js%3A26560%3A12)%0A%20%20%20%20at%20workLoopSync%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact-dom%2Fcjs%2Freact-dom.development.js%3A26466%3A5)%0A%20%20%20%20at%20renderRootSync%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact-dom%2Fcjs%2Freact-dom.development.js%3A26434%3A7)%0A%20%20%20%20at%20recoverFromConcurrentError%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact-dom%2Fcjs%2Freact-dom.development.js%3A25850%3A20)%0A%20%20%20%20at%20callback%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact-dom%2Fcjs%2Freact-dom.development.js%3A25750%3A22)%0A%20%20%20%20at%20flushActQueue%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact%2Fcjs%2Freact.development.js%3A2667%3A24)%0A%20%20%20%20at%20actImplementation%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Freact%2Fcjs%2Freact.development.js%3A2582%3A11)%0A%20%20%20%20at%20%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2F%40testing-library%2Freact%2Fdist%2Fact-compat.js%3A63%3A25%0A%20%20%20%20at%20renderRoot%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2F%40testing-library%2Freact%2Fdist%2Fpure.js%3A159%3A3)%0A%20%20%20%20at%20render%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2F%40testing-library%2Freact%2Fdist%2Fpure.js%3A246%3A10)%0A%20%20%20%20at%20Object.%3Canonymous%3E%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fsrc%2Fcomponents%2FErrorBoundary%2FErrorBoundary.test.tsx%3A27%3A27)%0A%20%20%20%20at%20Promise.then.completed%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-circus%2Fbuild%2Futils.js%3A391%3A28)%0A%20%20%20%20at%20new%20Promise%20(%3Canonymous%3E)%0A%20%20%20%20at%20callAsyncCircusFn%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-circus%2Fbuild%2Futils.js%3A316%3A10)%0A%20%20%20%20at%20_callCircusTest%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-circus%2Fbuild%2Frun.js%3A218%3A40)%0A%20%20%20%20at%20processTicksAndRejections%20(node%3Ainternal%2Fprocess%2Ftask_queues%3A95%3A5)%0A%20%20%20%20at%20_runTest%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-circus%2Fbuild%2Frun.js%3A155%3A3)%0A%20%20%20%20at%20_runTestsForDescribeBlock%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-circus%2Fbuild%2Frun.js%3A66%3A9)%0A%20%20%20%20at%20_runTestsForDescribeBlock%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-circus%2Fbuild%2Frun.js%3A60%3A9)%0A%20%20%20%20at%20run%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-circus%2Fbuild%2Frun.js%3A25%3A3)%0A%20%20%20%20at%20runAndTransformResultsToJestFormat%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-circus%2Fbuild%2Flegacy-code-todo-rewrite%2FjestAdapterInit.js%3A170%3A21)%0A%20%20%20%20at%20jestAdapter%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-circus%2Fbuild%2Flegacy-code-todo-rewrite%2FjestAdapter.js%3A81%3A19)%0A%20%20%20%20at%20runTestInternal%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-runner%2Fbuild%2FrunTest.js%3A389%3A16)%0A%20%20%20%20at%20runTest%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-runner%2Fbuild%2FrunTest.js%3A475%3A34)%0A%20%20%20%20at%20Object.worker%20(%2Fhome%2Fubuntu%2Fcode%2Fjaas-dashboard%2Fnode_modules%2Fjest-runner%2Fbuild%2FtestWorker.js%3A133%3A12)%0A%60%60%60"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                please raise an issue on GitHub.
+              </a>
+            </p>
+          </div>
+        </div>
+        <div
+          class="p-code-snippet"
+        >
+          <div
+            class="p-code-snippet__header "
+          >
+            <h5
+              class="p-code-snippet__title"
+            >
+              Error
+            </h5>
+          </div>
+          <pre
+            class="p-code-snippet__block--numbered is-wrapped"
+          >
+            <code>
+              <span
+                class="p-code-snippet__line"
+              >
+                Oh noes!
+              </span>
+              
+
+            </code>
+          </pre>
+          <div
+            class="p-code-snippet__header "
+          >
+            <h5
+              class="p-code-snippet__title"
+            >
+              Stack trace
+            </h5>
+          </div>
+          <pre
+            class="p-code-snippet__block--numbered is-wrapped"
+          >
+            <code>
+              <span
+                class="p-code-snippet__line"
+              >
+                Error: Oh noes!
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at Component (/home/ubuntu/code/jaas-dashboard/src/components/ErrorBoundary/ErrorBoundary.test.tsx:6:9)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at renderWithHooks (/home/ubuntu/code/jaas-dashboard/node_modules/react-dom/cjs/react-dom.development.js:16305:18)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at mountIndeterminateComponent (/home/ubuntu/code/jaas-dashboard/node_modules/react-dom/cjs/react-dom.development.js:20074:13)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at beginWork (/home/ubuntu/code/jaas-dashboard/node_modules/react-dom/cjs/react-dom.development.js:21587:16)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at beginWork$1 (/home/ubuntu/code/jaas-dashboard/node_modules/react-dom/cjs/react-dom.development.js:27426:14)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at performUnitOfWork (/home/ubuntu/code/jaas-dashboard/node_modules/react-dom/cjs/react-dom.development.js:26560:12)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at workLoopSync (/home/ubuntu/code/jaas-dashboard/node_modules/react-dom/cjs/react-dom.development.js:26466:5)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at renderRootSync (/home/ubuntu/code/jaas-dashboard/node_modules/react-dom/cjs/react-dom.development.js:26434:7)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at recoverFromConcurrentError (/home/ubuntu/code/jaas-dashboard/node_modules/react-dom/cjs/react-dom.development.js:25850:20)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at callback (/home/ubuntu/code/jaas-dashboard/node_modules/react-dom/cjs/react-dom.development.js:25750:22)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at flushActQueue (/home/ubuntu/code/jaas-dashboard/node_modules/react/cjs/react.development.js:2667:24)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at actImplementation (/home/ubuntu/code/jaas-dashboard/node_modules/react/cjs/react.development.js:2582:11)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at /home/ubuntu/code/jaas-dashboard/node_modules/@testing-library/react/dist/act-compat.js:63:25
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at renderRoot (/home/ubuntu/code/jaas-dashboard/node_modules/@testing-library/react/dist/pure.js:159:3)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at render (/home/ubuntu/code/jaas-dashboard/node_modules/@testing-library/react/dist/pure.js:246:10)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at Object.&lt;anonymous&gt; (/home/ubuntu/code/jaas-dashboard/src/components/ErrorBoundary/ErrorBoundary.test.tsx:27:27)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at Promise.then.completed (/home/ubuntu/code/jaas-dashboard/node_modules/jest-circus/build/utils.js:391:28)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at new Promise (&lt;anonymous&gt;)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at callAsyncCircusFn (/home/ubuntu/code/jaas-dashboard/node_modules/jest-circus/build/utils.js:316:10)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at _callCircusTest (/home/ubuntu/code/jaas-dashboard/node_modules/jest-circus/build/run.js:218:40)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at _runTest (/home/ubuntu/code/jaas-dashboard/node_modules/jest-circus/build/run.js:155:3)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at _runTestsForDescribeBlock (/home/ubuntu/code/jaas-dashboard/node_modules/jest-circus/build/run.js:66:9)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at _runTestsForDescribeBlock (/home/ubuntu/code/jaas-dashboard/node_modules/jest-circus/build/run.js:60:9)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at run (/home/ubuntu/code/jaas-dashboard/node_modules/jest-circus/build/run.js:25:3)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at runAndTransformResultsToJestFormat (/home/ubuntu/code/jaas-dashboard/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:170:21)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at jestAdapter (/home/ubuntu/code/jaas-dashboard/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:81:19)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at runTestInternal (/home/ubuntu/code/jaas-dashboard/node_modules/jest-runner/build/runTest.js:389:16)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at runTest (/home/ubuntu/code/jaas-dashboard/node_modules/jest-runner/build/runTest.js:475:34)
+              </span>
+              
+
+              <span
+                class="p-code-snippet__line"
+              >
+                    at Object.worker (/home/ubuntu/code/jaas-dashboard/node_modules/jest-runner/build/testWorker.js:133:12)
+              </span>
+              
+
+            </code>
+          </pre>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 `;
