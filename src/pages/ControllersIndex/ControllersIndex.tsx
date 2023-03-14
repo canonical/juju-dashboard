@@ -1,27 +1,19 @@
-import cloneDeep from "clone-deep";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-
-import { MainTable } from "@canonical/react-components";
+import { Icon, MainTable, Tooltip } from "@canonical/react-components";
 import {
   MainTableCell,
   MainTableHeader,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import Header from "components/Header/Header";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
-
 import FadeIn from "animations/FadeIn";
-
+import cloneDeep from "clone-deep";
+import Header from "components/Header/Header";
 import useWindowTitle from "hooks/useWindowTitle";
-
+import BaseLayout from "layout/BaseLayout/BaseLayout";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { getControllerData, getModelData } from "store/juju/selectors";
-
-import { StringParam, useQueryParam } from "use-query-params";
-
 import { AdditionalController, Controller } from "store/juju/types";
-
+import { StringParam, useQueryParam } from "use-query-params";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
-
 import "./_controllers.scss";
 
 type AnnotatedController = (Controller | AdditionalController) & {
@@ -84,18 +76,17 @@ function Details() {
   }
 
   const headers: MainTableHeader[] = [
-    { content: "Default", sortKey: "name" },
+    { content: "default", sortKey: "name" },
     { content: "cloud/region", sortKey: "cloud/region" },
-    { content: "models", sortKey: "models", className: "u-align--right" },
-    { content: "machines", sortKey: "machines", className: "u-align--right" },
+    { content: "models", sortKey: "models" },
+    { content: "machines", sortKey: "machines" },
     {
       content: "applications",
       sortKey: "applications",
-      className: "u-align--right",
     },
-    { content: "units", sortKey: "units", className: "u-align--right" },
-    { content: "version", sortKey: "version", className: "u-align--right" },
-    { content: "public", sortKey: "public", className: "u-align--right" },
+    { content: "units", sortKey: "units" },
+    { content: "version", sortKey: "version" },
+    { content: "access", sortKey: "public" },
   ];
 
   const additionalHeaders = cloneDeep(headers);
@@ -129,25 +120,50 @@ function Details() {
     const region =
       "location" in c && c?.location?.region ? c.location.region : "unknown";
     const cloudRegion = `${cloud}/${region}`;
-    const publicAccess = "Public" in c && c.Public ? `${c?.Public}` : "False";
-
+    const access = "Public" in c && c.Public ? "Public" : "Private";
+    let columns = [
+      generatePathValue(c),
+      { content: cloudRegion },
+      { content: c.models },
+      { content: c.machines },
+      { content: c.applications },
+      { content: c.units },
+      { content: "" },
+      { content: access, className: "u-capitalise" },
+    ];
+    if ("version" in c && c.version) {
+      columns[columns.length - 2] = {
+        content: (
+          <>
+            {c.version}{" "}
+            {c.updateAvailable ? (
+              <Tooltip
+                message={
+                  <>
+                    There is an update or migration available for this
+                    controller.{" "}
+                    <a
+                      className="p-list__link"
+                      href="https://juju.is/docs/olm/upgrading"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Read more
+                    </a>
+                  </>
+                }
+              >
+                <Icon name="warning" data-testid="update-available" />
+              </Tooltip>
+            ) : null}
+          </>
+        ),
+      };
+    }
     return {
-      columns: [
-        generatePathValue(c),
-        { content: cloudRegion },
-        { content: c.models, className: "u-align--right" },
-        { content: c.machines, className: "u-align--right" },
-        { content: c.applications, className: "u-align--right" },
-        { content: c.units, className: "u-align--right" },
-        {
-          content: "version" in c ? c.version : null,
-          className: "u-align--right",
-        },
-        { content: publicAccess, className: "u-align--right u-capitalise" },
-      ],
+      columns,
     };
   }
-
   // XXX this isn't a great way of doing this.
   const additionalRows = additionalControllers.map((uuid) => {
     const row = generateRow(controllerMap[uuid]);

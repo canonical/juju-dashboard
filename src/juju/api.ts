@@ -1,3 +1,4 @@
+import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import {
   connect,
   connectAndLogin,
@@ -382,7 +383,16 @@ export async function fetchControllerList(
       },
     ];
   }
+
   if (controllers) {
+    // check for updates
+    await Promise.all(
+      controllers.map(async (controller) => {
+        controller.updateAvailable = await jujuUpdateAvailable(
+          controller.version || ""
+        );
+      })
+    );
     dispatch(
       jujuActions.updateControllerList({ wsControllerURL, controllers })
     );

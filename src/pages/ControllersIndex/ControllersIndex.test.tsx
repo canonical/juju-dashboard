@@ -1,16 +1,16 @@
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
+import { MemoryRouter } from "react-router";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import type { RootState } from "store/store";
-import { rootStateFactory } from "testing/factories/root";
 import {
   controllerFactory,
   jujuStateFactory,
 } from "testing/factories/juju/juju";
+import { rootStateFactory } from "testing/factories/root";
 
 import ControllersIndex from "./ControllersIndex";
 
@@ -98,5 +98,44 @@ describe("Controllers table", () => {
     expect(
       document.querySelector(".p-panel.register-controller")
     ).toBeInTheDocument();
+  });
+
+  it("Indicates if a controller has an update available", () => {
+    jest.mock("@canonical/jujulib/dist/api/versions", () => ({
+      jujuUpdateAvailable: jest.fn().mockResolvedValue(true),
+    }));
+
+    state.juju = jujuStateFactory.build({
+      controllers: {
+        "wss://jimm.jujucharms.com/api": [
+          controllerFactory.build({
+            uuid: "123",
+            version: "1.0.0",
+            updateAvailable: true,
+          }),
+          controllerFactory.build({
+            uuid: "234",
+            version: "1.0.0",
+            updateAvailable: true,
+          }),
+          controllerFactory.build({
+            uuid: "345",
+            version: "0.9.9",
+            updateAvailable: false,
+          }),
+        ],
+      },
+    });
+    const store = mockStore(state);
+    render(
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <ControllersIndex />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(screen.getAllByTestId("update-available")).toHaveLength(2);
   });
 });

@@ -116,7 +116,6 @@
   }
 
   .entity-count {
-    background-color: $color-negative;
     border-radius: 50%;
     display: inline-block;
     font-size: 0.875rem;
@@ -126,6 +125,14 @@
     padding: 0 0.25rem;
     text-align: center;
     width: 1.5rem;
+
+    &.is-negative {
+      background-color: $color-negative;
+    }
+
+    &.is-caution {
+      background-color: $color-caution;
+    }
   }
 
   .p-primary-nav__divider {

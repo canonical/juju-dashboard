@@ -1,13 +1,14 @@
 import { render, screen } from "@testing-library/react";
+import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
-import { Provider } from "react-redux";
 
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
+  controllerFactory,
   jujuStateFactory,
-  modelDataFactory,
   modelDataApplicationFactory,
+  modelDataFactory,
   modelDataStatusFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
@@ -127,5 +128,44 @@ describe("Primary Nav", () => {
       </Provider>
     );
     expect(screen.getByText("Version 0.4.0")).toHaveClass("version");
+  });
+
+  it("displays the count of the controllers with old versions", () => {
+    jest.mock("@canonical/jujulib/dist/api/versions", () => ({
+      jujuUpdateAvailable: jest.fn().mockResolvedValue(true),
+    }));
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            isJuju: true,
+          }),
+        }),
+        juju: jujuStateFactory.build({
+          controllers: {
+            abc123: [
+              controllerFactory.build({
+                version: "2.7.0",
+                updateAvailable: true,
+              }),
+            ],
+            456: [
+              controllerFactory.build({
+                version: "2.8.0",
+                updateAvailable: false,
+              }),
+            ],
+          },
+        }),
+      })
+    );
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <PrimaryNav />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(screen.getByText("1")).toHaveClass("entity-count");
   });
 });
