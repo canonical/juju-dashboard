@@ -40,6 +40,10 @@ export type ModelData = {
   uuid: string;
 };
 
+export type ModelDataWithControllerName = Omit<ModelData, "info"> & {
+  info?: ModelInfo & { controllerName?: string };
+};
+
 export type ModelDataList = Record<string, ModelData>;
 
 export type ModelListInfo = {
