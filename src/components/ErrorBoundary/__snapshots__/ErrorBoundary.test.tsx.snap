@@ -296,6 +296,18 @@ exports[`Error Boundary renders without crashing and matches snapshot 1`] = `
             </code>
           </pre>
         </div>
+        <p>
+          Further debugging can be done
+           
+          <a
+            href="https://juju.is/docs/olm/troubleshooting"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            via the Juju CLI
+          </a>
+          .
+        </p>
       </div>
     </div>
   </div>
