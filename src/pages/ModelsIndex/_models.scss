@@ -15,9 +15,11 @@
       pointer-events: none;
     }
 
-    @media (max-width: $breakpoint-large) {
-      .models__count {
-        display: none;
+    .models__count {
+      display: none;
+
+      @media (min-width: $breakpoint-large) {
+        display: block;
       }
     }
 
@@ -27,7 +29,8 @@
     }
 
     @media (min-width: $breakpoint-large) {
-      grid-template-columns: 120px 1fr 280px;
+      // Account for the 1.5rem padding applied to the header.
+      grid-template-columns: calc(120px - 1.5rem) 1fr calc(280px - 1.5rem);
     }
 
     .search-and-filter {

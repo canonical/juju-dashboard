@@ -77,4 +77,20 @@ describe("ButtonGroup", () => {
     );
     expect(screen.queryByTestId(TestId.LABEL)).not.toBeInTheDocument();
   });
+
+  it("can set the label to not wrap", () => {
+    const setActiveButton = jest.fn();
+    render(
+      <ButtonGroup
+        activeButton="cloud"
+        buttons={["status", "cloud", "owner"]}
+        label="Foo"
+        noWrap
+        setActiveButton={setActiveButton}
+      />
+    );
+    expect(screen.queryByTestId(TestId.LABEL)).toHaveClass(
+      "p-button-group__label--fixed"
+    );
+  });
 });

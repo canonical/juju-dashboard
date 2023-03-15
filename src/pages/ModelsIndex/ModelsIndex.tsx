@@ -145,6 +145,7 @@ export default function Models() {
             activeButton={groupModelsBy}
             buttons={["status", "cloud", "owner"]}
             label="Group by:"
+            noWrap
             setActiveButton={setGroupModelsBy}
           />
           <SearchAndFilter
