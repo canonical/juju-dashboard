@@ -9,6 +9,7 @@ export enum TestId {
 type Props = {
   buttons: string[];
   label?: string;
+  noWrap?: boolean;
   activeButton: string;
   setActiveButton: (value: string) => void;
 };
@@ -16,6 +17,7 @@ type Props = {
 const ButtonGroup = ({
   buttons,
   label,
+  noWrap,
   activeButton,
   setActiveButton,
 }: Props): JSX.Element => {
@@ -23,7 +25,12 @@ const ButtonGroup = ({
     <div className="p-button-group">
       <div className="p-button-group__inner">
         {label ? (
-          <span className="p-button-group__label" data-testid={TestId.LABEL}>
+          <span
+            className={classNames("p-button-group__label", {
+              "p-button-group__label--fixed": noWrap,
+            })}
+            data-testid={TestId.LABEL}
+          >
             {label}
           </span>
         ) : null}

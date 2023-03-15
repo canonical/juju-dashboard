@@ -15,9 +15,11 @@
       pointer-events: none;
     }
 
-    @media (max-width: $breakpoint-large) {
-      .models__count {
-        display: none;
+    .models__count {
+      display: none;
+
+      @media (min-width: $breakpoint-large) {
+        display: block;
       }
     }
 
