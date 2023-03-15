@@ -56,6 +56,7 @@ export default function ShareModel() {
   });
 
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
+
   const modelUUID = modelStatusData?.info?.uuid;
   const modelName = modelStatusData?.info?.name;
 
@@ -100,9 +101,6 @@ export default function ShareModel() {
     permissionTo: string | undefined,
     permissionFrom: string | undefined
   ) => {
-    if (!modelControllerURL || !modelUUID) {
-      return;
-    }
     let response: ErrorResults | null;
     if (!modelControllerURL || !modelUUID) {
       return;
@@ -180,7 +178,11 @@ export default function ShareModel() {
       "revoke",
       username,
       undefined,
-      usersAccess?.[username]
+      // When revoking permissions the user is dropped down a level from
+      // whatever permission is passed to the revoke command. As we want to
+      // remove the user entirely we need to revoke the lowest possible
+      // permission (which also revokes all higher permissions).
+      "read"
     );
 
     reactHotToast.custom((t) => (
