@@ -1,16 +1,28 @@
+import { ReactNode } from "react";
 import { useSelector } from "react-redux";
-import { MainTable } from "@canonical/react-components";
-import { useQueryParams, StringParam, withDefault } from "use-query-params";
+import { Link } from "react-router-dom";
+import { List, MainTable, Tooltip } from "@canonical/react-components";
+import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import {
+  useQueryParams,
+  StringParam,
+  withDefault,
+  QueryParamConfig,
+  SetQuery,
+} from "use-query-params";
 import useActiveUser from "hooks/useActiveUser";
 
 import {
   getModelStatusGroupData,
   extractOwnerName,
   canAdministerModelAccess,
+  Filters,
+  Status,
 } from "store/juju/utils/models";
 import { generateStatusElement } from "components/utils";
 
 import { getGroupedByStatusAndFilteredModelData } from "store/juju/selectors";
+import { ModelData } from "store/juju/types";
 
 import {
   generateModelDetailsLink,
@@ -26,11 +38,11 @@ export const TestId = {
 
 /**
   Generates the table headers for the supplied table label.
-  @param {String} label The title of the table.
-  @param {Number} count The number of elements in the status.
-  @returns {Array} The headers for the table.
+  @param label The title of the table.
+  @param count The number of elements in the status.
+  @returns The headers for the table.
 */
-function generateStatusTableHeaders(label, count) {
+function generateStatusTableHeaders(label: string, count: number) {
   return [
     {
       content: generateStatusElement(label, count),
@@ -56,35 +68,64 @@ function generateStatusTableHeaders(label, count) {
 
 /**
   Generates the warning message for the model name cell.
-  @param {Object} model The full model data.
-  @return {Object} The react component for the warning message.
+  @param model The full model data.
+  @return The react component for the warning message.
 */
-const generateWarningMessage = (model) => {
+const generateWarningMessage = (model: ModelData) => {
   const { messages } = getModelStatusGroupData(model);
-  const title = messages.join("; ");
+  if (!messages.length) {
+    return null;
+  }
+  const ownerTag = model?.info?.["owner-tag"] ?? "";
   const link = generateModelDetailsLink(
     model.model.name,
-    model?.info?.ownerTag,
-    title
+    ownerTag,
+    messages[0].message
   );
+  const modelDetailsPath = `/models/${ownerTag.replace("user-", "")}/${
+    model.model.name
+  }`;
+  const list: ReactNode[] = messages.slice(0, 5).map((message) => (
+    <>
+      {message.unitId || message.appName}:{" "}
+      <Link
+        to={[
+          modelDetailsPath,
+          `app/${message.appName}`,
+          message.unitId ? `unit/${message.unitId.replace("/", "-")}` : null,
+        ]
+          .filter(Boolean)
+          .join("/")}
+      >
+        {message.message}
+      </Link>
+    </>
+  ));
+  const remainder = messages.slice(5);
+  if (remainder.length) {
+    list.push(`+${remainder.length} more...`);
+  }
   return (
-    <span className="model-table-list_error-message" title={title}>
-      {link}
-    </span>
+    <Tooltip
+      className="p-tooltip--constrain-width"
+      message={<List className="u-no-margin--bottom u-truncate" items={list} />}
+    >
+      <span className="model-table-list_error-message">{link}</span>
+    </Tooltip>
   );
 };
 
 /**
   Generates the model name cell.
-  @param {Object} model The model data.
-  @param {String} groupLabel The status group the model belongs in.
+  @param model The model data.
+  @param groupLabel The status group the model belongs in.
     e.g. blocked, alert, running
-  @returns {Object} The React element for the model name cell.
+  @returns The React element for the model name cell.
 */
-const generateModelNameCell = (model, groupLabel) => {
+const generateModelNameCell = (model: ModelData, groupLabel: string) => {
   const link = generateModelDetailsLink(
     model.model.name,
-    model.info && model.info["owner-tag"],
+    model.info?.["owner-tag"] ?? "",
     model.model.name
   );
   return (
@@ -97,18 +138,27 @@ const generateModelNameCell = (model, groupLabel) => {
 
 /**
   Returns the model info and statuses in the proper format for the table data.
-  @param {Object} groupedModels The models grouped by state
-  @returns {Object} The formatted table data.
+  @param  groupedModels The models grouped by state
+  @return The formatted table data.
 */
-function generateModelTableDataByStatus(groupedModels, setPanelQs, activeUser) {
-  const modelData = {
+function generateModelTableDataByStatus(
+  groupedModels: Record<Status, ModelData[]>,
+  setPanelQs: SetQuery<
+    Record<
+      string,
+      QueryParamConfig<string | null | undefined, string | null | undefined>
+    >
+  >,
+  activeUser: string
+) {
+  const modelData: Record<string, MainTableRow[]> = {
     blockedRows: [],
     alertRows: [],
     runningRows: [],
   };
 
   Object.keys(groupedModels).forEach((groupLabel) => {
-    const models = groupedModels[groupLabel];
+    const models = groupedModels[groupLabel as Status];
 
     models.forEach((model) => {
       let owner = "";
@@ -118,9 +168,12 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs, activeUser) {
       const cloud = generateCloudCell(model);
       const credential = getStatusValue(model, "cloud-credential-tag");
       const controller = getStatusValue(model, "controllerName");
-      // .slice(2) here will make the year 2 characters instead of 4
-      // e.g. 2021-01-01 becomes 21-01-01
-      const lastUpdated = getStatusValue(model, "status.since")?.slice(2);
+      let lastUpdated = getStatusValue(model, "status.since");
+      if (typeof lastUpdated === "string") {
+        // .slice(2) here will make the year 2 characters instead of 4
+        // e.g. 2021-01-01 becomes 21-01-01
+        lastUpdated = lastUpdated.slice(2);
+      }
       modelData[`${groupLabel}Rows`].push({
         "data-testid": `model-uuid-${model?.uuid}`,
         columns: [
@@ -189,14 +242,16 @@ function generateModelTableDataByStatus(groupedModels, setPanelQs, activeUser) {
           controller,
           lastUpdated,
         },
-      });
+        // TSFixMe this is required until react-components includes template
+        // literals for data properties.
+      } as MainTableRow);
     });
   });
 
   return modelData;
 }
 
-export default function StatusGroup({ filters }) {
+export default function StatusGroup({ filters }: { filters: Filters }) {
   const groupedAndFilteredData = useSelector(
     getGroupedByStatusAndFilteredModelData(filters)
   );

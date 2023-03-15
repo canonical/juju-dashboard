@@ -56,15 +56,18 @@ const checkHighestStatus = (highestStatus: Status) => {
 
 export const getModelStatusGroupData = (model: ModelData) => {
   let highestStatus = statusOrder[0]; // Set the highest status to the lowest.
-  let messages: string[] = [];
+  let messages: { message: string; appName: string; unitId?: string }[] = [];
   const applications = model.applications || {};
   Object.keys(applications).forEach((appName) => {
     const app = applications[appName];
     const { status: appStatus } = getApplicationStatusGroup(app);
     highestStatus = setHighestStatus(appStatus, highestStatus);
-    if (checkHighestStatus(highestStatus)) {
+    if (checkHighestStatus(appStatus)) {
       // If it's the highest status then we want to store the message.
-      messages.push(app.status.info);
+      messages.push({
+        appName,
+        message: app.status.info,
+      });
       return;
     }
     const units = app.units || {}; // subordinates do not have units.
@@ -72,9 +75,13 @@ export const getModelStatusGroupData = (model: ModelData) => {
       const unit = units[unitId];
       const { status: unitStatus } = getUnitStatusGroup(unit);
       highestStatus = setHighestStatus(unitStatus, highestStatus);
-      if (checkHighestStatus(highestStatus)) {
+      if (checkHighestStatus(unitStatus)) {
         // If it's the highest status then we want to store the message.
-        messages.push(unit["agent-status"].info);
+        messages.push({
+          appName,
+          unitId,
+          message: unit["agent-status"].info,
+        });
         return;
       }
     });

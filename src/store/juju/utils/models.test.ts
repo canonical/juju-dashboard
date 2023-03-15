@@ -1,7 +1,16 @@
 import {
+  modelDataFactory,
+  modelStatusInfoFactory,
+  modelDataApplicationFactory,
+  modelDataStatusFactory,
+  modelDataUnitFactory,
+} from "testing/factories/juju/juju";
+
+import {
   canAdministerModelAccess,
   generateIconPath,
   pluralize,
+  getModelStatusGroupData,
 } from "./models";
 
 describe("pluralize", () => {
@@ -99,5 +108,133 @@ describe("generateIconPath", () => {
     const charmId = "ch:amd64/xenial/content-cache-425";
     const iconPath = generateIconPath(charmId);
     expect(iconPath).toBe("https://charmhub.io/content-cache/icon");
+  });
+});
+
+describe("getModelStatusGroupData", () => {
+  it("should handle 'running' as the highest status", () => {
+    const modelData = modelDataFactory.build({
+      applications: {
+        easyrsa: modelDataApplicationFactory.build({
+          status: modelDataStatusFactory.build({
+            status: "running",
+          }),
+        }),
+      },
+      model: modelStatusInfoFactory.build({
+        "cloud-tag": "cloud-aws",
+      }),
+    });
+    const status = getModelStatusGroupData(modelData);
+    expect(status.highestStatus).toBe("running");
+  });
+
+  it("should handle 'alert' as the highest status", () => {
+    const modelData = modelDataFactory.build({
+      applications: {
+        easyrsa: modelDataApplicationFactory.build({
+          status: modelDataStatusFactory.build({
+            status: "running",
+          }),
+        }),
+        etcd: modelDataApplicationFactory.build({
+          status: modelDataStatusFactory.build({
+            status: "unknown",
+          }),
+        }),
+      },
+    });
+    const status = getModelStatusGroupData(modelData);
+    expect(status.highestStatus).toBe("alert");
+  });
+
+  it("should handle 'blocked' as the highest status", () => {
+    const modelData = modelDataFactory.build({
+      applications: {
+        easyrsa: modelDataApplicationFactory.build({
+          status: modelDataStatusFactory.build({
+            status: "running",
+          }),
+        }),
+        etcd: modelDataApplicationFactory.build({
+          status: modelDataStatusFactory.build({
+            status: "unknown",
+          }),
+        }),
+        calico: modelDataApplicationFactory.build({
+          status: modelDataStatusFactory.build({
+            status: "blocked",
+          }),
+        }),
+      },
+    });
+    const status = getModelStatusGroupData(modelData);
+    expect(status.highestStatus).toBe("blocked");
+  });
+
+  it("should add messages for 'blocked' apps and units", () => {
+    const modelData = modelDataFactory.build({
+      applications: {
+        easyrsa: modelDataApplicationFactory.build({
+          status: modelDataStatusFactory.build({
+            info: "This app's running message should not be included.",
+            status: "running",
+          }),
+        }),
+        etcd: modelDataApplicationFactory.build({
+          status: modelDataStatusFactory.build({
+            info: "This app's alert app message should not be included.",
+            status: "unknown",
+          }),
+          units: {
+            "etcd/2": modelDataUnitFactory.build({
+              "agent-status": modelDataStatusFactory.build({
+                info: "This unit's blocked message should be included!",
+                status: "lost",
+              }),
+            }),
+          },
+        }),
+        calico: modelDataApplicationFactory.build({
+          status: modelDataStatusFactory.build({
+            info: "This app's blocked message should be included!",
+            status: "blocked",
+          }),
+          units: {
+            "calico/0": modelDataUnitFactory.build({
+              "agent-status": modelDataStatusFactory.build({
+                info: "This unit's running message should not be included.",
+                status: "available",
+              }),
+            }),
+            "calico/1": modelDataUnitFactory.build({
+              "agent-status": modelDataStatusFactory.build({
+                info: "This unit's alert message should not be included.",
+                status: "allocating",
+              }),
+            }),
+            "calico/2": modelDataUnitFactory.build({
+              "agent-status": modelDataStatusFactory.build({
+                info: "This unit's blocked message should not be included.",
+                status: "lost",
+              }),
+            }),
+          },
+        }),
+      },
+    });
+    const status = getModelStatusGroupData(modelData);
+    expect(status.highestStatus).toBe("blocked");
+    expect(status.messages).toStrictEqual([
+      {
+        appName: "etcd",
+        unitId: "etcd/2",
+        message: "This unit's blocked message should be included!",
+      },
+      {
+        appName: "calico",
+        message: "This app's blocked message should be included!",
+      },
+    ]);
   });
 });

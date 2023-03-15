@@ -1,5 +1,6 @@
 import { MemoryRouter } from "react-router";
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryParamProvider } from "use-query-params";
@@ -16,6 +17,7 @@ import {
   modelDataApplicationFactory,
   modelDataStatusFactory,
   modelUserInfoFactory,
+  modelDataUnitFactory,
 } from "testing/factories/juju/juju";
 
 import StatusGroup from "./StatusGroup";
@@ -88,7 +90,7 @@ describe("StatusGroup", () => {
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup filters={[]} />
+            <StatusGroup filters={{}} />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
@@ -102,7 +104,7 @@ describe("StatusGroup", () => {
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup filters={[]} />
+            <StatusGroup filters={{}} />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
@@ -137,7 +139,7 @@ describe("StatusGroup", () => {
       <MemoryRouter>
         <Provider store={store}>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup filters={[]} />
+            <StatusGroup filters={{}} />
           </QueryParamProvider>
         </Provider>
       </MemoryRouter>
@@ -196,6 +198,58 @@ describe("StatusGroup", () => {
     );
     expect(within(firstContentRow).getAllByRole("gridcell")[6]).toHaveClass(
       "lrg-screen-access-cell"
+    );
+  });
+
+  it("displays links to blocked apps and units", async () => {
+    state.juju.modelData.abc123.applications = {
+      calico: modelDataApplicationFactory.build({
+        status: modelDataStatusFactory.build({
+          info: "app blocked",
+          status: "blocked",
+        }),
+      }),
+      etcd: modelDataApplicationFactory.build({
+        units: {
+          "etcd/0": modelDataUnitFactory.build({
+            "agent-status": modelDataStatusFactory.build({
+              info: "unit blocked",
+              status: "lost",
+            }),
+          }),
+        },
+      }),
+    };
+    const store = mockStore(state);
+    render(
+      <MemoryRouter>
+        <Provider store={store}>
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <StatusGroup filters={{}} />
+          </QueryParamProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    const tables = screen.getAllByRole("grid");
+    const row = within(tables[0]).getAllByRole("row")[1];
+    const error = within(row).getByRole("link", { name: "app blocked" });
+    expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
+    await userEvent.hover(error);
+    const tooltip = screen.getAllByRole("tooltip")[0];
+    expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
+    const appError = within(tooltip).getByRole("link", {
+      name: "app blocked",
+    });
+    expect(appError).toHaveAttribute(
+      "href",
+      "/models/eggman@external/sub-test/app/calico"
+    );
+    const unitError = within(tooltip).getByRole("link", {
+      name: "unit blocked",
+    });
+    expect(unitError).toHaveAttribute(
+      "href",
+      "/models/eggman@external/sub-test/app/etcd/unit/etcd-0"
     );
   });
 });
