@@ -106,7 +106,10 @@ const generateWarningMessage = (model: ModelData) => {
     list.push(`+${remainder.length} more...`);
   }
   return (
-    <Tooltip message={<List className="u-no-margin--bottom" items={list} />}>
+    <Tooltip
+      className="p-tooltip--constrain-width"
+      message={<List className="u-no-margin--bottom u-truncate" items={list} />}
+    >
       <span className="model-table-list_error-message">{link}</span>
     </Tooltip>
   );
