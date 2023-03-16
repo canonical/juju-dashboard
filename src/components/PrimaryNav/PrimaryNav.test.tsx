@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
+import * as versionsAPI from "@canonical/jujulib/dist/api/versions";
 
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
@@ -17,6 +18,10 @@ import PrimaryNav from "./PrimaryNav";
 
 const mockStore = configureStore([]);
 describe("Primary Nav", () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it("applies is-selected state correctly", () => {
     const store = mockStore(rootStateFactory.withGeneralConfig().build());
     render(
@@ -167,6 +172,7 @@ describe("Primary Nav", () => {
   });
 
   it("shows an update available message if there is an update available for the dashboard", async () => {
+    jest.spyOn(versionsAPI, "dashboardUpdateAvailable").mockResolvedValue(true);
     const store = mockStore(
       rootStateFactory
         .withGeneralConfig()
@@ -185,7 +191,11 @@ describe("Primary Nav", () => {
     );
     expect(notification).toBeInTheDocument();
   });
+
   it("doesn't show an update available message if there is no update available for the dashboard", async () => {
+    jest
+      .spyOn(versionsAPI, "dashboardUpdateAvailable")
+      .mockResolvedValue(false);
     const store = mockStore(
       rootStateFactory
         .withGeneralConfig()
