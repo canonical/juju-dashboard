@@ -70,21 +70,21 @@ const ControllersLink = () => {
   );
 };
 
+let didInit = false;
 const PrimaryNav = () => {
   const appVersion = useSelector(getAppVersion);
   const [updateAvailable, setUpdateAvailable] = useState(false);
-  const [versionRequested, setVersionRequested] = useState(false);
 
   useEffect(() => {
-    // Prevent multiple request calls while the version request is in progress
-    // or completed.
-    if (!versionRequested) {
-      setVersionRequested(true);
-      dashboardUpdateAvailable(appVersion || "").then((e) => {
-        setUpdateAvailable(e);
-      });
-    }
-  }, [appVersion, versionRequested]);
+    if (didInit || !appVersion) return;
+    didInit = true;
+    dashboardUpdateAvailable(appVersion || "").then((e) => {
+      setUpdateAvailable(e);
+    });
+    return () => {
+      didInit = false;
+    };
+  }, [appVersion]);
 
   return (
     <nav className="p-primary-nav">
