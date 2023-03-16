@@ -46,17 +46,24 @@ describe("Entity Details Container", () => {
   function renderComponent({
     props,
     storeState = state,
-  }: { props?: Props; storeState?: RootState } = {}) {
+    path = "/models/kirk@external/enterprise",
+    urlPattern = "/models/:userName/:modelName",
+  }: {
+    props?: Props;
+    storeState?: RootState;
+    path?: string;
+    urlPattern?: string;
+  } = {}) {
     const store = mockStore(storeState);
 
-    window.history.pushState({}, "", "/models/kirk@external/enterprise");
+    window.history.pushState({}, "", path);
     render(
       <Provider store={store}>
         <BrowserRouter>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
               <Route
-                path="/models/:userName/:modelName"
+                path={urlPattern}
                 element={
                   <EntityDetails
                     type={props?.type}
@@ -257,6 +264,18 @@ describe("Entity Details Container", () => {
     await waitFor(() => {
       expect(document.querySelector(".l-content")).toHaveClass(
         "l-content--has-webcli"
+      );
+    });
+  });
+
+  it("gives the header a class when the header shouldbe a single column", async () => {
+    renderComponent({
+      path: "/models/eggman@external/group-test/app/etcd",
+      urlPattern: "/models/:userName/:modelName/app/:appName",
+    });
+    await waitFor(() => {
+      expect(document.querySelector(".entity-details__header")).toHaveClass(
+        "entity-details__header--single-col"
       );
     });
   });

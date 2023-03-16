@@ -2,6 +2,7 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/breakpoints";
 @import "../../scss/custom/icons";
+@import "../../scss/variables";
 @include vf-b-placeholders;
 
 @mixin entity-details-layout {
@@ -96,7 +97,6 @@
       align-items: center;
       display: grid;
       gap: 2rem;
-      grid-template-columns: 1fr;
       grid-template-columns: repeat(3, 1fr);
       padding-top: 0;
     }
@@ -109,6 +109,22 @@
 
       .p-breadcrumbs__item:not(:first-of-type) {
         text-indent: 1.25rem;
+      }
+    }
+
+    &.entity-details__header--single-col {
+      gap: 0;
+      grid-template-columns: 1fr;
+      min-height: $top-header-height;
+
+      @include desktop {
+        grid-template-columns: 1fr;
+      }
+
+      .p-breadcrumbs {
+        // Centre the content to match the tabs.
+        margin-bottom: 1.25rem;
+        margin-top: 1.25rem;
       }
     }
 

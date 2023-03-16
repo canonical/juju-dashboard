@@ -29,6 +29,7 @@ import { useAppSelector } from "store/store";
 import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
+import { useEntityDetailsParams } from "components/hooks";
 
 import "./_entity-details.scss";
 
@@ -61,6 +62,7 @@ const EntityDetails = ({
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const applications = useSelector(getModelApplications(modelUUID));
+  const { isNestedEntityPage } = useEntityDetailsParams();
 
   const [query, setQuery] = useQueryParams({
     panel: StringParam,
@@ -238,7 +240,11 @@ const EntityDetails = ({
   return (
     <BaseLayout>
       <Header>
-        <div className="entity-details__header">
+        <div
+          className={classNames("entity-details__header", {
+            "entity-details__header--single-col": isNestedEntityPage,
+          })}
+        >
           <Breadcrumb />
           <div
             className="entity-details__view-selector"
