@@ -10,6 +10,7 @@ import classnames from "classnames";
 
 import { isSet } from "components/utils";
 import { ConfigData } from "juju/api";
+import { Button, Icon } from "@canonical/react-components";
 
 export type SetNewValue = (name: string, value: any) => void;
 
@@ -147,16 +148,13 @@ const ConfigField = <V,>({
     >
       <h5 className="u-float-left">
         {config.description ? (
-          <i
-            className={classnames("config-input--view-description", {
-              "p-icon--plus": !showDescription,
-              "p-icon--minus": showDescription,
-            })}
+          <Button
+            appearance="base"
+            className="config-input--view-description"
             onClick={handleShowDescription}
-            onKeyPress={handleShowDescription}
-            role="button"
-            tabIndex={0}
-          />
+          >
+            <Icon name={showDescription ? "minus" : "plus"} />
+          </Button>
         ) : null}
         {config.name}
       </h5>

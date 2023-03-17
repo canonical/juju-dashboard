@@ -223,11 +223,16 @@ $panel-padding: 1.5rem;
     background-color: $color-light;
   }
 
-  .p-icon--plus.config-input--view-description,
-  .p-icon--minus.config-input--view-description {
+  .config-input--view-description {
     display: none;
-    margin-right: 0.5rem;
-    width: 0.875rem;
+    // Give the toggle button a larger hit area:
+    margin: -$spv--x-small 0 0 (-$spv--small);
+    padding: $spv--x-small $spv--small;
+
+    .p-icon--minus,
+    .p-icon--plus {
+      width: #{map-get($font-sizes, small)}rem;
+    }
 
     @media screen and (max-width: $breakpoint-large) {
       display: inline-block;
