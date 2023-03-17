@@ -1,4 +1,11 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import classnames from "classnames";
 
 import { isSet } from "components/utils";
@@ -31,7 +38,7 @@ const ConfigField = <V,>({
   );
   const [showDescription, setShowDescription] = useState(false);
   const descriptionRef = useRef<HTMLDivElement>(null);
-  const [maxDescriptionHeight, setMaxDescriptionHeight] = useState("0px");
+  const [maxDescriptionHeight, setMaxDescriptionHeight] = useState<string>();
 
   let inputValue = config.default;
   if (isSet(config.newValue)) {
@@ -40,22 +47,59 @@ const ConfigField = <V,>({
     inputValue = config.value;
   }
 
-  useEffect(() => {
-    if (descriptionRef.current?.firstChild) {
+  const updateDescriptionHeight = useCallback(() => {
+    if (
+      // Don't update if the height has already been retrieved.
+      !maxDescriptionHeight &&
+      descriptionRef.current?.firstChild &&
+      // Don't try and update if the element is not visible.
+      descriptionRef.current?.offsetParent !== null
+    ) {
       setMaxDescriptionHeight(
         `${
           (descriptionRef.current.firstChild as HTMLPreElement).clientHeight
         }px`
       );
     }
-  }, []);
+  }, [maxDescriptionHeight]);
+
+  const resizeObserver = useMemo(
+    () => new ResizeObserver(updateDescriptionHeight),
+    [updateDescriptionHeight]
+  );
+
+  useEffect(() => {
+    if (maxDescriptionHeight) {
+      // There's no need to keep observing the element once the height has
+      // been retrieved.
+      resizeObserver.disconnect();
+    }
+  }, [maxDescriptionHeight, resizeObserver]);
+
+  useEffect(() => {
+    const descriptionElement = descriptionRef.current;
+    if (!descriptionElement) {
+      return;
+    }
+    // Attempt to set the height if the element is visible.
+    updateDescriptionHeight();
+    // On larger screens the description is hidden so the element needs to be
+    // observed for when the screen is resized down and it becomes visible so
+    // that the height can be retrieved.
+    resizeObserver.observe(descriptionElement);
+    return () => {
+      if (descriptionElement) {
+        resizeObserver.unobserve(descriptionElement);
+      }
+    };
+  }, [updateDescriptionHeight, resizeObserver]);
 
   useEffect(() => {
     if (!descriptionRef.current) {
       return;
     }
     if (showDescription) {
-      descriptionRef.current.style.maxHeight = maxDescriptionHeight;
+      descriptionRef.current.style.maxHeight = maxDescriptionHeight ?? "0px";
     } else {
       descriptionRef.current.style.maxHeight = "0px";
     }
@@ -102,16 +146,18 @@ const ConfigField = <V,>({
       onClick={() => setSelectedConfig(config)}
     >
       <h5 className="u-float-left">
-        <i
-          className={classnames("config-input--view-description", {
-            "p-icon--plus": !showDescription,
-            "p-icon--minus": showDescription,
-          })}
-          onClick={handleShowDescription}
-          onKeyPress={handleShowDescription}
-          role="button"
-          tabIndex={0}
-        />
+        {config.description ? (
+          <i
+            className={classnames("config-input--view-description", {
+              "p-icon--plus": !showDescription,
+              "p-icon--minus": showDescription,
+            })}
+            onClick={handleShowDescription}
+            onKeyPress={handleShowDescription}
+            role="button"
+            tabIndex={0}
+          />
+        ) : null}
         {config.name}
       </h5>
       <button

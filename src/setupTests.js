@@ -18,7 +18,14 @@ if (!window.HTMLDivElement.prototype.animate) {
   );
 }
 
+class ResizeObserver {
+  observe = jest.fn();
+  unobserve = jest.fn();
+  disconnect = jest.fn();
+}
+
 // Provide node modules that are required by bakeryjs.
 global.TextDecoder = util.TextDecoder;
 global.TextEncoder = util.TextEncoder;
 global.crypto = crypto;
+global.ResizeObserver = ResizeObserver;
