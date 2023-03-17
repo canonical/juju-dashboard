@@ -31,6 +31,28 @@ if (process.env.NODE_ENV === "production") {
   Sentry.setTag("dashboardVersion", appVersion);
 }
 
+const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\//);
+export const getControllerAPIEndpointErrors = (
+  controllerAPIEndpoint?: string
+) => {
+  if (!controllerAPIEndpoint) {
+    return "controllerAPIEndpoint is not set.";
+  } else if (!controllerAPIEndpoint.endsWith("/api")) {
+    return `controllerAPIEndpoint (${controllerAPIEndpoint}) must end with /api.`;
+  } else if (!controllerAPIEndpoint?.startsWith("/")) {
+    if (
+      !controllerAPIEndpoint.startsWith("wss://") &&
+      !controllerAPIEndpoint.startsWith("ws://")
+    ) {
+      return `controllerAPIEndpoint (${controllerAPIEndpoint}) must be an absolute path or begin with ws:// or wss://.`;
+    } else if (!addressRegex.test(controllerAPIEndpoint)) {
+      return `controllerAPIEndpoint (${controllerAPIEndpoint}) must be an absolute path or contain a hostname or IP.`;
+    }
+  }
+
+  return null;
+};
+
 const renderRoot = (content: ReactNode) => {
   const rootElement = document.getElementById("root");
   if (rootElement) {
@@ -66,19 +88,10 @@ function bootstrap() {
   if (!config) {
     error = "No configuration found.";
   }
-  const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\/api$/);
-  if (!config?.controllerAPIEndpoint) {
-    error = `controllerAPIEndpoint is not set.`;
-  } else if (!config?.controllerAPIEndpoint.endsWith("/api")) {
-    error = `controllerAPIEndpoint (${config?.controllerAPIEndpoint}) must end with /api.`;
-  } else if (
-    !config?.controllerAPIEndpoint.startsWith("wss://") &&
-    !config?.controllerAPIEndpoint.startsWith("ws://")
-  ) {
-    error = `controllerAPIEndpoint (${config?.controllerAPIEndpoint}) must begin with ws:// or wss://.`;
-  } else if (!addressRegex.test(config?.controllerAPIEndpoint)) {
-    error = `controllerAPIEndpoint (${config?.controllerAPIEndpoint}) must contain a hostname or IP.`;
-  }
+  const controllerEndpointError = getControllerAPIEndpointErrors(
+    config?.controllerAPIEndpoint
+  );
+  error = controllerEndpointError ?? error;
   if (error || !config) {
     renderRoot(
       <Strip>
