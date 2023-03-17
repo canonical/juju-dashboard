@@ -3,7 +3,7 @@ import { Icon, StatusLabel, Tooltip } from "@canonical/react-components";
 import classNames from "classnames";
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { getAppVersion } from "store/general/selectors";
@@ -70,20 +70,18 @@ const ControllersLink = () => {
   );
 };
 
-let didInit = false;
 const PrimaryNav = () => {
   const appVersion = useSelector(getAppVersion);
   const [updateAvailable, setUpdateAvailable] = useState(false);
+  let versionRequested = useRef(false);
 
   useEffect(() => {
-    if (didInit || !appVersion) return;
-    didInit = true;
-    dashboardUpdateAvailable(appVersion || "").then((e) => {
-      setUpdateAvailable(e);
-    });
-    return () => {
-      didInit = false;
-    };
+    if (appVersion && !versionRequested.current) {
+      dashboardUpdateAvailable(appVersion || "").then((e) => {
+        setUpdateAvailable(e);
+      });
+      versionRequested.current = true;
+    }
   }, [appVersion]);
 
   return (
