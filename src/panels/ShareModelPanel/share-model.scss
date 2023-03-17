@@ -55,7 +55,7 @@
     .help-text {
       color: $color-mid-dark;
       display: block;
-      font-size: 0.875rem;
+      font-size: #{map-get($font-sizes, small)}rem;
       text-indent: 0;
     }
   }

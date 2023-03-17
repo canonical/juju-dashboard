@@ -20,7 +20,7 @@ $panel-padding: 1.5rem;
   overflow-y: auto;
 
   &__modal-button-row-hint {
-    font-size: 0.875rem;
+    font-size: #{map-get($font-sizes, small)}rem;
     margin-bottom: 1.5rem;
     text-align: left;
   }
@@ -239,7 +239,7 @@ $panel-padding: 1.5rem;
 
     clear: both;
     display: none;
-    font-size: 0.875rem;
+    font-size: #{map-get($font-sizes, small)}rem;
     margin-bottom: 0.5rem;
     margin-left: 1.3rem;
     max-height: 0;
