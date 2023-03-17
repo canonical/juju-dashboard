@@ -18,7 +18,7 @@
   }
 
   .radio-input-box__content {
-    font-size: 0.875rem;
+    font-size: #{map-get($font-sizes, small)}rem;
     margin-top: 0.25rem;
     padding-left: 2rem;
   }

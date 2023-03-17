@@ -9,7 +9,7 @@
 
   &__toggles-info {
     color: $color-mid-dark;
-    font-size: 0.875rem;
+    font-size: #{map-get($font-sizes, small)}rem;
   }
 
   &__header {

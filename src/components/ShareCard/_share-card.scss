@@ -46,7 +46,7 @@
 
   &__supplementary {
     color: $color-mid-dark;
-    font-size: 0.875rem;
+    font-size: #{map-get($font-sizes, small)}rem;
     max-width: calc(100% - 1.5rem);
 
     select {

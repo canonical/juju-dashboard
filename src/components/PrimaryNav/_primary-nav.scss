@@ -102,13 +102,13 @@
       &__item {
         color: $color-x-light;
         display: flex;
-        font-size: 0.875rem;
+        font-size: #{map-get($font-sizes, small)}rem;
         justify-content: space-between;
         margin-right: 1rem;
 
         .version {
           color: $color-light;
-          font-size: 0.875rem;
+          font-size: #{map-get($font-sizes, small)}rem;
           padding-left: 1rem;
         }
       }
@@ -118,7 +118,7 @@
   .entity-count {
     border-radius: 50%;
     display: inline-block;
-    font-size: 0.875rem;
+    font-size: #{map-get($font-sizes, small)}rem;
     height: 1.5rem;
     margin-left: auto;
     margin-right: 1rem;

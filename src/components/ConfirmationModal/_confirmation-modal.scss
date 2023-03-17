@@ -44,7 +44,7 @@
 
   &__sub-header {
     color: $color-mid-dark;
-    font-size: 0.875rem;
+    font-size: #{map-get($font-sizes, small)}rem;
   }
 
   &__info-group {
