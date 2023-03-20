@@ -6,7 +6,7 @@ import {
   getApplicationConfig,
   setApplicationConfig,
 } from "juju/api";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import type { Store } from "redux";
 
 import {
@@ -18,6 +18,7 @@ import {
 import FadeIn from "animations/FadeIn";
 import { generateIconImg, isSet } from "components/utils";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
+import ScrollOnRender from "components/ScrollOnRender";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 
 import useAnalytics from "hooks/useAnalytics";
@@ -46,11 +47,11 @@ type Props = {
 
 type ConfirmTypes = "apply" | "cancel" | null;
 
-const generateErrors = (errors: string[]) =>
+const generateErrors = (errors: string[], scrollArea?: HTMLElement | null) =>
   errors.map((error) => (
-    <Notification key={error} severity="negative">
-      {error}
-    </Notification>
+    <ScrollOnRender key={error} scrollArea={scrollArea}>
+      <Notification severity="negative">{error}</Notification>
+    </ScrollOnRender>
   ));
 
 export default function ConfigPanel({
@@ -70,6 +71,7 @@ export default function ConfigPanel({
   const [savingConfig, setSavingConfig] = useState<boolean>(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
   const [formErrors, setFormErrors] = useState<string[] | null>(null);
+  const scrollArea = useRef<HTMLDivElement>(null);
 
   const sendAnalytics = useAnalytics();
 
@@ -203,6 +205,7 @@ export default function ConfigPanel({
       category: "User",
       action: "Config values updated",
     });
+    onClose();
   }
 
   function generateConfirmationDialog(): JSX.Element | null {
@@ -254,6 +257,7 @@ export default function ConfigPanel({
       onClose={checkCanClose}
       isLoading={!appName}
       className="config-panel"
+      ref={scrollArea}
     >
       <div>
         {isLoading ? (
@@ -290,7 +294,9 @@ export default function ConfigPanel({
                 </div>
 
                 <div className="config-panel__list">
-                  {formErrors ? generateErrors(formErrors) : null}
+                  {formErrors
+                    ? generateErrors(formErrors, scrollArea?.current)
+                    : null}
                   {generateConfigElementList(
                     config,
                     selectedConfig,
