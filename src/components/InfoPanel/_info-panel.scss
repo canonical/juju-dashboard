@@ -30,8 +30,13 @@
     .p-icon--fullscreen {
       bottom: 10px;
       cursor: pointer;
+      display: none;
       position: absolute;
       right: 10px;
+
+      @include medium {
+        display: inline-block;
+      }
     }
   }
 

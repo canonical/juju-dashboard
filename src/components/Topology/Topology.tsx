@@ -4,24 +4,44 @@ import cloneDeep from "clone-deep";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { generateIconPath } from "store/juju/utils/models";
+import {
+  AnnotationData,
+  ApplicationData,
+  ApplicationInfo,
+  RelationData,
+} from "juju/types";
+
+type Props = {
+  annotations: AnnotationData | null;
+  applications: ApplicationData | null;
+  relations: RelationData | null;
+  width: number;
+  height: number;
+};
+
+type Application = ApplicationInfo & {
+  name: string;
+  annotations: AnnotationData[0];
+};
 
 /**
   Returns whether the application is a subordinate.
-  @param {Object} app The application status object.
-  @returns {Boolean} If the application is a subordinate.
+  @param app The application status object.
+  @returns If the application is a subordinate.
 */
-const isSubordinate = (app) => app?.subordinateTo?.length > 0;
+const isSubordinate = (app: Application) =>
+  app?.annotations.subordinateTo?.length > 0;
 
 /**
   Computes the maximum delta from 0 for both the x and y axis. This is necessary
   because there are no restrictions on placing applications in a bundle at
   negative indexes.
-  @param {Object} annotations The annotations object from the model status.
-  @returns {Object} The deltas for x and y in the keys { deltaX, deltaY }.
+  @param annotations The annotations object from the model status.
+  @returns The deltas for x and y in the keys { deltaX, deltaY }.
 */
-const computePositionDelta = (annotations) => {
-  let deltaX = null;
-  let deltaY = null;
+const computePositionDelta = (annotations: AnnotationData | null) => {
+  let deltaX: number | null = null;
+  let deltaY: number | null = null;
 
   if (!annotations) {
     return { deltaX, deltaY };
@@ -44,10 +64,10 @@ const computePositionDelta = (annotations) => {
 
 /**
   Retrieve the X and Y annotation with the highest value.
-  @param {Object} annotations The annotations object from the model status.
-  @returns {Object} The value of the annotation with the highest X and Y value.
+  @param annotations The annotations object from the model status.
+  @returns The value of the annotation with the highest X and Y value.
 */
-const computeMaxXY = (annotations) => {
+const computeMaxXY = (annotations: AnnotationData | null) => {
   let maxY = 0;
   let maxX = 0;
   if (!annotations) {
@@ -72,27 +92,41 @@ const computeMaxXY = (annotations) => {
 /**
   Applies the supplied delta to the supplied position. Both inputs are parsed
   as floats.
-  @param {Number} position
-  @param {Number} delta
-  @returns {Float} The position value with the delta applied.
+  @param position
+  @param delta
+  @returns The position value with the delta applied.
 */
-const applyDelta = (position, delta) =>
-  parseFloat(position) + -parseFloat(delta);
+const applyDelta = (
+  position?: number | string | null,
+  delta?: number | string | null
+) =>
+  (typeof position === "number" ? position : parseFloat(position || "0")) +
+  -(typeof delta === "number" ? delta : parseFloat(delta || "0"));
 
 /**
   Generates the relation positions for the two endpoints based on the
   application name data passed in.
-  @param {*} data The relation data.
-  @returns {Object} x and y coordinates for the two relation endpoints.
+  @param data The relation data.
+  @returns x and y coordinates for the two relation endpoints.
 */
-const getRelationPosition = (data) => {
+const getRelationPosition = (data: string[]) => {
   // Gets the values from the elements translate attribute.
   // translate(123.456, 789.012)
   const translateValues = /(\d*\.?\d*),\s(\d*\.?\d*)/;
-  const getElement = (index) => d3.select(`[data-name="${data[index]}"]`);
-  const getRect = (element) =>
-    translateValues.exec(element.node().getAttribute("transform"));
-  const getData = (element) => element.data()[0];
+  const getElement = (index: number) =>
+    d3.select<d3.BaseType, Application>(`[data-name="${data[index]}"]`);
+  const getRect = (
+    element: d3.Selection<d3.BaseType, Application, HTMLElement, any>
+  ) => {
+    const node = element?.node();
+    if (node && "getAttribute" in node) {
+      const transform = node.getAttribute("transform");
+      return transform ? translateValues.exec(transform) : null;
+    }
+  };
+  const getData = (
+    element: d3.Selection<d3.BaseType, Application, HTMLElement, any>
+  ) => element.data()[0];
 
   const element1 = getElement(0);
   const element2 = getElement(1);
@@ -100,10 +134,10 @@ const getRelationPosition = (data) => {
   const app2 = getRect(element2);
 
   return {
-    x1: applyDelta(app1[1], isSubordinate(getData(element1)) ? -60 : -90),
-    y1: applyDelta(app1[2], isSubordinate(getData(element1)) ? -60 : -90),
-    x2: applyDelta(app2[1], isSubordinate(getData(element2)) ? -60 : -90),
-    y2: applyDelta(app2[2], isSubordinate(getData(element2)) ? -60 : -90),
+    x1: applyDelta(app1?.[1], isSubordinate(getData(element1)) ? -60 : -90),
+    y1: applyDelta(app1?.[2], isSubordinate(getData(element1)) ? -60 : -90),
+    x2: applyDelta(app2?.[1], isSubordinate(getData(element2)) ? -60 : -90),
+    y2: applyDelta(app2?.[2], isSubordinate(getData(element2)) ? -60 : -90),
   };
 };
 
@@ -113,18 +147,18 @@ const Topology = ({
   relations: relationData,
   width,
   height,
-}) => {
-  const ref = useRef();
+}: Props) => {
+  const ref = useRef<SVGSVGElement>(null);
 
-  const annotationData = cloneDeep(annotations);
+  const annotationData = cloneDeep(annotations) ?? {};
 
   const { deltaX, deltaY } = computePositionDelta(annotationData);
 
-  const applications = Object.entries(applicationData).map(
+  const applications: Application[] = Object.entries(applicationData ?? {}).map(
     ([appName, application]) => {
       return {
         ...application,
-        ...annotationData[appName],
+        annotations: annotationData[appName] ?? {},
         name: appName,
       };
     }
@@ -134,10 +168,10 @@ const Topology = ({
   for (const appName in annotationData) {
     const annotation = annotationData[appName];
     if (annotation["gui-x"]) {
-      annotation["gui-x"] = applyDelta(annotation["gui-x"], deltaX);
+      annotation["gui-x"] = applyDelta(annotation["gui-x"], deltaX).toString();
     }
     if (annotation["gui-y"]) {
-      annotation["gui-y"] = applyDelta(annotation["gui-y"], deltaY);
+      annotation["gui-y"] = applyDelta(annotation["gui-y"], deltaY).toString();
     }
   }
 
@@ -151,12 +185,14 @@ const Topology = ({
   // Dedupe the relations as we only draw a single line between two
   // applications regardless of how many relations are between them.
   const extractor = /(.+):(.+)\s(.+):(.+)/;
-  const endpoints = Object.entries(relationData || {}).reduce(
+  const endpoints = Object.entries(relationData || {}).reduce<string[]>(
     (acc, [key, relation]) => {
       // We don't draw peer relations so we can ignore them.
       if (relation.endpoints.length > 1) {
         const parts = key.match(extractor);
-        acc.push(`${parts[1]}:${parts[3]}`);
+        if (parts) {
+          acc.push(`${parts[1]}:${parts[3]}`);
+        }
       }
       return acc;
     },
@@ -171,7 +207,7 @@ const Topology = ({
   // The missing application is likely a cross-model-relation which isn't
   // fully supported yet.
   // https://github.com/canonical-web-and-design/jaas-dashboard/issues/526
-  const applicationNames = Object.keys(applicationData);
+  const applicationNames = Object.keys(applicationData ?? {});
 
   const relations = deDupedRelations.filter(
     (relation) =>
@@ -180,8 +216,12 @@ const Topology = ({
   );
 
   useEffect(() => {
+    const svgNode = ref.current;
+    if (!svgNode) {
+      return;
+    }
     const topo = d3
-      .select(ref.current)
+      .select(svgNode)
       .attr("viewBox", `0 0 ${width} ${height}`)
       .append("g");
 
@@ -196,8 +236,14 @@ const Topology = ({
       .enter()
       .append("g")
       .attr("transform", (d) => {
-        const x = d["gui-x"] !== undefined ? d["gui-x"] : gridCount.x;
-        const y = d["gui-y"] !== undefined ? d["gui-y"] : gridCount.y;
+        const x =
+          d.annotations["gui-x"] !== undefined
+            ? d.annotations["gui-x"]
+            : gridCount.x;
+        const y =
+          d.annotations["gui-y"] !== undefined
+            ? d.annotations["gui-y"]
+            : gridCount.y;
         gridCount.x += 250;
         // Let the placed units determine the max width of the visualization.
         // and move the grid units to a new line.
@@ -220,18 +266,35 @@ const Topology = ({
       .attr("stroke", "#888888")
       .call((_) => {
         // When ever a new element is added zoom the canvas to fit.
-        const { width: svgWidth, height: svgHeight } = topo
-          .node()
-          .getBoundingClientRect();
+        let svgHeight = 0;
+        let svgWidth = 0;
+        let parentHeight = 0;
+        let parentWidth = 0;
+        const rect = topo?.node()?.getBoundingClientRect();
+        // Get the rect of the containing <svg>. This could be different to the
+        // width and height passed into this component due to the responsive design.
+        const parentRect = topo.node()?.parentElement?.getBoundingClientRect();
+        if (rect && parentRect) {
+          svgWidth = rect.width;
+          svgHeight = rect.height;
+          parentWidth = parentRect.width;
+          parentHeight = parentRect.height;
+        }
         if (svgWidth > 0 && svgHeight > 0) {
-          // Magic number that presents reasonable padding around the viz.
-          const padding = 200;
-          const scale = Math.min(
-            width / (svgWidth + padding),
-            height / (svgHeight + padding)
+          const containerScale = Math.min(
+            width / parentWidth,
+            height / parentHeight
           );
-          const translateX = (width - svgWidth * scale) / 2;
-          const translateY = (height - svgHeight * scale) / 2;
+          // Magic number that presents reasonable padding around the viz.
+          const padding = 200 / containerScale;
+          const scale = Math.min(
+            parentWidth / (svgWidth + padding),
+            parentHeight / (svgHeight + padding)
+          );
+          const translateX =
+            ((parentWidth - svgWidth * scale) / 2) * containerScale;
+          const translateY =
+            ((parentHeight - svgHeight * scale) / 2) * containerScale;
           topo.attr(
             "transform",
             `translate(${translateX},${translateY}) scale(${scale},${scale})`
