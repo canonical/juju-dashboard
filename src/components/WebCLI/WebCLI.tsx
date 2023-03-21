@@ -35,6 +35,8 @@ type Authentication = {
   macaroons?: Macaroon[];
 };
 
+export const MAX_HISTORY = 200;
+
 const WebCLI = ({
   controllerWSHost,
   credentials,
@@ -154,7 +156,11 @@ const WebCLI = ({
     const formFields = e.currentTarget.children;
     if ("command" in formFields) {
       command = (formFields.command as HTMLInputElement).value.trim();
-      setCLIHistory(cliHistory.concat([command]));
+      let history = cliHistory.concat([command]);
+      if (history.length > MAX_HISTORY) {
+        history = history.slice(-MAX_HISTORY);
+      }
+      setCLIHistory(history);
       // Reset the position in case the user was navigating through the history.
       setHistoryPosition(0);
     }

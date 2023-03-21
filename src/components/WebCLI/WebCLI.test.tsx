@@ -11,6 +11,7 @@ import { rootStateFactory } from "testing/factories/root";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 
 import WebCLI from "./WebCLI";
+import { MAX_HISTORY } from "./WebCLI";
 
 const mockStore = configureStore([]);
 
@@ -183,6 +184,42 @@ describe("WebCLI", () => {
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}{arrowup}{arrowup}");
     expect(input).toHaveValue("status");
+  });
+
+  it("limits the number of items in the history", async () => {
+    const items = [...Array(MAX_HISTORY).keys()].map((_, i) => `command-${i}`);
+    localStorage.setItem("cliHistory", JSON.stringify(items));
+    clobberConsoleError();
+    // ..until it receives a 'done' message.
+    new WS("ws://localhost:1234/model/abc123/commands", {
+      jsonProtocol: true,
+    });
+    await generateComponent({
+      protocol: "ws",
+      controllerWSHost: "localhost:1234",
+      modelUUID: "abc123",
+      credentials: {
+        user: "spaceman",
+        password: "somelongpassword",
+      },
+    });
+    return new Promise<void>(async (resolve) => {
+      const input = screen.getByRole("textbox");
+      let history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
+      expect(history).toHaveLength(MAX_HISTORY);
+      expect(history[0]).toBe("command-0");
+      await userEvent.type(input, "status{enter}");
+      history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
+      expect(history).toHaveLength(MAX_HISTORY);
+      // The first item should be now be the old second item.
+      expect(history[0]).toBe("command-1");
+      setTimeout(() => {
+        act(() => {
+          WS.clean();
+        });
+        resolve();
+      });
+    });
   });
 
   it("supports macaroon based authentication", async () => {
