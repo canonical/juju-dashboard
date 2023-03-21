@@ -46,6 +46,7 @@ describe("WebCLI", () => {
     // Reset the console.error to the original console.error in case
     // it was cobbered in a test.
     console.error = originalError;
+    localStorage.clear();
   });
 
   /*
@@ -134,6 +135,54 @@ describe("WebCLI", () => {
         resolve();
       });
     });
+  });
+
+  it("navigate back through the history", async () => {
+    localStorage.setItem(
+      "cliHistory",
+      JSON.stringify(["status", "help", "whoami"])
+    );
+    await generateComponent();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "{arrowup}{arrowup}");
+    expect(input).toHaveValue("help");
+  });
+
+  it("navigate forward through the history", async () => {
+    localStorage.setItem(
+      "cliHistory",
+      JSON.stringify(["status", "help", "whoami"])
+    );
+    await generateComponent();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "{arrowup}{arrowup}{arrowup}");
+    expect(input).toHaveValue("status");
+    await userEvent.type(input, "{arrowdown}{arrowdown}");
+    expect(input).toHaveValue("whoami");
+  });
+
+  it("can navigate forward to the empty state", async () => {
+    localStorage.setItem(
+      "cliHistory",
+      JSON.stringify(["status", "help", "whoami"])
+    );
+    await generateComponent();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "{arrowup}{arrowup}");
+    expect(input).toHaveValue("help");
+    await userEvent.type(input, "{arrowdown}{arrowdown}");
+    expect(input).toHaveValue("");
+  });
+
+  it("prevents navigating past the last history item", async () => {
+    localStorage.setItem(
+      "cliHistory",
+      JSON.stringify(["status", "help", "whoami"])
+    );
+    await generateComponent();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "{arrowup}{arrowup}{arrowup}{arrowup}");
+    expect(input).toHaveValue("status");
   });
 
   it("supports macaroon based authentication", async () => {
