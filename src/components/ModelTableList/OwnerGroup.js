@@ -1,5 +1,4 @@
 import { MainTable } from "@canonical/react-components";
-import useActiveUsers from "hooks/useActiveUsers";
 import { useSelector } from "react-redux";
 import { StringParam, useQueryParams, withDefault } from "use-query-params";
 
@@ -9,7 +8,10 @@ import {
 } from "store/juju/utils/models";
 import { generateStatusElement } from "components/utils";
 
-import { getGroupedByOwnerAndFilteredModelData } from "store/juju/selectors";
+import {
+  getGroupedByOwnerAndFilteredModelData,
+  getActiveUsers,
+} from "store/juju/selectors";
 
 import {
   generateAccessButton,
@@ -76,7 +78,7 @@ export default function OwnerGroup({ filters }) {
     model: StringParam,
     panel: withDefault(StringParam, "share-model"),
   })[1];
-  const activeUsers = useActiveUsers();
+  const activeUsers = useSelector(getActiveUsers);
 
   let ownerTables = [];
   let ownerModels = {};

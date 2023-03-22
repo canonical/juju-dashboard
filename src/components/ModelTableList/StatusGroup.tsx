@@ -10,7 +10,6 @@ import {
   QueryParamConfig,
   SetQuery,
 } from "use-query-params";
-import useActiveUsers from "hooks/useActiveUsers";
 
 import {
   getModelStatusGroupData,
@@ -21,7 +20,10 @@ import {
 } from "store/juju/utils/models";
 import { generateStatusElement } from "components/utils";
 
-import { getGroupedByStatusAndFilteredModelData } from "store/juju/selectors";
+import {
+  getActiveUsers,
+  getGroupedByStatusAndFilteredModelData,
+} from "store/juju/selectors";
 import { ModelData } from "store/juju/types";
 
 import {
@@ -260,7 +262,7 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
     model: StringParam,
     panel: withDefault(StringParam, "share-model"),
   })[1];
-  const activeUsers = useActiveUsers();
+  const activeUsers = useSelector(getActiveUsers);
 
   const { blockedRows, alertRows, runningRows } =
     generateModelTableDataByStatus(

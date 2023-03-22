@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { MainTable } from "@canonical/react-components";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
-import useActiveUsers from "hooks/useActiveUsers";
 
 import {
   getModelStatusGroupData,
@@ -10,7 +9,10 @@ import {
 } from "store/juju/utils/models";
 import { generateStatusElement } from "components/utils";
 
-import { getGroupedByCloudAndFilteredModelData } from "store/juju/selectors";
+import {
+  getActiveUsers,
+  getGroupedByCloudAndFilteredModelData,
+} from "store/juju/selectors";
 
 import {
   generateModelDetailsLink,
@@ -68,7 +70,7 @@ function generateCloudTableHeaders(cloud, count) {
 }
 
 export default function CloudGroup({ filters }) {
-  const activeUsers = useActiveUsers();
+  const activeUsers = useSelector(getActiveUsers);
 
   const groupedAndFilteredData = useSelector(
     getGroupedByCloudAndFilteredModelData(filters)

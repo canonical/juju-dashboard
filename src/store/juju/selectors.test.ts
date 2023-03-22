@@ -11,6 +11,7 @@ import {
   machineChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
 import { rootStateFactory } from "testing/factories";
+import { generalStateFactory } from "testing/factories/general";
 
 import {
   getModelWatcherDataByUUID,
@@ -29,6 +30,8 @@ import {
   getModelList,
   getModelByUUID,
   getModelControllerDataByUUID,
+  getActiveUsers,
+  getActiveUser,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -336,5 +339,69 @@ describe("selectors", () => {
         })
       )
     ).toBe(true);
+  });
+
+  it("getActiveUser", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        controllerConnections: {
+          "wss://example.com/api": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
+      }),
+      juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            wsControllerURL: "wss://example.com/api",
+          }),
+        },
+      }),
+    });
+    expect(getActiveUser(state, "abc123")).toStrictEqual("eggman@external");
+  });
+
+  it("getActiveUsers", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        controllerConnections: {
+          "wss://example.com/api": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+          "wss://test.com/api": {
+            user: {
+              "display-name": "spaceman",
+              identity: "user-spaceman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
+      }),
+      juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            wsControllerURL: "wss://example.com/api",
+          }),
+          def456: modelListInfoFactory.build({
+            wsControllerURL: "wss://test.com/api",
+          }),
+        },
+      }),
+    });
+    expect(getActiveUsers(state)).toStrictEqual({
+      abc123: "eggman@external",
+      def456: "spaceman@external",
+    });
   });
 });

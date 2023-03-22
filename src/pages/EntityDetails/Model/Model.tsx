@@ -33,11 +33,11 @@ import EntityInfo from "components/EntityInfo/EntityInfo";
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 
-import useActiveUser from "hooks/useActiveUser";
 import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
 
 import {
+  getActiveUser,
   getModelApplications,
   getModelInfo,
   getModelMachines,
@@ -45,6 +45,7 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
@@ -98,7 +99,7 @@ const Model = () => {
   const relations = useSelector(getModelRelations(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
-  const activeUser = useActiveUser(modelUUID);
+  const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
 
   const machinesTableRows = useMemo(() => {
     return generateMachineRows(machines, units, tableRowClick, query?.entity);
