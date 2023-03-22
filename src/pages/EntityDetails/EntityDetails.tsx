@@ -146,7 +146,7 @@ const EntityDetails = ({
     } else if (activePanel === "remoteApps" || activePanel === "offers") {
       return (
         <SlidePanel
-          isActive={activePanel}
+          isActive={!!activePanel}
           onClose={() => setQuery(closePanelConfig)}
           isLoading={!entity}
           className={`${activePanel}-panel`}
