@@ -60,7 +60,7 @@ const WebCLI = ({
     wsMessageStore.current = "";
     setOutput(""); // Clear the output when sending a new message.
   };
-  const keyListener = useCallback(
+  const keydownListener = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "ArrowUp" || event.key === "ArrowDown") {
         let newPosition = historyPosition;
@@ -85,13 +85,25 @@ const WebCLI = ({
     [cliHistory, historyPosition]
   );
 
+  const keyupListener = useCallback((event: KeyboardEvent) => {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      if (inputRef.current) {
+        const position = inputRef.current.value.length;
+        // Move the cursor to the end of the history value that was just inserted.
+        inputRef.current.setSelectionRange(position, position);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const input = inputRef.current;
-    input?.addEventListener("keydown", keyListener);
+    input?.addEventListener("keydown", keydownListener);
+    input?.addEventListener("keyup", keyupListener);
     return () => {
-      input?.removeEventListener("keydown", keyListener);
+      input?.removeEventListener("keydown", keydownListener);
+      input?.removeEventListener("keyup", keyupListener);
     };
-  }, [keyListener]);
+  }, [keydownListener, keyupListener]);
 
   const wsAddress = useMemo(() => {
     if (!controllerWSHost || !modelUUID) {
