@@ -1,7 +1,15 @@
 import { Macaroon } from "@canonical/macaroon-bakery/dist/macaroon";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useStore } from "react-redux";
 
+import useLocalStorage from "hooks/useLocalStorage";
 import bakery from "juju/bakery";
 import { getActiveUserTag } from "store/general/selectors";
 import { Credential } from "store/general/types";
@@ -27,6 +35,8 @@ type Authentication = {
   macaroons?: Macaroon[];
 };
 
+export const MAX_HISTORY = 200;
+
 const WebCLI = ({
   controllerWSHost,
   credentials,
@@ -35,16 +45,65 @@ const WebCLI = ({
 }: Props) => {
   const [connection, setConnection] = useState<Connection | null>(null);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
+  const [historyPosition, setHistoryPosition] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const wsMessageStore = useRef<string>("");
   let [output, setOutput] = useState("");
   const sendAnalytics = useAnalytics();
   const storeState = useStore().getState();
+  const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
+    "cliHistory",
+    []
+  );
 
   const clearMessageBuffer = () => {
     wsMessageStore.current = "";
     setOutput(""); // Clear the output when sending a new message.
   };
+  const keydownListener = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+        let newPosition = historyPosition;
+        if (event.key === "ArrowUp") {
+          if (newPosition < cliHistory.length) {
+            newPosition++;
+          }
+        } else if (event.key === "ArrowDown") {
+          if (newPosition > 0) {
+            newPosition--;
+          }
+        }
+        setHistoryPosition(newPosition);
+        if (inputRef.current) {
+          // Position "0" is used for not navigating through the history and
+          // values great than 0 are the positions in the history.
+          inputRef.current.value =
+            newPosition > 0 ? cliHistory[cliHistory.length - newPosition] : "";
+        }
+      }
+    },
+    [cliHistory, historyPosition]
+  );
+
+  const keyupListener = useCallback((event: KeyboardEvent) => {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      if (inputRef.current) {
+        const position = inputRef.current.value.length;
+        // Move the cursor to the end of the history value that was just inserted.
+        inputRef.current.setSelectionRange(position, position);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const input = inputRef.current;
+    input?.addEventListener("keydown", keydownListener);
+    input?.addEventListener("keyup", keyupListener);
+    return () => {
+      input?.removeEventListener("keydown", keydownListener);
+      input?.removeEventListener("keyup", keyupListener);
+    };
+  }, [keydownListener, keyupListener]);
 
   const wsAddress = useMemo(() => {
     if (!controllerWSHost || !modelUUID) {
@@ -109,6 +168,13 @@ const WebCLI = ({
     const formFields = e.currentTarget.children;
     if ("command" in formFields) {
       command = (formFields.command as HTMLInputElement).value.trim();
+      let history = cliHistory.concat([command]);
+      if (history.length > MAX_HISTORY) {
+        history = history.slice(-MAX_HISTORY);
+      }
+      setCLIHistory(history);
+      // Reset the position in case the user was navigating through the history.
+      setHistoryPosition(0);
     }
 
     connection?.send(

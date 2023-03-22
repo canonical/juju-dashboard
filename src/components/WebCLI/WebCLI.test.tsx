@@ -11,6 +11,7 @@ import { rootStateFactory } from "testing/factories/root";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 
 import WebCLI from "./WebCLI";
+import { MAX_HISTORY } from "./WebCLI";
 
 const mockStore = configureStore([]);
 
@@ -46,6 +47,7 @@ describe("WebCLI", () => {
     // Reset the console.error to the original console.error in case
     // it was cobbered in a test.
     console.error = originalError;
+    localStorage.clear();
   });
 
   /*
@@ -127,6 +129,90 @@ describe("WebCLI", () => {
         credentials: "somelongpassword",
         commands: ["status"],
       });
+      setTimeout(() => {
+        act(() => {
+          WS.clean();
+        });
+        resolve();
+      });
+    });
+  });
+
+  it("navigate back through the history", async () => {
+    localStorage.setItem(
+      "cliHistory",
+      JSON.stringify(["status", "help", "whoami"])
+    );
+    await generateComponent();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "{arrowup}{arrowup}");
+    expect(input).toHaveValue("help");
+  });
+
+  it("navigate forward through the history", async () => {
+    localStorage.setItem(
+      "cliHistory",
+      JSON.stringify(["status", "help", "whoami"])
+    );
+    await generateComponent();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "{arrowup}{arrowup}{arrowup}");
+    expect(input).toHaveValue("status");
+    await userEvent.type(input, "{arrowdown}{arrowdown}");
+    expect(input).toHaveValue("whoami");
+  });
+
+  it("can navigate forward to the empty state", async () => {
+    localStorage.setItem(
+      "cliHistory",
+      JSON.stringify(["status", "help", "whoami"])
+    );
+    await generateComponent();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "{arrowup}{arrowup}");
+    expect(input).toHaveValue("help");
+    await userEvent.type(input, "{arrowdown}{arrowdown}");
+    expect(input).toHaveValue("");
+  });
+
+  it("prevents navigating past the last history item", async () => {
+    localStorage.setItem(
+      "cliHistory",
+      JSON.stringify(["status", "help", "whoami"])
+    );
+    await generateComponent();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "{arrowup}{arrowup}{arrowup}{arrowup}");
+    expect(input).toHaveValue("status");
+  });
+
+  it("limits the number of items in the history", async () => {
+    const items = [...Array(MAX_HISTORY).keys()].map((_, i) => `command-${i}`);
+    localStorage.setItem("cliHistory", JSON.stringify(items));
+    clobberConsoleError();
+    // ..until it receives a 'done' message.
+    new WS("ws://localhost:1234/model/abc123/commands", {
+      jsonProtocol: true,
+    });
+    await generateComponent({
+      protocol: "ws",
+      controllerWSHost: "localhost:1234",
+      modelUUID: "abc123",
+      credentials: {
+        user: "spaceman",
+        password: "somelongpassword",
+      },
+    });
+    return new Promise<void>(async (resolve) => {
+      const input = screen.getByRole("textbox");
+      let history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
+      expect(history).toHaveLength(MAX_HISTORY);
+      expect(history[0]).toBe("command-0");
+      await userEvent.type(input, "status{enter}");
+      history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
+      expect(history).toHaveLength(MAX_HISTORY);
+      // The first item should be now be the old second item.
+      expect(history[0]).toBe("command-1");
       setTimeout(() => {
         act(() => {
           WS.clean();
