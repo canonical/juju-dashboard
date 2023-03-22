@@ -1,6 +1,7 @@
 import {
   jujuStateFactory,
   modelListInfoFactory,
+  controllerFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -25,6 +26,9 @@ import {
   getControllerData,
   getModelListLoaded,
   hasModels,
+  getModelList,
+  getModelByUUID,
+  getModelControllerDataByUUID,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -163,6 +167,60 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual(modelWatcherData.abc123.applications);
+  });
+
+  it("getModelList", () => {
+    let models = {
+      abc123: modelListInfoFactory.build({
+        wsControllerURL: "wss://example.com/api",
+      }),
+    };
+    expect(
+      getModelList(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            models,
+          }),
+        })
+      )
+    ).toStrictEqual(models);
+  });
+
+  it("getModelByUUID", () => {
+    const models = {
+      abc123: modelListInfoFactory.build({
+        wsControllerURL: "wss://example.com/api",
+      }),
+    };
+    expect(
+      getModelByUUID(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            models,
+          }),
+        }),
+        "abc123"
+      )
+    ).toStrictEqual(models.abc123);
+  });
+
+  it("getModelControllerDataByUUID", () => {
+    const controllers = {
+      "wss://example.com/api": [controllerFactory.build({ uuid: "abc123" })],
+      "wss://test.com/api": [controllerFactory.build({ uuid: "def456" })],
+    };
+    expect(
+      getModelControllerDataByUUID("def456")(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            controllers,
+          }),
+        })
+      )
+    ).toStrictEqual({
+      ...controllerFactory.build({ uuid: "def456" }),
+      url: "wss://test.com/api",
+    });
   });
 
   it("getModelListLoaded", () => {

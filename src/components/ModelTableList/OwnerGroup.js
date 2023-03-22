@@ -1,5 +1,5 @@
 import { MainTable } from "@canonical/react-components";
-import useActiveUser from "hooks/useActiveUser";
+import useActiveUsers from "hooks/useActiveUsers";
 import { useSelector } from "react-redux";
 import { StringParam, useQueryParams, withDefault } from "use-query-params";
 
@@ -76,7 +76,7 @@ export default function OwnerGroup({ filters }) {
     model: StringParam,
     panel: withDefault(StringParam, "share-model"),
   })[1];
-  const activeUser = useActiveUser();
+  const activeUsers = useActiveUsers();
 
   let ownerTables = [];
   let ownerModels = {};
@@ -84,6 +84,7 @@ export default function OwnerGroup({ filters }) {
     Object.values(ownerRows[owner]).forEach((modelGroup) => {
       ownerModels.rows = [];
       modelGroup.forEach((model) => {
+        const activeUser = activeUsers[model.uuid];
         const { highestStatus } = getModelStatusGroupData(model);
         const cloud = generateCloudCell(model);
         const credential = getStatusValue(model, "cloud-credential-tag");

@@ -82,7 +82,6 @@ const generateCloudAndRegion = (cloudTag: string, region?: string) => {
 
 const Model = () => {
   const modelStatusData = useModelStatus();
-  const activeUser = useActiveUser();
 
   const { userName, modelName } = useParams<EntityDetailsRoute>();
 
@@ -99,6 +98,7 @@ const Model = () => {
   const relations = useSelector(getModelRelations(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
+  const activeUser = useActiveUser(modelUUID);
 
   const machinesTableRows = useMemo(() => {
     return generateMachineRows(machines, units, tableRowClick, query?.entity);

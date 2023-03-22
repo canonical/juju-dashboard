@@ -1,11 +1,10 @@
-import { useSelector, useStore } from "react-redux";
-import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
+import { getActiveUserTag } from "store/general/selectors";
+import { getModelByUUID } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
-export default function useActiveUser() {
-  const store = useStore();
-  const getState = store.getState;
-  return getActiveUserTag(getState(), useSelector(getWSControllerURL))?.replace(
-    "user-",
-    ""
-  );
+export default function useActiveUser(modelUUID: string) {
+  const model = useAppSelector((state) => getModelByUUID(state, modelUUID));
+  return useAppSelector((state) =>
+    getActiveUserTag(state, model?.wsControllerURL)
+  )?.replace("user-", "");
 }

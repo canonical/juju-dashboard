@@ -10,7 +10,7 @@ import {
   QueryParamConfig,
   SetQuery,
 } from "use-query-params";
-import useActiveUser from "hooks/useActiveUser";
+import useActiveUsers from "hooks/useActiveUsers";
 
 import {
   getModelStatusGroupData,
@@ -149,7 +149,7 @@ function generateModelTableDataByStatus(
       QueryParamConfig<string | null | undefined, string | null | undefined>
     >
   >,
-  activeUser: string
+  activeUsers: Record<string, string>
 ) {
   const modelData: Record<string, MainTableRow[]> = {
     blockedRows: [],
@@ -165,6 +165,7 @@ function generateModelTableDataByStatus(
       if (model.info) {
         owner = extractOwnerName(model.info["owner-tag"]);
       }
+      const activeUser = activeUsers[model.uuid];
       const cloud = generateCloudCell(model);
       const credential = getStatusValue(model, "cloud-credential-tag");
       const controller = getStatusValue(model, "controllerName");
@@ -259,13 +260,13 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
     model: StringParam,
     panel: withDefault(StringParam, "share-model"),
   })[1];
-  const activeUser = useActiveUser();
+  const activeUsers = useActiveUsers();
 
   const { blockedRows, alertRows, runningRows } =
     generateModelTableDataByStatus(
       groupedAndFilteredData,
       setPanelQs,
-      activeUser
+      activeUsers
     );
 
   const emptyStateMsg = "There are no models with this status";

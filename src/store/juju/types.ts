@@ -52,6 +52,7 @@ export type ModelListInfo = {
   ownerTag: string;
   type: string;
   uuid: string;
+  wsControllerURL: string;
 };
 
 export type ModelsList = {

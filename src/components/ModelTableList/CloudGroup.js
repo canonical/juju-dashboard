@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { MainTable } from "@canonical/react-components";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
-import useActiveUser from "hooks/useActiveUser";
+import useActiveUsers from "hooks/useActiveUsers";
 
 import {
   getModelStatusGroupData,
@@ -68,7 +68,7 @@ function generateCloudTableHeaders(cloud, count) {
 }
 
 export default function CloudGroup({ filters }) {
-  const activeUser = useActiveUser();
+  const activeUsers = useActiveUsers();
 
   const groupedAndFilteredData = useSelector(
     getGroupedByCloudAndFilteredModelData(filters)
@@ -86,6 +86,7 @@ export default function CloudGroup({ filters }) {
     Object.values(cloudRows[cloud]).forEach((modelGroup) => {
       cloudModels.rows = [];
       modelGroup.forEach((model) => {
+        const activeUser = activeUsers[model.uuid];
         const { highestStatus } = getModelStatusGroupData(model);
         const owner = extractOwnerName(model.info["owner-tag"]);
         const region = getStatusValue(model, "region");

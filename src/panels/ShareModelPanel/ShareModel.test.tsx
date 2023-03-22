@@ -40,6 +40,7 @@ describe("Share Model Panel", () => {
         modelData: {
           abc123: modelDataFactory.build({
             info: modelDataInfoFactory.build({
+              "controller-uuid": "123",
               name: "hadoopspark",
               users: [modelUserInfoFactory.build()],
             }),
