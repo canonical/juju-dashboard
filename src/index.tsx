@@ -88,6 +88,12 @@ function bootstrap() {
   if (!config) {
     error = "No configuration found.";
   }
+  // Support Juju 2.9 deployments with the old configuration values.
+  // XXX This can be removed once we drop support for 2.9 with the 3.0 release.
+  if (config?.baseControllerURL === null) {
+    const protocol = window.location.protocol.includes("https") ? "wss" : "ws";
+    config.controllerAPIEndpoint = `${protocol}://${window.location.host}/api`;
+  }
   const controllerEndpointError = getControllerAPIEndpointErrors(
     config?.controllerAPIEndpoint
   );
@@ -116,12 +122,6 @@ function bootstrap() {
         : "ws";
       config.controllerAPIEndpoint = `${protocol}://${window.location.host}${controllerAPIEndpoint}`;
     }
-  }
-  // Support Juju 2.9 deployments with the old configuration values.
-  // XXX This can be removed once we drop support for 2.9 with the 3.0 release.
-  if (config.baseControllerURL === null) {
-    const protocol = window.location.protocol.includes("https") ? "wss" : "ws";
-    config.controllerAPIEndpoint = `${protocol}://${window.location.host}/api`;
   }
 
   if (process.env.NODE_ENV === "production") {
