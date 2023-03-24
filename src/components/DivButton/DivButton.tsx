@@ -1,5 +1,11 @@
 import type { PropsWithSpread } from "@canonical/react-components";
-import { HTMLProps, KeyboardEvent, MouseEvent, PropsWithChildren } from "react";
+import {
+  HTMLProps,
+  KeyboardEvent,
+  MouseEvent,
+  PropsWithChildren,
+  useRef,
+} from "react";
 import classnames from "classnames";
 
 import "./_div-button.scss";
@@ -17,15 +23,22 @@ type Props = PropsWithSpread<
  element wraps another interactive element.
  */
 const DivButton = ({ children, onClick, className, ...props }: Props) => {
+  const ref = useRef(null);
   return (
     <div
       className={classnames("p-div-button", className)}
       onClick={(event) => onClick(event)}
       onKeyDown={(event) => {
-        if (event.key === " " || event.key === "Enter") {
+        if (
+          // Check that this element has focus so that this doesn't fire when
+          // interacting with children.
+          document.activeElement === ref.current &&
+          (event.key === " " || event.key === "Enter")
+        ) {
           onClick(event);
         }
       }}
+      ref={ref}
       role="button"
       tabIndex={0}
       {...props}
