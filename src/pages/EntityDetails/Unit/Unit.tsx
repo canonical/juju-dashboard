@@ -19,7 +19,6 @@ import { extractRevisionNumber } from "store/juju/utils/models";
 
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import InfoPanel from "components/InfoPanel/InfoPanel";
-import EntityDetails from "pages/EntityDetails/EntityDetails";
 
 import {
   getAllModelApplicationStatus,
@@ -97,7 +96,7 @@ export default function Unit() {
   }
 
   return (
-    <EntityDetails type="unit">
+    <>
       <div>
         <InfoPanel />
         <EntityInfo data={unitEntityData} />
@@ -122,6 +121,6 @@ export default function Unit() {
           />
         </div>
       </div>
-    </EntityDetails>
+    </>
   );
 }

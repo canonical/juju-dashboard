@@ -1,8 +1,8 @@
-import { useEffect, useState, PropsWithChildren, ReactNode } from "react";
+import { useEffect, useState, ReactNode, useRef } from "react";
 import classNames from "classnames";
 import { Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Outlet } from "react-router-dom";
 import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
@@ -30,18 +30,14 @@ import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
 import { useEntityDetailsParams } from "components/hooks";
+import { EntityDetailsRoute } from "components/Routes/Routes";
+import SearchBox from "components/SearchBox/SearchBox";
 
 import "./_entity-details.scss";
 
 export enum Label {
   NOT_FOUND = "Model not found",
 }
-
-type Props = {
-  type?: string;
-  additionalHeaderContent?: JSX.Element;
-  onApplicationsFilter?: (query: string) => void;
-};
 
 function generatePanelContent(activePanel: string, entity: string) {
   switch (activePanel) {
@@ -52,12 +48,20 @@ function generatePanelContent(activePanel: string, entity: string) {
   }
 }
 
-const EntityDetails = ({
-  type,
-  additionalHeaderContent,
-  children,
-}: PropsWithChildren<Props>) => {
-  const { userName, modelName } = useParams();
+const getEntityType = (params: Partial<EntityDetailsRoute>) => {
+  if (!!params.unitId) {
+    return "unit";
+  } else if (!!params.machineId) {
+    return "machine";
+  } else if (!!params.appName) {
+    return "app";
+  }
+  return "model";
+};
+
+const EntityDetails = () => {
+  const routeParams = useParams<EntityDetailsRoute>();
+  const { userName, modelName } = routeParams;
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
@@ -68,6 +72,7 @@ const EntityDetails = ({
     panel: StringParam,
     entity: StringParam,
     activeView: withDefault(StringParam, "apps"),
+    filterQuery: withDefault(StringParam, ""),
   });
   const setActiveView = (view?: string) => {
     setQuery({ activeView: view });
@@ -78,6 +83,7 @@ const EntityDetails = ({
 
   const store = useStore();
   const storeState = store.getState();
+  const searchBoxRef = useRef<HTMLInputElement>(null);
 
   const [showWebCLI, setShowWebCLI] = useState(false);
 
@@ -91,6 +97,7 @@ const EntityDetails = ({
   const primaryControllerData = useSelector(
     getControllerDataByUUID(controllerUUID)
   );
+  const entityType = getEntityType(routeParams);
 
   let credentials = null;
   let controllerWSHost = "";
@@ -126,6 +133,11 @@ const EntityDetails = ({
       setShowWebCLI(true);
     }
   }, [modelInfo]);
+
+  useEffect(() => {
+    // set value
+    if (searchBoxRef.current) searchBoxRef.current.value = query.filterQuery;
+  }, [query.filterQuery]);
 
   useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
 
@@ -187,6 +199,28 @@ const EntityDetails = ({
     return items;
   };
 
+  const generateSearch = () => {
+    return (
+      <SearchBox
+        className="u-no-margin"
+        placeholder="Filter applications"
+        onKeyDown={(e) => {
+          if (e.code === "Enter") handleFilterSubmit();
+        }}
+        onSearch={handleFilterSubmit}
+        onClear={handleFilterSubmit}
+        externallyControlled
+        ref={searchBoxRef}
+        data-testid="filter-applications"
+      />
+    );
+  };
+
+  const handleFilterSubmit = () => {
+    const filterQuery = searchBoxRef.current?.value || "";
+    setQuery({ filterQuery });
+  };
+
   let content: ReactNode;
   if (modelInfo) {
     content = (
@@ -196,9 +230,9 @@ const EntityDetails = ({
             "l-content--has-webcli": showWebCLI,
           })}
         >
-          <div className={`entity-details entity-details__${type}`}>
+          <div className={`entity-details entity-details__${entityType}`}>
             <>
-              {children}
+              <Outlet />
               {generateActivePanel()}
             </>
           </div>
@@ -250,11 +284,13 @@ const EntityDetails = ({
             className="entity-details__view-selector"
             data-testid="view-selector"
           >
-            {modelInfo && type === "model" && (
+            {modelInfo && entityType === "model" && (
               <Tabs links={generateTabItems()} />
             )}
           </div>
-          {additionalHeaderContent}
+          {activeView === "apps" && !isNestedEntityPage
+            ? generateSearch()
+            : null}
         </div>
       </Header>
       {content}

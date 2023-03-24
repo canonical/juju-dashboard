@@ -23,8 +23,6 @@ import {
   unitTableHeaders,
 } from "tables/tableHeaders";
 
-import EntityDetails from "pages/EntityDetails/EntityDetails";
-
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 
@@ -99,7 +97,7 @@ export default function Machine() {
   };
 
   return (
-    <EntityDetails type="machine">
+    <>
       <div>
         <InfoPanel />
         <EntityInfo data={MachineEntityData} />
@@ -124,6 +122,6 @@ export default function Machine() {
           </div>
         </div>
       </div>
-    </EntityDetails>
+    </>
   );
 }

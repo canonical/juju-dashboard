@@ -1,5 +1,5 @@
 import { MainTable } from "@canonical/react-components";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
@@ -30,7 +30,6 @@ import {
 import InfoPanel from "components/InfoPanel/InfoPanel";
 
 import EntityInfo from "components/EntityInfo/EntityInfo";
-import EntityDetails from "pages/EntityDetails/EntityDetails";
 import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 
 import useActiveUser from "hooks/useActiveUser";
@@ -48,7 +47,6 @@ import {
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
-import SearchBox from "components/SearchBox/SearchBox";
 import ApplicationsTab from "./ApplicationsTab/ApplicationsTab";
 
 export enum Label {
@@ -86,7 +84,7 @@ const Model = () => {
 
   const { userName, modelName } = useParams<EntityDetailsRoute>();
 
-  const [query, setQuery] = useQueryParams({
+  const [query] = useQueryParams({
     panel: StringParam,
     entity: StringParam,
     activeView: withDefault(StringParam, "apps"),
@@ -121,42 +119,15 @@ const Model = () => {
   const modelInfoData = useSelector(getModelInfo(modelUUID));
 
   const setPanelQs = useQueryParam("panel", StringParam)[1];
-  const searchBoxRef = useRef<HTMLInputElement>(null);
   const [applicationsFilterQuery, setApplicationsFilterQuery] =
     useState<string>(query.filterQuery || "");
 
   useEffect(() => {
     setApplicationsFilterQuery(query.filterQuery);
-    // set value
-    if (searchBoxRef.current) searchBoxRef.current.value = query.filterQuery;
   }, [query.filterQuery]);
 
-  const handleFilterSubmit = () => {
-    const filterQuery = searchBoxRef.current?.value || "";
-    setQuery({ filterQuery });
-  };
-
   return (
-    <EntityDetails
-      type="model"
-      additionalHeaderContent={
-        shouldShow("apps", query.activeView) ? (
-          <SearchBox
-            className="u-no-margin"
-            placeholder="Filter applications"
-            onKeyDown={(e) => {
-              if (e.code === "Enter") handleFilterSubmit();
-            }}
-            onSearch={handleFilterSubmit}
-            onClear={handleFilterSubmit}
-            externallyControlled
-            ref={searchBoxRef}
-            data-testid="filter-applications"
-          />
-        ) : undefined
-      }
-      onApplicationsFilter={(q) => setApplicationsFilterQuery(q)}
-    >
+    <>
       <div>
         <InfoPanel />
         <div className="entity-details__actions">
@@ -270,7 +241,7 @@ const Model = () => {
         )}
         {shouldShow("action-logs", query.activeView) && <ActionLogs />}
       </div>
-    </EntityDetails>
+    </>
   );
 };
 
