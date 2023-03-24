@@ -1,12 +1,12 @@
 import type { PropsWithSpread } from "@canonical/react-components";
-import { HTMLProps, PropsWithChildren } from "react";
+import { HTMLProps, KeyboardEvent, MouseEvent, PropsWithChildren } from "react";
 import classnames from "classnames";
 
 import "./_div-button.scss";
 
 type Props = PropsWithSpread<
   {
-    onClick: () => void;
+    onClick: (event: MouseEvent | KeyboardEvent) => void;
   },
   HTMLProps<HTMLDivElement>
 > &
@@ -20,10 +20,10 @@ const DivButton = ({ children, onClick, className, ...props }: Props) => {
   return (
     <div
       className={classnames("p-div-button", className)}
-      onClick={() => onClick()}
+      onClick={(event) => onClick(event)}
       onKeyDown={(event) => {
         if (event.key === " " || event.key === "Enter") {
-          onClick();
+          onClick(event);
         }
       }}
       role="button"

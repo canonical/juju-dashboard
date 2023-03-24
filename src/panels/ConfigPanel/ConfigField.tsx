@@ -143,7 +143,10 @@ const ConfigField = <V,>({
         "config-input--changed": inputChanged,
       })}
       data-testid={config.name}
-      onClick={() => setSelectedConfig(config)}
+      onClick={(event) => {
+        event.preventDefault();
+        setSelectedConfig(config);
+      }}
     >
       <h5 className="u-float-left">
         {config.description ? (
