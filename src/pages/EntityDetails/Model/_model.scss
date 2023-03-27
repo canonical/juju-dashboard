@@ -1,0 +1,23 @@
+@import "vanilla-framework/scss/_settings_colors";
+@import "vanilla-framework/scss/_base_forms";
+
+.advanced-query-input {
+  .p-search-box__input {
+    font-family: "Ubuntu Mono variable", "Ubuntu Mono", Consolas, Monaco,
+      Courier, monospace;
+  }
+}
+.p-contextual-menu {
+  &__dropdown {
+    padding: 0.5rem 0;
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+    &[data-show="true"] {
+      opacity: 1;
+    }
+  }
+  &__title {
+    color: $colors--light-theme--text-inactive;
+    padding: 1rem 0.25rem;
+  }
+}
