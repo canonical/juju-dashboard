@@ -17,8 +17,6 @@ import EntityInfo from "components/EntityInfo/EntityInfo";
 import FormikFormData from "components/FormikFormData/FormikFormData";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 
-import EntityDetails from "pages/EntityDetails/EntityDetails";
-
 import useTableRowClick from "hooks/useTableRowClick";
 
 import { extractRevisionNumber } from "store/juju/utils/models";
@@ -264,7 +262,7 @@ export default function App(): JSX.Element {
   };
 
   return (
-    <EntityDetails type="app">
+    <>
       <div>
         <InfoPanel />
         <>
@@ -350,6 +348,6 @@ export default function App(): JSX.Element {
           )}
         </div>
       </div>
-    </EntityDetails>
+    </>
   );
 }

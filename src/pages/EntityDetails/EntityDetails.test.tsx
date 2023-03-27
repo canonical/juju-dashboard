@@ -62,17 +62,9 @@ describe("Entity Details Container", () => {
         <BrowserRouter>
           <QueryParamProvider adapter={ReactRouter6Adapter}>
             <Routes>
-              <Route
-                path={urlPattern}
-                element={
-                  <EntityDetails
-                    type={props?.type}
-                    onApplicationsFilter={props?.onApplicationsFilter}
-                  >
-                    {props?.children}
-                  </EntityDetails>
-                }
-              />
+              <Route path={urlPattern} element={<EntityDetails />}>
+                {props?.children}
+              </Route>
             </Routes>
           </QueryParamProvider>
         </BrowserRouter>
@@ -208,7 +200,9 @@ describe("Entity Details Container", () => {
 
   it("shows the supplied child", () => {
     const children = "Hello I am a child!";
-    renderComponent({ props: { children } });
+    renderComponent({
+      props: { children: <Route path="" element={children} /> },
+    });
     expect(screen.getByText(children)).toBeInTheDocument();
   });
 
@@ -277,6 +271,40 @@ describe("Entity Details Container", () => {
       expect(document.querySelector(".entity-details__header")).toHaveClass(
         "entity-details__header--single-col"
       );
+    });
+  });
+
+  it("shows the search & filter box in the apps tab", async () => {
+    renderComponent({
+      path: "/models/eggman@external/group-test",
+      urlPattern: "/models/:userName/:modelName",
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId("filter-applications")).toBeInTheDocument();
+    });
+  });
+
+  it("does not the search & filter box for subsections", async () => {
+    renderComponent({
+      path: "/models/eggman@external/group-test/app/etcd",
+      urlPattern: "/models/:userName/:modelName/app/:appName",
+    });
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId("filter-applications")
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it("does not the search & filter box for non-apps tabs", async () => {
+    renderComponent({
+      path: "/models/eggman@external/group-test?activeView=integrations",
+      urlPattern: "/models/:userName/:modelName",
+    });
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId("filter-applications")
+      ).not.toBeInTheDocument();
     });
   });
 });

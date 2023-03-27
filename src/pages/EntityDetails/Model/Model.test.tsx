@@ -1,5 +1,4 @@
 import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
@@ -146,7 +145,7 @@ describe("Model", () => {
     ).toBeInTheDocument();
   });
 
-  it("view toggles hide and show tables", async () => {
+  it("displays the apps table by default", async () => {
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
         applications: {
@@ -178,23 +177,216 @@ describe("Model", () => {
     expect(
       document.querySelector(".entity-details__main > .entity-details__apps")
     ).toBeInTheDocument();
-    await userEvent.click(screen.getByTestId("tab-link-Machines"));
+    expect(
+      document.querySelector(
+        ".entity-details__main > .entity-details__machines"
+      )
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(
+        ".entity-details__main > .entity-details__relations"
+      )
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(".entity-details__action-logs")
+    ).not.toBeInTheDocument();
+  });
+
+  it("can display the apps table", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        relations: {
+          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/models/eggman@external/test1?activeView=apps"]}
+        >
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route path="/models/:userName/:modelName" element={<Model />} />
+            </Routes>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    Element.prototype.scrollIntoView = jest.fn();
+
+    expect(
+      document.querySelector(".entity-details__main > .entity-details__apps")
+    ).toBeInTheDocument();
+    expect(
+      document.querySelector(
+        ".entity-details__main > .entity-details__machines"
+      )
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(
+        ".entity-details__main > .entity-details__relations"
+      )
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(".entity-details__action-logs")
+    ).not.toBeInTheDocument();
+  });
+
+  it("can display the machines table", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        relations: {
+          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={["/models/eggman@external/test1?activeView=machines"]}
+        >
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route path="/models/:userName/:modelName" element={<Model />} />
+            </Routes>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    Element.prototype.scrollIntoView = jest.fn();
+
+    expect(
+      document.querySelector(".entity-details__main > .entity-details__apps")
+    ).not.toBeInTheDocument();
     expect(
       document.querySelector(
         ".entity-details__main > .entity-details__machines"
       )
     ).toBeInTheDocument();
-    await userEvent.click(screen.getByTestId("tab-link-Integrations"));
+    expect(
+      document.querySelector(
+        ".entity-details__main > .entity-details__relations"
+      )
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(".entity-details__action-logs")
+    ).not.toBeInTheDocument();
+  });
+
+  it("can display the relations table", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        relations: {
+          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/eggman@external/test1?activeView=integrations",
+          ]}
+        >
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route path="/models/:userName/:modelName" element={<Model />} />
+            </Routes>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    Element.prototype.scrollIntoView = jest.fn();
+
+    expect(
+      document.querySelector(".entity-details__main > .entity-details__apps")
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(
+        ".entity-details__main > .entity-details__machines"
+      )
+    ).not.toBeInTheDocument();
     expect(
       document.querySelector(
         ".entity-details__main > .entity-details__relations"
       )
     ).toBeInTheDocument();
-    await userEvent.click(screen.getByTestId("tab-link-Applications"));
+    expect(
+      document.querySelector(".entity-details__action-logs")
+    ).not.toBeInTheDocument();
+  });
+
+  it("can display the action logs table", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        relations: {
+          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/eggman@external/test1?activeView=action-logs",
+          ]}
+        >
+          <QueryParamProvider adapter={ReactRouter6Adapter}>
+            <Routes>
+              <Route path="/models/:userName/:modelName" element={<Model />} />
+            </Routes>
+          </QueryParamProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    Element.prototype.scrollIntoView = jest.fn();
+
     expect(
       document.querySelector(".entity-details__main > .entity-details__apps")
-    ).toBeInTheDocument();
-    await userEvent.click(screen.getByTestId("tab-link-Action Logs"));
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(
+        ".entity-details__main > .entity-details__machines"
+      )
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(
+        ".entity-details__main > .entity-details__relations"
+      )
+    ).not.toBeInTheDocument();
     expect(
       document.querySelector(".entity-details__action-logs")
     ).toBeInTheDocument();
@@ -521,20 +713,5 @@ describe("Model", () => {
     expect(
       screen.getByRole("button", { name: Label.ACCESS_BUTTON })
     ).toBeInTheDocument();
-  });
-  it("shows the search & filter box in the apps tab", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(screen.getByTestId("filter-applications")).toBeInTheDocument();
   });
 });
