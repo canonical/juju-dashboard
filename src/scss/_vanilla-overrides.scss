@@ -14,3 +14,12 @@
 .p-tooltip__message {
   z-index: z("zelda") + 1;
 }
+
+@media (min-width: $breakpoint-large) {
+  body {
+    // Override the Vanilla default which sets the position to relative only on
+    // large screens. This was causing issues with scrolling the main content in
+    // Safari.
+    position: unset !important;
+  }
+}

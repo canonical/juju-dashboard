@@ -48,6 +48,9 @@
 
 .l-main {
   background-color: $color-x-light;
+  // Override the Vanilla default that sets overflow-y to auto but this prevents
+  // sticky from being used by the the entity details sidebar.
+  overflow-y: visible !important;
 
   @include large {
     padding-left: 3rem;
@@ -135,6 +138,9 @@
 
 .l-application {
   overflow-x: hidden;
+  // Override the Vanilla default that sets overflow-y to hidden but this prevents
+  // sticky from being used by the the entity details sidebar.
+  overflow-y: visible !important;
 
   .l-navigation.is-pinned + .l-main {
     padding-left: 0;
