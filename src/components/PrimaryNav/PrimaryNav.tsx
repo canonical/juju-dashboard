@@ -12,6 +12,7 @@ import {
   getGroupedModelStatusCounts,
 } from "store/juju/selectors";
 import { Controllers } from "store/juju/types";
+import urls from "urls";
 import "./_primary-nav.scss";
 
 const ModelsLink = () => {
@@ -23,7 +24,7 @@ const ModelsLink = () => {
           "is-selected": isActive,
         })
       }
-      to={"/models"}
+      to={urls.models}
     >
       <i className={`p-icon--models is-light`}></i>
       <span className="hide-collapsed">Models</span>
@@ -57,7 +58,7 @@ const ControllersLink = () => {
           "is-selected": isActive,
         })
       }
-      to={"/controllers"}
+      to={urls.controllers}
     >
       <i className={`p-icon--controllers is-light`}></i>
       <span className="hide-collapsed">Controllers</span>

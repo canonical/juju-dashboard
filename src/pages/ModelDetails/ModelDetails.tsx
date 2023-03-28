@@ -16,6 +16,7 @@ import { useAppStore } from "store/store";
 import { Connection } from "@canonical/jujulib";
 import { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import EntityDetails from "pages/EntityDetails/EntityDetails";
+import urls from "urls";
 
 export default function ModelDetails() {
   const appState = useAppStore().getState();
@@ -58,13 +59,17 @@ export default function ModelDetails() {
     // eslint-disable-next-line
   }, [modelUUID]);
 
+  const detailsRoute = urls.model.index(null);
   return (
     <Routes>
       <Route path="*" element={<EntityDetails />}>
         <Route path="" element={<Model />} />
-        <Route path="app/:appName" element={<App />} />
-        <Route path="app/:appName/unit/:unitId" element={<Unit />} />
-        <Route path="machine/:machineId" element={<Machine />} />
+        <Route path={urls.model.app(null, detailsRoute)} element={<App />} />
+        <Route path={urls.model.unit(null, detailsRoute)} element={<Unit />} />
+        <Route
+          path={urls.model.machine(null, detailsRoute)}
+          element={<Machine />}
+        />
       </Route>
     </Routes>
   );

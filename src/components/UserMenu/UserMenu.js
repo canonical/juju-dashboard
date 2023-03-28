@@ -7,6 +7,7 @@ import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import useAnalytics from "hooks/useAnalytics";
 import { thunks as appThunks } from "store/app";
 import { extractOwnerName } from "store/juju/utils/models";
+import urls from "urls";
 
 import { actions } from "store/ui";
 import { isUserMenuActive } from "store/ui/selectors";
@@ -65,7 +66,7 @@ const UserMenu = () => {
                     "is-selected": isActive,
                   })
                 }
-                to="/settings"
+                to={urls.settings}
               >
                 Settings
               </NavLink>
@@ -73,7 +74,7 @@ const UserMenu = () => {
             <li className="p-list__item">
               <Link
                 className="user-menu__link"
-                to="/"
+                to={urls.index}
                 onClick={() => dispatch(appThunks.logOut())}
               >
                 Log out

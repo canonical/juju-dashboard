@@ -32,6 +32,7 @@ import FadeIn from "animations/FadeIn";
 import { useEntityDetailsParams } from "components/hooks";
 import { EntityDetailsRoute } from "components/Routes/Routes";
 import SearchBox from "components/SearchBox/SearchBox";
+import urls from "urls";
 
 import "./_entity-details.scss";
 
@@ -256,7 +257,7 @@ const EntityDetails = () => {
                 .
               </p>
               <p>
-                <Link to="/models">View all models</Link>
+                <Link to={urls.models}>View all models</Link>
               </p>
             </>
           </NotFound>

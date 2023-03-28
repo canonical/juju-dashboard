@@ -13,6 +13,8 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getControllerData, getModelData } from "store/juju/selectors";
 import { AdditionalController, Controller } from "store/juju/types";
+import urls from "urls";
+
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 import "./_controllers.scss";
 
@@ -221,7 +223,7 @@ export default function ControllersIndex() {
         <div className="entity-details__header">
           <strong className="controllers--count">
             {controllerCount} controllers,{" "}
-            <Link to="/models">{modelCount} models</Link>
+            <Link to={urls.models}>{modelCount} models</Link>
           </strong>
         </div>
       </Header>

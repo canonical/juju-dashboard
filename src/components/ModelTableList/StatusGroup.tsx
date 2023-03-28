@@ -20,6 +20,7 @@ import {
   getGroupedByStatusAndFilteredModelData,
 } from "store/juju/selectors";
 import { Controllers, ModelData } from "store/juju/types";
+import urls from "urls";
 
 import {
   generateModelDetailsLink,
@@ -74,30 +75,31 @@ const generateWarningMessage = (model: ModelData) => {
     return null;
   }
   const ownerTag = model?.info?.["owner-tag"] ?? "";
+  const userName = ownerTag.replace("user-", "");
+  const modelName = model.model.name;
   const link = generateModelDetailsLink(
-    model.model.name,
+    modelName,
     ownerTag,
     messages[0].message
   );
-  const modelDetailsPath = `/models/${ownerTag.replace("user-", "")}/${
-    model.model.name
-  }`;
-  const list: ReactNode[] = messages.slice(0, 5).map((message) => (
-    <>
-      {message.unitId || message.appName}:{" "}
-      <Link
-        to={[
-          modelDetailsPath,
-          `app/${message.appName}`,
-          message.unitId ? `unit/${message.unitId.replace("/", "-")}` : null,
-        ]
-          .filter(Boolean)
-          .join("/")}
-      >
-        {message.message}
-      </Link>
-    </>
-  ));
+  const list: ReactNode[] = messages.slice(0, 5).map((message) => {
+    const unitId = message.unitId ? message.unitId.replace("/", "-") : null;
+    const appName = message.appName;
+    return (
+      <>
+        {unitId || appName}:{" "}
+        <Link
+          to={
+            unitId
+              ? urls.model.unit({ userName, modelName, appName, unitId })
+              : urls.model.app({ userName, modelName, appName })
+          }
+        >
+          {message.message}
+        </Link>
+      </>
+    );
+  });
   const remainder = messages.slice(5);
   if (remainder.length) {
     list.push(`+${remainder.length} more...`);

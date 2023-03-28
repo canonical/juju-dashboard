@@ -1,6 +1,8 @@
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { useEntityDetailsParams } from "components/hooks";
+import urls from "urls";
 
 import "./_breadcrumbs.scss";
 
@@ -14,8 +16,11 @@ export default function Breadcrumb(): JSX.Element {
     isNestedEntityPage,
   } = useEntityDetailsParams();
 
-  const generateBreadcrumbs = function (): JSX.Element {
+  const generateBreadcrumbs = function (): ReactNode {
     const view = machineId ? "machines" : "apps";
+    if (!userName || !modelName) {
+      return null;
+    }
 
     if (isNestedEntityPage) {
       return (
@@ -24,14 +29,16 @@ export default function Breadcrumb(): JSX.Element {
             className="p-breadcrumbs__item u-no-padding--top"
             data-testid="breadcrumb-model"
           >
-            <Link to={`/models/${userName}/${modelName}`}>{modelName}</Link>
+            <Link to={urls.model.index({ userName, modelName })}>
+              {modelName}
+            </Link>
           </li>
           {!unitId && (
             <li
               className="p-breadcrumbs__item u-no-padding--top"
               data-testid="breadcrumb-section"
             >
-              <Link to={`/models/${userName}/${modelName}?activeView=${view}`}>
+              <Link to={urls.model.tab({ userName, modelName, tab: view })}>
                 {entityType.title}
               </Link>
             </li>
@@ -42,7 +49,7 @@ export default function Breadcrumb(): JSX.Element {
                 className="p-breadcrumbs__item u-no-padding--top"
                 data-testid="breadcrumb-section"
               >
-                <Link to={`/models/${userName}/${modelName}?activeView=apps`}>
+                <Link to={urls.model.tab({ userName, modelName, tab: "apps" })}>
                   Applications
                 </Link>
               </li>
@@ -50,9 +57,11 @@ export default function Breadcrumb(): JSX.Element {
                 className="p-breadcrumbs__item u-no-padding--top"
                 data-testid="breadcrumb-app"
               >
-                <Link to={`/models/${userName}/${modelName}/app/${appName}`}>
-                  {appName}
-                </Link>
+                {appName ? (
+                  <Link to={urls.model.app({ userName, modelName, appName })}>
+                    {appName}
+                  </Link>
+                ) : null}
               </li>
             </>
           )}
@@ -71,7 +80,10 @@ export default function Breadcrumb(): JSX.Element {
         data-testid="breadcrumb-model"
         title={modelName}
       >
-        <Link to={`/models/${userName}/${modelName}`} className="p-link--soft">
+        <Link
+          to={urls.model.index({ userName, modelName })}
+          className="p-link--soft"
+        >
           <strong>{modelName}</strong>
         </Link>
       </li>

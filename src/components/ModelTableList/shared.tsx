@@ -13,6 +13,7 @@ import {
   extractCredentialName,
 } from "store/juju/utils/models";
 import { SetParams } from "hooks/useQueryParams";
+import urls, { ModelTab } from "urls";
 
 export const JAAS_CONTROLLER_UUID = "a030379a-940f-4760-8fcf-3062b41a04e7";
 
@@ -28,7 +29,7 @@ export function generateModelDetailsLink(
   modelName: string,
   ownerTag: string,
   label: ReactNode,
-  view?: string,
+  view?: ModelTab,
   className?: string
 ) {
   // Because we get some data at different times based on the multiple API calls
@@ -42,15 +43,17 @@ export function generateModelDetailsLink(
   }
   // If the owner isn't the logged in user then we need to use the
   // fully qualified path name.
-  let modelDetailsPath = `/models/${ownerTag.replace(
-    "user-",
-    ""
-  )}/${modelName}`;
-  if (view) {
-    modelDetailsPath = `${modelDetailsPath}?activeView=${view}`;
-  }
+
+  const userName = ownerTag.replace("user-", "");
   return (
-    <Link to={modelDetailsPath} className={className}>
+    <Link
+      to={
+        view
+          ? urls.model.tab({ userName, modelName, tab: view })
+          : urls.model.index({ userName, modelName })
+      }
+      className={className}
+    >
       {label}
     </Link>
   );

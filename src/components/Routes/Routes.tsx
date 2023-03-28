@@ -20,6 +20,7 @@ import Settings from "pages/Settings/Settings";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 
 import useAnalytics from "hooks/useAnalytics";
+import urls from "urls";
 
 export type EntityDetailsRoute = {
   userName: string;
@@ -42,9 +43,9 @@ export function Routes() {
 
   return (
     <ReactRouterRoutes>
-      <Route path="/" element={<Navigate to="/models" />} />
+      <Route path={urls.index} element={<Navigate to={urls.models} />} />
       <Route
-        path="/models"
+        path={urls.models}
         element={
           <Login>
             <ModelsIndex />
@@ -52,7 +53,7 @@ export function Routes() {
         }
       />
       <Route
-        path="/models/:userName/:modelName/*"
+        path={`${urls.model.index(null)}/*`}
         element={
           <Login>
             <ModelDetails />
@@ -60,7 +61,7 @@ export function Routes() {
         }
       />
       <Route
-        path="/controllers"
+        path={urls.controllers}
         element={
           <Login>
             <ControllersIndex />
@@ -68,7 +69,7 @@ export function Routes() {
         }
       />
       <Route
-        path="/settings"
+        path={urls.settings}
         element={
           <Login>
             <Settings />
