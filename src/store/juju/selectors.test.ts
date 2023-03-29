@@ -2,6 +2,8 @@ import {
   jujuStateFactory,
   modelListInfoFactory,
   controllerFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -32,7 +34,10 @@ import {
   getModelControllerDataByUUID,
   getActiveUsers,
   getActiveUser,
+  getModelDataByUUID,
+  getModelAccess,
 } from "./selectors";
+import { modelUserInfoFactory } from "../../testing/factories/juju/juju";
 
 describe("selectors", () => {
   it("getModelData", () => {
@@ -205,6 +210,99 @@ describe("selectors", () => {
         "abc123"
       )
     ).toStrictEqual(models.abc123);
+  });
+
+  it("getModelDataByUUID", () => {
+    const modelData = {
+      abc123: modelDataFactory.build(),
+    };
+    expect(
+      getModelDataByUUID(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelData,
+          }),
+        }),
+        "abc123"
+      )
+    ).toStrictEqual(modelData.abc123);
+  });
+
+  it("getModelAccess for a user with access to a model", () => {
+    expect(
+      getModelAccess(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            controllerConnections: {
+              "wss://example.com/api": {
+                user: {
+                  "display-name": "eggman",
+                  identity: "user-eggman@external",
+                  "controller-access": "",
+                  "model-access": "",
+                },
+              },
+            },
+          }),
+          juju: jujuStateFactory.build({
+            modelData: {
+              abc123: modelDataFactory.build({
+                info: modelDataInfoFactory.build({
+                  users: [
+                    modelUserInfoFactory.build({
+                      user: "eggman@external",
+                      access: "read",
+                    }),
+                  ],
+                }),
+              }),
+            },
+            models: {
+              abc123: modelListInfoFactory.build({
+                wsControllerURL: "wss://example.com/api",
+              }),
+            },
+          }),
+        }),
+        "abc123"
+      )
+    ).toBe("read");
+  });
+
+  it("getModelAccess for a user with access to a controller", () => {
+    expect(
+      getModelAccess(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            controllerConnections: {
+              "wss://example.com/api": {
+                user: {
+                  "display-name": "eggman",
+                  identity: "user-eggman@external",
+                  "controller-access": "superuser",
+                  "model-access": "",
+                },
+              },
+            },
+          }),
+          juju: jujuStateFactory.build({
+            modelData: {
+              abc123: modelDataFactory.build({
+                info: modelDataInfoFactory.build({
+                  users: [],
+                }),
+              }),
+            },
+            models: {
+              abc123: modelListInfoFactory.build({
+                wsControllerURL: "wss://example.com/api",
+              }),
+            },
+          }),
+        }),
+        "abc123"
+      )
+    ).toBe("superuser");
   });
 
   it("getModelControllerDataByUUID", () => {
