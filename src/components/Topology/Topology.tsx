@@ -166,7 +166,7 @@ const Topology = memo(
 
     // Apply deltas to the annotations.
     for (const appName in annotationData) {
-      const annotation = annotationData[appName];
+      const annotation = { ...annotationData[appName] };
       if (annotation["gui-x"]) {
         annotation["gui-x"] = applyDelta(
           annotation["gui-x"],

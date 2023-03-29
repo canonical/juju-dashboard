@@ -198,7 +198,7 @@ export default function ActionLogs() {
         const actionFullDetails = actions.find(
           (action) => action.action.tag === actionData.action.tag
         );
-        delete actionFullDetails?.output["return-code"];
+        delete actionFullDetails?.output?.["return-code"];
         if (!actionFullDetails) return;
         const stdout = (actionFullDetails.log || []).map((m, i) => (
           <span className="action-logs__stdout" key={i}>

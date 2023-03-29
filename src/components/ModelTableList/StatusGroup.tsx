@@ -177,7 +177,7 @@ function generateModelTableDataByStatus(
         // e.g. 2021-01-01 becomes 21-01-01
         lastUpdated = lastUpdated.slice(2);
       }
-      modelData[`${groupLabel}Rows`].push({
+      const row = {
         "data-testid": `model-uuid-${model?.uuid}`,
         columns: [
           {
@@ -245,9 +245,8 @@ function generateModelTableDataByStatus(
           controller,
           lastUpdated,
         },
-        // TSFixMe this is required until react-components includes template
-        // literals for data properties.
-      } as MainTableRow);
+      };
+      modelData[`${groupLabel}Rows`].push(row);
     });
   });
 

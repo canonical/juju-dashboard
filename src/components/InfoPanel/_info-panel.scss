@@ -34,7 +34,7 @@
       position: absolute;
       right: 10px;
 
-      @include medium {
+      @include desktop {
         display: inline-block;
       }
     }
