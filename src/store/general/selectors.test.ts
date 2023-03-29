@@ -17,6 +17,7 @@ import {
   getWSControllerURL,
   isConnecting,
   isLoggedIn,
+  getActiveUserControllerAccess,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -148,6 +149,25 @@ describe("selectors", () => {
         "wss://example.com"
       )
     ).toBe("user");
+  });
+
+  it("getActiveUserControllerAccess", () => {
+    expect(
+      getActiveUserControllerAccess(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            controllerConnections: {
+              "wss://example.com": {
+                user: {
+                  "controller-access": "superuser",
+                },
+              },
+            },
+          }),
+        }),
+        "wss://example.com"
+      )
+    ).toBe("superuser");
   });
 
   it("isLoggedIn", () => {

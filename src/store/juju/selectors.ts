@@ -10,7 +10,10 @@ import type {
   RelationData,
   UnitData,
 } from "juju/types";
-import { getActiveUserTag } from "store/general/selectors";
+import {
+  getActiveUserTag,
+  getActiveUserControllerAccess,
+} from "store/general/selectors";
 import { RootState } from "store/store";
 
 import type { Controllers, ModelData, ModelsList } from "./types";
@@ -65,6 +68,11 @@ export const getModelByUUID = createSelector(
   (modelList, uuid) => modelList?.[uuid]
 );
 
+export const getModelDataByUUID = createSelector(
+  [getModelData, (_, modelUUID: string) => modelUUID],
+  (modelData, modelUUID) => modelData[modelUUID]
+);
+
 /**
   Get the active users for each model.
 */
@@ -89,6 +97,25 @@ export const getActiveUser = createSelector(
   [getModelByUUID, (state: RootState) => state],
   (model, state) =>
     getActiveUserTag(state, model?.wsControllerURL)?.replace("user-", "")
+);
+
+export const getModelAccess = createSelector(
+  [
+    getModelByUUID,
+    getModelDataByUUID,
+    getActiveUser,
+    (state: RootState) => state,
+  ],
+  (model, modelData, activeUser, state) => {
+    const controllerAccess = getActiveUserControllerAccess(
+      state,
+      model.wsControllerURL
+    );
+    const modelUser = (modelData?.info?.users ?? []).find(
+      ({ user }) => user === activeUser
+    );
+    return modelUser?.access || controllerAccess || null;
+  }
 );
 
 /**

@@ -72,6 +72,7 @@ export const isConnecting = createSelector(
   [slice],
   (sliceState) => !!sliceState?.visitURL
 );
+
 /**
     Returns the users current controller logged in identity
     @param wsControllerURL The controller url to make the query on.
@@ -86,6 +87,16 @@ export const getActiveUserTag = createSelector(
   (_sliceState, controllerConnection) =>
     // TSFixMe: jujulib types user as `object`.
     (controllerConnection?.user as TSFixMe)?.identity
+);
+
+export const getActiveUserControllerAccess = createSelector(
+  [
+    slice,
+    (state, wsControllerURL) => getControllerConnection(state, wsControllerURL),
+  ],
+  (_sliceState, controllerConnection) =>
+    // TSFixMe: jujulib types user as `object`.
+    (controllerConnection?.user as TSFixMe)?.["controller-access"]
 );
 
 /**

@@ -37,6 +37,7 @@ import useTableRowClick from "hooks/useTableRowClick";
 
 import {
   getActiveUser,
+  getModelAccess,
   getModelApplications,
   getModelInfo,
   getModelMachines,
@@ -118,6 +119,9 @@ const Model = () => {
   );
 
   const modelInfoData = useSelector(getModelInfo(modelUUID));
+  const modelAccess = useAppSelector((state) =>
+    getModelAccess(state, modelUUID)
+  );
 
   const setPanelQs = useQueryParam("panel", StringParam)[1];
   const [applicationsFilterQuery, setApplicationsFilterQuery] =
@@ -148,6 +152,7 @@ const Model = () => {
         {modelInfoData && (
           <EntityInfo
             data={{
+              access: modelAccess ?? "Unknown",
               controller: modelInfoData.type,
               "Cloud/Region": generateCloudAndRegion(
                 modelInfoData["cloud-tag"],
