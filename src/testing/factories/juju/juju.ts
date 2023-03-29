@@ -47,6 +47,7 @@ export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
   ownerTag: "user-eggman@external",
   type: "iaas",
   uuid: "84e872ff-9171-46be-829b-70f0ffake18d",
+  wsControllerURL: "wss://example.com/api",
 }));
 
 export const modelDataStatusFactory = Factory.define<

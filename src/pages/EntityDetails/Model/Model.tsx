@@ -32,11 +32,11 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 
-import useActiveUser from "hooks/useActiveUser";
 import useModelStatus from "hooks/useModelStatus";
 import useTableRowClick from "hooks/useTableRowClick";
 
 import {
+  getActiveUser,
   getModelApplications,
   getModelInfo,
   getModelMachines,
@@ -44,6 +44,7 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
@@ -80,7 +81,6 @@ const generateCloudAndRegion = (cloudTag: string, region?: string) => {
 
 const Model = () => {
   const modelStatusData = useModelStatus();
-  const activeUser = useActiveUser();
 
   const { userName, modelName } = useParams<EntityDetailsRoute>();
 
@@ -97,6 +97,7 @@ const Model = () => {
   const relations = useSelector(getModelRelations(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
+  const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
 
   const machinesTableRows = useMemo(() => {
     return generateMachineRows(machines, units, tableRowClick, query?.entity);

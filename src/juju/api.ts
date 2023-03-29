@@ -47,6 +47,7 @@ import { addControllerCloudRegion } from "store/juju/thunks";
 import { Controller as JujuController } from "store/juju/types";
 import { RootState, Store } from "store/store";
 import { ApplicationInfo } from "./types";
+import { getModelByUUID } from "../store/juju/selectors";
 
 /**
   Return a common connection option config.
@@ -323,12 +324,10 @@ export async function fetchAllModelStatuses(
       if (isLoggedIn(getState(), wsControllerURL)) {
         await fetchAndStoreModelStatus(
           modelUUID,
-          wsControllerURL,
+          getModelByUUID(getState(), modelUUID).wsControllerURL,
           dispatch,
           getState
         );
-      }
-      if (isLoggedIn(getState(), wsControllerURL)) {
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         dispatch(jujuActions.updateModelInfo({ modelInfo, wsControllerURL }));
         if (modelInfo.results[0].result["is-controller"]) {
@@ -426,16 +425,13 @@ export function disableControllerUUIDMasking(conn: Connection) {
   @returns conn The connection.
 */
 async function connectAndLoginToModel(modelUUID: string, appState: RootState) {
-  const baseWSControllerURL = getWSControllerURL(appState);
-  if (!baseWSControllerURL) {
+  const wsControllerURL = getModelByUUID(appState, modelUUID).wsControllerURL;
+  if (!wsControllerURL) {
     return null;
   }
   const config = getConfig(appState);
-  const credentials = getUserPass(appState, baseWSControllerURL);
-  const modelURL = baseWSControllerURL.replace(
-    "/api",
-    `/model/${modelUUID}/api`
-  );
+  const credentials = getUserPass(appState, wsControllerURL);
+  const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   const response = await connectAndLoginWithTimeout(
     modelURL,
     credentials,

@@ -91,6 +91,7 @@ describe("reducers", () => {
           name: "a model",
           ownerTag: "user-eggman@external",
           type: "model",
+          wsControllerURL: "wss://example.com",
         }),
       },
       modelsLoaded: true,

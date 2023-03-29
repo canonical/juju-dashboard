@@ -95,6 +95,7 @@ describe("Model", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test1",
+            wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
         },
         modelWatcherData: {
@@ -691,6 +692,7 @@ describe("Model", () => {
     state.juju.modelData.abc123.info = modelDataInfoFactory.build({
       uuid: "abc123",
       name: "test1",
+      "controller-uuid": "controller123",
       users: [
         modelUserInfoFactory.build({
           user: "eggman@external",

@@ -10,6 +10,7 @@ import type {
   RelationData,
   UnitData,
 } from "juju/types";
+import { getActiveUserTag } from "store/general/selectors";
 import { RootState } from "store/store";
 
 import type { Controllers, ModelData, ModelsList } from "./types";
@@ -51,7 +52,44 @@ const getModelWatcherData = createSelector(
   (sliceState) => sliceState.modelWatcherData
 );
 
-const getModelList = createSelector([slice], (sliceState) => sliceState.models);
+export const getModelList = createSelector(
+  [slice],
+  (sliceState) => sliceState.models
+);
+
+/**
+  Get a model by UUID.
+*/
+export const getModelByUUID = createSelector(
+  [getModelList, (_, uuid: string) => uuid],
+  (modelList, uuid) => modelList?.[uuid]
+);
+
+/**
+  Get the active users for each model.
+*/
+export const getActiveUsers = createSelector(
+  [getModelList, (state: RootState) => state],
+  (models, state) => {
+    const activeUsers: Record<string, string> = {};
+    Object.entries(models).forEach(([modelUUID, model]) => {
+      activeUsers[modelUUID] = getActiveUserTag(
+        state,
+        model.wsControllerURL
+      )?.replace("user-", "");
+    });
+    return activeUsers;
+  }
+);
+
+/**
+  Get the active user for a model.
+*/
+export const getActiveUser = createSelector(
+  [getModelByUUID, (state: RootState) => state],
+  (model, state) =>
+    getActiveUserTag(state, model?.wsControllerURL)?.replace("user-", "")
+);
 
 /**
   Get the loaded state of the model list.
@@ -593,8 +631,8 @@ export const getModelControllerDataByUUID = (controllerUUID?: string) => {
   return createSelector(getControllerData, (controllerData) => {
     if (!controllerData || !controllerUUID) return null;
     let modelController: (Controllers[0][0] & { url?: string }) | null = null;
+    let controllerURL;
     for (const controller of Object.entries(controllerData)) {
-      modelController = { path: "/", uuid: "abc123", version: "1" };
       // Loop through the sub controllers for each primary controller.
       // This is typically only seen in JAAS. Outside of JAAS there is only ever
       // a single sub controller.
@@ -603,6 +641,7 @@ export const getModelControllerDataByUUID = (controllerUUID?: string) => {
           "uuid" in subController && controllerUUID === subController.uuid
       );
       if (modelControllerData) {
+        controllerURL = controller[0];
         modelController = modelControllerData;
         break;
       }
@@ -611,7 +650,7 @@ export const getModelControllerDataByUUID = (controllerUUID?: string) => {
     // write facades on the api
     const clonedModelController = cloneDeep(modelController);
     if (clonedModelController) {
-      clonedModelController.url = Object.keys(controllerData)[0];
+      clonedModelController.url = controllerURL;
     }
     return clonedModelController;
   });

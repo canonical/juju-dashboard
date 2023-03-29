@@ -13,6 +13,7 @@ import {
   modelDataFactory,
   modelStatusInfoFactory,
   modelUserInfoFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { RootState } from "store/store";
 
@@ -29,12 +30,15 @@ describe("OwnerGroup", () => {
         modelData: {
           abc123: modelDataFactory.build({
             info: modelDataInfoFactory.build({
+              "controller-uuid": "controller123",
               "cloud-tag": "cloud-aws",
               "owner-tag": "user-eggman@external",
+              uuid: "abc123",
             }),
             model: modelStatusInfoFactory.build({
               "cloud-tag": "cloud-aws",
             }),
+            uuid: "abc123",
           }),
           def456: modelDataFactory.build({
             info: modelDataInfoFactory.build({
@@ -53,6 +57,12 @@ describe("OwnerGroup", () => {
             model: modelStatusInfoFactory.build({
               "cloud-tag": "cloud-google",
             }),
+          }),
+        },
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
         },
       }),
@@ -125,6 +135,7 @@ describe("OwnerGroup", () => {
     });
     state.juju.modelData.abc123.info = modelDataInfoFactory.build({
       "cloud-tag": "cloud-aws",
+      "controller-uuid": "controller123",
       users: [
         modelUserInfoFactory.build({
           user: "eggman@external",
