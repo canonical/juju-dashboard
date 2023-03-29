@@ -3,8 +3,7 @@ import configureStore from "redux-mock-store";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
+
 import { InitialEntry } from "@remix-run/router";
 import * as juju from "juju/api";
 
@@ -72,21 +71,19 @@ describe("ActionsPanel", () => {
   function generateComponent(initialEntries?: InitialEntry[]) {
     if (!initialEntries) {
       initialEntries = [
-        "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0&units=ceph%2F1",
+        "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0,ceph%2F1",
       ];
     }
     const store = mockStore(state);
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={initialEntries}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName/app/:appName"
-                element={<ActionsPanel />}
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName/app/:appName"
+              element={<ActionsPanel />}
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );

@@ -6,12 +6,6 @@ import {
   canAdministerModelAccess,
   extractCloudName,
 } from "store/juju/utils/models";
-import {
-  StringParam,
-  useQueryParam,
-  useQueryParams,
-  withDefault,
-} from "use-query-params";
 
 import {
   consumedTableHeaders,
@@ -33,6 +27,7 @@ import EntityInfo from "components/EntityInfo/EntityInfo";
 import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 
 import useModelStatus from "hooks/useModelStatus";
+import { useQueryParams } from "hooks/useQueryParams";
 import useTableRowClick from "hooks/useTableRowClick";
 
 import {
@@ -85,11 +80,16 @@ const Model = () => {
 
   const { userName, modelName } = useParams<EntityDetailsRoute>();
 
-  const [query] = useQueryParams({
-    panel: StringParam,
-    entity: StringParam,
-    activeView: withDefault(StringParam, "apps"),
-    filterQuery: withDefault(StringParam, ""),
+  const [query, setQuery] = useQueryParams<{
+    entity: string | null;
+    panel: string | null;
+    activeView: string;
+    filterQuery: string;
+  }>({
+    panel: null,
+    entity: null,
+    activeView: "apps",
+    filterQuery: "",
   });
 
   const tableRowClick = useTableRowClick();
@@ -123,7 +123,6 @@ const Model = () => {
     getModelAccess(state, modelUUID)
   );
 
-  const setPanelQs = useQueryParam("panel", StringParam)[1];
   const [applicationsFilterQuery, setApplicationsFilterQuery] =
     useState<string>(query.filterQuery || "");
 
@@ -146,7 +145,7 @@ const Model = () => {
             ) && (
               <button
                 className="entity-details__action-button"
-                onClick={() => setPanelQs("share-model")}
+                onClick={() => setQuery({ panel: "share-model" })}
               >
                 <i className="p-icon--share"></i>
                 {Label.ACCESS_BUTTON}

@@ -8,23 +8,11 @@ import ChipGroup from "components/ChipGroup/ChipGroup";
 import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
-
 import useModelAttributes from "hooks/useModelAttributes";
-
+import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
-
 import FadeIn from "animations/FadeIn";
-
 import { pluralize } from "store/juju/utils/models";
-
-import {
-  ArrayParam,
-  StringParam,
-  useQueryParam,
-  useQueryParams,
-  withDefault,
-} from "use-query-params";
-
 import {
   getGroupedModelStatusCounts,
   getModelData,
@@ -45,19 +33,29 @@ export enum TestId {
 
 export default function Models() {
   useWindowTitle("Models");
-  // Grab filter from 'groupedby' query in URL and assign to variable
-  const [groupModelsBy, setGroupModelsBy] = useQueryParam(
-    "groupedby",
-    withDefault(StringParam, "status")
-  );
 
-  const [filters, setFilters] = useQueryParams({
-    cloud: withDefault(ArrayParam, []),
-    owner: withDefault(ArrayParam, []),
-    region: withDefault(ArrayParam, []),
-    credential: withDefault(ArrayParam, []),
-    custom: withDefault(ArrayParam, []),
+  const [queryParams, setQueryParams] = useQueryParams<{
+    groupedby: string;
+    cloud: string[];
+    owner: string[];
+    region: string[];
+    credential: string[];
+    custom: string[];
+  }>({
+    groupedby: "status",
+    cloud: [],
+    owner: [],
+    region: [],
+    credential: [],
+    custom: [],
   });
+  const filters = {
+    cloud: queryParams.cloud,
+    owner: queryParams.owner,
+    region: queryParams.region,
+    credential: queryParams.credential,
+    custom: queryParams.custom,
+  };
 
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const hasSomeModels = useSelector(hasModels);
@@ -127,7 +125,10 @@ export default function Models() {
         <div className="l-content">
           <div className="models">
             <ChipGroup chips={{ blocked, alert, running }} />
-            <ModelTableList groupedBy={groupModelsBy} filters={filters} />
+            <ModelTableList
+              groupedBy={queryParams.groupedby}
+              filters={filters}
+            />
           </div>
         </div>
       </FadeIn>
@@ -142,11 +143,11 @@ export default function Models() {
             {modelCount} {pluralize(modelCount, "model")}
           </strong>
           <ButtonGroup
-            activeButton={groupModelsBy}
+            activeButton={queryParams.groupedby}
             buttons={["status", "cloud", "owner"]}
             label="Group by:"
             noWrap
-            setActiveButton={setGroupModelsBy}
+            setActiveButton={(group) => setQueryParams({ groupedby: group })}
           />
           <SearchAndFilter
             filterPanelData={[
@@ -193,7 +194,7 @@ export default function Models() {
                 });
 
               if (!isObjectsEqual(activeFilters, filters)) {
-                setFilters(activeFilters);
+                setQueryParams(activeFilters);
               }
             }}
           />

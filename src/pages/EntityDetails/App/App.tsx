@@ -3,13 +3,6 @@ import { Field, Formik } from "formik";
 import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  ArrayParam,
-  StringParam,
-  useQueryParam,
-  useQueryParams,
-  withDefault,
-} from "use-query-params";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import ChipGroup from "components/ChipGroup/ChipGroup";
@@ -18,6 +11,7 @@ import FormikFormData from "components/FormikFormData/FormikFormData";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 
 import useTableRowClick from "hooks/useTableRowClick";
+import { useQueryParams } from "hooks/useQueryParams";
 
 import { extractRevisionNumber } from "store/juju/utils/models";
 import { generateStatusElement } from "components/utils";
@@ -154,19 +148,22 @@ export default function App(): JSX.Element {
     [filteredUnitList, tableRowClick, hideMachines]
   );
 
-  const [tableView, setTableView] = useQueryParam(
-    "tableview",
-    withDefault(StringParam, "units")
-  );
-
-  const [query, setQuery] = useQueryParams({
-    activeView: withDefault(StringParam, "apps"),
-    entity: StringParam,
-    panel: StringParam,
+  const [query, setQuery] = useQueryParams<{
+    tableView: string;
+    activeView: string;
+    entity: string | null;
+    panel: string | null;
+    units: string[];
+  }>({
+    tableView: "units",
+    activeView: "apps",
+    entity: null,
+    panel: null,
+    units: [],
   });
 
   const showConfig = () => {
-    query && setQuery({ panel: "config", entity: entity });
+    setQuery({ panel: "config", entity: entity });
   };
 
   const application = entity ? applications?.[entity] : null;
@@ -193,12 +190,8 @@ export default function App(): JSX.Element {
     [machines, units, entity]
   );
 
-  const [panel, setPanel] = useQueryParams({
-    panel: StringParam,
-    units: ArrayParam,
-  });
   const showActions = () => {
-    setPanel({ panel: "execute-action", units: selectedUnits.current });
+    setQuery({ panel: "execute-action", units: selectedUnits.current });
   };
 
   const navigateActionLogs = () => {
@@ -248,7 +241,7 @@ export default function App(): JSX.Element {
     if (selectedUnits.current.length !== formData.selectedUnits.length) {
       // The user has updated the selected list of units so update the
       // query param that stores the unit list.
-      if (panel.panel === "execute-action") {
+      if (query.panel === "execute-action") {
         selectedUnits.current = formData.selectedUnits;
         showActions();
       }
@@ -281,12 +274,12 @@ export default function App(): JSX.Element {
         {!hideMachines && (
           <ButtonGroup
             buttons={["units", "machines"]}
-            activeButton={tableView}
-            setActiveButton={setTableView}
+            activeButton={query.tableView}
+            setActiveButton={(tableView) => setQuery({ tableView })}
           />
         )}
         <div className="entity-details__tables" ref={tablesRef}>
-          {tableView === "units" && (
+          {query.tableView === "units" && (
             <>
               <ChipGroup chips={unitChipData} descriptor="units" />
               <div className="entity-details__action-button-row">
@@ -333,7 +326,7 @@ export default function App(): JSX.Element {
               </Formik>
             </>
           )}
-          {tableView === "machines" && (
+          {query.tableView === "machines" && (
             <>
               <ChipGroup chips={machineChipData} descriptor="machines" />
               <MainTable

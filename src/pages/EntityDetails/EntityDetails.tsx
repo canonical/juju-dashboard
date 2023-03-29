@@ -3,8 +3,8 @@ import classNames from "classnames";
 import { Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
 import { useParams, Link, Outlet } from "react-router-dom";
-import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
+import { useQueryParams } from "hooks/useQueryParams";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
 import Breadcrumb from "components/Breadcrumb/Breadcrumb";
@@ -69,10 +69,10 @@ const EntityDetails = () => {
   const { isNestedEntityPage } = useEntityDetailsParams();
 
   const [query, setQuery] = useQueryParams({
-    panel: StringParam,
-    entity: StringParam,
-    activeView: withDefault(StringParam, "apps"),
-    filterQuery: withDefault(StringParam, ""),
+    panel: null,
+    entity: null,
+    activeView: "apps",
+    filterQuery: "",
   });
   const setActiveView = (view?: string) => {
     setQuery({ activeView: view });

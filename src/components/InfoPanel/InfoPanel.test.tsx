@@ -2,8 +2,6 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
@@ -57,14 +55,12 @@ describe("Info Panel", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName"
-                element={<InfoPanel />}
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<InfoPanel />}
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -76,14 +72,12 @@ describe("Info Panel", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName"
-                element={<InfoPanel />}
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<InfoPanel />}
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );

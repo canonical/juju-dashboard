@@ -7,8 +7,7 @@ import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import { charmApplicationFactory } from "testing/factories/juju/Charms";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
+
 import ApplicationsTab from "./ApplicationsTab";
 
 const mockStore = configureStore([]);
@@ -97,14 +96,12 @@ describe("ApplicationsTab", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/test@external/test-model"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName"
-                element={<ApplicationsTab filterQuery={filterQuery} />}
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<ApplicationsTab filterQuery={filterQuery} />}
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );

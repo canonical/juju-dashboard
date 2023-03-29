@@ -1,9 +1,7 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { rootStateFactory } from "testing/factories/root";
 
@@ -18,9 +16,7 @@ describe("Panels", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/foo"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Panels />
-          </QueryParamProvider>
+          <Panels />
         </MemoryRouter>
       </Provider>,
       {
@@ -33,9 +29,11 @@ describe("Panels", () => {
 
     const closeSpy = jest.spyOn(close, "onEscape");
 
-    outerNode.dispatchEvent(
-      new KeyboardEvent("keydown", { code: "Escape", bubbles: true })
-    );
+    act(() => {
+      outerNode.dispatchEvent(
+        new KeyboardEvent("keydown", { code: "Escape", bubbles: true })
+      );
+    });
     expect(closeSpy).toHaveBeenCalled();
   });
 });

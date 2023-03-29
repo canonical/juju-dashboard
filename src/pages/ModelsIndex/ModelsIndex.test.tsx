@@ -3,8 +3,6 @@ import { Provider } from "react-redux";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { rootStateFactory } from "testing/factories/root";
 import { RootState } from "store/store";
@@ -68,9 +66,7 @@ describe("Models Index page", () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelsIndex />
-          </QueryParamProvider>
+          <ModelsIndex />
         </MemoryRouter>
       </Provider>
     );
@@ -85,9 +81,7 @@ describe("Models Index page", () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelsIndex />
-          </QueryParamProvider>
+          <ModelsIndex />
         </MemoryRouter>
       </Provider>
     );
@@ -100,9 +94,7 @@ describe("Models Index page", () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelsIndex />
-          </QueryParamProvider>
+          <ModelsIndex />
         </MemoryRouter>
       </Provider>
     );
@@ -116,9 +108,7 @@ describe("Models Index page", () => {
     render(
       <Provider store={store}>
         <BrowserRouter>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelsIndex />
-          </QueryParamProvider>
+          <ModelsIndex />
         </BrowserRouter>
       </Provider>
     );
@@ -139,9 +129,7 @@ describe("Models Index page", () => {
     render(
       <Provider store={store}>
         <BrowserRouter>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelsIndex />
-          </QueryParamProvider>
+          <ModelsIndex />
         </BrowserRouter>
       </Provider>
     );

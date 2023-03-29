@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { MainTable } from "@canonical/react-components";
-import { useQueryParams, StringParam, withDefault } from "use-query-params";
 
+import { useQueryParams } from "hooks/useQueryParams";
 import {
   getModelStatusGroupData,
   extractOwnerName,
@@ -78,10 +78,10 @@ export default function CloudGroup({ filters }) {
     getGroupedByCloudAndFilteredModelData(filters)
   );
 
-  const setPanelQs = useQueryParams({
-    model: StringParam,
-    panel: withDefault(StringParam, "share-model"),
-  })[1];
+  const [, setPanelQs] = useQueryParams({
+    model: null,
+    panel: null,
+  });
 
   const cloudRows = generateModelTableDataByCloud(groupedAndFilteredData);
   let cloudTables = [];

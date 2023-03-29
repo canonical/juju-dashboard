@@ -9,8 +9,6 @@ import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -60,13 +58,11 @@ describe("Entity Details Container", () => {
     render(
       <Provider store={store}>
         <BrowserRouter>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path={urlPattern} element={<EntityDetails />}>
-                {props?.children}
-              </Route>
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path={urlPattern} element={<EntityDetails />}>
+              {props?.children}
+            </Route>
+          </Routes>
         </BrowserRouter>
       </Provider>
     );

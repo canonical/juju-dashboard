@@ -1,7 +1,7 @@
 import { MainTable } from "@canonical/react-components";
 import { useSelector } from "react-redux";
-import { StringParam, useQueryParams, withDefault } from "use-query-params";
 
+import { useQueryParams } from "hooks/useQueryParams";
 import {
   canAdministerModelAccess,
   getModelStatusGroupData,
@@ -75,10 +75,10 @@ export default function OwnerGroup({ filters }) {
     getGroupedByOwnerAndFilteredModelData(filters)
   );
   const ownerRows = generateModelTableDataByOwner(groupedAndFilteredData);
-  const setPanelQs = useQueryParams({
-    model: StringParam,
-    panel: withDefault(StringParam, "share-model"),
-  })[1];
+  const [, setPanelQs] = useQueryParams({
+    model: null,
+    panel: null,
+  });
   const activeUsers = useSelector(getActiveUsers);
   const controllers = useSelector(getControllerData);
 

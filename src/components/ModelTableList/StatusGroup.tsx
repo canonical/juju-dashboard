@@ -3,14 +3,8 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { List, MainTable, Tooltip } from "@canonical/react-components";
 import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import {
-  useQueryParams,
-  StringParam,
-  withDefault,
-  QueryParamConfig,
-  SetQuery,
-} from "use-query-params";
 
+import { useQueryParams, SetParams } from "hooks/useQueryParams";
 import {
   getModelStatusGroupData,
   extractOwnerName,
@@ -146,12 +140,7 @@ const generateModelNameCell = (model: ModelData, groupLabel: string) => {
 */
 function generateModelTableDataByStatus(
   groupedModels: Record<Status, ModelData[]>,
-  setPanelQs: SetQuery<
-    Record<
-      string,
-      QueryParamConfig<string | null | undefined, string | null | undefined>
-    >
-  >,
+  setPanelQs: SetParams<Record<string, unknown>>,
   activeUsers: Record<string, string>,
   controllers: Controllers | null
 ) {
@@ -260,10 +249,10 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
     getGroupedByStatusAndFilteredModelData(filters)
   );
   const controllers = useSelector(getControllerData);
-  const setPanelQs = useQueryParams({
-    model: StringParam,
-    panel: withDefault(StringParam, "share-model"),
-  })[1];
+  const [, setPanelQs] = useQueryParams({
+    model: null,
+    panel: null,
+  });
   const activeUsers = useSelector(getActiveUsers);
 
   const { blockedRows, alertRows, runningRows } =

@@ -2,8 +2,6 @@ import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router";
 import configureStore from "redux-mock-store";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import type { RootState } from "store/store";
 import {
@@ -28,9 +26,7 @@ describe("Controllers table", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ControllersIndex />
-          </QueryParamProvider>
+          <ControllersIndex />
         </Provider>
       </MemoryRouter>
     );
@@ -50,9 +46,7 @@ describe("Controllers table", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ControllersIndex />
-          </QueryParamProvider>
+          <ControllersIndex />
         </Provider>
       </MemoryRouter>
     );
@@ -73,9 +67,7 @@ describe("Controllers table", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ControllersIndex />
-          </QueryParamProvider>
+          <ControllersIndex />
         </Provider>
       </MemoryRouter>
     );
@@ -89,9 +81,7 @@ describe("Controllers table", () => {
         <MemoryRouter
           initialEntries={["/controllers?panel=register-controller"]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ControllersIndex />
-          </QueryParamProvider>
+          <ControllersIndex />
         </MemoryRouter>
       </Provider>
     );
@@ -126,9 +116,7 @@ describe("Controllers table", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ControllersIndex />
-          </QueryParamProvider>
+          <ControllersIndex />
         </Provider>
       </MemoryRouter>
     );

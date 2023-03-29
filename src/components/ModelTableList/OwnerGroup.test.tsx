@@ -2,8 +2,6 @@ import { MemoryRouter } from "react-router";
 import { render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { rootStateFactory } from "testing/factories/root";
 import { generalStateFactory, configFactory } from "testing/factories/general";
@@ -74,9 +72,7 @@ describe("OwnerGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <OwnerGroup filters={[]} />
-          </QueryParamProvider>
+          <OwnerGroup filters={[]} />
         </Provider>
       </MemoryRouter>
     );
@@ -88,9 +84,7 @@ describe("OwnerGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <OwnerGroup filters={[]} />
-          </QueryParamProvider>
+          <OwnerGroup filters={[]} />
         </Provider>
       </MemoryRouter>
     );
@@ -108,9 +102,7 @@ describe("OwnerGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <OwnerGroup filters={filters} />
-          </QueryParamProvider>
+          <OwnerGroup filters={filters} />
         </Provider>
       </MemoryRouter>
     );
@@ -150,9 +142,7 @@ describe("OwnerGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <OwnerGroup filters={filters} />
-          </QueryParamProvider>
+          <OwnerGroup filters={filters} />
         </Provider>
       </MemoryRouter>
     );

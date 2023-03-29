@@ -3,8 +3,7 @@ import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
+
 import { actions as appActions } from "store/app";
 
 import { Label } from "components/ShareCard/ShareCard";
@@ -55,14 +54,12 @@ describe("Share Model Panel", () => {
     render(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName"
-                element={<ShareModel />}
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<ShareModel />}
+            />
+          </Routes>
         </Provider>
       </MemoryRouter>
     );
@@ -76,14 +73,12 @@ describe("Share Model Panel", () => {
     render(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName"
-                element={<ShareModel />}
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<ShareModel />}
+            />
+          </Routes>
         </Provider>
       </MemoryRouter>
     );
@@ -104,14 +99,12 @@ describe("Share Model Panel", () => {
     render(
       <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName"
-                element={<ShareModel />}
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<ShareModel />}
+            />
+          </Routes>
         </Provider>
       </MemoryRouter>
     );
