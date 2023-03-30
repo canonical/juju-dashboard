@@ -11,6 +11,7 @@ import { generateStatusElement } from "components/utils";
 
 import {
   getActiveUsers,
+  getControllerData,
   getGroupedByCloudAndFilteredModelData,
 } from "store/juju/selectors";
 
@@ -71,6 +72,7 @@ function generateCloudTableHeaders(cloud, count) {
 
 export default function CloudGroup({ filters }) {
   const activeUsers = useSelector(getActiveUsers);
+  const controllers = useSelector(getControllerData);
 
   const groupedAndFilteredData = useSelector(
     getGroupedByCloudAndFilteredModelData(filters)
@@ -93,7 +95,7 @@ export default function CloudGroup({ filters }) {
         const owner = extractOwnerName(model.info["owner-tag"]);
         const region = getStatusValue(model, "region");
         const credential = getStatusValue(model, "cloud-credential-tag");
-        const controller = getStatusValue(model, "controllerName");
+        const controller = getStatusValue(model, "controllerName", controllers);
         const lastUpdated = getStatusValue(model, "status.since")?.slice(2);
         cloudModels.rows.push({
           "data-testid": `model-uuid-${model?.uuid}`,

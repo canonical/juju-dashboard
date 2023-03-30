@@ -18,6 +18,7 @@ import ModelTableList from "./ModelTableList";
 import { TestId as CloudTestId } from "./CloudGroup";
 import { TestId as OwnerTestId } from "./OwnerGroup";
 import { TestId as StatusTestId } from "./StatusGroup";
+import { JAAS_CONTROLLER_UUID } from "./shared";
 
 const mockStore = configureStore([]);
 
@@ -118,6 +119,18 @@ describe("ModelTableList", () => {
   });
 
   it("renders the controller name as JAAS", () => {
+    state.juju.controllers = {
+      "wss://jimm.jujucharms.com/api": [
+        controllerFactory.build({
+          path: "admins/1-eu-west-1-aws-jaas",
+          uuid: JAAS_CONTROLLER_UUID,
+        }),
+      ],
+    };
+    const modelInfo = state.juju.modelData.abc123.info;
+    if (modelInfo) {
+      modelInfo["controller-uuid"] = JAAS_CONTROLLER_UUID;
+    }
     const store = mockStore(state);
     render(
       <MemoryRouter>

@@ -4,6 +4,7 @@ import {
   controllerFactory,
   modelDataFactory,
   modelDataInfoFactory,
+  modelStatusInfoFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -36,6 +37,7 @@ import {
   getActiveUser,
   getModelDataByUUID,
   getModelAccess,
+  getFilteredModelData,
 } from "./selectors";
 import { modelUserInfoFactory } from "../../testing/factories/juju/juju";
 
@@ -500,6 +502,181 @@ describe("selectors", () => {
     expect(getActiveUsers(state)).toStrictEqual({
       abc123: "eggman@external",
       def456: "spaceman@external",
+    });
+  });
+
+  describe("getFilteredModelData", () => {
+    it("filters by cloud", () => {
+      const modelData = {
+        abc123: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            "cloud-tag": "cloud-aws",
+          }),
+        }),
+        def456: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            "cloud-tag": "cloud-google",
+          }),
+        }),
+        ghi789: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            "cloud-tag": "cloud-azure",
+          }),
+        }),
+      };
+      const state = rootStateFactory.build({
+        juju: jujuStateFactory.build({
+          modelData,
+        }),
+      });
+      expect(
+        getFilteredModelData({ cloud: ["aws", "google"] })(state)
+      ).toStrictEqual({
+        abc123: modelData.abc123,
+        def456: modelData.def456,
+      });
+    });
+
+    it("filters by credential", () => {
+      const modelData = {
+        abc123: modelDataFactory.build({
+          info: modelDataInfoFactory.build({
+            "cloud-credential-tag": "cloudcred-google_eggman@external_juju",
+          }),
+        }),
+        def456: modelDataFactory.build({
+          info: modelDataInfoFactory.build({
+            "cloud-credential-tag": "cloudcred-google_spaceman@external_juju",
+          }),
+        }),
+        ghi789: modelDataFactory.build({
+          info: modelDataInfoFactory.build({
+            "cloud-credential-tag": "cloudcred-google_eggman_juju",
+          }),
+        }),
+      };
+      const state = rootStateFactory.build({
+        juju: jujuStateFactory.build({
+          modelData,
+        }),
+      });
+      expect(
+        getFilteredModelData({ credential: ["eggman", "eggman@external"] })(
+          state
+        )
+      ).toStrictEqual({
+        abc123: modelData.abc123,
+        ghi789: modelData.ghi789,
+      });
+    });
+
+    it("filters by region", () => {
+      const modelData = {
+        abc123: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            region: "east",
+          }),
+        }),
+        def456: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            region: "west",
+          }),
+        }),
+        ghi789: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            region: "north",
+          }),
+        }),
+      };
+      const state = rootStateFactory.build({
+        juju: jujuStateFactory.build({
+          modelData,
+        }),
+      });
+      expect(
+        getFilteredModelData({ region: ["west", "north"] })(state)
+      ).toStrictEqual({
+        def456: modelData.def456,
+        ghi789: modelData.ghi789,
+      });
+    });
+
+    it("filters by owner", () => {
+      const modelData = {
+        abc123: modelDataFactory.build({
+          info: modelDataInfoFactory.build({
+            "owner-tag": "user-eggman@external",
+          }),
+        }),
+        def456: modelDataFactory.build({
+          info: modelDataInfoFactory.build({
+            "owner-tag": "user-spaceman@external",
+          }),
+        }),
+        ghi789: modelDataFactory.build({
+          info: modelDataInfoFactory.build({
+            "owner-tag": "user-eggman",
+          }),
+        }),
+      };
+      const state = rootStateFactory.build({
+        juju: jujuStateFactory.build({
+          modelData,
+        }),
+      });
+      expect(
+        getFilteredModelData({ owner: ["eggman", "eggman@external"] })(state)
+      ).toStrictEqual({
+        abc123: modelData.abc123,
+        ghi789: modelData.ghi789,
+      });
+    });
+
+    it("filters by custom", () => {
+      const modelData = {
+        a1: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            name: "matches",
+          }),
+        }),
+        b2: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            "cloud-tag": "matches",
+          }),
+        }),
+        c3: modelDataFactory.build({
+          info: modelDataInfoFactory.build({
+            "cloud-credential-tag": "cloudcred-google_matches_juju",
+          }),
+        }),
+        d4: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            region: "matches",
+          }),
+        }),
+        e5: modelDataFactory.build({
+          info: modelDataInfoFactory.build({
+            "owner-tag": "user-matches",
+          }),
+        }),
+        f6: modelDataFactory.build({
+          model: modelStatusInfoFactory.build({
+            name: "not this one!",
+          }),
+        }),
+      };
+      const state = rootStateFactory.build({
+        juju: jujuStateFactory.build({
+          modelData,
+        }),
+      });
+      expect(getFilteredModelData({ custom: ["match"] })(state)).toStrictEqual({
+        a1: modelData.a1,
+        b2: modelData.b2,
+        c3: modelData.c3,
+        d4: modelData.d4,
+        e5: modelData.e5,
+      });
     });
   });
 });

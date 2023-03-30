@@ -16,7 +16,12 @@ import {
 } from "store/general/selectors";
 import { RootState } from "store/store";
 
-import type { Controllers, ModelData, ModelsList } from "./types";
+import type {
+  Controllers,
+  ModelData,
+  ModelDataList,
+  ModelsList,
+} from "./types";
 import {
   extractCloudName,
   extractCredentialName,
@@ -312,108 +317,72 @@ export function getAllModelApplicationStatus(modelUUID: string) {
   @returns A selector for the filtered model data.
 */
 export const getFilteredModelData = (filters: Filters) =>
-  createSelector(
-    [getModelData, getControllerData],
-    (modelData, controllers) => {
-      const clonedModelData = cloneDeep(modelData);
-      // Add the controller name to the model data where we have a valid name.
-      Object.entries(clonedModelData ?? {}).forEach((model) => {
-        if (model[1].info) {
-          let controllerName = null;
-          const modelInfo:
-            | (ModelData["info"] & {
-                controllerName?: string;
-              })
-            | null = model[1].info ?? null;
-          if (!modelInfo) {
-            return;
-          }
-          if (controllers) {
-            Object.entries(controllers).some((controller) => {
-              const controllerData = controller[1].find(
-                (controller) =>
-                  "uuid" in controller &&
-                  modelInfo["controller-uuid"] === controller.uuid
-              );
-              controllerName =
-                controllerData && "path" in controllerData
-                  ? controllerData?.path
-                  : null;
-              return controllerName;
-            });
-          }
-          if (
-            modelInfo["controller-uuid"] ===
-            "a030379a-940f-4760-8fcf-3062b41a04e7"
-          ) {
-            controllerName = "JAAS";
-          }
-          if (!controllerName) {
-            controllerName = modelInfo["controller-uuid"];
-          }
-          modelInfo.controllerName = controllerName;
-        }
-      });
-      if (!filters) {
-        return clonedModelData;
+  createSelector([getModelData], (modelData) => {
+    const clonedModelData: ModelDataList = cloneDeep(modelData);
+    const filterSegments: Record<string, string[][]> = {};
+
+    // Collect segments from filter data
+    Object.entries(filters).forEach((filter) => {
+      if (filter[1].length === 0) return;
+      if (!filterSegments[filter[0]]) {
+        filterSegments[filter[0]] = [];
       }
-      const filterSegments: Record<string, string[][]> = {};
+      filterSegments[filter[0]].push(filter[1]);
+    });
 
-      // Collect segments from filter data
-      Object.entries(filters).forEach((filter) => {
-        if (filter[1].length === 0) return;
-        if (!filterSegments[filter[0]]) {
-          filterSegments[filter[0]] = [];
-        }
-        filterSegments[filter[0]].push(filter[1]);
-      });
-
-      Object.entries(clonedModelData ?? {}).forEach(([uuid, data]) => {
-        const modelName = "model" in data ? data?.model?.name : null;
-        const cloud =
-          "model" in data ? extractCloudName(data.model["cloud-tag"]) : null;
-        const credential =
-          "info" in data
-            ? extractCredentialName(data.info?.["cloud-credential-tag"])
-            : null;
-        const region = "model" in data ? data.model.region : null;
-        const owner = data.info
-          ? extractOwnerName(data.info["owner-tag"])
+    Object.entries(clonedModelData).forEach(([uuid, data]) => {
+      const modelName = "model" in data ? data?.model?.name : null;
+      const cloud =
+        "model" in data ? extractCloudName(data.model["cloud-tag"]) : null;
+      const credential =
+        "info" in data
+          ? extractCredentialName(data.info?.["cloud-credential-tag"])
           : null;
-        // Combine all of the above to create string for fuzzy custom search
-        const combinedModelAttributes = `${modelName} ${cloud} ${credential} ${region} ${owner}`;
+      const region = "model" in data ? data.model.region : null;
+      const owner = data.info ? extractOwnerName(data.info["owner-tag"]) : null;
+      // Combine all of the above to create string for fuzzy custom search
+      const combinedModelAttributes = [
+        modelName,
+        cloud,
+        credential,
+        region,
+        owner,
+      ]
+        .filter(Boolean)
+        .join(" ");
 
-        const remove = Object.entries(filterSegments).some(
-          ([segment, valuesArr]) => {
-            const values: string[] = valuesArr[0];
-            switch (segment) {
-              case "cloud":
-                return !cloud || !values.includes(cloud);
-              case "credential":
-                if ("info" in data) {
-                  return !credential || !values.includes(credential);
-                }
-                break;
-              case "region":
-                return !region || !values.includes(region);
-              case "owner":
-                if ("info" in data) {
-                  return !owner || !values.includes(owner);
-                }
-                break;
-              case "custom":
-                return !values.some(combinedModelAttributes.includes);
-            }
-            return false;
+      const remove = Object.entries(filterSegments).some(
+        ([segment, valuesArr]) => {
+          const values: string[] = valuesArr[0];
+          switch (segment) {
+            case "cloud":
+              return !cloud || !values.includes(cloud);
+            case "credential":
+              if ("info" in data) {
+                return !credential || !values.includes(credential);
+              }
+              break;
+            case "region":
+              return !region || !values.includes(region);
+            case "owner":
+              if ("info" in data) {
+                return !owner || !values.includes(owner);
+              }
+              break;
+            case "custom":
+              return !values.some((value) =>
+                combinedModelAttributes.includes(value)
+              );
           }
-        );
-        if (remove) {
-          delete clonedModelData?.[uuid as keyof ModelData];
+          return false;
         }
-      });
-      return clonedModelData;
-    }
-  );
+      );
+      if (remove) {
+        delete clonedModelData?.[uuid as keyof ModelData];
+      }
+    });
+    return clonedModelData;
+  });
 
 /**
   Gets the model UUID from the supplied name using a memoized selector

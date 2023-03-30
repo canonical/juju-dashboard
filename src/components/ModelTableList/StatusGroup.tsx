@@ -22,9 +22,10 @@ import { generateStatusElement } from "components/utils";
 
 import {
   getActiveUsers,
+  getControllerData,
   getGroupedByStatusAndFilteredModelData,
 } from "store/juju/selectors";
-import { ModelData } from "store/juju/types";
+import { Controllers, ModelData } from "store/juju/types";
 
 import {
   generateModelDetailsLink,
@@ -151,7 +152,8 @@ function generateModelTableDataByStatus(
       QueryParamConfig<string | null | undefined, string | null | undefined>
     >
   >,
-  activeUsers: Record<string, string>
+  activeUsers: Record<string, string>,
+  controllers: Controllers | null
 ) {
   const modelData: Record<string, MainTableRow[]> = {
     blockedRows: [],
@@ -170,7 +172,7 @@ function generateModelTableDataByStatus(
       const activeUser = activeUsers[model.uuid];
       const cloud = generateCloudCell(model);
       const credential = getStatusValue(model, "cloud-credential-tag");
-      const controller = getStatusValue(model, "controllerName");
+      const controller = getStatusValue(model, "controllerName", controllers);
       let lastUpdated = getStatusValue(model, "status.since");
       if (typeof lastUpdated === "string") {
         // .slice(2) here will make the year 2 characters instead of 4
@@ -257,6 +259,7 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
   const groupedAndFilteredData = useSelector(
     getGroupedByStatusAndFilteredModelData(filters)
   );
+  const controllers = useSelector(getControllerData);
   const setPanelQs = useQueryParams({
     model: StringParam,
     panel: withDefault(StringParam, "share-model"),
@@ -267,7 +270,8 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
     generateModelTableDataByStatus(
       groupedAndFilteredData,
       setPanelQs,
-      activeUsers
+      activeUsers,
+      controllers
     );
 
   const emptyStateMsg = "There are no models with this status";

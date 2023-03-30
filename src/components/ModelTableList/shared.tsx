@@ -6,13 +6,15 @@ import awsLogo from "static/images/logo/cloud/aws.svg";
 import azureLogo from "static/images/logo/cloud/azure.svg";
 import gceLogo from "static/images/logo/cloud/gce.svg";
 import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
-import { ModelData, ModelDataWithControllerName } from "store/juju/types";
+import { Controllers, ModelData } from "store/juju/types";
 
 import {
   extractCloudName,
   extractCredentialName,
 } from "store/juju/utils/models";
 import { QueryParamConfig, SetQuery } from "use-query-params";
+
+export const JAAS_CONTROLLER_UUID = "a030379a-940f-4760-8fcf-3062b41a04e7";
 
 /**
   Generates the model details link for the table cell. If no ownerTag can be
@@ -54,6 +56,22 @@ export function generateModelDetailsLink(
   );
 }
 
+const isControllers = (controllers: unknown): controllers is Controllers => {
+  if (!controllers) {
+    return false;
+  }
+  const items = Object.values(controllers)[0];
+  if (!Array.isArray(items)) {
+    return false;
+  }
+  return (
+    !!items[0] &&
+    typeof items[0] === "object" &&
+    "uuid" in items[0] &&
+    "path" in items[0]
+  );
+};
+
 /**
   Used to fetch the values from status as it won't be defined when the
   modelInfo data is.
@@ -62,13 +80,14 @@ export function generateModelDetailsLink(
   @returns The computed value for the requested field if defined, or
     an empty string.
 */
-export function getStatusValue(
-  status: ModelDataWithControllerName,
+export function getStatusValue<E extends unknown>(
+  status: ModelData,
   key: string,
-  extra?: string
+  extra?: E
 ) {
   let returnValue: ReactNode = "";
   if (typeof status === "object" && status !== null) {
+    const controllerUUID = status.info?.["controller-uuid"];
     switch (key) {
       case "summary":
         const applicationKeys = Object.keys(status.applications);
@@ -87,7 +106,7 @@ export function getStatusValue(
                 position="top-center"
                 className="u-flex--block has-icon"
               >
-                {extra
+                {extra && typeof extra === "string"
                   ? generateModelDetailsLink(
                       status.model.name,
                       extra,
@@ -113,7 +132,7 @@ export function getStatusValue(
                 position="top-center"
                 className="u-flex--block has-icon"
               >
-                {extra
+                {extra && typeof extra === "string"
                   ? generateModelDetailsLink(
                       status.model.name,
                       extra,
@@ -142,10 +161,27 @@ export function getStatusValue(
         );
         break;
       case "controllerUuid":
-        returnValue = status.info?.["controller-uuid"];
+        returnValue = controllerUUID;
         break;
       case "controllerName":
-        returnValue = status.info?.controllerName;
+        if (controllerUUID === JAAS_CONTROLLER_UUID) {
+          returnValue = "JAAS";
+        } else if (isControllers(extra)) {
+          Object.entries(extra).some((controller) => {
+            const controllerData = controller[1].find(
+              (controller) =>
+                "uuid" in controller && controllerUUID === controller.uuid
+            );
+            returnValue =
+              controllerData && "path" in controllerData
+                ? controllerData?.path
+                : null;
+            return !!controllerData;
+          });
+        }
+        if (!returnValue) {
+          returnValue = controllerUUID;
+        }
         break;
       case "status.since":
         returnValue = status.info?.status?.since?.split("T")[0];
