@@ -1,6 +1,6 @@
 import { ClassName, Icon, PropsWithSpread } from "@canonical/react-components";
 import classNames from "classnames";
-import React, { HTMLProps, MutableRefObject, useRef } from "react";
+import React, { HTMLProps, MutableRefObject, ReactNode, useRef } from "react";
 
 // TODO: use the react-components component as a base once this PR is released:
 // https://github.com/canonical/react-components/pull/887
@@ -57,6 +57,8 @@ export type Props = PropsWithSpread<
      * The value of the search input when the state is externally controlled.
      */
     value?: string;
+    customSearchIcon?: ReactNode;
+    hideClearButton?: boolean;
   },
   HTMLProps<HTMLInputElement>
 >;
@@ -74,6 +76,8 @@ const SearchBox = React.forwardRef<HTMLInputElement, Props>(
       placeholder = "Search",
       shouldRefocusAfterReset,
       value,
+      customSearchIcon,
+      hideClearButton = false,
       ...props
     }: Props,
     forwardedRef
@@ -122,20 +126,26 @@ const SearchBox = React.forwardRef<HTMLInputElement, Props>(
           value={externallyControlled ? value : undefined}
           {...props}
         />
-        <button
-          className="p-search-box__reset"
-          disabled={disabled}
-          onClick={resetInput}
-          type="reset"
-        >
-          <Icon name="close">{Label.Clear}</Icon>
-        </button>
+        {!hideClearButton && (
+          <button
+            className="p-search-box__reset"
+            disabled={disabled}
+            onClick={resetInput}
+            type="reset"
+          >
+            <Icon name="close">{Label.Clear}</Icon>
+          </button>
+        )}
         <button
           className="p-search-box__button"
           disabled={disabled}
           onClick={triggerSearch}
         >
-          <Icon name="search">{Label.Search}</Icon>
+          {customSearchIcon ? (
+            customSearchIcon
+          ) : (
+            <Icon name="search">{Label.Search}</Icon>
+          )}
         </button>
       </div>
     );

@@ -1,22 +1,23 @@
-import { useEffect, useState, ReactNode, useRef } from "react";
-import classNames from "classnames";
 import { Spinner, Tabs } from "@canonical/react-components";
+import classNames from "classnames";
+import { ReactNode, useEffect, useState } from "react";
 import { useSelector, useStore } from "react-redux";
-import { useParams, Link, Outlet } from "react-router-dom";
-import { useQueryParams, StringParam, withDefault } from "use-query-params";
+import { Link, Outlet, useParams } from "react-router-dom";
+import { StringParam, useQueryParams, withDefault } from "use-query-params";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
 import Breadcrumb from "components/Breadcrumb/Breadcrumb";
 import Header from "components/Header/Header";
+import NotFound from "components/NotFound/NotFound";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import WebCLI from "components/WebCLI/WebCLI";
-import NotFound from "components/NotFound/NotFound";
 
 import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 
+import useWindowTitle from "hooks/useWindowTitle";
 import { getUserPass } from "store/general/selectors";
 import {
   getControllerDataByUUID,
@@ -26,13 +27,12 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
-import useWindowTitle from "hooks/useWindowTitle";
 
 import FadeIn from "animations/FadeIn";
 import { useEntityDetailsParams } from "components/hooks";
 import { EntityDetailsRoute } from "components/Routes/Routes";
-import SearchBox from "components/SearchBox/SearchBox";
 
+import { ApplicationsSearch } from "./ApplicationsSearch";
 import "./_entity-details.scss";
 
 export enum Label {
@@ -72,7 +72,7 @@ const EntityDetails = () => {
     panel: StringParam,
     entity: StringParam,
     activeView: withDefault(StringParam, "apps"),
-    filterQuery: withDefault(StringParam, ""),
+    filterQuery: StringParam,
   });
   const setActiveView = (view?: string) => {
     setQuery({ activeView: view });
@@ -83,7 +83,6 @@ const EntityDetails = () => {
 
   const store = useStore();
   const storeState = store.getState();
-  const searchBoxRef = useRef<HTMLInputElement>(null);
 
   const [showWebCLI, setShowWebCLI] = useState(false);
 
@@ -133,11 +132,6 @@ const EntityDetails = () => {
       setShowWebCLI(true);
     }
   }, [modelInfo]);
-
-  useEffect(() => {
-    // set value
-    if (searchBoxRef.current) searchBoxRef.current.value = query.filterQuery;
-  }, [query.filterQuery]);
 
   useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
 
@@ -197,28 +191,6 @@ const EntityDetails = () => {
     }
 
     return items;
-  };
-
-  const generateSearch = () => {
-    return (
-      <SearchBox
-        className="u-no-margin"
-        placeholder="Filter applications"
-        onKeyDown={(e) => {
-          if (e.code === "Enter") handleFilterSubmit();
-        }}
-        onSearch={handleFilterSubmit}
-        onClear={handleFilterSubmit}
-        externallyControlled
-        ref={searchBoxRef}
-        data-testid="filter-applications"
-      />
-    );
-  };
-
-  const handleFilterSubmit = () => {
-    const filterQuery = searchBoxRef.current?.value || "";
-    setQuery({ filterQuery });
   };
 
   let content: ReactNode;
@@ -288,9 +260,9 @@ const EntityDetails = () => {
               <Tabs links={generateTabItems()} />
             )}
           </div>
-          {activeView === "apps" && !isNestedEntityPage
-            ? generateSearch()
-            : null}
+          {activeView === "apps" && !isNestedEntityPage ? (
+            <ApplicationsSearch />
+          ) : null}
         </div>
       </Header>
       {content}
