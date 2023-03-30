@@ -37,6 +37,8 @@ import {
 import { ModelData } from "store/juju/types";
 import { pluralize } from "store/juju/utils/models";
 import { useAppStore } from "store/store";
+import urls from "urls";
+
 import { renderCounts } from "../../counts";
 import {
   addSelectAllColumn,
@@ -176,7 +178,11 @@ export default function ApplicationsTab({ filterQuery }: Props) {
     (entityName: string, entityPanel: string) => {
       // This can be removed when all entities are moved to top level aside panels
       if (entityPanel === "apps") {
-        navigate(`/models/${userName}/${modelName}/app/${entityName}`);
+        if (userName && modelName) {
+          navigate(
+            urls.model.app({ userName, modelName, appName: entityName })
+          );
+        }
       } else {
         return setQueryParams({ panel: entityPanel, entity: entityName });
       }

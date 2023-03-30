@@ -28,6 +28,7 @@ import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import { RootState, useAppStore } from "store/store";
+import urls from "urls";
 import "./_action-logs.scss";
 
 type Operations = OperationResult[];
@@ -64,9 +65,7 @@ function generateLinkToApp(
   modelName: string
 ) {
   return (
-    <Link to={`/models/${userName}/${modelName}/app/${appName}`}>
-      {appName}
-    </Link>
+    <Link to={urls.model.app({ userName, modelName, appName })}>{appName}</Link>
   );
 }
 

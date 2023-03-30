@@ -32,7 +32,7 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-
+import urls from "urls";
 import type { MachineData, UnitData } from "juju/types";
 
 import { generateMachineCounts, generateUnitCounts } from "../counts";
@@ -195,7 +195,9 @@ export default function App(): JSX.Element {
   };
 
   const navigateActionLogs = () => {
-    navigate(`/models/${userName}/${modelName}?activeView=action-logs`);
+    if (userName && modelName) {
+      navigate(urls.model.tab({ userName, modelName, tab: "action-logs" }));
+    }
   };
 
   const onFormChange = (formData: FormData) => {

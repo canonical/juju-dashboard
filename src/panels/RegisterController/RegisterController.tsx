@@ -8,6 +8,7 @@ import { thunks as appThunks } from "store/app";
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import { useAppDispatch } from "store/store";
+import urls from "urls";
 
 import { ControllerArgs } from "../../store/app/actions";
 import "./register-controller.scss";
@@ -44,7 +45,7 @@ export default function RegisterController() {
     setAdditionalControllers(additionalControllers);
     dispatch(appThunks.connectAndStartPolling());
     // Close the panel
-    navigate("/controllers");
+    navigate(urls.controllers);
   };
 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
