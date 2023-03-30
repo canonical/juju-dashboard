@@ -2,8 +2,6 @@ import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { rootStateFactory } from "testing/factories/root";
 
@@ -19,9 +17,7 @@ describe("PageNotFound page", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/foobar11"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes />
-          </QueryParamProvider>
+          <Routes />
         </MemoryRouter>
       </Provider>
     );

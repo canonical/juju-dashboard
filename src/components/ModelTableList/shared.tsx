@@ -12,7 +12,7 @@ import {
   extractCloudName,
   extractCredentialName,
 } from "store/juju/utils/models";
-import { QueryParamConfig, SetQuery } from "use-query-params";
+import { SetParams } from "hooks/useQueryParams";
 
 export const JAAS_CONTROLLER_UUID = "a030379a-940f-4760-8fcf-3062b41a04e7";
 
@@ -274,12 +274,7 @@ export function generateCloudAndRegion(model: ModelData) {
   @returns The markup for the table cell
 */
 export function generateAccessButton(
-  setPanelQs: SetQuery<
-    Record<
-      string,
-      QueryParamConfig<string | null | undefined, string | null | undefined>
-    >
-  >,
+  setPanelQs: SetParams<Record<string, unknown>>,
   modelName: string
 ) {
   return (

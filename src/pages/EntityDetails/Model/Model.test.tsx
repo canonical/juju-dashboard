@@ -2,8 +2,6 @@ import { render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { TestId } from "components/InfoPanel/InfoPanel";
 import { RootState } from "store/store";
@@ -110,11 +108,9 @@ describe("Model", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -133,11 +129,9 @@ describe("Model", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -164,11 +158,9 @@ describe("Model", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -213,11 +205,9 @@ describe("Model", () => {
         <MemoryRouter
           initialEntries={["/models/eggman@external/test1?activeView=apps"]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -262,11 +252,9 @@ describe("Model", () => {
         <MemoryRouter
           initialEntries={["/models/eggman@external/test1?activeView=machines"]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -313,11 +301,9 @@ describe("Model", () => {
             "/models/eggman@external/test1?activeView=integrations",
           ]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -364,11 +350,9 @@ describe("Model", () => {
             "/models/eggman@external/test1?activeView=action-logs",
           ]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -405,11 +389,9 @@ describe("Model", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -432,11 +414,9 @@ describe("Model", () => {
         <MemoryRouter
           initialEntries={["/models/eggman@external/test1?activeView=machines"]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -460,11 +440,9 @@ describe("Model", () => {
       <Provider store={store}>
         cockroachdb
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -493,11 +471,9 @@ describe("Model", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -519,11 +495,9 @@ describe("Model", () => {
             "/models/eggman@external/test1?activeView=integrations",
           ]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -544,11 +518,9 @@ describe("Model", () => {
         <MemoryRouter
           initialEntries={["/models/eggman@external/test1?activeView=machines"]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -589,11 +561,9 @@ describe("Model", () => {
         <MemoryRouter
           initialEntries={["/models/eggman@external/test1?activeView=machines"]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -638,11 +608,9 @@ describe("Model", () => {
         <MemoryRouter
           initialEntries={["/models/eggman@external/test1?activeView=machines"]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -675,11 +643,9 @@ describe("Model", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -704,11 +670,9 @@ describe("Model", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route path="/models/:userName/:modelName" element={<Model />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );

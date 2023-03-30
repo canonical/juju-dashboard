@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
+
 import { getModelUUID, getModelStatus } from "store/juju/selectors";
-import { useQueryParams, StringParam } from "use-query-params";
 import { useAppSelector } from "store/store";
+import { useQueryParams } from "hooks/useQueryParams";
 
 // Return model status data based on model name in URL
 export default function useModelStatus() {
@@ -12,7 +13,7 @@ export default function useModelStatus() {
   // if model name cannot be derived from URL params, fallback and check for
   // query string value.
   const queryParams = useQueryParams({
-    model: StringParam,
+    model: null,
   });
 
   if (!modelName) {

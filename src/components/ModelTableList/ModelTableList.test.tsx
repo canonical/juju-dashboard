@@ -2,8 +2,6 @@ import { MemoryRouter } from "react-router";
 import { render, RenderResult, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import * as appSelectors from "store/juju/selectors";
 import { RootState } from "store/store";
@@ -46,9 +44,7 @@ describe("ModelTableList", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelTableList filters={[]} groupedBy="" />
-          </QueryParamProvider>
+          <ModelTableList filters={[]} groupedBy="" />
         </Provider>
       </MemoryRouter>
     );
@@ -67,11 +63,9 @@ describe("ModelTableList", () => {
     ];
     const generateComponent = (groupedBy: string) => (
       <MemoryRouter>
-        <QueryParamProvider adapter={ReactRouter6Adapter}>
-          <Provider store={store}>
-            <ModelTableList filters={[]} groupedBy={groupedBy} />
-          </Provider>
-        </QueryParamProvider>
+        <Provider store={store}>
+          <ModelTableList filters={[]} groupedBy={groupedBy} />
+        </Provider>
       </MemoryRouter>
     );
     let result: RenderResult;
@@ -106,9 +100,7 @@ describe("ModelTableList", () => {
       render(
         <MemoryRouter>
           <Provider store={store}>
-            <QueryParamProvider adapter={ReactRouter6Adapter}>
-              <ModelTableList groupedBy={table.groupedBy} filters={filters} />
-            </QueryParamProvider>
+            <ModelTableList groupedBy={table.groupedBy} filters={filters} />
           </Provider>
         </MemoryRouter>
       );
@@ -135,9 +127,7 @@ describe("ModelTableList", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelTableList filters={[]} groupedBy="" />
-          </QueryParamProvider>
+          <ModelTableList filters={[]} groupedBy="" />
         </Provider>
       </MemoryRouter>
     );
@@ -157,9 +147,7 @@ describe("ModelTableList", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelTableList filters={[]} groupedBy="" />
-          </QueryParamProvider>
+          <ModelTableList filters={[]} groupedBy="" />
         </Provider>
       </MemoryRouter>
     );
@@ -189,9 +177,7 @@ describe("ModelTableList", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <ModelTableList filters={[]} groupedBy="" />
-          </QueryParamProvider>
+          <ModelTableList filters={[]} groupedBy="" />
         </Provider>
       </MemoryRouter>
     );

@@ -3,8 +3,6 @@ import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import { RootState } from "store/store";
@@ -88,16 +86,14 @@ describe("Entity Details App", () => {
     render(
       <Provider store={store}>
         <BrowserRouter>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName/app/:appName"
-                element={<App />}
-              />
-              {/* Capture other paths to prevent warnings when navigating in the tests. */}
-              <Route path="*" element={<span />} />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName/app/:appName"
+              element={<App />}
+            />
+            {/* Capture other paths to prevent warnings when navigating in the tests. */}
+            <Route path="*" element={<span />} />
+          </Routes>
         </BrowserRouter>
       </Provider>
     );
@@ -197,9 +193,7 @@ describe("Entity Details App", () => {
     const secondInput = screen.getByTestId("table-checkbox-1");
     await userEvent.click(secondInput);
 
-    expect(window.location.search).toEqual(
-      "?panel=execute-action&units=0&units=1"
-    );
+    expect(window.location.search).toEqual("?panel=execute-action&units=0%2C1");
   });
 
   it("navigates to the actions log when button pressed", async () => {

@@ -9,7 +9,6 @@ import {
 } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { StringParam, useQueryParam, useQueryParams } from "use-query-params";
 
 import Aside from "components/Aside/Aside";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
@@ -21,6 +20,7 @@ import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import ToastCard from "components/ToastCard/ToastCard";
 import { generateIconImg } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
+import { useQueryParams } from "hooks/useQueryParams";
 import { executeActionOnUnits } from "juju/api";
 import { ApplicationInfo } from "juju/types";
 import ActionOptions from "panels/ActionsPanel/ActionOptions";
@@ -51,8 +51,9 @@ export default function CharmActionsPanel(): JSX.Element {
   const [confirmType, setConfirmType] = useState<string>("");
   const [selectedAction, setSelectedAction] = useState<string>();
   const actionOptionsValues = useRef<ActionOptionValues>({});
-  const [queryParams] = useQueryParams({
-    charm: StringParam,
+  const [queryParams, setQueryParams] = useQueryParams({
+    charm: null,
+    panel: null,
   });
   const selectedApplications = useSelector(
     getSelectedApplications(queryParams.charm || "")
@@ -62,7 +63,6 @@ export default function CharmActionsPanel(): JSX.Element {
     () => selectedCharm?.actions?.specs || {},
     [selectedCharm]
   );
-  const closePanel = useQueryParam("panel")[1];
   const generateTitle = () => {
     if (!selectedApplications || !selectedCharm)
       return "You need to select a charm and applications to continue.";
@@ -167,7 +167,7 @@ export default function CharmActionsPanel(): JSX.Element {
           () => {
             setConfirmType("");
             executeAction();
-            closePanel("");
+            setQueryParams({ panel: null });
           },
           () => setConfirmType("")
         );

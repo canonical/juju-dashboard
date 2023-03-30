@@ -3,8 +3,6 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -101,9 +99,7 @@ describe("StatusGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup filters={{}} />
-          </QueryParamProvider>
+          <StatusGroup filters={{}} />
         </Provider>
       </MemoryRouter>
     );
@@ -115,9 +111,7 @@ describe("StatusGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup filters={{}} />
-          </QueryParamProvider>
+          <StatusGroup filters={{}} />
         </Provider>
       </MemoryRouter>
     );
@@ -136,9 +130,7 @@ describe("StatusGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup filters={filters} />
-          </QueryParamProvider>
+          <StatusGroup filters={filters} />
         </Provider>
       </MemoryRouter>
     );
@@ -150,9 +142,7 @@ describe("StatusGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup filters={{}} />
-          </QueryParamProvider>
+          <StatusGroup filters={{}} />
         </Provider>
       </MemoryRouter>
     );
@@ -195,9 +185,7 @@ describe("StatusGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup filters={filters} />
-          </QueryParamProvider>
+          <StatusGroup filters={filters} />
         </Provider>
       </MemoryRouter>
     );
@@ -237,9 +225,7 @@ describe("StatusGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <StatusGroup filters={{}} />
-          </QueryParamProvider>
+          <StatusGroup filters={{}} />
         </Provider>
       </MemoryRouter>
     );

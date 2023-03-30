@@ -6,13 +6,13 @@ import {
 import FadeIn from "animations/FadeIn";
 import cloneDeep from "clone-deep";
 import Header from "components/Header/Header";
+import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getControllerData, getModelData } from "store/juju/selectors";
 import { AdditionalController, Controller } from "store/juju/types";
-import { StringParam, useQueryParam } from "use-query-params";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 import "./_controllers.scss";
 
@@ -173,7 +173,9 @@ function Details() {
 
   const rows = controllerMap && Object.values(controllerMap).map(generateRow);
 
-  const setPanelQs = useQueryParam("panel", StringParam)[1];
+  const [, setPanelQs] = useQueryParams<{ panel: string | null }>({
+    panel: null,
+  });
 
   return (
     <>
@@ -184,7 +186,7 @@ function Details() {
         <div className="controllers--register">
           <button
             className="p-button--positive"
-            onClick={() => setPanelQs("register-controller")}
+            onClick={() => setPanelQs({ panel: "register-controller" })}
           >
             Register a controller
           </button>

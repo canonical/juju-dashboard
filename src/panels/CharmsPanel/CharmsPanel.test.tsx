@@ -9,8 +9,7 @@ import {
   charmApplicationFactory,
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
+
 import CharmsPanel from "./ChamsPanel";
 
 const mockStore = configureStore([]);
@@ -45,14 +44,12 @@ describe("CharmsPanel", () => {
         <MemoryRouter
           initialEntries={["/models/admin/tests?panel=choose-charm"]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName"
-                element={<CharmsPanel />}
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<CharmsPanel />}
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );

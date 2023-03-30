@@ -3,12 +3,6 @@ import Fuse from "fuse.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  StringParam,
-  useQueryParam,
-  useQueryParams,
-  withDefault,
-} from "use-query-params";
 
 import {
   appsOffersTableHeaders,
@@ -30,6 +24,7 @@ import classnames from "classnames";
 import { EntityDetailsRoute } from "components/Routes/Routes";
 import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
+import { useQueryParams } from "hooks/useQueryParams";
 import useTableRowClick from "hooks/useTableRowClick";
 import { getCharmsFromApplications } from "juju/api";
 import { ApplicationData, ApplicationInfo } from "juju/types";
@@ -74,7 +69,9 @@ function SearchResultsActionsRow() {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
-  const [, setPanel] = useQueryParam("panel", StringParam);
+  const [, setPanel] = useQueryParams<{ panel: string | null }>({
+    panel: null,
+  });
 
   const handleRunAction = async () => {
     sendAnalytics({
@@ -87,7 +84,7 @@ function SearchResultsActionsRow() {
       appState,
       dispatch
     );
-    setPanel("choose-charm");
+    setPanel({ panel: "choose-charm" });
   };
 
   return (
@@ -112,10 +109,14 @@ type Props = {
 
 export default function ApplicationsTab({ filterQuery }: Props) {
   const navigate = useNavigate();
-  const [queryParams, setQueryParams] = useQueryParams({
-    panel: StringParam,
-    entity: StringParam,
-    activeView: withDefault(StringParam, "apps"),
+  const [queryParams, setQueryParams] = useQueryParams<{
+    entity: string | null;
+    panel: string | null;
+    activeView: string;
+  }>({
+    panel: null,
+    entity: null,
+    activeView: "apps",
   });
   const { userName, modelName } = useParams<EntityDetailsRoute>();
 

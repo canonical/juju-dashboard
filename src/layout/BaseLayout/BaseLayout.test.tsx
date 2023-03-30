@@ -7,8 +7,6 @@ import {
 } from "react-router-dom";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import { rootStateFactory } from "testing/factories/root";
 import { RootState } from "store/store";
@@ -28,11 +26,9 @@ describe("Base Layout", () => {
     render(
       <Provider store={store}>
         <Router>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <BaseLayout>
-              <p>foo</p>
-            </BaseLayout>
-          </QueryParamProvider>
+          <BaseLayout>
+            <p>foo</p>
+          </BaseLayout>
         </Router>
       </Provider>
     );
@@ -44,11 +40,9 @@ describe("Base Layout", () => {
     render(
       <Provider store={store}>
         <Router>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <BaseLayout>
-              <p>foo</p>
-            </BaseLayout>
-          </QueryParamProvider>
+          <BaseLayout>
+            <p>foo</p>
+          </BaseLayout>
         </Router>
       </Provider>
     );
@@ -66,18 +60,16 @@ describe("Base Layout", () => {
             "/models/pizza@external/hadoopspark?activeView=machines",
           ]}
         >
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models/:userName/:modelName"
-                element={
-                  <BaseLayout>
-                    <p>foo</p>
-                  </BaseLayout>
-                }
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={
+                <BaseLayout>
+                  <p>foo</p>
+                </BaseLayout>
+              }
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -92,18 +84,16 @@ describe("Base Layout", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models"
-                element={
-                  <BaseLayout>
-                    <p>foo</p>
-                  </BaseLayout>
-                }
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models"
+              element={
+                <BaseLayout>
+                  <p>foo</p>
+                </BaseLayout>
+              }
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );
@@ -118,18 +108,16 @@ describe("Base Layout", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/models/"]}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <Routes>
-              <Route
-                path="/models"
-                element={
-                  <BaseLayout>
-                    <p>foo</p>
-                  </BaseLayout>
-                }
-              />
-            </Routes>
-          </QueryParamProvider>
+          <Routes>
+            <Route
+              path="/models"
+              element={
+                <BaseLayout>
+                  <p>foo</p>
+                </BaseLayout>
+              }
+            />
+          </Routes>
         </MemoryRouter>
       </Provider>
     );

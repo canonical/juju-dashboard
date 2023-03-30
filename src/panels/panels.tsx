@@ -1,6 +1,6 @@
 import { useListener } from "@canonical/react-components";
 import { AnimatePresence } from "framer-motion";
-import { StringParam, useQueryParam } from "use-query-params";
+import { useQueryParams } from "hooks/useQueryParams";
 
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import RegisterController from "panels/RegisterController/RegisterController";
@@ -23,16 +23,18 @@ export const close = {
 };
 
 export default function Panels() {
-  const [panelQs, setPanelQs] = useQueryParam("panel", StringParam);
+  const [panelQs, setPanelQs] = useQueryParams<{ panel: string | null }>({
+    panel: null,
+  });
 
   useListener(
     window,
-    (e: KeyboardEvent) => close.onEscape(e, setPanelQs),
+    (e: KeyboardEvent) => close.onEscape(e, () => setPanelQs(null)),
     "keydown"
   );
 
   const generatePanel = () => {
-    switch (panelQs) {
+    switch (panelQs.panel) {
       case "register-controller":
         return <RegisterController />;
       case "execute-action":
@@ -47,5 +49,5 @@ export default function Panels() {
         return null;
     }
   };
-  return <AnimatePresence>{panelQs && generatePanel()}</AnimatePresence>;
+  return <AnimatePresence>{panelQs.panel && generatePanel()}</AnimatePresence>;
 }

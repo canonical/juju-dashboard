@@ -1,16 +1,19 @@
 import { Button, RadioInput } from "@canonical/react-components";
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
+import { useQueryParams } from "hooks/useQueryParams";
 import { FormEventHandler, useState } from "react";
 import { useSelector } from "react-redux";
 import { getCharms } from "store/juju/selectors";
-import { StringParam, useQueryParams } from "use-query-params";
 import "./_charms-panel.scss";
 
 export default function CharmsPanel() {
-  const [, setQuery] = useQueryParams({
-    panel: StringParam,
-    charm: StringParam,
+  const [, setQuery] = useQueryParams<{
+    panel: string | null;
+    charm: string | null;
+  }>({
+    panel: null,
+    charm: null,
   });
 
   const [selectedCharm, setSelectedCharm] = useState<string | null>(null);

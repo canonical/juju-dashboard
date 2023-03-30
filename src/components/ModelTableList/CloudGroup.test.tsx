@@ -2,8 +2,6 @@ import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
 import { render, screen, within } from "@testing-library/react";
 import configureStore from "redux-mock-store";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 import {
   jujuStateFactory,
@@ -71,9 +69,7 @@ describe("CloudGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <CloudGroup filters={[]} />
-          </QueryParamProvider>
+          <CloudGroup filters={[]} />
         </Provider>
       </MemoryRouter>
     );
@@ -85,9 +81,7 @@ describe("CloudGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <CloudGroup filters={[]} />
-          </QueryParamProvider>
+          <CloudGroup filters={[]} />
         </Provider>
       </MemoryRouter>
     );
@@ -105,9 +99,7 @@ describe("CloudGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <CloudGroup filters={filters} />
-          </QueryParamProvider>
+          <CloudGroup filters={filters} />
         </Provider>
       </MemoryRouter>
     );
@@ -149,9 +141,7 @@ describe("CloudGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <QueryParamProvider adapter={ReactRouter6Adapter}>
-            <CloudGroup filters={filters} />
-          </QueryParamProvider>
+          <CloudGroup filters={filters} />
         </Provider>
       </MemoryRouter>
     );

@@ -1,7 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { QueryParamProvider } from "use-query-params";
-import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
 
 import PanelHeader from "./PanelHeader";
@@ -13,9 +11,7 @@ describe("PanelHeader", () => {
       <MemoryRouter
         initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
       >
-        <QueryParamProvider adapter={ReactRouter6Adapter}>
-          <PanelHeader title={title} />
-        </QueryParamProvider>
+        <PanelHeader title={title} />
       </MemoryRouter>
     );
     expect(screen.getByText(title)).toHaveClass("p-panel__title");
@@ -25,9 +21,7 @@ describe("PanelHeader", () => {
     window.history.pushState({}, "", "/models?model=cmr&panel=share-model");
     render(
       <BrowserRouter>
-        <QueryParamProvider adapter={ReactRouter6Adapter}>
-          <PanelHeader title="Title" />
-        </QueryParamProvider>
+        <PanelHeader title="Title" />
       </BrowserRouter>
     );
     const searchParams = new URLSearchParams(window.location.search);

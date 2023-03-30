@@ -13,7 +13,6 @@ import {
 } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { ArrayParam, useQueryParam, withDefault } from "use-query-params";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 
@@ -22,6 +21,7 @@ import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
+import { useQueryParams } from "hooks/useQueryParams";
 import { RootState, useAppStore } from "store/store";
 
 import ActionOptions from "./ActionOptions";
@@ -100,13 +100,11 @@ export default function ActionsPanel(): JSX.Element {
 
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
-  const selectedUnits = useQueryParam(
-    "units",
-    withDefault(ArrayParam, [])
-    // Cast it into an array so it has the proper methods for the reduce below.
-  )[0] as string[];
-
-  const closePanel = useQueryParam("panel")[1];
+  const [queryParams, setQueryParams] = useQueryParams<{
+    units: string[];
+    panel: string | null;
+  }>({ units: [], panel: null });
+  const selectedUnits = queryParams.units;
 
   useEffect(() => {
     setFetchingActionData(true);
@@ -202,7 +200,7 @@ export default function ActionsPanel(): JSX.Element {
           () => {
             setConfirmType("");
             executeAction();
-            closePanel("");
+            setQueryParams(null);
           },
           () => setConfirmType("")
         );
