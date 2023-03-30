@@ -226,7 +226,7 @@ export const extractCredentialName = (tag?: string) => {
   if (!tag) return "-";
   let cred = tag.split("cloudcred-")[1];
   if (cred.indexOf("@") > -1) {
-    return cred.split("@")[1].split("_")[1];
+    return cred.split("@")[0].split("_")[1];
   }
   return cred.split("_")[1];
 };

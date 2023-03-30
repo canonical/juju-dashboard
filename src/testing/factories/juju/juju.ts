@@ -39,7 +39,7 @@ export const controllerLocationFactory = Factory.define<ControllerLocation>(
 
 export const controllerFactory = Factory.define<Controller>(() => ({
   path: "admin/jaas",
-  uuid: "a030379a-940f-4760-8fcf-3062b41a04e7",
+  uuid: "a030379a-940f-4760-8fcf-3062bfake4e7",
 }));
 
 export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
@@ -170,7 +170,7 @@ export const modelDataInfoFactory = Factory.define<ModelInfo>(() => ({
   name: "sub-test",
   type: "iaas",
   uuid: "84e872ff-9171-46be-829b-70f0ffake18d",
-  "controller-uuid": "a030379a-940f-4760-8fcf-3062b41a04e7",
+  "controller-uuid": "a030379a-940f-4760-8fcf-3062bfake4e7",
   "provider-type": "gce",
   "default-series": "bionic",
   "cloud-tag": "cloud-google",

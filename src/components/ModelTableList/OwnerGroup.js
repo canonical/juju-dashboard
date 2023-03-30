@@ -11,6 +11,7 @@ import { generateStatusElement } from "components/utils";
 import {
   getGroupedByOwnerAndFilteredModelData,
   getActiveUsers,
+  getControllerData,
 } from "store/juju/selectors";
 
 import {
@@ -79,6 +80,7 @@ export default function OwnerGroup({ filters }) {
     panel: withDefault(StringParam, "share-model"),
   })[1];
   const activeUsers = useSelector(getActiveUsers);
+  const controllers = useSelector(getControllerData);
 
   let ownerTables = [];
   let ownerModels = {};
@@ -90,7 +92,7 @@ export default function OwnerGroup({ filters }) {
         const { highestStatus } = getModelStatusGroupData(model);
         const cloud = generateCloudCell(model);
         const credential = getStatusValue(model, "cloud-credential-tag");
-        const controller = getStatusValue(model, "controllerName");
+        const controller = getStatusValue(model, "controllerName", controllers);
         const lastUpdated = getStatusValue(model, "status.since")?.slice(2);
         ownerModels.rows.push({
           "data-testid": `model-uuid-${model?.uuid}`,
