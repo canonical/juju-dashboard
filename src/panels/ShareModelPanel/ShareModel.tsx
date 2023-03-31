@@ -8,15 +8,19 @@ import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 import { actions as appActions } from "store/app";
-import { getModelControllerDataByUUID } from "store/juju/selectors";
+import {
+  getModelControllerDataByUUID,
+  getUserDomains,
+  getUserDomainsInModel,
+} from "store/juju/selectors";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import ShareCard from "components/ShareCard/ShareCard";
 import ToastCard from "components/ToastCard/ToastCard";
-import { usePromiseDispatch } from "store/store";
+import { useAppSelector, usePromiseDispatch } from "store/store";
 
-import { Input, RadioInput } from "@canonical/react-components";
+import { Button, Input, RadioInput } from "@canonical/react-components";
 import "./share-model.scss";
 
 type User = {
@@ -64,6 +68,12 @@ export default function ShareModel() {
     getModelControllerDataByUUID(controllerUUID);
 
   const modelControllerData = useSelector(modelControllerDataByUUID);
+  const allUserDomains = useAppSelector(getUserDomains);
+  const modelUserDomains = useAppSelector((state) =>
+    getUserDomainsInModel(state, modelUUID)
+  );
+  // Display the domains used in this model first.
+  const userDomains = [...modelUserDomains, ...allUserDomains].slice(0, 5);
 
   const modelControllerURL = modelControllerData?.url;
   const users = modelStatusData?.info?.users;
@@ -317,6 +327,41 @@ export default function ShareModel() {
             <h5>Add new user</h5>
             <form onSubmit={newUserFormik.handleSubmit}>
               <Input
+                help={
+                  <>
+                    Usernames for external identity providers must be in the
+                    format "user@domain".
+                    {userDomains.length ? (
+                      <>
+                        {" "}
+                        Suggestions:{" "}
+                        {userDomains.map((domain, i) => (
+                          <span key={domain}>
+                            <Button
+                              appearance="link"
+                              className="p-text--small"
+                              onClick={() => {
+                                const currentValue =
+                                  newUserFormik.values.username;
+                                // Replace the user domain (if there is one) with this one.
+                                newUserFormik.setFieldValue(
+                                  "username",
+                                  `${currentValue.split("@")[0]}@${domain}`
+                                );
+                              }}
+                              type="button"
+                            >
+                              @{domain}
+                            </Button>
+                            {i < userDomains.length - 1 ? ", " : null}
+                          </span>
+                        ))}
+                        .
+                      </>
+                    ) : null}
+                  </>
+                }
+                id="username"
                 name="username"
                 type="text"
                 label="Username"
