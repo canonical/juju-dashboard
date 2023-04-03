@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { List, MainTable, Tooltip } from "@canonical/react-components";
+import { ListItem } from "@canonical/react-components/dist/components/List/List";
 import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 
 import { useQueryParams, SetParams } from "hooks/useQueryParams";
@@ -12,8 +12,8 @@ import {
   Filters,
   Status,
 } from "store/juju/utils/models";
+import TruncatedTooltip from "components/TruncatedTooltip";
 import { generateStatusElement } from "components/utils";
-
 import {
   getActiveUsers,
   getControllerData,
@@ -82,23 +82,26 @@ const generateWarningMessage = (model: ModelData) => {
     ownerTag,
     messages[0].message
   );
-  const list: ReactNode[] = messages.slice(0, 5).map((message) => {
+  const list: ListItem[] = messages.slice(0, 5).map((message) => {
     const unitId = message.unitId ? message.unitId.replace("/", "-") : null;
     const appName = message.appName;
-    return (
-      <>
-        {unitId || appName}:{" "}
-        <Link
-          to={
-            unitId
-              ? urls.model.unit({ userName, modelName, appName, unitId })
-              : urls.model.app.index({ userName, modelName, appName })
-          }
-        >
-          {message.message}
-        </Link>
-      </>
-    );
+    return {
+      className: "u-truncate",
+      content: (
+        <>
+          {unitId || appName}:{" "}
+          <Link
+            to={
+              unitId
+                ? urls.model.unit({ userName, modelName, appName, unitId })
+                : urls.model.app.index({ userName, modelName, appName })
+            }
+          >
+            {message.message}
+          </Link>
+        </>
+      ),
+    };
   });
   const remainder = messages.slice(5);
   if (remainder.length) {
@@ -106,8 +109,9 @@ const generateWarningMessage = (model: ModelData) => {
   }
   return (
     <Tooltip
-      className="p-tooltip--constrain-width"
-      message={<List className="u-no-margin--bottom u-truncate" items={list} />}
+      positionElementClassName="p-tooltip__position-element--inline"
+      tooltipClassName="p-tooltip--constrain-width"
+      message={<List className="u-no-margin--bottom" items={list} />}
     >
       <span className="model-table-list_error-message">{link}</span>
     </Tooltip>
@@ -192,9 +196,11 @@ function generateModelTableDataByStatus(
           },
           {
             "data-testid": "column-cloud",
-            content: cloud,
-            className: "u-truncate",
-            title: generateCloudAndRegion(model),
+            content: (
+              <TruncatedTooltip message={generateCloudAndRegion(model)}>
+                {cloud}
+              </TruncatedTooltip>
+            ),
           },
           {
             "data-testid": "column-credential",

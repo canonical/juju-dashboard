@@ -123,7 +123,7 @@ describe("ApplicationsTab", () => {
         /There are no applications associated with this model/i
       )
     ).not.toBeInTheDocument();
-    expect(screen.queryByText(/db1/i)).toBeInTheDocument();
+    expect(screen.queryAllByText(/db1/i)).toHaveLength(2);
   });
 
   it("shows all the application by default", () => {

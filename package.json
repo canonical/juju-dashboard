@@ -97,6 +97,7 @@
     "npm-package-json-lint": "6.4.0",
     "postcss": "8.4.21",
     "prettier": "2.8.2",
+    "react-anchorme": "3.0.0",
     "redux-devtools": "3.7.0",
     "redux-devtools-extension": "2.13.9",
     "redux-mock-store": "1.5.4",

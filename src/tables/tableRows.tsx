@@ -1,5 +1,6 @@
 import cloneDeep from "clone-deep";
 import { Field } from "formik";
+import { Anchorme } from "react-anchorme";
 
 import { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import {
@@ -13,7 +14,7 @@ import {
   generateIconImg,
   copyToClipboard,
 } from "components/utils";
-import { Button, Icon, Tooltip } from "@canonical/react-components";
+import { Button, Icon } from "@canonical/react-components";
 import {
   MainTableCell,
   MainTableRow,
@@ -23,6 +24,7 @@ import { StatusData } from "store/juju/selectors";
 import { ModelData } from "store/juju/types";
 import { Link } from "react-router-dom";
 import urls from "urls";
+import TruncatedTooltip from "components/TruncatedTooltip";
 
 export type ModelParams = {
   modelName: string;
@@ -81,7 +83,11 @@ export function generateLocalApplicationRows(
     const status = app.status
       ? generateStatusElement(applicationStatuses[app.name])
       : "-";
-
+    const message = (
+      <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
+        {app.status?.message ?? ""}
+      </Anchorme>
+    );
     return {
       columns: [
         {
@@ -97,12 +103,13 @@ export function generateLocalApplicationRows(
               {generateEntityIdentifier(app["charm-url"] || "", key, false)}
             </Link>
           ),
-          className: "u-truncate",
         },
         {
           "data-test-column": "status",
-          content: status,
-          className: "u-capitalise u-truncate",
+          content: (
+            <TruncatedTooltip message={status}>{status}</TruncatedTooltip>
+          ),
+          className: "u-capitalise",
         },
         {
           "data-test-column": "version",
@@ -124,9 +131,9 @@ export function generateLocalApplicationRows(
         },
         {
           "data-test-column": "message",
-          content: app.status?.message,
-          className: "u-truncate",
-          title: app.status?.message,
+          content: app.status?.message ? (
+            <TruncatedTooltip message={message}>{message}</TruncatedTooltip>
+          ) : null,
         },
       ],
       sortData: {
@@ -169,13 +176,19 @@ export function generateRemoteApplicationRows(
         columns: [
           {
             "data-test-column": "app",
-            content: app["offer-name"], // we cannot access charm name
-            className: "u-truncate",
+            // we cannot access charm name
+            content: (
+              <TruncatedTooltip message={app["offer-name"]}>
+                {app["offer-name"]}
+              </TruncatedTooltip>
+            ),
           },
           {
             "data-test-column": "status",
-            content: status,
-            className: "u-capitalise u-truncate",
+            content: (
+              <TruncatedTooltip message={status}>{status}</TruncatedTooltip>
+            ),
+            className: "u-capitalise",
           },
           {
             "data-test-column": "interface",
@@ -183,8 +196,9 @@ export function generateRemoteApplicationRows(
           },
           {
             "data-test-column": "offer_url",
-            content: offerUrl,
-            className: "u-truncate",
+            content: (
+              <TruncatedTooltip message={offerUrl}>{offerUrl}</TruncatedTooltip>
+            ),
           },
           {
             "data-test-column": "store",
@@ -268,15 +282,20 @@ export function generateUnitRows(
     const publicAddress = unit["public-address"];
     const ports = generatePortsList(unit.ports);
     const message = unit["workload-status"].message || "-";
+    const messageWithLinks = (
+      <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
+        {message}
+      </Anchorme>
+    );
     const charm = unit["charm-url"];
+    const name = generateEntityIdentifier(charm ? charm : "", unitId, false);
     let columns: MainTableCell[] = [
       {
         content: (
           <Link to={generateUnitURL(modelParams, unitId)}>
-            {generateEntityIdentifier(charm ? charm : "", unitId, false)}
+            <TruncatedTooltip message={name}>{name}</TruncatedTooltip>
           </Link>
         ),
-        className: "u-truncate",
       },
       {
         content: generateStatusElement(workload),
@@ -293,13 +312,18 @@ export function generateUnitRows(
         className: "u-flex has-hover",
       },
       {
-        content: ports,
+        content: <TruncatedTooltip message={ports}>{ports}</TruncatedTooltip>,
         className: "u-align--right",
-        title: ports,
       },
       {
-        content: <span title={message}>{message}</span>,
-        className: "u-truncate",
+        content: (
+          <TruncatedTooltip
+            message={messageWithLinks}
+            tooltipClassName="p-tooltip--constrain-width"
+          >
+            {messageWithLinks}
+          </TruncatedTooltip>
+        ),
       },
     ];
 
@@ -348,11 +372,17 @@ export function generateUnitRows(
       for (let [key] of Object.entries(subordinates)) {
         const subordinate = subordinates[key];
         const address = subordinate["public-address"];
+        const workloadStatus = subordinate["workload-status"].current;
+        const name = generateEntityIdentifier(
+          subordinate["charm-url"],
+          key,
+          true
+        );
         let columns: MainTableCell[] = [
           {
             content: (
               <Link to={generateUnitURL(modelParams, unitId)}>
-                {generateEntityIdentifier(subordinate["charm-url"], key, true)}
+                <TruncatedTooltip message={name}>{name}</TruncatedTooltip>
               </Link>
             ),
             className: "u-truncate",
@@ -371,8 +401,11 @@ export function generateUnitRows(
             className: "u-align--right",
           },
           {
-            content: subordinate["workload-status"].current,
-            className: "u-truncate",
+            content: (
+              <TruncatedTooltip message={workloadStatus}>
+                {workloadStatus}
+              </TruncatedTooltip>
+            ),
           },
         ];
 
@@ -438,6 +471,12 @@ export function generateMachineRows(
       const machine = machines[machineId];
       const az =
         machine?.["hardware-characteristics"]?.["availability-zone"] || "";
+      const agentStatus = machine["agent-status"].message;
+      const message = (
+        <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
+          {agentStatus}
+        </Anchorme>
+      );
       return {
         columns: [
           {
@@ -463,8 +502,7 @@ export function generateMachineRows(
           },
           {
             content: (
-              <Tooltip
-                className="u-truncate"
+              <TruncatedTooltip
                 message={machine["agent-status"].current}
                 position="top-center"
                 positionElementClassName="entity-details__machines-status-icon"
@@ -474,21 +512,18 @@ export function generateMachineRows(
                   null,
                   true,
                   false,
-                  "p-icon u-truncate"
+                  "p-icon"
                 )}
-              </Tooltip>
+              </TruncatedTooltip>
             ),
-            className: "u-capitalise u-truncate",
+            className: "u-capitalise",
           },
           { content: az },
           { content: machine["instance-id"] },
           {
             content: (
-              <span title={machine["agent-status"].message}>
-                {machine["agent-status"].message}
-              </span>
+              <TruncatedTooltip message={message}>{message}</TruncatedTooltip>
             ),
-            className: "u-truncate",
           },
         ],
         sortData: {
@@ -527,7 +562,7 @@ export function generateRelationRows(
       columns: [
         {
           content: (
-            <>
+            <TruncatedTooltip message={providerLabel}>
               {applications
                 ? generateRelationIconImage(
                     providerApplicationName || peerApplicationName,
@@ -535,13 +570,12 @@ export function generateRelationRows(
                   )
                 : null}
               {providerLabel}
-            </>
+            </TruncatedTooltip>
           ),
-          className: "u-truncate",
         },
         {
           content: (
-            <>
+            <TruncatedTooltip message={requirerLabel}>
               {applications
                 ? generateRelationIconImage(
                     requirerApplicationName,
@@ -549,10 +583,8 @@ export function generateRelationRows(
                   )
                 : null}
               {requirerLabel}
-            </>
+            </TruncatedTooltip>
           ),
-          title: requirerLabel,
-          className: "u-truncate",
         },
         { content: relation.endpoints[0].relation.interface },
         { content: relation.endpoints[0].relation.role },
@@ -575,25 +607,26 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
   const offers = modelStatusData.offers;
   return Object.keys(offers).map((offerId) => {
     const offer = offers[offerId];
+    const endpoints = Object.entries<RemoteEndpoint>(offer.endpoints)
+      .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
+      .join("/n");
     return {
       columns: [
         {
           content: (
-            <>
+            <TruncatedTooltip message={offer.applicationName}>
               {generateRelationIconImage(
                 offer.applicationName,
                 modelStatusData.applications
               )}
               {offer.applicationName}
-            </>
+            </TruncatedTooltip>
           ),
-          className: "u-truncate",
         },
         {
-          content: Object.entries<RemoteEndpoint>(offer.endpoints)
-            .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
-            .join("/n"),
-          className: "u-truncate",
+          content: (
+            <TruncatedTooltip message={endpoints}>{endpoints}</TruncatedTooltip>
+          ),
         },
         {
           content: offer.activeConnectedCount,
@@ -624,12 +657,11 @@ export function generateAppOffersRows(
       columns: [
         {
           content: (
-            <>
+            <TruncatedTooltip message={offer["offer-name"]}>
               {generateRelationIconImage(offer, modelStatusData.applications)}
               {offer["offer-name"]}
-            </>
+            </TruncatedTooltip>
           ),
-          className: "u-truncate",
         },
         {
           content: <>{interfaces.join(",")}</>,
@@ -663,25 +695,26 @@ export function generateConsumedRows(modelStatusData?: ModelData | null) {
   const remoteApplications = modelStatusData["remote-applications"] || {};
   return Object.keys(remoteApplications).map((appName) => {
     const application = remoteApplications[appName];
+    const endpoints = Object.entries<RemoteEndpoint>(application.endpoints)
+      .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
+      .join("/n");
     return {
       columns: [
         {
           content: (
-            <>
+            <TruncatedTooltip message={application.offerName}>
               {generateRelationIconImage(
                 application.offerName,
                 modelStatusData.applications
               )}
               {application.offerName}
-            </>
+            </TruncatedTooltip>
           ),
-          className: "u-truncate",
         },
         {
-          content: Object.entries<RemoteEndpoint>(application.endpoints)
-            .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
-            .join("/n"),
-          className: "u-truncate",
+          content: (
+            <TruncatedTooltip message={endpoints}>{endpoints}</TruncatedTooltip>
+          ),
         },
         {
           content: application.status.status,
