@@ -84,7 +84,7 @@ function SearchResultsActionsRow() {
       appState,
       dispatch
     );
-    setPanel({ panel: "choose-charm" });
+    setPanel({ panel: "choose-charm" }, { replace: true });
   };
 
   return (

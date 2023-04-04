@@ -148,14 +148,14 @@ const EntityDetails = () => {
           appName={entity}
           charm={charm}
           modelUUID={modelUUID}
-          onClose={() => setQuery(closePanelConfig)}
+          onClose={() => setQuery(closePanelConfig, { replace: true })}
         />
       );
     } else if (activePanel === "remoteApps" || activePanel === "offers") {
       return (
         <SlidePanel
           isActive={!!activePanel}
-          onClose={() => setQuery(closePanelConfig)}
+          onClose={() => setQuery(closePanelConfig, { replace: true })}
           isLoading={!entity}
           className={`${activePanel}-panel`}
         >

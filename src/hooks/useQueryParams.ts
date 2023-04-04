@@ -1,7 +1,10 @@
 import { useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { NavigateOptions, useSearchParams } from "react-router-dom";
 
-export type SetParams<P> = (params?: Partial<P> | null) => void;
+export type SetParams<P> = (
+  params?: Partial<P> | null,
+  options?: NavigateOptions
+) => void;
 
 export const useQueryParams = <
   P extends Record<string, null | string | string[]>
@@ -11,7 +14,7 @@ export const useQueryParams = <
   const [searchParams, setSearchParams] = useSearchParams();
 
   const setParam = useCallback(
-    (newParams?: Partial<P> | null) => {
+    (newParams?: Partial<P> | null, options?: NavigateOptions) => {
       if (!newParams) {
         // If this is call with no params then clear all.
         Array.from(searchParams.keys()).forEach((key) =>
@@ -27,7 +30,7 @@ export const useQueryParams = <
           }
         });
       }
-      setSearchParams(searchParams);
+      setSearchParams(searchParams, options);
     },
     [searchParams, setSearchParams]
   );

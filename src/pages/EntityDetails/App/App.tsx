@@ -173,7 +173,7 @@ export default function App(): JSX.Element {
   });
 
   const showConfig = () => {
-    setQuery({ panel: "config", entity: entity });
+    setQuery({ panel: "config", entity: entity }, { replace: true });
   };
 
   const application = entity ? applications?.[entity] : null;
@@ -201,7 +201,10 @@ export default function App(): JSX.Element {
   );
 
   const showActions = () => {
-    setQuery({ panel: "execute-action", units: selectedUnits.current });
+    setQuery(
+      { panel: "execute-action", units: selectedUnits.current },
+      { replace: true }
+    );
   };
 
   const onFormChange = (formData: FormData) => {

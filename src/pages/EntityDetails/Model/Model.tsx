@@ -150,7 +150,9 @@ const Model = () => {
             ) && (
               <button
                 className="entity-details__action-button"
-                onClick={() => setQuery({ panel: "share-model" })}
+                onClick={() =>
+                  setQuery({ panel: "share-model" }, { replace: true })
+                }
               >
                 <i className="p-icon--share"></i>
                 {Label.ACCESS_BUTTON}

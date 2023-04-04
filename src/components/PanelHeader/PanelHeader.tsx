@@ -16,7 +16,7 @@ export default function PanelHeader({ title }: Props): JSX.Element {
       <div className="p-panel__title">{title}</div>
       <div className="p-panel__controls">
         <button
-          onClick={() => setPanelQs(null)}
+          onClick={() => setPanelQs(null, { replace: true })}
           className="p-button--base js-aside-close u-no-margin--bottom has-icon"
         >
           <i className="p-icon--close"></i>
