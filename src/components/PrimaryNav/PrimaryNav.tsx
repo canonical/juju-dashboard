@@ -24,7 +24,7 @@ const ModelsLink = () => {
           "is-selected": isActive,
         })
       }
-      to={urls.models}
+      to={urls.models.index}
     >
       <i className={`p-icon--models is-light`}></i>
       <span className="hide-collapsed">Models</span>

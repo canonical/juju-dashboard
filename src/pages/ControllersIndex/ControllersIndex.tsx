@@ -223,7 +223,7 @@ export default function ControllersIndex() {
         <div className="entity-details__header">
           <strong className="controllers--count">
             {controllerCount} controllers,{" "}
-            <Link to={urls.models}>{modelCount} models</Link>
+            <Link to={urls.models.index}>{modelCount} models</Link>
           </strong>
         </div>
       </Header>

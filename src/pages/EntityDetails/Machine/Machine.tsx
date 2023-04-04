@@ -3,8 +3,6 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import useTableRowClick from "hooks/useTableRowClick";
-
 import {
   getAllModelApplicationStatus,
   getModelApplications,
@@ -31,7 +29,6 @@ import type { ApplicationData, UnitData } from "juju/types";
 
 export default function Machine() {
   const { machineId, modelName, userName } = useParams<EntityDetailsRoute>();
-  const tableRowClick = useTableRowClick();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
@@ -74,17 +71,22 @@ export default function Machine() {
 
   const applicationRows = useMemo(
     () =>
-      generateLocalApplicationRows(
-        filteredApplicationList,
-        applicationStatuses,
-        tableRowClick
-      ),
-    [filteredApplicationList, applicationStatuses, tableRowClick]
+      modelName && userName
+        ? generateLocalApplicationRows(
+            filteredApplicationList,
+            applicationStatuses,
+            { modelName, userName }
+          )
+        : [],
+    [filteredApplicationList, applicationStatuses, modelName, userName]
   );
 
   const unitRows = useMemo(
-    () => generateUnitRows(filteredUnitList, tableRowClick),
-    [filteredUnitList, tableRowClick]
+    () =>
+      modelName && userName
+        ? generateUnitRows(filteredUnitList, { modelName, userName })
+        : [],
+    [filteredUnitList, modelName, userName]
   );
 
   const hardware = machine?.["hardware-characteristics"];

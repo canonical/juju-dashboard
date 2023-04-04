@@ -1,6 +1,8 @@
 import { argPath } from "utils";
 
 export type ModelTab = "apps" | "machines" | "integrations" | "action-logs";
+export type AppTab = "machines" | "units";
+export type ModelsGroupedBy = "status" | "cloud" | "owner";
 
 const urls = {
   index: "/",
@@ -14,9 +16,17 @@ const urls = {
       modelName: string;
       tab: ModelTab;
     }>("/models/:userName/:modelName?activeView=:tab"),
-    app: argPath<{ userName: string; modelName: string; appName: string }>(
-      "/models/:userName/:modelName/app/:appName"
-    ),
+    app: {
+      index: argPath<{ userName: string; modelName: string; appName: string }>(
+        "/models/:userName/:modelName/app/:appName"
+      ),
+      tab: argPath<{
+        userName: string;
+        modelName: string;
+        appName: string;
+        tab: AppTab;
+      }>("/models/:userName/:modelName/app/:appName?tableView=:tab"),
+    },
     machine: argPath<{
       userName: string;
       modelName: string;
@@ -29,7 +39,12 @@ const urls = {
       unitId: string;
     }>("/models/:userName/:modelName/app/:appName/unit/:unitId"),
   },
-  models: "/models",
+  models: {
+    index: "/models",
+    group: argPath<{
+      groupedby: ModelsGroupedBy;
+    }>("/models?groupedby=:groupedby"),
+  },
   settings: "/settings",
 };
 

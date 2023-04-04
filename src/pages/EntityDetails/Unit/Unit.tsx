@@ -3,8 +3,6 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import useTableRowClick from "hooks/useTableRowClick";
-
 import {
   generateLocalApplicationTableHeaders,
   machineTableHeaders,
@@ -37,7 +35,6 @@ export default function Unit() {
   // The unit name might have a dash in it so we need to grab only the last one
   // ex) content-cache-0.
   const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1");
-  const tableRowClick = useTableRowClick();
 
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
@@ -68,18 +65,26 @@ export default function Unit() {
   );
 
   const machineRows = useMemo(
-    () => generateMachineRows(filteredMachineList, units, tableRowClick),
-    [filteredMachineList, units, tableRowClick]
+    () =>
+      modelName && userName
+        ? generateMachineRows(filteredMachineList, units, {
+            modelName,
+            userName,
+          })
+        : [],
+    [filteredMachineList, units, modelName, userName]
   );
 
   const applicationRows = useMemo(
     () =>
-      generateLocalApplicationRows(
-        filteredApplicationList,
-        applicationStatuses,
-        tableRowClick
-      ),
-    [filteredApplicationList, applicationStatuses, tableRowClick]
+      modelName && userName
+        ? generateLocalApplicationRows(
+            filteredApplicationList,
+            applicationStatuses,
+            { modelName, userName }
+          )
+        : [],
+    [filteredApplicationList, applicationStatuses, modelName, userName]
   );
 
   const unit = unitIdentifier ? units?.[unitIdentifier] : null;

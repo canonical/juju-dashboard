@@ -21,7 +21,7 @@ export default function PageNotFound() {
               <p>Are you looking for any of the pages below?</p>
               <ul>
                 <li>
-                  <Link to={urls.models}>Models</Link>
+                  <Link to={urls.models.index}>Models</Link>
                 </li>
                 <li>
                   <Link to={urls.controllers}>Controllers</Link>

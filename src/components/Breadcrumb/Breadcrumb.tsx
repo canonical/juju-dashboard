@@ -58,7 +58,9 @@ export default function Breadcrumb(): JSX.Element {
                 data-testid="breadcrumb-app"
               >
                 {appName ? (
-                  <Link to={urls.model.app({ userName, modelName, appName })}>
+                  <Link
+                    to={urls.model.app.index({ userName, modelName, appName })}
+                  >
                     {appName}
                   </Link>
                 ) : null}

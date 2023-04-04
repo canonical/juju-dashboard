@@ -1,4 +1,4 @@
-import { useEffect, useState, ReactNode, useRef } from "react";
+import { useEffect, useState, ReactNode, useRef, MouseEvent } from "react";
 import classNames from "classnames";
 import { Spinner, Tabs } from "@canonical/react-components";
 import { useSelector, useStore } from "react-redux";
@@ -75,9 +75,6 @@ const EntityDetails = () => {
     activeView: "apps",
     filterQuery: "",
   });
-  const setActiveView = (view?: string) => {
-    setQuery({ activeView: view });
-  };
 
   const { panel: activePanel, entity, activeView } = query;
   const closePanelConfig = { panel: undefined, entity: undefined };
@@ -112,14 +109,12 @@ const EntityDetails = () => {
     wsProtocol = primaryControllerData[0].split("://")[0];
   }
 
-  const handleNavClick = (e: MouseEvent, section: string) => {
-    e.preventDefault();
+  const handleNavClick = (e: MouseEvent) => {
     (e.target as HTMLAnchorElement)?.scrollIntoView({
       behavior: "smooth",
       block: "end",
       inline: "nearest",
     });
-    setActiveView(section);
   };
 
   useEffect(() => {
@@ -171,21 +166,30 @@ const EntityDetails = () => {
   };
 
   const generateTabItems = () => {
+    if (!userName || !modelName) {
+      return [];
+    }
     let items = [
       {
         active: activeView === "apps",
         label: "Applications",
-        onClick: (e: MouseEvent) => handleNavClick(e, "apps"),
+        onClick: (e: MouseEvent) => handleNavClick(e),
+        to: urls.model.tab({ userName, modelName, tab: "apps" }),
+        component: Link,
       },
       {
         active: activeView === "integrations",
         label: "Integrations",
-        onClick: (e: MouseEvent) => handleNavClick(e, "integrations"),
+        onClick: (e: MouseEvent) => handleNavClick(e),
+        to: urls.model.tab({ userName, modelName, tab: "integrations" }),
+        component: Link,
       },
       {
         active: activeView === "action-logs",
         label: "Action Logs",
-        onClick: (e: MouseEvent) => handleNavClick(e, "action-logs"),
+        onClick: (e: MouseEvent) => handleNavClick(e),
+        to: urls.model.tab({ userName, modelName, tab: "action-logs" }),
+        component: Link,
       },
     ];
 
@@ -193,7 +197,9 @@ const EntityDetails = () => {
       items.push({
         active: activeView === "machines",
         label: "Machines",
-        onClick: (e: MouseEvent) => handleNavClick(e, "machines"),
+        onClick: (e: MouseEvent) => handleNavClick(e),
+        to: urls.model.tab({ userName, modelName, tab: "machines" }),
+        component: Link,
       });
     }
 
@@ -257,7 +263,7 @@ const EntityDetails = () => {
                 .
               </p>
               <p>
-                <Link to={urls.models}>View all models</Link>
+                <Link to={urls.models.index}>View all models</Link>
               </p>
             </>
           </NotFound>

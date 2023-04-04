@@ -20,6 +20,8 @@ import {
   hasModels,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { Link } from "react-router-dom";
+import urls, { ModelsGroupedBy } from "urls";
 
 import "./_models.scss";
 
@@ -144,10 +146,16 @@ export default function Models() {
           </strong>
           <ButtonGroup
             activeButton={queryParams.groupedby}
-            buttons={["status", "cloud", "owner"]}
+            buttons={["status", "cloud", "owner"].map((group) => ({
+              children: group,
+              key: group,
+              to: urls.models.group({
+                groupedby: group as ModelsGroupedBy,
+              }),
+            }))}
+            buttonComponent={Link}
             label="Group by:"
             noWrap
-            setActiveButton={(group) => setQueryParams({ groupedby: group })}
           />
           <SearchAndFilter
             filterPanelData={[

@@ -28,7 +28,6 @@ import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
-import useTableRowClick from "hooks/useTableRowClick";
 
 import {
   getActiveUser,
@@ -92,7 +91,6 @@ const Model = () => {
     filterQuery: "",
   });
 
-  const tableRowClick = useTableRowClick();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
   const relations = useSelector(getModelRelations(modelUUID));
@@ -101,8 +99,15 @@ const Model = () => {
   const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
 
   const machinesTableRows = useMemo(() => {
-    return generateMachineRows(machines, units, tableRowClick, query?.entity);
-  }, [machines, units, tableRowClick, query]);
+    return modelName && userName
+      ? generateMachineRows(
+          machines,
+          units,
+          { modelName, userName },
+          query?.entity
+        )
+      : [];
+  }, [machines, units, modelName, userName, query]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(relations, applications),
