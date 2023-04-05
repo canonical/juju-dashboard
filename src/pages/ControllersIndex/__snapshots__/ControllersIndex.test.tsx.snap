@@ -16,7 +16,7 @@ exports[`Controllers table counts models, machines, apps, and units 1`] = `
     class=""
     role="gridcell"
   >
-    unknown/unknown
+    Multiple
   </td>
   <td
     aria-hidden="false"

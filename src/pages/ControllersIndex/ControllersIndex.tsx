@@ -26,6 +26,9 @@ type AnnotatedController = (Controller | AdditionalController) & {
   wsControllerURL: string;
 };
 
+const isJAAS = (controllerData: AnnotatedController) =>
+  "path" in controllerData && controllerData?.path === "admin/jaas";
+
 function Details() {
   useWindowTitle("Controllers");
   const controllerData = useSelector(getControllerData);
@@ -104,7 +107,7 @@ function Details() {
 
   function generatePathValue(controllerData: AnnotatedController) {
     const column: MainTableCell = { content: "" };
-    if ("path" in controllerData && controllerData?.path === "admin/jaas") {
+    if (isJAAS(controllerData)) {
       column.content = "JAAS";
     } else if ("path" in controllerData && controllerData.path) {
       column.content = controllerData.path;
@@ -125,7 +128,7 @@ function Details() {
     const access = "Public" in c && c.Public ? "Public" : "Private";
     let columns = [
       generatePathValue(c),
-      { content: cloudRegion },
+      { content: isJAAS(c) ? "Multiple" : cloudRegion },
       { content: c.models },
       { content: c.machines },
       { content: c.applications },
