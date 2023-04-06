@@ -10,7 +10,7 @@ Machine  State    DNS             Inst id        Series  AZ          Message
 "
 `;
 
-exports[`WebCLI WebCLI Output displays messages recieved over the websocket 1`] = `
+exports[`WebCLI WebCLI Output displays messages received over the websocket 1`] = `
 "
 Model       Controller       Cloud/Region     Version    SLA          Timestamp
 controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z
@@ -39,13 +39,18 @@ exports[`WebCLI renders correctly 1`] = `
       </div>
       <pre
         class="webcli__output-content"
+        data-testid="output-content"
         style="height: 1px;"
       >
-        <code>
-          Welcome to the Juju Web CLI - see the 
+        <code
+          data-testid="output-help"
+        >
+          Welcome to the Juju Web CLI - see the
+           
           <a
             class="p-link--inverted"
             href="https://juju.is/docs/olm/using-the-juju-web-cli"
+            rel="noreferrer"
             target="_blank"
           >
             full documentation here

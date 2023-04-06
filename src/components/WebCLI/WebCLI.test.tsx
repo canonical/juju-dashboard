@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { act } from "react-dom/test-utils";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { WS } from "jest-websocket-mock";
@@ -10,8 +9,8 @@ import { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories/root";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 
-import WebCLI from "./WebCLI";
-import { MAX_HISTORY } from "./WebCLI";
+import WebCLI, { MAX_HISTORY } from "./WebCLI";
+import { TestId } from "./Output";
 
 const mockStore = configureStore([]);
 
@@ -35,7 +34,6 @@ jest.mock("juju/bakery", () => ({
 }));
 
 describe("WebCLI", () => {
-  const originalError = console.error;
   let bakerySpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -44,23 +42,8 @@ describe("WebCLI", () => {
 
   afterEach(() => {
     bakerySpy.mockClear();
-    // Reset the console.error to the original console.error in case
-    // it was cobbered in a test.
-    console.error = originalError;
     localStorage.clear();
   });
-
-  /*
-    Due to the setTimeout in the webCLI message buffer there doesn't appear
-    to be a way to avoid all react `act` warnings in the tests that test
-    the message handling.
-
-    This method clobers the console.error for those tests so that we don't have
-    to see the errors in the console.
-  */
-  const clobberConsoleError = () => {
-    console.error = jest.fn();
-  };
 
   async function generateComponent(
     props: Props = {
@@ -87,24 +70,20 @@ describe("WebCLI", () => {
   it("shows the help in the output when the ? is clicked", async () => {
     await generateComponent();
     await userEvent.click(screen.getByRole("button"));
-    return new Promise((resolve) => setTimeout(resolve)).then(() => {
-      expect(
-        document.querySelector(".webcli__output-content code")
-      ).toHaveTextContent(
-        `Welcome to the Juju Web CLI - see the full documentation here.`
-      );
-    });
+    expect(
+      document.querySelector(".webcli__output-content code")
+    ).toHaveTextContent(
+      `Welcome to the Juju Web CLI - see the full documentation here.`
+    );
   });
 
   it("shows the help when there is no output", async () => {
     await generateComponent();
-    return new Promise((resolve) => setTimeout(resolve)).then(() => {
-      expect(
-        document.querySelector(".webcli__output-content code")
-      ).toHaveTextContent(
-        `Welcome to the Juju Web CLI - see the full documentation here.`
-      );
-    });
+    expect(
+      document.querySelector(".webcli__output-content code")
+    ).toHaveTextContent(
+      `Welcome to the Juju Web CLI - see the full documentation here.`
+    );
   });
 
   it("trims the command being submitted", async () => {
@@ -120,22 +99,15 @@ describe("WebCLI", () => {
         password: "somelongpassword",
       },
     });
-    return new Promise<void>(async (resolve) => {
-      await server.connected;
-      const input = screen.getByRole("textbox");
-      await userEvent.type(input, "      status       {enter}");
-      await expect(server).toReceiveMessage({
-        user: "spaceman",
-        credentials: "somelongpassword",
-        commands: ["status"],
-      });
-      setTimeout(() => {
-        act(() => {
-          WS.clean();
-        });
-        resolve();
-      });
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "      status       {enter}");
+    await expect(server).toReceiveMessage({
+      user: "spaceman",
+      credentials: "somelongpassword",
+      commands: ["status"],
     });
+    WS.clean();
   });
 
   it("navigate back through the history", async () => {
@@ -189,7 +161,6 @@ describe("WebCLI", () => {
   it("limits the number of items in the history", async () => {
     const items = [...Array(MAX_HISTORY).keys()].map((_, i) => `command-${i}`);
     localStorage.setItem("cliHistory", JSON.stringify(items));
-    clobberConsoleError();
     // ..until it receives a 'done' message.
     new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
@@ -203,23 +174,16 @@ describe("WebCLI", () => {
         password: "somelongpassword",
       },
     });
-    return new Promise<void>(async (resolve) => {
-      const input = screen.getByRole("textbox");
-      let history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
-      expect(history).toHaveLength(MAX_HISTORY);
-      expect(history[0]).toBe("command-0");
-      await userEvent.type(input, "status{enter}");
-      history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
-      expect(history).toHaveLength(MAX_HISTORY);
-      // The first item should be now be the old second item.
-      expect(history[0]).toBe("command-1");
-      setTimeout(() => {
-        act(() => {
-          WS.clean();
-        });
-        resolve();
-      });
-    });
+    const input = screen.getByRole("textbox");
+    let history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
+    expect(history).toHaveLength(MAX_HISTORY);
+    expect(history[0]).toBe("command-0");
+    await userEvent.type(input, "status{enter}");
+    history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
+    expect(history).toHaveLength(MAX_HISTORY);
+    // The first item should be now be the old second item.
+    expect(history[0]).toBe("command-1");
+    WS.clean();
   });
 
   it("supports macaroon based authentication", async () => {
@@ -259,27 +223,19 @@ describe("WebCLI", () => {
       },
       state
     );
-    return new Promise<void>(async (resolve) => {
-      await server.connected;
-      const input = screen.getByRole("textbox");
-      await userEvent.type(input, "      status       {enter}");
-      await expect(server).toReceiveMessage({
-        user: "eggman@external",
-        macaroons: [["mac", "aroon"]],
-        commands: ["status"],
-      });
-      setTimeout(() => {
-        act(() => {
-          WS.clean();
-        });
-        resolve();
-      });
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "      status       {enter}");
+    await expect(server).toReceiveMessage({
+      user: "eggman@external",
+      macaroons: [["mac", "aroon"]],
+      commands: ["status"],
     });
+    WS.clean();
   });
 
   describe("WebCLI Output", () => {
-    it("displays messages recieved over the websocket", async () => {
-      clobberConsoleError();
+    it("displays messages received over the websocket", async () => {
       // ..until it receives a 'done' message.
       const server = new WS("ws://localhost:1234/model/abc123/commands", {
         jsonProtocol: true,
@@ -293,67 +249,55 @@ describe("WebCLI", () => {
           password: "somelongpassword",
         },
       });
-      return new Promise<void>(async (resolve) => {
-        await act(async () => {
-          await server.connected;
-          const input = screen.getByRole("textbox");
-          await userEvent.type(input, "status --color{enter}");
-          await expect(server).toReceiveMessage({
-            user: "eggman@external",
-            credentials: "somelongpassword",
-            commands: ["status --color"],
-          });
-        });
-
-        const messages = [
-          {
-            output: [
-              "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
-            ],
-          },
-          {
-            output: [
-              "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
-            ],
-          },
-          { output: [""] },
-          {
-            output: [
-              "Machine  State    DNS             Inst id        Series  AZ          Message",
-            ],
-          },
-          {
-            output: [
-              "0        started  35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
-            ],
-          },
-          { output: [""] },
-          { done: true },
-        ];
-
-        messages.forEach((message) => {
-          // Due to the settimeout in the message buffer this causes intermittent react `act`
-          // errors so this test has console.error clobbered to avoid looking at them.
-          server.send(message);
-        });
-
-        // Force the test to wait for the content to be rendered.
-        await screen.findByText(/google-us-east1/);
-        expect(
-          document.querySelector(".webcli__output-content code")?.textContent
-        ).toMatchSnapshot();
-        expect(
-          document.querySelector(".webcli__output-content")
-        ).toHaveAttribute("style", "height: 300px;");
-        act(() => {
-          WS.clean();
-        });
-        resolve();
+      await server.connected;
+      const input = screen.getByRole("textbox");
+      await userEvent.type(input, "status --color{enter}");
+      await expect(server).toReceiveMessage({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
       });
+
+      const messages = [
+        {
+          output: [
+            "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
+          ],
+        },
+        {
+          output: [
+            "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
+          ],
+        },
+        { output: [""] },
+        {
+          output: [
+            "Machine  State    DNS             Inst id        Series  AZ          Message",
+          ],
+        },
+        {
+          output: [
+            "0        started  35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
+          ],
+        },
+        { output: [""] },
+        { done: true },
+      ];
+
+      messages.forEach((message) => {
+        server.send(message);
+      });
+
+      const code = await screen.findByTestId(TestId.CODE);
+      expect(code?.textContent).toMatchSnapshot();
+      expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+        "style",
+        "height: 300px;"
+      );
+      WS.clean();
     });
 
     it("displays ansi colored content colored", async () => {
-      clobberConsoleError();
       // ..until it receives a 'done' message.
       const server = new WS("ws://localhost:1234/model/abc123/commands", {
         jsonProtocol: true,
@@ -367,63 +311,52 @@ describe("WebCLI", () => {
           password: "somelongpassword",
         },
       });
-      return new Promise<void>(async (resolve) => {
-        await act(async () => {
-          await server.connected;
-          const input = screen.getByRole("textbox");
-          await userEvent.type(input, "status --color{enter}");
-          await expect(server).toReceiveMessage({
-            user: "spaceman",
-            credentials: "somelongpassword",
-            commands: ["status --color"],
-          });
-        });
-
-        const messages = [
-          {
-            output: [
-              "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
-            ],
-          },
-          {
-            output: [
-              "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
-            ],
-          },
-          { output: [""] },
-          {
-            output: [
-              "Machine  State    DNS             Inst id        Series  AZ          Message",
-            ],
-          },
-          {
-            output: [
-              "0        \u001b[32mstarted  \u001b[0m35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
-            ],
-          },
-          { output: [""] },
-          { done: true },
-        ];
-
-        messages.forEach((message) => {
-          // Due to the settimeout in the message buffer this causes intermittent react `act`
-          // errors so this test has console.error clobbered to avoid looking at them.
-          server.send(message);
-        });
-
-        // Force the test to wait for the content to be rendered.
-        await screen.findByText(/google-us-east1/);
-        expect(
-          document.querySelector(".webcli__output-content code")?.textContent
-        ).toMatchSnapshot();
-        expect(
-          document.querySelector(".webcli__output-content")
-        ).toHaveAttribute("style", "height: 300px;");
-        act(() => {
-          WS.clean();
-        });
-        resolve();
+      await server.connected;
+      const input = screen.getByRole("textbox");
+      await userEvent.type(input, "status --color{enter}");
+      await expect(server).toReceiveMessage({
+        user: "spaceman",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
       });
+
+      const messages = [
+        {
+          output: [
+            "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
+          ],
+        },
+        {
+          output: [
+            "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
+          ],
+        },
+        { output: [""] },
+        {
+          output: [
+            "Machine  State    DNS             Inst id        Series  AZ          Message",
+          ],
+        },
+        {
+          output: [
+            "0        \u001b[32mstarted  \u001b[0m35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
+          ],
+        },
+        { output: [""] },
+        { done: true },
+      ];
+
+      messages.forEach((message) => {
+        server.send(message);
+      });
+
+      const code = await screen.findByTestId(TestId.CODE);
+      expect(code?.textContent).toMatchSnapshot();
+      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+        "style",
+        "height: 300px;"
+      );
+      WS.clean();
     });
   });
 });
