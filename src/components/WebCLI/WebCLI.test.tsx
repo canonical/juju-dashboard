@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -290,10 +290,13 @@ describe("WebCLI", () => {
 
       const code = await screen.findByTestId(TestId.CODE);
       expect(code?.textContent).toMatchSnapshot();
-      expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
-        "style",
-        "height: 300px;"
-      );
+      // Wait for the setTimeout that buffers the message updates in connection.js.
+      await waitFor(() => {
+        expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+          "style",
+          "height: 300px;"
+        );
+      });
       WS.clean();
     });
 
@@ -352,10 +355,13 @@ describe("WebCLI", () => {
 
       const code = await screen.findByTestId(TestId.CODE);
       expect(code?.textContent).toMatchSnapshot();
-      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
-        "style",
-        "height: 300px;"
-      );
+      // Wait for the setTimeout that buffers the message updates in connection.js.
+      await waitFor(() => {
+        expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+          "style",
+          "height: 300px;"
+        );
+      });
       WS.clean();
     });
   });

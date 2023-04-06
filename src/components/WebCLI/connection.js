@@ -7,6 +7,7 @@ class Connection {
   }
 
   _messageBuffer = "";
+  timeout = null;
 
   connect() {
     const ws = new WebSocket(this.address);
@@ -23,6 +24,9 @@ class Connection {
 
   disconnect() {
     this._ws.close();
+    if (this.timeout) {
+      clearTimeout(this._handleMessage);
+    }
   }
 
   _handleMessage(e) {
@@ -52,17 +56,21 @@ class Connection {
   }
 
   _pushToMessageBuffer(message) {
+    const bufferEmpty = !!this._messageBuffer;
     this._messageBuffer = this._messageBuffer + message;
-    setTimeout(() => {
-      /*
+    if (bufferEmpty) {
+      this.timeout = setTimeout(() => {
+        /*
         The messageBuffer is required because the websocket returns messages
         much faster than React wants to update the component. Doing this allows
         us to store the messages in a buffer and then set the output every
         cycle.
       */
-      this._messageCallback(this._messageBuffer);
-      this._messageBuffer = "";
-    });
+        this._messageCallback(this._messageBuffer);
+        this._messageBuffer = "";
+        this.timeout = null;
+      });
+    }
   }
 }
 
