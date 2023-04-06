@@ -94,7 +94,6 @@
     "eslint-plugin-react": "7.31.11",
     "fishery": "2.2.2",
     "jest-websocket-mock": "2.4.0",
-    "mock-socket": "9.0.3",
     "npm-package-json-lint": "6.4.0",
     "postcss": "8.4.21",
     "prettier": "2.8.2",
