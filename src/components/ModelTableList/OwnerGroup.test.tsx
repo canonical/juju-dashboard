@@ -72,7 +72,7 @@ describe("OwnerGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <OwnerGroup filters={[]} />
+          <OwnerGroup filters={{}} />
         </Provider>
       </MemoryRouter>
     );
@@ -84,7 +84,7 @@ describe("OwnerGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <OwnerGroup filters={[]} />
+          <OwnerGroup filters={{}} />
         </Provider>
       </MemoryRouter>
     );

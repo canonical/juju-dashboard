@@ -13,15 +13,15 @@ import "../../scss/index.scss";
 
 function App() {
   const isProduction = process.env.NODE_ENV === "production" ?? true;
-  const { baseAppURL } = useSelector(getConfig);
-  const [disableAnalytics] = useLocalStorage("disableAnalytics", false);
+  const config = useSelector(getConfig);
+  const [disableAnalytics] = useLocalStorage("disableAnalytics", "false");
   if (isProduction && (!disableAnalytics || disableAnalytics === "false")) {
     initialize("UA-1018242-68");
     pageview(window.location.href.replace(window.location.origin, ""));
   }
 
   return (
-    <Router basename={baseAppURL}>
+    <Router basename={config?.baseAppURL}>
       <ErrorBoundary>
         <Routes />
       </ErrorBoundary>
