@@ -1,13 +1,25 @@
+type Options = {
+  address: string;
+  messageCallback: (message: string) => void;
+  onclose: () => void;
+  onopen: () => void;
+};
+
 class Connection {
-  constructor(options) {
+  address: string;
+  _messageBuffer = "";
+  _timeout: number | null = null;
+  _messageCallback: (message: string) => void;
+  _wsOnOpen: () => void;
+  _wsOnClose: () => void;
+  _ws: WebSocket | null = null;
+
+  constructor(options: Options) {
     this._messageCallback = options.messageCallback;
     this.address = options.address;
-    this.wsOnOpen = options.onopen;
-    this.wsOnClose = options.onclose;
+    this._wsOnOpen = options.onopen;
+    this._wsOnClose = options.onclose;
   }
-
-  _messageBuffer = "";
-  timeout = null;
 
   connect() {
     const ws = new WebSocket(this.address);
@@ -18,24 +30,24 @@ class Connection {
     return this;
   }
 
-  send(message) {
-    this._ws.send(message);
+  send(message: string) {
+    this._ws?.send(message);
   }
 
   disconnect() {
-    this._ws.close();
-    if (this.timeout) {
-      clearTimeout(this._handleMessage);
+    this._ws?.close();
+    if (this._timeout) {
+      clearTimeout(this._timeout);
     }
   }
 
-  _handleMessage(e) {
+  _handleMessage(e: MessageEvent) {
     try {
       const data = JSON.parse(e.data);
       if (data["redirect-to"]) {
         // This is a JAAS controller and we need to instead
         // connect to the sub controller.
-        this._ws.close();
+        this._ws?.close();
         this.address = data["redirect-to"];
         this.connect();
       }
@@ -55,11 +67,11 @@ class Connection {
     }
   }
 
-  _pushToMessageBuffer(message) {
+  _pushToMessageBuffer(message: string) {
     const bufferEmpty = !!this._messageBuffer;
     this._messageBuffer = this._messageBuffer + message;
     if (bufferEmpty) {
-      this.timeout = setTimeout(() => {
+      this._timeout = window.setTimeout(() => {
         /*
         The messageBuffer is required because the websocket returns messages
         much faster than React wants to update the component. Doing this allows
@@ -68,7 +80,7 @@ class Connection {
       */
         this._messageCallback(this._messageBuffer);
         this._messageBuffer = "";
-        this.timeout = null;
+        this._timeout = null;
       });
     }
   }
