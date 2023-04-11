@@ -9,6 +9,7 @@ import {
   getModelStatusGroupData,
   Filters,
 } from "store/juju/utils/models";
+import TruncatedTooltip from "components/TruncatedTooltip";
 import { generateStatusElement } from "components/utils";
 
 import {
@@ -115,9 +116,11 @@ export default function OwnerGroup({ filters }: Props) {
           },
           {
             "data-testid": "column-cloud",
-            content: cloud,
-            className: "u-truncate",
-            title: generateCloudAndRegion(model),
+            content: (
+              <TruncatedTooltip message={generateCloudAndRegion(model)}>
+                {cloud}
+              </TruncatedTooltip>
+            ),
           },
           {
             "data-testid": "column-credential",

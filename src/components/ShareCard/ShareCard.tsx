@@ -1,7 +1,8 @@
-import { Button, Select, Tooltip } from "@canonical/react-components";
+import { Button, Select } from "@canonical/react-components";
 import { useEffect, useState } from "react";
 
 import { formatFriendlyDateToNow } from "components/utils";
+import TruncatedTooltip from "components/TruncatedTooltip";
 
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
 
@@ -70,14 +71,10 @@ export default function ShareCard({
     <div>
       <SlideDownFadeOut isAnimating={hasBeenRemoved}>
         <div className="share-card" data-active={inFocus}>
-          <div className="share-card__title u-truncate">
-            <Tooltip
-              message={userName}
-              className="u-truncate"
-              positionElementClassName="share-card__tooltip-wrapper"
-            >
+          <div className="share-card__title">
+            <TruncatedTooltip message={userName}>
               <strong className="share-card__username">{userName}</strong>
-            </Tooltip>
+            </TruncatedTooltip>
             <span className="share-card__secondary">
               {isOwner ? (
                 Label.OWNER

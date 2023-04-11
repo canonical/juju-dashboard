@@ -102,9 +102,4 @@
       opacity: 1;
     }
   }
-
-  &__tooltip-wrapper {
-    // Override to allow long usernames to truncate.
-    display: inline !important;
-  }
 }

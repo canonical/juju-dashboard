@@ -384,9 +384,8 @@
   /* stylelint-enable no-descending-specificity */
 
   // Override the status icon so that it truncates inside the tooltip wrapper.
-  .entity-details__machines .status-icon,
-  .entity-details__machines-status-icon {
-    display: inline !important;
+  .entity-details__machines .status-icon {
+    display: inline;
   }
 }
 

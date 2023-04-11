@@ -43,6 +43,11 @@
   margin-top: 0.25rem;
 }
 
-.p-tooltip--constrain-width {
+.p-tooltip--constrain-width .p-tooltip__message {
   max-width: 20rem;
+  white-space: pre-wrap;
+}
+
+.p-tooltip__position-element--inline {
+  display: inline !important;
 }
