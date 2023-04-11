@@ -18,7 +18,7 @@ export default function TextAreaConfig({
       input={(value) => (
         <textarea
           ref={inputRef}
-          value={value}
+          value={value ?? ""}
           onFocus={() => setSelectedConfig(config)}
           onChange={(e) => {
             setNewValue(config.name, e.target.value);
