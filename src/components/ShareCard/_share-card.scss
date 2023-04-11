@@ -34,7 +34,7 @@
       }
     }
 
-    @media (min-width: 1170px) {
+    @media (width >= 1170px) {
       grid-template-columns: 1fr 1fr;
 
       .share-card__status-wrap {
