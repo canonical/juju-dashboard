@@ -1,8 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+
+export enum TestId {
+  CODE = "output-code",
+  CONTENT = "output-content",
+  HELP = "output-help",
+}
 
 type Props = {
   content: string;
-  helpMessage: string;
+  helpMessage: ReactNode;
   showHelp: boolean;
   setShouldShowHelp: (showHelp: boolean) => void;
 };
@@ -182,20 +188,26 @@ const WebCLIOutput = ({
 
   // Strip any color escape codes from the content.
   content = content.replace(/\\u001b/gi, "");
-  const colorizedContent = useMemo(() => {
-    if (showHelp || !content) {
-      return helpMessage;
-    }
-    return colorize(content);
-  }, [content, showHelp, helpMessage]);
+  const colorizedContent = useMemo(() => colorize(content), [content]);
 
   return (
     <div className="webcli__output" style={{ height: `${height}px` }}>
       <div className="webcli__output-dragarea" aria-hidden={true}>
         <div className="webcli__output-handle"></div>
       </div>
-      <pre className="webcli__output-content" style={{ height: `${height}px` }}>
-        <code dangerouslySetInnerHTML={{ __html: colorizedContent }}></code>
+      <pre
+        className="webcli__output-content"
+        style={{ height: `${height}px` }}
+        data-testid={TestId.CONTENT}
+      >
+        {showHelp || !content ? (
+          <code data-testid={TestId.HELP}>{helpMessage}</code>
+        ) : (
+          <code
+            data-testid={TestId.CODE}
+            dangerouslySetInnerHTML={{ __html: colorizedContent }}
+          ></code>
+        )}
       </pre>
     </div>
   );

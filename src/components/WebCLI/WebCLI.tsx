@@ -147,8 +147,10 @@ const WebCLI = ({
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
       // the model for the model status.
-      const origin = new URL(connection?.address).origin;
-      const macaroons = bakery.storage.get(origin);
+      const origin = connection?.address
+        ? new URL(connection?.address)?.origin
+        : null;
+      const macaroons = origin ? bakery.storage.get(origin) : null;
       if (macaroons) {
         const deserialized = JSON.parse(atob(macaroons));
         const originalWSOrigin = wsAddress ? new URL(wsAddress).origin : null;
@@ -207,7 +209,20 @@ const WebCLI = ({
         content={output}
         showHelp={shouldShowHelp}
         setShouldShowHelp={setShouldShowHelp}
-        helpMessage={`Welcome to the Juju Web CLI - see the <a href="https://juju.is/docs/olm/using-the-juju-web-cli" class="p-link--inverted" target="_blank">full documentation here</a>.`}
+        helpMessage={
+          <>
+            Welcome to the Juju Web CLI - see the{" "}
+            <a
+              href="https://juju.is/docs/olm/using-the-juju-web-cli"
+              className="p-link--inverted"
+              rel="noreferrer"
+              target="_blank"
+            >
+              full documentation here
+            </a>
+            .
+          </>
+        }
       />
       <div className="webcli__input">
         <div className="webcli__input-prompt">$ juju</div>
