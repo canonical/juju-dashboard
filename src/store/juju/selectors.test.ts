@@ -38,6 +38,10 @@ import {
   getModelDataByUUID,
   getModelAccess,
   getFilteredModelData,
+  getExternalUsers,
+  getExternalUsersInModel,
+  getUserDomains,
+  getUserDomainsInModel,
 } from "./selectors";
 import { modelUserInfoFactory } from "../../testing/factories/juju/juju";
 
@@ -503,6 +507,125 @@ describe("selectors", () => {
       abc123: "eggman@external",
       def456: "spaceman@external",
     });
+  });
+
+  it("getExternalUsers", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [
+                modelUserInfoFactory.build({ user: "eggman@external" }),
+                modelUserInfoFactory.build({ user: "spaceman@domain" }),
+                modelUserInfoFactory.build({ user: "frogman" }),
+              ],
+            }),
+          }),
+          def456: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [
+                modelUserInfoFactory.build({ user: "other@model2" }),
+                modelUserInfoFactory.build({ user: "other2@anothermodel2" }),
+                modelUserInfoFactory.build({ user: "other3" }),
+              ],
+            }),
+          }),
+        },
+      }),
+    });
+    expect(getExternalUsers(state)).toStrictEqual([
+      "eggman@external",
+      "spaceman@domain",
+      "other@model2",
+      "other2@anothermodel2",
+    ]);
+  });
+
+  it("getExternalUsersInModel", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [
+                modelUserInfoFactory.build({ user: "eggman@external" }),
+                modelUserInfoFactory.build({ user: "spaceman@domain" }),
+                modelUserInfoFactory.build({ user: "frogman" }),
+              ],
+            }),
+          }),
+          def456: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [modelUserInfoFactory.build({ user: "other@model2" })],
+            }),
+          }),
+        },
+      }),
+    });
+    expect(getExternalUsersInModel(state, "abc123")).toStrictEqual([
+      "eggman@external",
+      "spaceman@domain",
+    ]);
+  });
+
+  it("getUserDomains", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [
+                modelUserInfoFactory.build({ user: "eggman@external" }),
+                modelUserInfoFactory.build({ user: "spaceman@domain" }),
+                modelUserInfoFactory.build({ user: "frogman" }),
+              ],
+            }),
+          }),
+          def456: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [
+                modelUserInfoFactory.build({ user: "other@model2" }),
+                modelUserInfoFactory.build({ user: "other2@external" }),
+              ],
+            }),
+          }),
+        },
+      }),
+    });
+    expect(getUserDomains(state)).toStrictEqual([
+      "external",
+      "domain",
+      "model2",
+    ]);
+  });
+
+  it("getUserDomainsInModel", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [
+                modelUserInfoFactory.build({ user: "eggman@external" }),
+                modelUserInfoFactory.build({ user: "spaceman@domain" }),
+                modelUserInfoFactory.build({ user: "frogman" }),
+                modelUserInfoFactory.build({ user: "fireman@external" }),
+              ],
+            }),
+          }),
+          def456: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [modelUserInfoFactory.build({ user: "other@model2" })],
+            }),
+          }),
+        },
+      }),
+    });
+    expect(getUserDomainsInModel(state, "abc123")).toStrictEqual([
+      "external",
+      "domain",
+    ]);
   });
 
   describe("getFilteredModelData", () => {

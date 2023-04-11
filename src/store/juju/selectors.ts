@@ -74,8 +74,8 @@ export const getModelByUUID = createSelector(
 );
 
 export const getModelDataByUUID = createSelector(
-  [getModelData, (_, modelUUID: string) => modelUUID],
-  (modelData, modelUUID) => modelData[modelUUID]
+  [getModelData, (_, modelUUID?: string | null) => modelUUID],
+  (modelData, modelUUID) => (modelUUID ? modelData[modelUUID] : null)
 );
 
 /**
@@ -92,6 +92,62 @@ export const getActiveUsers = createSelector(
       )?.replace("user-", "");
     });
     return activeUsers;
+  }
+);
+
+/**
+  Get all unique external users.
+*/
+export const getExternalUsers = createSelector([getModelData], (models) => {
+  const users = new Set<string>();
+  Object.values(models).forEach((model) => {
+    model.info?.users.forEach(({ user }) => {
+      if (user.includes("@")) {
+        users.add(user);
+      }
+    });
+  });
+  return Array.from(users.values());
+});
+
+/**
+  Get external users in a mdoel.
+*/
+export const getExternalUsersInModel = createSelector(
+  [getModelDataByUUID],
+  (model) => {
+    const users = new Set<string>();
+    model?.info?.users.forEach(({ user }) => {
+      if (user.includes("@")) {
+        users.add(user);
+      }
+    });
+    return Array.from(users.values());
+  }
+);
+
+/**
+  Get user domains.
+*/
+export const getUserDomains = createSelector([getExternalUsers], (users) => {
+  const domains = new Set<string>();
+  users.forEach((user) => {
+    domains.add(user.split("@")[1]);
+  });
+  return Array.from(domains.values());
+});
+
+/**
+  Get user domains in a model.
+*/
+export const getUserDomainsInModel = createSelector(
+  [getExternalUsersInModel],
+  (users) => {
+    const domains = new Set<string>();
+    users.forEach((user) => {
+      domains.add(user.split("@")[1]);
+    });
+    return Array.from(domains.values());
   }
 );
 
