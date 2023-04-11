@@ -59,7 +59,7 @@
     "d3": "7.8.4",
     "date-fns": "2.29.3",
     "formik": "2.2.9",
-    "framer-motion": "7.10.3",
+    "framer-motion": "10.11.2",
     "fuse.js": "6.6.2",
     "lodash.mergewith": "4.6.2",
     "process": "0.11.10",
@@ -75,7 +75,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.16.5",
-    "@testing-library/react": "13.4.0",
+    "@testing-library/react": "14.0.0",
     "@testing-library/user-event": "14.4.3",
     "@types/classnames": "2.3.1",
     "@types/clone-deep": "4.0.1",
@@ -102,11 +102,11 @@
     "redux-devtools-extension": "2.13.9",
     "redux-mock-store": "1.5.4",
     "sass": "1.61.0",
-    "stylelint": "14.16.1",
-    "stylelint-config-standard-scss": "5.0.0",
-    "stylelint-order": "5.0.0",
+    "stylelint": "15.4.0",
+    "stylelint-config-standard-scss": "8.0.0",
+    "stylelint-order": "6.0.3",
     "ts-jest": "29.1.0",
-    "typescript": "4.9.5"
+    "typescript": "5.0.4"
   },
   "npmpackagejsonlint": {
     "rules": {
