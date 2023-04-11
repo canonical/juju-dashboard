@@ -9,7 +9,6 @@
   "plugins": ["prettier", "jest", "jsx-a11y", "import"],
   "root": true,
   "rules": {
-    "react/prop-types": 0,
     "react/jsx-filename-extension": [
       1,
       {

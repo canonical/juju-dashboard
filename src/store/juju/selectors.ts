@@ -1,6 +1,6 @@
 import { AdditionalProperties } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import cloneDeep from "clone-deep";
-import { createSelector } from "reselect";
+import { createSelector } from "@reduxjs/toolkit";
 
 import type {
   AnnotationData,
