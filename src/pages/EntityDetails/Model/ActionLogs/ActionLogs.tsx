@@ -219,7 +219,7 @@ export default function ActionLogs() {
         const StdErr = () => (
           <span className="action-logs__stderr">{stderr}</span>
         );
-        let defaultRow: TableRow = {
+        const defaultRow: TableRow = {
           application: "-",
           id: "-",
           status: "-",

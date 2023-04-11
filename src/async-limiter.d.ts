@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Types from: https://github.com/STRML/async-limiter/pull/9
 
 type LimiterCallback = () => void;

@@ -27,7 +27,7 @@ import {
 
 import { Output } from "./ActionLogs";
 
-var completed = new Date();
+const completed = new Date();
 completed.setMonth(completed.getMonth() - 18);
 
 const mockOperationResults = operationResultsFactory.build({
@@ -213,7 +213,7 @@ describe("Action Logs", () => {
   });
 
   it("handles unkown dates", async () => {
-    var completed = new Date("0001-01-01T00:00:00Z");
+    const completed = new Date("0001-01-01T00:00:00Z");
     const mockActionResults = actionResultsFactory.build({
       results: [
         actionResultFactory.build({

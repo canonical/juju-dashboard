@@ -1,20 +1,21 @@
 import { ReactNode, useEffect } from "react";
 import { Form, useFormikContext } from "formik";
+import { ValueOf } from "@canonical/react-components";
 
-export type SetFieldValue = (fieldName: string, value: any) => void;
+export type SetFieldValue<V> = (fieldName: string, value: ValueOf<V>) => void;
 
-type Props = {
+type Props<V> = {
   children: ReactNode;
-  onFormChange: (data: any) => void;
-  onSetup: (setFieldValue: SetFieldValue) => void;
+  onFormChange: (data: V) => void;
+  onSetup: (setFieldValue: SetFieldValue<V>) => void;
 };
 
-export default function FormikFormData({
+export default function FormikFormData<V>({
   children,
-  onFormChange = () => {},
-  onSetup = () => {},
-}: Props): JSX.Element {
-  const { values, setFieldValue } = useFormikContext<any>();
+  onFormChange,
+  onSetup,
+}: Props<V>): JSX.Element {
+  const { values, setFieldValue } = useFormikContext<V>();
 
   useEffect(() => {
     onSetup(setFieldValue);

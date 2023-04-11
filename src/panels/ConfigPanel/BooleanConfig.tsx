@@ -1,4 +1,6 @@
+import { FormEvent, MouseEvent } from "react";
 import { RadioInput } from "@canonical/react-components";
+
 import ConfigField, { ConfigProps } from "./ConfigField";
 
 export default function BooleanConfig({
@@ -7,9 +9,12 @@ export default function BooleanConfig({
   setSelectedConfig,
   setNewValue,
 }: ConfigProps): JSX.Element {
-  function handleOptionChange(e: any) {
-    const bool = e.target.value === "true" ? true : false;
-    setNewValue(e.target.name, bool);
+  function handleOptionChange(
+    e: FormEvent<HTMLInputElement> | MouseEvent<HTMLInputElement>
+  ) {
+    const target = e.target as HTMLInputElement;
+    const bool = target.value === "true" ? true : false;
+    setNewValue(target.name, bool);
   }
 
   return (

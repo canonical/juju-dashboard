@@ -369,7 +369,7 @@ export function generateUnitRows(
     const subordinates = unit.subordinates;
 
     if (subordinates) {
-      for (let [key] of Object.entries(subordinates)) {
+      for (const [key] of Object.entries(subordinates)) {
         const subordinate = subordinates[key];
         const address = subordinate["public-address"];
         const workloadStatus = subordinate["workload-status"].current;
@@ -378,7 +378,7 @@ export function generateUnitRows(
           key,
           true
         );
-        let columns: MainTableCell[] = [
+        const columns: MainTableCell[] = [
           {
             content: (
               <Link to={generateUnitURL(modelParams, unitId)}>

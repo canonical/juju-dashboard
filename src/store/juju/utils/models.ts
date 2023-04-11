@@ -30,7 +30,7 @@ export const groupModelsByStatus = (modelData?: ModelDataList | null) => {
   if (!modelData) {
     return grouped;
   }
-  for (let modelUUID in modelData) {
+  for (const modelUUID in modelData) {
     const model = modelData[modelUUID as keyof ModelDataList];
     const { highestStatus } = getModelStatusGroupData(model);
     grouped[highestStatus].push(model);
@@ -56,7 +56,7 @@ const checkHighestStatus = (highestStatus: Status) => {
 
 export const getModelStatusGroupData = (model: ModelData) => {
   let highestStatus = statusOrder[0]; // Set the highest status to the lowest.
-  let messages: { message: string; appName: string; unitId?: string }[] = [];
+  const messages: { message: string; appName: string; unitId?: string }[] = [];
   const applications = model.applications || {};
   Object.keys(applications).forEach((appName) => {
     const app = applications[appName];
@@ -224,7 +224,7 @@ export const extractCredentialName = (tag?: string) => {
   // @ is not there in local boostraps
   // cloudcred-localhost_admin_localhost
   if (!tag) return "-";
-  let cred = tag.split("cloudcred-")[1];
+  const cred = tag.split("cloudcred-")[1];
   if (cred.indexOf("@") > -1) {
     return cred.split("@")[0].split("_")[1];
   }

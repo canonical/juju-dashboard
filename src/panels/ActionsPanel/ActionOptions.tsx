@@ -42,7 +42,13 @@ export default function ActionOptions({ name, data, onValuesChange }: Props) {
   }, [name, collectedOptions]);
 
   return (
-    <Formik initialValues={initialValues} onSubmit={() => {}} key={name}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={() => {
+        // Submit event is not used.
+      }}
+      key={name}
+    >
       <OptionInputs
         name={name}
         options={collectedOptions}

@@ -31,8 +31,9 @@ import BooleanConfig from "./BooleanConfig";
 import TextAreaConfig from "./TextAreaConfig";
 
 import "./_config-panel.scss";
-import { SetNewValue } from "./ConfigField";
+import { SetNewValue, SetSelectedConfig } from "./ConfigField";
 import NumberConfig from "./NumberConfig";
+import { ConfigValue } from "../../juju/api";
 
 export enum Label {
   NONE = "This application doesn't have any configuration parameters",
@@ -104,7 +105,7 @@ export default function ConfigPanel({
     });
   }, [sendAnalytics]);
 
-  function setNewValue(name: string, value: any) {
+  function setNewValue(name: string, value: ConfigValue) {
     const newConfig = cloneDeep(config);
     newConfig[name].newValue = value;
     if (newConfig[name].newValue === newConfig[name].value) {
@@ -180,7 +181,7 @@ export default function ConfigPanel({
       config,
       reduxStore.getState()
     );
-    let errors = response?.results?.reduce<string[]>((collection, result) => {
+    const errors = response?.results?.reduce<string[]>((collection, result) => {
       if (result.error) {
         collection.push(result.error.message);
       }
@@ -393,7 +394,7 @@ async function getConfig(
 function generateConfigElementList(
   configs: Config,
   selectedConfig: ConfigData | undefined,
-  setSelectedConfig: Function,
+  setSelectedConfig: SetSelectedConfig,
   setNewValue: SetNewValue
 ) {
   const elements = Object.keys(configs).map((key) => {

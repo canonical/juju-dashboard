@@ -156,7 +156,7 @@ export interface Status {
   message: string;
   since?: ISO8601Date;
   version: string;
-  data?: { [key: string]: any };
+  data?: { [key: string]: unknown };
   err?: string;
 }
 type Config = { [key: string]: string | boolean };
@@ -267,7 +267,7 @@ export interface ModelChangeDelta {
   "is-controller": boolean;
   config: Config;
   status: ModelAgentStatus;
-  constraints: { [key: string]: any };
+  constraints: { [key: string]: unknown };
   sla: ModelDeltaSLA;
 }
 

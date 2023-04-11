@@ -6,7 +6,7 @@ jest.mock("react-ga");
 
 // XXX jsdom does not support the web animations api
 const animateMock = () => {
-  return { onfinish: () => {} };
+  return { onfinish: jest.fn() };
 };
 
 if (!window.HTMLDivElement.prototype.animate) {

@@ -32,7 +32,7 @@ describe("ConfigPanel", () => {
           appName="easyrsa"
           charm="cs:easyrsa"
           modelUUID=""
-          onClose={() => {}}
+          onClose={jest.fn()}
         />
       </Provider>
     );
@@ -58,7 +58,7 @@ describe("ConfigPanel", () => {
           appName="easyrsa"
           charm="cs:easyrsa"
           modelUUID=""
-          onClose={() => {}}
+          onClose={jest.fn()}
         />
       </Provider>
     );

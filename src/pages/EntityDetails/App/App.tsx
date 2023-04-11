@@ -64,7 +64,7 @@ export default function App(): JSX.Element {
     useState<boolean>(false);
 
   const tablesRef = useRef<HTMLDivElement>(null);
-  const setFieldsValues = useRef<SetFieldValue>();
+  const setFieldsValues = useRef<SetFieldValue<FormData>>();
   const selectedUnits = useRef<string[]>([]);
   const selectAll = useRef<boolean>(false);
 
@@ -259,7 +259,7 @@ export default function App(): JSX.Element {
     setEnableActionButtonRow(formData.selectedUnits.length > 0);
   };
 
-  const onSetup = (setFieldValue: SetFieldValue) => {
+  const onSetup = (setFieldValue: SetFieldValue<FormData>) => {
     setFieldsValues.current = setFieldValue;
   };
 
@@ -341,7 +341,9 @@ export default function App(): JSX.Element {
                   selectAll: false,
                   selectedUnits: [],
                 }}
-                onSubmit={() => {}}
+                onSubmit={() => {
+                  // Nothing is done on form submission.
+                }}
               >
                 <FormikFormData onFormChange={onFormChange} onSetup={onSetup}>
                   <MainTable

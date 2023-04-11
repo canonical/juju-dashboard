@@ -48,7 +48,7 @@ const WebCLI = ({
   const [historyPosition, setHistoryPosition] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const wsMessageStore = useRef<string>("");
-  let [output, setOutput] = useState("");
+  const [output, setOutput] = useState("");
   const sendAnalytics = useAnalytics();
   const storeState = useStore().getState();
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
@@ -119,8 +119,12 @@ const WebCLI = ({
     }
     const conn = new Connection({
       address: wsAddress,
-      onopen: () => {},
-      onclose: () => {},
+      onopen: () => {
+        // Unused handler.
+      },
+      onclose: () => {
+        // Unused handler.
+      },
       messageCallback: (message: string) => {
         wsMessageStore.current = wsMessageStore.current + message;
         setOutput(wsMessageStore.current);
@@ -139,7 +143,7 @@ const WebCLI = ({
     // We need to get the most up to date connection information in the event
     // that the original connection was redirected. This typically happens in
     // a JAAS style environment.
-    let authentication: Authentication = {};
+    const authentication: Authentication = {};
     if (credentials && credentials.user && credentials.password) {
       authentication.user = credentials.user;
       authentication.credentials = credentials.password;

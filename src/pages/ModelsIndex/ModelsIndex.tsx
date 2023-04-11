@@ -68,7 +68,7 @@ export default function Models() {
 
   // Generate chips from available model data
   const generateChips = (lead: string, values: string[]) => {
-    let chipValues: SearchAndFilterChip[] = [];
+    const chipValues: SearchAndFilterChip[] = [];
     values.forEach((value) => {
       chipValues.push({ lead, value });
     });

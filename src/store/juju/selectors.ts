@@ -460,7 +460,7 @@ export const getModelUUID = (name: string) => {
       modelName = name;
     }
     if (modelData) {
-      for (let uuid in modelData) {
+      for (const uuid in modelData) {
         const model = modelData[uuid].info;
         if (model && model.name === modelName) {
           if (owner) {
@@ -508,7 +508,7 @@ export const getGroupedByCloudAndFilteredModelData = (filters: Filters) =>
     if (!modelData) {
       return grouped;
     }
-    for (let modelUUID in modelData) {
+    for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
       if (model.info) {
         const cloud = extractCloudName(model.info["cloud-tag"]);
@@ -532,7 +532,7 @@ export const getGroupedByOwnerAndFilteredModelData = (filters: Filters) =>
     if (!modelData) {
       return grouped;
     }
-    for (let modelUUID in modelData) {
+    for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
       if (model.info) {
         const owner = extractOwnerName(model.info["owner-tag"]);
@@ -569,9 +569,9 @@ export const getGroupedMachinesDataByStatus = createSelector(
     if (!modelData) {
       return grouped;
     }
-    for (let modelUUID in modelData) {
+    for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
-      for (let machineID in model.machines) {
+      for (const machineID in model.machines) {
         const machine = model.machines[machineID];
         grouped[getMachineStatusGroup(machine).status].push(machine);
       }
@@ -595,11 +595,11 @@ export const getGroupedUnitsDataByStatus = createSelector(
     if (!modelData) {
       return grouped;
     }
-    for (let modelUUID in modelData) {
+    for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
-      for (let applicationID in model.applications) {
+      for (const applicationID in model.applications) {
         const application = model.applications[applicationID];
-        for (let unitID in application.units) {
+        for (const unitID in application.units) {
           const unit = application.units[unitID];
           grouped[getUnitStatusGroup(unit).status].push(unit);
         }
@@ -624,9 +624,9 @@ export const getGroupedApplicationsDataByStatus = createSelector(
     if (!modelData) {
       return grouped;
     }
-    for (let modelUUID in modelData) {
+    for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
-      for (let applicationID in model.applications) {
+      for (const applicationID in model.applications) {
         const application = model.applications[applicationID];
         grouped[getApplicationStatusGroup(application).status].push(
           application

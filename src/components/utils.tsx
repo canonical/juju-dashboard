@@ -33,7 +33,7 @@ export const generateStatusElement = (
   actionsLogs = false,
   className: string | null = null
 ) => {
-  let statusClass = status ? `is-${status.toLowerCase()}` : "";
+  const statusClass = status ? `is-${status.toLowerCase()}` : "";
   let countValue = "";
   if (count || count === 0) {
     countValue = ` (${count})`;

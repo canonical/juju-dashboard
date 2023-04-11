@@ -136,6 +136,7 @@ export function processDeltas(
             // store this information.
             // This can be resolved by computing the unit-count in the
             // selector instead of when the unit delta arrives.
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore TSFixMe XXX
             modelData.applications[applicationName] = {};
           }

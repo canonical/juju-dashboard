@@ -169,7 +169,7 @@ const EntityDetails = () => {
     if (!userName || !modelName) {
       return [];
     }
-    let items = [
+    const items = [
       {
         active: activeView === "apps",
         label: "Applications",

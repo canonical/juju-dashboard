@@ -83,11 +83,7 @@ const isControllers = (controllers: unknown): controllers is Controllers => {
   @returns The computed value for the requested field if defined, or
     an empty string.
 */
-export function getStatusValue<E extends unknown>(
-  status: ModelData,
-  key: string,
-  extra?: E
-) {
+export function getStatusValue<E>(status: ModelData, key: string, extra?: E) {
   let returnValue: ReactNode = "";
   if (typeof status === "object" && status !== null) {
     const controllerUUID = status.info?.["controller-uuid"];
@@ -203,7 +199,7 @@ export function getStatusValue<E extends unknown>(
   @returns The React element for the model cloud and region cell.
 */
 export function generateCloudCell(model: ModelData) {
-  let provider = model?.info?.["provider-type"];
+  const provider = model?.info?.["provider-type"];
   let logo = null;
   switch (provider) {
     case "ec2":

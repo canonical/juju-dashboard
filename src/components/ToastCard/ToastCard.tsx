@@ -1,4 +1,8 @@
-import reactHotToast from "react-hot-toast";
+import reactHotToast, {
+  Renderable,
+  Toast,
+  ValueOrFunction,
+} from "react-hot-toast";
 
 import "./_toast-card.scss";
 
@@ -6,7 +10,7 @@ type ToastInstance = {
   createdAt: number;
   duration?: number | undefined;
   id: string;
-  message: any;
+  message: ValueOrFunction<Renderable, Toast>;
   pauseDuration: number;
   type: string;
   visible: boolean;
