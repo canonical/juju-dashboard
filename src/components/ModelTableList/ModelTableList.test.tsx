@@ -44,7 +44,7 @@ describe("ModelTableList", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <ModelTableList filters={[]} groupedBy="" />
+          <ModelTableList filters={{}} groupedBy="" />
         </Provider>
       </MemoryRouter>
     );
@@ -64,7 +64,7 @@ describe("ModelTableList", () => {
     const generateComponent = (groupedBy: string) => (
       <MemoryRouter>
         <Provider store={store}>
-          <ModelTableList filters={[]} groupedBy={groupedBy} />
+          <ModelTableList filters={{}} groupedBy={groupedBy} />
         </Provider>
       </MemoryRouter>
     );
@@ -95,7 +95,7 @@ describe("ModelTableList", () => {
       { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
       { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
     ];
-    const filters = ["cloud:aws"];
+    const filters = { cloud: ["aws"] };
     tables.forEach((table) => {
       render(
         <MemoryRouter>
@@ -127,7 +127,7 @@ describe("ModelTableList", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <ModelTableList filters={[]} groupedBy="" />
+          <ModelTableList filters={{}} groupedBy="" />
         </Provider>
       </MemoryRouter>
     );
@@ -147,7 +147,7 @@ describe("ModelTableList", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <ModelTableList filters={[]} groupedBy="" />
+          <ModelTableList filters={{}} groupedBy="" />
         </Provider>
       </MemoryRouter>
     );
@@ -177,7 +177,7 @@ describe("ModelTableList", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <ModelTableList filters={[]} groupedBy="" />
+          <ModelTableList filters={{}} groupedBy="" />
         </Provider>
       </MemoryRouter>
     );

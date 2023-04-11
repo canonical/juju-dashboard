@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector, useDispatch, useStore } from "react-redux";
+import { useSelector, useStore } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import classNames from "classnames";
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
@@ -7,6 +7,7 @@ import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import useAnalytics from "hooks/useAnalytics";
 import { thunks as appThunks } from "store/app";
 import { extractOwnerName } from "store/juju/utils/models";
+import { useAppDispatch } from "store/store";
 import urls from "urls";
 
 import { actions } from "store/ui";
@@ -16,7 +17,7 @@ import "./_user-menu.scss";
 
 const UserMenu = () => {
   const sendAnalytics = useAnalytics();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const store = useStore();
   const getState = store.getState;
   const activeUser = getActiveUserTag(
@@ -50,7 +51,7 @@ const UserMenu = () => {
             onClick={toggleUserMenuActive}
             onKeyPress={toggleUserMenuActive}
             role="button"
-            tabIndex="0"
+            tabIndex={0}
           >
             <i className="p-icon--user is-light"></i>
             <span className="user-menu__name">

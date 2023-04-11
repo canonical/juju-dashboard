@@ -69,7 +69,7 @@ describe("CloudGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <CloudGroup filters={[]} />
+          <CloudGroup filters={{}} />
         </Provider>
       </MemoryRouter>
     );
@@ -81,7 +81,7 @@ describe("CloudGroup", () => {
     render(
       <MemoryRouter>
         <Provider store={store}>
-          <CloudGroup filters={[]} />
+          <CloudGroup filters={{}} />
         </Provider>
       </MemoryRouter>
     );

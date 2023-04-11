@@ -10,7 +10,7 @@ import jujuText from "static/images/logo/juju-text.svg";
 import "./_logo.scss";
 
 export default function Logo() {
-  const isJuju = useSelector(getConfig).isJuju;
+  const isJuju = useSelector(getConfig)?.isJuju;
 
   return (
     <a href={isJuju ? "https://juju.is" : "https://jaas.ai"} className="logo">
