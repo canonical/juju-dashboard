@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getControllerData, getModelData } from "store/juju/selectors";
 import { AdditionalController, Controller } from "store/juju/types";
+import { isJAASFromPath } from "store/juju/utils/controllers";
 import urls from "urls";
 
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
@@ -104,7 +105,7 @@ function Details() {
 
   function generatePathValue(controllerData: AnnotatedController) {
     const column: MainTableCell = { content: "" };
-    if ("path" in controllerData && controllerData?.path === "admin/jaas") {
+    if (isJAASFromPath(controllerData)) {
       column.content = "JAAS";
     } else if ("path" in controllerData && controllerData.path) {
       column.content = controllerData.path;
@@ -125,7 +126,7 @@ function Details() {
     const access = "Public" in c && c.Public ? "Public" : "Private";
     let columns = [
       generatePathValue(c),
-      { content: cloudRegion },
+      { content: isJAASFromPath(c) ? "Multiple" : cloudRegion },
       { content: c.models },
       { content: c.machines },
       { content: c.applications },

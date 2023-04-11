@@ -74,6 +74,28 @@ describe("Controllers table", () => {
     expect(screen.getAllByRole("row")[1]).toMatchSnapshot();
   });
 
+  it("handles cloud/region for JAAS", () => {
+    state.juju = jujuStateFactory.build({
+      controllers: {
+        "wss://jimm.jujucharms.com/api": [
+          controllerFactory.build({ path: "admin/jaas", uuid: "123" }),
+        ],
+      },
+      models: {},
+    });
+    const store = mockStore(state);
+    render(
+      <MemoryRouter>
+        <Provider store={store}>
+          <ControllersIndex />
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(
+      screen.getByRole("gridcell", { name: "Multiple" })
+    ).toBeInTheDocument();
+  });
+
   it("shows 'Register new controller' panel", () => {
     const store = mockStore(state);
     render(
