@@ -65,7 +65,9 @@ function generateLinkToApp(
   modelName: string
 ) {
   return (
-    <Link to={urls.model.app({ userName, modelName, appName })}>{appName}</Link>
+    <Link to={urls.model.app.index({ userName, modelName, appName })}>
+      {appName}
+    </Link>
   );
 }
 
@@ -326,7 +328,7 @@ export default function ActionLogs() {
                   },
                 ]}
               />
-              {Object.keys(actionFullDetails.output).length > 0 && (
+              {Object.keys(actionFullDetails?.output ?? {}).length > 0 && (
                 <Button
                   onClick={() => setModalDetails(actionFullDetails.output)}
                   data-testid="show-output"

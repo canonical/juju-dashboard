@@ -19,15 +19,15 @@ import {
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { ApplicationData, RelationData, UnitData } from "juju/types";
-import { MouseEvent } from "react";
 import { StatusData } from "store/juju/selectors";
 import { ModelData } from "store/juju/types";
+import { Link } from "react-router-dom";
+import urls from "urls";
 
-export type TableRowClick = (
-  entityType: string,
-  entityId: string,
-  e: MouseEvent
-) => void;
+export type ModelParams = {
+  modelName: string;
+  userName: string;
+};
 
 export type Query = {
   panel?: string | null;
@@ -59,7 +59,7 @@ const generateAddress = (address?: string | null) =>
 export function generateLocalApplicationRows(
   applications: ApplicationData | null,
   applicationStatuses: StatusData | null,
-  tableRowClick: TableRowClick,
+  modelParams: ModelParams,
   query?: Query
 ) {
   if (!applications || !applicationStatuses) {
@@ -86,7 +86,17 @@ export function generateLocalApplicationRows(
       columns: [
         {
           "data-test-column": "name",
-          content: generateEntityIdentifier(app["charm-url"] || "", key, false),
+          content: (
+            <Link
+              to={urls.model.app.index({
+                userName: modelParams.userName,
+                modelName: modelParams.modelName,
+                appName: key.replace("/", "-"),
+              })}
+            >
+              {generateEntityIdentifier(app["charm-url"] || "", key, false)}
+            </Link>
+          ),
           className: "u-truncate",
         },
         {
@@ -128,7 +138,6 @@ export function generateLocalApplicationRows(
         rev,
         notes: "-",
       },
-      onClick: (e: MouseEvent) => tableRowClick("app", key, e),
       "data-app": key,
       className:
         query?.panel === "apps" && query?.entity === key ? "is-selected" : "",
@@ -138,7 +147,7 @@ export function generateLocalApplicationRows(
 
 export function generateRemoteApplicationRows(
   modelStatusData: ModelData | null,
-  tableRowClick: TableRowClick,
+  modelParams: ModelParams,
   query?: Query
 ) {
   if (!modelStatusData) {
@@ -190,8 +199,6 @@ export function generateRemoteApplicationRows(
           store: "store",
         },
         "data-app": key,
-        onClick: (e: MouseEvent) =>
-          false && tableRowClick(key, "remoteApps", e), // DISABLED PANEL
         className:
           query?.panel === "remoteApps" && query?.entity === key
             ? "is-selected"
@@ -201,9 +208,20 @@ export function generateRemoteApplicationRows(
   );
 }
 
+const generateUnitURL = (modelParams: ModelParams, unitId: string) => {
+  const id = unitId.replace("/", "-");
+  const appName = id?.split("-").slice(0, -1).join("-");
+  return urls.model.unit({
+    userName: modelParams.userName,
+    modelName: modelParams.modelName,
+    appName,
+    unitId: id,
+  });
+};
+
 export function generateUnitRows(
   units: UnitData | null,
-  tableRowClick: TableRowClick,
+  modelParams: ModelParams,
   showCheckbox?: boolean,
   hideMachines?: boolean
 ) {
@@ -253,7 +271,11 @@ export function generateUnitRows(
     const charm = unit["charm-url"];
     let columns: MainTableCell[] = [
       {
-        content: generateEntityIdentifier(charm ? charm : "", unitId, false),
+        content: (
+          <Link to={generateUnitURL(modelParams, unitId)}>
+            {generateEntityIdentifier(charm ? charm : "", unitId, false)}
+          </Link>
+        ),
         className: "u-truncate",
       },
       {
@@ -317,7 +339,6 @@ export function generateUnitRows(
         ports,
         message,
       },
-      onClick: (e) => tableRowClick("unit", unitId, e),
       "data-unit": unitId,
     });
 
@@ -329,10 +350,10 @@ export function generateUnitRows(
         const address = subordinate["public-address"];
         let columns: MainTableCell[] = [
           {
-            content: generateEntityIdentifier(
-              subordinate["charm-url"],
-              key,
-              true
+            content: (
+              <Link to={generateUnitURL(modelParams, unitId)}>
+                {generateEntityIdentifier(subordinate["charm-url"], key, true)}
+              </Link>
             ),
             className: "u-truncate",
           },
@@ -376,7 +397,6 @@ export function generateUnitRows(
             ports,
             message,
           },
-          onClick: (e) => tableRowClick("unit", unitId, e),
           "data-unit": unitId,
         });
       }
@@ -389,7 +409,7 @@ export function generateUnitRows(
 export function generateMachineRows(
   machines: ModelData["machines"] | null,
   units: UnitData | null,
-  tableRowClick: TableRowClick,
+  modelParams: ModelParams,
   selectedEntity?: string | null
 ) {
   if (!machines) {
@@ -423,10 +443,16 @@ export function generateMachineRows(
           {
             content: (
               <>
-                <div>
+                <Link
+                  to={urls.model.machine({
+                    userName: modelParams.userName,
+                    modelName: modelParams.modelName,
+                    machineId: machineId.replace("/", "-"),
+                  })}
+                >
                   {machineId}
                   <span className="u-capitalise">. {machine.series}</span>
-                </div>
+                </Link>
                 {machine.dnsName}
               </>
             ),
@@ -472,7 +498,6 @@ export function generateMachineRows(
           instanceId: machine["instance-id"],
           message: machine?.["agent-status"].message,
         },
-        onClick: (e: MouseEvent) => tableRowClick("machine", machineId, e),
         "data-machine": machineId,
         className: selectedEntity === machineId ? "is-selected" : "",
       };
@@ -580,7 +605,6 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
 
 export function generateAppOffersRows(
   modelStatusData: ModelData | null,
-  tableRowClick: TableRowClick,
   query: Query
 ) {
   if (!modelStatusData) {
@@ -622,7 +646,6 @@ export function generateAppOffersRows(
           content: "-", // offer url is not yet available from the API
         },
       ],
-      onClick: (e: MouseEvent) => false && tableRowClick(offerId, "offers", e), // DISABLED PANEL
       "data-app": offerId,
       className:
         query.panel === "offers" && query.entity === offerId

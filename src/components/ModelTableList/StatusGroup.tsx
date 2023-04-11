@@ -92,7 +92,7 @@ const generateWarningMessage = (model: ModelData) => {
           to={
             unitId
               ? urls.model.unit({ userName, modelName, appName, unitId })
-              : urls.model.app({ userName, modelName, appName })
+              : urls.model.app.index({ userName, modelName, appName })
           }
         >
           {message.message}

@@ -113,10 +113,10 @@ describe("Models Index page", () => {
       </Provider>
     );
 
-    expect(screen.getByRole("button", { name: "view by status" })).toHaveClass(
+    expect(screen.getByRole("link", { name: "status" })).toHaveClass(
       "is-selected"
     );
-    const ownerButton = screen.getByRole("button", { name: "view by owner" });
+    const ownerButton = screen.getByRole("link", { name: "owner" });
     await userEvent.click(ownerButton);
     expect(ownerButton).toHaveClass("is-selected");
     const searchParams = new URLSearchParams(window.location.search);

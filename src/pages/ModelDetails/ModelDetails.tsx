@@ -64,7 +64,10 @@ export default function ModelDetails() {
     <Routes>
       <Route path="*" element={<EntityDetails />}>
         <Route path="" element={<Model />} />
-        <Route path={urls.model.app(null, detailsRoute)} element={<App />} />
+        <Route
+          path={urls.model.app.index(null, detailsRoute)}
+          element={<App />}
+        />
         <Route path={urls.model.unit(null, detailsRoute)} element={<Unit />} />
         <Route
           path={urls.model.machine(null, detailsRoute)}

@@ -108,9 +108,7 @@ describe("Entity Details App", () => {
     generateComponent();
     expect(screen.getByTestId(TestId.UNITS_TABLE)).toBeInTheDocument();
     expect(screen.queryByTestId(TestId.MACHINES_TABLE)).not.toBeInTheDocument();
-    await userEvent.click(
-      screen.getByRole("button", { name: "view by machines" })
-    );
+    await userEvent.click(screen.getByRole("link", { name: "machines" }));
     expect(screen.queryByTestId(TestId.UNITS_TABLE)).not.toBeInTheDocument();
     expect(screen.getByTestId(TestId.MACHINES_TABLE)).toBeInTheDocument();
   });

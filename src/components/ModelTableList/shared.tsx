@@ -283,10 +283,13 @@ export function generateAccessButton(
   return (
     <button
       onClick={() => {
-        setPanelQs({
-          model: modelName,
-          panel: "share-model",
-        });
+        setPanelQs(
+          {
+            model: modelName,
+            panel: "share-model",
+          },
+          { replace: true }
+        );
       }}
       className="model-access p-button--neutral is-dense"
     >

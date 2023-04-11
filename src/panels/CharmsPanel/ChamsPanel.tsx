@@ -20,7 +20,10 @@ export default function CharmsPanel() {
   const charms = useSelector(getCharms());
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
-    setQuery({ panel: "charm-actions", charm: selectedCharm });
+    setQuery(
+      { panel: "charm-actions", charm: selectedCharm },
+      { replace: true }
+    );
   };
   return (
     <Aside width="narrow">

@@ -188,7 +188,9 @@ function Details() {
         <div className="controllers--register">
           <button
             className="p-button--positive"
-            onClick={() => setPanelQs({ panel: "register-controller" })}
+            onClick={() =>
+              setPanelQs({ panel: "register-controller" }, { replace: true })
+            }
           >
             Register a controller
           </button>
@@ -223,7 +225,7 @@ export default function ControllersIndex() {
         <div className="entity-details__header">
           <strong className="controllers--count">
             {controllerCount} controllers,{" "}
-            <Link to={urls.models}>{modelCount} models</Link>
+            <Link to={urls.models.index}>{modelCount} models</Link>
           </strong>
         </div>
       </Header>

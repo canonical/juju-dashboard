@@ -167,7 +167,7 @@ export default function CharmActionsPanel(): JSX.Element {
           () => {
             setConfirmType("");
             executeAction();
-            setQueryParams({ panel: null });
+            setQueryParams({ panel: null }, { replace: true });
           },
           () => setConfirmType("")
         );

@@ -1,4 +1,6 @@
 import classNames from "classnames";
+import { ComponentType, ElementType } from "react";
+import { Button, ButtonProps } from "@canonical/react-components";
 
 import "./_button-group.scss";
 
@@ -6,21 +8,21 @@ export enum TestId {
   LABEL = "label",
 }
 
-type Props = {
-  buttons: string[];
+type Props<P = ButtonProps> = {
+  buttons: ({ key: string } & P)[];
+  buttonComponent?: ElementType | ComponentType<P>;
   label?: string;
   noWrap?: boolean;
   activeButton: string;
-  setActiveButton: (value: string) => void;
 };
 
-const ButtonGroup = ({
+const ButtonGroup = <P,>({
   buttons,
+  buttonComponent,
   label,
   noWrap,
   activeButton,
-  setActiveButton,
-}: Props): JSX.Element => {
+}: Props<P>): JSX.Element => {
   return (
     <div className="p-button-group">
       <div className="p-button-group__inner">
@@ -35,18 +37,15 @@ const ButtonGroup = ({
           </span>
         ) : null}
         <div className="p-button-group__buttons">
-          {buttons.map((label) => (
-            <button
-              aria-label={`view by ${label}`}
-              key={label}
+          {buttons.map(({ key, ...buttonProps }, i) => (
+            <Button
+              element={buttonComponent}
+              key={key}
               className={classNames("p-button-group__button", {
-                "is-selected": activeButton === label,
+                "is-selected": activeButton === key,
               })}
-              value={label}
-              onClick={(e) => setActiveButton(e.currentTarget.value)}
-            >
-              {label}
-            </button>
+              {...buttonProps}
+            />
           ))}
         </div>
       </div>

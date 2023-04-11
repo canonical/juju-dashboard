@@ -43,9 +43,9 @@ export function Routes() {
 
   return (
     <ReactRouterRoutes>
-      <Route path={urls.index} element={<Navigate to={urls.models} />} />
+      <Route path={urls.index} element={<Navigate to={urls.models.index} />} />
       <Route
-        path={urls.models}
+        path={urls.models.index}
         element={
           <Login>
             <ModelsIndex />

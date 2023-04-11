@@ -23,3 +23,11 @@ td {
     margin: -$input-border-thickness 0 0;
   }
 }
+
+%row-hover {
+  @include desktop {
+    tbody tr:hover {
+      box-shadow: $box-shadow;
+    }
+  }
+}

@@ -2,7 +2,7 @@ import { Button, MainTable, Icon } from "@canonical/react-components";
 import { Field, Formik } from "formik";
 import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import ChipGroup from "components/ChipGroup/ChipGroup";
@@ -10,7 +10,6 @@ import EntityInfo from "components/EntityInfo/EntityInfo";
 import FormikFormData from "components/FormikFormData/FormikFormData";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 
-import useTableRowClick from "hooks/useTableRowClick";
 import { useQueryParams } from "hooks/useQueryParams";
 
 import { extractRevisionNumber } from "store/juju/utils/models";
@@ -32,7 +31,7 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-import urls from "urls";
+import urls, { AppTab } from "urls";
 import type { MachineData, UnitData } from "juju/types";
 
 import { generateMachineCounts, generateUnitCounts } from "../counts";
@@ -55,7 +54,6 @@ type FormData = {
 };
 
 export default function App(): JSX.Element {
-  const navigate = useNavigate();
   const {
     appName: entity,
     userName,
@@ -76,8 +74,6 @@ export default function App(): JSX.Element {
   const machines = useSelector(getModelMachines(modelUUID));
   const modelData = useSelector(getModelInfo(modelUUID));
 
-  const tableRowClick = useTableRowClick();
-
   const filteredMachineList = useMemo(() => {
     const filteredMachines: MachineData = {};
     if (!units || !machines) {
@@ -95,8 +91,14 @@ export default function App(): JSX.Element {
   }, [units, machines, entity]);
 
   const machinesPanelRows = useMemo(
-    () => generateMachineRows(filteredMachineList, units, tableRowClick),
-    [filteredMachineList, units, tableRowClick]
+    () =>
+      modelName && userName
+        ? generateMachineRows(filteredMachineList, units, {
+            modelName,
+            userName,
+          })
+        : [],
+    [filteredMachineList, units, modelName, userName]
   );
 
   const hideMachines = modelData?.type === "kubernetes";
@@ -144,8 +146,16 @@ export default function App(): JSX.Element {
   }, [units, entity]);
 
   const unitPanelRows = useMemo(
-    () => generateUnitRows(filteredUnitList, tableRowClick, true, hideMachines),
-    [filteredUnitList, tableRowClick, hideMachines]
+    () =>
+      modelName && userName
+        ? generateUnitRows(
+            filteredUnitList,
+            { modelName, userName },
+            true,
+            hideMachines
+          )
+        : [],
+    [filteredUnitList, modelName, userName, hideMachines]
   );
 
   const [query, setQuery] = useQueryParams<{
@@ -163,7 +173,7 @@ export default function App(): JSX.Element {
   });
 
   const showConfig = () => {
-    setQuery({ panel: "config", entity: entity });
+    setQuery({ panel: "config", entity: entity }, { replace: true });
   };
 
   const application = entity ? applications?.[entity] : null;
@@ -191,13 +201,10 @@ export default function App(): JSX.Element {
   );
 
   const showActions = () => {
-    setQuery({ panel: "execute-action", units: selectedUnits.current });
-  };
-
-  const navigateActionLogs = () => {
-    if (userName && modelName) {
-      navigate(urls.model.tab({ userName, modelName, tab: "action-logs" }));
-    }
+    setQuery(
+      { panel: "execute-action", units: selectedUnits.current },
+      { replace: true }
+    );
   };
 
   const onFormChange = (formData: FormData) => {
@@ -275,9 +282,21 @@ export default function App(): JSX.Element {
       <div className="entity-details__main u-overflow--auto">
         {!hideMachines && (
           <ButtonGroup
-            buttons={["units", "machines"]}
+            buttons={["units", "machines"].map((tab) => ({
+              children: tab,
+              key: tab,
+              to:
+                userName && modelName && entity
+                  ? urls.model.app.tab({
+                      userName,
+                      modelName,
+                      appName: entity,
+                      tab: tab as AppTab,
+                    })
+                  : "",
+            }))}
+            buttonComponent={Link}
             activeButton={query.tableView}
-            setActiveButton={(tableView) => setQuery({ tableView })}
           />
         )}
         <div className="entity-details__tables" ref={tablesRef}>
@@ -298,11 +317,20 @@ export default function App(): JSX.Element {
                 </Button>
                 <span className="entity-details__action-button-divider"></span>
                 <Button
+                  element={Link}
                   appearance="base"
                   className="entity-details__action-button"
                   hasIcon={true}
-                  onClick={navigateActionLogs}
                   data-testid={TestId.SHOW_ACTION_LOGS}
+                  to={
+                    userName && modelName
+                      ? urls.model.tab({
+                          userName,
+                          modelName,
+                          tab: "action-logs",
+                        })
+                      : ""
+                  }
                 >
                   <Icon name="action-logs" />
                   <span>View Action Logs</span>

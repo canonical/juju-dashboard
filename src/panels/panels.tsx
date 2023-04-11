@@ -29,7 +29,8 @@ export default function Panels() {
 
   useListener(
     window,
-    (e: KeyboardEvent) => close.onEscape(e, () => setPanelQs(null)),
+    (e: KeyboardEvent) =>
+      close.onEscape(e, () => setPanelQs(null, { replace: true })),
     "keydown"
   );
 
