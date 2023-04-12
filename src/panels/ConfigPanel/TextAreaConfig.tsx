@@ -1,5 +1,7 @@
 import { useRef } from "react";
-import ConfigField, { ConfigProps } from "./ConfigField";
+
+import type { ConfigProps } from "./ConfigField";
+import ConfigField from "./ConfigField";
 
 export default function TextAreaConfig({
   config,

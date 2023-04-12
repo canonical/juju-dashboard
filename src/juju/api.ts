@@ -1,34 +1,32 @@
-import {
+import type {
   ConnectOptions,
   Credentials,
   Client as JujuClient,
-  connect,
-  connectAndLogin,
 } from "@canonical/jujulib";
-import {
+import { connect, connectAndLogin } from "@canonical/jujulib";
+import Action from "@canonical/jujulib/dist/api/facades/action";
+import type {
   AdditionalProperties as ActionAdditionalProperties,
   Entities,
   OperationQueryArgs,
 } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
-import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
-import Limiter from "async-limiter";
-import { Dispatch } from "redux";
-
-import Action from "@canonical/jujulib/dist/api/facades/action";
 import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
 import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
 import Application from "@canonical/jujulib/dist/api/facades/application";
-import { ErrorResults } from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
+import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
 import Charms from "@canonical/jujulib/dist/api/facades/charms";
+import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
 import Client from "@canonical/jujulib/dist/api/facades/client";
 import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
+import type { ModelInfoResults as JujuModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
+import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
+import type { ValueOf } from "@canonical/react-components";
+import Limiter from "async-limiter";
+import type { Dispatch } from "redux";
 
-import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
-import { ModelInfoResults as JujuModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import { ValueOf } from "@canonical/react-components";
 import { isSet } from "components/utils";
 import bakery from "juju/bakery";
 import JIMMV2 from "juju/jimm-facade";
@@ -39,14 +37,16 @@ import {
   getWSControllerURL,
   isLoggedIn,
 } from "store/general/selectors";
-import { Credential } from "store/general/types";
+import type { Credential } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
-import { Controller as JujuController } from "store/juju/types";
-import { RootState, Store } from "store/store";
-import { TSFixMe } from "types";
+import type { Controller as JujuController } from "store/juju/types";
+import type { RootState, Store } from "store/store";
+import type { TSFixMe } from "types";
+
 import { getModelByUUID } from "../store/juju/selectors";
-import {
+
+import type {
   ApplicationInfo,
   ConnectionWithFacades,
   Facades,

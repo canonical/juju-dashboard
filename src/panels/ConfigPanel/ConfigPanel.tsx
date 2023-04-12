@@ -1,39 +1,32 @@
-import classnames from "classnames";
-import cloneDeep from "clone-deep";
-import {
-  Config,
-  ConfigData,
-  getApplicationConfig,
-  setApplicationConfig,
-} from "juju/api";
-import { ReactNode, useEffect, useRef, useState } from "react";
-import type { Store } from "redux";
-
 import {
   Notification,
   Spinner,
   useListener,
 } from "@canonical/react-components";
+import classnames from "classnames";
+import cloneDeep from "clone-deep";
+import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { Store } from "redux";
 
 import FadeIn from "animations/FadeIn";
-import { generateIconImg, isSet } from "components/utils";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import ScrollOnRender from "components/ScrollOnRender";
 import SlidePanel from "components/SlidePanel/SlidePanel";
-
+import { generateIconImg, isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
-
+import type { Config, ConfigData } from "juju/api";
+import type { ConfigValue } from "juju/api";
+import { getApplicationConfig, setApplicationConfig } from "juju/api";
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
 import { useAppStore } from "store/store";
 
 import BooleanConfig from "./BooleanConfig";
-import TextAreaConfig from "./TextAreaConfig";
-
-import "./_config-panel.scss";
-import { SetNewValue, SetSelectedConfig } from "./ConfigField";
+import type { SetNewValue, SetSelectedConfig } from "./ConfigField";
 import NumberConfig from "./NumberConfig";
-import { ConfigValue } from "../../juju/api";
+import "./_config-panel.scss";
+import TextAreaConfig from "./TextAreaConfig";
 
 export enum Label {
   NONE = "This application doesn't have any configuration parameters",

@@ -1,12 +1,13 @@
 import classNames from "classnames";
 import { parseISO, formatDistanceToNow } from "date-fns";
-import { ImgHTMLAttributes, useState } from "react";
+import type { ImgHTMLAttributes } from "react";
+import { useState } from "react";
 
 import TruncatedTooltip from "components/TruncatedTooltip";
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { generateIconPath } from "store/juju/utils/models";
 
-import { ModelData } from "../juju/types";
+import type { ModelData } from "../juju/types";
 
 export function generateEntityIdentifier(
   charmId: string,

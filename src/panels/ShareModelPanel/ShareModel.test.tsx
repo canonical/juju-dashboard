@@ -1,13 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-
-import { actions as appActions } from "store/app";
+import configureStore from "redux-mock-store";
 
 import { Label } from "components/ShareCard/ShareCard";
-import { RootState } from "store/store";
+import { actions as appActions } from "store/app";
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
   jujuStateFactory,

@@ -3,21 +3,10 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import {
-  generateLocalApplicationTableHeaders,
-  machineTableHeaders,
-} from "tables/tableHeaders";
-
-import {
-  generateLocalApplicationRows,
-  generateMachineRows,
-} from "tables/tableRows";
-
-import { extractRevisionNumber } from "store/juju/utils/models";
-
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import InfoPanel from "components/InfoPanel/InfoPanel";
-
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { ApplicationData, MachineData } from "juju/types";
 import {
   getAllModelApplicationStatus,
   getModelApplications,
@@ -26,9 +15,15 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-
-import type { EntityDetailsRoute } from "components/Routes/Routes";
-import type { ApplicationData, MachineData } from "juju/types";
+import { extractRevisionNumber } from "store/juju/utils/models";
+import {
+  generateLocalApplicationTableHeaders,
+  machineTableHeaders,
+} from "tables/tableHeaders";
+import {
+  generateLocalApplicationRows,
+  generateMachineRows,
+} from "tables/tableRows";
 
 export default function Unit() {
   const { modelName, userName, unitId } = useParams<EntityDetailsRoute>();

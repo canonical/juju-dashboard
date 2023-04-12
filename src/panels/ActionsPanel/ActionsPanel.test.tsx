@@ -1,22 +1,20 @@
-import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
+import type { InitialEntry } from "@remix-run/router";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import configureStore from "redux-mock-store";
 
-import { InitialEntry } from "@remix-run/router";
 import * as juju from "juju/api";
-
+import { executeActionOnUnits } from "juju/api";
+import type { RootState } from "store/store";
+import { rootStateFactory } from "testing/factories";
 import {
   applicationCharmActionsResultFactory,
   applicationsCharmActionsResultsFactory,
   applicationCharmActionFactory,
   applicationCharmActionParamsFactory,
 } from "testing/factories/juju/ActionV7";
-
-import { executeActionOnUnits } from "juju/api";
-import { RootState } from "store/store";
-import { rootStateFactory } from "testing/factories";
 import {
   jujuStateFactory,
   modelDataFactory,

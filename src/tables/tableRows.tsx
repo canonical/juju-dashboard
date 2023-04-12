@@ -1,12 +1,15 @@
+import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import { Button, Icon } from "@canonical/react-components";
+import type {
+  MainTableCell,
+  MainTableRow,
+} from "@canonical/react-components/dist/components/MainTable/MainTable";
 import cloneDeep from "clone-deep";
 import { Field } from "formik";
 import { Anchorme } from "react-anchorme";
+import { Link } from "react-router-dom";
 
-import { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import {
-  extractRevisionNumber,
-  extractRelationEndpoints,
-} from "store/juju/utils/models";
+import TruncatedTooltip from "components/TruncatedTooltip";
 import {
   generateEntityIdentifier,
   generateRelationIconImage,
@@ -14,17 +17,14 @@ import {
   generateIconImg,
   copyToClipboard,
 } from "components/utils";
-import { Button, Icon } from "@canonical/react-components";
+import type { ApplicationData, RelationData, UnitData } from "juju/types";
+import type { StatusData } from "store/juju/selectors";
+import type { ModelData } from "store/juju/types";
 import {
-  MainTableCell,
-  MainTableRow,
-} from "@canonical/react-components/dist/components/MainTable/MainTable";
-import { ApplicationData, RelationData, UnitData } from "juju/types";
-import { StatusData } from "store/juju/selectors";
-import { ModelData } from "store/juju/types";
-import { Link } from "react-router-dom";
+  extractRevisionNumber,
+  extractRelationEndpoints,
+} from "store/juju/utils/models";
 import urls from "urls";
-import TruncatedTooltip from "components/TruncatedTooltip";
 
 export type ModelParams = {
   modelName: string;

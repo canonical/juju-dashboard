@@ -1,6 +1,7 @@
+import type { ButtonProps } from "@canonical/react-components";
+import { Button } from "@canonical/react-components";
 import classNames from "classnames";
-import { ComponentType, ElementType } from "react";
-import { Button, ButtonProps } from "@canonical/react-components";
+import type { ComponentType, ElementType } from "react";
 
 import "./_button-group.scss";
 

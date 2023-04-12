@@ -1,6 +1,6 @@
-import { AdditionalProperties } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import cloneDeep from "clone-deep";
+import type { AdditionalProperties } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { createSelector } from "@reduxjs/toolkit";
+import cloneDeep from "clone-deep";
 
 import type {
   AnnotationData,
@@ -14,7 +14,7 @@ import {
   getActiveUserTag,
   getActiveUserControllerAccess,
 } from "store/general/selectors";
-import { RootState } from "store/store";
+import type { RootState } from "store/store";
 
 import type {
   Controllers,
@@ -22,11 +22,11 @@ import type {
   ModelDataList,
   ModelsList,
 } from "./types";
+import type { Filters } from "./utils/models";
 import {
   extractCloudName,
   extractCredentialName,
   extractOwnerName,
-  Filters,
   getApplicationStatusGroup,
   getMachineStatusGroup,
   getUnitStatusGroup,

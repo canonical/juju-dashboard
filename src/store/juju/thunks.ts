@@ -1,10 +1,10 @@
+import type { ModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import cloneDeep from "clone-deep";
 
 import { actions as jujuActions } from "store/juju";
-import { RootState } from "store/store";
 import { checkLoggedIn } from "store/middleware/check-auth";
-import cloneDeep from "clone-deep";
+import type { RootState } from "store/store";
 
 /**
   Updates the correct controller entry with a cloud and region fetched from

@@ -1,9 +1,29 @@
 import { Button, MainTable, Icon } from "@canonical/react-components";
+import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import classnames from "classnames";
 import Fuse from "fuse.js";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
+import ChipGroup from "components/ChipGroup/ChipGroup";
+import type { Chip } from "components/ChipGroup/ChipGroup";
+import ContentReveal from "components/ContentReveal/ContentReveal";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import useAnalytics from "hooks/useAnalytics";
+import useModelStatus from "hooks/useModelStatus";
+import { useQueryParams } from "hooks/useQueryParams";
+import { getCharmsFromApplications } from "juju/api";
+import type { ApplicationData, ApplicationInfo } from "juju/types";
+import {
+  getAllModelApplicationStatus,
+  getModelApplications,
+  getModelUUIDFromList,
+  getSelectedApplications,
+} from "store/juju/selectors";
+import type { ModelData } from "store/juju/types";
+import { pluralize } from "store/juju/utils/models";
+import { useAppStore } from "store/store";
 import {
   appsOffersTableHeaders,
   generateLocalApplicationTableHeaders,
@@ -15,29 +35,8 @@ import {
   generateRemoteApplicationRows,
 } from "tables/tableRows";
 
-import ContentReveal from "components/ContentReveal/ContentReveal";
-
-import ChipGroup, { Chip } from "components/ChipGroup/ChipGroup";
-
-import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import classnames from "classnames";
-import { EntityDetailsRoute } from "components/Routes/Routes";
-import useAnalytics from "hooks/useAnalytics";
-import useModelStatus from "hooks/useModelStatus";
-import { useQueryParams } from "hooks/useQueryParams";
-import { getCharmsFromApplications } from "juju/api";
-import { ApplicationData, ApplicationInfo } from "juju/types";
-import {
-  getAllModelApplicationStatus,
-  getModelApplications,
-  getModelUUIDFromList,
-  getSelectedApplications,
-} from "store/juju/selectors";
-import { ModelData } from "store/juju/types";
-import { pluralize } from "store/juju/utils/models";
-import { useAppStore } from "store/store";
-
 import { renderCounts } from "../../counts";
+
 import {
   addSelectAllColumn,
   addSelectColumn,

@@ -1,13 +1,8 @@
-import { Tooltip, TooltipProps } from "@canonical/react-components";
+import type { TooltipProps } from "@canonical/react-components";
+import { Tooltip } from "@canonical/react-components";
 import classNames from "classnames";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-  PropsWithChildren,
-} from "react";
+import type { PropsWithChildren } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 
 import "./_truncated-tooltip.scss";
 

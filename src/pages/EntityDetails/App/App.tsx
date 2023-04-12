@@ -8,22 +8,12 @@ import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import FormikFormData from "components/FormikFormData/FormikFormData";
-import InfoPanel from "components/InfoPanel/InfoPanel";
-
-import { useQueryParams } from "hooks/useQueryParams";
-
-import { extractRevisionNumber } from "store/juju/utils/models";
-import { generateStatusElement } from "components/utils";
-
 import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
+import InfoPanel from "components/InfoPanel/InfoPanel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-
-import {
-  generateSelectableUnitTableHeaders,
-  machineTableHeaders,
-} from "tables/tableHeaders";
-import { generateMachineRows, generateUnitRows } from "tables/tableRows";
-
+import { generateStatusElement } from "components/utils";
+import { useQueryParams } from "hooks/useQueryParams";
+import type { MachineData, UnitData } from "juju/types";
 import {
   getModelApplications,
   getModelInfo,
@@ -31,8 +21,14 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-import urls, { AppTab } from "urls";
-import type { MachineData, UnitData } from "juju/types";
+import { extractRevisionNumber } from "store/juju/utils/models";
+import {
+  generateSelectableUnitTableHeaders,
+  machineTableHeaders,
+} from "tables/tableHeaders";
+import { generateMachineRows, generateUnitRows } from "tables/tableRows";
+import type { AppTab } from "urls";
+import urls from "urls";
 
 import { generateMachineCounts, generateUnitCounts } from "../counts";
 

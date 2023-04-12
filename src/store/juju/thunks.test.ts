@@ -8,9 +8,10 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import { addControllerCloudRegion } from "./thunks";
-import { actions } from "./slice";
 import { controllerLocationFactory } from "../../testing/factories/juju/juju";
+
+import { actions } from "./slice";
+import { addControllerCloudRegion } from "./thunks";
 
 // Prevent setting up the bakery instance.
 jest.mock("juju/bakery");

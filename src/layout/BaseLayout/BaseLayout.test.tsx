@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import { Provider } from "react-redux";
 import {
   BrowserRouter as Router,
   MemoryRouter,
@@ -6,10 +7,9 @@ import {
   Routes,
 } from "react-router-dom";
 import configureStore from "redux-mock-store";
-import { Provider } from "react-redux";
 
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories/root";
-import { RootState } from "store/store";
 
 import BaseLayout from "./BaseLayout";
 

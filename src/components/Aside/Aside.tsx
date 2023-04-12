@@ -1,7 +1,7 @@
-import SlideInOut from "animations/SlideInOut";
+import { Spinner } from "@canonical/react-components";
 import classnames from "classnames";
 
-import { Spinner } from "@canonical/react-components";
+import SlideInOut from "animations/SlideInOut";
 
 import "./_aside.scss";
 

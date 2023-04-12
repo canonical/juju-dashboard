@@ -1,8 +1,9 @@
 import { renderHook } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { Route, Routes, MemoryRouter } from "react-router-dom";
-import { rootStateFactory } from "testing/factories";
 import configureStore from "redux-mock-store";
+
+import { rootStateFactory } from "testing/factories";
 
 import { useEntityDetailsParams } from "./hooks";
 

@@ -1,8 +1,8 @@
-import { Filters } from "store/juju/utils/models";
+import type { Filters } from "store/juju/utils/models";
 
-import StatusGroup from "./StatusGroup";
 import CloudGroup from "./CloudGroup";
 import OwnerGroup from "./OwnerGroup";
+import StatusGroup from "./StatusGroup";
 
 import "./_model-table-list.scss";
 

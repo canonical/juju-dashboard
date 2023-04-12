@@ -1,9 +1,9 @@
-import { MemoryRouter } from "react-router";
 import { render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
+import { MemoryRouter } from "react-router";
 import configureStore from "redux-mock-store";
 
-import { rootStateFactory } from "testing/factories/root";
+import type { RootState } from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import {
   modelDataInfoFactory,
@@ -13,7 +13,7 @@ import {
   modelUserInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
-import { RootState } from "store/store";
+import { rootStateFactory } from "testing/factories/root";
 
 import OwnerGroup from "./OwnerGroup";
 

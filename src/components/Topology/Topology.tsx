@@ -1,14 +1,14 @@
-import { useRef, useEffect, memo } from "react";
 import * as d3 from "d3";
+import { useRef, useEffect, memo } from "react";
 
-import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
-import { generateIconPath } from "store/juju/utils/models";
-import {
+import type {
   AnnotationData,
   ApplicationData,
   ApplicationInfo,
   RelationData,
 } from "juju/types";
+import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
+import { generateIconPath } from "store/juju/utils/models";
 
 type Props = {
   annotations: AnnotationData | null;

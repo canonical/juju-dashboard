@@ -1,27 +1,28 @@
-import { ReactNode } from "react";
 import { SearchAndFilter, Spinner } from "@canonical/react-components";
-import { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
+import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
+import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
+import FadeIn from "animations/FadeIn";
 import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
-import FadeIn from "animations/FadeIn";
-import { pluralize } from "store/juju/utils/models";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 import {
   getGroupedModelStatusCounts,
   getModelData,
   getModelListLoaded,
   hasModels,
 } from "store/juju/selectors";
+import { pluralize } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
-import { Link } from "react-router-dom";
-import urls, { ModelsGroupedBy } from "urls";
+import type { ModelsGroupedBy } from "urls";
+import urls from "urls";
 
 import "./_models.scss";
 

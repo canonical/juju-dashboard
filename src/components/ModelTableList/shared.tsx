@@ -1,19 +1,19 @@
 import { Icon, Tooltip } from "@canonical/react-components";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
+import type { SetParams } from "hooks/useQueryParams";
 import awsLogo from "static/images/logo/cloud/aws.svg";
 import azureLogo from "static/images/logo/cloud/azure.svg";
 import gceLogo from "static/images/logo/cloud/gce.svg";
 import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
-import { Controllers, ModelData } from "store/juju/types";
-
+import type { Controllers, ModelData } from "store/juju/types";
 import {
   extractCloudName,
   extractCredentialName,
 } from "store/juju/utils/models";
-import { SetParams } from "hooks/useQueryParams";
-import urls, { ModelTab } from "urls";
+import type { ModelTab } from "urls";
+import urls from "urls";
 
 export const JAAS_CONTROLLER_UUID = "a030379a-940f-4760-8fcf-3062b41a04e7";
 

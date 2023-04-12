@@ -1,8 +1,5 @@
-import {
-  updatePermissions,
-  connectAndPollControllers,
-  ControllerArgs,
-} from "./actions";
+import type { ControllerArgs } from "./actions";
+import { updatePermissions, connectAndPollControllers } from "./actions";
 
 describe("actions", () => {
   it("updatePermissions", () => {

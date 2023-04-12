@@ -1,25 +1,25 @@
+import { List, MainTable, Tooltip } from "@canonical/react-components";
+import type { ListItem } from "@canonical/react-components/dist/components/List/List";
+import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { List, MainTable, Tooltip } from "@canonical/react-components";
-import { ListItem } from "@canonical/react-components/dist/components/List/List";
-import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 
-import { useQueryParams, SetParams } from "hooks/useQueryParams";
-import {
-  getModelStatusGroupData,
-  extractOwnerName,
-  canAdministerModelAccess,
-  Filters,
-  Status,
-} from "store/juju/utils/models";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { generateStatusElement } from "components/utils";
+import { useQueryParams } from "hooks/useQueryParams";
+import type { SetParams } from "hooks/useQueryParams";
 import {
   getActiveUsers,
   getControllerData,
   getGroupedByStatusAndFilteredModelData,
 } from "store/juju/selectors";
-import { Controllers, ModelData } from "store/juju/types";
+import type { Controllers, ModelData } from "store/juju/types";
+import {
+  getModelStatusGroupData,
+  extractOwnerName,
+  canAdministerModelAccess,
+} from "store/juju/utils/models";
+import type { Filters, Status } from "store/juju/utils/models";
 import urls from "urls";
 
 import {

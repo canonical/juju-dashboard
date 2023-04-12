@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { UIState } from "./types";
+import type { UIState } from "./types";
 
 const slice = createSlice({
   name: "ui",

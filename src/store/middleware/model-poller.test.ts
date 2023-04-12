@@ -1,11 +1,11 @@
-import { Client, Connection, Transport } from "@canonical/jujulib";
-import { AnyAction, MiddlewareAPI } from "redux";
+import type { Client, Connection, Transport } from "@canonical/jujulib";
+import type { AnyAction, MiddlewareAPI } from "redux";
 
 import * as jujuModule from "juju/api";
-import { actions as jujuActions } from "store/juju";
 import { actions as appActions, thunks as appThunks } from "store/app";
-import { ControllerArgs } from "store/app/actions";
+import type { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
+import { actions as jujuActions } from "store/juju";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import {
@@ -13,7 +13,7 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import { modelPollerMiddleware, LoginError } from "./model-poller";
+import { LoginError, modelPollerMiddleware } from "./model-poller";
 
 jest.mock("juju/api", () => ({
   disableControllerUUIDMasking: jest

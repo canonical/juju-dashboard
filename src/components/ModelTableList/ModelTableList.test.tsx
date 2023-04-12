@@ -1,10 +1,11 @@
-import { MemoryRouter } from "react-router";
-import { render, RenderResult, screen, within } from "@testing-library/react";
+import type { RenderResult } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
+import { MemoryRouter } from "react-router";
 import configureStore from "redux-mock-store";
 
 import * as appSelectors from "store/juju/selectors";
-import { RootState } from "store/store";
+import type { RootState } from "store/store";
 import {
   controllerFactory,
   jujuStateFactory,
@@ -12,8 +13,8 @@ import {
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 
-import ModelTableList from "./ModelTableList";
 import { TestId as CloudTestId } from "./CloudGroup";
+import ModelTableList from "./ModelTableList";
 import { TestId as OwnerTestId } from "./OwnerGroup";
 import { TestId as StatusTestId } from "./StatusGroup";
 import { JAAS_CONTROLLER_UUID } from "./shared";

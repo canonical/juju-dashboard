@@ -5,6 +5,11 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
 import * as juju from "juju/api";
+import ActionLogs, {
+  Label,
+} from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
+import type { RootState } from "store/store";
+import { rootStateFactory } from "testing/factories";
 import {
   actionFactory,
   actionMessageFactory,
@@ -13,12 +18,6 @@ import {
   operationResultFactory,
   operationResultsFactory,
 } from "testing/factories/juju/ActionV7";
-
-import ActionLogs, {
-  Label,
-} from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
-import { RootState } from "store/store";
-import { rootStateFactory } from "testing/factories";
 import {
   jujuStateFactory,
   modelDataFactory,

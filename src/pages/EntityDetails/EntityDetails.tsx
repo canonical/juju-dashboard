@@ -1,22 +1,25 @@
-import { useEffect, useState, ReactNode, useRef, MouseEvent } from "react";
-import classNames from "classnames";
 import { Spinner, Tabs } from "@canonical/react-components";
+import classNames from "classnames";
+import type { ReactNode, MouseEvent } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector, useStore } from "react-redux";
 import { useParams, Link, Outlet } from "react-router-dom";
 
-import { useQueryParams } from "hooks/useQueryParams";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
-
+import FadeIn from "animations/FadeIn";
 import Breadcrumb from "components/Breadcrumb/Breadcrumb";
 import Header from "components/Header/Header";
+import NotFound from "components/NotFound/NotFound";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import SearchBox from "components/SearchBox/SearchBox";
 import SlidePanel from "components/SlidePanel/SlidePanel";
 import WebCLI from "components/WebCLI/WebCLI";
-import NotFound from "components/NotFound/NotFound";
-
+import { useEntityDetailsParams } from "components/hooks";
+import { useQueryParams } from "hooks/useQueryParams";
+import useWindowTitle from "hooks/useWindowTitle";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
 import OffersPanel from "panels/OffersPanel/OffersPanel";
 import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
-
 import { getUserPass } from "store/general/selectors";
 import {
   getControllerDataByUUID,
@@ -26,12 +29,6 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
-import useWindowTitle from "hooks/useWindowTitle";
-
-import FadeIn from "animations/FadeIn";
-import { useEntityDetailsParams } from "components/hooks";
-import { EntityDetailsRoute } from "components/Routes/Routes";
-import SearchBox from "components/SearchBox/SearchBox";
 import urls from "urls";
 
 import "./_entity-details.scss";

@@ -1,6 +1,7 @@
-import { ConnectionInfo, Transport } from "@canonical/jujulib";
+import type { ConnectionInfo, Transport } from "@canonical/jujulib";
 import { autoBind } from "@canonical/jujulib/dist/api/utils";
-import { Controller } from "../store/juju/types";
+
+import type { Controller } from "store/juju/types";
 
 /**
   pinger describes a resource that can be pinged and stopped.

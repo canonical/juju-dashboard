@@ -3,13 +3,14 @@
   has been allowed.
 */
 
-import { Middleware } from "redux";
+import type { Middleware } from "redux";
+
 import { actions as appActions, thunks as appThunks } from "store/app";
-import { addControllerCloudRegion } from "store/juju/thunks";
 import { actions as generalActions } from "store/general";
 import { isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
-import { RootState, Store } from "store/store";
+import { addControllerCloudRegion } from "store/juju/thunks";
+import type { RootState, Store } from "store/store";
 import { actions as uiActions } from "store/ui";
 
 function error(name: string, wsControllerURL: string) {

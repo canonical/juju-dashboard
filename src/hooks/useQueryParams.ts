@@ -1,5 +1,6 @@
 import { useCallback } from "react";
-import { NavigateOptions, useSearchParams } from "react-router-dom";
+import type { NavigateOptions } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export type SetParams<P> = (
   params?: Partial<P> | null,

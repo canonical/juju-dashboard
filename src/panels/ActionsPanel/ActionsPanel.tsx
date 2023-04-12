@@ -1,28 +1,22 @@
 import { Button } from "@canonical/react-components";
-import { getModelUUID } from "store/juju/selectors";
-import { pluralize } from "store/juju/utils/models";
-import { generateIconImg } from "components/utils";
-import { executeActionOnUnits, getActionsForApplication } from "juju/api";
-import {
-  MutableRefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import type { MutableRefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-
-import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import Aside from "components/Aside/Aside";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import { generateIconImg } from "components/utils";
 import { useQueryParams } from "hooks/useQueryParams";
-import { RootState, useAppStore } from "store/store";
+import { executeActionOnUnits, getActionsForApplication } from "juju/api";
+import { getModelUUID } from "store/juju/selectors";
+import { pluralize } from "store/juju/utils/models";
+import type { RootState } from "store/store";
+import { useAppStore } from "store/store";
 
 import ActionOptions from "./ActionOptions";
 

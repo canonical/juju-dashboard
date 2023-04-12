@@ -1,9 +1,9 @@
+import type { ModelDataList } from "store/juju/types";
 import {
   extractCloudName,
   extractOwnerName,
   extractCredentialName,
 } from "store/juju/utils/models";
-import { ModelDataList } from "store/juju/types";
 
 export default function useModelAttributes(modelData: ModelDataList | null) {
   const clouds: string[] = [];

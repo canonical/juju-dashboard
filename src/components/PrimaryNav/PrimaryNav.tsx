@@ -1,17 +1,18 @@
 import { dashboardUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import { Icon, StatusLabel, Tooltip } from "@canonical/react-components";
 import classNames from "classnames";
-import Logo from "components/Logo/Logo";
-import UserMenu from "components/UserMenu/UserMenu";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+
+import Logo from "components/Logo/Logo";
+import UserMenu from "components/UserMenu/UserMenu";
 import { getAppVersion } from "store/general/selectors";
 import {
   getControllerData,
   getGroupedModelStatusCounts,
 } from "store/juju/selectors";
-import { Controllers } from "store/juju/types";
+import type { Controllers } from "store/juju/types";
 import urls from "urls";
 import "./_primary-nav.scss";
 

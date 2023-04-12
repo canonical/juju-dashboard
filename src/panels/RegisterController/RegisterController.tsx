@@ -1,16 +1,16 @@
 import classNames from "classnames";
-import { ChangeEvent, FormEventHandler, useState } from "react";
+import type { ChangeEvent, FormEventHandler } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import useLocalStorage from "hooks/useLocalStorage";
-import { thunks as appThunks } from "store/app";
 
 import Aside from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
+import useLocalStorage from "hooks/useLocalStorage";
+import { thunks as appThunks } from "store/app";
 import { useAppDispatch } from "store/store";
 import urls from "urls";
 
-import { ControllerArgs } from "../../store/app/actions";
+import type { ControllerArgs } from "../../store/app/actions";
 import "./register-controller.scss";
 
 type FormValues = {

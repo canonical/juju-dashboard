@@ -1,4 +1,4 @@
-import { ConnectionInfo } from "@canonical/jujulib";
+import type { ConnectionInfo } from "@canonical/jujulib";
 
 export type Config = {
   controllerAPIEndpoint: string;

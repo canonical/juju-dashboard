@@ -1,11 +1,12 @@
-import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import useAnalytics from "hooks/useAnalytics";
-import { ApplicationData, ApplicationInfo } from "juju/types";
+import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import useAnalytics from "hooks/useAnalytics";
+import type { ApplicationData, ApplicationInfo } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 import { getSelectedApplications } from "store/juju/selectors";
-import { Header } from "tables/tableHeaders";
+import type { Header } from "tables/tableHeaders";
 
 export const useTableSelect = (applications: ApplicationInfo[]) => {
   const selectedApplications = useRef<ApplicationInfo[]>([]);

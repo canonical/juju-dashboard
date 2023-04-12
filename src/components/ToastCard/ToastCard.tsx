@@ -1,8 +1,5 @@
-import reactHotToast, {
-  Renderable,
-  Toast,
-  ValueOrFunction,
-} from "react-hot-toast";
+import type { Renderable, Toast, ValueOrFunction } from "react-hot-toast";
+import reactHotToast from "react-hot-toast";
 
 import "./_toast-card.scss";
 

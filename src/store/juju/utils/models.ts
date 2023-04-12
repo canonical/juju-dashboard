@@ -1,7 +1,9 @@
+import type { ModelUserInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { Endpoint } from "@canonical/jujulib/dist/api/facades/uniter/UniterV18";
+
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
-import { Endpoint } from "@canonical/jujulib/dist/api/facades/uniter/UniterV18";
-import { ModelUserInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import { ModelData, ModelDataList } from "../types";
+
+import type { ModelData, ModelDataList } from "../types";
 
 export type Filters = Record<string, string[]>;
 

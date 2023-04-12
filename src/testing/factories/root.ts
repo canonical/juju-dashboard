@@ -1,6 +1,6 @@
 import { Factory } from "fishery";
 
-import { RootState } from "store/store";
+import type { RootState } from "store/store";
 
 import { generalStateFactory } from "./general";
 import { jujuStateFactory } from "./juju/juju";

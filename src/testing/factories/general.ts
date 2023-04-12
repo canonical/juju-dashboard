@@ -1,5 +1,6 @@
 import { Factory } from "fishery";
-import { Config, Credential, GeneralState } from "store/general/types";
+
+import type { Config, Credential, GeneralState } from "store/general/types";
 
 export const configFactory = Factory.define<Config>(() => ({
   controllerAPIEndpoint: "wss://controller.example.com",

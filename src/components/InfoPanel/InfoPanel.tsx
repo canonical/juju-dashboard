@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-
-import Topology from "components/Topology/Topology";
 import { Modal, useListener } from "@canonical/react-components";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import Topology from "components/Topology/Topology";
 import { getViewportWidth } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import {
@@ -13,8 +13,6 @@ import {
   getModelRelations,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-
-import type { EntityDetailsRoute } from "components/Routes/Routes";
 
 import "./_info-panel.scss";
 

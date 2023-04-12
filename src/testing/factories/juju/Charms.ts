@@ -1,6 +1,7 @@
-import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
+import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
 import { Factory } from "fishery";
-import { ApplicationInfo } from "juju/types";
+
+import type { ApplicationInfo } from "juju/types";
 
 export const charmInfoFactory = Factory.define<Charm>(() => ({
   revision: 20,

@@ -1,7 +1,8 @@
-import { FormEvent, MouseEvent } from "react";
 import { RadioInput } from "@canonical/react-components";
+import type { FormEvent, MouseEvent } from "react";
 
-import ConfigField, { ConfigProps } from "./ConfigField";
+import type { ConfigProps } from "./ConfigField";
+import ConfigField from "./ConfigField";
 
 export default function BooleanConfig({
   config,

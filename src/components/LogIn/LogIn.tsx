@@ -1,3 +1,11 @@
+import { Spinner } from "@canonical/react-components";
+import type { FormEvent, ReactNode } from "react";
+import React, { useEffect, useRef } from "react";
+import { useSelector, useStore } from "react-redux";
+
+import FadeUpIn from "animations/FadeUpIn";
+import bakery from "juju/bakery";
+import logo from "static/images/logo/logo-black-on-white.svg";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import {
@@ -7,16 +15,8 @@ import {
   getWSControllerURL,
   isLoggedIn,
 } from "store/general/selectors";
-import React, { FormEvent, ReactNode, useEffect, useRef } from "react";
-import { useSelector, useStore } from "react-redux";
-
-import { Spinner } from "@canonical/react-components";
-
-import FadeUpIn from "animations/FadeUpIn";
-import bakery from "juju/bakery";
-import { RootState, useAppDispatch } from "store/store";
-
-import logo from "static/images/logo/logo-black-on-white.svg";
+import type { RootState } from "store/store";
+import { useAppDispatch } from "store/store";
 
 import "./_login.scss";
 

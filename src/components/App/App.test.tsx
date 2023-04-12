@@ -1,7 +1,7 @@
-import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
-import * as reactRouterDOM from "react-router-dom";
 import { render } from "@testing-library/react";
+import { Provider } from "react-redux";
+import * as reactRouterDOM from "react-router-dom";
+import configureStore from "redux-mock-store";
 
 import { rootStateFactory } from "testing/factories/root";
 

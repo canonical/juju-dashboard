@@ -1,6 +1,6 @@
 import { act, render } from "@testing-library/react";
-import { MemoryRouter } from "react-router";
 import { Provider } from "react-redux";
+import { MemoryRouter } from "react-router";
 import configureStore from "redux-mock-store";
 
 import { rootStateFactory } from "testing/factories/root";

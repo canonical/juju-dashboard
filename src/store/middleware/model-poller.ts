@@ -1,9 +1,8 @@
-import { Middleware } from "redux";
+import type { Client } from "@canonical/jujulib";
+import type { TSFixMe } from "@canonical/react-components";
 import * as Sentry from "@sentry/browser";
+import type { Middleware } from "redux";
 
-import { isLoggedIn } from "store/general/selectors";
-import { actions as generalActions } from "store/general";
-import { actions as appActions, thunks as appThunks } from "store/app";
 import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
@@ -11,12 +10,13 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
+import type { ConnectionWithFacades } from "juju/types";
+import { actions as appActions, thunks as appThunks } from "store/app";
+import { actions as generalActions } from "store/general";
+import { isLoggedIn } from "store/general/selectors";
+import type { Credential } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
-import { TSFixMe } from "@canonical/react-components";
-import { RootState, Store } from "store/store";
-import { Client } from "@canonical/jujulib";
-import { Credential } from "store/general/types";
-import { ConnectionWithFacades } from "juju/types";
+import type { RootState, Store } from "store/store";
 
 export enum LoginError {
   LOG = "unable to log into controller",

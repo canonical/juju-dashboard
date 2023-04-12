@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
 
-import BaseLayout from "layout/BaseLayout/BaseLayout";
 import NotFound from "components/NotFound/NotFound";
-
 import useWindowTitle from "hooks/useWindowTitle";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 import urls from "urls";
 
 export enum Label {

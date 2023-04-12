@@ -1,8 +1,10 @@
-import { MemoryRouter } from "react-router";
-import { Provider } from "react-redux";
 import { render, screen, within } from "@testing-library/react";
+import { Provider } from "react-redux";
+import { MemoryRouter } from "react-router";
 import configureStore from "redux-mock-store";
 
+import type { RootState } from "store/store";
+import { generalStateFactory, configFactory } from "testing/factories/general";
 import {
   jujuStateFactory,
   modelDataFactory,
@@ -11,9 +13,7 @@ import {
   modelUserInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
-import { generalStateFactory, configFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
-import { RootState } from "store/store";
 
 import CloudGroup from "./CloudGroup";
 

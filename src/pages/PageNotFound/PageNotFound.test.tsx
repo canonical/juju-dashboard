@@ -1,13 +1,14 @@
-import configureStore from "redux-mock-store";
-import { Provider } from "react-redux";
 import { render, screen } from "@testing-library/react";
+import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router";
-
-import { rootStateFactory } from "testing/factories/root";
+import configureStore from "redux-mock-store";
 
 import { Routes } from "components/Routes/Routes";
-import { Label } from "./PageNotFound";
+import { rootStateFactory } from "testing/factories/root";
+
 import { TestId } from "../../layout/BaseLayout/BaseLayout";
+
+import { Label } from "./PageNotFound";
 
 const mockStore = configureStore([]);
 

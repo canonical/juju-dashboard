@@ -1,4 +1,4 @@
-import { AdditionalController, Controller } from "store/juju/types";
+import type { AdditionalController, Controller } from "store/juju/types";
 
 export const isJAASFromPath = (
   controllerData: Controller | AdditionalController
