@@ -1,5 +1,6 @@
-import { useState, useEffect, ReactNode } from "react";
 import classnames from "classnames";
+import type { ReactNode } from "react";
+import { useState, useEffect } from "react";
 
 import "./_banner.scss";
 

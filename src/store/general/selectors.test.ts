@@ -1,9 +1,9 @@
+import { rootStateFactory } from "testing/factories";
 import {
   configFactory,
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import { rootStateFactory } from "testing/factories";
 
 import {
   getActiveUserTag,

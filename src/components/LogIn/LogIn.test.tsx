@@ -1,10 +1,10 @@
-import configureStore from "redux-mock-store";
-import { Provider } from "react-redux";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
 
-import { actions as generalActions } from "store/general";
 import { thunks as appThunks } from "store/app";
+import { actions as generalActions } from "store/general";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 

@@ -1,4 +1,4 @@
-import {
+import type {
   ActionResult,
   AdditionalProperties,
   OperationResult,
@@ -13,8 +13,12 @@ import {
   Spinner,
   Tooltip,
 } from "@canonical/react-components";
-import FadeIn from "animations/FadeIn";
 import classnames from "classnames";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+
+import FadeIn from "animations/FadeIn";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import {
   copyToClipboard,
@@ -23,11 +27,9 @@ import {
   generateStatusElement,
 } from "components/utils";
 import { queryActionsList, queryOperationsList } from "juju/api";
-import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
-import { RootState, useAppStore } from "store/store";
+import type { RootState } from "store/store";
+import { useAppStore } from "store/store";
 import urls from "urls";
 import "./_action-logs.scss";
 

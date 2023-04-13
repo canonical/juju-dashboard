@@ -3,12 +3,14 @@
     "react-app",
     "plugin:prettier/recommended",
     "plugin:jest/recommended",
+    "plugin:import/typescript",
     "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["prettier", "jest", "@typescript-eslint"],
   "root": true,
   "rules": {
+    "@typescript-eslint/consistent-type-imports": "error",
     "react/jsx-filename-extension": [
       1,
       {
@@ -18,6 +20,23 @@
     "import/prefer-default-export": 0,
     "import/imports-first": ["error", "absolute-first"],
     "import/newline-after-import": "error",
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc"
+        },
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ]
+      }
+    ],
     "jest/prefer-expect-assertions": 0,
     "jest/prefer-inline-snapshots": 0,
     "jest/lowercase-name": 0,
@@ -26,6 +45,13 @@
     "no-param-reassign": 0,
     "no-case-declarations": 0,
     "prefer-destructuring": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    }
   },
   "globals": {
     "window": true,

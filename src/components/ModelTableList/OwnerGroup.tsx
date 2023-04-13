@@ -1,22 +1,21 @@
-import { ReactNode } from "react";
 import { MainTable } from "@canonical/react-components";
+import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
-import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 
-import { useQueryParams } from "hooks/useQueryParams";
-import {
-  canAdministerModelAccess,
-  getModelStatusGroupData,
-  Filters,
-} from "store/juju/utils/models";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { generateStatusElement } from "components/utils";
-
+import { useQueryParams } from "hooks/useQueryParams";
 import {
   getGroupedByOwnerAndFilteredModelData,
   getActiveUsers,
   getControllerData,
 } from "store/juju/selectors";
+import {
+  canAdministerModelAccess,
+  getModelStatusGroupData,
+} from "store/juju/utils/models";
+import type { Filters } from "store/juju/utils/models";
 
 import {
   generateAccessButton,

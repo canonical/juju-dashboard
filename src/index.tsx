@@ -1,13 +1,14 @@
+import process from "process";
+
 import { Notification, Strip } from "@canonical/react-components";
-import { ReactNode, StrictMode } from "react";
+import * as Sentry from "@sentry/browser";
+import type { ReactNode } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import process from "process";
-import * as Sentry from "@sentry/browser";
 
 import App from "components/App/App";
 import reduxStore from "store";
-
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 

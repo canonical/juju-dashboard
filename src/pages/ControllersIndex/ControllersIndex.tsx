@@ -1,18 +1,19 @@
 import { Icon, MainTable, Tooltip } from "@canonical/react-components";
-import {
+import type {
   MainTableCell,
   MainTableHeader,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import FadeIn from "animations/FadeIn";
 import cloneDeep from "clone-deep";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
+import FadeIn from "animations/FadeIn";
 import Header from "components/Header/Header";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { getControllerData, getModelData } from "store/juju/selectors";
-import { AdditionalController, Controller } from "store/juju/types";
+import type { AdditionalController, Controller } from "store/juju/types";
 import { isJAASFromPath } from "store/juju/utils/controllers";
 import urls from "urls";
 

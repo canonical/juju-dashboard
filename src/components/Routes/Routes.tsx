@@ -7,19 +7,12 @@ import {
 } from "react-router-dom";
 
 import Login from "components/LogIn/LogIn";
-
-import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
-import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
-
-// Entity Detail pages
-import ModelDetails from "pages/ModelDetails/ModelDetails";
-
-import Settings from "pages/Settings/Settings";
-
-// Error pages
-import PageNotFound from "pages/PageNotFound/PageNotFound";
-
 import useAnalytics from "hooks/useAnalytics";
+import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
+import ModelDetails from "pages/ModelDetails/ModelDetails";
+import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
+import PageNotFound from "pages/PageNotFound/PageNotFound";
+import Settings from "pages/Settings/Settings";
 import urls from "urls";
 
 export type EntityDetailsRoute = {

@@ -1,5 +1,5 @@
-import { ModelStatusInfo } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import {
+import type { ModelStatusInfo } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type {
   MachineHardware,
   ModelMachineInfo,
   ModelSLAInfo,

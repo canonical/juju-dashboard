@@ -2,7 +2,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import bakery from "juju/bakery";
 import { actions as appActions } from "store/app";
-import { actions as jujuActions } from "store/juju";
 import { actions as generalActions } from "store/general";
 import {
   getConfig,
@@ -11,9 +10,10 @@ import {
   getUserPass,
   getWSControllerURL,
 } from "store/general/selectors";
-import { RootState } from "store/store";
+import { actions as jujuActions } from "store/juju";
+import type { RootState } from "store/store";
 
-import { ControllerArgs } from "./actions";
+import type { ControllerArgs } from "./actions";
 
 export const logOut = createAsyncThunk<
   void,

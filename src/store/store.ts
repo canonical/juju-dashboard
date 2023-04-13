@@ -1,14 +1,11 @@
-import { AnyAction, configureStore } from "@reduxjs/toolkit";
-import {
-  TypedUseSelectorHook,
-  useDispatch,
-  useSelector,
-  useStore,
-} from "react-redux";
+import type { AnyAction } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
+import type { TypedUseSelectorHook } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 
 import generalReducer from "store/general";
-import checkAuth from "store/middleware/check-auth";
 import jujuReducer from "store/juju";
+import checkAuth from "store/middleware/check-auth";
 import { modelPollerMiddleware } from "store/middleware/model-poller";
 import uiReducer from "store/ui";
 

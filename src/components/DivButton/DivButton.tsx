@@ -1,12 +1,12 @@
 import type { PropsWithSpread } from "@canonical/react-components";
-import {
+import classnames from "classnames";
+import type {
   HTMLProps,
   KeyboardEvent,
   MouseEvent,
   PropsWithChildren,
-  useRef,
 } from "react";
-import classnames from "classnames";
+import { useRef } from "react";
 
 import "./_div-button.scss";
 

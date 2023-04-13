@@ -1,6 +1,7 @@
 import { Spinner, useListener } from "@canonical/react-components";
 import classnames from "classnames";
-import { forwardRef, MouseEvent, PropsWithChildren, Ref } from "react";
+import type { MouseEvent, PropsWithChildren, Ref } from "react";
+import { forwardRef } from "react";
 
 import "./_slide-panel.scss";
 

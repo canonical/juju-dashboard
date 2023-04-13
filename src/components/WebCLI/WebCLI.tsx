@@ -1,23 +1,16 @@
-import { Macaroon } from "@canonical/macaroon-bakery/dist/macaroon";
-import {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import type { Macaroon } from "@canonical/macaroon-bakery/dist/macaroon";
+import type { FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "react-redux";
 
 import useLocalStorage from "hooks/useLocalStorage";
 import bakery from "juju/bakery";
 import { getActiveUserTag } from "store/general/selectors";
-import { Credential } from "store/general/types";
+import type { Credential } from "store/general/types";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
 import WebCLIOutput from "./Output";
-
 import Connection from "./connection";
 
 import "./_webcli.scss";

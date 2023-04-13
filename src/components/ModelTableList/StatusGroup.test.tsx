@@ -1,10 +1,10 @@
-import { MemoryRouter } from "react-router";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
+import { MemoryRouter } from "react-router";
 import configureStore from "redux-mock-store";
 
-import { RootState } from "store/store";
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import {

@@ -7,7 +7,6 @@ import type {
   ModelData,
   ModelWatcherData,
 } from "./types";
-
 import {
   DeltaChangeTypes,
   DeltaEntityTypes,

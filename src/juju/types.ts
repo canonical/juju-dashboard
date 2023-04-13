@@ -1,20 +1,20 @@
-import { Error as JujuError } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { Connection } from "@canonical/jujulib";
+import type ActionV7 from "@canonical/jujulib/dist/api/facades/action/ActionV7";
+import type AllWatcherV3 from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
+import type { AdditionalProperties as AnnotationsAdditionalProperties } from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
+import type AnnotationsV2 from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
+import type ApplicationV15 from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
+import type CharmsV5 from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
+import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type ClientV6 from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type CloudV7 from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
+import type ControllerV9 from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
+import type { Error as JujuError } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type ModelManagerV9 from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type PingerV1 from "@canonical/jujulib/dist/api/facades/pinger/PingerV1";
 
-import { ModelInfo as StoreModelInfo } from "store/juju/types";
-import { AdditionalProperties as AnnotationsAdditionalProperties } from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
-import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import ActionV7 from "@canonical/jujulib/dist/api/facades/action/ActionV7";
-import AnnotationsV2 from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
-import ApplicationV15 from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
-import AllWatcherV3 from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
-import CharmsV5 from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
-import ClientV6 from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import CloudV7 from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
-import ControllerV9 from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
-import ModelManagerV9 from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import PingerV1 from "@canonical/jujulib/dist/api/facades/pinger/PingerV1";
-import JIMMV2 from "juju/jimm-facade";
-import { Connection } from "@canonical/jujulib";
+import type JIMMV2 from "juju/jimm-facade";
+import type { ModelInfo as StoreModelInfo } from "store/juju/types";
 // See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 

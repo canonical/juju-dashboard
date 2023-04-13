@@ -1,17 +1,16 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
-import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import configureStore from "redux-mock-store";
 
+import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
   modelWatcherModelDataFactory,
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
-
-import { modelListInfoFactory } from "testing/factories/juju/juju";
-import { RootState } from "store/store";
 
 import InfoPanel from "./InfoPanel";
 

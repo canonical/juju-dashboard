@@ -1,7 +1,7 @@
 import { useListener } from "@canonical/react-components";
 import { AnimatePresence } from "framer-motion";
-import { useQueryParams } from "hooks/useQueryParams";
 
+import { useQueryParams } from "hooks/useQueryParams";
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import RegisterController from "panels/RegisterController/RegisterController";
 import ShareModel from "panels/ShareModelPanel/ShareModel";

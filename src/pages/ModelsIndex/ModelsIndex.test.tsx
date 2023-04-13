@@ -1,11 +1,10 @@
-import configureStore from "redux-mock-store";
-import { Provider } from "react-redux";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
+import configureStore from "redux-mock-store";
 
-import { rootStateFactory } from "testing/factories/root";
-import { RootState } from "store/store";
+import type { RootState } from "store/store";
 import {
   jujuStateFactory,
   modelDataFactory,
@@ -13,6 +12,7 @@ import {
   modelDataStatusFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
+import { rootStateFactory } from "testing/factories/root";
 
 import ModelsIndex, { Label, TestId } from "./ModelsIndex";
 

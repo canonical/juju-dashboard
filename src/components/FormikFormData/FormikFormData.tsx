@@ -1,6 +1,7 @@
-import { ReactNode, useEffect } from "react";
+import type { ValueOf } from "@canonical/react-components";
 import { Form, useFormikContext } from "formik";
-import { ValueOf } from "@canonical/react-components";
+import type { ReactNode } from "react";
+import { useEffect } from "react";
 
 export type SetFieldValue<V> = (fieldName: string, value: ValueOf<V>) => void;
 

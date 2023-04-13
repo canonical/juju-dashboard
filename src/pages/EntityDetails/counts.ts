@@ -1,6 +1,6 @@
-import { Chip } from "components/ChipGroup/ChipGroup";
+import type { Chip } from "components/ChipGroup/ChipGroup";
 import type { MachineChangeDelta, MachineData, UnitData } from "juju/types";
-import { ModelData } from "store/juju/types";
+import type { ModelData } from "store/juju/types";
 
 export const incrementCounts = (
   status: string,

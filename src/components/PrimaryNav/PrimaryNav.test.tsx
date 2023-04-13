@@ -1,8 +1,8 @@
+import * as versionsAPI from "@canonical/jujulib/dist/api/versions";
 import { render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
-import * as versionsAPI from "@canonical/jujulib/dist/api/versions";
 
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {

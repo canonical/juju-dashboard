@@ -3,6 +3,7 @@ import {
   modelDataInfoFactory,
   controllerFactory,
 } from "testing/factories/juju/juju";
+
 import { getStatusValue, JAAS_CONTROLLER_UUID } from "./shared";
 
 describe("shared", () => {

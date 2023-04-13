@@ -1,16 +1,16 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { WS } from "jest-websocket-mock";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import { WS } from "jest-websocket-mock";
 
 import bakery from "juju/bakery";
-import { RootState } from "store/store";
-import { rootStateFactory } from "testing/factories/root";
+import type { RootState } from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
+import { rootStateFactory } from "testing/factories/root";
 
-import WebCLI, { MAX_HISTORY } from "./WebCLI";
 import { TestId } from "./Output";
+import WebCLI, { MAX_HISTORY } from "./WebCLI";
 
 const mockStore = configureStore([]);
 

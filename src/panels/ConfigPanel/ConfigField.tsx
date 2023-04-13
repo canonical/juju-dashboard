@@ -1,17 +1,11 @@
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import classnames from "classnames";
-
-import { isSet } from "components/utils";
-import { ConfigData, ConfigValue } from "juju/api";
 import { Button, Icon } from "@canonical/react-components";
+import classnames from "classnames";
+import type { ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import DivButton from "components/DivButton";
+import { isSet } from "components/utils";
+import type { ConfigData, ConfigValue } from "juju/api";
 
 export type SetNewValue = (name: string, value: ConfigValue) => void;
 

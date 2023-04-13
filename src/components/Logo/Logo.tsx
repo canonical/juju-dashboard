@@ -1,11 +1,10 @@
 import { useSelector } from "react-redux";
 
-import { getConfig } from "store/general/selectors";
-
 // Image imports
-import logoMark from "static/images/logo/logo-mark.svg";
 import jaasText from "static/images/logo/jaas-text.svg";
 import jujuText from "static/images/logo/juju-text.svg";
+import logoMark from "static/images/logo/logo-mark.svg";
+import { getConfig } from "store/general/selectors";
 
 import "./_logo.scss";
 

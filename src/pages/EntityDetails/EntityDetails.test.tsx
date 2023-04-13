@@ -5,12 +5,12 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
-import { RootState } from "store/store";
+import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {

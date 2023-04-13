@@ -1,12 +1,13 @@
-import { Component, PropsWithChildren } from "react";
-import * as Sentry from "@sentry/browser";
 import {
   Notification,
   Strip,
   CodeSnippet,
   CodeSnippetBlockAppearance,
 } from "@canonical/react-components";
-import { Extras } from "@sentry/types";
+import * as Sentry from "@sentry/browser";
+import type { Extras } from "@sentry/types";
+import { Component } from "react";
+import type { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren;
 

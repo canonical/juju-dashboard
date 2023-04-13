@@ -1,5 +1,6 @@
 import { Factory } from "fishery";
-import {
+
+import type {
   ActionChangeDelta,
   ApplicationInfo,
   CharmChangeDelta,

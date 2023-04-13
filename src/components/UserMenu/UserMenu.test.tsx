@@ -1,12 +1,12 @@
-import { BrowserRouter as Router } from "react-router-dom";
-import configureStore from "redux-mock-store";
-import { Provider } from "react-redux";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
+import configureStore from "redux-mock-store";
 
-import { rootStateFactory } from "testing/factories/root";
-import { RootState } from "store/store";
+import type { RootState } from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
+import { rootStateFactory } from "testing/factories/root";
 
 import UserMenu from "./UserMenu";
 

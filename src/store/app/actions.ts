@@ -1,5 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
-import { Credential } from "store/general/types";
+
+import type { Credential } from "store/general/types";
 
 export const updatePermissions = createAction<{
   action: string;

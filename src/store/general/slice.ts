@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { GeneralState } from "./types";
+
+import type { GeneralState } from "./types";
 
 const slice = createSlice({
   name: "general",

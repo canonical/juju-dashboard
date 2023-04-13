@@ -1,22 +1,21 @@
-import { ReactNode } from "react";
-import { useSelector } from "react-redux";
 import { MainTable } from "@canonical/react-components";
-import { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import type { ReactNode } from "react";
+import { useSelector } from "react-redux";
 
-import { useQueryParams } from "hooks/useQueryParams";
-import {
-  getModelStatusGroupData,
-  extractOwnerName,
-  canAdministerModelAccess,
-  Filters,
-} from "store/juju/utils/models";
 import { generateStatusElement } from "components/utils";
-
+import { useQueryParams } from "hooks/useQueryParams";
 import {
   getActiveUsers,
   getControllerData,
   getGroupedByCloudAndFilteredModelData,
 } from "store/juju/selectors";
+import type { Filters } from "store/juju/utils/models";
+import {
+  getModelStatusGroupData,
+  extractOwnerName,
+  canAdministerModelAccess,
+} from "store/juju/utils/models";
 
 import {
   generateModelDetailsLink,

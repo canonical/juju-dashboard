@@ -1,5 +1,6 @@
+import type { ReactNode } from "react";
+
 import { useQueryParams } from "hooks/useQueryParams";
-import { ReactNode } from "react";
 
 type Props = {
   title: ReactNode;

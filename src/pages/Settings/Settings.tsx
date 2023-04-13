@@ -1,12 +1,11 @@
-import Header from "components/Header/Header";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
+import { Switch } from "@canonical/react-components";
 
 import FadeIn from "animations/FadeIn";
-
+import Header from "components/Header/Header";
 import useLocalStorage from "hooks/useLocalStorage";
 import useWindowTitle from "hooks/useWindowTitle";
+import BaseLayout from "layout/BaseLayout/BaseLayout";
 
-import { Switch } from "@canonical/react-components";
 import "./settings.scss";
 
 export default function Settings() {

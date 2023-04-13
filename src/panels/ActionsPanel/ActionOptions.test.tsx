@@ -1,14 +1,14 @@
-import { TSFixMe } from "@canonical/react-components";
+import type { TSFixMe } from "@canonical/react-components";
 import { render } from "@testing-library/react";
-import * as OptionsInputModule from "components/RadioInputBox/OptionInputs";
 
+import * as OptionsInputModule from "components/RadioInputBox/OptionInputs";
 import {
   applicationCharmActionFactory,
   applicationCharmActionParamsFactory,
 } from "testing/factories/juju/ActionV7";
 
 import ActionOptions from "./ActionOptions";
-import { ActionData } from "./ActionsPanel";
+import type { ActionData } from "./ActionsPanel";
 
 describe("ActionOptions", () => {
   afterEach(() => {

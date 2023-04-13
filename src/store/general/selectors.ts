@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-import { RootState } from "store/store";
-import { TSFixMe } from "types";
+import type { RootState } from "store/store";
+import type { TSFixMe } from "types";
 
 const slice = (state: RootState) => state.general;
 

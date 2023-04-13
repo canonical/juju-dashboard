@@ -1,4 +1,6 @@
-import { PropsWithChildren, useEffect, useState } from "react";
+import classNames from "classnames";
+import type { PropsWithChildren } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
@@ -6,17 +8,12 @@ import { useLocation, useParams } from "react-router-dom";
 import Banner from "components/Banner/Banner";
 import Logo from "components/Logo/Logo";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
-
-import Panels from "panels/panels";
-
-import useOffline from "hooks/useOffline";
-
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-
+import useOffline from "hooks/useOffline";
+import Panels from "panels/panels";
 import { actions } from "store/ui";
 import { isSideNavCollapsed } from "store/ui/selectors";
 
-import classNames from "classnames";
 import "./_base-layout.scss";
 
 export enum TestId {

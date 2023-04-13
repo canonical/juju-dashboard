@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+
 import ContentReveal from "./ContentReveal";
 
 describe("Content Reveal", () => {

@@ -1,35 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "@canonical/react-components";
-import {
-  MutableRefObject,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import type { MutableRefObject } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import Aside from "components/Aside/Aside";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
+import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
-
-import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import ToastCard from "components/ToastCard/ToastCard";
 import { generateIconImg } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import { useQueryParams } from "hooks/useQueryParams";
 import { executeActionOnUnits } from "juju/api";
-import { ApplicationInfo } from "juju/types";
+import type { ApplicationInfo } from "juju/types";
 import ActionOptions from "panels/ActionsPanel/ActionOptions";
-import {
+import type {
   ActionData,
   ActionOptionValue,
   ActionOptionValues,
-  enableSubmit,
 } from "panels/ActionsPanel/ActionsPanel";
-import { useParams } from "react-router-dom";
+import { enableSubmit } from "panels/ActionsPanel/ActionsPanel";
 import {
   getModelUUIDFromList,
   getSelectedApplications,

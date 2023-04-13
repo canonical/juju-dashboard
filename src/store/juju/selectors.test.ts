@@ -1,3 +1,5 @@
+import { rootStateFactory } from "testing/factories";
+import { generalStateFactory } from "testing/factories/general";
 import {
   jujuStateFactory,
   modelListInfoFactory,
@@ -13,8 +15,8 @@ import {
   relationChangeDeltaFactory,
   machineChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
-import { rootStateFactory } from "testing/factories";
-import { generalStateFactory } from "testing/factories/general";
+
+import { modelUserInfoFactory } from "../../testing/factories/juju/juju";
 
 import {
   getModelWatcherDataByUUID,
@@ -43,7 +45,6 @@ import {
   getUserDomains,
   getUserDomainsInModel,
 } from "./selectors";
-import { modelUserInfoFactory } from "../../testing/factories/juju/juju";
 
 describe("selectors", () => {
   it("getModelData", () => {

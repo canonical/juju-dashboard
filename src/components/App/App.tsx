@@ -1,13 +1,11 @@
+import { initialize, pageview } from "react-ga";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
-import { initialize, pageview } from "react-ga";
 
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
-
 import { Routes } from "components/Routes/Routes";
-
-import { getConfig } from "store/general/selectors";
 import useLocalStorage from "hooks/useLocalStorage";
+import { getConfig } from "store/general/selectors";
 
 import "../../scss/index.scss";
 

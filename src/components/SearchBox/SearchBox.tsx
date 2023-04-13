@@ -1,6 +1,8 @@
-import { ClassName, Icon, PropsWithSpread } from "@canonical/react-components";
+import type { ClassName, PropsWithSpread } from "@canonical/react-components";
+import { Icon } from "@canonical/react-components";
 import classNames from "classnames";
-import React, { HTMLProps, MutableRefObject, useRef } from "react";
+import type { HTMLProps, MutableRefObject } from "react";
+import React, { useRef } from "react";
 
 // TODO: use the react-components component as a base once this PR is released:
 // https://github.com/canonical/react-components/pull/887

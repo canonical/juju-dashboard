@@ -1,9 +1,10 @@
 import { act, renderHook } from "@testing-library/react";
+import type { PropsWithChildren } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { rootStateFactory } from "testing/factories";
 import configureStore from "redux-mock-store";
-import { PropsWithChildren } from "react";
+
+import { rootStateFactory } from "testing/factories";
 
 import { useQueryParams } from "./useQueryParams";
 

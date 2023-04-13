@@ -1,17 +1,16 @@
+import classNames from "classnames";
 import { useEffect } from "react";
 import { useSelector, useStore } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
-import classNames from "classnames";
-import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 
 import useAnalytics from "hooks/useAnalytics";
 import { thunks as appThunks } from "store/app";
+import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import { extractOwnerName } from "store/juju/utils/models";
 import { useAppDispatch } from "store/store";
-import urls from "urls";
-
 import { actions } from "store/ui";
 import { isUserMenuActive } from "store/ui/selectors";
+import urls from "urls";
 
 import "./_user-menu.scss";
 

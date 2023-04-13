@@ -13,7 +13,7 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import { ControllerArgs } from "./actions";
+import type { ControllerArgs } from "./actions";
 import { logOut, connectAndStartPolling, connectAndListModels } from "./thunks";
 
 describe("thunks", () => {

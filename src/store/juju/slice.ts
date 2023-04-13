@@ -1,15 +1,18 @@
-import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
-import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import { UserModelList } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
+import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
+import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type { UserModelList } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+
+import type {
   AllWatcherDelta,
   ApplicationInfo,
   FullStatusWithAnnotations,
   ModelInfoResults,
 } from "juju/types";
 import { processDeltas } from "juju/watchers";
-import { Controllers, JujuState } from "./types";
+
+import type { Controllers, JujuState } from "./types";
 
 const slice = createSlice({
   name: "juju",

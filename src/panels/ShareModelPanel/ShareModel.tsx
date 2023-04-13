@@ -1,26 +1,25 @@
-import { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import { Button, Input, RadioInput } from "@canonical/react-components";
 import cloneDeep from "clone-deep";
 import { useFormik } from "formik";
 import { motion } from "framer-motion";
-import useModelStatus from "hooks/useModelStatus";
 import { useEffect, useState } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
+import Aside from "components/Aside/Aside";
+import PanelHeader from "components/PanelHeader/PanelHeader";
+import ShareCard from "components/ShareCard/ShareCard";
+import ToastCard from "components/ToastCard/ToastCard";
+import useModelStatus from "hooks/useModelStatus";
 import { actions as appActions } from "store/app";
 import {
   getModelControllerDataByUUID,
   getUserDomains,
   getUserDomainsInModel,
 } from "store/juju/selectors";
-
-import Aside from "components/Aside/Aside";
-import PanelHeader from "components/PanelHeader/PanelHeader";
-import ShareCard from "components/ShareCard/ShareCard";
-import ToastCard from "components/ToastCard/ToastCard";
 import { useAppSelector, usePromiseDispatch } from "store/store";
 
-import { Button, Input, RadioInput } from "@canonical/react-components";
 import "./share-model.scss";
 
 type User = {

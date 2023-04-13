@@ -2,33 +2,13 @@ import { MainTable } from "@canonical/react-components";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  canAdministerModelAccess,
-  extractCloudName,
-} from "store/juju/utils/models";
-
-import {
-  consumedTableHeaders,
-  machineTableHeaders,
-  offersTableHeaders,
-  relationTableHeaders,
-} from "tables/tableHeaders";
-
-import {
-  generateConsumedRows,
-  generateMachineRows,
-  generateOffersRows,
-  generateRelationRows,
-} from "tables/tableRows";
-
-import InfoPanel from "components/InfoPanel/InfoPanel";
 
 import EntityInfo from "components/EntityInfo/EntityInfo";
-import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
-
+import InfoPanel from "components/InfoPanel/InfoPanel";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
-
+import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 import {
   getActiveUser,
   getModelAccess,
@@ -39,9 +19,23 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
+import {
+  canAdministerModelAccess,
+  extractCloudName,
+} from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
-
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import {
+  consumedTableHeaders,
+  machineTableHeaders,
+  offersTableHeaders,
+  relationTableHeaders,
+} from "tables/tableHeaders";
+import {
+  generateConsumedRows,
+  generateMachineRows,
+  generateOffersRows,
+  generateRelationRows,
+} from "tables/tableRows";
 
 import ApplicationsTab from "./ApplicationsTab/ApplicationsTab";
 

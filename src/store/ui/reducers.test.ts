@@ -1,4 +1,5 @@
 import { uiStateFactory } from "testing/factories";
+
 import { actions, reducer } from "./slice";
 
 describe("reducers", () => {
