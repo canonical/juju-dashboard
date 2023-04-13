@@ -11,6 +11,7 @@ import classnames from "classnames";
 import { isSet } from "components/utils";
 import { ConfigData } from "juju/api";
 import { Button, Icon } from "@canonical/react-components";
+import DivButton from "components/DivButton";
 
 export type SetNewValue = (name: string, value: any) => void;
 
@@ -136,15 +137,16 @@ const ConfigField = <V,>({
   }
 
   return (
-    // XXX How to tell aria to ignore the click but not the element?
-    // eslint-disable-next-line
-    <div
+    <DivButton
       className={classnames("config-input", {
         "config-input--focused": inputFocused,
         "config-input--changed": inputChanged,
       })}
       data-testid={config.name}
-      onClick={() => setSelectedConfig(config)}
+      onClick={(event) => {
+        event.preventDefault();
+        setSelectedConfig(config);
+      }}
     >
       <h5 className="u-float-left">
         {config.description ? (
@@ -166,6 +168,8 @@ const ConfigField = <V,>({
           }
         )}
         onClick={resetToDefault}
+        tabIndex={showUseDefault ? 0 : -1}
+        aria-hidden={!showUseDefault}
       >
         use default
       </button>
@@ -178,7 +182,7 @@ const ConfigField = <V,>({
         </pre>
       </div>
       {input(inputValue)}
-    </div>
+    </DivButton>
   );
 };
 
