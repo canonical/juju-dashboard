@@ -1,5 +1,6 @@
 import { ConnectionInfo, Transport } from "@canonical/jujulib";
 import { autoBind } from "@canonical/jujulib/dist/api/utils";
+import { Controller } from "../store/juju/types";
 
 /**
   pinger describes a resource that can be pinged and stopped.
@@ -33,7 +34,7 @@ class JIMMV2 {
     });
   }
 
-  listControllers() {
+  listControllers(): Promise<{ controllers: Controller[] }> {
     return new Promise((resolve, reject) => {
       const params = {};
       const req = {

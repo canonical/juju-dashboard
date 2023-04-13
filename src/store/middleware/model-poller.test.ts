@@ -1,3 +1,4 @@
+import { Client, Connection, Transport } from "@canonical/jujulib";
 import { AnyAction, MiddlewareAPI } from "redux";
 
 import * as jujuModule from "juju/api";
@@ -13,22 +14,6 @@ import {
 } from "testing/factories/juju/juju";
 
 import { modelPollerMiddleware, LoginError } from "./model-poller";
-
-type Conn = {
-  facades: {
-    modelManager: {
-      listModels: jest.Mock<any, any>;
-    };
-  };
-  info: {
-    user: {};
-  };
-};
-
-// TODO: Import this from jujulib once it has been migrated to TypeScript.
-type Juju = {
-  logout: () => void;
-};
 
 jest.mock("juju/api", () => ({
   disableControllerUUIDMasking: jest
@@ -61,9 +46,9 @@ describe("model poller", () => {
       "last-connection": "today",
     },
   ];
-  let juju: Juju;
+  let juju: Client;
   const intervalId = 99;
-  let conn: Conn;
+  let conn: Connection;
   const storeState = rootStateFactory.build({
     juju: jujuStateFactory.build({
       controllers: {
@@ -95,12 +80,15 @@ describe("model poller", () => {
         },
       },
       info: {
-        user: {},
+        user: {
+          identity: "eggman",
+        },
       },
+      transport: {} as Transport,
     };
     juju = {
       logout: jest.fn(),
-    };
+    } as unknown as Client;
   });
 
   const runMiddleware = async (actionOverrides?: Partial<AnyAction>) => {
@@ -202,7 +190,7 @@ describe("model poller", () => {
 
   it("dispatches an error if the info is not returned", async () => {
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn: { info: null },
+      conn: { ...conn, info: {} },
       intervalId,
       juju,
     }));
@@ -381,7 +369,7 @@ describe("model poller", () => {
     }));
     jest
       .spyOn(jujuModule, "setModelSharingPermissions")
-      .mockImplementation(() => Promise.resolve("response"));
+      .mockImplementation(() => Promise.resolve({ results: [] }));
     const middleware = await runMiddleware();
     const action = appActions.updatePermissions({
       action: "grant",
@@ -394,6 +382,6 @@ describe("model poller", () => {
     const response = middleware(next)(action);
     expect(jujuModule.setModelSharingPermissions).toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
-    return expect(response).resolves.toEqual("response");
+    return expect(response).resolves.toStrictEqual({ results: [] });
   });
 });

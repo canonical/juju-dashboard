@@ -189,7 +189,7 @@ export default function ConfigPanel({
     setSavingConfig(false);
     setEnableSave(false);
     setConfirmType(null);
-    if (errors.length) {
+    if (errors?.length) {
       setFormErrors(errors);
       return;
     }
@@ -379,8 +379,8 @@ async function getConfig(
       // Add the key to the config object to make for easier use later.
       const config: Config = {};
       // The config param can be null.
-      Object.keys(result.config ?? {}).forEach((key) => {
-        config[key] = result.config[key];
+      Object.keys(result?.config ?? {}).forEach((key) => {
+        config[key] = result?.config[key];
         config[key].name = key;
       });
       setIsLoading(false);

@@ -1,6 +1,5 @@
 import { Middleware } from "redux";
 import * as Sentry from "@sentry/browser";
-import { UserModelList } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
 import { isLoggedIn } from "store/general/selectors";
 import { actions as generalActions } from "store/general";
@@ -15,8 +14,9 @@ import {
 import { actions as jujuActions } from "store/juju";
 import { TSFixMe } from "@canonical/react-components";
 import { RootState, Store } from "store/store";
-import { Client, Connection } from "@canonical/jujulib";
+import { Client } from "@canonical/jujulib";
 import { Credential } from "store/general/types";
+import { ConnectionWithFacades } from "juju/types";
 
 export enum LoginError {
   LOG = "unable to log into controller",
@@ -30,7 +30,7 @@ export const modelPollerMiddleware: Middleware<
   RootState,
   Store["dispatch"]
 > = (reduxStore) => {
-  const controllers = new Map<string, Connection>();
+  const controllers = new Map<string, ConnectionWithFacades>();
   const jujus = new Map<string, Client>();
   return (next) => async (action) => {
     if (action.type === appActions.connectAndPollControllers.type) {
@@ -42,17 +42,19 @@ export const modelPollerMiddleware: Middleware<
             identityProviderAvailable,
             isAdditionalController,
           ] = controllerData;
-          let conn: Connection;
-          let juju: Client;
+          let conn: ConnectionWithFacades | undefined;
+          let juju: Client | undefined;
           let error: unknown;
-          let intervalId: number | undefined;
+          let intervalId: number | null | undefined;
           try {
             ({ conn, error, juju, intervalId } = await loginWithBakery(
               wsControllerURL,
               credentials,
               identityProviderAvailable
             ));
-            controllers.set(wsControllerURL, conn);
+            if (conn) {
+              controllers.set(wsControllerURL, conn);
+            }
             if (error && typeof error === "string") {
               reduxStore.dispatch(generalActions.storeLoginError(error));
               return;
@@ -66,7 +68,7 @@ export const modelPollerMiddleware: Middleware<
             return console.log(LoginError.LOG, e, controllerData);
           }
 
-          if (!conn?.info) {
+          if (!conn?.info || !Object.keys(conn.info).length) {
             reduxStore.dispatch(
               generalActions.storeLoginError(LoginError.NO_INFO)
             );
@@ -89,7 +91,9 @@ export const modelPollerMiddleware: Middleware<
               info: conn.info,
             })
           );
-          jujus.set(wsControllerURL, juju);
+          if (juju) {
+            jujus.set(wsControllerURL, juju);
+          }
           if (intervalId) {
             reduxStore.dispatch(
               generalActions.updatePingerIntervalId({
@@ -119,26 +123,30 @@ export const modelPollerMiddleware: Middleware<
           }
 
           do {
-            try {
-              const models: UserModelList =
-                await conn.facades.modelManager.listModels({
-                  // TSFixMe: jujulib types user as `object`.
-                  tag: (conn.info.user as TSFixMe).identity,
+            // TSFixMe: jujulib types user as `object`.
+            const identity = (conn?.info?.user as TSFixMe)?.identity;
+            if (identity) {
+              try {
+                const models = await conn.facades.modelManager?.listModels({
+                  tag: identity,
                 });
-              reduxStore.dispatch(
-                jujuActions.updateModelList({ models, wsControllerURL })
-              );
-              const modelUUIDList =
-                models["user-models"]?.map((item) => item.model.uuid) ?? [];
-              await fetchAllModelStatuses(
-                wsControllerURL,
-                modelUUIDList,
-                conn,
-                reduxStore.dispatch,
-                reduxStore.getState
-              );
-            } catch (e) {
-              console.log(e);
+                if (models) {
+                  reduxStore.dispatch(
+                    jujuActions.updateModelList({ models, wsControllerURL })
+                  );
+                }
+                const modelUUIDList =
+                  models?.["user-models"]?.map((item) => item.model.uuid) ?? [];
+                await fetchAllModelStatuses(
+                  wsControllerURL,
+                  modelUUIDList,
+                  conn,
+                  reduxStore.dispatch,
+                  reduxStore.getState
+                );
+              } catch (e) {
+                console.log(e);
+              }
             }
 
             // Wait 30s then start again.

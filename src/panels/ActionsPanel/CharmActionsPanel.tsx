@@ -15,7 +15,6 @@ import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 
-import { EnqueuedActions } from "@canonical/jujulib/dist/api/facades/action/ActionV6";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import ToastCard from "components/ToastCard/ToastCard";
 import { generateIconImg } from "components/utils";
@@ -102,8 +101,8 @@ export default function CharmActionsPanel(): JSX.Element {
       modelUUID,
       appState
     )
-      .then((payload: EnqueuedActions) => {
-        const error = payload.actions?.find((e) => e.error);
+      .then((payload) => {
+        const error = payload?.actions?.find((e) => e.error);
         if (error) throw error;
         reactHotToast.custom((t) => (
           <ToastCard
