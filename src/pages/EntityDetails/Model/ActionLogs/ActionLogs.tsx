@@ -154,18 +154,23 @@ export default function ActionLogs() {
           modelUUID,
           appStore.getState()
         );
-        setOperations(operationList.results);
-        const actionsTags = operationList.results
-          ?.flatMap((operation: OperationResult) =>
-            operation.actions?.map((action) => action.action.tag)
-          )
-          .map((actionTag: string) => ({ tag: actionTag }));
-        const actionsList = await queryActionsList(
-          { entities: actionsTags },
-          modelUUID,
-          appStore.getState()
-        );
-        setActions(actionsList.results);
+        if (operationList?.results) {
+          setOperations(operationList.results);
+          const actionsTags = operationList.results
+            .flatMap((operation: OperationResult) =>
+              operation.actions?.map((action) => action.action.tag)
+            )
+            .filter((actionTag?: string): actionTag is string => !!actionTag)
+            .map((actionTag: string) => ({ tag: actionTag }));
+          const actionsList = await queryActionsList(
+            { entities: actionsTags },
+            modelUUID,
+            appStore.getState()
+          );
+          if (actionsList) {
+            setActions(actionsList.results);
+          }
+        }
         setFetchedOperations(true);
       }
     }

@@ -1,6 +1,20 @@
 import { Error as JujuError } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
 import { ModelInfo as StoreModelInfo } from "store/juju/types";
+import { AdditionalProperties as AnnotationsAdditionalProperties } from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
+import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import ActionV7 from "@canonical/jujulib/dist/api/facades/action/ActionV7";
+import AnnotationsV2 from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
+import ApplicationV15 from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
+import AllWatcherV3 from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
+import CharmsV5 from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
+import ClientV6 from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import CloudV7 from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
+import ControllerV9 from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
+import ModelManagerV9 from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import PingerV1 from "@canonical/jujulib/dist/api/facades/pinger/PingerV1";
+import JIMMV2 from "juju/jimm-facade";
+import { Connection } from "@canonical/jujulib";
 // See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
@@ -340,3 +354,30 @@ export interface ModelInfoResult {
 export interface ModelInfoResults {
   results: ModelInfoResult[];
 }
+
+export type FullStatusAnnotations = Record<
+  string,
+  AnnotationsAdditionalProperties
+>;
+
+export type FullStatusWithAnnotations = FullStatus & {
+  annotations?: FullStatusAnnotations;
+};
+
+export type Facades = {
+  action?: ActionV7;
+  allWatcher?: AllWatcherV3;
+  annotations?: AnnotationsV2;
+  application?: ApplicationV15;
+  charms?: CharmsV5;
+  client?: ClientV6;
+  cloud?: CloudV7;
+  controller?: ControllerV9;
+  modelManager?: ModelManagerV9;
+  pinger?: PingerV1;
+  jimM?: InstanceType<typeof JIMMV2>;
+};
+
+export type ConnectionWithFacades = Connection & {
+  facades: Facades;
+};

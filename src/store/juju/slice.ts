@@ -2,7 +2,12 @@ import { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { UserModelList } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AllWatcherDelta, ApplicationInfo, ModelInfoResults } from "juju/types";
+import {
+  AllWatcherDelta,
+  ApplicationInfo,
+  FullStatusWithAnnotations,
+  ModelInfoResults,
+} from "juju/types";
 import { processDeltas } from "juju/watchers";
 import { Controllers, JujuState } from "./types";
 
@@ -46,7 +51,7 @@ const slice = createSlice({
       state,
       action: PayloadAction<{
         modelUUID: string;
-        status: FullStatus;
+        status: FullStatusWithAnnotations;
         wsControllerURL: string;
       }>
     ) => {

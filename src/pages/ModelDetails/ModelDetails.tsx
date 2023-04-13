@@ -13,10 +13,10 @@ import App from "pages/EntityDetails/App/App";
 import Unit from "pages/EntityDetails/Unit/Unit";
 import Machine from "pages/EntityDetails/Machine/Machine";
 import { useAppStore } from "store/store";
-import { Connection } from "@canonical/jujulib";
 import { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import EntityDetails from "pages/EntityDetails/EntityDetails";
 import urls from "urls";
+import { ConnectionWithFacades } from "juju/types";
 
 export default function ModelDetails() {
   const appState = useAppStore().getState();
@@ -25,7 +25,7 @@ export default function ModelDetails() {
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
   useEffect(() => {
-    let conn: Connection | null = null;
+    let conn: ConnectionWithFacades | null = null;
     let pingerIntervalId: number | null = null;
     let watcherHandle: AllWatcherId | null = null;
 
@@ -38,8 +38,8 @@ export default function ModelDetails() {
       // its way into the all watcher at which point we can drop this additional
       // request for data.
       // https://bugs.launchpad.net/juju/+bug/1939341
-      const status = await conn?.facades.client.fullStatus();
-      if (status !== null) {
+      const status = await conn?.facades.client?.fullStatus({ patterns: [] });
+      if (status) {
         dispatch(
           jujuActions.populateMissingAllWatcherData({ uuid: modelUUID, status })
         );
