@@ -99,7 +99,7 @@ describe("reducers", () => {
   });
 
   it("updateModelStatus", () => {
-    let updatedModel = {
+    const updatedModel = {
       ...model,
       uuid: "abc123",
     };

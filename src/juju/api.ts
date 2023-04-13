@@ -500,15 +500,22 @@ export async function getApplicationConfig(
   return config;
 }
 
-export type ConfigData = {
+export type ConfigValue = string | number | boolean | undefined;
+
+export type ConfigOption<V, T> = {
   name: string;
-  default: any;
+  default: V | undefined;
   description: string;
   source: "default" | "user";
-  type: "string" | "int" | "float" | "boolean";
-  value: any;
-  newValue: any;
+  type: T;
+  value: V | undefined;
+  newValue: V | undefined;
 };
+
+export type ConfigData =
+  | ConfigOption<string, "string">
+  | ConfigOption<number, "int" | "float">
+  | ConfigOption<boolean, "boolean">;
 
 export type Config = {
   [key: string]: ConfigData;

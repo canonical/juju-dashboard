@@ -9,24 +9,26 @@ import {
 import classnames from "classnames";
 
 import { isSet } from "components/utils";
-import { ConfigData } from "juju/api";
+import { ConfigData, ConfigValue } from "juju/api";
 import { Button, Icon } from "@canonical/react-components";
 import DivButton from "components/DivButton";
 
-export type SetNewValue = (name: string, value: any) => void;
+export type SetNewValue = (name: string, value: ConfigValue) => void;
+
+export type SetSelectedConfig = (config: ConfigData) => void;
 
 export type ConfigProps = {
   config: ConfigData;
   selectedConfig: ConfigData | undefined;
-  setSelectedConfig: Function;
+  setSelectedConfig: SetSelectedConfig;
   setNewValue: SetNewValue;
 };
 
-type Props<V> = ConfigProps & {
+type Props<V extends ConfigValue> = ConfigProps & {
   input: (value: V) => ReactNode;
 };
 
-const ConfigField = <V,>({
+const ConfigField = <V extends ConfigValue>({
   config,
   input,
   selectedConfig,
@@ -181,7 +183,7 @@ const ConfigField = <V,>({
           {config.description}
         </pre>
       </div>
-      {input(inputValue)}
+      {input(inputValue as V)}
     </DivButton>
   );
 };

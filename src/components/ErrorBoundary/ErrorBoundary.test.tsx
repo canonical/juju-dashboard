@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import ErrorBoundary from "./ErrorBoundary";
 
 function ChildComponent() {
-  let error = new Error("Oh noes!");
+  const error = new Error("Oh noes!");
   error.stack = "Stack trace output";
   throw error;
   // eslint-disable-next-line no-unreachable

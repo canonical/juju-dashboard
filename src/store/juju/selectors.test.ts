@@ -184,7 +184,7 @@ describe("selectors", () => {
   });
 
   it("getModelList", () => {
-    let models = {
+    const models = {
       abc123: modelListInfoFactory.build({
         wsControllerURL: "wss://example.com/api",
       }),

@@ -62,7 +62,7 @@ const slice = createSlice({
       // There is some data that we don't want to store because it changes
       // to often causing needless re-renders and is currently irrelevent
       // like controllerTimestamp.
-      let model = {
+      const model = {
         ...(state.modelData[modelUUID] ?? {}),
         applications: action.payload.status.applications,
         machines: action.payload.status.machines,
@@ -110,7 +110,7 @@ const slice = createSlice({
         wsControllerURL: string;
       }>
     ) => {
-      let controllers = state.controllers ?? {};
+      const controllers = state.controllers ?? {};
       controllers[action.payload.wsControllerURL] = action.payload.controllers;
       state.controllers = controllers;
     },

@@ -81,7 +81,8 @@ describe("useQueryParams", () => {
         wrapper: generateContainer,
       }
     );
-    let [searchParams, setSearchParams] = result.current;
+    let [searchParams] = result.current;
+    const [, setSearchParams] = result.current;
     expect(searchParams.panel).toBeNull();
     expect(window.location.search).toBe("");
     act(() => setSearchParams({ panel: "config" }));
@@ -97,7 +98,8 @@ describe("useQueryParams", () => {
         wrapper: generateContainer,
       }
     );
-    let [searchParams, setSearchParams] = result.current;
+    let [searchParams] = result.current;
+    const [, setSearchParams] = result.current;
     expect(searchParams.panels).toStrictEqual([]);
     expect(window.location.search).toBe("");
     act(() => setSearchParams({ panels: ["config", "actions"] }));
@@ -118,7 +120,8 @@ describe("useQueryParams", () => {
         wrapper: generateContainer,
       }
     );
-    let [searchParams, setSearchParams] = result.current;
+    let [searchParams] = result.current;
+    const [, setSearchParams] = result.current;
     expect(searchParams.panel).toBe("config");
     act(() => setSearchParams({ panel: null }));
     [searchParams] = result.current;
@@ -134,7 +137,8 @@ describe("useQueryParams", () => {
         wrapper: generateContainer,
       }
     );
-    let [searchParams, setSearchParams] = result.current;
+    let [searchParams] = result.current;
+    const [, setSearchParams] = result.current;
     expect(searchParams.panel).toBe("config");
     act(() => setSearchParams(null));
     [searchParams] = result.current;

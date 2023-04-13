@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import classnames from "classnames";
 
 import "./_banner.scss";
@@ -9,7 +9,7 @@ export enum Label {
 
 type Props = {
   isActive: boolean;
-  children: any;
+  children: ReactNode;
   variant: "positive" | "caution" | "negative";
 };
 

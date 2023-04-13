@@ -124,7 +124,7 @@ function Details() {
       "location" in c && c?.location?.region ? c.location.region : "unknown";
     const cloudRegion = `${cloud}/${region}`;
     const access = "Public" in c && c.Public ? "Public" : "Private";
-    let columns = [
+    const columns = [
       generatePathValue(c),
       { content: isJAASFromPath(c) ? "Multiple" : cloudRegion },
       { content: c.models },

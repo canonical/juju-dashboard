@@ -115,7 +115,7 @@ const getRelationPosition = (data: string[]) => {
   const getElement = (index: number) =>
     d3.select<d3.BaseType, Application>(`[data-name="${data[index]}"]`);
   const getRect = (
-    element: d3.Selection<d3.BaseType, Application, HTMLElement, any>
+    element: d3.Selection<d3.BaseType, Application, HTMLElement, void>
   ) => {
     const node = element?.node();
     if (node && "getAttribute" in node) {
@@ -124,7 +124,7 @@ const getRelationPosition = (data: string[]) => {
     }
   };
   const getData = (
-    element: d3.Selection<d3.BaseType, Application, HTMLElement, any>
+    element: d3.Selection<d3.BaseType, Application, HTMLElement, void>
   ) => element.data()[0];
 
   const element1 = getElement(0);
@@ -181,7 +181,9 @@ const Topology = memo(
       }
     }
 
-    let { maxX, maxY } = computeMaxXY(annotationData);
+    const computeMax = computeMaxXY(annotationData);
+    let { maxX } = computeMax;
+    const { maxY } = computeMax;
     if (maxX === 0) {
       // If there is no maxX then all of the icons are unplaced
       // so set a maximum width.
@@ -233,7 +235,7 @@ const Topology = memo(
 
       const appIcons = topo.selectAll(".application").data(applications);
 
-      let gridCount = {
+      const gridCount = {
         x: 0,
         y: maxY,
       };

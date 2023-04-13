@@ -78,7 +78,7 @@ const SearchBox = React.forwardRef<HTMLInputElement, Props>(
     }: Props,
     forwardedRef
   ): JSX.Element => {
-    const internalRef = useRef<HTMLInputElement>();
+    const internalRef = useRef<HTMLInputElement | null>(null);
     const resetInput = () => {
       const inputEl =
         (forwardedRef as MutableRefObject<HTMLInputElement>)?.current ||
@@ -109,7 +109,7 @@ const SearchBox = React.forwardRef<HTMLInputElement, Props>(
           onChange={(evt) => onChange?.(evt.target.value)}
           placeholder={placeholder}
           ref={(input) => {
-            internalRef.current = input!;
+            internalRef.current = input;
             // Handle both function and object refs.
             if (typeof forwardedRef === "function") {
               forwardedRef(input);

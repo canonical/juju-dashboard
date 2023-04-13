@@ -26,7 +26,7 @@ export enum LoginError {
 type ControllerOptions = [string, Credential, boolean, boolean | undefined];
 
 export const modelPollerMiddleware: Middleware<
-  {},
+  void,
   RootState,
   Store["dispatch"]
 > = (reduxStore) => {

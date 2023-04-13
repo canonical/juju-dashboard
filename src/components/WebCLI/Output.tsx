@@ -133,7 +133,7 @@ const WebCLIOutput = ({
       if (!dragHandles.includes(target?.classList.value)) {
         return;
       }
-      var rect = target.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
       resizeDeltaY.current = e.targetTouches[0].pageY - rect.top;
       document.addEventListener("touchmove", resizeTouch, { passive: false });
     };

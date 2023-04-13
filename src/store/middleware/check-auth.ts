@@ -39,7 +39,7 @@ export const checkLoggedIn = (state: RootState, wsControllerURL: string) => {
 */
 // eslint-disable-next-line import/no-anonymous-default-export
 export const checkAuthMiddleware: Middleware<
-  {},
+  void,
   RootState,
   Store["dispatch"]
 > =

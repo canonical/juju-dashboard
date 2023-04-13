@@ -74,7 +74,7 @@ const ControllersLink = () => {
 const PrimaryNav = () => {
   const appVersion = useSelector(getAppVersion);
   const [updateAvailable, setUpdateAvailable] = useState(false);
-  let versionRequested = useRef(false);
+  const versionRequested = useRef(false);
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {

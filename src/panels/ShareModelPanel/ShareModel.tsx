@@ -160,26 +160,23 @@ export default function ShareModel() {
       permissionTo,
       permissionFrom
     );
-    let error = response?.results?.[0]?.error?.message ?? null;
+    let error: string | null = response?.results?.[0]?.error?.message ?? null;
     // ignore this error as it means that it's a success
     if (error && error.match(/user already has .+ access or greater/i)) {
       delete response?.results[0];
       error = null;
     }
 
-    if (error) {
-      reactHotToast.custom((t) => (
-        <ToastCard toastInstance={t} type="negative" text={error!} />
-      ));
-    } else {
-      reactHotToast.custom((t) => (
-        <ToastCard
-          toastInstance={t}
-          type="positive"
-          text={`Permissions for <strong>${username}</strong> have been changed to <em>${permissionTo}.</em>`}
-        />
-      ));
-    }
+    reactHotToast.custom((t) => (
+      <ToastCard
+        toastInstance={t}
+        type={error ? "negative" : "positive"}
+        text={
+          error ??
+          `Permissions for <strong>${username}</strong> have been changed to <em>${permissionTo}.</em>`
+        }
+      />
+    ));
     return response ?? null;
   };
 
