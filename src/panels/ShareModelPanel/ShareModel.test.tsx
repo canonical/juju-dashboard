@@ -8,11 +8,11 @@ import { Label } from "components/ShareCard/ShareCard";
 import { actions as appActions } from "store/app";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelUserInfoFactory,
   controllerFactory,
 } from "testing/factories/juju/juju";
 

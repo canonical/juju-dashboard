@@ -1,10 +1,3 @@
-import type { ModelStatusInfo } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import type {
-  MachineHardware,
-  ModelMachineInfo,
-  ModelSLAInfo,
-  ModelUserInfo,
-} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { Factory } from "fishery";
 
 import type {
@@ -16,6 +9,9 @@ import type {
   ModelInfo,
   ModelListInfo,
 } from "store/juju/types";
+
+import { modelStatusInfoFactory } from "./Clientv6";
+import { modelSLAInfoFactory } from "./ModelManagerV9";
 
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -120,51 +116,6 @@ export const modelDataMachineFactory = Factory.define<ModelData["machines"][0]>(
     "lxd-profiles": {},
   })
 );
-
-export const modelStatusInfoFactory = Factory.define<ModelStatusInfo>(() => ({
-  name: "sub-test",
-  type: "iaas",
-  "cloud-tag": "cloud-google",
-  region: "us-east1",
-  version: "2.6.10",
-  "available-version": "",
-  "model-status": modelDataStatusFactory.build(),
-  "meter-status": {
-    color: "",
-    message: "",
-  },
-  sla: "unsupported",
-}));
-
-export const modelUserInfoFactory = Factory.define<ModelUserInfo>(() => ({
-  user: "user-eggman@external",
-  "display-name": "eggman",
-  "last-connection": "2019-11-15T18:31:36Z",
-  access: "admin",
-  "model-tag": "",
-}));
-
-export const machineHardwareFactory = Factory.define<MachineHardware>(() => ({
-  arch: "amd64",
-  mem: 1700,
-  "root-disk": 10240,
-  cores: 1,
-  "cpu-power": 138,
-  tags: [],
-  "availability-zone": "us-east1-b",
-}));
-
-export const modelMachineInfoFactory = Factory.define<ModelMachineInfo>(() => ({
-  id: "0",
-  hardware: machineHardwareFactory.build(),
-  "instance-id": "juju-9cb18d-0",
-  status: "started",
-}));
-
-export const modelSLAInfoFactory = Factory.define<ModelSLAInfo>(() => ({
-  level: "unsupported",
-  owner: "",
-}));
 
 export const modelDataInfoFactory = Factory.define<ModelInfo>(() => ({
   name: "sub-test",
