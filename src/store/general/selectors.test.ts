@@ -18,6 +18,7 @@ import {
   isConnecting,
   isLoggedIn,
   getActiveUserControllerAccess,
+  getConnectionError,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -48,6 +49,18 @@ describe("selectors", () => {
         "wss://example.com"
       )
     ).toStrictEqual(credential);
+  });
+
+  it("getConnectionError", () => {
+    expect(
+      getConnectionError(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            connectionError: "error",
+          }),
+        })
+      )
+    ).toBe("error");
   });
 
   it("getLoginError", () => {

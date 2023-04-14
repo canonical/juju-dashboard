@@ -27,6 +27,11 @@ export const getUserPass = createSelector(
   (sliceState, wsControllerURL) => sliceState?.credentials?.[wsControllerURL]
 );
 
+export const getConnectionError = createSelector(
+  [slice],
+  (sliceState) => sliceState?.connectionError
+);
+
 /**
   Fetches a login error from state
   @param state The application state.

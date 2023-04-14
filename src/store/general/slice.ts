@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 import type { GeneralState } from "./types";
 
@@ -7,6 +8,7 @@ const slice = createSlice({
   initialState: {
     appVersion: null,
     config: null,
+    connectionError: null,
     controllerConnections: null,
     credentials: null,
     loginError: null,
@@ -24,6 +26,9 @@ const slice = createSlice({
     },
     storeConfig: (state, action) => {
       state.config = action.payload;
+    },
+    storeConnectionError: (state, action: PayloadAction<string>) => {
+      state.connectionError = action.payload;
     },
     storeLoginError: (state, action) => {
       state.loginError = action.payload;

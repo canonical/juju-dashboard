@@ -2,6 +2,7 @@ import { initialize, pageview } from "react-ga";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 
+import ConnectionError from "components/ConnectionError";
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 import { Routes } from "components/Routes/Routes";
 import useLocalStorage from "hooks/useLocalStorage";
@@ -21,7 +22,9 @@ function App() {
   return (
     <Router basename={config?.baseAppURL}>
       <ErrorBoundary>
-        <Routes />
+        <ConnectionError>
+          <Routes />
+        </ConnectionError>
       </ErrorBoundary>
     </Router>
   );

@@ -24,6 +24,7 @@ export type Credentials = Record<string, Credential>;
 export type GeneralState = {
   appVersion: string | null;
   config: Config | null;
+  connectionError?: string | null;
   controllerConnections: ControllerConnections | null;
   credentials: Credentials | null;
   loginError: string | null;

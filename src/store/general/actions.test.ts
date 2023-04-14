@@ -37,6 +37,13 @@ describe("actions", () => {
     });
   });
 
+  it("storeConnectionError", () => {
+    expect(actions.storeConnectionError("error")).toStrictEqual({
+      type: "general/storeConnectionError",
+      payload: "error",
+    });
+  });
+
   it("storeUserPass", () => {
     expect(
       actions.storeUserPass({
