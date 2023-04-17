@@ -19,13 +19,10 @@ import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
 import FadeIn from "animations/FadeIn";
+import CharmIcon from "components/CharmIcon/CharmIcon";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import {
-  copyToClipboard,
-  formatFriendlyDateToNow,
-  generateIconImg,
-  generateStatusElement,
-} from "components/utils";
+import Status from "components/Status";
+import { copyToClipboard, formatFriendlyDateToNow } from "components/utils";
 import { queryActionsList, queryOperationsList } from "juju/api";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { RootState } from "store/store";
@@ -85,7 +82,7 @@ function generateAppIcon(
   if (application && userName && modelName) {
     return (
       <>
-        {generateIconImg(appName, application.charm)}
+        <CharmIcon name={appName} charmId={application.charm} />
         {generateLinkToApp(appName, userName, modelName)}
       </>
     );
@@ -252,12 +249,7 @@ export default function ActionLogs() {
               modelName
             ),
             id: `${operationId}/${actionName}`,
-            status: generateStatusElement(
-              actionData.status,
-              undefined,
-              true,
-              true
-            ),
+            status: <Status status={actionData.status} useIcon actionsLogs />,
           };
           rows.push({
             ...defaultRow,
@@ -274,12 +266,7 @@ export default function ActionLogs() {
             </>
           ),
           id: "",
-          status: generateStatusElement(
-            actionData.status,
-            undefined,
-            true,
-            true
-          ),
+          status: <Status status={actionData.status} useIcon actionsLogs />,
           taskId: actionData.action.tag.split("-")[1],
           message: (
             <>

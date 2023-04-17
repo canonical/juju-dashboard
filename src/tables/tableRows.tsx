@@ -9,14 +9,12 @@ import { Field } from "formik";
 import { Anchorme } from "react-anchorme";
 import { Link } from "react-router-dom";
 
+import CharmIcon from "components/CharmIcon/CharmIcon";
+import EntityIdentifier from "components/EntityIdentifier/EntityIdentifier";
+import RelationIcon from "components/RelationIcon";
+import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import {
-  generateEntityIdentifier,
-  generateRelationIconImage,
-  generateStatusElement,
-  generateIconImg,
-  copyToClipboard,
-} from "components/utils";
+import { copyToClipboard } from "components/utils";
 import type { ApplicationData, RelationData, UnitData } from "juju/types";
 import type { StatusData } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
@@ -80,9 +78,11 @@ export function generateLocalApplicationRows(
     const rev = extractRevisionNumber(app["charm-url"]) || "-";
     const store = getStore(app["charm-url"]);
     const version = app["workload-version"] || "-";
-    const status = app.status
-      ? generateStatusElement(applicationStatuses[app.name])
-      : "-";
+    const status = app.status ? (
+      <Status status={applicationStatuses[app.name]} />
+    ) : (
+      "-"
+    );
     const message = (
       <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
         {app.status?.message ?? ""}
@@ -100,7 +100,7 @@ export function generateLocalApplicationRows(
                 appName: key.replace("/", "-"),
               })}
             >
-              {generateEntityIdentifier(app["charm-url"] || "", key, false)}
+              <EntityIdentifier charmId={app["charm-url"]} name={key} />
             </Link>
           ),
         },
@@ -288,17 +288,16 @@ export function generateUnitRows(
       </Anchorme>
     );
     const charm = unit["charm-url"];
-    const name = generateEntityIdentifier(charm ? charm : "", unitId, false);
     let columns: MainTableCell[] = [
       {
         content: (
           <Link to={generateUnitURL(modelParams, unitId)}>
-            <TruncatedTooltip message={name}>{name}</TruncatedTooltip>
+            <EntityIdentifier charmId={charm} name={unitId} />
           </Link>
         ),
       },
       {
-        content: generateStatusElement(workload),
+        content: <Status status={workload} />,
         className: "u-capitalise",
       },
       { content: agent },
@@ -373,24 +372,21 @@ export function generateUnitRows(
         const subordinate = subordinates[key];
         const address = subordinate["public-address"];
         const workloadStatus = subordinate["workload-status"].current;
-        const name = generateEntityIdentifier(
-          subordinate["charm-url"],
-          key,
-          true
-        );
         const columns: MainTableCell[] = [
           {
             content: (
               <Link to={generateUnitURL(modelParams, unitId)}>
-                <TruncatedTooltip message={name}>{name}</TruncatedTooltip>
+                <EntityIdentifier
+                  charmId={subordinate["charm-url"]}
+                  name={key}
+                  subordinate
+                />
               </Link>
             ),
             className: "u-truncate",
           },
           {
-            content: generateStatusElement(
-              subordinate["workload-status"].current
-            ),
+            content: <Status status={subordinate["workload-status"].current} />,
             className: "u-capitalise",
           },
           { content: subordinate["agent-status"].current },
@@ -458,9 +454,13 @@ export function generateMachineRows(
         }
       });
     const apps = appsOnMachine.length
-      ? appsOnMachine.map((app) => {
-          return generateIconImg(app[0], app[1]);
-        })
+      ? appsOnMachine.map((app) => (
+          <CharmIcon
+            name={app[0]}
+            charmId={app[1]}
+            key={`${app[0]}-${app[1]}`}
+          />
+        ))
       : "None";
     return apps;
   };
@@ -507,13 +507,11 @@ export function generateMachineRows(
                 position="top-center"
                 positionElementClassName="entity-details__machines-status-icon"
               >
-                {generateStatusElement(
-                  machine["agent-status"].current,
-                  null,
-                  true,
-                  false,
-                  "p-icon"
-                )}
+                <Status
+                  status={machine["agent-status"].current}
+                  className="p-icon"
+                  useIcon
+                />
               </TruncatedTooltip>
             ),
             className: "u-capitalise",
@@ -563,12 +561,14 @@ export function generateRelationRows(
         {
           content: (
             <TruncatedTooltip message={providerLabel}>
-              {applications
-                ? generateRelationIconImage(
-                    providerApplicationName || peerApplicationName,
-                    applications
-                  )
-                : null}
+              {applications ? (
+                <RelationIcon
+                  applicationName={
+                    providerApplicationName || peerApplicationName
+                  }
+                  applications={applications}
+                />
+              ) : null}
               {providerLabel}
             </TruncatedTooltip>
           ),
@@ -576,12 +576,12 @@ export function generateRelationRows(
         {
           content: (
             <TruncatedTooltip message={requirerLabel}>
-              {applications
-                ? generateRelationIconImage(
-                    requirerApplicationName,
-                    applications
-                  )
-                : null}
+              {applications ? (
+                <RelationIcon
+                  applicationName={requirerApplicationName}
+                  applications={applications}
+                />
+              ) : null}
               {requirerLabel}
             </TruncatedTooltip>
           ),
@@ -615,10 +615,10 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
         {
           content: (
             <TruncatedTooltip message={offer.applicationName}>
-              {generateRelationIconImage(
-                offer.applicationName,
-                modelStatusData.applications
-              )}
+              <RelationIcon
+                applicationName={offer.applicationName}
+                applications={modelStatusData.applications}
+              />
               {offer.applicationName}
             </TruncatedTooltip>
           ),
@@ -658,7 +658,10 @@ export function generateAppOffersRows(
         {
           content: (
             <TruncatedTooltip message={offer["offer-name"]}>
-              {generateRelationIconImage(offer, modelStatusData.applications)}
+              <RelationIcon
+                applicationName={offer}
+                applications={modelStatusData.applications}
+              />
               {offer["offer-name"]}
             </TruncatedTooltip>
           ),
@@ -703,10 +706,10 @@ export function generateConsumedRows(modelStatusData?: ModelData | null) {
         {
           content: (
             <TruncatedTooltip message={application.offerName}>
-              {generateRelationIconImage(
-                application.offerName,
-                modelStatusData.applications
-              )}
+              <RelationIcon
+                applicationName={application.offerName}
+                applications={modelStatusData.applications}
+              />
               {application.offerName}
             </TruncatedTooltip>
           ),

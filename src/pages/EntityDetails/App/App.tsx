@@ -11,7 +11,7 @@ import FormikFormData from "components/FormikFormData/FormikFormData";
 import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import { generateStatusElement } from "components/utils";
+import Status from "components/Status";
 import { useQueryParams } from "hooks/useQueryParams";
 import type { MachineData, UnitData } from "juju/types";
 import {
@@ -177,7 +177,7 @@ export default function App(): JSX.Element {
   let appEntityData = {};
   if (application) {
     appEntityData = {
-      status: generateStatusElement(application.status?.current),
+      status: <Status status={application.status?.current} />,
       charm: application["charm-url"],
       os: "Ubuntu",
       revision: extractRevisionNumber(application["charm-url"]) || "-",
