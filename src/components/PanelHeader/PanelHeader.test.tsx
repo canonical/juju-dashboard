@@ -11,7 +11,7 @@ describe("PanelHeader", () => {
       <MemoryRouter
         initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
       >
-        <PanelHeader title={title} />
+        <PanelHeader id="123" title={title} />
       </MemoryRouter>
     );
     expect(screen.getByText(title)).toHaveClass("p-panel__title");
@@ -21,7 +21,7 @@ describe("PanelHeader", () => {
     window.history.pushState({}, "", "/models?model=cmr&panel=share-model");
     render(
       <BrowserRouter>
-        <PanelHeader title="Title" />
+        <PanelHeader id="123" title="Title" />
       </BrowserRouter>
     );
     const searchParams = new URLSearchParams(window.location.search);

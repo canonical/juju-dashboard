@@ -459,7 +459,7 @@ export function disableControllerUUIDMasking(conn: ConnectionWithFacades) {
   @returns conn The connection.
 */
 async function connectAndLoginToModel(modelUUID: string, appState: RootState) {
-  const wsControllerURL = getModelByUUID(appState, modelUUID).wsControllerURL;
+  const wsControllerURL = getModelByUUID(appState, modelUUID)?.wsControllerURL;
   if (!wsControllerURL) {
     return null;
   }

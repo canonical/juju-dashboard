@@ -10,7 +10,7 @@ import Logo from "components/Logo/Logo";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import useOffline from "hooks/useOffline";
-import Panels from "panels/panels";
+import Panels from "panels/Panels";
 import { actions } from "store/ui";
 import { isSideNavCollapsed } from "store/ui/selectors";
 

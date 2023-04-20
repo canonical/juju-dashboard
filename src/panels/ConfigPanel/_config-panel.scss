@@ -10,29 +10,10 @@ $panel-padding: 1.5rem;
 }
 
 .config-panel {
-  $magic-title-height: 4.7rem;
-  $magic-drawer-height: 5rem;
-
-  /* prettier-ignore */
-  $magic-non-content-height: ($panel-padding * 2) + $top-header-height + $magic-drawer-height + $magic-title-height;
-  $magic-min-height: calc(100vh - #{$magic-non-content-height});
-
-  overflow-y: auto;
-
   &__modal-button-row-hint {
     font-size: #{map-get($font-sizes, small)}rem;
     margin-bottom: 1.5rem;
     text-align: left;
-  }
-
-  .config-content {
-    @media (max-width: $breakpoint-large) {
-      grid-template-columns: 1fr !important;
-    }
-
-    &.row {
-      padding: 0;
-    }
   }
 
   h5 {
@@ -52,7 +33,6 @@ $panel-padding: 1.5rem;
   .full-size {
     display: flex;
     justify-content: center;
-    min-height: $magic-min-height;
     text-align: center;
   }
 
@@ -60,6 +40,12 @@ $panel-padding: 1.5rem;
     @include vf-animation(opacity, brisk, out);
 
     opacity: 0;
+    white-space: nowrap;
+    width: auto;
+
+    &[aria-hidden="true"] {
+      width: 0;
+    }
   }
 
   .config-panel__show-button {
@@ -69,11 +55,12 @@ $panel-padding: 1.5rem;
   &__reset-all {
     flex: 1 0 auto;
     margin-left: auto;
+    text-align: right;
 
     &.config-panel__hide-button {
       overflow: hidden;
       position: absolute;
-      right: 1.5rem;
+      right: $sph--large * 2;
       top: 0;
     }
   }
@@ -94,12 +81,22 @@ $panel-padding: 1.5rem;
     margin: 0 auto;
   }
 
+  &__list {
+    padding-right: $sph--large * 2;
+  }
+
   &__list-header {
     display: flex;
     justify-content: space-between;
-    margin: 2rem 0 1rem;
-    padding: 0 1.5rem;
+    margin-bottom: $spv--large;
+    padding: 0 $sph--large * 2 0 $sph--small;
     position: relative;
+
+    h5 {
+      // Need to leave extra room for the reset button so that when it appears/disappears
+      // it does not move the content around.
+      padding-bottom: $sph--small;
+    }
 
     @media (max-width: $breakpoint-x-small) {
       flex-direction: column;
@@ -122,37 +119,10 @@ $panel-padding: 1.5rem;
         margin-left: inherit;
       }
     }
-
-    .entity-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
-      .entity-icon {
-        vertical-align: text-bottom;
-      }
-    }
-  }
-
-  &__config-list {
-    border-right: 1px solid $color-mid-light;
-    padding-top: 1rem;
-
-    @media screen and (max-width: $breakpoint-large) {
-      border-right: none;
-    }
-  }
-
-  &__list {
-    min-height: $magic-min-height;
-    padding: 0 1rem;
   }
 
   &__description {
-    margin-top: 2rem;
-    padding-right: 1.5rem;
-
-    @media screen and (max-width: $breakpoint-large) {
+    @media screen and (max-width: $breakpoint-small) {
       display: none !important;
     }
 
@@ -163,7 +133,6 @@ $panel-padding: 1.5rem;
   }
 
   &__no-description {
-    min-height: $magic-min-height;
     padding: 0 5rem;
     position: sticky;
     text-align: center;
@@ -187,7 +156,7 @@ $panel-padding: 1.5rem;
 
   &__button-row {
     border-top: 1px solid $color-mid-light;
-    margin: 0 1.5rem;
+    margin-right: $sph--large;
     text-align: right;
 
     button {
@@ -222,10 +191,14 @@ $panel-padding: 1.5rem;
     background-color: $color-light;
   }
 
+  &__title {
+    display: flex;
+  }
+
   .config-input--view-description {
     display: none;
     // Give the toggle button a larger hit area:
-    margin: -$spv--x-small 0 0 (-$spv--small);
+    margin: ($spv--x-small * 0.5) 0 0 (-$spv--small);
     padding: $spv--x-small $spv--small;
 
     .p-icon--minus,
@@ -233,7 +206,7 @@ $panel-padding: 1.5rem;
       width: #{map-get($font-sizes, small)}rem;
     }
 
-    @media screen and (max-width: $breakpoint-large) {
+    @media screen and (max-width: $breakpoint-small) {
       display: inline-block;
     }
   }

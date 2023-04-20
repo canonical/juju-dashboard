@@ -41,10 +41,6 @@
     }
   }
 
-  .p-panel__content {
-    padding: 1rem;
-  }
-
   .p-notification--negative {
     margin: 0 1rem;
   }
@@ -70,6 +66,12 @@
   }
 
   .share-cards {
+    padding-right: $sph--large * 2;
+
+    @media (max-width: $breakpoint-small) {
+      padding-right: 0;
+    }
+
     &__heading {
       display: flex;
 

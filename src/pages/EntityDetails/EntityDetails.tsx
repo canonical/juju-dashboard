@@ -11,19 +11,14 @@ import Header from "components/Header/Header";
 import NotFound from "components/NotFound/NotFound";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import SearchBox from "components/SearchBox/SearchBox";
-import SlidePanel from "components/SlidePanel/SlidePanel";
 import WebCLI from "components/WebCLI/WebCLI";
 import { useEntityDetailsParams } from "components/hooks";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
-import ConfigPanel from "panels/ConfigPanel/ConfigPanel";
-import OffersPanel from "panels/OffersPanel/OffersPanel";
-import RemoteAppsPanel from "panels/RemoteAppsPanel/RemoteAppsPanel";
 import { getUserPass } from "store/general/selectors";
 import {
   getControllerDataByUUID,
-  getModelApplications,
   getModelInfo,
   getModelListLoaded,
   getModelUUIDFromList,
@@ -35,15 +30,6 @@ import "./_entity-details.scss";
 
 export enum Label {
   NOT_FOUND = "Model not found",
-}
-
-function generatePanelContent(activePanel: string, entity: string) {
-  switch (activePanel) {
-    case "remoteApps":
-      return <RemoteAppsPanel entity={entity} />;
-    case "offers":
-      return <OffersPanel entity={entity} />;
-  }
 }
 
 const getEntityType = (params: Partial<EntityDetailsRoute>) => {
@@ -63,7 +49,6 @@ const EntityDetails = () => {
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
-  const applications = useSelector(getModelApplications(modelUUID));
   const { isNestedEntityPage } = useEntityDetailsParams();
 
   const [query, setQuery] = useQueryParams({
@@ -73,8 +58,7 @@ const EntityDetails = () => {
     filterQuery: "",
   });
 
-  const { panel: activePanel, entity, activeView } = query;
-  const closePanelConfig = { panel: undefined, entity: undefined };
+  const { activeView } = query;
 
   const store = useStore();
   const storeState = store.getState();
@@ -133,34 +117,6 @@ const EntityDetails = () => {
   }, [query.filterQuery]);
 
   useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
-
-  const generateActivePanel = () => {
-    if (activePanel === "config") {
-      const charm = entity ? applications?.[entity]?.["charm-url"] : null;
-      if (!entity || !charm) {
-        return null;
-      }
-      return (
-        <ConfigPanel
-          appName={entity}
-          charm={charm}
-          modelUUID={modelUUID}
-          onClose={() => setQuery(closePanelConfig, { replace: true })}
-        />
-      );
-    } else if (activePanel === "remoteApps" || activePanel === "offers") {
-      return (
-        <SlidePanel
-          isActive={!!activePanel}
-          onClose={() => setQuery(closePanelConfig, { replace: true })}
-          isLoading={!entity}
-          className={`${activePanel}-panel`}
-        >
-          {entity ? generatePanelContent(activePanel, entity) : null}
-        </SlidePanel>
-      );
-    }
-  };
 
   const generateTabItems = () => {
     if (!userName || !modelName) {
@@ -235,10 +191,7 @@ const EntityDetails = () => {
           })}
         >
           <div className={`entity-details entity-details__${entityType}`}>
-            <>
-              <Outlet />
-              {generateActivePanel()}
-            </>
+            <Outlet />
           </div>
         </div>
       </FadeIn>

@@ -213,10 +213,7 @@ export function generateRemoteApplicationRows(
           store: "store",
         },
         "data-app": key,
-        className:
-          query?.panel === "remoteApps" && query?.entity === key
-            ? "is-selected"
-            : "",
+        className: "",
       };
     })
   );
@@ -682,10 +679,6 @@ export function generateAppOffersRows(
         },
       ],
       "data-app": offerId,
-      className:
-        query.panel === "offers" && query.entity === offerId
-          ? "is-selected"
-          : "",
     };
   });
 }

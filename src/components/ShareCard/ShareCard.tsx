@@ -71,7 +71,7 @@ export default function ShareCard({
       <SlideDownFadeOut isAnimating={hasBeenRemoved}>
         <div className="share-card" data-active={inFocus}>
           <div className="share-card__title">
-            <TruncatedTooltip message={userName}>
+            <TruncatedTooltip message={userName} wrapperClassName="u-truncate">
               <strong className="share-card__username">{userName}</strong>
             </TruncatedTooltip>
             <span className="share-card__secondary">

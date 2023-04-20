@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import DivButton from "components/DivButton";
+import TruncatedTooltip from "components/TruncatedTooltip";
 import { isSet } from "components/utils";
 import type { ConfigData, ConfigValue } from "juju/api";
 
@@ -139,12 +140,11 @@ const ConfigField = <V extends ConfigValue>({
         "config-input--changed": inputChanged,
       })}
       data-testid={config.name}
-      onClick={(event) => {
-        event.preventDefault();
+      onClick={() => {
         setSelectedConfig(config);
       }}
     >
-      <h5 className="u-float-left">
+      <div className="config-input__title">
         {config.description ? (
           <Button
             appearance="base"
@@ -154,21 +154,22 @@ const ConfigField = <V extends ConfigValue>({
             <Icon name={showDescription ? "minus" : "plus"} />
           </Button>
         ) : null}
-        {config.name}
-      </h5>
-      <button
-        className={classnames(
-          "u-float-right p-button--base config-panel__hide-button",
-          {
+        <h5 className="u-truncate u-flex-grow">
+          <TruncatedTooltip message={config.name}>
+            {config.name}
+          </TruncatedTooltip>
+        </h5>
+        <button
+          className={classnames("p-button--base config-panel__hide-button", {
             "config-panel__show-button": showUseDefault,
-          }
-        )}
-        onClick={resetToDefault}
-        tabIndex={showUseDefault ? 0 : -1}
-        aria-hidden={!showUseDefault}
-      >
-        use default
-      </button>
+          })}
+          onClick={resetToDefault}
+          tabIndex={showUseDefault ? 0 : -1}
+          aria-hidden={!showUseDefault}
+        >
+          use default
+        </button>
+      </div>
       <div
         className={classnames("config-input--description")}
         ref={descriptionRef}

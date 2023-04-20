@@ -4,11 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import Aside from "components/Aside/Aside";
 import CharmIcon from "components/CharmIcon/CharmIcon";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
-import PanelHeader from "components/PanelHeader/PanelHeader";
+import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -21,6 +20,10 @@ import { useAppStore } from "store/store";
 import ActionOptions from "./ActionOptions";
 
 import "./_actions-panel.scss";
+
+export enum TestId {
+  PANEL = "actions-panel",
+}
 
 export type ActionData = {
   [key: string]: ActionItem;
@@ -207,9 +210,13 @@ export default function ActionsPanel(): JSX.Element {
   const data = Object.keys(actionData).length > 0 ? actionData : null;
 
   return (
-    <Aside width="narrow">
-      <div className="p-panel actions-panel">
-        <PanelHeader title={generateTitle()} />
+    <Panel
+      width="narrow"
+      panelClassName="actions-panel"
+      data-testid={TestId.PANEL}
+      title={generateTitle()}
+    >
+      <>
         <div
           className="actions-panel__unit-list"
           data-testid="actions-panel-unit-list"
@@ -250,8 +257,8 @@ export default function ActionsPanel(): JSX.Element {
             Run action
           </Button>
         </div>
-      </div>
-    </Aside>
+      </>
+    </Panel>
   );
 }
 
