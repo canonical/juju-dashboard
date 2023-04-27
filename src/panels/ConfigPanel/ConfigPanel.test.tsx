@@ -10,12 +10,12 @@ import {
   applicationGetFactory,
   configFactory,
 } from "testing/factories/juju/ApplicationV15";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   controllerFactory,
   jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelUserInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 
