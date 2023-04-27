@@ -1,5 +1,10 @@
 import type { ModelStatusInfo } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type {
+  ApplicationOfferStatus,
+  DetailedStatus,
+  RemoteApplicationStatus,
+} from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { Factory } from "fishery";
 
 import { modelDataStatusFactory } from "./juju";
@@ -33,3 +38,33 @@ export const fullStatusFactory = Factory.define<FullStatus>(() => ({
   relations: [],
   units: {},
 }));
+
+export const applicationOfferStatusFactory =
+  Factory.define<ApplicationOfferStatus>(() => ({
+    "active-connected-count": 1,
+    "application-name": "etcd",
+    charm: "ch:etcd",
+    endpoints: {},
+    "offer-name": "db",
+    "total-connected-count": 2,
+  }));
+
+export const detailedStatusFactory = Factory.define<DetailedStatus>(() => ({
+  data: {},
+  info: "ready",
+  kind: "",
+  life: "",
+  since: "2023-02-26T23:40:27.575528717Z",
+  status: "active",
+  version: "",
+}));
+
+export const remoteApplicationStatusFactory =
+  Factory.define<RemoteApplicationStatus>(() => ({
+    endpoints: [],
+    life: "",
+    "offer-name": "mysql",
+    "offer-url": "juju-controller:admin/cmr.mysql",
+    relations: {},
+    status: detailedStatusFactory.build(),
+  }));

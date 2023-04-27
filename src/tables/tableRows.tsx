@@ -1,4 +1,8 @@
-import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type {
+  RemoteApplicationStatus,
+  RemoteEndpoint,
+} from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type { ApplicationOfferStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { Button, Icon } from "@canonical/react-components";
 import type {
   MainTableCell,
@@ -603,7 +607,7 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
 
   const offers = modelStatusData.offers;
   return Object.keys(offers).map((offerId) => {
-    const offer = offers[offerId];
+    const offer: ApplicationOfferStatus = offers[offerId];
     const endpoints = Object.entries<RemoteEndpoint>(offer.endpoints)
       .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
       .join("/n");
@@ -611,12 +615,12 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
       columns: [
         {
           content: (
-            <TruncatedTooltip message={offer.applicationName}>
+            <TruncatedTooltip message={offer["application-name"]}>
               <RelationIcon
-                applicationName={offer.applicationName}
+                applicationName={offer["application-name"]}
                 applications={modelStatusData.applications}
               />
-              {offer.applicationName}
+              {offer["application-name"]}
             </TruncatedTooltip>
           ),
         },
@@ -626,7 +630,7 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
           ),
         },
         {
-          content: offer.activeConnectedCount,
+          content: offer["active-connected-count"],
         },
       ],
     };
@@ -690,7 +694,7 @@ export function generateConsumedRows(modelStatusData?: ModelData | null) {
 
   const remoteApplications = modelStatusData["remote-applications"] || {};
   return Object.keys(remoteApplications).map((appName) => {
-    const application = remoteApplications[appName];
+    const application: RemoteApplicationStatus = remoteApplications[appName];
     const endpoints = Object.entries<RemoteEndpoint>(application.endpoints)
       .map((endpoint) => `${endpoint[1].name}:${endpoint[1].interface}`)
       .join("/n");
@@ -698,12 +702,12 @@ export function generateConsumedRows(modelStatusData?: ModelData | null) {
       columns: [
         {
           content: (
-            <TruncatedTooltip message={application.offerName}>
+            <TruncatedTooltip message={application["offer-name"]}>
               <RelationIcon
-                applicationName={application.offerName}
+                applicationName={application["offer-name"]}
                 applications={modelStatusData.applications}
               />
-              {application.offerName}
+              {application["offer-name"]}
             </TruncatedTooltip>
           ),
         },

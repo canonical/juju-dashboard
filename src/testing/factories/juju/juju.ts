@@ -10,7 +10,7 @@ import type {
   ModelListInfo,
 } from "store/juju/types";
 
-import { modelStatusInfoFactory } from "./Clientv6";
+import { modelStatusInfoFactory } from "./ClientV6";
 import { modelSLAInfoFactory } from "./ModelManagerV9";
 
 function generateUUID() {

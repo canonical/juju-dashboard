@@ -1,6 +1,6 @@
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
-import { modelStatusInfoFactory } from "testing/factories/juju/Clientv6";
+import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   controllerFactory,

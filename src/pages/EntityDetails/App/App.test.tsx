@@ -158,7 +158,7 @@ describe("Entity Details App", () => {
     await userEvent.click(firstInput);
     expect(selectAll).not.toBeChecked();
 
-    // Clickcing selectAll with partial units selected, selects all
+    // Clicking selectAll with partial units selected, selects all
     await userEvent.click(selectAll);
     unitsListChecked(true);
     expect(selectAll).toBeChecked();
@@ -207,5 +207,16 @@ describe("Entity Details App", () => {
     }
     generateComponent(storeData);
     expect(screen.getByText(Label.NO_UNITS)).toBeInTheDocument();
+  });
+
+  it("can display the config panel", async () => {
+    generateComponent();
+    expect(window.location.search).toEqual("");
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.CONFIGURE })
+    );
+    expect(window.location.search).toEqual(
+      "?panel=config&entity=etcd&charm=cs%3Aceph-mon-55&modelUUID=abc123"
+    );
   });
 });

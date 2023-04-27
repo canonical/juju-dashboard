@@ -1,9 +1,10 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
-import { TestId } from "components/InfoPanel/InfoPanel";
+import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
@@ -15,6 +16,10 @@ import {
   actionResultsFactory,
   operationResultsFactory,
 } from "testing/factories/juju/ActionV7";
+import {
+  applicationOfferStatusFactory,
+  remoteApplicationStatusFactory,
+} from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   modelDataFactory,
@@ -30,7 +35,7 @@ import {
   unitChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
 
-import Model, { Label } from "./Model";
+import Model, { Label, TestId } from "./Model";
 
 const mockOperationResults = operationResultsFactory.build();
 const mockActionResults = actionResultsFactory.build();
@@ -114,7 +119,7 @@ describe("Model", () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(screen.getByTestId(TestId.INFO_PANEL)).toBeInTheDocument();
+    expect(screen.getByTestId(InfoPanelTestId.INFO_PANEL)).toBeInTheDocument();
   });
 
   it("renders the main table", () => {
@@ -375,6 +380,90 @@ describe("Model", () => {
     expect(
       document.querySelector(".entity-details__action-logs")
     ).toBeInTheDocument();
+  });
+
+  it("can display the offers table", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        relations: {
+          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          uuid: "abc123",
+          name: "test1",
+        }),
+        offers: {
+          db: applicationOfferStatusFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/eggman@external/test1?activeView=integrations",
+          ]}
+        >
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(screen.getByTestId(TestId.OFFERS)).toBeInTheDocument();
+  });
+
+  it("can display the consumed table", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        relations: {
+          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          uuid: "abc123",
+          name: "test1",
+        }),
+        "remote-applications": {
+          mysql: remoteApplicationStatusFactory.build(),
+        },
+      }),
+    };
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[
+            "/models/eggman@external/test1?activeView=integrations",
+          ]}
+        >
+          <Routes>
+            <Route path="/models/:userName/:modelName" element={<Model />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(screen.getByTestId(TestId.CONSUMED)).toBeInTheDocument();
   });
 
   it("renders the details pane for models shared-with-me", () => {
@@ -654,7 +743,7 @@ describe("Model", () => {
     ).toBeInTheDocument();
   });
 
-  it("should have a link for model access panel", () => {
+  it("should have a link for model access panel", async () => {
     state.juju.modelData.abc123.info = modelDataInfoFactory.build({
       uuid: "abc123",
       name: "test1",
@@ -667,17 +756,20 @@ describe("Model", () => {
       ],
     });
     const store = mockStore(state);
+    window.history.pushState({}, "", "/models/eggman@external/test1");
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
+        <BrowserRouter>
           <Routes>
             <Route path="/models/:userName/:modelName" element={<Model />} />
           </Routes>
-        </MemoryRouter>
+        </BrowserRouter>
       </Provider>
     );
-    expect(
+    expect(window.location.search).toEqual("");
+    await userEvent.click(
       screen.getByRole("button", { name: Label.ACCESS_BUTTON })
-    ).toBeInTheDocument();
+    );
+    expect(window.location.search).toEqual("?panel=share-model");
   });
 });

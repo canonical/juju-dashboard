@@ -2,7 +2,7 @@ import { Spinner, Tabs } from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode, MouseEvent } from "react";
 import { useEffect, useState, useRef } from "react";
-import { useSelector, useStore } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams, Link, Outlet } from "react-router-dom";
 
 import FadeIn from "animations/FadeIn";
@@ -60,8 +60,6 @@ const EntityDetails = () => {
 
   const { activeView } = query;
 
-  const store = useStore();
-  const storeState = store.getState();
   const searchBoxRef = useRef<HTMLInputElement>(null);
 
   const [showWebCLI, setShowWebCLI] = useState(false);
@@ -78,17 +76,15 @@ const EntityDetails = () => {
   );
   const entityType = getEntityType(routeParams);
 
-  let credentials = null;
-  let controllerWSHost = "";
-  let wsProtocol: string | null = null;
-  if (primaryControllerData) {
-    credentials = getUserPass(storeState, primaryControllerData[0]);
-    controllerWSHost = primaryControllerData[0]
+  const credentials = useAppSelector((state) =>
+    getUserPass(state, primaryControllerData?.[0])
+  );
+  const controllerWSHost =
+    primaryControllerData?.[0]
       .replace("ws://", "")
       .replace("wss://", "")
-      .replace("/api", "");
-    wsProtocol = primaryControllerData[0].split("://")[0];
-  }
+      .replace("/api", "") || null;
+  const wsProtocol = primaryControllerData?.[0].split("://")[0];
 
   const handleNavClick = (e: MouseEvent) => {
     (e.target as HTMLAnchorElement)?.scrollIntoView({
@@ -251,7 +247,7 @@ const EntityDetails = () => {
         </div>
       </Header>
       {content}
-      {showWebCLI && (
+      {showWebCLI && controllerWSHost && (
         <WebCLI
           controllerWSHost={controllerWSHost}
           credentials={credentials}

@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
+import * as componentUtils from "components/utils";
 import * as juju from "juju/api";
 import ActionLogs, {
   Label,
@@ -22,9 +23,16 @@ import {
   jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
+  modelDataApplicationFactory,
+  modelDataStatusFactory,
 } from "testing/factories/juju/juju";
 
 import { Output } from "./ActionLogs";
+
+jest.mock("components/utils", () => ({
+  ...jest.requireActual("components/utils"),
+  copyToClipboard: jest.fn(),
+}));
 
 const completed = new Date();
 completed.setMonth(completed.getMonth() - 18);
@@ -136,6 +144,13 @@ describe("Action Logs", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
+            applications: {
+              easyrsa: modelDataApplicationFactory.build({
+                status: modelDataStatusFactory.build({
+                  status: "running",
+                }),
+              }),
+            },
             info: modelDataInfoFactory.build({
               name: "group-test",
             }),
@@ -211,7 +226,7 @@ describe("Action Logs", () => {
     expect(rows[3].textContent).toEqual(expected[2].join(""));
   });
 
-  it("handles unkown dates", async () => {
+  it("handles unknown dates", async () => {
     const completed = new Date("0001-01-01T00:00:00Z");
     const mockActionResults = actionResultsFactory.build({
       results: [
@@ -264,6 +279,17 @@ describe("Action Logs", () => {
     expect(within(rows[3]).getByText("error message")).toBeInTheDocument();
   });
 
+  it("can show both STOUT and STDERR", async () => {
+    generateComponent();
+    const rows = await screen.findAllByRole("row");
+    await userEvent.click(
+      within(rows[3]).getByRole("button", { name: Label.OUTPUT })
+    );
+    await userEvent.click(screen.getByRole("button", { name: Output.ALL }));
+    expect(within(rows[3]).getByText("log message 1")).toBeInTheDocument();
+    expect(within(rows[3]).getByText("error message")).toBeInTheDocument();
+  });
+
   it("only shows the action result button when there is a result", async () => {
     generateComponent();
     const showOutputBtns = await screen.findAllByTestId("show-output");
@@ -286,5 +312,15 @@ describe("Action Logs", () => {
     expect(modal).toBeInTheDocument();
     await userEvent.click(screen.getByLabelText("Close active modal"));
     expect(modal).not.toBeInTheDocument();
+  });
+
+  it("can copy the action result", async () => {
+    generateComponent();
+    await userEvent.click(await screen.findByTestId("show-output"));
+    await userEvent.click(screen.getByRole("button", { name: Label.COPY }));
+    expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(`{
+  "key1": "value1",
+  "test": 123
+}`);
   });
 });

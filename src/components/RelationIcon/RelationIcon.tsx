@@ -1,9 +1,11 @@
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+
 import CharmIcon from "components/CharmIcon/CharmIcon";
 import type { ModelData } from "juju/types";
 
 type Props = {
   applicationName: string;
-  applications: ModelData["applications"];
+  applications: ModelData["applications"] | Record<string, ApplicationStatus>;
 };
 
 const RelationIcon = ({ applicationName, applications }: Props) => {
@@ -11,9 +13,11 @@ const RelationIcon = ({ applicationName, applications }: Props) => {
     return null;
   }
   const application = applications[applicationName];
-  return (
-    <CharmIcon name={applicationName} charmId={application["charm-url"]} />
-  );
+  const charmId =
+    "charm-url" in application
+      ? application["charm-url"]
+      : application["charm"];
+  return <CharmIcon name={applicationName} charmId={charmId} />;
 };
 
 export default RelationIcon;

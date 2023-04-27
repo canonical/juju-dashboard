@@ -6,7 +6,7 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
-import { fullStatusFactory } from "testing/factories/juju/Clientv6";
+import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 
 import {
   LOGIN_TIMEOUT,

@@ -41,6 +41,7 @@ export enum TestId {
 }
 
 export enum Label {
+  CONFIGURE = "Configure",
   NO_UNITS = "There are no units in this application",
 }
 
@@ -275,7 +276,8 @@ export default function App(): JSX.Element {
               className="entity-details__action-button"
               onClick={showConfig}
             >
-              <i className="p-icon--settings"></i>Configure
+              <i className="p-icon--settings"></i>
+              {Label.CONFIGURE}
             </button>
           </div>
           <EntityInfo data={appEntityData} />
