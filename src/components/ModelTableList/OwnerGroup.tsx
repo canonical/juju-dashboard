@@ -3,8 +3,8 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
 
+import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { generateStatusElement } from "components/utils";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getGroupedByOwnerAndFilteredModelData,
@@ -42,7 +42,7 @@ export enum TestId {
 function generateOwnerTableHeaders(owner: string, count: number) {
   return [
     {
-      content: generateStatusElement(owner, count, false),
+      content: <Status status={owner} count={count} />,
       sortKey: "name",
     },
     { content: "", sortKey: "summary" }, // The unit/machines/apps counts
@@ -110,7 +110,7 @@ export default function OwnerGroup({ filters }: Props) {
           },
           {
             "data-testid": "column-status",
-            content: generateStatusElement(highestStatus),
+            content: <Status status={highestStatus} />,
             className: "u-capitalise",
           },
           {

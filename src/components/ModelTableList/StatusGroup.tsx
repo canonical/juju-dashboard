@@ -4,8 +4,8 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
+import StatusComponent from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { generateStatusElement } from "components/utils";
 import { useQueryParams } from "hooks/useQueryParams";
 import type { SetParams } from "hooks/useQueryParams";
 import {
@@ -19,7 +19,8 @@ import {
   extractOwnerName,
   canAdministerModelAccess,
 } from "store/juju/utils/models";
-import type { Filters, Status } from "store/juju/utils/models";
+import type { Filters } from "store/juju/utils/models";
+import type { Status } from "store/juju/utils/models";
 import urls from "urls";
 
 import {
@@ -43,7 +44,7 @@ export const TestId = {
 function generateStatusTableHeaders(label: string, count: number) {
   return [
     {
-      content: generateStatusElement(label, count),
+      content: <StatusComponent status={label} count={count} />,
       sortKey: "name",
     },
     { content: "", sortKey: "summary" }, // The unit/machines/apps counts

@@ -10,10 +10,11 @@ import { useEffect, useRef, useState } from "react";
 import type { Store } from "redux";
 
 import FadeIn from "animations/FadeIn";
+import CharmIcon from "components/CharmIcon";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import ScrollOnRender from "components/ScrollOnRender";
 import SlidePanel from "components/SlidePanel/SlidePanel";
-import { generateIconImg, isSet } from "components/utils";
+import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import type { Config, ConfigData } from "juju/api";
 import type { ConfigValue } from "juju/api";
@@ -270,7 +271,7 @@ export default function ConfigPanel({
               <div className="config-panel__config-list col-6">
                 <div className="config-panel__list-header">
                   <h4 className="entity-name">
-                    {generateIconImg(appName, charm)} {appName}
+                    <CharmIcon name={appName} charmId={charm} /> {appName}
                   </h4>
                   <div
                     className={classnames("config-panel__reset-all", {

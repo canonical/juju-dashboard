@@ -3,7 +3,7 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
 
-import { generateStatusElement } from "components/utils";
+import Status from "components/Status";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getActiveUsers,
@@ -40,7 +40,7 @@ export enum TestId {
 function generateCloudTableHeaders(cloud: string, count: number) {
   return [
     {
-      content: generateStatusElement(cloud, count, false),
+      content: <Status status={cloud} count={count} />,
       sortKey: "name",
     },
     { content: "", sortKey: "summary" }, // The unit/machines/apps counts
@@ -118,7 +118,7 @@ export default function CloudGroup({ filters }: Props) {
           },
           {
             "data-testid": "column-status",
-            content: generateStatusElement(highestStatus),
+            content: <Status status={highestStatus} />,
             className: "u-capitalise",
           },
           {

@@ -7,12 +7,12 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import Aside from "components/Aside/Aside";
+import CharmIcon from "components/CharmIcon/CharmIcon";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import ToastCard from "components/ToastCard/ToastCard";
-import { generateIconImg } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import { useQueryParams } from "hooks/useQueryParams";
 import { executeActionOnUnits } from "juju/api";
@@ -66,7 +66,12 @@ export default function CharmActionsPanel(): JSX.Element {
 
     return (
       <h5>
-        {generateIconImg(selectedCharm?.meta?.name || "", selectedCharm?.url)}{" "}
+        {selectedCharm?.meta?.name && selectedCharm?.url ? (
+          <CharmIcon
+            name={selectedCharm.meta.name}
+            charmId={selectedCharm.url}
+          />
+        ) : null}{" "}
         {selectedApplications.length}{" "}
         {pluralize(selectedApplications.length, "application")} ({totalUnits}{" "}
         {pluralize(selectedApplications.length, "unit")}) selected
