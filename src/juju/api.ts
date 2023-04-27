@@ -161,7 +161,7 @@ export async function loginWithBakery(
   return { conn, juju, intervalId };
 }
 
-type LoginResponse = Awaited<ReturnType<typeof connectAndLogin>> & {
+export type LoginResponse = Awaited<ReturnType<typeof connectAndLogin>> & {
   conn?: ConnectionWithFacades;
 };
 
@@ -180,7 +180,7 @@ export async function connectAndLoginWithTimeout(
   credentials: Credential | null | undefined,
   options: ConnectOptions,
   identityProviderAvailable: boolean
-): Promise<string | LoginResponse> {
+): Promise<LoginResponse> {
   const timeout: Promise<string> = new Promise((resolve) => {
     setTimeout(resolve, LOGIN_TIMEOUT, "timeout");
   });
@@ -195,7 +195,7 @@ export async function connectAndLoginWithTimeout(
   );
   return new Promise((resolve, reject) => {
     Promise.race([timeout, juju]).then((resp) => {
-      if (resp === "timeout") {
+      if (typeof resp === "string") {
         reject("timeout");
         return;
       }
@@ -232,17 +232,12 @@ export async function fetchModelStatus(
   if (isLoggedIn(getState(), wsControllerURL)) {
     try {
       const controllerCredentials = getUserPass(getState(), wsControllerURL);
-      const response = await connectAndLoginWithTimeout(
+      const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,
         generateConnectionOptions(false),
         useIdentityProvider
       );
-      if (typeof response === "string") {
-        console.error("error connecting to model:", modelUUID);
-        return;
-      }
-      const { conn, logout } = response;
       if (isLoggedIn(getState(), wsControllerURL)) {
         status =
           (await conn?.facades.client?.fullStatus({ patterns: [] })) ?? null;
@@ -258,7 +253,7 @@ export async function fetchModelStatus(
       }
 
       if (status && isLoggedIn(getState(), wsControllerURL)) {
-        const entities = Object.keys(status.applications).map((name) => ({
+        const entities = Object.keys(status.applications ?? {}).map((name) => ({
           tag: `application-${name}`,
         }));
         const response = await conn?.facades.annotations?.get({ entities });

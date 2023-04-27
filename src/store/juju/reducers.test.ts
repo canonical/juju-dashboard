@@ -1,4 +1,5 @@
 import { DeltaChangeTypes, DeltaEntityTypes } from "juju/types";
+import { fullStatusFactory } from "testing/factories/juju/Clientv6";
 import {
   controllerFactory,
   jujuStateFactory,
@@ -12,11 +13,7 @@ import {
 
 import { actions, reducer } from "./slice";
 
-const status = {
-  applications: {},
-  branches: {},
-  "controller-timestamp": "now",
-  machines: {},
+const status = fullStatusFactory.build({
   model: {
     "available-version": "",
     "cloud-tag": "",
@@ -39,10 +36,7 @@ const status = {
     version: "",
     region: "west",
   },
-  offers: {},
-  relations: [],
-  "remote-applications": {},
-};
+});
 
 const model = modelDataFactory.build({
   uuid: "abc123",

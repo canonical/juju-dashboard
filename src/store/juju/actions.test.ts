@@ -1,10 +1,8 @@
+import { fullStatusFactory } from "testing/factories/juju/Clientv6";
+
 import { actions } from "./slice";
 
-const status = {
-  applications: {},
-  branches: {},
-  "controller-timestamp": "now",
-  machines: {},
+const status = fullStatusFactory.build({
   model: {
     "available-version": "",
     "cloud-tag": "",
@@ -26,10 +24,7 @@ const status = {
     type: "",
     version: "",
   },
-  offers: {},
-  relations: [],
-  "remote-applications": {},
-};
+});
 
 describe("actions", () => {
   it("updateModelList", () => {

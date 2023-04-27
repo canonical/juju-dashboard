@@ -1,49 +1,48 @@
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
+import { modelStatusInfoFactory } from "testing/factories/juju/Clientv6";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
-  jujuStateFactory,
-  modelListInfoFactory,
   controllerFactory,
+  jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelStatusInfoFactory,
 } from "testing/factories/juju/juju";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
-  modelWatcherModelDataFactory,
   applicationInfoFactory,
-  unitChangeDeltaFactory,
-  relationChangeDeltaFactory,
   machineChangeDeltaFactory,
+  modelWatcherModelDataFactory,
+  relationChangeDeltaFactory,
+  unitChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
 
-import { modelUserInfoFactory } from "../../testing/factories/juju/juju";
-
 import {
-  getModelWatcherDataByUUID,
-  getModelInfo,
-  getModelUUIDFromList,
-  getModelAnnotations,
-  getModelApplications,
-  getModelUnits,
-  getModelRelations,
-  getModelMachines,
-  getAllModelApplicationStatus,
-  getModelData,
-  getControllerData,
-  getModelListLoaded,
-  hasModels,
-  getModelList,
-  getModelByUUID,
-  getModelControllerDataByUUID,
-  getActiveUsers,
   getActiveUser,
-  getModelDataByUUID,
-  getModelAccess,
-  getFilteredModelData,
+  getActiveUsers,
+  getAllModelApplicationStatus,
+  getControllerData,
   getExternalUsers,
   getExternalUsersInModel,
+  getFilteredModelData,
+  getModelAccess,
+  getModelAnnotations,
+  getModelApplications,
+  getModelByUUID,
+  getModelControllerDataByUUID,
+  getModelData,
+  getModelDataByUUID,
+  getModelInfo,
+  getModelList,
+  getModelListLoaded,
+  getModelMachines,
+  getModelRelations,
+  getModelUUIDFromList,
+  getModelUnits,
+  getModelWatcherDataByUUID,
   getUserDomains,
   getUserDomainsInModel,
+  hasModels,
 } from "./selectors";
 
 describe("selectors", () => {

@@ -7,14 +7,14 @@ import configureStore from "redux-mock-store";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
+import { modelStatusInfoFactory } from "testing/factories/juju/Clientv6";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelStatusInfoFactory,
   modelDataApplicationFactory,
   modelDataStatusFactory,
-  modelUserInfoFactory,
   modelDataUnitFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";

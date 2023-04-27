@@ -1,6 +1,6 @@
+import { modelStatusInfoFactory } from "testing/factories/juju/Clientv6";
 import {
   modelDataFactory,
-  modelStatusInfoFactory,
   modelDataApplicationFactory,
   modelDataStatusFactory,
   modelDataUnitFactory,

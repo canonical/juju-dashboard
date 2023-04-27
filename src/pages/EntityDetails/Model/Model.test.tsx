@@ -15,11 +15,11 @@ import {
   actionResultsFactory,
   operationResultsFactory,
 } from "testing/factories/juju/ActionV7";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   modelDataFactory,
   modelDataInfoFactory,
   modelListInfoFactory,
-  modelUserInfoFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
