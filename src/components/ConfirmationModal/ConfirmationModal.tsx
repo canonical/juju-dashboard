@@ -8,11 +8,13 @@ import "./_confirmation-modal.scss";
 type Props = {
   children?: ReactNode;
   buttonRow: ReactNode;
+  onClose?: () => void;
 };
 
 export default function ConfirmationModal({
   children,
   buttonRow,
+  onClose,
 }: Props): JSX.Element {
   const modalRef = useRef<HTMLDivElement>(null);
   const portalHost =
@@ -35,7 +37,7 @@ export default function ConfirmationModal({
 
   return createPortal(
     <div className="p-confirmation-modal" ref={modalRef}>
-      <Modal buttonRow={buttonRow}>
+      <Modal buttonRow={buttonRow} close={onClose}>
         <div>{children}</div>
       </Modal>
     </div>,

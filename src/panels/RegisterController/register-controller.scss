@@ -6,10 +6,6 @@
     padding: 0;
   }
 
-  .p-panel__content {
-    padding: 1.5rem;
-  }
-
   .p-icon--warning {
     margin-top: 7px;
     position: absolute;
@@ -39,5 +35,9 @@
 
   .p-button--positive {
     width: 100%;
+  }
+
+  .register-a-controller__submit-segment {
+    padding-top: $spv--small;
   }
 }

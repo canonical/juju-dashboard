@@ -36,6 +36,10 @@
   }
 }
 
+.u-flex-grow {
+  flex-grow: 1;
+}
+
 // Extend has-icon to work outside of buttons
 // https://github.com/canonical-web-and-design/vanilla-framework/issues/3102
 .has-icon [class*="p-icon"]:first-child {
@@ -50,4 +54,9 @@
 
 .p-tooltip__position-element--inline {
   display: inline !important;
+}
+
+.p-panel_content--padded {
+  padding-left: $sph--large;
+  padding-right: $sph--large;
 }

@@ -1,10 +1,15 @@
+import type { PropsWithSpread } from "@canonical/react-components";
+import type { HTMLMotionProps } from "framer-motion";
 import { motion } from "framer-motion";
 
-type Props = {
-  isActive: boolean;
-  children: JSX.Element;
-  className: string;
-};
+export type Props = PropsWithSpread<
+  {
+    isActive: boolean;
+    children: JSX.Element;
+    className: string;
+  },
+  HTMLMotionProps<"div">
+>;
 
 export default function SlideInOut({
   isActive = true,

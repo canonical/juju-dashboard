@@ -25,8 +25,8 @@ export default function BooleanConfig({
       setSelectedConfig={setSelectedConfig}
       setNewValue={setNewValue}
       input={(value) => (
-        <div className="row">
-          <div className="col-2">
+        <div className="row u-no-padding">
+          <div className="col-3">
             <RadioInput
               label="true"
               name={config.name}
@@ -37,7 +37,7 @@ export default function BooleanConfig({
               onChange={handleOptionChange}
             />
           </div>
-          <div className="col-2">
+          <div className="col-3">
             <RadioInput
               label="false"
               name={config.name}

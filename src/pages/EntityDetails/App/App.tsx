@@ -157,22 +157,28 @@ export default function App(): JSX.Element {
   const [query, setQuery] = useQueryParams<{
     tableView: string;
     activeView: string;
+    charm: string | null;
     entity: string | null;
+    modelUUID: string | null;
     panel: string | null;
     units: string[];
   }>({
     tableView: "units",
     activeView: "apps",
+    charm: null,
     entity: null,
+    modelUUID: null,
     panel: null,
     units: [],
   });
 
-  const showConfig = () => {
-    setQuery({ panel: "config", entity: entity }, { replace: true });
-  };
-
   const application = entity ? applications?.[entity] : null;
+  const showConfig = () => {
+    setQuery(
+      { panel: "config", entity, charm: application?.["charm-url"], modelUUID },
+      { replace: true }
+    );
+  };
 
   let appEntityData = {};
   if (application) {

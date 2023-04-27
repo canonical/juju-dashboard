@@ -1,13 +1,22 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
 import * as apiModule from "juju/api";
+import type { RootState } from "store/store";
 import {
   applicationGetFactory,
   configFactory,
 } from "testing/factories/juju/ApplicationV15";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  controllerFactory,
+  jujuStateFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
+} from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 
 import ConfigPanel, { Label } from "./ConfigPanel";
@@ -19,21 +28,59 @@ jest.mock("juju/api", () => ({
 }));
 
 describe("ConfigPanel", () => {
-  beforeEach(() => jest.resetModules());
+  let state: RootState;
+
+  beforeEach(() => {
+    jest.resetModules();
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        controllers: {
+          "wss://jimm.jujucharms.com/api": [
+            controllerFactory.build({ path: "admin/jaas", uuid: "123" }),
+          ],
+        },
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              "controller-uuid": "123",
+              name: "hadoopspark",
+              users: [
+                modelUserInfoFactory.build({ user: "eggman@external" }),
+                modelUserInfoFactory.build({ user: "spaceman@domain" }),
+              ],
+            }),
+          }),
+        },
+      }),
+    });
+  });
 
   it("displays a message if the app has no config", async () => {
     jest.spyOn(apiModule, "getApplicationConfig").mockImplementation(() => {
       return Promise.resolve(applicationGetFactory.build({ config: {} }));
     });
-    const store = mockStore(rootStateFactory.build());
+    const params = new URLSearchParams({
+      entity: "easyrsa",
+      charm: "cs:easyrsa",
+      modelUUID: "abc123",
+      panel: "config",
+    });
+    window.history.pushState(
+      {},
+      "",
+      `/models/eggman@external/hadoopspark?${params.toString()}`
+    );
+    const store = mockStore(state);
     render(
       <Provider store={store}>
-        <ConfigPanel
-          appName="easyrsa"
-          charm="cs:easyrsa"
-          modelUUID=""
-          onClose={jest.fn()}
-        />
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<ConfigPanel />}
+            />
+          </Routes>
+        </BrowserRouter>
       </Provider>
     );
     // Use findBy to wait for the async events to finish
@@ -51,15 +98,28 @@ describe("ConfigPanel", () => {
         })
       );
     });
-    const store = mockStore(rootStateFactory.build());
+    const params = new URLSearchParams({
+      entity: "easyrsa",
+      charm: "cs:easyrsa",
+      modelUUID: "abc123",
+      panel: "config",
+    });
+    window.history.pushState(
+      {},
+      "",
+      `/models/eggman@external/hadoopspark?${params.toString()}`
+    );
+    const store = mockStore(state);
     render(
       <Provider store={store}>
-        <ConfigPanel
-          appName="easyrsa"
-          charm="cs:easyrsa"
-          modelUUID=""
-          onClose={jest.fn()}
-        />
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<ConfigPanel />}
+            />
+          </Routes>
+        </BrowserRouter>
       </Provider>
     );
 

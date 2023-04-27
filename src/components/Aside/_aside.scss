@@ -1,7 +1,14 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/breakpoints";
 
-.l-aside {
+// Scope the l-aside within l-application so that it can override the Vanilla styles.
+.l-application .l-aside {
+  // Always fill the screen height.
+  height: 100vh;
+  // The aside is within the main element so any long content will make the
+  // aside scroll up with the page so this needs to be prevented.
+  position: fixed;
+
   .loading {
     align-items: center;
     background-color: $color-x-light;
@@ -34,10 +41,19 @@
           &:first-child {
             border-right: 1px solid #ccc;
             margin-right: 2rem;
-            padding-right: 2rem;
           }
         }
       }
+    }
+  }
+
+  .p-panel {
+    // Panels inside the aside do not need to handle overflow as this is already
+    // handled by the aside, and doubling up prevents sticky from working in the children.
+    overflow: initial;
+
+    .p-panel__content {
+      overflow: initial;
     }
   }
 }

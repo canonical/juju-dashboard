@@ -6,11 +6,10 @@ import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import Aside from "components/Aside/Aside";
 import CharmIcon from "components/CharmIcon/CharmIcon";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
-import PanelHeader from "components/PanelHeader/PanelHeader";
+import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import ToastCard from "components/ToastCard/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
@@ -32,6 +31,10 @@ import {
 import { pluralize } from "store/juju/utils/models";
 import { useAppStore } from "store/store";
 import "../ActionsPanel/_actions-panel.scss";
+
+export enum TestId {
+  PANEL = "charm-actions-panel",
+}
 
 export default function CharmActionsPanel(): JSX.Element {
   const sendAnalytics = useAnalytics();
@@ -174,9 +177,13 @@ export default function CharmActionsPanel(): JSX.Element {
   };
 
   return (
-    <Aside width="narrow">
-      <div className="p-panel actions-panel">
-        <PanelHeader title={generateTitle()} />
+    <Panel
+      width="narrow"
+      panelClassName="actions-panel"
+      data-testid={TestId.PANEL}
+      title={generateTitle()}
+    >
+      <>
         <div className="actions-panel__action-list">
           <LoadingHandler
             hasData={Object.keys(actionData).length > 0}
@@ -211,8 +218,8 @@ export default function CharmActionsPanel(): JSX.Element {
             Run action
           </Button>
         </div>
-      </div>
-    </Aside>
+      </>
+    </Panel>
   );
 }
 
