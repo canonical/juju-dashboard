@@ -15,7 +15,7 @@ import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
 import Application from "@canonical/jujulib/dist/api/facades/application";
 import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
 import Charms from "@canonical/jujulib/dist/api/facades/charms";
-import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
+import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import Client from "@canonical/jujulib/dist/api/facades/client";
 import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
@@ -404,7 +404,7 @@ export async function fetchControllerList(
     const controllerConfig = await conn.facades.controller?.controllerConfig(
       null
     );
-    if (controllerConfig) {
+    if (controllerConfig?.config) {
       controllers = [
         {
           path: controllerConfig.config["controller-name"],

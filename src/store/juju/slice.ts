@@ -124,6 +124,9 @@ const slice = createSlice({
       if (!state.modelWatcherData) {
         state.modelWatcherData = {};
       }
+      if (!state.modelWatcherData[action.payload.uuid]) {
+        return;
+      }
       state.modelWatcherData[action.payload.uuid].model = {
         ...(state.modelWatcherData[action.payload.uuid]?.model ?? {}),
         "cloud-tag": action.payload.status.model["cloud-tag"],
