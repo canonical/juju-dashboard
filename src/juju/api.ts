@@ -3,7 +3,7 @@ import type {
   Credentials,
   Client as JujuClient,
 } from "@canonical/jujulib";
-import { connect, connectAndLogin } from "@canonical/jujulib";
+import { CLIENT_VERSION, connect, connectAndLogin } from "@canonical/jujulib";
 import Action from "@canonical/jujulib/dist/api/facades/action";
 import type {
   AdditionalProperties as ActionAdditionalProperties,
@@ -57,6 +57,7 @@ import type {
 
 export const PING_TIME = 20000;
 export const LOGIN_TIMEOUT = 5000;
+const JUJU_VERSION = CLIENT_VERSION;
 
 /**
   Return a common connection option config.
@@ -151,7 +152,7 @@ export async function loginWithBakery(
   );
   let conn: ConnectionWithFacades | null | undefined = null;
   try {
-    conn = await juju.login(loginParams);
+    conn = await juju.login(loginParams, JUJU_VERSION);
   } catch (error) {
     return { error };
   }
@@ -191,7 +192,8 @@ export async function connectAndLoginWithTimeout(
   const juju: Promise<LoginResponse> = connectAndLogin(
     modelURL,
     loginParams,
-    options
+    options,
+    JUJU_VERSION
   );
   return new Promise((resolve, reject) => {
     Promise.race([timeout, juju]).then((resp) => {
