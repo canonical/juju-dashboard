@@ -3,7 +3,7 @@ import type {
   Credentials,
   Client as JujuClient,
 } from "@canonical/jujulib";
-import { CLIENT_VERSION, connect, connectAndLogin } from "@canonical/jujulib";
+import { connect, connectAndLogin } from "@canonical/jujulib";
 import Action from "@canonical/jujulib/dist/api/facades/action";
 import type {
   AdditionalProperties as ActionAdditionalProperties,
@@ -57,7 +57,12 @@ import type {
 
 export const PING_TIME = 20000;
 export const LOGIN_TIMEOUT = 5000;
-const JUJU_VERSION = CLIENT_VERSION;
+// Juju supports a client one major version away from the controller's version,
+// but only when the minor version is `0` so by setting this to exactly `3.0.0`
+// this will allow the dashboard to work with both 2.x.x and 3.x.x controllers.
+// See the API server code for more details:
+// https://github.com/juju/juju/blob/e2c7b4c88e516976666e3d0c9479d0d3c704e643/apiserver/restrict_newer_client.go#L21C1-L29
+export const CLIENT_VERSION = "3.0.0";
 
 /**
   Return a common connection option config.
@@ -152,7 +157,7 @@ export async function loginWithBakery(
   );
   let conn: ConnectionWithFacades | null | undefined = null;
   try {
-    conn = await juju.login(loginParams, JUJU_VERSION);
+    conn = await juju.login(loginParams, CLIENT_VERSION);
   } catch (error) {
     return { error };
   }
@@ -193,7 +198,7 @@ export async function connectAndLoginWithTimeout(
     modelURL,
     loginParams,
     options,
-    JUJU_VERSION
+    CLIENT_VERSION
   );
   return new Promise((resolve, reject) => {
     Promise.race([timeout, juju]).then((resp) => {
