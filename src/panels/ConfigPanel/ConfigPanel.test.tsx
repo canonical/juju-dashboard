@@ -9,7 +9,7 @@ import type { RootState } from "store/store";
 import {
   applicationGetFactory,
   configFactory,
-} from "testing/factories/juju/ApplicationV15";
+} from "testing/factories/juju/Application";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   controllerFactory,

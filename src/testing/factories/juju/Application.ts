@@ -33,6 +33,7 @@ export const constraintsFactory = Factory.define<Value>(() => ({
   container: "",
   cores: 0,
   "cpu-power": 0,
+  "image-id": "123",
   "instance-role": "",
   "instance-type": "",
   mem: 0,

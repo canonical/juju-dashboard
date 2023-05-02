@@ -16,6 +16,7 @@ import {
   fetchModelStatus,
   generateConnectionOptions,
   loginWithBakery,
+  CLIENT_VERSION,
 } from "./api";
 
 jest.mock("@canonical/jujulib", () => ({
@@ -70,10 +71,13 @@ describe("Juju API", () => {
         intervalId: expect.any(Number),
       });
       expect(connectSpy).toHaveBeenCalled();
-      expect(juju.login).toHaveBeenCalledWith({
-        username: "eggman",
-        password: "123",
-      });
+      expect(juju.login).toHaveBeenCalledWith(
+        {
+          username: "eggman",
+          password: "123",
+        },
+        CLIENT_VERSION
+      );
     });
 
     it("handles login with external provider", async () => {
@@ -90,7 +94,7 @@ describe("Juju API", () => {
         },
         true
       );
-      expect(juju.login).toHaveBeenCalledWith({});
+      expect(juju.login).toHaveBeenCalledWith({}, CLIENT_VERSION);
     });
 
     it("handles login errors", async () => {
@@ -264,7 +268,8 @@ describe("Juju API", () => {
         expect.any(String),
         // An empty object is passed when using an external provider.
         {},
-        expect.any(Object)
+        expect.any(Object),
+        CLIENT_VERSION
       );
     });
 

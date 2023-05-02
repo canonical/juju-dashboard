@@ -1,4 +1,4 @@
-import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV2";
+import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import { Factory } from "fishery";
 
 import type { ApplicationInfo } from "juju/types";

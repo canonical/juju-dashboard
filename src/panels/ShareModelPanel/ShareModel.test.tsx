@@ -44,6 +44,7 @@ describe("Share Model Panel", () => {
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
               ],
+              uuid: "abc123",
             }),
           }),
         },
@@ -74,6 +75,8 @@ describe("Share Model Panel", () => {
     state.juju.modelData.def456 = modelDataFactory.build({
       info: modelDataInfoFactory.build({
         users: [
+          modelUserInfoFactory.build({ user: "eggman@external" }),
+          modelUserInfoFactory.build({ user: "another@external" }),
           modelUserInfoFactory.build({ user: "other@model2" }),
           modelUserInfoFactory.build({ user: "other2@anothermodel2" }),
         ],
@@ -197,7 +200,7 @@ describe("Share Model Panel", () => {
     );
     expect(updatePermissionsSpy).toHaveBeenCalledWith({
       action: "revoke",
-      modelUUID: "84e872ff-9171-46be-829b-70f0ffake18d",
+      modelUUID: "abc123",
       permissionFrom: "read",
       permissionTo: undefined,
       user: "spaceman@domain",

@@ -1,4 +1,4 @@
-import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV4";
+import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type { ModelInfo as JujuModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
