@@ -190,9 +190,10 @@ function Details() {
         <div className="controllers--register">
           <button
             className="p-button--positive"
-            onClick={() =>
-              setPanelQs({ panel: "register-controller" }, { replace: true })
-            }
+            onClick={(event) => {
+              event.stopPropagation();
+              setPanelQs({ panel: "register-controller" }, { replace: true });
+            }}
           >
             Register a controller
           </button>

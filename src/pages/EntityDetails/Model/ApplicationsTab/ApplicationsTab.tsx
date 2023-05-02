@@ -1,13 +1,14 @@
-import { Button, MainTable, Icon } from "@canonical/react-components";
+import { Button, Icon, MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import classnames from "classnames";
 import Fuse from "fuse.js";
+import type { MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import ChipGroup from "components/ChipGroup/ChipGroup";
 import type { Chip } from "components/ChipGroup/ChipGroup";
+import ChipGroup from "components/ChipGroup/ChipGroup";
 import ContentReveal from "components/ContentReveal/ContentReveal";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import useAnalytics from "hooks/useAnalytics";
@@ -72,7 +73,8 @@ function SearchResultsActionsRow() {
     panel: null,
   });
 
-  const handleRunAction = async () => {
+  const handleRunAction = async (event: MouseEvent) => {
+    event.stopPropagation();
     sendAnalytics({
       category: "ApplicationSearch",
       action: "Run action (button)",

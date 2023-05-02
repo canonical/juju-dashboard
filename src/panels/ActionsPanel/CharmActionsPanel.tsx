@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "@canonical/react-components";
-import type { MutableRefObject } from "react";
+import type { MouseEvent, MutableRefObject } from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -165,7 +165,8 @@ export default function CharmActionsPanel(): JSX.Element {
         return SubmitConfirmation(
           selectedAction,
           selectedApplications,
-          () => {
+          (event) => {
+            event.stopPropagation();
             setConfirmType("");
             executeAction();
             setQueryParams({ panel: null }, { replace: true });
@@ -243,7 +244,7 @@ function onValuesChange(
 function SubmitConfirmation(
   actionName: string,
   applications: ApplicationInfo[],
-  confirmFunction: () => void,
+  confirmFunction: (event: MouseEvent) => void,
   cancelFunction: () => void
 ): JSX.Element {
   const applicationCount = applications.length;
