@@ -1089,10 +1089,10 @@
   resolved "https://registry.yarnpkg.com/@canonical/cookie-policy/-/cookie-policy-3.4.0.tgz#0d6708da340df5867fd2cc9dbd95538c46f20cf8"
   integrity sha512-cdVqxQmGu+j+Q86UobihWWVFzGzHlekFeMFxlbRpm+yqxEOUCrLkA9/t/RsMfLNDToP2ECPgsMbS20aPlA2tIg==
 
-"@canonical/jujulib@3.1.1":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-3.1.1.tgz#6b8776a55adb7ab80f4a66775facbebdc0c9e4ab"
-  integrity sha512-8Gm0rMnWtN805KR5aOQUST+q6xr6R9Zkrnv/EqlDoccAJ+k/28ccjHtvWQKVn8OVQnpLPIM37r7m8z5SuBqNxg==
+"@canonical/jujulib@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@canonical/jujulib/-/jujulib-3.2.0.tgz#7e0d29060bb100a265fc54b077200a7f894e2c1a"
+  integrity sha512-YRrio9rxoaUQ9c3/RlQw3Sde8FtmqpClYsGtnhtftAnJ6BV1WKfbz6VLSCU5EO5srDZNVx2vxgBUzgk382kL1w==
   dependencies:
     "@canonical/macaroon-bakery" "1.3.2"
     btoa "1.2.1"

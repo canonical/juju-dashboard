@@ -73,8 +73,11 @@ export default function ShareModel() {
   const modelUserDomains = useAppSelector((state) =>
     getUserDomainsInModel(state, modelUUID)
   );
+  const allDomains = allUserDomains.filter(
+    (domain) => !modelUserDomains.includes(domain)
+  );
   // Display the domains used in this model first.
-  const userDomains = [...modelUserDomains, ...allUserDomains].slice(0, 5);
+  const userDomains = [...modelUserDomains, ...allDomains].slice(0, 5);
 
   const modelControllerURL = modelControllerData?.url;
   const users = modelStatusData?.info?.users;
