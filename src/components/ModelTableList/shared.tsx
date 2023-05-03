@@ -278,7 +278,8 @@ export function generateAccessButton(
 ) {
   return (
     <button
-      onClick={() => {
+      onClick={(event) => {
+        event.stopPropagation();
         setPanelQs(
           {
             model: modelName,

@@ -1,5 +1,6 @@
 import { Button, MainTable, Icon } from "@canonical/react-components";
 import { Field, Formik } from "formik";
+import type { MouseEvent } from "react";
 import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
@@ -173,7 +174,8 @@ export default function App(): JSX.Element {
   });
 
   const application = entity ? applications?.[entity] : null;
-  const showConfig = () => {
+  const showConfig = (event: MouseEvent) => {
+    event.stopPropagation();
     setQuery(
       { panel: "config", entity, charm: application?.["charm-url"], modelUUID },
       { replace: true }
@@ -310,7 +312,10 @@ export default function App(): JSX.Element {
                   appearance="base"
                   className="entity-details__action-button"
                   hasIcon={true}
-                  onClick={showActions}
+                  onClick={(event: MouseEvent) => {
+                    event.stopPropagation();
+                    showActions();
+                  }}
                   disabled={!enableActionButtonRow}
                   data-testid={TestId.RUN_ACTION_BUTTON}
                 >
