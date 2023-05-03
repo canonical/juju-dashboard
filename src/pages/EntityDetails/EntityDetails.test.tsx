@@ -5,19 +5,28 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
+import * as WebCLIModule from "components/WebCLI/WebCLI";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import {
+  credentialFactory,
+  generalStateFactory,
+  configFactory,
+} from "testing/factories/general";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
+import { controllerFactory } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
   modelWatcherModelDataFactory,
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
+import urls from "urls";
 
 import EntityDetails, { Label } from "./EntityDetails";
 
@@ -26,10 +35,12 @@ jest.mock("components/Topology/Topology", () => {
   return Topology;
 });
 
-jest.mock("components/WebCLI/WebCLI", () => {
-  const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
-  return WebCLI;
-});
+jest.mock("components/WebCLI/WebCLI", () => ({
+  __esModule: true,
+  default: () => {
+    return <div className="webcli" data-testid="webcli"></div>;
+  },
+}));
 
 const mockStore = configureStore([]);
 
@@ -70,7 +81,22 @@ describe("Entity Details Container", () => {
 
   beforeEach(() => {
     state = rootStateFactory.withGeneralConfig().build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://example.com:17070/api",
+        }),
+        credentials: {
+          "wss://example.com:17070/api": credentialFactory.build({
+            user: "user-kirk@external",
+          }),
+        },
+      }),
       juju: jujuStateFactory.build({
+        controllers: {
+          "wss://example.com:17070/api": [
+            controllerFactory.build({ uuid: "controller123" }),
+          ],
+        },
         models: {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
@@ -85,6 +111,7 @@ describe("Entity Details Container", () => {
               "ceph-mon": applicationInfoFactory.build(),
             },
             model: modelWatcherModelInfoFactory.build({
+              "controller-uuid": "controller123",
               name: "enterprise",
               owner: "kirk@external",
             }),
@@ -92,6 +119,11 @@ describe("Entity Details Container", () => {
         },
       }),
     });
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
   });
 
   it("should display the correct window title", () => {
@@ -219,6 +251,7 @@ describe("Entity Details Container", () => {
           name: "enterprise",
           owner: "kirk@external",
           version: "3.0.7",
+          "controller-uuid": "controller123",
         }),
       }),
     };
@@ -256,6 +289,23 @@ describe("Entity Details Container", () => {
         "l-content--has-webcli"
       );
     });
+  });
+
+  it("passes the controller details to the webCLI", async () => {
+    const cliComponent = jest
+      .spyOn(WebCLIModule, "default")
+      .mockImplementation(jest.fn());
+    renderComponent();
+    expect(cliComponent.mock.calls[0][0]).toMatchObject({
+      controllerWSHost: "example.com:17070",
+      credentials: {
+        password: "verysecure123",
+        user: "user-kirk@external",
+      },
+      modelUUID: "abc123",
+      protocol: "wss",
+    });
+    cliComponent.mockReset();
   });
 
   it("gives the header a class when the header shouldbe a single column", async () => {
@@ -302,5 +352,65 @@ describe("Entity Details Container", () => {
         screen.queryByTestId("filter-applications")
       ).not.toBeInTheDocument();
     });
+  });
+
+  it("searches when the 'enter' key is pressed", async () => {
+    renderComponent();
+    expect(window.location.search).toEqual("");
+    await userEvent.type(screen.getByRole("searchbox"), "what{Enter}");
+    expect(window.location.search).toEqual("?filterQuery=what");
+  });
+
+  it("does not search when other keys are pressed", async () => {
+    renderComponent();
+    expect(window.location.search).toEqual("");
+    await userEvent.type(screen.getByRole("searchbox"), "what{Shift}");
+    expect(window.location.search).toEqual("");
+  });
+
+  it("gives the content the correct class for the model", async () => {
+    renderComponent();
+    expect(
+      document.querySelector(".entity-details__model")
+    ).toBeInTheDocument();
+  });
+
+  it("gives the content the correct class for an app", async () => {
+    renderComponent({
+      path: urls.model.app.index({
+        userName: "kirk@external",
+        modelName: "enterprise",
+        appName: "etcd",
+      }),
+      urlPattern: urls.model.app.index(null),
+    });
+    expect(document.querySelector(".entity-details__app")).toBeInTheDocument();
+  });
+
+  it("gives the content the correct class for a machine", async () => {
+    renderComponent({
+      path: urls.model.machine({
+        userName: "kirk@external",
+        modelName: "enterprise",
+        machineId: "1",
+      }),
+      urlPattern: urls.model.machine(null),
+    });
+    expect(
+      document.querySelector(".entity-details__machine")
+    ).toBeInTheDocument();
+  });
+
+  it("gives the content the correct class for a unit", async () => {
+    renderComponent({
+      path: urls.model.unit({
+        userName: "kirk@external",
+        modelName: "enterprise",
+        appName: "etcd",
+        unitId: "etcd-0",
+      }),
+      urlPattern: urls.model.unit(null),
+    });
+    expect(document.querySelector(".entity-details__unit")).toBeInTheDocument();
   });
 });

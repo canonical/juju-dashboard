@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import "./_chip-group.scss";
 
 export type Chip = {
@@ -6,10 +7,11 @@ export type Chip = {
 
 type Props = {
   chips?: Chip | null;
+  className?: string | null;
   descriptor?: string | null;
 };
 
-const ChipGroup = ({ chips, descriptor }: Props) => {
+const ChipGroup = ({ chips, className, descriptor }: Props) => {
   const getLabelType = (descriptor?: string | null) => {
     let label;
     switch (descriptor) {
@@ -43,7 +45,7 @@ const ChipGroup = ({ chips, descriptor }: Props) => {
   return (
     <>
       {numberOfChips > 0 && (
-        <div className="chip-group">
+        <div className={classNames("chip-group", className)}>
           {labelType && (
             <strong className="chip-group__descriptor">
               {`${numberOfChips} ${labelType}`}

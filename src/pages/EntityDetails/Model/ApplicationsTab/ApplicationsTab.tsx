@@ -22,7 +22,6 @@ import {
   getModelUUIDFromList,
   getSelectedApplications,
 } from "store/juju/selectors";
-import type { ModelData } from "store/juju/types";
 import { pluralize } from "store/juju/utils/models";
 import { useAppStore } from "store/store";
 import {
@@ -57,7 +56,7 @@ const ContentRevealTitle = ({
     <span>
       {count} {pluralize(count, subject)}
     </span>
-    <ChipGroup chips={chips} descriptor={null} />
+    <ChipGroup chips={chips} className="u-no-margin" descriptor={null} />
   </>
 );
 
@@ -120,7 +119,7 @@ export default function ApplicationsTab({ filterQuery }: Props) {
   });
   const { userName, modelName } = useParams<EntityDetailsRoute>();
 
-  const modelStatusData = useModelStatus() as ModelData;
+  const modelStatusData = useModelStatus();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
   const applicationStatuses = useSelector(
@@ -200,6 +199,7 @@ export default function ApplicationsTab({ filterQuery }: Props) {
 
   const localAppTableLength = localApplicationTableRows?.length;
   const appOffersTableLength = appOffersRows?.length;
+
   const remoteAppsTableLength = remoteApplicationTableRows?.length;
 
   const countVisibleTables = (tablesLengths: number[]) =>

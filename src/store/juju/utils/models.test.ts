@@ -1,4 +1,3 @@
-import { modelStatusInfoFactory } from "testing/factories/juju/Clientv6";
 import {
   modelDataFactory,
   modelDataApplicationFactory,
@@ -121,7 +120,7 @@ describe("getModelStatusGroupData", () => {
           }),
         }),
       },
-      model: modelStatusInfoFactory.build({
+      model: modelDataStatusFactory.build({
         "cloud-tag": "cloud-aws",
       }),
     });

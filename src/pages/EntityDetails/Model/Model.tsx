@@ -43,6 +43,11 @@ export enum Label {
   ACCESS_BUTTON = "Model access",
 }
 
+export enum TestId {
+  CONSUMED = "consumed",
+  OFFERS = "offers",
+}
+
 const shouldShow = (segment: string, activeView: string) => {
   switch (activeView) {
     case "apps":
@@ -50,7 +55,6 @@ const shouldShow = (segment: string, activeView: string) => {
         return true;
       }
       return false;
-    case "units":
     case "machines":
     case "integrations":
     case "action-logs":
@@ -219,6 +223,7 @@ const Model = () => {
             )}
             {consumedTableRows.length > 0 && (
               <MainTable
+                data-testid={TestId.CONSUMED}
                 headers={consumedTableHeaders}
                 rows={consumedTableRows}
                 className="entity-details__relations p-main-table"
@@ -228,6 +233,7 @@ const Model = () => {
             )}
             {offersTableRows.length > 0 && (
               <MainTable
+                data-testid={TestId.OFFERS}
                 headers={offersTableHeaders}
                 rows={offersTableRows}
                 className="entity-details__relations p-main-table"

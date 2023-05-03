@@ -1,5 +1,5 @@
 import { DeltaChangeTypes, DeltaEntityTypes } from "juju/types";
-import { fullStatusFactory } from "testing/factories/juju/Clientv6";
+import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import {
   controllerFactory,
   jujuStateFactory,

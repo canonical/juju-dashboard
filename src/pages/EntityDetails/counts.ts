@@ -65,7 +65,7 @@ export function generateMachineCounts(
   const counts = {};
   if (machines && units && applicationName) {
     const machineIds: MachineChangeDelta["id"][] = [];
-    Object.entries(units).forEach(([unitId, unitData]) => {
+    Object.entries(units).forEach(([, unitData]) => {
       if (unitData.application === applicationName) {
         machineIds.push(unitData["machine-id"]);
       }
@@ -82,15 +82,12 @@ export function generateMachineCounts(
 
 /**
   Generates a list of counts from the modelStatusData.
-  @param {String} countType The type of count to generate
-  @param {Object} modelStatusData The modelStatusData from the redux store.
-  @param {String} filterBy The value to filter the counts by. ex) "grafana" when
-    you only want to view the unit counts for grafana.
+  @param countType The type of count to generate
+  @param modelStatusData The modelStatusData from the redux store.
 */
 export const renderCounts = (
-  countType: string,
-  modelStatusData?: ModelData | null,
-  filterBy = ""
+  countType: "localApps" | "relations" | "offers" | "remoteApps",
+  modelStatusData?: ModelData | null
 ) => {
   if (!modelStatusData) return null;
   let chips = null;

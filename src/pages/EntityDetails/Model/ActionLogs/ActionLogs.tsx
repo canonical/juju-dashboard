@@ -50,6 +50,7 @@ type ApplicationData = {
 
 export enum Label {
   OUTPUT = "Output",
+  COPY = "Copy to clipboard",
 }
 
 export enum Output {
@@ -102,7 +103,7 @@ function ActionPayloadModal(props: {
       title="Action result payload"
       buttonRow={
         <Button appearance="neutral" onClick={() => copyToClipboard(json)}>
-          Copy to clipboard
+          {Label.COPY}
         </Button>
       }
       data-testid="action-payload-modal"
