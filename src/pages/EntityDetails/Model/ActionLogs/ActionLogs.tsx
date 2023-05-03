@@ -17,6 +17,7 @@ import classnames from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import type { Column } from "react-table";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon/CharmIcon";
@@ -352,7 +353,7 @@ export default function ActionLogs() {
     selectedOutput,
   ]);
 
-  const columnData = useMemo(
+  const columnData: Column[] = useMemo(
     () => [
       {
         Header: "application",
