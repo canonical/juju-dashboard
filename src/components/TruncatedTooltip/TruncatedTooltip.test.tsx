@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import TruncatedTooltip from "./TruncatedTooltip";
 
@@ -37,6 +38,7 @@ describe("TruncatedTooltip", () => {
     render(
       <TruncatedTooltip message="Tooltip content">{content}</TruncatedTooltip>
     );
+    await userEvent.hover(screen.getByText(content));
     expect(screen.getByTestId("tooltip-portal")).toHaveClass("u-hide");
   });
 
@@ -52,6 +54,7 @@ describe("TruncatedTooltip", () => {
     render(
       <TruncatedTooltip message="Tooltip content">{content}</TruncatedTooltip>
     );
+    await userEvent.hover(screen.getByText(content));
     expect(screen.getByTestId("tooltip-portal")).not.toHaveClass("u-hide");
   });
 });
