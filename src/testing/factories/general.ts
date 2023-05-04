@@ -26,6 +26,7 @@ class GeneralStateFactory extends Factory<GeneralState> {
 export const generalStateFactory = GeneralStateFactory.define(() => ({
   appVersion: null,
   config: null,
+  connectionError: null,
   controllerConnections: null,
   credentials: null,
   loginError: null,

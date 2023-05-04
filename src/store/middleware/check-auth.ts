@@ -54,6 +54,7 @@ export const checkAuthMiddleware: Middleware<
       generalActions.logOut.type,
       generalActions.storeConfig.type,
       generalActions.storeLoginError.type,
+      generalActions.storeConnectionError.type,
       generalActions.storeUserPass.type,
       generalActions.storeVersion.type,
       generalActions.storeVisitURL.type,

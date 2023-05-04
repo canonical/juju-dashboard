@@ -98,10 +98,9 @@ describe("Juju API", () => {
     });
 
     it("handles login errors", async () => {
-      const error = new Error("It didn't work!");
       const juju = {
         login: jest.fn().mockImplementation(() => {
-          throw error;
+          throw new Error();
         }),
       };
       jest.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
@@ -113,7 +112,9 @@ describe("Juju API", () => {
         },
         false
       );
-      expect(response).toStrictEqual({ error });
+      expect(response).toStrictEqual({
+        error: "Could not log into controller",
+      });
     });
 
     it("starts pinging the connection", async () => {

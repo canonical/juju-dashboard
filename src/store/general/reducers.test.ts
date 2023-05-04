@@ -56,6 +56,18 @@ describe("reducers", () => {
     });
   });
 
+  it("storeConnectionError", () => {
+    const state = generalStateFactory.build({
+      connectionError: "old error",
+    });
+    expect(
+      reducer(state, actions.storeConnectionError("new error"))
+    ).toStrictEqual({
+      ...state,
+      connectionError: "new error",
+    });
+  });
+
   it("storeUserPass", () => {
     const state = generalStateFactory.build();
     const credential = credentialFactory.build({

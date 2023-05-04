@@ -30,6 +30,7 @@ import type { Dispatch } from "redux";
 import { isSet } from "components/utils";
 import bakery from "juju/bakery";
 import JIMMV2 from "juju/jimm-facade";
+import { actions as generalActions } from "store/general";
 import {
   getConfig,
   getControllerConnection,
@@ -118,7 +119,7 @@ function startPingerLoop(conn: ConnectionWithFacades) {
   const intervalId = window.setInterval(() => {
     conn.facades.pinger?.ping(null).catch((e: unknown) => {
       // If the pinger fails for whatever reason then cancel the ping.
-      console.error("pinger stopped,", e);
+      console.log("pinger stopped,", e);
       stopPingerLoop(intervalId);
     });
   }, PING_TIME);
@@ -159,11 +160,10 @@ export async function loginWithBakery(
   try {
     conn = await juju.login(loginParams, CLIENT_VERSION);
   } catch (error) {
-    return { error };
+    return { error: "Could not log into controller" };
   }
 
   const intervalId = conn ? startPingerLoop(conn) : null;
-
   return { conn, juju, intervalId };
 }
 
@@ -400,11 +400,19 @@ export async function fetchControllerList(
 ) {
   let controllers: JujuController[] | null = null;
   if (conn.facades.jimM) {
-    const response = await conn.facades.jimM?.listControllers();
-    controllers = response.controllers;
-    controllers?.forEach(
-      (c) => (c.additionalController = additionalController)
-    );
+    try {
+      const response = await conn.facades.jimM?.listControllers();
+      controllers = response.controllers;
+      controllers?.forEach(
+        (c) => (c.additionalController = additionalController)
+      );
+    } catch (error) {
+      dispatch(
+        generalActions.storeConnectionError(
+          "Unable to fetch the list of controllers."
+        )
+      );
+    }
   } else {
     // If we're not connected to a JIMM then call to get the controller config
     // and generate a fake controller list.
