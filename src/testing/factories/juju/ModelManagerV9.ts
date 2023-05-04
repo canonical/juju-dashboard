@@ -1,10 +1,52 @@
 import type {
+  Error,
   MachineHardware,
+  ModelInfo,
+  ModelInfoResult,
+  ModelInfoResults,
   ModelMachineInfo,
   ModelSLAInfo,
   ModelUserInfo,
+  Number as ModelNumber,
 } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { Factory } from "fishery";
+
+export const numberFactory = Factory.define<ModelNumber>(() => ({
+  Build: 1,
+  Major: 2,
+  Minor: 3,
+  Patch: 4,
+  Tag: "",
+}));
+
+export const errorFactory = Factory.define<Error>(() => ({
+  code: "1",
+  message: "Uh oh",
+}));
+
+export const modelInfoFactory = Factory.define<ModelInfo>(() => ({
+  "agent-version": numberFactory.build(),
+  "cloud-tag": "cloud-aws",
+  "controller-uuid": "con123",
+  "is-controller": false,
+  life: "alive",
+  machines: [],
+  name: "test-model",
+  "owner-tag": "user-eggman@external",
+  sla: modelSLAInfoFactory.build(),
+  type: "iaas",
+  users: [],
+  uuid: "abc123",
+}));
+
+export const modelInfoResultFactory = Factory.define<ModelInfoResult>(() => ({
+  error: errorFactory.build(),
+  result: modelInfoFactory.build(),
+}));
+
+export const modelInfoResultsFactory = Factory.define<ModelInfoResults>(() => ({
+  results: [],
+}));
 
 export const modelUserInfoFactory = Factory.define<ModelUserInfo>(() => ({
   user: "user-eggman@external",

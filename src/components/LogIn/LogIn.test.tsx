@@ -109,7 +109,7 @@ describe("LogIn", () => {
   });
 
   it("logs in", async () => {
-    // Mock the result of the thunk a normal action so that it can be tested
+    // Mock the result of the thunk to be a normal action so that it can be tested
     // for. This is necessary because we don't have a full store set up which
     // can dispatch thunks (and we don't need to handle the thunk, just know it
     // was dispatched).
