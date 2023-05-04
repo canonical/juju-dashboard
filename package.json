@@ -87,6 +87,7 @@
     "@types/node": "18.16.18",
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.0",
+    "@types/react-table": "7.7.14",
     "@types/redux-mock-store": "1.0.3",
     "@typescript-eslint/eslint-plugin": "5.59.11",
     "@typescript-eslint/parser": "5.59.11",

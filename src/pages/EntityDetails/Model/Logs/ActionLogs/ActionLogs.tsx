@@ -13,10 +13,11 @@ import {
   Tooltip,
 } from "@canonical/react-components";
 import classnames from "classnames";
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import type { Column } from "react-table";
+import type { Column, Row } from "react-table";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon/CharmIcon";
@@ -25,6 +26,7 @@ import Status from "components/Status";
 import { copyToClipboard, formatFriendlyDateToNow } from "components/utils";
 import { queryActionsList, queryOperationsList } from "juju/api";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
+import type { ModelData } from "store/juju/types";
 import type { RootState } from "store/store";
 import { useAppStore } from "store/store";
 import urls from "urls";
@@ -35,13 +37,24 @@ type Actions = ActionResult[];
 
 type TableRows = TableRow[];
 
-type TableRow = {
-  application: string;
+type RowCells = {
+  application: ReactNode;
+  completed?: ReactNode;
+  controls?: ReactNode;
   id: string;
-  status: string;
+  message: ReactNode;
+  sortData: {
+    application: string;
+    completed?: number;
+    message?: string;
+    status: string;
+  };
+  status: ReactNode;
   taskId: string;
-  message: string;
-  completed: string;
+};
+
+type TableRow = RowCells & {
+  subRows: (RowCells & { controls: ReactNode })[];
 };
 
 type ApplicationData = {
@@ -121,6 +134,58 @@ function ActionPayloadModal(props: {
   );
 }
 
+const compare = (a: string | number, b: string | number) =>
+  a === b ? 0 : a > b ? 1 : -1;
+
+const tableSort = (column: string, rowA: Row<RowCells>, rowB: Row<RowCells>) =>
+  column in rowA.original.sortData && column in rowB.original.sortData
+    ? compare(rowA.original.sortData.status, rowB.original.sortData.status)
+    : 0;
+
+const generateApplicationRow = (
+  actionData: ActionResult,
+  operationData: OperationResult,
+  modelStatusData: ModelData | null,
+  userName: string,
+  modelName: string
+): TableRow | null => {
+  // The action name is being defined like this because the action name is
+  // only contained in the actions array and not on the operation level.
+  // Even though at the current time an operation is the same action
+  // performed across multiple units of the same application. I expect
+  // that the CLI may gain this functionality in the future and we'll have
+  // to update this code to display the correct action name.
+  const actionName = actionData.action.name;
+  const operationId = operationData.operation.split("-")[1];
+  // The receiver is in the format "unit-ceph-mon-0" to "ceph-mon"
+  const parts = actionData.action.receiver.match(/unit-(.+)-\d+/);
+  const appName = parts && parts[1];
+  if (!appName) {
+    console.error(
+      "Unable to parse action receiver",
+      actionData.action.receiver
+    );
+    return null;
+  }
+  return {
+    application: generateAppIcon(
+      modelStatusData?.applications[appName],
+      appName,
+      userName,
+      modelName
+    ),
+    id: `${operationId}/${actionName}`,
+    message: "",
+    sortData: {
+      application: appName,
+      status: actionData.status,
+    },
+    status: <Status status={actionData.status} useIcon actionsLogs />,
+    subRows: [],
+    taskId: "",
+  };
+};
+
 export default function ActionLogs() {
   const [operations, setOperations] = useState<Operations>([]);
   const [actions, setActions] = useState<Actions>([]);
@@ -183,24 +248,30 @@ export default function ActionLogs() {
 
   const tableData = useMemo(() => {
     const handleOutputSelect = (actionTag: string, output: Output) => {
-      selectedOutput[actionTag] = output;
-      setSelectedOutput({ ...selectedOutput });
+      setSelectedOutput((previousSelected) => ({
+        ...previousSelected,
+        [actionTag]: output,
+      }));
     };
 
     const rows: TableRows = [];
     operations?.forEach((operationData) => {
-      const operationId = operationData.operation.split("-")[1];
-      // The action name is being defined like this because the action name is
-      // only contained in the actions array and not on the operation level.
-      // Even though at the current time an operation is the same action
-      // performed across multiple units of the same application. I expect
-      // that the CLI may gain this functionality in the future and we'll have
-      // to update this code to display the correct action name.
-      let actionName = "";
-      operationData.actions?.forEach((actionData, index) => {
-        actionName = actionData.action.name;
+      if (!operationData.actions?.length || !userName || !modelName) {
+        return;
+      }
+      // Retrieve the application details from the first action:
+      const applicationRow = generateApplicationRow(
+        operationData.actions[0],
+        operationData,
+        modelStatusData,
+        userName,
+        modelName
+      );
+      if (!applicationRow) {
+        return;
+      }
+      operationData.actions?.forEach((actionData) => {
         const outputType = selectedOutput[actionData.action.tag] || Output.ALL;
-
         const actionFullDetails = actions.find(
           (action) => action.action.tag === actionData.action.tag
         );
@@ -215,55 +286,16 @@ export default function ActionLogs() {
           actionFullDetails.status === "failed"
             ? actionFullDetails.message
             : "";
-        const StdOut = () => <span>{stdout}</span>;
-        const StdErr = () => (
-          <span className="action-logs__stderr">{stderr}</span>
-        );
-        const defaultRow: TableRow = {
-          application: "-",
-          id: "-",
-          status: "-",
-          taskId: "",
-          message: "",
-          completed: "",
-        };
-        let newData = {};
         const completedDate = new Date(actionData.completed);
-
-        if (index === 0) {
-          // If this is the first row then add the application row.
-          // The reciever is in the format "unit-ceph-mon-0" to "ceph-mon"
-          const parts = actionData.action.receiver.match(/unit-(.+)-\d+/);
-          const appName = parts && parts[1];
-          if (!appName) {
-            console.error(
-              "Unable to parse action receiver",
-              actionData.action.receiver
-            );
-            return;
-          }
-          newData = {
-            application: generateAppIcon(
-              modelStatusData?.applications[appName],
-              appName,
-              userName,
-              modelName
-            ),
-            id: `${operationId}/${actionName}`,
-            status: <Status status={actionData.status} useIcon actionsLogs />,
-          };
-          rows.push({
-            ...defaultRow,
-            ...newData,
-          });
-        }
-        newData = {
+        const name = actionData.action.receiver.replace(
+          /unit-(.+)-(\d+)/,
+          "$1/$2"
+        );
+        applicationRow.subRows.push({
           application: (
             <>
               <span className="entity-details__unit-indent">└</span>
-              <span>
-                {actionData.action.receiver.replace(/unit-(.+)-(\d+)/, "$1/$2")}
-              </span>
+              <span>{name}</span>
             </>
           ),
           id: "",
@@ -271,20 +303,14 @@ export default function ActionLogs() {
           taskId: actionData.action.tag.split("-")[1],
           message: (
             <>
-              {outputType === Output.STDOUT ? (
-                <StdOut />
-              ) : outputType === Output.STDERR ? (
-                <StdErr />
-              ) : (
-                <>
-                  <StdOut />
-                  <StdErr />
-                </>
-              )}
+              {outputType !== Output.STDERR ? <span>{stdout}</span> : null}
+              {outputType !== Output.STDOUT ? (
+                <span className="action-logs__stderr">{stderr}</span>
+              ) : null}
             </>
           ),
+          // Sometimes the log gets returned with a date of "0001-01-01T00:00:00Z".
           completed:
-            // Sometimes the log gets returned with a date of "0001-01-01T00:00:00Z".
             completedDate.getFullYear() === 1 ? (
               "Unknown"
             ) : (
@@ -334,52 +360,62 @@ export default function ActionLogs() {
               )}
             </div>
           ),
-        };
-
-        rows.push({
-          ...defaultRow,
-          ...newData,
+          sortData: {
+            application: name,
+            completed: completedDate.getTime(),
+            message: stdout + stderr,
+            status: actionData.status,
+          },
         });
       });
+      rows.push(applicationRow);
     });
     return rows;
   }, [
     operations,
-    modelStatusData?.applications,
+    modelStatusData,
     userName,
     modelName,
     actions,
     selectedOutput,
   ]);
 
-  const columnData: Column[] = useMemo(
+  const columnData: Column<RowCells>[] = useMemo(
     () => [
       {
         Header: "application",
         accessor: "application",
+        sortType: tableSort.bind(null, "application"),
       },
       {
         Header: "operation id/name",
         accessor: "id",
+        sortType: "basic",
       },
       {
         Header: "status",
         accessor: "status",
+        sortType: tableSort.bind(null, "status"),
       },
       {
         Header: "task id",
         accessor: "taskId",
+        sortType: "basic",
       },
       {
         Header: "action message",
         accessor: "message",
+        sortType: tableSort.bind(null, "message"),
       },
       {
         Header: "completion time",
         accessor: "completed",
+        sortType: tableSort.bind(null, "completed"),
+        sortInverted: true,
       },
       {
         accessor: "controls",
+        disableSortBy: true,
       },
     ],
     []
@@ -400,6 +436,9 @@ export default function ActionLogs() {
           emptyMsg={emptyMsg}
           columns={columnData}
           data={tableData}
+          initialSortColumn="completed"
+          initialSortDirection="ascending"
+          sortable
         />
       )}
       <FadeIn isActive={Boolean(modalDetails)}>
