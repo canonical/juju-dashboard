@@ -436,9 +436,14 @@ export async function fetchControllerList(
     // check for updates
     await Promise.all(
       controllers.map(async (controller) => {
-        controller.updateAvailable = await jujuUpdateAvailable(
-          controller.version || ""
-        );
+        let updateAvailable = false;
+        try {
+          updateAvailable =
+            (await jujuUpdateAvailable(controller.version || "")) ?? false;
+        } catch (error) {
+          updateAvailable = false;
+        }
+        controller.updateAvailable = updateAvailable;
       })
     );
     dispatch(

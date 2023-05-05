@@ -213,4 +213,26 @@ describe("Primary Nav", () => {
     );
     expect(notification).not.toBeInTheDocument();
   });
+
+  it("handles no update response", async () => {
+    jest
+      .spyOn(versionsAPI, "dashboardUpdateAvailable")
+      .mockRejectedValue(new Error());
+    const store = mockStore(
+      rootStateFactory
+        .withGeneralConfig()
+        .build({ general: { appVersion: "9.9.0" } })
+    );
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <PrimaryNav />
+        </MemoryRouter>
+      </Provider>
+    );
+    const notification = await waitFor(() =>
+      screen.queryByTestId("dashboard-update")
+    );
+    expect(notification).not.toBeInTheDocument();
+  });
 });
