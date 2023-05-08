@@ -79,9 +79,13 @@ const PrimaryNav = () => {
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
-      dashboardUpdateAvailable(appVersion || "").then((e) => {
-        setUpdateAvailable(e);
-      });
+      dashboardUpdateAvailable(appVersion || "")
+        ?.then((updateAvailable) => {
+          setUpdateAvailable(updateAvailable ?? false);
+        })
+        .catch(() => {
+          setUpdateAvailable(false);
+        });
       versionRequested.current = true;
     }
   }, [appVersion]);
