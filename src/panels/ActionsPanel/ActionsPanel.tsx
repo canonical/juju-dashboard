@@ -262,7 +262,7 @@ export default function ActionsPanel(): JSX.Element {
   );
 }
 
-function onValuesChange(
+export function onValuesChange(
   actionName: string,
   values: ActionOptionValue,
   optionValues: MutableRefObject<ActionOptionValues>

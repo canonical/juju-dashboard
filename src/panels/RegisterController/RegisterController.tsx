@@ -13,8 +13,11 @@ import urls from "urls";
 import "./register-controller.scss";
 
 export enum Label {
+  SUBMIT = "Add Controller",
   TITLE = "Register a controller",
 }
+
+export const STORAGE_KEY = "additionalControllers";
 
 type FormValues = {
   controllerName?: string;
@@ -30,7 +33,7 @@ export default function RegisterController() {
   const dispatch = useAppDispatch();
   const [additionalControllers, setAdditionalControllers] = useLocalStorage<
     ControllerArgs[]
-  >("additionalControllers", []);
+  >(STORAGE_KEY, []);
   const navigate = useNavigate();
 
   const handleRegisterAController: FormEventHandler<HTMLFormElement> = (e) => {
@@ -244,7 +247,7 @@ export default function RegisterController() {
                 type="submit"
                 disabled={!formValues.certificateAccepted}
               >
-                Add Controller
+                {Label.SUBMIT}
               </button>
             </div>
           </div>

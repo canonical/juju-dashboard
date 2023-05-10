@@ -8,6 +8,11 @@ import TruncatedTooltip from "components/TruncatedTooltip";
 import { isSet } from "components/utils";
 import type { ConfigData, ConfigValue } from "juju/api";
 
+export enum Label {
+  DEFAULT_BUTTON = "use default",
+  TOGGLE_DESCRIPTION = "Toggle description",
+}
+
 export type SetNewValue = (name: string, value: ConfigValue) => void;
 
 export type SetSelectedConfig = (config: ConfigData) => void;
@@ -147,6 +152,7 @@ const ConfigField = <V extends ConfigValue>({
       <div className="config-input__title">
         {config.description ? (
           <Button
+            aria-label={Label.TOGGLE_DESCRIPTION}
             appearance="base"
             className="config-input--view-description"
             onClick={handleShowDescription}
@@ -167,7 +173,7 @@ const ConfigField = <V extends ConfigValue>({
           tabIndex={showUseDefault ? 0 : -1}
           aria-hidden={!showUseDefault}
         >
-          use default
+          {Label.DEFAULT_BUTTON}
         </button>
       </div>
       <div
