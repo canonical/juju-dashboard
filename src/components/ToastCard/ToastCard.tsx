@@ -56,7 +56,7 @@ export default function ToastCard({ toastInstance, type, text, undo }: Props) {
         <i
           className="p-icon--close"
           onClick={() => handleClose(toastInstance.id)}
-          onKeyPress={() => handleClose(toastInstance.id)}
+          onKeyUp={() => handleClose(toastInstance.id)}
           role="button"
           tabIndex={0}
         >

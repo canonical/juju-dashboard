@@ -1,6 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import cloneDeep from "clone-deep";
+import { Toaster } from "react-hot-toast";
+import reactHotToast from "react-hot-toast";
 
 import ToastCard from "./ToastCard";
 
@@ -66,6 +68,14 @@ describe("Toast Card", () => {
     expect(document.querySelector(".p-icon--error")).toBeInTheDocument();
   });
 
+  it("should display correct warning icon", () => {
+    const t = cloneDeep(toastInstanceExample);
+    render(
+      <ToastCard type="caution" text="I am a toast message" toastInstance={t} />
+    );
+    expect(document.querySelector(".p-icon--warning")).toBeInTheDocument();
+  });
+
   it("should display close icon", () => {
     const t = cloneDeep(toastInstanceExample);
     render(
@@ -109,5 +119,40 @@ describe("Toast Card", () => {
     expect(undoButton).toBeInTheDocument();
     await userEvent.click(undoButton);
     expect(undoFn).toHaveBeenCalled();
+  });
+
+  it("should remove the card when close is clicked", async () => {
+    render(<Toaster />);
+    await act(async () => {
+      reactHotToast.custom((t) => (
+        <ToastCard
+          type="negative"
+          text="I am a toast message"
+          toastInstance={t}
+        />
+      ));
+    });
+    expect(screen.getByRole("status")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
+
+  it("should close the card using the keyboard", async () => {
+    render(<Toaster />);
+    await act(async () => {
+      reactHotToast.custom((t) => (
+        <ToastCard
+          type="negative"
+          text="I am a toast message"
+          toastInstance={t}
+        />
+      ));
+    });
+    expect(screen.getByRole("status")).toBeInTheDocument();
+    fireEvent.keyUp(screen.getByRole("button", { name: "Close" }), {
+      key: " ",
+      code: "Space",
+    });
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 });

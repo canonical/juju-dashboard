@@ -1,4 +1,4 @@
-import { Spinner, Tabs } from "@canonical/react-components";
+import { SearchBox, Spinner, Tabs } from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode, MouseEvent } from "react";
 import { useEffect, useState, useRef } from "react";
@@ -10,7 +10,6 @@ import Breadcrumb from "components/Breadcrumb/Breadcrumb";
 import Header from "components/Header/Header";
 import NotFound from "components/NotFound/NotFound";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import SearchBox from "components/SearchBox/SearchBox";
 import WebCLI from "components/WebCLI/WebCLI";
 import { useEntityDetailsParams } from "components/hooks";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -57,6 +56,7 @@ const EntityDetails = () => {
     activeView: "apps",
     filterQuery: "",
   });
+  const [filterQuery, setFilterQuery] = useState(query.filterQuery);
 
   const { activeView } = query;
 
@@ -161,19 +161,20 @@ const EntityDetails = () => {
         className="u-no-margin"
         placeholder="Filter applications"
         onKeyDown={(e) => {
-          if (e.code === "Enter") handleFilterSubmit();
+          if (e.code === "Enter") handleFilterSubmit(filterQuery);
         }}
-        onSearch={handleFilterSubmit}
-        onClear={handleFilterSubmit}
+        onSearch={() => handleFilterSubmit(filterQuery)}
+        onClear={() => handleFilterSubmit("")}
+        onChange={setFilterQuery}
         externallyControlled
         ref={searchBoxRef}
         data-testid="filter-applications"
+        value={filterQuery}
       />
     );
   };
 
-  const handleFilterSubmit = () => {
-    const filterQuery = searchBoxRef.current?.value || "";
+  const handleFilterSubmit = (filterQuery: string) => {
     setQuery({ filterQuery });
   };
 
