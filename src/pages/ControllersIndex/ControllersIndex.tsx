@@ -20,6 +20,10 @@ import urls from "urls";
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 import "./_controllers.scss";
 
+export enum Label {
+  REGISTER_BUTTON = "Register a controller",
+}
+
 type AnnotatedController = (Controller | AdditionalController) & {
   models: number;
   machines: number;
@@ -195,7 +199,7 @@ function Details() {
               setPanelQs({ panel: "register-controller" }, { replace: true });
             }}
           >
-            Register a controller
+            {Label.REGISTER_BUTTON}
           </button>
         </div>
       </div>
