@@ -28,8 +28,7 @@ type Application = ApplicationInfo & {
   @param app The application status object.
   @returns If the application is a subordinate.
 */
-const isSubordinate = (app: Application) =>
-  app?.annotations.subordinateTo?.length > 0;
+const isSubordinate = (app: Application) => app.subordinate;
 
 /**
   Computes the maximum delta from 0 for both the x and y axis. This is necessary
@@ -244,14 +243,15 @@ const Topology = memo(
         .enter()
         .append("g")
         .attr("transform", (d) => {
+          const adjustment = isSubordinate(d) ? 30 : 0;
           const x =
             d.annotations["gui-x"] !== undefined
               ? d.annotations["gui-x"]
-              : gridCount.x;
+              : gridCount.x + adjustment;
           const y =
             d.annotations["gui-y"] !== undefined
-              ? d.annotations["gui-y"]
-              : gridCount.y;
+              ? Number(d.annotations["gui-y"])
+              : gridCount.y + adjustment;
           gridCount.x += 250;
           // Let the placed units determine the max width of the visualization.
           // and move the grid units to a new line.

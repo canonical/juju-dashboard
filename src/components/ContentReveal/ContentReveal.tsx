@@ -6,12 +6,12 @@ import "./_content-reveal.scss";
 type Props = {
   title: string | ReactNode;
   children: JSX.Element;
-  openByDefault: ReactNode;
+  openByDefault?: boolean;
 };
 
 export default function ContentReveal({
   title,
-  openByDefault,
+  openByDefault = false,
   children,
 }: Props) {
   const [isOpen, setIsOpen] = useState(openByDefault);
