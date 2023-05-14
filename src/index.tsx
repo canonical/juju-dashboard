@@ -16,7 +16,13 @@ import packageJSON from "../package.json";
 
 import * as serviceWorker from "./serviceWorker";
 
+export const ROOT_ID = "root";
+export const RECHECK_TIME = 500;
 const appVersion = packageJSON.version;
+
+export enum Label {
+  NO_CONFIG = "No configuration found.",
+}
 
 // Webpack 5 no longer makes node variables available at runtime so we need to
 // attach `process` to the window:
@@ -55,7 +61,7 @@ export const getControllerAPIEndpointErrors = (
 };
 
 const renderRoot = (content: ReactNode) => {
-  const rootElement = document.getElementById("root");
+  const rootElement = document.getElementById(ROOT_ID);
   if (rootElement) {
     const root = createRoot(rootElement);
     root.render(content);
@@ -66,28 +72,27 @@ const renderRoot = (content: ReactNode) => {
 // executed. This is a simple debounce so that in the event it's not it'll wait
 // a few cycles before trying again.
 let checkCounter = 0;
-const checkConfigExists = () => {
+export const renderApp = () => {
   if (!window.jujuDashboardConfig) {
     if (checkCounter < 5) {
       checkCounter++;
-      setTimeout(checkConfigExists, 500);
+      setTimeout(renderApp, RECHECK_TIME);
       return;
     } else {
-      console.error(
-        "Configuration values not defined unable to bootstrap application"
-      );
+      // Display the config error.
+      bootstrap();
     }
   } else {
     bootstrap();
   }
 };
-checkConfigExists();
+renderApp();
 
 function bootstrap() {
   const config = window.jujuDashboardConfig;
   let error: string | null = null;
   if (!config) {
-    error = "No configuration found.";
+    error = Label.NO_CONFIG;
   }
   // Support Juju 2.9 deployments with the old configuration values.
   // XXX This can be removed once we drop support for 2.9 with the 3.0 release.
@@ -98,7 +103,7 @@ function bootstrap() {
   const controllerEndpointError = getControllerAPIEndpointErrors(
     config?.controllerAPIEndpoint
   );
-  error = controllerEndpointError ?? error;
+  error = error ?? controllerEndpointError;
   if (error || !config) {
     renderRoot(
       <Strip>

@@ -4,7 +4,7 @@ export type Config = {
   controllerAPIEndpoint: string;
   baseAppURL: string;
   // Support for 2.9 configuration.
-  baseControllerURL?: string;
+  baseControllerURL?: string | null;
   identityProviderAvailable: boolean;
   identityProviderURL: string;
   isJuju: boolean;
