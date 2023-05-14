@@ -1,6 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
 import type { RootState } from "store/store";
@@ -11,7 +12,7 @@ import {
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
 
-import CharmsPanel from "./ChamsPanel";
+import CharmsPanel from "./CharmsPanel";
 
 const mockStore = configureStore([]);
 
@@ -40,18 +41,14 @@ describe("CharmsPanel", () => {
   });
   function generateComponent() {
     const store = mockStore(storeData);
+    window.history.pushState({}, "", "/models/admin/tests?panel=choose-charm");
     render(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/admin/tests?panel=choose-charm"]}
-        >
+        <BrowserRouter>
           <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<CharmsPanel />}
-            />
+            <Route path="*" element={<CharmsPanel />} />
           </Routes>
-        </MemoryRouter>
+        </BrowserRouter>
       </Provider>
     );
   }
@@ -69,5 +66,14 @@ describe("CharmsPanel", () => {
     generateComponent();
     act(() => screen.getAllByRole("radio")[0].click());
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
+  });
+
+  it("can open the actions panel", async () => {
+    generateComponent();
+    await userEvent.click(screen.getAllByRole("radio")[0]);
+    await userEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(window.location.search).toBe(
+      "?panel=charm-actions&charm=ch%3Aamd64%2Ffocal%2Fpostgresql-k8s-20"
+    );
   });
 });

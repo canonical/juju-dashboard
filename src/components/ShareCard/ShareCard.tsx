@@ -112,7 +112,7 @@ export default function ShareCard({
                       );
                       if (accessChange) {
                         accessChange.then((response) => {
-                          if (!response?.results[0]?.error) {
+                          if (!response?.results?.[0]?.error) {
                             setInFocus(false);
                             setUpdateStatus("Updated");
                           } else {

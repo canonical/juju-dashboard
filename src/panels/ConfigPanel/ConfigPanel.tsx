@@ -1,4 +1,4 @@
-import { Notification, useListener } from "@canonical/react-components";
+import { Notification } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
 import type { ReactNode, MouseEvent } from "react";
@@ -26,7 +26,16 @@ import TextAreaConfig from "./TextAreaConfig";
 import "./_config-panel.scss";
 
 export enum Label {
+  CANCEL_BUTTON = "Cancel",
+  CANCEL_CONFIRM = "Are you sure you wish to cancel?",
+  CANCEL_CONFIRM_CANCEL_BUTTON = "Continue editing",
+  CANCEL_CONFIRM_CONFIRM_BUTTON = "Yes, I'm sure",
   NONE = "This application doesn't have any configuration parameters",
+  RESET_BUTTON = "Reset all values",
+  SAVE_BUTTON = "Save and apply",
+  SAVE_CONFIRM = "Are you sure you wish to apply these changes?",
+  SAVE_CONFIRM_CANCEL_BUTTON = "Cancel",
+  SAVE_CONFIRM_CONFIRM_BUTTON = "Yes, apply changes",
 }
 
 export enum TestId {
@@ -68,16 +77,6 @@ export default function ConfigPanel(): JSX.Element {
     panel: null,
   });
   const { entity: appName, charm, modelUUID } = query;
-
-  useListener(
-    window,
-    (e: KeyboardEvent) => {
-      if (e.code === "Escape" && confirmType !== null) {
-        setConfirmType(null);
-      }
-    },
-    "keydown"
-  );
 
   useEffect(() => {
     if (modelUUID && appName) {
@@ -310,7 +309,7 @@ export default function ConfigPanel(): JSX.Element {
                     className="u-button-neutral"
                     onClick={allFieldsToDefault}
                   >
-                    Reset all values
+                    {Label.RESET_BUTTON}
                   </button>
                 </div>
               </div>
@@ -334,7 +333,7 @@ export default function ConfigPanel(): JSX.Element {
               >
                 <div className="config-panel__button-row">
                   <button className="p-button--neutral" onClick={handleCancel}>
-                    Cancel
+                    {Label.CANCEL_BUTTON}
                   </button>
                   <button
                     className={classnames(
@@ -347,7 +346,7 @@ export default function ConfigPanel(): JSX.Element {
                     disabled={!enableSave || savingConfig}
                   >
                     {!savingConfig ? (
-                      "Save and apply"
+                      Label.SAVE_BUTTON
                     ) : (
                       <>
                         <i className="p-icon--spinner u-animation--spin is-light"></i>
@@ -506,19 +505,19 @@ function CancelConfirmation(
           key="cancel"
           onClick={cancelFunction}
         >
-          Continue editing
+          {Label.CANCEL_CONFIRM_CANCEL_BUTTON}
         </button>,
         <button
           className="p-button--negative"
           key="save"
           onClick={confirmFunction}
         >
-          Yes, I'm sure
+          {Label.CANCEL_CONFIRM_CONFIRM_BUTTON}
         </button>,
       ]}
       onClose={cancelFunction}
     >
-      <h4>Are you sure you wish to cancel?</h4>
+      <h4>{Label.CANCEL_CONFIRM}</h4>
       <p>
         You have edited the following values to the {appName} configuration:
       </p>
@@ -548,20 +547,20 @@ function SaveConfirmation(
               key="cancel"
               onClick={cancelFunction}
             >
-              Cancel
+              {Label.SAVE_CONFIRM_CANCEL_BUTTON}
             </button>
             <button
               className="p-button--positive"
               key="save"
               onClick={confirmFunction}
             >
-              Yes, apply changes
+              {Label.SAVE_CONFIRM_CONFIRM_BUTTON}
             </button>
           </div>
         </div>
       }
     >
-      <h4>Are you sure you wish to apply these changes?</h4>
+      <h4>{Label.SAVE_CONFIRM}</h4>
       <p>
         You have edited the following values to the {appName} configuration:
       </p>

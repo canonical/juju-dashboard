@@ -77,7 +77,7 @@ export const charmInfoFactory = Factory.define<Charm>(() => ({
     },
     "min-juju-version": "2.9.0",
   },
-  actions: { specs: [] },
+  actions: { specs: {} },
   manifest: {
     bases: [
       {

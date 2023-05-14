@@ -6,7 +6,7 @@ import RegisterController from "panels/RegisterController/RegisterController";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 
 import CharmActionsPanel from "./ActionsPanel/CharmActionsPanel";
-import CharmsPanel from "./CharmsPanel/ChamsPanel";
+import CharmsPanel from "./CharmsPanel/CharmsPanel";
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
 
 export default function Panels() {

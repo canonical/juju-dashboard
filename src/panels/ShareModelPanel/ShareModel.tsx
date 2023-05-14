@@ -20,6 +20,12 @@ import { useAppSelector, usePromiseDispatch } from "store/store";
 
 import "./share-model.scss";
 
+export enum Label {
+  ADD_BUTTON = "Add user",
+  BACK_BUTTON = "Back",
+  SHOW_ADD_FORM = "Add new user",
+}
+
 export enum TestId {
   PANEL = "share-panel",
 }
@@ -245,7 +251,7 @@ export default function ShareModel() {
         reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="negative" text={error} />
         ));
-      } else {
+      } else if (response) {
         resetForm();
         reactHotToast.custom((t) => (
           <ToastCard
@@ -281,7 +287,7 @@ export default function ShareModel() {
                 }}
               >
                 <i className="p-icon--chevron-up"></i>
-                <span>Back</span>
+                <span>{Label.BACK_BUTTON}</span>
               </button>
             </>
           ) : (
@@ -310,7 +316,7 @@ export default function ShareModel() {
               onClick={() => setShowAddNewUser(true)}
             >
               <i className="p-icon--plus"></i>
-              <span>Add new user</span>
+              <span>{Label.SHOW_ADD_FORM}</span>
             </button>
           </div>
           {sortedUsers?.map((userObj: User) => {
@@ -427,7 +433,7 @@ export default function ShareModel() {
                 type="submit"
                 disabled={!newUserFormSubmitActive}
               >
-                Add user
+                {Label.ADD_BUTTON}
               </button>
             </div>
           </form>

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "@canonical/react-components";
-import type { MouseEvent, MutableRefObject } from "react";
+import type { MouseEvent } from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -22,6 +22,7 @@ import type {
   ActionOptionValue,
   ActionOptionValues,
 } from "panels/ActionsPanel/ActionsPanel";
+import { onValuesChange } from "panels/ActionsPanel/ActionsPanel";
 import { enableSubmit } from "panels/ActionsPanel/ActionsPanel";
 import {
   getModelUUIDFromList,
@@ -31,6 +32,11 @@ import {
 import { pluralize } from "store/juju/utils/models";
 import { useAppStore } from "store/store";
 import "../ActionsPanel/_actions-panel.scss";
+
+export enum Label {
+  NONE_SELECTED = "You need to select a charm and applications to continue.",
+  ACTION_ERROR = "Some of the actions failed to execute",
+}
 
 export enum TestId {
   PANEL = "charm-actions-panel",
@@ -59,9 +65,12 @@ export default function CharmActionsPanel(): JSX.Element {
     () => selectedCharm?.actions?.specs || {},
     [selectedCharm]
   );
+  const unitCount = selectedApplications.reduce(
+    (total, app) => total + (app["unit-count"] || 0),
+    0
+  );
   const generateTitle = () => {
-    if (!selectedApplications || !selectedCharm)
-      return "You need to select a charm and applications to continue.";
+    if (!selectedApplications || !selectedCharm) return Label.NONE_SELECTED;
     const totalUnits = selectedApplications.reduce(
       (total, app) => total + (app["unit-count"] || 0),
       0
@@ -77,7 +86,7 @@ export default function CharmActionsPanel(): JSX.Element {
         ) : null}{" "}
         {selectedApplications.length}{" "}
         {pluralize(selectedApplications.length, "application")} ({totalUnits}{" "}
-        {pluralize(selectedApplications.length, "unit")}) selected
+        {pluralize(totalUnits, "unit")}) selected
       </h5>
     );
   };
@@ -119,7 +128,7 @@ export default function CharmActionsPanel(): JSX.Element {
           <ToastCard
             toastInstance={t}
             type="negative"
-            text="Some of the actions failed to execute"
+            text={Label.ACTION_ERROR}
           />
         ));
       });
@@ -213,7 +222,7 @@ export default function CharmActionsPanel(): JSX.Element {
           <Button
             appearance="positive"
             className="actions-panel__run-action"
-            disabled={disableSubmit}
+            disabled={disableSubmit || unitCount === 0}
             onClick={handleSubmit}
           >
             Run action
@@ -222,23 +231,6 @@ export default function CharmActionsPanel(): JSX.Element {
       </>
     </Panel>
   );
-}
-
-function onValuesChange(
-  actionName: string,
-  values: ActionOptionValue,
-  optionValues: MutableRefObject<ActionOptionValues>
-) {
-  const updatedValues: ActionOptionValue = {};
-  Object.keys(values).forEach((key) => {
-    // Use toString to convert booleans to strings as this is what the API requires.
-    updatedValues[key.replace(`${actionName}-`, "")] = values[key].toString();
-  });
-
-  optionValues.current = {
-    ...optionValues.current,
-    [actionName]: updatedValues,
-  };
 }
 
 function SubmitConfirmation(

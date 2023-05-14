@@ -7,7 +7,7 @@ import { rootStateFactory } from "testing/factories/root";
 
 import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
 import { TestId as CharmActionsTestId } from "./ActionsPanel/CharmActionsPanel";
-import { Label as CharmsPanelLabel } from "./CharmsPanel/ChamsPanel";
+import { Label as CharmsPanelLabel } from "./CharmsPanel/CharmsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
 import Panels from "./Panels";
 import { Label as RegisterControllerLabel } from "./RegisterController/RegisterController";
