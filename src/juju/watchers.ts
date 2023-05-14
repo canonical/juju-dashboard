@@ -13,7 +13,7 @@ import {
   ReduxDeltaEntityTypes,
 } from "./types";
 
-function generateModelWatcherBase(): ModelData {
+export function generateModelWatcherBase(): ModelData {
   return {
     actions: {},
     annotations: {},

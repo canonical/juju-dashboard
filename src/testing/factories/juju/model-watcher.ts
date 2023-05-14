@@ -2,6 +2,8 @@ import { Factory } from "fishery";
 
 import type {
   ActionChangeDelta,
+  AnnotationChangeDelta,
+  ApplicationChangeDelta,
   ApplicationInfo,
   CharmChangeDelta,
   Endpoint,
@@ -203,6 +205,27 @@ export const unitChangeDeltaFactory = Factory.define<UnitChangeDelta>(() => ({
   series: "bionic",
   subordinate: false,
 }));
+
+export const annotationChangeDeltaFactory =
+  Factory.define<AnnotationChangeDelta>(() => ({
+    "model-uuid": "abc123",
+    tag: "application-etcd",
+    annotations: {},
+  }));
+
+export const applicationChangeDeltaFactory =
+  Factory.define<ApplicationChangeDelta>(() => ({
+    "charm-url": "ch:amd64/focal/postgresql-k8s-20",
+    constraints: {},
+    exposed: false,
+    life: "alive",
+    "min-units": 0,
+    "model-uuid": "816d67b1-4942-4420-8be2-07df30f7a1ce",
+    name: "db2",
+    "owner-tag": "user-eggman",
+    subordinate: false,
+    "workload-version": "",
+  }));
 
 export const modelWatcherModelDataFactory =
   Factory.define<ModelWatcherModelData>(() => ({
