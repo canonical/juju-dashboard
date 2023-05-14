@@ -8,11 +8,13 @@ import BaseLayout from "layout/BaseLayout/BaseLayout";
 
 import "./settings.scss";
 
+export const DISABLE_ANALYTICS_KEY = "disableAnalytics";
+
 export default function Settings() {
   useWindowTitle("Settings");
 
   const [disableAnalytics, setDisableAnalytics] = useLocalStorage(
-    "disableAnalytics",
+    DISABLE_ANALYTICS_KEY,
     false
   );
 
