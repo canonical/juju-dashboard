@@ -8,6 +8,10 @@ import BaseLayout from "layout/BaseLayout/BaseLayout";
 
 import "./settings.scss";
 
+export enum Label {
+  DISABLE_TOGGLE = "Disable analytics",
+}
+
 export const DISABLE_ANALYTICS_KEY = "disableAnalytics";
 
 export default function Settings() {
@@ -28,7 +32,7 @@ export default function Settings() {
           <div className="settings__toggles">
             <div className="settings__toggles-group">
               <Switch
-                label="Disable analytics"
+                label={Label.DISABLE_TOGGLE}
                 defaultChecked={disableAnalytics}
                 onChange={() => {
                   setDisableAnalytics(!disableAnalytics);

@@ -209,7 +209,6 @@ export default function Models() {
           />
         </div>
       </Header>
-
       {content}
     </BaseLayout>
   );
