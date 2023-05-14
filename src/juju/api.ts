@@ -20,7 +20,10 @@ import Client from "@canonical/jujulib/dist/api/facades/client";
 import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
-import type { ModelInfoResults as JujuModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type {
+  ModelInfoResults as JujuModelInfoResults,
+  Number as ModelManagerNumber,
+} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import type { ValueOf } from "@canonical/react-components";
@@ -321,16 +324,27 @@ async function fetchModelInfo(conn: ConnectionWithFacades, modelUUID: string) {
   return modelInfo;
 }
 
+const versionToString = (agentVersion: ModelManagerNumber) =>
+  `${agentVersion.Major}.${agentVersion.Minor}.${agentVersion.Patch}`;
+
 const toModelInfo = (modelInfo: JujuModelInfoResults): ModelInfoResults => ({
-  results: modelInfo.results.map((result) => ({
-    ...result,
-    result: {
-      ...result.result,
-      // The agent version type from jujulib is Number but the API returns
-      // string. This make sure that all agent versions are strings.
-      "agent-version": result.result["agent-version"].toString(),
-    },
-  })),
+  results: modelInfo.results.map((result) => {
+    // The agent version type from jujulib is a Number object but the API returns
+    // string. This makes sure that all agent versions are strings.
+    const agentVersion: string | ModelManagerNumber =
+      result.result["agent-version"];
+    const versionString: string =
+      agentVersion && typeof agentVersion === "object"
+        ? versionToString(agentVersion)
+        : agentVersion;
+    return {
+      ...result,
+      result: {
+        ...result.result,
+        "agent-version": versionString,
+      },
+    };
+  }),
 });
 /**
   Loops through each model UUID to fetch the status. Upon receiving the status
@@ -478,7 +492,10 @@ export function disableControllerUUIDMasking(conn: ConnectionWithFacades) {
   @param appState
   @returns conn The connection.
 */
-async function connectAndLoginToModel(modelUUID: string, appState: RootState) {
+export async function connectAndLoginToModel(
+  modelUUID: string,
+  appState: RootState
+) {
   const wsControllerURL = getModelByUUID(appState, modelUUID)?.wsControllerURL;
   if (!wsControllerURL) {
     return null;
@@ -492,7 +509,7 @@ async function connectAndLoginToModel(modelUUID: string, appState: RootState) {
     generateConnectionOptions(true),
     config?.identityProviderAvailable ?? false
   );
-  return typeof response === "string" ? null : response.conn;
+  return response.conn;
 }
 
 /**
@@ -519,12 +536,12 @@ export type ConfigValue = string | number | boolean | undefined;
 
 export type ConfigOption<V, T> = {
   name: string;
-  default: V | undefined;
+  default?: V;
   description: string;
   source: "default" | "user";
   type: T;
-  value: V | undefined;
-  newValue: V | undefined;
+  value?: V;
+  newValue?: V;
 };
 
 export type ConfigData =

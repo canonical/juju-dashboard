@@ -3,6 +3,7 @@ import type {
   ApplicationGetResults,
   Base,
   Value,
+  ErrorResults,
 } from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
 import { Factory } from "fishery";
 
@@ -72,3 +73,7 @@ export const applicationGetFactory = Factory.define<ApplicationGetResults>(
     "endpoint-bindings": endpointBindingsFactory.build(),
   })
 );
+
+export const errorResultsFactory = Factory.define<ErrorResults>(() => ({
+  results: [],
+}));
