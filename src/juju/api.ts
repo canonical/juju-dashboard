@@ -122,7 +122,7 @@ function startPingerLoop(conn: ConnectionWithFacades) {
   const intervalId = window.setInterval(() => {
     conn.facades.pinger?.ping(null).catch((e: unknown) => {
       // If the pinger fails for whatever reason then cancel the ping.
-      console.log("pinger stopped,", e);
+      console.error("pinger stopped,", e);
       stopPingerLoop(intervalId);
     });
   }, PING_TIME);

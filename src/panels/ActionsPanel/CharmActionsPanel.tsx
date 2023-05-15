@@ -36,6 +36,7 @@ import "../ActionsPanel/_actions-panel.scss";
 export enum Label {
   NONE_SELECTED = "You need to select a charm and applications to continue.",
   ACTION_ERROR = "Some of the actions failed to execute",
+  ACTION_SUCCESS = "Action successfully executed.",
 }
 
 export enum TestId {
@@ -119,7 +120,7 @@ export default function CharmActionsPanel(): JSX.Element {
           <ToastCard
             toastInstance={t}
             type="positive"
-            text="Action successfully executed."
+            text={Label.ACTION_SUCCESS}
           />
         ));
       })

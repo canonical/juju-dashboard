@@ -1,30 +1,49 @@
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
+import {
+  charmApplicationFactory,
+  charmInfoFactory,
+} from "testing/factories/juju/Charms";
 import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   controllerFactory,
   jujuStateFactory,
+  modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
+  modelDataStatusFactory,
+  modelListInfoFactory,
+  modelDataMachineFactory,
+  modelDataUnitFactory,
 } from "testing/factories/juju/juju";
-import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
   machineChangeDeltaFactory,
   modelWatcherModelDataFactory,
   relationChangeDeltaFactory,
+  unitAgentStatusFactory,
   unitChangeDeltaFactory,
+  workloadStatusFactory,
 } from "testing/factories/juju/model-watcher";
 
 import {
   getActiveUser,
   getActiveUsers,
   getAllModelApplicationStatus,
+  getCharms,
   getControllerData,
+  getControllerDataByUUID,
   getExternalUsers,
   getExternalUsersInModel,
   getFilteredModelData,
+  getGroupedApplicationsDataByStatus,
+  getGroupedByCloudAndFilteredModelData,
+  getGroupedByOwnerAndFilteredModelData,
+  getGroupedByStatusAndFilteredModelData,
+  getGroupedMachinesDataByStatus,
+  getGroupedModelStatusCounts,
+  getGroupedUnitsDataByStatus,
   getModelAccess,
   getModelAnnotations,
   getModelApplications,
@@ -37,9 +56,13 @@ import {
   getModelListLoaded,
   getModelMachines,
   getModelRelations,
+  getModelStatus,
+  getModelUUID,
   getModelUUIDFromList,
   getModelUnits,
   getModelWatcherDataByUUID,
+  getSelectedApplications,
+  getSelectedCharm,
   getUserDomains,
   getUserDomainsInModel,
   hasModels,
@@ -121,7 +144,500 @@ describe("selectors", () => {
     ).toStrictEqual(modelWatcherData.abc123.model);
   });
 
-  it("getModelUUID", () => {
+  it("getModelUUID from model name", () => {
+    expect(
+      getModelUUID("test-model")(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelData: {
+              abc123: modelDataFactory.build({
+                info: modelDataInfoFactory.build({
+                  name: "test-model",
+                }),
+              }),
+            },
+          }),
+        })
+      )
+    ).toStrictEqual("abc123");
+  });
+
+  it("getModelUUID from model and owner names", () => {
+    expect(
+      getModelUUID("eggman/test-model")(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelData: {
+              abc123: modelDataFactory.build({
+                info: modelDataInfoFactory.build({
+                  name: "test-model",
+                  "owner-tag": "user-eggman",
+                }),
+              }),
+            },
+          }),
+        })
+      )
+    ).toStrictEqual("abc123");
+  });
+
+  it("getModelUUID handles incorrect owner name", () => {
+    expect(
+      getModelUUID("eggman/test-model")(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelData: {
+              abc123: modelDataFactory.build({
+                info: modelDataInfoFactory.build({
+                  name: "test-model",
+                  "owner-tag": "user-admin",
+                }),
+              }),
+            },
+          }),
+        })
+      )
+    ).toBeNull();
+  });
+
+  it("getModelStatus handles incorrect owner name", () => {
+    const model = modelDataFactory.build();
+    expect(
+      getModelStatus("abc123")(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelData: {
+              abc123: model,
+            },
+          }),
+        })
+      )
+    ).toStrictEqual(model);
+  });
+
+  it("getGroupedByStatusAndFilteredModelData", () => {
+    const modelData = {
+      abc123: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            status: modelDataStatusFactory.build({
+              status: "pending",
+            }),
+          }),
+        },
+      }),
+      def456: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            status: modelDataStatusFactory.build({
+              status: "blocked",
+            }),
+          }),
+        },
+      }),
+      ghi789: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            status: modelDataStatusFactory.build({
+              status: "unknown",
+            }),
+          }),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData,
+      }),
+    });
+    expect(
+      getGroupedByStatusAndFilteredModelData({ cloud: ["aws", "google"] })(
+        state
+      )
+    ).toStrictEqual({
+      alert: [modelData.ghi789],
+      blocked: [modelData.def456],
+      running: [modelData.abc123],
+    });
+  });
+
+  it("getGroupedByCloudAndFilteredModelData", () => {
+    const modelData = {
+      abc123: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          "cloud-tag": "cloud-aws",
+        }),
+      }),
+      def456: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          "cloud-tag": "cloud-gce",
+        }),
+      }),
+      ghi789: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          "cloud-tag": "cloud-azure",
+        }),
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData,
+      }),
+    });
+    expect(
+      getGroupedByCloudAndFilteredModelData({ cloud: ["aws", "google"] })(state)
+    ).toStrictEqual({
+      aws: [modelData.abc123],
+      gce: [modelData.def456],
+      azure: [modelData.ghi789],
+    });
+  });
+
+  it("getGroupedByOwnerAndFilteredModelData", () => {
+    const modelData = {
+      abc123: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          "owner-tag": "user-eggman",
+        }),
+      }),
+      def456: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          "owner-tag": "user-spaceman",
+        }),
+      }),
+      ghi789: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          "owner-tag": "user-admin",
+        }),
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData,
+      }),
+    });
+    expect(
+      getGroupedByOwnerAndFilteredModelData({ cloud: ["aws", "google"] })(state)
+    ).toStrictEqual({
+      eggman: [modelData.abc123],
+      spaceman: [modelData.def456],
+      admin: [modelData.ghi789],
+    });
+  });
+
+  it("getGroupedMachinesDataByStatus", () => {
+    const modelData = {
+      abc123: modelDataFactory.build({
+        machines: {
+          "0": modelDataMachineFactory.build({
+            "agent-status": {
+              status: "down",
+            },
+            id: "0",
+          }),
+          "1": modelDataMachineFactory.build({
+            "agent-status": {
+              status: "pending",
+            },
+            id: "1",
+          }),
+        },
+      }),
+      def456: modelDataFactory.build({
+        machines: {
+          "2": modelDataMachineFactory.build({
+            "agent-status": {
+              status: "running",
+            },
+            id: "2",
+          }),
+          "3": modelDataMachineFactory.build({
+            "agent-status": {
+              status: "down",
+            },
+            id: "3",
+          }),
+        },
+      }),
+      ghi789: modelDataFactory.build({
+        machines: {
+          "4": modelDataMachineFactory.build({
+            "agent-status": {
+              status: "down",
+            },
+            id: "4",
+          }),
+          "5": modelDataMachineFactory.build({
+            "agent-status": {
+              status: "error",
+            },
+            id: "5",
+          }),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData,
+      }),
+    });
+    expect(getGroupedMachinesDataByStatus(state)).toStrictEqual({
+      alert: [modelData.abc123.machines["1"]],
+      blocked: [
+        modelData.abc123.machines["0"],
+        modelData.def456.machines["3"],
+        modelData.ghi789.machines["4"],
+      ],
+      running: [modelData.def456.machines["2"], modelData.ghi789.machines["5"]],
+    });
+  });
+
+  it("getGroupedUnitsDataByStatus", () => {
+    const modelData = {
+      abc123: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            units: {
+              "easyrsa/0": modelDataUnitFactory.build({
+                "agent-status": modelDataStatusFactory.build({
+                  status: "running",
+                }),
+                charm: "ch:easyrsa",
+              }),
+            },
+          }),
+        },
+      }),
+      def456: modelDataFactory.build({
+        applications: {
+          etcd: modelDataApplicationFactory.build({
+            units: {
+              "etcd/0": modelDataUnitFactory.build({
+                "agent-status": modelDataStatusFactory.build({
+                  status: "allocating",
+                }),
+                charm: "ch:etcd",
+              }),
+              "etcd/1": modelDataUnitFactory.build({
+                "agent-status": modelDataStatusFactory.build({
+                  status: "lost",
+                }),
+                charm: "ch:etcd",
+              }),
+            },
+          }),
+          ceph: modelDataApplicationFactory.build({
+            units: {
+              "ceph/0": modelDataUnitFactory.build({
+                "agent-status": modelDataStatusFactory.build({
+                  status: "lost",
+                }),
+                charm: "ch:ceph",
+              }),
+            },
+          }),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData,
+      }),
+    });
+    expect(getGroupedUnitsDataByStatus(state)).toStrictEqual({
+      alert: [modelData.def456.applications.etcd.units["etcd/0"]],
+      blocked: [
+        modelData.def456.applications.etcd.units["etcd/1"],
+        modelData.def456.applications.ceph.units["ceph/0"],
+      ],
+      running: [modelData.abc123.applications.easyrsa.units["easyrsa/0"]],
+    });
+  });
+
+  it("getGroupedApplicationsDataByStatus", () => {
+    const modelData = {
+      abc123: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            status: modelDataStatusFactory.build({
+              status: "pending",
+            }),
+          }),
+        },
+      }),
+      def456: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            status: modelDataStatusFactory.build({
+              status: "blocked",
+            }),
+          }),
+        },
+      }),
+      ghi789: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            status: modelDataStatusFactory.build({
+              status: "unknown",
+            }),
+          }),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData,
+      }),
+    });
+    expect(getGroupedApplicationsDataByStatus(state)).toStrictEqual({
+      alert: [modelData.ghi789.applications.easyrsa],
+      blocked: [modelData.def456.applications.easyrsa],
+      running: [modelData.abc123.applications.easyrsa],
+    });
+  });
+
+  it("getGroupedModelStatusCounts", () => {
+    const modelData = {
+      abc123: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            status: modelDataStatusFactory.build({
+              status: "pending",
+            }),
+          }),
+        },
+      }),
+      def456: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            status: modelDataStatusFactory.build({
+              status: "unknown",
+            }),
+          }),
+        },
+      }),
+      ghi789: modelDataFactory.build({
+        applications: {
+          easyrsa: modelDataApplicationFactory.build({
+            status: modelDataStatusFactory.build({
+              status: "unknown",
+            }),
+          }),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData,
+      }),
+    });
+    expect(getGroupedModelStatusCounts(state)).toStrictEqual({
+      alert: 2,
+      blocked: 0,
+      running: 1,
+    });
+  });
+
+  it("getControllerDataByUUID", () => {
+    const controller = controllerFactory.build({
+      uuid: "controller123",
+    });
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        controllers: {
+          "wss://example.com": [controller],
+        },
+      }),
+    });
+    expect(getControllerDataByUUID("controller123")(state)).toStrictEqual([
+      "wss://example.com",
+      [controller],
+    ]);
+  });
+
+  it("getCharms", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        charms: [
+          charmInfoFactory.build(),
+          charmInfoFactory.build({
+            meta: { name: "Redis k8s" },
+            url: "ch:amd64/focal/redis-k8s",
+          }),
+        ],
+        selectedApplications: [
+          charmApplicationFactory.build({ "charm-url": "ch:nothing" }),
+          charmApplicationFactory.build({
+            "charm-url": "ch:amd64/focal/redis-k8s",
+          }),
+        ],
+      }),
+    });
+    expect(getCharms()(state)).toStrictEqual([
+      charmInfoFactory.build({
+        meta: { name: "Redis k8s" },
+        url: "ch:amd64/focal/redis-k8s",
+      }),
+    ]);
+  });
+
+  it("getSelectedApplications without charm URL", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        selectedApplications: [
+          charmApplicationFactory.build({ "charm-url": "ch:nothing" }),
+          charmApplicationFactory.build({
+            "charm-url": "ch:amd64/focal/redis-k8s",
+          }),
+        ],
+      }),
+    });
+    expect(getSelectedApplications()(state)).toStrictEqual(
+      state.juju.selectedApplications
+    );
+  });
+
+  it("getSelectedApplications with charm URL", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        selectedApplications: [
+          charmApplicationFactory.build({ "charm-url": "ch:nothing" }),
+          charmApplicationFactory.build({
+            "charm-url": "ch:amd64/focal/redis-k8s",
+          }),
+        ],
+      }),
+    });
+    expect(
+      getSelectedApplications("ch:amd64/focal/redis-k8s")(state)
+    ).toStrictEqual([
+      charmApplicationFactory.build({
+        "charm-url": "ch:amd64/focal/redis-k8s",
+      }),
+    ]);
+  });
+
+  it("getSelectedCharm", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        charms: [
+          charmInfoFactory.build(),
+          charmInfoFactory.build({
+            meta: { name: "Redis k8s" },
+            url: "ch:amd64/focal/redis-k8s",
+          }),
+        ],
+      }),
+    });
+    expect(getSelectedCharm("ch:amd64/focal/redis-k8s")(state)).toStrictEqual(
+      charmInfoFactory.build({
+        meta: { name: "Redis k8s" },
+        url: "ch:amd64/focal/redis-k8s",
+      })
+    );
+  });
+
+  it("getModelUUIDFromList", () => {
     expect(
       getModelUUIDFromList(
         "a model",
@@ -401,22 +917,51 @@ describe("selectors", () => {
     const modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
         units: {
-          "ceph-mon/0": {
-            "agent-status": {
+          "ceph-mon/0": unitChangeDeltaFactory.build({
+            "agent-status": unitAgentStatusFactory.build({
               current: "idle",
-              message: "",
-              since: "2021-08-13T19:34:41.247417373Z",
-              version: "2.8.7",
-            },
-            "workload-status": {
+            }),
+            "workload-status": workloadStatusFactory.build({
               current: "blocked",
-              message:
-                "Insufficient peer units to bootstrap cluster (require 3)",
-              since: "2021-08-13T19:34:37.747827227Z",
-              version: "",
-            },
+            }),
             application: "ceph-mon",
-          },
+          }),
+          "postgres/0": unitChangeDeltaFactory.build({
+            "agent-status": unitAgentStatusFactory.build({
+              current: "rebooting",
+            }),
+            "workload-status": workloadStatusFactory.build({
+              current: "waiting",
+            }),
+            application: "postgres",
+          }),
+          "etcd/0": unitChangeDeltaFactory.build({
+            "agent-status": unitAgentStatusFactory.build({
+              current: "failed",
+            }),
+            "workload-status": workloadStatusFactory.build({
+              current: "maintenance",
+            }),
+            application: "etcd",
+          }),
+          "wordpress/0": unitChangeDeltaFactory.build({
+            "agent-status": unitAgentStatusFactory.build({
+              current: "allocating",
+            }),
+            "workload-status": workloadStatusFactory.build({
+              current: "maintenance",
+            }),
+            application: "wordpress",
+          }),
+          "dashboard/0": unitChangeDeltaFactory.build({
+            "agent-status": unitAgentStatusFactory.build({
+              current: "executing",
+            }),
+            "workload-status": workloadStatusFactory.build({
+              current: "maintenance",
+            }),
+            application: "dashboard",
+          }),
         },
       }),
     };
@@ -428,7 +973,13 @@ describe("selectors", () => {
           }),
         })
       )
-    ).toStrictEqual({ "ceph-mon": "blocked" });
+    ).toStrictEqual({
+      "ceph-mon": "blocked",
+      dashboard: "alert",
+      etcd: "blocked",
+      postgres: "alert",
+      wordpress: "alert",
+    });
   });
 
   it("hasModels", () => {

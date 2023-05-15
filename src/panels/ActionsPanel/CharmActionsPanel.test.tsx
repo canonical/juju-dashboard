@@ -1,6 +1,7 @@
 import type { InitialEntry } from "@remix-run/router";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
@@ -47,7 +48,12 @@ describe("CharmActionsPanel", () => {
           <Routes>
             <Route
               path="/models/:userName/:modelName/app/:appName"
-              element={<CharmActionsPanel />}
+              element={
+                <>
+                  <CharmActionsPanel />
+                  <Toaster />
+                </>
+              }
             />
           </Routes>
         </MemoryRouter>
@@ -274,6 +280,7 @@ describe("CharmActionsPanel", () => {
     expect(call[1]).toBe("pause");
     expect(call[2]).toEqual({}); // no options
     executeActionOnUnitsSpy.mockRestore();
+    expect(await screen.findByText(Label.ACTION_SUCCESS)).toBeInTheDocument();
   });
 
   it("submits the action request to the api with options that are required", async () => {
@@ -305,5 +312,31 @@ describe("CharmActionsPanel", () => {
       "osd-devices": "new device",
     });
     executeActionOnUnitsSpy.mockRestore();
+  });
+
+  it("handles API errors", async () => {
+    const executeActionOnUnitsSpy = jest
+      .spyOn(juju, "executeActionOnUnits")
+      .mockImplementation(() => Promise.reject());
+    generateComponent();
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).toBeDisabled();
+    await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).not.toBeDisabled();
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Run action" })
+    );
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Confirm" })
+    );
+    const call = executeActionOnUnitsSpy.mock.calls[0];
+    expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
+    expect(call[1]).toBe("pause");
+    expect(call[2]).toEqual({}); // no options
+    executeActionOnUnitsSpy.mockRestore();
+    expect(await screen.findByText(Label.ACTION_ERROR)).toBeInTheDocument();
   });
 });

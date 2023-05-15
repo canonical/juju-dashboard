@@ -1,4 +1,8 @@
 import { DeltaChangeTypes, DeltaEntityTypes } from "juju/types";
+import {
+  charmInfoFactory,
+  charmApplicationFactory,
+} from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import {
   controllerFactory,
@@ -293,6 +297,57 @@ describe("reducers", () => {
         "gui-x": "818",
         "gui-y": "563",
       },
+    });
+  });
+
+  it("updateCharms", () => {
+    const state = jujuStateFactory.build({
+      charms: [
+        charmInfoFactory.build({ url: "ch:mysql" }),
+        charmInfoFactory.build({ url: "ch:ceph" }),
+      ],
+    });
+    const charms = [
+      charmInfoFactory.build({ url: "ch:postgres" }),
+      charmInfoFactory.build({ url: "ch:ceph" }),
+    ];
+    expect(
+      reducer(
+        state,
+        actions.updateCharms({
+          charms,
+          wsControllerURL: "wss://test.example.com",
+        })
+      )
+    ).toStrictEqual({
+      ...state,
+      charms: [
+        charmInfoFactory.build({ url: "ch:mysql" }),
+        charmInfoFactory.build({ url: "ch:ceph" }),
+        charmInfoFactory.build({ url: "ch:postgres" }),
+      ],
+    });
+  });
+
+  it("updateSelectedApplications", () => {
+    const state = jujuStateFactory.build({
+      selectedApplications: [
+        charmApplicationFactory.build({ "charm-url": "ch:mysql" }),
+      ],
+    });
+    const selectedApplications = [
+      charmApplicationFactory.build({ "charm-url": "ch:ceph" }),
+    ];
+    expect(
+      reducer(
+        state,
+        actions.updateSelectedApplications({
+          selectedApplications,
+        })
+      )
+    ).toStrictEqual({
+      ...state,
+      selectedApplications,
     });
   });
 });

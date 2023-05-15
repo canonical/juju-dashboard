@@ -20,6 +20,12 @@ export enum TestId {
   MAIN = "main-children",
 }
 
+export enum Label {
+  OFFLINE = "Your dashboard is offline.",
+  MOBILE_MENU_OPEN_BUTTON = "Open menu",
+  MOBILE_MENU_CLOSE_BUTTON = "Close menu",
+}
+
 const BaseLayout = ({ children }: PropsWithChildren) => {
   const [mobileMenuCollapsed, setMobileMenuCollapsed] = useState(true);
   const location = useLocation();
@@ -51,7 +57,7 @@ const BaseLayout = ({ children }: PropsWithChildren) => {
         variant={isOffline === false ? "positive" : "caution"}
       >
         {isOffline ? (
-          <p>Your dashboard is offline.</p>
+          <p>{Label.OFFLINE}</p>
         ) : (
           <p>
             Your dashboard is now back online - please{" "}
@@ -71,7 +77,9 @@ const BaseLayout = ({ children }: PropsWithChildren) => {
               setMobileMenuCollapsed(!mobileMenuCollapsed);
             }}
           >
-            {mobileMenuCollapsed ? "Open menu" : "Close menu"}
+            {mobileMenuCollapsed
+              ? Label.MOBILE_MENU_OPEN_BUTTON
+              : Label.MOBILE_MENU_CLOSE_BUTTON}
           </button>
         </div>
         <header

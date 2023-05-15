@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -111,6 +111,31 @@ describe("Entity Details App", () => {
     await userEvent.click(screen.getByRole("link", { name: "machines" }));
     expect(screen.queryByTestId(TestId.UNITS_TABLE)).not.toBeInTheDocument();
     expect(screen.getByTestId(TestId.MACHINES_TABLE)).toBeInTheDocument();
+  });
+
+  it("displays machine column in the unit table", async () => {
+    generateComponent();
+    expect(
+      within(screen.getByTestId(TestId.UNITS_TABLE)).getByRole("columnheader", {
+        name: "machine",
+      })
+    ).toBeInTheDocument();
+  });
+
+  it("does not display the machine column for k8s", async () => {
+    expect(storeData.juju.modelWatcherData?.abc123.model.type).toBeTruthy();
+    if (storeData.juju.modelWatcherData?.abc123.model.type) {
+      storeData.juju.modelWatcherData.abc123.model.type = "kubernetes";
+    }
+    generateComponent();
+    expect(
+      within(screen.getByTestId(TestId.UNITS_TABLE)).queryByRole(
+        "columnheader",
+        {
+          name: "machine",
+        }
+      )
+    ).not.toBeInTheDocument();
   });
 
   it("supports selecting and deselecting all units", async () => {
