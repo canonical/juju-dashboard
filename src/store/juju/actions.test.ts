@@ -1,3 +1,7 @@
+import {
+  charmApplicationFactory,
+  charmInfoFactory,
+} from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 
 import { actions } from "./slice";
@@ -138,6 +142,34 @@ describe("actions", () => {
     expect(actions.processAllWatcherDeltas([])).toStrictEqual({
       type: "juju/processAllWatcherDeltas",
       payload: [],
+    });
+  });
+
+  it("updateCharms", () => {
+    const charms = [charmInfoFactory.build()];
+    expect(
+      actions.updateCharms({
+        charms,
+        wsControllerURL: "wss://test.example.com",
+      })
+    ).toStrictEqual({
+      type: "juju/updateCharms",
+      payload: {
+        charms,
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("updateSelectedApplications", () => {
+    const selectedApplications = [charmApplicationFactory.build()];
+    expect(
+      actions.updateSelectedApplications({
+        selectedApplications,
+      })
+    ).toStrictEqual({
+      type: "juju/updateSelectedApplications",
+      payload: { selectedApplications },
     });
   });
 });

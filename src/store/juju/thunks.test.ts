@@ -7,8 +7,7 @@ import {
   controllerFactory,
   jujuStateFactory,
 } from "testing/factories/juju/juju";
-
-import { controllerLocationFactory } from "../../testing/factories/juju/juju";
+import { controllerLocationFactory } from "testing/factories/juju/juju";
 
 import { actions } from "./slice";
 import { addControllerCloudRegion } from "./thunks";
