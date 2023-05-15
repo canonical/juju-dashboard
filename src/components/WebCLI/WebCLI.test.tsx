@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { WS } from "jest-websocket-mock";
 import { Provider } from "react-redux";
@@ -362,6 +362,68 @@ describe("WebCLI", () => {
           "height: 300px;"
         );
       });
+      WS.clean();
+    });
+
+    it("can be resized with a mouse", async () => {
+      await generateComponent({
+        protocol: "ws",
+        controllerWSHost: "localhost:1234",
+        modelUUID: "abc123",
+        credentials: {
+          user: "spaceman",
+          password: "somelongpassword",
+        },
+      });
+      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+        "style",
+        "height: 1px;"
+      );
+      const handle = document.querySelector(".webcli__output-handle");
+      expect(handle).toBeTruthy();
+      if (handle) {
+        fireEvent.mouseDown(handle);
+        fireEvent.mouseMove(handle, {
+          clientY: 100,
+        });
+      }
+      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+        "style",
+        "height: 628px;"
+      );
+      WS.clean();
+    });
+
+    it("can be resized on mobile", async () => {
+      await generateComponent({
+        protocol: "ws",
+        controllerWSHost: "localhost:1234",
+        modelUUID: "abc123",
+        credentials: {
+          user: "spaceman",
+          password: "somelongpassword",
+        },
+      });
+      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+        "style",
+        "height: 1px;"
+      );
+      const handle = document.querySelector(".webcli__output-handle");
+      expect(handle).toBeTruthy();
+      if (handle) {
+        fireEvent.touchStart(handle);
+        fireEvent.touchMove(handle, {
+          touches: [
+            {
+              clientY: 100,
+            },
+          ],
+        });
+      }
+      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+        "style",
+        "height: 628px;"
+      );
       WS.clean();
     });
   });

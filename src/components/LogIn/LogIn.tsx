@@ -20,6 +20,16 @@ import { useAppDispatch } from "store/store";
 
 import "./_login.scss";
 
+export enum ErrorResponse {
+  INVALID_TAG = '"user-" is not a valid user tag',
+  INVALID_FIELD = "invalid entity name or password",
+}
+
+export enum Label {
+  INVALID_NAME = "Invalid user name",
+  INVALID_FIELD = "Invalid user name or password",
+}
+
 type Props = { children: ReactNode };
 
 export default function LogIn({ children }: Props) {
@@ -70,11 +80,11 @@ function generateErrorMessage(loginError?: string | null) {
   }
   let loginErrorMessage = null;
   switch (loginError) {
-    case '"user-" is not a valid user tag':
-      loginErrorMessage = "Invalid user name";
+    case ErrorResponse.INVALID_TAG:
+      loginErrorMessage = Label.INVALID_NAME;
       break;
-    case "invalid entity name or password":
-      loginErrorMessage = "Invalid user name or password";
+    case ErrorResponse.INVALID_FIELD:
+      loginErrorMessage = Label.INVALID_FIELD;
       break;
     default:
       loginErrorMessage = loginError;

@@ -9,6 +9,7 @@ import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 
 import LogIn from "./LogIn";
+import { ErrorResponse, Label } from "./LogIn";
 
 const mockStore = configureStore([]);
 
@@ -38,6 +39,31 @@ describe("LogIn", () => {
     const content = screen.getByText("App content");
     expect(content).toBeInTheDocument();
     expect(content).toHaveClass("app-content");
+  });
+
+  it("does not display the login form if the user is logged in", () => {
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          controllerConnections: {
+            "ws://localhost:1234/api": {
+              user: {
+                "display-name": "eggman",
+                identity: "user-eggman@external",
+                "controller-access": "",
+                "model-access": "",
+              },
+            },
+          },
+        }),
+      })
+    );
+    render(
+      <Provider store={store}>
+        <LogIn>App content</LogIn>
+      </Provider>
+    );
+    expect(document.querySelector(".login")).not.toBeInTheDocument();
   });
 
   it("renders an IdentityProvider login UI if the user is not logged in", () => {
@@ -91,7 +117,7 @@ describe("LogIn", () => {
     const store = mockStore(
       rootStateFactory.build({
         general: generalStateFactory.build({
-          loginError: "Invalid user name",
+          loginError: "Controller rejected request",
           config: configFactory.build({
             identityProviderAvailable: false,
           }),
@@ -103,9 +129,47 @@ describe("LogIn", () => {
         <LogIn>App content</LogIn>
       </Provider>
     );
-    const error = screen.getByText("Invalid user name");
+    const error = screen.getByText("Controller rejected request");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("error-message");
+  });
+
+  it("renders invalid username login errors", () => {
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          loginError: ErrorResponse.INVALID_TAG,
+          config: configFactory.build({
+            identityProviderAvailable: false,
+          }),
+        }),
+      })
+    );
+    render(
+      <Provider store={store}>
+        <LogIn>App content</LogIn>
+      </Provider>
+    );
+    expect(screen.getByText(Label.INVALID_NAME)).toBeInTheDocument();
+  });
+
+  it("renders invalid field errors", () => {
+    const store = mockStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          loginError: ErrorResponse.INVALID_FIELD,
+          config: configFactory.build({
+            identityProviderAvailable: false,
+          }),
+        }),
+      })
+    );
+    render(
+      <Provider store={store}>
+        <LogIn>App content</LogIn>
+      </Provider>
+    );
+    expect(screen.getByText(Label.INVALID_FIELD)).toBeInTheDocument();
   });
 
   it("logs in", async () => {

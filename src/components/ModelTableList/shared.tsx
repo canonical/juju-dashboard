@@ -17,6 +17,10 @@ import urls from "urls";
 
 export const JAAS_CONTROLLER_UUID = "a030379a-940f-4760-8fcf-3062b41a04e7";
 
+export enum Label {
+  ACCESS_BUTTON = "Access",
+}
+
 /**
   Generates the model details link for the table cell. If no ownerTag can be
   provided then it'll return raw text for the model name.
@@ -290,7 +294,7 @@ export function generateAccessButton(
       }}
       className="model-access p-button--neutral is-dense"
     >
-      Access
+      {Label.ACCESS_BUTTON}
     </button>
   );
 }

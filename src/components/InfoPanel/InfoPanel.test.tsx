@@ -1,4 +1,5 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
@@ -12,7 +13,7 @@ import {
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
 
-import InfoPanel from "./InfoPanel";
+import InfoPanel, { Label } from "./InfoPanel";
 
 const mockStore = configureStore([]);
 
@@ -83,5 +84,29 @@ describe("Info Panel", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     act(() => screen.getByRole("button").click());
     await waitFor(() => expect(screen.getByRole("dialog")).toBeInTheDocument());
+  });
+
+  it("can close the topology", async () => {
+    const store = mockStore(state);
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/models/kirk@external/enterprise"]}>
+          <Routes>
+            <Route
+              path="/models/:userName/:modelName"
+              element={<InfoPanel />}
+            />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.EXPAND_BUTTON })
+    );
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole("button", { name: "Close active modal" })
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });
