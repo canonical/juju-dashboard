@@ -1,4 +1,4 @@
-import { Modal, useListener } from "@canonical/react-components";
+import { Modal } from "@canonical/react-components";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -18,6 +18,10 @@ import "./_info-panel.scss";
 
 export enum TestId {
   INFO_PANEL = "info-panel",
+}
+
+export enum Label {
+  EXPAND_BUTTON = "Expand topology",
 }
 
 const expandedTopologyDimensions = () => {
@@ -55,14 +59,6 @@ const InfoPanel = () => {
   const topologySize = infoPanelDimensions();
 
   const sendAnalytics = useAnalytics();
-
-  // Close topology, if open, on Escape key press
-  const closeOnEscape = function (e: KeyboardEvent) {
-    if (e.code === "Escape" && showExpandedTopology) {
-      setShowExpandedTopology(false);
-    }
-  };
-  useListener(window, closeOnEscape, "keydown");
 
   const handleExpandTopology = () => {
     setShowExpandedTopology(!showExpandedTopology);
@@ -107,7 +103,7 @@ const InfoPanel = () => {
                   role="button"
                   tabIndex={0}
                 >
-                  Expand topology
+                  {Label.EXPAND_BUTTON}
                 </i>
               )}
             </div>

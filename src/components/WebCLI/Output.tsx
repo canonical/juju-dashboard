@@ -103,7 +103,6 @@ const WebCLIOutput = ({
       const viewPortHeight = window.innerHeight;
       const mousePosition = clientY + 40; // magic number
       const newHeight = viewPortHeight - mousePosition + resizeDeltaY.current;
-
       const maximumOutputHeight = viewPortHeight - 100; // magic number.
       if (newHeight < maximumOutputHeight && newHeight >= 10) {
         setHeight(newHeight);
@@ -125,7 +124,7 @@ const WebCLIOutput = ({
       if (!dragHandles.includes(target?.classList.value)) {
         return;
       }
-      resizeDeltaY.current = e.offsetY;
+      resizeDeltaY.current = e.offsetY ?? 0;
       document.addEventListener("mousemove", resizeMouse);
     };
 
@@ -135,7 +134,7 @@ const WebCLIOutput = ({
         return;
       }
       const rect = target.getBoundingClientRect();
-      resizeDeltaY.current = e.targetTouches[0].pageY - rect.top;
+      resizeDeltaY.current = e.targetTouches?.[0]?.pageY ?? 0 - rect?.top ?? 0;
       document.addEventListener("touchmove", resizeTouch, { passive: false });
     };
 

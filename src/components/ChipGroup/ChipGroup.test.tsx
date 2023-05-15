@@ -25,7 +25,7 @@ describe("Chip Group", () => {
     expect(document.querySelector(".is-baz")).not.toBeInTheDocument();
   });
 
-  it("should display the correct count and descriptor", () => {
+  it("should display the correct count and descriptor for units", () => {
     const fakeChips = {
       foo: 1,
       bar: 2,
@@ -33,6 +33,30 @@ describe("Chip Group", () => {
     };
     render(<ChipGroup chips={fakeChips} descriptor="units" />);
     expect(screen.getByText("3 Units")).toHaveClass("chip-group__descriptor");
+  });
+
+  it("should display the correct count and descriptor for local apps", () => {
+    const fakeChips = {
+      foo: 1,
+      bar: 2,
+      baz: 0,
+    };
+    render(<ChipGroup chips={fakeChips} descriptor="localApps" />);
+    expect(screen.getByText("3 Local applications")).toHaveClass(
+      "chip-group__descriptor"
+    );
+  });
+
+  it("should display the correct count and descriptor for machines", () => {
+    const fakeChips = {
+      foo: 1,
+      bar: 2,
+      baz: 0,
+    };
+    render(<ChipGroup chips={fakeChips} descriptor="machines" />);
+    expect(screen.getByText("3 Machines")).toHaveClass(
+      "chip-group__descriptor"
+    );
   });
 
   it("should not display the descriptor when null", () => {
