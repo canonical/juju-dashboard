@@ -1,24 +1,20 @@
-import { render, screen } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
+import { screen } from "@testing-library/react";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import type { RootState } from "store/store";
-import { rootStateFactory, jujuStateFactory } from "testing/factories";
+import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
-  modelWatcherModelDataFactory,
   applicationInfoFactory,
-  unitChangeDeltaFactory,
   machineChangeDeltaFactory,
+  modelWatcherModelDataFactory,
+  modelWatcherModelInfoFactory,
+  unitChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
-import { modelWatcherModelInfoFactory } from "testing/factories/juju/model-watcher";
+import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import Unit from "./Unit";
-
-const mockStore = configureStore([]);
 
 jest.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
@@ -32,6 +28,13 @@ jest.mock("components/WebCLI/WebCLI", () => {
 
 describe("Unit", () => {
   let state: RootState;
+  const path = urls.model.unit(null);
+  const url = urls.model.unit({
+    appName: "etcd",
+    modelName: "canonical-kubernetes",
+    unitId: "etcd-0",
+    userName: "eggman@external",
+  });
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -63,40 +66,17 @@ describe("Unit", () => {
     });
   });
 
-  function generateComponent() {
-    const store = mockStore(state);
-    window.history.pushState(
-      {},
-      "",
-      urls.model.unit({
-        appName: "etcd",
-        modelName: "canonical-kubernetes",
-        unitId: "etcd-0",
-        userName: "eggman@external",
-      })
-    );
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route path={urls.model.unit(null)} element={<Unit />} />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
-  }
-
   it("renders the info panel", async () => {
-    generateComponent();
+    renderComponent(<Unit />, { path, url, state });
     expect(screen.getByTestId(InfoPanelTestId.INFO_PANEL)).toBeInTheDocument();
   });
   it("displays the apps table", async () => {
-    generateComponent();
+    renderComponent(<Unit />, { path, url, state });
     expect(document.querySelector(".entity-details__apps")).toBeInTheDocument();
   });
 
   it("can display the machines table", async () => {
-    generateComponent();
+    renderComponent(<Unit />, { path, url, state });
     expect(
       document.querySelector(".entity-details__machines")
     ).toBeInTheDocument();
@@ -109,7 +89,7 @@ describe("Unit", () => {
           type: "kubernetes",
         });
     }
-    generateComponent();
+    renderComponent(<Unit />, { path, url, state });
     expect(
       document.querySelector(".entity-details__machines")
     ).not.toBeInTheDocument();

@@ -1,27 +1,23 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import type { RootState } from "store/store";
-import { rootStateFactory, jujuStateFactory } from "testing/factories";
+import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
+  configFactory,
   credentialFactory,
   generalStateFactory,
-  configFactory,
 } from "testing/factories/general";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
-  modelWatcherModelDataFactory,
   applicationInfoFactory,
+  modelWatcherModelDataFactory,
   unitChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
+import { renderComponent } from "testing/utils";
 
 import App, { Label, TestId } from "./App";
-
-const mockStore = configureStore([]);
 
 jest.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
@@ -34,10 +30,12 @@ jest.mock("components/WebCLI/WebCLI", () => {
 });
 
 describe("Entity Details App", () => {
-  let storeData: RootState;
+  let state: RootState;
+  const path = "/models/:userName/:modelName/app/:appName";
+  const url = "/models/eggman@external/canonical-kubernetes/app/etcd";
 
   beforeEach(() => {
-    storeData = rootStateFactory.build({
+    state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
           controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
@@ -76,36 +74,13 @@ describe("Entity Details App", () => {
     });
   });
 
-  function generateComponent(data = storeData) {
-    const store = mockStore(data);
-    window.history.pushState(
-      {},
-      "",
-      "/models/eggman@external/canonical-kubernetes/app/etcd"
-    );
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName/app/:appName"
-              element={<App />}
-            />
-            {/* Capture other paths to prevent warnings when navigating in the tests. */}
-            <Route path="*" element={<span />} />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
-  }
-
   it("renders the info panel", async () => {
-    generateComponent();
+    renderComponent(<App />, { path, url, state });
     expect(screen.getByTestId(InfoPanelTestId.INFO_PANEL)).toBeInTheDocument();
   });
 
   it("allows you to switch between a unit and machines view", async () => {
-    generateComponent();
+    renderComponent(<App />, { path, url, state });
     expect(screen.getByTestId(TestId.UNITS_TABLE)).toBeInTheDocument();
     expect(screen.queryByTestId(TestId.MACHINES_TABLE)).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("link", { name: "machines" }));
@@ -114,7 +89,7 @@ describe("Entity Details App", () => {
   });
 
   it("displays machine column in the unit table", async () => {
-    generateComponent();
+    renderComponent(<App />, { path, url, state });
     expect(
       within(screen.getByTestId(TestId.UNITS_TABLE)).getByRole("columnheader", {
         name: "machine",
@@ -123,11 +98,11 @@ describe("Entity Details App", () => {
   });
 
   it("does not display the machine column for k8s", async () => {
-    expect(storeData.juju.modelWatcherData?.abc123.model.type).toBeTruthy();
-    if (storeData.juju.modelWatcherData?.abc123.model.type) {
-      storeData.juju.modelWatcherData.abc123.model.type = "kubernetes";
+    expect(state.juju.modelWatcherData?.abc123.model.type).toBeTruthy();
+    if (state.juju.modelWatcherData?.abc123.model.type) {
+      state.juju.modelWatcherData.abc123.model.type = "kubernetes";
     }
-    generateComponent();
+    renderComponent(<App />, { path, url, state });
     expect(
       within(screen.getByTestId(TestId.UNITS_TABLE)).queryByRole(
         "columnheader",
@@ -139,7 +114,7 @@ describe("Entity Details App", () => {
   });
 
   it("supports selecting and deselecting all units", async () => {
-    generateComponent();
+    renderComponent(<App />, { path, url, state });
 
     const selectAll = screen.getByTestId(TestId.SELECT_ALL);
     const selectedUnits = [
@@ -194,7 +169,7 @@ describe("Entity Details App", () => {
   });
 
   it("enable the action button row when a unit is selected", async () => {
-    generateComponent();
+    renderComponent(<App />, { path, url, state });
     expect(screen.getByTestId(TestId.RUN_ACTION_BUTTON)).toBeDisabled();
     const firstInput = screen.getByTestId("table-checkbox-0");
     await userEvent.click(firstInput);
@@ -202,7 +177,7 @@ describe("Entity Details App", () => {
   });
 
   it("updates the url when units are selected and deselected", async () => {
-    generateComponent();
+    renderComponent(<App />, { path, url, state });
 
     // Select a single unit.
     const firstInput = screen.getByTestId("table-checkbox-0");
@@ -220,22 +195,22 @@ describe("Entity Details App", () => {
   });
 
   it("navigates to the actions log when button pressed", async () => {
-    generateComponent();
+    renderComponent(<App />, { path, url, state });
     await userEvent.click(screen.getByTestId(TestId.SHOW_ACTION_LOGS));
     expect(window.location.search).toEqual("?activeView=action-logs");
   });
 
   it("does not fail if a subordinate is not related to another application", async () => {
-    const modelWatcherData = storeData.juju.modelWatcherData;
+    const modelWatcherData = state.juju.modelWatcherData;
     if (modelWatcherData && "abc123" in modelWatcherData) {
       modelWatcherData["abc123"].units = {};
     }
-    generateComponent(storeData);
+    renderComponent(<App />, { path, url, state });
     expect(screen.getByText(Label.NO_UNITS)).toBeInTheDocument();
   });
 
   it("can display the config panel", async () => {
-    generateComponent();
+    renderComponent(<App />, { path, url, state });
     expect(window.location.search).toEqual("");
     await userEvent.click(
       screen.getByRole("button", { name: Label.CONFIGURE })

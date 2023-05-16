@@ -1,10 +1,6 @@
-import type { InitialEntry } from "@remix-run/router";
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Toaster } from "react-hot-toast";
-import { Provider } from "react-redux";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import * as juju from "juju/api";
 import { executeActionOnUnits } from "juju/api";
@@ -14,17 +10,18 @@ import {
   applicationCharmActionFactory,
   applicationCharmActionParamsFactory,
 } from "testing/factories/juju/ActionV7";
-import { charmApplicationFactory } from "testing/factories/juju/Charms";
-import { charmInfoFactory } from "testing/factories/juju/Charms";
+import {
+  charmApplicationFactory,
+  charmInfoFactory,
+} from "testing/factories/juju/Charms";
 import {
   jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
+import { renderComponent } from "testing/utils";
 
 import CharmActionsPanel, { Label } from "./CharmActionsPanel";
-
-const mockStore = configureStore([]);
 
 jest.mock("juju/api", () => {
   return {
@@ -34,32 +31,9 @@ jest.mock("juju/api", () => {
 
 describe("CharmActionsPanel", () => {
   let state: RootState;
-
-  function generateComponent(initialEntries?: InitialEntry[]) {
-    if (!initialEntries) {
-      initialEntries = [
-        "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&charm=ch:ceph",
-      ];
-    }
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={initialEntries}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName/app/:appName"
-              element={
-                <>
-                  <CharmActionsPanel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
-  }
+  const path = "/models/:userName/:modelName/app/:appName";
+  const url =
+    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&charm=ch:ceph";
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -116,26 +90,52 @@ describe("CharmActionsPanel", () => {
   });
 
   it("displays a message if viewing the panel without selecting a charm", async () => {
-    generateComponent([
-      "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&charm=something-else",
-    ]);
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      {
+        path,
+        url: "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&charm=something-else",
+        state,
+      }
+    );
     expect(screen.getByText(Label.NONE_SELECTED)).toBeInTheDocument();
   });
 
   it("Renders the list of available actions", async () => {
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(await screen.findAllByRole("radio")).toHaveLength(2);
   });
 
   it("validates that an action is selected before submitting", async () => {
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
   });
 
   it("displays the number of selected apps and units", async () => {
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(await screen.findByRole("heading")).toHaveTextContent(
       "1 application (2 units) selected"
     );
@@ -148,7 +148,13 @@ describe("CharmActionsPanel", () => {
         "unit-count": 0,
       }),
     ];
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(await screen.findByRole("heading")).toHaveTextContent(
       "1 application (0 units) selected"
     );
@@ -161,7 +167,13 @@ describe("CharmActionsPanel", () => {
         "unit-count": 0,
       }),
     ];
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -178,7 +190,13 @@ describe("CharmActionsPanel", () => {
   });
 
   it("disables the submit button if a required text field is empty", async () => {
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -221,7 +239,13 @@ describe("CharmActionsPanel", () => {
         },
       }),
     ];
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" })
     );
@@ -239,7 +263,13 @@ describe("CharmActionsPanel", () => {
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -261,7 +291,13 @@ describe("CharmActionsPanel", () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(() => Promise.resolve(undefined));
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -287,7 +323,13 @@ describe("CharmActionsPanel", () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(() => Promise.resolve(undefined));
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" })
     );
@@ -318,7 +360,13 @@ describe("CharmActionsPanel", () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(() => Promise.reject());
-    generateComponent();
+    renderComponent(
+      <>
+        <CharmActionsPanel />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();

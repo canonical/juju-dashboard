@@ -1,9 +1,6 @@
 import * as jujuLib from "@canonical/jujulib";
 import type { Connection } from "@canonical/jujulib";
-import { render, screen } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
+import { screen } from "@testing-library/react";
 
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
@@ -11,6 +8,7 @@ import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
+import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import ModelDetails from "./ModelDetails";
@@ -35,14 +33,17 @@ jest.mock("@canonical/jujulib", () => ({
   connectAndLogin: jest.fn(),
 }));
 
-const mockStore = configureStore();
-
 describe("ModelDetails", () => {
   let state: RootState;
   let client: {
     conn: Connection;
     logout: () => void;
   };
+  const path = `${urls.model.index(null)}/*`;
+  const url = urls.model.index({
+    modelName: "test-model",
+    userName: "eggman@external",
+  });
 
   beforeEach(() => {
     state = rootStateFactory.withGeneralConfig().build({
@@ -92,24 +93,7 @@ describe("ModelDetails", () => {
     jest
       .spyOn(jujuLib, "connectAndLogin")
       .mockImplementation(async () => client);
-    const store = mockStore(state);
-    window.history.pushState(
-      {},
-      "",
-      urls.model.index({ modelName: "test-model", userName: "eggman@external" })
-    );
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path={`${urls.model.index(null)}/*`}
-              element={<ModelDetails />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    const { store } = renderComponent(<ModelDetails />, { path, url, state });
     const action = jujuActions.populateMissingAllWatcherData({
       uuid: "abc123",
       status,
@@ -123,128 +107,55 @@ describe("ModelDetails", () => {
   });
 
   it("should stop watching the model on unmount", async () => {
-    const store = mockStore(state);
-    window.history.pushState(
-      {},
-      "",
-      urls.model.index({ modelName: "test-model", userName: "eggman@external" })
-    );
-    const { unmount } = render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path={`${urls.model.index(null)}/*`}
-              element={<ModelDetails />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    const { result } = renderComponent(<ModelDetails />, { path, url, state });
     // Wait for the component to be rendered so that async methods have completed.
     await screen.findByTestId("model");
-    unmount();
+    result.unmount();
     expect(client.conn.facades.allWatcher.stop).toHaveBeenCalled();
   });
 
   it("should display the model page", async () => {
-    const store = mockStore(state);
-    window.history.pushState(
-      {},
-      "",
-      urls.model.index({ modelName: "test-model", userName: "eggman@external" })
-    );
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path={`${urls.model.index(null)}/*`}
-              element={<ModelDetails />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ModelDetails />, { path, url, state });
     expect(await screen.findByTestId("model")).toBeInTheDocument();
   });
 
   it("should display the app page", async () => {
-    const store = mockStore(state);
-    window.history.pushState(
-      {},
-      "",
-      urls.model.app.index({
+    renderComponent(<ModelDetails />, {
+      path,
+      url: urls.model.app.index({
         modelName: "test-model",
         userName: "eggman@external",
         appName: "ceph",
-      })
-    );
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path={`${urls.model.index(null)}/*`}
-              element={<ModelDetails />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+      }),
+      state,
+    });
     expect(await screen.findByTestId("app")).toBeInTheDocument();
   });
 
   it("should display the unit page", async () => {
-    const store = mockStore(state);
-    window.history.pushState(
-      {},
-      "",
-      urls.model.unit({
+    renderComponent(<ModelDetails />, {
+      path,
+      url: urls.model.unit({
         modelName: "test-model",
         userName: "eggman@external",
         appName: "ceph",
         unitId: "ceph-0",
-      })
-    );
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path={`${urls.model.index(null)}/*`}
-              element={<ModelDetails />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+      }),
+      state,
+    });
     expect(await screen.findByTestId("unit")).toBeInTheDocument();
   });
 
   it("should display the machine page", async () => {
-    const store = mockStore(state);
-    window.history.pushState(
-      {},
-      "",
-      urls.model.machine({
+    renderComponent(<ModelDetails />, {
+      path,
+      url: urls.model.machine({
         modelName: "test-model",
         userName: "eggman@external",
         machineId: "1",
-      })
-    );
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path={`${urls.model.index(null)}/*`}
-              element={<ModelDetails />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+      }),
+      state,
+    });
     expect(await screen.findByTestId("machine")).toBeInTheDocument();
   });
 });

@@ -1,15 +1,6 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { ReactNode } from "react";
-import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
+import { Route } from "react-router-dom";
 
 import * as WebCLIModule from "components/WebCLI/WebCLI";
 import type { RootState } from "store/store";
@@ -26,6 +17,7 @@ import {
   modelWatcherModelDataFactory,
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
+import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import EntityDetails, { Label } from "./EntityDetails";
@@ -42,42 +34,10 @@ jest.mock("components/WebCLI/WebCLI", () => ({
   },
 }));
 
-const mockStore = configureStore([]);
-
-type Props = {
-  children?: ReactNode;
-  type?: string;
-  onApplicationsFilter?: (query: string) => void;
-};
-
 describe("Entity Details Container", () => {
   let state: RootState;
-  function renderComponent({
-    props,
-    storeState = state,
-    path = "/models/kirk@external/enterprise",
-    urlPattern = "/models/:userName/:modelName",
-  }: {
-    props?: Props;
-    storeState?: RootState;
-    path?: string;
-    urlPattern?: string;
-  } = {}) {
-    const store = mockStore(storeState);
-
-    window.history.pushState({}, "", path);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route path={urlPattern} element={<EntityDetails />}>
-              {props?.children}
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
-  }
+  const path = "/models/:userName/:modelName";
+  const url = "/models/kirk@external/enterprise";
 
   beforeEach(() => {
     state = rootStateFactory.withGeneralConfig().build({
@@ -127,39 +87,33 @@ describe("Entity Details Container", () => {
   });
 
   it("should display the correct window title", () => {
-    renderComponent();
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(document.title).toEqual("Model: enterprise | Juju Dashboard");
   });
 
   it("should show a spinner if waiting on model list data", () => {
     state.juju.modelsLoaded = false;
     state.juju.modelWatcherData = {};
-    renderComponent({
-      storeState: state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("should show a spinner if waiting on model data", () => {
     state.juju.modelWatcherData = {};
-    renderComponent({
-      storeState: state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("should show a not found message if the model does not exist", () => {
     state.juju.models = {};
-    renderComponent({
-      storeState: state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(
       screen.getByRole("heading", { name: Label.NOT_FOUND })
     ).toBeInTheDocument();
   });
 
   it("lists the correct tabs", () => {
-    renderComponent({ props: { type: "model" } });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsAction LogsMachines$/
     );
@@ -178,17 +132,14 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent({
-      props: { type: "model" },
-      storeState: state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsAction Logs$/
     );
   });
 
   it("clicking the tabs changes the visible section", () => {
-    renderComponent({ props: { type: "model" } });
+    renderComponent(<EntityDetails />, { path, url, state });
     const viewSelector = screen.getByTestId("view-selector");
     const sections = [
       {
@@ -226,16 +177,19 @@ describe("Entity Details Container", () => {
     });
   });
 
-  it("shows the supplied child", () => {
+  it("shows the supplied child", async () => {
     const children = "Hello I am a child!";
-    renderComponent({
-      props: { children: <Route path="" element={children} /> },
+    renderComponent(<EntityDetails />, {
+      path,
+      url,
+      routeChildren: <Route path="" element={children} />,
+      state,
     });
-    expect(screen.getByText(children)).toBeInTheDocument();
+    expect(await screen.findByText(children)).toBeInTheDocument();
   });
 
   it("shows the CLI in juju 2.9", async () => {
-    renderComponent();
+    renderComponent(<EntityDetails />, { path, url, state });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).toBeInTheDocument();
     });
@@ -255,7 +209,7 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent();
+    renderComponent(<EntityDetails />, { path, url, state });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).toBeInTheDocument();
     });
@@ -274,16 +228,14 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent({
-      storeState: state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
     });
   });
 
   it("gives the content a class when the webCLI is shown", async () => {
-    renderComponent();
+    renderComponent(<EntityDetails />, { path, url, state });
     await waitFor(() => {
       expect(document.querySelector(".l-content")).toHaveClass(
         "l-content--has-webcli"
@@ -295,7 +247,7 @@ describe("Entity Details Container", () => {
     const cliComponent = jest
       .spyOn(WebCLIModule, "default")
       .mockImplementation(jest.fn());
-    renderComponent();
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(cliComponent.mock.calls[0][0]).toMatchObject({
       controllerWSHost: "example.com:17070",
       credentials: {
@@ -308,10 +260,11 @@ describe("Entity Details Container", () => {
     cliComponent.mockReset();
   });
 
-  it("gives the header a class when the header shouldbe a single column", async () => {
-    renderComponent({
-      path: "/models/eggman@external/group-test/app/etcd",
-      urlPattern: "/models/:userName/:modelName/app/:appName",
+  it("gives the header a class when the header should be a single column", async () => {
+    renderComponent(<EntityDetails />, {
+      path: "/models/:userName/:modelName/app/:appName",
+      url: "/models/eggman@external/group-test/app/etcd",
+      state,
     });
     await waitFor(() => {
       expect(document.querySelector(".entity-details__header")).toHaveClass(
@@ -321,9 +274,10 @@ describe("Entity Details Container", () => {
   });
 
   it("shows the search & filter box in the apps tab", async () => {
-    renderComponent({
-      path: "/models/eggman@external/group-test",
-      urlPattern: "/models/:userName/:modelName",
+    renderComponent(<EntityDetails />, {
+      path,
+      url: "/models/eggman@external/group-test",
+      state,
     });
     await waitFor(() => {
       expect(screen.getByTestId("filter-applications")).toBeInTheDocument();
@@ -331,9 +285,10 @@ describe("Entity Details Container", () => {
   });
 
   it("does not the search & filter box for subsections", async () => {
-    renderComponent({
-      path: "/models/eggman@external/group-test/app/etcd",
-      urlPattern: "/models/:userName/:modelName/app/:appName",
+    renderComponent(<EntityDetails />, {
+      path: "/models/:userName/:modelName/app/:appName",
+      url: "/models/eggman@external/group-test/app/etcd",
+      state,
     });
     await waitFor(() => {
       expect(
@@ -343,9 +298,10 @@ describe("Entity Details Container", () => {
   });
 
   it("does not the search & filter box for non-apps tabs", async () => {
-    renderComponent({
-      path: "/models/eggman@external/group-test?activeView=integrations",
-      urlPattern: "/models/:userName/:modelName",
+    renderComponent(<EntityDetails />, {
+      path,
+      url: "/models/eggman@external/group-test?activeView=integrations",
+      state,
     });
     await waitFor(() => {
       expect(
@@ -355,46 +311,48 @@ describe("Entity Details Container", () => {
   });
 
   it("searches when the 'enter' key is pressed", async () => {
-    renderComponent();
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(window.location.search).toEqual("");
     await userEvent.type(screen.getByRole("searchbox"), "what{Enter}");
     expect(window.location.search).toEqual("?filterQuery=what");
   });
 
   it("does not search when other keys are pressed", async () => {
-    renderComponent();
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(window.location.search).toEqual("");
     await userEvent.type(screen.getByRole("searchbox"), "what{Shift}");
     expect(window.location.search).toEqual("");
   });
 
   it("gives the content the correct class for the model", async () => {
-    renderComponent();
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(
       document.querySelector(".entity-details__model")
     ).toBeInTheDocument();
   });
 
   it("gives the content the correct class for an app", async () => {
-    renderComponent({
-      path: urls.model.app.index({
+    renderComponent(<EntityDetails />, {
+      path: urls.model.app.index(null),
+      url: urls.model.app.index({
         userName: "kirk@external",
         modelName: "enterprise",
         appName: "etcd",
       }),
-      urlPattern: urls.model.app.index(null),
+      state,
     });
     expect(document.querySelector(".entity-details__app")).toBeInTheDocument();
   });
 
   it("gives the content the correct class for a machine", async () => {
-    renderComponent({
-      path: urls.model.machine({
+    renderComponent(<EntityDetails />, {
+      path: urls.model.machine(null),
+      url: urls.model.machine({
         userName: "kirk@external",
         modelName: "enterprise",
         machineId: "1",
       }),
-      urlPattern: urls.model.machine(null),
+      state,
     });
     expect(
       document.querySelector(".entity-details__machine")
@@ -402,14 +360,15 @@ describe("Entity Details Container", () => {
   });
 
   it("gives the content the correct class for a unit", async () => {
-    renderComponent({
-      path: urls.model.unit({
+    renderComponent(<EntityDetails />, {
+      path: urls.model.unit(null),
+      url: urls.model.unit({
         userName: "kirk@external",
         modelName: "enterprise",
         appName: "etcd",
         unitId: "etcd-0",
       }),
-      urlPattern: urls.model.unit(null),
+      state,
     });
     expect(document.querySelector(".entity-details__unit")).toBeInTheDocument();
   });

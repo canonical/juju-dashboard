@@ -1,8 +1,5 @@
 import type { RenderResult } from "@testing-library/react";
-import { render, screen, within } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router";
-import configureStore from "redux-mock-store";
+import { screen, within } from "@testing-library/react";
 
 import * as appSelectors from "store/juju/selectors";
 import type { RootState } from "store/store";
@@ -12,14 +9,13 @@ import {
   modelDataFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import { TestId as CloudTestId } from "./CloudGroup";
 import ModelTableList from "./ModelTableList";
 import { TestId as OwnerTestId } from "./OwnerGroup";
 import { TestId as StatusTestId } from "./StatusGroup";
 import { JAAS_CONTROLLER_UUID } from "./shared";
-
-const mockStore = configureStore([]);
 
 describe("ModelTableList", () => {
   let state: RootState;
@@ -41,14 +37,7 @@ describe("ModelTableList", () => {
   });
 
   it("by default, renders the status table", () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ModelTableList filters={{}} groupedBy="" />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
     expect(screen.getByTestId(StatusTestId.STATUS_GROUP)).toBeInTheDocument();
     expect(
       screen.queryByTestId(OwnerTestId.OWNER_GROUP)
@@ -56,25 +45,19 @@ describe("ModelTableList", () => {
   });
 
   it("displays all data from redux store when grouping by...", () => {
-    const store = mockStore(state);
     const tables = [
       ["status", StatusTestId.STATUS_GROUP],
       ["owner", OwnerTestId.OWNER_GROUP],
       ["cloud", CloudTestId.CLOUD_GROUP],
     ];
-    const generateComponent = (groupedBy: string) => (
-      <MemoryRouter>
-        <Provider store={store}>
-          <ModelTableList filters={{}} groupedBy={groupedBy} />
-        </Provider>
-      </MemoryRouter>
-    );
     let result: RenderResult;
     tables.forEach((table) => {
       if (result) {
-        result.rerender(generateComponent(table[0]));
+        result.rerender(<ModelTableList filters={{}} groupedBy={table[0]} />);
       } else {
-        result = render(generateComponent(table[0]));
+        ({ result } = renderComponent(
+          <ModelTableList filters={{}} groupedBy={table[0]} />
+        ));
       }
       expect(screen.getByTestId(table[1])).toBeInTheDocument();
       tables.forEach((otherTable) => {
@@ -90,7 +73,6 @@ describe("ModelTableList", () => {
       appSelectors,
       "getGroupedByStatusAndFilteredModelData"
     );
-    const store = mockStore(state);
     const tables = [
       { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
       { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
@@ -98,12 +80,8 @@ describe("ModelTableList", () => {
     ];
     const filters = { cloud: ["aws"] };
     tables.forEach((table) => {
-      render(
-        <MemoryRouter>
-          <Provider store={store}>
-            <ModelTableList groupedBy={table.groupedBy} filters={filters} />
-          </Provider>
-        </MemoryRouter>
+      renderComponent(
+        <ModelTableList groupedBy={table.groupedBy} filters={filters} />
       );
       expect(getGroupedByStatusAndFilteredModelData).toHaveBeenCalledWith(
         filters
@@ -124,14 +102,7 @@ describe("ModelTableList", () => {
     if (modelInfo) {
       modelInfo["controller-uuid"] = JAAS_CONTROLLER_UUID;
     }
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ModelTableList filters={{}} groupedBy="" />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
     expect(screen.getAllByTestId("column-controller")[0]).toHaveTextContent(
       "JAAS"
     );
@@ -144,14 +115,7 @@ describe("ModelTableList", () => {
     if (modelInfo) {
       modelInfo["controller-uuid"] = unknownUUID;
     }
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ModelTableList filters={{}} groupedBy="" />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
     const row = screen.getByTestId(`model-uuid-${testModelUUID}`);
     expect(within(row).getByTestId("column-controller")).toHaveTextContent(
       unknownUUID
@@ -174,14 +138,7 @@ describe("ModelTableList", () => {
     if (modelDataInfo) {
       modelDataInfo["controller-uuid"] = knownUUID;
     }
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ModelTableList filters={{}} groupedBy="" />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
     const row = screen.getByTestId(`model-uuid-${testModelUUID}`);
     expect(within(row).getByTestId("column-controller")).toHaveTextContent(
       "admins/1-eu-west-1-aws-jaas"

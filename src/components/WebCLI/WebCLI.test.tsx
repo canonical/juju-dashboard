@@ -1,28 +1,14 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { WS } from "jest-websocket-mock";
-import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
 
 import bakery from "juju/bakery";
-import type { RootState } from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import { TestId } from "./Output";
 import WebCLI, { MAX_HISTORY } from "./WebCLI";
-
-const mockStore = configureStore([]);
-
-type Props = {
-  protocol?: string;
-  controllerWSHost: string;
-  modelUUID: string;
-  credentials: {
-    user: string;
-    password: string;
-  } | null;
-};
 
 jest.mock("juju/bakery", () => ({
   __esModule: true,
@@ -35,6 +21,11 @@ jest.mock("juju/bakery", () => ({
 
 describe("WebCLI", () => {
   let bakerySpy: jest.SpyInstance;
+  const props = {
+    controllerWSHost: "jimm.jujucharms.com:443",
+    modelUUID: "abc123",
+    credentials: null,
+  };
 
   beforeEach(() => {
     bakerySpy = jest.spyOn(bakery.storage, "get");
@@ -45,30 +36,13 @@ describe("WebCLI", () => {
     localStorage.clear();
   });
 
-  async function generateComponent(
-    props: Props = {
-      controllerWSHost: "jimm.jujucharms.com:443",
-      modelUUID: "abc123",
-      credentials: null,
-    },
-    state?: RootState
-  ) {
-    const store = mockStore(state || rootStateFactory.build());
-
-    return render(
-      <Provider store={store}>
-        <WebCLI {...props} />
-      </Provider>
-    );
-  }
-
   it("renders correctly", async () => {
-    const { container } = await generateComponent();
-    expect(container).toMatchSnapshot();
+    const { result } = renderComponent(<WebCLI {...props} />);
+    expect(result.container).toMatchSnapshot();
   });
 
   it("shows the help in the output when the ? is clicked", async () => {
-    await generateComponent();
+    renderComponent(<WebCLI {...props} />);
     await userEvent.click(screen.getByRole("button"));
     expect(
       document.querySelector(".webcli__output-content code")
@@ -78,7 +52,7 @@ describe("WebCLI", () => {
   });
 
   it("shows the help when there is no output", async () => {
-    await generateComponent();
+    renderComponent(<WebCLI {...props} />);
     expect(
       document.querySelector(".webcli__output-content code")
     ).toHaveTextContent(
@@ -90,15 +64,17 @@ describe("WebCLI", () => {
     const server = new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
     });
-    await generateComponent({
-      protocol: "ws",
-      controllerWSHost: "localhost:1234",
-      modelUUID: "abc123",
-      credentials: {
-        user: "spaceman",
-        password: "somelongpassword",
-      },
-    });
+    renderComponent(
+      <WebCLI
+        protocol="ws"
+        controllerWSHost="localhost:1234"
+        modelUUID="abc123"
+        credentials={{
+          user: "spaceman",
+          password: "somelongpassword",
+        }}
+      />
+    );
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "      status       {enter}");
@@ -115,7 +91,7 @@ describe("WebCLI", () => {
       "cliHistory",
       JSON.stringify(["status", "help", "whoami"])
     );
-    await generateComponent();
+    renderComponent(<WebCLI {...props} />);
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}");
     expect(input).toHaveValue("help");
@@ -126,7 +102,7 @@ describe("WebCLI", () => {
       "cliHistory",
       JSON.stringify(["status", "help", "whoami"])
     );
-    await generateComponent();
+    renderComponent(<WebCLI {...props} />);
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}{arrowup}");
     expect(input).toHaveValue("status");
@@ -139,7 +115,7 @@ describe("WebCLI", () => {
       "cliHistory",
       JSON.stringify(["status", "help", "whoami"])
     );
-    await generateComponent();
+    renderComponent(<WebCLI {...props} />);
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}");
     expect(input).toHaveValue("help");
@@ -152,7 +128,7 @@ describe("WebCLI", () => {
       "cliHistory",
       JSON.stringify(["status", "help", "whoami"])
     );
-    await generateComponent();
+    renderComponent(<WebCLI {...props} />);
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}{arrowup}{arrowup}");
     expect(input).toHaveValue("status");
@@ -165,15 +141,17 @@ describe("WebCLI", () => {
     new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
     });
-    await generateComponent({
-      protocol: "ws",
-      controllerWSHost: "localhost:1234",
-      modelUUID: "abc123",
-      credentials: {
-        user: "spaceman",
-        password: "somelongpassword",
-      },
-    });
+    renderComponent(
+      <WebCLI
+        protocol="ws"
+        controllerWSHost="localhost:1234"
+        modelUUID="abc123"
+        credentials={{
+          user: "spaceman",
+          password: "somelongpassword",
+        }}
+      />
+    );
     const input = screen.getByRole("textbox");
     let history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
     expect(history).toHaveLength(MAX_HISTORY);
@@ -214,14 +192,14 @@ describe("WebCLI", () => {
     const server = new WS("ws://localhost:1234/model/abc123/commands", {
       jsonProtocol: true,
     });
-    await generateComponent(
-      {
-        protocol: "ws",
-        controllerWSHost: "localhost:1234",
-        modelUUID: "abc123",
-        credentials: null,
-      },
-      state
+    renderComponent(
+      <WebCLI
+        protocol="ws"
+        controllerWSHost="localhost:1234"
+        modelUUID="abc123"
+        credentials={null}
+      />,
+      { state }
     );
     await server.connected;
     const input = screen.getByRole("textbox");
@@ -240,15 +218,17 @@ describe("WebCLI", () => {
       const server = new WS("ws://localhost:1234/model/abc123/commands", {
         jsonProtocol: true,
       });
-      await generateComponent({
-        protocol: "ws",
-        controllerWSHost: "localhost:1234",
-        modelUUID: "abc123",
-        credentials: {
-          user: "eggman@external",
-          password: "somelongpassword",
-        },
-      });
+      renderComponent(
+        <WebCLI
+          protocol="ws"
+          controllerWSHost="localhost:1234"
+          modelUUID="abc123"
+          credentials={{
+            user: "eggman@external",
+            password: "somelongpassword",
+          }}
+        />
+      );
       await server.connected;
       const input = screen.getByRole("textbox");
       await userEvent.type(input, "status --color{enter}");
@@ -305,15 +285,17 @@ describe("WebCLI", () => {
       const server = new WS("ws://localhost:1234/model/abc123/commands", {
         jsonProtocol: true,
       });
-      await generateComponent({
-        protocol: "ws",
-        controllerWSHost: "localhost:1234",
-        modelUUID: "abc123",
-        credentials: {
-          user: "spaceman",
-          password: "somelongpassword",
-        },
-      });
+      renderComponent(
+        <WebCLI
+          protocol="ws"
+          controllerWSHost="localhost:1234"
+          modelUUID="abc123"
+          credentials={{
+            user: "spaceman",
+            password: "somelongpassword",
+          }}
+        />
+      );
       await server.connected;
       const input = screen.getByRole("textbox");
       await userEvent.type(input, "status --color{enter}");
@@ -366,15 +348,17 @@ describe("WebCLI", () => {
     });
 
     it("can be resized with a mouse", async () => {
-      await generateComponent({
-        protocol: "ws",
-        controllerWSHost: "localhost:1234",
-        modelUUID: "abc123",
-        credentials: {
-          user: "spaceman",
-          password: "somelongpassword",
-        },
-      });
+      renderComponent(
+        <WebCLI
+          protocol="ws"
+          controllerWSHost="localhost:1234"
+          modelUUID="abc123"
+          credentials={{
+            user: "spaceman",
+            password: "somelongpassword",
+          }}
+        />
+      );
       expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
         "style",
         "height: 1px;"
@@ -395,15 +379,17 @@ describe("WebCLI", () => {
     });
 
     it("can be resized on mobile", async () => {
-      await generateComponent({
-        protocol: "ws",
-        controllerWSHost: "localhost:1234",
-        modelUUID: "abc123",
-        credentials: {
-          user: "spaceman",
-          password: "somelongpassword",
-        },
-      });
+      renderComponent(
+        <WebCLI
+          protocol="ws"
+          controllerWSHost="localhost:1234"
+          modelUUID="abc123"
+          credentials={{
+            user: "spaceman",
+            password: "somelongpassword",
+          }}
+        />
+      );
       expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
         "style",
         "height: 1px;"

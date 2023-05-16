@@ -1,29 +1,24 @@
-import type { InitialEntry } from "@remix-run/router";
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import * as juju from "juju/api";
 import { executeActionOnUnits } from "juju/api";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
-  applicationCharmActionsResultFactory,
-  applicationsCharmActionsResultsFactory,
   applicationCharmActionFactory,
   applicationCharmActionParamsFactory,
+  applicationCharmActionsResultFactory,
+  applicationsCharmActionsResultsFactory,
 } from "testing/factories/juju/ActionV7";
 import {
   jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
+import { renderComponent } from "testing/utils";
 
 import ActionsPanel from "./ActionsPanel";
-
-const mockStore = configureStore([]);
 
 const mockResponse = applicationsCharmActionsResultsFactory.build({
   results: [
@@ -65,27 +60,9 @@ jest.mock("juju/api", () => {
 
 describe("ActionsPanel", () => {
   let state: RootState;
-
-  function generateComponent(initialEntries?: InitialEntry[]) {
-    if (!initialEntries) {
-      initialEntries = [
-        "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0,ceph%2F1",
-      ];
-    }
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={initialEntries}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName/app/:appName"
-              element={<ActionsPanel />}
-            />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
-  }
+  const path = "/models/:userName/:modelName/app/:appName";
+  const url =
+    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0,ceph%2F1";
 
   beforeEach(() => {
     const getActionsForApplicationSpy = jest.spyOn(
@@ -111,19 +88,19 @@ describe("ActionsPanel", () => {
   });
 
   it("Renders the list of available actions", async () => {
-    generateComponent();
+    renderComponent(<ActionsPanel />, { path, url, state });
     expect(await screen.findAllByRole("radio")).toHaveLength(2);
   });
 
   it("validates that an action is selected before submitting", async () => {
-    generateComponent();
+    renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
   });
 
   it("updates the title & unit list based on the number of units selected", async () => {
-    generateComponent();
+    renderComponent(<ActionsPanel />, { path, url, state });
     expect(await screen.findByText("2 units selected")).toBeInTheDocument();
     expect(
       await screen.findByTestId("actions-panel-unit-list")
@@ -131,9 +108,11 @@ describe("ActionsPanel", () => {
   });
 
   it("successfully handles no units selected", async () => {
-    generateComponent([
-      "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action",
-    ]);
+    renderComponent(<ActionsPanel />, {
+      path,
+      url: "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action",
+      state,
+    });
     expect(await screen.findByRole("heading")).toHaveTextContent(
       "0 units selected"
     );
@@ -143,9 +122,11 @@ describe("ActionsPanel", () => {
   });
 
   it("disables the submit button if no units are selected", async () => {
-    generateComponent([
-      "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action",
-    ]);
+    renderComponent(<ActionsPanel />, {
+      path,
+      url: "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action",
+      state,
+    });
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -162,7 +143,7 @@ describe("ActionsPanel", () => {
   });
 
   it("disables the submit button if a required text field is empty", async () => {
-    generateComponent();
+    renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -210,7 +191,7 @@ describe("ActionsPanel", () => {
       "getActionsForApplication"
     );
     getActionsForApplicationSpy.mockResolvedValue(mockResponse);
-    generateComponent();
+    renderComponent(<ActionsPanel />, { path, url, state });
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" })
     );
@@ -228,7 +209,7 @@ describe("ActionsPanel", () => {
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {
-    generateComponent();
+    renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -251,7 +232,7 @@ describe("ActionsPanel", () => {
 
   it("submits the action request to the api without options", async () => {
     const executeActionOnUnitsSpy = jest.spyOn(juju, "executeActionOnUnits");
-    generateComponent();
+    renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -274,7 +255,7 @@ describe("ActionsPanel", () => {
 
   it("submits the action request to the api with options that are required", async () => {
     const executeActionOnUnitsSpy = jest.spyOn(juju, "executeActionOnUnits");
-    generateComponent();
+    renderComponent(<ActionsPanel />, { path, url, state });
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" })
     );

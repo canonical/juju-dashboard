@@ -1,8 +1,5 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import * as componentUtils from "components/utils";
 import * as juju from "juju/api";
@@ -21,11 +18,12 @@ import {
 } from "testing/factories/juju/ActionV7";
 import {
   jujuStateFactory,
+  modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelDataApplicationFactory,
   modelDataStatusFactory,
 } from "testing/factories/juju/juju";
+import { renderComponent } from "testing/utils";
 
 import { Output } from "./ActionLogs";
 
@@ -110,30 +108,10 @@ jest.mock("juju/api", () => {
   };
 });
 
-const mockStore = configureStore([]);
-
 describe("Action Logs", () => {
   let state: RootState;
-
-  function generateComponent() {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/eggman@external/group-test?activeView=action-logs",
-          ]}
-        >
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ActionLogs />}
-            />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
-  }
+  const path = "/models/:userName/:modelName";
+  const url = "/models/eggman@external/group-test?activeView=action-logs";
 
   beforeEach(() => {
     jest
@@ -165,7 +143,7 @@ describe("Action Logs", () => {
   });
 
   it("requests the action logs data on load", async () => {
-    generateComponent();
+    renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
       ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
       [
@@ -196,7 +174,7 @@ describe("Action Logs", () => {
   });
 
   it("fails gracefully if app does not exist in model data", async () => {
-    generateComponent();
+    renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
       ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
       [
@@ -246,7 +224,7 @@ describe("Action Logs", () => {
       ],
     });
     jest.spyOn(juju, "queryActionsList").mockResolvedValue(mockActionResults);
-    generateComponent();
+    renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
       ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
       [
@@ -265,7 +243,7 @@ describe("Action Logs", () => {
   });
 
   it("Only shows messages of selected type", async () => {
-    generateComponent();
+    renderComponent(<ActionLogs />, { path, url, state });
     const rows = await screen.findAllByRole("row");
     await userEvent.click(
       within(rows[2]).getByRole("button", { name: Label.OUTPUT })
@@ -280,7 +258,7 @@ describe("Action Logs", () => {
   });
 
   it("can show both STOUT and STDERR", async () => {
-    generateComponent();
+    renderComponent(<ActionLogs />, { path, url, state });
     const rows = await screen.findAllByRole("row");
     await userEvent.click(
       within(rows[3]).getByRole("button", { name: Label.OUTPUT })
@@ -291,13 +269,13 @@ describe("Action Logs", () => {
   });
 
   it("only shows the action result button when there is a result", async () => {
-    generateComponent();
+    renderComponent(<ActionLogs />, { path, url, state });
     const showOutputBtns = await screen.findAllByTestId("show-output");
     expect(showOutputBtns.length).toBe(1);
   });
 
   it("shows the payload when the action result button is clicked", async () => {
-    generateComponent();
+    renderComponent(<ActionLogs />, { path, url, state });
     const showOutputBtn = await screen.findByTestId("show-output");
     await userEvent.click(showOutputBtn);
     const modal = await screen.findByTestId("action-payload-modal");
@@ -305,7 +283,7 @@ describe("Action Logs", () => {
   });
 
   it("closes the payload modal when the close button is clicked", async () => {
-    generateComponent();
+    renderComponent(<ActionLogs />, { path, url, state });
     const showOutputBtn = await screen.findByTestId("show-output");
     await userEvent.click(showOutputBtn);
     const modal = await screen.findByTestId("action-payload-modal");
@@ -315,7 +293,7 @@ describe("Action Logs", () => {
   });
 
   it("can copy the action result", async () => {
-    generateComponent();
+    renderComponent(<ActionLogs />, { path, url, state });
     await userEvent.click(await screen.findByTestId("show-output"));
     await userEvent.click(screen.getByRole("button", { name: Label.COPY }));
     expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(`{
