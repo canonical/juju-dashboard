@@ -1,8 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import { getCharmsFromApplications } from "juju/api";
 import { actions as jujuActions } from "store/juju";
@@ -19,10 +16,9 @@ import {
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
+import { renderComponent } from "testing/utils";
 
 import ApplicationsTab from "./ApplicationsTab";
-
-const mockStore = configureStore([]);
 
 // mock getCharmsFromApplications
 jest.mock("juju/api", () => {
@@ -36,6 +32,8 @@ jest.mock("juju/api", () => {
 
 describe("ApplicationsTab", () => {
   let state: RootState;
+  const path = "/models/:userName/:modelName";
+  const url = "/models/test@external/test-model";
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -89,40 +87,9 @@ describe("ApplicationsTab", () => {
     });
   });
 
-  function renderComponent({
-    applications,
-    filterQuery = "",
-    selectedApps,
-  }: {
-    applications: boolean;
-    filterQuery?: string;
-    selectedApps?: boolean;
-  }) {
-    if (!applications) {
-      state.juju.modelWatcherData = {};
-    }
-    if (selectedApps && applications) {
-      state.juju.selectedApplications = [charmApplicationFactory.build()];
-    }
-    const store = mockStore(state);
-    window.history.pushState({}, "", "/models/test@external/test-model");
-    const { rerender } = render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ApplicationsTab filterQuery={filterQuery} />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
-    return { store, rerender };
-  }
-
   it("displays a message when there are no applications", () => {
-    renderComponent({ applications: false });
+    state.juju.modelWatcherData = {};
+    renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
       screen.queryByText(
         /There are no applications associated with this model/i
@@ -131,7 +98,7 @@ describe("ApplicationsTab", () => {
   });
 
   it("shows the applications table when there are applications", () => {
-    renderComponent({ applications: true });
+    renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
       screen.queryByText(
         /There are no applications associated with this model/i
@@ -141,12 +108,12 @@ describe("ApplicationsTab", () => {
   });
 
   it("shows all the application by default", () => {
-    renderComponent({ applications: true });
+    renderComponent(<ApplicationsTab />, { path, url, state });
     expect(screen.queryAllByRole("row")).toHaveLength(8);
   });
 
   it("doesn't show the select column when there is no search", () => {
-    renderComponent({ applications: true });
+    renderComponent(<ApplicationsTab />, { path, url, state });
     // first column not to be a checkbox
     expect(
       screen.queryAllByRole("columnheader")[0].querySelector("input")
@@ -154,7 +121,11 @@ describe("ApplicationsTab", () => {
   });
 
   it("shows the select column when there is a search", () => {
-    renderComponent({ applications: true, filterQuery: "db" });
+    renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
+    });
     // first column to be a checkbox
     expect(
       screen.queryAllByRole("columnheader")[0].querySelector("input")
@@ -162,9 +133,10 @@ describe("ApplicationsTab", () => {
   });
 
   it("can select individual apps", async () => {
-    const { store } = renderComponent({
-      applications: true,
-      filterQuery: "db",
+    const { store } = renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
     });
     await userEvent.click(screen.getByTestId("select-app-db1"));
     const actions = store.getActions();
@@ -184,14 +156,19 @@ describe("ApplicationsTab", () => {
         state.juju.modelWatcherData?.test123.applications.db1,
       ];
     }
-    renderComponent({ applications: true, filterQuery: "db" });
+    renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
+    });
     expect(screen.getByTestId("select-app-db1")).toBeChecked();
   });
 
   it("can select all apps", async () => {
-    const { store } = renderComponent({
-      applications: true,
-      filterQuery: "db",
+    const { store } = renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
     });
     await userEvent.click(screen.getByTestId("select-all-apps"));
     const actions = store.getActions();
@@ -216,9 +193,10 @@ describe("ApplicationsTab", () => {
     if (apps) {
       state.juju.selectedApplications = Object.values(apps);
     }
-    const { store } = renderComponent({
-      applications: true,
-      filterQuery: "db",
+    const { store } = renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
     });
     await userEvent.click(screen.getByTestId("select-all-apps"));
     expect(screen.getByTestId("select-all-apps")).toBeChecked();
@@ -240,9 +218,10 @@ describe("ApplicationsTab", () => {
   });
 
   it("checks the select all input when all the apps are selected", async () => {
-    renderComponent({
-      applications: true,
-      filterQuery: "db",
+    renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
     });
     expect(screen.getByTestId("select-all-apps")).not.toBeChecked();
     await userEvent.click(screen.getByTestId("select-all-apps"));
@@ -261,7 +240,11 @@ describe("ApplicationsTab", () => {
     if (apps) {
       state.juju.selectedApplications = Object.values(apps);
     }
-    renderComponent({ applications: true, filterQuery: "db" });
+    renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
+    });
     await userEvent.click(screen.getByTestId("select-all-apps"));
     expect(screen.getByTestId("select-all-apps")).toBeChecked();
     await userEvent.click(screen.getByTestId("select-app-db1"));
@@ -269,31 +252,40 @@ describe("ApplicationsTab", () => {
   });
 
   it("doesn't show the run action button when there is no search", () => {
-    renderComponent({ applications: true });
+    renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
       screen.queryByRole("button", { name: /run action/i })
     ).not.toBeInTheDocument();
   });
 
   it("shows the run action button when there is a search", () => {
-    renderComponent({ applications: true, filterQuery: "db" });
+    renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
+    });
     expect(
       screen.queryByRole("button", { name: /run action/i })
     ).toBeInTheDocument();
   });
 
   it("disable the run action button when there are no applications selected", () => {
-    renderComponent({ applications: true, filterQuery: "db" });
+    renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
+    });
     expect(
       screen.queryByRole("button", { name: /run action/i })
     ).toBeDisabled();
   });
 
   it("enable the run action button when there is at least one application selected", () => {
-    renderComponent({
-      applications: true,
-      filterQuery: "db",
-      selectedApps: true,
+    state.juju.selectedApplications = [charmApplicationFactory.build()];
+    renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
     });
     expect(
       screen.queryByRole("button", { name: /run action/i })
@@ -301,10 +293,11 @@ describe("ApplicationsTab", () => {
   });
 
   it("opens the choose-charm panel when clicking the run action button", async () => {
-    renderComponent({
-      applications: true,
-      filterQuery: "db",
-      selectedApps: true,
+    state.juju.selectedApplications = [charmApplicationFactory.build()];
+    renderComponent(<ApplicationsTab filterQuery="db" />, {
+      path,
+      url,
+      state,
     });
     expect(window.location.search).toEqual("");
     await userEvent.click(screen.getByRole("button", { name: /run action/i }));
@@ -324,7 +317,7 @@ describe("ApplicationsTab", () => {
         },
       }),
     };
-    renderComponent({ applications: true });
+    renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
       document.querySelector(".entity-details__offers")
     ).toBeInTheDocument();
@@ -342,7 +335,7 @@ describe("ApplicationsTab", () => {
         },
       }),
     };
-    renderComponent({ applications: true });
+    renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
       document.querySelector(".entity-details__remote-apps")
     ).toBeInTheDocument();
