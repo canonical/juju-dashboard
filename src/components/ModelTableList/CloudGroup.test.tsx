@@ -1,10 +1,7 @@
-import { render, screen, within } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router";
-import configureStore from "redux-mock-store";
+import { screen, within } from "@testing-library/react";
 
 import type { RootState } from "store/store";
-import { generalStateFactory, configFactory } from "testing/factories/general";
+import { configFactory, generalStateFactory } from "testing/factories/general";
 import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
@@ -14,10 +11,9 @@ import {
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import CloudGroup from "./CloudGroup";
-
-const mockStore = configureStore([]);
 
 describe("CloudGroup", () => {
   let state: RootState;
@@ -65,26 +61,13 @@ describe("CloudGroup", () => {
   });
 
   it("by default, renders no tables with no data", () => {
-    const store = mockStore(rootStateFactory.build());
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <CloudGroup filters={{}} />
-        </Provider>
-      </MemoryRouter>
-    );
+    state = rootStateFactory.build();
+    renderComponent(<CloudGroup filters={{}} />, { state });
     expect(screen.queryByRole("grid")).not.toBeInTheDocument();
   });
 
   it("displays model data grouped by cloud from the redux store", () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <CloudGroup filters={{}} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<CloudGroup filters={{}} />, { state });
     const tables = screen.getAllByRole("grid");
     expect(tables.length).toBe(2);
     expect(within(tables[0]).getAllByRole("row")).toHaveLength(3);
@@ -92,17 +75,10 @@ describe("CloudGroup", () => {
   });
 
   it("fetches filtered data if filters supplied", () => {
-    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <CloudGroup filters={filters} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<CloudGroup filters={filters} />, { state });
     const tables = screen.getAllByRole("grid");
     expect(tables.length).toBe(1);
     expect(within(tables[0]).getAllByRole("row")).toHaveLength(3);
@@ -134,17 +110,10 @@ describe("CloudGroup", () => {
         }),
       ],
     });
-    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <CloudGroup filters={filters} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<CloudGroup filters={filters} />, { state });
     const firstContentRow = screen.getAllByRole("row")[1];
     const modelAccessButton = within(firstContentRow).getAllByRole("button", {
       name: "Access",

@@ -1,8 +1,5 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import * as apiModule from "juju/api";
 import type { RootState } from "store/store";
@@ -18,10 +15,9 @@ import {
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import ConfigPanel, { Label } from "./ConfigPanel";
-
-const mockStore = configureStore([]);
 
 jest.mock("juju/api", () => ({
   getApplicationConfig: jest.fn(),
@@ -36,7 +32,8 @@ describe("ConfigPanel", () => {
     modelUUID: "abc123",
     panel: "config",
   });
-  const URL = `/models/eggman@external/hadoopspark?${params.toString()}`;
+  const url = `/models/eggman@external/hadoopspark?${params.toString()}`;
+  const path = "/models/:userName/:modelName";
   let getApplicationConfigSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -74,26 +71,13 @@ describe("ConfigPanel", () => {
           })
         )
       );
-    window.history.pushState({}, "", URL);
   });
 
   it("displays a message if the app has no config", async () => {
     jest.spyOn(apiModule, "getApplicationConfig").mockImplementation(() => {
       return Promise.resolve(applicationGetFactory.build({ config: {} }));
     });
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     // Use findBy to wait for the async events to finish
     await screen.findByText(Label.NONE);
     expect(document.querySelector(".config-panel__message")).toMatchSnapshot();
@@ -113,19 +97,7 @@ describe("ConfigPanel", () => {
           })
         )
       );
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     expect(
       within(await screen.findByTestId("name")).getByRole("textbox")
     ).toBeInTheDocument();
@@ -138,19 +110,7 @@ describe("ConfigPanel", () => {
   });
 
   it("highlights changed fields before save", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     const wrapper = await screen.findByTestId("email");
     const input = within(wrapper).getByRole("textbox");
     await userEvent.type(input, "new value");
@@ -159,19 +119,7 @@ describe("ConfigPanel", () => {
   });
 
   it("can reset all fields", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     const email = within(await screen.findByTestId("email")).getByRole(
       "textbox"
     );
@@ -188,19 +136,7 @@ describe("ConfigPanel", () => {
   });
 
   it("displays a confirmation when clicking outside and there are unsaved changes", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com"
@@ -215,19 +151,7 @@ describe("ConfigPanel", () => {
   });
 
   it("closes when clicking outside and there are no unsaved changes", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.click(document.body);
     expect(
       within(screen.getByRole("dialog", { name: "" })).queryByRole("heading", {
@@ -238,19 +162,7 @@ describe("ConfigPanel", () => {
   });
 
   it("displays a confirmation when cancelling and there are unsaved changes", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com"
@@ -267,19 +179,7 @@ describe("ConfigPanel", () => {
   });
 
   it("can confirm the cancel confirmation", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com"
@@ -300,19 +200,7 @@ describe("ConfigPanel", () => {
   });
 
   it("can cancel the cancel confirmation", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com"
@@ -333,19 +221,7 @@ describe("ConfigPanel", () => {
   });
 
   it("closes when cancelling and there are no unsaved changes", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.click(
       await screen.findByRole("button", { name: Label.CANCEL_BUTTON })
     );
@@ -358,19 +234,7 @@ describe("ConfigPanel", () => {
   });
 
   it("displays a confirmation before saving", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com"
@@ -394,19 +258,7 @@ describe("ConfigPanel", () => {
       apiModule,
       "setApplicationConfig"
     );
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com"
@@ -436,19 +288,7 @@ describe("ConfigPanel", () => {
     const setApplicationConfigSpy = jest
       .spyOn(apiModule, "setApplicationConfig")
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
@@ -490,19 +330,7 @@ describe("ConfigPanel", () => {
         results: [{ error: { code: "1", message: "That's not a name" } }],
       })
     );
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ConfigPanel />}
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ConfigPanel />, { state, path, url });
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),

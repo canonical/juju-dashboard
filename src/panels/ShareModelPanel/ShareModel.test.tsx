@@ -1,9 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Toaster } from "react-hot-toast";
-import { Provider } from "react-redux";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import { Label as ShareCardLabel } from "components/ShareCard/ShareCard";
 import { actions as appActions } from "store/app";
@@ -12,18 +9,19 @@ import * as storeModule from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
+  controllerFactory,
   jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  controllerFactory,
 } from "testing/factories/juju/juju";
+import { renderComponent } from "testing/utils";
 
 import ShareModel, { Label } from "./ShareModel";
 
-const mockStore = configureStore([]);
-
 describe("Share Model Panel", () => {
   let state: RootState;
+  const path = "/models/:userName/:modelName";
+  const url = "/models/eggman@external/hadoopspark";
 
   afterEach(() => {
     jest.restoreAllMocks();
@@ -55,19 +53,7 @@ describe("Share Model Panel", () => {
   });
 
   it("should show panel", () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ShareModel />}
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     expect(
       screen.getByRole("heading", { name: "Sharing with:" })
     ).toBeInTheDocument();
@@ -84,19 +70,7 @@ describe("Share Model Panel", () => {
         ],
       }),
     });
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ShareModel />}
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     expect(
       screen.getByRole("button", { name: "@external" })
     ).toBeInTheDocument();
@@ -108,19 +82,7 @@ describe("Share Model Panel", () => {
   });
 
   it("can insert a domain", async () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ShareModel />}
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
       "eggman"
@@ -132,19 +94,7 @@ describe("Share Model Panel", () => {
   });
 
   it("can replace a domain", async () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ShareModel />}
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
       "eggman@otherdomain"
@@ -156,19 +106,7 @@ describe("Share Model Panel", () => {
   });
 
   it("should show small screen view toggles", async () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ShareModel />}
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     const addNewUserButton = screen.getByRole("button", {
       name: "Add new user",
     });
@@ -181,23 +119,12 @@ describe("Share Model Panel", () => {
   });
 
   it("shows a warning if trying to add an existing user", async () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={
-                <>
-                  <ShareModel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
@@ -215,23 +142,12 @@ describe("Share Model Panel", () => {
     jest
       .spyOn(storeModule, "usePromiseDispatch")
       .mockReturnValue(jest.fn().mockImplementation(() => Promise.reject()));
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={
-                <>
-                  <ShareModel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
@@ -253,23 +169,12 @@ describe("Share Model Panel", () => {
         })
       )
     );
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={
-                <>
-                  <ShareModel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
@@ -286,23 +191,12 @@ describe("Share Model Panel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(dispatch);
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={
-                <>
-                  <ShareModel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
@@ -327,19 +221,7 @@ describe("Share Model Panel", () => {
 
   it("can remove a user", async () => {
     const updatePermissionsSpy = jest.spyOn(appActions, "updatePermissions");
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<ShareModel />}
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.click(
       screen.getByRole("button", {
         name: ShareCardLabel.REMOVE,
@@ -357,23 +239,12 @@ describe("Share Model Panel", () => {
 
   it("can undo removing a user", async () => {
     const updatePermissionsSpy = jest.spyOn(appActions, "updatePermissions");
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={
-                <>
-                  <ShareModel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
     );
     await userEvent.click(
       screen.getByRole("button", {
@@ -397,23 +268,12 @@ describe("Share Model Panel", () => {
 
   it("can change permissions", async () => {
     const updatePermissionsSpy = jest.spyOn(appActions, "updatePermissions");
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={
-                <>
-                  <ShareModel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(updatePermissionsSpy).toHaveBeenCalledWith({
@@ -437,23 +297,12 @@ describe("Share Model Panel", () => {
         })
       )
     );
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={
-                <>
-                  <ShareModel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(document.querySelector(".toast-card__message")?.textContent).toBe(
@@ -471,23 +320,12 @@ describe("Share Model Panel", () => {
         })
       )
     );
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={
-                <>
-                  <ShareModel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(document.querySelector(".toast-card__message")?.textContent).toBe(
@@ -496,23 +334,12 @@ describe("Share Model Panel", () => {
   });
 
   it("can show and hide the mobile add form", async () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter initialEntries={["/models/eggman@external/hadoopspark"]}>
-        <Provider store={store}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={
-                <>
-                  <ShareModel />
-                  <Toaster />
-                </>
-              }
-            />
-          </Routes>
-        </Provider>
-      </MemoryRouter>
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
     );
     // Check the initial state.
     expect(document.querySelector(".p-panel__content")).toHaveAttribute(

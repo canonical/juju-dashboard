@@ -1,29 +1,23 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
+
+import { renderComponent } from "testing/utils";
 
 import PanelHeader from "./PanelHeader";
 
 describe("PanelHeader", () => {
   it("Renders the supplied title", () => {
     const title = "My Title";
-    render(
-      <MemoryRouter
-        initialEntries={["/models/user-eggman@external/new-search-aggregate"]}
-      >
-        <PanelHeader id="123" title={title} />
-      </MemoryRouter>
-    );
+    renderComponent(<PanelHeader id="123" title={title} />, {
+      url: "/models/user-eggman@external/new-search-aggregate",
+    });
     expect(screen.getByText(title)).toHaveClass("p-panel__title");
   });
 
   it("Removes all query params when close button clicked", async () => {
-    window.history.pushState({}, "", "/models?model=cmr&panel=share-model");
-    render(
-      <BrowserRouter>
-        <PanelHeader id="123" title="Title" />
-      </BrowserRouter>
-    );
+    renderComponent(<PanelHeader id="123" title="Title" />, {
+      url: "/models?model=cmr&panel=share-model",
+    });
     const searchParams = new URLSearchParams(window.location.search);
     expect(searchParams.get("panel")).toEqual("share-model");
     expect(searchParams.get("model")).toEqual("cmr");
