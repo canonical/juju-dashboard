@@ -28,7 +28,7 @@ type ComponentProps = {
   store: MockStoreEnhanced<RootState, unknown>;
 } & PropsWithChildren;
 
-const ComponentProviders = ({
+export const ComponentProviders = ({
   children,
   routeChildren,
   path,
@@ -47,7 +47,7 @@ const ComponentProviders = ({
   </Provider>
 );
 
-const changeURL = (url: string) => window.history.pushState({}, "", url);
+export const changeURL = (url: string) => window.history.pushState({}, "", url);
 
 export const renderComponent = (
   component: JSX.Element,

@@ -1,27 +1,23 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router";
-import configureStore from "redux-mock-store";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
-import { generalStateFactory, configFactory } from "testing/factories/general";
+import { configFactory, generalStateFactory } from "testing/factories/general";
 import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
+  modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelDataApplicationFactory,
   modelDataStatusFactory,
   modelDataUnitFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
+import { renderComponent } from "testing/utils";
 
 import StatusGroup from "./StatusGroup";
-
-const mockStore = configureStore([]);
 
 describe("StatusGroup", () => {
   let state: RootState;
@@ -95,26 +91,13 @@ describe("StatusGroup", () => {
   });
 
   it("by default, renders no tables when there is no data", () => {
-    const store = mockStore(rootStateFactory.build());
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <StatusGroup filters={{}} />
-        </Provider>
-      </MemoryRouter>
-    );
+    const state = rootStateFactory.build();
+    renderComponent(<StatusGroup filters={{}} />, { state });
     expect(screen.queryByRole("grid")).not.toBeInTheDocument();
   });
 
   it("displays model data grouped by status from the redux store", () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <StatusGroup filters={{}} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<StatusGroup filters={{}} />, { state });
     const tables = screen.getAllByRole("grid");
     expect(tables.length).toBe(3);
     expect(within(tables[0]).getAllByRole("row")).toHaveLength(3);
@@ -123,29 +106,15 @@ describe("StatusGroup", () => {
   });
 
   it("fetches filtered data if filters supplied", () => {
-    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <StatusGroup filters={filters} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<StatusGroup filters={filters} />, { state });
     expect(screen.getAllByRole("row").length).toBe(3);
   });
 
   it("displays the provider type icon", () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <StatusGroup filters={{}} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<StatusGroup filters={{}} />, { state });
     expect(screen.getAllByTestId("provider-logo")[0]).toHaveAttribute(
       "src",
       "gce.svg"
@@ -178,17 +147,10 @@ describe("StatusGroup", () => {
         }),
       ],
     });
-    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <StatusGroup filters={filters} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<StatusGroup filters={filters} />, { state });
     const firstContentRow = screen.getAllByRole("row")[1];
     const modelAccessButton = within(firstContentRow).getAllByRole("button", {
       name: "Access",
@@ -221,14 +183,7 @@ describe("StatusGroup", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <StatusGroup filters={{}} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<StatusGroup filters={{}} />, { state });
     const tables = screen.getAllByRole("grid");
     const row = within(tables[0]).getAllByRole("row")[1];
     const error = within(row).getByRole("link", { name: "app blocked" });

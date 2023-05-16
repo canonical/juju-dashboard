@@ -1,9 +1,5 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router";
-import { BrowserRouter } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import type { RootState } from "store/store";
 import {
@@ -17,10 +13,9 @@ import {
 } from "testing/factories/juju/juju";
 import { machineChangeDeltaFactory } from "testing/factories/juju/model-watcher";
 import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import ControllersIndex, { Label } from "./ControllersIndex";
-
-const mockStore = configureStore([]);
 
 describe("Controllers table", () => {
   let state: RootState;
@@ -30,14 +25,7 @@ describe("Controllers table", () => {
   });
 
   it("renders a blank page if no data", () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ControllersIndex />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ControllersIndex />, { state });
     expect(screen.queryByRole("row")).not.toBeInTheDocument();
   });
 
@@ -50,14 +38,7 @@ describe("Controllers table", () => {
         ],
       },
     });
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ControllersIndex />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ControllersIndex />, { state });
     expect(screen.getAllByRole("row")).toHaveLength(3);
   });
 
@@ -70,14 +51,7 @@ describe("Controllers table", () => {
         ],
       },
     });
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ControllersIndex />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ControllersIndex />, { state });
     const tables = screen.getAllByRole("grid");
     expect(tables).toHaveLength(2);
     const additionalRows = within(tables[1]).getAllByRole("row");
@@ -142,14 +116,7 @@ describe("Controllers table", () => {
         }),
       },
     });
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ControllersIndex />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ControllersIndex />, { state });
     expect(screen.getAllByRole("row")[1]).toHaveTextContent(
       ["JAAS", "Multiple", "2", "5", "2", "3", "Private"].join("")
     );
@@ -164,29 +131,14 @@ describe("Controllers table", () => {
       },
       models: {},
     });
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ControllersIndex />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ControllersIndex />, { state });
     expect(
       screen.getByRole("gridcell", { name: "Multiple" })
     ).toBeInTheDocument();
   });
 
   it("shows 'Register new controller' panel", async () => {
-    const store = mockStore(state);
-    window.history.pushState({}, "", "/controllers");
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <ControllersIndex />
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ControllersIndex />, { url: "/controllers" });
     await userEvent.click(
       screen.getByRole("button", { name: Label.REGISTER_BUTTON })
     );
@@ -218,14 +170,7 @@ describe("Controllers table", () => {
         ],
       },
     });
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <ControllersIndex />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<ControllersIndex />, { state });
     expect(screen.getAllByTestId("update-available")).toHaveLength(2);
   });
 });

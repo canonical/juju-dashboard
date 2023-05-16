@@ -1,8 +1,5 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import type { RootState } from "store/store";
@@ -34,6 +31,7 @@ import {
   relationChangeDeltaFactory,
   unitChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
+import { renderComponent } from "testing/utils";
 
 import Model, { Label, TestId } from "./Model";
 
@@ -65,10 +63,10 @@ jest.mock("juju/api", () => {
   };
 });
 
-const mockStore = configureStore([]);
-
 describe("Model", () => {
   let state: RootState;
+  const url = "/models/eggman@external/test1";
+  const path = "/models/:userName/:modelName";
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -109,16 +107,7 @@ describe("Model", () => {
   });
 
   it("renders the info panel data", () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, { state, url, path });
     expect(screen.getByTestId(InfoPanelTestId.INFO_PANEL)).toBeInTheDocument();
   });
 
@@ -130,16 +119,7 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, { state, url, path });
     expect(
       document.querySelector(".entity-details__main table")
     ).toBeInTheDocument();
@@ -159,16 +139,7 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, { state, url, path });
 
     Element.prototype.scrollIntoView = jest.fn();
 
@@ -204,18 +175,11 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/eggman@external/test1?activeView=apps"]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=apps",
+      path,
+    });
 
     Element.prototype.scrollIntoView = jest.fn();
 
@@ -251,18 +215,11 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/eggman@external/test1?activeView=machines"]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=machines",
+      path,
+    });
 
     Element.prototype.scrollIntoView = jest.fn();
 
@@ -298,20 +255,11 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/eggman@external/test1?activeView=integrations",
-          ]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=integrations",
+      path,
+    });
 
     Element.prototype.scrollIntoView = jest.fn();
 
@@ -347,20 +295,11 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/eggman@external/test1?activeView=action-logs",
-          ]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=action-logs",
+      path,
+    });
 
     Element.prototype.scrollIntoView = jest.fn();
 
@@ -407,20 +346,11 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/eggman@external/test1?activeView=integrations",
-          ]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=integrations",
+      path,
+    });
     expect(screen.getByTestId(TestId.OFFERS)).toBeInTheDocument();
   });
 
@@ -449,20 +379,11 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/eggman@external/test1?activeView=integrations",
-          ]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=integrations",
+      path,
+    });
     expect(screen.getByTestId(TestId.CONSUMED)).toBeInTheDocument();
   });
 
@@ -474,16 +395,7 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, { state, url, path });
     expect(
       document.querySelector(".entity-details__main table")
     ).toBeInTheDocument(); // does this target correct table?
@@ -497,18 +409,11 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/eggman@external/test1?activeView=machines"]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=machines",
+      path,
+    });
     expect(document.querySelector(".entity-details__main table")).toHaveClass(
       "entity-details__machines"
     );
@@ -524,17 +429,7 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        cockroachdb
-        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, { state, url, path });
     expect(
       document.querySelector(".entity-details__apps tr[data-app='cockroachdb']")
     ).toBeInTheDocument();
@@ -555,17 +450,8 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
     const testApp = "client";
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, { state, url, path });
     const applicationRow = document.querySelector(`tr[data-app="${testApp}"]`);
     expect(
       applicationRow?.querySelector("td[data-test-column='scale']")?.textContent
@@ -576,20 +462,11 @@ describe("Model", () => {
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build(),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/eggman@external/test1?activeView=integrations",
-          ]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=integrations",
+      path,
+    });
 
     const noRelationsMsg = document.querySelector(
       "[data-testid='no-integrations-msg']"
@@ -601,18 +478,11 @@ describe("Model", () => {
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build(),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/eggman@external/test1?activeView=machines"]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=machines",
+      path,
+    });
 
     const noMachinesMsg = document.querySelector(
       "[data-testid='no-machines-msg']"
@@ -644,18 +514,11 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/eggman@external/test1?activeView=machines"]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=machines",
+      path,
+    });
     const machineApps = document.querySelectorAll(".machine-app-icons img");
     expect(machineApps).toHaveLength(10);
   });
@@ -691,18 +554,11 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/eggman@external/test1?activeView=machines"]}
-        >
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=machines",
+      path,
+    });
 
     const machineAppIconRows = screen.getAllByRole("row");
 
@@ -728,16 +584,7 @@ describe("Model", () => {
         },
       }),
     };
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/test1"]}>
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, { state, url, path });
     expect(
       document.querySelector(".info-panel__pictogram")
     ).toBeInTheDocument();
@@ -755,17 +602,7 @@ describe("Model", () => {
         }),
       ],
     });
-    const store = mockStore(state);
-    window.history.pushState({}, "", "/models/eggman@external/test1");
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/models/:userName/:modelName" element={<Model />} />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<Model />, { state, url, path });
     expect(window.location.search).toEqual("");
     await userEvent.click(
       screen.getByRole("button", { name: Label.ACCESS_BUTTON })

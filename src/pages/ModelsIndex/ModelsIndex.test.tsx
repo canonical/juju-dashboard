@@ -1,30 +1,25 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import type { RootState } from "store/store";
 import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
 import {
   jujuStateFactory,
-  modelDataFactory,
   modelDataApplicationFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
   modelDataStatusFactory,
   modelListInfoFactory,
-  modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import ModelsIndex, { Label, TestId } from "./ModelsIndex";
-
-const mockStore = configureStore([]);
 
 describe("Models Index page", () => {
   let state: RootState;
 
   beforeEach(() => {
-    window.history.pushState({}, "", "/");
     state = rootStateFactory.withGeneralConfig().build({
       juju: jujuStateFactory.build({
         models: {
@@ -86,14 +81,7 @@ describe("Models Index page", () => {
   });
 
   it("renders without crashing", () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <ModelsIndex />
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<ModelsIndex />, { state });
     expect(document.querySelector(".header")).toBeInTheDocument();
     expect(screen.getAllByRole("grid")).toHaveLength(3);
     expect(document.querySelector(".chip-group")).toBeInTheDocument();
@@ -101,41 +89,20 @@ describe("Models Index page", () => {
 
   it("displays a spinner while loading models", () => {
     state.juju.modelsLoaded = false;
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <ModelsIndex />
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<ModelsIndex />, { state });
     expect(screen.getByTestId(TestId.LOADING)).toBeInTheDocument();
   });
 
   it("displays a message if there are no models", () => {
     state.juju.models = {};
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <ModelsIndex />
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<ModelsIndex />, { state });
     expect(
       screen.getByRole("heading", { name: Label.NOT_FOUND })
     ).toBeInTheDocument();
   });
 
   it("displays correct grouping view", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <ModelsIndex />
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ModelsIndex />, { state });
 
     expect(screen.getByRole("link", { name: "status" })).toHaveClass(
       "is-selected"
@@ -149,14 +116,7 @@ describe("Models Index page", () => {
   });
 
   it("should display the correct window title", () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <ModelsIndex />
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ModelsIndex />, { state });
     const pageTitle = document.title;
     expect(pageTitle).toEqual("Models | Juju Dashboard");
   });
@@ -165,15 +125,7 @@ describe("Models Index page", () => {
     const params = new URLSearchParams({
       cloud: "aws",
     });
-    window.history.pushState({}, "", `?${params.toString()}`);
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <ModelsIndex />
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ModelsIndex />, { state, url: `?${params.toString()}` });
     // There should be two tables, one for each status:
     expect(screen.getAllByRole("grid")).toHaveLength(2);
     // There will be one extra row for each table header:
@@ -188,14 +140,7 @@ describe("Models Index page", () => {
   });
 
   it("can change model filters", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <ModelsIndex />
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<ModelsIndex />, { state });
     // There should be three tables, one for each status:
     expect(screen.getAllByRole("grid")).toHaveLength(3);
     // There will be one extra row for each table header:

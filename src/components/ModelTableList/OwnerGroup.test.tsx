@@ -1,7 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router";
-import configureStore from "redux-mock-store";
+import { screen, within } from "@testing-library/react";
 
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
@@ -14,10 +11,9 @@ import {
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import OwnerGroup from "./OwnerGroup";
-
-const mockStore = configureStore([]);
 
 describe("OwnerGroup", () => {
   let state: RootState;
@@ -68,26 +64,13 @@ describe("OwnerGroup", () => {
   });
 
   it("by default, renders no tables with no data", () => {
-    const store = mockStore(rootStateFactory.build());
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <OwnerGroup filters={{}} />
-        </Provider>
-      </MemoryRouter>
-    );
+    const state = rootStateFactory.build();
+    renderComponent(<OwnerGroup filters={{}} />, { state });
     expect(screen.queryByRole("grid")).not.toBeInTheDocument();
   });
 
   it("displays model data grouped by owner from the redux store", () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <OwnerGroup filters={{}} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<OwnerGroup filters={{}} />, { state });
     const tables = screen.getAllByRole("grid");
     expect(tables.length).toBe(2);
     expect(within(tables[0]).getAllByRole("row").length).toEqual(3);
@@ -95,17 +78,10 @@ describe("OwnerGroup", () => {
   });
 
   it("fetches filtered data if filters supplied", () => {
-    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <OwnerGroup filters={filters} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<OwnerGroup filters={filters} />, { state });
     expect(screen.getAllByRole("row").length).toBe(4);
   });
 
@@ -135,17 +111,10 @@ describe("OwnerGroup", () => {
         }),
       ],
     });
-    const store = mockStore(state);
     const filters = {
       cloud: ["aws"],
     };
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <OwnerGroup filters={filters} />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<OwnerGroup filters={filters} />, { state });
     const firstContentRow = screen.getAllByRole("row")[1];
     const modelAccessButton = within(firstContentRow).getAllByRole("button", {
       name: "Access",

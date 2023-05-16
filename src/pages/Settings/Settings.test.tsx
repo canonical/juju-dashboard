@@ -1,14 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
-import { rootStateFactory } from "testing/factories";
+import { renderComponent } from "testing/utils";
 
-import Settings, { Label, DISABLE_ANALYTICS_KEY } from "./Settings";
-
-const mockStore = configureStore();
+import Settings, { DISABLE_ANALYTICS_KEY, Label } from "./Settings";
 
 describe("Settings", () => {
   afterEach(() => {
@@ -16,29 +11,15 @@ describe("Settings", () => {
   });
 
   it("restores the analytics setting", async () => {
-    const store = mockStore(rootStateFactory.build());
     localStorage.setItem(DISABLE_ANALYTICS_KEY, JSON.stringify("true"));
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Settings />
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<Settings />);
     expect(
       screen.getByRole("switch", { name: Label.DISABLE_TOGGLE })
     ).toBeChecked();
   });
 
   it("can update the analytics setting", async () => {
-    const store = mockStore(rootStateFactory.build());
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Settings />
-        </BrowserRouter>
-      </Provider>
-    );
+    renderComponent(<Settings />);
     expect(localStorage.getItem(DISABLE_ANALYTICS_KEY)).toBeNull();
     await userEvent.click(
       screen.getByRole("switch", { name: Label.DISABLE_TOGGLE })

@@ -1,43 +1,40 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { BrowserRouter } from "react-router-dom";
+
+import { renderComponent } from "testing/utils";
 
 import Panel from "./Panel";
 
 describe("Panel", () => {
+  const url = "/foo?panel=share-model";
+
   it("displays the title and content", async () => {
-    window.history.pushState({}, "", "/foo?panel=share-model");
-    render(
-      <BrowserRouter>
-        <Panel panelClassName="test-panel" title="Test panel">
-          <>Test content</>
-        </Panel>
-      </BrowserRouter>
+    renderComponent(
+      <Panel panelClassName="test-panel" title="Test panel">
+        <>Test content</>
+      </Panel>,
+      { url }
     );
     expect(screen.getByText("Test panel")).toBeInTheDocument();
     expect(screen.getByText("Test content")).toBeInTheDocument();
   });
 
   it("should give the panel a class name", async () => {
-    window.history.pushState({}, "", "/foo?panel=share-model");
-    render(
-      <BrowserRouter>
-        <Panel panelClassName="test-panel" title="Test panel">
-          <>Test content</>
-        </Panel>
-      </BrowserRouter>
+    renderComponent(
+      <Panel panelClassName="test-panel" title="Test panel">
+        <>Test content</>
+      </Panel>,
+      { url }
     );
     expect(document.querySelector(".p-panel")).toHaveClass("test-panel");
   });
 
   it("should clear the search params when escape key is pressed", async () => {
-    window.history.pushState({}, "", "/foo?panel=share-model");
-    render(
-      <BrowserRouter>
-        <Panel panelClassName="test-panel" title="Test panel">
-          <>Test content</>
-        </Panel>
-      </BrowserRouter>
+    renderComponent(
+      <Panel panelClassName="test-panel" title="Test panel">
+        <>Test content</>
+      </Panel>,
+      { url }
     );
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe("?panel=share-model");
@@ -49,13 +46,11 @@ describe("Panel", () => {
   });
 
   it("should not close if another key is pressed", async () => {
-    window.history.pushState({}, "", "/foo?panel=share-model");
-    render(
-      <BrowserRouter>
-        <Panel panelClassName="test-panel" title="Test panel">
-          <>Test content</>
-        </Panel>
-      </BrowserRouter>
+    renderComponent(
+      <Panel panelClassName="test-panel" title="Test panel">
+        <>Test content</>
+      </Panel>,
+      { url }
     );
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe("?panel=share-model");
@@ -67,17 +62,15 @@ describe("Panel", () => {
   });
 
   it("should check if it can close when escape key is pressed", async () => {
-    window.history.pushState({}, "", "/foo?panel=share-model");
-    render(
-      <BrowserRouter>
-        <Panel
-          checkCanClose={() => false}
-          panelClassName="test-panel"
-          title="Test panel"
-        >
-          <>Test content</>
-        </Panel>
-      </BrowserRouter>
+    renderComponent(
+      <Panel
+        checkCanClose={() => false}
+        panelClassName="test-panel"
+        title="Test panel"
+      >
+        <>Test content</>
+      </Panel>,
+      { url }
     );
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe("?panel=share-model");
@@ -89,13 +82,11 @@ describe("Panel", () => {
   });
 
   it("should clear the search params when clicking outside the panel", async () => {
-    window.history.pushState({}, "", "/foo?panel=share-model");
-    render(
-      <BrowserRouter>
-        <Panel panelClassName="test-panel" title="Test panel">
-          <>Test content</>
-        </Panel>
-      </BrowserRouter>
+    renderComponent(
+      <Panel panelClassName="test-panel" title="Test panel">
+        <>Test content</>
+      </Panel>,
+      { url }
     );
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe("?panel=share-model");
@@ -105,13 +96,11 @@ describe("Panel", () => {
   });
 
   it("should not clear the search params when clicking inside the panel", async () => {
-    window.history.pushState({}, "", "/foo?panel=share-model");
-    render(
-      <BrowserRouter>
-        <Panel panelClassName="test-panel" title="Test panel">
-          <>Test content</>
-        </Panel>
-      </BrowserRouter>
+    renderComponent(
+      <Panel panelClassName="test-panel" title="Test panel">
+        <>Test content</>
+      </Panel>,
+      { url }
     );
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe("?panel=share-model");
@@ -121,17 +110,15 @@ describe("Panel", () => {
   });
 
   it("should check if it can close when clicking inside the panel", async () => {
-    window.history.pushState({}, "", "/foo?panel=share-model");
-    render(
-      <BrowserRouter>
-        <Panel
-          checkCanClose={() => false}
-          panelClassName="test-panel"
-          title="Test panel"
-        >
-          <>Test content</>
-        </Panel>
-      </BrowserRouter>
+    renderComponent(
+      <Panel
+        checkCanClose={() => false}
+        panelClassName="test-panel"
+        title="Test panel"
+      >
+        <>Test content</>
+      </Panel>,
+      { url }
     );
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe("?panel=share-model");

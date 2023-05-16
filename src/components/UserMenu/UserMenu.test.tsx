@@ -1,16 +1,13 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { BrowserRouter as Router } from "react-router-dom";
-import configureStore from "redux-mock-store";
 
 import type { RootState } from "store/store";
-import { generalStateFactory, configFactory } from "testing/factories/general";
+import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import UserMenu from "./UserMenu";
 
-const mockStore = configureStore([]);
 describe("User Menu", () => {
   let state: RootState;
 
@@ -35,52 +32,24 @@ describe("User Menu", () => {
   });
 
   it("is inactive by default", () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <Router>
-          <UserMenu />
-        </Router>
-      </Provider>
-    );
+    renderComponent(<UserMenu />, { state });
     expect(document.querySelector(".user-menu")).not.toHaveClass("is-active");
   });
 
   it("is active when userMenuActive in redux store is true", () => {
     state.ui.userMenuActive = true;
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <Router>
-          <UserMenu />
-        </Router>
-      </Provider>
-    );
+    renderComponent(<UserMenu />, { state });
 
     expect(document.querySelector(".user-menu")).toHaveClass("is-active");
   });
 
   it("displays current logged in user", () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <Router>
-          <UserMenu />
-        </Router>
-      </Provider>
-    );
+    renderComponent(<UserMenu />, { state });
     expect(screen.getByText("eggman")).toHaveClass("user-menu__name");
   });
 
   it("Test dispatch function is fired", async () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <Router>
-          <UserMenu />
-        </Router>
-      </Provider>
-    );
+    const { store } = renderComponent(<UserMenu />, { state });
     await userEvent.click(screen.getByRole("button"));
     const actions = store.getActions();
     const expectedPayload = { payload: true, type: "ui/userMenuActive" };

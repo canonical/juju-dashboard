@@ -1,17 +1,13 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
 
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
-import LogIn from "./LogIn";
-import { ErrorResponse, Label } from "./LogIn";
-
-const mockStore = configureStore([]);
+import LogIn, { ErrorResponse, Label } from "./LogIn";
 
 describe("LogIn", () => {
   afterEach(() => {
@@ -19,20 +15,14 @@ describe("LogIn", () => {
   });
 
   it("renders a 'connecting' message while connecting", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            identityProviderAvailable: true,
-          }),
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          identityProviderAvailable: true,
         }),
-      })
-    );
-    render(
-      <Provider store={store}>
-        <LogIn>App content</LogIn>
-      </Provider>
-    );
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
     expect(
       within(screen.getByRole("button")).getByText("Connecting...")
     ).toBeInTheDocument();
@@ -42,46 +32,34 @@ describe("LogIn", () => {
   });
 
   it("does not display the login form if the user is logged in", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          controllerConnections: {
-            "ws://localhost:1234/api": {
-              user: {
-                "display-name": "eggman",
-                identity: "user-eggman@external",
-                "controller-access": "",
-                "model-access": "",
-              },
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        controllerConnections: {
+          "ws://localhost:1234/api": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
             },
           },
-        }),
-      })
-    );
-    render(
-      <Provider store={store}>
-        <LogIn>App content</LogIn>
-      </Provider>
-    );
+        },
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
     expect(document.querySelector(".login")).not.toBeInTheDocument();
   });
 
   it("renders an IdentityProvider login UI if the user is not logged in", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          visitURL: "I am a url",
-          config: configFactory.build({
-            identityProviderAvailable: true,
-          }),
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        visitURL: "I am a url",
+        config: configFactory.build({
+          identityProviderAvailable: true,
         }),
-      })
-    );
-    render(
-      <Provider store={store}>
-        <LogIn>App content</LogIn>
-      </Provider>
-    );
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
     expect(screen.getByRole("link")).toHaveTextContent(
       "Log in to the dashboard"
     );
@@ -91,20 +69,14 @@ describe("LogIn", () => {
   });
 
   it("renders a UserPass login UI if the user is not logged in", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            identityProviderAvailable: false,
-          }),
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          identityProviderAvailable: false,
         }),
-      })
-    );
-    render(
-      <Provider store={store}>
-        <LogIn>App content</LogIn>
-      </Provider>
-    );
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
     expect(screen.getByRole("button")).toHaveTextContent(
       "Log in to the dashboard"
     );
@@ -114,61 +86,43 @@ describe("LogIn", () => {
   });
 
   it("renders a login error if one exists", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          loginError: "Controller rejected request",
-          config: configFactory.build({
-            identityProviderAvailable: false,
-          }),
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        loginError: "Controller rejected request",
+        config: configFactory.build({
+          identityProviderAvailable: false,
         }),
-      })
-    );
-    render(
-      <Provider store={store}>
-        <LogIn>App content</LogIn>
-      </Provider>
-    );
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
     const error = screen.getByText("Controller rejected request");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("error-message");
   });
 
   it("renders invalid username login errors", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          loginError: ErrorResponse.INVALID_TAG,
-          config: configFactory.build({
-            identityProviderAvailable: false,
-          }),
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        loginError: ErrorResponse.INVALID_TAG,
+        config: configFactory.build({
+          identityProviderAvailable: false,
         }),
-      })
-    );
-    render(
-      <Provider store={store}>
-        <LogIn>App content</LogIn>
-      </Provider>
-    );
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
     expect(screen.getByText(Label.INVALID_NAME)).toBeInTheDocument();
   });
 
   it("renders invalid field errors", () => {
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          loginError: ErrorResponse.INVALID_FIELD,
-          config: configFactory.build({
-            identityProviderAvailable: false,
-          }),
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        loginError: ErrorResponse.INVALID_FIELD,
+        config: configFactory.build({
+          identityProviderAvailable: false,
         }),
-      })
-    );
-    render(
-      <Provider store={store}>
-        <LogIn>App content</LogIn>
-      </Provider>
-    );
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
     expect(screen.getByText(Label.INVALID_FIELD)).toBeInTheDocument();
   });
 
@@ -182,20 +136,14 @@ describe("LogIn", () => {
       .mockImplementation(
         jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
       );
-    const store = mockStore(
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            identityProviderAvailable: false,
-          }),
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          identityProviderAvailable: false,
         }),
-      })
-    );
-    render(
-      <Provider store={store}>
-        <LogIn>App content</LogIn>
-      </Provider>
-    );
+      }),
+    });
+    const { store } = renderComponent(<LogIn>App content</LogIn>, { state });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
       "eggman"

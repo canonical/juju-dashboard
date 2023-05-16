@@ -1,29 +1,15 @@
-import { render, screen } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import configureStore from "redux-mock-store";
+import { screen } from "@testing-library/react";
 
-import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import Breadcrumb from "./Breadcrumb";
 
-const mockStore = configureStore([]);
-
 describe("Breadcrumb", () => {
   it("displays correctly on model details", () => {
-    const store = mockStore(rootStateFactory.build());
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/models/eggman@external/group-test"]}>
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName"
-              element={<Breadcrumb />}
-            />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Breadcrumb />, {
+      path: "/models/:userName/:modelName",
+      url: "/models/eggman@external/group-test",
+    });
     expect(
       screen.queryByTestId("breadcrumb-application")
     ).not.toBeInTheDocument();
@@ -33,21 +19,10 @@ describe("Breadcrumb", () => {
   });
 
   it("displays correctly on application details", () => {
-    const store = mockStore(rootStateFactory.build());
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/eggman@external/group-test/app/easyrsa"]}
-        >
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName/app/:appName"
-              element={<Breadcrumb />}
-            />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Breadcrumb />, {
+      path: "/models/:userName/:modelName/app/:appName",
+      url: "/models/eggman@external/group-test/app/easyrsa",
+    });
     expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
       "group-testApplicationseasyrsa"
     );
@@ -63,23 +38,10 @@ describe("Breadcrumb", () => {
   });
 
   it("displays correctly on unit details", () => {
-    const store = mockStore(rootStateFactory.build());
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={[
-            "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
-          ]}
-        >
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName/app/:appName/unit/:unitId"
-              element={<Breadcrumb />}
-            />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Breadcrumb />, {
+      path: "/models/:userName/:modelName/app/:appName/unit/:unitId",
+      url: "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
+    });
     expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
       "group-testApplicationslogstashlogstash-0"
     );
@@ -95,21 +57,10 @@ describe("Breadcrumb", () => {
   });
 
   it("displays correctly on machine details", () => {
-    const store = mockStore(rootStateFactory.build());
-    render(
-      <Provider store={store}>
-        <MemoryRouter
-          initialEntries={["/models/eggman@external/group-test/machine/0"]}
-        >
-          <Routes>
-            <Route
-              path="/models/:userName/:modelName/machine/:machineId"
-              element={<Breadcrumb />}
-            />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
+    renderComponent(<Breadcrumb />, {
+      path: "/models/:userName/:modelName/machine/:machineId",
+      url: "/models/eggman@external/group-test/machine/0",
+    });
     expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
       "group-testMachines0"
     );

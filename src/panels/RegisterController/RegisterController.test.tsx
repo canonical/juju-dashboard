@@ -1,24 +1,12 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router";
-import configureStore from "redux-mock-store";
 
 import { thunks as appThunks } from "store/app";
-import type { RootState } from "store/store";
-import { rootStateFactory } from "testing/factories/root";
+import { renderComponent } from "testing/utils";
 
 import RegisterController, { Label, STORAGE_KEY } from "./RegisterController";
 
-const mockStore = configureStore([]);
-
 describe("RegisterController", () => {
-  let state: RootState;
-
-  beforeEach(() => {
-    state = rootStateFactory.withGeneralConfig().build();
-  });
-
   afterEach(() => {
     localStorage.clear();
   });
@@ -33,14 +21,7 @@ describe("RegisterController", () => {
       .mockImplementation(
         jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
       );
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <RegisterController />
-        </Provider>
-      </MemoryRouter>
-    );
+    const { store } = renderComponent(<RegisterController />);
     await userEvent.type(
       screen.getByRole("textbox", {
         name: "Name",
@@ -89,14 +70,7 @@ describe("RegisterController", () => {
   });
 
   it("requires the certificate warning to be checked", async () => {
-    const store = mockStore(state);
-    render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <RegisterController />
-        </Provider>
-      </MemoryRouter>
-    );
+    renderComponent(<RegisterController />);
     expect(screen.getByRole("button", { name: Label.SUBMIT })).toBeDisabled();
     await userEvent.click(
       screen.getByRole("checkbox", {

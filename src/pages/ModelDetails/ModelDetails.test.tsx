@@ -1,5 +1,5 @@
-import * as jujuLib from "@canonical/jujulib";
 import type { Connection } from "@canonical/jujulib";
+import * as jujuLib from "@canonical/jujulib";
 import { screen } from "@testing-library/react";
 
 import { actions as jujuActions } from "store/juju";
@@ -122,12 +122,12 @@ describe("ModelDetails", () => {
   it("should display the app page", async () => {
     renderComponent(<ModelDetails />, {
       path,
+      state,
       url: urls.model.app.index({
         modelName: "test-model",
         userName: "eggman@external",
         appName: "ceph",
       }),
-      state,
     });
     expect(await screen.findByTestId("app")).toBeInTheDocument();
   });
@@ -135,13 +135,13 @@ describe("ModelDetails", () => {
   it("should display the unit page", async () => {
     renderComponent(<ModelDetails />, {
       path,
+      state,
       url: urls.model.unit({
         modelName: "test-model",
         userName: "eggman@external",
         appName: "ceph",
         unitId: "ceph-0",
       }),
-      state,
     });
     expect(await screen.findByTestId("unit")).toBeInTheDocument();
   });
@@ -149,12 +149,12 @@ describe("ModelDetails", () => {
   it("should display the machine page", async () => {
     renderComponent(<ModelDetails />, {
       path,
+      state,
       url: urls.model.machine({
         modelName: "test-model",
         userName: "eggman@external",
         machineId: "1",
       }),
-      state,
     });
     expect(await screen.findByTestId("machine")).toBeInTheDocument();
   });
