@@ -7,22 +7,25 @@ import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
-  getGroupedByOwnerAndFilteredModelData,
   getActiveUsers,
   getControllerData,
+  getGroupedByOwnerAndFilteredModelData,
 } from "store/juju/selectors";
+import type { Filters } from "store/juju/utils/models";
 import {
   canAdministerModelAccess,
   getModelStatusGroupData,
 } from "store/juju/utils/models";
-import type { Filters } from "store/juju/utils/models";
 
+import AccessButton from "./AccessButton";
+import CloudCell from "./CloudCell/CloudCell";
+import ModelDetailsLink from "./ModelDetailsLink";
+import ModelSummary from "./ModelSummary";
 import {
-  generateAccessButton,
   generateCloudAndRegion,
-  generateCloudCell,
-  generateModelDetailsLink,
-  getStatusValue,
+  getControllerName,
+  getCredential,
+  getLastUpdated,
 } from "./shared";
 
 type Props = {
@@ -80,31 +83,31 @@ export default function OwnerGroup({ filters }: Props) {
     Object.values(groupedAndFilteredData[owner]).forEach((model) => {
       const activeUser = activeUsers[model.uuid];
       const { highestStatus } = getModelStatusGroupData(model);
-      const cloud = generateCloudCell(model);
-      const credential = getStatusValue(model, "cloud-credential-tag");
-      const controller = getStatusValue(model, "controllerName", controllers);
-      const statusSince = getStatusValue(model, "status.since");
-      const lastUpdated =
-        typeof statusSince === "string" ? statusSince?.slice(2) : statusSince;
+      const cloud = <CloudCell model={model} />;
+      const credential = getCredential(model);
+      const controller = getControllerName(model, controllers);
+      const lastUpdated = getLastUpdated(model);
       const row = {
         "data-testid": `model-uuid-${model?.uuid}`,
         columns: [
           {
             "data-testid": "column-name",
-            content: model.info
-              ? generateModelDetailsLink(
-                  model.info.name,
-                  model.info && model.info["owner-tag"],
-                  model.info.name
-                )
-              : null,
+            content: model.info ? (
+              <ModelDetailsLink
+                modelName={model.info.name}
+                ownerTag={model.info?.["owner-tag"]}
+              >
+                {model.info.name}
+              </ModelDetailsLink>
+            ) : null,
           },
           {
             "data-testid": "column-summary",
-            content: getStatusValue(
-              model,
-              "summary",
-              model.info?.["owner-tag"]
+            content: (
+              <ModelSummary
+                modelData={model}
+                ownerTag={model.info?.["owner-tag"]}
+              />
             ),
             className: "u-overflow--visible",
           },
@@ -134,8 +137,12 @@ export default function OwnerGroup({ filters }: Props) {
             content: (
               <>
                 {model.info
-                  ? canAdministerModelAccess(activeUser, model.info.users) &&
-                    generateAccessButton(setPanelQs, model.info.name)
+                  ? canAdministerModelAccess(activeUser, model.info.users) && (
+                      <AccessButton
+                        setPanelQs={setPanelQs}
+                        modelName={model.info.name}
+                      />
+                    )
                   : null}
                 <span className="model-access-alt">{lastUpdated}</span>
               </>
@@ -150,8 +157,15 @@ export default function OwnerGroup({ filters }: Props) {
             content: (
               <>
                 {model.info
-                  ? canAdministerModelAccess(activeUser, model?.info?.users) &&
-                    generateAccessButton(setPanelQs, model.info.name)
+                  ? canAdministerModelAccess(
+                      activeUser,
+                      model?.info?.users
+                    ) && (
+                      <AccessButton
+                        setPanelQs={setPanelQs}
+                        modelName={model.info.name}
+                      />
+                    )
                   : null}
               </>
             ),
