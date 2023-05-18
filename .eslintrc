@@ -3,11 +3,10 @@
     "react-app",
     "plugin:prettier/recommended",
     "plugin:jest/recommended",
-    "plugin:import/typescript",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["prettier", "jest", "@typescript-eslint"],
+  "plugins": ["prettier", "jest"],
   "root": true,
   "rules": {
     "@typescript-eslint/consistent-type-imports": "error",
