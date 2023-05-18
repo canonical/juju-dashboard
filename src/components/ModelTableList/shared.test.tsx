@@ -4,18 +4,18 @@ import {
   modelDataFactory,
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
-
-import { modelDataStatusFactory } from "../../testing/factories/juju/juju";
+import { modelDataStatusFactory } from "testing/factories/juju/juju";
 
 import {
   JAAS_CONTROLLER_UUID,
   generateCloudAndRegion,
   getCloudName,
+  getControllerName,
   getControllerUUID,
   getCredential,
   getLastUpdated,
   getRegion,
-  getControllerName,
+  generateTableHeaders,
 } from "./shared";
 
 describe("shared", () => {
@@ -125,5 +125,39 @@ describe("shared", () => {
       }),
     });
     expect(generateCloudAndRegion(modelData)).toStrictEqual("aws/au-south");
+  });
+
+  describe("generateTableHeaders", () => {
+    it("can display an owner column", () => {
+      const headers = generateTableHeaders("status", 5, { showOwner: true });
+      expect(headers).toHaveLength(8);
+      expect(headers[2].content).toBe("Owner");
+    });
+
+    it("can display a status column", () => {
+      const headers = generateTableHeaders("status", 5, { showStatus: true });
+      expect(headers).toHaveLength(8);
+      expect(headers[2].content).toBe("Status");
+    });
+
+    it("can display both status and owner column", () => {
+      const headers = generateTableHeaders("status", 5, {
+        showOwner: true,
+        showStatus: true,
+      });
+      expect(headers).toHaveLength(9);
+      expect(headers[2].content).toBe("Owner");
+      expect(headers[3].content).toBe("Status");
+    });
+
+    it("can display a region column", () => {
+      const headers = generateTableHeaders("status", 5);
+      expect(headers[2].content).toBe("Region");
+    });
+
+    it("can display a cloud/region column", () => {
+      const headers = generateTableHeaders("status", 5, { showCloud: true });
+      expect(headers[2].content).toBe("Cloud/Region");
+    });
   });
 });

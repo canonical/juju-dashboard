@@ -21,6 +21,7 @@ import AccessButton from "./AccessButton/AccessButton";
 import ModelDetailsLink from "./ModelDetailsLink";
 import ModelSummary from "./ModelSummary";
 import {
+  generateTableHeaders,
   getControllerName,
   getCredential,
   getLastUpdated,
@@ -33,37 +34,6 @@ type Props = {
 
 export enum TestId {
   CLOUD_GROUP = "cloud-group",
-}
-
-/**
-  Generates the table headers for the cloud grouped table
-  @param cloud The title of the table.
-  @param count The number of elements in the status.
-  @returns The headers for the table.
-*/
-function generateCloudTableHeaders(cloud: string, count: number) {
-  return [
-    {
-      content: <Status status={cloud} count={count} />,
-      sortKey: "name",
-    },
-    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
-    { content: "Owner", sortKey: "owner" },
-    { content: "Status", sortKey: "status" },
-    { content: "Region", sortKey: "region" },
-    { content: "Credential", sortKey: "credential" },
-    { content: "Controller", sortKey: "controller" },
-    {
-      content: "Last Updated",
-      sortKey: "lastUpdated",
-      className: "u-align--right",
-    },
-    {
-      content: "",
-      sortKey: "",
-      className: "sm-screen-access-header",
-    },
-  ];
 }
 
 export default function CloudGroup({ filters }: Props) {
@@ -191,7 +161,10 @@ export default function CloudGroup({ filters }: Props) {
     cloudTables.push(
       <MainTable
         key={cloud}
-        headers={generateCloudTableHeaders(cloud, cloudModels.length)}
+        headers={generateTableHeaders(cloud, cloudModels.length, {
+          showOwner: true,
+          showStatus: true,
+        })}
         rows={cloudModels}
         sortable
       />

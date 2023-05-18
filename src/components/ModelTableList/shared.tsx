@@ -1,3 +1,6 @@
+import type { MainTableHeader } from "@canonical/react-components/dist/components/MainTable/MainTable";
+
+import Status from "components/Status";
 import type { Controllers, ModelData } from "store/juju/types";
 import {
   extractCloudName,
@@ -52,3 +55,53 @@ export const getLastUpdated = (model: ModelData) => {
 export function generateCloudAndRegion(model: ModelData) {
   return `${getCloudName(model)}/${getRegion(model)}`;
 }
+
+export type TableHeaderOptions = {
+  showCloud?: boolean;
+  showOwner?: boolean;
+  showStatus?: boolean;
+};
+
+/**
+    Generates the table headers for the supplied table label.
+    @param label The title of the table.
+    @param count The number of elements in the status.
+    @returns The headers for the table.
+  */
+export const generateTableHeaders = (
+  label: string,
+  count: number,
+  options?: TableHeaderOptions
+) => {
+  const rows = [
+    {
+      content: <Status status={label} count={count} />,
+      sortKey: "name",
+    },
+    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
+    options?.showOwner ? { content: "Owner", sortKey: "owner" } : null,
+    options?.showStatus ? { content: "Status", sortKey: "status" } : null,
+    options?.showCloud
+      ? { content: "Cloud/Region", sortKey: "cloud" }
+      : { content: "Region", sortKey: "region" },
+    { content: "Credential", sortKey: "credential" },
+    { content: "Controller", sortKey: "controller" },
+    {
+      content: "Last Updated",
+      sortKey: "lastUpdated",
+      className: "u-align--right",
+    },
+    {
+      content: "",
+      sortKey: "",
+      className: "sm-screen-access-header",
+    },
+  ];
+  // Remove any null headers that aren't being shown.
+  return rows.reduce<MainTableHeader[]>((headers, row) => {
+    if (row) {
+      headers.push(row);
+    }
+    return headers;
+  }, []);
+};

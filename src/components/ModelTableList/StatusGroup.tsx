@@ -4,7 +4,6 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import StatusComponent from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import type { SetParams } from "hooks/useQueryParams";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -28,6 +27,7 @@ import ModelDetailsLink from "./ModelDetailsLink";
 import ModelSummary from "./ModelSummary";
 import {
   generateCloudAndRegion,
+  generateTableHeaders,
   getControllerName,
   getCredential,
   getLastUpdated,
@@ -36,36 +36,6 @@ import {
 export const TestId = {
   STATUS_GROUP: "status-group",
 };
-
-/**
-  Generates the table headers for the supplied table label.
-  @param label The title of the table.
-  @param count The number of elements in the status.
-  @returns The headers for the table.
-*/
-function generateStatusTableHeaders(label: string, count: number) {
-  return [
-    {
-      content: <StatusComponent status={label} count={count} />,
-      sortKey: "name",
-    },
-    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
-    { content: "Owner", sortKey: "owner" },
-    { content: "Cloud/Region", sortKey: "cloud" },
-    { content: "Credential", sortKey: "credential" },
-    { content: "Controller", sortKey: "controller" },
-    {
-      content: "Last Updated",
-      sortKey: "lastUpdated",
-      className: "u-align--right",
-    },
-    {
-      content: "",
-      sortKey: "",
-      className: "sm-screen-access-header",
-    },
-  ];
-}
 
 /**
   Generates the warning message for the model name cell.
@@ -291,7 +261,10 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
     >
       {blockedRows.length ? (
         <MainTable
-          headers={generateStatusTableHeaders("Blocked", blockedRows.length)}
+          headers={generateTableHeaders("Blocked", blockedRows.length, {
+            showCloud: true,
+            showOwner: true,
+          })}
           rows={blockedRows}
           sortable
           emptyStateMsg={emptyStateMsg}
@@ -300,7 +273,10 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
       ) : null}
       {alertRows.length ? (
         <MainTable
-          headers={generateStatusTableHeaders("Alert", alertRows.length)}
+          headers={generateTableHeaders("Alert", alertRows.length, {
+            showCloud: true,
+            showOwner: true,
+          })}
           rows={alertRows}
           sortable
           emptyStateMsg={emptyStateMsg}
@@ -309,7 +285,10 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
       ) : null}
       {runningRows.length ? (
         <MainTable
-          headers={generateStatusTableHeaders("Running", runningRows.length)}
+          headers={generateTableHeaders("Running", runningRows.length, {
+            showCloud: true,
+            showOwner: true,
+          })}
           rows={runningRows}
           sortable
           emptyStateMsg={emptyStateMsg}

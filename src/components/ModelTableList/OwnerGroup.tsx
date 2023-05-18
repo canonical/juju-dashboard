@@ -23,6 +23,7 @@ import ModelDetailsLink from "./ModelDetailsLink";
 import ModelSummary from "./ModelSummary";
 import {
   generateCloudAndRegion,
+  generateTableHeaders,
   getControllerName,
   getCredential,
   getLastUpdated,
@@ -34,36 +35,6 @@ type Props = {
 
 export enum TestId {
   OWNER_GROUP = "owner-group",
-}
-
-/**
-  Generates the table headers for the owner grouped table
-  @param owner The title of the table.
-  @param count The number of elements in the status.
-  @returns The headers for the table.
-*/
-function generateOwnerTableHeaders(owner: string, count: number) {
-  return [
-    {
-      content: <Status status={owner} count={count} />,
-      sortKey: "name",
-    },
-    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
-    { content: "Status", sortKey: "status" },
-    { content: "Cloud/Region", sortKey: "cloud" },
-    { content: "Credential", sortKey: "credential" },
-    { content: "Controller", sortKey: "controller" },
-    {
-      content: "Last Updated",
-      sortKey: "lastUpdated",
-      className: "u-align--right",
-    },
-    {
-      content: "",
-      sortKey: "",
-      className: "sm-screen-access-header",
-    },
-  ];
 }
 
 export default function OwnerGroup({ filters }: Props) {
@@ -187,7 +158,10 @@ export default function OwnerGroup({ filters }: Props) {
     ownerTables.push(
       <MainTable
         key={owner}
-        headers={generateOwnerTableHeaders(owner, ownerModels.length)}
+        headers={generateTableHeaders(owner, ownerModels.length, {
+          showCloud: true,
+          showStatus: true,
+        })}
         rows={ownerModels}
         sortable
         className="p-main-table"
