@@ -5,7 +5,8 @@ import { useSelector, useStore } from "react-redux";
 
 import FadeUpIn from "animations/FadeUpIn";
 import bakery from "juju/bakery";
-import logo from "static/images/logo/logo-black-on-white.svg";
+import jaasLogo from "static/images/logo/jaas-logo-black-on-white.svg";
+import jujuLogo from "static/images/logo/juju-logo-black-on-white.svg";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import {
@@ -28,12 +29,15 @@ export enum ErrorResponse {
 export enum Label {
   INVALID_NAME = "Invalid user name",
   INVALID_FIELD = "Invalid user name or password",
+  JAAS_LOGO = "JAAS logo",
+  JUJU_LOGO = "Juju logo",
 }
 
 type Props = { children: ReactNode };
 
 export default function LogIn({ children }: Props) {
   const config = useSelector(getConfig);
+  const isJuju = useSelector(getConfig)?.isJuju;
 
   const controllerConnections = useSelector(getControllerConnections) || {};
   const wsControllerURLs = Object.keys(controllerConnections);
@@ -53,7 +57,11 @@ export default function LogIn({ children }: Props) {
         <div className="login">
           <FadeUpIn isActive={!userIsLoggedIn}>
             <div className="login__inner p-card--highlighted">
-              <img className="login__logo" src={logo} alt="JAAS logo" />
+              <img
+                className="login__logo"
+                src={isJuju ? jujuLogo : jaasLogo}
+                alt={isJuju ? Label.JUJU_LOGO : Label.JAAS_LOGO}
+              />
               {config?.identityProviderAvailable ? (
                 <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />
               ) : (
