@@ -1,13 +1,15 @@
 import {
-  Notification,
-  Strip,
   CodeSnippet,
   CodeSnippetBlockAppearance,
+  Notification,
+  Strip,
 } from "@canonical/react-components";
 import * as Sentry from "@sentry/browser";
 import type { Extras } from "@sentry/types";
-import { Component } from "react";
 import type { PropsWithChildren } from "react";
+import { Component } from "react";
+
+import { externalURLs } from "urls";
 
 type Props = PropsWithChildren;
 
@@ -44,7 +46,9 @@ export default class ErrorBoundary extends Component<Props, State> {
     const body = encodeURIComponent(
       `\`\`\`\n${error?.stack ?? "No stack track"}\n\`\`\``
     );
-    const url = `https://github.com/canonical-web-and-design/jaas-dashboard/issues/new?assignees=&labels=&template=bug_report.md&title=Dashboard error: ${encodeURIComponent(
+    const url = `${
+      externalURLs.new_issue
+    }?assignees=&labels=&template=bug_report.md&title=Dashboard error: ${encodeURIComponent(
       error?.message ?? "No error"
     )}&body=${body}`;
     if (hasError) {

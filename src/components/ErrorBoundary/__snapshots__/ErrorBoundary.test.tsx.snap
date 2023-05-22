@@ -29,7 +29,7 @@ exports[`Error Boundary renders without crashing and matches snapshot 1`] = `
               Something has gone wrong. If this issue persists,
                
               <a
-                href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new?assignees=&labels=&template=bug_report.md&title=Dashboard error: Oh%20noes!&body=%60%60%60%0AStack%20trace%20output%0A%60%60%60"
+                href="https://github.com/canonical/juju-dashboard/issues/new?assignees=&labels=&template=bug_report.md&title=Dashboard error: Oh%20noes!&body=%60%60%60%0AStack%20trace%20output%0A%60%60%60"
                 rel="noopener noreferrer"
                 target="_blank"
               >
