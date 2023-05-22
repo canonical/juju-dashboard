@@ -3,11 +3,11 @@
   "version": "0.11.2",
   "description": "A dashboard for Juju and JAAS (Juju as a service)",
   "bugs": {
-    "url": "https://github.com/canonical-web-and-design/jaas-dashboard/issues"
+    "url": "https://github.com/canonical/juju-dashboard/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/canonical-web-and-design/jaas-dashboard.git"
+    "url": "git+https://github.com/canonical/juju-dashboard.git"
   },
   "license": "LGPL-3.0",
   "author": {

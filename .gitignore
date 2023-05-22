@@ -1,7 +1,7 @@
 node_modules/
 build/
 .docker-project
-.yarn.canonical-webteam-jaas-dashboard*
+.yarn.canonical-webteam-juju-dashboard*
 yarn-error.log
 /package-lock.json
 .DS_Store
