@@ -12,15 +12,20 @@ import {
 } from "store/juju/selectors";
 import type { Filters } from "store/juju/utils/models";
 import {
-  getModelStatusGroupData,
-  extractOwnerName,
   canAdministerModelAccess,
+  extractOwnerName,
+  getModelStatusGroupData,
 } from "store/juju/utils/models";
 
+import AccessButton from "./AccessButton/AccessButton";
+import ModelDetailsLink from "./ModelDetailsLink";
+import ModelSummary from "./ModelSummary";
 import {
-  generateModelDetailsLink,
-  getStatusValue,
-  generateAccessButton,
+  generateTableHeaders,
+  getControllerName,
+  getCredential,
+  getLastUpdated,
+  getRegion,
 } from "./shared";
 
 type Props = {
@@ -29,37 +34,6 @@ type Props = {
 
 export enum TestId {
   CLOUD_GROUP = "cloud-group",
-}
-
-/**
-  Generates the table headers for the cloud grouped table
-  @param cloud The title of the table.
-  @param count The number of elements in the status.
-  @returns The headers for the table.
-*/
-function generateCloudTableHeaders(cloud: string, count: number) {
-  return [
-    {
-      content: <Status status={cloud} count={count} />,
-      sortKey: "name",
-    },
-    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
-    { content: "Owner", sortKey: "owner" },
-    { content: "Status", sortKey: "status" },
-    { content: "Region", sortKey: "region" },
-    { content: "Credential", sortKey: "credential" },
-    { content: "Controller", sortKey: "controller" },
-    {
-      content: "Last Updated",
-      sortKey: "lastUpdated",
-      className: "u-align--right",
-    },
-    {
-      content: "",
-      sortKey: "",
-      className: "sm-screen-access-header",
-    },
-  ];
 }
 
 export default function CloudGroup({ filters }: Props) {
@@ -84,31 +58,31 @@ export default function CloudGroup({ filters }: Props) {
       const owner = model.info
         ? extractOwnerName(model.info["owner-tag"])
         : null;
-      const region = getStatusValue(model, "region");
-      const credential = getStatusValue(model, "cloud-credential-tag");
-      const controller = getStatusValue(model, "controllerName", controllers);
-      const statusSince = getStatusValue(model, "status.since");
-      const lastUpdated =
-        typeof statusSince === "string" ? statusSince.slice(2) : statusSince;
+      const region = getRegion(model);
+      const credential = getCredential(model);
+      const controller = getControllerName(model, controllers);
+      const lastUpdated = getLastUpdated(model);
       const row = {
         "data-testid": `model-uuid-${model?.uuid}`,
         columns: [
           {
             "data-testid": "column-name",
-            content: model.info
-              ? generateModelDetailsLink(
-                  model.info.name,
-                  model.info && model.info["owner-tag"],
-                  model.info.name
-                )
-              : null,
+            content: model.info ? (
+              <ModelDetailsLink
+                modelName={model.info.name}
+                ownerTag={model.info?.["owner-tag"]}
+              >
+                {model.info.name}
+              </ModelDetailsLink>
+            ) : null,
           },
           {
             "data-testid": "column-summary",
-            content: getStatusValue(
-              model,
-              "summary",
-              model.info?.["owner-tag"]
+            content: (
+              <ModelSummary
+                modelData={model}
+                ownerTag={model.info?.["owner-tag"]}
+              />
             ),
             className: "u-overflow--visible",
           },
@@ -139,8 +113,12 @@ export default function CloudGroup({ filters }: Props) {
             content: (
               <>
                 {model?.info
-                  ? canAdministerModelAccess(activeUser, model.info.users) &&
-                    generateAccessButton(setPanelQs, model.info.name)
+                  ? canAdministerModelAccess(activeUser, model.info.users) && (
+                      <AccessButton
+                        setPanelQs={setPanelQs}
+                        modelName={model.info.name}
+                      />
+                    )
                   : null}
                 <span className="model-access-alt">{lastUpdated}</span>
               </>
@@ -155,8 +133,12 @@ export default function CloudGroup({ filters }: Props) {
             content: (
               <>
                 {model?.info
-                  ? canAdministerModelAccess(activeUser, model.info.users) &&
-                    generateAccessButton(setPanelQs, model.info.name)
+                  ? canAdministerModelAccess(activeUser, model.info.users) && (
+                      <AccessButton
+                        setPanelQs={setPanelQs}
+                        modelName={model.info.name}
+                      />
+                    )
                   : null}
               </>
             ),
@@ -179,7 +161,10 @@ export default function CloudGroup({ filters }: Props) {
     cloudTables.push(
       <MainTable
         key={cloud}
-        headers={generateCloudTableHeaders(cloud, cloudModels.length)}
+        headers={generateTableHeaders(cloud, cloudModels.length, {
+          showOwner: true,
+          showStatus: true,
+        })}
         rows={cloudModels}
         sortable
       />

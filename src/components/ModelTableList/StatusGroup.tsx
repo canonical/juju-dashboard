@@ -4,66 +4,38 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import StatusComponent from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { useQueryParams } from "hooks/useQueryParams";
 import type { SetParams } from "hooks/useQueryParams";
+import { useQueryParams } from "hooks/useQueryParams";
 import {
   getActiveUsers,
   getControllerData,
   getGroupedByStatusAndFilteredModelData,
 } from "store/juju/selectors";
 import type { Controllers, ModelData } from "store/juju/types";
+import type { Filters, Status } from "store/juju/utils/models";
 import {
-  getModelStatusGroupData,
-  extractOwnerName,
   canAdministerModelAccess,
+  extractOwnerName,
+  getModelStatusGroupData,
 } from "store/juju/utils/models";
-import type { Filters } from "store/juju/utils/models";
-import type { Status } from "store/juju/utils/models";
 import urls from "urls";
 
+import AccessButton from "./AccessButton/AccessButton";
+import CloudCell from "./CloudCell/CloudCell";
+import ModelDetailsLink from "./ModelDetailsLink";
+import ModelSummary from "./ModelSummary";
 import {
-  generateModelDetailsLink,
-  getStatusValue,
-  generateCloudCell,
   generateCloudAndRegion,
-  generateAccessButton,
+  generateTableHeaders,
+  getControllerName,
+  getCredential,
+  getLastUpdated,
 } from "./shared";
 
 export const TestId = {
   STATUS_GROUP: "status-group",
 };
-
-/**
-  Generates the table headers for the supplied table label.
-  @param label The title of the table.
-  @param count The number of elements in the status.
-  @returns The headers for the table.
-*/
-function generateStatusTableHeaders(label: string, count: number) {
-  return [
-    {
-      content: <StatusComponent status={label} count={count} />,
-      sortKey: "name",
-    },
-    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
-    { content: "Owner", sortKey: "owner" },
-    { content: "Cloud/Region", sortKey: "cloud" },
-    { content: "Credential", sortKey: "credential" },
-    { content: "Controller", sortKey: "controller" },
-    {
-      content: "Last Updated",
-      sortKey: "lastUpdated",
-      className: "u-align--right",
-    },
-    {
-      content: "",
-      sortKey: "",
-      className: "sm-screen-access-header",
-    },
-  ];
-}
 
 /**
   Generates the warning message for the model name cell.
@@ -78,10 +50,10 @@ const generateWarningMessage = (model: ModelData) => {
   const ownerTag = model?.info?.["owner-tag"] ?? "";
   const userName = ownerTag.replace("user-", "");
   const modelName = model.model.name;
-  const link = generateModelDetailsLink(
-    modelName,
-    ownerTag,
-    messages[0].message
+  const link = (
+    <ModelDetailsLink modelName={modelName} ownerTag={ownerTag}>
+      {messages[0].message}
+    </ModelDetailsLink>
   );
   const list = messages.slice(0, 5).map((message) => {
     const unitId = message.unitId ? message.unitId.replace("/", "-") : null;
@@ -129,14 +101,16 @@ const generateWarningMessage = (model: ModelData) => {
   @returns The React element for the model name cell.
 */
 const generateModelNameCell = (model: ModelData, groupLabel: string) => {
-  const link = generateModelDetailsLink(
-    model.model.name,
-    model.info?.["owner-tag"] ?? "",
-    model.model.name
-  );
   return (
     <>
-      <div>{link}</div>
+      <div>
+        <ModelDetailsLink
+          modelName={model.model.name}
+          ownerTag={model.info?.["owner-tag"]}
+        >
+          {model.model.name}
+        </ModelDetailsLink>
+      </div>
       {groupLabel === "blocked" ? generateWarningMessage(model) : null}
     </>
   );
@@ -168,15 +142,10 @@ function generateModelTableDataByStatus(
         owner = extractOwnerName(model.info["owner-tag"]);
       }
       const activeUser = activeUsers[model.uuid];
-      const cloud = generateCloudCell(model);
-      const credential = getStatusValue(model, "cloud-credential-tag");
-      const controller = getStatusValue(model, "controllerName", controllers);
-      let lastUpdated = getStatusValue(model, "status.since");
-      if (typeof lastUpdated === "string") {
-        // .slice(2) here will make the year 2 characters instead of 4
-        // e.g. 2021-01-01 becomes 21-01-01
-        lastUpdated = lastUpdated.slice(2);
-      }
+      const cloud = <CloudCell model={model} />;
+      const credential = getCredential(model);
+      const controller = getControllerName(model, controllers);
+      const lastUpdated = getLastUpdated(model);
       const row = {
         "data-testid": `model-uuid-${model?.uuid}`,
         columns: [
@@ -186,10 +155,11 @@ function generateModelTableDataByStatus(
           },
           {
             "data-testid": "column-summary",
-            content: getStatusValue(
-              model,
-              "summary",
-              model.info?.["owner-tag"]
+            content: (
+              <ModelSummary
+                modelData={model}
+                ownerTag={model.info?.["owner-tag"]}
+              />
             ),
             className: "u-overflow--visible",
           },
@@ -218,8 +188,12 @@ function generateModelTableDataByStatus(
             "data-testid": "column-updated",
             content: (
               <>
-                {canAdministerModelAccess(activeUser, model?.info?.users) &&
-                  generateAccessButton(setPanelQs, model.model.name)}
+                {canAdministerModelAccess(activeUser, model?.info?.users) && (
+                  <AccessButton
+                    setPanelQs={setPanelQs}
+                    modelName={model.model.name}
+                  />
+                )}
                 <span className="model-access-alt">{lastUpdated}</span>
               </>
             ),
@@ -232,8 +206,12 @@ function generateModelTableDataByStatus(
           {
             content: (
               <>
-                {canAdministerModelAccess(activeUser, model?.info?.users) &&
-                  generateAccessButton(setPanelQs, model.model.name)}
+                {canAdministerModelAccess(activeUser, model?.info?.users) && (
+                  <AccessButton
+                    setPanelQs={setPanelQs}
+                    modelName={model.model.name}
+                  />
+                )}
               </>
             ),
             className: "sm-screen-access-cell",
@@ -283,7 +261,10 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
     >
       {blockedRows.length ? (
         <MainTable
-          headers={generateStatusTableHeaders("Blocked", blockedRows.length)}
+          headers={generateTableHeaders("Blocked", blockedRows.length, {
+            showCloud: true,
+            showOwner: true,
+          })}
           rows={blockedRows}
           sortable
           emptyStateMsg={emptyStateMsg}
@@ -292,7 +273,10 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
       ) : null}
       {alertRows.length ? (
         <MainTable
-          headers={generateStatusTableHeaders("Alert", alertRows.length)}
+          headers={generateTableHeaders("Alert", alertRows.length, {
+            showCloud: true,
+            showOwner: true,
+          })}
           rows={alertRows}
           sortable
           emptyStateMsg={emptyStateMsg}
@@ -301,7 +285,10 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
       ) : null}
       {runningRows.length ? (
         <MainTable
-          headers={generateStatusTableHeaders("Running", runningRows.length)}
+          headers={generateTableHeaders("Running", runningRows.length, {
+            showCloud: true,
+            showOwner: true,
+          })}
           rows={runningRows}
           sortable
           emptyStateMsg={emptyStateMsg}

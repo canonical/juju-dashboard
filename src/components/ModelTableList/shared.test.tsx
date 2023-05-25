@@ -1,165 +1,163 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-
+import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
 import {
+  controllerFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  controllerFactory,
 } from "testing/factories/juju/juju";
+import { modelDataStatusFactory } from "testing/factories/juju/juju";
 
 import {
-  getStatusValue,
   JAAS_CONTROLLER_UUID,
-  generateAccessButton,
-  Label,
-  generateCloudCell,
+  generateCloudAndRegion,
+  getCloudName,
+  getControllerName,
+  getControllerUUID,
+  getCredential,
+  getLastUpdated,
+  getRegion,
+  generateTableHeaders,
 } from "./shared";
 
 describe("shared", () => {
-  describe("getStatusValue", () => {
-    it("can get a controller name", () => {
-      const controllers = {
-        "wss://test.com/api": [
-          controllerFactory.build({
-            uuid: "controller123",
-            path: "default-controller",
-          }),
-        ],
-      };
-      const modelData = modelDataFactory.build({
-        info: modelDataInfoFactory.build({
-          "controller-uuid": "controller123",
-        }),
-      });
-      expect(
-        getStatusValue(modelData, "controllerName", controllers)
-      ).toStrictEqual("default-controller");
+  it("getCloudName", () => {
+    const modelData = modelDataFactory.build({
+      model: modelStatusInfoFactory.build({
+        "cloud-tag": "cloud-aws",
+      }),
     });
-
-    it("can get the JAAS controller name", () => {
-      const controllers = {
-        "wss://test.com/api": [
-          controllerFactory.build({ uuid: JAAS_CONTROLLER_UUID }),
-        ],
-      };
-      const modelData = modelDataFactory.build({
-        info: modelDataInfoFactory.build({
-          "controller-uuid": JAAS_CONTROLLER_UUID,
-        }),
-      });
-      expect(
-        getStatusValue(modelData, "controllerName", controllers)
-      ).toStrictEqual("JAAS");
-    });
-
-    it("handles an unknown controller name", () => {
-      const controllers = {
-        "wss://test.com/api": [
-          controllerFactory.build({
-            uuid: "something-else",
-          }),
-        ],
-      };
-      const modelData = modelDataFactory.build({
-        info: modelDataInfoFactory.build({
-          "controller-uuid": "controller123",
-        }),
-      });
-      expect(
-        getStatusValue(modelData, "controllerName", controllers)
-      ).toStrictEqual("controller123");
-    });
+    expect(getCloudName(modelData)).toStrictEqual("aws");
   });
 
-  describe("generateCloudCell", () => {
-    it("handles no provider", () => {
-      render(
-        generateCloudCell(
-          modelDataFactory.build({
-            info: undefined,
-          })
-        )
-      );
-      expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  it("getRegion", () => {
+    const modelData = modelDataFactory.build({
+      model: modelStatusInfoFactory.build({
+        region: "au-south",
+      }),
     });
-
-    it("can generate an AWS logo", () => {
-      render(
-        generateCloudCell(
-          modelDataFactory.build({
-            info: modelDataInfoFactory.build({
-              "provider-type": "ec2",
-            }),
-          })
-        )
-      );
-      expect(screen.getByRole("img")).toHaveAttribute("alt", "AWS logo");
-    });
-
-    it("can generate a GCE logo", () => {
-      render(
-        generateCloudCell(
-          modelDataFactory.build({
-            info: modelDataInfoFactory.build({
-              "provider-type": "gce",
-            }),
-          })
-        )
-      );
-      expect(screen.getByRole("img")).toHaveAttribute(
-        "alt",
-        "Google Cloud Platform logo"
-      );
-    });
-
-    it("can generate an Azure logo", () => {
-      render(
-        generateCloudCell(
-          modelDataFactory.build({
-            info: modelDataInfoFactory.build({
-              "provider-type": "azure",
-            }),
-          })
-        )
-      );
-      expect(screen.getByRole("img")).toHaveAttribute("alt", "Azure logo");
-    });
-
-    it("can generate a Kubernetes logo", () => {
-      render(
-        generateCloudCell(
-          modelDataFactory.build({
-            info: modelDataInfoFactory.build({
-              "provider-type": "kubernetes",
-            }),
-          })
-        )
-      );
-      expect(screen.getByRole("img")).toHaveAttribute("alt", "Kubernetes logo");
-    });
+    expect(getRegion(modelData)).toStrictEqual("au-south");
   });
 
-  describe("generateAccessButton", () => {
-    it("display an access button", () => {
-      render(generateAccessButton(jest.fn(), "test-model"));
-      expect(
-        screen.getByRole("button", { name: Label.ACCESS_BUTTON })
-      ).toBeInTheDocument();
+  it("getCredential", () => {
+    const modelData = modelDataFactory.build({
+      info: modelDataInfoFactory.build({
+        "cloud-credential-tag": "cloudcred-amazon_eggman@external_juju",
+      }),
+    });
+    expect(getCredential(modelData)).toStrictEqual("eggman");
+  });
+
+  it("getControllerUUID", () => {
+    const modelData = modelDataFactory.build({
+      info: modelDataInfoFactory.build({
+        "controller-uuid": "controller123",
+      }),
+    });
+    expect(getControllerUUID(modelData)).toStrictEqual("controller123");
+  });
+
+  it("can get a controller name", () => {
+    const controllers = {
+      "wss://test.com/api": [
+        controllerFactory.build({
+          uuid: "controller123",
+          path: "default-controller",
+        }),
+      ],
+    };
+    const modelData = modelDataFactory.build({
+      info: modelDataInfoFactory.build({
+        "controller-uuid": "controller123",
+      }),
+    });
+    expect(getControllerName(modelData, controllers)).toStrictEqual(
+      "default-controller"
+    );
+  });
+
+  it("can get the JAAS controller name", () => {
+    const controllers = {
+      "wss://test.com/api": [
+        controllerFactory.build({ uuid: JAAS_CONTROLLER_UUID }),
+      ],
+    };
+    const modelData = modelDataFactory.build({
+      info: modelDataInfoFactory.build({
+        "controller-uuid": JAAS_CONTROLLER_UUID,
+      }),
+    });
+    expect(getControllerName(modelData, controllers)).toStrictEqual("JAAS");
+  });
+
+  it("handles an unknown controller name", () => {
+    const controllers = {
+      "wss://test.com/api": [
+        controllerFactory.build({
+          uuid: "something-else",
+        }),
+      ],
+    };
+    const modelData = modelDataFactory.build({
+      info: modelDataInfoFactory.build({
+        "controller-uuid": "controller123",
+      }),
+    });
+    expect(getControllerName(modelData, controllers)).toStrictEqual(
+      "controller123"
+    );
+  });
+
+  it("getLastUpdated", () => {
+    const modelData = modelDataFactory.build({
+      info: modelDataInfoFactory.build({
+        status: modelDataStatusFactory.build({
+          sine: "2019-11-12T23:49:17.148Z",
+        }),
+      }),
+    });
+    expect(getLastUpdated(modelData)).toStrictEqual("19-11-12");
+  });
+
+  it("generateCloudAndRegion", () => {
+    const modelData = modelDataFactory.build({
+      model: modelStatusInfoFactory.build({
+        "cloud-tag": "cloud-aws",
+        region: "au-south",
+      }),
+    });
+    expect(generateCloudAndRegion(modelData)).toStrictEqual("aws/au-south");
+  });
+
+  describe("generateTableHeaders", () => {
+    it("can display an owner column", () => {
+      const headers = generateTableHeaders("status", 5, { showOwner: true });
+      expect(headers).toHaveLength(8);
+      expect(headers[2].content).toBe("Owner");
     });
 
-    it("can open the access panel", async () => {
-      const setPanelQs = jest.fn();
-      render(generateAccessButton(setPanelQs, "test-model"));
-      await userEvent.click(
-        screen.getByRole("button", { name: Label.ACCESS_BUTTON })
-      );
-      expect(setPanelQs).toHaveBeenCalledWith(
-        {
-          model: "test-model",
-          panel: "share-model",
-        },
-        { replace: true }
-      );
+    it("can display a status column", () => {
+      const headers = generateTableHeaders("status", 5, { showStatus: true });
+      expect(headers).toHaveLength(8);
+      expect(headers[2].content).toBe("Status");
+    });
+
+    it("can display both status and owner column", () => {
+      const headers = generateTableHeaders("status", 5, {
+        showOwner: true,
+        showStatus: true,
+      });
+      expect(headers).toHaveLength(9);
+      expect(headers[2].content).toBe("Owner");
+      expect(headers[3].content).toBe("Status");
+    });
+
+    it("can display a region column", () => {
+      const headers = generateTableHeaders("status", 5);
+      expect(headers[2].content).toBe("Region");
+    });
+
+    it("can display a cloud/region column", () => {
+      const headers = generateTableHeaders("status", 5, { showCloud: true });
+      expect(headers[2].content).toBe("Cloud/Region");
     });
   });
 });
