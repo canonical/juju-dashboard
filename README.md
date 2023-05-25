@@ -2,7 +2,7 @@
 
 # Juju Dashboard
 
-## View the real-time status of your [Juju](https://juju.is) or [JAAS](https://jaas.ai/) environment.
+**View the real-time status of your [Juju](https://juju.is) or [JAAS](https://jaas.ai/) environment.**
 
 <br />
 
@@ -128,7 +128,6 @@ Juju Dashboard is licensed under the [LGPLv3](/LICENSE.md) by [Canonical
 Ltd](http://canonical.com/).
 
 <hr />
-<br />
 
 Want to work on projects like this? We're
 [hiring](https://canonical.com/careers)!
