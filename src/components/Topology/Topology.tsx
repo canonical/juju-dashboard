@@ -213,7 +213,7 @@ const Topology = memo(
     // Remove relations that do not have all applications in the map.
     // The missing application is likely a cross-model-relation which isn't
     // fully supported yet.
-    // https://github.com/canonical-web-and-design/jaas-dashboard/issues/526
+    // https://github.com/canonical/juju-dashboard/issues/526
     const applicationNames = Object.keys(applicationData ?? {});
 
     const relations = deDupedRelations.filter(
