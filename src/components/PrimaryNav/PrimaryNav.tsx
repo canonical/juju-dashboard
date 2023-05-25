@@ -13,7 +13,7 @@ import {
   getGroupedModelStatusCounts,
 } from "store/juju/selectors";
 import type { Controllers } from "store/juju/types";
-import urls from "urls";
+import urls, { externalURLs } from "urls";
 import "./_primary-nav.scss";
 
 const ModelsLink = () => {
@@ -110,7 +110,7 @@ const PrimaryNav = () => {
           <li className="p-list__item">
             <a
               className="p-list__link"
-              href="https://github.com/canonical-web-and-design/jaas-dashboard/issues/new"
+              href={externalURLs.new_issue}
               target="_blank"
               rel="noopener noreferrer"
             >

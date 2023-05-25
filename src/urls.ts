@@ -48,4 +48,8 @@ const urls = {
   settings: "/settings",
 };
 
+export const externalURLs = {
+  new_issue: "https://github.com/canonical/juju-dashboard/issues/new",
+};
+
 export default urls;
