@@ -1,3 +1,3 @@
-domain: jaas-dashboard.demos.haus
-image: prod-web-team-demos.docker-registry.canonical.com/jaas-dashboard.demos.haus
+domain: juju-dashboard.demos.haus
+image: prod-web-team-demos.docker-registry.canonical.com/juju-dashboard.demos.haus
 readinessPath: "/"
