@@ -21,7 +21,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: yarn install
       - run: yarn test --coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -42,7 +42,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: yarn install
       - run: yarn prettier --check 'src/**/*'
   eslint:
     name: Lint JavaScript/TypeScript
@@ -58,7 +58,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: yarn install
       - run: yarn eslint-check
   stylelint:
     name: Lint SCSS
@@ -74,7 +74,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: yarn install
       - run: yarn stylelint-check
   types:
     name: Check types
@@ -90,7 +90,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: yarn install
       - run: yarn typescript-build
   build:
     name: Build
@@ -106,7 +106,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: yarn install
       - run: CI=false yarn build
   dotrun:
     runs-on: ubuntu-latest
