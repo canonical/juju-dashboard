@@ -5,4 +5,8 @@ rm -rf \
   build/ \
   .docker-project \
   .yarn.canonical-webteam-juju-dashboard* \
-  yarn-error.log
+  yarn-error.log \
+  .yarn/cache \
+  .yarn/install-state.gz \
+  juju-dashboard-*.tar.bz2 \
+  coverage \
