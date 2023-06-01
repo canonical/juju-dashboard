@@ -153,7 +153,7 @@ and [hooks](https://react.dev/reference/react) over class based components.
 It is recommended to have one component per file, and one component per
 directory. A typical component directory will have the structure:
 
-- `__component.scss` (any SCSS specific to this component)
+- `_component.scss` (any SCSS specific to this component)
 - `Component.tsx` (the component itself)
 - `Component.test.tsx` (tests specific to this component)
 - `index.tsx` (export the component from this file)
