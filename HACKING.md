@@ -11,6 +11,7 @@ contribute and what kinds of contributions are welcome.
 
 ## In this document:
 
+- [In this document:](#in-this-document)
 - [Setting up the dashboard for development](#setting-up-the-dashboard-for-development)
   - [Controller configuration](#controller-configuration)
   - [Dotrun vs Yarn](#dotrun-vs-yarn)
