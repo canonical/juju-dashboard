@@ -6,9 +6,9 @@ FROM node:20 AS yarn-dependencies
 
 WORKDIR /srv
 
-ADD package.json yarn.lock ./
-RUN --mount=type=cache,target=/usr/local/share/.cache/yarn yarn install
-
+COPY .yar[n] ./.yarn
+COPY package.json yarn.lock .yarnrc.yml ./
+RUN yarn install
 
 # Build stage: Run "yarn run build-js"
 # ===

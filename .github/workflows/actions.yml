@@ -15,19 +15,13 @@ jobs:
         node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Restore node_modules
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "yarn"
       - name: Install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: CYPRESS_INSTALL_BINARY=0 yarn install
+        run: yarn install
       - run: yarn test --coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -42,19 +36,13 @@ jobs:
         node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Restore node_modules
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "yarn"
       - name: Install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: CYPRESS_INSTALL_BINARY=0 yarn install
+        run: yarn install
       - run: yarn prettier --check 'src/**/*'
   eslint:
     name: Lint JavaScript/TypeScript
@@ -64,19 +52,13 @@ jobs:
         node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Restore node_modules
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "yarn"
       - name: Install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: CYPRESS_INSTALL_BINARY=0 yarn install
+        run: yarn install
       - run: yarn eslint-check
   stylelint:
     name: Lint SCSS
@@ -86,19 +68,13 @@ jobs:
         node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Restore node_modules
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "yarn"
       - name: Install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: CYPRESS_INSTALL_BINARY=0 yarn install
+        run: yarn install
       - run: yarn stylelint-check
   types:
     name: Check types
@@ -108,19 +84,13 @@ jobs:
         node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Restore node_modules
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "yarn"
       - name: Install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: CYPRESS_INSTALL_BINARY=0 yarn install
+        run: yarn install
       - run: yarn typescript-build
   build:
     name: Build
@@ -130,19 +100,13 @@ jobs:
         node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Restore node_modules
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "yarn"
       - name: Install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: CYPRESS_INSTALL_BINARY=0 yarn install
+        run: yarn install
       - run: CI=false yarn build
   dotrun:
     runs-on: ubuntu-latest
