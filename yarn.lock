@@ -3518,12 +3518,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.5":
-  version: 18.2.5
-  resolution: "@types/react-dom@npm:18.2.5"
+"@types/react-dom@npm:18.2.0":
+  version: 18.2.0
+  resolution: "@types/react-dom@npm:18.2.0"
   dependencies:
     "@types/react": "*"
-  checksum: c48209f8c60cb9054f3deee5365bc9fd6dadd8f901b67f1612a334057b2671518fc5145f14aca63ff276a926ccb5358308a6cf58ec700178f382bb3ebde96d91
+  checksum: 9212b3793707a763f10e2c608f6ccb5f729029da6cb84204f333634d3d7baafbc1b20b7faf7cf788a8fd385050a1fb579902031f9462473ef10607116f33f33c
   languageName: node
   linkType: hard
 
@@ -3564,17 +3564,6 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: db3d92b423150222a666329f7aa3023e3e942044700557b8a7d161530847e621aec9f56c9e7f71761b06dd164c8a7b17ad52355863efe80963dffa5537e8e5fd
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:18.2.12":
-  version: 18.2.12
-  resolution: "@types/react@npm:18.2.12"
-  dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: ad85a7eadaf1b35cfeee9f715b39311420ff46d46e0650377d918b3f888c2e47416037da4a765e1dccd3d1916abd54c105a3bee803c971ba56c955a7768ce976
   languageName: node
   linkType: hard
 
@@ -10081,8 +10070,8 @@ __metadata:
     "@types/jest": 29.5.2
     "@types/lodash.mergewith": 4.6.7
     "@types/node": 18.16.18
-    "@types/react": 18.2.12
-    "@types/react-dom": 18.2.5
+    "@types/react": 18.2.0
+    "@types/react-dom": 18.2.0
     "@types/redux-mock-store": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.59.11
     "@typescript-eslint/parser": 5.59.11
