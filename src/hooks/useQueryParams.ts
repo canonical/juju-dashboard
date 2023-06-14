@@ -27,7 +27,10 @@ export const useQueryParams = <
             // Clear a param if it has been provided with a null or undefined value.
             searchParams.delete(param);
           } else {
-            searchParams.set(param, value);
+            searchParams.set(
+              param,
+              Array.isArray(value) ? value.join(",") : value
+            );
           }
         });
       }
