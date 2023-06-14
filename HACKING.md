@@ -9,7 +9,7 @@ If you haven't already read the [contribution guide](/docs/CONTRIBUTING.md) then
 that is a good place to start as it will give you an overview of how to
 contribute and what kinds of contributions are welcome.
 
-## In this document:
+**In this document:**
 
 - [Setting up the dashboard for development](#setting-up-the-dashboard-for-development)
   - [Controller configuration](#controller-configuration)
