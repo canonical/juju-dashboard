@@ -4,14 +4,16 @@ import userEvent from "@testing-library/user-event";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
-import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
+import {
+  detailedStatusFactory,
+  modelStatusInfoFactory,
+} from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
   modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelDataStatusFactory,
   modelDataUnitFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
@@ -29,7 +31,7 @@ describe("StatusGroup", () => {
           abc123: modelDataFactory.build({
             applications: {
               easyrsa: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "blocked",
                 }),
               }),
@@ -46,7 +48,7 @@ describe("StatusGroup", () => {
           def456: modelDataFactory.build({
             applications: {
               cockroachdb: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "blocked",
                 }),
               }),
@@ -58,7 +60,7 @@ describe("StatusGroup", () => {
           ghi789: modelDataFactory.build({
             applications: {
               elasticsearch: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "unknown",
                 }),
               }),
@@ -70,7 +72,7 @@ describe("StatusGroup", () => {
           jkl101112: modelDataFactory.build({
             applications: {
               kibana: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "running",
                 }),
               }),
@@ -167,7 +169,7 @@ describe("StatusGroup", () => {
   it("displays links to blocked apps and units", async () => {
     state.juju.modelData.abc123.applications = {
       calico: modelDataApplicationFactory.build({
-        status: modelDataStatusFactory.build({
+        status: detailedStatusFactory.build({
           info: "app blocked",
           status: "blocked",
         }),
@@ -175,7 +177,7 @@ describe("StatusGroup", () => {
       etcd: modelDataApplicationFactory.build({
         units: {
           "etcd/0": modelDataUnitFactory.build({
-            "agent-status": modelDataStatusFactory.build({
+            "agent-status": detailedStatusFactory.build({
               info: "unit blocked",
               status: "lost",
             }),

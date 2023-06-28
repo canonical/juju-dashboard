@@ -1,5 +1,4 @@
 import type { Client } from "@canonical/jujulib";
-import type { TSFixMe } from "@canonical/react-components";
 import * as Sentry from "@sentry/browser";
 import type { Middleware } from "redux";
 
@@ -123,8 +122,7 @@ export const modelPollerMiddleware: Middleware<
           }
 
           do {
-            // TSFixMe: jujulib types user as `object`.
-            const identity = (conn?.info?.user as TSFixMe)?.identity;
+            const identity = conn?.info?.user?.identity;
             if (identity) {
               try {
                 const models = await conn.facades.modelManager?.listModels({

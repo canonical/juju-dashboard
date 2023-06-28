@@ -25,7 +25,7 @@ export const errorFactory = Factory.define<Error>(() => ({
 }));
 
 export const modelInfoFactory = Factory.define<ModelInfo>(() => ({
-  "agent-version": numberFactory.build(),
+  "agent-version": "1.2.3",
   "cloud-tag": "cloud-aws",
   "controller-uuid": "con123",
   "is-controller": false,
@@ -33,6 +33,7 @@ export const modelInfoFactory = Factory.define<ModelInfo>(() => ({
   machines: [],
   name: "test-model",
   "owner-tag": "user-eggman@external",
+  "secret-backends": [],
   sla: modelSLAInfoFactory.build(),
   type: "iaas",
   users: [],
@@ -63,6 +64,7 @@ export const machineHardwareFactory = Factory.define<MachineHardware>(() => ({
   cores: 1,
   "cpu-power": 138,
   tags: [],
+  "virt-type": "kvm",
   "availability-zone": "us-east1-b",
 }));
 

@@ -102,6 +102,9 @@ const Checkbox = ({
   app: ApplicationInfo;
 }) => {
   const selectedApplications = useSelector(getSelectedApplications());
+  if (!("name" in app)) {
+    return null;
+  }
   const fieldID = `select-app-${app.name}`;
   const handleSelect = () => {
     onSelect(app);

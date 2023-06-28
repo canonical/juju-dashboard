@@ -59,7 +59,7 @@ describe("model poller", () => {
       controllerConnections: {
         [wsControllerURL]: {
           user: {
-            identity: { this: "is" },
+            identity: "user-eggman",
           },
         },
       },
@@ -81,6 +81,9 @@ describe("model poller", () => {
       },
       info: {
         user: {
+          "controller-access": "admin",
+          "model-access": "admin",
+          "display-name": "Eggman",
           identity: "eggman",
         },
       },
@@ -317,9 +320,7 @@ describe("model poller", () => {
       general: generalStateFactory.build({
         controllerConnections: {
           [wsControllerURL]: {
-            user: {
-              identity: null,
-            },
+            user: {},
           },
         },
       }),

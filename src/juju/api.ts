@@ -11,6 +11,7 @@ import type {
   OperationQueryArgs,
 } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
+import type { AllWatcherNextResults } from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
 import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
 import Application from "@canonical/jujulib/dist/api/facades/application";
 import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
@@ -20,10 +21,6 @@ import Client from "@canonical/jujulib/dist/api/facades/client";
 import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
-import type {
-  ModelInfoResults as JujuModelInfoResults,
-  Number as ModelManagerNumber,
-} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import type { ValueOf } from "@canonical/react-components";
@@ -46,17 +43,16 @@ import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { Controller as JujuController } from "store/juju/types";
 import type { RootState, Store } from "store/store";
-import type { TSFixMe } from "types";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
 import type {
+  AllWatcherDelta,
   ApplicationInfo,
   ConnectionWithFacades,
   Facades,
   FullStatusAnnotations,
   FullStatusWithAnnotations,
-  ModelInfoResults,
 } from "./types";
 
 export const PING_TIME = 20000;
@@ -324,28 +320,6 @@ async function fetchModelInfo(conn: ConnectionWithFacades, modelUUID: string) {
   return modelInfo;
 }
 
-const versionToString = (agentVersion: ModelManagerNumber) =>
-  `${agentVersion.Major}.${agentVersion.Minor}.${agentVersion.Patch}`;
-
-const toModelInfo = (modelInfo: JujuModelInfoResults): ModelInfoResults => ({
-  results: modelInfo.results.map((result) => {
-    // The agent version type from jujulib is a Number object but the API returns
-    // string. This makes sure that all agent versions are strings.
-    const agentVersion: string | ModelManagerNumber =
-      result.result["agent-version"];
-    const versionString: string =
-      agentVersion && typeof agentVersion === "object"
-        ? versionToString(agentVersion)
-        : agentVersion;
-    return {
-      ...result,
-      result: {
-        ...result.result,
-        "agent-version": versionString,
-      },
-    };
-  }),
-});
 /**
   Loops through each model UUID to fetch the status. Upon receiving the status
   dispatches to store that status data.
@@ -376,7 +350,7 @@ export async function fetchAllModelStatuses(
         if (modelInfo) {
           dispatch(
             jujuActions.updateModelInfo({
-              modelInfo: toModelInfo(modelInfo),
+              modelInfo,
               wsControllerURL,
             })
           );
@@ -651,6 +625,18 @@ export async function queryActionsList(
   return actionsListResult;
 }
 
+// A typeguard to narrow the type of the deltas to what we expect. This is
+// needed because currently jujulib doesn't define types for the delta objects.
+const isDeltas = (
+  deltas: AllWatcherNextResults["deltas"]
+): deltas is AllWatcherDelta[] =>
+  deltas.length > 0 &&
+  Array.isArray(deltas[0]) &&
+  deltas[0].length === 3 &&
+  typeof deltas[0][0] === "string" &&
+  typeof deltas[0][1] === "string" &&
+  typeof deltas[0][2] === "object";
+
 export async function startModelWatcher(
   modelUUID: string,
   appState: RootState,
@@ -662,15 +648,14 @@ export async function startModelWatcher(
   }
   const watcherHandle = await conn?.facades.client?.watchAll(null);
   const pingerIntervalId = startPingerLoop(conn);
-  const data = await conn?.facades.allWatcher?.next(
-    // TSFixMe: The watcher-id type for next() is a number but client.watchAll() returns
-    // the id as a string and passing a number here doesn't work.
-    watcherHandle?.["watcher-id"] as TSFixMe
-  );
-  if (data?.deltas)
-    // TSFixMe: the Delta type returned by the all watcher does not match the data
-    // that's actually returned (typed in this project as: AllWatcherDelta).
-    dispatch(jujuActions.processAllWatcherDeltas(data?.deltas as TSFixMe));
+  const id = watcherHandle?.["watcher-id"];
+  if (!id) {
+    return;
+  }
+  const data = await conn?.facades.allWatcher?.next({ id });
+  if (data?.deltas && isDeltas(data?.deltas)) {
+    dispatch(jujuActions.processAllWatcherDeltas(data.deltas));
+  }
   return { conn, watcherHandle, pingerIntervalId };
 }
 
@@ -679,10 +664,8 @@ export async function stopModelWatcher(
   watcherHandleId: string,
   pingerIntervalId: number
 ) {
-  // TSFixMe: The watcher-id type for next() is a number but client.watchAll() returns
-  // the id as a string and passing a number here doesn't work.
   // TODO: use allWatcher.stop(...)
-  await conn.facades.allWatcher?.stop(watcherHandleId as TSFixMe);
+  await conn.facades.allWatcher?.stop({ id: watcherHandleId });
   stopPingerLoop(pingerIntervalId);
   conn.transport.close();
 }
@@ -737,9 +720,7 @@ export async function setModelSharingPermissions(
     modelInfo &&
       dispatch(
         jujuActions.updateModelInfo({
-          // TSFixMe: The agent-version type returned by the API is a string, but the
-          // jujulib type is a number.
-          modelInfo: modelInfo as TSFixMe,
+          modelInfo,
           wsControllerURL: controllerURL,
         })
       );
@@ -771,7 +752,9 @@ export async function getCharmsFromApplications(
   dispatch: Dispatch
 ) {
   const uniqueCharmURLs = new Set<string>();
-  applications.forEach((app) => uniqueCharmURLs.add(app["charm-url"]));
+  applications.forEach(
+    (app) => "charm-url" in app && uniqueCharmURLs.add(app["charm-url"])
+  );
   const charms = await Promise.all(
     [...uniqueCharmURLs].map((charmURL) =>
       getCharmInfo(charmURL, modelUUID, appState)

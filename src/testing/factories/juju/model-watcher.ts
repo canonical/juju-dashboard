@@ -1,3 +1,4 @@
+import type { ModelSLAInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { Factory } from "fishery";
 
 import type {
@@ -13,7 +14,6 @@ import type {
   MachineChangeDelta,
   ModelAgentStatus,
   ModelData as ModelWatcherModelData,
-  ModelDeltaSLA,
   ModelInfo as ModelWatcherModelInfo,
   RelationChangeDelta,
   UnitAgentStatus,
@@ -34,7 +34,7 @@ export const modelAgentStatusFactory = Factory.define<ModelAgentStatus>(() => ({
   version: "",
 }));
 
-export const modelSLAFactory = Factory.define<ModelDeltaSLA>(() => ({
+export const modelSLAFactory = Factory.define<ModelSLAInfo>(() => ({
   level: "unsupported",
   owner: "",
 }));

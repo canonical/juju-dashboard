@@ -1,7 +1,54 @@
-import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
+import type {
+  Charm,
+  CharmActions,
+  CharmActionSpec,
+  CharmOption,
+  CharmRelation,
+  CharmResourceMeta,
+  CharmStorage,
+} from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import { Factory } from "fishery";
 
 import type { ApplicationInfo } from "juju/types";
+
+export const charmOptionFactory = Factory.define<CharmOption>(() => ({
+  description: "The name of the bucket in Ceph to add these devices into",
+  type: "string",
+}));
+
+export const charmRelationFactory = Factory.define<CharmRelation>(() => ({
+  name: "db",
+  role: "provider",
+  interface: "pgsql",
+  optional: false,
+  limit: 0,
+  scope: "global",
+}));
+
+export const charmStorageFactory = Factory.define<CharmStorage>(() => ({
+  name: "logs",
+  description: "",
+  type: "filesystem",
+  shared: false,
+  "read-only": false,
+  "count-min": 1,
+  "count-max": 1,
+  "minimum-size": 0,
+  location: "/var/log/postgresql",
+}));
+
+export const charmResourceMetaFactory = Factory.define<CharmResourceMeta>(
+  () => ({
+    name: "postgresql-image",
+    type: "oci-image",
+    path: "",
+    description: "docker image for PostgreSQL",
+  })
+);
+
+export const charmActionsFactory = Factory.define<CharmActions>(() => ({
+  specs: {},
+}));
 
 export const charmInfoFactory = Factory.define<Charm>(() => ({
   revision: 20,
@@ -14,37 +61,28 @@ export const charmInfoFactory = Factory.define<Charm>(() => ({
     description: "PostgreSQL charm for Kubernetes deployments.\n",
     subordinate: false,
     provides: {
-      db: {
+      db: charmRelationFactory.build({
         name: "db",
         role: "provider",
         interface: "pgsql",
-        optional: false,
-        limit: 0,
-        scope: "global",
-      },
-      "db-admin": {
+      }),
+      "db-admin": charmRelationFactory.build({
         name: "db-admin",
         role: "provider",
         interface: "pgsql",
-        optional: false,
-        limit: 0,
-        scope: "global",
-      },
+      }),
     },
     peers: {
-      peer: {
+      peer: charmRelationFactory.build({
         name: "peer",
         role: "peer",
         interface: "peer",
-        optional: false,
-        limit: 0,
-        scope: "global",
-      },
+      }),
     },
     tags: ["databases", "k8s"],
     series: ["kubernetes"],
     storage: {
-      logs: {
+      logs: charmStorageFactory.build({
         name: "logs",
         description: "",
         type: "filesystem",
@@ -54,8 +92,8 @@ export const charmInfoFactory = Factory.define<Charm>(() => ({
         "count-max": 1,
         "minimum-size": 0,
         location: "/var/log/postgresql",
-      },
-      pgdata: {
+      }),
+      pgdata: charmStorageFactory.build({
         name: "pgdata",
         description: "",
         type: "filesystem",
@@ -65,19 +103,19 @@ export const charmInfoFactory = Factory.define<Charm>(() => ({
         "count-max": 1,
         "minimum-size": 0,
         location: "/srv",
-      },
+      }),
     },
     resources: {
-      "postgresql-image": {
+      "postgresql-image": charmResourceMetaFactory.build({
         name: "postgresql-image",
         type: "oci-image",
         path: "",
         description: "docker image for PostgreSQL",
-      },
+      }),
     },
     "min-juju-version": "2.9.0",
   },
-  actions: { specs: {} },
+  actions: charmActionsFactory.build(),
   manifest: {
     bases: [
       {
@@ -109,4 +147,9 @@ export const charmApplicationFactory = Factory.define<ApplicationInfo>(() => ({
     version: "",
   },
   "workload-version": "",
+}));
+
+export const charmActionSpecFactory = Factory.define<CharmActionSpec>(() => ({
+  description: "Add disk(s) to Ceph",
+  params: {},
 }));

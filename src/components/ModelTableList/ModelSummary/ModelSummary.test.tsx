@@ -4,8 +4,8 @@ import {
   modelDataApplicationFactory,
   modelDataFactory,
   modelDataUnitFactory,
+  modelDataMachineFactory,
 } from "testing/factories/juju/juju";
-import { machineChangeDeltaFactory } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
 import ModelSummary, { Label } from "./ModelSummary";
@@ -23,8 +23,8 @@ describe("ModelSummary", () => {
         }),
       },
       machines: {
-        "0": machineChangeDeltaFactory.build(),
-        "1": machineChangeDeltaFactory.build(),
+        "0": modelDataMachineFactory.build(),
+        "1": modelDataMachineFactory.build(),
       },
     });
     renderComponent(

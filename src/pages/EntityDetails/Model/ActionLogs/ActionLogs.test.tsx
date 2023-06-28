@@ -16,12 +16,12 @@ import {
   operationResultFactory,
   operationResultsFactory,
 } from "testing/factories/juju/ActionV7";
+import { detailedStatusFactory } from "testing/factories/juju/ClientV6";
 import {
   jujuStateFactory,
   modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelDataStatusFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -124,7 +124,7 @@ describe("Action Logs", () => {
           abc123: modelDataFactory.build({
             applications: {
               easyrsa: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "running",
                 }),
               }),

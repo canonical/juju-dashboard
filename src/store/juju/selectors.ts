@@ -86,10 +86,13 @@ export const getActiveUsers = createSelector(
   (models, state) => {
     const activeUsers: Record<string, string> = {};
     Object.entries(models).forEach(([modelUUID, model]) => {
-      activeUsers[modelUUID] = getActiveUserTag(
-        state,
-        model.wsControllerURL
-      )?.replace("user-", "");
+      const user = getActiveUserTag(state, model.wsControllerURL)?.replace(
+        "user-",
+        ""
+      );
+      if (user) {
+        activeUsers[modelUUID] = user;
+      }
     });
     return activeUsers;
   }
@@ -714,7 +717,8 @@ export function getCharms() {
   return createSelector([slice], (sliceState) => {
     return sliceState.charms.filter((charm) => {
       return sliceState.selectedApplications.some(
-        (application) => application["charm-url"] === charm.url
+        (application) =>
+          "charm-url" in application && application["charm-url"] === charm.url
       );
     });
   });
@@ -730,7 +734,8 @@ export function getSelectedApplications(charmURL?: string) {
       return sliceState.selectedApplications;
     }
     return sliceState.selectedApplications.filter(
-      (application) => application["charm-url"] === charmURL
+      (application) =>
+        "charm-url" in application && application["charm-url"] === charmURL
     );
   });
 }

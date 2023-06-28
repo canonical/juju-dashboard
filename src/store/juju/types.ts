@@ -1,8 +1,11 @@
-import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
-import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import type { ModelInfo as JujuModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
+import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
-import type { ApplicationInfo, ModelWatcherData } from "juju/types";
+import type {
+  ApplicationInfo,
+  FullStatusWithAnnotations,
+  ModelWatcherData,
+} from "juju/types";
 
 export type ControllerLocation = {
   cloud?: string;
@@ -25,19 +28,14 @@ export type AdditionalController = {
 
 export type Controllers = Record<string, (Controller | AdditionalController)[]>;
 
-export type ModelInfo =
-  | Omit<JujuModelInfo, "agent-version"> & {
-      "agent-version": string;
-    };
-
-export type ModelData = {
-  applications: FullStatus["applications"];
+// There is some model data that we don't want to store from the full status because it changes
+// too often causing needless re-renders and is currently irrelevant
+// like controllerTimestamp.
+export type ModelData = Omit<
+  FullStatusWithAnnotations,
+  "branches" | "controller-timestamp"
+> & {
   info?: ModelInfo;
-  machines: FullStatus["machines"];
-  model: FullStatus["model"];
-  offers: FullStatus["offers"];
-  relations: FullStatus["relations"] | null;
-  "remote-applications": FullStatus["remote-applications"];
   uuid: string;
 };
 

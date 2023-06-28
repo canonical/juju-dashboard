@@ -3,6 +3,7 @@ import type {
   ActionMessage,
   ActionResult,
   ActionResults,
+  ActionSpec,
   AdditionalProperties,
   ApplicationCharmActionsResult,
   ApplicationsCharmActionsResults,
@@ -69,11 +70,10 @@ export const applicationCharmActionParamsFactory =
     type: "object",
   }));
 
-export const applicationCharmActionFactory =
-  Factory.define<AdditionalProperties>(() => ({
-    description: "Add disk(s) to Ceph",
-    params: {},
-  }));
+export const actionSpecFactory = Factory.define<ActionSpec>(() => ({
+  description: "Add disk(s) to Ceph",
+  params: {},
+}));
 
 export const applicationCharmActionsResultFactory =
   Factory.define<ApplicationCharmActionsResult>(() => ({

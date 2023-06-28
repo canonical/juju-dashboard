@@ -2,12 +2,12 @@ import * as versionsAPI from "@canonical/jujulib/dist/api/versions";
 import { screen, waitFor } from "@testing-library/react";
 
 import { configFactory, generalStateFactory } from "testing/factories/general";
+import { detailedStatusFactory } from "testing/factories/juju/ClientV6";
 import {
   controllerFactory,
   jujuStateFactory,
   modelDataApplicationFactory,
   modelDataFactory,
-  modelDataStatusFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -33,7 +33,7 @@ describe("Primary Nav", () => {
           abc123: modelDataFactory.build({
             applications: {
               easyrsa: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "blocked",
                 }),
               }),
@@ -42,7 +42,7 @@ describe("Primary Nav", () => {
           def456: modelDataFactory.build({
             applications: {
               cockroachdb: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "blocked",
                 }),
               }),

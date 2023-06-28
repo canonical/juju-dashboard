@@ -1,11 +1,8 @@
-import type { TSFixMe } from "@canonical/react-components";
 import { render } from "@testing-library/react";
 
 import * as OptionsInputModule from "components/RadioInputBox/OptionInputs";
-import {
-  applicationCharmActionFactory,
-  applicationCharmActionParamsFactory,
-} from "testing/factories/juju/ActionV7";
+import { applicationCharmActionParamsFactory } from "testing/factories/juju/ActionV7";
+import { charmActionSpecFactory } from "testing/factories/juju/Charms";
 
 import ActionOptions from "./ActionOptions";
 import type { ActionData } from "./ActionsPanel";
@@ -18,10 +15,8 @@ describe("ActionOptions", () => {
   it("generates a list of options from the provided data", () => {
     const OptionsInputSpy = jest.spyOn(OptionsInputModule, "default");
     const onValuesChange = jest.fn();
-    // TSFixMe: The jujulib types for the actions are `AdditionalProperties`
-    // while the component is more strongly typed.
-    const actionData: TSFixMe = {
-      "add-disk": applicationCharmActionFactory.build({
+    const actionData = {
+      "add-disk": charmActionSpecFactory.build({
         params: applicationCharmActionParamsFactory.build({
           properties: {
             bucket: {
@@ -39,7 +34,7 @@ describe("ActionOptions", () => {
           type: "object",
         }),
       }),
-      pause: applicationCharmActionFactory.build({
+      pause: charmActionSpecFactory.build({
         params: applicationCharmActionParamsFactory.build({
           title: "pause",
           type: "object",

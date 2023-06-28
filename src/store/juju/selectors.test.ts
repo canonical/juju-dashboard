@@ -4,7 +4,10 @@ import {
   charmApplicationFactory,
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
-import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
+import {
+  detailedStatusFactory,
+  modelStatusInfoFactory,
+} from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   controllerFactory,
@@ -12,7 +15,6 @@ import {
   modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelDataStatusFactory,
   modelListInfoFactory,
   modelDataMachineFactory,
   modelDataUnitFactory,
@@ -220,7 +222,7 @@ describe("selectors", () => {
       abc123: modelDataFactory.build({
         applications: {
           easyrsa: modelDataApplicationFactory.build({
-            status: modelDataStatusFactory.build({
+            status: detailedStatusFactory.build({
               status: "pending",
             }),
           }),
@@ -229,7 +231,7 @@ describe("selectors", () => {
       def456: modelDataFactory.build({
         applications: {
           easyrsa: modelDataApplicationFactory.build({
-            status: modelDataStatusFactory.build({
+            status: detailedStatusFactory.build({
               status: "blocked",
             }),
           }),
@@ -238,7 +240,7 @@ describe("selectors", () => {
       ghi789: modelDataFactory.build({
         applications: {
           easyrsa: modelDataApplicationFactory.build({
-            status: modelDataStatusFactory.build({
+            status: detailedStatusFactory.build({
               status: "unknown",
             }),
           }),
@@ -399,7 +401,7 @@ describe("selectors", () => {
           easyrsa: modelDataApplicationFactory.build({
             units: {
               "easyrsa/0": modelDataUnitFactory.build({
-                "agent-status": modelDataStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
                   status: "running",
                 }),
                 charm: "ch:easyrsa",
@@ -413,13 +415,13 @@ describe("selectors", () => {
           etcd: modelDataApplicationFactory.build({
             units: {
               "etcd/0": modelDataUnitFactory.build({
-                "agent-status": modelDataStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
                   status: "allocating",
                 }),
                 charm: "ch:etcd",
               }),
               "etcd/1": modelDataUnitFactory.build({
-                "agent-status": modelDataStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
                   status: "lost",
                 }),
                 charm: "ch:etcd",
@@ -429,7 +431,7 @@ describe("selectors", () => {
           ceph: modelDataApplicationFactory.build({
             units: {
               "ceph/0": modelDataUnitFactory.build({
-                "agent-status": modelDataStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
                   status: "lost",
                 }),
                 charm: "ch:ceph",
@@ -459,7 +461,7 @@ describe("selectors", () => {
       abc123: modelDataFactory.build({
         applications: {
           easyrsa: modelDataApplicationFactory.build({
-            status: modelDataStatusFactory.build({
+            status: detailedStatusFactory.build({
               status: "pending",
             }),
           }),
@@ -468,7 +470,7 @@ describe("selectors", () => {
       def456: modelDataFactory.build({
         applications: {
           easyrsa: modelDataApplicationFactory.build({
-            status: modelDataStatusFactory.build({
+            status: detailedStatusFactory.build({
               status: "blocked",
             }),
           }),
@@ -477,7 +479,7 @@ describe("selectors", () => {
       ghi789: modelDataFactory.build({
         applications: {
           easyrsa: modelDataApplicationFactory.build({
-            status: modelDataStatusFactory.build({
+            status: detailedStatusFactory.build({
               status: "unknown",
             }),
           }),
@@ -501,7 +503,7 @@ describe("selectors", () => {
       abc123: modelDataFactory.build({
         applications: {
           easyrsa: modelDataApplicationFactory.build({
-            status: modelDataStatusFactory.build({
+            status: detailedStatusFactory.build({
               status: "pending",
             }),
           }),
@@ -510,7 +512,7 @@ describe("selectors", () => {
       def456: modelDataFactory.build({
         applications: {
           easyrsa: modelDataApplicationFactory.build({
-            status: modelDataStatusFactory.build({
+            status: detailedStatusFactory.build({
               status: "unknown",
             }),
           }),
@@ -519,7 +521,7 @@ describe("selectors", () => {
       ghi789: modelDataFactory.build({
         applications: {
           easyrsa: modelDataApplicationFactory.build({
-            status: modelDataStatusFactory.build({
+            status: detailedStatusFactory.build({
               status: "unknown",
             }),
           }),

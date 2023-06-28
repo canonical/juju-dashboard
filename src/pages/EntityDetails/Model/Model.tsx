@@ -142,21 +142,22 @@ const Model = () => {
         <div className="entity-details__sidebar">
           <InfoPanel />
           <div className="entity-details__actions">
-            {canAdministerModelAccess(
-              activeUser,
-              modelStatusData?.info?.users
-            ) && (
-              <button
-                className="entity-details__action-button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setQuery({ panel: "share-model" }, { replace: true });
-                }}
-              >
-                <i className="p-icon--share"></i>
-                {Label.ACCESS_BUTTON}
-              </button>
-            )}
+            {activeUser &&
+              canAdministerModelAccess(
+                activeUser,
+                modelStatusData?.info?.users
+              ) && (
+                <button
+                  className="entity-details__action-button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setQuery({ panel: "share-model" }, { replace: true });
+                  }}
+                >
+                  <i className="p-icon--share"></i>
+                  {Label.ACCESS_BUTTON}
+                </button>
+              )}
           </div>
           {modelInfoData && (
             <EntityInfo

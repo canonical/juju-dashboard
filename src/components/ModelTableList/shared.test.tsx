@@ -1,10 +1,12 @@
-import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
+import {
+  detailedStatusFactory,
+  modelStatusInfoFactory,
+} from "testing/factories/juju/ClientV6";
 import {
   controllerFactory,
   modelDataFactory,
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
-import { modelDataStatusFactory } from "testing/factories/juju/juju";
 
 import {
   JAAS_CONTROLLER_UUID,
@@ -109,8 +111,8 @@ describe("shared", () => {
   it("getLastUpdated", () => {
     const modelData = modelDataFactory.build({
       info: modelDataInfoFactory.build({
-        status: modelDataStatusFactory.build({
-          sine: "2019-11-12T23:49:17.148Z",
+        status: detailedStatusFactory.build({
+          since: "2019-11-12T23:49:17.148Z",
         }),
       }),
     });

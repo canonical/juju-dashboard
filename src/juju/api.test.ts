@@ -32,7 +32,6 @@ import {
   applicationInfoFactory,
   machineChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
-import type { TSFixMe } from "types";
 
 import type { Config } from "./api";
 import {
@@ -558,35 +557,13 @@ describe("Juju API", () => {
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateModelInfo({
-          modelInfo: {
-            ...abc123,
-            results: [
-              {
-                ...abc123.results[0],
-                result: {
-                  ...abc123.results[0].result,
-                  "agent-version": "2.3.4",
-                },
-              },
-            ],
-          },
+          modelInfo: abc123,
           wsControllerURL: "wss://example.com/api",
         })
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateModelInfo({
-          modelInfo: {
-            ...def456,
-            results: [
-              {
-                ...def456.results[0],
-                result: {
-                  ...def456.results[0].result,
-                  "agent-version": "2.3.4",
-                },
-              },
-            ],
-          },
+          modelInfo: def456,
           wsControllerURL: "wss://example.com/api",
         })
       );
@@ -1151,7 +1128,7 @@ describe("Juju API", () => {
       expect(conn.facades.client.watchAll).toHaveBeenCalled();
       jest.advanceTimersByTime(PING_TIME);
       expect(conn.facades.pinger.ping).toHaveBeenCalled();
-      expect(conn.facades.allWatcher.next).toHaveBeenCalledWith(12345);
+      expect(conn.facades.allWatcher.next).toHaveBeenCalledWith({ id: 12345 });
       expect(response).toMatchObject({
         conn,
         watcherHandle,
@@ -1216,7 +1193,7 @@ describe("Juju API", () => {
         },
       } as unknown as Connection;
       await stopModelWatcher(conn, "123", 456);
-      expect(conn.facades.allWatcher.stop).toHaveBeenCalledWith("123");
+      expect(conn.facades.allWatcher.stop).toHaveBeenCalledWith({ id: "123" });
       expect(conn.transport.close).toHaveBeenCalled();
       jest.advanceTimersByTime(PING_TIME);
       await waitFor(() => {
@@ -1369,9 +1346,7 @@ describe("Juju API", () => {
             }),
           }),
         ],
-        // TSFixMe: The agent-version type returned by the API is a string, but the
-        // jujulib type is a number.
-      }) as TSFixMe;
+      });
       const conn = {
         facades: {
           modelManager: {

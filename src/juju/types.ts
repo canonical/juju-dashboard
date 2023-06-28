@@ -4,17 +4,16 @@ import type AllWatcherV3 from "@canonical/jujulib/dist/api/facades/all-watcher/A
 import type { AdditionalProperties as AnnotationsAdditionalProperties } from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
 import type AnnotationsV2 from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
 import type ApplicationV15 from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
-import type CharmsV5 from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
+import type CharmsV6 from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type ClientV6 from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type CloudV7 from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type ControllerV9 from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
-import type { Error as JujuError } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type ModelManagerV9 from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { ModelSLAInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type PingerV1 from "@canonical/jujulib/dist/api/facades/pinger/PingerV1";
 
 import type JIMMV2 from "juju/jimm-facade";
-import type { ModelInfo as StoreModelInfo } from "store/juju/types";
 // See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
@@ -115,14 +114,14 @@ export type DeltaMessageData =
   | RelationChangeDelta;
 
 export interface ModelData {
-  [ReduxDeltaEntityTypes.ACTIONS]: ActionData;
-  [ReduxDeltaEntityTypes.ANNOTATIONS]: AnnotationData;
-  [ReduxDeltaEntityTypes.APPLICATIONS]: ApplicationData;
-  [ReduxDeltaEntityTypes.CHARMS]: ModelCharmData;
-  [ReduxDeltaEntityTypes.MACHINES]: MachineData;
-  [ReduxDeltaEntityTypes.MODEL]: ModelInfo;
-  [ReduxDeltaEntityTypes.RELATIONS]: RelationData;
-  [ReduxDeltaEntityTypes.UNITS]: UnitData;
+  actions: ActionData;
+  annotations: AnnotationData;
+  applications: ApplicationData;
+  charms: ModelCharmData;
+  machines: MachineData;
+  model: ModelInfo;
+  relations: RelationData;
+  units: UnitData;
 }
 
 export interface ModelInfo extends ModelChangeDelta {
@@ -136,9 +135,17 @@ export interface AnnotationInfo {
   [annotationName: string]: string;
 }
 
-export interface ApplicationInfo extends ApplicationChangeDelta {
+interface AnnotatedApplicationInfo extends ApplicationChangeDelta {
   "unit-count"?: number;
 }
+
+export type ApplicationInfo =
+  | AnnotatedApplicationInfo
+  // It's possible the unit count is returned before the application info in
+  // which case only the unit count will exist in the store.
+  | {
+      "unit-count": number;
+    };
 
 // Shared Types
 
@@ -253,11 +260,6 @@ export interface HardwareCharacteristics {
   "availability-zone": string;
 }
 
-export interface ModelDeltaSLA {
-  level: string;
-  owner: string;
-}
-
 export interface ModelChangeDelta {
   "model-uuid": string;
   name: string;
@@ -268,7 +270,7 @@ export interface ModelChangeDelta {
   config: Config;
   status: ModelAgentStatus;
   constraints: { [key: string]: unknown };
-  sla: ModelDeltaSLA;
+  sla: ModelSLAInfo;
 }
 
 export interface ModelAgentStatus extends Status {
@@ -347,14 +349,6 @@ export interface WorkloadStatus extends Status {
     | "waiting";
 }
 
-export interface ModelInfoResult {
-  error: JujuError;
-  result: StoreModelInfo;
-}
-export interface ModelInfoResults {
-  results: ModelInfoResult[];
-}
-
 export type FullStatusAnnotations = Record<
   string,
   AnnotationsAdditionalProperties
@@ -369,7 +363,7 @@ export type Facades = {
   allWatcher?: AllWatcherV3;
   annotations?: AnnotationsV2;
   application?: ApplicationV15;
-  charms?: CharmsV5;
+  charms?: CharmsV6;
   client?: ClientV6;
   cloud?: CloudV7;
   controller?: ControllerV9;

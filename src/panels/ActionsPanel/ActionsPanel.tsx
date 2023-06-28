@@ -1,3 +1,4 @@
+import type { ActionSpec } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import { Button } from "@canonical/react-components";
 import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -25,14 +26,7 @@ export enum TestId {
   PANEL = "actions-panel",
 }
 
-export type ActionData = {
-  [key: string]: ActionItem;
-};
-
-type ActionItem = {
-  description: string;
-  params: ActionParams;
-};
+export type ActionData = Record<string, ActionSpec>;
 
 type ActionParams = {
   description: string;
@@ -326,7 +320,8 @@ const requiredPopulated: RequiredPopulated = (
   actionData,
   optionsValues
 ) => {
-  const required = actionData[selected].params.required;
+  const required: ActionParams["required"] =
+    actionData[selected].params.required;
   if (!required) {
     return true;
   }

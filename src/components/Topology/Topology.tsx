@@ -28,7 +28,8 @@ type Application = ApplicationInfo & {
   @param app The application status object.
   @returns If the application is a subordinate.
 */
-const isSubordinate = (app: Application) => app.subordinate;
+const isSubordinate = (app: Application) =>
+  "subordinate" in app && app.subordinate;
 
 /**
   Computes the maximum delta from 0 for both the x and y axis. This is necessary
@@ -314,7 +315,9 @@ const Topology = memo(
 
       appIcon
         .append("image")
-        .attr("xlink:href", (d) => generateIconPath(d["charm-url"]))
+        .attr("xlink:href", (d) =>
+          "charm-url" in d ? generateIconPath(d["charm-url"]) : null
+        )
         // use a fallback image if the icon is not found
         .on("error", function () {
           d3.select(this).attr("xlink:href", () => defaultCharmIcon);

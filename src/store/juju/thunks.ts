@@ -28,6 +28,10 @@ export const addControllerCloudRegion = createAsyncThunk<
     const controllers = cloneDeep(
       thunkAPI.getState()?.juju?.controllers?.[wsControllerURL]
     );
+    if (!modelInfo.results?.length) {
+      // No model info results returned.
+      return;
+    }
     const model = modelInfo.results[0].result;
     if (controllers) {
       const updatedControllers = controllers.map((controller) => {

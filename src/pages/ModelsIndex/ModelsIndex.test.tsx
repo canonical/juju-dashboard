@@ -2,13 +2,15 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
-import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
+import {
+  detailedStatusFactory,
+  modelStatusInfoFactory,
+} from "testing/factories/juju/ClientV6";
 import {
   jujuStateFactory,
   modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelDataStatusFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
@@ -38,7 +40,7 @@ describe("Models Index page", () => {
             }),
             applications: {
               easyrsa: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "blocked",
                 }),
               }),
@@ -53,7 +55,7 @@ describe("Models Index page", () => {
             }),
             applications: {
               cockroachdb: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "running",
                 }),
               }),
@@ -68,7 +70,7 @@ describe("Models Index page", () => {
             }),
             applications: {
               elasticsearch: modelDataApplicationFactory.build({
-                status: modelDataStatusFactory.build({
+                status: detailedStatusFactory.build({
                   status: "unknown",
                 }),
               }),
