@@ -132,7 +132,7 @@ Next, update the dashboard with the next version, following the
 [SemVer](https://semver.org/) rules.
 
 ```
-yarn version --new-version 1.2.3
+yarn version [major|minor|patch]
 ```
 
 Create a PR and land the version update.
