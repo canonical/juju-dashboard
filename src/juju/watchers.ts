@@ -49,23 +49,24 @@ export function generateModelWatcherBase(): ModelData {
   };
 }
 
-function _processDelta(
+function _processDelta<M extends ModelData, E extends keyof M>(
   actionType: string,
   delta: DeltaMessageData,
-  modelData: ModelData,
-  entityType: ReduxDeltaEntityTypes,
-  key: string
+  modelData: M,
+  entityType: E,
+  entityId: string
 ): void {
   if (actionType === DeltaChangeTypes.CHANGE) {
+    // The 'change' delta is used for adding and modifying entities so no need
+    // to check if the entity already exists in the store.
     const formatted = {
-      [key]: delta,
+      [entityId]: delta,
     };
     mergeWith(modelData[entityType], formatted);
-  } else if (
-    actionType === DeltaChangeTypes.REMOVE &&
-    entityType !== ReduxDeltaEntityTypes.MODEL
-  ) {
-    delete modelData[entityType][key];
+  } else if (actionType === DeltaChangeTypes.REMOVE && entityType !== "model") {
+    if (entityId in modelData[entityType]) {
+      delete modelData[entityType][entityId as keyof M[E]];
+    }
   }
 }
 
@@ -76,42 +77,47 @@ export function processDeltas(
   if (!modelWatcherData || !deltas) {
     return;
   }
-  deltas.forEach((delta) => {
+  deltas.forEach(([deltaEntityType, deltaActionType, deltaData]) => {
     // Delta is in the format of [entityType, actionType, data].
-    const modelUUID = delta[2]["model-uuid"];
+    const modelUUID = deltaData["model-uuid"];
     if (!modelWatcherData[modelUUID]) {
       modelWatcherData[modelUUID] = generateModelWatcherBase();
     }
     const modelData = modelWatcherData[modelUUID];
-    const _process = _processDelta.bind(null, delta[1], delta[2], modelData);
-    if (delta[0] === DeltaEntityTypes.ACTION) {
-      _process(ReduxDeltaEntityTypes.ACTIONS, delta[2].id);
-    } else if (delta[0] === DeltaEntityTypes.ANNOTATION) {
-      const appName = delta[2].tag.replace("application-", "");
+    const _process = _processDelta.bind(
+      null,
+      deltaActionType,
+      deltaData,
+      modelData
+    );
+    if (deltaEntityType === DeltaEntityTypes.ACTION) {
+      _process(ReduxDeltaEntityTypes.ACTIONS, deltaData.id);
+    } else if (deltaEntityType === DeltaEntityTypes.ANNOTATION) {
+      const appName = deltaData.tag.replace("application-", "");
       const formatted = {
-        [appName]: delta[2].annotations,
+        [appName]: deltaData.annotations,
       };
-      mergeWith(modelData[ReduxDeltaEntityTypes.ANNOTATIONS], formatted);
-    } else if (delta[0] === DeltaEntityTypes.APPLICATION) {
+      mergeWith(modelData.annotations, formatted);
+    } else if (deltaEntityType === DeltaEntityTypes.APPLICATION) {
       const formatted: ApplicationData = {
-        [delta[2].name]: delta[2],
+        [deltaData.name]: deltaData,
       };
-      if (formatted[delta[2].name]["unit-count"] === undefined) {
-        formatted[delta[2].name]["unit-count"] = 0;
+      if (formatted[deltaData.name]["unit-count"] === undefined) {
+        formatted[deltaData.name]["unit-count"] = 0;
       }
-      mergeWith(modelData[ReduxDeltaEntityTypes.APPLICATIONS], formatted);
-    } else if (delta[0] === DeltaEntityTypes.CHARM) {
-      _process(ReduxDeltaEntityTypes.CHARMS, delta[2]["charm-url"]);
-    } else if (delta[0] === DeltaEntityTypes.MACHINE) {
-      _process(ReduxDeltaEntityTypes.MACHINES, delta[2].id);
-    } else if (delta[0] === DeltaEntityTypes.MODEL) {
-      if (delta[1] === DeltaChangeTypes.CHANGE) {
-        mergeWith(modelWatcherData[modelUUID].model, delta[2]);
+      mergeWith(modelData.applications, formatted);
+    } else if (deltaEntityType === DeltaEntityTypes.CHARM) {
+      _process(ReduxDeltaEntityTypes.CHARMS, deltaData["charm-url"]);
+    } else if (deltaEntityType === DeltaEntityTypes.MACHINE) {
+      _process(ReduxDeltaEntityTypes.MACHINES, deltaData.id);
+    } else if (deltaEntityType === DeltaEntityTypes.MODEL) {
+      if (deltaActionType === DeltaChangeTypes.CHANGE) {
+        mergeWith(modelWatcherData[modelUUID].model, deltaData);
       }
-    } else if (delta[0] === DeltaEntityTypes.RELATION) {
-      _process(ReduxDeltaEntityTypes.RELATIONS, delta[2].key);
-    } else if (delta[0] === DeltaEntityTypes.UNIT) {
-      _process(ReduxDeltaEntityTypes.UNITS, delta[2].name);
+    } else if (deltaEntityType === DeltaEntityTypes.RELATION) {
+      _process(ReduxDeltaEntityTypes.RELATIONS, deltaData.key);
+    } else if (deltaEntityType === DeltaEntityTypes.UNIT) {
+      _process(ReduxDeltaEntityTypes.UNITS, deltaData.name);
       const applicationUnitCounts: { [key: string]: number } = {};
       // We loop through the full modelData units list every time there is a
       // unit delta so that we don't have to keep reference to the delta type
@@ -128,18 +134,14 @@ export function processDeltas(
       Object.entries(applicationUnitCounts).forEach(
         ([applicationName, count]) => {
           if (!modelData.applications[applicationName]) {
-            // The following line is ignored because the type requires that
-            // the application has a number of pre-defined values.
-            // This is only here because sometimes the unit delta is parsed
-            // before the application delta arrives so it needs somewhere to
-            // store this information.
-            // This can be resolved by computing the unit-count in the
-            // selector instead of when the unit delta arrives.
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore TSFixMe XXX
-            modelData.applications[applicationName] = {};
+            // Sometimes the unit delta is parsed
+            // before the application delta arrives so it needs to
+            // store this information before it gets merged with the rest of the
+            // application info.
+            modelData.applications[applicationName] = { "unit-count": count };
+          } else {
+            modelData.applications[applicationName]["unit-count"] = count;
           }
-          modelData.applications[applicationName]["unit-count"] = count;
         }
       );
     }

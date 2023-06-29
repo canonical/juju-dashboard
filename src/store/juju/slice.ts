@@ -1,6 +1,9 @@
-import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
+import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import type { UserModelList } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type {
+  ModelInfoResults,
+  UserModelList,
+} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -8,7 +11,6 @@ import type {
   AllWatcherDelta,
   ApplicationInfo,
   FullStatusWithAnnotations,
-  ModelInfoResults,
 } from "juju/types";
 import { processDeltas } from "juju/watchers";
 
@@ -63,7 +65,7 @@ const slice = createSlice({
         state.modelData = {};
       }
       // There is some data that we don't want to store because it changes
-      // to often causing needless re-renders and is currently irrelevent
+      // too often causing needless re-renders and is currently irrelevant
       // like controllerTimestamp.
       const model = {
         ...(state.modelData[modelUUID] ?? {}),
@@ -87,7 +89,7 @@ const slice = createSlice({
       }>
     ) => {
       const modelInfo = action.payload.modelInfo.results[0].result;
-      // There don't appear to be any irrelevent data in the modelInfo so
+      // There don't appear to be any irrelevant data in the modelInfo so
       // we overwrite the whole object every time it changes even though
       // mostly that'll just be status timestamps.
       const modelData = state.modelData?.[modelInfo?.uuid];

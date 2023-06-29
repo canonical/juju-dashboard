@@ -1,3 +1,11 @@
+import type {
+  ApplicationStatus,
+  Base,
+  MachineStatus,
+  NetworkInterface,
+  UnitStatus,
+} from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { Factory } from "fishery";
 
 import type {
@@ -6,11 +14,10 @@ import type {
   ControllerLocation,
   JujuState,
   ModelData,
-  ModelInfo,
   ModelListInfo,
 } from "store/juju/types";
 
-import { modelStatusInfoFactory } from "./ClientV6";
+import { modelStatusInfoFactory, detailedStatusFactory } from "./ClientV6";
 import { modelSLAInfoFactory } from "./ModelManagerV9";
 
 function generateUUID() {
@@ -46,20 +53,9 @@ export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
   wsControllerURL: "wss://example.com/api",
 }));
 
-export const modelDataStatusFactory = Factory.define<
-  ModelData["applications"][0]["status"]
->(() => ({
-  status: "available",
-  info: "",
-  data: {},
-  since: "2019-11-12T23:49:17.148Z",
-}));
-
-export const modelDataUnitFactory = Factory.define<
-  ModelData["applications"][0]["units"][0]
->(() => ({
-  "agent-status": modelDataStatusFactory.build(),
-  "workload-status": modelDataStatusFactory.build(),
+export const modelDataUnitFactory = Factory.define<UnitStatus>(() => ({
+  "agent-status": detailedStatusFactory.build(),
+  "workload-status": detailedStatusFactory.build(),
   "workload-version": "3.0.1",
   machine: "1",
   "opened-ports": [],
@@ -69,53 +65,60 @@ export const modelDataUnitFactory = Factory.define<
   leader: true,
 }));
 
-export const modelDataApplicationFactory = Factory.define<
-  ModelData["applications"][0]
->(() => ({
-  charm: "cs:~containers/easyrsa-278",
-  series: "bionic",
-  exposed: false,
-  life: "",
-  relations: {},
-  "can-upgrade-to": "",
-  "subordinate-to": [],
-  units: {},
-  "meter-statuses": {},
-  status: modelDataStatusFactory.build(),
-  "workload-version": "3.0.1",
-  "charm-version": "7af705f",
-  "endpoint-bindings": {},
-  "public-address": "",
+export const baseFactory = Factory.define<Base>(() => ({
+  channel: "stable",
+  name: "Stable",
 }));
 
-export const modelDataMachineNetworkInterfcaceFactory = Factory.define<
-  ModelData["machines"][0]["network-interfaces"][0]
->(() => ({
-  "ip-addresses": [],
-  "mac-address": "a2:a2:53:31:db:9a",
-  "is-up": true,
-}));
-
-export const modelDataMachineFactory = Factory.define<ModelData["machines"][0]>(
+export const modelDataApplicationFactory = Factory.define<ApplicationStatus>(
   () => ({
-    "agent-status": modelDataStatusFactory.build(),
-    "instance-status": modelDataStatusFactory.build(),
-    "dns-name": "35.243.128.238",
-    "ip-addresses": [],
-    "instance-id": "juju-9cb18d-0",
+    base: baseFactory.build(),
+    charm: "cs:~containers/easyrsa-278",
+    "charm-profile": "",
     series: "bionic",
-    id: "0",
-    "network-interfaces": {},
-    containers: {},
-    constraints: "",
-    hardware:
-      "arch=amd64 cores=1 cpu-power=138 mem=1700M root-disk=10240M availability-zone=us-east1-b",
-    jobs: [],
-    "has-vote": false,
-    "wants-vote": false,
-    "lxd-profiles": {},
+    exposed: false,
+    life: "",
+    relations: {},
+    "can-upgrade-to": "",
+    "subordinate-to": [],
+    units: {},
+    "meter-statuses": {},
+    status: detailedStatusFactory.build(),
+    "workload-version": "3.0.1",
+    "charm-version": "7af705f",
+    "endpoint-bindings": {},
+    "public-address": "",
   })
 );
+
+export const modelDataMachineNetworkInterfcaceFactory =
+  Factory.define<NetworkInterface>(() => ({
+    "ip-addresses": [],
+    "mac-address": "a2:a2:53:31:db:9a",
+    "is-up": true,
+  }));
+
+export const modelDataMachineFactory = Factory.define<MachineStatus>(() => ({
+  "agent-status": detailedStatusFactory.build(),
+  base: baseFactory.build(),
+  "instance-status": detailedStatusFactory.build(),
+  "dns-name": "35.243.128.238",
+  "ip-addresses": [],
+  "instance-id": "juju-9cb18d-0",
+  series: "bionic",
+  id: "0",
+  "network-interfaces": {},
+  containers: {},
+  constraints: "",
+  "display-name": "0",
+  hardware:
+    "arch=amd64 cores=1 cpu-power=138 mem=1700M root-disk=10240M availability-zone=us-east1-b",
+  jobs: [],
+  "has-vote": false,
+  "modification-status": detailedStatusFactory.build(),
+  "wants-vote": false,
+  "lxd-profiles": {},
+}));
 
 export const modelDataInfoFactory = Factory.define<ModelInfo>(() => ({
   name: "sub-test",
@@ -130,8 +133,9 @@ export const modelDataInfoFactory = Factory.define<ModelInfo>(() => ({
   "owner-tag": "user-eggman@external",
   life: "alive",
   "is-controller": false,
+  "secret-backends": [],
   sla: modelSLAInfoFactory.build(),
-  status: modelDataStatusFactory.build(),
+  status: detailedStatusFactory.build(),
   users: [],
   machines: [],
   "agent-version": "2.6.10",
@@ -142,7 +146,7 @@ export const modelDataFactory = Factory.define<ModelData>(() => ({
   machines: {},
   model: modelStatusInfoFactory.build(),
   offers: {},
-  relations: null,
+  relations: [],
   uuid: generateUUID(),
   info: modelDataInfoFactory.build(),
   "remote-applications": {},

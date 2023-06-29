@@ -4,6 +4,7 @@ import {
   charmApplicationFactory,
 } from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   controllerFactory,
   jujuStateFactory,
@@ -133,32 +134,7 @@ describe("reducers", () => {
             code: "",
             message: "",
           },
-          result: {
-            "agent-version": "5",
-            "controller-uuid": "controller1",
-            "cloud-region": "west",
-            machines: [],
-            "owner-tag": "user-eggman@external",
-            users: [],
-            uuid: "abc123",
-            "cloud-tag": "cloud-aws",
-            region: "us-east-1",
-            type: "iaas",
-            version: "2.9.12",
-            "model-uuid": "abc123",
-            name: "enterprise",
-            life: "alive",
-            owner: "kirk@external",
-            "is-controller": false,
-            constraints: {},
-            config: {
-              "default-series": "bionic",
-            },
-            sla: {
-              level: "unsupported",
-              owner: "",
-            },
-          },
+          result: modelInfoFactory.build(),
         },
       ],
     };

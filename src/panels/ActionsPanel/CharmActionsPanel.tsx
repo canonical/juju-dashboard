@@ -18,7 +18,6 @@ import { executeActionOnUnits } from "juju/api";
 import type { ApplicationInfo } from "juju/types";
 import ActionOptions from "panels/ActionsPanel/ActionOptions";
 import type {
-  ActionData,
   ActionOptionValue,
   ActionOptionValues,
 } from "panels/ActionsPanel/ActionsPanel";
@@ -43,6 +42,8 @@ export enum TestId {
   PANEL = "charm-actions-panel",
 }
 
+const filterExist = <I,>(item: I | null): item is I => !!item;
+
 export default function CharmActionsPanel(): JSX.Element {
   const sendAnalytics = useAnalytics();
   const { userName, modelName } = useParams();
@@ -62,7 +63,7 @@ export default function CharmActionsPanel(): JSX.Element {
     getSelectedApplications(queryParams.charm || "")
   );
   const selectedCharm = useSelector(getSelectedCharm(queryParams.charm || ""));
-  const actionData: ActionData = useMemo(
+  const actionData = useMemo(
     () => selectedCharm?.actions?.specs || {},
     [selectedCharm]
   );
@@ -104,7 +105,8 @@ export default function CharmActionsPanel(): JSX.Element {
       selectedApplications
         .map((a) =>
           Array(a["unit-count"])
-            .fill(a.name)
+            .fill("name" in a ? a.name : null)
+            .filter(Boolean)
             .map((unit, i) => `${unit}-${i}`)
         )
         .flat(),
@@ -144,7 +146,9 @@ export default function CharmActionsPanel(): JSX.Element {
       onValuesChange(actionName, values, actionOptionsValues);
       enableSubmit(
         selectedAction,
-        selectedApplications.map((a) => a.name),
+        selectedApplications
+          .map((a) => ("name" in a ? a.name : null))
+          .filter(filterExist),
         actionData,
         actionOptionsValues,
         setDisableSubmit
@@ -158,7 +162,9 @@ export default function CharmActionsPanel(): JSX.Element {
       setSelectedAction(actionName);
       enableSubmit(
         actionName,
-        selectedApplications.map((a) => a.name),
+        selectedApplications
+          .map((a) => ("name" in a ? a.name : null))
+          .filter(filterExist),
         actionData,
         actionOptionsValues,
         setDisableSubmit

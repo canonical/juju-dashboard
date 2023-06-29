@@ -7,8 +7,6 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { Factory } from "fishery";
 
-import { modelDataStatusFactory } from "./juju";
-
 export const modelStatusInfoFactory = Factory.define<ModelStatusInfo>(() => ({
   name: "sub-test",
   type: "iaas",
@@ -16,7 +14,7 @@ export const modelStatusInfoFactory = Factory.define<ModelStatusInfo>(() => ({
   region: "us-east1",
   version: "2.6.10",
   "available-version": "",
-  "model-status": modelDataStatusFactory.build(),
+  "model-status": detailedStatusFactory.build(),
   "meter-status": {
     color: "",
     message: "",

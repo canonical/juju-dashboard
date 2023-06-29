@@ -6,13 +6,11 @@ import * as juju from "juju/api";
 import { executeActionOnUnits } from "juju/api";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
-import {
-  applicationCharmActionFactory,
-  applicationCharmActionParamsFactory,
-} from "testing/factories/juju/ActionV7";
+import { applicationCharmActionParamsFactory } from "testing/factories/juju/ActionV7";
 import {
   charmApplicationFactory,
   charmInfoFactory,
+  charmActionSpecFactory,
 } from "testing/factories/juju/Charms";
 import {
   jujuStateFactory,
@@ -43,7 +41,7 @@ describe("CharmActionsPanel", () => {
             url: "ch:ceph",
             actions: {
               specs: {
-                "add-disk": applicationCharmActionFactory.build({
+                "add-disk": charmActionSpecFactory.build({
                   params: applicationCharmActionParamsFactory.build({
                     properties: {
                       bucket: {
@@ -58,7 +56,7 @@ describe("CharmActionsPanel", () => {
                     type: "object",
                   }),
                 }),
-                pause: applicationCharmActionFactory.build({
+                pause: charmActionSpecFactory.build({
                   params: applicationCharmActionParamsFactory.build({
                     title: "pause",
                     type: "object",
@@ -220,7 +218,7 @@ describe("CharmActionsPanel", () => {
         url: "ch:ceph",
         actions: {
           specs: {
-            "add-disk": applicationCharmActionFactory.build({
+            "add-disk": charmActionSpecFactory.build({
               params: applicationCharmActionParamsFactory.build({
                 properties: {
                   bucket: {

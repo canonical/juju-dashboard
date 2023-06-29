@@ -10,8 +10,8 @@ import {
   modelDataFactory,
   modelDataInfoFactory,
   modelDataUnitFactory,
+  modelDataMachineFactory,
 } from "testing/factories/juju/juju";
-import { machineChangeDeltaFactory } from "testing/factories/juju/model-watcher";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
@@ -85,8 +85,8 @@ describe("Controllers table", () => {
             "controller-uuid": "controller123",
           }),
           machines: {
-            "0": machineChangeDeltaFactory.build(),
-            "1": machineChangeDeltaFactory.build(),
+            "0": modelDataMachineFactory.build(),
+            "1": modelDataMachineFactory.build(),
           },
           applications: {
             easyrsa: modelDataApplicationFactory.build({
@@ -102,9 +102,9 @@ describe("Controllers table", () => {
             "controller-uuid": "controller123",
           }),
           machines: {
-            "0": machineChangeDeltaFactory.build(),
-            "1": machineChangeDeltaFactory.build(),
-            "2": machineChangeDeltaFactory.build(),
+            "0": modelDataMachineFactory.build(),
+            "1": modelDataMachineFactory.build(),
+            "2": modelDataMachineFactory.build(),
           },
           applications: {
             ceph: modelDataApplicationFactory.build({

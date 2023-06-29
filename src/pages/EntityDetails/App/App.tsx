@@ -177,14 +177,21 @@ export default function App(): JSX.Element {
   const application = entity ? applications?.[entity] : null;
   const showConfig = (event: MouseEvent) => {
     event.stopPropagation();
-    setQuery(
-      { panel: "config", entity, charm: application?.["charm-url"], modelUUID },
-      { replace: true }
-    );
+    if (application && "charm-url" in application) {
+      setQuery(
+        {
+          panel: "config",
+          entity,
+          charm: application?.["charm-url"],
+          modelUUID,
+        },
+        { replace: true }
+      );
+    }
   };
 
   let appEntityData = {};
-  if (application) {
+  if (application && "charm-url" in application) {
     appEntityData = {
       status: <Status status={application.status?.current} />,
       charm: application["charm-url"],

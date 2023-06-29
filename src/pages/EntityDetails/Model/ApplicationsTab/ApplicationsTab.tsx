@@ -151,7 +151,7 @@ export default function ApplicationsTab({ filterQuery }: Props) {
       const searchedApps = fuse.search(filterQuery).map((e) => e.item);
       const filteredApplications: ApplicationData = {};
       searchedApps.forEach((application) => {
-        if (applications[application.name]) {
+        if ("name" in application && applications[application.name]) {
           filteredApplications[application.name] = application;
         }
       });

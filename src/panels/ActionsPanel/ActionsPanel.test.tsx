@@ -6,11 +6,11 @@ import { executeActionOnUnits } from "juju/api";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
-  applicationCharmActionFactory,
   applicationCharmActionParamsFactory,
   applicationCharmActionsResultFactory,
   applicationsCharmActionsResultsFactory,
 } from "testing/factories/juju/ActionV7";
+import { charmActionSpecFactory } from "testing/factories/juju/Charms";
 import {
   jujuStateFactory,
   modelDataFactory,
@@ -25,7 +25,7 @@ const mockResponse = applicationsCharmActionsResultsFactory.build({
     applicationCharmActionsResultFactory.build({
       "application-tag": "application-ceph",
       actions: {
-        "add-disk": applicationCharmActionFactory.build({
+        "add-disk": charmActionSpecFactory.build({
           params: applicationCharmActionParamsFactory.build({
             properties: {
               bucket: {
@@ -40,7 +40,7 @@ const mockResponse = applicationsCharmActionsResultsFactory.build({
             type: "object",
           }),
         }),
-        pause: applicationCharmActionFactory.build({
+        pause: charmActionSpecFactory.build({
           params: applicationCharmActionParamsFactory.build({
             title: "pause",
             type: "object",
@@ -167,7 +167,7 @@ describe("ActionsPanel", () => {
         applicationCharmActionsResultFactory.build({
           "application-tag": "application-ceph",
           actions: {
-            "add-disk": applicationCharmActionFactory.build({
+            "add-disk": charmActionSpecFactory.build({
               params: applicationCharmActionParamsFactory.build({
                 properties: {
                   bucket: {

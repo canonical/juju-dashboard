@@ -35,7 +35,7 @@ describe("model poller", () => {
         controllerConnections: {
           [wsControllerURL]: {
             user: {
-              identity: { this: "is" },
+              identity: "user-eggman",
             },
           },
         },

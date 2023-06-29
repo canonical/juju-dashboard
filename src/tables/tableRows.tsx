@@ -19,7 +19,12 @@ import RelationIcon from "components/RelationIcon";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { copyToClipboard } from "components/utils";
-import type { ApplicationData, RelationData, UnitData } from "juju/types";
+import type {
+  ApplicationData,
+  RelationData,
+  UnitData,
+  MachineData,
+} from "juju/types";
 import type { StatusData } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import {
@@ -79,19 +84,23 @@ export function generateLocalApplicationRows(
 
   return Object.keys(applications).map((key) => {
     const app = applications[key];
-    const rev = extractRevisionNumber(app["charm-url"]) || "-";
-    const store = getStore(app["charm-url"]);
-    const version = app["workload-version"] || "-";
-    const status = app.status ? (
-      <Status status={applicationStatuses[app.name]} />
-    ) : (
-      "-"
-    );
-    const message = (
-      <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
-        {app.status?.message ?? ""}
-      </Anchorme>
-    );
+    const rev =
+      ("charm-url" in app && extractRevisionNumber(app["charm-url"])) || "-";
+    const store = "charm-url" in app && getStore(app["charm-url"]);
+    const version =
+      ("workload-version" in app && app["workload-version"]) || "-";
+    const status =
+      "status" in app && app.status ? (
+        <Status status={applicationStatuses[app.name]} />
+      ) : (
+        "-"
+      );
+    const message =
+      "status" in app && app.status?.message ? (
+        <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
+          {app.status.message}
+        </Anchorme>
+      ) : null;
     return {
       columns: [
         {
@@ -104,7 +113,10 @@ export function generateLocalApplicationRows(
                 appName: key.replace("/", "-"),
               })}
             >
-              <EntityIdentifier charmId={app["charm-url"]} name={key} />
+              <EntityIdentifier
+                charmId={"charm-url" in app ? app["charm-url"] : null}
+                name={key}
+              />
             </Link>
           ),
         },
@@ -117,7 +129,8 @@ export function generateLocalApplicationRows(
         },
         {
           "data-test-column": "version",
-          content: app["workload-version"] || "-",
+          content:
+            ("workload-version" in app && app["workload-version"]) || "-",
         },
         {
           "data-test-column": "scale",
@@ -135,9 +148,10 @@ export function generateLocalApplicationRows(
         },
         {
           "data-test-column": "message",
-          content: app.status?.message ? (
-            <TruncatedTooltip message={message}>{message}</TruncatedTooltip>
-          ) : null,
+          content:
+            "status" in app && app.status?.message ? (
+              <TruncatedTooltip message={message}>{message}</TruncatedTooltip>
+            ) : null,
         },
       ],
       sortData: {
@@ -437,7 +451,7 @@ export function generateUnitRows(
 }
 
 export function generateMachineRows(
-  machines: ModelData["machines"] | null,
+  machines: MachineData | null,
   units: UnitData | null,
   modelParams: ModelParams,
   selectedEntity?: string | null
@@ -482,19 +496,16 @@ export function generateMachineRows(
         columns: [
           {
             content: (
-              <>
-                <Link
-                  to={urls.model.machine({
-                    userName: modelParams.userName,
-                    modelName: modelParams.modelName,
-                    machineId: machineId.replace("/", "-"),
-                  })}
-                >
-                  {machineId}
-                  <span className="u-capitalise">. {machine.series}</span>
-                </Link>
-                {machine.dnsName}
-              </>
+              <Link
+                to={urls.model.machine({
+                  userName: modelParams.userName,
+                  modelName: modelParams.modelName,
+                  machineId: machineId.replace("/", "-"),
+                })}
+              >
+                {machineId}
+                <span className="u-capitalise">. {machine.series}</span>
+              </Link>
             ),
           },
           {
@@ -660,7 +671,7 @@ export function generateAppOffersRows(
           content: (
             <TruncatedTooltip message={offer["offer-name"]}>
               <RelationIcon
-                applicationName={offer}
+                applicationName={offer["application-name"]}
                 applications={modelStatusData.applications}
               />
               {offer["offer-name"]}
