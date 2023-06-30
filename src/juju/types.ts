@@ -1,7 +1,7 @@
 import type { Connection } from "@canonical/jujulib";
 import type ActionV7 from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import type AllWatcherV3 from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
-import type { AdditionalProperties as AnnotationsAdditionalProperties } from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
+import type { AnnotationsGetResult } from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
 import type AnnotationsV2 from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
 import type ApplicationV15 from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
 import type CharmsV6 from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
@@ -38,7 +38,7 @@ export interface ModelCharmData {
 }
 
 export interface ModelWatcherData {
-  [uuid: string]: ModelData;
+  [uuid: string]: WatcherModelData;
 }
 
 export interface RelationData {
@@ -103,28 +103,20 @@ export enum ReduxDeltaEntityTypes {
   UNITS = "units",
 }
 
-export type DeltaMessageData =
-  | ActionChangeDelta
-  | AnnotationChangeDelta
-  | ApplicationChangeDelta
-  | CharmChangeDelta
-  | UnitChangeDelta
-  | MachineChangeDelta
-  | ModelChangeDelta
-  | RelationChangeDelta;
+export type DeltaMessageData = AllWatcherDelta[2];
 
-export interface ModelData {
+export interface WatcherModelData {
   actions: ActionData;
   annotations: AnnotationData;
   applications: ApplicationData;
   charms: ModelCharmData;
   machines: MachineData;
-  model: ModelInfo;
+  model: WatcherModelInfo;
   relations: RelationData;
   units: UnitData;
 }
 
-export interface ModelInfo extends ModelChangeDelta {
+export interface WatcherModelInfo extends ModelChangeDelta {
   "cloud-tag": string;
   region?: string;
   type: string;
@@ -321,7 +313,6 @@ export interface UnitChangeDelta {
         protocol: string;
         number: number;
       }[]
-    | []
     | null;
   principal: string; // If subordinate is true this will have the parent.
   series: string;
@@ -351,7 +342,7 @@ export interface WorkloadStatus extends Status {
 
 export type FullStatusAnnotations = Record<
   string,
-  AnnotationsAdditionalProperties
+  AnnotationsGetResult["annotations"]
 >;
 
 export type FullStatusWithAnnotations = FullStatus & {
