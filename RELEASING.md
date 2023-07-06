@@ -56,7 +56,7 @@ confirm these work with the dashboard.
 
 #### Local machine controller
 
-If you don't already have a local controller you will need [to set one up](https://github.com/canonical/juju-dashboard/tree/main/docs/HACKING.md#juju-controllers-in-multipass).
+If you don't already have a local controller you will need [to set one up](https://github.com/canonical/juju-dashboard/tree/main/HACKING.md#juju-controllers-in-multipass).
 
 Clone the [juju-dashboard-charm
 repo](https://github.com/canonical/juju-dashboard-charm).
