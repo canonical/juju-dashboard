@@ -39,9 +39,7 @@ While we try to QA the dashboard as much as we can there are always combinations
 of Juju environments, browsers, devices etc. that we haven't tested or don't
 have access to.
 
-We have some [QA
-instructions](/docs/RELEASING.md#qa)
-to help you get started.
+We have some [QA instructions](/RELEASING.md#qa) to help you get started.
 
 ### Write docs
 
@@ -88,7 +86,7 @@ Some solutions might require some input from our in-house design team.
 
 #### Setting up for development
 
-Take a look at our [HACKING doc](/docs/HACKING.md) to find out how to get the
+Take a look at our [HACKING doc](/HACKING.md) to find out how to get the
 dashboard codebase set up, overview of the codebase and guides on setting up
 Juju environments.
 

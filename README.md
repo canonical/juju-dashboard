@@ -103,7 +103,7 @@ bugs for the relevant codebase will help the issue to be seen by the right team:
 ## Contributing
 
 Juju Dashboard is [open source](#licence) and we welcome contributions. Take
-a look at the [contribution guide](/docs/CONTRIBUTING.md) guide to find out how
+a look at the [contribution guide](/CONTRIBUTING.md) guide to find out how
 to contribute to the project.
 
 ## Development
@@ -115,11 +115,11 @@ Framework](https://github.com/canonical/vanilla-framework), [Vanilla React
 Components](https://github.com/canonical/react-components) and last but not
 least [Juju](https://github.com/juju/juju).
 
-To get started working on the dashboard take a look at our [development guide](/docs/HACKING.md).
+To get started working on the dashboard take a look at our [development guide](/HACKING.md).
 
 ## Release
 
-Check out the [release guide](/docs/RELEASING.md) for details about how to
+Check out the [release guide](/RELEASING.md) for details about how to
 release Juju Dashboard and its dependencies.
 
 ## Licence

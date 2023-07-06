@@ -5,7 +5,7 @@ Juju Dashboard is a JavaScript application built with [React](https://github.com
 [TypeScript](https://github.com/microsoft/TypeScript). Being familiar with those
 tools will help when developing the dashboard.
 
-If you haven't already read the [contribution guide](/docs/CONTRIBUTING.md) then
+If you haven't already read the [contribution guide](/CONTRIBUTING.md) then
 that is a good place to start as it will give you an overview of how to
 contribute and what kinds of contributions are welcome.
 
