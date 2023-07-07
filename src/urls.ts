@@ -49,8 +49,8 @@ const urls = {
 };
 
 export const externalURLs = {
-  new_issue: "https://github.com/canonical/juju-dashboard/issues/new",
-  cli_help: "https://juju.is/docs/olm/the-juju-web-cli",
+  newIssue: "https://github.com/canonical/juju-dashboard/issues/new",
+  cliHelp: "https://juju.is/docs/olm/the-juju-web-cli",
 };
 
 export default urls;

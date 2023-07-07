@@ -211,7 +211,7 @@ const WebCLI = ({
           <>
             Welcome to the Juju Web CLI - see the{" "}
             <a
-              href={externalURLs.cli_help}
+              href={externalURLs.cliHelp}
               className="p-link--inverted"
               rel="noreferrer"
               target="_blank"
