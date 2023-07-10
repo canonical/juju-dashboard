@@ -135,45 +135,40 @@ const Model = () => {
 
   return (
     <>
-      <div>
-        {/* The sidebar needs to be within a wrapping div so that it does not
-            get given the full height of the grid so that the sidebar can be sticky.
-        */}
-        <div className="entity-details__sidebar">
-          <InfoPanel />
-          <div className="entity-details__actions">
-            {activeUser &&
-              canAdministerModelAccess(
-                activeUser,
-                modelStatusData?.info?.users
-              ) && (
-                <button
-                  className="entity-details__action-button"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    setQuery({ panel: "share-model" }, { replace: true });
-                  }}
-                >
-                  <i className="p-icon--share"></i>
-                  {Label.ACCESS_BUTTON}
-                </button>
-              )}
-          </div>
-          {modelInfoData && (
-            <EntityInfo
-              data={{
-                access: modelAccess ?? "Unknown",
-                controller: modelInfoData.type,
-                "Cloud/Region": generateCloudAndRegion(
-                  modelInfoData["cloud-tag"],
-                  modelInfoData.region
-                ),
-                version: modelInfoData.version,
-                sla: modelInfoData.sla?.level,
-              }}
-            />
-          )}
+      <div className="entity-details__sidebar">
+        <InfoPanel />
+        <div className="entity-details__actions">
+          {activeUser &&
+            canAdministerModelAccess(
+              activeUser,
+              modelStatusData?.info?.users
+            ) && (
+              <button
+                className="entity-details__action-button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setQuery({ panel: "share-model" }, { replace: true });
+                }}
+              >
+                <i className="p-icon--share"></i>
+                {Label.ACCESS_BUTTON}
+              </button>
+            )}
         </div>
+        {modelInfoData && (
+          <EntityInfo
+            data={{
+              access: modelAccess ?? "Unknown",
+              controller: modelInfoData.type,
+              "Cloud/Region": generateCloudAndRegion(
+                modelInfoData["cloud-tag"],
+                modelInfoData.region
+              ),
+              version: modelInfoData.version,
+              sla: modelInfoData.sla?.level,
+            }}
+          />
+        )}
       </div>
       <div className="entity-details__main u-overflow--auto">
         {shouldShow("apps", query.activeView) && (
