@@ -8,15 +8,6 @@
     display: block;
   }
 
-  .p-modal {
-    position: fixed;
-    z-index: z("zelda");
-
-    &__dialog {
-      width: 90% !important;
-    }
-  }
-
   &__pictogram {
     // Keep height and width in sync with the dimensions of
     // the Topology component.
@@ -51,9 +42,13 @@
       grid-template-columns: repeat(2, 1fr);
     }
   }
+}
 
-  .p-muted-heading {
-    font-size: 0.75rem;
-    margin-bottom: 0.25rem;
-  }
+.p-muted-heading {
+  font-size: 0.75rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.p-modal .p-modal__dialog {
+  width: 90%;
 }
