@@ -362,6 +362,7 @@ function SubmitConfirmation(
           </Button>
         </div>
       }
+      onClose={cancelFunction}
     >
       <div>
         <h4>Run {actionName}?</h4>
