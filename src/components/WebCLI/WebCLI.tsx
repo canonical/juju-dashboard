@@ -7,6 +7,7 @@ import useLocalStorage from "hooks/useLocalStorage";
 import bakery from "juju/bakery";
 import { getActiveUserTag } from "store/general/selectors";
 import type { Credential } from "store/general/types";
+import { externalURLs } from "urls";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
@@ -210,7 +211,7 @@ const WebCLI = ({
           <>
             Welcome to the Juju Web CLI - see the{" "}
             <a
-              href="https://juju.is/docs/olm/using-the-juju-web-cli"
+              href={externalURLs.cliHelp}
               className="p-link--inverted"
               rel="noreferrer"
               target="_blank"

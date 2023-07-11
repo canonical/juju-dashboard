@@ -47,7 +47,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       `\`\`\`\n${error?.stack ?? "No stack track"}\n\`\`\``
     );
     const url = `${
-      externalURLs.new_issue
+      externalURLs.newIssue
     }?assignees=&labels=&template=bug_report.md&title=Dashboard error: ${encodeURIComponent(
       error?.message ?? "No error"
     )}&body=${body}`;
