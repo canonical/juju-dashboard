@@ -1,7 +1,7 @@
 import { Modal } from "@canonical/react-components";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import usePortal from "react-useportal";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import Topology from "components/Topology/Topology";
@@ -46,7 +46,12 @@ const infoPanelDimensions = () => {
 const InfoPanel = () => {
   const { modelName, userName } = useParams<EntityDetailsRoute>();
 
-  const [showExpandedTopology, setShowExpandedTopology] = useState(false);
+  const {
+    openPortal,
+    closePortal,
+    isOpen: showExpandedTopology,
+    Portal,
+  } = usePortal();
 
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const annotations = useSelector(getModelAnnotations(modelUUID));
@@ -60,8 +65,8 @@ const InfoPanel = () => {
 
   const sendAnalytics = useAnalytics();
 
-  const handleExpandTopology = () => {
-    setShowExpandedTopology(!showExpandedTopology);
+  const handleExpandTopology = (e: React.MouseEvent<HTMLButtonElement>) => {
+    openPortal(e);
     sendAnalytics({
       path: undefined,
       category: "User",
@@ -71,44 +76,42 @@ const InfoPanel = () => {
 
   return (
     <div className="info-panel" data-testid={TestId.INFO_PANEL}>
-      {showExpandedTopology ? (
-        <Modal
-          close={() => setShowExpandedTopology(false)}
-          title={modelName?.split("/")[1] || modelName}
-        >
+      {showExpandedTopology && (
+        <Portal>
+          <Modal
+            close={closePortal}
+            title={modelName?.split("/")[1] || modelName}
+          >
+            <Topology
+              width={width}
+              height={height}
+              annotations={annotations}
+              applications={applications}
+              relations={relations}
+            />
+          </Modal>
+        </Portal>
+      )}
+      {applicationsCount > 0 && (
+        <div className="info-panel__pictogram">
           <Topology
-            width={width}
-            height={height}
+            width={topologySize}
+            height={topologySize}
             annotations={annotations}
             applications={applications}
             relations={relations}
           />
-        </Modal>
-      ) : (
-        <>
-          {applicationsCount > 0 && (
-            <div className="info-panel__pictogram">
-              <Topology
-                width={topologySize}
-                height={topologySize}
-                annotations={annotations}
-                applications={applications}
-                relations={relations}
-              />
-              {modelName !== undefined && (
-                <i
-                  className="p-icon--fullscreen"
-                  onClick={handleExpandTopology}
-                  onKeyPress={handleExpandTopology}
-                  role="button"
-                  tabIndex={0}
-                >
-                  {Label.EXPAND_BUTTON}
-                </i>
-              )}
-            </div>
+          {modelName !== undefined && (
+            <i
+              className="p-icon--fullscreen"
+              onClick={handleExpandTopology}
+              role="button"
+              tabIndex={0}
+            >
+              {Label.EXPAND_BUTTON}
+            </i>
           )}
-        </>
+        </div>
       )}
     </div>
   );

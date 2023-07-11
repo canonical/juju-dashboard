@@ -10120,6 +10120,7 @@ __metadata:
     react-redux: 8.1.0
     react-router-dom: 6.12.1
     react-scripts: 5.0.1
+    react-useportal: 1.0.18
     redux: 4.2.1
     redux-devtools: 3.7.0
     redux-devtools-extension: 2.13.9

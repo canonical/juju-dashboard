@@ -69,6 +69,11 @@
       }
     }
 
+    &__sidebar {
+      position: sticky;
+      top: $top-header-height + 1.5rem;
+    }
+
     @include desktop {
       gap: 1rem;
       grid-template-columns: 230px 1fr;
