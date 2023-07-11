@@ -10,6 +10,10 @@ $panel-padding: 1.5rem;
 }
 
 .config-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
   &__modal-button-row-hint {
     font-size: #{map-get($font-sizes, small)}rem;
     margin-bottom: 1.5rem;
@@ -83,6 +87,19 @@ $panel-padding: 1.5rem;
 
   &__list {
     padding-right: $sph--large * 2;
+  }
+
+  .p-panel__content {
+    flex: 1;
+
+    .aside-split-col {
+      display: flex;
+      flex-direction: column;
+
+      .config-panel__list {
+        flex: 1;
+      }
+    }
   }
 
   &__list-header {
