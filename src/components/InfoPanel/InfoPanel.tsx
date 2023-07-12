@@ -79,6 +79,7 @@ const InfoPanel = () => {
       {showExpandedTopology && (
         <Portal>
           <Modal
+            className="info-panel__modal"
             close={closePortal}
             title={modelName?.split("/")[1] || modelName}
           >

@@ -42,13 +42,8 @@
       grid-template-columns: repeat(2, 1fr);
     }
   }
-}
 
-.p-muted-heading {
-  font-size: 0.75rem !important;
-  margin-bottom: 0.25rem !important;
-}
-
-.p-modal .p-modal__dialog {
-  width: 90%;
+  &__modal .p-modal__dialog {
+    width: 90%;
+  }
 }

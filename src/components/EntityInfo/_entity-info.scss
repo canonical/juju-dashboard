@@ -9,5 +9,10 @@
 
   &__grid-item {
     overflow-wrap: anywhere;
+
+    .p-muted-heading {
+      font-size: 0.75rem !important;
+      margin-bottom: 0.25rem !important;
+    }
   }
 }
