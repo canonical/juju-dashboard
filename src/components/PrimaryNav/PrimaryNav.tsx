@@ -110,7 +110,7 @@ const PrimaryNav = () => {
           <li className="p-list__item">
             <a
               className="p-list__link"
-              href={externalURLs.new_issue}
+              href={externalURLs.newIssue}
               target="_blank"
               rel="noopener noreferrer"
             >
