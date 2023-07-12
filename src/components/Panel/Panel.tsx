@@ -7,34 +7,34 @@ import { forwardRef, useId } from "react";
 import Aside from "components/Aside/Aside";
 import type { Props as AsideProps } from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
-import { useQueryParams } from "hooks/useQueryParams";
 
 type Props = PropsWithSpread<
   {
     checkCanClose?: (e: KeyboardEvent | MouseEvent) => boolean;
     panelClassName: string;
     title: ReactNode;
+    onRemovePanelQueryParams?: () => void;
   },
   PropsWithChildren & AsideProps
 >;
 
-export const close = {
+const close = {
   // Close panel if Escape key is pressed when panel active
   onEscape: (
     e: KeyboardEvent,
-    queryStringSetter: (qs?: string | null) => void,
+    onRemovePanelQueryParams: () => void,
     checkCanClose?: Props["checkCanClose"]
   ) => {
     if (e.code === "Escape") {
       if (checkCanClose && !checkCanClose?.(e)) {
         return;
       }
-      queryStringSetter(undefined);
+      onRemovePanelQueryParams();
     }
   },
   onClickOutside: (
     e: MouseEvent,
-    queryStringSetter: (qs?: string | null) => void,
+    onRemovePanelQueryParams: () => void,
     checkCanClose?: Props["checkCanClose"]
   ) => {
     if (checkCanClose && !checkCanClose?.(e)) {
@@ -42,38 +42,40 @@ export const close = {
     }
     const target = e.target as HTMLElement;
     if (!target.closest(".p-panel")) {
-      queryStringSetter(undefined);
+      onRemovePanelQueryParams();
     }
   },
 };
 
-export const Panel = forwardRef<HTMLDivElement, Props>(
+const Panel = forwardRef<HTMLDivElement, Props>(
   (
-    { checkCanClose, children, panelClassName, title, ...props }: Props,
+    {
+      checkCanClose,
+      children,
+      panelClassName,
+      title,
+      onRemovePanelQueryParams,
+      ...props
+    }: Props,
     ref
   ) => {
-    const [, setPanelQs] = useQueryParams<{ panel: string | null }>({
-      panel: null,
-    });
+    // TODO: Make onRemovePanelQueryParams a required prop,
+    // remove handleRemovePanelQueryParams and modify tests.
+    const handleRemovePanelQueryParams =
+      onRemovePanelQueryParams === undefined
+        ? () => {}
+        : onRemovePanelQueryParams;
 
     useListener(
       window,
       (e: KeyboardEvent) =>
-        close.onEscape(
-          e,
-          () => setPanelQs(null, { replace: true }),
-          checkCanClose
-        ),
+        close.onEscape(e, handleRemovePanelQueryParams, checkCanClose),
       "keydown"
     );
     useListener(
       window,
       (e: MouseEvent) =>
-        close.onClickOutside(
-          e,
-          () => setPanelQs(null, { replace: true }),
-          checkCanClose
-        ),
+        close.onClickOutside(e, handleRemovePanelQueryParams, checkCanClose),
       "click"
     );
 
@@ -81,7 +83,11 @@ export const Panel = forwardRef<HTMLDivElement, Props>(
     return (
       <Aside {...props} aria-labelledby={titleId} role="dialog">
         <div className={classNames("p-panel", panelClassName)} ref={ref}>
-          <PanelHeader id={titleId} title={title} />
+          <PanelHeader
+            id={titleId}
+            title={title}
+            onRemovePanelQueryParams={handleRemovePanelQueryParams}
+          />
           {children}
         </div>
       </Aside>

@@ -11,8 +11,8 @@ import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import { useQueryParams } from "hooks/useQueryParams";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
+import { usePanelQueryParams } from "panels/utils";
 import { getModelUUID } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import type { RootState } from "store/store";
@@ -69,6 +69,11 @@ export type OnValuesChange = (
   options: ActionOptionValue
 ) => void;
 
+type ActionsQueryParams = {
+  panel: string | null;
+  units: string[];
+};
+
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
@@ -91,10 +96,9 @@ export default function ActionsPanel(): JSX.Element {
 
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
-  const [queryParams, setQueryParams] = useQueryParams<{
-    units: string[];
-    panel: string | null;
-  }>({ units: [], panel: null });
+  const defaultQueryParams: ActionsQueryParams = { panel: null, units: [] };
+  const [queryParams, , handleRemovePanelQueryParams] =
+    usePanelQueryParams<ActionsQueryParams>(defaultQueryParams);
   const selectedUnits = queryParams.units;
 
   useEffect(() => {
@@ -193,7 +197,7 @@ export default function ActionsPanel(): JSX.Element {
           () => {
             setConfirmType("");
             executeAction();
-            setQueryParams(null);
+            handleRemovePanelQueryParams();
           },
           () => setConfirmType("")
         );
@@ -209,6 +213,7 @@ export default function ActionsPanel(): JSX.Element {
       panelClassName="actions-panel"
       data-testid={TestId.PANEL}
       title={generateTitle()}
+      onRemovePanelQueryParams={handleRemovePanelQueryParams}
     >
       <>
         <div

@@ -12,9 +12,9 @@ import Panel from "components/Panel";
 import ScrollOnRender from "components/ScrollOnRender";
 import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
-import { useQueryParams } from "hooks/useQueryParams";
 import type { Config, ConfigData, ConfigValue } from "juju/api";
 import { getApplicationConfig, setApplicationConfig } from "juju/api";
+import { usePanelQueryParams } from "panels/utils";
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
 import { useAppStore } from "store/store";
@@ -44,6 +44,13 @@ export enum TestId {
 
 type ConfirmTypes = "apply" | "cancel" | null;
 
+type ConfigQueryParams = {
+  panel: string | null;
+  charm: string | null;
+  entity: string | null;
+  modelUUID: string | null;
+};
+
 const generateErrors = (errors: string[], scrollArea?: HTMLElement | null) =>
   errors.map((error) => (
     <ScrollOnRender key={error} scrollArea={scrollArea}>
@@ -65,18 +72,16 @@ export default function ConfigPanel(): JSX.Element {
   const [formErrors, setFormErrors] = useState<string[] | null>(null);
   const scrollArea = useRef<HTMLDivElement>(null);
   const sendAnalytics = useAnalytics();
-  const [query, setQuery] = useQueryParams<{
-    charm: string | null;
-    entity: string | null;
-    modelUUID: string | null;
-    panel: string | null;
-  }>({
+
+  const defaultQueryParams: ConfigQueryParams = {
+    panel: null,
     charm: null,
     entity: null,
     modelUUID: null,
-    panel: null,
-  });
-  const { entity: appName, charm, modelUUID } = query;
+  };
+  const [queryParams, setQueryParams, handleRemovePanelQueryParams] =
+    usePanelQueryParams<ConfigQueryParams>(defaultQueryParams);
+  const { entity: appName, charm, modelUUID } = queryParams;
 
   useEffect(() => {
     if (modelUUID && appName) {
@@ -100,7 +105,7 @@ export default function ConfigPanel(): JSX.Element {
   }, [sendAnalytics]);
 
   const onClose = () =>
-    setQuery(
+    setQueryParams(
       {
         charm: null,
         entity: null,
@@ -286,6 +291,7 @@ export default function ConfigPanel(): JSX.Element {
           {appName}
         </h5>
       }
+      onRemovePanelQueryParams={handleRemovePanelQueryParams}
     >
       <>
         {!isLoading && (!config || Object.keys(config).length === 0) ? (

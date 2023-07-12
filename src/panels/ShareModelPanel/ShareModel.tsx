@@ -10,6 +10,7 @@ import Panel from "components/Panel";
 import ShareCard from "components/ShareCard/ShareCard";
 import ToastCard from "components/ToastCard/ToastCard";
 import useModelStatus from "hooks/useModelStatus";
+import { usePanelQueryParams } from "panels/utils";
 import { actions as appActions } from "store/app";
 import {
   getModelControllerDataByUUID,
@@ -46,12 +47,20 @@ type UserAccess = {
   access: string | null;
 };
 
+type ShareModelQueryParams = {
+  panel: string | null;
+};
+
 export default function ShareModel() {
   const promiseDispatch = usePromiseDispatch();
   const [usersAccess, setUsersAccess] = useState<UsersAccess>({});
   const [newUserFormSubmitActive, setNewUserFormSubmitActive] = useState(false);
 
   const [showAddNewUser, setShowAddNewUser] = useState(false);
+
+  const defaultQueryParams: ShareModelQueryParams = { panel: null };
+  const [, , handleRemovePanelQueryParams] =
+    usePanelQueryParams<ShareModelQueryParams>(defaultQueryParams);
 
   const modelStatusData = useModelStatus() || null;
   const newUserFormik = useFormik({
@@ -300,6 +309,7 @@ export default function ShareModel() {
           )}
         </div>
       }
+      onRemovePanelQueryParams={handleRemovePanelQueryParams}
       loading={!modelStatusData}
       isSplit={true}
     >

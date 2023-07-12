@@ -1,18 +1,17 @@
 import type { ReactNode } from "react";
 
-import { useQueryParams } from "hooks/useQueryParams";
-
 type Props = {
   id: string;
   title: ReactNode;
+  // TODO: Make onRemovePanelQueryParams required and modify tests.
+  onRemovePanelQueryParams?: () => void;
 };
 
-export default function PanelHeader({ title, id }: Props): JSX.Element {
-  const [, setPanelQs] = useQueryParams({
-    panel: null,
-    model: null,
-  });
-
+export default function PanelHeader({
+  title,
+  id,
+  onRemovePanelQueryParams,
+}: Props): JSX.Element {
   return (
     <div className="p-panel__header">
       <div className="p-panel__title" id={id}>
@@ -20,7 +19,7 @@ export default function PanelHeader({ title, id }: Props): JSX.Element {
       </div>
       <div className="p-panel__controls">
         <button
-          onClick={() => setPanelQs(null, { replace: true })}
+          onClick={onRemovePanelQueryParams}
           className="p-button--base js-aside-close u-no-margin--bottom has-icon"
         >
           <i className="p-icon--close"></i>
