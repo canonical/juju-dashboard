@@ -5,14 +5,14 @@
     @media (width >= 1580px) {
       grid-template-columns: repeat(2, 1fr);
     }
-  }
 
-  &__grid-item {
-    overflow-wrap: anywhere;
+    &-item {
+      overflow-wrap: anywhere;
 
-    .p-muted-heading {
-      font-size: 0.75rem;
-      margin-bottom: 0.25rem;
+      .p-muted-heading {
+        font-size: 0.75rem;
+        margin-bottom: 0.25rem;
+      }
     }
   }
 }
