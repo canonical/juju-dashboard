@@ -559,6 +559,7 @@ function SaveConfirmation(
           </div>
         </div>
       }
+      onClose={cancelFunction}
     >
       <h4>{Label.SAVE_CONFIRM}</h4>
       <p>
