@@ -1,5 +1,4 @@
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import useAnalytics from "hooks/useAnalytics";
@@ -9,27 +8,25 @@ import { getSelectedApplications } from "store/juju/selectors";
 import type { Header } from "tables/tableHeaders";
 
 export const useTableSelect = (applications: ApplicationInfo[]) => {
-  const selectedApplications = useRef<ApplicationInfo[]>([]);
+  let selectedApplications = useSelector(getSelectedApplications());
 
   const sendAnalytics = useAnalytics();
 
-  const [selectAll, setSelectAll] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  const handleSelectAll = () => {
+  const handleSelectAll = (selectAll = true) => {
     sendAnalytics({
       category: "ApplicationSearch",
       action: "Select all applications",
     });
-    if (selectAll) {
-      selectedApplications.current = [];
+    if (!selectAll) {
+      selectedApplications = [];
     } else {
-      selectedApplications.current = applications;
+      selectedApplications = applications;
     }
-    setSelectAll(!selectAll);
     dispatch(
       jujuActions.updateSelectedApplications({
-        selectedApplications: selectedApplications.current,
+        selectedApplications: selectedApplications,
       })
     );
   };
@@ -39,39 +36,29 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
       category: "ApplicationSearch",
       action: "Select application",
     });
-    let apps = selectedApplications.current;
+    let apps = selectedApplications;
     if (apps.includes(application)) {
       apps = apps.filter((a) => a !== application);
     } else {
       apps = [...apps, application];
     }
-    if (apps.length === applications.length) {
-      setSelectAll(true);
-    } else if (selectAll) {
-      setSelectAll(false);
-    }
-    selectedApplications.current = apps;
+    selectedApplications = apps;
     dispatch(
       jujuActions.updateSelectedApplications({
         selectedApplications: apps,
       })
     );
   };
-
   return {
-    selectAll,
+    selectAll: selectedApplications.length === applications.length,
     handleSelectAll,
     handleSelect,
-    reset: () => {
-      selectedApplications.current = [];
-      setSelectAll(false);
-    },
   };
 };
 export const addSelectAllColumn = (
   header: Header,
   selectAll: boolean,
-  handleSelectAll: () => void
+  handleSelectAll: (selectAll?: boolean) => void
 ) => {
   return [
     {
@@ -82,7 +69,7 @@ export const addSelectAllColumn = (
             className="p-checkbox__input"
             id="select-all"
             name="selectAll"
-            onChange={handleSelectAll}
+            onChange={() => handleSelectAll(!selectAll)}
             checked={selectAll}
             data-testid="select-all-apps"
           />
