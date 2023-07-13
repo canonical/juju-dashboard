@@ -277,7 +277,7 @@ export default function App(): JSX.Element {
 
   return (
     <>
-      <div>
+      <div className="entity-details__sidebar">
         <InfoPanel />
         <>
           <div className="entity-details__actions">
