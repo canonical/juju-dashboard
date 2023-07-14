@@ -68,7 +68,10 @@ function SearchResultsActionsRow() {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
-  const [, setPanel] = useQueryParams<{ panel: string | null }>({
+  const [, setPanel] = useQueryParams<{
+    panel: string | null;
+    charm?: string;
+  }>({
     panel: null,
   });
 
@@ -78,13 +81,22 @@ function SearchResultsActionsRow() {
       category: "ApplicationSearch",
       action: "Run action (button)",
     });
-    await getCharmsFromApplications(
+
+    const charms = await getCharmsFromApplications(
       selectedApplications,
       modelUUID,
       appState,
       dispatch
     );
-    setPanel({ panel: "choose-charm" }, { replace: true });
+    const firstCharmURL =
+      charms && charms[0] && charms[0].url ? charms[0].url : undefined;
+    const newQueryParams =
+      firstCharmURL && charms.length === 1
+        ? { panel: "charm-actions", charm: firstCharmURL }
+        : { panel: "choose-charm" };
+
+    // Skip charm selection panel if only one charm is available for selection.
+    setPanel(newQueryParams, { replace: true });
   };
 
   return (
