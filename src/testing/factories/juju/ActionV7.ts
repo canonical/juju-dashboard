@@ -4,13 +4,13 @@ import type {
   ActionResult,
   ActionResults,
   ActionSpec,
-  AdditionalProperties,
   ApplicationCharmActionsResult,
   ApplicationsCharmActionsResults,
   Error as ActionError,
   OperationResult,
   OperationResults,
 } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
+import type { CharmActionSpec } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import { Factory } from "fishery";
 
 export const errorFactory = Factory.define<ActionError>(() => ({
@@ -60,15 +60,16 @@ export const operationResultsFactory = Factory.define<OperationResults>(() => ({
   truncated: false,
 }));
 
-export const applicationCharmActionParamsFactory =
-  Factory.define<AdditionalProperties>(() => ({
-    additionalProperties: false,
-    description: "Add disk(s) to Ceph",
-    properties: {},
-    required: [],
-    title: "add-disk",
-    type: "object",
-  }));
+export const applicationCharmActionParamsFactory = Factory.define<
+  CharmActionSpec["params"]
+>(() => ({
+  additionalProperties: false,
+  description: "Add disk(s) to Ceph",
+  properties: {},
+  required: [],
+  title: "add-disk",
+  type: "object",
+}));
 
 export const actionSpecFactory = Factory.define<ActionSpec>(() => ({
   description: "Add disk(s) to Ceph",

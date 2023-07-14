@@ -1,11 +1,13 @@
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 
 import CharmIcon from "components/CharmIcon/CharmIcon";
-import type { ModelData } from "juju/types";
+import type { WatcherModelData } from "juju/types";
 
 type Props = {
   applicationName: string;
-  applications: ModelData["applications"] | Record<string, ApplicationStatus>;
+  applications:
+    | WatcherModelData["applications"]
+    | Record<string, ApplicationStatus>;
 };
 
 const RelationIcon = ({ applicationName, applications }: Props) => {

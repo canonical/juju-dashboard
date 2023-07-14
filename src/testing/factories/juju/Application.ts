@@ -1,32 +1,32 @@
 import type {
-  AdditionalProperties,
   ApplicationGetResults,
   Base,
   Value,
   ErrorResults,
-} from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
+} from "@canonical/jujulib/dist/api/facades/application/ApplicationV18";
 import { Factory } from "fishery";
 
-export const applicationConfigFactory = Factory.define<AdditionalProperties>(
+export const applicationConfigFactory = Factory.define<
+  NonNullable<ApplicationGetResults["application-config"]>
+>(() => ({
+  trust: configFactory.build({
+    default: false,
+    description: "Does this application have access to trusted credentials",
+    type: "bool",
+    value: false,
+  }),
+}));
+
+export const configFactory = Factory.define<ApplicationGetResults["config"]>(
   () => ({
-    trust: {
-      default: false,
-      description: "Does this application have access to trusted credentials",
-      source: "default",
-      type: "bool",
-      value: false,
-    },
+    default: "",
+    description:
+      "Base64 encoded Certificate Authority (CA) bundle. Setting this config\nallows container runtimes to pull images from registries with TLS\ncertificates signed by an external CA.\n",
+    source: "default",
+    type: "string",
+    value: "",
   })
 );
-
-export const configFactory = Factory.define<AdditionalProperties>(() => ({
-  default: "",
-  description:
-    "Base64 encoded Certificate Authority (CA) bundle. Setting this config\nallows container runtimes to pull images from registries with TLS\ncertificates signed by an external CA.\n",
-  source: "default",
-  type: "string",
-  value: "",
-}));
 
 export const constraintsFactory = Factory.define<Value>(() => ({
   "allocate-public-ip": false,
@@ -46,14 +46,14 @@ export const constraintsFactory = Factory.define<Value>(() => ({
   zones: [],
 }));
 
-export const endpointBindingsFactory = Factory.define<AdditionalProperties>(
-  () => ({
-    "": "alpha",
-    containerd: "alpha",
-    "docker-registry": "alpha",
-    untrusted: "alpha",
-  })
-);
+export const endpointBindingsFactory = Factory.define<
+  NonNullable<ApplicationGetResults["endpoint-bindings"]>
+>(() => ({
+  "": "alpha",
+  containerd: "alpha",
+  "docker-registry": "alpha",
+  untrusted: "alpha",
+}));
 
 export const baseFactory = Factory.define<Base>(() => ({
   channel: "base",

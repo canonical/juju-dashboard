@@ -1,4 +1,8 @@
-import type { AdditionalProperties } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type {
+  ApplicationStatus,
+  MachineStatus,
+  UnitStatus,
+} from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 
@@ -6,7 +10,7 @@ import type {
   AnnotationData,
   ApplicationData,
   MachineData,
-  ModelInfo,
+  WatcherModelInfo,
   RelationData,
   UnitData,
 } from "juju/types";
@@ -212,7 +216,7 @@ export function getModelWatcherDataByUUID(modelUUID: string) {
 export function getModelInfo(modelUUID: string) {
   return createSelector(
     getModelWatcherDataByUUID(modelUUID),
-    (modelWatcherData): ModelInfo | null => {
+    (modelWatcherData): WatcherModelInfo | null => {
       if (modelWatcherData) {
         return modelWatcherData.model;
       }
@@ -564,7 +568,7 @@ export const getGroupedModelDataByStatus = createSelector(
 export const getGroupedMachinesDataByStatus = createSelector(
   getModelData,
   (modelData) => {
-    const grouped: Record<string, AdditionalProperties[]> = {
+    const grouped: Record<string, MachineStatus[]> = {
       blocked: [],
       alert: [],
       running: [],
@@ -590,7 +594,7 @@ export const getGroupedMachinesDataByStatus = createSelector(
 export const getGroupedUnitsDataByStatus = createSelector(
   getModelData,
   (modelData) => {
-    const grouped: Record<string, AdditionalProperties[]> = {
+    const grouped: Record<string, UnitStatus[]> = {
       blocked: [],
       alert: [],
       running: [],
@@ -619,7 +623,7 @@ export const getGroupedUnitsDataByStatus = createSelector(
 export const getGroupedApplicationsDataByStatus = createSelector(
   getModelData,
   (modelData) => {
-    const grouped: Record<string, AdditionalProperties[]> = {
+    const grouped: Record<string, ApplicationStatus[]> = {
       blocked: [],
       alert: [],
       running: [],

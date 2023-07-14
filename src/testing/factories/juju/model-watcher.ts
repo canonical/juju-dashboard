@@ -13,8 +13,8 @@ import type {
   MachineAgentStatus,
   MachineChangeDelta,
   ModelAgentStatus,
-  ModelData as ModelWatcherModelData,
-  ModelInfo as ModelWatcherModelInfo,
+  WatcherModelData,
+  WatcherModelInfo,
   RelationChangeDelta,
   UnitAgentStatus,
   UnitChangeDelta,
@@ -39,8 +39,8 @@ export const modelSLAFactory = Factory.define<ModelSLAInfo>(() => ({
   owner: "",
 }));
 
-export const modelWatcherModelInfoFactory =
-  Factory.define<ModelWatcherModelInfo>(() => ({
+export const modelWatcherModelInfoFactory = Factory.define<WatcherModelInfo>(
+  () => ({
     "cloud-tag": "cloud-aws",
     region: "us-east-1",
     type: "iaas",
@@ -55,7 +55,8 @@ export const modelWatcherModelInfoFactory =
     status: modelAgentStatusFactory.build(),
     constraints: {},
     sla: modelSLAFactory.build(),
-  }));
+  })
+);
 
 export const actionChangeDeltaFactory = Factory.define<ActionChangeDelta>(
   () => ({
@@ -227,8 +228,8 @@ export const applicationChangeDeltaFactory =
     "workload-version": "",
   }));
 
-export const modelWatcherModelDataFactory =
-  Factory.define<ModelWatcherModelData>(() => ({
+export const modelWatcherModelDataFactory = Factory.define<WatcherModelData>(
+  () => ({
     "remote-applications": {},
     actions: {},
     annotations: {},
@@ -239,4 +240,5 @@ export const modelWatcherModelDataFactory =
     offers: {},
     relations: {},
     units: {},
-  }));
+  })
+);

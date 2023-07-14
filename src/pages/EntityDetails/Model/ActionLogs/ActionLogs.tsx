@@ -1,6 +1,5 @@
 import type {
   ActionResult,
-  AdditionalProperties,
   OperationResult,
 } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import {
@@ -93,7 +92,7 @@ function generateAppIcon(
 }
 
 function ActionPayloadModal(props: {
-  payload: AdditionalProperties | null;
+  payload: ActionResult["output"] | null;
   onClose: () => void;
 }) {
   if (!props.payload) return <></>;
@@ -126,9 +125,9 @@ export default function ActionLogs() {
   const [operations, setOperations] = useState<Operations>([]);
   const [actions, setActions] = useState<Actions>([]);
   const [fetchedOperations, setFetchedOperations] = useState(false);
-  const [modalDetails, setModalDetails] = useState<AdditionalProperties | null>(
-    null
-  );
+  const [modalDetails, setModalDetails] = useState<
+    ActionResult["output"] | null
+  >(null);
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const [selectedOutput, setSelectedOutput] = useState<{
     [key: string]: Output;

@@ -1,6 +1,6 @@
 import type { Client } from "@canonical/jujulib";
 import * as Sentry from "@sentry/browser";
-import type { Middleware } from "redux";
+import type { AnyAction, Middleware } from "redux";
 
 import {
   disableControllerUUIDMasking,
@@ -31,7 +31,7 @@ export const modelPollerMiddleware: Middleware<
 > = (reduxStore) => {
   const controllers = new Map<string, ConnectionWithFacades>();
   const jujus = new Map<string, Client>();
-  return (next) => async (action) => {
+  return (next) => async (action: AnyAction) => {
     if (action.type === appActions.connectAndPollControllers.type) {
       action.payload.controllers.forEach(
         async (controllerData: ControllerOptions) => {

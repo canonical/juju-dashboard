@@ -4,7 +4,7 @@ import type {
   AllWatcherDelta,
   ApplicationData,
   DeltaMessageData,
-  ModelData,
+  WatcherModelData,
   ModelWatcherData,
 } from "./types";
 import {
@@ -13,7 +13,7 @@ import {
   ReduxDeltaEntityTypes,
 } from "./types";
 
-export function generateModelWatcherBase(): ModelData {
+export function generateModelWatcherBase(): WatcherModelData {
   return {
     actions: {},
     annotations: {},
@@ -49,7 +49,7 @@ export function generateModelWatcherBase(): ModelData {
   };
 }
 
-function _processDelta<M extends ModelData, E extends keyof M>(
+function _processDelta<M extends WatcherModelData, E extends keyof M>(
   actionType: string,
   delta: DeltaMessageData,
   modelData: M,
