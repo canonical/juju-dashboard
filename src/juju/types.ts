@@ -56,25 +56,12 @@ export type AllWatcherDelta =
       DeltaChangeTypes.CHANGE,
       AnnotationChangeDelta
     ]
-  | [
-      DeltaEntityTypes.APPLICATION,
-      DeltaChangeTypes.CHANGE,
-      ApplicationChangeDelta
-    ]
-  | [
-      DeltaEntityTypes.APPLICATION,
-      DeltaChangeTypes.REMOVE,
-      ApplicationChangeDelta
-    ]
-  | [DeltaEntityTypes.CHARM, DeltaChangeTypes.CHANGE, CharmChangeDelta]
-  | [DeltaEntityTypes.CHARM, DeltaChangeTypes.REMOVE, CharmChangeDelta]
-  | [DeltaEntityTypes.UNIT, DeltaChangeTypes.CHANGE, UnitChangeDelta]
-  | [DeltaEntityTypes.UNIT, DeltaChangeTypes.REMOVE, UnitChangeDelta]
-  | [DeltaEntityTypes.MACHINE, DeltaChangeTypes.CHANGE, MachineChangeDelta]
-  | [DeltaEntityTypes.MACHINE, DeltaChangeTypes.REMOVE, MachineChangeDelta]
+  | [DeltaEntityTypes.APPLICATION, DeltaChangeTypes, ApplicationChangeDelta]
+  | [DeltaEntityTypes.CHARM, DeltaChangeTypes, CharmChangeDelta]
+  | [DeltaEntityTypes.UNIT, DeltaChangeTypes, UnitChangeDelta]
+  | [DeltaEntityTypes.MACHINE, DeltaChangeTypes, MachineChangeDelta]
   | [DeltaEntityTypes.MODEL, DeltaChangeTypes.CHANGE, ModelChangeDelta]
-  | [DeltaEntityTypes.RELATION, DeltaChangeTypes.CHANGE, RelationChangeDelta]
-  | [DeltaEntityTypes.RELATION, DeltaChangeTypes.REMOVE, RelationChangeDelta];
+  | [DeltaEntityTypes.RELATION, DeltaChangeTypes, RelationChangeDelta];
 
 export enum DeltaEntityTypes {
   ACTION = "action",
