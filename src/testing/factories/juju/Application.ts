@@ -3,7 +3,7 @@ import type {
   Base,
   Value,
   ErrorResults,
-} from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
+} from "@canonical/jujulib/dist/api/facades/application/ApplicationV18";
 import { Factory } from "fishery";
 
 export const applicationConfigFactory = Factory.define<
@@ -12,7 +12,6 @@ export const applicationConfigFactory = Factory.define<
   trust: configFactory.build({
     default: false,
     description: "Does this application have access to trusted credentials",
-    source: "default",
     type: "bool",
     value: false,
   }),

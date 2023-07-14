@@ -14,7 +14,7 @@ import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
 import type { AllWatcherNextResults } from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
 import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
 import Application from "@canonical/jujulib/dist/api/facades/application";
-import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
+import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/application/ApplicationV18";
 import Charms from "@canonical/jujulib/dist/api/facades/charms";
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import Client from "@canonical/jujulib/dist/api/facades/client";

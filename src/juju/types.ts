@@ -3,7 +3,7 @@ import type ActionV7 from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import type AllWatcherV3 from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
 import type { AnnotationsGetResult } from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
 import type AnnotationsV2 from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
-import type ApplicationV15 from "@canonical/jujulib/dist/api/facades/application/ApplicationV15";
+import type ApplicationV18 from "@canonical/jujulib/dist/api/facades/application/ApplicationV18";
 import type CharmsV6 from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type ClientV6 from "@canonical/jujulib/dist/api/facades/client/ClientV6";
@@ -353,7 +353,7 @@ export type Facades = {
   action?: ActionV7;
   allWatcher?: AllWatcherV3;
   annotations?: AnnotationsV2;
-  application?: ApplicationV15;
+  application?: ApplicationV18;
   charms?: CharmsV6;
   client?: ClientV6;
   cloud?: CloudV7;
