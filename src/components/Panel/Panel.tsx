@@ -13,7 +13,7 @@ type Props = PropsWithSpread<
     checkCanClose?: (e: KeyboardEvent | MouseEvent) => boolean;
     panelClassName: string;
     title: ReactNode;
-    onRemovePanelQueryParams?: () => void;
+    onRemovePanelQueryParams: () => void;
   },
   PropsWithChildren & AsideProps
 >;
@@ -59,23 +59,16 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     }: Props,
     ref
   ) => {
-    // TODO: Make onRemovePanelQueryParams a required prop,
-    // remove handleRemovePanelQueryParams and modify tests.
-    const handleRemovePanelQueryParams =
-      onRemovePanelQueryParams === undefined
-        ? () => {}
-        : onRemovePanelQueryParams;
-
     useListener(
       window,
       (e: KeyboardEvent) =>
-        close.onEscape(e, handleRemovePanelQueryParams, checkCanClose),
+        close.onEscape(e, onRemovePanelQueryParams, checkCanClose),
       "keydown"
     );
     useListener(
       window,
       (e: MouseEvent) =>
-        close.onClickOutside(e, handleRemovePanelQueryParams, checkCanClose),
+        close.onClickOutside(e, onRemovePanelQueryParams, checkCanClose),
       "click"
     );
 
@@ -86,7 +79,7 @@ const Panel = forwardRef<HTMLDivElement, Props>(
           <PanelHeader
             id={titleId}
             title={title}
-            onRemovePanelQueryParams={handleRemovePanelQueryParams}
+            onRemovePanelQueryParams={onRemovePanelQueryParams}
           />
           {children}
         </div>

@@ -3,8 +3,7 @@ import type { ReactNode } from "react";
 type Props = {
   id: string;
   title: ReactNode;
-  // TODO: Make onRemovePanelQueryParams required and modify tests.
-  onRemovePanelQueryParams?: () => void;
+  onRemovePanelQueryParams: () => void;
 };
 
 export default function PanelHeader({
