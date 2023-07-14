@@ -10,7 +10,7 @@ import Panel from "components/Panel";
 import ShareCard from "components/ShareCard/ShareCard";
 import ToastCard from "components/ToastCard/ToastCard";
 import useModelStatus from "hooks/useModelStatus";
-import { usePanelQueryParams } from "panels/utils";
+import { usePanelQueryParams } from "panels/hooks";
 import { actions as appActions } from "store/app";
 import {
   getModelControllerDataByUUID,

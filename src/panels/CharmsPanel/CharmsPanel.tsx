@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import Panel from "components/Panel";
-import { usePanelQueryParams } from "panels/utils";
+import { usePanelQueryParams } from "panels/hooks";
 import { getCharms } from "store/juju/selectors";
 import "./_charms-panel.scss";
 

@@ -14,7 +14,7 @@ import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import type { Config, ConfigData, ConfigValue } from "juju/api";
 import { getApplicationConfig, setApplicationConfig } from "juju/api";
-import { usePanelQueryParams } from "panels/utils";
+import { usePanelQueryParams } from "panels/hooks";
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
 import { useAppStore } from "store/store";
@@ -79,7 +79,7 @@ export default function ConfigPanel(): JSX.Element {
     entity: null,
     modelUUID: null,
   };
-  const [queryParams, setQueryParams, handleRemovePanelQueryParams] =
+  const [queryParams, , handleRemovePanelQueryParams] =
     usePanelQueryParams<ConfigQueryParams>(defaultQueryParams);
   const { entity: appName, charm, modelUUID } = queryParams;
 
@@ -103,17 +103,6 @@ export default function ConfigPanel(): JSX.Element {
       action: "Config panel opened",
     });
   }, [sendAnalytics]);
-
-  const onClose = () =>
-    setQueryParams(
-      {
-        charm: null,
-        entity: null,
-        modelUUID: null,
-        panel: null,
-      },
-      { replace: true }
-    );
 
   function setNewValue(name: string, value: ConfigValue) {
     const newConfig = cloneDeep(config);
@@ -179,7 +168,7 @@ export default function ConfigPanel(): JSX.Element {
     if (hasChangedFields(config)) {
       setConfirmType("cancel");
     } else {
-      onClose();
+      handleRemovePanelQueryParams();
     }
   }
 
@@ -219,7 +208,7 @@ export default function ConfigPanel(): JSX.Element {
       category: "User",
       action: "Config values updated",
     });
-    onClose();
+    handleRemovePanelQueryParams();
   }
 
   function generateConfirmationDialog(): JSX.Element | null {
@@ -245,7 +234,7 @@ export default function ConfigPanel(): JSX.Element {
           changedConfigList,
           () => {
             setConfirmType(null);
-            onClose();
+            handleRemovePanelQueryParams();
           },
           () => setConfirmType(null)
         );

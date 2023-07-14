@@ -22,7 +22,7 @@ import type {
 } from "panels/ActionsPanel/ActionsPanel";
 import { onValuesChange } from "panels/ActionsPanel/ActionsPanel";
 import { enableSubmit } from "panels/ActionsPanel/ActionsPanel";
-import { usePanelQueryParams } from "panels/utils";
+import { usePanelQueryParams } from "panels/hooks";
 import {
   getModelUUIDFromList,
   getSelectedApplications,
@@ -65,7 +65,7 @@ export default function CharmActionsPanel(): JSX.Element {
     panel: null,
     charm: null,
   };
-  const [queryParams, setQueryParams, handleRemovePanelQueryParams] =
+  const [queryParams, , handleRemovePanelQueryParams] =
     usePanelQueryParams<CharmActionsQueryParams>(defaultQueryParams);
   const selectedApplications = useSelector(
     getSelectedApplications(queryParams.charm || "")
@@ -193,7 +193,7 @@ export default function CharmActionsPanel(): JSX.Element {
             event.stopPropagation();
             setConfirmType("");
             executeAction();
-            setQueryParams({ panel: null }, { replace: true });
+            handleRemovePanelQueryParams();
           },
           () => setConfirmType("")
         );

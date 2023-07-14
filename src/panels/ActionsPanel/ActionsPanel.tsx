@@ -12,7 +12,7 @@ import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
-import { usePanelQueryParams } from "panels/utils";
+import { usePanelQueryParams } from "panels/hooks";
 import { getModelUUID } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import type { RootState } from "store/store";

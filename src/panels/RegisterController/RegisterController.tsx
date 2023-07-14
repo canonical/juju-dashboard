@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import Panel from "components/Panel";
 import useLocalStorage from "hooks/useLocalStorage";
-import { usePanelQueryParams } from "panels/utils";
+import { usePanelQueryParams } from "panels/hooks";
 import { thunks as appThunks } from "store/app";
 import type { ControllerArgs } from "store/app/actions";
 import { useAppDispatch } from "store/store";
