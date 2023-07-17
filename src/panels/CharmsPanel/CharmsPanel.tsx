@@ -12,7 +12,11 @@ export enum Label {
   TITLE = "Choose applications of charm:",
 }
 
-export default function CharmsPanel() {
+type Props = {
+  loading?: boolean;
+};
+
+export default function CharmsPanel({ loading }: Props): JSX.Element {
   const [, setQuery] = useQueryParams<{
     panel: string | null;
     charm: string | null;
@@ -31,7 +35,12 @@ export default function CharmsPanel() {
     );
   };
   return (
-    <Panel width="narrow" panelClassName="charms-panel" title={Label.TITLE}>
+    <Panel
+      width="narrow"
+      panelClassName="charms-panel"
+      title={Label.TITLE}
+      loading={loading}
+    >
       <div className="p-panel__content p-panel_content--padded">
         <form
           className="p-form u-fixed-width charm-list"
