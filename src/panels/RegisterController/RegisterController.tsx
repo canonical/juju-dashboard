@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import Panel from "components/Panel";
 import useLocalStorage from "hooks/useLocalStorage";
+import { usePanelQueryParams } from "panels/hooks";
 import { thunks as appThunks } from "store/app";
 import type { ControllerArgs } from "store/app/actions";
 import { useAppDispatch } from "store/store";
@@ -28,6 +29,10 @@ type FormValues = {
   certificateAccepted?: boolean;
 };
 
+type RegisterControllerQueryParams = {
+  panel: string | null;
+};
+
 export default function RegisterController() {
   const [formValues, setFormValues] = useState<FormValues>({});
   const dispatch = useAppDispatch();
@@ -35,6 +40,10 @@ export default function RegisterController() {
     ControllerArgs[]
   >(STORAGE_KEY, []);
   const navigate = useNavigate();
+
+  const defaultQueryParams: RegisterControllerQueryParams = { panel: null };
+  const [, , handleRemovePanelQueryParams] =
+    usePanelQueryParams<RegisterControllerQueryParams>(defaultQueryParams);
 
   const handleRegisterAController: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -75,7 +84,11 @@ export default function RegisterController() {
   }
 
   return (
-    <Panel panelClassName="register-controller" title={<h4>{Label.TITLE}</h4>}>
+    <Panel
+      panelClassName="register-controller"
+      title={<h4>{Label.TITLE}</h4>}
+      onRemovePanelQueryParams={handleRemovePanelQueryParams}
+    >
       <div className="p-panel__content p-panel_content--padded">
         <p className="p-form-help-text">
           Information can be retrieved using the{" "}

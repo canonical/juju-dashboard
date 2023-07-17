@@ -7,9 +7,9 @@ export type SetParams<P> = (
   options?: NavigateOptions
 ) => void;
 
-export const useQueryParams = <
-  P extends Record<string, null | string | string[]>
->(
+export type QueryParams = Record<string, null | string | string[]>;
+
+export const useQueryParams = <P extends QueryParams>(
   params: P
 ): [P, SetParams<P>] => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,5 +51,6 @@ export const useQueryParams = <
       }
     }
   });
+
   return [params, setParam];
 };

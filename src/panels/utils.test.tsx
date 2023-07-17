@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { generatePanelTableRows } from "./shared";
+import { generatePanelTableRows } from "./utils";
 
 describe("generatePanelTableRows", () => {
   it("can render table rows", () => {

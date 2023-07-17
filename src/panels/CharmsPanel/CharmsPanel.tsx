@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import Panel from "components/Panel";
-import { useQueryParams } from "hooks/useQueryParams";
+import { usePanelQueryParams } from "panels/hooks";
 import { getCharms } from "store/juju/selectors";
 import "./_charms-panel.scss";
 
@@ -12,26 +12,35 @@ export enum Label {
   TITLE = "Choose applications of charm:",
 }
 
+type CharmsQueryParams = {
+  panel: string | null;
+  charm: string | null;
+};
+
 export default function CharmsPanel() {
-  const [, setQuery] = useQueryParams<{
-    panel: string | null;
-    charm: string | null;
-  }>({
+  const defaultQueryParams: CharmsQueryParams = {
     panel: null,
     charm: null,
-  });
+  };
+  const [, setQueryParams, handleRemovePanelQueryParams] =
+    usePanelQueryParams<CharmsQueryParams>(defaultQueryParams);
 
   const [selectedCharm, setSelectedCharm] = useState<string | null>(null);
   const charms = useSelector(getCharms());
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
-    setQuery(
+    setQueryParams(
       { panel: "charm-actions", charm: selectedCharm },
       { replace: true }
     );
   };
   return (
-    <Panel width="narrow" panelClassName="charms-panel" title={Label.TITLE}>
+    <Panel
+      width="narrow"
+      panelClassName="charms-panel"
+      title={Label.TITLE}
+      onRemovePanelQueryParams={handleRemovePanelQueryParams}
+    >
       <div className="p-panel__content p-panel_content--padded">
         <form
           className="p-form u-fixed-width charm-list"
