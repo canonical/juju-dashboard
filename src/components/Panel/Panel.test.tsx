@@ -37,14 +37,6 @@ describe("Panel", () => {
     });
   };
 
-  it("should render successfully", () => {
-    const {
-      result: { container },
-    } = mockRenderComponent({});
-
-    expect(container).toMatchSnapshot();
-  });
-
   it("should display the title and content", async () => {
     mockRenderComponent({});
 

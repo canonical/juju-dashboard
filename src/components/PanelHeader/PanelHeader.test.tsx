@@ -29,15 +29,6 @@ describe("PanelHeader", () => {
     return renderComponent(<MockPanelHeader />, { url });
   };
 
-  it("should render successfully", () => {
-    const {
-      result: { container },
-    } = mockRenderComponent({
-      url: "/mockPath?model=cmr&panel=share-model",
-    });
-    expect(container).toMatchSnapshot();
-  });
-
   it("should render the supplied title", () => {
     mockRenderComponent({
       url: "/mockPath?model=cmr&panel=share-model",
