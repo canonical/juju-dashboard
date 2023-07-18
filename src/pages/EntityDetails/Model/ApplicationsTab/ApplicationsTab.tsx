@@ -11,6 +11,7 @@ import type { Chip } from "components/ChipGroup/ChipGroup";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 import ContentReveal from "components/ContentReveal/ContentReveal";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
 import type { ApplicationData, ApplicationInfo } from "juju/types";
@@ -59,6 +60,7 @@ const ContentRevealTitle = ({
 
 function SearchResultsActionsRow() {
   const selectedApplications = useSelector(getSelectedApplications());
+  const sendAnalytics = useAnalytics();
 
   const [, setPanel] = useQueryParams<{ panel: string | null }>({
     panel: null,
@@ -66,7 +68,11 @@ function SearchResultsActionsRow() {
 
   const handleRunAction = async (event: MouseEvent) => {
     event.stopPropagation();
-    setPanel({ panel: "choose-charm" }, { replace: true });
+    sendAnalytics({
+      category: "ApplicationSearch",
+      action: "Run action (button)",
+    });
+    setPanel({ panel: "charm-actions" }, { replace: true });
   };
 
   return (

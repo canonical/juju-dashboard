@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 import Panel from "components/Panel";
 import { useQueryParams } from "hooks/useQueryParams";
+import CharmActionsPanel from "panels/ActionsPanel/CharmActionsPanel";
 import { getCharms } from "store/juju/selectors";
 import "./_charms-panel.scss";
 
@@ -12,12 +13,8 @@ export enum Label {
   TITLE = "Choose applications of charm:",
 }
 
-type Props = {
-  loading?: boolean;
-};
-
-export default function CharmsPanel({ loading }: Props): JSX.Element {
-  const [, setQuery] = useQueryParams<{
+export default function CharmsPanel(): JSX.Element {
+  const [queryParams, setQueryParams] = useQueryParams<{
     panel: string | null;
     charm: string | null;
   }>({
@@ -29,46 +26,43 @@ export default function CharmsPanel({ loading }: Props): JSX.Element {
   const charms = useSelector(getCharms());
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
-    setQuery(
-      { panel: "charm-actions", charm: selectedCharm },
-      { replace: true }
-    );
+    setQueryParams({ charm: selectedCharm }, { replace: true });
   };
   return (
-    <Panel
-      width="narrow"
-      panelClassName="charms-panel"
-      title={Label.TITLE}
-      loading={loading}
-    >
-      <div className="p-panel__content p-panel_content--padded">
-        <form
-          className="p-form u-fixed-width charm-list"
-          onSubmit={handleSubmit}
-        >
-          <div className="charm-list__items">
-            {charms.map((charm) => (
-              <div key={charm.url} className="p-form__group">
-                <RadioInput
-                  id={charm.url}
-                  label={`${charm.meta?.name} (rev: ${charm.revision})`}
-                  checked={selectedCharm === charm.url}
-                  onChange={() => setSelectedCharm(charm.url)}
-                />
-              </div>
-            ))}
-          </div>
-          <div className="actions-panel__drawer u-float">
-            <Button
-              type="submit"
-              className="u-float-right"
-              disabled={!selectedCharm}
+    <>
+      {!!queryParams.charm && <CharmActionsPanel />}
+      {!queryParams.charm && (
+        <Panel width="narrow" panelClassName="charms-panel" title={Label.TITLE}>
+          <div className="p-panel__content p-panel_content--padded">
+            <form
+              className="p-form u-fixed-width charm-list"
+              onSubmit={handleSubmit}
             >
-              Next
-            </Button>
+              <div className="charm-list__items">
+                {charms.map((charm) => (
+                  <div key={charm.url} className="p-form__group">
+                    <RadioInput
+                      id={charm.url}
+                      label={`${charm.meta?.name} (rev: ${charm.revision})`}
+                      checked={selectedCharm === charm.url}
+                      onChange={() => setSelectedCharm(charm.url)}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="actions-panel__drawer u-float">
+                <Button
+                  type="submit"
+                  className="u-float-right"
+                  disabled={!selectedCharm}
+                >
+                  Next
+                </Button>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
-    </Panel>
+        </Panel>
+      )}
+    </>
   );
 }

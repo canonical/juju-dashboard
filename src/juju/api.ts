@@ -745,7 +745,7 @@ export async function getCharmInfo(
   return charmDetails;
 }
 
-export async function getCharmsFromApplications(
+export async function getCharmsURLFromApplications(
   applications: ApplicationInfo[],
   modelUUID: string,
   appState: RootState,
@@ -767,5 +767,5 @@ export async function getCharmsFromApplications(
       wsControllerURL: baseWSControllerURL,
     })
   );
-  return charms;
+  return charms.filter((charm) => !!charm).map((charm) => charm?.url);
 }
