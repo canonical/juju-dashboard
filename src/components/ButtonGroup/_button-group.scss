@@ -55,7 +55,6 @@
     margin: 0 !important; // Required to override Vanilla button:not(:last-of-type):not(:only-of-type)
     padding: 0.3rem 1.65rem;
     text-align: center;
-    text-transform: capitalize;
 
     &.is-selected {
       background: $color-mid-x-light;

@@ -3,9 +3,6 @@ import userEvent from "@testing-library/user-event";
 
 import * as componentUtils from "components/utils";
 import * as juju from "juju/api";
-import ActionLogs, {
-  Label,
-} from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -25,6 +22,7 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
+import ActionLogs, { Label } from "./ActionLogs";
 import { Output } from "./ActionLogs";
 
 jest.mock("components/utils", () => ({

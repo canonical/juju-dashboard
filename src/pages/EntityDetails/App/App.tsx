@@ -295,16 +295,16 @@ export default function App(): JSX.Element {
       <div className="entity-details__main u-overflow--auto">
         {!hideMachines && (
           <ButtonGroup
-            buttons={["units", "machines"].map((tab) => ({
+            buttons={["Units", "Machines"].map((tab) => ({
               children: tab,
-              key: tab,
+              key: tab.toLowerCase(),
               to:
                 userName && modelName && entity
                   ? urls.model.app.tab({
                       userName,
                       modelName,
                       appName: entity,
-                      tab: tab as AppTab,
+                      tab: tab.toLowerCase() as AppTab,
                     })
                   : "",
             }))}

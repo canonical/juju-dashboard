@@ -83,7 +83,7 @@ describe("Entity Details App", () => {
     renderComponent(<App />, { path, url, state });
     expect(screen.getByTestId(TestId.UNITS_TABLE)).toBeInTheDocument();
     expect(screen.queryByTestId(TestId.MACHINES_TABLE)).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole("link", { name: "machines" }));
+    await userEvent.click(screen.getByRole("link", { name: "Machines" }));
     expect(screen.queryByTestId(TestId.UNITS_TABLE)).not.toBeInTheDocument();
     expect(screen.getByTestId(TestId.MACHINES_TABLE)).toBeInTheDocument();
   });
