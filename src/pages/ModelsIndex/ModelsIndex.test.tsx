@@ -106,10 +106,10 @@ describe("Models Index page", () => {
   it("displays correct grouping view", async () => {
     renderComponent(<ModelsIndex />, { state });
 
-    expect(screen.getByRole("link", { name: "status" })).toHaveClass(
+    expect(screen.getByRole("link", { name: "Status" })).toHaveClass(
       "is-selected"
     );
-    const ownerButton = screen.getByRole("link", { name: "owner" });
+    const ownerButton = screen.getByRole("link", { name: "Owner" });
     await userEvent.click(ownerButton);
     expect(ownerButton).toHaveClass("is-selected");
     const searchParams = new URLSearchParams(window.location.search);

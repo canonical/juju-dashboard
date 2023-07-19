@@ -391,11 +391,6 @@
 
 @mixin entity-details__button-group {
   .entity-details .p-button-group {
-    .p-button-group__buttons {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-    }
-
     .p-button-group__button {
       padding: 0.5rem 1rem;
 

@@ -390,7 +390,7 @@ export default function ActionLogs() {
   return (
     <div
       className={classnames("entity-details__action-logs", {
-        "entity-details__loading": !fetchedOperations,
+        "action-logs__loading": !fetchedOperations,
       })}
     >
       {!fetchedOperations ? (

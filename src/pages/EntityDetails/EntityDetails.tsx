@@ -135,7 +135,7 @@ const EntityDetails = () => {
       },
       {
         active: activeView === "action-logs",
-        label: "Action Logs",
+        label: "Logs",
         onClick: (e: MouseEvent) => handleNavClick(e),
         to: urls.model.tab({ userName, modelName, tab: "action-logs" }),
         component: Link,
