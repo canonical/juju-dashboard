@@ -5,6 +5,10 @@ import ActionLogs from "./ActionLogs";
 
 import "./_logs.scss";
 
+export enum Label {
+  ACTION_LOGS = "Action logs",
+}
+
 const Logs = () => {
   const [{ activeView }, setQueryParams] = useQueryParams<{
     activeView: string | null;
@@ -14,7 +18,7 @@ const Logs = () => {
   return (
     <div className="logs-tab">
       <ButtonGroup
-        buttons={[{ title: "Action logs", url: "action-logs" }].map(
+        buttons={[{ title: Label.ACTION_LOGS, url: "action-logs" }].map(
           ({ title, url }) => ({
             children: title,
             key: url,
