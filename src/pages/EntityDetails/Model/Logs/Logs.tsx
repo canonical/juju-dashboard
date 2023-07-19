@@ -3,6 +3,8 @@ import { useQueryParams } from "hooks/useQueryParams";
 
 import ActionLogs from "./ActionLogs";
 
+import "./_logs.scss";
+
 const Logs = () => {
   const [{ activeView }, setQueryParams] = useQueryParams<{
     activeView: string | null;
@@ -10,7 +12,7 @@ const Logs = () => {
     activeView: null,
   });
   return (
-    <>
+    <div className="logs-tab">
       <ButtonGroup
         buttons={[{ title: "Action logs", url: "action-logs" }].map(
           ({ title, url }) => ({
@@ -24,7 +26,7 @@ const Logs = () => {
         activeButton={activeView}
       />
       {activeView === "action-logs" ? <ActionLogs /> : null}
-    </>
+    </div>
   );
 };
 
