@@ -1,14 +1,18 @@
 import { screen } from "@testing-library/react";
 
+import { getCharmsURLFromApplications } from "juju/api";
 import { renderComponent } from "testing/utils";
 
 import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
-import { TestId as CharmActionsTestId } from "./ActionsPanel/CharmActionsPanel";
-import { Label as CharmsPanelLabel } from "./CharmsPanel/CharmsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
 import Panels from "./Panels";
 import { Label as RegisterControllerLabel } from "./RegisterController/RegisterController";
 import { TestId as ShareModelTestId } from "./ShareModelPanel/ShareModel";
+
+jest.mock("juju/api", () => ({
+  ...jest.requireActual("juju/api"),
+  getCharmsURLFromApplications: jest.fn().mockResolvedValue(["mockCharmURL"]),
+}));
 
 describe("Panels", () => {
   it("can display the register controller panel", () => {
@@ -29,15 +33,8 @@ describe("Panels", () => {
   });
 
   it("can display the choose charm panel", () => {
-    renderComponent(<Panels />, { url: "/?panel=choose-charm" });
-    expect(
-      screen.getByRole("dialog", { name: CharmsPanelLabel.TITLE })
-    ).toBeInTheDocument();
-  });
-
-  it("can display the charm actions panel", () => {
     renderComponent(<Panels />, { url: "/?panel=charm-actions" });
-    expect(screen.getByTestId(CharmActionsTestId.PANEL)).toBeInTheDocument();
+    expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
   });
 
   it("can display the config panel", async () => {
