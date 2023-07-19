@@ -44,7 +44,11 @@ export enum TestId {
 
 const filterExist = <I,>(item: I | null): item is I => !!item;
 
-export default function CharmActionsPanel(): JSX.Element {
+type Props = {
+  charmURL: string;
+};
+
+export default function CharmActionsPanel({ charmURL }: Props): JSX.Element {
   const sendAnalytics = useAnalytics();
   const { userName, modelName } = useParams();
 
@@ -55,14 +59,11 @@ export default function CharmActionsPanel(): JSX.Element {
   const [confirmType, setConfirmType] = useState<string>("");
   const [selectedAction, setSelectedAction] = useState<string>();
   const actionOptionsValues = useRef<ActionOptionValues>({});
-  const [queryParams, setQueryParams] = useQueryParams({
-    charm: null,
+  const [, setQueryParams] = useQueryParams({
     panel: null,
   });
-  const selectedApplications = useSelector(
-    getSelectedApplications(queryParams.charm || "")
-  );
-  const selectedCharm = useSelector(getSelectedCharm(queryParams.charm || ""));
+  const selectedApplications = useSelector(getSelectedApplications(charmURL));
+  const selectedCharm = useSelector(getSelectedCharm(charmURL));
   const actionData = useMemo(
     () => selectedCharm?.actions?.specs || {},
     [selectedCharm]

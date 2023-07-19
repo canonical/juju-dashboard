@@ -1,9 +1,8 @@
-import { useCallback, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import { useQueryParams } from "hooks/useQueryParams";
 import { getCharmsURLFromApplications } from "juju/api";
 import CharmActionsPanel from "panels/ActionsPanel/CharmActionsPanel";
 import CharmsPanel from "panels/CharmsPanel/CharmsPanel";
@@ -14,13 +13,13 @@ import {
 import { useAppStore } from "store/store";
 
 const ChooseCharmsPanel = () => {
-  const [queryParams, setQueryParams] = useQueryParams<{
-    panel: string | null;
-    charm?: string | null;
-  }>({
-    panel: null,
-    charm: undefined,
-  });
+  // TODO: Add usePanelQueryParams after getting latest changes from main in
+  // order to close the panel correctly.
+
+  const [charmURL, setCharmURL] = useState<string | null | undefined>(
+    undefined
+  );
+  console.log(charmURL);
 
   const selectedApplications = useSelector(getSelectedApplications());
   const appState = useAppStore().getState();
@@ -28,26 +27,29 @@ const ChooseCharmsPanel = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
-  const setCharmsURLFromApplications = useCallback(async () => {
-    const charmsURL = await getCharmsURLFromApplications(
-      selectedApplications,
-      modelUUID,
-      appState,
-      dispatch
-    );
-    const uniqueCharmURL = charmsURL.length === 1 ? charmsURL[0] : undefined;
-    setQueryParams({ charm: uniqueCharmURL ? uniqueCharmURL : null });
-  }, [appState, dispatch, modelUUID, selectedApplications, setQueryParams]);
-
   useEffect(() => {
-    setCharmsURLFromApplications();
+    (async () => {
+      const charmsURL = await getCharmsURLFromApplications(
+        selectedApplications,
+        modelUUID,
+        appState,
+        dispatch
+      );
+      const isCharmURLUnique = charmsURL.length === 1;
+      setCharmURL(isCharmURLUnique ? charmsURL[0] : null);
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-      {queryParams.charm === null && <CharmsPanel />}
-      {queryParams.charm && <CharmActionsPanel />}
+      {!charmURL && (
+        <CharmsPanel
+          isLoading={charmURL === undefined}
+          onCharmURLChange={setCharmURL}
+        />
+      )}
+      {charmURL && <CharmActionsPanel charmURL={charmURL} />}
     </>
   );
 };
