@@ -11,7 +11,7 @@ export enum Label {
   TITLE = "Choose applications of charm:",
 }
 
-type Props = {
+export type Props = {
   isLoading: boolean;
   onCharmURLChange: (charmURL: string | null) => void;
 };

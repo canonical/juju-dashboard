@@ -10,12 +10,13 @@ import {
 } from "testing/factories/juju/Charms";
 import { renderComponent } from "testing/utils";
 
+import type { Props } from "./CharmsPanel";
 import CharmsPanel from "./CharmsPanel";
 
 describe("CharmsPanel", () => {
   let state: RootState;
   const path = "*";
-  const url = "/models/admin/tests?panel=choose-charm";
+  const url = "/models/admin/tests?panel=charm-actions";
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -38,28 +39,45 @@ describe("CharmsPanel", () => {
     });
   });
 
+  const mockHandleCharmURLChange = jest.fn((charmURL: string | null) => {});
+  const mockRenderCharmsPanel = ({
+    isLoading = false,
+    onCharmURLChange = mockHandleCharmURLChange,
+  }: Partial<Props>) =>
+    renderComponent(
+      <CharmsPanel isLoading={isLoading} onCharmURLChange={onCharmURLChange} />,
+      { path, url, state }
+    );
+
   it("renders the correct number of charms", () => {
-    renderComponent(<CharmsPanel />, { path, url, state });
+    mockRenderCharmsPanel({});
     expect(screen.getAllByRole("radio").length).toBe(2);
   });
 
   it("next button is disabled when no charm is selected", () => {
-    renderComponent(<CharmsPanel />, { path, url, state });
+    mockRenderCharmsPanel({});
     expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
   });
 
   it("next button is enabled when a charm is selected", () => {
-    renderComponent(<CharmsPanel />, { path, url, state });
+    mockRenderCharmsPanel({});
     act(() => screen.getAllByRole("radio")[0].click());
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
   });
 
   it("can open the actions panel", async () => {
-    renderComponent(<CharmsPanel />, { path, url, state });
+    mockRenderCharmsPanel({});
     await userEvent.click(screen.getAllByRole("radio")[0]);
     await userEvent.click(screen.getByRole("button", { name: "Next" }));
-    expect(window.location.search).toBe(
-      "?panel=charm-actions&charm=ch%3Aamd64%2Ffocal%2Fpostgresql-k8s-20"
-    );
+    expect(mockHandleCharmURLChange).toHaveBeenCalledTimes(1);
+  });
+
+  it("should display spinner when panel is loading", () => {
+    const {
+      result: { container },
+    } = mockRenderCharmsPanel({ isLoading: true });
+    expect(
+      container.querySelector(".l-aside")?.querySelector(".p-icon--spinner")
+    ).toBeVisible();
   });
 });
