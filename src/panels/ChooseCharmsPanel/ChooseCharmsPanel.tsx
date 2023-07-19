@@ -19,7 +19,6 @@ const ChooseCharmsPanel = () => {
   const [charmURL, setCharmURL] = useState<string | null | undefined>(
     undefined
   );
-  console.log(charmURL);
 
   const selectedApplications = useSelector(getSelectedApplications());
   const appState = useAppStore().getState();

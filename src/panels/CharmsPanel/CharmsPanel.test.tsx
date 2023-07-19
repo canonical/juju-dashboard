@@ -40,12 +40,12 @@ describe("CharmsPanel", () => {
   });
 
   const mockHandleCharmURLChange = jest.fn((charmURL: string | null) => {});
-  const mockRenderCharmsPanel = ({
-    isLoading = false,
-    onCharmURLChange = mockHandleCharmURLChange,
-  }: Partial<Props>) =>
+  const mockRenderCharmsPanel = ({ isLoading = false }: Partial<Props>) =>
     renderComponent(
-      <CharmsPanel isLoading={isLoading} onCharmURLChange={onCharmURLChange} />,
+      <CharmsPanel
+        isLoading={isLoading}
+        onCharmURLChange={mockHandleCharmURLChange}
+      />,
       { path, url, state }
     );
 

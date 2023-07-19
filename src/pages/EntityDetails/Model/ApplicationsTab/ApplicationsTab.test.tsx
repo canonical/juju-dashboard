@@ -1,7 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { getCharmsURLFromApplications } from "juju/api";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -19,16 +18,6 @@ import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watch
 import { renderComponent } from "testing/utils";
 
 import ApplicationsTab from "./ApplicationsTab";
-
-// mock getCharmsURLFromApplications
-jest.mock("juju/api", () => {
-  return {
-    getCharmsURLFromApplications: jest.fn().mockReturnValue(() => ({
-      data: [],
-      loading: false,
-    })),
-  };
-});
 
 describe("ApplicationsTab", () => {
   let state: RootState;
@@ -301,8 +290,7 @@ describe("ApplicationsTab", () => {
     });
     expect(window.location.search).toEqual("");
     await userEvent.click(screen.getByRole("button", { name: /run action/i }));
-    expect(window.location.search).toEqual("?panel=choose-charm");
-    expect(getCharmsURLFromApplications).toHaveBeenCalled();
+    expect(window.location.search).toEqual("?panel=charm-actions");
   });
 
   it("can show the offers table", () => {

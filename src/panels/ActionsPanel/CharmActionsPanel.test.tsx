@@ -19,6 +19,7 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
+import type { Props } from "./CharmActionsPanel";
 import CharmActionsPanel, { Label } from "./CharmActionsPanel";
 
 jest.mock("juju/api", () => {
@@ -31,7 +32,7 @@ describe("CharmActionsPanel", () => {
   let state: RootState;
   const path = "/models/:userName/:modelName/app/:appName";
   const url =
-    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&charm=ch:ceph";
+    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action";
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -87,53 +88,37 @@ describe("CharmActionsPanel", () => {
     jest.resetModules();
   });
 
-  it("displays a message if viewing the panel without selecting a charm", async () => {
+  const mockCharmURL = "ch:ceph";
+  const mockRenderCharmsActionsPanel = ({
+    charmURL = mockCharmURL,
+  }: Partial<Props>) =>
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
-      {
-        path,
-        url: "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&charm=something-else",
-        state,
-      }
+      { path, url, state }
     );
+
+  it("displays a message if viewing the panel without selecting a charm", async () => {
+    mockRenderCharmsActionsPanel({ charmURL: "someOtherCharmURL" });
     expect(screen.getByText(Label.NONE_SELECTED)).toBeInTheDocument();
   });
 
   it("Renders the list of available actions", async () => {
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     expect(await screen.findAllByRole("radio")).toHaveLength(2);
   });
 
   it("validates that an action is selected before submitting", async () => {
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
   });
 
   it("displays the number of selected apps and units", async () => {
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     expect(await screen.findByRole("heading")).toHaveTextContent(
       "1 application (2 units) selected"
     );
@@ -146,13 +131,7 @@ describe("CharmActionsPanel", () => {
         "unit-count": 0,
       }),
     ];
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     expect(await screen.findByRole("heading")).toHaveTextContent(
       "1 application (0 units) selected"
     );
@@ -165,13 +144,7 @@ describe("CharmActionsPanel", () => {
         "unit-count": 0,
       }),
     ];
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -188,13 +161,7 @@ describe("CharmActionsPanel", () => {
   });
 
   it("disables the submit button if a required text field is empty", async () => {
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -237,13 +204,7 @@ describe("CharmActionsPanel", () => {
         },
       }),
     ];
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" })
     );
@@ -261,13 +222,7 @@ describe("CharmActionsPanel", () => {
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -289,13 +244,7 @@ describe("CharmActionsPanel", () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(() => Promise.resolve(undefined));
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -321,13 +270,7 @@ describe("CharmActionsPanel", () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(() => Promise.resolve(undefined));
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" })
     );
@@ -358,13 +301,7 @@ describe("CharmActionsPanel", () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(() => Promise.reject());
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
+    mockRenderCharmsActionsPanel({});
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();

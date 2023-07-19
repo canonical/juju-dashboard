@@ -44,7 +44,7 @@ export enum TestId {
 
 const filterExist = <I,>(item: I | null): item is I => !!item;
 
-type Props = {
+export type Props = {
   charmURL: string;
 };
 
