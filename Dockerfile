@@ -8,8 +8,6 @@ WORKDIR /srv
 
 COPY .yar[n] ./.yarn
 COPY package.json yarn.lock .yarnrc.yml ./
-RUN yarn config set proxy http://squid.internal:3128
-RUN yarn config set https-proxy http://squid.internal:3128
 RUN yarn install
 
 # Build stage: Run "yarn run build-js"
