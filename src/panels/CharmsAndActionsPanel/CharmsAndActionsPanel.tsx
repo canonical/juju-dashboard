@@ -42,9 +42,9 @@ const CharmsAndActionsPanel = () => {
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
   useEffect(() => {
-    // getCharmsURLFromApplications should be executed only once after
+    // getCharmsURLFromApplications should be resolved only once after
     // selectedApplications and modelUUID are initialized. Once it is
-    // executed, isSet(charmURL) === true, thus triggering an early
+    // resolved, isSet(charmURL) becomes true, thus triggering an early
     // return at each subsequent call of useEffect.
     if (!selectedApplications || !modelUUID || isSet(charmURL)) {
       return;

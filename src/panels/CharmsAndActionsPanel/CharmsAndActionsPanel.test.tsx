@@ -1,4 +1,4 @@
-import { screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 
 import * as juju from "juju/api";
 import { getCharmsURLFromApplications } from "juju/api";
@@ -6,20 +6,21 @@ import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { applicationCharmActionParamsFactory } from "testing/factories/juju/ActionV7";
 import {
+  charmActionSpecFactory,
+  charmActionsFactory,
   charmApplicationFactory,
   charmInfoFactory,
-  charmActionSpecFactory,
 } from "testing/factories/juju/Charms";
 import {
   jujuStateFactory,
-  modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import CharmsAndActionsPanel from "./CharmsAndActionsPanel";
+import CharmsAndActionsPanel, {
+  Label as CharmsAndActionsPanelLabel,
+} from "./CharmsAndActionsPanel";
 
 describe("CharmsAndActionsPanel", () => {
   let state: RootState;
@@ -36,51 +37,17 @@ describe("CharmsAndActionsPanel", () => {
       juju: jujuStateFactory.build({
         models: {
           test123: modelListInfoFactory.build({
-            name: "test-model",
-            uuid: "test123",
             ownerTag: "test@external",
+            name: "test-model",
           }),
         },
         charms: [
           charmInfoFactory.build({
             url: "ch:ceph",
-            actions: {
-              specs: {
-                "add-disk": charmActionSpecFactory.build({
-                  params: applicationCharmActionParamsFactory.build({
-                    properties: {
-                      bucket: {
-                        type: "string",
-                      },
-                      "osd-devices": {
-                        type: "string",
-                      },
-                    },
-                    required: ["osd-devices"],
-                    title: "add-disk",
-                    type: "object",
-                  }),
-                }),
-                pause: charmActionSpecFactory.build({
-                  params: applicationCharmActionParamsFactory.build({
-                    title: "pause",
-                    type: "object",
-                  }),
-                }),
-              },
-            },
           }),
         ],
-        modelData: {
-          abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
-              name: "group-test",
-            }),
-          }),
-        },
         selectedApplications: [
           charmApplicationFactory.build({
-            name: "ceph",
             "charm-url": "ch:ceph",
           }),
         ],
@@ -103,27 +70,25 @@ describe("CharmsAndActionsPanel", () => {
     });
   });
 
-  it("should display the number of selected apps and units", async () => {
+  it("should render CharmActionsPanel when there is a unique charm", async () => {
     jest
       .spyOn(juju, "getCharmsURLFromApplications")
       .mockImplementation(() => Promise.resolve(["ch:ceph"]));
-    renderComponent(<CharmsAndActionsPanel />, { path, url, state });
-    await waitFor(() => {
-      expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
-    });
-    expect(await screen.findByRole("heading")).toHaveTextContent(
-      "1 application (2 units) selected"
-    );
-  });
-
-  it("should successfully handle no units selected", async () => {
-    jest
-      .spyOn(juju, "getCharmsURLFromApplications")
-      .mockImplementation(() => Promise.resolve(["ch:ceph"]));
-    state.juju.selectedApplications = [
-      charmApplicationFactory.build({
-        "charm-url": "ch:ceph",
-        "unit-count": 0,
+    state.juju.charms = [
+      charmInfoFactory.build({
+        url: "ch:ceph",
+        actions: charmActionsFactory.build({
+          specs: {
+            action1: charmActionSpecFactory.build({
+              description: "Mock description for Action 1",
+              params: applicationCharmActionParamsFactory.build(),
+            }),
+            action2: charmActionSpecFactory.build({
+              description: "Mock description for Action 2",
+              params: applicationCharmActionParamsFactory.build(),
+            }),
+          },
+        }),
       }),
     ];
     renderComponent(<CharmsAndActionsPanel />, { path, url, state });
@@ -131,7 +96,44 @@ describe("CharmsAndActionsPanel", () => {
       expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     });
     expect(await screen.findByRole("heading")).toHaveTextContent(
-      "1 application (0 units) selected"
+      "1 application (2 units) selected"
     );
+    const charmActionsOptions = screen.getAllByRole("radio");
+    expect(charmActionsOptions).toHaveLength(2);
+    act(() => charmActionsOptions[0].click());
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).toBeEnabled();
+  });
+
+  it("should render CharmsPanel when there is no unique charm", async () => {
+    jest
+      .spyOn(juju, "getCharmsURLFromApplications")
+      .mockImplementation(() => Promise.resolve(["ch:ceph", "ch:ceph2"]));
+    state.juju.selectedApplications = [
+      ...state.juju.selectedApplications,
+      charmApplicationFactory.build({
+        "charm-url": "ch:ceph2",
+      }),
+    ];
+    state.juju.charms = [
+      ...state.juju.charms,
+      charmInfoFactory.build({
+        url: "ch:ceph2",
+      }),
+    ];
+    const {
+      result: { container },
+    } = renderComponent(<CharmsAndActionsPanel />, { path, url, state });
+    await waitFor(() => {
+      expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
+    });
+    expect(container.querySelector(".p-panel__title")).toContainHTML(
+      CharmsAndActionsPanelLabel.CHARMS_PANEL_TITLE
+    );
+    const charmOptions = screen.getAllByRole("radio");
+    expect(charmOptions).toHaveLength(2);
+    act(() => charmOptions[0].click());
+    expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
   });
 });

@@ -11,7 +11,7 @@ import { renderComponent } from "testing/utils";
 import CharmActionsPanelTitle, { Label } from "./CharmActionsPanelTitle";
 
 describe("CharmActionsPanelTitle", () => {
-  it("should display warning message if there are no selected applications", () => {
+  it("should display a warning message if there are no selected applications", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         charms: [
@@ -27,7 +27,7 @@ describe("CharmActionsPanelTitle", () => {
     expect(title).toBeVisible();
   });
 
-  it("should display warning message if there is no selected charm", () => {
+  it("should display a warning message if there is no selected charm", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         selectedApplications: [
@@ -43,7 +43,7 @@ describe("CharmActionsPanelTitle", () => {
     expect(title).toBeVisible();
   });
 
-  it("should display warning message if there is nothing in store that corresponds to charmURL", () => {
+  it("should display a warning message if there is nothing in store that corresponds to charmURL", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         selectedApplications: [
@@ -77,14 +77,36 @@ describe("CharmActionsPanelTitle", () => {
         selectedApplications: [
           charmApplicationFactory.build({
             "charm-url": "ch:ceph",
-            "unit-count": 1,
           }),
         ],
       }),
     });
     renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, { state });
 
-    const title = screen.getByText("1 application (1 unit) selected");
+    const title = screen.getByText("1 application (2 units) selected");
+    expect(title).toBeVisible();
+    expect(title.tagName).toBe("H5");
+  });
+
+  it("should display the title when no unit is selected", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        charms: [
+          charmInfoFactory.build({
+            url: "ch:ceph",
+          }),
+        ],
+        selectedApplications: [
+          charmApplicationFactory.build({
+            "charm-url": "ch:ceph",
+            "unit-count": 0,
+          }),
+        ],
+      }),
+    });
+    renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, { state });
+
+    const title = screen.getByText("1 application (0 units) selected");
     expect(title).toBeVisible();
     expect(title.tagName).toBe("H5");
   });

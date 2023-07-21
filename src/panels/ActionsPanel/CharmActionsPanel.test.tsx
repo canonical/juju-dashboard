@@ -88,17 +88,6 @@ describe("CharmActionsPanel", () => {
     jest.resetModules();
   });
 
-  // it("displays a message if viewing the panel without selecting a charm", async () => {
-  //   renderComponent(
-  //     <>
-  //       <CharmActionsPanel charmURL="some-other-charm" />
-  //       <Toaster />
-  //     </>,
-  //     { path, url, state }
-  //   );
-  //   expect(screen.getByText(Label.NONE_SELECTED)).toBeInTheDocument();
-  // });
-
   it("Renders the list of available actions", async () => {
     renderComponent(
       <>
