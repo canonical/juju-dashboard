@@ -42,7 +42,7 @@ const CharmsAndActionsPanel = () => {
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
   useEffect(() => {
-    // We want getCharmsURLFromApplications to execute only once after
+    // getCharmsURLFromApplications should be executed only once after
     // selectedApplications and modelUUID are initialized. Once it is
     // executed, isSet(charmURL) === true, thus triggering an early
     // return at each subsequent call of useEffect.
