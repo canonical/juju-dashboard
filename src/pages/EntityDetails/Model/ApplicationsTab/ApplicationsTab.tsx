@@ -72,7 +72,7 @@ function SearchResultsActionsRow() {
       category: "ApplicationSearch",
       action: "Run action (button)",
     });
-    setPanel({ panel: "charm-actions" }, { replace: true });
+    setPanel({ panel: "select-charms-and-actions" }, { replace: true });
   };
 
   return (

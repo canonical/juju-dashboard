@@ -1,18 +1,19 @@
 import { screen } from "@testing-library/react";
 
-import { getCharmsURLFromApplications } from "juju/api";
+// import * as apiModule from "juju/api";
 import { renderComponent } from "testing/utils";
 
 import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
+import { TestId as CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
 import Panels from "./Panels";
 import { Label as RegisterControllerLabel } from "./RegisterController/RegisterController";
 import { TestId as ShareModelTestId } from "./ShareModelPanel/ShareModel";
 
-jest.mock("juju/api", () => ({
-  ...jest.requireActual("juju/api"),
-  getCharmsURLFromApplications: jest.fn().mockResolvedValue(["mockCharmURL"]),
-}));
+// jest.mock("juju/api", () => ({
+//   ...jest.requireActual("juju/api"),
+//   getCharmsURLFromApplications: jest.fn(),
+// }));
 
 describe("Panels", () => {
   it("can display the register controller panel", () => {
@@ -32,9 +33,14 @@ describe("Panels", () => {
     expect(screen.getByTestId(ShareModelTestId.PANEL)).toBeInTheDocument();
   });
 
-  it("can display the choose charm panel", () => {
-    renderComponent(<Panels />, { url: "/?panel=charm-actions" });
-    expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
+  it("can display the choose charm panel", async () => {
+    // jest
+    //   .spyOn(apiModule, "getCharmsURLFromApplications")
+    //   .mockImplementation(() => Promise.resolve(["mockCharmsURL"]));
+    renderComponent(<Panels />, { url: "/?panel=select-charms-and-actions" });
+    expect(
+      screen.getByTestId(CharmsAndActionsPanelTestId.PANEL)
+    ).toBeInTheDocument();
   });
 
   it("can display the config panel", async () => {

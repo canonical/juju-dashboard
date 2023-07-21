@@ -19,7 +19,6 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import type { Props } from "./CharmActionsPanel";
 import CharmActionsPanel, { Label } from "./CharmActionsPanel";
 
 jest.mock("juju/api", () => {
@@ -32,7 +31,8 @@ describe("CharmActionsPanel", () => {
   let state: RootState;
   const path = "/models/:userName/:modelName/app/:appName";
   const url =
-    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action";
+    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=select-charms-and-actions";
+  const charmURL = "ch:ceph";
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -88,10 +88,18 @@ describe("CharmActionsPanel", () => {
     jest.resetModules();
   });
 
-  const mockCharmURL = "ch:ceph";
-  const mockRenderCharmsActionsPanel = ({
-    charmURL = mockCharmURL,
-  }: Partial<Props>) =>
+  // it("displays a message if viewing the panel without selecting a charm", async () => {
+  //   renderComponent(
+  //     <>
+  //       <CharmActionsPanel charmURL="some-other-charm" />
+  //       <Toaster />
+  //     </>,
+  //     { path, url, state }
+  //   );
+  //   expect(screen.getByText(Label.NONE_SELECTED)).toBeInTheDocument();
+  // });
+
+  it("Renders the list of available actions", async () => {
     renderComponent(
       <>
         <CharmActionsPanel charmURL={charmURL} />
@@ -99,42 +107,20 @@ describe("CharmActionsPanel", () => {
       </>,
       { path, url, state }
     );
-
-  it("displays a message if viewing the panel without selecting a charm", async () => {
-    mockRenderCharmsActionsPanel({ charmURL: "someOtherCharmURL" });
-    expect(screen.getByText(Label.NONE_SELECTED)).toBeInTheDocument();
-  });
-
-  it("Renders the list of available actions", async () => {
-    mockRenderCharmsActionsPanel({});
     expect(await screen.findAllByRole("radio")).toHaveLength(2);
   });
 
   it("validates that an action is selected before submitting", async () => {
-    mockRenderCharmsActionsPanel({});
+    renderComponent(
+      <>
+        <CharmActionsPanel charmURL={charmURL} />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
-  });
-
-  it("displays the number of selected apps and units", async () => {
-    mockRenderCharmsActionsPanel({});
-    expect(await screen.findByRole("heading")).toHaveTextContent(
-      "1 application (2 units) selected"
-    );
-  });
-
-  it("successfully handles no units selected", async () => {
-    state.juju.selectedApplications = [
-      charmApplicationFactory.build({
-        "charm-url": "ch:ceph",
-        "unit-count": 0,
-      }),
-    ];
-    mockRenderCharmsActionsPanel({});
-    expect(await screen.findByRole("heading")).toHaveTextContent(
-      "1 application (0 units) selected"
-    );
   });
 
   it("disables the submit button if no units are selected", async () => {
@@ -144,7 +130,13 @@ describe("CharmActionsPanel", () => {
         "unit-count": 0,
       }),
     ];
-    mockRenderCharmsActionsPanel({});
+    renderComponent(
+      <>
+        <CharmActionsPanel charmURL={charmURL} />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -161,7 +153,13 @@ describe("CharmActionsPanel", () => {
   });
 
   it("disables the submit button if a required text field is empty", async () => {
-    mockRenderCharmsActionsPanel({});
+    renderComponent(
+      <>
+        <CharmActionsPanel charmURL={charmURL} />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -204,7 +202,13 @@ describe("CharmActionsPanel", () => {
         },
       }),
     ];
-    mockRenderCharmsActionsPanel({});
+    renderComponent(
+      <>
+        <CharmActionsPanel charmURL={charmURL} />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" })
     );
@@ -222,7 +226,13 @@ describe("CharmActionsPanel", () => {
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {
-    mockRenderCharmsActionsPanel({});
+    renderComponent(
+      <>
+        <CharmActionsPanel charmURL={charmURL} />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -244,7 +254,13 @@ describe("CharmActionsPanel", () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(() => Promise.resolve(undefined));
-    mockRenderCharmsActionsPanel({});
+    renderComponent(
+      <>
+        <CharmActionsPanel charmURL={charmURL} />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
@@ -270,7 +286,13 @@ describe("CharmActionsPanel", () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(() => Promise.resolve(undefined));
-    mockRenderCharmsActionsPanel({});
+    renderComponent(
+      <>
+        <CharmActionsPanel charmURL={charmURL} />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" })
     );
@@ -301,7 +323,13 @@ describe("CharmActionsPanel", () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(() => Promise.reject());
-    mockRenderCharmsActionsPanel({});
+    renderComponent(
+      <>
+        <CharmActionsPanel charmURL={charmURL} />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();

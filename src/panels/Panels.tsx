@@ -5,7 +5,7 @@ import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import RegisterController from "panels/RegisterController/RegisterController";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 
-import ChooseCharmsPanel from "./ChooseCharmsPanel/ChooseCharmsPanel";
+import CharmsAndActionsPanel from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
 
 export default function Panels() {
@@ -21,8 +21,8 @@ export default function Panels() {
         return <ActionsPanel />;
       case "share-model":
         return <ShareModel />;
-      case "charm-actions":
-        return <ChooseCharmsPanel />;
+      case "select-charms-and-actions":
+        return <CharmsAndActionsPanel />;
       case "config":
         return <ConfigPanel />;
       default:

@@ -290,7 +290,7 @@ describe("ApplicationsTab", () => {
     });
     expect(window.location.search).toEqual("");
     await userEvent.click(screen.getByRole("button", { name: /run action/i }));
-    expect(window.location.search).toEqual("?panel=charm-actions");
+    expect(window.location.search).toEqual("?panel=select-charms-and-actions");
   });
 
   it("can show the offers table", () => {
