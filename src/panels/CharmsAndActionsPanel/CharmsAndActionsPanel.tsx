@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import { isSet } from "components/utils";
 import { getCharmsURLFromApplications } from "juju/api";
 import CharmActionsPanel from "panels/ActionsPanel/CharmActionsPanel";
 import CharmsPanel from "panels/CharmsPanel/CharmsPanel";
@@ -70,7 +71,7 @@ const CharmsAndActionsPanel = () => {
   };
 
   useEffect(() => {
-    if (!selectedApplications || !modelUUID) {
+    if (!selectedApplications || !modelUUID || isSet(charmURL)) {
       return;
     }
     getCharmsURLFromApplications(
@@ -82,7 +83,7 @@ const CharmsAndActionsPanel = () => {
       const isCharmURLUnique = charmsURL.length === 1;
       setCharmURL(isCharmURLUnique ? charmsURL[0] : null);
     });
-  }, [appState, dispatch, modelUUID, selectedApplications]);
+  }, [appState, charmURL, dispatch, modelUUID, selectedApplications]);
 
   return (
     <Panel

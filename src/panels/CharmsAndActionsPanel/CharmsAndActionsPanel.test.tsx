@@ -14,19 +14,33 @@ import {
   jujuStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
 import CharmsAndActionsPanel from "./CharmsAndActionsPanel";
 
 describe("CharmsAndActionsPanel", () => {
   let state: RootState;
+  const path = urls.model.index(null);
+  const url = urls.model.index({
+    userName: "test@external",
+    modelName: "test-model",
+  });
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
+        models: {
+          test123: modelListInfoFactory.build({
+            name: "test-model",
+            uuid: "test123",
+            ownerTag: "test@external",
+          }),
+        },
         charms: [
           charmInfoFactory.build({
             url: "ch:ceph",
@@ -80,7 +94,7 @@ describe("CharmsAndActionsPanel", () => {
       .mockImplementation(() => Promise.resolve([]));
     const {
       result: { container },
-    } = renderComponent(<CharmsAndActionsPanel />, { state });
+    } = renderComponent(<CharmsAndActionsPanel />, { path, url, state });
     expect(
       container.querySelector(".l-aside")?.querySelector(".p-icon--spinner")
     ).toBeVisible();
@@ -93,7 +107,7 @@ describe("CharmsAndActionsPanel", () => {
     jest
       .spyOn(juju, "getCharmsURLFromApplications")
       .mockImplementation(() => Promise.resolve(["ch:ceph"]));
-    renderComponent(<CharmsAndActionsPanel />, { state });
+    renderComponent(<CharmsAndActionsPanel />, { path, url, state });
     await waitFor(() => {
       expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     });
@@ -112,7 +126,7 @@ describe("CharmsAndActionsPanel", () => {
         "unit-count": 0,
       }),
     ];
-    renderComponent(<CharmsAndActionsPanel />, { state });
+    renderComponent(<CharmsAndActionsPanel />, { path, url, state });
     await waitFor(() => {
       expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     });
