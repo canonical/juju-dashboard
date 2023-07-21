@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { isSet } from "components/utils";
@@ -12,17 +11,18 @@ import CharmsPanel from "panels/CharmsPanel/CharmsPanel";
 import {
   getModelUUIDFromList,
   getSelectedApplications,
-  getSelectedCharm,
 } from "store/juju/selectors";
-import { pluralize } from "store/juju/utils/models";
 import { useAppStore } from "store/store";
+
+import CharmActionsPanelTitle from "./CharmActionsPanelTitle";
 
 export enum Label {
   CHARMS_PANEL_TITLE = "Choose applications of charm:",
-  NONE_SELECTED_TITLE = "You need to select a charm and applications to continue.",
-  CHARMS_PANEL_CLASS_NAME = "charms-panel",
-  CHARM_ACTIONS_PANEL_CLASS_NAME = "actions-panel",
-  NO_SELECTED_CHARM = "no-selected-charm-url",
+}
+
+export enum ClassName {
+  CHARMS_PANEL = "charms-panel",
+  CHARM_ACTIONS_PANEL = "actions-panel",
 }
 
 export enum TestId {
@@ -36,41 +36,16 @@ const CharmsAndActionsPanel = () => {
   const [charmURL, setCharmURL] = useState<string | null>();
 
   const selectedApplications = useSelector(getSelectedApplications());
-  const selectedApplicationsForCharmURL = useSelector(
-    getSelectedApplications(charmURL ?? undefined)
-  );
   const appState = useAppStore().getState();
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const selectedCharm = useSelector(
-    getSelectedCharm(charmURL ?? Label.NO_SELECTED_CHARM)
-  );
-
-  const generateCharmActionsPanelTitle = () => {
-    if (!selectedApplicationsForCharmURL || !selectedCharm)
-      return Label.NONE_SELECTED_TITLE;
-    const totalUnits = selectedApplicationsForCharmURL.reduce(
-      (total, app) => total + (app["unit-count"] || 0),
-      0
-    );
-
-    return (
-      <h5>
-        {selectedCharm?.meta?.name && selectedCharm?.url ? (
-          <CharmIcon
-            name={selectedCharm.meta.name}
-            charmId={selectedCharm.url}
-          />
-        ) : null}{" "}
-        {selectedApplicationsForCharmURL.length}{" "}
-        {pluralize(selectedApplicationsForCharmURL.length, "application")} (
-        {totalUnits} {pluralize(totalUnits, "unit")}) selected
-      </h5>
-    );
-  };
 
   useEffect(() => {
+    // We want getCharmsURLFromApplications to execute only once after
+    // selectedApplications and modelUUID are initialized. Once it is
+    // executed, isSet(charmURL) === true, thus triggering an early
+    // return at each subsequent call of useEffect.
     if (!selectedApplications || !modelUUID || isSet(charmURL)) {
       return;
     }
@@ -89,13 +64,15 @@ const CharmsAndActionsPanel = () => {
     <Panel
       width="narrow"
       panelClassName={
-        charmURL
-          ? Label.CHARM_ACTIONS_PANEL_CLASS_NAME
-          : Label.CHARMS_PANEL_CLASS_NAME
+        charmURL ? ClassName.CHARM_ACTIONS_PANEL : ClassName.CHARMS_PANEL
       }
       data-testid={TestId.PANEL}
       title={
-        charmURL ? generateCharmActionsPanelTitle() : Label.CHARMS_PANEL_TITLE
+        charmURL ? (
+          <CharmActionsPanelTitle charmURL={charmURL} />
+        ) : (
+          Label.CHARMS_PANEL_TITLE
+        )
       }
       loading={charmURL === undefined}
     >
