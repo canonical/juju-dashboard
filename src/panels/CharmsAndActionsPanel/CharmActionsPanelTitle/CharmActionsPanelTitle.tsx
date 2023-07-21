@@ -11,7 +11,7 @@ type Props = {
   charmURL: string;
 };
 
-enum Label {
+export enum Label {
   NONE_SELECTED_TITLE = "You need to select a charm and applications to continue.",
 }
 
@@ -19,7 +19,7 @@ const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
   const selectedApplications = useSelector(getSelectedApplications(charmURL));
   const selectedCharm = useSelector(getSelectedCharm(charmURL));
 
-  if (!selectedApplications || !selectedCharm)
+  if (!selectedApplications.length || !selectedCharm)
     return <>{Label.NONE_SELECTED_TITLE}</>;
   const totalUnits = selectedApplications.reduce(
     (total, app) => total + (app["unit-count"] || 0),
