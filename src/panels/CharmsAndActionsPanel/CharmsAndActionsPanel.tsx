@@ -8,6 +8,7 @@ import { isSet } from "components/utils";
 import { getCharmsURLFromApplications } from "juju/api";
 import CharmActionsPanel from "panels/ActionsPanel/CharmActionsPanel";
 import CharmsPanel from "panels/CharmsPanel/CharmsPanel";
+import { usePanelQueryParams } from "panels/hooks";
 import {
   getModelUUIDFromList,
   getSelectedApplications,
@@ -29,11 +30,17 @@ export enum TestId {
   PANEL = "charms-and-actions-panel",
 }
 
-const CharmsAndActionsPanel = () => {
-  // TODO: Add usePanelQueryParams after getting latest changes from main in
-  // order to close the panel correctly.
+type CharmsAndActionsQueryParams = {
+  panel: string | null;
+};
 
+const CharmsAndActionsPanel = () => {
   const [charmURL, setCharmURL] = useState<string | null>();
+  const defaultQueryParams: CharmsAndActionsQueryParams = {
+    panel: null,
+  };
+  const [, , handleRemovePanelQueryParams] =
+    usePanelQueryParams<CharmsAndActionsQueryParams>(defaultQueryParams);
 
   const selectedApplications = useSelector(getSelectedApplications());
   const appState = useAppStore().getState();
@@ -74,6 +81,7 @@ const CharmsAndActionsPanel = () => {
           Label.CHARMS_PANEL_TITLE
         )
       }
+      onRemovePanelQueryParams={handleRemovePanelQueryParams}
       loading={charmURL === undefined}
     >
       <>

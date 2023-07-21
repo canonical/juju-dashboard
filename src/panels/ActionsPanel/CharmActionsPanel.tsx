@@ -37,7 +37,6 @@ export enum Label {
 
 type CharmActionsQueryParams = {
   panel: string | null;
-  charm: string | null;
 };
 
 const filterExist = <I,>(item: I | null): item is I => !!item;
@@ -60,14 +59,11 @@ export default function CharmActionsPanel({ charmURL }: Props): JSX.Element {
 
   const defaultQueryParams: CharmActionsQueryParams = {
     panel: null,
-    charm: null,
   };
-  const [queryParams, , handleRemovePanelQueryParams] =
+  const [, , handleRemovePanelQueryParams] =
     usePanelQueryParams<CharmActionsQueryParams>(defaultQueryParams);
-  const selectedApplications = useSelector(
-    getSelectedApplications(queryParams.charm || "")
-  );
-  const selectedCharm = useSelector(getSelectedCharm(queryParams.charm || ""));
+  const selectedApplications = useSelector(getSelectedApplications(charmURL));
+  const selectedCharm = useSelector(getSelectedCharm(charmURL));
   const actionData = useMemo(
     () => selectedCharm?.actions?.specs || {},
     [selectedCharm]
