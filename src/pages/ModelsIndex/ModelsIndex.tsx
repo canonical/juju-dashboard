@@ -147,11 +147,11 @@ export default function Models() {
           </strong>
           <ButtonGroup
             activeButton={queryParams.groupedby}
-            buttons={["status", "cloud", "owner"].map((group) => ({
+            buttons={["Status", "Cloud", "Owner"].map((group) => ({
               children: group,
-              key: group,
+              key: group.toLowerCase(),
               to: urls.models.group({
-                groupedby: group as ModelsGroupedBy,
+                groupedby: group.toLowerCase() as ModelsGroupedBy,
               }),
             }))}
             buttonComponent={Link}

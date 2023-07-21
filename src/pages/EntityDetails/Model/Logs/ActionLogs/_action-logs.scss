@@ -1,4 +1,4 @@
-@import "../../../../scss/settings";
+@import "../../../../../scss/settings";
 @import "vanilla-framework/scss/vanilla";
 
 @mixin action-logs {
@@ -11,6 +11,13 @@
         width: 20%;
       }
     }
+  }
+
+  .action-logs__loading {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    justify-content: center;
   }
 
   .action-logs__stdout {

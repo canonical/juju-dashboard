@@ -8,7 +8,6 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
-import ActionLogs from "pages/EntityDetails/Model/ActionLogs/ActionLogs";
 import {
   getActiveUser,
   getModelAccess,
@@ -38,6 +37,7 @@ import {
 } from "tables/tableRows";
 
 import ApplicationsTab from "./ApplicationsTab/ApplicationsTab";
+import Logs from "./Logs";
 
 export enum Label {
   ACCESS_BUTTON = "Model access",
@@ -258,7 +258,7 @@ const Model = () => {
             )}
           </>
         )}
-        {shouldShow("action-logs", query.activeView) && <ActionLogs />}
+        {shouldShow("action-logs", query.activeView) && <Logs />}
       </div>
     </>
   );

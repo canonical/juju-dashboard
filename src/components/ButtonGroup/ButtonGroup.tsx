@@ -14,7 +14,7 @@ type Props<P = ButtonProps> = {
   buttonComponent?: ElementType | ComponentType<P>;
   label?: string;
   noWrap?: boolean;
-  activeButton: string;
+  activeButton?: string | null;
 };
 
 const ButtonGroup = <P,>({

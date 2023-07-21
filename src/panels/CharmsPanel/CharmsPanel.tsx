@@ -11,9 +11,6 @@ type Props = {
 };
 
 export default function CharmsPanel({ onCharmURLChange }: Props): JSX.Element {
-  // TODO: Add usePanelQueryParams after getting latest changes from main in
-  // order to close the panel correctly.
-
   const [selectedCharm, setSelectedCharm] = useState<string | null>(null);
   const charms = useSelector(getCharms());
   const handleSubmit: FormEventHandler = (e) => {

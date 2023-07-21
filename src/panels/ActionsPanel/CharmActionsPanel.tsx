@@ -11,7 +11,6 @@ import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import ToastCard from "components/ToastCard/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
-import { useQueryParams } from "hooks/useQueryParams";
 import { executeActionOnUnits } from "juju/api";
 import type { ApplicationInfo } from "juju/types";
 import ActionOptions from "panels/ActionsPanel/ActionOptions";
@@ -21,6 +20,7 @@ import type {
 } from "panels/ActionsPanel/ActionsPanel";
 import { onValuesChange } from "panels/ActionsPanel/ActionsPanel";
 import { enableSubmit } from "panels/ActionsPanel/ActionsPanel";
+import { usePanelQueryParams } from "panels/hooks";
 import {
   getModelUUIDFromList,
   getSelectedApplications,
@@ -34,6 +34,11 @@ export enum Label {
   ACTION_ERROR = "Some of the actions failed to execute",
   ACTION_SUCCESS = "Action successfully executed.",
 }
+
+type CharmActionsQueryParams = {
+  panel: string | null;
+  charm: string | null;
+};
 
 const filterExist = <I,>(item: I | null): item is I => !!item;
 
@@ -52,11 +57,17 @@ export default function CharmActionsPanel({ charmURL }: Props): JSX.Element {
   const [confirmType, setConfirmType] = useState<string>("");
   const [selectedAction, setSelectedAction] = useState<string>();
   const actionOptionsValues = useRef<ActionOptionValues>({});
-  const [, setQueryParams] = useQueryParams({
+
+  const defaultQueryParams: CharmActionsQueryParams = {
     panel: null,
-  });
-  const selectedApplications = useSelector(getSelectedApplications(charmURL));
-  const selectedCharm = useSelector(getSelectedCharm(charmURL));
+    charm: null,
+  };
+  const [queryParams, , handleRemovePanelQueryParams] =
+    usePanelQueryParams<CharmActionsQueryParams>(defaultQueryParams);
+  const selectedApplications = useSelector(
+    getSelectedApplications(queryParams.charm || "")
+  );
+  const selectedCharm = useSelector(getSelectedCharm(queryParams.charm || ""));
   const actionData = useMemo(
     () => selectedCharm?.actions?.specs || {},
     [selectedCharm]
@@ -158,7 +169,7 @@ export default function CharmActionsPanel({ charmURL }: Props): JSX.Element {
             event.stopPropagation();
             setConfirmType("");
             executeAction();
-            setQueryParams({ panel: null }, { replace: true });
+            handleRemovePanelQueryParams();
           },
           () => setConfirmType("")
         );
