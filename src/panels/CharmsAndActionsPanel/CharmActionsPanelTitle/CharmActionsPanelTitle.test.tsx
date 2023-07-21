@@ -73,19 +73,20 @@ describe("CharmActionsPanelTitle", () => {
         selectedApplications: [
           charmApplicationFactory.build({
             "charm-url": "ch:ceph",
-            "unit-count": 0,
           }),
         ],
       }),
     });
-    const {
-      result: { container },
-    } = renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, {
+    renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, {
       state,
     });
 
-    const entityIcon = container.querySelector(".entity-icon");
+    const entityIcon = screen.queryByRole("img");
     expect(entityIcon).not.toBeInTheDocument();
+
+    const title = screen.getByText("1 application (2 units) selected");
+    expect(title).toBeVisible();
+    expect(title.tagName).toBe("H5");
   });
 
   it("should display the title when no unit is selected", () => {
@@ -126,13 +127,11 @@ describe("CharmActionsPanelTitle", () => {
         ],
       }),
     });
-    const {
-      result: { container },
-    } = renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, {
+    renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, {
       state,
     });
 
-    const entityIcon = container.querySelector(".entity-icon");
+    const entityIcon = screen.queryByRole("img");
     expect(entityIcon).toBeVisible();
 
     const title = screen.getByText("1 application (2 units) selected");
