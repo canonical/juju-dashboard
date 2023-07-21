@@ -66,26 +66,26 @@ describe("CharmActionsPanelTitle", () => {
     expect(title).toBeVisible();
   });
 
-  it("should display the title if a charm and applications are selected", () => {
+  it("should not display an icon if there is no info about it in selected charm", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
-        charms: [
-          charmInfoFactory.build({
-            url: "ch:ceph",
-          }),
-        ],
+        charms: [{ url: "ch:ceph", config: {}, revision: 0 }],
         selectedApplications: [
           charmApplicationFactory.build({
             "charm-url": "ch:ceph",
+            "unit-count": 0,
           }),
         ],
       }),
     });
-    renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, { state });
+    const {
+      result: { container },
+    } = renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, {
+      state,
+    });
 
-    const title = screen.getByText("1 application (2 units) selected");
-    expect(title).toBeVisible();
-    expect(title.tagName).toBe("H5");
+    const entityIcon = container.querySelector(".entity-icon");
+    expect(entityIcon).not.toBeInTheDocument();
   });
 
   it("should display the title when no unit is selected", () => {
@@ -107,6 +107,35 @@ describe("CharmActionsPanelTitle", () => {
     renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, { state });
 
     const title = screen.getByText("1 application (0 units) selected");
+    expect(title).toBeVisible();
+    expect(title.tagName).toBe("H5");
+  });
+
+  it("should display the title and icon if a charm and applications are selected", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        charms: [
+          charmInfoFactory.build({
+            url: "ch:ceph",
+          }),
+        ],
+        selectedApplications: [
+          charmApplicationFactory.build({
+            "charm-url": "ch:ceph",
+          }),
+        ],
+      }),
+    });
+    const {
+      result: { container },
+    } = renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, {
+      state,
+    });
+
+    const entityIcon = container.querySelector(".entity-icon");
+    expect(entityIcon).toBeVisible();
+
+    const title = screen.getByText("1 application (2 units) selected");
     expect(title).toBeVisible();
     expect(title.tagName).toBe("H5");
   });
