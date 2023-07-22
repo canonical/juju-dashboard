@@ -1,6 +1,5 @@
 import { screen } from "@testing-library/react";
 
-// import * as apiModule from "juju/api";
 import { renderComponent } from "testing/utils";
 
 import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
@@ -9,11 +8,6 @@ import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
 import Panels from "./Panels";
 import { Label as RegisterControllerLabel } from "./RegisterController/RegisterController";
 import { TestId as ShareModelTestId } from "./ShareModelPanel/ShareModel";
-
-// jest.mock("juju/api", () => ({
-//   ...jest.requireActual("juju/api"),
-//   getCharmsURLFromApplications: jest.fn(),
-// }));
 
 describe("Panels", () => {
   it("can display the register controller panel", () => {
@@ -34,9 +28,6 @@ describe("Panels", () => {
   });
 
   it("can display the choose charm panel", async () => {
-    // jest
-    //   .spyOn(apiModule, "getCharmsURLFromApplications")
-    //   .mockImplementation(() => Promise.resolve(["mockCharmsURL"]));
     renderComponent(<Panels />, { url: "/?panel=select-charms-and-actions" });
     expect(
       screen.getByTestId(CharmsAndActionsPanelTestId.PANEL)
