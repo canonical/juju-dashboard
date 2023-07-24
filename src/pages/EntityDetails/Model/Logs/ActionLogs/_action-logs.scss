@@ -4,8 +4,15 @@
 @mixin action-logs {
   .entity-details__action-logs {
     table {
+      // Operation ID column
+      th:nth-child(2) {
+        width: 15%;
+      }
+
       // log messages column
       th:nth-child(5),
+      // Completion time column.
+      th:nth-child(6),
       // control buttons column
       th:nth-child(7) {
         width: 20%;
