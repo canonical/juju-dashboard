@@ -196,8 +196,8 @@ describe("Entity Details App", () => {
 
   it("navigates to the actions log when button pressed", async () => {
     renderComponent(<App />, { path, url, state });
-    await userEvent.click(screen.getByTestId(TestId.SHOW_ACTION_LOGS));
-    expect(window.location.search).toEqual("?activeView=action-logs");
+    await userEvent.click(screen.getByTestId(TestId.SHOW_LOGS));
+    expect(window.location.search).toEqual("?activeView=logs");
   });
 
   it("does not fail if a subordinate is not related to another application", async () => {

@@ -1,6 +1,6 @@
 import { argPath } from "utils";
 
-export type ModelTab = "apps" | "machines" | "integrations" | "action-logs";
+export type ModelTab = "apps" | "machines" | "integrations" | "logs";
 export type AppTab = "machines" | "units";
 export type ModelsGroupedBy = "status" | "cloud" | "owner";
 

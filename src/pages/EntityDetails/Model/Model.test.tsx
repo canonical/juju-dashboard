@@ -297,7 +297,7 @@ describe("Model", () => {
     };
     renderComponent(<Model />, {
       state,
-      url: "/models/eggman@external/test1?activeView=action-logs",
+      url: "/models/eggman@external/test1?activeView=logs",
       path,
     });
 
@@ -319,6 +319,32 @@ describe("Model", () => {
     expect(
       document.querySelector(".entity-details__action-logs")
     ).toBeInTheDocument();
+  });
+
+  it("can display the audit logs table", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        relations: {
+          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=logs&tableView=audit-logs",
+      path,
+    });
+
+    Element.prototype.scrollIntoView = jest.fn();
+
+    const content = screen.getByText("Audit Logs Placeholder");
+    expect(content).toBeInTheDocument();
   });
 
   it("can display the offers table", async () => {

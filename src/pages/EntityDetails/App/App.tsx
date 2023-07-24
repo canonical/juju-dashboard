@@ -37,7 +37,7 @@ export enum TestId {
   MACHINES_TABLE = "machines-table",
   RUN_ACTION_BUTTON = "run-action-button",
   SELECT_ALL = "select-all",
-  SHOW_ACTION_LOGS = "show-action-logs",
+  SHOW_LOGS = "show-logs",
   UNITS_TABLE = "units-table",
 }
 
@@ -337,18 +337,18 @@ export default function App(): JSX.Element {
                   appearance="base"
                   className="entity-details__action-button"
                   hasIcon={true}
-                  data-testid={TestId.SHOW_ACTION_LOGS}
+                  data-testid={TestId.SHOW_LOGS}
                   to={
                     userName && modelName
                       ? urls.model.tab({
                           userName,
                           modelName,
-                          tab: "action-logs",
+                          tab: "logs",
                         })
                       : ""
                   }
                 >
-                  <Icon name="action-logs" />
+                  <Icon name="logs" />
                   <span>View Action Logs</span>
                 </Button>
               </div>
