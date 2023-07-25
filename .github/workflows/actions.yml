@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - main
+      - audit-logs
   pull_request:
     branches:
       - main
+      - audit-logs
 jobs:
   test:
     name: Test
