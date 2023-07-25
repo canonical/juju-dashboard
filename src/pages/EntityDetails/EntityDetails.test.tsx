@@ -152,7 +152,7 @@ describe("Entity Details Container", () => {
       },
       {
         text: "Logs",
-        query: "action-logs",
+        query: "logs",
       },
       {
         text: "Machines",
