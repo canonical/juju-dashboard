@@ -343,8 +343,12 @@ describe("Model", () => {
 
     Element.prototype.scrollIntoView = jest.fn();
 
-    const content = screen.getByText("Audit Logs Placeholder");
-    expect(content).toBeInTheDocument();
+    expect(
+      document.querySelector(".entity-details__action-logs")
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(".entity-details__audit-logs")
+    ).toBeInTheDocument();
   });
 
   it("can display the offers table", async () => {
