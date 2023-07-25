@@ -39,7 +39,7 @@ describe("CharmsPanel", () => {
   });
 
   it("renders the correct number of charms", () => {
-    renderComponent(<CharmsPanel onCharmURLChange={() => {}} />, {
+    renderComponent(<CharmsPanel onCharmURLChange={jest.fn()} />, {
       path,
       url,
       state,
@@ -48,7 +48,7 @@ describe("CharmsPanel", () => {
   });
 
   it("next button is disabled when no charm is selected", () => {
-    renderComponent(<CharmsPanel onCharmURLChange={() => {}} />, {
+    renderComponent(<CharmsPanel onCharmURLChange={jest.fn()} />, {
       path,
       url,
       state,
@@ -57,7 +57,7 @@ describe("CharmsPanel", () => {
   });
 
   it("next button is enabled when a charm is selected", () => {
-    renderComponent(<CharmsPanel onCharmURLChange={() => {}} />, {
+    renderComponent(<CharmsPanel onCharmURLChange={jest.fn()} />, {
       path,
       url,
       state,

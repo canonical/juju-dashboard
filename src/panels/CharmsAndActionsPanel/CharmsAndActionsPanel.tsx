@@ -48,12 +48,17 @@ const CharmsAndActionsPanel = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
+  // charmURL is initially undefined (isSet(charmURL) is false) and we
+  // set its value once we get the information about the charms. Until
+  // then, the Panel will be in a loading state.
+  const isPanelLoading = !isSet(charmURL);
+
   useEffect(() => {
     // getCharmsURLFromApplications should be resolved only once after
     // selectedApplications and modelUUID are initialized. Once it is
-    // resolved, isSet(charmURL) becomes true, thus triggering an early
-    // return at each subsequent call of useEffect.
-    if (!selectedApplications || !modelUUID || isSet(charmURL)) {
+    // resolved, the Panel is loaded and we will get an early return
+    // at each subsequent call of useEffect.
+    if (!selectedApplications || !modelUUID || !isPanelLoading) {
       return;
     }
     getCharmsURLFromApplications(
@@ -65,7 +70,7 @@ const CharmsAndActionsPanel = () => {
       const isCharmURLUnique = charmsURL.length === 1;
       setCharmURL(isCharmURLUnique ? charmsURL[0] : null);
     });
-  }, [appState, charmURL, dispatch, modelUUID, selectedApplications]);
+  }, [appState, dispatch, isPanelLoading, modelUUID, selectedApplications]);
 
   return (
     <Panel
@@ -82,11 +87,14 @@ const CharmsAndActionsPanel = () => {
         )
       }
       onRemovePanelQueryParams={handleRemovePanelQueryParams}
-      loading={charmURL === undefined}
+      loading={isPanelLoading}
     >
       <>
-        {charmURL && <CharmActionsPanel charmURL={charmURL} />}
-        {!charmURL && <CharmsPanel onCharmURLChange={setCharmURL} />}
+        {charmURL ? (
+          <CharmActionsPanel charmURL={charmURL} />
+        ) : (
+          <CharmsPanel onCharmURLChange={setCharmURL} />
+        )}
       </>
     </Panel>
   );
