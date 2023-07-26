@@ -19,6 +19,7 @@ import {
   getActiveUserControllerAccess,
 } from "store/general/selectors";
 import type { RootState } from "store/store";
+import getUserName from "utils/getUserName";
 
 import type {
   Controllers,
@@ -163,8 +164,10 @@ export const getUserDomainsInModel = createSelector(
 */
 export const getActiveUser = createSelector(
   [getModelByUUID, (state: RootState) => state],
-  (model, state) =>
-    getActiveUserTag(state, model?.wsControllerURL)?.replace("user-", "")
+  (model, state) => {
+    const activeUserTag = getActiveUserTag(state, model?.wsControllerURL);
+    return activeUserTag ? getUserName(activeUserTag) : undefined;
+  }
 );
 
 export const getModelAccess = createSelector(
@@ -235,7 +238,7 @@ export function getModelUUIDFromList(
       return modelUUID;
     }
     Object.entries(modelList).some(([_key, { name, ownerTag, uuid }]) => {
-      if (name === modelName && ownerTag.replace("user-", "") === ownerName) {
+      if (name === modelName && getUserName(ownerTag) === ownerName) {
         modelUUID = uuid;
         return true;
       }
