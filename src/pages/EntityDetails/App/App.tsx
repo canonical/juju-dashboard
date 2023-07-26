@@ -5,13 +5,13 @@ import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
-import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import FormikFormData from "components/FormikFormData/FormikFormData";
 import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import SegmentedControl from "components/SegmentedControl";
 import Status from "components/Status";
 import { useQueryParams } from "hooks/useQueryParams";
 import type { MachineData, UnitData } from "juju/types";
@@ -294,7 +294,7 @@ export default function App(): JSX.Element {
       </div>
       <div className="entity-details__main u-overflow--auto">
         {!hideMachines && (
-          <ButtonGroup
+          <SegmentedControl
             buttons={["Units", "Machines"].map((tab) => ({
               children: tab,
               key: tab.toLowerCase(),
