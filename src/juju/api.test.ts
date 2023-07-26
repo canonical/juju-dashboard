@@ -50,7 +50,7 @@ import {
   getActionsForApplication,
   getApplicationConfig,
   getCharmInfo,
-  getCharmsFromApplications,
+  getCharmsURLFromApplications,
   loginWithBakery,
   queryActionsList,
   queryOperationsList,
@@ -1410,7 +1410,7 @@ describe("Juju API", () => {
     });
   });
 
-  describe("getCharmsFromApplications", () => {
+  describe("getCharmsURLFromApplications", () => {
     it("fetches and stores charms", async () => {
       const dispatch = jest.fn();
       const etcd = charmInfoFactory.build({
@@ -1450,7 +1450,7 @@ describe("Juju API", () => {
         applicationInfoFactory.build({ "charm-url": "cs:myslq" }),
         applicationInfoFactory.build({ "charm-url": "cs:etcd" }),
       ];
-      await getCharmsFromApplications(apps, "abc123", state, dispatch);
+      await getCharmsURLFromApplications(apps, "abc123", state, dispatch);
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateCharms({
           charms: [etcd, mysql],

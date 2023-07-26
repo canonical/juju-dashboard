@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Fuse from "fuse.js";
 import type { MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import type { Chip } from "components/ChipGroup/ChipGroup";
@@ -14,7 +14,6 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
-import { getCharmsFromApplications } from "juju/api";
 import type { ApplicationData, ApplicationInfo } from "juju/types";
 import {
   getAllModelApplicationStatus,
@@ -23,7 +22,6 @@ import {
   getSelectedApplications,
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
-import { useAppStore } from "store/store";
 import {
   appsOffersTableHeaders,
   generateLocalApplicationTableHeaders,
@@ -63,10 +61,6 @@ const ContentRevealTitle = ({
 function SearchResultsActionsRow() {
   const selectedApplications = useSelector(getSelectedApplications());
   const sendAnalytics = useAnalytics();
-  const appState = useAppStore().getState();
-  const dispatch = useDispatch();
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
 
   const [, setPanel] = useQueryParams<{ panel: string | null }>({
     panel: null,
@@ -78,13 +72,7 @@ function SearchResultsActionsRow() {
       category: "ApplicationSearch",
       action: "Run action (button)",
     });
-    await getCharmsFromApplications(
-      selectedApplications,
-      modelUUID,
-      appState,
-      dispatch
-    );
-    setPanel({ panel: "choose-charm" }, { replace: true });
+    setPanel({ panel: "select-charms-and-actions" }, { replace: true });
   };
 
   return (

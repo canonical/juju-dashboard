@@ -6,10 +6,8 @@ import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import CharmIcon from "components/CharmIcon/CharmIcon";
 import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
-import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import ToastCard from "components/ToastCard/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
@@ -28,7 +26,6 @@ import {
   getSelectedApplications,
   getSelectedCharm,
 } from "store/juju/selectors";
-import { pluralize } from "store/juju/utils/models";
 import { useAppStore } from "store/store";
 import "../ActionsPanel/_actions-panel.scss";
 
@@ -38,18 +35,17 @@ export enum Label {
   ACTION_SUCCESS = "Action successfully executed.",
 }
 
-export enum TestId {
-  PANEL = "charm-actions-panel",
-}
-
 type CharmActionsQueryParams = {
   panel: string | null;
-  charm: string | null;
 };
 
 const filterExist = <I,>(item: I | null): item is I => !!item;
 
-export default function CharmActionsPanel(): JSX.Element {
+export type Props = {
+  charmURL: string;
+};
+
+export default function CharmActionsPanel({ charmURL }: Props): JSX.Element {
   const sendAnalytics = useAnalytics();
   const { userName, modelName } = useParams();
 
@@ -63,14 +59,11 @@ export default function CharmActionsPanel(): JSX.Element {
 
   const defaultQueryParams: CharmActionsQueryParams = {
     panel: null,
-    charm: null,
   };
-  const [queryParams, , handleRemovePanelQueryParams] =
+  const [, , handleRemovePanelQueryParams] =
     usePanelQueryParams<CharmActionsQueryParams>(defaultQueryParams);
-  const selectedApplications = useSelector(
-    getSelectedApplications(queryParams.charm || "")
-  );
-  const selectedCharm = useSelector(getSelectedCharm(queryParams.charm || ""));
+  const selectedApplications = useSelector(getSelectedApplications(charmURL));
+  const selectedCharm = useSelector(getSelectedCharm(charmURL));
   const actionData = useMemo(
     () => selectedCharm?.actions?.specs || {},
     [selectedCharm]
@@ -79,27 +72,6 @@ export default function CharmActionsPanel(): JSX.Element {
     (total, app) => total + (app["unit-count"] || 0),
     0
   );
-  const generateTitle = () => {
-    if (!selectedApplications || !selectedCharm) return Label.NONE_SELECTED;
-    const totalUnits = selectedApplications.reduce(
-      (total, app) => total + (app["unit-count"] || 0),
-      0
-    );
-
-    return (
-      <h5>
-        {selectedCharm?.meta?.name && selectedCharm?.url ? (
-          <CharmIcon
-            name={selectedCharm.meta.name}
-            charmId={selectedCharm.url}
-          />
-        ) : null}{" "}
-        {selectedApplications.length}{" "}
-        {pluralize(selectedApplications.length, "application")} ({totalUnits}{" "}
-        {pluralize(totalUnits, "unit")}) selected
-      </h5>
-    );
-  };
 
   const executeAction = () => {
     sendAnalytics({
@@ -202,50 +174,42 @@ export default function CharmActionsPanel(): JSX.Element {
   };
 
   return (
-    <Panel
-      width="narrow"
-      panelClassName="actions-panel"
-      data-testid={TestId.PANEL}
-      title={generateTitle()}
-      onRemovePanelQueryParams={handleRemovePanelQueryParams}
-    >
-      <>
-        <div className="actions-panel__action-list">
-          <LoadingHandler
-            hasData={Object.keys(actionData).length > 0}
-            loading={false}
-            noDataMessage="This charm has not provided any actions."
-          >
-            {Object.keys(actionData).map((actionName) => (
-              <RadioInputBox
+    <>
+      <div className="actions-panel__action-list">
+        <LoadingHandler
+          hasData={Object.keys(actionData).length > 0}
+          loading={false}
+          noDataMessage="This charm has not provided any actions."
+        >
+          {Object.keys(actionData).map((actionName) => (
+            <RadioInputBox
+              name={actionName}
+              description={actionData[actionName].description}
+              onSelect={selectHandler}
+              selectedInput={selectedAction}
+              key={actionName}
+            >
+              <ActionOptions
                 name={actionName}
-                description={actionData[actionName].description}
-                onSelect={selectHandler}
-                selectedInput={selectedAction}
-                key={actionName}
-              >
-                <ActionOptions
-                  name={actionName}
-                  data={actionData}
-                  onValuesChange={changeHandler}
-                />
-              </RadioInputBox>
-            ))}
-            {generateConfirmationModal()}
-          </LoadingHandler>
-        </div>
-        <div className="actions-panel__drawer">
-          <Button
-            appearance="positive"
-            className="actions-panel__run-action"
-            disabled={disableSubmit || unitCount === 0}
-            onClick={handleSubmit}
-          >
-            Run action
-          </Button>
-        </div>
-      </>
-    </Panel>
+                data={actionData}
+                onValuesChange={changeHandler}
+              />
+            </RadioInputBox>
+          ))}
+          {generateConfirmationModal()}
+        </LoadingHandler>
+      </div>
+      <div className="actions-panel__drawer">
+        <Button
+          appearance="positive"
+          className="actions-panel__run-action"
+          disabled={disableSubmit || unitCount === 0}
+          onClick={handleSubmit}
+        >
+          Run action
+        </Button>
+      </div>
+    </>
   );
 }
 
