@@ -104,14 +104,15 @@ describe("Models Index page", () => {
   });
 
   it("displays correct grouping view", async () => {
-    renderComponent(<ModelsIndex />, { state });
+    renderComponent(<ModelsIndex />, { state, url: "?groupedby=status" });
 
-    expect(screen.getByRole("link", { name: "Status" })).toHaveClass(
-      "is-selected"
+    expect(screen.getByRole("tab", { name: "Status" })).toHaveAttribute(
+      "aria-selected",
+      "true"
     );
-    const ownerButton = screen.getByRole("link", { name: "Owner" });
+    const ownerButton = screen.getByRole("tab", { name: "Owner" });
     await userEvent.click(ownerButton);
-    expect(ownerButton).toHaveClass("is-selected");
+    expect(ownerButton).toHaveAttribute("aria-selected", "true");
     const searchParams = new URLSearchParams(window.location.search);
     expect(searchParams.get("groupedby")).toEqual("owner");
     expect(document.querySelector(".owners-group")).toBeInTheDocument();

@@ -27,9 +27,7 @@ describe("Model", () => {
     expect(
       document.querySelector(".entity-details__action-logs")
     ).not.toBeInTheDocument();
-    await userEvent.click(
-      screen.getByRole("button", { name: Label.ACTION_LOGS })
-    );
+    await userEvent.click(screen.getByRole("tab", { name: Label.ACTION_LOGS }));
     expect(
       document.querySelector(".entity-details__action-logs")
     ).toBeInTheDocument();

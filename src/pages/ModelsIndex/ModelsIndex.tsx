@@ -5,10 +5,10 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import FadeIn from "animations/FadeIn";
-import ButtonGroup from "components/ButtonGroup/ButtonGroup";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 import Header from "components/Header/Header";
 import ModelTableList from "components/ModelTableList/ModelTableList";
+import SegmentedControl from "components/SegmentedControl";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
@@ -145,19 +145,21 @@ export default function Models() {
           <strong className="models__count">
             {modelCount} {pluralize(modelCount, "model")}
           </strong>
-          <ButtonGroup
-            activeButton={queryParams.groupedby}
-            buttons={["Status", "Cloud", "Owner"].map((group) => ({
-              children: group,
-              key: group.toLowerCase(),
-              to: urls.models.group({
-                groupedby: group.toLowerCase() as ModelsGroupedBy,
-              }),
-            }))}
-            buttonComponent={Link}
-            label="Group by:"
-            noWrap
-          />
+          <span className="models__header-controls">
+            Group by:{" "}
+            <SegmentedControl
+              className="u-display--inline-block"
+              activeButton={queryParams.groupedby}
+              buttons={["Status", "Cloud", "Owner"].map((group) => ({
+                children: group,
+                key: group.toLowerCase(),
+                to: urls.models.group({
+                  groupedby: group.toLowerCase() as ModelsGroupedBy,
+                }),
+              }))}
+              buttonComponent={Link}
+            />
+          </span>
           <SearchAndFilter
             filterPanelData={[
               {
