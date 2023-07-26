@@ -1,7 +1,7 @@
-import { SearchBox, Spinner, Tabs } from "@canonical/react-components";
+import { Spinner, Tabs } from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode, MouseEvent } from "react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams, Link, Outlet } from "react-router-dom";
 
@@ -50,17 +50,14 @@ const EntityDetails = () => {
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const { isNestedEntityPage } = useEntityDetailsParams();
 
-  const [query, setQuery] = useQueryParams({
+  const [query] = useQueryParams({
     panel: null,
     entity: null,
     activeView: "apps",
     filterQuery: "",
   });
-  const [filterQuery, setFilterQuery] = useState(query.filterQuery);
 
   const { activeView } = query;
-
-  const searchBoxRef = useRef<HTMLInputElement>(null);
 
   const [showWebCLI, setShowWebCLI] = useState(false);
 
@@ -107,11 +104,6 @@ const EntityDetails = () => {
     }
   }, [modelInfo]);
 
-  useEffect(() => {
-    // set value
-    if (searchBoxRef.current) searchBoxRef.current.value = query.filterQuery;
-  }, [query.filterQuery]);
-
   useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
 
   const generateTabItems = () => {
@@ -153,29 +145,6 @@ const EntityDetails = () => {
     }
 
     return items;
-  };
-
-  const generateSearch = () => {
-    return (
-      <SearchBox
-        className="u-no-margin"
-        placeholder="Filter applications"
-        onKeyDown={(e) => {
-          if (e.code === "Enter") handleFilterSubmit(filterQuery);
-        }}
-        onSearch={() => handleFilterSubmit(filterQuery)}
-        onClear={() => handleFilterSubmit("")}
-        onChange={setFilterQuery}
-        externallyControlled
-        ref={searchBoxRef}
-        data-testid="filter-applications"
-        value={filterQuery}
-      />
-    );
-  };
-
-  const handleFilterSubmit = (filterQuery: string) => {
-    setQuery({ filterQuery });
   };
 
   let content: ReactNode;
@@ -242,9 +211,6 @@ const EntityDetails = () => {
               <Tabs links={generateTabItems()} />
             )}
           </div>
-          {activeView === "apps" && !isNestedEntityPage
-            ? generateSearch()
-            : null}
         </div>
       </Header>
       {content}
