@@ -46,6 +46,7 @@ const urls = {
     }>("/models?groupedby=:groupedby"),
   },
   settings: "/settings",
+  logs: "/logs",
 };
 
 export const externalURLs = {

@@ -9,6 +9,7 @@ import {
 import Login from "components/LogIn/LogIn";
 import useAnalytics from "hooks/useAnalytics";
 import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
+import Logs from "pages/Logs";
 import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
@@ -70,6 +71,14 @@ export function Routes() {
         }
       />
       <Route path="*" element={<PageNotFound />} />
+      <Route
+        path={urls.logs}
+        element={
+          <Login>
+            <Logs />
+          </Login>
+        }
+      />
     </ReactRouterRoutes>
   );
 }

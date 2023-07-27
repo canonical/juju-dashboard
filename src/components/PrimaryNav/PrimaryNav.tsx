@@ -16,23 +16,34 @@ import type { Controllers } from "store/juju/types";
 import urls, { externalURLs } from "urls";
 import "./_primary-nav.scss";
 
+type PrimaryNavLinkProps = {
+  children: React.ReactNode;
+  to: string;
+};
+
+const PrimaryNavLink = ({ children, to }: PrimaryNavLinkProps) => (
+  <NavLink
+    className={({ isActive }) =>
+      classNames("p-list__link", {
+        "is-selected": isActive,
+      })
+    }
+    to={to}
+  >
+    {children}
+  </NavLink>
+);
+
 const ModelsLink = () => {
   const { blocked: blockedModels } = useSelector(getGroupedModelStatusCounts);
   return (
-    <NavLink
-      className={({ isActive }) =>
-        classNames("p-list__link", {
-          "is-selected": isActive,
-        })
-      }
-      to={urls.models.index}
-    >
+    <PrimaryNavLink to={urls.models.index}>
       <i className={`p-icon--models is-light`}></i>
       <span className="hide-collapsed">Models</span>
       {blockedModels > 0 && (
         <span className="entity-count is-negative">{blockedModels}</span>
       )}
-    </NavLink>
+    </PrimaryNavLink>
   );
 };
 
@@ -53,14 +64,7 @@ const ControllersLink = () => {
   }, [controllers]);
 
   return (
-    <NavLink
-      className={({ isActive }) =>
-        classNames("p-list__link", {
-          "is-selected": isActive,
-        })
-      }
-      to={urls.controllers}
-    >
+    <PrimaryNavLink to={urls.controllers}>
       <i className={`p-icon--controllers is-light`}></i>
       <span className="hide-collapsed">Controllers</span>
       {controllersUpdateCount > 0 && (
@@ -68,9 +72,16 @@ const ControllersLink = () => {
           {controllersUpdateCount}
         </span>
       )}
-    </NavLink>
+    </PrimaryNavLink>
   );
 };
+
+const LogsLink = () => (
+  <PrimaryNavLink to={urls.logs}>
+    <i className={`p-icon--topic is-light`}></i>
+    <span className="hide-collapsed">Logs</span>
+  </PrimaryNavLink>
+);
 
 const PrimaryNav = () => {
   const appVersion = useSelector(getAppVersion);
@@ -102,6 +113,9 @@ const PrimaryNav = () => {
         </li>
         <li className="p-list__item">
           <ControllersLink />
+        </li>
+        <li className="p-list__item">
+          <LogsLink />
         </li>
       </ul>
       <hr className="p-primary-nav__divider hide-collapsed" />
