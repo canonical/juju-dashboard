@@ -8,6 +8,7 @@ import bakery from "juju/bakery";
 import { getActiveUserTag } from "store/general/selectors";
 import type { Credential } from "store/general/types";
 import { externalURLs } from "urls";
+import getUserName from "utils/getUserName";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
@@ -156,7 +157,7 @@ const WebCLI = ({
           storeState,
           `${originalWSOrigin}/api`
         );
-        authentication.user = activeUser?.replace("user-", "");
+        authentication.user = activeUser ? getUserName(activeUser) : undefined;
         authentication.macaroons = [deserialized];
       } else {
         // XXX Surface error to the user.

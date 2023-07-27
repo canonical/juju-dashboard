@@ -28,6 +28,8 @@ describe("Model", () => {
     expect(screen.getByRole("button", { name: "Audit logs" })).toHaveClass(
       "is-selected"
     );
-    expect(screen.queryByText("Audit Logs Placeholder")).toBeInTheDocument();
+    expect(
+      document.querySelector(".entity-details__audit-logs")
+    ).toBeInTheDocument();
   });
 });

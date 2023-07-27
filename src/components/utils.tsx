@@ -1,6 +1,6 @@
 import { parseISO, formatDistanceToNow } from "date-fns";
 
-export const isSet = (val: unknown) => !!val || val !== undefined;
+export const isSet = (val: unknown) => val !== undefined;
 
 /**
   @returns Returns the current viewport width
