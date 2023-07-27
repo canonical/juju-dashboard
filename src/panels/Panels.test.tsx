@@ -3,8 +3,7 @@ import { screen } from "@testing-library/react";
 import { renderComponent } from "testing/utils";
 
 import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
-import { TestId as CharmActionsTestId } from "./ActionsPanel/CharmActionsPanel";
-import { Label as CharmsPanelLabel } from "./CharmsPanel/CharmsPanel";
+import { TestId as CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
 import Panels from "./Panels";
 import { Label as RegisterControllerLabel } from "./RegisterController/RegisterController";
@@ -28,16 +27,11 @@ describe("Panels", () => {
     expect(screen.getByTestId(ShareModelTestId.PANEL)).toBeInTheDocument();
   });
 
-  it("can display the choose charm panel", () => {
-    renderComponent(<Panels />, { url: "/?panel=choose-charm" });
+  it("can display the choose charm panel", async () => {
+    renderComponent(<Panels />, { url: "/?panel=select-charms-and-actions" });
     expect(
-      screen.getByRole("dialog", { name: CharmsPanelLabel.TITLE })
+      screen.getByTestId(CharmsAndActionsPanelTestId.PANEL)
     ).toBeInTheDocument();
-  });
-
-  it("can display the charm actions panel", () => {
-    renderComponent(<Panels />, { url: "/?panel=charm-actions" });
-    expect(screen.getByTestId(CharmActionsTestId.PANEL)).toBeInTheDocument();
   });
 
   it("can display the config panel", async () => {

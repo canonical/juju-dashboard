@@ -1,4 +1,4 @@
-import ButtonGroup from "components/ButtonGroup/ButtonGroup";
+import SegmentedControl from "components/SegmentedControl";
 import { useQueryParams } from "hooks/useQueryParams";
 
 import "./_logs.scss";
@@ -25,7 +25,7 @@ const Logs = () => {
   });
   return (
     <div className="logs-tab">
-      <ButtonGroup
+      <SegmentedControl
         buttons={BUTTON_DETAILS.map(({ title, url }) => ({
           children: title,
           key: url,

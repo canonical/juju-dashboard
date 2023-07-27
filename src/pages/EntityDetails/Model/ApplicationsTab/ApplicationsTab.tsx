@@ -1,47 +1,32 @@
-import { Button, Icon, MainTable } from "@canonical/react-components";
-import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import classnames from "classnames";
-import Fuse from "fuse.js";
-import type { MouseEvent } from "react";
-import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { MainTable } from "@canonical/react-components";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import type { Chip } from "components/ChipGroup/ChipGroup";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 import ContentReveal from "components/ContentReveal/ContentReveal";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import useAnalytics from "hooks/useAnalytics";
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
-import { getCharmsFromApplications } from "juju/api";
-import type { ApplicationData, ApplicationInfo } from "juju/types";
 import {
-  getAllModelApplicationStatus,
   getModelApplications,
   getModelUUIDFromList,
-  getSelectedApplications,
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
-import { useAppStore } from "store/store";
 import {
   appsOffersTableHeaders,
-  generateLocalApplicationTableHeaders,
   remoteApplicationTableHeaders,
 } from "tables/tableHeaders";
 import {
   generateAppOffersRows,
-  generateLocalApplicationRows,
   generateRemoteApplicationRows,
 } from "tables/tableRows";
 
 import { renderCounts } from "../../counts";
 
-import {
-  addSelectAllColumn,
-  addSelectColumn,
-  useTableSelect,
-} from "./useTableSelect";
+import LocalAppsTable from "./LocalAppsTable";
+import SearchResults from "./SearchResults/SearchResults";
 
 const ContentRevealTitle = ({
   count,
@@ -60,124 +45,25 @@ const ContentRevealTitle = ({
   </>
 );
 
-function SearchResultsActionsRow() {
-  const selectedApplications = useSelector(getSelectedApplications());
-  const sendAnalytics = useAnalytics();
-  const appState = useAppStore().getState();
-  const dispatch = useDispatch();
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-
-  const [, setPanel] = useQueryParams<{ panel: string | null }>({
-    panel: null,
-  });
-
-  const handleRunAction = async (event: MouseEvent) => {
-    event.stopPropagation();
-    sendAnalytics({
-      category: "ApplicationSearch",
-      action: "Run action (button)",
-    });
-    await getCharmsFromApplications(
-      selectedApplications,
-      modelUUID,
-      appState,
-      dispatch
-    );
-    setPanel({ panel: "choose-charm" }, { replace: true });
-  };
-
-  return (
-    <div className="applications-search-results__actions-row">
-      <Button
-        appearance="base"
-        className="entity-details__action-button"
-        hasIcon={true}
-        onClick={handleRunAction}
-        disabled={!selectedApplications.length}
-      >
-        <Icon name="run-action" />
-        <span>Run action</span>
-      </Button>
-    </div>
-  );
-}
-
-type Props = {
-  filterQuery?: string;
-};
-
-export default function ApplicationsTab({ filterQuery }: Props) {
+export default function ApplicationsTab() {
   const [queryParams] = useQueryParams<{
     entity: string | null;
     panel: string | null;
     activeView: string;
+    filterQuery: string | null;
   }>({
     panel: null,
     entity: null,
     activeView: "apps",
+    filterQuery: null,
   });
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-
   const modelStatusData = useModelStatus();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applications = useSelector(getModelApplications(modelUUID));
-  const applicationStatuses = useSelector(
-    getAllModelApplicationStatus(modelUUID)
-  );
-  const [filteredApplications, setFilteredApplications] =
-    useState<ApplicationData>({});
-  const [fuse, setFuse] = useState<Fuse<ApplicationInfo>>(new Fuse([]));
-
-  const { handleSelect, handleSelectAll, selectAll, reset } = useTableSelect(
-    Object.values(filteredApplications)
-  );
-
-  useMemo(() => {
-    if (applications)
-      setFuse(
-        new Fuse(Object.values(applications), {
-          keys: ["name", "charm-url", "owner-tag", "constraints.arch"],
-        })
-      );
-  }, [applications]);
-
-  useEffect(() => {
-    if (!applications) return;
-    if (!filterQuery) {
-      // include all applications by default
-      setFilteredApplications(applications);
-    } else {
-      const searchedApps = fuse.search(filterQuery).map((e) => e.item);
-      const filteredApplications: ApplicationData = {};
-      searchedApps.forEach((application) => {
-        if ("name" in application && applications[application.name]) {
-          filteredApplications[application.name] = application;
-        }
-      });
-      setFilteredApplications(filteredApplications);
-      // on new search, reset applications selection
-      reset();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fuse, filterQuery, applications]);
-
-  const localApplicationTableRows: MainTableRow[] = useMemo(() => {
-    return modelName && userName
-      ? generateLocalApplicationRows(
-          filteredApplications,
-          applicationStatuses,
-          { modelName, userName },
-          queryParams
-        )
-      : [];
-  }, [
-    filteredApplications,
-    applicationStatuses,
-    modelName,
-    userName,
-    queryParams,
-  ]);
+  const localAppTableLength = applications
+    ? Object.keys(applications).length
+    : 0;
 
   const remoteApplicationTableRows = useMemo(() => {
     return modelName && userName
@@ -197,7 +83,6 @@ export default function ApplicationsTab({ filterQuery }: Props) {
   const appOffersChips = renderCounts("offers", modelStatusData);
   const remoteAppChips = renderCounts("remoteApps", modelStatusData);
 
-  const localAppTableLength = localApplicationTableRows?.length;
   const appOffersTableLength = appOffersRows?.length;
 
   const remoteAppsTableLength = remoteApplicationTableRows?.length;
@@ -227,29 +112,6 @@ export default function ApplicationsTab({ filterQuery }: Props) {
     </>
   );
 
-  const LocalAppsTable = () => {
-    let headers = generateLocalApplicationTableHeaders();
-    let rows = localApplicationTableRows;
-    if (filterQuery) {
-      headers = addSelectAllColumn(headers, selectAll, handleSelectAll);
-      rows = addSelectColumn(rows, filteredApplications, handleSelect);
-    }
-    return (
-      <>
-        {filterQuery && <SearchResultsActionsRow />}
-        <MainTable
-          headers={headers}
-          rows={rows}
-          className={classnames("entity-details__apps p-main-table", {
-            selectable: filterQuery,
-          })}
-          sortable
-          emptyStateMsg={"There are no local applications in this model"}
-        />
-      </>
-    );
-  };
-
   const RemoteAppsTable = () => (
     <>
       {!!remoteAppsTableLength && (
@@ -266,6 +128,20 @@ export default function ApplicationsTab({ filterQuery }: Props) {
   const getContentReveals = () => {
     return (
       <>
+        {!!localAppTableLength && (
+          <ContentReveal
+            title={
+              <ContentRevealTitle
+                count={localAppTableLength}
+                subject="Local application"
+                chips={LocalAppChips}
+              />
+            }
+            openByDefault={true}
+          >
+            <LocalAppsTable applications={applications} />
+          </ContentReveal>
+        )}
         {!!appOffersTableLength && (
           <ContentReveal
             title={
@@ -278,20 +154,6 @@ export default function ApplicationsTab({ filterQuery }: Props) {
             openByDefault={true}
           >
             {<AppOffersTable />}
-          </ContentReveal>
-        )}
-        {!!localAppTableLength && (
-          <ContentReveal
-            title={
-              <ContentRevealTitle
-                count={localAppTableLength}
-                subject="Local application"
-                chips={LocalAppChips}
-              />
-            }
-            openByDefault={true}
-          >
-            {<LocalAppsTable />}
           </ContentReveal>
         )}
         {!!remoteAppsTableLength && (
@@ -311,7 +173,9 @@ export default function ApplicationsTab({ filterQuery }: Props) {
       </>
     );
   };
-  if (visibleTables === 0) {
+  if (queryParams.filterQuery) {
+    return <SearchResults />;
+  } else if (visibleTables === 0) {
     return (
       <span>
         There are no applications associated with this model. Learn about{" "}
@@ -328,8 +192,8 @@ export default function ApplicationsTab({ filterQuery }: Props) {
   } else {
     return (
       <>
+        <LocalAppsTable applications={applications} />
         <AppOffersTable />
-        <LocalAppsTable />
         <RemoteAppsTable />
       </>
     );

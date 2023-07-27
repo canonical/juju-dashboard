@@ -11,8 +11,9 @@ describe("Model", () => {
       path: "/models/:userName/:modelName",
     });
 
-    expect(screen.getByRole("button", { name: "Action logs" })).toHaveClass(
-      "is-selected"
+    expect(screen.getByRole("tab", { name: "Action logs" })).toHaveAttribute(
+      "aria-selected",
+      "true"
     );
     expect(
       document.querySelector(".entity-details__action-logs")
@@ -25,8 +26,9 @@ describe("Model", () => {
       path: "/models/:userName/:modelName",
     });
 
-    expect(screen.getByRole("button", { name: "Audit logs" })).toHaveClass(
-      "is-selected"
+    expect(screen.getByRole("tab", { name: "Audit logs" })).toHaveAttribute(
+      "aria-selected",
+      "true"
     );
     expect(
       document.querySelector(".entity-details__audit-logs")

@@ -1,5 +1,5 @@
 import { MainTable } from "@canonical/react-components";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -81,12 +81,10 @@ const Model = () => {
     entity: string | null;
     panel: string | null;
     activeView: string;
-    filterQuery: string;
   }>({
     panel: null,
     entity: null,
     activeView: "apps",
-    filterQuery: "",
   });
 
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
@@ -125,13 +123,6 @@ const Model = () => {
   const modelAccess = useAppSelector((state) =>
     getModelAccess(state, modelUUID)
   );
-
-  const [applicationsFilterQuery, setApplicationsFilterQuery] =
-    useState<string>(query.filterQuery || "");
-
-  useEffect(() => {
-    setApplicationsFilterQuery(query.filterQuery);
-  }, [query.filterQuery]);
 
   return (
     <>
@@ -176,9 +167,7 @@ const Model = () => {
         </div>
       </div>
       <div className="entity-details__main u-overflow--auto">
-        {shouldShow("apps", query.activeView) && (
-          <ApplicationsTab filterQuery={applicationsFilterQuery} />
-        )}
+        {shouldShow("apps", query.activeView) && <ApplicationsTab />}
         {shouldShow("machines", query.activeView) &&
           (machinesTableRows.length > 0 ? (
             <MainTable

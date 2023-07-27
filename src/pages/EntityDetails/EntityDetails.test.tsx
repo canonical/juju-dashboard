@@ -1,5 +1,4 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { Route } from "react-router-dom";
 
 import * as WebCLIModule from "components/WebCLI/WebCLI";
@@ -271,57 +270,6 @@ describe("Entity Details Container", () => {
         "entity-details__header--single-col"
       );
     });
-  });
-
-  it("shows the search & filter box in the apps tab", async () => {
-    renderComponent(<EntityDetails />, {
-      path,
-      url: "/models/eggman@external/group-test",
-      state,
-    });
-    await waitFor(() => {
-      expect(screen.getByTestId("filter-applications")).toBeInTheDocument();
-    });
-  });
-
-  it("does not the search & filter box for subsections", async () => {
-    renderComponent(<EntityDetails />, {
-      path: "/models/:userName/:modelName/app/:appName",
-      url: "/models/eggman@external/group-test/app/etcd",
-      state,
-    });
-    await waitFor(() => {
-      expect(
-        screen.queryByTestId("filter-applications")
-      ).not.toBeInTheDocument();
-    });
-  });
-
-  it("does not the search & filter box for non-apps tabs", async () => {
-    renderComponent(<EntityDetails />, {
-      path,
-      url: "/models/eggman@external/group-test?activeView=integrations",
-      state,
-    });
-    await waitFor(() => {
-      expect(
-        screen.queryByTestId("filter-applications")
-      ).not.toBeInTheDocument();
-    });
-  });
-
-  it("searches when the 'enter' key is pressed", async () => {
-    renderComponent(<EntityDetails />, { path, url, state });
-    expect(window.location.search).toEqual("");
-    await userEvent.type(screen.getByRole("searchbox"), "what{Enter}");
-    expect(window.location.search).toEqual("?filterQuery=what");
-  });
-
-  it("does not search when other keys are pressed", async () => {
-    renderComponent(<EntityDetails />, { path, url, state });
-    expect(window.location.search).toEqual("");
-    await userEvent.type(screen.getByRole("searchbox"), "what{Shift}");
-    expect(window.location.search).toEqual("");
   });
 
   it("gives the content the correct class for the model", async () => {

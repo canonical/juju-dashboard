@@ -31,7 +31,8 @@ describe("CharmActionsPanel", () => {
   let state: RootState;
   const path = "/models/:userName/:modelName/app/:appName";
   const url =
-    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&charm=ch:ceph";
+    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=select-charms-and-actions";
+  const charmURL = "ch:ceph";
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -87,25 +88,10 @@ describe("CharmActionsPanel", () => {
     jest.resetModules();
   });
 
-  it("displays a message if viewing the panel without selecting a charm", async () => {
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      {
-        path,
-        url: "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&charm=something-else",
-        state,
-      }
-    );
-    expect(screen.getByText(Label.NONE_SELECTED)).toBeInTheDocument();
-  });
-
   it("Renders the list of available actions", async () => {
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
       { path, url, state }
@@ -116,7 +102,7 @@ describe("CharmActionsPanel", () => {
   it("validates that an action is selected before submitting", async () => {
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
       { path, url, state }
@@ -124,38 +110,6 @@ describe("CharmActionsPanel", () => {
     expect(
       await screen.findByRole("button", { name: "Run action" })
     ).toBeDisabled();
-  });
-
-  it("displays the number of selected apps and units", async () => {
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
-    expect(await screen.findByRole("heading")).toHaveTextContent(
-      "1 application (2 units) selected"
-    );
-  });
-
-  it("successfully handles no units selected", async () => {
-    state.juju.selectedApplications = [
-      charmApplicationFactory.build({
-        "charm-url": "ch:ceph",
-        "unit-count": 0,
-      }),
-    ];
-    renderComponent(
-      <>
-        <CharmActionsPanel />
-        <Toaster />
-      </>,
-      { path, url, state }
-    );
-    expect(await screen.findByRole("heading")).toHaveTextContent(
-      "1 application (0 units) selected"
-    );
   });
 
   it("disables the submit button if no units are selected", async () => {
@@ -167,7 +121,7 @@ describe("CharmActionsPanel", () => {
     ];
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
       { path, url, state }
@@ -190,7 +144,7 @@ describe("CharmActionsPanel", () => {
   it("disables the submit button if a required text field is empty", async () => {
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
       { path, url, state }
@@ -239,7 +193,7 @@ describe("CharmActionsPanel", () => {
     ];
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
       { path, url, state }
@@ -263,7 +217,7 @@ describe("CharmActionsPanel", () => {
   it("shows a confirmation dialog on clicking submit", async () => {
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
       { path, url, state }
@@ -291,7 +245,7 @@ describe("CharmActionsPanel", () => {
       .mockImplementation(() => Promise.resolve(undefined));
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
       { path, url, state }
@@ -323,7 +277,7 @@ describe("CharmActionsPanel", () => {
       .mockImplementation(() => Promise.resolve(undefined));
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
       { path, url, state }
@@ -360,7 +314,7 @@ describe("CharmActionsPanel", () => {
       .mockImplementation(() => Promise.reject());
     renderComponent(
       <>
-        <CharmActionsPanel />
+        <CharmActionsPanel charmURL={charmURL} />
         <Toaster />
       </>,
       { path, url, state }
