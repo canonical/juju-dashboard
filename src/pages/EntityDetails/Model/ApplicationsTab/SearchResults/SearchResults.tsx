@@ -37,6 +37,8 @@ const SearchResults = () => {
       );
   }, [applications]);
 
+  // TODO: perform the search via the API for JQ.
+  // TODO: possibly need to append a filter to only search within the current model.
   useEffect(() => {
     if (!applications) {
       return;

@@ -50,7 +50,9 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
     );
   };
   return {
-    selectAll: selectedApplications.length === applications.length,
+    selectAll:
+      selectedApplications.length === applications.length &&
+      applications.length > 0,
     handleSelectAll,
     handleSelect,
   };

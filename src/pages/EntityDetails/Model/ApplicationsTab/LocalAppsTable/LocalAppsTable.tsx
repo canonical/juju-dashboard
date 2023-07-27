@@ -1,24 +1,21 @@
-import { MainTable, Button, Icon } from "@canonical/react-components";
+import { MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import classnames from "classnames";
-import type { MouseEvent } from "react";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import useAnalytics from "hooks/useAnalytics";
 import { useQueryParams } from "hooks/useQueryParams";
 import type { ApplicationData } from "juju/types";
 import {
   getAllModelApplicationStatus,
   getModelUUIDFromList,
-  getSelectedApplications,
 } from "store/juju/selectors";
 import { generateLocalApplicationTableHeaders } from "tables/tableHeaders";
 import { generateLocalApplicationRows } from "tables/tableRows";
 
-import AppSearchBox from "./AppSearchBox";
+import SearchResultsActionsRow from "./SearchResultsActionsRow";
 import {
   addSelectAllColumn,
   addSelectColumn,
@@ -35,14 +32,12 @@ type Props = {
 };
 
 const LocalAppsTable = ({ applications }: Props) => {
-  const sendAnalytics = useAnalytics();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applicationStatuses = useSelector(
     getAllModelApplicationStatus(modelUUID)
   );
-  const selectedApplications = useSelector(getSelectedApplications());
-  const [queryParams, setQueryParams] = useQueryParams<{
+  const [queryParams] = useQueryParams<{
     entity: string | null;
     panel: string | null;
     activeView: string;
@@ -73,32 +68,10 @@ const LocalAppsTable = ({ applications }: Props) => {
     headers = addSelectAllColumn(headers, selectAll, handleSelectAll);
     rows = addSelectColumn(rows, applications, handleSelect);
   }
-  const handleRunAction = async (event: MouseEvent) => {
-    event.stopPropagation();
-    sendAnalytics({
-      category: "ApplicationSearch",
-      action: "Run action (button)",
-    });
-    setQueryParams({ panel: "select-charms-and-actions" }, { replace: true });
-  };
 
   return (
     <>
-      <div className="applications-search-results__actions-row u-flex">
-        {queryParams.filterQuery && (
-          <Button
-            appearance="base"
-            className="entity-details__action-button"
-            hasIcon={true}
-            onClick={handleRunAction}
-            disabled={!selectedApplications.length}
-          >
-            <Icon name="run-action" />
-            <span>Run action</span>
-          </Button>
-        )}
-        <AppSearchBox />
-      </div>
+      <SearchResultsActionsRow />
       <MainTable
         headers={headers}
         rows={rows}
