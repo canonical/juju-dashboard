@@ -9,7 +9,7 @@ import { generateFakeAuditLogs } from "pages/Logs/audit-logs-fake-data";
 import getUserName from "utils/getUserName";
 
 type Props = {
-  showModel: boolean;
+  showModel?: boolean;
 };
 
 const COLUMN_DATA: Column[] = [
@@ -39,7 +39,7 @@ const COLUMN_DATA: Column[] = [
   },
 ];
 
-const AuditLogsTable = ({ showModel }: Props) => {
+const AuditLogsTable = ({ showModel = false }: Props) => {
   const { modelName } = useParams<EntityDetailsRoute>();
   const additionalEmptyMsg = showModel ? ` for ${modelName}` : "";
   const emptyMsg = `There are no audit logs available yet${additionalEmptyMsg}!`;
