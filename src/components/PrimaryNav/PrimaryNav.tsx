@@ -1,9 +1,7 @@
 import { dashboardUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import { Icon, StatusLabel, Tooltip } from "@canonical/react-components";
-import classNames from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
 
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
@@ -14,32 +12,14 @@ import {
 } from "store/juju/selectors";
 import type { Controllers } from "store/juju/types";
 import urls, { externalURLs } from "urls";
+
 import "./_primary-nav.scss";
-
-type PrimaryNavLinkProps = {
-  children: React.ReactNode;
-  to: string;
-};
-
-const PrimaryNavLink = ({ children, to }: PrimaryNavLinkProps) => (
-  <NavLink
-    className={({ isActive }) =>
-      classNames("p-list__link", {
-        "is-selected": isActive,
-      })
-    }
-    to={to}
-  >
-    {children}
-  </NavLink>
-);
+import PrimaryNavLink from "./PrimaryNavLink";
 
 const ModelsLink = () => {
   const { blocked: blockedModels } = useSelector(getGroupedModelStatusCounts);
   return (
-    <PrimaryNavLink to={urls.models.index}>
-      <i className={`p-icon--models is-light`}></i>
-      <span className="hide-collapsed">Models</span>
+    <PrimaryNavLink to={urls.models.index} iconName="models" title="Models">
       {blockedModels > 0 && (
         <span className="entity-count is-negative">{blockedModels}</span>
       )}
@@ -64,9 +44,11 @@ const ControllersLink = () => {
   }, [controllers]);
 
   return (
-    <PrimaryNavLink to={urls.controllers}>
-      <i className={`p-icon--controllers is-light`}></i>
-      <span className="hide-collapsed">Controllers</span>
+    <PrimaryNavLink
+      to={urls.controllers}
+      iconName="controllers"
+      title="Controllers"
+    >
       {controllersUpdateCount > 0 && (
         <span className="entity-count is-caution">
           {controllersUpdateCount}
@@ -77,10 +59,7 @@ const ControllersLink = () => {
 };
 
 const LogsLink = () => (
-  <PrimaryNavLink to={urls.logs}>
-    <i className={`p-icon--topic is-light`}></i>
-    <span className="hide-collapsed">Logs</span>
-  </PrimaryNavLink>
+  <PrimaryNavLink to={urls.logs} iconName="topic" title="Logs" />
 );
 
 const PrimaryNav = () => {

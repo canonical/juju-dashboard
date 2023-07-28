@@ -1,8 +1,11 @@
+import Header from "components/Header/Header";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
 const Logs = (): JSX.Element => (
   <BaseLayout>
-    <h1>Audit logs</h1>
+    <Header>
+      <b>Audit logs</b>
+    </Header>
   </BaseLayout>
 );
 
