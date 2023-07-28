@@ -42,6 +42,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-icon-units;
 @include vf-p-icon-user;
 @include vf-p-icon-video-play;
+@include vf-p-icon-topic;
 
 // Overrides for Vanilla. This needs to be after the Vanilla includes.
 @import "vanilla-overrides";
