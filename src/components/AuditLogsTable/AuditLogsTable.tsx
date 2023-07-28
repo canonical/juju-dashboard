@@ -8,6 +8,10 @@ import { formatFriendlyDateToNow } from "components/utils";
 import { generateFakeAuditLogs } from "pages/Logs/audit-logs-fake-data";
 import getUserName from "utils/getUserName";
 
+type Props = {
+  showModel?: boolean;
+};
+
 const COLUMN_DATA: Column[] = [
   {
     Header: "user",
@@ -35,9 +39,13 @@ const COLUMN_DATA: Column[] = [
   },
 ];
 
-const AuditLogsTable = () => {
+const AuditLogsTable = ({ showModel = false }: Props) => {
   const { modelName } = useParams<EntityDetailsRoute>();
-  const emptyMsg = `There are no audit logs available yet for ${modelName}`;
+  const additionalEmptyMsg = showModel ? ` for ${modelName}` : "";
+  const emptyMsg = `There are no audit logs available yet${additionalEmptyMsg}!`;
+  const columnData = COLUMN_DATA.filter(
+    (column) => showModel || column.accessor !== "model"
+  );
 
   const fakeTableData = useMemo(() => {
     const auditLogsData = generateFakeAuditLogs();
@@ -68,7 +76,7 @@ const AuditLogsTable = () => {
 
   return (
     <ModularTable
-      columns={COLUMN_DATA}
+      columns={columnData}
       data={fakeTableData}
       emptyMsg={emptyMsg}
     />
