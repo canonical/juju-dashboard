@@ -26,4 +26,15 @@ describe("AuditLogsTable", () => {
       expect(header).not.toHaveTextContent("model");
     });
   });
+
+  it("should contain all headers", () => {
+    renderComponent(<AuditLogsTable showModel={true} />);
+    const columnHeaders = document.querySelectorAll("table th");
+    expect(columnHeaders[0]).toHaveTextContent("user");
+    expect(columnHeaders[1]).toHaveTextContent("model");
+    expect(columnHeaders[2]).toHaveTextContent("time");
+    expect(columnHeaders[3]).toHaveTextContent("facade name");
+    expect(columnHeaders[4]).toHaveTextContent("facade method");
+    expect(columnHeaders[5]).toHaveTextContent("facade version");
+  });
 });

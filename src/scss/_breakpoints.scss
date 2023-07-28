@@ -2,7 +2,7 @@
 
 // 0px -> mobile
 @mixin mobile {
-  @media screen and (max-width: $breakpoint-small) {
+  @media screen and (max-width: $breakpoint-small - 1px) {
     @content;
   }
 }

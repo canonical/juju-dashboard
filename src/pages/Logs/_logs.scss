@@ -1,0 +1,12 @@
+@import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
+
+.logs {
+  @include mobile {
+    overflow-x: scroll;
+  }
+
+  @include desktop {
+    overflow-y: scroll;
+  }
+}

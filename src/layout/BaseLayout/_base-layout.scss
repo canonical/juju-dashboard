@@ -61,6 +61,21 @@
     margin: 0 1rem;
     position: absolute;
   }
+
+  @include desktop {
+    height: 100vh;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      .l-content {
+        flex: 1;
+        min-height: 0;
+      }
+    }
+  }
 }
 
 .l-navigation {
