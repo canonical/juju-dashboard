@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   Navigate,
   Route,
@@ -14,6 +15,7 @@ import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import Settings from "pages/Settings/Settings";
+import { getConfig } from "store/general/selectors";
 import urls from "urls";
 
 export type EntityDetailsRoute = {
@@ -27,6 +29,8 @@ export type EntityDetailsRoute = {
 export function Routes() {
   const sendAnalytics = useAnalytics();
   const location = useLocation();
+
+  const isJuju = useSelector(getConfig)?.isJuju;
 
   useEffect(() => {
     // Send an analytics event when the URL changes.
@@ -71,14 +75,16 @@ export function Routes() {
         }
       />
       <Route path="*" element={<PageNotFound />} />
-      <Route
-        path={urls.logs}
-        element={
-          <Login>
-            <Logs />
-          </Login>
-        }
-      />
+      {!isJuju && (
+        <Route
+          path={urls.logs}
+          element={
+            <Login>
+              <Logs />
+            </Login>
+          }
+        />
+      )}
     </ReactRouterRoutes>
   );
 }

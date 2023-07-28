@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
-import { getAppVersion } from "store/general/selectors";
+import { getAppVersion, getConfig } from "store/general/selectors";
 import {
   getControllerData,
   getGroupedModelStatusCounts,
@@ -67,6 +67,8 @@ const PrimaryNav = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
 
+  const isJuju = useSelector(getConfig)?.isJuju;
+
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
       dashboardUpdateAvailable(appVersion || "")
@@ -93,9 +95,11 @@ const PrimaryNav = () => {
         <li className="p-list__item">
           <ControllersLink />
         </li>
-        <li className="p-list__item">
-          <LogsLink />
-        </li>
+        {!isJuju && (
+          <li className="p-list__item">
+            <LogsLink />
+          </li>
+        )}
       </ul>
       <hr className="p-primary-nav__divider hide-collapsed" />
       <div className="p-primary-nav__bottom hide-collapsed">
