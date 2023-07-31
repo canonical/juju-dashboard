@@ -3,8 +3,6 @@ import AuditLogsTable from "components/AuditLogsTable/AuditLogsTable";
 import Header from "components/Header/Header";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
-import "./_logs.scss";
-
 const Logs = (): JSX.Element => (
   <BaseLayout>
     <Header>

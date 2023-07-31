@@ -51,6 +51,7 @@
   // Override the Vanilla default that sets overflow-y to auto but this prevents
   // sticky from being used by the the entity details sidebar.
   overflow-y: visible !important;
+  overflow-x: scroll;
 
   @include large {
     padding-left: 3rem;
@@ -60,21 +61,6 @@
     bottom: 1rem;
     margin: 0 1rem;
     position: absolute;
-  }
-
-  @include desktop {
-    height: 100vh;
-
-    > div {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-
-      .l-content {
-        flex: 1;
-        min-height: 0;
-      }
-    }
   }
 }
 
@@ -135,6 +121,12 @@
       .user-menu.is-active {
         max-height: $user-menu-height--active;
       }
+    }
+  }
+
+  &.is-pinned {
+    @include desktop {
+      position: sticky !important;
     }
   }
 }
