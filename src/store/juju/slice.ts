@@ -7,6 +7,7 @@ import type {
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+import type { FindAuditEventsRequest } from "juju/jimm-facade";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -107,6 +108,14 @@ const slice = createSlice({
     },
     clearControllerData: (state) => {
       state.controllers = {};
+    },
+    findAuditEvents: {
+      prepare: (
+        params: FindAuditEventsRequest & { wsControllerURL: string }
+      ) => ({ payload: params }),
+      reducer: () => {
+        // Nothing to reduce.
+      },
     },
     updateControllerList: (
       state,

@@ -108,6 +108,21 @@ describe("actions", () => {
     });
   });
 
+  it("findAuditEvents", () => {
+    expect(
+      actions.findAuditEvents({
+        "user-tag": "user-eggman@external",
+        wsControllerURL: "wss://test.example.com",
+      })
+    ).toStrictEqual({
+      type: "juju/findAuditEvents",
+      payload: {
+        "user-tag": "user-eggman@external",
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
   it("updateControllerList", () => {
     expect(
       actions.updateControllerList({

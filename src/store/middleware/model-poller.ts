@@ -6,6 +6,7 @@ import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
+  findAuditEvents,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
@@ -176,6 +177,12 @@ export const modelPollerMiddleware: Middleware<
         reduxStore.dispatch
       );
       return response;
+    } else if (action.type === jujuActions.findAuditEvents.type) {
+      const conn = controllers.get(action.payload.wsControllerURL);
+      if (!conn) {
+        return null;
+      }
+      return await findAuditEvents(conn);
     }
     return next(action);
   };
