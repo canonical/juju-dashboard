@@ -320,4 +320,26 @@ describe("Entity Details Container", () => {
     });
     expect(document.querySelector(".entity-details__unit")).toBeInTheDocument();
   });
+
+  it("should navigate correctly when pressing Action Logs tab under Juju", () => {
+    state.general.config = configFactory.build({
+      isJuju: true,
+    });
+    renderComponent(<EntityDetails />, { path, url, state });
+    const viewSelector = screen.getByTestId("view-selector");
+    const scrollIntoView = jest.fn();
+    fireEvent.click(within(viewSelector).getByText("Action Logs"), {
+      target: {
+        scrollIntoView,
+      },
+    });
+    expect(scrollIntoView.mock.calls[0]).toEqual([
+      {
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      },
+    ]);
+    expect(window.location.search).toEqual("?activeView=logs");
+  });
 });
