@@ -15,7 +15,7 @@ import { useEntityDetailsParams } from "components/hooks";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
-import { getConfig, getUserPass } from "store/general/selectors";
+import { getIsJuju, getUserPass } from "store/general/selectors";
 import {
   getControllerDataByUUID,
   getModelInfo,
@@ -50,7 +50,7 @@ const EntityDetails = () => {
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const { isNestedEntityPage } = useEntityDetailsParams();
 
-  const isJuju = useSelector(getConfig)?.isJuju;
+  const isJuju = useSelector(getIsJuju);
 
   const [query] = useQueryParams({
     panel: null,

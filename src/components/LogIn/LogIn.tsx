@@ -15,6 +15,7 @@ import {
   getLoginError,
   getWSControllerURL,
   isLoggedIn,
+  getIsJuju,
 } from "store/general/selectors";
 import type { RootState } from "store/store";
 import { useAppDispatch } from "store/store";
@@ -37,7 +38,7 @@ type Props = { children: ReactNode };
 
 export default function LogIn({ children }: Props) {
   const config = useSelector(getConfig);
-  const isJuju = useSelector(getConfig)?.isJuju;
+  const isJuju = useSelector(getIsJuju);
 
   const controllerConnections = useSelector(getControllerConnections) || {};
   const wsControllerURLs = Object.keys(controllerConnections);

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
-import { getAppVersion, getConfig } from "store/general/selectors";
+import { getAppVersion, getIsJuju } from "store/general/selectors";
 import {
   getControllerData,
   getGroupedModelStatusCounts,
@@ -67,7 +67,7 @@ const PrimaryNav = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
 
-  const isJuju = useSelector(getConfig)?.isJuju;
+  const isJuju = useSelector(getIsJuju);
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {

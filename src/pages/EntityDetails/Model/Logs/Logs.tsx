@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 
 import SegmentedControl from "components/SegmentedControl";
 import { useQueryParams } from "hooks/useQueryParams";
-import { getConfig } from "store/general/selectors";
+import { getIsJuju } from "store/general/selectors";
 
 import "./_logs.scss";
 import ActionLogs from "./ActionLogs";
@@ -19,7 +19,7 @@ const BUTTON_DETAILS = [
 ];
 
 const Logs = () => {
-  const isJuju = useSelector(getConfig)?.isJuju;
+  const isJuju = useSelector(getIsJuju);
   const [{ tableView }, setQueryParams] = useQueryParams<{
     activeView: string | null;
     tableView: string;
