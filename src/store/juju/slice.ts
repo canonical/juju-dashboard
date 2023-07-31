@@ -109,6 +109,8 @@ const slice = createSlice({
     clearControllerData: (state) => {
       state.controllers = {};
     },
+    // This action can be dispatched to fetch audit events which is handled in
+    // the model-poller middleware.
     findAuditEvents: {
       prepare: (
         params: FindAuditEventsRequest & { wsControllerURL: string }

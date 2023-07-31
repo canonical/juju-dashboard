@@ -771,6 +771,9 @@ export async function getCharmsURLFromApplications(
   return charms.filter((charm) => !!charm).map((charm) => charm?.url);
 }
 
+/**
+  Fetch audit events via the JIMM facade on the given controller connection.
+ */
 export function findAuditEvents(conn: ConnectionWithFacades) {
   return new Promise<AuditEvents>(async (resolve, reject) => {
     if (conn?.facades?.jimM) {

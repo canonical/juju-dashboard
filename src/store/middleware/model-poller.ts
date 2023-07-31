@@ -178,6 +178,8 @@ export const modelPollerMiddleware: Middleware<
       );
       return response;
     } else if (action.type === jujuActions.findAuditEvents.type) {
+      // Intercept findAuditEvents actions and fetch and return audit events via the
+      // controller connection.
       const conn = controllers.get(action.payload.wsControllerURL);
       if (!conn) {
         return null;
