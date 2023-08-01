@@ -4,6 +4,7 @@ import { add } from "date-fns";
 import { TestId } from "components/LoadingSpinner/LoadingSpinner";
 import { actions as jujuActions } from "store/juju";
 import * as storeModule from "store/store";
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { auditEventFactory } from "testing/factories/juju/jimm";
@@ -12,9 +13,15 @@ import { renderComponent } from "testing/utils";
 import AuditLogsTable from "./AuditLogsTable";
 
 describe("AuditLogsTable", () => {
-  let state: storeModule.RootState;
+  let state: RootState;
 
   beforeEach(() => {
+    const dispatch = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ events: [auditEventFactory.build()] })
+      );
+    jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(dispatch);
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -38,33 +45,32 @@ describe("AuditLogsTable", () => {
     jest.restoreAllMocks();
   });
 
-  it("should have model as second header when showing the model data", () => {
-    renderComponent(<AuditLogsTable showModel={true} />);
-    expect(document.querySelector("table tr")).toBeVisible();
-    expect(document.querySelectorAll("table th")[1]).toHaveTextContent("model");
+  it("should have model as second header when showing the model data", async () => {
+    renderComponent(<AuditLogsTable showModel={true} />, { state });
+    expect((await screen.findAllByRole("columnheader"))[1]).toHaveTextContent(
+      "model"
+    );
   });
 
-  it("should not have model as header when showModel param is not passed", () => {
-    renderComponent(<AuditLogsTable />);
-    expect(document.querySelector("table tr")).toBeVisible();
-    const headers = document.querySelectorAll("table th");
+  it("should not have model as header when showModel param is not passed", async () => {
+    renderComponent(<AuditLogsTable />, { state });
+    const headers = await screen.findAllByRole("columnheader");
     headers.forEach((header) => {
       expect(header).not.toHaveTextContent("model");
     });
   });
 
-  it("should not have model as header when not showing the model data", () => {
-    renderComponent(<AuditLogsTable showModel={false} />);
-    expect(document.querySelector("table tr")).toBeVisible();
-    const headers = document.querySelectorAll("table th");
+  it("should not have model as header when not showing the model data", async () => {
+    renderComponent(<AuditLogsTable showModel={false} />, { state });
+    const headers = await screen.findAllByRole("columnheader");
     headers.forEach((header) => {
       expect(header).not.toHaveTextContent("model");
     });
   });
 
-  it("should contain all headers", () => {
-    renderComponent(<AuditLogsTable showModel={true} />);
-    const columnHeaders = document.querySelectorAll("table th");
+  it("should contain all headers", async () => {
+    renderComponent(<AuditLogsTable showModel={true} />, { state });
+    const columnHeaders = await screen.findAllByRole("columnheader");
     expect(columnHeaders[0]).toHaveTextContent("user");
     expect(columnHeaders[1]).toHaveTextContent("model");
     expect(columnHeaders[2]).toHaveTextContent("time");
