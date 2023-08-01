@@ -15,7 +15,7 @@ import { useEntityDetailsParams } from "components/hooks";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
-import { getUserPass } from "store/general/selectors";
+import { getIsJuju, getUserPass } from "store/general/selectors";
 import {
   getControllerDataByUUID,
   getModelInfo,
@@ -49,6 +49,8 @@ const EntityDetails = () => {
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const { isNestedEntityPage } = useEntityDetailsParams();
+
+  const isJuju = useSelector(getIsJuju);
 
   const [query] = useQueryParams({
     panel: null,
@@ -127,7 +129,7 @@ const EntityDetails = () => {
       },
       {
         active: activeView === "logs",
-        label: "Logs",
+        label: isJuju ? "Action Logs" : "Logs",
         onClick: (e: MouseEvent) => handleNavClick(e),
         to: urls.model.tab({ userName, modelName, tab: "logs" }),
         component: Link,
