@@ -51,7 +51,6 @@
   // Override the Vanilla default that sets overflow-y to auto but this prevents
   // sticky from being used by the the entity details sidebar.
   overflow-y: visible !important;
-  overflow-x: scroll;
 
   @include large {
     padding-left: 3rem;
@@ -123,12 +122,6 @@
       }
     }
   }
-
-  &.is-pinned {
-    @include desktop {
-      position: sticky !important;
-    }
-  }
 }
 
 .l-content {
@@ -149,7 +142,13 @@
   // sticky from being used by the the entity details sidebar.
   overflow-y: visible !important;
 
-  .l-navigation.is-pinned + .l-main {
-    padding-left: 0;
+  .l-navigation.is-pinned {
+    + .l-main {
+      padding-left: 0;
+    }
+
+    @include desktop {
+      position: sticky;
+    }
   }
 }

@@ -8,7 +8,7 @@ const Logs = (): JSX.Element => (
     <Header>
       <b>Audit logs</b>
     </Header>
-    <div className="l-content logs">
+    <div className="l-content logs u-overflow--auto">
       <FadeIn isActive={true}>
         <AuditLogsTable showModel />
       </FadeIn>
