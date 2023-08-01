@@ -50,7 +50,7 @@ const COLUMN_DATA: Column[] = [
 const AuditLogsTable = ({ showModel = false }: Props) => {
   const { modelName } = useParams<EntityDetailsRoute>();
   const [auditLogs, setAuditLogs] = useState<AuditEvent[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const promiseDispatch = usePromiseDispatch();
   const wsControllerURL = useSelector(getWSControllerURL);
   const hasControllerConnection = useAppSelector((state) =>
