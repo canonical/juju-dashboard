@@ -34,7 +34,7 @@ export type FindAuditEventsRequest = {
   limit?: number;
   method?: string;
   model?: string;
-  offset?: string;
+  offset?: number;
   "user-tag"?: string;
 };
 
