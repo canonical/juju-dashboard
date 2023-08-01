@@ -1,5 +1,6 @@
 import type { AnyAction } from "@reduxjs/toolkit";
 import { configureStore } from "@reduxjs/toolkit";
+import { useCallback } from "react";
 import type { TypedUseSelectorHook } from "react-redux";
 import { useDispatch, useSelector, useStore } from "react-redux";
 
@@ -50,8 +51,11 @@ export const useAppDispatch: () => AppDispatch = useDispatch;
 // This hook can be used in place of useDispatch to get correctly typed dispatches that return promises.
 export const usePromiseDispatch = () => {
   const dispatch = useAppDispatch();
-  return <Result>(action: AnyAction) =>
-    (dispatch as (action: AnyAction) => Promise<Result>)(action);
+  return useCallback(
+    <Result>(action: AnyAction) =>
+      (dispatch as (action: AnyAction) => Promise<Result>)(action),
+    [dispatch]
+  );
 };
 // This hook annotates the selectors using the store state.
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

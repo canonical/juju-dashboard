@@ -1,0 +1,8 @@
+@import "../../scss/variables";
+
+.loading-spinner {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - $top-header-height);
+}

@@ -1,4 +1,4 @@
-import { Spinner, Tabs } from "@canonical/react-components";
+import { Tabs } from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode, MouseEvent } from "react";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { useParams, Link, Outlet } from "react-router-dom";
 import FadeIn from "animations/FadeIn";
 import Breadcrumb from "components/Breadcrumb/Breadcrumb";
 import Header from "components/Header/Header";
+import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import NotFound from "components/NotFound/NotFound";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import WebCLI from "components/WebCLI/WebCLI";
@@ -189,11 +190,7 @@ const EntityDetails = () => {
       </div>
     );
   } else {
-    content = (
-      <div className="entity-details__loading" data-testid="loading-spinner">
-        <Spinner />
-      </div>
-    );
+    content = <LoadingSpinner />;
   }
 
   return (
