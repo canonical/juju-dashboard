@@ -25,6 +25,7 @@ jest.mock("juju/api", () => ({
   loginWithBakery: jest.fn(),
   fetchAllModelStatuses: jest.fn(),
   setModelSharingPermissions: jest.fn(),
+  findAuditEvents: jest.fn(),
 }));
 
 describe("model poller", () => {
@@ -384,5 +385,46 @@ describe("model poller", () => {
     expect(jujuModule.setModelSharingPermissions).toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
     return expect(response).resolves.toStrictEqual({ results: [] });
+  });
+
+  it("handles fetching audit events", async () => {
+    const events = { events: [] };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "findAuditEvents")
+      .mockImplementation(() => Promise.resolve(events));
+    const middleware = await runMiddleware();
+    const action = jujuActions.findAuditEvents({
+      "user-tag": "user-eggman@external",
+      wsControllerURL: "wss://example.com",
+    });
+    const response = middleware(next)(action);
+    expect(jujuModule.findAuditEvents).toHaveBeenCalled();
+    expect(next).not.toHaveBeenCalled();
+    return expect(response).resolves.toStrictEqual(events);
+  });
+
+  it("handles no controller when fetching audit events", async () => {
+    const events = { events: [] };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "findAuditEvents")
+      .mockImplementation(() => Promise.resolve(events));
+    const middleware = await runMiddleware();
+    const action = jujuActions.findAuditEvents({
+      "user-tag": "user-eggman@external",
+      wsControllerURL: "nothing",
+    });
+    const response = middleware(next)(action);
+    expect(jujuModule.findAuditEvents).not.toHaveBeenCalled();
+    return expect(response).resolves.toBeNull();
   });
 });
