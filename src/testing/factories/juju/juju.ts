@@ -10,6 +10,7 @@ import { Factory } from "fishery";
 
 import type {
   AdditionalController,
+  AuditEventsState,
   Controller,
   ControllerLocation,
   JujuState,
@@ -152,7 +153,14 @@ export const modelDataFactory = Factory.define<ModelData>(() => ({
   "remote-applications": {},
 }));
 
+export const auditEventsStateFactory = Factory.define<AuditEventsState>(() => ({
+  items: null,
+  loaded: false,
+  loading: false,
+}));
+
 export const jujuStateFactory = Factory.define<JujuState>(() => ({
+  auditEvents: auditEventsStateFactory.build(),
   controllers: null,
   models: {},
   modelsLoaded: false,

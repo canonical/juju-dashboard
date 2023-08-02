@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import type { RootState } from "store/store";
-import * as storeModule from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
   configFactory,
@@ -19,7 +18,9 @@ import {
   remoteApplicationStatusFactory,
 } from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
+  auditEventsStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
   modelListInfoFactory,
@@ -90,6 +91,9 @@ describe("Model", () => {
         },
       }),
       juju: jujuStateFactory.build({
+        auditEvents: auditEventsStateFactory.build({
+          items: [auditEventFactory.build()],
+        }),
         modelData: {
           abc123: modelDataFactory.build(),
         },
@@ -327,8 +331,6 @@ describe("Model", () => {
   });
 
   it("can display the audit logs table", async () => {
-    const dispatch = jest.fn().mockImplementation(() => Promise.resolve());
-    jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(dispatch);
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
         applications: {

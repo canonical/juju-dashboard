@@ -1,5 +1,5 @@
 import { ModularTable, Tooltip } from "@canonical/react-components";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import type { Column } from "react-table";
@@ -7,13 +7,17 @@ import type { Column } from "react-table";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { formatFriendlyDateToNow } from "components/utils";
-import type { AuditEvent, AuditEvents } from "juju/jimm-facade";
 import {
   getWSControllerURL,
   getControllerConnection,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
-import { useAppSelector, usePromiseDispatch } from "store/store";
+import {
+  getAuditEvents,
+  getAuditEventsLoading,
+  getAuditEventsLoaded,
+} from "store/juju/selectors";
+import { useAppDispatch, useAppSelector } from "store/store";
 import getUserName from "utils/getUserName";
 
 type Props = {
@@ -49,10 +53,11 @@ const COLUMN_DATA: Column[] = [
 
 const AuditLogsTable = ({ showModel = false }: Props) => {
   const { modelName } = useParams<EntityDetailsRoute>();
-  const [auditLogs, setAuditLogs] = useState<AuditEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const promiseDispatch = usePromiseDispatch();
+  const dispatch = useAppDispatch();
   const wsControllerURL = useSelector(getWSControllerURL);
+  const auditLogs = useSelector(getAuditEvents);
+  const auditLogsLoaded = useSelector(getAuditEventsLoaded);
+  const auditLogsLoading = useSelector(getAuditEventsLoading);
   const hasControllerConnection = useAppSelector((state) =>
     getControllerConnection(state, wsControllerURL)
   );
@@ -66,14 +71,16 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
     if (!wsControllerURL || !hasControllerConnection) {
       return;
     }
-    setLoading(true);
-    promiseDispatch<AuditEvents>(
-      jujuActions.findAuditEvents({ wsControllerURL })
-    ).then((response) => {
-      setLoading(false);
-      setAuditLogs(response?.events);
-    });
-  }, [hasControllerConnection, promiseDispatch, wsControllerURL]);
+    dispatch(jujuActions.fetchAuditEvents({ wsControllerURL }));
+  }, [hasControllerConnection, dispatch, wsControllerURL]);
+
+  useEffect(
+    () => () => {
+      // Clear audit events when the component is unmounted.
+      dispatch(jujuActions.clearAuditEvents());
+    },
+    [dispatch]
+  );
 
   const tableData = useMemo(() => {
     if (!auditLogs) {
@@ -104,7 +111,7 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
     return tableData;
   }, [auditLogs]);
 
-  if (loading) {
+  if (auditLogsLoading || !auditLogsLoaded) {
     return <LoadingSpinner />;
   }
 

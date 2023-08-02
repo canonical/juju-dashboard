@@ -9,6 +9,7 @@ import {
   modelStatusInfoFactory,
 } from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
@@ -18,6 +19,7 @@ import {
   modelListInfoFactory,
   modelDataMachineFactory,
   modelDataUnitFactory,
+  auditEventsStateFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -68,9 +70,63 @@ import {
   getUserDomains,
   getUserDomainsInModel,
   hasModels,
+  getAuditEventsState,
+  getAuditEvents,
+  getAuditEventsLoaded,
+  getAuditEventsLoading,
 } from "./selectors";
 
 describe("selectors", () => {
+  it("getAuditEventsState", () => {
+    const auditEvents = auditEventsStateFactory.build();
+    expect(
+      getAuditEventsState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents,
+          }),
+        })
+      )
+    ).toStrictEqual(auditEvents);
+  });
+
+  it("getAuditEvents", () => {
+    const items = [auditEventFactory.build()];
+    expect(
+      getAuditEvents(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(items);
+  });
+
+  it("getAuditEventsLoaded", () => {
+    expect(
+      getAuditEventsLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ loaded: true }),
+          }),
+        })
+      )
+    ).toBe(true);
+  });
+
+  it("getAuditEventsLoading", () => {
+    expect(
+      getAuditEventsLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ loading: true }),
+          }),
+        })
+      )
+    ).toBe(true);
+  });
+
   it("getModelData", () => {
     const modelData = {
       "wss://example.com": {

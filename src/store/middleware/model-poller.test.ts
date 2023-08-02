@@ -8,6 +8,7 @@ import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
+import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
@@ -388,7 +389,7 @@ describe("model poller", () => {
   });
 
   it("handles fetching audit events", async () => {
-    const events = { events: [] };
+    const events = { events: [auditEventFactory.build()] };
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
@@ -398,14 +399,16 @@ describe("model poller", () => {
       .spyOn(jujuModule, "findAuditEvents")
       .mockImplementation(() => Promise.resolve(events));
     const middleware = await runMiddleware();
-    const action = jujuActions.findAuditEvents({
+    const action = jujuActions.fetchAuditEvents({
       "user-tag": "user-eggman@external",
       wsControllerURL: "wss://example.com",
     });
-    const response = middleware(next)(action);
+    await middleware(next)(action);
     expect(jujuModule.findAuditEvents).toHaveBeenCalled();
-    expect(next).not.toHaveBeenCalled();
-    return expect(response).resolves.toStrictEqual(events);
+    expect(next).toHaveBeenCalledWith(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateAuditEvents(events.events)
+    );
   });
 
   it("handles no controller when fetching audit events", async () => {
@@ -419,12 +422,11 @@ describe("model poller", () => {
       .spyOn(jujuModule, "findAuditEvents")
       .mockImplementation(() => Promise.resolve(events));
     const middleware = await runMiddleware();
-    const action = jujuActions.findAuditEvents({
+    const action = jujuActions.fetchAuditEvents({
       "user-tag": "user-eggman@external",
       wsControllerURL: "nothing",
     });
-    const response = middleware(next)(action);
+    await middleware(next)(action);
     expect(jujuModule.findAuditEvents).not.toHaveBeenCalled();
-    return expect(response).resolves.toBeNull();
   });
 });

@@ -5,11 +5,13 @@ import {
 } from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
+  auditEventsStateFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -170,6 +172,60 @@ describe("reducers", () => {
     expect(reducer(state, actions.clearModelData())).toStrictEqual(
       jujuStateFactory.build({ modelsLoaded: false })
     );
+  });
+
+  it("fetchAuditEvents", () => {
+    const state = jujuStateFactory.build({
+      auditEvents: auditEventsStateFactory.build({ loading: false }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.fetchAuditEvents({
+          wsControllerURL: "wss://example.com",
+        })
+      )
+    ).toStrictEqual({
+      ...state,
+      auditEvents: auditEventsStateFactory.build({ loading: true }),
+    });
+  });
+
+  it("updateAuditEvents", () => {
+    const state = jujuStateFactory.build({
+      auditEvents: auditEventsStateFactory.build({
+        items: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    const items = [auditEventFactory.build()];
+    expect(reducer(state, actions.updateAuditEvents(items))).toStrictEqual({
+      ...state,
+      auditEvents: auditEventsStateFactory.build({
+        items,
+        loaded: true,
+        loading: false,
+      }),
+    });
+  });
+
+  it("clearAuditEvents", () => {
+    const state = jujuStateFactory.build({
+      auditEvents: auditEventsStateFactory.build({
+        items: [auditEventFactory.build()],
+        loaded: true,
+        loading: true,
+      }),
+    });
+    expect(reducer(state, actions.clearAuditEvents())).toStrictEqual({
+      ...state,
+      auditEvents: auditEventsStateFactory.build({
+        items: null,
+        loaded: false,
+        loading: false,
+      }),
+    });
   });
 
   it("clearControllerData", () => {

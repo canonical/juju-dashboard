@@ -3,6 +3,7 @@ import {
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
+import { auditEventFactory } from "testing/factories/juju/jimm";
 
 import { actions } from "./slice";
 
@@ -108,18 +109,33 @@ describe("actions", () => {
     });
   });
 
-  it("findAuditEvents", () => {
+  it("fetchAuditEvents", () => {
     expect(
-      actions.findAuditEvents({
+      actions.fetchAuditEvents({
         "user-tag": "user-eggman@external",
         wsControllerURL: "wss://test.example.com",
       })
     ).toStrictEqual({
-      type: "juju/findAuditEvents",
+      type: "juju/fetchAuditEvents",
       payload: {
         "user-tag": "user-eggman@external",
         wsControllerURL: "wss://test.example.com",
       },
+    });
+  });
+
+  it("updateAuditEvents", () => {
+    const events = [auditEventFactory.build()];
+    expect(actions.updateAuditEvents(events)).toStrictEqual({
+      type: "juju/updateAuditEvents",
+      payload: events,
+    });
+  });
+
+  it("clearAuditEvents", () => {
+    expect(actions.clearAuditEvents()).toStrictEqual({
+      type: "juju/clearAuditEvents",
+      payload: undefined,
     });
   });
 

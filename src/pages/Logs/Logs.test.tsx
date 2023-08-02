@@ -1,23 +1,18 @@
 import { screen } from "@testing-library/react";
 
-import * as storeModule from "store/store";
-import { rootStateFactory } from "testing/factories";
+import type { RootState } from "store/store";
+import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import { auditEventFactory } from "testing/factories/juju/jimm";
+import { auditEventsStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import Logs from "./Logs";
 
 describe("Logs", () => {
-  let state: storeModule.RootState;
+  let state: RootState;
 
   beforeEach(() => {
-    const dispatch = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({ events: [auditEventFactory.build()] })
-      );
-    jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(dispatch);
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -33,6 +28,12 @@ describe("Logs", () => {
             },
           },
         },
+      }),
+      juju: jujuStateFactory.build({
+        auditEvents: auditEventsStateFactory.build({
+          items: [auditEventFactory.build()],
+          loaded: true,
+        }),
       }),
     });
   });
