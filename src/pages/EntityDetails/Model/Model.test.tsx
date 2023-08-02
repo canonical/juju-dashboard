@@ -1,8 +1,9 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import type { RootState } from "store/store";
+import * as storeModule from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
   configFactory,
@@ -104,6 +105,10 @@ describe("Model", () => {
         },
       }),
     });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it("renders the info panel data", () => {
@@ -322,6 +327,8 @@ describe("Model", () => {
   });
 
   it("can display the audit logs table", async () => {
+    const dispatch = jest.fn().mockImplementation(() => Promise.resolve());
+    jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(dispatch);
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
         applications: {
@@ -343,12 +350,14 @@ describe("Model", () => {
 
     Element.prototype.scrollIntoView = jest.fn();
 
-    expect(
-      document.querySelector(".entity-details__action-logs")
-    ).not.toBeInTheDocument();
-    expect(
-      document.querySelector(".entity-details__audit-logs")
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        document.querySelector(".entity-details__action-logs")
+      ).not.toBeInTheDocument();
+      expect(
+        document.querySelector(".entity-details__audit-logs")
+      ).toBeInTheDocument();
+    });
   });
 
   it("can display the offers table", async () => {

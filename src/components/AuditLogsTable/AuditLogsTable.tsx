@@ -1,11 +1,19 @@
 import { ModularTable, Tooltip } from "@canonical/react-components";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import type { Column } from "react-table";
 
+import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { formatFriendlyDateToNow } from "components/utils";
-import { generateFakeAuditLogs } from "pages/Logs/audit-logs-fake-data";
+import type { AuditEvent, AuditEvents } from "juju/jimm-facade";
+import {
+  getWSControllerURL,
+  getControllerConnection,
+} from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
+import { useAppSelector, usePromiseDispatch } from "store/store";
 import getUserName from "utils/getUserName";
 
 type Props = {
@@ -41,15 +49,37 @@ const COLUMN_DATA: Column[] = [
 
 const AuditLogsTable = ({ showModel = false }: Props) => {
   const { modelName } = useParams<EntityDetailsRoute>();
-  const additionalEmptyMsg = showModel ? ` for ${modelName}` : "";
+  const [auditLogs, setAuditLogs] = useState<AuditEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const promiseDispatch = usePromiseDispatch();
+  const wsControllerURL = useSelector(getWSControllerURL);
+  const hasControllerConnection = useAppSelector((state) =>
+    getControllerConnection(state, wsControllerURL)
+  );
+  const additionalEmptyMsg = showModel ? "" : ` for ${modelName}`;
   const emptyMsg = `There are no audit logs available yet${additionalEmptyMsg}!`;
   const columnData = COLUMN_DATA.filter(
     (column) => showModel || column.accessor !== "model"
   );
 
-  const fakeTableData = useMemo(() => {
-    const auditLogsData = generateFakeAuditLogs();
-    const tableData = auditLogsData.map((auditLogsEntry) => {
+  useEffect(() => {
+    if (!wsControllerURL || !hasControllerConnection) {
+      return;
+    }
+    setLoading(true);
+    promiseDispatch<AuditEvents>(
+      jujuActions.findAuditEvents({ wsControllerURL })
+    ).then((response) => {
+      setLoading(false);
+      setAuditLogs(response?.events);
+    });
+  }, [hasControllerConnection, promiseDispatch, wsControllerURL]);
+
+  const tableData = useMemo(() => {
+    if (!auditLogs) {
+      return [];
+    }
+    const tableData = auditLogs.map((auditLogsEntry) => {
       const time = (
         <Tooltip
           message={new Date(auditLogsEntry.time).toLocaleString()}
@@ -72,14 +102,14 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
       };
     });
     return tableData;
-  }, []);
+  }, [auditLogs]);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
-    <ModularTable
-      columns={columnData}
-      data={fakeTableData}
-      emptyMsg={emptyMsg}
-    />
+    <ModularTable columns={columnData} data={tableData} emptyMsg={emptyMsg} />
   );
 };
 
