@@ -41,6 +41,38 @@ import {
 const slice = (state: RootState) => state.juju;
 
 /**
+  Fetches the audit event details from state.
+*/
+export const getAuditEventsState = createSelector(
+  [slice],
+  (sliceState) => sliceState.auditEvents
+);
+
+/**
+  Fetches the audit event items from state.
+*/
+export const getAuditEvents = createSelector(
+  [getAuditEventsState],
+  (auditEvents) => auditEvents.items
+);
+
+/**
+  Fetches the audit events loaded state.
+*/
+export const getAuditEventsLoaded = createSelector(
+  [getAuditEventsState],
+  (auditEvents) => auditEvents.loaded
+);
+
+/**
+  Fetches the audit events loading state.
+*/
+export const getAuditEventsLoading = createSelector(
+  [getAuditEventsState],
+  (auditEvents) => auditEvents.loading
+);
+
+/**
   Fetches the model data from state.
   @param state The application state.
   @returns The list of model data or null if none found.

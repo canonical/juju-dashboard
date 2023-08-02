@@ -1,6 +1,7 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
+import type { AuditEvent } from "juju/jimm-facade";
 import type {
   ApplicationInfo,
   FullStatusWithAnnotations,
@@ -53,7 +54,14 @@ export type ModelsList = {
   [uuid: string]: ModelListInfo;
 };
 
+export type AuditEventsState = {
+  items: AuditEvent[] | null;
+  loaded: boolean;
+  loading: boolean;
+};
+
 export type JujuState = {
+  auditEvents: AuditEventsState;
   controllers: Controllers | null;
   models: ModelsList;
   modelsLoaded: boolean;

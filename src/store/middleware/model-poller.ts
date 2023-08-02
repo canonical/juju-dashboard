@@ -177,14 +177,22 @@ export const modelPollerMiddleware: Middleware<
         reduxStore.dispatch
       );
       return response;
-    } else if (action.type === jujuActions.findAuditEvents.type) {
-      // Intercept findAuditEvents actions and fetch and return audit events via the
+    } else if (action.type === jujuActions.fetchAuditEvents.type) {
+      // Intercept fetchAuditEvents actions and fetch and store audit events via the
       // controller connection.
+
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
       const conn = controllers.get(action.payload.wsControllerURL);
       if (!conn) {
-        return null;
+        return;
       }
-      return await findAuditEvents(conn);
+      const auditEvents = await findAuditEvents(conn);
+      reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
+      // The action has already been passed to the next middleware at the top of
+      // this handler.
+      return;
     }
     return next(action);
   };

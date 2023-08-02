@@ -7,7 +7,7 @@ import type {
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-import type { FindAuditEventsRequest } from "juju/jimm-facade";
+import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm-facade";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -17,9 +17,18 @@ import { processDeltas } from "juju/watchers";
 
 import type { Controllers, JujuState } from "./types";
 
+type WsControllerURLParam = {
+  wsControllerURL: string;
+};
+
 const slice = createSlice({
   name: "juju",
   initialState: {
+    auditEvents: {
+      items: null,
+      loaded: false,
+      loading: false,
+    },
     controllers: null,
     models: {},
     modelsLoaded: false,
@@ -31,10 +40,11 @@ const slice = createSlice({
   reducers: {
     updateModelList: (
       state,
-      action: PayloadAction<{
-        models: UserModelList;
-        wsControllerURL: string;
-      }>
+      action: PayloadAction<
+        {
+          models: UserModelList;
+        } & WsControllerURLParam
+      >
     ) => {
       const modelList = state.models;
       let userModels = action.payload.models["user-models"];
@@ -55,11 +65,12 @@ const slice = createSlice({
     },
     updateModelStatus: (
       state,
-      action: PayloadAction<{
-        modelUUID: string;
-        status: FullStatusWithAnnotations;
-        wsControllerURL: string;
-      }>
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          status: FullStatusWithAnnotations;
+        } & WsControllerURLParam
+      >
     ) => {
       const modelUUID = action.payload.modelUUID;
       if (!state.modelData) {
@@ -84,10 +95,11 @@ const slice = createSlice({
     },
     updateModelInfo: (
       state,
-      action: PayloadAction<{
-        modelInfo: ModelInfoResults;
-        wsControllerURL: string;
-      }>
+      action: PayloadAction<
+        {
+          modelInfo: ModelInfoResults;
+        } & WsControllerURLParam
+      >
     ) => {
       const modelInfo = action.payload.modelInfo.results[0].result;
       // There don't appear to be any irrelevant data in the modelInfo so
@@ -111,20 +123,29 @@ const slice = createSlice({
     },
     // This action can be dispatched to fetch audit events which is handled in
     // the model-poller middleware.
-    findAuditEvents: {
-      prepare: (
-        params: FindAuditEventsRequest & { wsControllerURL: string }
-      ) => ({ payload: params }),
-      reducer: () => {
-        // Nothing to reduce.
-      },
+    fetchAuditEvents: (
+      state,
+      action: PayloadAction<FindAuditEventsRequest & WsControllerURLParam>
+    ) => {
+      state.auditEvents.loading = true;
+    },
+    updateAuditEvents: (state, { payload }: PayloadAction<AuditEvent[]>) => {
+      state.auditEvents.items = payload;
+      state.auditEvents.loaded = true;
+      state.auditEvents.loading = false;
+    },
+    clearAuditEvents: (state) => {
+      state.auditEvents.items = null;
+      state.auditEvents.loaded = false;
+      state.auditEvents.loading = false;
     },
     updateControllerList: (
       state,
-      action: PayloadAction<{
-        controllers: Controllers[0];
-        wsControllerURL: string;
-      }>
+      action: PayloadAction<
+        {
+          controllers: Controllers[0];
+        } & WsControllerURLParam
+      >
     ) => {
       const controllers = state.controllers ?? {};
       controllers[action.payload.wsControllerURL] = action.payload.controllers;
@@ -159,7 +180,7 @@ const slice = createSlice({
     },
     updateCharms: (
       state,
-      action: PayloadAction<{ charms: Charm[]; wsControllerURL?: string }>
+      action: PayloadAction<{ charms: Charm[] } & Partial<WsControllerURLParam>>
     ) => {
       action.payload.charms = action.payload.charms.filter((charm) => {
         return !state.charms.some((c) => c.url === charm.url);
