@@ -115,26 +115,10 @@ describe("AuditLogsTable", () => {
     expect(
       store.getActions().find((dispatch) => dispatch.type === action.type)
     ).toMatchObject(action);
-    expect(await screen.findByRole("table")).toBeInTheDocument();
-    expect(screen.queryByTestId(TestId.LOADING)).not.toBeInTheDocument();
-    const row = screen.getAllByRole("row")[1];
-    const cells = within(row).getAllByRole("cell");
-    expect(cells[0]).toHaveTextContent("eggman");
-    expect(cells[1]).toHaveTextContent("microk8s");
-    expect(cells[2]).toHaveTextContent("1 day ago");
-    expect(cells[3]).toHaveTextContent("ModelManager");
-    expect(cells[4]).toHaveTextContent("AddModel");
-    expect(cells[5]).toHaveTextContent("3");
   });
 
   it("should display audit logs", async () => {
-    const { store } = renderComponent(<AuditLogsTable showModel />, { state });
-    const action = jujuActions.fetchAuditEvents({
-      wsControllerURL: "wss://example.com/api",
-    });
-    expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
-    ).toMatchObject(action);
+    renderComponent(<AuditLogsTable showModel />, { state });
     expect(await screen.findByRole("table")).toBeInTheDocument();
     expect(screen.queryByTestId(TestId.LOADING)).not.toBeInTheDocument();
     const row = screen.getAllByRole("row")[1];
