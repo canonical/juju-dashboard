@@ -74,6 +74,10 @@ import {
   getAuditEvents,
   getAuditEventsLoaded,
   getAuditEventsLoading,
+  getAuditEventsUsers,
+  getAuditEventsModels,
+  getAuditEventsFacades,
+  getAuditEventsMethods,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -125,6 +129,74 @@ describe("selectors", () => {
         })
       )
     ).toBe(true);
+  });
+
+  it("getAuditEventsUsers", () => {
+    const items = [
+      auditEventFactory.build({ "user-tag": "user-eggman" }),
+      auditEventFactory.build({ "user-tag": "user-spaceman" }),
+      auditEventFactory.build({ "user-tag": "user-eggman" }),
+    ];
+    expect(
+      getAuditEventsUsers(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(["eggman", "spaceman"]);
+  });
+
+  it("getAuditEventsModels", () => {
+    const items = [
+      auditEventFactory.build({ model: "model1" }),
+      auditEventFactory.build({ model: "model2" }),
+      auditEventFactory.build({ model: "model2" }),
+    ];
+    expect(
+      getAuditEventsModels(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(["model1", "model2"]);
+  });
+
+  it("getAuditEventsFacades", () => {
+    const items = [
+      auditEventFactory.build({ "facade-name": "Client" }),
+      auditEventFactory.build({ "facade-name": "Client" }),
+      auditEventFactory.build({ "facade-name": "Admin" }),
+    ];
+    expect(
+      getAuditEventsFacades(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(["Client", "Admin"]);
+  });
+
+  it("getAuditEventsMethods", () => {
+    const items = [
+      auditEventFactory.build({ "facade-method": "Login" }),
+      auditEventFactory.build({ "facade-method": "Logout" }),
+      auditEventFactory.build({ "facade-method": "Login" }),
+    ];
+    expect(
+      getAuditEventsMethods(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(["Login", "Logout"]);
   });
 
   it("getModelData", () => {

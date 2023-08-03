@@ -6,6 +6,7 @@ import type {
 import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 
+import type { AuditEvent } from "juju/jimm-facade";
 import type {
   AnnotationData,
   ApplicationData,
@@ -70,6 +71,52 @@ export const getAuditEventsLoaded = createSelector(
 export const getAuditEventsLoading = createSelector(
   [getAuditEventsState],
   (auditEvents) => auditEvents.loading
+);
+
+const getUniqueAuditEventValues = <K extends keyof AuditEvent>(
+  key: K,
+  auditEvents?: AuditEvent[] | null,
+  modifier?: (value: AuditEvent[K]) => string
+) => {
+  // Use a set to get unique values.
+  const values = new Set();
+  auditEvents?.forEach(({ [key]: value }) =>
+    values.add(modifier ? modifier(value) : value)
+  );
+  return Array.from(values);
+};
+
+/**
+  Fetches the unique usernames from the audit events.
+*/
+export const getAuditEventsUsers = createSelector(
+  [getAuditEvents],
+  (auditEvents) =>
+    getUniqueAuditEventValues("user-tag", auditEvents, getUserName)
+);
+
+/**
+  Fetches the unique model names from the audit events.
+*/
+export const getAuditEventsModels = createSelector(
+  [getAuditEvents],
+  (auditEvents) => getUniqueAuditEventValues("model", auditEvents)
+);
+
+/**
+  Fetches the unique facade names from the audit events.
+*/
+export const getAuditEventsFacades = createSelector(
+  [getAuditEvents],
+  (auditEvents) => getUniqueAuditEventValues("facade-name", auditEvents)
+);
+
+/**
+  Fetches the unique method names from the audit events.
+*/
+export const getAuditEventsMethods = createSelector(
+  [getAuditEvents],
+  (auditEvents) => getUniqueAuditEventValues("facade-method", auditEvents)
 );
 
 /**
