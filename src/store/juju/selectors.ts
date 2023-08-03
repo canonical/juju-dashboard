@@ -118,7 +118,7 @@ export const getExternalUsers = createSelector([getModelData], (models) => {
 });
 
 /**
-  Get external users in a mdoel.
+  Get external users in a model.
 */
 export const getExternalUsersInModel = createSelector(
   [getModelDataByUUID],
