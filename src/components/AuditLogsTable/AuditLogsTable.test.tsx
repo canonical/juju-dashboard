@@ -1,4 +1,5 @@
 import { screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { add } from "date-fns";
 
 import { TestId } from "components/LoadingSpinner/LoadingSpinner";
@@ -129,5 +130,23 @@ describe("AuditLogsTable", () => {
     expect(cells[3]).toHaveTextContent("ModelManager");
     expect(cells[4]).toHaveTextContent("AddModel");
     expect(cells[5]).toHaveTextContent("3");
+  });
+
+  it("should show refresh button", async () => {
+    renderComponent(<AuditLogsTable showModel />, { state });
+    expect(await screen.findByRole("table")).toBeInTheDocument();
+    expect(screen.queryByTestId(TestId.LOADING)).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Refresh" })).toBeVisible();
+  });
+
+  // TODO: Improve this test after pagination is added e.g. navigate to a
+  // different page, check that the rows change in the table and then, after
+  // pressing the refresh button, check that we get the first page rows.
+  it("should navigate to first page when pressing refresh button", async () => {
+    renderComponent(<AuditLogsTable showModel />, { state });
+    expect(await screen.findByRole("table")).toBeInTheDocument();
+    expect(screen.queryByTestId(TestId.LOADING)).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
+    expect(window.location.search).toEqual("?page=1");
   });
 });
