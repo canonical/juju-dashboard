@@ -1680,9 +1680,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:0.44.0":
-  version: 0.44.0
-  resolution: "@canonical/react-components@npm:0.44.0"
+"@canonical/react-components@npm:0.45.0":
+  version: 0.45.0
+  resolution: "@canonical/react-components@npm:0.45.0"
   dependencies:
     "@types/jest": 27.5.2
     "@types/node": 18.16.18
@@ -1701,7 +1701,7 @@ __metadata:
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 5a428d99c1650369aa61ff5f6c397ec783a81711a4daa46ebca09a935c39061830b8ac1a2e3e1d7a879d6bf07ad3f275e304c042ec96c7bc4dec4eb1be391af8
+  checksum: 3a0591381003ec63b4942beda7c675cc1f32f1063e65ba8d5db525dbc1fc43c1aac62a08971a1493e7b7a4f323ac3aa1967887874f582ac1ce62013f0c007344
   languageName: node
   linkType: hard
 
@@ -10122,7 +10122,7 @@ __metadata:
     "@babel/plugin-proposal-private-property-in-object": 7.21.11
     "@canonical/jujulib": 4.0.0
     "@canonical/macaroon-bakery": 1.3.2
-    "@canonical/react-components": 0.44.0
+    "@canonical/react-components": 0.45.0
     "@reduxjs/toolkit": 1.9.5
     "@sentry/browser": 7.55.0
     "@testing-library/jest-dom": 5.16.5
@@ -10181,7 +10181,7 @@ __metadata:
     stylelint-order: 6.0.3
     ts-jest: 29.1.0
     typescript: 5.1.3
-    vanilla-framework: 4.0.0
+    vanilla-framework: 4.1.0
   languageName: unknown
   linkType: soft
 
@@ -15367,10 +15367,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.0.0":
-  version: 4.0.0
-  resolution: "vanilla-framework@npm:4.0.0"
-  checksum: 89a09c861399a6f5d694731ab627e4f98408a21b1196a91d931270000c712ac9b28e2ef61f79b2f0838f079af6a25c8014cd7750dadfc4812894f077a1eb9e20
+"vanilla-framework@npm:4.1.0":
+  version: 4.1.0
+  resolution: "vanilla-framework@npm:4.1.0"
+  checksum: bb76d6692d15b7d2589be5e241239611a4b7bdd644f3e01e7b32ae34b4ecd5134c4bcd2ba8fc048e126b1ed62a66cb094d851cf33c1c88355851e6762ba315c7
   languageName: node
   linkType: hard
 
