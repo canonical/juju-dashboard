@@ -1,5 +1,5 @@
-import { ModularTable, Tooltip } from "@canonical/react-components";
-import { useEffect, useMemo } from "react";
+import { Button, ModularTable, Tooltip } from "@canonical/react-components";
+import { useCallback, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import type { Column } from "react-table";
@@ -7,6 +7,7 @@ import type { Column } from "react-table";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { formatFriendlyDateToNow } from "components/utils";
+import { useQueryParams } from "hooks/useQueryParams";
 import {
   getWSControllerURL,
   getControllerConnection,
@@ -67,12 +68,20 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
     (column) => showModel || column.accessor !== "model"
   );
 
-  useEffect(() => {
+  const [, setQueryParams] = useQueryParams<{ page: string | null }>({
+    page: null,
+  });
+
+  const fetchAuditEvents = useCallback(() => {
     if (!wsControllerURL || !hasControllerConnection) {
       return;
     }
     dispatch(jujuActions.fetchAuditEvents({ wsControllerURL }));
-  }, [hasControllerConnection, dispatch, wsControllerURL]);
+  }, [dispatch, hasControllerConnection, wsControllerURL]);
+
+  useEffect(() => {
+    fetchAuditEvents();
+  }, [fetchAuditEvents]);
 
   useEffect(
     () => () => {
@@ -111,12 +120,26 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
     return tableData;
   }, [auditLogs]);
 
-  if (auditLogsLoading || !auditLogsLoaded) {
-    return <LoadingSpinner />;
-  }
-
   return (
-    <ModularTable columns={columnData} data={tableData} emptyMsg={emptyMsg} />
+    <div className="audit-logs__table">
+      <Button
+        onClick={() => {
+          fetchAuditEvents();
+          setQueryParams({ page: "1" });
+        }}
+      >
+        Refresh
+      </Button>
+      {auditLogsLoading || !auditLogsLoaded ? (
+        <LoadingSpinner />
+      ) : (
+        <ModularTable
+          columns={columnData}
+          data={tableData}
+          emptyMsg={emptyMsg}
+        />
+      )}
+    </div>
   );
 };
 
