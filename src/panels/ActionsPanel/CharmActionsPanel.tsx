@@ -182,7 +182,7 @@ export default function CharmActionsPanel({
       data-testid={TestId.PANEL}
       title={<CharmActionsPanelTitle charmURL={charmURL} />}
       onRemovePanelQueryParams={onRemovePanelQueryParams}
-      initial={true}
+      initial={false}
     >
       <>
         <div className="actions-panel__action-list">
