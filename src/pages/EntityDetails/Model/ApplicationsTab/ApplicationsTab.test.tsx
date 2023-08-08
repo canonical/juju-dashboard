@@ -1,6 +1,5 @@
 import { screen } from "@testing-library/react";
 
-import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
