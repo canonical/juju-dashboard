@@ -163,6 +163,14 @@
           background-color: transparent;
         }
       }
+
+      // Override the spacing between the hover state and bottom border to
+      // match the height of the breadcrumbs.
+      .p-tabs__link:hover::before,
+      .p-tabs__link:hover:focus:not(:focus-visible)::before {
+        bottom: 0;
+        height: calc($bar-thickness);
+      }
     }
   }
 
