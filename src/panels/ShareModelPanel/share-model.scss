@@ -5,32 +5,6 @@
 @include vf-b-placeholders;
 
 .share-model {
-  .title-wrapper {
-    display: flex;
-
-    .p-button--base.has-icon {
-      display: flex;
-      margin-bottom: 0;
-    }
-
-    .p-icon--chevron-up {
-      display: block;
-      padding-right: 1rem;
-      transform: rotate(90deg);
-    }
-
-    .p-icon--share {
-      @include vf-icon-share($color-dark);
-
-      margin-right: 0.5rem;
-    }
-
-    &__heading {
-      display: flex;
-      margin-bottom: 0;
-    }
-  }
-
   .add-user-btn {
     display: flex;
     margin-bottom: 0;
@@ -66,12 +40,6 @@
   }
 
   .share-cards {
-    padding-right: $sph--large * 2;
-
-    @media (max-width: $breakpoint-small) {
-      padding-right: 0;
-    }
-
     &__heading {
       display: flex;
 
@@ -85,15 +53,15 @@
 
   // Toggle the cards and form view on small screens
   @media (max-width: $breakpoint-small) {
-    [data-mobile-show-add-user="false"] {
-      .add-new-user {
-        display: none;
+    [data-mobile-show-add-user="false"] & {
+      .aside-split-col--right {
+        display: none !important;
       }
     }
 
-    [data-mobile-show-add-user="true"] {
-      .share-cards {
-        display: none;
+    [data-mobile-show-add-user="true"] & {
+      .aside-split-col--left {
+        display: none !important;
       }
     }
   }

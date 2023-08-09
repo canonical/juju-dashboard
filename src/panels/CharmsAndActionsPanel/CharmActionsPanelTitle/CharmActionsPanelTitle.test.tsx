@@ -86,7 +86,6 @@ describe("CharmActionsPanelTitle", () => {
 
     const title = screen.getByText("1 application (2 units) selected");
     expect(title).toBeVisible();
-    expect(title.tagName).toBe("H5");
   });
 
   it("should display the title when no unit is selected", () => {
@@ -109,7 +108,6 @@ describe("CharmActionsPanelTitle", () => {
 
     const title = screen.getByText("1 application (0 units) selected");
     expect(title).toBeVisible();
-    expect(title.tagName).toBe("H5");
   });
 
   it("should display the title and icon if a charm and applications are selected", () => {
@@ -136,6 +134,5 @@ describe("CharmActionsPanelTitle", () => {
 
     const title = screen.getByText("1 application (2 units) selected");
     expect(title).toBeVisible();
-    expect(title.tagName).toBe("H5");
   });
 });

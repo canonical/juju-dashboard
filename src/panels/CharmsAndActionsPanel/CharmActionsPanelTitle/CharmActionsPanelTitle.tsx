@@ -27,14 +27,14 @@ const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
   );
 
   return (
-    <h5>
+    <>
       {selectedCharm?.meta?.name && selectedCharm?.url ? (
         <CharmIcon name={selectedCharm.meta.name} charmId={selectedCharm.url} />
       ) : null}{" "}
       {selectedApplications.length}{" "}
       {pluralize(selectedApplications.length, "application")} ({totalUnits}{" "}
       {pluralize(totalUnits, "unit")}) selected
-    </h5>
+    </>
   );
 };
 

@@ -1,0 +1,42 @@
+@import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
+
+.side-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  .p-panel__content {
+    display: flex;
+    // Make the content take the full height of the panel so that the drawer get
+    // stuck to the bottom.
+    flex: 1;
+    flex-direction: column;
+    padding-left: $sph--large;
+    padding-right: $sph--large;
+  }
+
+  .side-panel__content-scrolling {
+    // This element should expand to fill the available vertical space:
+    flex: 1;
+  }
+
+  &__split-content {
+    position: sticky;
+    top: $spv--large;
+  }
+
+  &__drawer {
+    background-color: white;
+    border-top: 1px solid $color-mid-x-light;
+    bottom: 0;
+    padding: $spv--large $sph--small 0;
+    position: sticky;
+    text-align: right;
+
+    @include mobile {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}

@@ -20,8 +20,6 @@ import { useAppStore } from "store/store";
 
 import ActionOptions from "./ActionOptions";
 
-import "./_actions-panel.scss";
-
 export enum TestId {
   PANEL = "actions-panel",
 }
@@ -132,12 +130,12 @@ export default function ActionsPanel(): JSX.Element {
   const generateTitle = () => {
     const unitLength = selectedUnits.length;
     return (
-      <h5>
+      <>
         {appName && namespace ? (
           <CharmIcon name={appName} charmId={namespace} />
         ) : null}{" "}
         {unitLength} {pluralize(unitLength, "unit")} selected
-      </h5>
+      </>
     );
   };
 
@@ -209,54 +207,45 @@ export default function ActionsPanel(): JSX.Element {
 
   return (
     <Panel
+      drawer={
+        <Button
+          appearance="positive"
+          disabled={disableSubmit}
+          onClick={handleSubmit}
+        >
+          Run action
+        </Button>
+      }
       width="narrow"
-      panelClassName="actions-panel"
       data-testid={TestId.PANEL}
       title={generateTitle()}
       onRemovePanelQueryParams={handleRemovePanelQueryParams}
     >
-      <>
-        <div
-          className="actions-panel__unit-list"
-          data-testid="actions-panel-unit-list"
-        >
-          Run action on: {generateSelectedUnitList()}
-        </div>
-        <div className="actions-panel__action-list">
-          <LoadingHandler
-            hasData={data ? true : false}
-            loading={fetchingActionData}
-            noDataMessage="This charm has not provided any actions."
+      <p data-testid="actions-panel-unit-list">
+        Run action on: {generateSelectedUnitList()}
+      </p>
+      <LoadingHandler
+        hasData={data ? true : false}
+        loading={fetchingActionData}
+        noDataMessage="This charm has not provided any actions."
+      >
+        {Object.keys(actionData).map((actionName) => (
+          <RadioInputBox
+            name={actionName}
+            description={actionData[actionName].description}
+            onSelect={selectHandler}
+            selectedInput={selectedAction}
+            key={actionName}
           >
-            {Object.keys(actionData).map((actionName) => (
-              <RadioInputBox
-                name={actionName}
-                description={actionData[actionName].description}
-                onSelect={selectHandler}
-                selectedInput={selectedAction}
-                key={actionName}
-              >
-                <ActionOptions
-                  name={actionName}
-                  data={actionData}
-                  onValuesChange={changeHandler}
-                />
-              </RadioInputBox>
-            ))}
-          </LoadingHandler>
-        </div>
-        {generateConfirmationModal()}
-        <div className="actions-panel__drawer">
-          <Button
-            appearance="positive"
-            className="actions-panel__run-action"
-            disabled={disableSubmit}
-            onClick={handleSubmit}
-          >
-            Run action
-          </Button>
-        </div>
-      </>
+            <ActionOptions
+              name={actionName}
+              data={actionData}
+              onValuesChange={changeHandler}
+            />
+          </RadioInputBox>
+        ))}
+      </LoadingHandler>
+      {generateConfirmationModal()}
     </Panel>
   );
 }

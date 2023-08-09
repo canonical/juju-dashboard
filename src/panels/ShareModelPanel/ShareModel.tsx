@@ -1,5 +1,5 @@
 import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import { Button, Input, RadioInput } from "@canonical/react-components";
+import { Button, Icon, Input, RadioInput } from "@canonical/react-components";
 import cloneDeep from "clone-deep";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
@@ -282,70 +282,35 @@ export default function ShareModel() {
 
   return (
     <Panel
+      // This attribute toggles between the cards and form on small screens
+      data-mobile-show-add-user={showAddNewUser}
       panelClassName="share-model"
       data-testid={TestId.PANEL}
       title={
-        <div className="title-wrapper">
-          {showAddNewUser ? (
-            <>
-              <button
-                className="p-button--base has-icon"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setShowAddNewUser(false);
-                }}
-              >
-                <i className="p-icon--chevron-up"></i>
-                <span>{Label.BACK_BUTTON}</span>
-              </button>
-            </>
-          ) : (
-            <div className="title-wrapper__heading">
-              <h5>
-                <i className="p-icon--share is-inline"></i> Model access:{" "}
-                {modelName}
-              </h5>
-            </div>
-          )}
-        </div>
+        showAddNewUser ? (
+          <Button
+            appearance="base"
+            className="u-no-margin"
+            hasIcon
+            onClick={(event) => {
+              event.stopPropagation();
+              setShowAddNewUser(false);
+            }}
+          >
+            <Icon name="chevron-left" />
+            <span>{Label.BACK_BUTTON}</span>
+          </Button>
+        ) : (
+          <>
+            <Icon name="share" /> Model access: {modelName}
+          </>
+        )
       }
       onRemovePanelQueryParams={handleRemovePanelQueryParams}
       loading={!modelStatusData}
       isSplit={true}
-    >
-      <div
-        className="p-panel__content p-panel_content--padded aside-split-wrapper"
-        // This attribute toggles between the cards and form on small screens
-        data-mobile-show-add-user={showAddNewUser}
-      >
-        <div className="aside-split-col share-cards">
-          <div className="share-cards__heading">
-            <h5>Sharing with:</h5>
-            <button
-              className="add-user-btn p-button--base has-icon"
-              onClick={() => setShowAddNewUser(true)}
-            >
-              <i className="p-icon--plus"></i>
-              <span>{Label.SHOW_ADD_FORM}</span>
-            </button>
-          </div>
-          {sortedUsers?.map((userObj: User) => {
-            const username = userObj["user"];
-            const lastConnected = userObj["last-connection"];
-            return (
-              <ShareCard
-                key={username}
-                userName={username}
-                lastConnected={lastConnected}
-                access={usersAccess?.[username]}
-                isOwner={isOwner(username)}
-                removeUser={handleRemoveUser}
-                accessSelectChange={handleAccessSelectChange}
-              />
-            );
-          })}
-        </div>
-        <div className="aside-split-col add-new-user">
+      splitContent={
+        <>
           <h5>Add new user</h5>
           <form onSubmit={newUserFormik.handleSubmit}>
             <Input
@@ -447,7 +412,35 @@ export default function ShareModel() {
               </button>
             </div>
           </form>
+        </>
+      }
+    >
+      <div className="share-cards">
+        <div className="share-cards__heading">
+          <h5>Sharing with:</h5>
+          <button
+            className="add-user-btn p-button--base has-icon"
+            onClick={() => setShowAddNewUser(true)}
+          >
+            <i className="p-icon--plus"></i>
+            <span>{Label.SHOW_ADD_FORM}</span>
+          </button>
         </div>
+        {sortedUsers?.map((userObj: User) => {
+          const username = userObj["user"];
+          const lastConnected = userObj["last-connection"];
+          return (
+            <ShareCard
+              key={username}
+              userName={username}
+              lastConnected={lastConnected}
+              access={usersAccess?.[username]}
+              isOwner={isOwner(username)}
+              removeUser={handleRemoveUser}
+              accessSelectChange={handleAccessSelectChange}
+            />
+          );
+        })}
       </div>
     </Panel>
   );
