@@ -181,14 +181,15 @@ export const modelPollerMiddleware: Middleware<
       // Intercept fetchAuditEvents actions and fetch and store audit events via the
       // controller connection.
 
+      const { wsControllerURL, ...params } = action.payload;
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
-      const conn = controllers.get(action.payload.wsControllerURL);
+      const conn = controllers.get(wsControllerURL);
       if (!conn) {
         return;
       }
-      const auditEvents = await findAuditEvents(conn);
+      const auditEvents = await findAuditEvents(conn, params);
       reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
       // The action has already been passed to the next middleware at the top of
       // this handler.

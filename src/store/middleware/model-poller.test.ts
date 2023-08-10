@@ -404,7 +404,10 @@ describe("model poller", () => {
       wsControllerURL: "wss://example.com",
     });
     await middleware(next)(action);
-    expect(jujuModule.findAuditEvents).toHaveBeenCalled();
+    expect(jujuModule.findAuditEvents).toHaveBeenCalledWith(
+      expect.any(Object),
+      { "user-tag": "user-eggman@external" }
+    );
     expect(next).toHaveBeenCalledWith(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateAuditEvents(events.events)
