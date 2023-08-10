@@ -3,6 +3,7 @@ import { screen } from "@testing-library/react";
 import { renderComponent } from "testing/utils";
 
 import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
+import { TestId as AuditLogsFilterPanelTestId } from "./AuditLogsFilterPanel/AuditLogsFilterPanel";
 import { TestId as CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
 import Panels from "./Panels";
@@ -40,6 +41,15 @@ describe("Panels", () => {
     });
     expect(
       await screen.findByTestId(ConfigPanelTestId.PANEL)
+    ).toBeInTheDocument();
+  });
+
+  it("can display the audit logs filter panel", async () => {
+    renderComponent(<Panels />, {
+      url: "/?panel=audit-log-filters",
+    });
+    expect(
+      await screen.findByTestId(AuditLogsFilterPanelTestId.PANEL)
     ).toBeInTheDocument();
   });
 });

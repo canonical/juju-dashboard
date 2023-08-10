@@ -78,6 +78,8 @@ import {
   getAuditEventsModels,
   getAuditEventsFacades,
   getAuditEventsMethods,
+  getModelNames,
+  getUsers,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -846,6 +848,26 @@ describe("selectors", () => {
     ).toStrictEqual(models);
   });
 
+  it("getModelNames", () => {
+    const models = {
+      abc123: modelListInfoFactory.build({
+        name: "model1",
+      }),
+      def456: modelListInfoFactory.build({
+        name: "model2",
+      }),
+    };
+    expect(
+      getModelNames(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            models,
+          }),
+        })
+      )
+    ).toStrictEqual(["model1", "model2"]);
+  });
+
   it("getModelByUUID", () => {
     const models = {
       abc123: modelListInfoFactory.build({
@@ -1149,6 +1171,33 @@ describe("selectors", () => {
       }),
     });
     expect(getActiveUser(state, "abc123")).toStrictEqual("eggman@external");
+  });
+
+  it("getUsers", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [
+                modelUserInfoFactory.build({ user: "eggman@external" }),
+                modelUserInfoFactory.build({ user: "spaceman@domain" }),
+              ],
+            }),
+          }),
+          def456: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [modelUserInfoFactory.build({ user: "other3" })],
+            }),
+          }),
+        },
+      }),
+    });
+    expect(getUsers(state)).toStrictEqual([
+      "eggman@external",
+      "spaceman@domain",
+      "other3",
+    ]);
   });
 
   it("getActiveUsers", () => {

@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 
+import { Label } from "components/AuditLogsTable/AuditLogsTableActions/AuditLogsTableActions";
 import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
@@ -47,5 +48,12 @@ describe("Logs", () => {
     expect(screen.getByText("Audit logs")).toBeVisible();
     expect(document.querySelector(".logs")).toBeVisible();
     expect(await screen.findAllByRole("cell")).toHaveLength(6);
+  });
+
+  it("should display the actions", async () => {
+    renderComponent(<Logs />, { state });
+    expect(
+      screen.getByRole("button", { name: Label.FILTER })
+    ).toBeInTheDocument();
   });
 });
