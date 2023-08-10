@@ -10181,7 +10181,7 @@ __metadata:
     stylelint-order: 6.0.3
     ts-jest: 29.1.0
     typescript: 5.1.3
-    vanilla-framework: 4.0.0
+    vanilla-framework: 4.1.0
   languageName: unknown
   linkType: soft
 
@@ -15367,10 +15367,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.0.0":
-  version: 4.0.0
-  resolution: "vanilla-framework@npm:4.0.0"
-  checksum: 89a09c861399a6f5d694731ab627e4f98408a21b1196a91d931270000c712ac9b28e2ef61f79b2f0838f079af6a25c8014cd7750dadfc4812894f077a1eb9e20
+"vanilla-framework@npm:4.1.0":
+  version: 4.1.0
+  resolution: "vanilla-framework@npm:4.1.0"
+  checksum: bb76d6692d15b7d2589be5e241239611a4b7bdd644f3e01e7b32ae34b4ecd5134c4bcd2ba8fc048e126b1ed62a66cb094d851cf33c1c88355851e6762ba315c7
   languageName: node
   linkType: hard
 

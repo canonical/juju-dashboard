@@ -39,29 +39,50 @@ describe("CharmsPanel", () => {
   });
 
   it("renders the correct number of charms", () => {
-    renderComponent(<CharmsPanel onCharmURLChange={jest.fn()} />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(
+      <CharmsPanel
+        onCharmURLChange={jest.fn()}
+        onRemovePanelQueryParams={jest.fn()}
+        isLoading={false}
+      />,
+      {
+        path,
+        url,
+        state,
+      }
+    );
     expect(screen.getAllByRole("radio").length).toBe(2);
   });
 
   it("next button is disabled when no charm is selected", () => {
-    renderComponent(<CharmsPanel onCharmURLChange={jest.fn()} />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(
+      <CharmsPanel
+        onCharmURLChange={jest.fn()}
+        onRemovePanelQueryParams={jest.fn()}
+        isLoading={false}
+      />,
+      {
+        path,
+        url,
+        state,
+      }
+    );
     expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
   });
 
   it("next button is enabled when a charm is selected", () => {
-    renderComponent(<CharmsPanel onCharmURLChange={jest.fn()} />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(
+      <CharmsPanel
+        onCharmURLChange={jest.fn()}
+        onRemovePanelQueryParams={jest.fn()}
+        isLoading={false}
+      />,
+      {
+        path,
+        url,
+        state,
+      }
+    );
     act(() => screen.getAllByRole("radio")[0].click());
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
   });
@@ -69,7 +90,11 @@ describe("CharmsPanel", () => {
   it("can open the actions panel", async () => {
     const mockHandleCharmURLChange = jest.fn();
     renderComponent(
-      <CharmsPanel onCharmURLChange={mockHandleCharmURLChange} />,
+      <CharmsPanel
+        onCharmURLChange={mockHandleCharmURLChange}
+        onRemovePanelQueryParams={jest.fn()}
+        isLoading={false}
+      />,
       { path, url, state }
     );
     await userEvent.click(screen.getAllByRole("radio")[0]);

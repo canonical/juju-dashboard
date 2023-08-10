@@ -1476,6 +1476,24 @@ describe("Juju API", () => {
       expect(response).toMatchObject(events);
     });
 
+    it("fetches audit events with supplied params", async () => {
+      const events = { events: [] };
+      const conn = {
+        facades: {
+          jimM: {
+            findAuditEvents: jest.fn().mockReturnValue(events),
+          },
+        },
+      } as unknown as Connection;
+      const response = await findAuditEvents(conn, {
+        "user-tag": "user-eggman@external",
+      });
+      expect(conn.facades.jimM.findAuditEvents).toHaveBeenCalledWith({
+        "user-tag": "user-eggman@external",
+      });
+      expect(response).toMatchObject(events);
+    });
+
     it("handles errors", async () => {
       const error = new Error("Request failed");
       const conn = {

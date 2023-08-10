@@ -1,6 +1,7 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import { Spinner } from "@canonical/react-components";
 import classnames from "classnames";
+import type { PropsWithChildren } from "react";
 
 import SlideInOut from "animations/SlideInOut";
 import type { Props as SlideInOutProps } from "animations/SlideInOut";
@@ -9,14 +10,13 @@ import "./_aside.scss";
 
 export type Props = PropsWithSpread<
   {
-    children: JSX.Element;
     className?: string;
     width?: "wide" | "narrow";
     pinned?: boolean;
     loading?: boolean;
     isSplit?: boolean;
   },
-  Partial<SlideInOutProps>
+  Partial<SlideInOutProps> & PropsWithChildren
 >;
 
 export default function Aside({
@@ -40,7 +40,7 @@ export default function Aside({
       {...props}
     >
       {!loading ? (
-        children
+        <>{children}</>
       ) : (
         <div className="loading">
           <Spinner />

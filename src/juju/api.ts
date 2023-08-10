@@ -46,7 +46,7 @@ import type { RootState, Store } from "store/store";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
-import type { AuditEvents } from "./jimm-facade";
+import type { AuditEvents, FindAuditEventsRequest } from "./jimm-facade";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -774,11 +774,14 @@ export async function getCharmsURLFromApplications(
 /**
   Fetch audit events via the JIMM facade on the given controller connection.
  */
-export function findAuditEvents(conn: ConnectionWithFacades) {
+export function findAuditEvents(
+  conn: ConnectionWithFacades,
+  params?: FindAuditEventsRequest
+) {
   return new Promise<AuditEvents>(async (resolve, reject) => {
     if (conn?.facades?.jimM) {
       try {
-        const events = await conn.facades.jimM.findAuditEvents();
+        const events = await conn.facades.jimM.findAuditEvents(params);
         resolve(events);
       } catch (e) {
         reject(e);

@@ -91,7 +91,10 @@ describe("CharmActionsPanel", () => {
   it("Renders the list of available actions", async () => {
     renderComponent(
       <>
-        <CharmActionsPanel charmURL={charmURL} />
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
         <Toaster />
       </>,
       { path, url, state }
@@ -102,7 +105,10 @@ describe("CharmActionsPanel", () => {
   it("validates that an action is selected before submitting", async () => {
     renderComponent(
       <>
-        <CharmActionsPanel charmURL={charmURL} />
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
         <Toaster />
       </>,
       { path, url, state }
@@ -121,7 +127,10 @@ describe("CharmActionsPanel", () => {
     ];
     renderComponent(
       <>
-        <CharmActionsPanel charmURL={charmURL} />
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
         <Toaster />
       </>,
       { path, url, state }
@@ -144,7 +153,10 @@ describe("CharmActionsPanel", () => {
   it("disables the submit button if a required text field is empty", async () => {
     renderComponent(
       <>
-        <CharmActionsPanel charmURL={charmURL} />
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
         <Toaster />
       </>,
       { path, url, state }
@@ -193,7 +205,10 @@ describe("CharmActionsPanel", () => {
     ];
     renderComponent(
       <>
-        <CharmActionsPanel charmURL={charmURL} />
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
         <Toaster />
       </>,
       { path, url, state }
@@ -217,7 +232,10 @@ describe("CharmActionsPanel", () => {
   it("shows a confirmation dialog on clicking submit", async () => {
     renderComponent(
       <>
-        <CharmActionsPanel charmURL={charmURL} />
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
         <Toaster />
       </>,
       { path, url, state }
@@ -245,7 +263,10 @@ describe("CharmActionsPanel", () => {
       .mockImplementation(() => Promise.resolve(undefined));
     renderComponent(
       <>
-        <CharmActionsPanel charmURL={charmURL} />
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
         <Toaster />
       </>,
       { path, url, state }
@@ -277,7 +298,10 @@ describe("CharmActionsPanel", () => {
       .mockImplementation(() => Promise.resolve(undefined));
     renderComponent(
       <>
-        <CharmActionsPanel charmURL={charmURL} />
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
         <Toaster />
       </>,
       { path, url, state }
@@ -314,7 +338,10 @@ describe("CharmActionsPanel", () => {
       .mockImplementation(() => Promise.reject());
     renderComponent(
       <>
-        <CharmActionsPanel charmURL={charmURL} />
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
         <Toaster />
       </>,
       { path, url, state }

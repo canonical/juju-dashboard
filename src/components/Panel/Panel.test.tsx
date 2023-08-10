@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { usePanelQueryParams } from "panels/hooks";
@@ -48,6 +48,46 @@ describe("Panel", () => {
     mockRenderComponent({});
 
     expect(document.querySelector(".p-panel")).toHaveClass("test-panel");
+  });
+
+  it("can display split columns", async () => {
+    render(
+      <Panel
+        onRemovePanelQueryParams={jest.fn()}
+        isSplit
+        title="Test panel"
+        splitContent={<div className="split-content"></div>}
+      >
+        Test content
+      </Panel>
+    );
+    expect(document.querySelector(".p-panel__content")).toHaveClass(
+      "aside-split-wrapper"
+    );
+    // It should wrap the left content in a column:
+    expect(
+      document.querySelector(".aside-split-col .side-panel__content-scrolling")
+    ).toBeInTheDocument();
+    // It should wrap the right content in a column:
+    expect(
+      document.querySelector(".aside-split-col .split-content")
+    ).toBeInTheDocument();
+  });
+
+  it("can display a button drawer", async () => {
+    render(
+      <Panel
+        onRemovePanelQueryParams={jest.fn()}
+        title="Test panel"
+        drawer={<button>Open!</button>}
+      >
+        Test content
+      </Panel>
+    );
+    // It should wrap the left content in a column:
+    const button = screen.getByRole("button", { name: "Open!" });
+    expect(button).toBeInTheDocument();
+    expect(button.parentElement).toHaveClass("side-panel__drawer");
   });
 
   it("should clear only the panel params when escape key is pressed", async () => {
