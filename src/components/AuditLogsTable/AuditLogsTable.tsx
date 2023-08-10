@@ -66,7 +66,7 @@ const COLUMN_DATA: Column[] = [
   },
 ];
 
-const DEFAULT_LIMIT_VALUE = 50;
+export const DEFAULT_LIMIT_VALUE = 50;
 const LIMIT_OPTIONS: OptionHTMLAttributes<HTMLOptionElement>[] = [
   { label: "50/page", value: DEFAULT_LIMIT_VALUE },
   { label: "100/page", value: 100 },
