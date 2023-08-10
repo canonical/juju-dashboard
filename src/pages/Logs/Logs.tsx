@@ -5,24 +5,22 @@ import AuditLogsTableActions from "components/AuditLogsTable/AuditLogsTableActio
 import Header from "components/Header/Header";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
-const Logs = (): JSX.Element => {
-  return (
-    <BaseLayout>
-      <Header>
-        <b>Audit logs</b>
-      </Header>
-      <div className="l-content logs">
-        <FadeIn isActive={true}>
-          <ActionBar>
-            <AuditLogsTableActions />
-          </ActionBar>
-          <div className="u-overflow--auto">
-            <AuditLogsTable showModel />
-          </div>
-        </FadeIn>
-      </div>
-    </BaseLayout>
-  );
-};
+const Logs = (): JSX.Element => (
+  <BaseLayout>
+    <Header>
+      <b>Audit logs</b>
+    </Header>
+    <div className="l-content logs">
+      <FadeIn isActive={true}>
+        <ActionBar>
+          <AuditLogsTableActions />
+        </ActionBar>
+        <div className="u-overflow--auto">
+          <AuditLogsTable showModel />
+        </div>
+      </FadeIn>
+    </div>
+  </BaseLayout>
+);
 
 export default Logs;
