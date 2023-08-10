@@ -18,9 +18,9 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import CharmsAndActionsPanel, {
-  Label as CharmsAndActionsPanelLabel,
-} from "./CharmsAndActionsPanel";
+import { Label as CharmsPanelLabel } from "../CharmsPanel/CharmsPanel";
+
+import CharmsAndActionsPanel from "./CharmsAndActionsPanel";
 
 describe("CharmsAndActionsPanel", () => {
   let state: RootState;
@@ -129,7 +129,7 @@ describe("CharmsAndActionsPanel", () => {
       expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     });
     expect(container.querySelector(".p-panel__title")).toContainHTML(
-      CharmsAndActionsPanelLabel.CHARMS_PANEL_TITLE
+      CharmsPanelLabel.PANEL_TITLE
     );
     const charmOptions = screen.getAllByRole("radio");
     expect(charmOptions).toHaveLength(2);

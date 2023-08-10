@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { isSet } from "components/utils";
 import { getCharmsURLFromApplications } from "juju/api";
@@ -14,17 +13,6 @@ import {
   getSelectedApplications,
 } from "store/juju/selectors";
 import { useAppStore } from "store/store";
-
-import CharmActionsPanelTitle from "./CharmActionsPanelTitle";
-
-export enum Label {
-  CHARMS_PANEL_TITLE = "Choose applications of charm:",
-}
-
-export enum ClassName {
-  CHARMS_PANEL = "charms-panel",
-  CHARM_ACTIONS_PANEL = "actions-panel",
-}
 
 export enum TestId {
   PANEL = "charms-and-actions-panel",
@@ -73,30 +61,20 @@ const CharmsAndActionsPanel = () => {
   }, [appState, dispatch, isPanelLoading, modelUUID, selectedApplications]);
 
   return (
-    <Panel
-      width="narrow"
-      panelClassName={
-        charmURL ? ClassName.CHARM_ACTIONS_PANEL : ClassName.CHARMS_PANEL
-      }
-      data-testid={TestId.PANEL}
-      title={
-        charmURL ? (
-          <CharmActionsPanelTitle charmURL={charmURL} />
-        ) : (
-          Label.CHARMS_PANEL_TITLE
-        )
-      }
-      onRemovePanelQueryParams={handleRemovePanelQueryParams}
-      loading={isPanelLoading}
-    >
-      <>
-        {charmURL ? (
-          <CharmActionsPanel charmURL={charmURL} />
-        ) : (
-          <CharmsPanel onCharmURLChange={setCharmURL} />
-        )}
-      </>
-    </Panel>
+    <>
+      {charmURL ? (
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={handleRemovePanelQueryParams}
+        />
+      ) : (
+        <CharmsPanel
+          onCharmURLChange={setCharmURL}
+          onRemovePanelQueryParams={handleRemovePanelQueryParams}
+          isLoading={isPanelLoading}
+        />
+      )}
+    </>
   );
 };
 

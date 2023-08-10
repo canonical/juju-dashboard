@@ -1,4 +1,4 @@
-import { Notification } from "@canonical/react-components";
+import { Button, Notification, Spinner } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
 import type { ReactNode, MouseEvent } from "react";
@@ -82,6 +82,7 @@ export default function ConfigPanel(): JSX.Element {
   const [queryParams, , handleRemovePanelQueryParams] =
     usePanelQueryParams<ConfigQueryParams>(defaultQueryParams);
   const { entity: appName, charm, modelUUID } = queryParams;
+  const hasConfig = !isLoading && !!config && Object.keys(config).length > 0;
 
   useEffect(() => {
     if (modelUUID && appName) {
@@ -268,110 +269,100 @@ export default function ConfigPanel(): JSX.Element {
     <Panel
       checkCanClose={checkCanClose}
       data-testid={TestId.PANEL}
+      drawer={
+        hasConfig ? (
+          <>
+            <Button onClick={handleCancel}>{Label.CANCEL_BUTTON}</Button>
+            <Button
+              appearance="positive"
+              className={classnames("config-panel__save-button", {
+                "is-active": savingConfig,
+              })}
+              onClick={handleSubmit}
+              disabled={!enableSave || savingConfig}
+            >
+              {!savingConfig ? (
+                Label.SAVE_BUTTON
+              ) : (
+                <>
+                  <Spinner isLight />
+                  <span>Saving&hellip;</span>
+                </>
+              )}
+            </Button>
+          </>
+        ) : null
+      }
       panelClassName="config-panel"
-      isSplit
+      isSplit={hasConfig}
       loading={isLoading}
       ref={scrollArea}
       title={
-        <h5>
+        <>
           {appName && charm ? (
             <CharmIcon name={appName} charmId={charm} />
           ) : null}{" "}
           {appName}
-        </h5>
+        </>
       }
       onRemovePanelQueryParams={handleRemovePanelQueryParams}
+      splitContent={
+        hasConfig ? (
+          <div className="config-panel__description">
+            {selectedConfig ? (
+              <FadeIn key={selectedConfig.name} isActive={true}>
+                <>
+                  <h4 className="p-heading--5">Configuration description</h4>
+                  <h5>{selectedConfig.name}</h5>
+                  <pre>{selectedConfig.description}</pre>
+                </>
+              </FadeIn>
+            ) : (
+              <div className="u-align--center">
+                <NoDescriptionMessage />
+              </div>
+            )}
+          </div>
+        ) : null
+      }
     >
       <>
-        {!isLoading && (!config || Object.keys(config).length === 0) ? (
-          <FadeIn isActive={true}>
-            <div className="full-size u-align-center">
-              <NoConfigMessage />
-            </div>
-          </FadeIn>
-        ) : (
-          <div className="p-panel__content p-panel_content--padded aside-split-wrapper">
-            <div className="aside-split-col">
-              <div className="config-panel__list-header">
-                <h5>Configure</h5>
-                <div
-                  className={classnames("config-panel__reset-all", {
-                    "config-panel__hide-button": !showResetAll,
-                    "config-panel__show-button": showResetAll,
-                  })}
-                >
-                  <button
-                    className="u-button-neutral"
-                    onClick={allFieldsToDefault}
-                  >
-                    {Label.RESET_BUTTON}
-                  </button>
-                </div>
-              </div>
-
-              <div className="config-panel__list">
-                {formErrors
-                  ? generateErrors(formErrors, scrollArea?.current)
-                  : null}
-                {generateConfigElementList(
-                  config,
-                  selectedConfig,
-                  setSelectedConfig,
-                  setNewValue
-                )}
-              </div>
-              {generateConfirmationDialog()}
+        {hasConfig && !isLoading ? (
+          <>
+            <div className="config-panel__list-header">
+              <h5>Configure</h5>
               <div
-                className={classnames("config-panel__drawer", {
-                  "is-open": confirmType !== null,
+                className={classnames("config-panel__reset-all", {
+                  "config-panel__hide-button": !showResetAll,
+                  "config-panel__show-button": showResetAll,
                 })}
               >
-                <div className="config-panel__button-row">
-                  <button className="p-button--neutral" onClick={handleCancel}>
-                    {Label.CANCEL_BUTTON}
-                  </button>
-                  <button
-                    className={classnames(
-                      "p-button--positive config-panel__save-button",
-                      {
-                        "is-active": savingConfig,
-                      }
-                    )}
-                    onClick={handleSubmit}
-                    disabled={!enableSave || savingConfig}
-                  >
-                    {!savingConfig ? (
-                      Label.SAVE_BUTTON
-                    ) : (
-                      <>
-                        <i className="p-icon--spinner u-animation--spin is-light"></i>
-                        <span>Saving&hellip;</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+                <button
+                  className="u-button-neutral"
+                  onClick={allFieldsToDefault}
+                >
+                  {Label.RESET_BUTTON}
+                </button>
               </div>
             </div>
-            <div className="config-panel__description aside-split-col">
-              {selectedConfig ? (
-                <FadeIn
-                  key={selectedConfig.name}
-                  isActive={true}
-                  className="config-panel__description-wrapper"
-                >
-                  <>
-                    <h4 className="p-heading--5">Configuration description</h4>
-                    <h5>{selectedConfig.name}</h5>
-                    <pre>{selectedConfig.description}</pre>
-                  </>
-                </FadeIn>
-              ) : (
-                <div className="config-panel__no-description u-vertically-center">
-                  <NoDescriptionMessage />
-                </div>
+
+            <div className="config-panel__list">
+              {formErrors
+                ? generateErrors(formErrors, scrollArea?.current)
+                : null}
+              {generateConfigElementList(
+                config,
+                selectedConfig,
+                setSelectedConfig,
+                setNewValue
               )}
             </div>
-          </div>
+            {generateConfirmationDialog()}
+          </>
+        ) : (
+          <FadeIn isActive={true} className="u-align--center">
+            <NoConfigMessage />
+          </FadeIn>
         )}
       </>
     </Panel>
@@ -468,7 +459,7 @@ function generateChangedKeyValues(config: Config) {
 function NoConfigMessage() {
   return (
     <div className="config-panel__message">
-      <img src={boxImage} alt="" className="config-panel--center-img" />
+      <img src={boxImage} alt="" />
       <h4>{Label.NONE}</h4>
     </div>
   );
@@ -477,7 +468,7 @@ function NoConfigMessage() {
 function NoDescriptionMessage() {
   return (
     <div className="config-panel__message">
-      <img src={bulbImage} alt="" className="config-panel--center-img" />
+      <img src={bulbImage} alt="" />
       <h4>
         Click on a configuration row to view its related description and
         parameters

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 type Props = {
   id: string;
@@ -14,7 +14,7 @@ export default function PanelHeader({
   return (
     <div className="p-panel__header">
       <div className="p-panel__title" id={id}>
-        {title}
+        <h5 className="u-no-margin">{title}</h5>
       </div>
       <div className="p-panel__controls">
         <button

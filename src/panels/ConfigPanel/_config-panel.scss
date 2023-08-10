@@ -3,17 +3,7 @@
 @import "../../scss/breakpoints";
 @import "../../scss/variables";
 
-$panel-padding: 1.5rem;
-
-.slide-panel.config-panel .slide-panel__content {
-  padding: $panel-padding 0 0;
-}
-
 .config-panel {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-
   &__modal-button-row-hint {
     font-size: #{map-get($font-sizes, small)}rem;
     margin-bottom: 1.5rem;
@@ -32,12 +22,6 @@ $panel-padding: 1.5rem;
     // extra styles
     white-space: pre-wrap;
     word-break: keep-all;
-  }
-
-  .full-size {
-    display: flex;
-    justify-content: center;
-    text-align: center;
   }
 
   .config-panel__hide-button {
@@ -70,7 +54,7 @@ $panel-padding: 1.5rem;
   }
 
   &__message {
-    padding-top: 6rem;
+    padding: 6rem $sph--large * 2 0;
 
     @include desktop {
       padding-top: 3rem;
@@ -81,32 +65,11 @@ $panel-padding: 1.5rem;
     }
   }
 
-  &--center-img {
-    margin: 0 auto;
-  }
-
-  &__list {
-    padding-right: $sph--large * 2;
-  }
-
-  .p-panel__content {
-    flex: 1;
-
-    .aside-split-col {
-      display: flex;
-      flex-direction: column;
-
-      .config-panel__list {
-        flex: 1;
-      }
-    }
-  }
-
   &__list-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: $spv--large;
-    padding: 0 $sph--large * 2 0 $sph--small;
+    padding-left: $sph--small;
     position: relative;
 
     h5 {
@@ -120,7 +83,6 @@ $panel-padding: 1.5rem;
     }
 
     @include mobile {
-      margin-top: 4rem;
       padding-right: 4rem; // Spacing for the close X
       padding-top: 1rem;
     }
@@ -138,54 +100,11 @@ $panel-padding: 1.5rem;
     }
   }
 
-  &__description {
-    @media screen and (max-width: $breakpoint-small) {
+  .aside-split-col--right {
+    @include mobile {
+      // On mobile the descriptions are shown next to the fields instead of in
+      // the split column.
       display: none !important;
-    }
-
-    &-wrapper {
-      position: sticky;
-      top: 1rem;
-    }
-  }
-
-  &__no-description {
-    padding: 0 5rem;
-    position: sticky;
-    text-align: center;
-    top: 0;
-  }
-
-  &__drawer {
-    background-color: white;
-    bottom: 0;
-    box-shadow: none;
-    position: sticky;
-
-    @media screen and (max-width: $breakpoint-x-small) {
-      padding-right: 0;
-    }
-
-    &.is-open {
-      box-shadow: $box-shadow;
-    }
-  }
-
-  &__button-row {
-    border-top: 1px solid $color-mid-light;
-    margin-right: $sph--large;
-    text-align: right;
-
-    button {
-      margin-top: 1.2rem;
-    }
-
-    button.config-panel__save-button {
-      @include vf-animation(opacity, brisk, out);
-
-      span {
-        padding-left: 1rem;
-      }
     }
   }
 }
@@ -239,7 +158,7 @@ $panel-padding: 1.5rem;
     max-height: 0;
     overflow: hidden;
 
-    @media screen and (max-width: $breakpoint-large) {
+    @media screen and (max-width: $breakpoint-small) {
       display: block;
     }
   }
@@ -267,8 +186,6 @@ $panel-padding: 1.5rem;
   }
 
   textarea {
-    border: 1px solid $color-grey60;
-    border-radius: 2px;
     height: 2.3rem;
     margin-bottom: 0.7rem;
     min-height: 2.3rem;

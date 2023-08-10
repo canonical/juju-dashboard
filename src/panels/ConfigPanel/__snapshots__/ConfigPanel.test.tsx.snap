@@ -6,7 +6,6 @@ exports[`ConfigPanel displays a message if the app has no config 1`] = `
 >
   <img
     alt=""
-    class="config-panel--center-img"
     src="no-config-params.svg"
   />
   <h4>

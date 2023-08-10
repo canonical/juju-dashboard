@@ -8,14 +8,18 @@ import Aside from "components/Aside/Aside";
 import type { Props as AsideProps } from "components/Aside/Aside";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 
+import "./_panel.scss";
+
 type Props = PropsWithSpread<
   {
     checkCanClose?: (e: KeyboardEvent | MouseEvent) => boolean;
-    panelClassName: string;
+    drawer?: ReactNode;
+    panelClassName?: string;
+    splitContent?: ReactNode;
     title: ReactNode;
     onRemovePanelQueryParams: () => void;
-  },
-  PropsWithChildren & AsideProps
+  } & PropsWithChildren,
+  AsideProps
 >;
 
 const close = {
@@ -52,7 +56,9 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     {
       checkCanClose,
       children,
+      drawer,
       panelClassName,
+      splitContent,
       title,
       onRemovePanelQueryParams,
       ...props
@@ -73,15 +79,41 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     );
 
     const titleId = useId();
+    const content = (
+      <>
+        <div className="side-panel__content-scrolling">{children}</div>
+        {drawer ? <div className="side-panel__drawer">{drawer}</div> : null}
+      </>
+    );
     return (
       <Aside {...props} aria-labelledby={titleId} role="dialog">
-        <div className={classNames("p-panel", panelClassName)} ref={ref}>
+        <div
+          className={classNames("p-panel side-panel", panelClassName)}
+          ref={ref}
+        >
           <PanelHeader
             id={titleId}
             title={title}
             onRemovePanelQueryParams={onRemovePanelQueryParams}
           />
-          {children}
+          <div
+            className={classNames("p-panel__content", {
+              "aside-split-wrapper": props.isSplit,
+            })}
+          >
+            {props.isSplit ? (
+              <div className="aside-split-col aside-split-col--left">
+                {content}
+              </div>
+            ) : (
+              content
+            )}
+            {props.isSplit && splitContent ? (
+              <div className="aside-split-col aside-split-col--right">
+                <div className="side-panel__split-content">{splitContent}</div>
+              </div>
+            ) : null}
+          </div>
         </div>
       </Aside>
     );

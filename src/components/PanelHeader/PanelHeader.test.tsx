@@ -33,7 +33,9 @@ describe("PanelHeader", () => {
     mockRenderComponent({
       url: "/mockPath?model=cmr&panel=share-model",
     });
-    expect(screen.getByText("Title")).toHaveClass("p-panel__title");
+    expect(screen.getByText("Title").parentElement).toHaveClass(
+      "p-panel__title"
+    );
   });
 
   it("should only remove panel query params after close button is clicked", async () => {
