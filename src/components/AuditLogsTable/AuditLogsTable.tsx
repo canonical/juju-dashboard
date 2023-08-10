@@ -90,9 +90,10 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
   );
 
   const [limit, setLimit] = useState<number>(DEFAULT_LIMIT_VALUE);
-  const [{ page }, setQueryParams] = useQueryParams<{ page: string | null }>({
-    page: null,
+  const [queryParams, setQueryParams] = useQueryParams<{ page: string }>({
+    page: "1",
   });
+  const page = Number(queryParams.page);
 
   const fetchAuditEvents = useCallback(
     (limit: number) => {
@@ -102,8 +103,9 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
       dispatch(
         jujuActions.fetchAuditEvents({
           wsControllerURL,
+          // Fetch an extra entry in order to check if there are more pages.
           limit: limit + 1,
-          offset: page === null ? 0 : (Number(page) - 1) * limit,
+          offset: (page - 1) * limit,
         })
       );
     },
@@ -165,13 +167,14 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
         <div className="audit-logs__pagination">
           <Pagination
             onForward={() => {
-              setQueryParams({ page: `${Number(page) + 1}` });
+              setQueryParams({ page: (page + 1).toString() });
             }}
             onBack={() => {
-              setQueryParams({ page: `${Number(page) - 1}` });
+              setQueryParams({ page: (page - 1).toString() });
             }}
+            // No further pages if couldn't fetch (limit + 1) entries.
             forwardDisabled={tableData.length <= limit}
-            backDisabled={page === null || page === "1"}
+            backDisabled={page === 1}
             centered
           />
           <Select
@@ -189,6 +192,7 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
       ) : (
         <ModularTable
           columns={columnData}
+          // Table will display at most (limit) entries.
           data={tableData.length <= limit ? tableData : tableData.slice(0, -1)}
           emptyMsg={emptyMsg}
         />
