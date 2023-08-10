@@ -342,7 +342,7 @@ describe("Share Model Panel", () => {
       { state, url, path }
     );
     // Check the initial state.
-    expect(document.querySelector(".p-panel__content")).toHaveAttribute(
+    expect(document.querySelector(".l-aside")).toHaveAttribute(
       "data-mobile-show-add-user",
       "false"
     );
@@ -353,7 +353,7 @@ describe("Share Model Panel", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.SHOW_ADD_FORM })
     );
-    expect(document.querySelector(".p-panel__content")).toHaveAttribute(
+    expect(document.querySelector(".l-aside")).toHaveAttribute(
       "data-mobile-show-add-user",
       "true"
     );
@@ -364,7 +364,7 @@ describe("Share Model Panel", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.BACK_BUTTON })
     );
-    expect(document.querySelector(".p-panel__content")).toHaveAttribute(
+    expect(document.querySelector(".l-aside")).toHaveAttribute(
       "data-mobile-show-add-user",
       "false"
     );

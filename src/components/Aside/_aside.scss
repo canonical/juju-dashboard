@@ -1,5 +1,7 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/breakpoints";
+@import "../../scss/functions/z-index";
+@import "../../scss/variables";
 
 // Scope the l-aside within l-application so that it can override the Vanilla styles.
 .l-application .l-aside {
@@ -8,6 +10,11 @@
   // The aside is within the main element so any long content will make the
   // aside scroll up with the page so this needs to be prevented.
   position: fixed;
+
+  @media (max-width: $breakpoint-large - 1px) {
+    // Make the panel appear above the side/top menus.
+    z-index: z("zelda") + 1 !important;
+  }
 
   .loading {
     align-items: center;
@@ -25,22 +32,26 @@
     }
 
     .aside-split-wrapper {
-      padding-bottom: 4rem;
-
-      @include desktop {
-        display: flex;
-        padding-bottom: 1rem;
-      }
+      display: flex;
+      // Display the split wrappers side by side.
+      flex-direction: row;
+      padding-bottom: 1rem;
 
       .aside-split-col {
-        width: 100%;
+        display: flex;
+        flex: 50%;
+        // Make the content take the full height of the panel so that the drawer get
+        // stuck to the bottom.
+        flex-direction: column;
 
         @include desktop {
-          width: calc(50% - 1rem);
-
           &:first-child {
             border-right: 1px solid #ccc;
-            margin-right: 2rem;
+            padding-right: $sph--x-large;
+          }
+
+          &:last-child {
+            margin-left: $sph--x-large;
           }
         }
       }

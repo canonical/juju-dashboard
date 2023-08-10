@@ -55,7 +55,7 @@ const generateWarningMessage = (model: ModelData) => {
       {messages[0].message}
     </ModelDetailsLink>
   );
-  const list = messages.slice(0, 5).map((message) => {
+  const list: ListItem[] = messages.slice(0, 5).map((message) => {
     const unitId = message.unitId ? message.unitId.replace("/", "-") : null;
     const appName = message.appName;
     return {
@@ -75,9 +75,7 @@ const generateWarningMessage = (model: ModelData) => {
         </>
       ),
     };
-    // TSFixMe the ListItem type has a conflict with the default HTMLProps
-    // content which is a string.
-  }) as ListItem[];
+  });
   const remainder = messages.slice(5);
   if (remainder.length) {
     list.push(`+${remainder.length} more...`);

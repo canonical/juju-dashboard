@@ -30,16 +30,10 @@ import {
 } from "store/juju/selectors";
 import { useAppStore } from "store/store";
 
-import "../ActionsPanel/_actions-panel.scss";
-
 export enum Label {
   NONE_SELECTED = "You need to select a charm and applications to continue.",
   ACTION_ERROR = "Some of the actions failed to execute",
   ACTION_SUCCESS = "Action successfully executed.",
-}
-
-export enum ClassName {
-  PANEL = "actions-panel",
 }
 
 const filterExist = <I,>(item: I | null): item is I => !!item;
@@ -177,49 +171,43 @@ export default function CharmActionsPanel({
 
   return (
     <Panel
+      drawer={
+        <Button
+          appearance="positive"
+          disabled={disableSubmit || unitCount === 0}
+          onClick={handleSubmit}
+        >
+          Run action
+        </Button>
+      }
       width="narrow"
-      panelClassName={ClassName.PANEL}
       data-testid={TestId.PANEL}
       title={<CharmActionsPanelTitle charmURL={charmURL} />}
       onRemovePanelQueryParams={onRemovePanelQueryParams}
       initial={false}
     >
-      <>
-        <div className="actions-panel__action-list">
-          <LoadingHandler
-            hasData={Object.keys(actionData).length > 0}
-            loading={false}
-            noDataMessage="This charm has not provided any actions."
+      <LoadingHandler
+        hasData={Object.keys(actionData).length > 0}
+        loading={false}
+        noDataMessage="This charm has not provided any actions."
+      >
+        {Object.keys(actionData).map((actionName) => (
+          <RadioInputBox
+            name={actionName}
+            description={actionData[actionName].description}
+            onSelect={selectHandler}
+            selectedInput={selectedAction}
+            key={actionName}
           >
-            {Object.keys(actionData).map((actionName) => (
-              <RadioInputBox
-                name={actionName}
-                description={actionData[actionName].description}
-                onSelect={selectHandler}
-                selectedInput={selectedAction}
-                key={actionName}
-              >
-                <ActionOptions
-                  name={actionName}
-                  data={actionData}
-                  onValuesChange={changeHandler}
-                />
-              </RadioInputBox>
-            ))}
-            {generateConfirmationModal()}
-          </LoadingHandler>
-        </div>
-        <div className="actions-panel__drawer">
-          <Button
-            appearance="positive"
-            className="actions-panel__run-action"
-            disabled={disableSubmit || unitCount === 0}
-            onClick={handleSubmit}
-          >
-            Run action
-          </Button>
-        </div>
-      </>
+            <ActionOptions
+              name={actionName}
+              data={actionData}
+              onValuesChange={changeHandler}
+            />
+          </RadioInputBox>
+        ))}
+        {generateConfirmationModal()}
+      </LoadingHandler>
     </Panel>
   );
 }

@@ -25,3 +25,10 @@
     @include vf-icon-video-play($color-mid-x-light);
   }
 }
+
+.p-icon--chevron-left {
+  @extend %icon;
+  @include vf-icon-chevron($color-mid-dark);
+
+  transform: rotate(90deg);
+}
