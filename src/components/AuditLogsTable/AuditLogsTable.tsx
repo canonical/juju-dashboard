@@ -1,5 +1,17 @@
-import { Button, ModularTable, Tooltip } from "@canonical/react-components";
-import { useCallback, useEffect, useMemo } from "react";
+import {
+  Button,
+  ModularTable,
+  Pagination,
+  Select,
+  Tooltip,
+} from "@canonical/react-components";
+import {
+  type OptionHTMLAttributes,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import type { Column } from "react-table";
@@ -20,6 +32,8 @@ import {
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 import getUserName from "utils/getUserName";
+
+import "./_audit-logs-table.scss";
 
 type Props = {
   showModel?: boolean;
@@ -52,6 +66,13 @@ const COLUMN_DATA: Column[] = [
   },
 ];
 
+export const DEFAULT_LIMIT_VALUE = 50;
+const LIMIT_OPTIONS: OptionHTMLAttributes<HTMLOptionElement>[] = [
+  { label: "50/page", value: DEFAULT_LIMIT_VALUE },
+  { label: "100/page", value: 100 },
+  { label: "200/page", value: 200 },
+];
+
 const AuditLogsTable = ({ showModel = false }: Props) => {
   const { modelName } = useParams<EntityDetailsRoute>();
   const dispatch = useAppDispatch();
@@ -68,20 +89,32 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
     (column) => showModel || column.accessor !== "model"
   );
 
-  const [, setQueryParams] = useQueryParams<{ page: string | null }>({
-    page: null,
+  const [limit, setLimit] = useState<number>(DEFAULT_LIMIT_VALUE);
+  const [queryParams, setQueryParams] = useQueryParams<{ page: string }>({
+    page: "1",
   });
+  const page = Number(queryParams.page);
 
-  const fetchAuditEvents = useCallback(() => {
-    if (!wsControllerURL || !hasControllerConnection) {
-      return;
-    }
-    dispatch(jujuActions.fetchAuditEvents({ wsControllerURL }));
-  }, [dispatch, hasControllerConnection, wsControllerURL]);
+  const fetchAuditEvents = useCallback(
+    (limit: number) => {
+      if (!wsControllerURL || !hasControllerConnection) {
+        return;
+      }
+      dispatch(
+        jujuActions.fetchAuditEvents({
+          wsControllerURL,
+          // Fetch an extra entry in order to check if there are more pages.
+          limit: limit + 1,
+          offset: (page - 1) * limit,
+        })
+      );
+    },
+    [dispatch, hasControllerConnection, page, wsControllerURL]
+  );
 
   useEffect(() => {
-    fetchAuditEvents();
-  }, [fetchAuditEvents]);
+    fetchAuditEvents(limit);
+  }, [fetchAuditEvents, limit]);
 
   useEffect(
     () => () => {
@@ -122,20 +155,45 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
 
   return (
     <div className="audit-logs__table">
-      <Button
-        onClick={() => {
-          fetchAuditEvents();
-          setQueryParams({ page: "1" });
-        }}
-      >
-        Refresh
-      </Button>
+      <div className="audit-logs__filter">
+        <Button
+          onClick={() => {
+            setQueryParams({ page: "1" });
+            fetchAuditEvents(limit);
+          }}
+        >
+          Refresh
+        </Button>
+        <div className="audit-logs__pagination">
+          <Pagination
+            onForward={() => {
+              setQueryParams({ page: (page + 1).toString() });
+            }}
+            onBack={() => {
+              setQueryParams({ page: (page - 1).toString() });
+            }}
+            // No further pages if couldn't fetch (limit + 1) entries.
+            forwardDisabled={tableData.length <= limit}
+            backDisabled={page === 1}
+            centered
+          />
+          <Select
+            defaultValue={DEFAULT_LIMIT_VALUE}
+            options={LIMIT_OPTIONS}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+              setQueryParams({ page: "1" });
+              setLimit(parseInt(e.target.value));
+            }}
+          />
+        </div>
+      </div>
       {auditLogsLoading || !auditLogsLoaded ? (
         <LoadingSpinner />
       ) : (
         <ModularTable
           columns={columnData}
-          data={tableData}
+          // Table will display at most (limit) entries.
+          data={tableData.length <= limit ? tableData : tableData.slice(0, -1)}
           emptyMsg={emptyMsg}
         />
       )}
