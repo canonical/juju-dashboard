@@ -9,6 +9,7 @@ import {
   modelListInfoFactory,
   modelDataFactory,
   modelDataInfoFactory,
+  controllerFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -80,22 +81,30 @@ describe("Fields", () => {
   it("should suggest model options", async () => {
     state.juju.auditEvents.items = [
       auditEventFactory.build({
-        model: "testmodel1",
+        model: "controller1/testmodel1",
       }),
       auditEventFactory.build({
-        model: "testmodel1",
+        model: "controller1/testmodel1",
       }),
       auditEventFactory.build({
-        model: "testmodel2",
+        model: "controller2/testmodel2",
       }),
     ];
     state.juju.models = {
       abc123: modelListInfoFactory.build({
         name: "testmodel1",
+        wsControllerURL: "wss://example.com/api",
       }),
       def456: modelListInfoFactory.build({
         name: "testmodel3",
+        wsControllerURL: "wss://test.com/api",
       }),
+    };
+    state.juju.controllers = {
+      "wss://example.com/api": [
+        controllerFactory.build({ name: "controller1" }),
+      ],
+      "wss://test.com/api": [controllerFactory.build({ name: "controller3" })],
     };
     renderComponent(
       <Formik initialValues={{}} onSubmit={jest.fn()}>
@@ -104,16 +113,16 @@ describe("Fields", () => {
       { state }
     );
     expect(
-      document.querySelector("option[value='testmodel1']")
+      document.querySelector("option[value='controller1/testmodel1']")
     ).toBeInTheDocument();
     expect(
-      document.querySelectorAll("option[value='testmodel1']")
+      document.querySelectorAll("option[value='controller1/testmodel1']")
     ).toHaveLength(1);
     expect(
-      document.querySelector("option[value='testmodel2']")
+      document.querySelector("option[value='controller2/testmodel2']")
     ).toBeInTheDocument();
     expect(
-      document.querySelector("option[value='testmodel3']")
+      document.querySelector("option[value='controller3/testmodel3']")
     ).toBeInTheDocument();
   });
 

@@ -17,7 +17,9 @@ import {
 import { useAppDispatch } from "store/store";
 import getUserName from "utils/getUserName";
 
+import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import AuditLogsTableFilters from "./AuditLogsTableFilters/AuditLogsTableFilters";
+import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import { DEFAULT_LIMIT_VALUE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";
 
@@ -58,8 +60,12 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
   const auditLogs = useSelector(getAuditEvents);
   const auditLogsLoaded = useSelector(getAuditEventsLoaded);
   const auditLogsLoading = useSelector(getAuditEventsLoading);
+  const [filters] = useQueryParams<AuditLogFilters>(DEFAULT_AUDIT_LOG_FILTERS);
+  const hasFilters = Object.values(filters).some((filter) => !!filter);
   const additionalEmptyMsg = showModel ? "" : ` for ${modelName}`;
-  const emptyMsg = `There are no audit logs available yet${additionalEmptyMsg}!`;
+  const emptyMsg = hasFilters
+    ? "No audit logs found. Try changing the filters."
+    : `There are no audit logs available yet${additionalEmptyMsg}!`;
   const columnData = COLUMN_DATA.filter(
     (column) => showModel || column.accessor !== "model"
   );

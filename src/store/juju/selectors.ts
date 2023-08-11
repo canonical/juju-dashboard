@@ -152,8 +152,20 @@ export const getModelList = createSelector(
 /**
   Get the names of all models.
 */
-export const getModelNames = createSelector([getModelList], (modelList) =>
-  Object.values(modelList)?.map(({ name }) => name)
+export const getFullModelNames = createSelector(
+  [getModelList, getControllerData],
+  (modelList, controllers) =>
+    controllers
+      ? Object.values(modelList)?.reduce<string[]>((modelNames, model) => {
+          const controller =
+            model.wsControllerURL in controllers &&
+            controllers[model.wsControllerURL][0];
+          if (controller && "name" in controller) {
+            modelNames.push(`${controller.name}/${model.name}`);
+          }
+          return modelNames;
+        }, [])
+      : []
 );
 
 /**

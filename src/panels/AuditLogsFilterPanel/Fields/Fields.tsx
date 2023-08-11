@@ -1,4 +1,5 @@
 import { Input } from "@canonical/react-components";
+import { format } from "date-fns";
 import { Field, useFormikContext } from "formik";
 import { useSelector } from "react-redux";
 
@@ -8,7 +9,7 @@ import {
   getAuditEventsMethods,
   getAuditEventsUsers,
   getAuditEventsModels,
-  getModelNames,
+  getFullModelNames,
   getUsers,
 } from "store/juju/selectors";
 
@@ -24,13 +25,15 @@ export enum Label {
   VERSION = "Version",
 }
 
+export const DATETIME_LOCAL = "yyyy-MM-dd'T'hh:mm";
+
 const Fields = (): JSX.Element => {
   const auditEventUsers = useSelector(getAuditEventsUsers);
   const jujuUsers = useSelector(getUsers);
   // Get the unique users from the logs and models returned from Juju.
   const users = Array.from(new Set([...auditEventUsers, ...jujuUsers]));
   const auditEventModels = useSelector(getAuditEventsModels);
-  const jujuModels = useSelector(getModelNames);
+  const jujuModels = useSelector(getFullModelNames);
   // Get the unique model names from the logs and models returned from Juju.
   const models = Array.from(new Set([...auditEventModels, ...jujuModels]));
   const facades = useSelector(getAuditEventsFacades);
@@ -45,8 +48,9 @@ const Fields = (): JSX.Element => {
         // https://github.com/canonical/react-components/issues/957
         id={Label.AFTER}
         label={Label.AFTER}
-        // Prevent this field from choosing a date after the 'Before' date.
-        max={values.before}
+        // Prevent this field from choosing a date after the 'Before' date or in
+        // the future.
+        max={values.before ? values.before : format(new Date(), DATETIME_LOCAL)}
         name="after"
         as={Input}
       />
@@ -58,6 +62,8 @@ const Fields = (): JSX.Element => {
         label={Label.BEFORE}
         // Prevent this field from choosing a date before the 'After' date.
         min={values.after}
+        // Prevent this field from choosing a date in the future.
+        max={format(new Date(), DATETIME_LOCAL)}
         name="before"
         as={Input}
       />
