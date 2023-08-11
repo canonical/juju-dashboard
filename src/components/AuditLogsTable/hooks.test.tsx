@@ -1,8 +1,6 @@
 import { renderHook } from "@testing-library/react";
-import { format } from "date-fns";
 import configureStore from "redux-mock-store";
 
-import { DATETIME_LOCAL } from "panels/AuditLogsFilterPanel/Fields/Fields";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -70,7 +68,7 @@ describe("useFetchAuditEvents", () => {
     changeURL(`/?${queryParams.toString()}`);
     const { result } = renderHook(() => useFetchAuditEvents(), {
       wrapper: (props) => (
-        <ComponentProviders {...props} path="*" store={store} />
+        <ComponentProviders {...props} path="" store={store} />
       ),
     });
     // Call the returned callback:
@@ -95,7 +93,7 @@ describe("useFetchAuditEvents", () => {
     const store = mockStore(state);
     const { result } = renderHook(() => useFetchAuditEvents(), {
       wrapper: (props) => (
-        <ComponentProviders {...props} path="*" store={store} />
+        <ComponentProviders {...props} path="" store={store} />
       ),
     });
     // Call the returned callback:
@@ -115,7 +113,7 @@ describe("useFetchAuditEvents", () => {
     const store = mockStore(state);
     const { result } = renderHook(() => useFetchAuditEvents(), {
       wrapper: (props) => (
-        <ComponentProviders {...props} path="*" store={store} />
+        <ComponentProviders {...props} path="" store={store} />
       ),
     });
     // Call the returned callback:
