@@ -121,4 +121,30 @@ describe("AuditLogsFilterPanel", () => {
     const queryParams = new URLSearchParams(params);
     expect(window.location.search).toBe(`?${queryParams.toString()}`);
   });
+
+  it("removes blank query params", async () => {
+    renderComponent(<AuditLogsFilterPanel />, {
+      url: "/?panel=audit-log-filters",
+    });
+    await userEvent.type(
+      screen.getByRole("combobox", { name: FieldLabel.FACADE }),
+      "Admin"
+    );
+    await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
+    // Only the facade was set, so no other filters should appear in the query string.
+    expect(window.location.search).toBe("?facade=Admin");
+  });
+
+  it("removes query params if the value was removed", async () => {
+    renderComponent(<AuditLogsFilterPanel />, {
+      url: "/?panel=audit-log-filters&facade=Admin&method=Login",
+    });
+    await userEvent.clear(
+      screen.getByRole("combobox", { name: FieldLabel.METHOD })
+    );
+    await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
+    // The method value was cleared in the input so it should get removed from
+    // the query string.
+    expect(window.location.search).toBe("?facade=Admin");
+  });
 });

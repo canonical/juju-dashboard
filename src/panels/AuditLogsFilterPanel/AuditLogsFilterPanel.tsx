@@ -75,8 +75,26 @@ const AuditLogsFilterPanel = (): JSX.Element => {
             version: queryParams.version ?? "",
           }}
           onSubmit={(values) => {
+            // Replace empty strings with `null` so that the query params get
+            // removed from the URL rather than being set to empty values (the
+            // useQueryParams hook will remove null or undefined values, but
+            // keeps the queryParam if it is an empty string).
+            const filters = Object.entries(values).reduce<
+              Record<keyof FormFields, string | null>
+            >(
+              (filters, [filterName, filterValue]) => {
+                filters[filterName as keyof FormFields] = filterValue
+                  ? filterValue
+                  : null;
+                return filters;
+              },
+              { ...values }
+            );
             // Set the filters and close the panel.
-            setQueryParams({ ...values, panel: undefined });
+            setQueryParams({
+              ...filters,
+              panel: undefined,
+            });
           }}
         >
           <Form id={formId}>
