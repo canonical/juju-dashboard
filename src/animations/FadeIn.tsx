@@ -1,10 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
+import type { PropsWithChildren } from "react";
 
 type Props = {
-  children: JSX.Element;
   className?: string;
   isActive: boolean;
-};
+} & PropsWithChildren;
 
 export default function FadeIn({
   children,

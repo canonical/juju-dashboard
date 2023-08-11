@@ -150,6 +150,13 @@ export const getModelList = createSelector(
 );
 
 /**
+  Get the names of all models.
+*/
+export const getModelNames = createSelector([getModelList], (modelList) =>
+  Object.values(modelList)?.map(({ name }) => name)
+);
+
+/**
   Get a model by UUID.
 */
 export const getModelByUUID = createSelector(
@@ -161,6 +168,17 @@ export const getModelDataByUUID = createSelector(
   [getModelData, (_, modelUUID?: string | null) => modelUUID],
   (modelData, modelUUID) => (modelUUID ? modelData[modelUUID] : null)
 );
+
+/**
+  Get all unique users.
+*/
+export const getUsers = createSelector([getModelData], (models) => {
+  const users = new Set<string>();
+  Object.values(models).forEach((model) => {
+    model.info?.users.forEach(({ user }) => users.add(user));
+  });
+  return Array.from(users);
+});
 
 /**
   Get the active users for each model.

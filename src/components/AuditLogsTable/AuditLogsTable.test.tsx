@@ -1,5 +1,4 @@
 import { screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { add } from "date-fns";
 
 import { TestId } from "components/LoadingSpinner/LoadingSpinner";
@@ -11,7 +10,8 @@ import { auditEventFactory } from "testing/factories/juju/jimm";
 import { auditEventsStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import AuditLogsTable, { DEFAULT_LIMIT_VALUE } from "./AuditLogsTable";
+import AuditLogsTable from "./AuditLogsTable";
+import { DEFAULT_LIMIT_VALUE } from "./consts";
 
 describe("AuditLogsTable", () => {
   let state: RootState;
@@ -84,34 +84,6 @@ describe("AuditLogsTable", () => {
     expect(columnHeaders[5]).toHaveTextContent("facade version");
   });
 
-  it("should not fetch audit logs if there is no websocket", () => {
-    state.general.config = configFactory.build({
-      controllerAPIEndpoint: "",
-    });
-    const { store } = renderComponent(<AuditLogsTable />, { state });
-    const action = jujuActions.fetchAuditEvents({
-      wsControllerURL: "wss://example.com/api",
-      limit: DEFAULT_LIMIT_VALUE + 1,
-      offset: 0,
-    });
-    expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
-    ).toBeUndefined();
-  });
-
-  it("should not fetch audit logs if there is no controller", () => {
-    state.general.controllerConnections = {};
-    const { store } = renderComponent(<AuditLogsTable />, { state });
-    const action = jujuActions.fetchAuditEvents({
-      wsControllerURL: "wss://example.com/api",
-      limit: DEFAULT_LIMIT_VALUE + 1,
-      offset: 0,
-    });
-    expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
-    ).toBeUndefined();
-  });
-
   it("should fetch audit logs", async () => {
     const { store } = renderComponent(<AuditLogsTable showModel />, { state });
     const action = jujuActions.fetchAuditEvents({
@@ -138,56 +110,13 @@ describe("AuditLogsTable", () => {
     expect(cells[5]).toHaveTextContent("3");
   });
 
-  it("should show refresh, next page and previous page buttons", async () => {
-    renderComponent(<AuditLogsTable showModel />, { state });
-    expect(screen.getByRole("button", { name: "Refresh" })).toBeVisible();
-    expect(screen.getByRole("button", { name: "Next page" })).toBeVisible();
-    expect(screen.getByRole("button", { name: "Previous page" })).toBeVisible();
-  });
-
-  it("should navigate to first page when pressing refresh button", async () => {
-    const auditLogs = [];
-    for (let i = 1; i <= 51; i++) {
-      auditLogs.push(
-        auditEventFactory.build({
-          "user-tag": `user-eggman${i}`,
-        })
-      );
-    }
-    state.juju.auditEvents.items = auditLogs;
-    renderComponent(<AuditLogsTable showModel />, { state });
-    await userEvent.click(screen.getByRole("button", { name: "Next page" }));
-    expect(window.location.search).toEqual("?page=2");
-    await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
-    expect(window.location.search).toEqual("?page=1");
-  });
-
-  it("should navigate to next page and then to previous page", async () => {
-    const auditLogs = [];
-    for (let i = 1; i <= 51; i++) {
-      auditLogs.push(
-        auditEventFactory.build({
-          "user-tag": `user-eggman${i}`,
-        })
-      );
-    }
-    state.juju.auditEvents.items = auditLogs;
-    renderComponent(<AuditLogsTable showModel />, { state });
-    await userEvent.click(screen.getByRole("button", { name: "Next page" }));
-    expect(window.location.search).toEqual("?page=2");
-    await userEvent.click(
-      screen.getByRole("button", { name: "Previous page" })
+  it("should display filters", async () => {
+    renderComponent(<AuditLogsTable showModel />, {
+      state,
+      url: "/?user=eggman",
+    });
+    expect(document.querySelector(".p-chip__value")).toHaveTextContent(
+      "eggman"
     );
-    expect(window.location.search).toEqual("?page=1");
-  });
-
-  it("should change amount of logs per page", async () => {
-    renderComponent(<AuditLogsTable showModel />, { state });
-    const dropdownMenu = screen.getByRole("combobox");
-    expect(dropdownMenu).toBeVisible();
-    expect(dropdownMenu).toHaveTextContent("50/page");
-    await userEvent.click(dropdownMenu);
-    await userEvent.click(screen.getByRole("option", { name: "100/page" }));
-    expect(dropdownMenu).toHaveTextContent("100/page");
   });
 });
