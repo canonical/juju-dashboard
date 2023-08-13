@@ -66,9 +66,7 @@ describe("useFetchAuditEvents", () => {
       before: now,
       user: "eggman",
       model: "model1",
-      facade: "Admin",
       method: "Login",
-      version: "4",
     };
     const queryParams = new URLSearchParams(params);
     changeURL(`/?${queryParams.toString()}`);

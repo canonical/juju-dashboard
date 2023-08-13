@@ -163,31 +163,6 @@ describe("Fields", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("should suggest facade options", async () => {
-    state.juju.auditEvents.items = [
-      auditEventFactory.build({
-        "facade-name": "Admin",
-      }),
-      auditEventFactory.build({
-        "facade-name": "Admin",
-      }),
-      auditEventFactory.build({
-        "facade-name": "ModelManager",
-      }),
-    ];
-    renderComponent(
-      <Formik initialValues={{}} onSubmit={jest.fn()}>
-        <Fields />
-      </Formik>,
-      { state }
-    );
-    expect(document.querySelector("option[value='Admin']")).toBeInTheDocument();
-    expect(document.querySelectorAll("option[value='Admin']")).toHaveLength(1);
-    expect(
-      document.querySelector("option[value='ModelManager']")
-    ).toBeInTheDocument();
-  });
-
   it("should suggest method options", async () => {
     state.juju.auditEvents.items = [
       auditEventFactory.build({
