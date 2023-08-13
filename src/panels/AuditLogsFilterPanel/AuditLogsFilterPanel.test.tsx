@@ -5,13 +5,13 @@ import { format } from "date-fns";
 import { renderComponent } from "testing/utils";
 
 import AuditLogsFilterPanel, { Label } from "./AuditLogsFilterPanel";
-import { Label as FieldLabel } from "./Fields/Fields";
+import { DATETIME_LOCAL, Label as FieldLabel } from "./Fields/Fields";
 
 describe("AuditLogsFilterPanel", () => {
   it("restores the filter values from the URL", async () => {
     const params = {
-      after: format(new Date(), "yyyy-MM-dd'T'hh:mm"),
-      before: format(new Date(), "yyyy-MM-dd'T'hh:mm"),
+      after: format(new Date(), DATETIME_LOCAL),
+      before: format(new Date(), DATETIME_LOCAL),
       user: "user-eggman",
       model: "model1",
       facade: "Admin",
@@ -64,10 +64,17 @@ describe("AuditLogsFilterPanel", () => {
     };
     const queryParams = new URLSearchParams(params);
     renderComponent(<AuditLogsFilterPanel />, {
-      url: `/?${queryParams.toString()}`,
+      url: `/?${queryParams.toString()}&page=4`,
     });
     await userEvent.click(screen.getByRole("button", { name: Label.CLEAR }));
     expect(window.location.search).toBe("");
+  });
+
+  it("disables the clear button if there are no filters", async () => {
+    renderComponent(<AuditLogsFilterPanel />, {
+      url: "/",
+    });
+    expect(screen.getByRole("button", { name: Label.CLEAR })).toBeDisabled();
   });
 
   it("can update the filters", async () => {
@@ -81,7 +88,7 @@ describe("AuditLogsFilterPanel", () => {
       version: "4",
     };
     renderComponent(<AuditLogsFilterPanel />, {
-      url: "/?panel=audit-log-filters",
+      url: "/?panel=audit-log-filters&page=4",
     });
     const after = document.querySelector<HTMLInputElement>(
       `input#${FieldLabel.AFTER}`

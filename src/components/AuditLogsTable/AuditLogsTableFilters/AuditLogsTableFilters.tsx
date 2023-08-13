@@ -46,10 +46,11 @@ export const generateFilters = (
   }, []);
 
 const AuditLogsTableFilters = () => {
-  const [filters, setFilters] = useQueryParams<AuditLogFilters>({
-    // Spread so that the default doesn't get updated when the filters change.
-    ...DEFAULT_AUDIT_LOG_FILTERS,
-  });
+  const [queryParams, setQueryParams] = useQueryParams<
+    AuditLogFilters & { page: string | null }
+  >({ ...DEFAULT_AUDIT_LOG_FILTERS, page: null });
+  // Extract just the filters so that they can be looped over.
+  const { page, ...filters } = queryParams;
   const hasFilters = Object.values(filters).some((filter) => !!filter);
   return hasFilters ? (
     <ActionBar>
@@ -57,13 +58,15 @@ const AuditLogsTableFilters = () => {
         <Button
           appearance="base"
           hasIcon
-          onClick={() => setFilters(DEFAULT_AUDIT_LOG_FILTERS)}
+          onClick={() =>
+            setQueryParams({ ...DEFAULT_AUDIT_LOG_FILTERS, page: null })
+          }
           className="u-no-margin"
         >
           <Icon name="close">Clear</Icon>
         </Button>
       </Tooltip>{" "}
-      <span>{generateFilters(filters, setFilters)}</span>
+      <span>{generateFilters(filters, setQueryParams)}</span>
     </ActionBar>
   ) : null;
 };

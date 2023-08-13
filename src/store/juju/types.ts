@@ -16,6 +16,7 @@ export type ControllerLocation = {
 export type Controller = {
   additionalController?: boolean;
   location?: ControllerLocation;
+  name?: string;
   path: string;
   Public?: boolean;
   uuid: string;

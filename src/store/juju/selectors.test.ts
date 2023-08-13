@@ -78,7 +78,7 @@ import {
   getAuditEventsModels,
   getAuditEventsFacades,
   getAuditEventsMethods,
-  getModelNames,
+  getFullModelNames,
   getUsers,
 } from "./selectors";
 
@@ -848,24 +848,34 @@ describe("selectors", () => {
     ).toStrictEqual(models);
   });
 
-  it("getModelNames", () => {
+  it("getFullModelNames", () => {
     const models = {
       abc123: modelListInfoFactory.build({
         name: "model1",
+        wsControllerURL: "wss://example.com/api",
       }),
       def456: modelListInfoFactory.build({
         name: "model2",
+        wsControllerURL: "wss://test.com/api",
       }),
     };
     expect(
-      getModelNames(
+      getFullModelNames(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             models,
+            controllers: {
+              "wss://example.com/api": [
+                controllerFactory.build({ name: "controller1" }),
+              ],
+              "wss://test.com/api": [
+                controllerFactory.build({ name: "controller2" }),
+              ],
+            },
           }),
         })
       )
-    ).toStrictEqual(["model1", "model2"]);
+    ).toStrictEqual(["controller1/model1", "controller2/model2"]);
   });
 
   it("getModelByUUID", () => {

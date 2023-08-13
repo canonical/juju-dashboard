@@ -71,7 +71,7 @@ describe("AuditLogsTableActions", () => {
     await userEvent.click(screen.getByRole("button", { name: "Next page" }));
     expect(window.location.search).toEqual("?page=2");
     await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
-    expect(window.location.search).toEqual("?page=1");
+    expect(window.location.search).toEqual("");
   });
 
   it("should navigate to next page and then to previous page", async () => {
@@ -101,6 +101,6 @@ describe("AuditLogsTableActions", () => {
     await userEvent.click(dropdownMenu);
     await userEvent.selectOptions(dropdownMenu, "100/page");
     expect(dropdownMenu).toHaveTextContent("100/page");
-    expect(window.location.search).toEqual("?limit=100&page=1");
+    expect(window.location.search).toEqual("?limit=100");
   });
 });

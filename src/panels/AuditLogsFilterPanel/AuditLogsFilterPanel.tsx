@@ -32,11 +32,15 @@ const AuditLogsFilterPanel = (): JSX.Element => {
   // These params are handled separately from the values in usePanelQueryParams
   // as they shouldn't be cleared when the panel closes.
   const [queryParams, setQueryParams] = useQueryParams<
-    AuditLogFilters & { panel: string | null }
+    AuditLogFilters & { page: string | null; panel: string | null }
   >({
     ...DEFAULT_AUDIT_LOG_FILTERS,
+    page: null,
     panel: null,
   });
+  // Extract just the filters so that they can be looped over.
+  const { page, panel, ...filters } = queryParams;
+  const hasFilters = Object.values(filters).some((filter) => !!filter);
   return (
     <>
       <Panel
@@ -44,9 +48,11 @@ const AuditLogsFilterPanel = (): JSX.Element => {
         drawer={
           <>
             <Button
+              disabled={!hasFilters}
               onClick={() => {
                 setQueryParams({
                   ...DEFAULT_AUDIT_LOG_FILTERS,
+                  page: null,
                   panel: undefined,
                 });
               }}
@@ -93,6 +99,7 @@ const AuditLogsFilterPanel = (): JSX.Element => {
             // Set the filters and close the panel.
             setQueryParams({
               ...filters,
+              page: null,
               panel: undefined,
             });
           }}

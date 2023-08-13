@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { useQueryParams } from "hooks/useQueryParams";
 import { getAuditEvents } from "store/juju/selectors";
 
-import { DEFAULT_LIMIT_VALUE } from "../consts";
+import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "../consts";
 import { useFetchAuditEvents } from "../hooks";
 
 import "./_audit-logs-table-actions.scss";
@@ -36,7 +36,7 @@ const AuditLogsTableActions = () => {
   }>({
     limit: null,
     panel: null,
-    page: "1",
+    page: DEFAULT_PAGE,
   });
   const limit = Number(queryParams.limit);
   const page = Number(queryParams.page);
@@ -47,7 +47,7 @@ const AuditLogsTableActions = () => {
         <Button
           hasIcon
           onClick={() => {
-            setQueryParams({ page: "1" }, { replace: true });
+            setQueryParams({ page: null }, { replace: true });
             fetchAuditEvents();
           }}
         >
@@ -67,7 +67,7 @@ const AuditLogsTableActions = () => {
           options={LIMIT_OPTIONS}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
             setQueryParams(
-              { limit: e.target.value, page: "1" },
+              { limit: e.target.value, page: null },
               { replace: true }
             );
           }}
