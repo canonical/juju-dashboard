@@ -25,7 +25,7 @@ export enum Label {
   VERSION = "Version",
 }
 
-export const DATETIME_LOCAL = "yyyy-MM-dd'T'hh:mm";
+export const DATETIME_LOCAL = "yyyy-MM-dd'T'HH:mm";
 
 const Fields = (): JSX.Element => {
   const auditEventUsers = useSelector(getAuditEventsUsers);
