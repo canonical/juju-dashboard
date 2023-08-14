@@ -2,9 +2,7 @@
 
 .audit-logs-table-actions {
   &__pagination {
-    display: flex;
     flex: 1;
-    gap: 0 $sph--large;
     justify-content: right;
   }
 }

@@ -6,6 +6,10 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9'%3E%3Cpath fill='#{vf-url-friendly-color($color)}' fill-rule='evenodd' d='M0 9V0h1v8h8v1H0z'/%3E%3C/svg%3E");
 }
 
+.p-icon--rotate-270 {
+  transform: rotate(270deg);
+}
+
 .p-icon--action-logs {
   @extend %icon;
   @include vf-icon-action-logs($color-mid-dark);
