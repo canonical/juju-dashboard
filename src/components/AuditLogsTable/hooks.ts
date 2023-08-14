@@ -39,12 +39,7 @@ export const useFetchAuditEvents = () => {
   });
   const limit = Number(queryParams.limit);
   const page = Number(queryParams.page);
-  let model: string | undefined;
-  if (modelName) {
-    model = fullModelName ?? undefined;
-  } else if (queryParams.model) {
-    model = queryParams.model;
-  }
+  const model = fullModelName ?? queryParams.model;
   return useCallback(() => {
     if (!wsControllerURL || !hasControllerConnection) {
       return;
@@ -64,7 +59,7 @@ export const useFetchAuditEvents = () => {
           : undefined,
         // Convert the username to a user tag:
         "user-tag": queryParams.user ? `user-${queryParams.user}` : undefined,
-        model,
+        model: model ?? undefined,
         method: queryParams.method ?? undefined,
       })
     );

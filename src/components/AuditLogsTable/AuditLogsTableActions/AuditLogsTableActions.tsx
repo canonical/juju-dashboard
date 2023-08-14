@@ -38,12 +38,7 @@ const AuditLogsTableActions = () => {
       <Button
         className="u-no-margin--right"
         onClick={() =>
-          setQueryParams(
-            {
-              panel: "audit-log-filters",
-            },
-            { replace: true }
-          )
+          setQueryParams({ panel: "audit-log-filters" }, { replace: true })
         }
       >
         <Icon name="filter" /> {Label.FILTER}

@@ -84,6 +84,7 @@ const Fields = (): JSX.Element => {
       {showModel ? (
         <Field
           type="text"
+          help='A model name in the format "controller-name/model-name"'
           // Have to manually set the id until this issue has been fixed:
           // https://github.com/canonical/react-components/issues/957
           id={Label.MODEL}
