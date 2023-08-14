@@ -59,6 +59,7 @@ export type AuditEventsState = {
   items: AuditEvent[] | null;
   loaded: boolean;
   loading: boolean;
+  limit: number;
 };
 
 export type JujuState = {

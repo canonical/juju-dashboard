@@ -5,11 +5,13 @@ import {
   Pagination,
   Select,
 } from "@canonical/react-components";
-import type { OptionHTMLAttributes } from "react";
+import { useCallback, type OptionHTMLAttributes } from "react";
 import { useSelector } from "react-redux";
 
 import { useQueryParams } from "hooks/useQueryParams";
-import { getAuditEvents } from "store/juju/selectors";
+import { actions as jujuActions } from "store/juju";
+import { getAuditEvents, getAuditEventsLimit } from "store/juju/selectors";
+import { useAppDispatch } from "store/store";
 
 import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "../consts";
 import { useFetchAuditEvents } from "../hooks";
@@ -28,19 +30,27 @@ const LIMIT_OPTIONS: OptionHTMLAttributes<HTMLOptionElement>[] = [
 ];
 
 const AuditLogsTableActions = () => {
+  const dispatch = useAppDispatch();
   const auditLogs = useSelector(getAuditEvents);
   const [queryParams, setQueryParams] = useQueryParams<{
-    limit: string | null;
     panel: string | null;
     page: string | null;
   }>({
-    limit: null,
     panel: null,
     page: DEFAULT_PAGE,
   });
-  const limit = Number(queryParams.limit);
+  const limit = useSelector(getAuditEventsLimit);
   const page = Number(queryParams.page);
   const fetchAuditEvents = useFetchAuditEvents();
+
+  const handleChangeSelect = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setQueryParams({ page: null }, { replace: true });
+      dispatch(jujuActions.updateAuditEventsLimit(Number(e.target.value)));
+    },
+    [dispatch, setQueryParams]
+  );
+
   return (
     <>
       <Tooltip message="Fetch latest logs">
@@ -63,14 +73,9 @@ const AuditLogsTableActions = () => {
       </Button>
       <div className="audit-logs-table-actions__pagination">
         <Select
-          defaultValue={DEFAULT_LIMIT_VALUE}
+          defaultValue={limit}
           options={LIMIT_OPTIONS}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            setQueryParams(
-              { limit: e.target.value, page: null },
-              { replace: true }
-            );
-          }}
+          onChange={handleChangeSelect}
         />
         <Pagination
           onForward={() => {

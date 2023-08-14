@@ -7,11 +7,12 @@ import {
   getWSControllerURL,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
+import { getAuditEventsLimit } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
-import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "./consts";
+import { DEFAULT_PAGE } from "./consts";
 
 export const useFetchAuditEvents = () => {
   const dispatch = useAppDispatch();
@@ -23,14 +24,12 @@ export const useFetchAuditEvents = () => {
   const [queryParams] = useQueryParams<
     {
       page: string;
-      limit: string;
     } & AuditLogFilters
   >({
     page: DEFAULT_PAGE,
-    limit: DEFAULT_LIMIT_VALUE.toString(),
     ...DEFAULT_AUDIT_LOG_FILTERS,
   });
-  const limit = Number(queryParams.limit);
+  const limit = Number(useSelector(getAuditEventsLimit));
   const page = Number(queryParams.page);
   return useCallback(() => {
     if (!wsControllerURL || !hasControllerConnection) {

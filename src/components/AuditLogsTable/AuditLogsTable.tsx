@@ -13,6 +13,7 @@ import {
   getAuditEvents,
   getAuditEventsLoading,
   getAuditEventsLoaded,
+  getAuditEventsLimit,
 } from "store/juju/selectors";
 import { useAppDispatch } from "store/store";
 import getUserName from "utils/getUserName";
@@ -20,7 +21,6 @@ import getUserName from "utils/getUserName";
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import AuditLogsTableFilters from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
-import { DEFAULT_LIMIT_VALUE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";
 
 type Props = {
@@ -60,6 +60,7 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
   const auditLogs = useSelector(getAuditEvents);
   const auditLogsLoaded = useSelector(getAuditEventsLoaded);
   const auditLogsLoading = useSelector(getAuditEventsLoading);
+  const auditLogsLimit = Number(useSelector(getAuditEventsLimit));
   const [filters] = useQueryParams<AuditLogFilters>(DEFAULT_AUDIT_LOG_FILTERS);
   const hasFilters = Object.values(filters).some((filter) => !!filter);
   const additionalEmptyMsg = showModel ? "" : ` for ${modelName}`;
@@ -70,12 +71,6 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
     (column) => showModel || column.accessor !== "model"
   );
   const fetchAuditEvents = useFetchAuditEvents();
-  const [queryParams] = useQueryParams<{
-    limit: string;
-  }>({
-    limit: DEFAULT_LIMIT_VALUE.toString(),
-  });
-  const limit = Number(queryParams.limit);
 
   useEffect(() => {
     fetchAuditEvents();
@@ -127,7 +122,11 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
         <ModularTable
           columns={columnData}
           // Table will display at most (limit) entries.
-          data={tableData.length <= limit ? tableData : tableData.slice(0, -1)}
+          data={
+            tableData.length <= auditLogsLimit
+              ? tableData
+              : tableData.slice(0, -1)
+          }
           emptyMsg={emptyMsg}
         />
       )}
