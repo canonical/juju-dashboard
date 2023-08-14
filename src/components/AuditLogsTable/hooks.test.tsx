@@ -5,6 +5,10 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
+import {
+  controllerFactory,
+  modelListInfoFactory,
+} from "testing/factories/juju/juju";
 import { ComponentProviders, changeURL } from "testing/utils";
 import urls from "urls";
 
@@ -89,6 +93,18 @@ describe("useFetchAuditEvents", () => {
   });
 
   it("should filter audit events by model name if provided in the URL", () => {
+    state.juju.models = {
+      abc123: modelListInfoFactory.build({
+        name: "current-model",
+        uuid: "abc123",
+        wsControllerURL: "wss://example.com/api",
+      }),
+    };
+    state.juju.controllers = {
+      "wss://example.com/api": [
+        controllerFactory.build({ name: "controller1" }),
+      ],
+    };
     const store = mockStore(state);
     changeURL(
       `${urls.model.index({
@@ -110,7 +126,7 @@ describe("useFetchAuditEvents", () => {
     result.current();
     const action = jujuActions.fetchAuditEvents({
       wsControllerURL: "wss://example.com/api",
-      model: "current-model",
+      model: "controller1/current-model",
     });
     expect(
       store.getActions().find((dispatch) => dispatch.type === action.type)
