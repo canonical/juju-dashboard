@@ -1,3 +1,4 @@
+import { screen } from "@testing-library/react";
 import { Formik } from "formik";
 
 import type { RootState } from "store/store";
@@ -12,8 +13,9 @@ import {
   controllerFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
-import Fields from "./Fields";
+import Fields, { Label } from "./Fields";
 
 describe("Fields", () => {
   let state: RootState;
@@ -110,7 +112,9 @@ describe("Fields", () => {
       <Formik initialValues={{}} onSubmit={jest.fn()}>
         <Fields />
       </Formik>,
-      { state }
+      {
+        state,
+      }
     );
     expect(
       document.querySelector("option[value='controller1/testmodel1']")
@@ -124,6 +128,39 @@ describe("Fields", () => {
     expect(
       document.querySelector("option[value='controller3/testmodel3']")
     ).toBeInTheDocument();
+  });
+
+  it("can show the model field", async () => {
+    renderComponent(
+      <Formik initialValues={{}} onSubmit={jest.fn()}>
+        <Fields />
+      </Formik>,
+      {
+        state,
+      }
+    );
+    expect(
+      screen.getByRole("combobox", { name: Label.MODEL })
+    ).toBeInTheDocument();
+  });
+
+  it("can not show the model field", async () => {
+    renderComponent(
+      <Formik initialValues={{}} onSubmit={jest.fn()}>
+        <Fields />
+      </Formik>,
+      {
+        state,
+        path: urls.model.index(null),
+        url: urls.model.index({
+          userName: "eggman@external",
+          modelName: "test-model",
+        }),
+      }
+    );
+    expect(
+      screen.queryByRole("combobox", { name: Label.MODEL })
+    ).not.toBeInTheDocument();
   });
 
   it("should suggest facade options", async () => {

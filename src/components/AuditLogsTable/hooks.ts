@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getControllerConnection,
@@ -19,7 +21,7 @@ export const useFetchAuditEvents = () => {
   const hasControllerConnection = useAppSelector((state) =>
     getControllerConnection(state, wsControllerURL)
   );
-
+  const { modelName } = useParams<EntityDetailsRoute>();
   const [queryParams] = useQueryParams<
     {
       page: string;
@@ -51,7 +53,7 @@ export const useFetchAuditEvents = () => {
           : undefined,
         // Convert the username to a user tag:
         "user-tag": queryParams.user ? `user-${queryParams.user}` : undefined,
-        model: queryParams.model ?? undefined,
+        model: modelName ?? queryParams.model ?? undefined,
         method: queryParams.method ?? undefined,
       })
     );
@@ -59,6 +61,7 @@ export const useFetchAuditEvents = () => {
     dispatch,
     hasControllerConnection,
     limit,
+    modelName,
     page,
     wsControllerURL,
     // Pass individual params so that this hook will only run if a specific

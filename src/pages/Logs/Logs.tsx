@@ -16,7 +16,7 @@ const Logs = (): JSX.Element => (
           <AuditLogsTableActions />
         </ActionBar>
         <div className="u-overflow--auto">
-          <AuditLogsTable showModel />
+          <AuditLogsTable />
         </div>
       </FadeIn>
     </div>
