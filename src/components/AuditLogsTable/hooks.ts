@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -22,12 +21,12 @@ import { DEFAULT_PAGE } from "./consts";
 
 export const useFetchAuditEvents = () => {
   const dispatch = useAppDispatch();
-  const wsControllerURL = useSelector(getWSControllerURL);
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const hasControllerConnection = useAppSelector((state) =>
     getControllerConnection(state, wsControllerURL)
   );
   const { modelName, userName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector(getModelUUIDFromList(modelName, userName));
   const fullModelName = useAppSelector((state) =>
     getFullModelName(state, modelUUID)
   );
@@ -39,7 +38,7 @@ export const useFetchAuditEvents = () => {
     page: DEFAULT_PAGE,
     ...DEFAULT_AUDIT_LOG_FILTERS,
   });
-  const limit = Number(useSelector(getAuditEventsLimit));
+  const limit = useAppSelector(getAuditEventsLimit);
   const page = Number(queryParams.page);
   const model = fullModelName ?? queryParams.model;
   return useCallback(() => {

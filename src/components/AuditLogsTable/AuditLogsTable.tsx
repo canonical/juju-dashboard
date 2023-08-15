@@ -1,6 +1,5 @@
 import { ModularTable, Tooltip } from "@canonical/react-components";
 import { useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import type { Column } from "react-table";
 
@@ -15,7 +14,7 @@ import {
   getAuditEventsLoaded,
   getAuditEventsLimit,
 } from "store/juju/selectors";
-import { useAppDispatch } from "store/store";
+import { useAppDispatch, useAppSelector } from "store/store";
 import getUserName from "utils/getUserName";
 
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
@@ -56,10 +55,10 @@ const AuditLogsTable = () => {
   const { modelName } = useParams<EntityDetailsRoute>();
   const showModel = !modelName;
   const dispatch = useAppDispatch();
-  const auditLogs = useSelector(getAuditEvents);
-  const auditLogsLoaded = useSelector(getAuditEventsLoaded);
-  const auditLogsLoading = useSelector(getAuditEventsLoading);
-  const auditLogsLimit = useSelector(getAuditEventsLimit);
+  const auditLogs = useAppSelector(getAuditEvents);
+  const auditLogsLoaded = useAppSelector(getAuditEventsLoaded);
+  const auditLogsLoading = useAppSelector(getAuditEventsLoading);
+  const auditLogsLimit = useAppSelector(getAuditEventsLimit);
   const [filters] = useQueryParams<AuditLogFilters>(DEFAULT_AUDIT_LOG_FILTERS);
   const hasFilters = Object.values(filters).some((filter) => !!filter);
   const additionalEmptyMsg = showModel ? "" : ` for ${modelName}`;

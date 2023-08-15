@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { add } from "date-fns";
 
+import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
@@ -56,13 +57,19 @@ describe("AuditLogsTablePagination", () => {
   });
 
   it("should change amount of logs per page", async () => {
-    renderComponent(<AuditLogsTablePagination showLimit />, { state });
+    const { store } = renderComponent(<AuditLogsTablePagination showLimit />, {
+      state,
+    });
     const dropdownMenu = screen.getByRole("combobox");
     expect(dropdownMenu).toBeVisible();
     expect(dropdownMenu).toHaveTextContent("50/page");
     await userEvent.click(dropdownMenu);
     await userEvent.selectOptions(dropdownMenu, "100/page");
     expect(dropdownMenu).toHaveTextContent("100/page");
+    const action = jujuActions.updateAuditEventsLimit(100);
+    expect(
+      store.getActions().find((dispatch) => dispatch.type === action.type)
+    ).toMatchObject(action);
   });
 
   it("should navigate to first page when pressing the back to start button", async () => {

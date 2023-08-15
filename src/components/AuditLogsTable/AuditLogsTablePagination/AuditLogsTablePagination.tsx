@@ -2,7 +2,6 @@ import type { PropsWithSpread } from "@canonical/react-components";
 import { Button, Icon, Pagination, Select } from "@canonical/react-components";
 import classNames from "classnames";
 import { useCallback, type HTMLProps, type OptionHTMLAttributes } from "react";
-import { useSelector } from "react-redux";
 
 import { useQueryParams } from "hooks/useQueryParams";
 import { actions as jujuActions } from "store/juju";
@@ -40,7 +39,7 @@ const AuditLogsTablePagination = ({
   ...props
 }: Props) => {
   const dispatch = useAppDispatch();
-  const auditLogs = useSelector(getAuditEvents);
+  const auditLogs = useAppSelector(getAuditEvents);
   const [queryParams, setQueryParams] = useQueryParams<{
     panel: string | null;
     page: string | null;
