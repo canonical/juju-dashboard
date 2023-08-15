@@ -76,6 +76,7 @@ const AuditLogsTable = () => {
   });
   const page = Number(queryParams.page);
   const hasNextPage = (auditLogs?.length ?? 0) > auditLogsLimit;
+  const hasPrevPage = page > Number(DEFAULT_PAGE);
 
   useEffect(() => {
     fetchAuditEvents();
@@ -131,7 +132,7 @@ const AuditLogsTable = () => {
           emptyMsg={emptyMsg}
         />
       )}
-      {auditLogsLoaded && (hasNextPage || page > Number(DEFAULT_PAGE)) ? (
+      {!auditLogsLoading && auditLogsLoaded && (hasNextPage || hasPrevPage) ? (
         <AuditLogsTablePagination />
       ) : null}
     </>
