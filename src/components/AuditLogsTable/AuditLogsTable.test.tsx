@@ -139,4 +139,15 @@ describe("AuditLogsTable", () => {
       screen.getByRole("navigation", { name: "Pagination" })
     ).toBeInTheDocument();
   });
+
+  it("should display pagination if not on the first page", async () => {
+    state.juju.auditEvents.items = auditEventFactory.buildList(51);
+    renderComponent(<AuditLogsTable showModel />, {
+      state,
+      url: "/?page=2",
+    });
+    expect(
+      screen.getByRole("navigation", { name: "Pagination" })
+    ).toBeInTheDocument();
+  });
 });

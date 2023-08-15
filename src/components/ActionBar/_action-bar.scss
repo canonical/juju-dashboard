@@ -2,5 +2,11 @@
 
 .action-bar {
   display: flex;
-  gap: $spv--small $sph--large;
+  flex-wrap: wrap;
+  gap: 0 $sph--large;
+
+  &__spacer {
+    // Fill the available space to push actions to the right hand side of the bar.
+    flex: 1;
+  }
 }
