@@ -34,6 +34,7 @@ $color-navigation-background: $color-brand;
 
 // Include additional icons
 @include vf-p-icon-applications;
+@include vf-p-icon-back-to-top;
 @include vf-p-icon-controllers;
 @include vf-p-icon-filter;
 @include vf-p-icon-fullscreen;

@@ -1,35 +1,18 @@
-import {
-  Button,
-  Icon,
-  Tooltip,
-  Pagination,
-  Select,
-} from "@canonical/react-components";
-import type { OptionHTMLAttributes } from "react";
-import { useSelector } from "react-redux";
+import { Button, Icon, Tooltip } from "@canonical/react-components";
 
 import { useQueryParams } from "hooks/useQueryParams";
-import { getAuditEvents } from "store/juju/selectors";
 
-import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "../consts";
+import AuditLogsTablePagination from "../AuditLogsTablePagination";
+import { DEFAULT_PAGE } from "../consts";
 import { useFetchAuditEvents } from "../hooks";
-
-import "./_audit-logs-table-actions.scss";
 
 export enum Label {
   FILTER = "Filter",
   REFRESH = "Refresh",
 }
 
-const LIMIT_OPTIONS: OptionHTMLAttributes<HTMLOptionElement>[] = [
-  { label: "50/page", value: DEFAULT_LIMIT_VALUE },
-  { label: "100/page", value: 100 },
-  { label: "200/page", value: 200 },
-];
-
 const AuditLogsTableActions = () => {
-  const auditLogs = useSelector(getAuditEvents);
-  const [queryParams, setQueryParams] = useQueryParams<{
+  const [, setQueryParams] = useQueryParams<{
     limit: string | null;
     panel: string | null;
     page: string | null;
@@ -38,8 +21,6 @@ const AuditLogsTableActions = () => {
     panel: null,
     page: DEFAULT_PAGE,
   });
-  const limit = Number(queryParams.limit);
-  const page = Number(queryParams.page);
   const fetchAuditEvents = useFetchAuditEvents();
   return (
     <>
@@ -55,36 +36,15 @@ const AuditLogsTableActions = () => {
         </Button>
       </Tooltip>
       <Button
+        className="u-no-margin--right"
         onClick={() =>
           setQueryParams({ panel: "audit-log-filters" }, { replace: true })
         }
       >
         <Icon name="filter" /> {Label.FILTER}
       </Button>
-      <div className="audit-logs-table-actions__pagination">
-        <Select
-          defaultValue={DEFAULT_LIMIT_VALUE}
-          options={LIMIT_OPTIONS}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            setQueryParams(
-              { limit: e.target.value, page: null },
-              { replace: true }
-            );
-          }}
-        />
-        <Pagination
-          onForward={() => {
-            setQueryParams({ page: (page + 1).toString() });
-          }}
-          onBack={() => {
-            setQueryParams({ page: (page - 1).toString() });
-          }}
-          // No further pages if couldn't fetch (limit + 1) entries.
-          forwardDisabled={(auditLogs?.length ?? 0) <= limit}
-          backDisabled={page === 1}
-          centered
-        />
-      </div>
+      <div className="action-bar__spacer"></div>
+      <AuditLogsTablePagination showLimit />
     </>
   );
 };

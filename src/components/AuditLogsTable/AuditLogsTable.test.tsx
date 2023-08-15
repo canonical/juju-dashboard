@@ -119,4 +119,35 @@ describe("AuditLogsTable", () => {
       "eggman"
     );
   });
+
+  it("should not display pagination if there is only one page of logs", async () => {
+    state.juju.auditEvents.items = auditEventFactory.buildList(50);
+    renderComponent(<AuditLogsTable showModel />, {
+      state,
+    });
+    expect(
+      screen.queryByRole("navigation", { name: "Pagination" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("should display pagination if there is more than one page of logs", async () => {
+    state.juju.auditEvents.items = auditEventFactory.buildList(51);
+    renderComponent(<AuditLogsTable showModel />, {
+      state,
+    });
+    expect(
+      screen.getByRole("navigation", { name: "Pagination" })
+    ).toBeInTheDocument();
+  });
+
+  it("should display pagination if not on the first page", async () => {
+    state.juju.auditEvents.items = auditEventFactory.buildList(51);
+    renderComponent(<AuditLogsTable showModel />, {
+      state,
+      url: "/?page=2",
+    });
+    expect(
+      screen.getByRole("navigation", { name: "Pagination" })
+    ).toBeInTheDocument();
+  });
 });
