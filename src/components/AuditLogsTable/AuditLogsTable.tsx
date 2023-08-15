@@ -22,7 +22,7 @@ import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilt
 import AuditLogsTableFilters from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import AuditLogsTablePagination from "./AuditLogsTablePagination";
-import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "./consts";
+import { DEFAULT_PAGE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";
 
 const COLUMN_DATA: Column[] = [
@@ -59,7 +59,7 @@ const AuditLogsTable = () => {
   const auditLogs = useSelector(getAuditEvents);
   const auditLogsLoaded = useSelector(getAuditEventsLoaded);
   const auditLogsLoading = useSelector(getAuditEventsLoading);
-  const auditLogsLimit = Number(useSelector(getAuditEventsLimit));
+  const auditLogsLimit = useSelector(getAuditEventsLimit);
   const [filters] = useQueryParams<AuditLogFilters>(DEFAULT_AUDIT_LOG_FILTERS);
   const hasFilters = Object.values(filters).some((filter) => !!filter);
   const additionalEmptyMsg = showModel ? "" : ` for ${modelName}`;
@@ -71,15 +71,12 @@ const AuditLogsTable = () => {
   );
   const fetchAuditEvents = useFetchAuditEvents();
   const [queryParams] = useQueryParams<{
-    limit: string;
     page: string;
   }>({
-    limit: DEFAULT_LIMIT_VALUE.toString(),
     page: DEFAULT_PAGE,
   });
-  const limit = Number(queryParams.limit);
   const page = Number(queryParams.page);
-  const hasNextPage = (auditLogs?.length ?? 0) > limit;
+  const hasNextPage = (auditLogs?.length ?? 0) > auditLogsLimit;
 
   useEffect(() => {
     fetchAuditEvents();

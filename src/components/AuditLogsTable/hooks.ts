@@ -9,8 +9,11 @@ import {
   getWSControllerURL,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
-import { getFullModelName, getModelUUIDFromList } from "store/juju/selectors";
-import { getAuditEventsLimit } from "store/juju/selectors";
+import {
+  getAuditEventsLimit,
+  getFullModelName,
+  getModelUUIDFromList,
+} from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";

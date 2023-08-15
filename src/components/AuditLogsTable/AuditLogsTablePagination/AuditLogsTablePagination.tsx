@@ -1,11 +1,13 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import { Button, Icon, Pagination, Select } from "@canonical/react-components";
 import classNames from "classnames";
-import type { HTMLProps, OptionHTMLAttributes } from "react";
+import { useCallback, type HTMLProps, type OptionHTMLAttributes } from "react";
 import { useSelector } from "react-redux";
 
 import { useQueryParams } from "hooks/useQueryParams";
-import { getAuditEvents } from "store/juju/selectors";
+import { actions as jujuActions } from "store/juju";
+import { getAuditEvents, getAuditEventsLimit } from "store/juju/selectors";
+import { useAppDispatch, useAppSelector } from "store/store";
 
 import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "../consts";
 
@@ -37,18 +39,26 @@ const AuditLogsTablePagination = ({
   showLimit,
   ...props
 }: Props) => {
+  const dispatch = useAppDispatch();
   const auditLogs = useSelector(getAuditEvents);
   const [queryParams, setQueryParams] = useQueryParams<{
-    limit: string | null;
     panel: string | null;
     page: string | null;
   }>({
-    limit: null,
     panel: null,
     page: DEFAULT_PAGE,
   });
-  const limit = Number(queryParams.limit);
+  const limit = useAppSelector(getAuditEventsLimit);
   const page = Number(queryParams.page);
+
+  const handleChangeSelect = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setQueryParams({ page: null }, { replace: true });
+      dispatch(jujuActions.updateAuditEventsLimit(Number(e.target.value)));
+    },
+    [dispatch, setQueryParams]
+  );
+
   return (
     <div
       className={classNames("audit-logs-table-pagination", className)}
@@ -56,14 +66,9 @@ const AuditLogsTablePagination = ({
     >
       {showLimit ? (
         <Select
-          defaultValue={DEFAULT_LIMIT_VALUE}
+          defaultValue={limit}
           options={LIMIT_OPTIONS}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            setQueryParams(
-              { limit: e.target.value, page: null },
-              { replace: true }
-            );
-          }}
+          onChange={handleChangeSelect}
         />
       ) : null}
       <Button

@@ -63,7 +63,6 @@ describe("AuditLogsTablePagination", () => {
     await userEvent.click(dropdownMenu);
     await userEvent.selectOptions(dropdownMenu, "100/page");
     expect(dropdownMenu).toHaveTextContent("100/page");
-    expect(window.location.search).toEqual("?limit=100");
   });
 
   it("should navigate to first page when pressing the back to start button", async () => {
