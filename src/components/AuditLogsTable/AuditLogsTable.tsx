@@ -21,11 +21,9 @@ import getUserName from "utils/getUserName";
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import AuditLogsTableFilters from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
+import AuditLogsTablePagination from "./AuditLogsTablePagination";
+import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";
-
-type Props = {
-  showModel?: boolean;
-};
 
 const COLUMN_DATA: Column[] = [
   {
@@ -54,8 +52,9 @@ const COLUMN_DATA: Column[] = [
   },
 ];
 
-const AuditLogsTable = ({ showModel = false }: Props) => {
+const AuditLogsTable = () => {
   const { modelName } = useParams<EntityDetailsRoute>();
+  const showModel = !modelName;
   const dispatch = useAppDispatch();
   const auditLogs = useSelector(getAuditEvents);
   const auditLogsLoaded = useSelector(getAuditEventsLoaded);
@@ -71,6 +70,16 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
     (column) => showModel || column.accessor !== "model"
   );
   const fetchAuditEvents = useFetchAuditEvents();
+  const [queryParams] = useQueryParams<{
+    limit: string;
+    page: string;
+  }>({
+    limit: DEFAULT_LIMIT_VALUE.toString(),
+    page: DEFAULT_PAGE,
+  });
+  const limit = Number(queryParams.limit);
+  const page = Number(queryParams.page);
+  const hasNextPage = (auditLogs?.length ?? 0) > limit;
 
   useEffect(() => {
     fetchAuditEvents();
@@ -122,14 +131,13 @@ const AuditLogsTable = ({ showModel = false }: Props) => {
         <ModularTable
           columns={columnData}
           // Table will display at most (limit) entries.
-          data={
-            tableData.length <= auditLogsLimit
-              ? tableData
-              : tableData.slice(0, -1)
-          }
+          data={hasNextPage ? tableData.slice(0, -1) : tableData}
           emptyMsg={emptyMsg}
         />
       )}
+      {auditLogsLoaded && (hasNextPage || page > Number(DEFAULT_PAGE)) ? (
+        <AuditLogsTablePagination />
+      ) : null}
     </>
   );
 };

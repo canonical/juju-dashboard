@@ -1,12 +1,15 @@
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getControllerConnection,
   getWSControllerURL,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
+import { getFullModelName, getModelUUIDFromList } from "store/juju/selectors";
 import { getAuditEventsLimit } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
@@ -20,7 +23,11 @@ export const useFetchAuditEvents = () => {
   const hasControllerConnection = useAppSelector((state) =>
     getControllerConnection(state, wsControllerURL)
   );
-
+  const { modelName, userName } = useParams<EntityDetailsRoute>();
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const fullModelName = useAppSelector((state) =>
+    getFullModelName(state, modelUUID)
+  );
   const [queryParams] = useQueryParams<
     {
       page: string;
@@ -31,6 +38,7 @@ export const useFetchAuditEvents = () => {
   });
   const limit = Number(useSelector(getAuditEventsLimit));
   const page = Number(queryParams.page);
+  const model = fullModelName ?? queryParams.model;
   return useCallback(() => {
     if (!wsControllerURL || !hasControllerConnection) {
       return;
@@ -50,7 +58,7 @@ export const useFetchAuditEvents = () => {
           : undefined,
         // Convert the username to a user tag:
         "user-tag": queryParams.user ? `user-${queryParams.user}` : undefined,
-        model: queryParams.model ?? undefined,
+        model: model ?? undefined,
         method: queryParams.method ?? undefined,
       })
     );
@@ -58,6 +66,7 @@ export const useFetchAuditEvents = () => {
     dispatch,
     hasControllerConnection,
     limit,
+    model,
     page,
     wsControllerURL,
     // Pass individual params so that this hook will only run if a specific
@@ -66,7 +75,6 @@ export const useFetchAuditEvents = () => {
     queryParams.after,
     queryParams.before,
     queryParams.user,
-    queryParams.model,
     queryParams.method,
   ]);
 };

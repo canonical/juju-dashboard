@@ -2,10 +2,11 @@ import { Input } from "@canonical/react-components";
 import { format } from "date-fns";
 import { Field, useFormikContext } from "formik";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import AutocompleteInput from "components/AutocompleteInput";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 import {
-  getAuditEventsFacades,
   getAuditEventsMethods,
   getAuditEventsUsers,
   getAuditEventsModels,
@@ -18,16 +19,16 @@ import type { FormFields } from "../types";
 export enum Label {
   AFTER = "After",
   BEFORE = "Before",
-  FACADE = "Facade",
-  METHOD = "Method",
+  METHOD = "Facade method",
   MODEL = "Model",
   USER = "User",
-  VERSION = "Version",
 }
 
 export const DATETIME_LOCAL = "yyyy-MM-dd'T'HH:mm";
 
 const Fields = (): JSX.Element => {
+  const { modelName } = useParams<EntityDetailsRoute>();
+  const showModel = !modelName;
   const auditEventUsers = useSelector(getAuditEventsUsers);
   const jujuUsers = useSelector(getUsers);
   // Get the unique users from the logs and models returned from Juju.
@@ -36,7 +37,6 @@ const Fields = (): JSX.Element => {
   const jujuModels = useSelector(getFullModelNames);
   // Get the unique model names from the logs and models returned from Juju.
   const models = Array.from(new Set([...auditEventModels, ...jujuModels]));
-  const facades = useSelector(getAuditEventsFacades);
   const methods = useSelector(getAuditEventsMethods);
   const { values } = useFormikContext<FormFields>();
 
@@ -77,26 +77,19 @@ const Fields = (): JSX.Element => {
         as={AutocompleteInput}
         options={users}
       />
-      <Field
-        type="text"
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.MODEL}
-        label={Label.MODEL}
-        name="model"
-        as={AutocompleteInput}
-        options={models}
-      />
-      <Field
-        type="text"
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.FACADE}
-        label={Label.FACADE}
-        name="facade"
-        as={AutocompleteInput}
-        options={facades}
-      />
+      {showModel ? (
+        <Field
+          type="text"
+          help='A model name in the format "controller-name/model-name".'
+          // Have to manually set the id until this issue has been fixed:
+          // https://github.com/canonical/react-components/issues/957
+          id={Label.MODEL}
+          label={Label.MODEL}
+          name="model"
+          as={AutocompleteInput}
+          options={models}
+        />
+      ) : null}
       <Field
         type="text"
         // Have to manually set the id until this issue has been fixed:
@@ -106,15 +99,6 @@ const Fields = (): JSX.Element => {
         name="method"
         as={AutocompleteInput}
         options={methods}
-      />
-      <Field
-        type="number"
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.VERSION}
-        label={Label.VERSION}
-        name="version"
-        as={Input}
       />
     </>
   );

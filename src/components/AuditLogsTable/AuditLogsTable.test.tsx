@@ -9,6 +9,7 @@ import { configFactory, generalStateFactory } from "testing/factories/general";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import { auditEventsStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
 import AuditLogsTable from "./AuditLogsTable";
 import { DEFAULT_LIMIT_VALUE } from "./consts";
@@ -51,22 +52,23 @@ describe("AuditLogsTable", () => {
   });
 
   it("should have model as second header when showing the model data", async () => {
-    renderComponent(<AuditLogsTable showModel={true} />, { state });
+    renderComponent(<AuditLogsTable />, {
+      state,
+    });
     expect((await screen.findAllByRole("columnheader"))[1]).toHaveTextContent(
       "model"
     );
   });
 
-  it("should not have model as header when showModel param is not passed", async () => {
-    renderComponent(<AuditLogsTable />, { state });
-    const headers = await screen.findAllByRole("columnheader");
-    headers.forEach((header) => {
-      expect(header).not.toHaveTextContent("model");
-    });
-  });
-
   it("should not have model as header when not showing the model data", async () => {
-    renderComponent(<AuditLogsTable showModel={false} />, { state });
+    renderComponent(<AuditLogsTable />, {
+      state,
+      path: urls.model.index(null),
+      url: urls.model.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+      }),
+    });
     const headers = await screen.findAllByRole("columnheader");
     headers.forEach((header) => {
       expect(header).not.toHaveTextContent("model");
@@ -74,7 +76,9 @@ describe("AuditLogsTable", () => {
   });
 
   it("should contain all headers", async () => {
-    renderComponent(<AuditLogsTable showModel={true} />, { state });
+    renderComponent(<AuditLogsTable />, {
+      state,
+    });
     const columnHeaders = await screen.findAllByRole("columnheader");
     expect(columnHeaders[0]).toHaveTextContent("user");
     expect(columnHeaders[1]).toHaveTextContent("model");
@@ -85,7 +89,7 @@ describe("AuditLogsTable", () => {
   });
 
   it("should fetch audit logs", async () => {
-    const { store } = renderComponent(<AuditLogsTable showModel />, { state });
+    const { store } = renderComponent(<AuditLogsTable />, { state });
     const action = jujuActions.fetchAuditEvents({
       wsControllerURL: "wss://example.com/api",
       limit: DEFAULT_LIMIT_VALUE + 1,
@@ -97,7 +101,7 @@ describe("AuditLogsTable", () => {
   });
 
   it("should display audit logs", async () => {
-    renderComponent(<AuditLogsTable showModel />, { state });
+    renderComponent(<AuditLogsTable />, { state });
     expect(await screen.findByRole("table")).toBeInTheDocument();
     expect(screen.queryByTestId(TestId.LOADING)).not.toBeInTheDocument();
     const row = screen.getAllByRole("row")[1];
@@ -111,12 +115,43 @@ describe("AuditLogsTable", () => {
   });
 
   it("should display filters", async () => {
-    renderComponent(<AuditLogsTable showModel />, {
+    renderComponent(<AuditLogsTable />, {
       state,
       url: "/?user=eggman",
     });
     expect(document.querySelector(".p-chip__value")).toHaveTextContent(
       "eggman"
     );
+  });
+
+  it("should not display pagination if there is only one page of logs", async () => {
+    state.juju.auditEvents.items = auditEventFactory.buildList(50);
+    renderComponent(<AuditLogsTable />, {
+      state,
+    });
+    expect(
+      screen.queryByRole("navigation", { name: "Pagination" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("should display pagination if there is more than one page of logs", async () => {
+    state.juju.auditEvents.items = auditEventFactory.buildList(51);
+    renderComponent(<AuditLogsTable />, {
+      state,
+    });
+    expect(
+      screen.getByRole("navigation", { name: "Pagination" })
+    ).toBeInTheDocument();
+  });
+
+  it("should display pagination if not on the first page", async () => {
+    state.juju.auditEvents.items = auditEventFactory.buildList(51);
+    renderComponent(<AuditLogsTable />, {
+      state,
+      url: "/?page=2",
+    });
+    expect(
+      screen.getByRole("navigation", { name: "Pagination" })
+    ).toBeInTheDocument();
   });
 });

@@ -3,7 +3,5 @@ export type FormFields = {
   before: string;
   user: string;
   model: string;
-  facade: string;
   method: string;
-  version: string;
 };

@@ -80,6 +80,7 @@ import {
   getAuditEventsMethods,
   getFullModelNames,
   getUsers,
+  getFullModelName,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -846,6 +847,30 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual(models);
+  });
+
+  it("getFullModelName", () => {
+    expect(
+      getFullModelName(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            models: {
+              abc123: modelListInfoFactory.build({
+                name: "model1",
+                uuid: "abc123",
+                wsControllerURL: "wss://example.com/api",
+              }),
+            },
+            controllers: {
+              "wss://example.com/api": [
+                controllerFactory.build({ name: "controller1" }),
+              ],
+            },
+          }),
+        }),
+        "abc123"
+      )
+    ).toStrictEqual("controller1/model1");
   });
 
   it("getFullModelNames", () => {

@@ -14,9 +14,7 @@ describe("AuditLogsFilterPanel", () => {
       before: format(new Date(), DATETIME_LOCAL),
       user: "user-eggman",
       model: "model1",
-      facade: "Admin",
       method: "Login",
-      version: "4",
       panel: "audit-log-filters",
     };
     const queryParams = new URLSearchParams(params);
@@ -38,17 +36,8 @@ describe("AuditLogsFilterPanel", () => {
       screen.getByRole("combobox", { name: FieldLabel.METHOD })
     ).toHaveValue(params.method);
     expect(
-      screen.getByRole("combobox", { name: FieldLabel.FACADE })
-    ).toHaveValue(params.facade);
-    expect(
       screen.getByRole("combobox", { name: FieldLabel.METHOD })
     ).toHaveValue(params.method);
-    expect(
-      screen.getByRole("spinbutton", { name: FieldLabel.VERSION })
-    ).toHaveValue(Number(params.version));
-    expect(
-      await screen.findByRole("spinbutton", { name: FieldLabel.VERSION })
-    ).toHaveValue(Number(params.version));
   });
 
   it("can clear the filters", async () => {
@@ -57,9 +46,7 @@ describe("AuditLogsFilterPanel", () => {
       before: new Date().toISOString(),
       user: "user-eggman",
       model: "model1",
-      facade: "Admin",
       method: "Login",
-      version: "4",
       panel: "audit-log-filters",
     };
     const queryParams = new URLSearchParams(params);
@@ -83,9 +70,7 @@ describe("AuditLogsFilterPanel", () => {
       before: format(new Date(), "yyyy-MM-dd'T'hh:mm"),
       user: "user-eggman",
       model: "model1",
-      facade: "Admin",
       method: "Login",
-      version: "4",
     };
     renderComponent(<AuditLogsFilterPanel />, {
       url: "/?panel=audit-log-filters&page=4",
@@ -113,16 +98,8 @@ describe("AuditLogsFilterPanel", () => {
       params.model
     );
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldLabel.FACADE }),
-      params.facade
-    );
-    await userEvent.type(
       screen.getByRole("combobox", { name: FieldLabel.METHOD }),
       params.method
-    );
-    await userEvent.type(
-      screen.getByRole("spinbutton", { name: FieldLabel.VERSION }),
-      params.version
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     const queryParams = new URLSearchParams(params);
@@ -134,17 +111,17 @@ describe("AuditLogsFilterPanel", () => {
       url: "/?panel=audit-log-filters",
     });
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldLabel.FACADE }),
-      "Admin"
+      screen.getByRole("combobox", { name: FieldLabel.METHOD }),
+      "Login"
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     // Only the facade was set, so no other filters should appear in the query string.
-    expect(window.location.search).toBe("?facade=Admin");
+    expect(window.location.search).toBe("?method=Login");
   });
 
   it("removes query params if the value was removed", async () => {
     renderComponent(<AuditLogsFilterPanel />, {
-      url: "/?panel=audit-log-filters&facade=Admin&method=Login",
+      url: "/?panel=audit-log-filters&user-tag=user-eggman@external&method=Login",
     });
     await userEvent.clear(
       screen.getByRole("combobox", { name: FieldLabel.METHOD })
@@ -152,6 +129,6 @@ describe("AuditLogsFilterPanel", () => {
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     // The method value was cleared in the input so it should get removed from
     // the query string.
-    expect(window.location.search).toBe("?facade=Admin");
+    expect(window.location.search).toBe("?user-tag=user-eggman%40external");
   });
 });

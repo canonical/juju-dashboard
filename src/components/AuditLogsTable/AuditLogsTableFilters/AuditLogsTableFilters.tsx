@@ -10,9 +10,7 @@ export type AuditLogFilters = {
   before: string | null;
   user: string | null;
   model: string | null;
-  facade: string | null;
   method: string | null;
-  version: string | null;
 };
 
 export const DEFAULT_AUDIT_LOG_FILTERS = {
@@ -20,9 +18,7 @@ export const DEFAULT_AUDIT_LOG_FILTERS = {
   before: null,
   user: null,
   model: null,
-  facade: null,
   method: null,
-  version: null,
 };
 
 export const generateFilters = (
