@@ -139,6 +139,13 @@ describe("actions", () => {
     });
   });
 
+  it("updateAuditEventsLimit", () => {
+    expect(actions.updateAuditEventsLimit(50)).toStrictEqual({
+      type: "juju/updateAuditEventsLimit",
+      payload: 50,
+    });
+  });
+
   it("updateControllerList", () => {
     expect(
       actions.updateControllerList({

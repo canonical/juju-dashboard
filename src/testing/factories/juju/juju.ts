@@ -8,6 +8,7 @@ import type {
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { Factory } from "fishery";
 
+import { DEFAULT_AUDIT_EVENTS_LIMIT } from "store/juju/slice";
 import type {
   AdditionalController,
   AuditEventsState,
@@ -157,6 +158,7 @@ export const auditEventsStateFactory = Factory.define<AuditEventsState>(() => ({
   items: null,
   loaded: false,
   loading: false,
+  limit: DEFAULT_AUDIT_EVENTS_LIMIT,
 }));
 
 export const jujuStateFactory = Factory.define<JujuState>(() => ({

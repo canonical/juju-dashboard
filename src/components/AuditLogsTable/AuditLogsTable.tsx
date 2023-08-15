@@ -1,6 +1,5 @@
 import { ModularTable, Tooltip } from "@canonical/react-components";
 import { useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import type { Column } from "react-table";
 
@@ -13,15 +12,16 @@ import {
   getAuditEvents,
   getAuditEventsLoading,
   getAuditEventsLoaded,
+  getAuditEventsLimit,
 } from "store/juju/selectors";
-import { useAppDispatch } from "store/store";
+import { useAppDispatch, useAppSelector } from "store/store";
 import getUserName from "utils/getUserName";
 
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import AuditLogsTableFilters from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import AuditLogsTablePagination from "./AuditLogsTablePagination";
-import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "./consts";
+import { DEFAULT_PAGE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";
 
 const COLUMN_DATA: Column[] = [
@@ -55,9 +55,10 @@ const AuditLogsTable = () => {
   const { modelName } = useParams<EntityDetailsRoute>();
   const showModel = !modelName;
   const dispatch = useAppDispatch();
-  const auditLogs = useSelector(getAuditEvents);
-  const auditLogsLoaded = useSelector(getAuditEventsLoaded);
-  const auditLogsLoading = useSelector(getAuditEventsLoading);
+  const auditLogs = useAppSelector(getAuditEvents);
+  const auditLogsLoaded = useAppSelector(getAuditEventsLoaded);
+  const auditLogsLoading = useAppSelector(getAuditEventsLoading);
+  const auditLogsLimit = useAppSelector(getAuditEventsLimit);
   const [filters] = useQueryParams<AuditLogFilters>(DEFAULT_AUDIT_LOG_FILTERS);
   const hasFilters = Object.values(filters).some((filter) => !!filter);
   const additionalEmptyMsg = showModel ? "" : ` for ${modelName}`;
@@ -69,15 +70,12 @@ const AuditLogsTable = () => {
   );
   const fetchAuditEvents = useFetchAuditEvents();
   const [queryParams] = useQueryParams<{
-    limit: string;
     page: string;
   }>({
-    limit: DEFAULT_LIMIT_VALUE.toString(),
     page: DEFAULT_PAGE,
   });
-  const limit = Number(queryParams.limit);
   const page = Number(queryParams.page);
-  const hasNextPage = (auditLogs?.length ?? 0) > limit;
+  const hasNextPage = (auditLogs?.length ?? 0) > auditLogsLimit;
 
   useEffect(() => {
     fetchAuditEvents();

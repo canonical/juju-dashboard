@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -9,35 +8,37 @@ import {
   getWSControllerURL,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
-import { getFullModelName, getModelUUIDFromList } from "store/juju/selectors";
+import {
+  getAuditEventsLimit,
+  getFullModelName,
+  getModelUUIDFromList,
+} from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
-import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "./consts";
+import { DEFAULT_PAGE } from "./consts";
 
 export const useFetchAuditEvents = () => {
   const dispatch = useAppDispatch();
-  const wsControllerURL = useSelector(getWSControllerURL);
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const hasControllerConnection = useAppSelector((state) =>
     getControllerConnection(state, wsControllerURL)
   );
   const { modelName, userName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector(getModelUUIDFromList(modelName, userName));
   const fullModelName = useAppSelector((state) =>
     getFullModelName(state, modelUUID)
   );
   const [queryParams] = useQueryParams<
     {
       page: string;
-      limit: string;
     } & AuditLogFilters
   >({
     page: DEFAULT_PAGE,
-    limit: DEFAULT_LIMIT_VALUE.toString(),
     ...DEFAULT_AUDIT_LOG_FILTERS,
   });
-  const limit = Number(queryParams.limit);
+  const limit = useAppSelector(getAuditEventsLimit);
   const page = Number(queryParams.page);
   const model = fullModelName ?? queryParams.model;
   return useCallback(() => {

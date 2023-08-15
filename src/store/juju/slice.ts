@@ -17,6 +17,8 @@ import { processDeltas } from "juju/watchers";
 
 import type { Controllers, JujuState } from "./types";
 
+export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
+
 type WsControllerURLParam = {
   wsControllerURL: string;
 };
@@ -28,6 +30,7 @@ const slice = createSlice({
       items: null,
       loaded: false,
       loading: false,
+      limit: DEFAULT_AUDIT_EVENTS_LIMIT,
     },
     controllers: null,
     models: {},
@@ -138,6 +141,9 @@ const slice = createSlice({
       state.auditEvents.items = null;
       state.auditEvents.loaded = false;
       state.auditEvents.loading = false;
+    },
+    updateAuditEventsLimit: (state, { payload }: PayloadAction<number>) => {
+      state.auditEvents.limit = payload;
     },
     updateControllerList: (
       state,

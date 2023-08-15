@@ -73,6 +73,11 @@ export const getAuditEventsLoading = createSelector(
   (auditEvents) => auditEvents.loading
 );
 
+export const getAuditEventsLimit = createSelector(
+  [getAuditEventsState],
+  (auditEvents) => auditEvents.limit
+);
+
 const getUniqueAuditEventValues = <K extends keyof AuditEvent>(
   key: K,
   auditEvents?: AuditEvent[] | null,

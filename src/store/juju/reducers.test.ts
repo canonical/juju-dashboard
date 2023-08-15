@@ -228,6 +228,20 @@ describe("reducers", () => {
     });
   });
 
+  it("updateAuditEventsLimit", () => {
+    const state = jujuStateFactory.build({
+      auditEvents: auditEventsStateFactory.build({
+        limit: 50,
+      }),
+    });
+    expect(reducer(state, actions.updateAuditEventsLimit(100))).toStrictEqual({
+      ...state,
+      auditEvents: auditEventsStateFactory.build({
+        limit: 100,
+      }),
+    });
+  });
+
   it("clearControllerData", () => {
     const state = jujuStateFactory.build({
       controllers: {

@@ -13,15 +13,14 @@ export enum Label {
 
 const AuditLogsTableActions = () => {
   const [, setQueryParams] = useQueryParams<{
-    limit: string | null;
     panel: string | null;
     page: string | null;
   }>({
-    limit: null,
     panel: null,
     page: DEFAULT_PAGE,
   });
   const fetchAuditEvents = useFetchAuditEvents();
+
   return (
     <>
       <Tooltip message="Fetch latest logs">
