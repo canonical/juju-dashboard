@@ -76,9 +76,7 @@ const AuditLogsFilterPanel = (): JSX.Element => {
             before: queryParams.before ?? "",
             user: queryParams.user ?? "",
             model: queryParams.model ?? "",
-            facade: queryParams.facade ?? "",
             method: queryParams.method ?? "",
-            version: queryParams.version ?? "",
           }}
           onSubmit={(values) => {
             // Replace empty strings with `null` so that the query params get

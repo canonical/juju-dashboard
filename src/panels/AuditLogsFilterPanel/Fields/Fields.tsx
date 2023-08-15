@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 import AutocompleteInput from "components/AutocompleteInput";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import {
-  getAuditEventsFacades,
   getAuditEventsMethods,
   getAuditEventsUsers,
   getAuditEventsModels,
@@ -20,11 +19,9 @@ import type { FormFields } from "../types";
 export enum Label {
   AFTER = "After",
   BEFORE = "Before",
-  FACADE = "Facade",
-  METHOD = "Method",
+  METHOD = "Facade method",
   MODEL = "Model",
   USER = "User",
-  VERSION = "Version",
 }
 
 export const DATETIME_LOCAL = "yyyy-MM-dd'T'HH:mm";
@@ -40,7 +37,6 @@ const Fields = (): JSX.Element => {
   const jujuModels = useSelector(getFullModelNames);
   // Get the unique model names from the logs and models returned from Juju.
   const models = Array.from(new Set([...auditEventModels, ...jujuModels]));
-  const facades = useSelector(getAuditEventsFacades);
   const methods = useSelector(getAuditEventsMethods);
   const { values } = useFormikContext<FormFields>();
 
@@ -98,30 +94,11 @@ const Fields = (): JSX.Element => {
         type="text"
         // Have to manually set the id until this issue has been fixed:
         // https://github.com/canonical/react-components/issues/957
-        id={Label.FACADE}
-        label={Label.FACADE}
-        name="facade"
-        as={AutocompleteInput}
-        options={facades}
-      />
-      <Field
-        type="text"
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
         id={Label.METHOD}
         label={Label.METHOD}
         name="method"
         as={AutocompleteInput}
         options={methods}
-      />
-      <Field
-        type="number"
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.VERSION}
-        label={Label.VERSION}
-        name="version"
-        as={Input}
       />
     </>
   );
