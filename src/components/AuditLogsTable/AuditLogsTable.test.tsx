@@ -126,7 +126,7 @@ describe("AuditLogsTable", () => {
 
   it("should not display pagination if there is only one page of logs", async () => {
     state.juju.auditEvents.items = auditEventFactory.buildList(50);
-    renderComponent(<AuditLogsTable showModel />, {
+    renderComponent(<AuditLogsTable />, {
       state,
     });
     expect(
@@ -136,7 +136,7 @@ describe("AuditLogsTable", () => {
 
   it("should display pagination if there is more than one page of logs", async () => {
     state.juju.auditEvents.items = auditEventFactory.buildList(51);
-    renderComponent(<AuditLogsTable showModel />, {
+    renderComponent(<AuditLogsTable />, {
       state,
     });
     expect(
@@ -146,7 +146,7 @@ describe("AuditLogsTable", () => {
 
   it("should display pagination if not on the first page", async () => {
     state.juju.auditEvents.items = auditEventFactory.buildList(51);
-    renderComponent(<AuditLogsTable showModel />, {
+    renderComponent(<AuditLogsTable />, {
       state,
       url: "/?page=2",
     });
