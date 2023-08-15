@@ -19,7 +19,7 @@ import type { FormFields } from "../types";
 export enum Label {
   AFTER = "After",
   BEFORE = "Before",
-  METHOD = "Method",
+  METHOD = "Facade method",
   MODEL = "Model",
   USER = "User",
 }
