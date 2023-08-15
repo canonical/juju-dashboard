@@ -24,10 +24,6 @@ import AuditLogsTablePagination from "./AuditLogsTablePagination";
 import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";
 
-type Props = {
-  showModel?: boolean;
-};
-
 const COLUMN_DATA: Column[] = [
   {
     Header: "user",
@@ -55,8 +51,9 @@ const COLUMN_DATA: Column[] = [
   },
 ];
 
-const AuditLogsTable = ({ showModel = false }: Props) => {
+const AuditLogsTable = () => {
   const { modelName } = useParams<EntityDetailsRoute>();
+  const showModel = !modelName;
   const dispatch = useAppDispatch();
   const auditLogs = useSelector(getAuditEvents);
   const auditLogsLoaded = useSelector(getAuditEventsLoaded);

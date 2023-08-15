@@ -182,6 +182,22 @@ export const getModelDataByUUID = createSelector(
 );
 
 /**
+  Get the full name of a model.
+*/
+export const getFullModelName = createSelector(
+  [getModelByUUID, getControllerData],
+  (model, controllers) => {
+    const controller =
+      controllers && model?.wsControllerURL in controllers
+        ? controllers[model.wsControllerURL][0]
+        : null;
+    return controller && "name" in controller
+      ? `${controller.name}/${model.name}`
+      : null;
+  }
+);
+
+/**
   Get all unique users.
 */
 export const getUsers = createSelector([getModelData], (models) => {

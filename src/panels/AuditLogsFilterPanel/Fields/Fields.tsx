@@ -2,8 +2,10 @@ import { Input } from "@canonical/react-components";
 import { format } from "date-fns";
 import { Field, useFormikContext } from "formik";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import AutocompleteInput from "components/AutocompleteInput";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
 import {
   getAuditEventsFacades,
   getAuditEventsMethods,
@@ -28,6 +30,8 @@ export enum Label {
 export const DATETIME_LOCAL = "yyyy-MM-dd'T'HH:mm";
 
 const Fields = (): JSX.Element => {
+  const { modelName } = useParams<EntityDetailsRoute>();
+  const showModel = !modelName;
   const auditEventUsers = useSelector(getAuditEventsUsers);
   const jujuUsers = useSelector(getUsers);
   // Get the unique users from the logs and models returned from Juju.
@@ -77,16 +81,19 @@ const Fields = (): JSX.Element => {
         as={AutocompleteInput}
         options={users}
       />
-      <Field
-        type="text"
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.MODEL}
-        label={Label.MODEL}
-        name="model"
-        as={AutocompleteInput}
-        options={models}
-      />
+      {showModel ? (
+        <Field
+          type="text"
+          help='A model name in the format "controller-name/model-name".'
+          // Have to manually set the id until this issue has been fixed:
+          // https://github.com/canonical/react-components/issues/957
+          id={Label.MODEL}
+          label={Label.MODEL}
+          name="model"
+          as={AutocompleteInput}
+          options={models}
+        />
+      ) : null}
       <Field
         type="text"
         // Have to manually set the id until this issue has been fixed:
