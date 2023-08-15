@@ -56,6 +56,7 @@ const AuditLogsTablePagination = ({
   });
   const limit = useAppSelector(getAuditEventsLimit);
   const page = Number(queryParams.page);
+  const hasNextPage = (auditLogs?.length ?? 0) > limit;
   const hasPrevPage = page > Number(DEFAULT_PAGE);
 
   const handleChangeSelect = useCallback(
@@ -101,11 +102,7 @@ const AuditLogsTablePagination = ({
           scrollToTop();
         }}
         // No further pages if couldn't fetch (limit + 1) entries.
-        forwardDisabled={
-          auditLogsLoading ||
-          !auditLogsLoaded ||
-          (auditLogs?.length ?? 0) <= limit
-        }
+        forwardDisabled={auditLogsLoading || !auditLogsLoaded || !hasNextPage}
         backDisabled={!hasPrevPage}
       />
     </div>
