@@ -10,6 +10,7 @@ import {
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
+  crossModelQueryStateFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -170,6 +171,71 @@ describe("reducers", () => {
     expect(reducer(state, actions.clearModelData())).toStrictEqual(
       jujuStateFactory.build({ modelsLoaded: false })
     );
+  });
+
+  it("fetchCrossModelQuery", () => {
+    const state = jujuStateFactory.build({
+      crossModelQuery: crossModelQueryStateFactory.build({ loading: false }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.fetchCrossModelQuery({
+          wsControllerURL: "wss://example.com",
+          type: "js",
+          query: ".",
+        })
+      )
+    ).toStrictEqual({
+      ...state,
+      crossModelQuery: crossModelQueryStateFactory.build({ loading: true }),
+    });
+  });
+
+  it("updateCrossModelQuery", () => {
+    const state = jujuStateFactory.build({
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results: null,
+        errors: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    const results = { mockResultKey: "mockResultValue" };
+    const errors = { mockErrorKey: "mockErrorValue" };
+    expect(
+      reducer(state, actions.updateCrossModelQuery({ results, errors }))
+    ).toStrictEqual({
+      ...state,
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results,
+        errors,
+        loaded: true,
+        loading: false,
+      }),
+    });
+  });
+
+  it("clearCrossModelQuery", () => {
+    const results = { mockResultKey: "mockResultValue" };
+    const errors = { mockErrorKey: "mockErrorValue" };
+    const state = jujuStateFactory.build({
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results,
+        errors,
+        loaded: true,
+        loading: true,
+      }),
+    });
+    expect(reducer(state, actions.clearCrossModelQuery())).toStrictEqual({
+      ...state,
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results: null,
+        errors: null,
+        loaded: false,
+        loading: false,
+      }),
+    });
   });
 
   it("clearControllerData", () => {

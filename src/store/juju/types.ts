@@ -1,6 +1,7 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
+import type { CrossModelQueryResponse } from "juju/jimm-facade";
 import type {
   ApplicationInfo,
   FullStatusWithAnnotations,
@@ -53,7 +54,15 @@ export type ModelsList = {
   [uuid: string]: ModelListInfo;
 };
 
+export type CrossModelQueryState = {
+  results: CrossModelQueryResponse["results"] | null;
+  errors: CrossModelQueryResponse["errors"] | null;
+  loaded: boolean;
+  loading: boolean;
+};
+
 export type JujuState = {
+  crossModelQuery: CrossModelQueryState;
   controllers: Controllers | null;
   models: ModelsList;
   modelsLoaded: boolean;

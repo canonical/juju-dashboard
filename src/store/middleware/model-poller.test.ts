@@ -25,6 +25,7 @@ jest.mock("juju/api", () => ({
   loginWithBakery: jest.fn(),
   fetchAllModelStatuses: jest.fn(),
   setModelSharingPermissions: jest.fn(),
+  findCrossModelQuery: jest.fn(),
 }));
 
 describe("model poller", () => {
@@ -384,5 +385,52 @@ describe("model poller", () => {
     expect(jujuModule.setModelSharingPermissions).toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
     return expect(response).resolves.toStrictEqual({ results: [] });
+  });
+
+  it("handles fetching cross model query results", async () => {
+    const crossModelQueryResponse = { results: {}, errors: {} };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "findCrossModelQuery")
+      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "wss://example.com",
+      type: "js",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(jujuModule.findCrossModelQuery).toHaveBeenCalledWith(
+      expect.any(Object),
+      { type: "js", query: "." }
+    );
+    expect(next).toHaveBeenCalledWith(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateCrossModelQuery(crossModelQueryResponse)
+    );
+  });
+
+  it("handles no controller when fetching cross model query results", async () => {
+    const crossModelQueryResponse = { results: {}, errors: {} };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "findCrossModelQuery")
+      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "nothing",
+      type: "js",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(jujuModule.findCrossModelQuery).not.toHaveBeenCalled();
   });
 });

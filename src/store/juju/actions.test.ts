@@ -108,6 +108,38 @@ describe("actions", () => {
     });
   });
 
+  it("fetchCrossModelQuery", () => {
+    expect(
+      actions.fetchCrossModelQuery({
+        wsControllerURL: "wss://test.example.com",
+        type: "js",
+        query: ".",
+      })
+    ).toStrictEqual({
+      type: "juju/fetchCrossModelQuery",
+      payload: {
+        wsControllerURL: "wss://test.example.com",
+        type: "js",
+        query: ".",
+      },
+    });
+  });
+
+  it("updateCrossModelQuery", () => {
+    const payload = { results: {}, errors: {} };
+    expect(actions.updateCrossModelQuery(payload)).toStrictEqual({
+      type: "juju/updateCrossModelQuery",
+      payload,
+    });
+  });
+
+  it("clearCrossModelQuery", () => {
+    expect(actions.clearCrossModelQuery()).toStrictEqual({
+      type: "juju/clearCrossModelQuery",
+      payload: undefined,
+    });
+  });
+
   it("updateControllerList", () => {
     expect(
       actions.updateControllerList({
