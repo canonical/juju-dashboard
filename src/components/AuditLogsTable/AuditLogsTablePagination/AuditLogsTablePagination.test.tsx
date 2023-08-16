@@ -85,4 +85,18 @@ describe("AuditLogsTablePagination", () => {
     );
     expect(window.location.search).toEqual("");
   });
+
+  it("shouldn't be possible to navigate to next page if audit logs are loading", () => {
+    state.juju.auditEvents.items = auditEventFactory.buildList(51);
+    state.juju.auditEvents.loading = true;
+    renderComponent(<AuditLogsTablePagination />, { state });
+    expect(screen.getByRole("button", { name: "Next page" })).toBeDisabled();
+  });
+
+  it("shouldn't be possible to navigate to next page if audit logs haven't loaded", () => {
+    state.juju.auditEvents.items = auditEventFactory.buildList(51);
+    state.juju.auditEvents.loaded = false;
+    renderComponent(<AuditLogsTablePagination />, { state });
+    expect(screen.getByRole("button", { name: "Next page" })).toBeDisabled();
+  });
 });

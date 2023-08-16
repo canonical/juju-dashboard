@@ -5,7 +5,12 @@ import { useCallback, type HTMLProps, type OptionHTMLAttributes } from "react";
 
 import { useQueryParams } from "hooks/useQueryParams";
 import { actions as jujuActions } from "store/juju";
-import { getAuditEvents, getAuditEventsLimit } from "store/juju/selectors";
+import {
+  getAuditEvents,
+  getAuditEventsLimit,
+  getAuditEventsLoaded,
+  getAuditEventsLoading,
+} from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "../consts";
@@ -40,6 +45,8 @@ const AuditLogsTablePagination = ({
 }: Props) => {
   const dispatch = useAppDispatch();
   const auditLogs = useAppSelector(getAuditEvents);
+  const auditLogsLoaded = useAppSelector(getAuditEventsLoaded);
+  const auditLogsLoading = useAppSelector(getAuditEventsLoading);
   const [queryParams, setQueryParams] = useQueryParams<{
     panel: string | null;
     page: string | null;
@@ -49,6 +56,8 @@ const AuditLogsTablePagination = ({
   });
   const limit = useAppSelector(getAuditEventsLimit);
   const page = Number(queryParams.page);
+  const hasNextPage = (auditLogs?.length ?? 0) > limit;
+  const hasPrevPage = page > Number(DEFAULT_PAGE);
 
   const handleChangeSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -72,7 +81,7 @@ const AuditLogsTablePagination = ({
       ) : null}
       <Button
         className="u-no-margin--right"
-        disabled={page === Number(DEFAULT_PAGE)}
+        disabled={!hasPrevPage}
         hasIcon
         onClick={() => {
           setQueryParams({ page: null });
@@ -93,8 +102,8 @@ const AuditLogsTablePagination = ({
           scrollToTop();
         }}
         // No further pages if couldn't fetch (limit + 1) entries.
-        forwardDisabled={(auditLogs?.length ?? 0) <= limit}
-        backDisabled={page === 1}
+        forwardDisabled={auditLogsLoading || !auditLogsLoaded || !hasNextPage}
+        backDisabled={!hasPrevPage}
       />
     </div>
   );
