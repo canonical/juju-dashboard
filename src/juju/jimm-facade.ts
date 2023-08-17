@@ -13,9 +13,13 @@ export type CrossModelQueryRequest = {
 // As typed in JIMM:
 // https://github.com/canonical/jimm/blob/1da76ed2d8dba741f5880f32c073f85f7d518904/api/params/params.go#L353
 export type CrossModelQueryResponse = {
-  results: Record<string, any>;
-  errors: Record<string, string>;
+  results: Record<string, unknown[]>;
+  errors: Record<string, string[]>;
 };
+
+// In the case an invalid type and/or query is passed, the response might
+// sometimes be a string.
+export type CrossModelQueryFullResponse = CrossModelQueryResponse | string;
 
 /**
   pinger describes a resource that can be pinged and stopped.
@@ -48,15 +52,13 @@ class JIMMV4 {
     });
   }
 
-  findCrossModelQuery(
-    params: CrossModelQueryRequest = { type: "jq", query: "." }
-  ): Promise<CrossModelQueryResponse> {
+  crossModelQuery(query: string = "."): Promise<CrossModelQueryFullResponse> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
         request: "CrossModelQuery",
         version: 4,
-        params,
+        params: { type: "jq", query },
       };
       this._transport.write(req, resolve, reject);
     });

@@ -25,7 +25,7 @@ jest.mock("juju/api", () => ({
   loginWithBakery: jest.fn(),
   fetchAllModelStatuses: jest.fn(),
   setModelSharingPermissions: jest.fn(),
-  findCrossModelQuery: jest.fn(),
+  crossModelQuery: jest.fn(),
 }));
 
 describe("model poller", () => {
@@ -395,7 +395,7 @@ describe("model poller", () => {
       juju,
     }));
     jest
-      .spyOn(jujuModule, "findCrossModelQuery")
+      .spyOn(jujuModule, "crossModelQuery")
       .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
@@ -404,7 +404,7 @@ describe("model poller", () => {
       query: ".",
     });
     await middleware(next)(action);
-    expect(jujuModule.findCrossModelQuery).toHaveBeenCalledWith(
+    expect(jujuModule.crossModelQuery).toHaveBeenCalledWith(
       expect.any(Object),
       { type: "js", query: "." }
     );
@@ -422,7 +422,7 @@ describe("model poller", () => {
       juju,
     }));
     jest
-      .spyOn(jujuModule, "findCrossModelQuery")
+      .spyOn(jujuModule, "crossModelQuery")
       .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
@@ -431,6 +431,6 @@ describe("model poller", () => {
       query: ".",
     });
     await middleware(next)(action);
-    expect(jujuModule.findCrossModelQuery).not.toHaveBeenCalled();
+    expect(jujuModule.crossModelQuery).not.toHaveBeenCalled();
   });
 });

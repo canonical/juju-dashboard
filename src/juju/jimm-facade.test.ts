@@ -30,9 +30,9 @@ describe("JIMMV4", () => {
     );
   });
 
-  it("findCrossModelQuery", async () => {
+  it("crossModelQuery", async () => {
     const jimm = new JIMMV4(transport, connectionInfo);
-    jimm.findCrossModelQuery({ type: "jq", query: "." });
+    jimm.crossModelQuery();
     expect(transport.write).toHaveBeenCalledWith(
       {
         type: "JIMM",

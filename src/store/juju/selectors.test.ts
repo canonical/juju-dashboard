@@ -91,7 +91,7 @@ describe("selectors", () => {
   });
 
   it("getCrossModelQueryResults", () => {
-    const results = { mockResultKey: "mockResultValue" };
+    const results = { mockResultKey: ["mockResultValue"] };
     expect(
       getCrossModelQueryResults(
         rootStateFactory.build({
@@ -104,7 +104,7 @@ describe("selectors", () => {
   });
 
   it("getCrossModelQueryErrors", () => {
-    const errors = { mockErrorKey: "mockErrorValue" };
+    const errors = { mockErrorKey: ["mockErrorValue"] };
     expect(
       getCrossModelQueryErrors(
         rootStateFactory.build({

@@ -9,7 +9,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import type {
   CrossModelQueryRequest,
-  CrossModelQueryResponse,
+  CrossModelQueryFullResponse,
 } from "juju/jimm-facade";
 import type {
   AllWatcherDelta,
@@ -130,10 +130,12 @@ const slice = createSlice({
     },
     updateCrossModelQuery: (
       state,
-      { payload }: PayloadAction<CrossModelQueryResponse>
+      { payload }: PayloadAction<CrossModelQueryFullResponse>
     ) => {
-      state.crossModelQuery.results = payload.results;
-      state.crossModelQuery.errors = payload.errors;
+      state.crossModelQuery.results =
+        typeof payload === "object" ? payload.results : null;
+      state.crossModelQuery.errors =
+        typeof payload === "object" ? payload.errors : payload;
       state.crossModelQuery.loaded = true;
       state.crossModelQuery.loading = false;
     },

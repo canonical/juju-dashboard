@@ -56,7 +56,7 @@ export type ModelsList = {
 
 export type CrossModelQueryState = {
   results: CrossModelQueryResponse["results"] | null;
-  errors: CrossModelQueryResponse["errors"] | null;
+  errors: CrossModelQueryResponse["errors"] | string | null;
   loaded: boolean;
   loading: boolean;
 };

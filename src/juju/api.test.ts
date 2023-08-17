@@ -58,7 +58,7 @@ import {
   setModelSharingPermissions,
   startModelWatcher,
   stopModelWatcher,
-  findCrossModelQuery,
+  crossModelQuery,
 } from "./api";
 import type { AllWatcherDelta } from "./types";
 import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
@@ -1461,18 +1461,18 @@ describe("Juju API", () => {
     });
   });
 
-  describe("findCrossModelQuery", () => {
+  describe("crossModelQuery", () => {
     it("fetches cross model query result", async () => {
       const result = { results: {}, errors: {} };
       const conn = {
         facades: {
           jimM: {
-            findCrossModelQuery: jest.fn().mockReturnValue(result),
+            crossModelQuery: jest.fn().mockReturnValue(result),
           },
         },
       } as unknown as Connection;
-      const response = await findCrossModelQuery(conn);
-      expect(conn.facades.jimM.findCrossModelQuery).toHaveBeenCalled();
+      const response = await crossModelQuery(conn);
+      expect(conn.facades.jimM.crossModelQuery).toHaveBeenCalled();
       expect(response).toMatchObject(result);
     });
 
@@ -1481,18 +1481,15 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            findCrossModelQuery: jest.fn().mockReturnValue(result),
+            crossModelQuery: jest.fn().mockReturnValue(result),
           },
         },
       } as unknown as Connection;
-      const response = await findCrossModelQuery(conn, {
+      const response = await crossModelQuery(conn, {
         type: "jq",
         query: ".",
       });
-      expect(conn.facades.jimM.findCrossModelQuery).toHaveBeenCalledWith({
-        type: "jq",
-        query: ".",
-      });
+      expect(conn.facades.jimM.crossModelQuery).toHaveBeenCalledWith(".");
       expect(response).toMatchObject(result);
     });
 
@@ -1501,20 +1498,20 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            findCrossModelQuery: jest.fn().mockImplementation(() => {
+            crossModelQuery: jest.fn().mockImplementation(() => {
               throw error;
             }),
           },
         },
       } as unknown as Connection;
-      await expect(findCrossModelQuery(conn)).rejects.toBe(error);
+      await expect(crossModelQuery(conn)).rejects.toBe(error);
     });
 
     it("handles no JIMM connection", async () => {
       const conn = {
         facades: {},
       } as unknown as Connection;
-      await expect(findCrossModelQuery(conn)).rejects.toBe(
+      await expect(crossModelQuery(conn)).rejects.toBe(
         "Not connected to JIMM."
       );
     });
