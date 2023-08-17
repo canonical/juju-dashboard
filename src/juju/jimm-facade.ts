@@ -21,6 +21,10 @@ export type CrossModelQueryResponse = {
 // sometimes be a string.
 export type CrossModelQueryFullResponse = CrossModelQueryResponse | string;
 
+export const isCrossModelQueryResponse = (
+  response: CrossModelQueryFullResponse
+): response is CrossModelQueryResponse => typeof response === "object";
+
 /**
   pinger describes a resource that can be pinged and stopped.
 */
