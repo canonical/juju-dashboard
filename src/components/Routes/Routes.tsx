@@ -8,6 +8,7 @@ import {
 
 import Login from "components/LogIn/LogIn";
 import useAnalytics from "hooks/useAnalytics";
+import AdvancedSearch from "pages/AdvancedSearch/AdvancedSearch";
 import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
 import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
@@ -70,6 +71,14 @@ export function Routes() {
         }
       />
       <Route path="*" element={<PageNotFound />} />
+      <Route
+        path={urls.search}
+        element={
+          <Login>
+            <AdvancedSearch />
+          </Login>
+        }
+      />
     </ReactRouterRoutes>
   );
 }
