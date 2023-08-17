@@ -174,7 +174,7 @@ describe("Primary Nav", () => {
     expect(navigationButtons[3]).toHaveTextContent("Report a bug");
   });
 
-  it("should not show LogsLink navigation button under Juju", () => {
+  it("should not show Advanced search navigation button under Juju", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
