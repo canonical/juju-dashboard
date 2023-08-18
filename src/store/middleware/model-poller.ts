@@ -181,7 +181,7 @@ export const modelPollerMiddleware: Middleware<
       // Intercept fetchCrossModelQuery actions and fetch and store
       // cross model query via the controller connection.
 
-      const { wsControllerURL, ...params } = action.payload;
+      const { wsControllerURL, query } = action.payload;
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
@@ -189,7 +189,7 @@ export const modelPollerMiddleware: Middleware<
       if (!conn) {
         return;
       }
-      const crossModelQueryResponse = await crossModelQuery(conn, params);
+      const crossModelQueryResponse = await crossModelQuery(conn, query);
       reduxStore.dispatch(
         jujuActions.updateCrossModelQuery(crossModelQueryResponse)
       );

@@ -1462,20 +1462,6 @@ describe("Juju API", () => {
   });
 
   describe("crossModelQuery", () => {
-    it("fetches cross model query result", async () => {
-      const result = { results: {}, errors: {} };
-      const conn = {
-        facades: {
-          jimM: {
-            crossModelQuery: jest.fn().mockReturnValue(result),
-          },
-        },
-      } as unknown as Connection;
-      const response = await crossModelQuery(conn);
-      expect(conn.facades.jimM.crossModelQuery).toHaveBeenCalled();
-      expect(response).toMatchObject(result);
-    });
-
     it("fetches cross model query result with supplied params", async () => {
       const result = { results: {}, errors: {} };
       const conn = {
@@ -1485,10 +1471,7 @@ describe("Juju API", () => {
           },
         },
       } as unknown as Connection;
-      const response = await crossModelQuery(conn, {
-        type: "jq",
-        query: ".",
-      });
+      const response = await crossModelQuery(conn, ".");
       expect(conn.facades.jimM.crossModelQuery).toHaveBeenCalledWith(".");
       expect(response).toMatchObject(result);
     });
@@ -1504,14 +1487,14 @@ describe("Juju API", () => {
           },
         },
       } as unknown as Connection;
-      await expect(crossModelQuery(conn)).rejects.toBe(error);
+      await expect(crossModelQuery(conn, ".")).rejects.toBe(error);
     });
 
     it("handles no JIMM connection", async () => {
       const conn = {
         facades: {},
       } as unknown as Connection;
-      await expect(crossModelQuery(conn)).rejects.toBe(
+      await expect(crossModelQuery(conn, ".")).rejects.toBe(
         "Not connected to JIMM."
       );
     });

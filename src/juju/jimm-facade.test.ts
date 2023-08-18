@@ -32,7 +32,7 @@ describe("JIMMV4", () => {
 
   it("crossModelQuery", async () => {
     const jimm = new JIMMV4(transport, connectionInfo);
-    jimm.crossModelQuery();
+    jimm.crossModelQuery(".");
     expect(transport.write).toHaveBeenCalledWith(
       {
         type: "JIMM",

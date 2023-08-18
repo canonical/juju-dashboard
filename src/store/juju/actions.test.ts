@@ -112,14 +112,12 @@ describe("actions", () => {
     expect(
       actions.fetchCrossModelQuery({
         wsControllerURL: "wss://test.example.com",
-        type: "js",
         query: ".",
       })
     ).toStrictEqual({
       type: "juju/fetchCrossModelQuery",
       payload: {
         wsControllerURL: "wss://test.example.com",
-        type: "js",
         query: ".",
       },
     });

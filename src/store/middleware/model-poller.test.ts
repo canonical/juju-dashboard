@@ -400,13 +400,12 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
       wsControllerURL: "wss://example.com",
-      type: "js",
       query: ".",
     });
     await middleware(next)(action);
     expect(jujuModule.crossModelQuery).toHaveBeenCalledWith(
       expect.any(Object),
-      { type: "js", query: "." }
+      "."
     );
     expect(next).toHaveBeenCalledWith(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -427,7 +426,6 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
       wsControllerURL: "nothing",
-      type: "js",
       query: ".",
     });
     await middleware(next)(action);

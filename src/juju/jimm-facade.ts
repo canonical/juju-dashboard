@@ -23,7 +23,8 @@ export type CrossModelQueryFullResponse = CrossModelQueryResponse | string;
 
 export const isCrossModelQueryResponse = (
   response: CrossModelQueryFullResponse
-): response is CrossModelQueryResponse => typeof response === "object";
+): response is CrossModelQueryResponse =>
+  typeof response === "object" && "results" in response && "errors" in response;
 
 /**
   pinger describes a resource that can be pinged and stopped.
@@ -56,13 +57,13 @@ class JIMMV4 {
     });
   }
 
-  crossModelQuery(query: string = "."): Promise<CrossModelQueryFullResponse> {
+  crossModelQuery(query: string): Promise<CrossModelQueryFullResponse> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
         request: "CrossModelQuery",
         version: 4,
-        params: { type: "jq", query },
+        params: { type: "jq", query }, // API currently only supports "jq" type.
       };
       this._transport.write(req, resolve, reject);
     });

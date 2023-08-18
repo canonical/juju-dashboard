@@ -46,10 +46,7 @@ import type { RootState, Store } from "store/store";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
-import type {
-  CrossModelQueryRequest,
-  CrossModelQueryFullResponse,
-} from "./jimm-facade";
+import type { CrossModelQueryFullResponse } from "./jimm-facade";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -774,15 +771,12 @@ export async function getCharmsURLFromApplications(
   return charms.filter((charm) => !!charm).map((charm) => charm?.url);
 }
 
-export function crossModelQuery(
-  conn: ConnectionWithFacades,
-  params?: CrossModelQueryRequest
-) {
+export function crossModelQuery(conn: ConnectionWithFacades, query: string) {
   return new Promise<CrossModelQueryFullResponse>(async (resolve, reject) => {
     if (conn?.facades?.jimM) {
       try {
         const crossModelQueryResponse = await conn.facades.jimM.crossModelQuery(
-          params?.query
+          query
         );
         resolve(crossModelQueryResponse);
       } catch (e) {

@@ -182,7 +182,6 @@ describe("reducers", () => {
         state,
         actions.fetchCrossModelQuery({
           wsControllerURL: "wss://example.com",
-          type: "js",
           query: ".",
         })
       )
