@@ -19,7 +19,6 @@ import {
   isLoggedIn,
   getActiveUserControllerAccess,
   getConnectionError,
-  getIsJuju,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -34,20 +33,6 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual(config);
-  });
-
-  it("getIsJuju", () => {
-    expect(
-      getIsJuju(
-        rootStateFactory.build({
-          general: generalStateFactory.build({
-            config: configFactory.build({
-              isJuju: true,
-            }),
-          }),
-        })
-      )
-    ).toStrictEqual(true);
   });
 
   it("getUserPass", () => {
