@@ -163,4 +163,30 @@ describe("Primary Nav", () => {
     );
     expect(notification).not.toBeInTheDocument();
   });
+
+  it("should have all navigation buttons", () => {
+    renderComponent(<PrimaryNav />);
+    const navigationButtons = document.querySelectorAll(".p-list__link");
+    expect(navigationButtons).toHaveLength(4);
+    expect(navigationButtons[0]).toHaveTextContent("Models");
+    expect(navigationButtons[1]).toHaveTextContent("Controllers");
+    expect(navigationButtons[2]).toHaveTextContent("Advanced search");
+    expect(navigationButtons[3]).toHaveTextContent("Report a bug");
+  });
+
+  it("should not show Advanced search navigation button under Juju", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          isJuju: true,
+        }),
+      }),
+    });
+    renderComponent(<PrimaryNav />, { state });
+    const navigationButtons = document.querySelectorAll(".p-list__link");
+    expect(navigationButtons).toHaveLength(3);
+    expect(navigationButtons[0]).toHaveTextContent("Models");
+    expect(navigationButtons[1]).toHaveTextContent("Controllers");
+    expect(navigationButtons[2]).toHaveTextContent("Report a bug");
+  });
 });
