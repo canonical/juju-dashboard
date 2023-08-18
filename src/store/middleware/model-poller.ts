@@ -6,6 +6,7 @@ import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
+  crossModelQuery,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
@@ -176,6 +177,25 @@ export const modelPollerMiddleware: Middleware<
         reduxStore.dispatch
       );
       return response;
+    } else if (action.type === jujuActions.fetchCrossModelQuery.type) {
+      // Intercept fetchCrossModelQuery actions and fetch and store
+      // cross model query via the controller connection.
+
+      const { wsControllerURL, query } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+      const crossModelQueryResponse = await crossModelQuery(conn, query);
+      reduxStore.dispatch(
+        jujuActions.updateCrossModelQuery(crossModelQueryResponse)
+      );
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
     }
     return next(action);
   };

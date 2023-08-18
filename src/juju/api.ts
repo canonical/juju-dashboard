@@ -29,7 +29,7 @@ import type { Dispatch } from "redux";
 
 import { isSet } from "components/utils";
 import bakery from "juju/bakery";
-import JIMMV2 from "juju/jimm-facade";
+import JIMMV4 from "juju/jimm-facade";
 import { actions as generalActions } from "store/general";
 import {
   getConfig,
@@ -46,6 +46,7 @@ import type { RootState, Store } from "store/store";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
+import type { CrossModelQueryFullResponse } from "./jimm-facade";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -85,7 +86,7 @@ export function generateConnectionOptions(
     Cloud,
     Controller,
     ModelManager,
-    JIMMV2,
+    JIMMV4,
   ];
   if (usePinger) {
     facades.push(Pinger);
@@ -768,4 +769,21 @@ export async function getCharmsURLFromApplications(
     })
   );
   return charms.filter((charm) => !!charm).map((charm) => charm?.url);
+}
+
+export function crossModelQuery(conn: ConnectionWithFacades, query: string) {
+  return new Promise<CrossModelQueryFullResponse>(async (resolve, reject) => {
+    if (conn?.facades?.jimM) {
+      try {
+        const crossModelQueryResponse = await conn.facades.jimM.crossModelQuery(
+          query
+        );
+        resolve(crossModelQueryResponse);
+      } catch (e) {
+        reject(e);
+      }
+    } else {
+      reject("Not connected to JIMM.");
+    }
+  });
 }

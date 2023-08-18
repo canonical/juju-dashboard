@@ -7,6 +7,11 @@ import type {
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+import {
+  type CrossModelQueryRequest,
+  type CrossModelQueryFullResponse,
+  isCrossModelQueryResponse,
+} from "juju/jimm-facade";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -16,9 +21,19 @@ import { processDeltas } from "juju/watchers";
 
 import type { Controllers, JujuState } from "./types";
 
+type WsControllerURLParam = {
+  wsControllerURL: string;
+};
+
 const slice = createSlice({
   name: "juju",
   initialState: {
+    crossModelQuery: {
+      results: null,
+      errors: null,
+      loaded: false,
+      loading: false,
+    },
     controllers: null,
     models: {},
     modelsLoaded: false,
@@ -107,6 +122,35 @@ const slice = createSlice({
     },
     clearControllerData: (state) => {
       state.controllers = {};
+    },
+    fetchCrossModelQuery: (
+      state,
+      action: PayloadAction<
+        Pick<CrossModelQueryRequest, "query"> & WsControllerURLParam
+      >
+    ) => {
+      state.crossModelQuery.loading = true;
+    },
+    updateCrossModelQuery: (
+      state,
+      { payload }: PayloadAction<CrossModelQueryFullResponse>
+    ) => {
+      // If "payload" is a string, it represents the error. In this case,
+      // "results" gets set to null and "errors" gets set to "payload".
+      state.crossModelQuery.results = isCrossModelQueryResponse(payload)
+        ? payload.results
+        : null;
+      state.crossModelQuery.errors = isCrossModelQueryResponse(payload)
+        ? payload.errors
+        : payload;
+      state.crossModelQuery.loaded = true;
+      state.crossModelQuery.loading = false;
+    },
+    clearCrossModelQuery: (state) => {
+      state.crossModelQuery.results = null;
+      state.crossModelQuery.errors = null;
+      state.crossModelQuery.loaded = false;
+      state.crossModelQuery.loading = false;
     },
     updateControllerList: (
       state,

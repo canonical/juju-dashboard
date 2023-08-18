@@ -18,6 +18,7 @@ import {
   modelListInfoFactory,
   modelDataMachineFactory,
   modelDataUnitFactory,
+  crossModelQueryStateFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -68,9 +69,81 @@ import {
   getUserDomains,
   getUserDomainsInModel,
   hasModels,
+  getCrossModelQueryState,
+  getCrossModelQueryResults,
+  getCrossModelQueryErrors,
+  getCrossModelQueryLoaded,
+  getCrossModelQueryLoading,
 } from "./selectors";
 
 describe("selectors", () => {
+  it("getCrossModelQueryState", () => {
+    const crossModelQuery = crossModelQueryStateFactory.build();
+    expect(
+      getCrossModelQueryState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery,
+          }),
+        })
+      )
+    ).toStrictEqual(crossModelQuery);
+  });
+
+  it("getCrossModelQueryResults", () => {
+    const results = { mockResultKey: ["mockResultValue"] };
+    expect(
+      getCrossModelQueryResults(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery: crossModelQueryStateFactory.build({ results }),
+          }),
+        })
+      )
+    ).toStrictEqual(results);
+  });
+
+  it("getCrossModelQueryErrors", () => {
+    const errors = { mockErrorKey: ["mockErrorValue"] };
+    expect(
+      getCrossModelQueryErrors(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery: crossModelQueryStateFactory.build({ errors }),
+          }),
+        })
+      )
+    ).toStrictEqual(errors);
+  });
+
+  it("getCrossModelQueryLoaded", () => {
+    expect(
+      getCrossModelQueryLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery: crossModelQueryStateFactory.build({
+              loaded: true,
+            }),
+          }),
+        })
+      )
+    ).toStrictEqual(true);
+  });
+
+  it("getCrossModelQueryLoading", () => {
+    expect(
+      getCrossModelQueryLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery: crossModelQueryStateFactory.build({
+              loading: true,
+            }),
+          }),
+        })
+      )
+    ).toStrictEqual(true);
+  });
+
   it("getModelData", () => {
     const modelData = {
       "wss://example.com": {

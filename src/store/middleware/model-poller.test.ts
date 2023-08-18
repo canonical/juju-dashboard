@@ -25,6 +25,7 @@ jest.mock("juju/api", () => ({
   loginWithBakery: jest.fn(),
   fetchAllModelStatuses: jest.fn(),
   setModelSharingPermissions: jest.fn(),
+  crossModelQuery: jest.fn(),
 }));
 
 describe("model poller", () => {
@@ -384,5 +385,50 @@ describe("model poller", () => {
     expect(jujuModule.setModelSharingPermissions).toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
     return expect(response).resolves.toStrictEqual({ results: [] });
+  });
+
+  it("handles fetching cross model query results", async () => {
+    const crossModelQueryResponse = { results: {}, errors: {} };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "crossModelQuery")
+      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "wss://example.com",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(jujuModule.crossModelQuery).toHaveBeenCalledWith(
+      expect.any(Object),
+      "."
+    );
+    expect(next).toHaveBeenCalledWith(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateCrossModelQuery(crossModelQueryResponse)
+    );
+  });
+
+  it("handles no controller when fetching cross model query results", async () => {
+    const crossModelQueryResponse = { results: {}, errors: {} };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "crossModelQuery")
+      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "nothing",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(jujuModule.crossModelQuery).not.toHaveBeenCalled();
   });
 });

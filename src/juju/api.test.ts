@@ -58,6 +58,7 @@ import {
   setModelSharingPermissions,
   startModelWatcher,
   stopModelWatcher,
+  crossModelQuery,
 } from "./api";
 import type { AllWatcherDelta } from "./types";
 import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
@@ -1456,6 +1457,45 @@ describe("Juju API", () => {
           charms: [etcd, mysql],
           wsControllerURL: "wss://example.com/api",
         })
+      );
+    });
+  });
+
+  describe("crossModelQuery", () => {
+    it("fetches cross model query result with supplied params", async () => {
+      const result = { results: {}, errors: {} };
+      const conn = {
+        facades: {
+          jimM: {
+            crossModelQuery: jest.fn().mockReturnValue(result),
+          },
+        },
+      } as unknown as Connection;
+      const response = await crossModelQuery(conn, ".");
+      expect(conn.facades.jimM.crossModelQuery).toHaveBeenCalledWith(".");
+      expect(response).toMatchObject(result);
+    });
+
+    it("handles errors", async () => {
+      const error = new Error("Request failed");
+      const conn = {
+        facades: {
+          jimM: {
+            crossModelQuery: jest.fn().mockImplementation(() => {
+              throw error;
+            }),
+          },
+        },
+      } as unknown as Connection;
+      await expect(crossModelQuery(conn, ".")).rejects.toBe(error);
+    });
+
+    it("handles no JIMM connection", async () => {
+      const conn = {
+        facades: {},
+      } as unknown as Connection;
+      await expect(crossModelQuery(conn, ".")).rejects.toBe(
+        "Not connected to JIMM."
       );
     });
   });

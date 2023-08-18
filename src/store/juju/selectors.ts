@@ -40,6 +40,46 @@ import {
 const slice = (state: RootState) => state.juju;
 
 /**
+  Fetches the cross model query from state.
+*/
+export const getCrossModelQueryState = createSelector(
+  [slice],
+  (sliceState) => sliceState.crossModelQuery
+);
+
+/**
+  Fetches the cross model query results from state.
+*/
+export const getCrossModelQueryResults = createSelector(
+  [getCrossModelQueryState],
+  (crossModelQuery) => crossModelQuery.results
+);
+
+/**
+  Fetches the cross model query errors from state.
+*/
+export const getCrossModelQueryErrors = createSelector(
+  [getCrossModelQueryState],
+  (crossModelQuery) => crossModelQuery.errors
+);
+
+/**
+  Fetches the cross model query loaded state.
+*/
+export const getCrossModelQueryLoaded = createSelector(
+  [getCrossModelQueryState],
+  (crossModelQuery) => crossModelQuery.loaded
+);
+
+/**
+  Fetches the cross model query loading state.
+*/
+export const getCrossModelQueryLoading = createSelector(
+  [getCrossModelQueryState],
+  (crossModelQuery) => crossModelQuery.loading
+);
+
+/**
   Fetches the model data from state.
   @param state The application state.
   @returns The list of model data or null if none found.

@@ -13,8 +13,8 @@ import type ModelManagerV9 from "@canonical/jujulib/dist/api/facades/model-manag
 import type { ModelSLAInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type PingerV1 from "@canonical/jujulib/dist/api/facades/pinger/PingerV1";
 
-import type JIMMV2 from "juju/jimm-facade";
-// See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
+import type JIMMV4 from "juju/jimm-facade";
+// See https://github.com/juju/juju/blob/main/rpc/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
 export interface ActionData {
@@ -135,7 +135,7 @@ type Life = "alive" | "dead" | "dying" | "";
 type ISO8601Date = string;
 type DeprecatedString = string;
 export interface Status {
-  // See https://github.com/juju/juju/blob/develop/core/status/status.go
+  // See https://github.com/juju/juju/blob/main/core/status/status.go
   // For the possible status values for `current`.
   // Possible statuses differ by entity type.
   current: string;
@@ -347,7 +347,7 @@ export type Facades = {
   controller?: ControllerV9;
   modelManager?: ModelManagerV9;
   pinger?: PingerV1;
-  jimM?: InstanceType<typeof JIMMV2>;
+  jimM?: InstanceType<typeof JIMMV4>;
 };
 
 export type ConnectionWithFacades = Connection & {
