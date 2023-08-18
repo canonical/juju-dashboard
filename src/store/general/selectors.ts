@@ -15,17 +15,6 @@ export const getConfig = createSelector(
 );
 
 /**
-  Determines if Juju is used based on config value from state.
-  @param state The application state.
-  @returns true if Juju is used, false if Juju isn't used or
-    undefined if config is undefined.
- */
-export const getIsJuju = createSelector(
-  [slice],
-  (sliceState) => sliceState?.config?.isJuju
-);
-
-/**
   Fetches the username and password from state.
   @param state The application state.
   @param wsControllerURL The fully qualified wsController URL to

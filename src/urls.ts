@@ -46,7 +46,6 @@ const urls = {
     }>("/models?groupedby=:groupedby"),
   },
   settings: "/settings",
-  search: "/search",
 };
 
 export const externalURLs = {

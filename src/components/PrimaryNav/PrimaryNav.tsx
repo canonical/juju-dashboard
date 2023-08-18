@@ -1,29 +1,38 @@
 import { dashboardUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import { Icon, StatusLabel, Tooltip } from "@canonical/react-components";
+import classNames from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
-import { getAppVersion, getIsJuju } from "store/general/selectors";
+import { getAppVersion } from "store/general/selectors";
 import {
   getControllerData,
   getGroupedModelStatusCounts,
 } from "store/juju/selectors";
 import type { Controllers } from "store/juju/types";
 import urls, { externalURLs } from "urls";
-
 import "./_primary-nav.scss";
-import PrimaryNavLink from "./PrimaryNavLink";
 
 const ModelsLink = () => {
   const { blocked: blockedModels } = useSelector(getGroupedModelStatusCounts);
   return (
-    <PrimaryNavLink to={urls.models.index} iconName="models" title="Models">
+    <NavLink
+      className={({ isActive }) =>
+        classNames("p-list__link", {
+          "is-selected": isActive,
+        })
+      }
+      to={urls.models.index}
+    >
+      <i className={`p-icon--models is-light`}></i>
+      <span className="hide-collapsed">Models</span>
       {blockedModels > 0 && (
         <span className="entity-count is-negative">{blockedModels}</span>
       )}
-    </PrimaryNavLink>
+    </NavLink>
   );
 };
 
@@ -31,48 +40,42 @@ const ControllersLink = () => {
   const controllers: Controllers | null = useSelector(getControllerData);
 
   const controllersUpdateCount = useMemo(() => {
-    if (!controllers) {
-      return 0;
-    }
-    return Object.values(controllers).reduce(
-      (controllersCount, controllerArray) =>
-        controllersCount +
-        controllerArray.reduce(
-          (count, controller) =>
-            "version" in controller && controller.updateAvailable
-              ? count + 1
-              : count,
-          0
-        ),
-      0
-    );
+    if (!controllers) return 0;
+    let count = 0;
+    Object.values(controllers).forEach((controller) => {
+      controller.forEach((controller) => {
+        if ("version" in controller && controller.updateAvailable) {
+          count += 1;
+        }
+      });
+    });
+    return count;
   }, [controllers]);
 
   return (
-    <PrimaryNavLink
+    <NavLink
+      className={({ isActive }) =>
+        classNames("p-list__link", {
+          "is-selected": isActive,
+        })
+      }
       to={urls.controllers}
-      iconName="controllers"
-      title="Controllers"
     >
+      <i className={`p-icon--controllers is-light`}></i>
+      <span className="hide-collapsed">Controllers</span>
       {controllersUpdateCount > 0 && (
         <span className="entity-count is-caution">
           {controllersUpdateCount}
         </span>
       )}
-    </PrimaryNavLink>
+    </NavLink>
   );
 };
-
-const AdvancedSearchLink = () => (
-  <PrimaryNavLink to={urls.search} iconName="search" title="Advanced search" />
-);
 
 const PrimaryNav = () => {
   const appVersion = useSelector(getAppVersion);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
-
-  const isJuju = useSelector(getIsJuju);
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
@@ -100,11 +103,6 @@ const PrimaryNav = () => {
         <li className="p-list__item">
           <ControllersLink />
         </li>
-        {!isJuju && (
-          <li className="p-list__item">
-            <AdvancedSearchLink />
-          </li>
-        )}
       </ul>
       <hr className="p-primary-nav__divider hide-collapsed" />
       <div className="p-primary-nav__bottom hide-collapsed">
