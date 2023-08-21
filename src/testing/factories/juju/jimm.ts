@@ -10,9 +10,42 @@ import type {
   CrossModelQueryUnit,
 } from "./jimm-types";
 
-export const crossModelQueryFactory = Factory.define<CrossModelQuery>(
-  () => ({})
-);
+class CrossModelQueryFactory extends Factory<CrossModelQuery> {
+  withApplicationEndpoints(count?: number) {
+    return this.params({
+      applications: crossModelQueryApplicationEndpointFactory
+        .buildList(count ?? 1)
+        .map((endpoint, index) => ({ [`endpoint_${index}`]: endpoint }))
+        .reduce(
+          (endpoints, endpoint) => Object.assign(endpoints, endpoint),
+          {}
+        ),
+    });
+  }
+  withApplications(count?: number) {
+    return this.params({
+      "application-endpoints": crossModelQueryApplicationFactory
+        .buildList(count ?? 1)
+        .map((app, index) => ({ [`app_${index}`]: app }))
+        .reduce((applications, app) => Object.assign(applications, app), {}),
+    });
+  }
+  withMachines(count?: number) {
+    return this.params({
+      machines: crossModelQueryMachineFactory
+        .buildList(count ?? 1)
+        .map((machine, index) => ({ [index]: machine }))
+        .reduce((machines, machine) => Object.assign(machines, machine), {}),
+    });
+  }
+  withModel() {
+    return this.params({
+      model: crossModelQueryModelFactory.build(),
+    });
+  }
+}
+
+export const crossModelQueryFactory = CrossModelQueryFactory.define(() => ({}));
 
 export const crossModelQueryApplicationEndpointFactory =
   Factory.define<CrossModelQueryApplicationEndpoint>(() => ({
