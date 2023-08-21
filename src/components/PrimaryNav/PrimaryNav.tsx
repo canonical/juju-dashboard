@@ -31,16 +31,21 @@ const ControllersLink = () => {
   const controllers: Controllers | null = useSelector(getControllerData);
 
   const controllersUpdateCount = useMemo(() => {
-    if (!controllers) return 0;
-    let count = 0;
-    Object.values(controllers).forEach((controller) => {
-      controller.forEach((controller) => {
-        if ("version" in controller && controller.updateAvailable) {
-          count += 1;
-        }
-      });
-    });
-    return count;
+    if (!controllers) {
+      return 0;
+    }
+    return Object.values(controllers).reduce(
+      (controllersCount, controllerArray) =>
+        controllersCount +
+        controllerArray.reduce(
+          (count, controller) =>
+            "version" in controller && controller.updateAvailable
+              ? count + 1
+              : count,
+          0
+        ),
+      0
+    );
   }, [controllers]);
 
   return (
