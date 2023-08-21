@@ -2,6 +2,7 @@ import FadeIn from "animations/FadeIn";
 import Header from "components/Header/Header";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
+import ResultsBlock from "./ResultsBlock";
 import SearchForm from "./SearchForm";
 
 const AdvancedSearch = (): JSX.Element => (
@@ -11,7 +12,11 @@ const AdvancedSearch = (): JSX.Element => (
     </Header>
     <div className="l-content">
       <FadeIn isActive={true}>
-        <SearchForm />
+        <>
+          <SearchForm />
+          <hr />
+          <ResultsBlock />
+        </>
       </FadeIn>
     </div>
   </BaseLayout>
