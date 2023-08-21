@@ -1,46 +1,65 @@
 import { Factory } from "fishery";
 
-import type {
-  CrossModelQuery,
-  CrossModelQueryApplication,
-  CrossModelQueryApplicationEndpoint,
-  CrossModelQueryMachine,
-  CrossModelQueryModel,
-  CrossModelQueryStatus,
-  CrossModelQueryUnit,
+import {
+  type CrossModelQueryEndpoint,
+  type CrossModelQuery,
+  type CrossModelQueryApplication,
+  type CrossModelQueryApplicationEndpoint,
+  type CrossModelQueryMachine,
+  type CrossModelQueryModel,
+  type CrossModelQueryStatus,
+  type CrossModelQueryUnit,
+  type CrossModelQueryController,
+  type CrossModelQueryOffer,
 } from "./jimm-types";
 
 class CrossModelQueryFactory extends Factory<CrossModelQuery> {
+  withApplications(count?: number) {
+    return this.params({
+      applications: crossModelQueryApplicationFactory
+        .buildList(count ?? 1)
+        .map((app, index) => ({ [`application_${index}`]: app }))
+        .reduce((applications, app) => Object.assign(applications, app), {}),
+    });
+  }
   withApplicationEndpoints(count?: number) {
     return this.params({
-      applications: crossModelQueryApplicationEndpointFactory
+      "application-endpoints": crossModelQueryApplicationEndpointFactory
         .buildList(count ?? 1)
-        .map((endpoint, index) => ({ [`endpoint_${index}`]: endpoint }))
+        .map((appEndpoint, index) => ({
+          [`appEndpoint_${index}`]: appEndpoint,
+        }))
         .reduce(
-          (endpoints, endpoint) => Object.assign(endpoints, endpoint),
+          (appEndpoints, appEndpoint) =>
+            Object.assign(appEndpoints, appEndpoint),
           {}
         ),
     });
   }
-  withApplications(count?: number) {
+  withController() {
     return this.params({
-      "application-endpoints": crossModelQueryApplicationFactory
-        .buildList(count ?? 1)
-        .map((app, index) => ({ [`app_${index}`]: app }))
-        .reduce((applications, app) => Object.assign(applications, app), {}),
+      controller: crossModelQueryControllerFactory.build(),
     });
   }
   withMachines(count?: number) {
     return this.params({
       machines: crossModelQueryMachineFactory
         .buildList(count ?? 1)
-        .map((machine, index) => ({ [index]: machine }))
+        .map((machine, index) => ({ [`machine_${index}`]: machine }))
         .reduce((machines, machine) => Object.assign(machines, machine), {}),
     });
   }
   withModel() {
     return this.params({
       model: crossModelQueryModelFactory.build(),
+    });
+  }
+  withOffers(count?: number) {
+    return this.params({
+      offers: crossModelQueryOfferFactory
+        .buildList(count ?? 1)
+        .map((offer, index) => ({ [`offer_${index}`]: offer }))
+        .reduce((offers, offer) => Object.assign(offers, offer), {}),
     });
   }
 }
@@ -51,7 +70,7 @@ export const crossModelQueryApplicationEndpointFactory =
   Factory.define<CrossModelQueryApplicationEndpoint>(() => ({
     "mysql-cmi": {
       "application-status": crossModelQueryStatusFactory.build(),
-      endpoints: { mysql: { interface: "mysql", role: "provider" } },
+      endpoints: { mysql: crossModelQueryEndpointFactory.build() },
       relations: { mysql: ["slurmdbd"] },
       url: "jaas-staging:huwshimi@external/cmi-provider.mysql-cmi",
     },
@@ -111,8 +130,28 @@ export const crossModelQueryModelFactory = Factory.define<CrossModelQueryModel>(
   })
 );
 
+export const crossModelQueryOfferFactory = Factory.define<CrossModelQueryOffer>(
+  () => ({
+    application: "mysql",
+    charm: "ch:amd64/jammy/mysql-151",
+    endpoints: { mysql: crossModelQueryEndpointFactory.build() },
+    "total-connected-count": 1,
+  })
+);
+
 export const crossModelQueryStatusFactory =
   Factory.define<CrossModelQueryStatus>(() => ({
     current: "pending",
     since: "16 Aug 2023 10:33:46+10:00",
+  }));
+
+export const crossModelQueryEndpointFactory =
+  Factory.define<CrossModelQueryEndpoint>(() => ({
+    interface: "mysql",
+    role: "provider",
+  }));
+
+export const crossModelQueryControllerFactory =
+  Factory.define<CrossModelQueryController>(() => ({
+    timestamp: "10:51:03+10:00",
   }));
