@@ -3,13 +3,24 @@ import type { FormikProps } from "formik";
 import { Field, Form, Formik } from "formik";
 import { useEffect, useRef } from "react";
 
+import { copyToClipboard } from "components/utils";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getControllerConnection,
   getWSControllerURL,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
+import {
+  getCrossModelQueryLoaded,
+  getCrossModelQueryLoading,
+  getCrossModelQueryResults,
+} from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+
+export enum Label {
+  SEARCH = "Search",
+  COPY_JSON = "Copy JSON",
+}
 
 type Fields = {
   query: string;
@@ -26,6 +37,13 @@ const SearchForm = (): JSX.Element => {
     q: "",
   });
   const jqParam = decodeURIComponent(queryParams.q);
+  const crossModelQueryResultsJSON = JSON.stringify(
+    useAppSelector(getCrossModelQueryResults),
+    null,
+    2
+  );
+  const isCrossModelQueryLoaded = useAppSelector(getCrossModelQueryLoaded);
+  const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
 
   useEffect(() => {
     if (jqParam && hasControllerConnection && wsControllerURL) {
@@ -67,7 +85,14 @@ const SearchForm = (): JSX.Element => {
               name="query"
               rows={8}
             />
-            <Button type="submit">Search</Button>
+            <Button type="submit">{Label.SEARCH}</Button>
+            <Button
+              type="button"
+              onClick={() => copyToClipboard(crossModelQueryResultsJSON)}
+              disabled={!isCrossModelQueryLoaded || isCrossModelQueryLoading}
+            >
+              {Label.COPY_JSON}
+            </Button>
           </Col>
         </Row>
       </Form>
