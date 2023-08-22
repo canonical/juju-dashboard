@@ -78,57 +78,20 @@ describe("SearchForm", () => {
   });
 
   it("should copy the cross-model query results", async () => {
-    state.juju.crossModelQuery.loaded = true;
-    state.juju.crossModelQuery.loading = false;
-    state.juju.crossModelQuery.results = {
+    const mockResults = {
       mockModelUUID: [crossModelQueryFactory.withApplications().build()],
     };
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.loading = false;
+    state.juju.crossModelQuery.results = mockResults;
     renderComponent(<SearchForm />, { state, url: "/q=." });
     const copyJSONButton = screen.getByRole("button", {
       name: Label.COPY_JSON,
     });
     expect(copyJSONButton).toBeEnabled();
     await userEvent.click(copyJSONButton);
-    const jsonResponse = {
-      mockModelUUID: [
-        {
-          applications: {
-            application_0: {
-              "application-status": {
-                current: "pending",
-                since: "16 Aug 2023 10:33:46+10:00",
-              },
-              base: {
-                channel: "22.04",
-                name: "ubuntu",
-              },
-              charm: "calico",
-              "charm-channel": "stable",
-              "charm-name": "calico",
-              "charm-origin": "charmhub",
-              "charm-rev": 87,
-              "charm-version": "a164af4",
-              "endpoint-bindings": {
-                "": "alpha",
-                cni: "alpha",
-                etcd: "alpha",
-              },
-              exposed: false,
-              relations: {
-                cni: ["kubernetes-control-plane", "kubernetes-worker"],
-                etcd: ["etcd"],
-              },
-              "subordinate-to": [
-                "kubernetes-control-plane",
-                "kubernetes-worker",
-              ],
-            },
-          },
-        },
-      ],
-    };
     expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(
-      JSON.stringify(jsonResponse, null, 2)
+      JSON.stringify(mockResults, null, 2)
     );
   });
 });
