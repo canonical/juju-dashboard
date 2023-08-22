@@ -14,7 +14,6 @@ const AdvancedSearch = (): JSX.Element => (
       <FadeIn isActive={true}>
         <>
           <SearchForm />
-          <hr />
           <ResultsBlock />
         </>
       </FadeIn>

@@ -1,75 +1,82 @@
-import { CodeSnippet, Spinner } from "@canonical/react-components";
-import { useEffect, useState } from "react";
+import {
+  CodeSnippet,
+  CodeSnippetBlockAppearance,
+  Spinner,
+} from "@canonical/react-components";
+import { useState } from "react";
 
 import {
+  getCrossModelQueryLoaded,
   getCrossModelQueryLoading,
   getCrossModelQueryResults,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
-type CodeSnippetView = "tree" | "json";
+enum CodeSnippetView {
+  TREE = "tree",
+  JSON = "json",
+}
 
-const ResultsBlock = (): JSX.Element => {
+const ResultsBlock = (): JSX.Element | null => {
   const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
-  const [isCrossModelQueryRequestMade, setIsCrossModelQueryRequestMade] =
-    useState<boolean>(false);
+  const isCrossModelQueryLoaded = useAppSelector(getCrossModelQueryLoaded);
   const crossModelQueryResults = useAppSelector(getCrossModelQueryResults);
-
-  const [codeSnippetView, setCodeSnippetView] =
-    useState<CodeSnippetView>("tree");
+  const [codeSnippetView, setCodeSnippetView] = useState<CodeSnippetView>(
+    CodeSnippetView.TREE
+  );
   const codeSnippetContent = {
-    tree: "Not sure yet how to implement the tree format.",
+    tree: "",
     json: JSON.stringify(crossModelQueryResults, null, 2),
   };
 
-  useEffect(() => {
-    if (!isCrossModelQueryRequestMade && isCrossModelQueryLoading) {
-      setIsCrossModelQueryRequestMade(true);
-    }
-  }, [isCrossModelQueryLoading, isCrossModelQueryRequestMade]);
+  if (isCrossModelQueryLoading) {
+    return (
+      <div className="u-align--center">
+        <div className="u-sv3">
+          <hr />
+        </div>
+        <Spinner />
+      </div>
+    );
+  }
 
-  if (!isCrossModelQueryRequestMade) {
-    return <>Result from Advanced search will be shown here!</>;
+  if (!isCrossModelQueryLoaded) {
+    return null;
   }
 
   return (
     <>
-      {isCrossModelQueryLoading ? (
-        <Spinner />
-      ) : (
-        <CodeSnippet
-          blocks={[
-            {
-              code: codeSnippetContent[codeSnippetView],
-              dropdowns: [
-                {
-                  options: [
-                    {
-                      value: "tree",
-                      label: "Tree",
-                    },
-                    {
-                      value: "json",
-                      label: "JSON",
-                    },
-                  ],
-                  value: codeSnippetView,
-                  onChange: (
-                    event:
-                      | React.ChangeEvent<HTMLSelectElement>
-                      | React.FormEvent<HTMLSelectElement>
-                  ) => {
-                    setCodeSnippetView(
-                      (event.target as HTMLSelectElement)
-                        .value as CodeSnippetView
-                    );
+      <CodeSnippet
+        blocks={[
+          {
+            appearance:
+              codeSnippetView === CodeSnippetView.JSON
+                ? CodeSnippetBlockAppearance.NUMBERED
+                : undefined,
+            code: codeSnippetContent[codeSnippetView],
+            dropdowns: [
+              {
+                options: [
+                  {
+                    value: CodeSnippetView.TREE,
+                    label: "Tree",
                   },
+                  {
+                    value: CodeSnippetView.JSON,
+                    label: "JSON",
+                  },
+                ],
+                value: codeSnippetView,
+                onChange: (event) => {
+                  setCodeSnippetView(
+                    (event.target as HTMLSelectElement).value as CodeSnippetView
+                  );
                 },
-              ],
-            },
-          ]}
-        />
-      )}
+              },
+            ],
+          },
+        ]}
+      />
     </>
   );
 };
