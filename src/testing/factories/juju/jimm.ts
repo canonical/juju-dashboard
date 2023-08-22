@@ -14,18 +14,18 @@ import {
 } from "./jimm-types";
 
 class CrossModelQueryFactory extends Factory<CrossModelQuery> {
-  withApplications(count?: number) {
+  withApplications(count: number = 1) {
     return this.params({
       applications: crossModelQueryApplicationFactory
-        .buildList(count ?? 1)
+        .buildList(count)
         .map((app, index) => ({ [`application_${index}`]: app }))
         .reduce((applications, app) => Object.assign(applications, app), {}),
     });
   }
-  withApplicationEndpoints(count?: number) {
+  withApplicationEndpoints(count: number = 1) {
     return this.params({
       "application-endpoints": crossModelQueryApplicationEndpointFactory
-        .buildList(count ?? 1)
+        .buildList(count)
         .map((appEndpoint, index) => ({
           [`appEndpoint_${index}`]: appEndpoint,
         }))
@@ -41,10 +41,10 @@ class CrossModelQueryFactory extends Factory<CrossModelQuery> {
       controller: crossModelQueryControllerFactory.build(),
     });
   }
-  withMachines(count?: number) {
+  withMachines(count: number = 1) {
     return this.params({
       machines: crossModelQueryMachineFactory
-        .buildList(count ?? 1)
+        .buildList(count)
         .map((machine, index) => ({ [`machine_${index}`]: machine }))
         .reduce((machines, machine) => Object.assign(machines, machine), {}),
     });
@@ -54,10 +54,10 @@ class CrossModelQueryFactory extends Factory<CrossModelQuery> {
       model: crossModelQueryModelFactory.build(),
     });
   }
-  withOffers(count?: number) {
+  withOffers(count: number = 1) {
     return this.params({
       offers: crossModelQueryOfferFactory
-        .buildList(count ?? 1)
+        .buildList(count)
         .map((offer, index) => ({ [`offer_${index}`]: offer }))
         .reduce((offers, offer) => Object.assign(offers, offer), {}),
     });
