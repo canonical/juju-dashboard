@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
+import { crossModelQueryFactory } from "testing/factories/juju/jimm";
 import { renderComponent } from "testing/utils";
 
 import ResultsBlock, { TestId } from "./ResultsBlock";
@@ -35,7 +36,7 @@ describe("ResultsBlock", () => {
     state.juju.crossModelQuery.loaded = true;
     state.juju.crossModelQuery.loading = false;
     state.juju.crossModelQuery.results = {
-      result: ["mockResult"],
+      mockModelUUID: [crossModelQueryFactory.withModel().build()],
     };
     renderComponent(<ResultsBlock />, { state });
     const codeSnippetDropdownButton = screen.getByRole("combobox");
@@ -47,7 +48,6 @@ describe("ResultsBlock", () => {
       screen.getByRole("option", { name: "JSON", hidden: true })
     ).toHaveAttribute("value", "json");
     await userEvent.selectOptions(codeSnippetDropdownButton, "JSON");
-    expect(screen.getByText('"result": [')).toBeVisible();
-    expect(screen.getByText('"mockResult"')).toBeVisible();
+    expect(screen.getByText('"model": {')).toBeVisible();
   });
 });
