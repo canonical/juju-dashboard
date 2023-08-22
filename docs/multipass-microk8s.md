@@ -25,7 +25,7 @@ Now install MicroK8s. Newer versions of Juju require strict MicroK8s (you can ch
 channels using `snap info microk8s`).
 
 ```shell
-sudo snap install microk8s --channel=1.27-strict/stable
+sudo snap install microk8s --channel=1.28-strict/stable
 ```
 
 You will need to be in the microk8s group so run:
