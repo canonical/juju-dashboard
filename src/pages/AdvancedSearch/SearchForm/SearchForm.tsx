@@ -25,18 +25,23 @@ const SearchForm = (): JSX.Element => {
   const [queryParams, setQueryParams] = useQueryParams<{ q: string }>({
     q: "",
   });
-  const query = decodeURIComponent(queryParams.q);
+  const jqParam = decodeURIComponent(queryParams.q);
 
   useEffect(() => {
-    if (query && hasControllerConnection && wsControllerURL) {
-      dispatch(jujuActions.fetchCrossModelQuery({ query, wsControllerURL }));
+    if (jqParam && hasControllerConnection && wsControllerURL) {
+      dispatch(
+        jujuActions.fetchCrossModelQuery({
+          query: jqParam,
+          wsControllerURL,
+        })
+      );
     }
-  }, [dispatch, hasControllerConnection, query, wsControllerURL]);
+  }, [dispatch, hasControllerConnection, jqParam, wsControllerURL]);
 
   return (
     <Formik<Fields>
       initialValues={{
-        query,
+        query: jqParam,
       }}
       innerRef={formikRef}
       onSubmit={(values) => {
