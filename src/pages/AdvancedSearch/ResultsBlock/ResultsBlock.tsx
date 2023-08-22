@@ -3,14 +3,15 @@ import {
   CodeSnippetBlockAppearance,
   Spinner,
 } from "@canonical/react-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { actions as jujuActions } from "store/juju";
 import {
   getCrossModelQueryLoaded,
   getCrossModelQueryLoading,
   getCrossModelQueryResults,
 } from "store/juju/selectors";
-import { useAppSelector } from "store/store";
+import { useAppDispatch, useAppSelector } from "store/store";
 
 enum CodeSnippetView {
   TREE = "tree",
@@ -18,6 +19,7 @@ enum CodeSnippetView {
 }
 
 const ResultsBlock = (): JSX.Element | null => {
+  const dispatch = useAppDispatch();
   const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
   const isCrossModelQueryLoaded = useAppSelector(getCrossModelQueryLoaded);
   const crossModelQueryResults = useAppSelector(getCrossModelQueryResults);
@@ -28,6 +30,14 @@ const ResultsBlock = (): JSX.Element | null => {
     tree: "",
     json: JSON.stringify(crossModelQueryResults, null, 2),
   };
+
+  useEffect(
+    () => () => {
+      // Clear cross-model query results when component is unmounted.
+      dispatch(jujuActions.clearCrossModelQuery());
+    },
+    [dispatch]
+  );
 
   if (isCrossModelQueryLoading) {
     return (
