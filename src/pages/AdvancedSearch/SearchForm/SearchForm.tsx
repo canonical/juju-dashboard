@@ -60,6 +60,7 @@ const SearchForm = (): JSX.Element => {
           setQueryParams({ q: encodeURIComponent(query) });
           setQueryHistory([
             query,
+            // Remove old queries that match the new one.
             ...queryHistory.filter((previous) => previous !== query),
           ]);
         }

@@ -62,4 +62,19 @@ describe("SearchForm", () => {
       JSON.stringify([".applications"])
     );
   });
+
+  it("should move duplicate queries to the top in local storage", async () => {
+    renderComponent(<SearchForm />, { state });
+    await userEvent.type(screen.getByRole("textbox"), ".applications{Enter}");
+    await userEvent.clear(screen.getByRole("textbox"));
+    await userEvent.type(screen.getByRole("textbox"), ".machines{Enter}");
+    expect(window.localStorage.getItem(QUERY_HISTORY_KEY)).toBe(
+      JSON.stringify([".machines", ".applications"])
+    );
+    await userEvent.clear(screen.getByRole("textbox"));
+    await userEvent.type(screen.getByRole("textbox"), ".applications{Enter}");
+    expect(window.localStorage.getItem(QUERY_HISTORY_KEY)).toBe(
+      JSON.stringify([".applications", ".machines"])
+    );
+  });
 });
