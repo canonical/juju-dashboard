@@ -13,6 +13,10 @@ import {
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
+export enum TestId {
+  LOADING = "loading",
+}
+
 enum CodeSnippetView {
   TREE = "tree",
   JSON = "json",
@@ -39,23 +43,24 @@ const ResultsBlock = (): JSX.Element | null => {
     [dispatch]
   );
 
+  if (!isCrossModelQueryLoaded) {
+    return null;
+  }
+
   if (isCrossModelQueryLoading) {
     return (
       <div className="u-align--center">
         <div className="u-sv3">
           <hr />
         </div>
-        <Spinner />
+        <Spinner data-testid={TestId.LOADING} />
       </div>
     );
   }
 
-  if (!isCrossModelQueryLoaded) {
-    return null;
-  }
-
   return (
     <>
+      <hr />
       <CodeSnippet
         blocks={[
           {
