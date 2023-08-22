@@ -1,24 +1,76 @@
 import { Factory } from "fishery";
 
-import type {
-  CrossModelQuery,
-  CrossModelQueryApplication,
-  CrossModelQueryApplicationEndpoint,
-  CrossModelQueryMachine,
-  CrossModelQueryModel,
-  CrossModelQueryStatus,
-  CrossModelQueryUnit,
+import {
+  type CrossModelQueryEndpoint,
+  type CrossModelQuery,
+  type CrossModelQueryApplication,
+  type CrossModelQueryApplicationEndpoint,
+  type CrossModelQueryMachine,
+  type CrossModelQueryModel,
+  type CrossModelQueryStatus,
+  type CrossModelQueryUnit,
+  type CrossModelQueryController,
+  type CrossModelQueryOffer,
 } from "./jimm-types";
 
-export const crossModelQueryFactory = Factory.define<CrossModelQuery>(
-  () => ({})
-);
+class CrossModelQueryFactory extends Factory<CrossModelQuery> {
+  withApplications(count: number = 1) {
+    return this.params({
+      applications: crossModelQueryApplicationFactory
+        .buildList(count)
+        .map((app, index) => ({ [`application_${index}`]: app }))
+        .reduce((applications, app) => Object.assign(applications, app), {}),
+    });
+  }
+  withApplicationEndpoints(count: number = 1) {
+    return this.params({
+      "application-endpoints": crossModelQueryApplicationEndpointFactory
+        .buildList(count)
+        .map((appEndpoint, index) => ({
+          [`appEndpoint_${index}`]: appEndpoint,
+        }))
+        .reduce(
+          (appEndpoints, appEndpoint) =>
+            Object.assign(appEndpoints, appEndpoint),
+          {}
+        ),
+    });
+  }
+  withController() {
+    return this.params({
+      controller: crossModelQueryControllerFactory.build(),
+    });
+  }
+  withMachines(count: number = 1) {
+    return this.params({
+      machines: crossModelQueryMachineFactory
+        .buildList(count)
+        .map((machine, index) => ({ [`machine_${index}`]: machine }))
+        .reduce((machines, machine) => Object.assign(machines, machine), {}),
+    });
+  }
+  withModel() {
+    return this.params({
+      model: crossModelQueryModelFactory.build(),
+    });
+  }
+  withOffers(count: number = 1) {
+    return this.params({
+      offers: crossModelQueryOfferFactory
+        .buildList(count)
+        .map((offer, index) => ({ [`offer_${index}`]: offer }))
+        .reduce((offers, offer) => Object.assign(offers, offer), {}),
+    });
+  }
+}
+
+export const crossModelQueryFactory = CrossModelQueryFactory.define(() => ({}));
 
 export const crossModelQueryApplicationEndpointFactory =
   Factory.define<CrossModelQueryApplicationEndpoint>(() => ({
     "mysql-cmi": {
       "application-status": crossModelQueryStatusFactory.build(),
-      endpoints: { mysql: { interface: "mysql", role: "provider" } },
+      endpoints: { mysql: crossModelQueryEndpointFactory.build() },
       relations: { mysql: ["slurmdbd"] },
       url: "jaas-staging:huwshimi@external/cmi-provider.mysql-cmi",
     },
@@ -78,8 +130,28 @@ export const crossModelQueryModelFactory = Factory.define<CrossModelQueryModel>(
   })
 );
 
+export const crossModelQueryOfferFactory = Factory.define<CrossModelQueryOffer>(
+  () => ({
+    application: "mysql",
+    charm: "ch:amd64/jammy/mysql-151",
+    endpoints: { mysql: crossModelQueryEndpointFactory.build() },
+    "total-connected-count": 1,
+  })
+);
+
 export const crossModelQueryStatusFactory =
   Factory.define<CrossModelQueryStatus>(() => ({
     current: "pending",
     since: "16 Aug 2023 10:33:46+10:00",
+  }));
+
+export const crossModelQueryEndpointFactory =
+  Factory.define<CrossModelQueryEndpoint>(() => ({
+    interface: "mysql",
+    role: "provider",
+  }));
+
+export const crossModelQueryControllerFactory =
+  Factory.define<CrossModelQueryController>(() => ({
+    timestamp: "10:51:03+10:00",
   }));

@@ -1,10 +1,7 @@
 export type CrossModelQuery = {
   "application-endpoints"?: Record<string, CrossModelQueryApplicationEndpoint>;
   applications?: Record<string, CrossModelQueryApplication>;
-  controller?: {
-    timestamp?: string;
-    [key: string]: unknown;
-  };
+  controller?: CrossModelQueryController;
   machines?: Record<string, CrossModelQueryMachine>;
   model?: CrossModelQueryModel;
   offers?: Record<string, CrossModelQueryOffer>;
@@ -61,6 +58,11 @@ export type CrossModelQueryStatus = {
   current?: string;
   message?: string;
   since?: string;
+  [key: string]: unknown;
+};
+
+export type CrossModelQueryController = {
+  timestamp?: string;
   [key: string]: unknown;
 };
 
