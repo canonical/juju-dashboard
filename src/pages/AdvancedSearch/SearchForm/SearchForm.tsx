@@ -4,6 +4,7 @@ import { Field, Form, Formik } from "formik";
 import { useEffect, useRef } from "react";
 
 import { copyToClipboard } from "components/utils";
+import useLocalStorage from "hooks/useLocalStorage";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getControllerConnection,
@@ -18,17 +19,18 @@ import {
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
+import SearchHistoryMenu from "./SearchHistoryMenu/SearchHistoryMenu";
+import type { FormFields } from "./types";
+
 export enum Label {
   SEARCH = "Search",
   COPY_JSON = "Copy JSON",
 }
 
-type Fields = {
-  query: string;
-};
+export const QUERY_HISTORY_KEY = "queryHistory";
 
 const SearchForm = (): JSX.Element => {
-  const formikRef = useRef<FormikProps<Fields>>(null);
+  const formikRef = useRef<FormikProps<FormFields>>(null);
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const hasControllerConnection = useAppSelector((state) =>
@@ -38,6 +40,10 @@ const SearchForm = (): JSX.Element => {
     q: "",
   });
   const jqParam = decodeURIComponent(queryParams.q);
+  const [queryHistory, setQueryHistory] = useLocalStorage<string[]>(
+    QUERY_HISTORY_KEY,
+    []
+  );
   const crossModelQueryResultsJSON = JSON.stringify(
     useAppSelector(getCrossModelQueryResults),
     null,
@@ -60,7 +66,7 @@ const SearchForm = (): JSX.Element => {
   }, [dispatch, hasControllerConnection, jqParam, wsControllerURL]);
 
   return (
-    <Formik<Fields>
+    <Formik<FormFields>
       initialValues={{
         query: jqParam,
       }}
@@ -69,6 +75,11 @@ const SearchForm = (): JSX.Element => {
         const { query } = values;
         if (query) {
           setQueryParams({ q: encodeURIComponent(query) });
+          setQueryHistory([
+            query,
+            // Remove old queries that match the new one.
+            ...queryHistory.filter((previous) => previous !== query),
+          ]);
         }
       }}
     >
@@ -89,6 +100,10 @@ const SearchForm = (): JSX.Element => {
               rows={8}
             />
             <Button type="submit">{Label.SEARCH}</Button>
+            <SearchHistoryMenu
+              queryHistory={queryHistory}
+              setQueryHistory={setQueryHistory}
+            />
             <Button
               type="button"
               onClick={() => copyToClipboard(crossModelQueryResultsJSON)}
