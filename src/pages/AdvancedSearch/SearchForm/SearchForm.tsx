@@ -3,6 +3,7 @@ import type { FormikProps } from "formik";
 import { Field, Form, Formik } from "formik";
 import { useEffect, useRef } from "react";
 
+import useLocalStorage from "hooks/useLocalStorage";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getControllerConnection,
@@ -11,12 +12,17 @@ import {
 import { actions as jujuActions } from "store/juju";
 import { useAppDispatch, useAppSelector } from "store/store";
 
-type Fields = {
-  query: string;
-};
+import SearchHistoryMenu from "./SearchHistoryMenu/SearchHistoryMenu";
+import type { FormFields } from "./types";
+
+export enum Label {
+  SEARCH = "Search",
+}
+
+export const QUERY_HISTORY_KEY = "queryHistory";
 
 const SearchForm = (): JSX.Element => {
-  const formikRef = useRef<FormikProps<Fields>>(null);
+  const formikRef = useRef<FormikProps<FormFields>>(null);
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const hasControllerConnection = useAppSelector((state) =>
@@ -26,6 +32,10 @@ const SearchForm = (): JSX.Element => {
     q: "",
   });
   const jqParam = decodeURIComponent(queryParams.q);
+  const [queryHistory, setQueryHistory] = useLocalStorage<string[]>(
+    QUERY_HISTORY_KEY,
+    []
+  );
 
   useEffect(() => {
     if (jqParam && hasControllerConnection && wsControllerURL) {
@@ -39,7 +49,7 @@ const SearchForm = (): JSX.Element => {
   }, [dispatch, hasControllerConnection, jqParam, wsControllerURL]);
 
   return (
-    <Formik<Fields>
+    <Formik<FormFields>
       initialValues={{
         query: jqParam,
       }}
@@ -48,6 +58,11 @@ const SearchForm = (): JSX.Element => {
         const { query } = values;
         if (query) {
           setQueryParams({ q: encodeURIComponent(query) });
+          setQueryHistory([
+            query,
+            // Remove old queries that match the new one.
+            ...queryHistory.filter((previous) => previous !== query),
+          ]);
         }
       }}
     >
@@ -67,7 +82,11 @@ const SearchForm = (): JSX.Element => {
               name="query"
               rows={8}
             />
-            <Button type="submit">Search</Button>
+            <Button type="submit">{Label.SEARCH}</Button>
+            <SearchHistoryMenu
+              queryHistory={queryHistory}
+              setQueryHistory={setQueryHistory}
+            />
           </Col>
         </Row>
       </Form>

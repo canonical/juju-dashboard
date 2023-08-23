@@ -7,7 +7,7 @@ import { rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import { renderComponent } from "testing/utils";
 
-import SearchForm from "./SearchForm";
+import SearchForm, { Label, QUERY_HISTORY_KEY } from "./SearchForm";
 
 describe("SearchForm", () => {
   let state: RootState;
@@ -23,6 +23,10 @@ describe("SearchForm", () => {
         }),
       }),
     });
+  });
+
+  afterEach(() => {
+    localStorage.clear();
   });
 
   it("should initialise the form with the query from the URL", async () => {
@@ -48,5 +52,29 @@ describe("SearchForm", () => {
     renderComponent(<SearchForm />, { state });
     await userEvent.type(screen.getByRole("textbox"), ".applications{Enter}");
     expect(window.location.search).toBe("?q=.applications");
+  });
+
+  it("should store the query in local storage when submitting the form", async () => {
+    renderComponent(<SearchForm />, { state });
+    await userEvent.type(screen.getByRole("textbox"), ".applications");
+    await userEvent.click(screen.getByRole("button", { name: Label.SEARCH }));
+    expect(window.localStorage.getItem(QUERY_HISTORY_KEY)).toBe(
+      JSON.stringify([".applications"])
+    );
+  });
+
+  it("should move duplicate queries to the top in local storage", async () => {
+    renderComponent(<SearchForm />, { state });
+    await userEvent.type(screen.getByRole("textbox"), ".applications{Enter}");
+    await userEvent.clear(screen.getByRole("textbox"));
+    await userEvent.type(screen.getByRole("textbox"), ".machines{Enter}");
+    expect(window.localStorage.getItem(QUERY_HISTORY_KEY)).toBe(
+      JSON.stringify([".machines", ".applications"])
+    );
+    await userEvent.clear(screen.getByRole("textbox"));
+    await userEvent.type(screen.getByRole("textbox"), ".applications{Enter}");
+    expect(window.localStorage.getItem(QUERY_HISTORY_KEY)).toBe(
+      JSON.stringify([".applications", ".machines"])
+    );
   });
 });
