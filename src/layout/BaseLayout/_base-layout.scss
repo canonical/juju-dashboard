@@ -142,7 +142,13 @@
   // sticky from being used by the the entity details sidebar.
   overflow-y: visible !important;
 
-  .l-navigation.is-pinned + .l-main {
-    padding-left: 0;
+  .l-navigation.is-pinned {
+    + .l-main {
+      padding-left: 0;
+    }
+
+    @include desktop {
+      position: sticky;
+    }
   }
 }
