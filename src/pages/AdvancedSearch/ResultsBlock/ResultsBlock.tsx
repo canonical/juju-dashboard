@@ -4,6 +4,7 @@ import {
   Spinner,
 } from "@canonical/react-components";
 import { useEffect, useState } from "react";
+import { JSONTree } from "react-json-tree";
 
 import { actions as jujuActions } from "store/juju";
 import {
@@ -30,10 +31,7 @@ const ResultsBlock = (): JSX.Element | null => {
   const [codeSnippetView, setCodeSnippetView] = useState<CodeSnippetView>(
     CodeSnippetView.TREE
   );
-  const codeSnippetContent = {
-    tree: "",
-    json: JSON.stringify(crossModelQueryResults, null, 2),
-  };
+  const resultsJSON = JSON.stringify(crossModelQueryResults, null, 2);
 
   useEffect(
     () => () => {
@@ -43,10 +41,8 @@ const ResultsBlock = (): JSX.Element | null => {
     [dispatch]
   );
 
-  if (!isCrossModelQueryLoaded) {
-    return null;
-  }
-
+  // The loading state needs to be first so that it appears even if the results
+  // have never loaded.
   if (isCrossModelQueryLoading) {
     return (
       <div className="u-align--center">
@@ -58,9 +54,12 @@ const ResultsBlock = (): JSX.Element | null => {
     );
   }
 
+  if (!isCrossModelQueryLoaded) {
+    return null;
+  }
+
   return (
     <>
-      <hr />
       <CodeSnippet
         blocks={[
           {
@@ -68,7 +67,18 @@ const ResultsBlock = (): JSX.Element | null => {
               codeSnippetView === CodeSnippetView.JSON
                 ? CodeSnippetBlockAppearance.NUMBERED
                 : undefined,
-            code: codeSnippetContent[codeSnippetView],
+            code:
+              codeSnippetView === CodeSnippetView.JSON ? (
+                resultsJSON
+              ) : (
+                <JSONTree
+                  data={crossModelQueryResults}
+                  hideRoot
+                  shouldExpandNodeInitially={(keyPath, data, level) =>
+                    level <= 2
+                  }
+                />
+              ),
             dropdowns: [
               {
                 options: [
