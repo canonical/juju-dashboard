@@ -1,13 +1,20 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import * as componentUtils from "components/utils";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
+import { crossModelQueryFactory } from "testing/factories/juju/jimm";
 import { renderComponent } from "testing/utils";
 
 import SearchForm, { Label, QUERY_HISTORY_KEY } from "./SearchForm";
+
+jest.mock("components/utils", () => ({
+  ...jest.requireActual("components/utils"),
+  copyToClipboard: jest.fn(),
+}));
 
 describe("SearchForm", () => {
   let state: RootState;
@@ -75,6 +82,56 @@ describe("SearchForm", () => {
     await userEvent.type(screen.getByRole("textbox"), ".applications{Enter}");
     expect(window.localStorage.getItem(QUERY_HISTORY_KEY)).toBe(
       JSON.stringify([".applications", ".machines"])
+    );
+  });
+
+  it("should have the copy json button dissabled when cross model query isn't loaded", () => {
+    renderComponent(<SearchForm />, { state, url: "/q=." });
+    expect(
+      screen.getByRole("button", {
+        name: Label.COPY_JSON,
+      })
+    ).toBeDisabled();
+  });
+
+  it("should have the copy json button dissabled when cross model query is loading", () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.loading = true;
+    renderComponent(<SearchForm />, { state, url: "/q=." });
+    expect(
+      screen.getByRole("button", {
+        name: Label.COPY_JSON,
+      })
+    ).toBeDisabled();
+  });
+
+  it("should have the copy json button dissabled when cross model query returns error", () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.loading = false;
+    state.juju.crossModelQuery.errors = "mockErrors";
+    renderComponent(<SearchForm />, { state, url: "/q=." });
+    expect(
+      screen.getByRole("button", {
+        name: Label.COPY_JSON,
+      })
+    ).toBeDisabled();
+  });
+
+  it("should copy the cross-model query results", async () => {
+    const mockResults = {
+      mockModelUUID: [crossModelQueryFactory.withApplications().build()],
+    };
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.loading = false;
+    state.juju.crossModelQuery.results = mockResults;
+    renderComponent(<SearchForm />, { state, url: "/q=." });
+    const copyJSONButton = screen.getByRole("button", {
+      name: Label.COPY_JSON,
+    });
+    expect(copyJSONButton).toBeEnabled();
+    await userEvent.click(copyJSONButton);
+    expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(
+      JSON.stringify(mockResults, null, 2)
     );
   });
 });

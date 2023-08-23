@@ -3,6 +3,7 @@ import type { FormikProps } from "formik";
 import { Field, Form, Formik } from "formik";
 import { useEffect, useRef } from "react";
 
+import { copyToClipboard } from "components/utils";
 import useLocalStorage from "hooks/useLocalStorage";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
@@ -10,6 +11,12 @@ import {
   getWSControllerURL,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
+import {
+  getCrossModelQueryErrors,
+  getCrossModelQueryLoaded,
+  getCrossModelQueryLoading,
+  getCrossModelQueryResults,
+} from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import SearchHistoryMenu from "./SearchHistoryMenu/SearchHistoryMenu";
@@ -17,6 +24,7 @@ import type { FormFields } from "./types";
 
 export enum Label {
   SEARCH = "Search",
+  COPY_JSON = "Copy JSON",
 }
 
 export const QUERY_HISTORY_KEY = "queryHistory";
@@ -36,6 +44,15 @@ const SearchForm = (): JSX.Element => {
     QUERY_HISTORY_KEY,
     []
   );
+  const crossModelQueryResultsJSON = JSON.stringify(
+    useAppSelector(getCrossModelQueryResults),
+    null,
+    2
+  );
+  const isCrossModelQueryLoaded = useAppSelector(getCrossModelQueryLoaded);
+  const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
+  const isCrossModelQueryError =
+    useAppSelector(getCrossModelQueryErrors) !== null;
 
   useEffect(() => {
     if (jqParam && hasControllerConnection && wsControllerURL) {
@@ -87,6 +104,17 @@ const SearchForm = (): JSX.Element => {
               queryHistory={queryHistory}
               setQueryHistory={setQueryHistory}
             />
+            <Button
+              type="button"
+              onClick={() => copyToClipboard(crossModelQueryResultsJSON)}
+              disabled={
+                !isCrossModelQueryLoaded ||
+                isCrossModelQueryLoading ||
+                isCrossModelQueryError
+              }
+            >
+              {Label.COPY_JSON}
+            </Button>
           </Col>
         </Row>
       </Form>
