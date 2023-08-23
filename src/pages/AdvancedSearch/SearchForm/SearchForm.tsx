@@ -1,7 +1,7 @@
-import { Button, Col, Row, Textarea } from "@canonical/react-components";
+import { Button, Textarea } from "@canonical/react-components";
 import type { FormikProps } from "formik";
 import { Field, Form, Formik } from "formik";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { copyToClipboard } from "components/utils";
 import useLocalStorage from "hooks/useLocalStorage";
@@ -19,12 +19,14 @@ import {
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
-import SearchHistoryMenu from "./SearchHistoryMenu/SearchHistoryMenu";
+import SearchHelp from "./SearchHelp";
+import SearchHistoryMenu from "./SearchHistoryMenu";
 import type { FormFields } from "./types";
 
 import "./_search-form.scss";
 
 export enum Label {
+  HELP = "Help",
   SEARCH = "Search",
   COPY_JSON = "Copy JSON",
 }
@@ -56,6 +58,18 @@ const SearchForm = (): JSX.Element => {
   const isCrossModelQueryError =
     useAppSelector(getCrossModelQueryErrors) !== null;
 
+  const search = useCallback(
+    (query: string) => {
+      setQueryParams({ q: encodeURIComponent(query) });
+      setQueryHistory([
+        query,
+        // Remove old queries that match the new one.
+        ...queryHistory.filter((previous) => previous !== query),
+      ]);
+    },
+    [queryHistory, setQueryHistory, setQueryParams]
+  );
+
   useEffect(() => {
     if (jqParam && hasControllerConnection && wsControllerURL) {
       dispatch(
@@ -76,18 +90,13 @@ const SearchForm = (): JSX.Element => {
       onSubmit={(values) => {
         const { query } = values;
         if (query) {
-          setQueryParams({ q: encodeURIComponent(query) });
-          setQueryHistory([
-            query,
-            // Remove old queries that match the new one.
-            ...queryHistory.filter((previous) => previous !== query),
-          ]);
+          search(query);
         }
       }}
     >
-      <Form data-testid="search-form">
-        <Row className="u-no-padding">
-          <Col size={6}>
+      <Form data-testid="search-form" className="search-form">
+        <div className="search-form__fields">
+          <div className="search-form__field">
             <Field
               as={Textarea}
               onKeyDown={(event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -101,9 +110,12 @@ const SearchForm = (): JSX.Element => {
               name="query"
               rows={8}
             />
+          </div>
+          <div className="search-form__controls">
             <Button type="submit">{Label.SEARCH}</Button>
             <SearchHistoryMenu
               queryHistory={queryHistory}
+              search={search}
               setQueryHistory={setQueryHistory}
             />
             <Button
@@ -118,8 +130,11 @@ const SearchForm = (): JSX.Element => {
             >
               {Label.COPY_JSON}
             </Button>
-          </Col>
-        </Row>
+          </div>
+          <div className="search-form__help">
+            <SearchHelp search={search} />
+          </div>
+        </div>
       </Form>
     </Formik>
   );
