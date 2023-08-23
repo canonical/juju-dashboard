@@ -22,6 +22,8 @@ import { useAppDispatch, useAppSelector } from "store/store";
 import SearchHistoryMenu from "./SearchHistoryMenu/SearchHistoryMenu";
 import type { FormFields } from "./types";
 
+import "./_search-form.scss";
+
 export enum Label {
   SEARCH = "Search",
   COPY_JSON = "Copy JSON",
@@ -106,6 +108,7 @@ const SearchForm = (): JSX.Element => {
             />
             <Button
               type="button"
+              className="copy-json"
               onClick={() => copyToClipboard(crossModelQueryResultsJSON)}
               disabled={
                 !isCrossModelQueryLoaded ||
