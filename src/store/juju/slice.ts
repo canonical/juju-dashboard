@@ -141,7 +141,7 @@ const slice = createSlice({
         ? payload.results
         : null;
       state.crossModelQuery.errors =
-        isCrossModelQueryResponse(payload) && Object.keys(payload).length
+        isCrossModelQueryResponse(payload) && Object.keys(payload.errors).length
           ? payload.errors
           : typeof payload === "string"
           ? payload
