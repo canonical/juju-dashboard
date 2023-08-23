@@ -11,6 +11,7 @@ import {
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import {
+  getCrossModelQueryErrors,
   getCrossModelQueryLoaded,
   getCrossModelQueryLoading,
   getCrossModelQueryResults,
@@ -44,6 +45,8 @@ const SearchForm = (): JSX.Element => {
   );
   const isCrossModelQueryLoaded = useAppSelector(getCrossModelQueryLoaded);
   const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
+  const isCrossModelQueryError =
+    useAppSelector(getCrossModelQueryErrors) !== null;
 
   useEffect(() => {
     if (jqParam && hasControllerConnection && wsControllerURL) {
@@ -89,7 +92,11 @@ const SearchForm = (): JSX.Element => {
             <Button
               type="button"
               onClick={() => copyToClipboard(crossModelQueryResultsJSON)}
-              disabled={!isCrossModelQueryLoaded || isCrossModelQueryLoading}
+              disabled={
+                !isCrossModelQueryLoaded ||
+                isCrossModelQueryLoading ||
+                isCrossModelQueryError
+              }
             >
               {Label.COPY_JSON}
             </Button>

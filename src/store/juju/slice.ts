@@ -140,9 +140,12 @@ const slice = createSlice({
       state.crossModelQuery.results = isCrossModelQueryResponse(payload)
         ? payload.results
         : null;
-      state.crossModelQuery.errors = isCrossModelQueryResponse(payload)
-        ? payload.errors
-        : payload;
+      state.crossModelQuery.errors =
+        isCrossModelQueryResponse(payload) && Object.keys(payload).length
+          ? payload.errors
+          : typeof payload === "string"
+          ? payload
+          : null;
       state.crossModelQuery.loaded = true;
       state.crossModelQuery.loading = false;
     },

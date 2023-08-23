@@ -77,6 +77,18 @@ describe("SearchForm", () => {
     ).toBeDisabled();
   });
 
+  it("should have the copy json button dissabled when cross model query returns error", () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.loading = false;
+    state.juju.crossModelQuery.errors = "mockErrors";
+    renderComponent(<SearchForm />, { state, url: "/q=." });
+    expect(
+      screen.getByRole("button", {
+        name: Label.COPY_JSON,
+      })
+    ).toBeDisabled();
+  });
+
   it("should copy the cross-model query results", async () => {
     const mockResults = {
       mockModelUUID: [crossModelQueryFactory.withApplications().build()],
