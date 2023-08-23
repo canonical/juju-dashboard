@@ -191,7 +191,7 @@ describe("reducers", () => {
     });
   });
 
-  it("updateCrossModelQuery with object as error", () => {
+  it("updateCrossModelQuery", () => {
     const state = jujuStateFactory.build({
       crossModelQuery: crossModelQueryStateFactory.build({
         results: null,
@@ -202,53 +202,6 @@ describe("reducers", () => {
     });
     const results = { mockResultKey: ["mockResultValue"] };
     const errors = { mockErrorKey: ["mockErrorValue"] };
-    expect(
-      reducer(state, actions.updateCrossModelQuery({ results, errors }))
-    ).toStrictEqual({
-      ...state,
-      crossModelQuery: crossModelQueryStateFactory.build({
-        results,
-        errors,
-        loaded: true,
-        loading: false,
-      }),
-    });
-  });
-
-  it("updateCrossModelQuery with string as error", () => {
-    const state = jujuStateFactory.build({
-      crossModelQuery: crossModelQueryStateFactory.build({
-        results: null,
-        errors: null,
-        loaded: false,
-        loading: true,
-      }),
-    });
-    const errors = "mockError";
-    expect(reducer(state, actions.updateCrossModelQuery(errors))).toStrictEqual(
-      {
-        ...state,
-        crossModelQuery: crossModelQueryStateFactory.build({
-          results: null,
-          errors,
-          loaded: true,
-          loading: false,
-        }),
-      }
-    );
-  });
-
-  it("updateCrossModelQuery with no error", () => {
-    const state = jujuStateFactory.build({
-      crossModelQuery: crossModelQueryStateFactory.build({
-        results: null,
-        errors: null,
-        loaded: false,
-        loading: true,
-      }),
-    });
-    const results = { mockResultKey: ["mockResultValue"] };
-    const errors = {};
     expect(
       reducer(state, actions.updateCrossModelQuery({ results, errors }))
     ).toStrictEqual({
