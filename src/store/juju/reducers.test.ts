@@ -191,7 +191,7 @@ describe("reducers", () => {
     });
   });
 
-  it("updateCrossModelQuery with object error", () => {
+  it("updateCrossModelQuery with object as error", () => {
     const state = jujuStateFactory.build({
       crossModelQuery: crossModelQueryStateFactory.build({
         results: null,
@@ -215,7 +215,7 @@ describe("reducers", () => {
     });
   });
 
-  it("updateCrossModelQuery with string error", () => {
+  it("updateCrossModelQuery with string as error", () => {
     const state = jujuStateFactory.build({
       crossModelQuery: crossModelQueryStateFactory.build({
         results: null,
@@ -236,6 +236,30 @@ describe("reducers", () => {
         }),
       }
     );
+  });
+
+  it("updateCrossModelQuery with no error", () => {
+    const state = jujuStateFactory.build({
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results: null,
+        errors: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    const results = { mockResultKey: ["mockResultValue"] };
+    const errors = {};
+    expect(
+      reducer(state, actions.updateCrossModelQuery({ results, errors }))
+    ).toStrictEqual({
+      ...state,
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results,
+        errors,
+        loaded: true,
+        loading: false,
+      }),
+    });
   });
 
   it("clearCrossModelQuery", () => {
