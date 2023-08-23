@@ -50,4 +50,18 @@ describe("ResultsBlock", () => {
     await userEvent.selectOptions(codeSnippetDropdownButton, "JSON");
     expect(screen.getByText('"model": {')).toBeVisible();
   });
+
+  it("should show tree of results", async () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.loading = false;
+    state.juju.crossModelQuery.results = {
+      mockModelUUID: [crossModelQueryFactory.withModel().build()],
+    };
+    renderComponent(<ResultsBlock />, { state });
+    const codeSnippetDropdownButton = screen.getByRole("combobox");
+    await userEvent.selectOptions(codeSnippetDropdownButton, "Tree");
+    expect(document.querySelector(".p-code-snippet__block")).toHaveTextContent(
+      "▶mockModelUUID:[] 1 item▶0:{} 1 key▶model:{} 8 keys"
+    );
+  });
 });
