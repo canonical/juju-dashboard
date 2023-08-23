@@ -2,6 +2,8 @@ import { ContextualMenu, Icon } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 
 import { useQueryParams } from "hooks/useQueryParams";
+import { getCrossModelQueryLoading } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import type { FormFields } from "../types";
 
@@ -19,6 +21,7 @@ const SearchHistoryMenu = ({
   queryHistory,
   setQueryHistory,
 }: Props): JSX.Element => {
+  const loading = useAppSelector(getCrossModelQueryLoading);
   const { setFieldValue } = useFormikContext<FormFields>();
   const [, setQueryParams] = useQueryParams<{ q: string }>({
     q: "",
@@ -45,7 +48,7 @@ const SearchHistoryMenu = ({
       ]}
       position="left"
       toggleClassName="has-icon"
-      toggleDisabled={queryHistory.length === 0}
+      toggleDisabled={queryHistory.length === 0 || loading}
       toggleLabel={<Icon name="revisions">{Label.HISTORY}</Icon>}
     />
   );

@@ -2,6 +2,8 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Field, Form, Formik } from "formik";
 
+import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import { crossModelQueryStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import SearchHistoryMenu from "./SearchHistoryMenu";
@@ -14,6 +16,23 @@ describe("SearchHistoryMenu", () => {
         <SearchHistoryMenu queryHistory={[]} setQueryHistory={jest.fn()} />
       </Formik>,
       { url: "/?q=.applications" }
+    );
+    expect(screen.getByRole("button", { name: Label.HISTORY })).toBeDisabled();
+  });
+
+  it("should be disabled while loading", async () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        crossModelQuery: crossModelQueryStateFactory.build({
+          loading: true,
+        }),
+      }),
+    });
+    renderComponent(
+      <Formik initialValues={{ query: "" }} onSubmit={jest.fn()}>
+        <SearchHistoryMenu queryHistory={[]} setQueryHistory={jest.fn()} />
+      </Formik>,
+      { state, url: "/?q=.applications" }
     );
     expect(screen.getByRole("button", { name: Label.HISTORY })).toBeDisabled();
   });
