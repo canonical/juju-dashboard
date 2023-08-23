@@ -406,6 +406,35 @@ describe("Juju API", () => {
         etcd: annotations,
       });
     });
+
+    it("handles string error responses", async () => {
+      const consoleError = console.error;
+      console.error = jest.fn();
+      const loginResponse = {
+        conn: {
+          facades: {
+            client: {
+              fullStatus: jest.fn().mockReturnValue("Uh oh!"),
+            },
+          },
+        } as unknown as Connection,
+        logout: jest.fn(),
+      };
+      jest
+        .spyOn(jujuLib, "connectAndLogin")
+        .mockImplementation(async () => loginResponse);
+      const response = await fetchModelStatus(
+        "abc123",
+        "wss://example.com/api",
+        () => state
+      );
+      expect(response).toBeUndefined();
+      expect(console.error).toHaveBeenCalledWith(
+        "Unable to fetch the status.",
+        "Uh oh!"
+      );
+      console.error = consoleError;
+    });
   });
 
   describe("fetchAndStoreModelStatus", () => {

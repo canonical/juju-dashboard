@@ -232,7 +232,7 @@ export async function fetchModelStatus(
     useIdentityProvider = config?.identityProviderAvailable ?? false;
   }
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
-  let status: FullStatusWithAnnotations | null = null;
+  let status: FullStatusWithAnnotations | string | null = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
   if (isLoggedIn(getState(), wsControllerURL)) {
@@ -247,13 +247,13 @@ export async function fetchModelStatus(
       if (isLoggedIn(getState(), wsControllerURL)) {
         status =
           (await conn?.facades.client?.fullStatus({ patterns: [] })) ?? null;
-        if (!status) {
+        if (!status || typeof status === "string") {
           // XXX If there is an error fetching the full status it's likely that
           // Juju can no longer access this model. At this moment we don't have
           // a location to notify the user. In the new watcher model that's
           // being implemented we will be able to surface this error in the
           // model details page.
-          console.error("Unable to fetch the status.");
+          console.error("Unable to fetch the status.", status);
           return;
         }
       }
