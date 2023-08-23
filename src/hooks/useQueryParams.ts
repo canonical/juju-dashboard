@@ -1,3 +1,4 @@
+import * as DOMPurify from "dompurify";
 import { useCallback } from "react";
 import type { NavigateOptions } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
@@ -32,6 +33,13 @@ export const useQueryParams = <P extends QueryParams>(
               Array.isArray(value) ? value.join(",") : value
             );
           }
+        });
+        // Sanitize all query params keys and values to prevent XSS attacks.
+        searchParams.forEach((value, key) => {
+          if (key !== DOMPurify.sanitize(key)) {
+            searchParams.delete(key);
+          }
+          searchParams.set(DOMPurify.sanitize(key), DOMPurify.sanitize(value));
         });
       }
       setSearchParams(searchParams, options);
