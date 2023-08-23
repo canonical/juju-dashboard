@@ -3274,7 +3274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dompurify@npm:^3.0.2":
+"@types/dompurify@npm:3.0.2":
   version: 3.0.2
   resolution: "@types/dompurify@npm:3.0.2"
   dependencies:
@@ -10147,7 +10147,7 @@ __metadata:
     "@types/classnames": 2.3.1
     "@types/clone-deep": 4.0.1
     "@types/d3": 7.4.0
-    "@types/dompurify": ^3.0.2
+    "@types/dompurify": 3.0.2
     "@types/jest": 29.5.2
     "@types/lodash.mergewith": 4.6.7
     "@types/node": 18.16.18
