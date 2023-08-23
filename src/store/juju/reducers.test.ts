@@ -191,7 +191,7 @@ describe("reducers", () => {
     });
   });
 
-  it("updateCrossModelQuery", () => {
+  it("updateCrossModelQuery with object error", () => {
     const state = jujuStateFactory.build({
       crossModelQuery: crossModelQueryStateFactory.build({
         results: null,
@@ -213,6 +213,29 @@ describe("reducers", () => {
         loading: false,
       }),
     });
+  });
+
+  it("updateCrossModelQuery with string error", () => {
+    const state = jujuStateFactory.build({
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results: null,
+        errors: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    const errors = "mockError";
+    expect(reducer(state, actions.updateCrossModelQuery(errors))).toStrictEqual(
+      {
+        ...state,
+        crossModelQuery: crossModelQueryStateFactory.build({
+          results: null,
+          errors,
+          loaded: true,
+          loading: false,
+        }),
+      }
+    );
   });
 
   it("clearCrossModelQuery", () => {
