@@ -27,7 +27,7 @@ enum CodeSnippetView {
   JSON = "json",
 }
 
-const valueRenderer: ValueRenderer = (_valueAsString, value, ...keyPath) => {
+const valueRenderer: ValueRenderer = (valueAsString, value, ...keyPath) => {
   const currentKey = keyPath[0];
   const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
   // Match a status of the following structure:
@@ -39,14 +39,12 @@ const valueRenderer: ValueRenderer = (_valueAsString, value, ...keyPath) => {
     currentKey === "current" &&
     typeof parentKey === "string" &&
     parentKey.endsWith("-status") &&
-    typeof value === "string"
+    typeof value === "string" &&
+    typeof valueAsString === "string"
   ) {
-    return <Status status={value}>"{value}"</Status>;
+    return <Status status={value}>{valueAsString}</Status>;
   }
-  if (typeof value === "string") {
-    return <>"{value}"</>;
-  }
-  return <>{value}</>;
+  return <>{valueAsString}</>;
 };
 
 const ResultsBlock = (): JSX.Element | null => {

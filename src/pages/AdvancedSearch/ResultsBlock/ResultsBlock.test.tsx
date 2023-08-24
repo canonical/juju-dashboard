@@ -78,7 +78,7 @@ describe("ResultsBlock", () => {
     expect(status).toHaveClass("is-pending");
   });
 
-  it("should put quotes around strings in the tree", async () => {
+  it("displays values in the tree", async () => {
     state.juju.crossModelQuery.loaded = true;
     state.juju.crossModelQuery.results = {
       mockModelUUID: [crossModelQueryFactory.withModel().build()],
