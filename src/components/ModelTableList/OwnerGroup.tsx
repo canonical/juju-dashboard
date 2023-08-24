@@ -3,6 +3,7 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
 
+import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -19,7 +20,6 @@ import {
 
 import AccessButton from "./AccessButton";
 import CloudCell from "./CloudCell/CloudCell";
-import ModelDetailsLink from "./ModelDetailsLink";
 import ModelSummary from "./ModelSummary";
 import {
   generateCloudAndRegion,

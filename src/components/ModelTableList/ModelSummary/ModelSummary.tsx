@@ -1,8 +1,7 @@
 import { Icon, Tooltip } from "@canonical/react-components";
 
+import ModelDetailsLink from "components/ModelDetailsLink";
 import type { ModelData } from "store/juju/types";
-
-import ModelDetailsLink from "../ModelDetailsLink";
 
 export enum Label {
   APPS = "Number of applications",
