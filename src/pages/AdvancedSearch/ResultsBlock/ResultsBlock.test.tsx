@@ -64,4 +64,27 @@ describe("ResultsBlock", () => {
       "▶mockModelUUID:[] 1 item▶0:{} 1 key▶model:{} 8 keys"
     );
   });
+
+  it("should show status icons in the tree", async () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.results = {
+      mockModelUUID: [crossModelQueryFactory.withModel().build()],
+    };
+    renderComponent(<ResultsBlock />, { state });
+    await userEvent.click(screen.getByText("model:"));
+    await userEvent.click(screen.getByText("model-status:"));
+    const status = screen.getByText('"pending"');
+    expect(status).toBeInTheDocument();
+    expect(status).toHaveClass("is-pending");
+  });
+
+  it("should put quotes around strings in the tree", async () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.results = {
+      mockModelUUID: [crossModelQueryFactory.withModel().build()],
+    };
+    renderComponent(<ResultsBlock />, { state });
+    await userEvent.click(screen.getByText("model:"));
+    expect(screen.getByText('"jaas-staging"')).toBeInTheDocument();
+  });
 });

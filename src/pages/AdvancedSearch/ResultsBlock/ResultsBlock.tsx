@@ -4,8 +4,10 @@ import {
   Spinner,
 } from "@canonical/react-components";
 import { useEffect, useState } from "react";
+import type { ValueRenderer } from "react-json-tree";
 import { JSONTree } from "react-json-tree";
 
+import Status from "components/Status";
 import { actions as jujuActions } from "store/juju";
 import {
   getCrossModelQueryLoaded,
@@ -13,6 +15,8 @@ import {
   getCrossModelQueryResults,
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+
+import "./_results-block.scss";
 
 export enum TestId {
   LOADING = "loading",
@@ -22,6 +26,28 @@ enum CodeSnippetView {
   TREE = "tree",
   JSON = "json",
 }
+
+const valueRenderer: ValueRenderer = (_valueAsString, value, ...keyPath) => {
+  const currentKey = keyPath[0];
+  const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
+  // Match a status of the following structure:
+  //   "application-status": {
+  //     "current": "unknown",
+  //     ...
+  //   }
+  if (
+    currentKey === "current" &&
+    typeof parentKey === "string" &&
+    parentKey.endsWith("-status") &&
+    typeof value === "string"
+  ) {
+    return <Status status={value}>"{value}"</Status>;
+  }
+  if (typeof value === "string") {
+    return <>"{value}"</>;
+  }
+  return <>{value}</>;
+};
 
 const ResultsBlock = (): JSX.Element | null => {
   const dispatch = useAppDispatch();
@@ -61,6 +87,7 @@ const ResultsBlock = (): JSX.Element | null => {
   return (
     <>
       <CodeSnippet
+        className="results-block"
         blocks={[
           {
             appearance:
@@ -74,9 +101,10 @@ const ResultsBlock = (): JSX.Element | null => {
                 <JSONTree
                   data={crossModelQueryResults}
                   hideRoot
-                  shouldExpandNodeInitially={(keyPath, data, level) =>
+                  shouldExpandNodeInitially={(_keyPath, _data, level) =>
                     level <= 2
                   }
+                  valueRenderer={valueRenderer}
                 />
               ),
             dropdowns: [
