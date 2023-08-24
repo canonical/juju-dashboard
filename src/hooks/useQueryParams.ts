@@ -37,14 +37,14 @@ export const useQueryParams = <P extends QueryParams>(
         // Sanitize all query params keys and values to prevent XSS attacks.
         searchParams.forEach((value, key) => {
           const sanitizedKey = DOMPurify.sanitize(key);
-          if (key !== DOMPurify.sanitize(key)) {
+          if (key !== sanitizedKey) {
             searchParams.delete(key);
             console.log(
-              `Key ${key} has been changed to ${sanitizedKey} in order to ` +
-                "prevent potential XSS Attacks."
+              `Query param key "${key}" has been changed to "${sanitizedKey}"` +
+                " in order to prevent potential XSS Attacks."
             );
           }
-          searchParams.set(DOMPurify.sanitize(key), DOMPurify.sanitize(value));
+          searchParams.set(sanitizedKey, DOMPurify.sanitize(value));
         });
       }
       setSearchParams(searchParams, options);
@@ -59,11 +59,7 @@ export const useQueryParams = <P extends QueryParams>(
         // Update any array params. If the key is in the URL without a value it
         // will be returned as an empty string.
         params[paramKey] = (
-          value === ""
-            ? []
-            : value
-                .split(",")
-                .map((elementValue) => DOMPurify.sanitize(elementValue))
+          value === "" ? [] : DOMPurify.sanitize(value).split(",")
         ) as P[keyof P];
       } else {
         params[paramKey] = DOMPurify.sanitize(value) as P[keyof P];
