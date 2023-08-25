@@ -27,26 +27,26 @@ enum CodeSnippetView {
   JSON = "json",
 }
 
-const DEFAULT = "#00000099";
+const DEFAULT_THEME_COLOUR = "#00000099";
 
 const THEME = {
   scheme: "Vanilla",
   base00: "#00000000",
-  base01: DEFAULT,
-  base02: DEFAULT,
-  base03: DEFAULT,
-  base04: DEFAULT,
-  base05: DEFAULT,
-  base06: DEFAULT,
+  base01: DEFAULT_THEME_COLOUR,
+  base02: DEFAULT_THEME_COLOUR,
+  base03: DEFAULT_THEME_COLOUR,
+  base04: DEFAULT_THEME_COLOUR,
+  base05: DEFAULT_THEME_COLOUR,
+  base06: DEFAULT_THEME_COLOUR,
   base07: "#000000",
   base08: "#a86500",
   base09: "#c7162b",
-  base0A: DEFAULT,
+  base0A: DEFAULT_THEME_COLOUR,
   base0B: "#0e811f",
-  base0C: DEFAULT,
+  base0C: DEFAULT_THEME_COLOUR,
   base0D: "#000000",
-  base0E: DEFAULT,
-  base0F: DEFAULT,
+  base0E: DEFAULT_THEME_COLOUR,
+  base0F: DEFAULT_THEME_COLOUR,
 };
 
 const valueRenderer: ValueRenderer = (valueAsString, value, ...keyPath) => {
