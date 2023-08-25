@@ -3528,6 +3528,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/prismjs@npm:1.26.0":
+  version: 1.26.0
+  resolution: "@types/prismjs@npm:1.26.0"
+  checksum: cd5e7a6214c1f4213ec512a5fcf6d8fe37a56b813fc57ac95b5ff5ee074742bfdbd2f2730d9fd985205bf4586728e09baa97023f739e5aa1c9735a7c1ecbd11a
+  languageName: node
+  linkType: hard
+
 "@types/prop-types@npm:*, @types/prop-types@npm:^15.7.3":
   version: 15.7.5
   resolution: "@types/prop-types@npm:15.7.5"
@@ -4814,6 +4821,15 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: ef2bcffc7c9a5e4426fc2dbf89bf3a46999a8415c21cd741c3ab3cb4b5ab804aaa3d71ef733f0eda1bcc0b91d9d80f98d33983a66dab9b8bed166ec38f8f8ad1
+  languageName: node
+  linkType: hard
+
+"babel-plugin-prismjs@npm:2.1.0":
+  version: 2.1.0
+  resolution: "babel-plugin-prismjs@npm:2.1.0"
+  peerDependencies:
+    prismjs: ^1.18.0
+  checksum: 8bc59ca46b493cb255ec914e26a0dd39c1aaee881e3701d6726db40152d4a176a96ac1438f80b0d705b188bee4106538de809bc79dff9774400da3d8331affce
   languageName: node
   linkType: hard
 
@@ -10191,6 +10207,7 @@ __metadata:
     "@types/jest": 29.5.2
     "@types/lodash.mergewith": 4.6.7
     "@types/node": 18.16.18
+    "@types/prismjs": 1.26.0
     "@types/react": 18.2.0
     "@types/react-dom": 18.2.0
     "@types/react-table": 7.7.14
@@ -10198,6 +10215,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.59.11
     "@typescript-eslint/parser": 5.59.11
     async-limiter: 2.0.0
+    babel-plugin-prismjs: 2.1.0
     classnames: 2.3.2
     clone-deep: 4.0.1
     d3: 7.8.5
@@ -10218,6 +10236,7 @@ __metadata:
     npm-package-json-lint: 6.4.0
     postcss: 8.4.24
     prettier: 2.8.8
+    prismjs: 1.29.0
     process: 0.11.10
     react: 18.2.0
     react-anchorme: 3.0.0
@@ -12605,6 +12624,13 @@ __metadata:
     ansi-styles: ^5.0.0
     react-is: ^18.0.0
   checksum: 4065356b558e6db25b4d41a01efb386935a6c06a0c9c104ef5ce59f2f476b8210edb8b3949b386e60ada0a6dc5ebcb2e6ccddc8c64dfd1a9943c3c3a9e7eaf89
+  languageName: node
+  linkType: hard
+
+"prismjs@npm:1.29.0":
+  version: 1.29.0
+  resolution: "prismjs@npm:1.29.0"
+  checksum: 007a8869d4456ff8049dc59404e32d5666a07d99c3b0e30a18bd3b7676dfa07d1daae9d0f407f20983865fd8da56de91d09cb08e6aa61f5bc420a27c0beeaf93
   languageName: node
   linkType: hard
 

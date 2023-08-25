@@ -3,6 +3,7 @@ import {
   CodeSnippetBlockAppearance,
   Spinner,
 } from "@canonical/react-components";
+import Prism from "prismjs";
 import { useEffect, useState } from "react";
 import { JSONTree } from "react-json-tree";
 
@@ -13,6 +14,8 @@ import {
   getCrossModelQueryResults,
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+
+import "./prism.css";
 
 export enum TestId {
   LOADING = "loading",
@@ -41,6 +44,12 @@ const ResultsBlock = (): JSX.Element | null => {
     [dispatch]
   );
 
+  useEffect(() => {
+    if (codeSnippetView === CodeSnippetView.JSON && !isCrossModelQueryLoading) {
+      Prism.highlightAll();
+    }
+  }, [codeSnippetView, isCrossModelQueryLoading]);
+
   // The loading state needs to be first so that it appears even if the results
   // have never loaded.
   if (isCrossModelQueryLoading) {
@@ -59,50 +68,51 @@ const ResultsBlock = (): JSX.Element | null => {
   }
 
   return (
-    <>
-      <CodeSnippet
-        blocks={[
-          {
-            appearance:
-              codeSnippetView === CodeSnippetView.JSON
-                ? CodeSnippetBlockAppearance.NUMBERED
-                : undefined,
-            code:
-              codeSnippetView === CodeSnippetView.JSON ? (
-                resultsJSON
-              ) : (
-                <JSONTree
-                  data={crossModelQueryResults}
-                  hideRoot
-                  shouldExpandNodeInitially={(keyPath, data, level) =>
-                    level <= 2
-                  }
-                />
-              ),
-            dropdowns: [
-              {
-                options: [
-                  {
-                    value: CodeSnippetView.TREE,
-                    label: "Tree",
-                  },
-                  {
-                    value: CodeSnippetView.JSON,
-                    label: "JSON",
-                  },
-                ],
-                value: codeSnippetView,
-                onChange: (event) => {
-                  setCodeSnippetView(
-                    (event.target as HTMLSelectElement).value as CodeSnippetView
-                  );
+    <CodeSnippet
+      className={
+        codeSnippetView === CodeSnippetView.JSON
+          ? "language-json keep-markup"
+          : null
+      }
+      blocks={[
+        {
+          appearance:
+            codeSnippetView === CodeSnippetView.JSON
+              ? CodeSnippetBlockAppearance.NUMBERED
+              : undefined,
+          code:
+            codeSnippetView === CodeSnippetView.JSON ? (
+              resultsJSON
+            ) : (
+              <JSONTree
+                data={crossModelQueryResults}
+                hideRoot
+                shouldExpandNodeInitially={(keyPath, data, level) => level <= 2}
+              />
+            ),
+          dropdowns: [
+            {
+              options: [
+                {
+                  value: CodeSnippetView.TREE,
+                  label: "Tree",
                 },
+                {
+                  value: CodeSnippetView.JSON,
+                  label: "JSON",
+                },
+              ],
+              value: codeSnippetView,
+              onChange: (event) => {
+                setCodeSnippetView(
+                  (event.target as HTMLSelectElement).value as CodeSnippetView
+                );
               },
-            ],
-          },
-        ]}
-      />
-    </>
+            },
+          ],
+        },
+      ]}
+    />
   );
 };
 
