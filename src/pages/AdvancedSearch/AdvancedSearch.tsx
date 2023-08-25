@@ -2,6 +2,7 @@ import FadeIn from "animations/FadeIn";
 import Header from "components/Header/Header";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
+import ErrorsBlock from "./ErrorsBlock";
 import ResultsBlock from "./ResultsBlock";
 import SearchForm from "./SearchForm";
 
@@ -14,6 +15,7 @@ const AdvancedSearch = (): JSX.Element => (
       <FadeIn isActive={true}>
         <>
           <SearchForm />
+          <ErrorsBlock />
           <ResultsBlock />
         </>
       </FadeIn>

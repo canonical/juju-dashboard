@@ -61,6 +61,7 @@
     "formik": "2.4.1",
     "framer-motion": "10.12.16",
     "fuse.js": "6.6.2",
+    "lodash": "4.17.21",
     "lodash.mergewith": "4.6.2",
     "process": "0.11.10",
     "react": "18.2.0",

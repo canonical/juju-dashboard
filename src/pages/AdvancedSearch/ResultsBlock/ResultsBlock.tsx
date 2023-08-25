@@ -11,6 +11,7 @@ import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import { actions as jujuActions } from "store/juju";
 import {
+  getCrossModelQueryErrors,
   getCrossModelQueryLoaded,
   getCrossModelQueryLoading,
   getCrossModelQueryResults,
@@ -93,6 +94,7 @@ const ResultsBlock = (): JSX.Element | null => {
   const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
   const isCrossModelQueryLoaded = useAppSelector(getCrossModelQueryLoaded);
   const crossModelQueryResults = useAppSelector(getCrossModelQueryResults);
+  const crossModelQueryErrors = useAppSelector(getCrossModelQueryErrors);
   const [codeSnippetView, setCodeSnippetView] = useState<CodeSnippetView>(
     CodeSnippetView.TREE
   );
@@ -119,7 +121,7 @@ const ResultsBlock = (): JSX.Element | null => {
     );
   }
 
-  if (!isCrossModelQueryLoaded) {
+  if (!isCrossModelQueryLoaded || !!crossModelQueryErrors) {
     return null;
   }
 
@@ -129,6 +131,7 @@ const ResultsBlock = (): JSX.Element | null => {
         className="results-block"
         blocks={[
           {
+            title: "Results",
             appearance:
               codeSnippetView === CodeSnippetView.JSON
                 ? CodeSnippetBlockAppearance.NUMBERED
