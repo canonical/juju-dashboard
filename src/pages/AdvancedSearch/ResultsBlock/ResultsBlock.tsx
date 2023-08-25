@@ -4,9 +4,10 @@ import {
   Spinner,
 } from "@canonical/react-components";
 import { useEffect, useState } from "react";
-import type { ValueRenderer } from "react-json-tree";
+import type { LabelRenderer, ValueRenderer } from "react-json-tree";
 import { JSONTree } from "react-json-tree";
 
+import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import { actions as jujuActions } from "store/juju";
 import {
@@ -47,6 +48,24 @@ const THEME = {
   base0D: "#000000",
   base0E: DEFAULT_THEME_COLOUR,
   base0F: DEFAULT_THEME_COLOUR,
+};
+
+const labelRenderer: LabelRenderer = (keyPath) => {
+  const currentKey = keyPath[0];
+  // If this is a top level key then it is a model UUID.
+  if (keyPath.length === 1) {
+    return (
+      <ModelDetailsLink
+        // Prevent toggling the object when the link is clicked.
+        onClick={(event) => event.stopPropagation()}
+        title={`UUID: ${currentKey}`}
+        uuid={currentKey.toString()}
+      >
+        {currentKey}:
+      </ModelDetailsLink>
+    );
+  }
+  return <>{currentKey}:</>;
 };
 
 const valueRenderer: ValueRenderer = (valueAsString, value, ...keyPath) => {
@@ -121,7 +140,8 @@ const ResultsBlock = (): JSX.Element | null => {
                 <JSONTree
                   data={crossModelQueryResults}
                   hideRoot
-                  shouldExpandNodeInitially={(_keyPath, _data, level) =>
+                  labelRenderer={labelRenderer}
+                  shouldExpandNodeInitially={(keyPath, data, level) =>
                     level <= 2
                   }
                   theme={THEME}

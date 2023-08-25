@@ -113,8 +113,8 @@ export const getModelList = createSelector(
   Get a model by UUID.
 */
 export const getModelByUUID = createSelector(
-  [getModelList, (_, uuid: string) => uuid],
-  (modelList, uuid) => modelList?.[uuid]
+  [getModelList, (_, uuid?: string) => uuid],
+  (modelList, uuid) => (uuid ? modelList?.[uuid] : null)
 );
 
 export const getModelDataByUUID = createSelector(
@@ -217,7 +217,7 @@ export const getModelAccess = createSelector(
   (model, modelData, activeUser, state) => {
     const controllerAccess = getActiveUserControllerAccess(
       state,
-      model.wsControllerURL
+      model?.wsControllerURL
     );
     const modelUser = (modelData?.info?.users ?? []).find(
       ({ user }) => user === activeUser
