@@ -2,13 +2,16 @@ import {
   CodeSnippet,
   CodeSnippetBlockAppearance,
   Spinner,
+  Tooltip,
 } from "@canonical/react-components";
+import { isValid, parseISO } from "date-fns";
 import { useEffect, useState } from "react";
 import type { LabelRenderer, ValueRenderer } from "react-json-tree";
 import { JSONTree } from "react-json-tree";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
+import { formatFriendlyDateToNow } from "components/utils";
 import { actions as jujuActions } from "store/juju";
 import {
   getCrossModelQueryLoaded,
@@ -84,6 +87,14 @@ const valueRenderer: ValueRenderer = (valueAsString, value, ...keyPath) => {
     typeof valueAsString === "string"
   ) {
     return <Status status={value}>{valueAsString}</Status>;
+  }
+  // Display date values as tooltip with relative date.
+  if (typeof value === "string" && isValid(parseISO(value))) {
+    return (
+      <Tooltip message={new Date(value).toLocaleString()}>
+        {formatFriendlyDateToNow(value)}
+      </Tooltip>
+    );
   }
   return <>{valueAsString}</>;
 };

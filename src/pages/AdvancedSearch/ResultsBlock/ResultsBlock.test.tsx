@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { formatFriendlyDateToNow } from "components/utils";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
@@ -106,5 +107,16 @@ describe("ResultsBlock", () => {
     renderComponent(<ResultsBlock />, { state });
     await userEvent.click(screen.getByText("model:"));
     expect(screen.getByText('"jaas-staging"')).toBeInTheDocument();
+  });
+
+  it("should show relative time in the tree", () => {
+    const pastDate = "2023-08-16 00:42:59Z";
+    const relativeTimeFromPastDate = formatFriendlyDateToNow(pastDate);
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.results = {
+      mockModelUUID: [{ time: "2023-08-16 00:42:59Z" }],
+    };
+    renderComponent(<ResultsBlock />, { state });
+    expect(screen.getByText(relativeTimeFromPastDate)).toBeVisible();
   });
 });
