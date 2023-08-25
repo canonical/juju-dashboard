@@ -53,8 +53,6 @@ const THEME = {
 
 const getTab = (key: string) => {
   switch (key) {
-    case "action-logs":
-      return ModelTab.ACTION_LOGS;
     case "applications":
     case "offers":
       return ModelTab.APPS;
