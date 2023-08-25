@@ -55,7 +55,12 @@ const labelRenderer: LabelRenderer = (keyPath) => {
   // If this is a top level key then it is a model UUID.
   if (keyPath.length === 1) {
     return (
-      <ModelDetailsLink uuid={currentKey.toString()}>
+      <ModelDetailsLink
+        // Prevent toggling the object when the link is clicked.
+        onClick={(event) => event.stopPropagation()}
+        title={`UUID: ${currentKey}`}
+        uuid={currentKey.toString()}
+      >
         {currentKey}:
       </ModelDetailsLink>
     );
