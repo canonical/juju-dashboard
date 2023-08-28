@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import type { LabelRenderer, ValueRenderer } from "react-json-tree";
 import { JSONTree } from "react-json-tree";
 
-import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import { actions as jujuActions } from "store/juju";
 import {
@@ -16,8 +15,10 @@ import {
   getCrossModelQueryResults,
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { ModelTab } from "urls";
 
 import "./_results-block.scss";
+import ResultsModelLink from "../ResultsModelLink";
 
 export enum TestId {
   LOADING = "loading",
@@ -50,22 +51,55 @@ const THEME = {
   base0F: DEFAULT_THEME_COLOUR,
 };
 
+const getTab = (key: string) => {
+  switch (key) {
+    case "applications":
+    case "offers":
+      return ModelTab.APPS;
+    case "machines":
+      return ModelTab.MACHINES;
+    case "relations":
+      return ModelTab.INTEGRATIONS;
+    default:
+      return;
+  }
+};
+
 const labelRenderer: LabelRenderer = (keyPath) => {
   const currentKey = keyPath[0];
+  // The last item in keyPath should always be the model UUID.
+  const modelUUID = keyPath[keyPath.length - 1];
+  if (!modelUUID || typeof modelUUID !== "string") {
+    // If this is not a value that can be displayed then display "[none]" instead.
+    return <span className="u-text--muted">[none]:</span>;
+  }
   // If this is a top level key then it is a model UUID.
   if (keyPath.length === 1) {
     return (
-      <ModelDetailsLink
-        // Prevent toggling the object when the link is clicked.
-        onClick={(event) => event.stopPropagation()}
-        title={`UUID: ${currentKey}`}
-        uuid={currentKey.toString()}
-      >
-        {currentKey}:
-      </ModelDetailsLink>
+      <ResultsModelLink
+        replaceLabel
+        title={`UUID: ${modelUUID}`}
+        uuid={modelUUID}
+      />
     );
   }
-  return <>{currentKey}:</>;
+  switch (currentKey) {
+    case "applications":
+    case "machines":
+    case "offers":
+    case "relations":
+    case "model":
+      return (
+        <ResultsModelLink uuid={modelUUID} view={getTab(currentKey)}>
+          {currentKey}
+        </ResultsModelLink>
+      );
+    // Display something when the key is a blank string.
+    case "":
+      return <span className="u-text--muted">[none]:</span>;
+    default:
+      return <>{currentKey}:</>;
+  }
 };
 
 const valueRenderer: ValueRenderer = (valueAsString, value, ...keyPath) => {

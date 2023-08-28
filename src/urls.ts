@@ -1,6 +1,12 @@
 import { argPath } from "utils";
 
-export type ModelTab = "apps" | "machines" | "integrations" | "action-logs";
+export enum ModelTab {
+  APPS = "apps",
+  MACHINES = "machines",
+  INTEGRATIONS = "integrations",
+  ACTION_LOGS = "action-logs",
+}
+
 export type AppTab = "machines" | "units";
 export type ModelsGroupedBy = "status" | "cloud" | "owner";
 

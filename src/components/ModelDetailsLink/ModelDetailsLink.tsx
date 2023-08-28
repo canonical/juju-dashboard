@@ -15,16 +15,18 @@ type BaseProps = {
 type NameProps = BaseProps & {
   modelName: string;
   ownerTag?: string | null;
+  replaceLabel?: never;
   uuid?: never;
 };
 
-type UUIDProps = BaseProps & {
+export type UUIDProps = BaseProps & {
   modelName?: never;
   ownerTag?: never;
+  replaceLabel?: boolean;
   uuid: string;
 };
 
-type Props = PropsWithSpread<
+export type Props = PropsWithSpread<
   NameProps | UUIDProps,
   Partial<LinkProps & React.RefAttributes<HTMLAnchorElement>>
 >;
@@ -33,6 +35,7 @@ const ModelDetailsLink = ({
   modelName,
   ownerTag,
   children,
+  replaceLabel,
   uuid,
   view,
   ...props
@@ -52,7 +55,8 @@ const ModelDetailsLink = ({
   // If the owner isn't the logged in user then we need to use the
   // fully qualified path name.
   const userName = owner.replace("user-", "");
-  const label = uuid && userName && model ? `${userName}/${model}` : children;
+  const label =
+    replaceLabel && userName && model ? `${userName}/${model}` : children;
   return (
     <Link
       to={
