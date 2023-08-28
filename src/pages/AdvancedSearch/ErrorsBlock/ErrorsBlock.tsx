@@ -38,8 +38,10 @@ const ErrorsBlock = (): JSX.Element | null => {
         {typeof crossModelQueryErrors === "string" ? (
           <p>{crossModelQueryErrors}</p>
         ) : (
-          Object.values(crossModelQueryErrors)[0].map((error) => (
-            <p className="u-no-margin--bottom">{error}</p>
+          Object.values(crossModelQueryErrors)[0].map((error, index) => (
+            <p className="u-no-margin--bottom" key={index}>
+              {error}
+            </p>
           ))
         )}
       </div>
