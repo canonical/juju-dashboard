@@ -8,7 +8,7 @@ import { renderComponent } from "testing/utils";
 
 import ErrorsBlock from "./ErrorsBlock";
 
-describe("ResultsBlock", () => {
+describe("ErrorsBlock", () => {
   let state: RootState;
 
   beforeEach(() => {
