@@ -109,14 +109,16 @@ describe("ResultsBlock", () => {
     expect(screen.getByText('"jaas-staging"')).toBeInTheDocument();
   });
 
-  it("should show relative time in the tree", () => {
+  it("should show actual time and relative time in the tree", () => {
     const pastDate = "2023-08-16 00:42:59Z";
     const relativeTimeFromPastDate = formatFriendlyDateToNow(pastDate);
     state.juju.crossModelQuery.loaded = true;
     state.juju.crossModelQuery.results = {
-      mockModelUUID: [{ time: "2023-08-16 00:42:59Z" }],
+      mockModelUUID: [{ time: pastDate }],
     };
     renderComponent(<ResultsBlock />, { state });
-    expect(screen.getByText(relativeTimeFromPastDate)).toBeVisible();
+    const dateComponent = screen.getByText(pastDate);
+    expect(dateComponent).toBeVisible();
+    expect(dateComponent).toHaveTextContent(relativeTimeFromPastDate);
   });
 });

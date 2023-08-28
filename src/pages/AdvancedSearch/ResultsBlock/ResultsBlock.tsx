@@ -2,7 +2,6 @@ import {
   CodeSnippet,
   CodeSnippetBlockAppearance,
   Spinner,
-  Tooltip,
 } from "@canonical/react-components";
 import { isValid, parseISO } from "date-fns";
 import { useEffect, useState } from "react";
@@ -91,9 +90,12 @@ const valueRenderer: ValueRenderer = (valueAsString, value, ...keyPath) => {
   // Display date values as tooltip with relative date.
   if (typeof value === "string" && isValid(parseISO(value))) {
     return (
-      <Tooltip message={new Date(value).toLocaleString()}>
-        {formatFriendlyDateToNow(value)}
-      </Tooltip>
+      <>
+        {value}{" "}
+        <span className="u-text--muted">
+          ({formatFriendlyDateToNow(value)})
+        </span>
+      </>
     );
   }
   return <>{valueAsString}</>;
