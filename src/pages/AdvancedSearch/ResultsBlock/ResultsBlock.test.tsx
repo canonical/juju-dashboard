@@ -105,6 +105,15 @@ describe("ResultsBlock", () => {
     ).toBeInTheDocument();
   });
 
+  it("should not replace top key if it is not a model UUID", async () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.results = {
+      "": [],
+    };
+    renderComponent(<ResultsBlock />, { state });
+    expect(screen.queryByText("[none]:")).toBeInTheDocument();
+  });
+
   it("should show status icons in the tree", async () => {
     state.juju.crossModelQuery.loaded = true;
     state.juju.crossModelQuery.results = {

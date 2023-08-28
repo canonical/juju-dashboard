@@ -113,21 +113,21 @@ const EntityDetails = () => {
     }
     const items = [
       {
-        active: activeView === "apps",
+        active: activeView === ModelTab.APPS,
         label: "Applications",
         onClick: (e: MouseEvent) => handleNavClick(e),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.APPS }),
         component: Link,
       },
       {
-        active: activeView === "integrations",
+        active: activeView === ModelTab.INTEGRATIONS,
         label: "Integrations",
         onClick: (e: MouseEvent) => handleNavClick(e),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.INTEGRATIONS }),
         component: Link,
       },
       {
-        active: activeView === "action-logs",
+        active: activeView === ModelTab.ACTION_LOGS,
         label: "Logs",
         onClick: (e: MouseEvent) => handleNavClick(e),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.ACTION_LOGS }),
@@ -137,7 +137,7 @@ const EntityDetails = () => {
 
     if (modelInfo?.type !== "kubernetes") {
       items.push({
-        active: activeView === "machines",
+        active: activeView === ModelTab.MACHINES,
         label: "Machines",
         onClick: (e: MouseEvent) => handleNavClick(e),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.MACHINES }),

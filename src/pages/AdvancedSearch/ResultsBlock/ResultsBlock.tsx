@@ -68,11 +68,10 @@ const getTab = (key: string) => {
 const labelRenderer: LabelRenderer = (keyPath) => {
   const currentKey = keyPath[0];
   // The last item in keyPath should always be the model UUID.
-  const lastItem = keyPath[keyPath.length - 1];
-  const modelUUID = typeof lastItem === "string" ? lastItem : null;
-  if (!modelUUID) {
-    // If this is somehow not a string then just display it.
-    return <>{currentKey}</>;
+  const modelUUID = keyPath[keyPath.length - 1];
+  if (!modelUUID || typeof modelUUID !== "string") {
+    // If this is not a value that can be displayed then display "[none]" instead.
+    return <span className="u-text--muted">[none]:</span>;
   }
   // If this is a top level key then it is a model UUID.
   if (keyPath.length === 1) {
