@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { formatFriendlyDateToNow } from "components/utils";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
@@ -232,5 +233,18 @@ describe("ResultsBlock", () => {
         modelName: "test-model",
       })
     );
+  });
+
+  it("should show actual time and relative time in the tree", () => {
+    const pastDate = "2023-08-16 00:42:59Z";
+    const relativeTimeFromPastDate = formatFriendlyDateToNow(pastDate);
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.results = {
+      mockModelUUID: [{ time: pastDate }],
+    };
+    renderComponent(<ResultsBlock />, { state });
+    const dateComponent = screen.getByText(pastDate);
+    expect(dateComponent).toBeVisible();
+    expect(dateComponent).toHaveTextContent(relativeTimeFromPastDate);
   });
 });
