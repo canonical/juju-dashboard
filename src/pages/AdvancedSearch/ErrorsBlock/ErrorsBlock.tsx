@@ -64,65 +64,69 @@ const ErrorsBlock = (): JSX.Element | null => {
     return null;
   }
 
+  if (
+    typeof crossModelQueryErrors === "string" ||
+    hasEqualErrors(crossModelQueryErrors)
+  ) {
+    return (
+      <>
+        <hr />
+        <p className="u-no-margin--bottom">Error:</p>
+        {typeof crossModelQueryErrors === "string" ? (
+          <p>{crossModelQueryErrors}</p>
+        ) : (
+          Object.values(crossModelQueryErrors)[0].map((error) => (
+            <p className="u-no-margin--bottom">{error}</p>
+          ))
+        )}
+      </>
+    );
+  }
+
   return (
-    <>
-      {typeof crossModelQueryErrors === "string" ? (
-        <p>Error: {crossModelQueryErrors}</p>
-      ) : (
-        <CodeSnippet
-          className="errors-block"
-          blocks={[
+    <CodeSnippet
+      className="errors-block"
+      blocks={[
+        {
+          title: "Errors",
+          appearance:
+            codeSnippetView === CodeSnippetView.JSON
+              ? CodeSnippetBlockAppearance.NUMBERED
+              : undefined,
+          code:
+            codeSnippetView === CodeSnippetView.JSON ? (
+              errorsJSON
+            ) : (
+              <JSONTree
+                data={crossModelQueryErrors}
+                hideRoot
+                shouldExpandNodeInitially={(keyPath, data, level) => level <= 1}
+                theme={THEME}
+              />
+            ),
+          dropdowns: [
             {
-              title: hasEqualErrors(crossModelQueryErrors)
-                ? "Same error for all models"
-                : "Errors",
-              appearance:
-                codeSnippetView === CodeSnippetView.JSON ||
-                hasEqualErrors(crossModelQueryErrors)
-                  ? CodeSnippetBlockAppearance.NUMBERED
-                  : undefined,
-              code: hasEqualErrors(crossModelQueryErrors) ? (
-                Object.values(crossModelQueryErrors)[0]
-              ) : codeSnippetView === CodeSnippetView.JSON ? (
-                errorsJSON
-              ) : (
-                <JSONTree
-                  data={crossModelQueryErrors}
-                  hideRoot
-                  shouldExpandNodeInitially={(keyPath, data, level) =>
-                    level <= 1
-                  }
-                  theme={THEME}
-                />
-              ),
-              dropdowns: hasEqualErrors(crossModelQueryErrors)
-                ? undefined
-                : [
-                    {
-                      options: [
-                        {
-                          value: CodeSnippetView.TREE,
-                          label: "Tree",
-                        },
-                        {
-                          value: CodeSnippetView.JSON,
-                          label: "JSON",
-                        },
-                      ],
-                      value: codeSnippetView,
-                      onChange: (event) => {
-                        setCodeSnippetView(
-                          (event.target as HTMLSelectElement)
-                            .value as CodeSnippetView
-                        );
-                      },
-                    },
-                  ],
+              options: [
+                {
+                  value: CodeSnippetView.TREE,
+                  label: "Tree",
+                },
+                {
+                  value: CodeSnippetView.JSON,
+                  label: "JSON",
+                },
+              ],
+              value: codeSnippetView,
+              onChange: (event) => {
+                setCodeSnippetView(
+                  (event.target as HTMLSelectElement).value as CodeSnippetView
+                );
+              },
             },
-          ]}
-        />
-      )}
-    </>
+          ],
+        },
+      ]}
+    />
   );
 };
 

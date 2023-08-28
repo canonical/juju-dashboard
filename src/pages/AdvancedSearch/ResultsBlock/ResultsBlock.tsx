@@ -126,55 +126,51 @@ const ResultsBlock = (): JSX.Element | null => {
   }
 
   return (
-    <>
-      <CodeSnippet
-        className="results-block"
-        blocks={[
-          {
-            title: "Results",
-            appearance:
-              codeSnippetView === CodeSnippetView.JSON
-                ? CodeSnippetBlockAppearance.NUMBERED
-                : undefined,
-            code:
-              codeSnippetView === CodeSnippetView.JSON ? (
-                resultsJSON
-              ) : (
-                <JSONTree
-                  data={crossModelQueryResults}
-                  hideRoot
-                  labelRenderer={labelRenderer}
-                  shouldExpandNodeInitially={(keyPath, data, level) =>
-                    level <= 2
-                  }
-                  theme={THEME}
-                  valueRenderer={valueRenderer}
-                />
-              ),
-            dropdowns: [
-              {
-                options: [
-                  {
-                    value: CodeSnippetView.TREE,
-                    label: "Tree",
-                  },
-                  {
-                    value: CodeSnippetView.JSON,
-                    label: "JSON",
-                  },
-                ],
-                value: codeSnippetView,
-                onChange: (event) => {
-                  setCodeSnippetView(
-                    (event.target as HTMLSelectElement).value as CodeSnippetView
-                  );
+    <CodeSnippet
+      className="results-block"
+      blocks={[
+        {
+          title: "Results",
+          appearance:
+            codeSnippetView === CodeSnippetView.JSON
+              ? CodeSnippetBlockAppearance.NUMBERED
+              : undefined,
+          code:
+            codeSnippetView === CodeSnippetView.JSON ? (
+              resultsJSON
+            ) : (
+              <JSONTree
+                data={crossModelQueryResults}
+                hideRoot
+                labelRenderer={labelRenderer}
+                shouldExpandNodeInitially={(keyPath, data, level) => level <= 2}
+                theme={THEME}
+                valueRenderer={valueRenderer}
+              />
+            ),
+          dropdowns: [
+            {
+              options: [
+                {
+                  value: CodeSnippetView.TREE,
+                  label: "Tree",
                 },
+                {
+                  value: CodeSnippetView.JSON,
+                  label: "JSON",
+                },
+              ],
+              value: codeSnippetView,
+              onChange: (event) => {
+                setCodeSnippetView(
+                  (event.target as HTMLSelectElement).value as CodeSnippetView
+                );
               },
-            ],
-          },
-        ]}
-      />
-    </>
+            },
+          ],
+        },
+      ]}
+    />
   );
 };
 
