@@ -110,9 +110,11 @@ describe("ResultsBlock", () => {
     state.juju.crossModelQuery.loaded = true;
     state.juju.crossModelQuery.results = {
       "": [],
+      mockResultKey: ["mockResultValue"],
     };
     renderComponent(<ResultsBlock />, { state });
     expect(screen.queryByText("[none]:")).toBeInTheDocument();
+    expect(screen.getByText('"mockResultValue"')).toBeVisible();
   });
 
   it("should show status icons in the tree", async () => {
@@ -246,5 +248,19 @@ describe("ResultsBlock", () => {
     const dateComponent = screen.getByText(pastDate);
     expect(dateComponent).toBeVisible();
     expect(dateComponent).toHaveTextContent(relativeTimeFromPastDate);
+  });
+
+  it("should show message when there is no result", () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.results = null;
+    renderComponent(<ResultsBlock />, { state });
+    expect(screen.getByText("No results returned!")).toBeVisible();
+  });
+
+  it("should show message when all models have no result", () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.results = { mockModel0: [], mockModel1: [null] };
+    renderComponent(<ResultsBlock />, { state });
+    expect(screen.getByText("No results returned!")).toBeVisible();
   });
 });

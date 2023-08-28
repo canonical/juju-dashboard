@@ -170,6 +170,20 @@ const ResultsBlock = (): JSX.Element | null => {
     return null;
   }
 
+  if (
+    !crossModelQueryResults ||
+    Object.values(crossModelQueryResults).every((resultArray) =>
+      resultArray.every((result) => result === null)
+    )
+  ) {
+    return (
+      <div className="results-block">
+        <hr />
+        <p>No results returned!</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <CodeSnippet
