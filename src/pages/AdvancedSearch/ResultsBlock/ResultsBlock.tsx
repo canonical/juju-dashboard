@@ -4,9 +4,12 @@ import {
   Spinner,
 } from "@canonical/react-components";
 import { isValid, parseISO } from "date-fns";
+import { Highlight } from "prism-react-renderer";
+import Prism from "prismjs/components/prism-core";
 import { useEffect, useState } from "react";
 import type { LabelRenderer, ValueRenderer } from "react-json-tree";
 import { JSONTree } from "react-json-tree";
+import "prismjs/components/prism-json";
 
 import Status from "components/Status";
 import { formatFriendlyDateToNow } from "components/utils";
@@ -48,7 +51,7 @@ const THEME = {
   base0A: DEFAULT_THEME_COLOUR,
   base0B: "#0e811f",
   base0C: DEFAULT_THEME_COLOUR,
-  base0D: "#000000",
+  base0D: "#77216f",
   base0E: DEFAULT_THEME_COLOUR,
   base0F: DEFAULT_THEME_COLOUR,
 };
@@ -171,54 +174,69 @@ const ResultsBlock = (): JSX.Element | null => {
   }
 
   return (
-    <>
-      <CodeSnippet
-        className="results-block"
-        blocks={[
-          {
-            appearance:
-              codeSnippetView === CodeSnippetView.JSON
-                ? CodeSnippetBlockAppearance.NUMBERED
-                : undefined,
-            code:
-              codeSnippetView === CodeSnippetView.JSON ? (
-                resultsJSON
-              ) : (
-                <JSONTree
-                  data={crossModelQueryResults}
-                  hideRoot
-                  labelRenderer={labelRenderer}
-                  shouldExpandNodeInitially={(keyPath, data, level) =>
-                    level <= 2
-                  }
-                  theme={THEME}
-                  valueRenderer={valueRenderer}
-                />
-              ),
-            dropdowns: [
-              {
-                options: [
-                  {
-                    value: CodeSnippetView.TREE,
-                    label: "Tree",
+    <Highlight code={resultsJSON} language="json" prism={Prism}>
+      {({ tokens, getLineProps, getTokenProps }) => (
+        <CodeSnippet
+          className="results-block"
+          blocks={[
+            {
+              appearance:
+                codeSnippetView === CodeSnippetView.JSON
+                  ? CodeSnippetBlockAppearance.NUMBERED
+                  : undefined,
+              code:
+                codeSnippetView === CodeSnippetView.JSON ? (
+                  tokens.map((line, i) => {
+                    const { style, ...lineProps } = getLineProps({ line });
+                    return (
+                      <span key={i} {...lineProps}>
+                        {line.map((token, key) => {
+                          const { style, ...tokenProps } = getTokenProps({
+                            token,
+                          });
+                          return <span key={key} {...tokenProps} />;
+                        })}
+                      </span>
+                    );
+                  })
+                ) : (
+                  <JSONTree
+                    data={crossModelQueryResults}
+                    hideRoot
+                    labelRenderer={labelRenderer}
+                    shouldExpandNodeInitially={(keyPath, data, level) =>
+                      level <= 2
+                    }
+                    theme={THEME}
+                    valueRenderer={valueRenderer}
+                  />
+                ),
+              dropdowns: [
+                {
+                  options: [
+                    {
+                      value: CodeSnippetView.TREE,
+                      label: "Tree",
+                    },
+                    {
+                      value: CodeSnippetView.JSON,
+                      label: "JSON",
+                    },
+                  ],
+                  value: codeSnippetView,
+                  onChange: (event) => {
+                    setCodeSnippetView(
+                      (event.target as HTMLSelectElement)
+                        .value as CodeSnippetView
+                    );
                   },
-                  {
-                    value: CodeSnippetView.JSON,
-                    label: "JSON",
-                  },
-                ],
-                value: codeSnippetView,
-                onChange: (event) => {
-                  setCodeSnippetView(
-                    (event.target as HTMLSelectElement).value as CodeSnippetView
-                  );
                 },
-              },
-            ],
-          },
-        ]}
-      />
-    </>
+              ],
+            },
+          ]}
+        />
+      )}
+    </Highlight>
   );
 };
 

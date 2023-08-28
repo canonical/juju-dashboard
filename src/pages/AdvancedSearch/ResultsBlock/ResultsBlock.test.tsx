@@ -77,7 +77,14 @@ describe("ResultsBlock", () => {
       screen.getByRole("option", { name: "JSON", hidden: true })
     ).toHaveAttribute("value", "json");
     await userEvent.selectOptions(codeSnippetDropdownButton, "JSON");
-    expect(screen.getByText('"model": {')).toBeVisible();
+    expect(
+      JSON.stringify(
+        JSON.parse(
+          document.querySelector(".p-code-snippet__block--numbered")
+            ?.textContent ?? ""
+        )
+      )
+    ).toBe(JSON.stringify(state.juju.crossModelQuery.results));
   });
 
   it("should show tree of results", async () => {
