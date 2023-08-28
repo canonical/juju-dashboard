@@ -1,0 +1,11 @@
+@import "vanilla-framework/scss/vanilla";
+
+.errors-block {
+  .status-icon::before {
+    left: -$sph--small;
+  }
+
+  .errors-block__heading {
+    color: $color-negative;
+  }
+}
