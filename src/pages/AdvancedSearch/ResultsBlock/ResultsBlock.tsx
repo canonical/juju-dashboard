@@ -174,8 +174,9 @@ const ResultsBlock = (): JSX.Element | null => {
     return null;
   }
 
-  // If results is null or the values of results are all an empty array or an
-  // array of nulls, we show a message instead of the actual value.
+  // Display a message if there are no results. The JQ filter is applied per
+  // model, so it could return null for every model, in which case this displays
+  // a single message.
   if (
     !crossModelQueryResults ||
     Object.values(crossModelQueryResults).every((resultArray) =>
