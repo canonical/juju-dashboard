@@ -31,6 +31,10 @@ enum CodeSnippetView {
   JSON = "json",
 }
 
+export enum Label {
+  NO_RESULTS = "No results returned!",
+}
+
 const DEFAULT_THEME_COLOUR = "#00000099";
 
 const THEME = {
@@ -170,6 +174,8 @@ const ResultsBlock = (): JSX.Element | null => {
     return null;
   }
 
+  // If results is null or the values of results are all an empty array or an
+  // array of nulls, we show a message instead of the actual value.
   if (
     !crossModelQueryResults ||
     Object.values(crossModelQueryResults).every((resultArray) =>
@@ -179,7 +185,7 @@ const ResultsBlock = (): JSX.Element | null => {
     return (
       <div className="results-block">
         <hr />
-        <p>No results returned!</p>
+        <p>{Label.NO_RESULTS}</p>
       </div>
     );
   }
