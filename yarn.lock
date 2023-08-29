@@ -3449,6 +3449,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.isequal@npm:4.5.6":
+  version: 4.5.6
+  resolution: "@types/lodash.isequal@npm:4.5.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 0f065989408a9e0584e6c27495be2cd4602e62650f55266aa195812582444463c0c8570c674ae84f947c11748f49ab43fd5b482fa120e08eeee4c23b162edc38
+  languageName: node
+  linkType: hard
+
 "@types/lodash.mergewith@npm:4.6.7":
   version: 4.6.7
   resolution: "@types/lodash.mergewith@npm:4.6.7"
@@ -10203,6 +10212,7 @@ __metadata:
     "@types/clone-deep": 4.0.1
     "@types/d3": 7.4.0
     "@types/jest": 29.5.2
+    "@types/lodash.isequal": 4.5.6
     "@types/lodash.mergewith": 4.6.7
     "@types/node": 18.16.18
     "@types/prismjs": 1.26.0
@@ -10229,6 +10239,7 @@ __metadata:
     framer-motion: 10.12.16
     fuse.js: 6.6.2
     jest-websocket-mock: 2.4.0
+    lodash.isequal: 4.5.0
     lodash.mergewith: 4.6.2
     npm-package-json-lint: 6.4.0
     postcss: 8.4.24
@@ -10426,6 +10437,13 @@ __metadata:
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
   checksum: a3f527d22c548f43ae31c861ada88b2637eb48ac6aa3eb56e82d44917971b8aa96fbb37aa60efea674dc4ee8c42074f90f7b1f772e9db375435f6c83a19b3bc6
+  languageName: node
+  linkType: hard
+
+"lodash.isequal@npm:4.5.0":
+  version: 4.5.0
+  resolution: "lodash.isequal@npm:4.5.0"
+  checksum: da27515dc5230eb1140ba65ff8de3613649620e8656b19a6270afe4866b7bd461d9ba2ac8a48dcc57f7adac4ee80e1de9f965d89d4d81a0ad52bb3eec2609644
   languageName: node
   linkType: hard
 
