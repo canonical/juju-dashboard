@@ -15,7 +15,7 @@ import { renderComponent } from "testing/utils";
 import urls from "urls";
 import { ModelTab } from "urls";
 
-import ResultsBlock, { TestId } from "./ResultsBlock";
+import ResultsBlock, { Label, TestId } from "./ResultsBlock";
 
 // Handle clicking the toggle for a key that has an anchor wrapping the label.
 const clickToggleForLink = async (name: string) => {
@@ -117,9 +117,11 @@ describe("ResultsBlock", () => {
     state.juju.crossModelQuery.loaded = true;
     state.juju.crossModelQuery.results = {
       "": [],
+      mockResultKey: ["mockResultValue"],
     };
     renderComponent(<ResultsBlock />, { state });
     expect(screen.queryByText("[none]:")).toBeInTheDocument();
+    expect(screen.getByText('"mockResultValue"')).toBeVisible();
   });
 
   it("should show status icons in the tree", async () => {
@@ -253,5 +255,19 @@ describe("ResultsBlock", () => {
     const dateComponent = screen.getByText(pastDate);
     expect(dateComponent).toBeVisible();
     expect(dateComponent).toHaveTextContent(relativeTimeFromPastDate);
+  });
+
+  it("should show message when there are no results", () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.results = null;
+    renderComponent(<ResultsBlock />, { state });
+    expect(screen.getByText(Label.NO_RESULTS)).toBeVisible();
+  });
+
+  it("should show message when all models have no results", () => {
+    state.juju.crossModelQuery.loaded = true;
+    state.juju.crossModelQuery.results = { mockModel0: [], mockModel1: [null] };
+    renderComponent(<ResultsBlock />, { state });
+    expect(screen.getByText(Label.NO_RESULTS)).toBeVisible();
   });
 });

@@ -34,6 +34,10 @@ enum CodeSnippetView {
   JSON = "json",
 }
 
+export enum Label {
+  NO_RESULTS = "No results returned!",
+}
+
 const DEFAULT_THEME_COLOUR = "#00000099";
 
 const THEME = {
@@ -171,6 +175,23 @@ const ResultsBlock = (): JSX.Element | null => {
 
   if (!isCrossModelQueryLoaded) {
     return null;
+  }
+
+  // Display a message if there are no results. The JQ filter is applied per
+  // model, so it could return null for every model, in which case this displays
+  // a single message.
+  if (
+    !crossModelQueryResults ||
+    Object.values(crossModelQueryResults).every((resultArray) =>
+      resultArray.every((result) => result === null)
+    )
+  ) {
+    return (
+      <div className="results-block">
+        <hr />
+        <p>{Label.NO_RESULTS}</p>
+      </div>
+    );
   }
 
   return (
