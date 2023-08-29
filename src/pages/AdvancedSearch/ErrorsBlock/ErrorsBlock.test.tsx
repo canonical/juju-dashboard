@@ -2,8 +2,9 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
-import { rootStateFactory } from "testing/factories";
+import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import ErrorsBlock from "./ErrorsBlock";
@@ -20,6 +21,15 @@ describe("ErrorsBlock", () => {
         config: configFactory.build({
           controllerAPIEndpoint: "wss://controller.example.com",
         }),
+      }),
+      juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            name: "test-model",
+            ownerTag: "user-eggman@external",
+          }),
+        },
       }),
     });
   });
@@ -60,7 +70,7 @@ describe("ErrorsBlock", () => {
 
   it("should render errors in json format", async () => {
     state.juju.crossModelQuery.errors = {
-      model0: ["mockError0"],
+      abc123: ["mockError0"],
       model1: ["mockError1"],
     };
     renderComponent(<ErrorsBlock />, { state });
@@ -75,7 +85,7 @@ describe("ErrorsBlock", () => {
       screen.getByRole("option", { name: "JSON", hidden: true })
     ).toHaveAttribute("value", "json");
     await userEvent.selectOptions(codeSnippetDropdownButton, "JSON");
-    expect(screen.getByText('"model0"')).toBeVisible();
+    expect(screen.getByText('"abc123"')).toBeVisible();
     expect(screen.getByText('"mockError0"')).toBeVisible();
     expect(screen.getByText('"model1"')).toBeVisible();
     expect(screen.getByText('"mockError1"')).toBeVisible();
@@ -83,14 +93,14 @@ describe("ErrorsBlock", () => {
 
   it("should render errors in tree format", async () => {
     state.juju.crossModelQuery.errors = {
-      model0: ["mockError0"],
+      abc123: ["mockError0"],
       model1: ["mockError1"],
     };
     renderComponent(<ErrorsBlock />, { state });
     const codeSnippetDropdownButton = screen.getByRole("combobox");
     await userEvent.selectOptions(codeSnippetDropdownButton, "Tree");
     expect(document.querySelector(".p-code-snippet__block")).toHaveTextContent(
-      '▶:[] 1 item0:"mockError0"▶:[] 1 item0:"mockError1"'
+      '▶eggman@external/test-model[] 1 item0:"mockError0"▶:[] 1 item0:"mockError1"'
     );
   });
 });
