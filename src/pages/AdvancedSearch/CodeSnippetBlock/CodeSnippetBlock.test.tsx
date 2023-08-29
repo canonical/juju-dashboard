@@ -11,7 +11,7 @@ describe("CodeSnippetBlock", () => {
       <CodeSnippetBlock
         className="mock-class-name"
         title="Mock Title"
-        code=""
+        code={null}
       />
     );
     expect(screen.getByText("Mock Title")).toBeVisible();
@@ -24,7 +24,7 @@ describe("CodeSnippetBlock", () => {
       <CodeSnippetBlock
         className="mock-class-name"
         title="Mock Title"
-        code='{ mockKey: "mockValue" }'
+        code={{ mockKey: ["mockValue"] }}
       />
     );
     const codeSnippetDropdownButton = screen.getByRole("combobox");
@@ -36,7 +36,7 @@ describe("CodeSnippetBlock", () => {
       screen.getByRole("option", { name: "JSON", hidden: true })
     ).toHaveAttribute("value", "json");
     await userEvent.selectOptions(codeSnippetDropdownButton, "JSON");
-    expect(screen.getByText('{ mockKey: "mockValue" }')).toBeVisible();
+    expect(screen.getByText('"mockKey": [')).toBeVisible();
   });
 
   it("should render errors in tree format", async () => {
@@ -44,13 +44,13 @@ describe("CodeSnippetBlock", () => {
       <CodeSnippetBlock
         className="mock-class-name"
         title="Mock Title"
-        code={{ mockKey: "mockValue" }}
+        code={{ mockKey: ["mockValue"] }}
       />
     );
     const codeSnippetDropdownButton = screen.getByRole("combobox");
     await userEvent.selectOptions(codeSnippetDropdownButton, "Tree");
     expect(document.querySelector(".p-code-snippet__block")).toHaveTextContent(
-      'mockKey:"mockValue"'
+      '▶mockKey:[] 1 item0:"mockValue"'
     );
   });
 });
