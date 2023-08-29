@@ -11,14 +11,17 @@ import {
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
+import { type CrossModelQueryResponse } from "juju/jimm-facade";
 
 import { CodeSnippetView } from "../types";
 
 type Props = {
   className: string;
   title: string;
-  jsonCode: string;
-  jsonTreeData: unknown;
+  code:
+    | CrossModelQueryResponse["results"]
+    | CrossModelQueryResponse["errors"]
+    | null; // TODO: remove after merging with cross-model-query
 };
 
 const DEFAULT_THEME_COLOUR = "#00000099";
@@ -81,12 +84,7 @@ const valueRenderer: ValueRenderer = (valueAsString, value, ...keyPath) => {
   return <>{valueAsString}</>;
 };
 
-const CodeSnippetBlock = ({
-  className,
-  title,
-  jsonCode,
-  jsonTreeData,
-}: Props): JSX.Element => {
+const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
   const [codeSnippetView, setCodeSnippetView] = useState<CodeSnippetView>(
     CodeSnippetView.TREE
   );
@@ -103,10 +101,10 @@ const CodeSnippetBlock = ({
               : undefined,
           code:
             codeSnippetView === CodeSnippetView.JSON ? (
-              jsonCode
+              JSON.stringify(code, null, 2)
             ) : (
               <JSONTree
-                data={jsonTreeData}
+                data={code}
                 hideRoot
                 labelRenderer={labelRenderer}
                 shouldExpandNodeInitially={(keyPath, data, level) => level <= 2}

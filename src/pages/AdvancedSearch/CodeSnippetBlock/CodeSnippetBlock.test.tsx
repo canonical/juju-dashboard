@@ -11,8 +11,7 @@ describe("CodeSnippetBlock", () => {
       <CodeSnippetBlock
         className="mock-class-name"
         title="Mock Title"
-        jsonCode=""
-        jsonTreeData={null}
+        code=""
       />
     );
     expect(screen.getByText("Mock Title")).toBeVisible();
@@ -25,8 +24,7 @@ describe("CodeSnippetBlock", () => {
       <CodeSnippetBlock
         className="mock-class-name"
         title="Mock Title"
-        jsonCode='{ mockKey: "mockValue" }'
-        jsonTreeData={null}
+        code='{ mockKey: "mockValue" }'
       />
     );
     const codeSnippetDropdownButton = screen.getByRole("combobox");
@@ -46,8 +44,7 @@ describe("CodeSnippetBlock", () => {
       <CodeSnippetBlock
         className="mock-class-name"
         title="Mock Title"
-        jsonCode=""
-        jsonTreeData={{ mockKey: "mockValue" }}
+        code={{ mockKey: "mockValue" }}
       />
     );
     const codeSnippetDropdownButton = screen.getByRole("combobox");

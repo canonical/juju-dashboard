@@ -23,7 +23,6 @@ const ResultsBlock = (): JSX.Element | null => {
   const isCrossModelQueryLoaded = useAppSelector(getCrossModelQueryLoaded);
   const crossModelQueryResults = useAppSelector(getCrossModelQueryResults);
   const crossModelQueryErrors = useAppSelector(getCrossModelQueryErrors);
-  const resultsJSON = JSON.stringify(crossModelQueryResults, null, 2);
 
   useEffect(
     () => () => {
@@ -54,8 +53,7 @@ const ResultsBlock = (): JSX.Element | null => {
     <CodeSnippetBlock
       className="results-block"
       title="Results"
-      jsonCode={resultsJSON}
-      jsonTreeData={crossModelQueryResults}
+      code={crossModelQueryResults}
     />
   );
 };

@@ -1,4 +1,4 @@
-import { isEqual } from "lodash";
+import isEqual from "lodash.isequal";
 
 import type { CrossModelQueryResponse } from "juju/jimm-facade";
 import {
@@ -13,7 +13,6 @@ import CodeSnippetBlock from "../CodeSnippetBlock/CodeSnippetBlock";
 const ErrorsBlock = (): JSX.Element | null => {
   const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
   const crossModelQueryErrors = useAppSelector(getCrossModelQueryErrors);
-  const errorsJSON = JSON.stringify(crossModelQueryErrors, null, 2);
 
   const hasEqualErrors = (errors: CrossModelQueryResponse["errors"]) => {
     const firstError = Object.values(errors)[0].slice().sort();
@@ -52,8 +51,7 @@ const ErrorsBlock = (): JSX.Element | null => {
     <CodeSnippetBlock
       className="errors-block"
       title="Errors"
-      jsonCode={errorsJSON}
-      jsonTreeData={crossModelQueryErrors}
+      code={crossModelQueryErrors}
     />
   );
 };
