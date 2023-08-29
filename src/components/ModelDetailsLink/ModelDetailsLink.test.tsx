@@ -5,6 +5,7 @@ import { rootStateFactory } from "testing/factories";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
+import { ModelTab } from "urls";
 
 import ModelDetailsLink from "./ModelDetailsLink";
 
@@ -32,7 +33,9 @@ describe("ModelDetailsLink", () => {
       }),
     };
     renderComponent(
-      <ModelDetailsLink uuid="abc123">Test Model</ModelDetailsLink>,
+      <ModelDetailsLink replaceLabel uuid="abc123">
+        Test Model
+      </ModelDetailsLink>,
       { state }
     );
     expect(
@@ -61,7 +64,7 @@ describe("ModelDetailsLink", () => {
       <ModelDetailsLink
         modelName="test-model"
         ownerTag="user-eggman"
-        view="apps"
+        view={ModelTab.APPS}
       >
         Test Model
       </ModelDetailsLink>,
@@ -72,7 +75,7 @@ describe("ModelDetailsLink", () => {
       urls.model.tab({
         userName: "eggman",
         modelName: "test-model",
-        tab: "apps",
+        tab: ModelTab.APPS,
       })
     );
   });
