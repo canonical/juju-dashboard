@@ -2,26 +2,29 @@ import {
   CodeSnippet,
   CodeSnippetBlockAppearance,
 } from "@canonical/react-components";
+import { isValid, parseISO } from "date-fns";
+import { Highlight } from "prism-react-renderer";
+import Prism from "prismjs/components/prism-core";
 import { useState } from "react";
 import {
   JSONTree,
   type LabelRenderer,
   type ValueRenderer,
 } from "react-json-tree";
+import "prismjs/components/prism-json";
 
-import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
+import { formatFriendlyDateToNow } from "components/utils";
 import { type CrossModelQueryResponse } from "juju/jimm-facade";
+import { ModelTab } from "urls";
 
+import ResultsModelLink from "../ResultsModelLink";
 import { CodeSnippetView } from "../types";
 
 type Props = {
   className: string;
   title: string;
-  code:
-    | CrossModelQueryResponse["results"]
-    | CrossModelQueryResponse["errors"]
-    | null; // TODO: remove after merging with cross-model-query
+  code: CrossModelQueryResponse["results"] | CrossModelQueryResponse["errors"];
 };
 
 const DEFAULT_THEME_COLOUR = "#00000099";
@@ -46,22 +49,55 @@ const THEME = {
   base0F: DEFAULT_THEME_COLOUR,
 };
 
+const getTab = (key: string) => {
+  switch (key) {
+    case "applications":
+    case "offers":
+      return ModelTab.APPS;
+    case "machines":
+      return ModelTab.MACHINES;
+    case "relations":
+      return ModelTab.INTEGRATIONS;
+    default:
+      return;
+  }
+};
+
 const labelRenderer: LabelRenderer = (keyPath) => {
   const currentKey = keyPath[0];
+  // The last item in keyPath should always be the model UUID.
+  const modelUUID = keyPath[keyPath.length - 1];
+  if (!modelUUID || typeof modelUUID !== "string") {
+    // If this is not a value that can be displayed then display "[none]" instead.
+    return <span className="u-text--muted">[none]:</span>;
+  }
   // If this is a top level key then it is a model UUID.
   if (keyPath.length === 1) {
     return (
-      <ModelDetailsLink
-        // Prevent toggling the object when the link is clicked.
-        onClick={(event) => event.stopPropagation()}
-        title={`UUID: ${currentKey}`}
-        uuid={currentKey.toString()}
-      >
-        {currentKey}:
-      </ModelDetailsLink>
+      <ResultsModelLink
+        replaceLabel
+        title={`UUID: ${modelUUID}`}
+        uuid={modelUUID}
+      />
     );
   }
-  return <>{currentKey}:</>;
+  switch (currentKey) {
+    case "applications":
+    case "machines":
+    case "offers":
+    case "relations":
+    case "model":
+      return (
+        <ResultsModelLink uuid={modelUUID} view={getTab(currentKey)}>
+          {currentKey}
+        </ResultsModelLink>
+      );
+    // Display something when the key is a blank string.
+    case "":
+      return <span className="u-text--muted">[none]:</span>;
+    default:
+      return <>{currentKey}:</>;
+  }
 };
 
 const valueRenderer: ValueRenderer = (valueAsString, value, ...keyPath) => {
@@ -81,6 +117,17 @@ const valueRenderer: ValueRenderer = (valueAsString, value, ...keyPath) => {
   ) {
     return <Status status={value}>{valueAsString}</Status>;
   }
+  // Display date values as tooltip with relative date.
+  if (typeof value === "string" && isValid(parseISO(value))) {
+    return (
+      <>
+        {value}{" "}
+        <span className="u-text--muted">
+          ({formatFriendlyDateToNow(value)})
+        </span>
+      </>
+    );
+  }
   return <>{valueAsString}</>;
 };
 
@@ -90,51 +137,74 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
   );
 
   return (
-    <CodeSnippet
-      className={className}
-      blocks={[
-        {
-          title,
-          appearance:
-            codeSnippetView === CodeSnippetView.JSON
-              ? CodeSnippetBlockAppearance.NUMBERED
-              : undefined,
-          code:
-            codeSnippetView === CodeSnippetView.JSON ? (
-              JSON.stringify(code, null, 2)
-            ) : (
-              <JSONTree
-                data={code}
-                hideRoot
-                labelRenderer={labelRenderer}
-                shouldExpandNodeInitially={(keyPath, data, level) => level <= 2}
-                theme={THEME}
-                valueRenderer={valueRenderer}
-              />
-            ),
-          dropdowns: [
+    <Highlight
+      code={JSON.stringify(code, null, 2)}
+      language="json"
+      prism={Prism}
+    >
+      {({ tokens, getLineProps, getTokenProps }) => (
+        <CodeSnippet
+          className={className}
+          blocks={[
             {
-              options: [
+              title,
+              appearance:
+                codeSnippetView === CodeSnippetView.JSON
+                  ? CodeSnippetBlockAppearance.NUMBERED
+                  : undefined,
+              code:
+                codeSnippetView === CodeSnippetView.JSON ? (
+                  tokens.map((line, i) => {
+                    const { style, ...lineProps } = getLineProps({ line });
+                    return (
+                      <span key={i} {...lineProps}>
+                        {line.map((token, key) => {
+                          const { style, ...tokenProps } = getTokenProps({
+                            token,
+                          });
+                          return <span key={key} {...tokenProps} />;
+                        })}
+                      </span>
+                    );
+                  })
+                ) : (
+                  <JSONTree
+                    data={code}
+                    hideRoot
+                    labelRenderer={labelRenderer}
+                    shouldExpandNodeInitially={(keyPath, data, level) =>
+                      level <= 2
+                    }
+                    theme={THEME}
+                    valueRenderer={valueRenderer}
+                  />
+                ),
+              dropdowns: [
                 {
-                  value: CodeSnippetView.TREE,
-                  label: "Tree",
-                },
-                {
-                  value: CodeSnippetView.JSON,
-                  label: "JSON",
+                  options: [
+                    {
+                      value: CodeSnippetView.TREE,
+                      label: "Tree",
+                    },
+                    {
+                      value: CodeSnippetView.JSON,
+                      label: "JSON",
+                    },
+                  ],
+                  value: codeSnippetView,
+                  onChange: (event) => {
+                    setCodeSnippetView(
+                      (event.target as HTMLSelectElement)
+                        .value as CodeSnippetView
+                    );
+                  },
                 },
               ],
-              value: codeSnippetView,
-              onChange: (event) => {
-                setCodeSnippetView(
-                  (event.target as HTMLSelectElement).value as CodeSnippetView
-                );
-              },
             },
-          ],
-        },
-      ]}
-    />
+          ]}
+        />
+      )}
+    </Highlight>
   );
 };
 

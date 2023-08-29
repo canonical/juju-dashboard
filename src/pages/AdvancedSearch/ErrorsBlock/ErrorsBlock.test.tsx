@@ -75,7 +75,10 @@ describe("ErrorsBlock", () => {
       screen.getByRole("option", { name: "JSON", hidden: true })
     ).toHaveAttribute("value", "json");
     await userEvent.selectOptions(codeSnippetDropdownButton, "JSON");
-    expect(screen.getByText('"model0": [')).toBeVisible();
+    expect(screen.getByText('"model0"')).toBeVisible();
+    expect(screen.getByText('"mockError0"')).toBeVisible();
+    expect(screen.getByText('"model1"')).toBeVisible();
+    expect(screen.getByText('"mockError1"')).toBeVisible();
   });
 
   it("should render errors in tree format", async () => {
@@ -87,7 +90,7 @@ describe("ErrorsBlock", () => {
     const codeSnippetDropdownButton = screen.getByRole("combobox");
     await userEvent.selectOptions(codeSnippetDropdownButton, "Tree");
     expect(document.querySelector(".p-code-snippet__block")).toHaveTextContent(
-      '▶model0:[] 1 item0:"mockError0"▶model1:[] 1 item0:"mockError1"'
+      '▶:[] 1 item0:"mockError0"▶:[] 1 item0:"mockError1"'
     );
   });
 });
