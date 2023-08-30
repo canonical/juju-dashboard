@@ -21,6 +21,8 @@ import type { CrossModelQueryState } from "store/juju/types";
 import { ModelTab } from "urls";
 
 import ResultsModelLink from "../ResultsModelLink";
+import UnitsLink from "../UnitsLink";
+import UnitsMachineLink from "../UnitsMachineLink/UnitsMachineLink";
 import { CodeSnippetView } from "../types";
 
 type Props = {
@@ -95,6 +97,7 @@ const getCurrentObject = (
 
 const labelRenderer: LabelRenderer = (keyPath) => {
   const currentKey = keyPath[0];
+  const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
   // The last item in keyPath should always be the model UUID.
   const modelUUID = keyPath[keyPath.length - 1];
   if (!modelUUID || typeof modelUUID !== "string") {
@@ -109,6 +112,14 @@ const labelRenderer: LabelRenderer = (keyPath) => {
         title={`UUID: ${modelUUID}`}
         uuid={modelUUID}
       />
+    );
+  }
+  if (parentKey === "units" && typeof currentKey === "string") {
+    const [appName, unitId] = currentKey.split("/");
+    return (
+      <UnitsLink uuid={modelUUID} appName={appName} unitId={unitId}>
+        {currentKey}
+      </UnitsLink>
     );
   }
   switch (currentKey) {
@@ -139,6 +150,8 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
     (valueAsString, value, ...keyPath) => {
       const currentKey = keyPath[0];
       const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
+      const grandparentKey = keyPath.length >= 3 ? keyPath[2] : null;
+      const modelUUID = keyPath[keyPath.length - 1];
       // Match a status of the following structure:
       //   "application-status": {
       //     "current": "unknown",
@@ -191,6 +204,19 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
             </a>
           );
         }
+      }
+      if (
+        grandparentKey === "units" &&
+        currentKey === "machine" &&
+        typeof valueAsString === "string" &&
+        typeof value === "string" &&
+        typeof modelUUID === "string"
+      ) {
+        return (
+          <UnitsMachineLink uuid={modelUUID} machineId={value}>
+            {valueAsString}
+          </UnitsMachineLink>
+        );
       }
       return <>{valueAsString}</>;
     },
