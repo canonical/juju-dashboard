@@ -46,6 +46,7 @@ const SearchHistoryMenu = ({
         },
       ]}
       position="left"
+      scrollOverflow
       toggleClassName="has-icon"
       toggleDisabled={queryHistory.length === 0}
       toggleLabel={<Icon name="revisions">{Label.HISTORY}</Icon>}
