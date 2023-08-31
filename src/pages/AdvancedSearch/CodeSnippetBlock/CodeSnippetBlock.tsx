@@ -46,7 +46,7 @@ const THEME = {
   base0A: DEFAULT_THEME_COLOUR,
   base0B: "#0e811f",
   base0C: DEFAULT_THEME_COLOUR,
-  base0D: "#000000",
+  base0D: "#77216f",
   base0E: DEFAULT_THEME_COLOUR,
   base0F: DEFAULT_THEME_COLOUR,
 };
