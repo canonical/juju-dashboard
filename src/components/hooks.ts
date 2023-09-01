@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { getModelByUUID } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import getUserName from "utils/getUserName";
 
 type NameProps = {
   modelName: string;
@@ -39,7 +40,6 @@ export const useModelByUUIDDetails = ({
   const modelDetails = useAppSelector((state) => getModelByUUID(state, uuid));
   const owner = uuid ? modelDetails?.ownerTag : ownerTag;
   const model = uuid ? modelDetails?.name : modelName;
-  const userName =
-    typeof owner === "string" ? owner.replace("user-", "") : null;
+  const userName = typeof owner === "string" ? getUserName(owner) : null;
   return { modelName: model, userName };
 };
