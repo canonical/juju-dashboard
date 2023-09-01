@@ -13,8 +13,8 @@ import type ModelManagerV9 from "@canonical/jujulib/dist/api/facades/model-manag
 import type { ModelSLAInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type PingerV1 from "@canonical/jujulib/dist/api/facades/pinger/PingerV1";
 
-import type JIMMV2 from "juju/jimm-facade";
-// See https://github.com/juju/juju/blob/develop/apiserver/params/multiwatcher.go
+import type JIMMV3 from "./jimm/JIMMV3";
+// See https://github.com/juju/juju/blob/main/rpc/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
 export interface ActionData {
@@ -347,7 +347,7 @@ export type Facades = {
   controller?: ControllerV9;
   modelManager?: ModelManagerV9;
   pinger?: PingerV1;
-  jimM?: InstanceType<typeof JIMMV2>;
+  jimM?: InstanceType<typeof JIMMV3>;
 };
 
 export type ConnectionWithFacades = Connection & {

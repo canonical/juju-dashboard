@@ -3,10 +3,7 @@ import { autoBind } from "@canonical/jujulib/dist/api/utils";
 
 import type { Controller } from "store/juju/types";
 
-/**
-  pinger describes a resource that can be pinged and stopped.
-*/
-class JIMMV2 {
+class JIMMV3 {
   static NAME: string;
   static VERSION: number;
   version: number;
@@ -16,7 +13,7 @@ class JIMMV2 {
   constructor(transport: Transport, info: ConnectionInfo) {
     this._transport = transport;
     this._info = info;
-    this.version = 2;
+    this.version = 3;
 
     // Automatically bind all methods to instances.
     autoBind(this);
@@ -24,12 +21,11 @@ class JIMMV2 {
 
   disableControllerUUIDMasking() {
     return new Promise((resolve, reject) => {
-      const params = {};
       const req = {
         type: "JIMM",
         request: "DisableControllerUUIDMasking",
-        version: 2,
-        params: params,
+        version: 3,
+        params: {},
       };
       this._transport.write(req, resolve, reject);
     });
@@ -41,7 +37,7 @@ class JIMMV2 {
       const req = {
         type: "JIMM",
         request: "ListControllers",
-        version: 2,
+        version: 3,
         params: params,
       };
       this._transport.write(req, resolve, reject);
@@ -49,6 +45,6 @@ class JIMMV2 {
   }
 }
 
-JIMMV2.NAME = "JIMM";
-JIMMV2.VERSION = 2;
-export default JIMMV2;
+JIMMV3.NAME = "JIMM";
+JIMMV3.VERSION = 3;
+export default JIMMV3;
