@@ -240,9 +240,10 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
           </MachineLink>
         );
       }
-      // Link relations[key][app-key] to app in model details.
+      // Link relations[key][app-key] and 'subordinate-to'[value]
+      // to app in model details.
       if (
-        grandparentKey === "relations" &&
+        (grandparentKey === "relations" || parentKey === "subordinate-to") &&
         typeof valueAsString === "string" &&
         typeof value === "string" &&
         typeof modelUUID === "string"
