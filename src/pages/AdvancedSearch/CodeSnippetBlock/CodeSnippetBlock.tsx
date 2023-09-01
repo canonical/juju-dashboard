@@ -115,6 +115,7 @@ const labelRenderer: LabelRenderer = (keyPath) => {
       />
     );
   }
+  // Link units[unit-key] to unit in model details.
   if (parentKey === "units" && typeof currentKey === "string") {
     const [appName, unitId] = currentKey.split("/");
     return (
@@ -123,6 +124,7 @@ const labelRenderer: LabelRenderer = (keyPath) => {
       </UnitLink>
     );
   }
+  // Link machines[machine-key] to machine in model details.
   if (parentKey === "machines" && typeof currentKey === "string") {
     return (
       <MachineLink uuid={modelUUID} machineId={currentKey}>
@@ -130,6 +132,7 @@ const labelRenderer: LabelRenderer = (keyPath) => {
       </MachineLink>
     );
   }
+  // Link offers[app-key] and applications[app-key] to app in model details.
   if (
     (parentKey === "offers" || parentKey === "applications") &&
     typeof currentKey === "string"
@@ -223,6 +226,7 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
           );
         }
       }
+      // Link units[unit-key].machine to machine in model details.
       if (
         grandparentKey === "units" &&
         currentKey === "machine" &&
@@ -234,6 +238,19 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
           <MachineLink uuid={modelUUID} machineId={value}>
             {valueAsString}
           </MachineLink>
+        );
+      }
+      // Link relations[key][app-key] to app in model details.
+      if (
+        grandparentKey === "relations" &&
+        typeof valueAsString === "string" &&
+        typeof value === "string" &&
+        typeof modelUUID === "string"
+      ) {
+        return (
+          <AppLink uuid={modelUUID} appName={value}>
+            {valueAsString}
+          </AppLink>
         );
       }
       return <>{valueAsString}</>;
