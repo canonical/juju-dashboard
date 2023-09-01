@@ -9,11 +9,7 @@ type Props = {
   machineId: string | null;
 } & PropsWithChildren;
 
-const UnitsMachineLink = ({
-  uuid,
-  machineId,
-  children,
-}: Props): JSX.Element => {
+const MachineLink = ({ uuid, machineId, children }: Props): JSX.Element => {
   const { userName, modelName } = useModelByUUIDDetails({ uuid });
 
   // If at least one of the bellow values is falsy, we can't form a valid Link.
@@ -22,10 +18,14 @@ const UnitsMachineLink = ({
   }
 
   return (
-    <Link to={urls.model.machine({ userName, modelName, machineId })}>
+    <Link
+      // Prevent toggling the object when the link is clicked.
+      onClick={(event) => event.stopPropagation()}
+      to={urls.model.machine({ userName, modelName, machineId })}
+    >
       {children}
     </Link>
   );
 };
 
-export default UnitsMachineLink;
+export default MachineLink;

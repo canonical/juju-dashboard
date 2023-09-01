@@ -14,15 +14,15 @@ import {
 } from "react-json-tree";
 import "prismjs/components/prism-json";
 
+import MachineLink from "components/MachineLink";
 import Status from "components/Status";
+import UnitLink from "components/UnitLink";
 import { formatFriendlyDateToNow } from "components/utils";
 import { type CrossModelQueryResponse } from "juju/jimm-facade";
 import type { CrossModelQueryState } from "store/juju/types";
 import { ModelTab } from "urls";
 
 import ResultsModelLink from "../ResultsModelLink";
-import UnitsLink from "../UnitsLink";
-import UnitsMachineLink from "../UnitsMachineLink/UnitsMachineLink";
 import { CodeSnippetView } from "../types";
 
 type Props = {
@@ -117,9 +117,16 @@ const labelRenderer: LabelRenderer = (keyPath) => {
   if (parentKey === "units" && typeof currentKey === "string") {
     const [appName, unitId] = currentKey.split("/");
     return (
-      <UnitsLink uuid={modelUUID} appName={appName} unitId={unitId}>
-        {currentKey}
-      </UnitsLink>
+      <UnitLink uuid={modelUUID} appName={appName} unitId={unitId}>
+        {currentKey}:
+      </UnitLink>
+    );
+  }
+  if (parentKey === "machines" && typeof currentKey === "string") {
+    return (
+      <MachineLink uuid={modelUUID} machineId={currentKey}>
+        {currentKey}:
+      </MachineLink>
     );
   }
   switch (currentKey) {
@@ -213,9 +220,9 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
         typeof modelUUID === "string"
       ) {
         return (
-          <UnitsMachineLink uuid={modelUUID} machineId={value}>
+          <MachineLink uuid={modelUUID} machineId={value}>
             {valueAsString}
-          </UnitsMachineLink>
+          </MachineLink>
         );
       }
       return <>{valueAsString}</>;
