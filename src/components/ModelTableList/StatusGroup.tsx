@@ -20,6 +20,7 @@ import {
   getModelStatusGroupData,
 } from "store/juju/utils/models";
 import urls from "urls";
+import getUserName from "utils/getUserName";
 
 import AccessButton from "./AccessButton/AccessButton";
 import CloudCell from "./CloudCell/CloudCell";
@@ -48,7 +49,7 @@ const generateWarningMessage = (model: ModelData) => {
     return null;
   }
   const ownerTag = model?.info?.["owner-tag"] ?? "";
-  const userName = ownerTag.replace("user-", "");
+  const userName = getUserName(ownerTag);
   const modelName = model.model.name;
   const link = (
     <ModelDetailsLink modelName={modelName} ownerTag={ownerTag}>
