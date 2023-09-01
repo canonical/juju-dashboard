@@ -14,6 +14,7 @@ import {
 } from "react-json-tree";
 import "prismjs/components/prism-json";
 
+import AppLink from "components/AppLink";
 import MachineLink from "components/MachineLink";
 import Status from "components/Status";
 import UnitLink from "components/UnitLink";
@@ -127,6 +128,16 @@ const labelRenderer: LabelRenderer = (keyPath) => {
       <MachineLink uuid={modelUUID} machineId={currentKey}>
         {currentKey}:
       </MachineLink>
+    );
+  }
+  if (
+    (parentKey === "offers" || parentKey === "applications") &&
+    typeof currentKey === "string"
+  ) {
+    return (
+      <AppLink uuid={modelUUID} appName={currentKey}>
+        {currentKey}:
+      </AppLink>
     );
   }
   switch (currentKey) {
