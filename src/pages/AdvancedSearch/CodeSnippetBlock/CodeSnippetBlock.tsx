@@ -254,6 +254,22 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
           </AppLink>
         );
       }
+      // Link ‘application-endpoints’[app-key].url to the app in the
+      // offer’s model details.
+      if (
+        grandparentKey === "application-endpoints" &&
+        currentKey === "url" &&
+        typeof valueAsString === "string" &&
+        typeof parentKey === "string" &&
+        typeof modelUUID === "string"
+      ) {
+        console.log("application-endpoints: ", currentKey);
+        return (
+          <AppLink uuid={modelUUID} appName={parentKey}>
+            {valueAsString}
+          </AppLink>
+        );
+      }
       return <>{valueAsString}</>;
     },
     [code]
