@@ -4,11 +4,19 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { getModelByUUID } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
-type UseModelDetailsProps = {
-  uuid: string;
+type NameProps = {
+  modelName: string;
   ownerTag?: string | null;
-  modelName?: string;
+  uuid?: never;
 };
+
+type UUIDProps = {
+  modelName?: never;
+  ownerTag?: never;
+  uuid: string;
+};
+
+export type ModelByUUIDDetailsProps = NameProps | UUIDProps;
 
 export const useEntityDetailsParams = () => {
   const { userName, modelName, appName, unitId, machineId } =
@@ -27,7 +35,7 @@ export const useModelByUUIDDetails = ({
   uuid,
   ownerTag,
   modelName,
-}: UseModelDetailsProps) => {
+}: ModelByUUIDDetailsProps) => {
   const modelDetails = useAppSelector((state) => getModelByUUID(state, uuid));
   const owner = uuid ? modelDetails?.ownerTag : ownerTag;
   const model = uuid ? modelDetails?.name : modelName;

@@ -3,8 +3,10 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import type { LinkProps } from "react-router-dom";
 
-import { getModelByUUID } from "store/juju/selectors";
-import { useAppSelector } from "store/store";
+import {
+  type ModelByUUIDDetailsProps,
+  useModelByUUIDDetails,
+} from "components/hooks";
 import type { ModelTab } from "urls";
 import urls from "urls";
 
@@ -40,9 +42,11 @@ const ModelDetailsLink = ({
   view,
   ...props
 }: Props) => {
-  const modelDetails = useAppSelector((state) => getModelByUUID(state, uuid));
-  const owner = uuid ? modelDetails?.ownerTag : ownerTag;
-  const model = uuid ? modelDetails?.name : modelName;
+  const { modelName: model, userName: owner } = useModelByUUIDDetails({
+    uuid,
+    ownerTag,
+    modelName,
+  } as ModelByUUIDDetailsProps);
   // Because we get some data at different times based on the multiple API calls
   // we need to check for their existence and supply reasonable fallbacks if it
   // isn't available. Once we have a single API call for all the data this check
