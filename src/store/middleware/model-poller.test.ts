@@ -431,4 +431,33 @@ describe("model poller", () => {
     await middleware(next)(action);
     expect(jujuModule.crossModelQuery).not.toHaveBeenCalled();
   });
+
+  it("handles errors when fetching cross model query results", async () => {
+    const consoleError = console.error;
+    console.error = jest.fn();
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "crossModelQuery")
+      .mockImplementation(() => Promise.reject("Uh oh!"));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "wss://example.com",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(console.error).toHaveBeenCalledWith(
+      "Could not perform cross model query:",
+      "Uh oh!"
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateCrossModelQuery(
+        "Unable to perform search. Please try again later."
+      )
+    );
+    console.error = consoleError;
+  });
 });

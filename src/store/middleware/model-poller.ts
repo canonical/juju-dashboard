@@ -10,6 +10,7 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
+import type { CrossModelQueryFullResponse } from "juju/jimm-facade";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -189,7 +190,14 @@ export const modelPollerMiddleware: Middleware<
       if (!conn) {
         return;
       }
-      const crossModelQueryResponse = await crossModelQuery(conn, query);
+      let crossModelQueryResponse: CrossModelQueryFullResponse;
+      try {
+        crossModelQueryResponse = await crossModelQuery(conn, query);
+      } catch (error) {
+        console.error("Could not perform cross model query:", error);
+        crossModelQueryResponse =
+          "Unable to perform search. Please try again later.";
+      }
       reduxStore.dispatch(
         jujuActions.updateCrossModelQuery(crossModelQueryResponse)
       );
