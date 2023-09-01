@@ -5,6 +5,7 @@ import type { LinkProps } from "react-router-dom";
 
 import type { ModelTab } from "urls";
 import urls from "urls";
+import getUserName from "utils/getUserName";
 
 type Props = PropsWithSpread<
   {
@@ -34,7 +35,7 @@ const ModelDetailsLink = ({
   }
   // If the owner isn't the logged in user then we need to use the
   // fully qualified path name.
-  const userName = ownerTag.replace("user-", "");
+  const userName = getUserName(ownerTag);
   return (
     <Link
       to={

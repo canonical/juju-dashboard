@@ -18,6 +18,7 @@ import {
   getUserDomainsInModel,
 } from "store/juju/selectors";
 import { useAppSelector, usePromiseDispatch } from "store/store";
+import getUserName from "utils/getUserName";
 
 import "./share-model.scss";
 
@@ -111,7 +112,8 @@ export default function ShareModel() {
   }, [users]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isOwner = (user: string) => {
-    return user === modelStatusData?.info?.["owner-tag"].replace("user-", "");
+    const ownerTag = modelStatusData?.info?.["owner-tag"];
+    return !!ownerTag && user === getUserName(ownerTag);
   };
 
   const userAlreadyHasAccess = (username: string, users?: User[]) => {

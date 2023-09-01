@@ -2,6 +2,7 @@ import type { ModelUserInfo } from "@canonical/jujulib/dist/api/facades/model-ma
 import type { Endpoint } from "@canonical/jujulib/dist/api/facades/uniter/UniterV18";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
+import getUserName from "utils/getUserName";
 
 import type { ModelData, ModelDataList } from "../types";
 
@@ -179,7 +180,7 @@ export const getUnitStatusGroup = (
   @returns The simplified owner string
 */
 export const extractOwnerName = (tag: string) => {
-  return tag.split("@")[0].replace("user-", "");
+  return getUserName(tag.split("@")[0]);
 };
 
 /**
