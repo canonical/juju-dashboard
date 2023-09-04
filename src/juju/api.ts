@@ -29,7 +29,7 @@ import type { Dispatch } from "redux";
 
 import { isSet } from "components/utils";
 import bakery from "juju/bakery";
-import JIMMV2 from "juju/jimm-facade";
+import JIMM from "juju/jimm";
 import { actions as generalActions } from "store/general";
 import {
   getConfig,
@@ -85,7 +85,7 @@ export function generateConnectionOptions(
     Cloud,
     Controller,
     ModelManager,
-    JIMMV2,
+    JIMM,
   ];
   if (usePinger) {
     facades.push(Pinger);
