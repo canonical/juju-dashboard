@@ -10,7 +10,7 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
-import type { CrossModelQueryFullResponse } from "juju/jimm/JIMMV3";
+import type { CrossModelQueryFullResponse } from "juju/jimm/JIMMV4";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";

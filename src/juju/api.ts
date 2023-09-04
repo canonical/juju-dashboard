@@ -46,7 +46,7 @@ import type { RootState, Store } from "store/store";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
-import type { CrossModelQueryFullResponse } from "./jimm/JIMMV3";
+import type { CrossModelQueryFullResponse } from "./jimm/JIMMV4";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
