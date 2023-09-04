@@ -1,10 +1,8 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
 
-import { connectionInfoFactory } from "testing/factories/juju/jujulib";
+import JIMMV3 from "./JIMMV3";
 
-import JIMMV4 from "./jimm-facade";
-
-describe("JIMMV4", () => {
+describe("JIMMV3", () => {
   let transport: Transport;
   let connectionInfo: ConnectionInfo;
 
@@ -12,11 +10,10 @@ describe("JIMMV4", () => {
     transport = {
       write: jest.fn(),
     } as unknown as Transport;
-    connectionInfo = connectionInfoFactory.build();
   });
 
   it("disableControllerUUIDMasking", async () => {
-    const jimm = new JIMMV4(transport, connectionInfo);
+    const jimm = new JIMMV3(transport, connectionInfo);
     jimm.disableControllerUUIDMasking();
     expect(transport.write).toHaveBeenCalledWith(
       {
@@ -31,7 +28,7 @@ describe("JIMMV4", () => {
   });
 
   it("crossModelQuery", async () => {
-    const jimm = new JIMMV4(transport, connectionInfo);
+    const jimm = new JIMMV3(transport, connectionInfo);
     jimm.crossModelQuery(".");
     expect(transport.write).toHaveBeenCalledWith(
       {
@@ -46,7 +43,7 @@ describe("JIMMV4", () => {
   });
 
   it("listControllers", async () => {
-    const jimm = new JIMMV4(transport, connectionInfo);
+    const jimm = new JIMMV3(transport, connectionInfo);
     jimm.listControllers();
     expect(transport.write).toHaveBeenCalledWith(
       {

@@ -1,6 +1,6 @@
 import isEqual from "lodash.isequal";
 
-import type { CrossModelQueryResponse } from "juju/jimm-facade";
+import type { CrossModelQueryResponse } from "juju/jimm/JIMMV3";
 import {
   getCrossModelQueryErrors,
   getCrossModelQueryLoading,

@@ -29,7 +29,7 @@ import type { Dispatch } from "redux";
 
 import { isSet } from "components/utils";
 import bakery from "juju/bakery";
-import JIMMV4 from "juju/jimm-facade";
+import JIMM from "juju/jimm";
 import { actions as generalActions } from "store/general";
 import {
   getConfig,
@@ -46,7 +46,7 @@ import type { RootState, Store } from "store/store";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
-import type { CrossModelQueryFullResponse } from "./jimm-facade";
+import type { CrossModelQueryFullResponse } from "./jimm/JIMMV3";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -86,7 +86,7 @@ export function generateConnectionOptions(
     Cloud,
     Controller,
     ModelManager,
-    JIMMV4,
+    JIMM,
   ];
   if (usePinger) {
     facades.push(Pinger);
