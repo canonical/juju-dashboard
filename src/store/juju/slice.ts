@@ -11,7 +11,7 @@ import {
   type CrossModelQueryRequest,
   type CrossModelQueryFullResponse,
   isCrossModelQueryResponse,
-} from "juju/jimm/JIMMV3";
+} from "juju/jimm/JIMMV4";
 import type {
   AllWatcherDelta,
   ApplicationInfo,

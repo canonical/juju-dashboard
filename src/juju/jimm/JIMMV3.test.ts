@@ -27,21 +27,6 @@ describe("JIMMV3", () => {
     );
   });
 
-  it("crossModelQuery", async () => {
-    const jimm = new JIMMV3(transport, connectionInfo);
-    jimm.crossModelQuery(".");
-    expect(transport.write).toHaveBeenCalledWith(
-      {
-        type: "JIMM",
-        request: "CrossModelQuery",
-        version: 4,
-        params: { type: "jq", query: "." },
-      },
-      expect.any(Function),
-      expect.any(Function)
-    );
-  });
-
   it("listControllers", async () => {
     const jimm = new JIMMV3(transport, connectionInfo);
     jimm.listControllers();
