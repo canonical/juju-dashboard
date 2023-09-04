@@ -160,4 +160,83 @@ describe("useQueryParams", () => {
     expect(searchParams.panel).toBeNull();
     expect(window.location.search).toBe("");
   });
+
+  it("should sanitize existing query params value", () => {
+    window.history.pushState({}, "", "?xss=<img src=x onerror=alert(1)//>");
+    const { result } = renderHook(
+      () => useQueryParams<{ xss: string | null }>({ xss: null }),
+      {
+        wrapper: generateContainer,
+      }
+    );
+    let [searchParams] = result.current;
+    expect(searchParams.xss).toStrictEqual('<img src="x">');
+  });
+
+  it("should sanitize existing query params value in url without specifying it to change", () => {
+    window.history.pushState({}, "", "?xss=<img src=x onerror=alert(1)//>");
+    const { result } = renderHook(
+      () => useQueryParams<{ panel: string | null }>({ panel: null }),
+      {
+        wrapper: generateContainer,
+      }
+    );
+    expect(window.location.search).toStrictEqual(
+      // Decoded: ?xss=<img src=x onerror=alert(1)//>
+      "?xss=%3Cimg%20src=x%20onerror=alert(1)//%3E"
+    );
+    const [, setSearchParams] = result.current;
+    act(() => setSearchParams({ panel: "config" }));
+    const [searchParams] = result.current;
+    expect(searchParams.panel).toStrictEqual("config");
+    expect(window.location.search).toStrictEqual(
+      // Decoded: ?xss=<img src="x">&panel=config
+      "?xss=%3Cimg+src%3D%22x%22%3E&panel=config"
+    );
+  });
+
+  it("should sanitize existing query params key in url", () => {
+    window.history.pushState(
+      {},
+      "",
+      // Decoded: ?<svg><g/onload=alert(2)//<p>=something
+      "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something"
+    );
+    const { result } = renderHook(
+      () =>
+        useQueryParams<{
+          panel: string | null;
+        }>({
+          panel: null,
+        }),
+      {
+        wrapper: generateContainer,
+      }
+    );
+    expect(window.location.search).toStrictEqual(
+      // Decoded: ?<svg><g/onload=alert(2)//<p>=something
+      "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something"
+    );
+    const [, setSearchParams] = result.current;
+    act(() => setSearchParams({ panel: "config" }));
+    expect(window.location.search).toStrictEqual(
+      // Decoded: ?panel=config&$<svg><g></g></svg>=something
+      "?panel=config&%3Csvg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E=something"
+    );
+  });
+
+  it("should sanitize query params value after changing it", () => {
+    const { result } = renderHook(
+      () => useQueryParams<{ xss: string | null }>({ xss: null }),
+      {
+        wrapper: generateContainer,
+      }
+    );
+    let [searchParams] = result.current;
+    expect(searchParams.xss).toStrictEqual(null);
+    const [, setSearchParams] = result.current;
+    act(() => setSearchParams({ xss: "<img src=x onerror=alert(1)//>" }));
+    [searchParams] = result.current;
+    expect(searchParams.xss).toStrictEqual('<img src="x">');
+  });
 });

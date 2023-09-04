@@ -29,7 +29,7 @@ import type { Dispatch } from "redux";
 
 import { isSet } from "components/utils";
 import bakery from "juju/bakery";
-import JIMMV2 from "juju/jimm-facade";
+import JIMM from "juju/jimm";
 import { actions as generalActions } from "store/general";
 import {
   getConfig,
@@ -46,7 +46,7 @@ import type { RootState, Store } from "store/store";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
-import type { AuditEvents, FindAuditEventsRequest } from "./jimm-facade";
+import type { AuditEvents, FindAuditEventsRequest } from "./jimm/JIMMV3";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -86,7 +86,7 @@ export function generateConnectionOptions(
     Cloud,
     Controller,
     ModelManager,
-    JIMMV2,
+    JIMM,
   ];
   if (usePinger) {
     facades.push(Pinger);
@@ -233,7 +233,7 @@ export async function fetchModelStatus(
     useIdentityProvider = config?.identityProviderAvailable ?? false;
   }
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
-  let status: FullStatusWithAnnotations | null = null;
+  let status: FullStatusWithAnnotations | string | null = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
   if (isLoggedIn(getState(), wsControllerURL)) {
@@ -248,13 +248,13 @@ export async function fetchModelStatus(
       if (isLoggedIn(getState(), wsControllerURL)) {
         status =
           (await conn?.facades.client?.fullStatus({ patterns: [] })) ?? null;
-        if (!status) {
+        if (!status || typeof status === "string") {
           // XXX If there is an error fetching the full status it's likely that
           // Juju can no longer access this model. At this moment we don't have
           // a location to notify the user. In the new watcher model that's
           // being implemented we will be able to surface this error in the
           // model details page.
-          console.error("Unable to fetch the status.");
+          console.error("Unable to fetch the status.", status);
           return;
         }
       }

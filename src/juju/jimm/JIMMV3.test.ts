@@ -1,8 +1,6 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
 
-import { connectionInfoFactory } from "testing/factories/juju/jujulib";
-
-import JIMMV3 from "./jimm-facade";
+import JIMMV3 from "./JIMMV3";
 
 describe("JIMMV3", () => {
   let transport: Transport;
@@ -12,7 +10,6 @@ describe("JIMMV3", () => {
     transport = {
       write: jest.fn(),
     } as unknown as Transport;
-    connectionInfo = connectionInfoFactory.build();
   });
 
   it("disableControllerUUIDMasking", async () => {

@@ -1,6 +1,6 @@
 import { Factory } from "fishery";
 
-import type { AuditEvent } from "juju/jimm-facade";
+import type { AuditEvent } from "juju/jimm/JIMMV3";
 
 export const auditEventFactory = Factory.define<AuditEvent>(() => ({
   time: "2023-07-01T09:04:04.279Z",

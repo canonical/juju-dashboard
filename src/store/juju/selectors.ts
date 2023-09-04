@@ -6,7 +6,7 @@ import type {
 import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 
-import type { AuditEvent } from "juju/jimm-facade";
+import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type {
   AnnotationData,
   ApplicationData,

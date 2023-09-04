@@ -50,7 +50,7 @@
   "dependencies": {
     "@canonical/jujulib": "4.0.0",
     "@canonical/macaroon-bakery": "1.3.2",
-    "@canonical/react-components": "0.45.0",
+    "@canonical/react-components": "0.47.0",
     "@reduxjs/toolkit": "1.9.5",
     "@sentry/browser": "7.55.0",
     "async-limiter": "2.0.0",
@@ -58,6 +58,7 @@
     "clone-deep": "4.0.1",
     "d3": "7.8.5",
     "date-fns": "2.30.0",
+    "dompurify": "3.0.5",
     "formik": "2.4.1",
     "framer-motion": "10.12.16",
     "fuse.js": "6.6.2",
@@ -72,7 +73,7 @@
     "react-scripts": "5.0.1",
     "react-useportal": "1.0.18",
     "redux": "4.2.1",
-    "vanilla-framework": "4.1.0"
+    "vanilla-framework": "4.2.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
@@ -82,6 +83,7 @@
     "@types/classnames": "2.3.1",
     "@types/clone-deep": "4.0.1",
     "@types/d3": "7.4.0",
+    "@types/dompurify": "3.0.2",
     "@types/jest": "29.5.2",
     "@types/lodash.mergewith": "4.6.7",
     "@types/node": "18.16.18",

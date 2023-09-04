@@ -38,9 +38,6 @@ export type FindAuditEventsRequest = {
   "user-tag"?: string;
 };
 
-/**
-  pinger describes a resource that can be pinged and stopped.
-*/
 class JIMMV3 {
   static NAME: string;
   static VERSION: number;
