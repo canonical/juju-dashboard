@@ -7,7 +7,7 @@ import type {
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
+import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV4";
 import type {
   AllWatcherDelta,
   ApplicationInfo,

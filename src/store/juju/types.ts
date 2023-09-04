@@ -1,7 +1,7 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
-import type { AuditEvent } from "juju/jimm/JIMMV3";
+import type { AuditEvent } from "juju/jimm/JIMMV4";
 import type {
   ApplicationInfo,
   FullStatusWithAnnotations,
