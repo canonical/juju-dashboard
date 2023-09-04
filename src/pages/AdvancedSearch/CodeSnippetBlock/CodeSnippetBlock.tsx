@@ -263,7 +263,6 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
         typeof parentKey === "string" &&
         typeof modelUUID === "string"
       ) {
-        console.log("application-endpoints: ", currentKey);
         return (
           <AppLink uuid={modelUUID} appName={parentKey}>
             {valueAsString}

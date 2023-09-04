@@ -17,7 +17,7 @@ type UUIDProps = {
   uuid: string;
 };
 
-export type ModelByUUIDDetailsProps = NameProps | UUIDProps;
+type ModelByUUIDDetailsProps = NameProps | UUIDProps;
 
 export const useEntityDetailsParams = () => {
   const { userName, modelName, appName, unitId, machineId } =

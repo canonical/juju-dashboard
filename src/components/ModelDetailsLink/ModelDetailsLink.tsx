@@ -3,10 +3,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import type { LinkProps } from "react-router-dom";
 
-import {
-  type ModelByUUIDDetailsProps,
-  useModelByUUIDDetails,
-} from "components/hooks";
+import { useModelByUUIDDetails } from "components/hooks";
 import type { ModelTab } from "urls";
 import urls from "urls";
 
@@ -42,11 +39,16 @@ const ModelDetailsLink = ({
   view,
   ...props
 }: Props) => {
-  const { modelName: model, userName: owner } = useModelByUUIDDetails({
-    uuid,
-    ownerTag,
-    modelName,
-  } as ModelByUUIDDetailsProps);
+  // This component's props require either uuid or modelName to exist,
+  // but this characteristic gets lost when the props are destructured.
+  const { modelName: model, userName: owner } = useModelByUUIDDetails(
+    uuid
+      ? ({ uuid } as UUIDProps)
+      : ({
+          ownerTag,
+          modelName,
+        } as NameProps)
+  );
   // Because we get some data at different times based on the multiple API calls
   // we need to check for their existence and supply reasonable fallbacks if it
   // isn't available. Once we have a single API call for all the data this check
