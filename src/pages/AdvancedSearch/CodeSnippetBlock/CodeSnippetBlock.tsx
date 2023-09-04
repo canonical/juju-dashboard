@@ -16,7 +16,7 @@ import "prismjs/components/prism-json";
 
 import Status from "components/Status";
 import { formatFriendlyDateToNow } from "components/utils";
-import { type CrossModelQueryResponse } from "juju/jimm-facade";
+import { type CrossModelQueryResponse } from "juju/jimm/JIMMV3";
 import type { CrossModelQueryState } from "store/juju/types";
 import { ModelTab } from "urls";
 

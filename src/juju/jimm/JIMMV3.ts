@@ -29,7 +29,7 @@ export const isCrossModelQueryResponse = (
 /**
   pinger describes a resource that can be pinged and stopped.
 */
-class JIMMV4 {
+class JIMMV3 {
   static NAME: string;
   static VERSION: number;
   version: number;
@@ -39,7 +39,7 @@ class JIMMV4 {
   constructor(transport: Transport, info: ConnectionInfo) {
     this._transport = transport;
     this._info = info;
-    this.version = 4;
+    this.version = 3;
 
     // Automatically bind all methods to instances.
     autoBind(this);
@@ -83,6 +83,6 @@ class JIMMV4 {
   }
 }
 
-JIMMV4.NAME = "JIMM";
-JIMMV4.VERSION = 4;
-export default JIMMV4;
+JIMMV3.NAME = "JIMM";
+JIMMV3.VERSION = 3;
+export default JIMMV3;

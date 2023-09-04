@@ -7,6 +7,7 @@ import { getModelByUUID } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import type { ModelTab } from "urls";
 import urls from "urls";
+import getUserName from "utils/getUserName";
 
 type BaseProps = {
   view?: ModelTab;
@@ -54,7 +55,7 @@ const ModelDetailsLink = ({
   }
   // If the owner isn't the logged in user then we need to use the
   // fully qualified path name.
-  const userName = owner.replace("user-", "");
+  const userName = getUserName(owner);
   const label =
     replaceLabel && userName && model ? `${userName}/${model}` : children;
   return (
