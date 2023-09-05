@@ -91,6 +91,7 @@ export const crossModelQueryApplicationFactory =
       etcd: ["etcd"],
     },
     "subordinate-to": ["kubernetes-control-plane", "kubernetes-worker"],
+    units: { "easyrsa/0": crossModelQueryUnitFactory.build() },
   }));
 
 export const crossModelQueryUnitFactory = Factory.define<CrossModelQueryUnit>(
