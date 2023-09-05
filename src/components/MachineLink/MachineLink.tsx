@@ -6,14 +6,14 @@ import urls from "urls";
 
 type Props = {
   uuid: string;
-  machineId: string | null;
+  machineId: string;
 } & PropsWithChildren;
 
 const MachineLink = ({ uuid, machineId, children }: Props): JSX.Element => {
   const { userName, modelName } = useModelByUUIDDetails({ uuid });
 
   // If at least one of the bellow values is falsy, we can't form a valid Link.
-  if (!userName || !modelName || !machineId || typeof uuid !== "string") {
+  if (!userName || !modelName || !machineId) {
     return <>{children}</>;
   }
 

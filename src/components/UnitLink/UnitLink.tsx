@@ -6,8 +6,8 @@ import urls from "urls";
 
 type Props = {
   uuid: string;
-  appName: string | null;
-  unitId: string | null;
+  appName: string;
+  unitId: string;
 } & PropsWithChildren;
 
 const UnitLink = ({ uuid, appName, unitId, children }: Props): JSX.Element => {
