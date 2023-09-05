@@ -62,6 +62,8 @@ export const useFetchAuditEvents = () => {
         "user-tag": queryParams.user ? `user-${queryParams.user}` : undefined,
         model: model ?? undefined,
         method: queryParams.method ?? undefined,
+        // Sort by most recent first.
+        sortTime: true,
       })
     );
   }, [
