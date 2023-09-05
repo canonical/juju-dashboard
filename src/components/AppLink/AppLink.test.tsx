@@ -25,7 +25,7 @@ describe("AppLink", () => {
     });
   });
 
-  it("should render correctly", () => {
+  it("should render correctly when there is no view", () => {
     renderComponent(
       <AppLink uuid="abc123" appName="mockApp">
         abc123
@@ -35,6 +35,19 @@ describe("AppLink", () => {
     expect(screen.queryByRole("link", { name: "abc123" })).toHaveAttribute(
       "href",
       "/models/eggman@external/test-model/app/mockApp"
+    );
+  });
+
+  it("should render correctly when view is present", () => {
+    renderComponent(
+      <AppLink uuid="abc123" appName="mockApp" view="units">
+        abc123
+      </AppLink>,
+      { state }
+    );
+    expect(screen.queryByRole("link", { name: "abc123" })).toHaveAttribute(
+      "href",
+      "/models/eggman@external/test-model/app/mockApp?tableView=units"
     );
   });
 
