@@ -10,6 +10,7 @@ import {
 } from "testing/factories/juju/jimm";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
 import CodeSnippetBlock from "./CodeSnippetBlock";
 
@@ -125,7 +126,7 @@ describe("CodeSnippetBlock", () => {
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
-    await userEvent.click(screen.getByText("calico:"));
+    await clickToggleForLink("calico:");
     expect(screen.getByRole("link", { name: '"cs:~calico"' })).toHaveAttribute(
       "href",
       "https://charmhub.io/calico"
@@ -156,7 +157,7 @@ describe("CodeSnippetBlock", () => {
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
-    await userEvent.click(screen.getByText("calico:"));
+    await clickToggleForLink("calico:");
     expect(screen.getByRole("link", { name: '"cs:~calico"' })).toHaveAttribute(
       "href",
       "https://charmhub.io/calico?channel=stable"
@@ -186,9 +187,213 @@ describe("CodeSnippetBlock", () => {
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
-    await userEvent.click(screen.getByText("calico:"));
+    await clickToggleForLink("calico:");
     expect(
       screen.queryByRole("link", { name: '"cs:~calico"' })
     ).not.toBeInTheDocument();
+  });
+
+  it("should link units[unit-key] to unit in model details", async () => {
+    renderComponent(
+      <CodeSnippetBlock
+        className="mock-class-name"
+        title="Mock Title"
+        code={{
+          abc123: [crossModelQueryFactory.withApplications().build()],
+        }}
+      />,
+      { state }
+    );
+    await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
+    await clickToggleForLink("applications:");
+    await clickToggleForLink("application_0:");
+    await userEvent.click(screen.getByText("units:"));
+    expect(screen.getByRole("link", { name: "easyrsa/0:" })).toHaveAttribute(
+      "href",
+      urls.model.unit({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "easyrsa",
+        unitId: "0",
+      })
+    );
+  });
+
+  it("should link machines[machine-key] to machine in model details", async () => {
+    renderComponent(
+      <CodeSnippetBlock
+        className="mock-class-name"
+        title="Mock Title"
+        code={{
+          abc123: [crossModelQueryFactory.withMachines().build()],
+        }}
+      />,
+      { state }
+    );
+    await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
+    await clickToggleForLink("machines:");
+    expect(screen.getByRole("link", { name: "machine_0:" })).toHaveAttribute(
+      "href",
+      urls.model.machine({
+        userName: "eggman@external",
+        modelName: "test-model",
+        machineId: "machine_0",
+      })
+    );
+  });
+
+  it("should link offers[app-key] to app in model details", async () => {
+    renderComponent(
+      <CodeSnippetBlock
+        className="mock-class-name"
+        title="Mock Title"
+        code={{
+          abc123: [crossModelQueryFactory.withOffers().build()],
+        }}
+      />,
+      { state }
+    );
+    await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
+    await clickToggleForLink("offers:");
+    expect(screen.getByRole("link", { name: "offer_0:" })).toHaveAttribute(
+      "href",
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "offer_0",
+      })
+    );
+  });
+
+  it("should link applications[app-key] to app in model details", async () => {
+    renderComponent(
+      <CodeSnippetBlock
+        className="mock-class-name"
+        title="Mock Title"
+        code={{
+          abc123: [crossModelQueryFactory.withApplications().build()],
+        }}
+      />,
+      { state }
+    );
+    await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
+    await clickToggleForLink("applications:");
+    expect(
+      screen.getByRole("link", { name: "application_0:" })
+    ).toHaveAttribute(
+      "href",
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "application_0",
+      })
+    );
+  });
+
+  it("should link units[unit-key].machine to machine in model details", async () => {
+    renderComponent(
+      <CodeSnippetBlock
+        className="mock-class-name"
+        title="Mock Title"
+        code={{
+          abc123: [crossModelQueryFactory.withApplications().build()],
+        }}
+      />,
+      { state }
+    );
+    await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
+    await clickToggleForLink("applications:");
+    await clickToggleForLink("application_0:");
+    await userEvent.click(screen.getByText("units:"));
+    await clickToggleForLink("easyrsa/0:");
+    expect(screen.getByRole("link", { name: '"0/lxd/0"' })).toHaveAttribute(
+      "href",
+      urls.model.machine({
+        userName: "eggman@external",
+        modelName: "test-model",
+        machineId: "0/lxd/0",
+      })
+    );
+  });
+
+  it("should link relations[key][app-key] to app in model details", async () => {
+    renderComponent(
+      <CodeSnippetBlock
+        className="mock-class-name"
+        title="Mock Title"
+        code={{
+          abc123: [crossModelQueryFactory.withApplicationEndpoints().build()],
+        }}
+      />,
+      { state }
+    );
+    await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
+    await userEvent.click(screen.getByText("application-endpoints:"));
+    await userEvent.click(screen.getByText("appEndpoint_0:"));
+    await clickToggleForLink("relations:");
+    await userEvent.click(screen.getByText("mysql:"));
+    expect(screen.getByRole("link", { name: '"slurmdbd"' })).toHaveAttribute(
+      "href",
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "slurmdbd",
+      })
+    );
+  });
+
+  it("should link 'subordinate-to'[value] to app in model details", async () => {
+    renderComponent(
+      <CodeSnippetBlock
+        className="mock-class-name"
+        title="Mock Title"
+        code={{
+          abc123: [crossModelQueryFactory.withApplications().build()],
+        }}
+      />,
+      { state }
+    );
+    await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
+    await clickToggleForLink("applications:");
+    await clickToggleForLink("application_0:");
+    await userEvent.click(screen.getByText("subordinate-to:"));
+    expect(
+      screen.getByRole("link", { name: '"kubernetes-control-plane"' })
+    ).toHaveAttribute(
+      "href",
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "kubernetes-control-plane",
+      })
+    );
+  });
+
+  it("should link 'application-endpoints'[app-key].url to app in model details", async () => {
+    renderComponent(
+      <CodeSnippetBlock
+        className="mock-class-name"
+        title="Mock Title"
+        code={{
+          abc123: [crossModelQueryFactory.withApplicationEndpoints().build()],
+        }}
+      />,
+      { state }
+    );
+    await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
+    await userEvent.click(screen.getByText("application-endpoints:"));
+    await userEvent.click(screen.getByText("appEndpoint_0:"));
+    expect(
+      screen.getByRole("link", {
+        name: '"jaas-staging:huwshimi@external/cmi-provider.mysql-cmi"',
+      })
+    ).toHaveAttribute(
+      "href",
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "appEndpoint_0",
+      })
+    );
   });
 });

@@ -218,7 +218,7 @@ describe("ResultsBlock", () => {
     };
     renderComponent(<ResultsBlock />, { state });
     await clickToggleForLink("applications:");
-    await userEvent.click(screen.getByText("application_0:"));
+    await clickToggleForLink("application_0:");
     expect(screen.getByRole("link", { name: "relations:" })).toHaveAttribute(
       "href",
       urls.model.tab({

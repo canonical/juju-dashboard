@@ -14,7 +14,10 @@ import {
 } from "react-json-tree";
 import "prismjs/components/prism-json";
 
+import AppLink from "components/AppLink";
+import MachineLink from "components/MachineLink";
 import Status from "components/Status";
+import UnitLink from "components/UnitLink";
 import { formatFriendlyDateToNow } from "components/utils";
 import { type CrossModelQueryResponse } from "juju/jimm/JIMMV4";
 import type { CrossModelQueryState } from "store/juju/types";
@@ -95,6 +98,7 @@ const getCurrentObject = (
 
 const labelRenderer: LabelRenderer = (keyPath) => {
   const currentKey = keyPath[0];
+  const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
   // The last item in keyPath should always be the model UUID.
   const modelUUID = keyPath[keyPath.length - 1];
   if (!modelUUID || typeof modelUUID !== "string") {
@@ -109,6 +113,34 @@ const labelRenderer: LabelRenderer = (keyPath) => {
         title={`UUID: ${modelUUID}`}
         uuid={modelUUID}
       />
+    );
+  }
+  // Link units[unit-key] to unit in model details.
+  if (parentKey === "units" && typeof currentKey === "string") {
+    const [appName, unitId] = currentKey.split("/");
+    return (
+      <UnitLink uuid={modelUUID} appName={appName} unitId={unitId}>
+        {currentKey}:
+      </UnitLink>
+    );
+  }
+  // Link machines[machine-key] to machine in model details.
+  if (parentKey === "machines" && typeof currentKey === "string") {
+    return (
+      <MachineLink uuid={modelUUID} machineId={currentKey}>
+        {currentKey}:
+      </MachineLink>
+    );
+  }
+  // Link offers[app-key] and applications[app-key] to app in model details.
+  if (
+    (parentKey === "offers" || parentKey === "applications") &&
+    typeof currentKey === "string"
+  ) {
+    return (
+      <AppLink uuid={modelUUID} appName={currentKey}>
+        {currentKey}:
+      </AppLink>
     );
   }
   switch (currentKey) {
@@ -139,6 +171,8 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
     (valueAsString, value, ...keyPath) => {
       const currentKey = keyPath[0];
       const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
+      const grandparentKey = keyPath.length >= 3 ? keyPath[2] : null;
+      const modelUUID = keyPath[keyPath.length - 1];
       // Match a status of the following structure:
       //   "application-status": {
       //     "current": "unknown",
@@ -191,6 +225,49 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
             </a>
           );
         }
+      }
+      // Link units[unit-key].machine to machine in model details.
+      if (
+        grandparentKey === "units" &&
+        currentKey === "machine" &&
+        typeof valueAsString === "string" &&
+        typeof value === "string" &&
+        typeof modelUUID === "string"
+      ) {
+        return (
+          <MachineLink uuid={modelUUID} machineId={value}>
+            {valueAsString}
+          </MachineLink>
+        );
+      }
+      // Link relations[key][app-key] and 'subordinate-to'[value]
+      // to app in model details.
+      if (
+        (grandparentKey === "relations" || parentKey === "subordinate-to") &&
+        typeof valueAsString === "string" &&
+        typeof value === "string" &&
+        typeof modelUUID === "string"
+      ) {
+        return (
+          <AppLink uuid={modelUUID} appName={value}>
+            {valueAsString}
+          </AppLink>
+        );
+      }
+      // Link ‘application-endpoints’[app-key].url to the app in the
+      // offer’s model details.
+      if (
+        grandparentKey === "application-endpoints" &&
+        currentKey === "url" &&
+        typeof valueAsString === "string" &&
+        typeof parentKey === "string" &&
+        typeof modelUUID === "string"
+      ) {
+        return (
+          <AppLink uuid={modelUUID} appName={parentKey}>
+            {valueAsString}
+          </AppLink>
+        );
       }
       return <>{valueAsString}</>;
     },

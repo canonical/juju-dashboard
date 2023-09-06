@@ -68,12 +68,10 @@ export const crossModelQueryFactory = CrossModelQueryFactory.define(() => ({}));
 
 export const crossModelQueryApplicationEndpointFactory =
   Factory.define<CrossModelQueryApplicationEndpoint>(() => ({
-    "mysql-cmi": {
-      "application-status": crossModelQueryStatusFactory.build(),
-      endpoints: { mysql: crossModelQueryEndpointFactory.build() },
-      relations: { mysql: ["slurmdbd"] },
-      url: "jaas-staging:huwshimi@external/cmi-provider.mysql-cmi",
-    },
+    "application-status": crossModelQueryStatusFactory.build(),
+    endpoints: { mysql: crossModelQueryEndpointFactory.build() },
+    relations: { mysql: ["slurmdbd"] },
+    url: "jaas-staging:huwshimi@external/cmi-provider.mysql-cmi",
   }));
 
 export const crossModelQueryApplicationFactory =
@@ -93,6 +91,7 @@ export const crossModelQueryApplicationFactory =
       etcd: ["etcd"],
     },
     "subordinate-to": ["kubernetes-control-plane", "kubernetes-worker"],
+    units: { "easyrsa/0": crossModelQueryUnitFactory.build() },
   }));
 
 export const crossModelQueryUnitFactory = Factory.define<CrossModelQueryUnit>(
