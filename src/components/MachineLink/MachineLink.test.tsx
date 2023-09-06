@@ -5,6 +5,7 @@ import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
 import MachineLink from "./MachineLink";
 
@@ -34,7 +35,11 @@ describe("MachineLink", () => {
     );
     expect(screen.queryByRole("link", { name: "machine0" })).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/machine/0"
+      urls.model.machine({
+        userName: "eggman@external",
+        modelName: "test-model",
+        machineId: "0",
+      })
     );
   });
 

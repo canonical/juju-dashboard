@@ -10,6 +10,7 @@ import {
 } from "testing/factories/juju/jimm";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
 import CodeSnippetBlock from "./CodeSnippetBlock";
 
@@ -209,7 +210,12 @@ describe("CodeSnippetBlock", () => {
     await userEvent.click(screen.getByText("units:"));
     expect(screen.getByRole("link", { name: "easyrsa/0:" })).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/app/easyrsa/unit/0"
+      urls.model.unit({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "easyrsa",
+        unitId: "0",
+      })
     );
   });
 
@@ -228,7 +234,11 @@ describe("CodeSnippetBlock", () => {
     await clickToggleForLink("machines:");
     expect(screen.getByRole("link", { name: "machine_0:" })).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/machine/machine_0"
+      urls.model.machine({
+        userName: "eggman@external",
+        modelName: "test-model",
+        machineId: "machine_0",
+      })
     );
   });
 
@@ -247,7 +257,11 @@ describe("CodeSnippetBlock", () => {
     await clickToggleForLink("offers:");
     expect(screen.getByRole("link", { name: "offer_0:" })).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/app/offer_0"
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "offer_0",
+      })
     );
   });
 
@@ -268,7 +282,11 @@ describe("CodeSnippetBlock", () => {
       screen.getByRole("link", { name: "application_0:" })
     ).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/app/application_0"
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "application_0",
+      })
     );
   });
 
@@ -290,7 +308,11 @@ describe("CodeSnippetBlock", () => {
     await clickToggleForLink("easyrsa/0:");
     expect(screen.getByRole("link", { name: '"0/lxd/0"' })).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/machine/0/lxd/0"
+      urls.model.machine({
+        userName: "eggman@external",
+        modelName: "test-model",
+        machineId: "0/lxd/0",
+      })
     );
   });
 
@@ -312,7 +334,11 @@ describe("CodeSnippetBlock", () => {
     await userEvent.click(screen.getByText("mysql:"));
     expect(screen.getByRole("link", { name: '"slurmdbd"' })).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/app/slurmdbd"
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "slurmdbd",
+      })
     );
   });
 
@@ -335,7 +361,11 @@ describe("CodeSnippetBlock", () => {
       screen.getByRole("link", { name: '"kubernetes-control-plane"' })
     ).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/app/kubernetes-control-plane"
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "kubernetes-control-plane",
+      })
     );
   });
 
@@ -359,7 +389,11 @@ describe("CodeSnippetBlock", () => {
       })
     ).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/app/appEndpoint_0"
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "appEndpoint_0",
+      })
     );
   });
 });

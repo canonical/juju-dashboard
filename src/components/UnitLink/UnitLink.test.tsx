@@ -5,6 +5,7 @@ import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
 import UnitLink from "./UnitLink";
 
@@ -34,7 +35,12 @@ describe("UnitLink", () => {
     );
     expect(screen.queryByRole("link", { name: "unit0" })).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/app/mockApp/unit/0"
+      urls.model.unit({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "mockApp",
+        unitId: "0",
+      })
     );
   });
 

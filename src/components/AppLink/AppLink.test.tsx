@@ -5,6 +5,7 @@ import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
 import AppLink from "./AppLink";
 
@@ -34,7 +35,11 @@ describe("AppLink", () => {
     );
     expect(screen.queryByRole("link", { name: "abc123" })).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/app/mockApp"
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "mockApp",
+      })
     );
   });
 
@@ -47,7 +52,12 @@ describe("AppLink", () => {
     );
     expect(screen.queryByRole("link", { name: "abc123" })).toHaveAttribute(
       "href",
-      "/models/eggman@external/test-model/app/mockApp?tableView=units"
+      urls.model.app.tab({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "mockApp",
+        tab: "units",
+      })
     );
   });
 
