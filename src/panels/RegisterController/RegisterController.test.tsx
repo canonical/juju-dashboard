@@ -42,11 +42,6 @@ describe("RegisterController", () => {
     );
     await userEvent.click(
       screen.getByRole("checkbox", {
-        name: "An identity provider is available.",
-      })
-    );
-    await userEvent.click(
-      screen.getByRole("checkbox", {
         name: "The SSL certificate, if any, has been accepted. *",
       })
     );
@@ -58,7 +53,7 @@ describe("RegisterController", () => {
           password: "",
           user: "eggman@external",
         },
-        true,
+        null,
         true,
       ],
     ]);
@@ -67,6 +62,28 @@ describe("RegisterController", () => {
         .getActions()
         .find((action) => action.type === "connectAndStartPolling")
     ).toBeTruthy();
+  });
+
+  it("clears and disables the username and password if external auth is set", async () => {
+    renderComponent(<RegisterController />);
+    await userEvent.type(
+      screen.getByRole("textbox", {
+        name: "Username",
+      }),
+      "eggman@external"
+    );
+    await userEvent.type(screen.getByLabelText("Password"), "verysecure123");
+    expect(screen.getByRole("textbox", { name: "Username" })).toHaveValue(
+      "eggman@external"
+    );
+    expect(screen.getByLabelText("Password")).toHaveValue("verysecure123");
+    await userEvent.click(
+      screen.getByRole("checkbox", {
+        name: "This controller uses an external identity provider.",
+      })
+    );
+    expect(screen.getByRole("textbox", { name: "Username" })).toHaveValue("");
+    expect(screen.getByLabelText("Password")).toHaveValue("");
   });
 
   it("requires the certificate warning to be checked", async () => {
