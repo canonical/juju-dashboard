@@ -1,4 +1,9 @@
-import { Button, Notification, Spinner } from "@canonical/react-components";
+import {
+  Button,
+  ConfirmationModal,
+  Notification,
+  Spinner,
+} from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
 import type { ReactNode, MouseEvent } from "react";
@@ -7,7 +12,6 @@ import type { Store } from "redux";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";
-import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import Panel from "components/Panel";
 import ScrollOnRender from "components/ScrollOnRender";
 import { isSet } from "components/utils";
@@ -215,29 +219,56 @@ export default function ConfigPanel(): JSX.Element {
   function generateConfirmationDialog(): JSX.Element | null {
     if (confirmType && appName) {
       const changedConfigList = generateChangedKeyValues(config);
-
       if (confirmType === "apply") {
-        return SaveConfirmation(
-          appName,
-          changedConfigList,
-          () => {
-            setConfirmType(null);
-            // Clear the form errors if there were any from a previous submit.
-            setFormErrors(null);
-            _submitToJuju();
-          },
-          () => setConfirmType(null)
+        return (
+          // Render the submit confirmation modal.
+          <ConfirmationModal
+            className="p-confirmation-modal"
+            title={Label.SAVE_CONFIRM}
+            cancelButtonLabel={Label.SAVE_CONFIRM_CANCEL_BUTTON}
+            confirmButtonLabel={Label.SAVE_CONFIRM_CONFIRM_BUTTON}
+            confirmButtonAppearance="positive"
+            onConfirm={() => {
+              setConfirmType(null);
+              // Clear the form errors if there were any from a previous submit.
+              setFormErrors(null);
+              _submitToJuju();
+            }}
+            close={() => setConfirmType(null)}
+          >
+            <p>
+              You have edited the following values to the {appName}{" "}
+              configuration:
+            </p>
+            {changedConfigList}
+            <div className="config-panel__modal-button-row-hint">
+              You can revert back to the applications default settings by
+              clicking the “Reset all values” button; or reset each edited field
+              by clicking “Use default”.
+            </div>
+          </ConfirmationModal>
         );
       }
       if (confirmType === "cancel") {
-        return CancelConfirmation(
-          appName,
-          changedConfigList,
-          () => {
-            setConfirmType(null);
-            handleRemovePanelQueryParams();
-          },
-          () => setConfirmType(null)
+        // Render the cancel confirmation modal.
+        return (
+          <ConfirmationModal
+            className="p-confirmation-modal"
+            title={Label.CANCEL_CONFIRM}
+            cancelButtonLabel={Label.CANCEL_CONFIRM_CANCEL_BUTTON}
+            confirmButtonLabel={Label.CANCEL_CONFIRM_CONFIRM_BUTTON}
+            onConfirm={() => {
+              setConfirmType(null);
+              handleRemovePanelQueryParams();
+            }}
+            close={() => setConfirmType(null)}
+          >
+            <p>
+              You have edited the following values to the {appName}{" "}
+              configuration:
+            </p>
+            {changedConfigList}
+          </ConfirmationModal>
         );
       }
     }
@@ -474,84 +505,5 @@ function NoDescriptionMessage() {
         parameters
       </h4>
     </div>
-  );
-}
-
-function CancelConfirmation(
-  appName: string,
-  changedConfigList: ReactNode,
-  confirmFunction: () => void,
-  cancelFunction: () => void
-): JSX.Element {
-  return (
-    <ConfirmationModal
-      buttonRow={[
-        <button
-          className="p-button--neutral"
-          key="cancel"
-          onClick={cancelFunction}
-        >
-          {Label.CANCEL_CONFIRM_CANCEL_BUTTON}
-        </button>,
-        <button
-          className="p-button--negative"
-          key="save"
-          onClick={confirmFunction}
-        >
-          {Label.CANCEL_CONFIRM_CONFIRM_BUTTON}
-        </button>,
-      ]}
-      onClose={cancelFunction}
-    >
-      <h4>{Label.CANCEL_CONFIRM}</h4>
-      <p>
-        You have edited the following values to the {appName} configuration:
-      </p>
-      {changedConfigList}
-    </ConfirmationModal>
-  );
-}
-
-function SaveConfirmation(
-  appName: string,
-  changedConfigList: ReactNode,
-  confirmFunction: () => void,
-  cancelFunction: () => void
-): JSX.Element {
-  return (
-    <ConfirmationModal
-      buttonRow={
-        <div>
-          <div className="config-panel__modal-button-row-hint">
-            You can revert back to the applications default settings by clicking
-            the “Reset all values” button; or reset each edited field by
-            clicking “Use default”.
-          </div>
-          <div>
-            <button
-              className="p-button--neutral"
-              key="cancel"
-              onClick={cancelFunction}
-            >
-              {Label.SAVE_CONFIRM_CANCEL_BUTTON}
-            </button>
-            <button
-              className="p-button--positive"
-              key="save"
-              onClick={confirmFunction}
-            >
-              {Label.SAVE_CONFIRM_CONFIRM_BUTTON}
-            </button>
-          </div>
-        </div>
-      }
-      onClose={cancelFunction}
-    >
-      <h4>{Label.SAVE_CONFIRM}</h4>
-      <p>
-        You have edited the following values to the {appName} configuration:
-      </p>
-      {changedConfigList}
-    </ConfirmationModal>
   );
 }

@@ -1,12 +1,11 @@
 import type { ActionSpec } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
-import { Button } from "@canonical/react-components";
+import { Button, ConfirmationModal } from "@canonical/react-components";
 import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import CharmIcon from "components/CharmIcon/CharmIcon";
-import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
@@ -72,6 +71,8 @@ type ActionsQueryParams = {
   units: string[];
 };
 
+type ConfirmTypes = "submit" | null;
+
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
@@ -86,7 +87,7 @@ export default function ActionsPanel(): JSX.Element {
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});
   const [fetchingActionData, setFetchingActionData] = useState(false);
-  const [confirmType, setConfirmType] = useState<string>("");
+  const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
   const [selectedAction, setSelectedAction]: [
     string | undefined,
     SetSelectedAction
@@ -188,16 +189,35 @@ export default function ActionsPanel(): JSX.Element {
       // Allow for adding more confirmation types, like for cancel
       // if inputs have been changed.
       if (confirmType === "submit") {
-        return SubmitConfirmation(
-          selectedAction,
-          selectedUnits.length,
-          selectedUnits,
-          () => {
-            setConfirmType("");
-            executeAction();
-            handleRemovePanelQueryParams();
-          },
-          () => setConfirmType("")
+        const unitNames = selectedUnits.reduce((acc, unitName) => {
+          return `${acc}, ${unitName.split("/")[1]}`;
+        });
+        // Render the submit confirmation modal.
+        return (
+          <ConfirmationModal
+            className="p-confirmation-modal"
+            title={`Run ${selectedAction}?`}
+            cancelButtonLabel="Cancel"
+            confirmButtonLabel="Confirm"
+            confirmButtonAppearance="positive"
+            onConfirm={() => {
+              setConfirmType(null);
+              executeAction();
+              handleRemovePanelQueryParams();
+            }}
+            close={() => setConfirmType(null)}
+          >
+            <div className="p-confirmation-modal__info-group">
+              <div className="p-confirmation-modal__sub-header">UNIT COUNT</div>
+              <div data-testid="confirmation-modal-unit-count">
+                {selectedUnits.length}
+              </div>
+            </div>
+            <div className="p-confirmation-modal__info-group">
+              <div className="p-confirmation-modal__sub-header">UNIT NAME</div>
+              <div data-testid="confirmation-modal-unit-names">{unitNames}</div>
+            </div>
+          </ConfirmationModal>
         );
       }
     }
@@ -333,42 +353,3 @@ const optionsValidate: ValidationFnProps = (selected, optionsValues) => {
   // XXX TODO
   return true;
 };
-
-function SubmitConfirmation(
-  actionName: string,
-  unitCount: number,
-  unitList: string[],
-  confirmFunction: () => void,
-  cancelFunction: () => void
-): JSX.Element {
-  const unitNames = unitList.reduce((acc, unitName) => {
-    return `${acc}, ${unitName.split("/")[1]}`;
-  });
-  return (
-    <ConfirmationModal
-      buttonRow={
-        <div>
-          <Button key="cancel" onClick={cancelFunction}>
-            Cancel
-          </Button>
-          <Button appearance="positive" key="save" onClick={confirmFunction}>
-            Confirm
-          </Button>
-        </div>
-      }
-      onClose={cancelFunction}
-    >
-      <div>
-        <h4>Run {actionName}?</h4>
-        <div className="p-confirmation-modal__info-group">
-          <div className="p-confirmation-modal__sub-header">UNIT COUNT</div>
-          <div data-testid="confirmation-modal-unit-count">{unitCount}</div>
-        </div>
-        <div className="p-confirmation-modal__info-group">
-          <div className="p-confirmation-modal__sub-header">UNIT NAME</div>
-          <div data-testid="confirmation-modal-unit-names">{unitNames}</div>
-        </div>
-      </div>
-    </ConfirmationModal>
-  );
-}

@@ -1,19 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button } from "@canonical/react-components";
-import type { MouseEvent } from "react";
+import { Button, ConfirmationModal } from "@canonical/react-components";
 import { useCallback, useMemo, useRef, useState } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import ToastCard from "components/ToastCard/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
 import { executeActionOnUnits } from "juju/api";
-import type { ApplicationInfo } from "juju/types";
 import ActionOptions from "panels/ActionsPanel/ActionOptions";
 import type {
   ActionOptionValue,
@@ -43,6 +40,8 @@ export type Props = {
   onRemovePanelQueryParams: () => void;
 };
 
+type ConfirmTypes = "submit" | null;
+
 export default function CharmActionsPanel({
   charmURL,
   onRemovePanelQueryParams,
@@ -54,7 +53,7 @@ export default function CharmActionsPanel({
   const appState = useAppStore().getState();
 
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
-  const [confirmType, setConfirmType] = useState<string>("");
+  const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
   const [selectedAction, setSelectedAction] = useState<string>();
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
@@ -154,16 +153,35 @@ export default function CharmActionsPanel({
       // Allow for adding more confirmation types, like for cancel
       // if inputs have been changed.
       if (confirmType === "submit") {
-        return SubmitConfirmation(
-          selectedAction,
-          selectedApplications,
-          (event) => {
-            event.stopPropagation();
-            setConfirmType("");
-            executeAction();
-            onRemovePanelQueryParams();
-          },
-          () => setConfirmType("")
+        const unitCount = selectedApplications.reduce(
+          (total, app) => total + (app["unit-count"] || 0),
+          0
+        );
+        // Render the submit confirmation modal.
+        return (
+          <ConfirmationModal
+            className="p-confirmation-modal"
+            title={`Run ${selectedAction}?`}
+            cancelButtonLabel="Cancel"
+            confirmButtonLabel="Confirm"
+            confirmButtonAppearance="positive"
+            onConfirm={(event) => {
+              event.stopPropagation();
+              setConfirmType(null);
+              executeAction();
+              onRemovePanelQueryParams();
+            }}
+            close={() => setConfirmType(null)}
+          >
+            <div className="p-confirmation-modal__info-group">
+              <div className="p-confirmation-modal__sub-header">
+                APPLICATION COUNT (UNIT COUNT)
+              </div>
+              <div data-testid="confirmation-modal-unit-count">
+                {selectedApplications.length} ({unitCount})
+              </div>
+            </div>
+          </ConfirmationModal>
         );
       }
     }
@@ -209,45 +227,5 @@ export default function CharmActionsPanel({
         {generateConfirmationModal()}
       </LoadingHandler>
     </Panel>
-  );
-}
-
-function SubmitConfirmation(
-  actionName: string,
-  applications: ApplicationInfo[],
-  confirmFunction: (event: MouseEvent) => void,
-  cancelFunction: () => void
-): JSX.Element {
-  const applicationCount = applications.length;
-  const unitCount = applications.reduce(
-    (total, app) => total + (app["unit-count"] || 0),
-    0
-  );
-  return (
-    <ConfirmationModal
-      buttonRow={
-        <div>
-          <Button key="cancel" onClick={cancelFunction}>
-            Cancel
-          </Button>
-          <Button appearance="positive" key="save" onClick={confirmFunction}>
-            Confirm
-          </Button>
-        </div>
-      }
-      onClose={cancelFunction}
-    >
-      <div>
-        <h4>Run {actionName}?</h4>
-        <div className="p-confirmation-modal__info-group">
-          <div className="p-confirmation-modal__sub-header">
-            APPLICATION COUNT (UNIT COUNT)
-          </div>
-          <div data-testid="confirmation-modal-unit-count">
-            {applicationCount} ({unitCount})
-          </div>
-        </div>
-      </div>
-    </ConfirmationModal>
   );
 }
