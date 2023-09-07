@@ -150,7 +150,7 @@ const Model = () => {
                 controller: modelInfoData.type,
                 "Cloud/Region": generateCloudAndRegion(
                   modelInfoData["cloud"],
-                  modelInfoData.region
+                  modelInfoData["cloud-region"]
                 ),
                 version: modelInfoData.version,
                 sla: modelInfoData.sla?.level,

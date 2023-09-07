@@ -183,7 +183,7 @@ const slice = createSlice({
         // Match the data returned by the Juju 3.2 watcher:
         cloud: extractCloudName(action.payload.status.model["cloud-tag"]),
         type: action.payload.status.model.type,
-        region: action.payload.status.model.region,
+        "cloud-region": action.payload.status.model.region,
         version: action.payload.status.model.version,
       };
     },

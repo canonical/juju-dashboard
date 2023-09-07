@@ -106,7 +106,7 @@ export interface WatcherModelData {
 // This type is used for Juju versions before 3.2.
 export interface Pre32AnnotatedWatcherModelInfo extends Pre32ModelChangeDelta {
   cloud: string;
-  region?: string;
+  "cloud-region"?: string;
   type: string;
   version: string;
 }
@@ -259,7 +259,7 @@ type Pre32ModelChangeDelta = {
 
 type Post32ModelChangeDelta = Pre32ModelChangeDelta & {
   cloud: string;
-  region: string;
+  "cloud-region": string;
   type: string;
   version: string;
 };

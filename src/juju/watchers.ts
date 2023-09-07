@@ -30,7 +30,7 @@ export function generateModelWatcherBase(): WatcherModelData {
       life: "",
       name: "",
       owner: "",
-      region: "",
+      "cloud-region": "",
       sla: {
         level: "",
         owner: "",
