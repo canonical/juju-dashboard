@@ -282,7 +282,7 @@ describe("CharmActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" })
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: "Confirm" })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -320,7 +320,7 @@ describe("CharmActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" })
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: "Confirm" })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -357,7 +357,7 @@ describe("CharmActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" })
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: "Confirm" })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -392,7 +392,7 @@ describe("CharmActionsPanel", () => {
       screen.queryByRole("dialog", { name: "Run pause?" })
     ).toBeInTheDocument();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Cancel" })
+      await screen.findByRole("button", { name: Label.CANCEL_BUTTON })
     );
     expect(
       screen.queryByRole("dialog", { name: "Run pause?" })

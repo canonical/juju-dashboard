@@ -31,6 +31,8 @@ export enum Label {
   NONE_SELECTED = "You need to select a charm and applications to continue.",
   ACTION_ERROR = "Some of the actions failed to execute",
   ACTION_SUCCESS = "Action successfully executed.",
+  CANCEL_BUTTON = "Cancel",
+  CONFIRM_BUTTON = "Confirm",
 }
 
 const filterExist = <I,>(item: I | null): item is I => !!item;
@@ -162,8 +164,8 @@ export default function CharmActionsPanel({
           <ConfirmationModal
             className="p-confirmation-modal"
             title={`Run ${selectedAction}?`}
-            cancelButtonLabel="Cancel"
-            confirmButtonLabel="Confirm"
+            cancelButtonLabel={Label.CANCEL_BUTTON}
+            confirmButtonLabel={Label.CONFIRM_BUTTON}
             confirmButtonAppearance="positive"
             onConfirm={(event) => {
               event.stopPropagation();

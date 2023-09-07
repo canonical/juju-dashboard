@@ -19,6 +19,13 @@ import { useAppStore } from "store/store";
 
 import ActionOptions from "./ActionOptions";
 
+export enum Label {
+  CANCEL_BUTTON = "Cancel",
+  CONFIRM_BUTTON = "Confirm",
+  NO_UNITS_SELECTED = "0 units selected",
+  NO_ACTIONS_PROVIDED = "This charm has not provided any actions.",
+}
+
 export enum TestId {
   PANEL = "actions-panel",
 }
@@ -121,7 +128,7 @@ export default function ActionsPanel(): JSX.Element {
 
   const generateSelectedUnitList = () => {
     if (!selectedUnits.length) {
-      return "0 units selected";
+      return Label.NO_UNITS_SELECTED;
     }
     return selectedUnits.reduce((acc, unitName) => {
       return `${acc}, ${unitName.split("/")[1]}`;
@@ -197,8 +204,8 @@ export default function ActionsPanel(): JSX.Element {
           <ConfirmationModal
             className="p-confirmation-modal"
             title={`Run ${selectedAction}?`}
-            cancelButtonLabel="Cancel"
-            confirmButtonLabel="Confirm"
+            cancelButtonLabel={Label.CANCEL_BUTTON}
+            confirmButtonLabel={Label.CONFIRM_BUTTON}
             confirmButtonAppearance="positive"
             onConfirm={() => {
               setConfirmType(null);
@@ -247,7 +254,7 @@ export default function ActionsPanel(): JSX.Element {
       <LoadingHandler
         hasData={data ? true : false}
         loading={fetchingActionData}
-        noDataMessage="This charm has not provided any actions."
+        noDataMessage={Label.NO_ACTIONS_PROVIDED}
       >
         {Object.keys(actionData).map((actionName) => (
           <RadioInputBox

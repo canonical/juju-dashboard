@@ -18,7 +18,7 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import ActionsPanel from "./ActionsPanel";
+import ActionsPanel, { Label } from "./ActionsPanel";
 
 const mockResponse = applicationsCharmActionsResultsFactory.build({
   results: [
@@ -114,11 +114,11 @@ describe("ActionsPanel", () => {
       state,
     });
     expect(await screen.findByRole("heading")).toHaveTextContent(
-      "0 units selected"
+      Label.NO_UNITS_SELECTED
     );
     expect(
       await screen.findByTestId("actions-panel-unit-list")
-    ).toHaveTextContent("Run action on: 0 units selected");
+    ).toHaveTextContent(`Run action on: ${Label.NO_UNITS_SELECTED}`);
   });
 
   it("disables the submit button if no units are selected", async () => {
@@ -244,7 +244,7 @@ describe("ActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" })
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: "Confirm" })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
@@ -270,7 +270,7 @@ describe("ActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" })
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: "Confirm" })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
@@ -301,7 +301,7 @@ describe("ActionsPanel", () => {
       screen.queryByRole("dialog", { name: "Run add-disk?" })
     ).toBeInTheDocument();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Cancel" })
+      await screen.findByRole("button", { name: Label.CANCEL_BUTTON })
     );
     expect(
       screen.queryByRole("dialog", { name: "Run add-disk?" })
