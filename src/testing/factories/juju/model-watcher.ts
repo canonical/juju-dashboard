@@ -41,7 +41,7 @@ export const modelSLAFactory = Factory.define<ModelSLAInfo>(() => ({
 
 export const modelWatcherModelInfoFactory = Factory.define<WatcherModelInfo>(
   () => ({
-    "cloud-tag": "cloud-aws",
+    cloud: "aws",
     region: "us-east-1",
     type: "iaas",
     version: "2.9.12",

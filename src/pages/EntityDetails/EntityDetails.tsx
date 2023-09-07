@@ -25,6 +25,7 @@ import {
 import { useAppSelector } from "store/store";
 import urls from "urls";
 import { ModelTab } from "urls";
+import { getMajorMinorVersion } from "utils";
 
 import "./_entity-details.scss";
 
@@ -93,10 +94,7 @@ const EntityDetails = () => {
   };
 
   useEffect(() => {
-    // Regex to extract the first two numbers:
-    const versionRegex = /^\d+\.\d+/g;
-    const version = Number(versionRegex.exec(modelInfo?.version ?? "")?.[0]);
-    if (version >= 2.9) {
+    if (getMajorMinorVersion(modelInfo?.version) >= 2.9) {
       // The Web CLI is only available in Juju controller versions 2.9 and
       // above. This will allow us to only show the shell on multi-controller
       // setups with different versions where the correct controller version

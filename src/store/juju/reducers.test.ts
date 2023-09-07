@@ -287,7 +287,7 @@ describe("reducers", () => {
           ...state.modelWatcherData?.abc123,
           model: modelWatcherModelInfoFactory.build({
             ...state.modelWatcherData?.abc123.model,
-            "cloud-tag": status.model["cloud-tag"],
+            cloud: status.model["cloud-tag"],
             type: status.model.type,
             region: status.model.region,
             version: status.model.version,

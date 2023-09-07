@@ -149,7 +149,7 @@ const Model = () => {
                 access: modelAccess ?? "Unknown",
                 controller: modelInfoData.type,
                 "Cloud/Region": generateCloudAndRegion(
-                  modelInfoData["cloud-tag"],
+                  modelInfoData["cloud"],
                   modelInfoData.region
                 ),
                 version: modelInfoData.version,

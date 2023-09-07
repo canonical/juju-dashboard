@@ -21,7 +21,7 @@ export function generateModelWatcherBase(): WatcherModelData {
     charms: {},
     machines: {},
     model: {
-      "cloud-tag": "",
+      cloud: "",
       "controller-uuid": "",
       "is-controller": false,
       "model-uuid": "",
