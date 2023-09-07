@@ -366,4 +366,36 @@ describe("CharmActionsPanel", () => {
     executeActionOnUnitsSpy.mockRestore();
     expect(await screen.findByText(Label.ACTION_ERROR)).toBeInTheDocument();
   });
+
+  it("should cancel the run selected action confirmation modal", async () => {
+    renderComponent(
+      <>
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).toBeDisabled();
+    await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).not.toBeDisabled();
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Run action" })
+    );
+    expect(
+      screen.queryByRole("dialog", { name: "Run pause?" })
+    ).toBeInTheDocument();
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Cancel" })
+    );
+    expect(
+      screen.queryByRole("dialog", { name: "Run pause?" })
+    ).not.toBeInTheDocument();
+  });
 });

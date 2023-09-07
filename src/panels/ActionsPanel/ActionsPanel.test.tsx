@@ -281,4 +281,30 @@ describe("ActionsPanel", () => {
     });
     executeActionOnUnitsSpy.mockRestore();
   });
+
+  it("should cancel the run selected action confirmation modal", async () => {
+    renderComponent(<ActionsPanel />, { path, url, state });
+    await userEvent.click(
+      await screen.findByRole("radio", { name: "add-disk" })
+    );
+    await userEvent.type(
+      await screen.findByRole("textbox", { name: "osd-devices" }),
+      "new device"
+    );
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).not.toBeDisabled();
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Run action" })
+    );
+    expect(
+      screen.queryByRole("dialog", { name: "Run add-disk?" })
+    ).toBeInTheDocument();
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Cancel" })
+    );
+    expect(
+      screen.queryByRole("dialog", { name: "Run add-disk?" })
+    ).not.toBeInTheDocument();
+  });
 });
