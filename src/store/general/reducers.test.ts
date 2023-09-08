@@ -35,6 +35,30 @@ describe("reducers", () => {
     });
   });
 
+  it("updateControllerFeatures", () => {
+    const state = generalStateFactory.build({
+      controllerFeatures: {},
+    });
+    expect(
+      reducer(
+        state,
+        actions.updateControllerFeatures({
+          wsControllerURL: "wss://example.com",
+          features: {
+            crossModelQueries: true,
+          },
+        })
+      )
+    ).toStrictEqual({
+      ...state,
+      controllerFeatures: {
+        "wss://example.com": {
+          crossModelQueries: true,
+        },
+      },
+    });
+  });
+
   it("storeConfig", () => {
     const state = generalStateFactory.build();
     const newConfig = configFactory.build({

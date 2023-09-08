@@ -1,6 +1,8 @@
 import { rootStateFactory } from "testing/factories";
 import {
   configFactory,
+  controllerFeaturesFactory,
+  controllerFeaturesStateFactory,
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
@@ -20,6 +22,8 @@ import {
   getActiveUserControllerAccess,
   getConnectionError,
   getIsJuju,
+  getControllerFeatures,
+  getControllerFeatureEnabled,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -146,6 +150,41 @@ describe("selectors", () => {
         "wss://example.com"
       )
     ).toStrictEqual({ controllerTag: "controller" });
+  });
+
+  it("getControllerFeatures", () => {
+    const controllerFeatures = controllerFeaturesStateFactory.build({
+      "wss://controller.example.com": controllerFeaturesFactory.build({
+        crossModelQueries: true,
+      }),
+    });
+    expect(
+      getControllerFeatures(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            controllerFeatures,
+          }),
+        })
+      )
+    ).toStrictEqual(controllerFeatures);
+  });
+
+  it("getControllerFeatureEnabled", () => {
+    expect(
+      getControllerFeatureEnabled(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            controllerFeatures: controllerFeaturesStateFactory.build({
+              "wss://controller.example.com": controllerFeaturesFactory.build({
+                crossModelQueries: true,
+              }),
+            }),
+          }),
+        }),
+        "wss://controller.example.com",
+        "crossModelQueries"
+      )
+    ).toStrictEqual(true);
   });
 
   it("isConnecting", () => {

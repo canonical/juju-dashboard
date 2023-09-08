@@ -192,6 +192,30 @@ describe("model poller", () => {
     );
   });
 
+  it("updates the controller features if JIMM >= 4", async () => {
+    conn.facades.modelManager.listModels.mockResolvedValue({
+      "user-models": [],
+    });
+    conn.facades.jimM = {
+      version: 4,
+    };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(next).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.updateControllerFeatures({
+        wsControllerURL,
+        features: {
+          crossModelQueries: true,
+        },
+      })
+    );
+  });
+
   it("dispatches an error if the info is not returned", async () => {
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn: { ...conn, info: {} },

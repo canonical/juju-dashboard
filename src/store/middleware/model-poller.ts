@@ -92,6 +92,15 @@ export const modelPollerMiddleware: Middleware<
               info: conn.info,
             })
           );
+          const jimmVersion = conn.facades.jimM?.version ?? 0;
+          reduxStore.dispatch(
+            generalActions.updateControllerFeatures({
+              wsControllerURL,
+              features: {
+                crossModelQueries: jimmVersion >= 4,
+              },
+            })
+          );
           if (juju) {
             jujus.set(wsControllerURL, juju);
           }

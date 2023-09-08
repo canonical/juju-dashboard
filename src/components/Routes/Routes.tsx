@@ -15,7 +15,12 @@ import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import Settings from "pages/Settings/Settings";
-import { getIsJuju } from "store/general/selectors";
+import {
+  getIsJuju,
+  getControllerFeatureEnabled,
+  getWSControllerURL,
+} from "store/general/selectors";
+import { useAppSelector } from "store/store";
 import urls from "urls";
 
 export type EntityDetailsRoute = {
@@ -31,6 +36,10 @@ export function Routes() {
   const location = useLocation();
 
   const isJuju = useSelector(getIsJuju);
+  const wsControllerURL = useSelector(getWSControllerURL);
+  const crossModelQueriesSupported = useAppSelector((state) =>
+    getControllerFeatureEnabled(state, wsControllerURL, "crossModelQueries")
+  );
 
   useEffect(() => {
     // Send an analytics event when the URL changes.
@@ -75,7 +84,7 @@ export function Routes() {
         }
       />
       <Route path="*" element={<PageNotFound />} />
-      {!isJuju && (
+      {!isJuju && crossModelQueriesSupported && (
         <Route
           path={urls.search}
           element={
