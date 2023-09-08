@@ -250,7 +250,7 @@ describe("CharmActionsPanel", () => {
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" })
     );
-    expect(document.querySelector(".p-confirmation-modal")).toBeInTheDocument();
+    expect(document.querySelector(".p-modal")).toBeInTheDocument();
     expect(
       await screen.findByTestId("confirmation-modal-unit-count")
     ).toHaveTextContent("1 (2)");
