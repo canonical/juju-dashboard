@@ -202,7 +202,6 @@ export default function ActionsPanel(): JSX.Element {
         // Render the submit confirmation modal.
         return (
           <ConfirmationModal
-            className="p-confirmation-modal"
             title={`Run ${selectedAction}?`}
             cancelButtonLabel={Label.CANCEL_BUTTON}
             confirmButtonLabel={Label.CONFIRM_BUTTON}
@@ -214,16 +213,14 @@ export default function ActionsPanel(): JSX.Element {
             }}
             close={() => setConfirmType(null)}
           >
-            <div className="p-confirmation-modal__info-group">
-              <div className="p-confirmation-modal__sub-header">UNIT COUNT</div>
-              <div data-testid="confirmation-modal-unit-count">
-                {selectedUnits.length}
-              </div>
-            </div>
-            <div className="p-confirmation-modal__info-group">
-              <div className="p-confirmation-modal__sub-header">UNIT NAME</div>
-              <div data-testid="confirmation-modal-unit-names">{unitNames}</div>
-            </div>
+            <h4 className="p-muted-heading u-no-margin--bottom">UNIT COUNT</h4>
+            <p data-testid="confirmation-modal-unit-count">
+              {selectedUnits.length}
+            </p>
+            <h4 className="p-muted-heading u-no-margin--bottom u-no-padding--top">
+              UNIT NAME
+            </h4>
+            <p data-testid="confirmation-modal-unit-names">{unitNames}</p>
           </ConfirmationModal>
         );
       }

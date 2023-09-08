@@ -223,7 +223,9 @@ export default function ConfigPanel(): JSX.Element {
         return (
           // Render the submit confirmation modal.
           <ConfirmationModal
-            className="p-confirmation-modal"
+            // Prevent clicks inside this panel from closing the parent panel.
+            // This is handled in `checkCanClose`.
+            className="prevent-panel-close"
             title={Label.SAVE_CONFIRM}
             cancelButtonLabel={Label.SAVE_CONFIRM_CANCEL_BUTTON}
             confirmButtonLabel={Label.SAVE_CONFIRM_CONFIRM_BUTTON}
@@ -281,7 +283,7 @@ export default function ConfigPanel(): JSX.Element {
       if (
         // The confirmation opens over the panel so need to prevent clicks
         // inside that panel from triggering a new confirmation.
-        target.closest(".p-confirmation-modal") ||
+        target.closest(".prevent-panel-close") ||
         target.closest(".p-panel")
       ) {
         return false;

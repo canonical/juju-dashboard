@@ -162,7 +162,6 @@ export default function CharmActionsPanel({
         // Render the submit confirmation modal.
         return (
           <ConfirmationModal
-            className="p-confirmation-modal"
             title={`Run ${selectedAction}?`}
             cancelButtonLabel={Label.CANCEL_BUTTON}
             confirmButtonLabel={Label.CONFIRM_BUTTON}
@@ -175,14 +174,12 @@ export default function CharmActionsPanel({
             }}
             close={() => setConfirmType(null)}
           >
-            <div className="p-confirmation-modal__info-group">
-              <div className="p-confirmation-modal__sub-header">
-                APPLICATION COUNT (UNIT COUNT)
-              </div>
-              <div data-testid="confirmation-modal-unit-count">
-                {selectedApplications.length} ({unitCount})
-              </div>
-            </div>
+            <h4 className="p-muted-heading u-no-margin--bottom">
+              APPLICATION COUNT (UNIT COUNT)
+            </h4>
+            <p data-testid="confirmation-modal-unit-count">
+              {selectedApplications.length} ({unitCount})
+            </p>
           </ConfirmationModal>
         );
       }
