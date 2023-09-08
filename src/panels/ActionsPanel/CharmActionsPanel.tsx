@@ -20,6 +20,7 @@ import { onValuesChange } from "panels/ActionsPanel/ActionsPanel";
 import { enableSubmit } from "panels/ActionsPanel/ActionsPanel";
 import CharmActionsPanelTitle from "panels/CharmsAndActionsPanel/CharmActionsPanelTitle";
 import { TestId } from "panels/CharmsAndActionsPanel/CharmsAndActionsPanel";
+import type { ConfirmTypes } from "panels/types";
 import {
   getModelUUIDFromList,
   getSelectedApplications,
@@ -41,8 +42,6 @@ export type Props = {
   charmURL: string;
   onRemovePanelQueryParams: () => void;
 };
-
-type ConfirmTypes = "submit" | null;
 
 export default function CharmActionsPanel({
   charmURL,

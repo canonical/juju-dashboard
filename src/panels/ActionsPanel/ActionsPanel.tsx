@@ -12,6 +12,7 @@ import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
 import { usePanelQueryParams } from "panels/hooks";
+import type { ConfirmTypes } from "panels/types";
 import { getModelUUID } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import type { RootState } from "store/store";
@@ -77,8 +78,6 @@ type ActionsQueryParams = {
   panel: string | null;
   units: string[];
 };
-
-type ConfirmTypes = "submit" | null;
 
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
