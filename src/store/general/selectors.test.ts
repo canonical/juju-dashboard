@@ -24,6 +24,7 @@ import {
   getIsJuju,
   getControllerFeatures,
   getControllerFeatureEnabled,
+  getLoginErrors,
   isCrossModelQueriesEnabled,
 } from "./selectors";
 
@@ -83,14 +84,27 @@ describe("selectors", () => {
     ).toBe("error");
   });
 
+  it("getLoginErrors", () => {
+    expect(
+      getLoginErrors(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            loginErrors: { "wss://example.com": "error" },
+          }),
+        })
+      )
+    ).toMatchObject({ "wss://example.com": "error" });
+  });
+
   it("getLoginError", () => {
     expect(
       getLoginError(
         rootStateFactory.build({
           general: generalStateFactory.build({
-            loginError: "error",
+            loginErrors: { "wss://example.com": "error" },
           }),
-        })
+        }),
+        "wss://example.com"
       )
     ).toBe("error");
   });

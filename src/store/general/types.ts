@@ -29,6 +29,8 @@ export type ControllerFeatures = {
 
 export type ControllerFeaturesState = Record<string, ControllerFeatures>;
 
+export type LoginErrors = Record<string, string>;
+
 export type GeneralState = {
   appVersion: string | null;
   config: Config | null;
@@ -36,7 +38,7 @@ export type GeneralState = {
   controllerConnections: ControllerConnections | null;
   controllerFeatures: ControllerFeaturesState | null;
   credentials: Credentials | null;
-  loginError: string | null;
+  loginErrors: LoginErrors | null;
   pingerIntervalIds: PingerIntervalIds | null;
   visitURL: string | null;
 };

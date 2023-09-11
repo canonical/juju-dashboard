@@ -38,8 +38,10 @@
     }
   }
 
-  .is-disconnected {
-    color: $color-negative;
+  &__status {
+    // Display block so that the status gets truncated if it doesn't fit in the
+    // cell.
+    display: block !important;
   }
 
   .controllers--registered-tooltip {

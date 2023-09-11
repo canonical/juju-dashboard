@@ -50,9 +50,17 @@ describe("actions", () => {
   });
 
   it("storeLoginError", () => {
-    expect(actions.storeLoginError("error")).toStrictEqual({
+    expect(
+      actions.storeLoginError({
+        wsControllerURL: "wss://example.com",
+        error: "error",
+      })
+    ).toStrictEqual({
       type: "general/storeLoginError",
-      payload: "error",
+      payload: {
+        wsControllerURL: "wss://example.com",
+        error: "error",
+      },
     });
   });
 
