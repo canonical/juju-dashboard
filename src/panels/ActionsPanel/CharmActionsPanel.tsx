@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import usePortal from "react-useportal";
 
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import Panel from "components/Panel";
@@ -16,8 +17,7 @@ import type {
   ActionOptionValue,
   ActionOptionValues,
 } from "panels/ActionsPanel/ActionsPanel";
-import { onValuesChange } from "panels/ActionsPanel/ActionsPanel";
-import { enableSubmit } from "panels/ActionsPanel/ActionsPanel";
+import { enableSubmit, onValuesChange } from "panels/ActionsPanel/ActionsPanel";
 import CharmActionsPanelTitle from "panels/CharmsAndActionsPanel/CharmActionsPanelTitle";
 import { TestId } from "panels/CharmsAndActionsPanel/CharmsAndActionsPanel";
 import type { ConfirmTypes } from "panels/types";
@@ -49,6 +49,7 @@ export default function CharmActionsPanel({
 }: Props): JSX.Element {
   const sendAnalytics = useAnalytics();
   const { userName, modelName } = useParams();
+  const { Portal } = usePortal();
 
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const appState = useAppStore().getState();
@@ -160,26 +161,28 @@ export default function CharmActionsPanel({
         );
         // Render the submit confirmation modal.
         return (
-          <ConfirmationModal
-            title={`Run ${selectedAction}?`}
-            cancelButtonLabel={Label.CANCEL_BUTTON}
-            confirmButtonLabel={Label.CONFIRM_BUTTON}
-            confirmButtonAppearance="positive"
-            onConfirm={(event) => {
-              event.stopPropagation();
-              setConfirmType(null);
-              executeAction();
-              onRemovePanelQueryParams();
-            }}
-            close={() => setConfirmType(null)}
-          >
-            <h4 className="p-muted-heading u-no-margin--bottom">
-              APPLICATION COUNT (UNIT COUNT)
-            </h4>
-            <p data-testid="confirmation-modal-unit-count">
-              {selectedApplications.length} ({unitCount})
-            </p>
-          </ConfirmationModal>
+          <Portal>
+            <ConfirmationModal
+              title={`Run ${selectedAction}?`}
+              cancelButtonLabel={Label.CANCEL_BUTTON}
+              confirmButtonLabel={Label.CONFIRM_BUTTON}
+              confirmButtonAppearance="positive"
+              onConfirm={(event) => {
+                event.stopPropagation();
+                setConfirmType(null);
+                executeAction();
+                onRemovePanelQueryParams();
+              }}
+              close={() => setConfirmType(null)}
+            >
+              <h4 className="p-muted-heading u-no-margin--bottom">
+                APPLICATION COUNT (UNIT COUNT)
+              </h4>
+              <p data-testid="confirmation-modal-unit-count">
+                {selectedApplications.length} ({unitCount})
+              </p>
+            </ConfirmationModal>
+          </Portal>
         );
       }
     }

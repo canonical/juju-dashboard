@@ -4,6 +4,7 @@ import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import usePortal from "react-useportal";
 
 import CharmIcon from "components/CharmIcon/CharmIcon";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
@@ -98,6 +99,7 @@ export default function ActionsPanel(): JSX.Element {
     string | undefined,
     SetSelectedAction
   ] = useState<string>();
+  const { Portal } = usePortal();
 
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
@@ -200,27 +202,31 @@ export default function ActionsPanel(): JSX.Element {
         });
         // Render the submit confirmation modal.
         return (
-          <ConfirmationModal
-            title={`Run ${selectedAction}?`}
-            cancelButtonLabel={Label.CANCEL_BUTTON}
-            confirmButtonLabel={Label.CONFIRM_BUTTON}
-            confirmButtonAppearance="positive"
-            onConfirm={() => {
-              setConfirmType(null);
-              executeAction();
-              handleRemovePanelQueryParams();
-            }}
-            close={() => setConfirmType(null)}
-          >
-            <h4 className="p-muted-heading u-no-margin--bottom">UNIT COUNT</h4>
-            <p data-testid="confirmation-modal-unit-count">
-              {selectedUnits.length}
-            </p>
-            <h4 className="p-muted-heading u-no-margin--bottom u-no-padding--top">
-              UNIT NAME
-            </h4>
-            <p data-testid="confirmation-modal-unit-names">{unitNames}</p>
-          </ConfirmationModal>
+          <Portal>
+            <ConfirmationModal
+              title={`Run ${selectedAction}?`}
+              cancelButtonLabel={Label.CANCEL_BUTTON}
+              confirmButtonLabel={Label.CONFIRM_BUTTON}
+              confirmButtonAppearance="positive"
+              onConfirm={() => {
+                setConfirmType(null);
+                executeAction();
+                handleRemovePanelQueryParams();
+              }}
+              close={() => setConfirmType(null)}
+            >
+              <h4 className="p-muted-heading u-no-margin--bottom">
+                UNIT COUNT
+              </h4>
+              <p data-testid="confirmation-modal-unit-count">
+                {selectedUnits.length}
+              </p>
+              <h4 className="p-muted-heading u-no-margin--bottom u-no-padding--top">
+                UNIT NAME
+              </h4>
+              <p data-testid="confirmation-modal-unit-names">{unitNames}</p>
+            </ConfirmationModal>
+          </Portal>
         );
       }
     }

@@ -6,7 +6,6 @@
 .config-panel {
   &__modal-button-row-hint {
     font-size: #{map-get($font-sizes, small)}rem;
-    margin-bottom: 1.5rem;
     text-align: left;
   }
 

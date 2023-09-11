@@ -229,6 +229,13 @@ export default function ConfigPanel(): JSX.Element {
               // This is handled in `checkCanClose`.
               className="prevent-panel-close"
               title={Label.SAVE_CONFIRM}
+              confirmExtra={
+                <p className="config-panel__modal-button-row-hint">
+                  You can revert back to the applications default settings by
+                  clicking the “Reset all values” button; or reset each edited
+                  field by clicking “Use default”.
+                </p>
+              }
               cancelButtonLabel={Label.SAVE_CONFIRM_CANCEL_BUTTON}
               confirmButtonLabel={Label.SAVE_CONFIRM_CONFIRM_BUTTON}
               confirmButtonAppearance="positive"
@@ -245,11 +252,6 @@ export default function ConfigPanel(): JSX.Element {
                 configuration:
               </p>
               {changedConfigList}
-              <div className="config-panel__modal-button-row-hint">
-                You can revert back to the applications default settings by
-                clicking the “Reset all values” button; or reset each edited
-                field by clicking “Use default”.
-              </div>
             </ConfirmationModal>
           </Portal>
         );
