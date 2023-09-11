@@ -230,7 +230,7 @@ export default function ConfigPanel(): JSX.Element {
               className="prevent-panel-close"
               title={Label.SAVE_CONFIRM}
               confirmExtra={
-                <p className="config-panel__modal-button-row-hint">
+                <p className="u-text--muted p-text--small u-align--left">
                   You can revert back to the applications default settings by
                   clicking the “Reset all values” button; or reset each edited
                   field by clicking “Use default”.
