@@ -23,8 +23,8 @@ export const STORAGE_KEY = "additionalControllers";
 type FormValues = {
   controllerName?: string;
   wsControllerHost?: string;
-  username?: string;
-  password?: string;
+  username: string;
+  password: string;
   identityProvider?: boolean;
   certificateAccepted?: boolean;
 };

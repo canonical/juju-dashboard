@@ -83,7 +83,9 @@ describe("RegisterController", () => {
       })
     );
     expect(screen.getByRole("textbox", { name: "Username" })).toHaveValue("");
+    expect(screen.getByRole("textbox", { name: "Username" })).toBeDisabled();
     expect(screen.getByLabelText("Password")).toHaveValue("");
+    expect(screen.getByLabelText("Password")).toBeDisabled();
   });
 
   it("requires the certificate warning to be checked", async () => {
