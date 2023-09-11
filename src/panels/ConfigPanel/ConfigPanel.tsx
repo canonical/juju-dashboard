@@ -1,19 +1,14 @@
-import {
-  Button,
-  ConfirmationModal,
-  Notification,
-  Spinner,
-} from "@canonical/react-components";
+import { Button, Notification, Spinner } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
 import type { ReactNode, MouseEvent } from "react";
 import { useEffect, useRef, useState } from "react";
-import usePortal from "react-useportal";
 import type { Store } from "redux";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
+import PortalConfirmationModal from "components/PortalConfirmationModal";
 import ScrollOnRender from "components/ScrollOnRender";
 import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
@@ -76,7 +71,6 @@ export default function ConfigPanel(): JSX.Element {
   const [formErrors, setFormErrors] = useState<string[] | null>(null);
   const scrollArea = useRef<HTMLDivElement>(null);
   const sendAnalytics = useAnalytics();
-  const { Portal } = usePortal();
 
   const defaultQueryParams: ConfigQueryParams = {
     panel: null,
@@ -223,61 +217,57 @@ export default function ConfigPanel(): JSX.Element {
       if (confirmType === "submit") {
         // Render the submit confirmation modal.
         return (
-          <Portal>
-            <ConfirmationModal
-              // Prevent clicks inside this panel from closing the parent panel.
-              // This is handled in `checkCanClose`.
-              className="prevent-panel-close"
-              title={Label.SAVE_CONFIRM}
-              confirmExtra={
-                <p className="u-text--muted p-text--small u-align--left">
-                  You can revert back to the applications default settings by
-                  clicking the “Reset all values” button; or reset each edited
-                  field by clicking “Use default”.
-                </p>
-              }
-              cancelButtonLabel={Label.SAVE_CONFIRM_CANCEL_BUTTON}
-              confirmButtonLabel={Label.SAVE_CONFIRM_CONFIRM_BUTTON}
-              confirmButtonAppearance="positive"
-              onConfirm={() => {
-                setConfirmType(null);
-                // Clear the form errors if there were any from a previous submit.
-                setFormErrors(null);
-                _submitToJuju();
-              }}
-              close={() => setConfirmType(null)}
-            >
-              <p>
-                You have edited the following values to the {appName}{" "}
-                configuration:
+          <PortalConfirmationModal
+            // Prevent clicks inside this panel from closing the parent panel.
+            // This is handled in `checkCanClose`.
+            className="prevent-panel-close"
+            title={Label.SAVE_CONFIRM}
+            confirmExtra={
+              <p className="u-text--muted p-text--small u-align--left">
+                You can revert back to the applications default settings by
+                clicking the “Reset all values” button; or reset each edited
+                field by clicking “Use default”.
               </p>
-              {changedConfigList}
-            </ConfirmationModal>
-          </Portal>
+            }
+            cancelButtonLabel={Label.SAVE_CONFIRM_CANCEL_BUTTON}
+            confirmButtonLabel={Label.SAVE_CONFIRM_CONFIRM_BUTTON}
+            confirmButtonAppearance="positive"
+            onConfirm={() => {
+              setConfirmType(null);
+              // Clear the form errors if there were any from a previous submit.
+              setFormErrors(null);
+              _submitToJuju();
+            }}
+            close={() => setConfirmType(null)}
+          >
+            <p>
+              You have edited the following values to the {appName}{" "}
+              configuration:
+            </p>
+            {changedConfigList}
+          </PortalConfirmationModal>
         );
       }
       if (confirmType === "cancel") {
         // Render the cancel confirmation modal.
         return (
-          <Portal>
-            <ConfirmationModal
-              className="prevent-panel-close"
-              title={Label.CANCEL_CONFIRM}
-              cancelButtonLabel={Label.CANCEL_CONFIRM_CANCEL_BUTTON}
-              confirmButtonLabel={Label.CANCEL_CONFIRM_CONFIRM_BUTTON}
-              onConfirm={() => {
-                setConfirmType(null);
-                handleRemovePanelQueryParams();
-              }}
-              close={() => setConfirmType(null)}
-            >
-              <p>
-                You have edited the following values to the {appName}{" "}
-                configuration:
-              </p>
-              {changedConfigList}
-            </ConfirmationModal>
-          </Portal>
+          <PortalConfirmationModal
+            className="prevent-panel-close"
+            title={Label.CANCEL_CONFIRM}
+            cancelButtonLabel={Label.CANCEL_CONFIRM_CANCEL_BUTTON}
+            confirmButtonLabel={Label.CANCEL_CONFIRM_CONFIRM_BUTTON}
+            onConfirm={() => {
+              setConfirmType(null);
+              handleRemovePanelQueryParams();
+            }}
+            close={() => setConfirmType(null)}
+          >
+            <p>
+              You have edited the following values to the {appName}{" "}
+              configuration:
+            </p>
+            {changedConfigList}
+          </PortalConfirmationModal>
         );
       }
     }

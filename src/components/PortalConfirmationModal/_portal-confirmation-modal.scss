@@ -1,0 +1,5 @@
+@import "../../scss/functions/z-index";
+
+.p-modal {
+  z-index: z("infinity") !important;
+}
