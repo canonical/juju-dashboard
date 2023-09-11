@@ -16,9 +16,12 @@ describe("PortalConfirmationModal", () => {
       "Content"
     );
     expect(screen.getByRole("dialog", { name: "" })).toContainElement(
+      screen.getByRole("contentinfo", { name: "" })
+    );
+    expect(screen.getByRole("contentinfo", { name: "" })).toContainElement(
       screen.getByRole("button", { name: "Cancel" })
     );
-    expect(screen.getByRole("dialog", { name: "" })).toContainElement(
+    expect(screen.getByRole("contentinfo", { name: "" })).toContainElement(
       screen.getByRole("button", { name: "Confirm" })
     );
   });
