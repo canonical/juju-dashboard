@@ -66,7 +66,6 @@ export default function CharmsPanel({
                     id={charm.url}
                     label={`${charm.meta?.name} (rev: ${charm.revision})`}
                     checked={selectedCharm === charm.url}
-                    onChange={() => setSelectedCharm(charm.url)}
                     disabled={true}
                   />
                 </Tooltip>
