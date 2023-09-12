@@ -1,10 +1,10 @@
 import { Button, RadioInput, Tooltip } from "@canonical/react-components";
 import { useState, type FormEventHandler } from "react";
-import { useSelector } from "react-redux";
 
 import Panel from "components/Panel";
 import { TestId } from "panels/CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { getCharms } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import CharmApplicationsDetails from "./CharmApplicationsDetails";
 
@@ -25,7 +25,7 @@ export default function CharmsPanel({
   onRemovePanelQueryParams,
 }: Props): JSX.Element {
   const [selectedCharm, setSelectedCharm] = useState<string | null>(null);
-  const charms = useSelector(getCharms());
+  const charms = useAppSelector(getCharms());
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();

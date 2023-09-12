@@ -1,13 +1,14 @@
-import { useSelector } from "react-redux";
-
 import { getSelectedApplications } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 type Props = {
   charmURL: string;
 };
 
 const CharmApplicationsDetails = ({ charmURL }: Props): JSX.Element => {
-  const selectedApplications = useSelector(getSelectedApplications(charmURL));
+  const selectedApplications = useAppSelector(
+    getSelectedApplications(charmURL)
+  );
 
   return (
     <p className="p-form-help-text is-tick-element">
