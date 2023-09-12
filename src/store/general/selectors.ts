@@ -148,3 +148,10 @@ export const getWSControllerURL = createSelector(
   getConfig,
   (config) => config?.controllerAPIEndpoint
 );
+
+export const isCrossModelQueriesEnabled = createSelector(
+  [getIsJuju, getWSControllerURL, (state) => state],
+  (isJuju, wsControllerURL, state) =>
+    !isJuju &&
+    getControllerFeatureEnabled(state, wsControllerURL, "crossModelQueries")
+);

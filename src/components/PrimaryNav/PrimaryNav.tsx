@@ -7,10 +7,8 @@ import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
 import {
   getAppVersion,
-  getControllerFeatureEnabled,
-  getIsJuju,
+  isCrossModelQueriesEnabled,
 } from "store/general/selectors";
-import { getWSControllerURL } from "store/general/selectors";
 import {
   getControllerData,
   getGroupedModelStatusCounts,
@@ -20,6 +18,7 @@ import { useAppSelector } from "store/store";
 import urls, { externalURLs } from "urls";
 
 import "./_primary-nav.scss";
+
 import PrimaryNavLink from "./PrimaryNavLink";
 
 export enum Label {
@@ -85,11 +84,7 @@ const PrimaryNav = () => {
   const appVersion = useSelector(getAppVersion);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
-  const wsControllerURL = useSelector(getWSControllerURL);
-  const crossModelQueriesSupported = useAppSelector((state) =>
-    getControllerFeatureEnabled(state, wsControllerURL, "crossModelQueries")
-  );
-  const isJuju = useSelector(getIsJuju);
+  const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
@@ -117,7 +112,7 @@ const PrimaryNav = () => {
         <li className="p-list__item">
           <ControllersLink />
         </li>
-        {!isJuju && crossModelQueriesSupported ? (
+        {crossModelQueriesEnabled ? (
           <li className="p-list__item">
             <AdvancedSearchLink />
           </li>

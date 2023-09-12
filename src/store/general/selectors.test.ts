@@ -24,6 +24,7 @@ import {
   getIsJuju,
   getControllerFeatures,
   getControllerFeatureEnabled,
+  isCrossModelQueriesEnabled,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -185,6 +186,46 @@ describe("selectors", () => {
         "crossModelQueries"
       )
     ).toStrictEqual(true);
+  });
+
+  it("isCrossModelQueriesEnabled", () => {
+    expect(
+      isCrossModelQueriesEnabled(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            config: configFactory.build({
+              controllerAPIEndpoint: "wss://controller.example.com",
+              isJuju: false,
+            }),
+            controllerFeatures: controllerFeaturesStateFactory.build({
+              "wss://controller.example.com": controllerFeaturesFactory.build({
+                crossModelQueries: true,
+              }),
+            }),
+          }),
+        })
+      )
+    ).toStrictEqual(true);
+  });
+
+  it("isCrossModelQueriesEnabled is not enabled when using Juju controller", () => {
+    expect(
+      isCrossModelQueriesEnabled(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            config: configFactory.build({
+              controllerAPIEndpoint: "wss://controller.example.com",
+              isJuju: true,
+            }),
+            controllerFeatures: controllerFeaturesStateFactory.build({
+              "wss://controller.example.com": controllerFeaturesFactory.build({
+                crossModelQueries: true,
+              }),
+            }),
+          }),
+        })
+      )
+    ).toStrictEqual(false);
   });
 
   it("isConnecting", () => {
