@@ -23,6 +23,25 @@ describe("actions", () => {
     });
   });
 
+  it("updateControllerFeatures", () => {
+    expect(
+      actions.updateControllerFeatures({
+        wsControllerURL: "wss://example.com",
+        features: {
+          crossModelQueries: true,
+        },
+      })
+    ).toStrictEqual({
+      type: "general/updateControllerFeatures",
+      payload: {
+        wsControllerURL: "wss://example.com",
+        features: {
+          crossModelQueries: true,
+        },
+      },
+    });
+  });
+
   it("storeConfig", () => {
     expect(actions.storeConfig("config")).toStrictEqual({
       type: "general/storeConfig",

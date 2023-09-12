@@ -2,6 +2,8 @@ import { createSelector } from "@reduxjs/toolkit";
 
 import type { RootState } from "store/store";
 
+import type { ControllerFeatures } from "./types";
+
 const slice = (state: RootState) => state.general;
 
 /**
@@ -83,6 +85,23 @@ export const getControllerConnection = createSelector(
     controllerConnections?.[wsControllerURL]
 );
 
+export const getControllerFeatures = createSelector(
+  [slice],
+  (sliceState) => sliceState?.controllerFeatures
+);
+
+export const getControllerFeatureEnabled = createSelector(
+  [
+    getControllerFeatures,
+    (_state, wsControllerURL, feature: keyof ControllerFeatures) => ({
+      wsControllerURL,
+      feature,
+    }),
+  ],
+  (controllerFeatures, { wsControllerURL, feature }) =>
+    controllerFeatures?.[wsControllerURL]?.[feature]
+);
+
 export const isConnecting = createSelector(
   [slice],
   (sliceState) => !!sliceState?.visitURL
@@ -128,4 +147,11 @@ export const isLoggedIn = createSelector(
 export const getWSControllerURL = createSelector(
   getConfig,
   (config) => config?.controllerAPIEndpoint
+);
+
+export const isCrossModelQueriesEnabled = createSelector(
+  [getIsJuju, getWSControllerURL, (state) => state],
+  (isJuju, wsControllerURL, state) =>
+    !isJuju &&
+    getControllerFeatureEnabled(state, wsControllerURL, "crossModelQueries")
 );
