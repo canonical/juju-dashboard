@@ -1,4 +1,5 @@
 import { Button, MainTable, Icon } from "@canonical/react-components";
+import classNames from "classnames";
 import { Field, Formik } from "formik";
 import type { MouseEvent } from "react";
 import { useMemo, useRef, useState } from "react";
@@ -13,6 +14,7 @@ import InfoPanel from "components/InfoPanel/InfoPanel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import SegmentedControl from "components/SegmentedControl";
 import Status from "components/Status";
+import useCanConfigureModel from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";
 import type { MachineData, UnitData } from "juju/types";
 import {
@@ -44,6 +46,7 @@ export enum TestId {
 export enum Label {
   CONFIGURE = "Configure",
   NO_UNITS = "There are no units in this application",
+  RUN_ACTION = "Run action",
 }
 
 type FormData = {
@@ -71,6 +74,7 @@ export default function App(): JSX.Element {
   const units = useSelector(getModelUnits(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));
   const modelData = useSelector(getModelInfo(modelUUID));
+  const canConfigureModel = useCanConfigureModel();
 
   const filteredMachineList = useMemo(() => {
     const filteredMachines: MachineData = {};
@@ -104,26 +108,31 @@ export default function App(): JSX.Element {
   const unitTableHeaders = useMemo(() => {
     const fieldID = "unit-list-select-all";
     return generateSelectableUnitTableHeaders(
-      {
-        content: (
-          <label className="p-checkbox--inline" htmlFor={fieldID}>
-            <Field
-              id={fieldID}
-              type="checkbox"
-              aria-labelledby="select-all-units"
-              className="p-checkbox__input"
-              name="selectAll"
-              data-testid={TestId.SELECT_ALL}
-            />
-            <span className="p-checkbox__label" id="select-all-units"></span>
-          </label>
-        ),
-        sortKey: "",
-        className: "select-unit",
-      },
+      canConfigureModel
+        ? {
+            content: (
+              <label className="p-checkbox--inline" htmlFor={fieldID}>
+                <Field
+                  id={fieldID}
+                  type="checkbox"
+                  aria-labelledby="select-all-units"
+                  className="p-checkbox__input"
+                  name="selectAll"
+                  data-testid={TestId.SELECT_ALL}
+                />
+                <span
+                  className="p-checkbox__label"
+                  id="select-all-units"
+                ></span>
+              </label>
+            ),
+            sortKey: "",
+            className: "select-unit",
+          }
+        : null,
       hideMachines
     );
-  }, [hideMachines]);
+  }, [canConfigureModel, hideMachines]);
 
   const filteredUnitList = useMemo(() => {
     if (!units) {
@@ -149,11 +158,11 @@ export default function App(): JSX.Element {
         ? generateUnitRows(
             filteredUnitList,
             { modelName, userName },
-            true,
+            canConfigureModel,
             hideMachines
           )
         : [],
-    [filteredUnitList, modelName, userName, hideMachines]
+    [canConfigureModel, filteredUnitList, modelName, userName, hideMachines]
   );
 
   const [query, setQuery] = useQueryParams<{
@@ -279,18 +288,18 @@ export default function App(): JSX.Element {
     <>
       <div className="entity-details__sidebar">
         <InfoPanel />
-        <>
+        {canConfigureModel ? (
           <div className="entity-details__actions">
-            <button
+            <Button
               className="entity-details__action-button"
               onClick={showConfig}
             >
-              <i className="p-icon--settings"></i>
+              <Icon name="settings" />
               {Label.CONFIGURE}
-            </button>
+            </Button>
           </div>
-          <EntityInfo data={appEntityData} />
-        </>
+        ) : null}
+        <EntityInfo data={appEntityData} />
       </div>
       <div className="entity-details__main u-overflow--auto">
         {!hideMachines && (
@@ -317,21 +326,25 @@ export default function App(): JSX.Element {
             <>
               <ChipGroup chips={unitChipData} descriptor="units" />
               <div className="entity-details__action-button-row">
-                <Button
-                  appearance="base"
-                  className="entity-details__action-button"
-                  hasIcon={true}
-                  onClick={(event: MouseEvent) => {
-                    event.stopPropagation();
-                    showActions();
-                  }}
-                  disabled={!enableActionButtonRow}
-                  data-testid={TestId.RUN_ACTION_BUTTON}
-                >
-                  <Icon name="run-action" />
-                  <span>Run action</span>
-                </Button>
-                <span className="entity-details__action-button-divider"></span>
+                {canConfigureModel ? (
+                  <>
+                    <Button
+                      appearance="base"
+                      className="entity-details__action-button"
+                      hasIcon={true}
+                      onClick={(event: MouseEvent) => {
+                        event.stopPropagation();
+                        showActions();
+                      }}
+                      disabled={!enableActionButtonRow}
+                      data-testid={TestId.RUN_ACTION_BUTTON}
+                    >
+                      <Icon name="run-action" />
+                      <span>{Label.RUN_ACTION}</span>
+                    </Button>
+                    <span className="entity-details__action-button-divider"></span>
+                  </>
+                ) : null}
                 <Button
                   element={Link}
                   appearance="base"
@@ -365,7 +378,12 @@ export default function App(): JSX.Element {
                   <MainTable
                     headers={unitTableHeaders}
                     rows={unitPanelRows}
-                    className="entity-details__units p-main-table panel__table has-checkbox"
+                    className={classNames(
+                      "entity-details__units p-main-table panel__table",
+                      {
+                        "has-checkbox": canConfigureModel,
+                      }
+                    )}
                     sortable
                     emptyStateMsg={Label.NO_UNITS}
                     data-testid={TestId.UNITS_TABLE}
@@ -382,7 +400,7 @@ export default function App(): JSX.Element {
                 rows={machinesPanelRows}
                 className="entity-details__machines p-main-table panel__table"
                 sortable
-                emptyStateMsg={"There are no machines in this model"}
+                emptyStateMsg="There are no machines in this model"
                 data-testid={TestId.MACHINES_TABLE}
               />
             </>

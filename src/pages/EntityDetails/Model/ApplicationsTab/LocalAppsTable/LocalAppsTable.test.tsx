@@ -6,6 +6,11 @@ import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import { charmApplicationFactory } from "testing/factories/juju/Charms";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelDataFactory,
+  modelDataInfoFactory,
+} from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
@@ -20,7 +25,18 @@ describe("LocalAppsTable", () => {
 
   beforeEach(() => {
     state = rootStateFactory.build({
-      general: generalStateFactory.build({}),
+      general: generalStateFactory.build({
+        controllerConnections: {
+          "wss://jimm.jujucharms.com/api": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
+      }),
       juju: jujuStateFactory.build({
         models: {
           test123: {
@@ -28,7 +44,23 @@ describe("LocalAppsTable", () => {
             uuid: "test123",
             ownerTag: "test@external",
             type: "iaas",
+            wsControllerURL: "wss://jimm.jujucharms.com/api",
           },
+        },
+        modelData: {
+          test123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              uuid: "test123",
+              name: "test-model",
+              "controller-uuid": "controller123",
+              users: [
+                modelUserInfoFactory.build({
+                  user: "eggman@external",
+                  access: "admin",
+                }),
+              ],
+            }),
+          }),
         },
         modelWatcherData: {
           test123: modelWatcherModelDataFactory.build({
@@ -122,6 +154,34 @@ describe("LocalAppsTable", () => {
     expect(
       screen.queryAllByRole("columnheader")[0].querySelector("input")
     ).toBeInTheDocument();
+  });
+
+  it("does not show the select column when the user only has read permissions", () => {
+    state.juju.modelData.test123.info = modelDataInfoFactory.build({
+      uuid: "test123",
+      name: "test-model",
+      "controller-uuid": "controller123",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "read",
+        }),
+      ],
+    });
+    renderComponent(
+      <LocalAppsTable
+        applications={state.juju.modelWatcherData?.test123.applications}
+      />,
+      {
+        path,
+        url: searchURL,
+        state,
+      }
+    );
+    // The first column should not have a checkbox.
+    expect(
+      screen.queryAllByRole("columnheader")[0].querySelector("input")
+    ).not.toBeInTheDocument();
   });
 
   it("can select individual apps", async () => {
@@ -292,6 +352,33 @@ describe("LocalAppsTable", () => {
     expect(
       screen.queryByRole("button", { name: /run action/i })
     ).toBeInTheDocument();
+  });
+
+  it("does not show the run action button when the user only has read permissions", () => {
+    state.juju.modelData.test123.info = modelDataInfoFactory.build({
+      uuid: "test123",
+      name: "test-model",
+      "controller-uuid": "controller123",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "read",
+        }),
+      ],
+    });
+    renderComponent(
+      <LocalAppsTable
+        applications={state.juju.modelWatcherData?.test123.applications}
+      />,
+      {
+        path,
+        url: searchURL,
+        state,
+      }
+    );
+    expect(
+      screen.queryByRole("button", { name: /run action/i })
+    ).not.toBeInTheDocument();
   });
 
   it("disables the run action button when there are no applications selected", () => {

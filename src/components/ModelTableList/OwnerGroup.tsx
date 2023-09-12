@@ -13,7 +13,7 @@ import {
 } from "store/juju/selectors";
 import type { Filters } from "store/juju/utils/models";
 import {
-  canAdministerModelAccess,
+  canAdministerModel,
   getModelStatusGroupData,
 } from "store/juju/utils/models";
 
@@ -108,7 +108,7 @@ export default function OwnerGroup({ filters }: Props) {
             content: (
               <>
                 {model.info
-                  ? canAdministerModelAccess(activeUser, model.info.users) && (
+                  ? canAdministerModel(activeUser, model.info.users) && (
                       <AccessButton
                         setPanelQs={setPanelQs}
                         modelName={model.info.name}
@@ -119,7 +119,7 @@ export default function OwnerGroup({ filters }: Props) {
               </>
             ),
             className: `u-align--right lrg-screen-access-cell ${
-              canAdministerModelAccess(activeUser, model?.info?.users)
+              canAdministerModel(activeUser, model?.info?.users)
                 ? "has-permission"
                 : ""
             }`,
@@ -128,10 +128,7 @@ export default function OwnerGroup({ filters }: Props) {
             content: (
               <>
                 {model.info
-                  ? canAdministerModelAccess(
-                      activeUser,
-                      model?.info?.users
-                    ) && (
+                  ? canAdministerModel(activeUser, model?.info?.users) && (
                       <AccessButton
                         setPanelQs={setPanelQs}
                         modelName={model.info.name}

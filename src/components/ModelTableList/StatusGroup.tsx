@@ -15,7 +15,7 @@ import {
 import type { Controllers, ModelData } from "store/juju/types";
 import type { Filters, Status } from "store/juju/utils/models";
 import {
-  canAdministerModelAccess,
+  canAdministerModel,
   extractOwnerName,
   getModelStatusGroupData,
 } from "store/juju/utils/models";
@@ -187,7 +187,7 @@ function generateModelTableDataByStatus(
             "data-testid": "column-updated",
             content: (
               <>
-                {canAdministerModelAccess(activeUser, model?.info?.users) && (
+                {canAdministerModel(activeUser, model?.info?.users) && (
                   <AccessButton
                     setPanelQs={setPanelQs}
                     modelName={model.model.name}
@@ -197,7 +197,7 @@ function generateModelTableDataByStatus(
               </>
             ),
             className: `u-align--right lrg-screen-access-cell ${
-              canAdministerModelAccess(activeUser, model?.info?.users)
+              canAdministerModel(activeUser, model?.info?.users)
                 ? "has-permission"
                 : ""
             }`,
@@ -205,7 +205,7 @@ function generateModelTableDataByStatus(
           {
             content: (
               <>
-                {canAdministerModelAccess(activeUser, model?.info?.users) && (
+                {canAdministerModel(activeUser, model?.info?.users) && (
                   <AccessButton
                     setPanelQs={setPanelQs}
                     modelName={model.model.name}
