@@ -1,24 +1,32 @@
 import type { ActionSpec } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
-import { Button } from "@canonical/react-components";
+import { Button, ConfirmationModal } from "@canonical/react-components";
 import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import usePortal from "react-useportal";
 
 import CharmIcon from "components/CharmIcon/CharmIcon";
-import ConfirmationModal from "components/ConfirmationModal/ConfirmationModal";
 import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
 import { usePanelQueryParams } from "panels/hooks";
+import type { ConfirmTypes } from "panels/types";
 import { getModelUUID } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import type { RootState } from "store/store";
 import { useAppStore } from "store/store";
 
 import ActionOptions from "./ActionOptions";
+
+export enum Label {
+  CANCEL_BUTTON = "Cancel",
+  CONFIRM_BUTTON = "Confirm",
+  NO_UNITS_SELECTED = "0 units selected",
+  NO_ACTIONS_PROVIDED = "This charm has not provided any actions.",
+}
 
 export enum TestId {
   PANEL = "actions-panel",
@@ -86,11 +94,12 @@ export default function ActionsPanel(): JSX.Element {
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});
   const [fetchingActionData, setFetchingActionData] = useState(false);
-  const [confirmType, setConfirmType] = useState<string>("");
+  const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
   const [selectedAction, setSelectedAction]: [
     string | undefined,
     SetSelectedAction
   ] = useState<string>();
+  const { Portal } = usePortal();
 
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
@@ -120,7 +129,7 @@ export default function ActionsPanel(): JSX.Element {
 
   const generateSelectedUnitList = () => {
     if (!selectedUnits.length) {
-      return "0 units selected";
+      return Label.NO_UNITS_SELECTED;
     }
     return selectedUnits.reduce((acc, unitName) => {
       return `${acc}, ${unitName.split("/")[1]}`;
@@ -188,16 +197,36 @@ export default function ActionsPanel(): JSX.Element {
       // Allow for adding more confirmation types, like for cancel
       // if inputs have been changed.
       if (confirmType === "submit") {
-        return SubmitConfirmation(
-          selectedAction,
-          selectedUnits.length,
-          selectedUnits,
-          () => {
-            setConfirmType("");
-            executeAction();
-            handleRemovePanelQueryParams();
-          },
-          () => setConfirmType("")
+        const unitNames = selectedUnits.reduce((acc, unitName) => {
+          return `${acc}, ${unitName.split("/")[1]}`;
+        });
+        // Render the submit confirmation modal.
+        return (
+          <Portal>
+            <ConfirmationModal
+              title={`Run ${selectedAction}?`}
+              cancelButtonLabel={Label.CANCEL_BUTTON}
+              confirmButtonLabel={Label.CONFIRM_BUTTON}
+              confirmButtonAppearance="positive"
+              onConfirm={() => {
+                setConfirmType(null);
+                executeAction();
+                handleRemovePanelQueryParams();
+              }}
+              close={() => setConfirmType(null)}
+            >
+              <h4 className="p-muted-heading u-no-margin--bottom">
+                UNIT COUNT
+              </h4>
+              <p data-testid="confirmation-modal-unit-count">
+                {selectedUnits.length}
+              </p>
+              <h4 className="p-muted-heading u-no-margin--bottom u-no-padding--top">
+                UNIT NAME
+              </h4>
+              <p data-testid="confirmation-modal-unit-names">{unitNames}</p>
+            </ConfirmationModal>
+          </Portal>
         );
       }
     }
@@ -227,7 +256,7 @@ export default function ActionsPanel(): JSX.Element {
       <LoadingHandler
         hasData={data ? true : false}
         loading={fetchingActionData}
-        noDataMessage="This charm has not provided any actions."
+        noDataMessage={Label.NO_ACTIONS_PROVIDED}
       >
         {Object.keys(actionData).map((actionName) => (
           <RadioInputBox
@@ -333,42 +362,3 @@ const optionsValidate: ValidationFnProps = (selected, optionsValues) => {
   // XXX TODO
   return true;
 };
-
-function SubmitConfirmation(
-  actionName: string,
-  unitCount: number,
-  unitList: string[],
-  confirmFunction: () => void,
-  cancelFunction: () => void
-): JSX.Element {
-  const unitNames = unitList.reduce((acc, unitName) => {
-    return `${acc}, ${unitName.split("/")[1]}`;
-  });
-  return (
-    <ConfirmationModal
-      buttonRow={
-        <div>
-          <Button key="cancel" onClick={cancelFunction}>
-            Cancel
-          </Button>
-          <Button appearance="positive" key="save" onClick={confirmFunction}>
-            Confirm
-          </Button>
-        </div>
-      }
-      onClose={cancelFunction}
-    >
-      <div>
-        <h4>Run {actionName}?</h4>
-        <div className="p-confirmation-modal__info-group">
-          <div className="p-confirmation-modal__sub-header">UNIT COUNT</div>
-          <div data-testid="confirmation-modal-unit-count">{unitCount}</div>
-        </div>
-        <div className="p-confirmation-modal__info-group">
-          <div className="p-confirmation-modal__sub-header">UNIT NAME</div>
-          <div data-testid="confirmation-modal-unit-names">{unitNames}</div>
-        </div>
-      </div>
-    </ConfirmationModal>
-  );
-}

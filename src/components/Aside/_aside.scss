@@ -11,10 +11,8 @@
   // aside scroll up with the page so this needs to be prevented.
   position: fixed;
 
-  @media (max-width: $breakpoint-large - 1px) {
-    // Make the panel appear above the side/top menus.
-    z-index: z("zelda") + 1 !important;
-  }
+  // Panel should appear above the side/top menus and other content.
+  z-index: z("zelda") + 1 !important;
 
   .loading {
     align-items: center;

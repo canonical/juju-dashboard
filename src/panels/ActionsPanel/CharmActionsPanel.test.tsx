@@ -250,7 +250,7 @@ describe("CharmActionsPanel", () => {
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" })
     );
-    expect(document.querySelector(".p-confirmation-modal")).toBeInTheDocument();
+    expect(document.querySelector(".p-modal")).toBeInTheDocument();
     expect(
       await screen.findByTestId("confirmation-modal-unit-count")
     ).toHaveTextContent("1 (2)");
@@ -282,7 +282,7 @@ describe("CharmActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" })
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: "Confirm" })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -320,7 +320,7 @@ describe("CharmActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" })
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: "Confirm" })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -357,7 +357,7 @@ describe("CharmActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" })
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: "Confirm" })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -365,5 +365,37 @@ describe("CharmActionsPanel", () => {
     expect(call[2]).toEqual({}); // no options
     executeActionOnUnitsSpy.mockRestore();
     expect(await screen.findByText(Label.ACTION_ERROR)).toBeInTheDocument();
+  });
+
+  it("should cancel the run selected action confirmation modal", async () => {
+    renderComponent(
+      <>
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).toBeDisabled();
+    await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).not.toBeDisabled();
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Run action" })
+    );
+    expect(
+      screen.queryByRole("dialog", { name: "Run pause?" })
+    ).toBeInTheDocument();
+    await userEvent.click(
+      await screen.findByRole("button", { name: Label.CANCEL_BUTTON })
+    );
+    expect(
+      screen.queryByRole("dialog", { name: "Run pause?" })
+    ).not.toBeInTheDocument();
   });
 });
