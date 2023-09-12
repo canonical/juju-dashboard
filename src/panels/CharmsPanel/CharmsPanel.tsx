@@ -6,6 +6,8 @@ import Panel from "components/Panel";
 import { TestId } from "panels/CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { getCharms } from "store/juju/selectors";
 
+import CharmApplicationsDetails from "./CharmApplicationsDetails";
+
 export enum Label {
   PANEL_TITLE = "Choose applications of charm:",
   NO_ACTIONS = "No actions available for this charm!",
@@ -52,15 +54,18 @@ export default function CharmsPanel({
             !!charm?.actions?.specs &&
             !!Object.keys(charm.actions.specs).length;
           const charmRadioInput = (
-            <RadioInput
-              id={charm.url}
-              label={`${charm.meta?.name} (rev: ${charm.revision})`}
-              checked={selectedCharm === charm.url}
-              onChange={
-                hasActionData ? () => setSelectedCharm(charm.url) : undefined
-              }
-              disabled={!hasActionData}
-            />
+            <>
+              <RadioInput
+                id={charm.url}
+                label={`${charm.meta?.name} (rev: ${charm.revision})`}
+                checked={selectedCharm === charm.url}
+                onChange={
+                  hasActionData ? () => setSelectedCharm(charm.url) : undefined
+                }
+                disabled={!hasActionData}
+              />
+              <CharmApplicationsDetails charmURL={charm.url} />
+            </>
           );
           return (
             <div key={charm.url} className="p-form__group">

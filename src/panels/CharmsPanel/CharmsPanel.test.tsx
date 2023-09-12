@@ -35,7 +35,9 @@ describe("CharmsPanel", () => {
           }),
         ],
         selectedApplications: [
-          charmApplicationFactory.build(),
+          charmApplicationFactory.build({
+            name: "Mock application name",
+          }),
           charmApplicationFactory.build({
             "charm-url": "ch:amd64/focal/redis-k8s",
           }),
@@ -123,5 +125,22 @@ describe("CharmsPanel", () => {
     expect(
       screen.getByRole("tooltip", { name: Label.NO_ACTIONS })
     ).toBeVisible();
+  });
+
+  it("should show applications details of charms", () => {
+    renderComponent(
+      <CharmsPanel
+        onCharmURLChange={jest.fn()}
+        onRemovePanelQueryParams={jest.fn()}
+        isLoading={false}
+      />,
+      { path, url, state }
+    );
+    const charmHelperMessages = document.querySelectorAll(".p-form-help-text");
+    expect(charmHelperMessages).toHaveLength(2);
+    expect(charmHelperMessages[0]).toHaveTextContent(
+      "Apps: Mock application name."
+    );
+    expect(charmHelperMessages[1]).toHaveTextContent("Apps: db2.");
   });
 });
