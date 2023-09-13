@@ -25,7 +25,7 @@ const CharmApplicationsDetails = ({ charmURL }: Props): JSX.Element => {
     <p className="p-form-help-text is-tick-element">
       <Tooltip
         message={
-          hiddenApplications ? (
+          hiddenApplications.length ? (
             <span>..., {formatApplicationsDetails(hiddenApplications)}</span>
           ) : null
         }
