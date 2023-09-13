@@ -138,9 +138,7 @@ describe("CharmsPanel", () => {
     );
     const charmHelperMessages = document.querySelectorAll(".p-form-help-text");
     expect(charmHelperMessages).toHaveLength(2);
-    expect(charmHelperMessages[0]).toHaveTextContent(
-      "Apps: Mock application name."
-    );
-    expect(charmHelperMessages[1]).toHaveTextContent("Apps: db2.");
+    expect(charmHelperMessages[0]).toHaveTextContent("Mock application name");
+    expect(charmHelperMessages[1]).toHaveTextContent("db2");
   });
 });

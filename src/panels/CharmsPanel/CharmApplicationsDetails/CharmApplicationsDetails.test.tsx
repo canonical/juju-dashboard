@@ -50,7 +50,7 @@ describe("CharmApplicationsDetails", () => {
       { state }
     );
     expect(document.querySelector(".p-form-help-text")).toHaveTextContent(
-      "Apps: First Mock application, Second Mock application."
+      "First Mock application, Second Mock application"
     );
   });
 });

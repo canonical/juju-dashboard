@@ -53,29 +53,26 @@ export default function CharmsPanel({
           const hasActionData =
             !!charm?.actions?.specs &&
             !!Object.keys(charm.actions.specs).length;
-          const charmRadioInput = (
-            <>
-              <RadioInput
-                id={charm.url}
-                label={`${charm.meta?.name} (rev: ${charm.revision})`}
-                checked={selectedCharm === charm.url}
-                onChange={
-                  hasActionData ? () => setSelectedCharm(charm.url) : undefined
-                }
-                disabled={!hasActionData}
-              />
-              <CharmApplicationsDetails charmURL={charm.url} />
-            </>
-          );
+
           return (
             <div key={charm.url} className="p-form__group">
-              {hasActionData ? (
-                charmRadioInput
-              ) : (
-                <Tooltip message={Label.NO_ACTIONS} position="left">
-                  {charmRadioInput}
-                </Tooltip>
-              )}
+              <Tooltip
+                message={hasActionData ? null : Label.NO_ACTIONS}
+                position="left"
+              >
+                <RadioInput
+                  id={charm.url}
+                  label={`${charm.meta?.name} (rev: ${charm.revision})`}
+                  checked={selectedCharm === charm.url}
+                  onChange={
+                    hasActionData
+                      ? () => setSelectedCharm(charm.url)
+                      : undefined
+                  }
+                  disabled={!hasActionData}
+                />
+              </Tooltip>
+              <CharmApplicationsDetails charmURL={charm.url} />
             </div>
           );
         })}
