@@ -33,6 +33,7 @@
     }
   }
 
+  &.is-busy,
   &.is-maintenance,
   &.is-attention,
   &.is-stopped,
@@ -50,6 +51,7 @@
     }
   }
 
+  &.is-available,
   &.is-completed,
   &.is-running,
   &.is-joined,

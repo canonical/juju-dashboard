@@ -4,6 +4,7 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
+import ModelDetailsLink from "components/ModelDetailsLink";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import type { SetParams } from "hooks/useQueryParams";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -24,7 +25,6 @@ import getUserName from "utils/getUserName";
 
 import AccessButton from "./AccessButton/AccessButton";
 import CloudCell from "./CloudCell/CloudCell";
-import ModelDetailsLink from "./ModelDetailsLink";
 import ModelSummary from "./ModelSummary";
 import {
   generateCloudAndRegion,

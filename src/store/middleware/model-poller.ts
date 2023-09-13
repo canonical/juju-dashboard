@@ -6,9 +6,11 @@ import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
+  crossModelQuery,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
+import type { CrossModelQueryFullResponse } from "juju/jimm/JIMMV4";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -88,6 +90,15 @@ export const modelPollerMiddleware: Middleware<
             generalActions.updateControllerConnection({
               wsControllerURL,
               info: conn.info,
+            })
+          );
+          const jimmVersion = conn.facades.jimM?.version ?? 0;
+          reduxStore.dispatch(
+            generalActions.updateControllerFeatures({
+              wsControllerURL,
+              features: {
+                crossModelQueries: jimmVersion >= 4,
+              },
             })
           );
           if (juju) {
@@ -176,6 +187,32 @@ export const modelPollerMiddleware: Middleware<
         reduxStore.dispatch
       );
       return response;
+    } else if (action.type === jujuActions.fetchCrossModelQuery.type) {
+      // Intercept fetchCrossModelQuery actions and fetch and store
+      // cross model query via the controller connection.
+
+      const { wsControllerURL, query } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+      let crossModelQueryResponse: CrossModelQueryFullResponse;
+      try {
+        crossModelQueryResponse = await crossModelQuery(conn, query);
+      } catch (error) {
+        console.error("Could not perform cross model query:", error);
+        crossModelQueryResponse =
+          "Unable to perform search. Please try again later.";
+      }
+      reduxStore.dispatch(
+        jujuActions.updateCrossModelQuery(crossModelQueryResponse)
+      );
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
     }
     return next(action);
   };

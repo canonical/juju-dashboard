@@ -5,16 +5,25 @@ import { useSelector } from "react-redux";
 
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
-import { getAppVersion } from "store/general/selectors";
+import {
+  getAppVersion,
+  isCrossModelQueriesEnabled,
+} from "store/general/selectors";
 import {
   getControllerData,
   getGroupedModelStatusCounts,
 } from "store/juju/selectors";
 import type { Controllers } from "store/juju/types";
+import { useAppSelector } from "store/store";
 import urls, { externalURLs } from "urls";
 
 import "./_primary-nav.scss";
+
 import PrimaryNavLink from "./PrimaryNavLink";
+
+export enum Label {
+  ADVANCED_SEARCH = "Advanced search",
+}
 
 const ModelsLink = () => {
   const { blocked: blockedModels } = useSelector(getGroupedModelStatusCounts);
@@ -63,10 +72,19 @@ const ControllersLink = () => {
   );
 };
 
+const AdvancedSearchLink = () => (
+  <PrimaryNavLink
+    to={urls.search}
+    iconName="search"
+    title={Label.ADVANCED_SEARCH}
+  />
+);
+
 const PrimaryNav = () => {
   const appVersion = useSelector(getAppVersion);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
+  const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
@@ -94,6 +112,11 @@ const PrimaryNav = () => {
         <li className="p-list__item">
           <ControllersLink />
         </li>
+        {crossModelQueriesEnabled ? (
+          <li className="p-list__item">
+            <AdvancedSearchLink />
+          </li>
+        ) : null}
       </ul>
       <hr className="p-primary-nav__divider hide-collapsed" />
       <div className="p-primary-nav__bottom hide-collapsed">

@@ -8,11 +8,14 @@ import {
 
 import Login from "components/LogIn/LogIn";
 import useAnalytics from "hooks/useAnalytics";
+import AdvancedSearch from "pages/AdvancedSearch/AdvancedSearch";
 import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
 import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import Settings from "pages/Settings/Settings";
+import { isCrossModelQueriesEnabled } from "store/general/selectors";
+import { useAppSelector } from "store/store";
 import urls from "urls";
 
 export type EntityDetailsRoute = {
@@ -26,6 +29,7 @@ export type EntityDetailsRoute = {
 export function Routes() {
   const sendAnalytics = useAnalytics();
   const location = useLocation();
+  const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
 
   useEffect(() => {
     // Send an analytics event when the URL changes.
@@ -70,6 +74,16 @@ export function Routes() {
         }
       />
       <Route path="*" element={<PageNotFound />} />
+      {crossModelQueriesEnabled && (
+        <Route
+          path={urls.search}
+          element={
+            <Login>
+              <AdvancedSearch />
+            </Login>
+          }
+        />
+      )}
     </ReactRouterRoutes>
   );
 }

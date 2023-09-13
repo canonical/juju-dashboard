@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { useEntityDetailsParams } from "components/hooks";
 import urls from "urls";
+import { ModelTab } from "urls";
 
 import "./_breadcrumbs.scss";
 
@@ -17,7 +18,7 @@ export default function Breadcrumb(): JSX.Element {
   } = useEntityDetailsParams();
 
   const generateBreadcrumbs = function (): ReactNode {
-    const view = machineId ? "machines" : "apps";
+    const view = machineId ? ModelTab.MACHINES : ModelTab.APPS;
     if (!userName || !modelName) {
       return null;
     }
@@ -49,7 +50,13 @@ export default function Breadcrumb(): JSX.Element {
                 className="p-breadcrumbs__item u-no-padding--top"
                 data-testid="breadcrumb-section"
               >
-                <Link to={urls.model.tab({ userName, modelName, tab: "apps" })}>
+                <Link
+                  to={urls.model.tab({
+                    userName,
+                    modelName,
+                    tab: ModelTab.APPS,
+                  })}
+                >
                   Applications
                 </Link>
               </li>

@@ -3,6 +3,7 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
 
+import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
@@ -18,7 +19,6 @@ import {
 } from "store/juju/utils/models";
 
 import AccessButton from "./AccessButton/AccessButton";
-import ModelDetailsLink from "./ModelDetailsLink";
 import ModelSummary from "./ModelSummary";
 import {
   generateTableHeaders,

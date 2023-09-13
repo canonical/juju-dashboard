@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - main
+      - cross-model-queries
   pull_request:
     branches:
       - main
+      - cross-model-queries
 jobs:
   test:
     name: Test
