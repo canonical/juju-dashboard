@@ -88,6 +88,24 @@ describe("reducers", () => {
     });
   });
 
+  it("storeLoginError creates login errors object if it is null", () => {
+    const state = generalStateFactory.build({
+      loginErrors: null,
+    });
+    expect(
+      reducer(
+        state,
+        actions.storeLoginError({
+          wsControllerURL: "wss://example.com",
+          error: "new error",
+        })
+      )
+    ).toStrictEqual({
+      ...state,
+      loginErrors: { "wss://example.com": "new error" },
+    });
+  });
+
   it("storeConnectionError", () => {
     const state = generalStateFactory.build({
       connectionError: "old error",
