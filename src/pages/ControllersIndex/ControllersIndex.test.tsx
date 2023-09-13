@@ -59,6 +59,7 @@ describe("Controllers table", () => {
     expect(additionalRows[1]).toHaveTextContent(
       [
         "wss://jimm.jujucharms.com/api",
+        "Connected",
         "unknown/unknown",
         "0",
         "0",
@@ -118,8 +119,28 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(screen.getAllByRole("row")[1]).toHaveTextContent(
-      ["JAAS", "Multiple", "2", "5", "2", "3", "Private"].join("")
+      ["JAAS", "Connected", "Multiple", "2", "5", "2", "3", "Private"].join("")
     );
+  });
+
+  it("displays login errors", async () => {
+    state.general.loginErrors = {
+      "wss://jimm.jujucharms.com/api": "Uh oh!",
+    };
+
+    state.juju = jujuStateFactory.build({
+      controllers: {
+        "wss://jimm.jujucharms.com/api": [
+          controllerFactory.build({ path: "admin/jaas", uuid: "123" }),
+        ],
+      },
+    });
+    renderComponent(<ControllersIndex />, { state });
+    expect(
+      screen.getByRole("gridcell", { name: "Disconnected" })
+    ).toBeInTheDocument();
+    await userEvent.hover(screen.getByText("Disconnected"));
+    expect(screen.getByText("Uh oh!")).toBeInTheDocument();
   });
 
   it("handles cloud/region for JAAS", () => {

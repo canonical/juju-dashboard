@@ -137,7 +137,10 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.storeLoginError("Uh oh!")
+      generalActions.storeLoginError({
+        wsControllerURL: "wss://example.com",
+        error: "Uh oh!",
+      })
     );
   });
 
@@ -225,7 +228,10 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.storeLoginError(LoginError.NO_INFO)
+      generalActions.storeLoginError({
+        wsControllerURL: "wss://example.com",
+        error: LoginError.NO_INFO,
+      })
     );
   });
 

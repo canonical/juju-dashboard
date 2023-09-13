@@ -45,13 +45,24 @@ export const getConnectionError = createSelector(
 );
 
 /**
+  Fetches login errors from state
+  @param state The application state.
+  @returns The collection of error messages if any.
+*/
+export const getLoginErrors = createSelector(
+  [slice],
+  (sliceState) => sliceState?.loginErrors
+);
+
+/**
   Fetches a login error from state
   @param state The application state.
+  @param wsControllerURL The wsController URL to retrieve errors for.
   @returns The error message if any.
 */
 export const getLoginError = createSelector(
-  [slice],
-  (sliceState) => sliceState?.loginError
+  [getLoginErrors, (_state, wsControllerURL) => wsControllerURL],
+  (loginErrors, wsControllerURL) => loginErrors?.[wsControllerURL]
 );
 
 /**

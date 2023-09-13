@@ -57,21 +57,28 @@ export const modelPollerMiddleware: Middleware<
               controllers.set(wsControllerURL, conn);
             }
             if (error && typeof error === "string") {
-              reduxStore.dispatch(generalActions.storeLoginError(error));
+              reduxStore.dispatch(
+                generalActions.storeLoginError({ wsControllerURL, error })
+              );
               return;
             }
           } catch (e) {
             reduxStore.dispatch(
-              generalActions.storeLoginError(
-                "Unable to log into the controller, check that you've configured the controller address correctly and that it is online."
-              )
+              generalActions.storeLoginError({
+                wsControllerURL,
+                error:
+                  "Unable to log into the controller, check that the controller address is correct and that it is online.",
+              })
             );
             return console.log(LoginError.LOG, e, controllerData);
           }
 
           if (!conn?.info || !Object.keys(conn.info).length) {
             reduxStore.dispatch(
-              generalActions.storeLoginError(LoginError.NO_INFO)
+              generalActions.storeLoginError({
+                wsControllerURL,
+                error: LoginError.NO_INFO,
+              })
             );
             return;
           }
