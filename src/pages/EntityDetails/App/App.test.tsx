@@ -9,7 +9,12 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import { modelListInfoFactory } from "testing/factories/juju/juju";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelListInfoFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
+} from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
   modelWatcherModelDataFactory,
@@ -43,12 +48,38 @@ describe("Entity Details App", () => {
         credentials: {
           "wss://jimm.jujucharms.com/api": credentialFactory.build(),
         },
+        controllerConnections: {
+          "wss://jimm.jujucharms.com/api": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
       }),
       juju: jujuStateFactory.build({
         models: {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "canonical-kubernetes",
+            wsControllerURL: "wss://jimm.jujucharms.com/api",
+          }),
+        },
+        modelData: {
+          test123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              uuid: "test123",
+              name: "canonical-kubernetes",
+              "controller-uuid": "controller123",
+              users: [
+                modelUserInfoFactory.build({
+                  user: "eggman@external",
+                  access: "admin",
+                }),
+              ],
+            }),
           }),
         },
         modelWatcherData: {
@@ -218,5 +249,44 @@ describe("Entity Details App", () => {
     expect(window.location.search).toEqual(
       "?panel=config&entity=etcd&charm=cs%3Aceph-mon-55&modelUUID=abc123"
     );
+  });
+
+  it("should not display the config button if the user only has read permissions", async () => {
+    state.juju.modelData.test123.info = modelDataInfoFactory.build({
+      uuid: "test123",
+      name: "canonical-kubernetes",
+      "controller-uuid": "controller123",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "read",
+        }),
+      ],
+    });
+    renderComponent(<App />, { path, url, state });
+    expect(window.location.search).toEqual("");
+    expect(
+      screen.queryByRole("button", { name: Label.CONFIGURE })
+    ).not.toBeInTheDocument();
+  });
+
+  it("should not display the checkboxes or run action button if the user only has read permissions", async () => {
+    state.juju.modelData.test123.info = modelDataInfoFactory.build({
+      uuid: "test123",
+      name: "canonical-kubernetes",
+      "controller-uuid": "controller123",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "read",
+        }),
+      ],
+    });
+    renderComponent(<App />, { path, url, state });
+    expect(window.location.search).toEqual("");
+    expect(
+      screen.queryByRole("button", { name: Label.RUN_ACTION })
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
   });
 });
