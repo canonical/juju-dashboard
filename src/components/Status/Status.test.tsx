@@ -11,6 +11,13 @@ describe("Status", () => {
     expect(status).not.toHaveClass("is-middle");
   });
 
+  it("can display a provided content", () => {
+    render(<Status status="middle">Upper middle</Status>);
+    const status = screen.getByText("Upper middle");
+    expect(status).toBeInTheDocument();
+    expect(status).toHaveClass("is-middle");
+  });
+
   it("can display an icon", () => {
     render(<Status status="middle" useIcon />);
     const status = screen.getByText("middle");

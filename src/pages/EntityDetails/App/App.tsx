@@ -29,6 +29,7 @@ import {
 } from "tables/tableHeaders";
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
 import type { AppTab } from "urls";
+import { ModelTab } from "urls";
 import urls from "urls";
 
 import { generateMachineCounts, generateUnitCounts } from "../counts";
@@ -343,7 +344,7 @@ export default function App(): JSX.Element {
                       ? urls.model.tab({
                           userName,
                           modelName,
-                          tab: "action-logs",
+                          tab: ModelTab.ACTION_LOGS,
                         })
                       : ""
                   }

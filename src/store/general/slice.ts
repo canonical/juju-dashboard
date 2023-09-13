@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import type { GeneralState } from "./types";
+import type { GeneralState, ControllerFeatures } from "./types";
 
 const slice = createSlice({
   name: "general",
@@ -10,6 +10,7 @@ const slice = createSlice({
     config: null,
     connectionError: null,
     controllerConnections: null,
+    controllerFeatures: null,
     credentials: null,
     loginError: null,
     pingerIntervalIds: null,
@@ -23,6 +24,17 @@ const slice = createSlice({
       const connections = state.controllerConnections ?? {};
       connections[action.payload.wsControllerURL] = action.payload.info;
       state.controllerConnections = connections;
+    },
+    updateControllerFeatures: (
+      state,
+      action: PayloadAction<{
+        wsControllerURL: string;
+        features: ControllerFeatures;
+      }>
+    ) => {
+      const features = state.controllerFeatures ?? {};
+      features[action.payload.wsControllerURL] = action.payload.features;
+      state.controllerFeatures = features;
     },
     storeConfig: (state, action) => {
       state.config = action.payload;
