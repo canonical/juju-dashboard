@@ -36,7 +36,7 @@ describe("CharmsPanel", () => {
         ],
         selectedApplications: [
           charmApplicationFactory.build({
-            name: "Mock application name",
+            name: "Mock app 1",
           }),
           charmApplicationFactory.build({
             "charm-url": "ch:amd64/focal/redis-k8s",
@@ -138,7 +138,38 @@ describe("CharmsPanel", () => {
     );
     const charmHelperMessages = document.querySelectorAll(".p-form-help-text");
     expect(charmHelperMessages).toHaveLength(2);
-    expect(charmHelperMessages[0]).toHaveTextContent("Mock application name");
+    expect(charmHelperMessages[0]).toHaveTextContent("Mock app 1");
     expect(charmHelperMessages[1]).toHaveTextContent("db2");
+  });
+
+  it("should show tooltip with additional applications details if there are more than 5 apps", async () => {
+    for (let i = 2; i < 10; i++) {
+      state.juju.selectedApplications.push(
+        charmApplicationFactory.build({
+          name: `Mock app ${i}`,
+        })
+      );
+    }
+    renderComponent(
+      <CharmsPanel
+        onCharmURLChange={jest.fn()}
+        onRemovePanelQueryParams={jest.fn()}
+        isLoading={false}
+      />,
+      { path, url, state }
+    );
+    expect(document.querySelectorAll(".p-form-help-text")[0]).toHaveTextContent(
+      "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5, +4 more..."
+    );
+    await userEvent.hover(
+      screen.getByText(
+        "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5"
+      )
+    );
+    expect(
+      screen.getByRole("tooltip", {
+        name: "..., Mock app 6, Mock app 7, Mock app 8, Mock app 9",
+      })
+    ).toBeVisible();
   });
 });
