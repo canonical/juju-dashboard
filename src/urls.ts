@@ -1,6 +1,12 @@
 import { argPath } from "utils";
 
-export type ModelTab = "apps" | "machines" | "integrations" | "logs";
+export enum ModelTab {
+  APPS = "apps",
+  MACHINES = "machines",
+  INTEGRATIONS = "integrations",
+  LOGS = "logs",
+}
+
 export type AppTab = "machines" | "units";
 export type ModelsGroupedBy = "status" | "cloud" | "owner";
 
@@ -47,6 +53,7 @@ const urls = {
   },
   settings: "/settings",
   logs: "/logs",
+  search: "/search",
 };
 
 export const externalURLs = {

@@ -1,7 +1,7 @@
 import { Spinner } from "@canonical/react-components";
 import type { FormEvent, ReactNode } from "react";
-import React, { useEffect, useRef } from "react";
-import { useSelector, useStore } from "react-redux";
+import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 
 import FadeUpIn from "animations/FadeUpIn";
 import bakery from "juju/bakery";
@@ -11,14 +11,13 @@ import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import {
   getConfig,
-  getControllerConnections,
   getLoginError,
   getWSControllerURL,
   isLoggedIn,
   getIsJuju,
 } from "store/general/selectors";
 import type { RootState } from "store/store";
-import { useAppDispatch } from "store/store";
+import { useAppDispatch, useAppSelector } from "store/store";
 
 import "./_login.scss";
 
@@ -39,18 +38,13 @@ type Props = { children: ReactNode };
 export default function LogIn({ children }: Props) {
   const config = useSelector(getConfig);
   const isJuju = useSelector(getIsJuju);
-
-  const controllerConnections = useSelector(getControllerConnections) || {};
-  const wsControllerURLs = Object.keys(controllerConnections);
-
-  const store = useStore<RootState>();
-  // Loop through all of the available controller connections to see
-  // if we're logged in.
-  const userIsLoggedIn = wsControllerURLs.some((wsControllerURL) =>
-    isLoggedIn(store.getState(), wsControllerURL)
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  const userIsLoggedIn = useAppSelector((state) =>
+    isLoggedIn(state, wsControllerURL)
   );
-
-  const loginError = useSelector(getLoginError);
+  const loginError = useAppSelector((state) =>
+    getLoginError(state, wsControllerURL)
+  );
 
   return (
     <>
@@ -123,8 +117,8 @@ interface LoginElements extends HTMLFormControlsCollection {
 
 function UserPassForm() {
   const dispatch = useAppDispatch();
-  const store = useStore<RootState>();
   const focus = useRef<HTMLInputElement>(null);
+  const wsControllerURL = useAppSelector(getWSControllerURL);
 
   function handleSubmit(
     e: FormEvent<HTMLFormElement & { elements: LoginElements }>
@@ -136,7 +130,7 @@ function UserPassForm() {
     dispatch(generalActions.cleanupLoginErrors());
     dispatch(
       generalActions.storeUserPass({
-        wsControllerURL: getWSControllerURL(store.getState()),
+        wsControllerURL,
         credential: { user, password },
       })
     );

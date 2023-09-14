@@ -47,6 +47,7 @@ import type { RootState, Store } from "store/store";
 import { getModelByUUID } from "../store/juju/selectors";
 
 import type { AuditEvents, FindAuditEventsRequest } from "./jimm/JIMMV3";
+import type { CrossModelQueryFullResponse } from "./jimm/JIMMV4";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -341,12 +342,18 @@ export async function fetchAllModelStatuses(
   modelUUIDList.forEach((modelUUID) => {
     queue.push(async (done) => {
       if (isLoggedIn(getState(), wsControllerURL)) {
-        await fetchAndStoreModelStatus(
-          modelUUID,
-          getModelByUUID(getState(), modelUUID).wsControllerURL,
-          dispatch,
-          getState
-        );
+        const modelWsControllerURL = getModelByUUID(
+          getState(),
+          modelUUID
+        )?.wsControllerURL;
+        if (modelWsControllerURL) {
+          await fetchAndStoreModelStatus(
+            modelUUID,
+            modelWsControllerURL,
+            dispatch,
+            getState
+          );
+        }
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         if (modelInfo) {
           dispatch(
@@ -783,6 +790,23 @@ export function findAuditEvents(
       try {
         const events = await conn.facades.jimM.findAuditEvents(params);
         resolve(events);
+      } catch (e) {
+        reject(e);
+      }
+    } else {
+      reject("Not connected to JIMM.");
+    }
+  });
+}
+
+export function crossModelQuery(conn: ConnectionWithFacades, query: string) {
+  return new Promise<CrossModelQueryFullResponse>(async (resolve, reject) => {
+    if (conn?.facades?.jimM) {
+      try {
+        const crossModelQueryResponse = await conn.facades.jimM.crossModelQuery(
+          query
+        );
+        resolve(crossModelQueryResponse);
       } catch (e) {
         reject(e);
       }

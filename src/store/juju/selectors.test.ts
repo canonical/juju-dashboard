@@ -20,6 +20,7 @@ import {
   modelDataMachineFactory,
   modelDataUnitFactory,
   auditEventsStateFactory,
+  crossModelQueryStateFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -78,6 +79,11 @@ import {
   getAuditEventsModels,
   getAuditEventsFacades,
   getAuditEventsMethods,
+  getCrossModelQueryState,
+  getCrossModelQueryResults,
+  getCrossModelQueryErrors,
+  getCrossModelQueryLoaded,
+  getCrossModelQueryLoading,
   getFullModelNames,
   getUsers,
   getFullModelName,
@@ -200,6 +206,73 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual(["Login", "Logout"]);
+  });
+
+  it("getCrossModelQueryState", () => {
+    const crossModelQuery = crossModelQueryStateFactory.build();
+    expect(
+      getCrossModelQueryState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery,
+          }),
+        })
+      )
+    ).toStrictEqual(crossModelQuery);
+  });
+
+  it("getCrossModelQueryResults", () => {
+    const results = { mockResultKey: ["mockResultValue"] };
+    expect(
+      getCrossModelQueryResults(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery: crossModelQueryStateFactory.build({ results }),
+          }),
+        })
+      )
+    ).toStrictEqual(results);
+  });
+
+  it("getCrossModelQueryErrors", () => {
+    const errors = { mockErrorKey: ["mockErrorValue"] };
+    expect(
+      getCrossModelQueryErrors(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery: crossModelQueryStateFactory.build({ errors }),
+          }),
+        })
+      )
+    ).toStrictEqual(errors);
+  });
+
+  it("getCrossModelQueryLoaded", () => {
+    expect(
+      getCrossModelQueryLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery: crossModelQueryStateFactory.build({
+              loaded: true,
+            }),
+          }),
+        })
+      )
+    ).toStrictEqual(true);
+  });
+
+  it("getCrossModelQueryLoading", () => {
+    expect(
+      getCrossModelQueryLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            crossModelQuery: crossModelQueryStateFactory.build({
+              loading: true,
+            }),
+          }),
+        })
+      )
+    ).toStrictEqual(true);
   });
 
   it("getModelData", () => {

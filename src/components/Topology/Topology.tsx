@@ -1,3 +1,4 @@
+import cloneDeep from "clone-deep";
 import * as d3 from "d3";
 import { useRef, useEffect, memo } from "react";
 
@@ -144,13 +145,15 @@ const getRelationPosition = (data: string[]) => {
 // glitches.
 const Topology = memo(
   ({
-    annotations: annotationData,
+    annotations,
     applications: applicationData,
     relations: relationData,
     width,
     height,
   }: Props) => {
     const ref = useRef<SVGSVGElement>(null);
+    // Clone the data so that it can be manipulated before rendering.
+    const annotationData = cloneDeep(annotations);
 
     const { deltaX, deltaY } = computePositionDelta(annotationData);
 
@@ -166,7 +169,7 @@ const Topology = memo(
 
     // Apply deltas to the annotations.
     for (const appName in annotationData) {
-      const annotation = { ...annotationData[appName] };
+      const annotation = annotationData[appName];
       if (annotation["gui-x"]) {
         annotation["gui-x"] = applyDelta(
           annotation["gui-x"],

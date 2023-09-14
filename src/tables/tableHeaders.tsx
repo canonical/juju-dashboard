@@ -40,14 +40,16 @@ export const unitTableHeaders: Header = [
 ];
 
 export const generateSelectableUnitTableHeaders = (
-  selectContent: HeaderRow,
+  selectContent: HeaderRow | null,
   removeMachines: boolean
 ): Header => {
   let headers = cloneDeep(unitTableHeaders);
   if (removeMachines) {
     headers = headers.filter((header) => !(header.sortKey === "machine"));
   }
-  headers.splice(0, 0, selectContent);
+  if (selectContent) {
+    headers.splice(0, 0, selectContent);
+  }
   return headers;
 };
 

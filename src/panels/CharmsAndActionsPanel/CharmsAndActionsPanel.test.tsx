@@ -120,6 +120,9 @@ describe("CharmsAndActionsPanel", () => {
       ...state.juju.charms,
       charmInfoFactory.build({
         url: "ch:ceph2",
+        actions: charmActionsFactory.build({
+          specs: { "apt-update": charmActionSpecFactory.build() },
+        }),
       }),
     ];
     const {
@@ -133,7 +136,7 @@ describe("CharmsAndActionsPanel", () => {
     );
     const charmOptions = screen.getAllByRole("radio");
     expect(charmOptions).toHaveLength(2);
-    act(() => charmOptions[0].click());
+    act(() => charmOptions[1].click());
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
   });
 });

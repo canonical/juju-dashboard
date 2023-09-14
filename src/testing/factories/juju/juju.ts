@@ -14,6 +14,7 @@ import type {
   AuditEventsState,
   Controller,
   ControllerLocation,
+  CrossModelQueryState,
   JujuState,
   ModelData,
   ModelListInfo,
@@ -161,8 +162,18 @@ export const auditEventsStateFactory = Factory.define<AuditEventsState>(() => ({
   limit: DEFAULT_AUDIT_EVENTS_LIMIT,
 }));
 
+export const crossModelQueryStateFactory = Factory.define<CrossModelQueryState>(
+  () => ({
+    results: null,
+    errors: null,
+    loaded: false,
+    loading: false,
+  })
+);
+
 export const jujuStateFactory = Factory.define<JujuState>(() => ({
   auditEvents: auditEventsStateFactory.build(),
+  crossModelQuery: crossModelQueryStateFactory.build(),
   controllers: null,
   models: {},
   modelsLoaded: false,

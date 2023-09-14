@@ -5,12 +5,14 @@ import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import {
+  charmActionSpecFactory,
+  charmActionsFactory,
   charmApplicationFactory,
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
 import { renderComponent } from "testing/utils";
 
-import CharmsPanel from "./CharmsPanel";
+import CharmsPanel, { Label } from "./CharmsPanel";
 
 describe("CharmsPanel", () => {
   let state: RootState;
@@ -22,7 +24,11 @@ describe("CharmsPanel", () => {
       general: generalStateFactory.build({}),
       juju: jujuStateFactory.build({
         charms: [
-          charmInfoFactory.build(),
+          charmInfoFactory.build({
+            actions: charmActionsFactory.build({
+              specs: { "apt-update": charmActionSpecFactory.build() },
+            }),
+          }),
           charmInfoFactory.build({
             meta: { name: "Redis k8s" },
             url: "ch:amd64/focal/redis-k8s",
@@ -100,5 +106,22 @@ describe("CharmsPanel", () => {
     await userEvent.click(screen.getAllByRole("radio")[0]);
     await userEvent.click(screen.getByRole("button", { name: "Next" }));
     expect(mockHandleCharmURLChange).toHaveBeenCalledTimes(1);
+  });
+
+  it("should show tooltip and have charm button dissabled if no action is available", async () => {
+    renderComponent(
+      <CharmsPanel
+        onCharmURLChange={jest.fn()}
+        onRemovePanelQueryParams={jest.fn()}
+        isLoading={false}
+      />,
+      { path, url, state }
+    );
+    const disabledRadioButton = screen.getAllByRole("radio")[1];
+    expect(disabledRadioButton).toBeDisabled();
+    await userEvent.hover(disabledRadioButton);
+    expect(
+      screen.getByRole("tooltip", { name: Label.NO_ACTIONS })
+    ).toBeVisible();
   });
 });

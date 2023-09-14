@@ -4,6 +4,7 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
+import ModelDetailsLink from "components/ModelDetailsLink";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import type { SetParams } from "hooks/useQueryParams";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -15,7 +16,7 @@ import {
 import type { Controllers, ModelData } from "store/juju/types";
 import type { Filters, Status } from "store/juju/utils/models";
 import {
-  canAdministerModelAccess,
+  canAdministerModel,
   extractOwnerName,
   getModelStatusGroupData,
 } from "store/juju/utils/models";
@@ -24,7 +25,6 @@ import getUserName from "utils/getUserName";
 
 import AccessButton from "./AccessButton/AccessButton";
 import CloudCell from "./CloudCell/CloudCell";
-import ModelDetailsLink from "./ModelDetailsLink";
 import ModelSummary from "./ModelSummary";
 import {
   generateCloudAndRegion,
@@ -187,7 +187,7 @@ function generateModelTableDataByStatus(
             "data-testid": "column-updated",
             content: (
               <>
-                {canAdministerModelAccess(activeUser, model?.info?.users) && (
+                {canAdministerModel(activeUser, model?.info?.users) && (
                   <AccessButton
                     setPanelQs={setPanelQs}
                     modelName={model.model.name}
@@ -197,7 +197,7 @@ function generateModelTableDataByStatus(
               </>
             ),
             className: `u-align--right lrg-screen-access-cell ${
-              canAdministerModelAccess(activeUser, model?.info?.users)
+              canAdministerModel(activeUser, model?.info?.users)
                 ? "has-permission"
                 : ""
             }`,
@@ -205,7 +205,7 @@ function generateModelTableDataByStatus(
           {
             content: (
               <>
-                {canAdministerModelAccess(activeUser, model?.info?.users) && (
+                {canAdministerModel(activeUser, model?.info?.users) && (
                   <AccessButton
                     setPanelQs={setPanelQs}
                     modelName={model.model.name}

@@ -1,5 +1,4 @@
 import { Button, Col, Row } from "@canonical/react-components";
-import classNames from "classnames";
 import type { ChangeEvent } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,8 +23,8 @@ export const STORAGE_KEY = "additionalControllers";
 type FormValues = {
   controllerName?: string;
   wsControllerHost?: string;
-  username?: string;
-  password?: string;
+  username: string;
+  password: string;
   identityProvider?: boolean;
   certificateAccepted?: boolean;
 };
@@ -35,7 +34,10 @@ type RegisterControllerQueryParams = {
 };
 
 export default function RegisterController() {
-  const [formValues, setFormValues] = useState<FormValues>({});
+  const [formValues, setFormValues] = useState<FormValues>({
+    password: "",
+    username: "",
+  });
   const dispatch = useAppDispatch();
   const [additionalControllers, setAdditionalControllers] = useLocalStorage<
     ControllerArgs[]
@@ -170,7 +172,31 @@ export default function RegisterController() {
             </div>
           </div>
         </div>
-
+        <div className="p-form__group row">
+          <div className="col-10 col-start-large-3">
+            <input
+              type="checkbox"
+              id="identityProviderAvailable"
+              name="identityProvider"
+              defaultChecked={false}
+              onChange={(event) => {
+                setFormValues({
+                  ...formValues,
+                  identityProvider: event.target.checked,
+                  password: "",
+                  username: "",
+                });
+              }}
+            />{" "}
+            <label htmlFor="identityProviderAvailable">
+              This controller uses an external identity provider.
+            </label>
+            <p className="p-form-help-text identity-provider ">
+              This will be true for controllers with the `identity-url`
+              parameter set.
+            </p>
+          </div>
+        </div>
         <div className="p-form__group row">
           <div className="col-2">
             <label htmlFor="username" className="p-form__label">
@@ -181,10 +207,12 @@ export default function RegisterController() {
           <div className="col-10">
             <div className="p-form__control">
               <input
+                disabled={formValues.identityProvider}
                 type="text"
                 id="username"
                 name="username"
                 onChange={handleInputChange}
+                value={formValues.username}
               />
               <p className="p-form-help-text">
                 The username you use to access the controller.
@@ -203,39 +231,18 @@ export default function RegisterController() {
           <div className="col-10">
             <div className="p-form__control">
               <input
+                disabled={formValues.identityProvider}
                 type="password"
                 id="password"
                 name="password"
                 onChange={handleInputChange}
+                value={formValues.password}
               />
               <p className="p-form-help-text">
                 The password will be what you used when running{" "}
                 <code>juju register</code> or if unchanged from the default it
                 can be retrieved by running <code>juju dashboard</code>.
               </p>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className={classNames("p-form__group row", {
-            "u-hide": formValues.username && formValues.password,
-          })}
-        >
-          <div className="col-10 col-start-large-3">
-            <input
-              type="checkbox"
-              id="identityProviderAvailable"
-              name="identityProvider"
-              defaultChecked={false}
-              onChange={handleInputChange}
-            />
-            <label htmlFor="identityProviderAvailable">
-              An identity provider is available.{" "}
-            </label>
-            <div className="p-form-help-text identity-provider">
-              If you provided a username and password this should be left
-              unchecked.
             </div>
           </div>
         </div>
@@ -258,7 +265,7 @@ export default function RegisterController() {
               defaultChecked={false}
               onChange={handleInputChange}
               required={true}
-            />
+            />{" "}
             <label htmlFor="certificateHasBeenAccepted">
               The SSL certificate, if any, has been accepted.{" "}
               <span className="required-star">*</span>

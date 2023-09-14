@@ -9,12 +9,16 @@ import { Link } from "react-router-dom";
 
 import FadeIn from "animations/FadeIn";
 import Header from "components/Header/Header";
+import Status from "components/Status";
+import TruncatedTooltip from "components/TruncatedTooltip";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
+import { getLoginErrors } from "store/general/selectors";
 import { getControllerData, getModelData } from "store/juju/selectors";
 import type { AdditionalController, Controller } from "store/juju/types";
 import { isJAASFromPath } from "store/juju/utils/controllers";
+import { useAppSelector } from "store/store";
 import urls from "urls";
 
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
@@ -36,6 +40,7 @@ function Details() {
   useWindowTitle("Controllers");
   const controllerData = useSelector(getControllerData);
   const modelData = useSelector(getModelData);
+  const loginErrors = useAppSelector(getLoginErrors);
 
   const controllerMap: Record<string, AnnotatedController> = {};
   const additionalControllers: string[] = [];
@@ -85,6 +90,11 @@ function Details() {
 
   const headers: MainTableHeader[] = [
     { content: "default", sortKey: "name" },
+    {
+      className: "p-table__cell--icon-placeholder",
+      content: "status",
+      sortKey: "status",
+    },
     { content: "cloud/region", sortKey: "cloud/region" },
     { content: "models", sortKey: "models" },
     { content: "machines", sortKey: "machines" },
@@ -113,11 +123,18 @@ function Details() {
     if (isJAASFromPath(controllerData)) {
       column.content = "JAAS";
     } else if ("path" in controllerData && controllerData.path) {
-      column.content = controllerData.path;
+      column.content = (
+        <Tooltip message={controllerData.wsControllerURL}>
+          {controllerData.path}
+        </Tooltip>
+      );
     } else {
-      column.content = controllerData?.wsControllerURL;
-      column.className = "is-disconnected";
-      column.title = "disconnected";
+      column.content = (
+        <TruncatedTooltip message={controllerData?.wsControllerURL}>
+          {controllerData?.wsControllerURL}
+        </TruncatedTooltip>
+      );
+      column.className = "u-text--muted";
     }
     return column;
   }
@@ -129,8 +146,22 @@ function Details() {
       "location" in c && c?.location?.region ? c.location.region : "unknown";
     const cloudRegion = `${cloud}/${region}`;
     const access = "Public" in c && c.Public ? "Public" : "Private";
+    const loginError = loginErrors?.[c.wsControllerURL];
     const columns = [
       generatePathValue(c),
+      {
+        content: (
+          <Tooltip
+            message={loginError}
+            positionElementClassName="controllers__status"
+          >
+            <Status
+              className="u-truncate controllers__status"
+              status={loginError ? "Disconnected" : "Connected"}
+            />
+          </Tooltip>
+        ),
+      },
       { content: isJAASFromPath(c) ? "Multiple" : cloudRegion },
       { content: c.models },
       { content: c.machines },
