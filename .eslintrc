@@ -3,13 +3,20 @@
     "react-app",
     "plugin:prettier/recommended",
     "plugin:jest/recommended",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "plugin:promise/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["prettier", "jest"],
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["prettier", "jest", "promise"],
   "root": true,
   "rules": {
     "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-misused-promises": "error",
     "react/jsx-filename-extension": [
       1,
       {
