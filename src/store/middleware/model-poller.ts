@@ -7,9 +7,11 @@ import {
   fetchAllModelStatuses,
   fetchControllerList,
   findAuditEvents,
+  crossModelQuery,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
+import type { CrossModelQueryFullResponse } from "juju/jimm/JIMMV4";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -56,21 +58,28 @@ export const modelPollerMiddleware: Middleware<
               controllers.set(wsControllerURL, conn);
             }
             if (error && typeof error === "string") {
-              reduxStore.dispatch(generalActions.storeLoginError(error));
+              reduxStore.dispatch(
+                generalActions.storeLoginError({ wsControllerURL, error })
+              );
               return;
             }
           } catch (e) {
             reduxStore.dispatch(
-              generalActions.storeLoginError(
-                "Unable to log into the controller, check that you've configured the controller address correctly and that it is online."
-              )
+              generalActions.storeLoginError({
+                wsControllerURL,
+                error:
+                  "Unable to log into the controller, check that the controller address is correct and that it is online.",
+              })
             );
             return console.log(LoginError.LOG, e, controllerData);
           }
 
           if (!conn?.info || !Object.keys(conn.info).length) {
             reduxStore.dispatch(
-              generalActions.storeLoginError(LoginError.NO_INFO)
+              generalActions.storeLoginError({
+                wsControllerURL,
+                error: LoginError.NO_INFO,
+              })
             );
             return;
           }
@@ -89,6 +98,15 @@ export const modelPollerMiddleware: Middleware<
             generalActions.updateControllerConnection({
               wsControllerURL,
               info: conn.info,
+            })
+          );
+          const jimmVersion = conn.facades.jimM?.version ?? 0;
+          reduxStore.dispatch(
+            generalActions.updateControllerFeatures({
+              wsControllerURL,
+              features: {
+                crossModelQueries: jimmVersion >= 4,
+              },
             })
           );
           if (juju) {
@@ -193,6 +211,32 @@ export const modelPollerMiddleware: Middleware<
       reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
       // The action has already been passed to the next middleware at the top of
       // this handler.
+      return;
+    } else if (action.type === jujuActions.fetchCrossModelQuery.type) {
+      // Intercept fetchCrossModelQuery actions and fetch and store
+      // cross model query via the controller connection.
+
+      const { wsControllerURL, query } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+      let crossModelQueryResponse: CrossModelQueryFullResponse;
+      try {
+        crossModelQueryResponse = await crossModelQuery(conn, query);
+      } catch (error) {
+        console.error("Could not perform cross model query:", error);
+        crossModelQueryResponse =
+          "Unable to perform search. Please try again later.";
+      }
+      reduxStore.dispatch(
+        jujuActions.updateCrossModelQuery(crossModelQueryResponse)
+      );
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
       return;
     }
     return next(action);

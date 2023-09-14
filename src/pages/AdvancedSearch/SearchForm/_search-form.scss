@@ -1,0 +1,41 @@
+@import "vanilla-framework/scss/vanilla";
+@import "../../../scss/breakpoints";
+
+.search-form {
+  &__fields {
+    display: grid;
+    gap: 0 $sph--x-large;
+    grid-template:
+      "field help"
+      "controls help"
+      / 1fr 1fr;
+
+    @media screen and (max-width: $breakpoint-large - 1px) {
+      gap: 0;
+      grid-template:
+        "field"
+        "help"
+        "controls";
+
+      textarea {
+        margin-bottom: $spv--small;
+      }
+    }
+  }
+
+  &__controls {
+    grid-area: controls;
+  }
+
+  &__field {
+    grid-area: field;
+  }
+
+  &__help {
+    grid-area: help;
+  }
+
+  .p-button.copy-json {
+    margin-left: $sph--large;
+  }
+}

@@ -35,6 +35,30 @@ describe("reducers", () => {
     });
   });
 
+  it("updateControllerFeatures", () => {
+    const state = generalStateFactory.build({
+      controllerFeatures: {},
+    });
+    expect(
+      reducer(
+        state,
+        actions.updateControllerFeatures({
+          wsControllerURL: "wss://example.com",
+          features: {
+            crossModelQueries: true,
+          },
+        })
+      )
+    ).toStrictEqual({
+      ...state,
+      controllerFeatures: {
+        "wss://example.com": {
+          crossModelQueries: true,
+        },
+      },
+    });
+  });
+
   it("storeConfig", () => {
     const state = generalStateFactory.build();
     const newConfig = configFactory.build({
@@ -48,11 +72,37 @@ describe("reducers", () => {
 
   it("storeLoginError", () => {
     const state = generalStateFactory.build({
-      loginError: "old error",
+      loginErrors: { "wss://example.com": "old error" },
     });
-    expect(reducer(state, actions.storeLoginError("new error"))).toStrictEqual({
+    expect(
+      reducer(
+        state,
+        actions.storeLoginError({
+          wsControllerURL: "wss://example.com",
+          error: "new error",
+        })
+      )
+    ).toStrictEqual({
       ...state,
-      loginError: "new error",
+      loginErrors: { "wss://example.com": "new error" },
+    });
+  });
+
+  it("storeLoginError creates login errors object if it is null", () => {
+    const state = generalStateFactory.build({
+      loginErrors: null,
+    });
+    expect(
+      reducer(
+        state,
+        actions.storeLoginError({
+          wsControllerURL: "wss://example.com",
+          error: "new error",
+        })
+      )
+    ).toStrictEqual({
+      ...state,
+      loginErrors: { "wss://example.com": "new error" },
     });
   });
 
@@ -125,11 +175,11 @@ describe("reducers", () => {
 
   it("cleanupLoginErrors", () => {
     const state = generalStateFactory.build({
-      loginError: "Uh oh!",
+      loginErrors: { "wss://example.com": "Uh oh!" },
     });
     expect(reducer(state, actions.cleanupLoginErrors())).toStrictEqual({
       ...state,
-      loginError: null,
+      loginErrors: null,
     });
   });
 

@@ -8,6 +8,11 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
 import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
+import {
+  type CrossModelQueryRequest,
+  type CrossModelQueryFullResponse,
+  isCrossModelQueryResponse,
+} from "juju/jimm/JIMMV4";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -31,6 +36,12 @@ const slice = createSlice({
       loaded: false,
       loading: false,
       limit: DEFAULT_AUDIT_EVENTS_LIMIT,
+    },
+    crossModelQuery: {
+      results: null,
+      errors: null,
+      loaded: false,
+      loading: false,
     },
     controllers: null,
     models: {},
@@ -144,6 +155,38 @@ const slice = createSlice({
     },
     updateAuditEventsLimit: (state, { payload }: PayloadAction<number>) => {
       state.auditEvents.limit = payload;
+    },
+    fetchCrossModelQuery: (
+      state,
+      action: PayloadAction<
+        Pick<CrossModelQueryRequest, "query"> & WsControllerURLParam
+      >
+    ) => {
+      state.crossModelQuery.loading = true;
+    },
+    updateCrossModelQuery: (
+      state,
+      { payload }: PayloadAction<CrossModelQueryFullResponse>
+    ) => {
+      // If "payload" is a string, it represents the error. In this case,
+      // "results" gets set to null and "errors" gets set to "payload".
+      state.crossModelQuery.results = isCrossModelQueryResponse(payload)
+        ? payload.results
+        : null;
+      state.crossModelQuery.errors =
+        isCrossModelQueryResponse(payload) && Object.keys(payload.errors).length
+          ? payload.errors
+          : typeof payload === "string"
+          ? payload
+          : null;
+      state.crossModelQuery.loaded = true;
+      state.crossModelQuery.loading = false;
+    },
+    clearCrossModelQuery: (state) => {
+      state.crossModelQuery.results = null;
+      state.crossModelQuery.errors = null;
+      state.crossModelQuery.loaded = false;
+      state.crossModelQuery.loading = false;
     },
     updateControllerList: (
       state,

@@ -143,7 +143,11 @@ describe("ConfigPanel", () => {
     );
     await userEvent.click(document.body);
     expect(
-      within(screen.getByRole("dialog", { name: "" })).getByRole("heading", {
+      within(
+        screen.getByRole("dialog", {
+          name: Label.CANCEL_CONFIRM,
+        })
+      ).getByRole("heading", {
         name: Label.CANCEL_CONFIRM,
       })
     ).toBeInTheDocument();
@@ -171,7 +175,11 @@ describe("ConfigPanel", () => {
       screen.getByRole("button", { name: Label.CANCEL_BUTTON })
     );
     expect(
-      within(screen.getByRole("dialog", { name: "" })).getByRole("heading", {
+      within(
+        screen.getByRole("dialog", {
+          name: Label.CANCEL_CONFIRM,
+        })
+      ).getByRole("heading", {
         name: Label.CANCEL_CONFIRM,
       })
     ).toBeInTheDocument();
@@ -188,7 +196,11 @@ describe("ConfigPanel", () => {
       screen.getByRole("button", { name: Label.CANCEL_BUTTON })
     );
     expect(
-      within(screen.getByRole("dialog", { name: "" })).getByRole("heading", {
+      within(
+        screen.getByRole("dialog", {
+          name: Label.CANCEL_CONFIRM,
+        })
+      ).getByRole("heading", {
         name: Label.CANCEL_CONFIRM,
       })
     ).toBeInTheDocument();
@@ -209,7 +221,11 @@ describe("ConfigPanel", () => {
       screen.getByRole("button", { name: Label.CANCEL_BUTTON })
     );
     expect(
-      within(screen.getByRole("dialog", { name: "" })).getByRole("heading", {
+      within(
+        screen.getByRole("dialog", {
+          name: Label.CANCEL_CONFIRM,
+        })
+      ).getByRole("heading", {
         name: Label.CANCEL_CONFIRM,
       })
     ).toBeInTheDocument();
@@ -247,7 +263,11 @@ describe("ConfigPanel", () => {
       screen.getByRole("button", { name: Label.SAVE_BUTTON })
     );
     expect(
-      within(screen.getByRole("dialog", { name: "" })).getByRole("heading", {
+      within(
+        screen.getByRole("dialog", {
+          name: Label.SAVE_CONFIRM,
+        })
+      ).getByRole("heading", {
         name: Label.SAVE_CONFIRM,
       })
     ).toBeInTheDocument();
@@ -271,12 +291,20 @@ describe("ConfigPanel", () => {
       screen.getByRole("button", { name: Label.SAVE_BUTTON })
     );
     expect(
-      within(screen.getByRole("dialog", { name: "" })).getByRole("heading", {
+      within(
+        screen.getByRole("dialog", {
+          name: Label.SAVE_CONFIRM,
+        })
+      ).getByRole("heading", {
         name: Label.SAVE_CONFIRM,
       })
     ).toBeInTheDocument();
     await userEvent.click(
-      within(screen.getByRole("dialog", { name: "" })).getByRole("button", {
+      within(
+        screen.getByRole("dialog", {
+          name: Label.SAVE_CONFIRM,
+        })
+      ).getByRole("button", {
         name: Label.SAVE_CONFIRM_CANCEL_BUTTON,
       })
     );

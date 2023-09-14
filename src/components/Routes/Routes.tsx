@@ -9,13 +9,15 @@ import {
 
 import Login from "components/LogIn/LogIn";
 import useAnalytics from "hooks/useAnalytics";
+import AdvancedSearch from "pages/AdvancedSearch/AdvancedSearch";
 import ControllersIndex from "pages/ControllersIndex/ControllersIndex";
 import Logs from "pages/Logs";
 import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import Settings from "pages/Settings/Settings";
-import { getIsJuju } from "store/general/selectors";
+import { getIsJuju, isCrossModelQueriesEnabled } from "store/general/selectors";
+import { useAppSelector } from "store/store";
 import urls from "urls";
 
 export type EntityDetailsRoute = {
@@ -29,6 +31,7 @@ export type EntityDetailsRoute = {
 export function Routes() {
   const sendAnalytics = useAnalytics();
   const location = useLocation();
+  const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
 
   const isJuju = useSelector(getIsJuju);
 
@@ -81,6 +84,16 @@ export function Routes() {
           element={
             <Login>
               <Logs />
+            </Login>
+          }
+        />
+      )}
+      {crossModelQueriesEnabled && (
+        <Route
+          path={urls.search}
+          element={
+            <Login>
+              <AdvancedSearch />
             </Login>
           }
         />

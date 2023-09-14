@@ -1,5 +1,6 @@
 import { Spinner } from "@canonical/react-components";
 import classNames from "classnames";
+import type { PropsWithChildren } from "react";
 
 type Props = {
   status?: string;
@@ -7,10 +8,11 @@ type Props = {
   useIcon?: boolean;
   actionsLogs?: boolean;
   className?: string | null;
-};
+} & PropsWithChildren;
 
 const Status = ({
   status = "unknown",
+  children,
   count,
   useIcon = true,
   actionsLogs = false,
@@ -28,7 +30,7 @@ const Status = ({
         [`is-${status.toLowerCase()}`]: useIcon && status,
       })}
     >
-      {status}
+      {children ?? status}
       {count || count === 0 ? ` (${count})` : null}
     </span>
   );

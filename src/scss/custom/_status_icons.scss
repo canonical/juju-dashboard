@@ -23,6 +23,7 @@
     }
   }
 
+  &.is-disconnected,
   &.is-failed,
   &.is-provisioning,
   &.is-down,
@@ -33,6 +34,7 @@
     }
   }
 
+  &.is-busy,
   &.is-maintenance,
   &.is-attention,
   &.is-stopped,
@@ -50,7 +52,9 @@
     }
   }
 
+  &.is-available,
   &.is-completed,
+  &.is-connected,
   &.is-running,
   &.is-joined,
   &.is-active {

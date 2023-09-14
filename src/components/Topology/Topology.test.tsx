@@ -80,7 +80,7 @@ describe("Topology", () => {
     );
     const apps = document.querySelectorAll(".application");
     expect(apps[0]).toHaveAttribute("data-name", "landscape");
-    expect(apps[0]).toHaveAttribute("transform", "translate(100, 150)");
+    expect(apps[0]).toHaveAttribute("transform", "translate(0, 0)");
     expect(apps[0].querySelector("circle")).toBeInTheDocument();
     expect(apps[0].querySelector("image")).toBeInTheDocument();
     expect(apps[0].querySelector("image")).toHaveAttribute(
@@ -88,7 +88,7 @@ describe("Topology", () => {
       "https://charmhub.io/landscape/icon"
     );
     expect(apps[1]).toHaveAttribute("data-name", "postgresql");
-    expect(apps[1]).toHaveAttribute("transform", "translate(250, 300)");
+    expect(apps[1]).toHaveAttribute("transform", "translate(150, 150)");
     expect(apps[1].querySelector("circle")).toBeInTheDocument();
     expect(apps[1].querySelector("image")).toBeInTheDocument();
     expect(apps[1].querySelector("image")).toHaveAttribute(
@@ -191,9 +191,9 @@ describe("Topology", () => {
     const relationLine = document
       .querySelector(".relation")
       ?.querySelector("line");
-    expect(relationLine).toHaveAttribute("x1", "190");
-    expect(relationLine).toHaveAttribute("x2", "340");
-    expect(relationLine).toHaveAttribute("y1", "240");
-    expect(relationLine).toHaveAttribute("y2", "390");
+    expect(relationLine).toHaveAttribute("x1", "90");
+    expect(relationLine).toHaveAttribute("x2", "240");
+    expect(relationLine).toHaveAttribute("y1", "90");
+    expect(relationLine).toHaveAttribute("y2", "240");
   });
 });

@@ -2,6 +2,10 @@ import * as versionsAPI from "@canonical/jujulib/dist/api/versions";
 import { screen, waitFor } from "@testing-library/react";
 
 import { configFactory, generalStateFactory } from "testing/factories/general";
+import {
+  controllerFeaturesFactory,
+  controllerFeaturesStateFactory,
+} from "testing/factories/general";
 import { detailedStatusFactory } from "testing/factories/juju/ClientV6";
 import {
   controllerFactory,
@@ -12,7 +16,7 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import PrimaryNav from "./PrimaryNav";
+import PrimaryNav, { Label } from "./PrimaryNav";
 
 describe("Primary Nav", () => {
   afterEach(() => {
@@ -188,5 +192,45 @@ describe("Primary Nav", () => {
     expect(navigationButtons[0]).toHaveTextContent("Models");
     expect(navigationButtons[1]).toHaveTextContent("Controllers");
     expect(navigationButtons[2]).toHaveTextContent("Report a bug");
+  });
+
+  it("should not show Advanced search navigation button under Juju", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://controller.example.com",
+          isJuju: true,
+        }),
+        controllerFeatures: controllerFeaturesStateFactory.build({
+          "wss://controller.example.com": controllerFeaturesFactory.build({
+            crossModelQueries: true,
+          }),
+        }),
+      }),
+    });
+    renderComponent(<PrimaryNav />, { state });
+    expect(
+      screen.queryByRole("link", { name: Label.ADVANCED_SEARCH })
+    ).not.toBeInTheDocument();
+  });
+
+  it("should show Advanced search navigation button if the controller supports it", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://controller.example.com",
+          isJuju: false,
+        }),
+        controllerFeatures: controllerFeaturesStateFactory.build({
+          "wss://controller.example.com": controllerFeaturesFactory.build({
+            crossModelQueries: true,
+          }),
+        }),
+      }),
+    });
+    renderComponent(<PrimaryNav />, { state });
+    expect(
+      screen.getByRole("link", { name: Label.ADVANCED_SEARCH })
+    ).toBeInTheDocument();
   });
 });
