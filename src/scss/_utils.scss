@@ -51,8 +51,17 @@
   margin-top: 0.25rem;
 }
 
+// Limit the width of tooltip to 20rem.
+// 25rem was chosen as the breakpoint, because 80vw equals 20rem at 25rem.
 .p-tooltip--constrain-width .p-tooltip__message {
-  max-width: 20rem;
+  @media (width <= 25rem) {
+    width: 80vw;
+  }
+
+  @media (width > 25rem) {
+    width: 20rem;
+  }
+
   white-space: pre-wrap;
 }
 
