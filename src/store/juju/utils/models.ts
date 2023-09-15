@@ -2,7 +2,7 @@ import type { ModelUserInfo } from "@canonical/jujulib/dist/api/facades/model-ma
 import type { Endpoint } from "@canonical/jujulib/dist/api/facades/uniter/UniterV18";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
-import getUserName from "utils/getUserName";
+import { getUserName } from "utils";
 
 import type { ModelData, ModelDataList } from "../types";
 

@@ -5,7 +5,7 @@ import type { LinkProps } from "react-router-dom";
 
 import type { ModelTab } from "urls";
 import urls from "urls";
-import getUserName from "utils/getUserName";
+import { getUserName } from "utils";
 
 type Props = PropsWithSpread<
   {

@@ -1,8 +1,11 @@
 import { Tooltip } from "@canonical/react-components";
 
+import { getViewportWidth } from "components/utils";
 import type { ApplicationInfo } from "juju/types";
+import Breakpoint from "layout/breakpoint";
 import { getSelectedApplications } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { breakLines } from "utils";
 
 type Props = {
   charmURL: string;
@@ -15,6 +18,7 @@ const formatApplicationsDetails = (applications: ApplicationInfo[]) =>
     .join(", ");
 
 const CharmApplicationsDetails = ({ charmURL }: Props): JSX.Element => {
+  const isSmallScreen = getViewportWidth() <= Breakpoint.X_SMALL;
   const selectedApplications = useAppSelector(
     getSelectedApplications(charmURL)
   );
@@ -23,19 +27,23 @@ const CharmApplicationsDetails = ({ charmURL }: Props): JSX.Element => {
 
   return (
     <p className="p-form-help-text is-tick-element">
-      <Tooltip
-        message={
-          hiddenApplications.length ? (
-            <span>..., {formatApplicationsDetails(hiddenApplications)}</span>
-          ) : null
-        }
-        position="btm-left"
-      >
-        {formatApplicationsDetails(displayedApplications)}
-        {hiddenApplications.length ? (
-          <span>, +{hiddenApplications.length} more...</span>
-        ) : null}
-      </Tooltip>
+      {formatApplicationsDetails(displayedApplications)}
+      {hiddenApplications.length ? (
+        <>
+          {" + "}
+          <Tooltip
+            tooltipClassName="p-tooltip--fixed-x-small-width"
+            message={
+              isSmallScreen
+                ? formatApplicationsDetails(hiddenApplications)
+                : breakLines(formatApplicationsDetails(hiddenApplications))
+            }
+            position="btm-center"
+          >
+            <u>{hiddenApplications.length} more</u>
+          </Tooltip>
+        </>
+      ) : null}
     </p>
   );
 };

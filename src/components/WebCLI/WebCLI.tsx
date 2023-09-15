@@ -8,7 +8,7 @@ import bakery from "juju/bakery";
 import { getActiveUserTag } from "store/general/selectors";
 import type { Credential } from "store/general/types";
 import { externalURLs } from "urls";
-import getUserName from "utils/getUserName";
+import { getUserName } from "utils";
 
 import useAnalytics from "../../hooks/useAnalytics";
 
