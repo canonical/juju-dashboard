@@ -1,7 +1,19 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
+import type { EntityStatus } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { autoBind } from "@canonical/jujulib/dist/api/utils";
 
-import type { Controller } from "store/juju/types";
+export type ControllerInfo = {
+  "agent-version": string;
+  "api-addresses"?: [];
+  "ca-certificate"?: string;
+  "cloud-region"?: string;
+  "cloud-tag"?: string;
+  name: string;
+  "public-address"?: string;
+  status: EntityStatus;
+  username: string;
+  uuid: string;
+};
 
 class JIMMV3 {
   static NAME: string;
@@ -31,7 +43,7 @@ class JIMMV3 {
     });
   }
 
-  listControllers(): Promise<{ controllers: Controller[] }> {
+  listControllers(): Promise<{ controllers: ControllerInfo[] }> {
     return new Promise((resolve, reject) => {
       const params = {};
       const req = {

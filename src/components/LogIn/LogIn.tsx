@@ -1,9 +1,12 @@
 import { Spinner } from "@canonical/react-components";
-import type { FormEvent, ReactNode } from "react";
+import type { FormEvent, PropsWithChildren } from "react";
 import { useEffect, useRef } from "react";
+import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 import FadeUpIn from "animations/FadeUpIn";
+import AuthenticationButton from "components/AuthenticationButton";
+import ToastCard from "components/ToastCard/ToastCard";
 import bakery from "juju/bakery";
 import jaasLogo from "static/images/logo/jaas-logo-black-on-white.svg";
 import jujuLogo from "static/images/logo/juju-logo-black-on-white.svg";
@@ -12,6 +15,7 @@ import { actions as generalActions } from "store/general";
 import {
   getConfig,
   getLoginError,
+  getVisitURLs,
   getWSControllerURL,
   isLoggedIn,
 } from "store/general/selectors";
@@ -32,9 +36,8 @@ export enum Label {
   JUJU_LOGO = "Juju logo",
 }
 
-type Props = { children: ReactNode };
-
-export default function LogIn({ children }: Props) {
+export default function LogIn({ children }: PropsWithChildren) {
+  const viewedAuthRequests = useRef<string[]>([]);
   const config = useSelector(getConfig);
   const isJuju = useSelector(getConfig)?.isJuju;
   const wsControllerURL = useAppSelector(getWSControllerURL);
@@ -44,6 +47,36 @@ export default function LogIn({ children }: Props) {
   const loginError = useAppSelector((state) =>
     getLoginError(state, wsControllerURL)
   );
+  const visitURLs = useAppSelector(getVisitURLs);
+
+  useEffect(() => {
+    visitURLs?.forEach((visitURL) => {
+      if (!viewedAuthRequests.current.includes(visitURL)) {
+        reactHotToast.custom((t) => (
+          <ToastCard toastInstance={t} type="caution">
+            <p className="u-no-margin--top u-no-padding--top">
+              Controller authentication required
+            </p>
+            <AuthenticationButton
+              appearance="positive"
+              visitURL={visitURL}
+              className="u-no-margin--bottom"
+              onClick={() => {
+                // Close the notification once the user clicks the button to
+                // open the authentication page.
+                reactHotToast.remove(t.id);
+              }}
+            >
+              Log in
+            </AuthenticationButton>
+          </ToastCard>
+        ));
+        // Append this to the list of auth requests that have been displayed, so
+        // that we don't display the same notifications again if visitURLs is mutated.
+        viewedAuthRequests.current = [...viewedAuthRequests.current, visitURL];
+      }
+    });
+  }, [visitURLs]);
 
   return (
     <>
@@ -102,7 +135,7 @@ function generateErrorMessage(loginError?: string | null) {
 function IdentityProviderForm({ userIsLoggedIn }: { userIsLoggedIn: boolean }) {
   const visitURL = useSelector((state: RootState) => {
     if (!userIsLoggedIn) {
-      return state?.general?.visitURL;
+      return state?.general?.visitURLs?.[0];
     }
   });
 
@@ -158,14 +191,9 @@ function UserPassForm() {
 function Button({ visitURL }: { visitURL?: string | null }) {
   if (visitURL) {
     return (
-      <a
-        className="p-button--positive"
-        href={visitURL}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
+      <AuthenticationButton appearance="positive" visitURL={visitURL}>
         Log in to the dashboard
-      </a>
+      </AuthenticationButton>
     );
   } else {
     return (

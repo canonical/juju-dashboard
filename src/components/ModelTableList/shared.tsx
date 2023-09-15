@@ -2,12 +2,11 @@ import type { MainTableHeader } from "@canonical/react-components/dist/component
 
 import Status from "components/Status";
 import type { Controllers, ModelData } from "store/juju/types";
+import { JAAS_CONTROLLER_UUID } from "store/juju/utils/controllers";
 import {
   extractCloudName,
   extractCredentialName,
 } from "store/juju/utils/models";
-
-export const JAAS_CONTROLLER_UUID = "a030379a-940f-4760-8fcf-3062b41a04e7";
 
 export const getCloudName = (model: ModelData) =>
   extractCloudName(model.model["cloud-tag"]);
@@ -33,7 +32,8 @@ export const getControllerName = (
     (controller) =>
       !!controller[1].some((controller) => {
         if ("uuid" in controller && controllerUUID === controller.uuid) {
-          controllerName = controller.path;
+          controllerName =
+            "name" in controller ? controller.name : controller.path;
         }
         return !!controllerName;
       })

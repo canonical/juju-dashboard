@@ -1,6 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { JAAS_CONTROLLER_UUID } from "store/juju/utils/controllers";
 import type { RootState } from "store/store";
 import {
   additionalControllerFactory,
@@ -12,6 +13,7 @@ import {
   modelDataUnitFactory,
   modelDataMachineFactory,
 } from "testing/factories/juju/juju";
+import { connectionInfoFactory } from "testing/factories/juju/jujulib";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
@@ -33,7 +35,7 @@ describe("Controllers table", () => {
     state.juju = jujuStateFactory.build({
       controllers: {
         "wss://jimm.jujucharms.com/api": [
-          controllerFactory.build({ path: "admin/jaas", uuid: "123" }),
+          controllerFactory.build({ uuid: JAAS_CONTROLLER_UUID }),
           controllerFactory.build({ path: "admin/jaas2", uuid: "456" }),
         ],
       },
@@ -43,10 +45,13 @@ describe("Controllers table", () => {
   });
 
   it("displays additional controllers", () => {
+    state.general.controllerConnections = {
+      "wss://jimm.jujucharms.com/api": connectionInfoFactory.build({}),
+    };
     state.juju = jujuStateFactory.build({
       controllers: {
         "wss://jimm.jujucharms.com/api": [
-          controllerFactory.build({ path: "admin/jaas", uuid: "123" }),
+          controllerFactory.build({ uuid: JAAS_CONTROLLER_UUID }),
           additionalControllerFactory.build(),
         ],
       },
@@ -58,7 +63,7 @@ describe("Controllers table", () => {
     expect(additionalRows).toHaveLength(2);
     expect(additionalRows[1]).toHaveTextContent(
       [
-        "wss://jimm.jujucharms.com/api",
+        "jimm.jujucharms.com",
         "Connected",
         "unknown/unknown",
         "0",
@@ -71,19 +76,21 @@ describe("Controllers table", () => {
   });
 
   it("counts models, machines, apps, and units", () => {
+    state.general.controllerConnections = {
+      "wss://jimm.jujucharms.com/api": connectionInfoFactory.build(),
+    };
     state.juju = jujuStateFactory.build({
       controllers: {
         "wss://jimm.jujucharms.com/api": [
           controllerFactory.build({
-            path: "admin/jaas",
-            uuid: "controller123",
+            uuid: JAAS_CONTROLLER_UUID,
           }),
         ],
       },
       modelData: {
         abc123: modelDataFactory.build({
           info: modelDataInfoFactory.build({
-            "controller-uuid": "controller123",
+            "controller-uuid": JAAS_CONTROLLER_UUID,
           }),
           machines: {
             "0": modelDataMachineFactory.build(),
@@ -100,7 +107,7 @@ describe("Controllers table", () => {
         }),
         def456: modelDataFactory.build({
           info: modelDataInfoFactory.build({
-            "controller-uuid": "controller123",
+            "controller-uuid": JAAS_CONTROLLER_UUID,
           }),
           machines: {
             "0": modelDataMachineFactory.build(),
@@ -119,7 +126,17 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(screen.getAllByRole("row")[1]).toHaveTextContent(
-      ["JAAS", "Connected", "Multiple", "2", "5", "2", "3", "Private"].join("")
+      [
+        "JAAS",
+        "Connected",
+        "Multiple",
+        "2",
+        "5",
+        "2",
+        "3",
+        "1.2.3 ",
+        "Public",
+      ].join("")
     );
   });
 
@@ -131,23 +148,38 @@ describe("Controllers table", () => {
     state.juju = jujuStateFactory.build({
       controllers: {
         "wss://jimm.jujucharms.com/api": [
-          controllerFactory.build({ path: "admin/jaas", uuid: "123" }),
+          controllerFactory.build({ uuid: JAAS_CONTROLLER_UUID }),
         ],
       },
     });
     renderComponent(<ControllersIndex />, { state });
     expect(
-      screen.getByRole("gridcell", { name: "Disconnected" })
+      screen.getByRole("gridcell", { name: "Failed to connect" })
     ).toBeInTheDocument();
-    await userEvent.hover(screen.getByText("Disconnected"));
+    await userEvent.hover(screen.getByText("Failed to connect"));
     expect(screen.getByText("Uh oh!")).toBeInTheDocument();
+  });
+
+  it("displays authentication required", async () => {
+    state.general.controllerConnections = {};
+    state.juju = jujuStateFactory.build({
+      controllers: {
+        "wss://jimm.jujucharms.com/api": [
+          controllerFactory.build({ uuid: JAAS_CONTROLLER_UUID }),
+        ],
+      },
+    });
+    renderComponent(<ControllersIndex />, { state });
+    expect(
+      screen.getByRole("gridcell", { name: "Authentication required" })
+    ).toBeInTheDocument();
   });
 
   it("handles cloud/region for JAAS", () => {
     state.juju = jujuStateFactory.build({
       controllers: {
         "wss://jimm.jujucharms.com/api": [
-          controllerFactory.build({ path: "admin/jaas", uuid: "123" }),
+          controllerFactory.build({ uuid: JAAS_CONTROLLER_UUID }),
         ],
       },
       models: {},

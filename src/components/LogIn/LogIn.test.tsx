@@ -53,7 +53,7 @@ describe("LogIn", () => {
   it("renders an IdentityProvider login UI if the user is not logged in", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
-        visitURL: "I am a url",
+        visitURLs: ["I am a url"],
         config: configFactory.build({
           identityProviderAvailable: true,
         }),
@@ -177,7 +177,7 @@ describe("LogIn", () => {
   it("displays the JAAS logo under JAAS", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
-        visitURL: "I am a url",
+        visitURLs: ["I am a url"],
         config: configFactory.build({
           isJuju: false,
         }),

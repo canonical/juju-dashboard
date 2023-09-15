@@ -51,7 +51,9 @@ export const checkAuthMiddleware: Middleware<
     const actionAllowlist = [
       appActions.connectAndPollControllers.type,
       generalActions.cleanupLoginErrors.type,
+      generalActions.clearVisitURLs.type,
       generalActions.logOut.type,
+      generalActions.removeVisitURL.type,
       generalActions.storeConfig.type,
       generalActions.storeLoginError.type,
       generalActions.storeConnectionError.type,

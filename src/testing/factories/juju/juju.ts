@@ -44,6 +44,8 @@ export const controllerLocationFactory = Factory.define<ControllerLocation>(
 export const controllerFactory = Factory.define<Controller>(() => ({
   path: "admin/jaas",
   uuid: "a030379a-940f-4760-8fcf-3062bfake4e7",
+  additionalController: false,
+  version: "1.2.3",
 }));
 
 export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({

@@ -35,6 +35,9 @@ export const modelPollerMiddleware: Middleware<
   const jujus = new Map<string, Client>();
   return (next) => async (action: AnyAction) => {
     if (action.type === appActions.connectAndPollControllers.type) {
+      // Each time we try to log in to a controller we get new macaroons, so
+      // first clean up any old auth requests:
+      reduxStore.dispatch(generalActions.clearVisitURLs());
       action.payload.controllers.forEach(
         async (controllerData: ControllerOptions) => {
           const [
@@ -127,8 +130,7 @@ export const modelPollerMiddleware: Middleware<
             reduxStore.dispatch,
             reduxStore.getState
           );
-          // XXX the isJuju Check needs to be done on a per-controller basis
-          if (!action.payload.isJuju) {
+          if (identityProviderAvailable) {
             // This call will be a noop if the user isn't an administrator
             // on the JIMM controller we're connected to.
             try {

@@ -14,7 +14,7 @@ const slice = createSlice({
     credentials: null,
     loginErrors: null,
     pingerIntervalIds: null,
-    visitURL: null,
+    visitURLs: null,
   } as GeneralState,
   reducers: {
     cleanupLoginErrors: (state) => {
@@ -59,14 +59,27 @@ const slice = createSlice({
     storeVersion: (state, action) => {
       state.appVersion = action.payload;
     },
-    storeVisitURL: (state, action) => {
-      state.visitURL = action.payload;
+    storeVisitURL: (state, action: PayloadAction<string>) => {
+      if (!state.visitURLs) {
+        state.visitURLs = [];
+      }
+      state.visitURLs.push(action.payload);
+    },
+    removeVisitURL: (state, action: PayloadAction<string>) => {
+      if (state.visitURLs) {
+        state.visitURLs = state.visitURLs?.filter(
+          (url) => url !== action.payload
+        );
+      }
+    },
+    clearVisitURLs: (state) => {
+      state.visitURLs = null;
     },
     logOut: (state) => {
       state.controllerConnections = null;
       state.credentials = null;
       state.pingerIntervalIds = null;
-      state.visitURL = null;
+      state.visitURLs = null;
     },
     updatePingerIntervalId: (state, action) => {
       const intervals = state.pingerIntervalIds ?? {};

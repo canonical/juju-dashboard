@@ -178,6 +178,9 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.clearVisitURLs()
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
       generalActions.updateControllerConnection({
         wsControllerURL,
         info: conn.info,
@@ -254,6 +257,9 @@ describe("model poller", () => {
   });
 
   it("disables masking when using JIMM", async () => {
+    const controllers = [
+      [wsControllerURL, { user: "eggman@external", password: "test" }, true],
+    ];
     const disableControllerUUIDMasking = jest.spyOn(
       jujuModule,
       "disableControllerUUIDMasking"

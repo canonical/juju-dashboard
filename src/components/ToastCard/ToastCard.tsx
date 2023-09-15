@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from "react";
 import type { Renderable, Toast, ValueOrFunction } from "react-hot-toast";
 import reactHotToast from "react-hot-toast";
 
@@ -16,11 +17,15 @@ type ToastInstance = {
 type Props = {
   toastInstance: ToastInstance;
   type: "positive" | "caution" | "negative";
-  text: string;
   undo?: () => void;
-};
+} & PropsWithChildren;
 
-export default function ToastCard({ toastInstance, type, text, undo }: Props) {
+export default function ToastCard({
+  children,
+  toastInstance,
+  type,
+  undo,
+}: Props) {
   let iconName;
   switch (type) {
     case "positive":
@@ -49,10 +54,7 @@ export default function ToastCard({ toastInstance, type, text, undo }: Props) {
     >
       <div className="toast-card__body">
         {iconName && <i className={`p-icon--${iconName}`}>Success</i>}
-        <div
-          className="toast-card__message"
-          dangerouslySetInnerHTML={{ __html: text }}
-        ></div>
+        <div className="toast-card__message">{children}</div>
         <i
           className="p-icon--close"
           onClick={() => handleClose(toastInstance.id)}

@@ -362,7 +362,7 @@ export async function fetchAllModelStatuses(
             })
           );
         }
-        if (modelInfo?.results[0].result["is-controller"]) {
+        if (modelInfo?.results[0].result?.["is-controller"]) {
           // If this is a controller model then update the
           // controller data with this model data.
           dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }));
@@ -397,10 +397,10 @@ export async function fetchControllerList(
   if (conn.facades.jimM) {
     try {
       const response = await conn.facades.jimM?.listControllers();
-      controllers = response.controllers;
-      controllers?.forEach(
-        (c) => (c.additionalController = additionalController)
-      );
+      controllers = response.controllers.map((controller) => ({
+        ...controller,
+        additionalController,
+      }));
     } catch (error) {
       dispatch(
         generalActions.storeConnectionError(
@@ -434,7 +434,11 @@ export async function fetchControllerList(
         let updateAvailable = false;
         try {
           updateAvailable =
-            (await jujuUpdateAvailable(controller.version || "")) ?? false;
+            (await jujuUpdateAvailable(
+              "agent-version" in controller
+                ? controller["agent-version"]
+                : controller.version || ""
+            )) ?? false;
         } catch (error) {
           updateAvailable = false;
         }

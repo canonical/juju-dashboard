@@ -2,6 +2,7 @@ import type { RenderResult } from "@testing-library/react";
 import { screen, within } from "@testing-library/react";
 
 import * as appSelectors from "store/juju/selectors";
+import { JAAS_CONTROLLER_UUID } from "store/juju/utils/controllers";
 import type { RootState } from "store/store";
 import {
   controllerFactory,
@@ -15,7 +16,6 @@ import { TestId as CloudTestId } from "./CloudGroup";
 import ModelTableList from "./ModelTableList";
 import { TestId as OwnerTestId } from "./OwnerGroup";
 import { TestId as StatusTestId } from "./StatusGroup";
-import { JAAS_CONTROLLER_UUID } from "./shared";
 
 describe("ModelTableList", () => {
   let state: RootState;

@@ -3,14 +3,16 @@ import {
   controllerFactory,
 } from "testing/factories/juju/juju";
 
-import { isJAASFromPath } from "./controllers";
+import { JAAS_CONTROLLER_UUID, isJAASFromUUID } from "./controllers";
 
-describe("isJAASFromPath", () => {
-  it("identifies a JAAS controller from the path", () => {
-    expect(isJAASFromPath(controllerFactory.build())).toBe(true);
+describe("isJAASFromUUID", () => {
+  it("identifies a JAAS controller from the UUID", () => {
+    expect(
+      isJAASFromUUID(controllerFactory.build({ uuid: JAAS_CONTROLLER_UUID }))
+    ).toBe(true);
   });
 
-  it("identifies a non-JAAS controller from the path", () => {
-    expect(isJAASFromPath(additionalControllerFactory.build())).toBe(false);
+  it("identifies a non-JAAS controller from the UUID", () => {
+    expect(isJAASFromUUID(additionalControllerFactory.build())).toBe(false);
   });
 });
