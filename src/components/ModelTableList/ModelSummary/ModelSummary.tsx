@@ -1,8 +1,8 @@
 import { Icon, Tooltip } from "@canonical/react-components";
 
+import ModelDetailsLink from "components/ModelDetailsLink";
 import type { ModelData } from "store/juju/types";
-
-import ModelDetailsLink from "../ModelDetailsLink";
+import { ModelTab } from "urls";
 
 export enum Label {
   APPS = "Number of applications",
@@ -33,7 +33,7 @@ const ModelSummary = ({ modelData, ownerTag }: Props) => {
         <ModelDetailsLink
           modelName={modelData.model.name}
           ownerTag={ownerTag}
-          view="apps"
+          view={ModelTab.APPS}
           className="p-link--soft"
           aria-label={Label.APPS}
         >
@@ -57,7 +57,7 @@ const ModelSummary = ({ modelData, ownerTag }: Props) => {
         <ModelDetailsLink
           modelName={modelData.model.name}
           ownerTag={ownerTag}
-          view="machines"
+          view={ModelTab.MACHINES}
           className="p-link--soft"
           aria-label={Label.MACHINES}
         >

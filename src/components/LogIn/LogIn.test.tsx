@@ -16,7 +16,7 @@ describe("LogIn", () => {
 
   it("renders a 'connecting' message while connecting", () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
+      general: generalStateFactory.withConfig().build({
         config: configFactory.build({
           identityProviderAvailable: true,
         }),
@@ -33,9 +33,9 @@ describe("LogIn", () => {
 
   it("does not display the login form if the user is logged in", () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
+      general: generalStateFactory.withConfig().build({
         controllerConnections: {
-          "ws://localhost:1234/api": {
+          "wss://controller.example.com": {
             user: {
               "display-name": "eggman",
               identity: "user-eggman@external",
@@ -52,7 +52,7 @@ describe("LogIn", () => {
 
   it("renders an IdentityProvider login UI if the user is not logged in", () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
+      general: generalStateFactory.withConfig().build({
         visitURL: "I am a url",
         config: configFactory.build({
           identityProviderAvailable: true,
@@ -70,7 +70,7 @@ describe("LogIn", () => {
 
   it("renders a UserPass login UI if the user is not logged in", () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
+      general: generalStateFactory.withConfig().build({
         config: configFactory.build({
           identityProviderAvailable: false,
         }),
@@ -87,8 +87,10 @@ describe("LogIn", () => {
 
   it("renders a login error if one exists", () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
-        loginError: "Controller rejected request",
+      general: generalStateFactory.withConfig().build({
+        loginErrors: {
+          "wss://controller.example.com": "Controller rejected request",
+        },
         config: configFactory.build({
           identityProviderAvailable: false,
         }),
@@ -102,8 +104,10 @@ describe("LogIn", () => {
 
   it("renders invalid username login errors", () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
-        loginError: ErrorResponse.INVALID_TAG,
+      general: generalStateFactory.withConfig().build({
+        loginErrors: {
+          "wss://controller.example.com": ErrorResponse.INVALID_TAG,
+        },
         config: configFactory.build({
           identityProviderAvailable: false,
         }),
@@ -115,8 +119,10 @@ describe("LogIn", () => {
 
   it("renders invalid field errors", () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
-        loginError: ErrorResponse.INVALID_FIELD,
+      general: generalStateFactory.withConfig().build({
+        loginErrors: {
+          "wss://controller.example.com": ErrorResponse.INVALID_FIELD,
+        },
         config: configFactory.build({
           identityProviderAvailable: false,
         }),
@@ -137,7 +143,7 @@ describe("LogIn", () => {
         jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
       );
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
+      general: generalStateFactory.withConfig().build({
         config: configFactory.build({
           identityProviderAvailable: false,
         }),
@@ -170,7 +176,7 @@ describe("LogIn", () => {
 
   it("displays the JAAS logo under JAAS", () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
+      general: generalStateFactory.withConfig().build({
         visitURL: "I am a url",
         config: configFactory.build({
           isJuju: false,
@@ -184,7 +190,7 @@ describe("LogIn", () => {
 
   it("displays the Juju logo under Juju", () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.build({
+      general: generalStateFactory.withConfig().build({
         config: configFactory.build({
           isJuju: true,
           identityProviderAvailable: false,

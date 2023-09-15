@@ -46,6 +46,7 @@ import type { RootState, Store } from "store/store";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
+import type { CrossModelQueryFullResponse } from "./jimm/JIMMV4";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -340,12 +341,18 @@ export async function fetchAllModelStatuses(
   modelUUIDList.forEach((modelUUID) => {
     queue.push(async (done) => {
       if (isLoggedIn(getState(), wsControllerURL)) {
-        await fetchAndStoreModelStatus(
-          modelUUID,
-          getModelByUUID(getState(), modelUUID).wsControllerURL,
-          dispatch,
-          getState
-        );
+        const modelWsControllerURL = getModelByUUID(
+          getState(),
+          modelUUID
+        )?.wsControllerURL;
+        if (modelWsControllerURL) {
+          await fetchAndStoreModelStatus(
+            modelUUID,
+            modelWsControllerURL,
+            dispatch,
+            getState
+          );
+        }
         const modelInfo = await fetchModelInfo(conn, modelUUID);
         if (modelInfo) {
           dispatch(
@@ -768,4 +775,21 @@ export async function getCharmsURLFromApplications(
     })
   );
   return charms.filter((charm) => !!charm).map((charm) => charm?.url);
+}
+
+export function crossModelQuery(conn: ConnectionWithFacades, query: string) {
+  return new Promise<CrossModelQueryFullResponse>(async (resolve, reject) => {
+    if (conn?.facades?.jimM) {
+      try {
+        const crossModelQueryResponse = await conn.facades.jimM.crossModelQuery(
+          query
+        );
+        resolve(crossModelQueryResponse);
+      } catch (e) {
+        reject(e);
+      }
+    } else {
+      reject("Not connected to JIMM.");
+    }
+  });
 }

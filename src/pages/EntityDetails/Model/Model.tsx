@@ -1,4 +1,4 @@
-import { MainTable } from "@canonical/react-components";
+import { Button, Icon, MainTable } from "@canonical/react-components";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -6,10 +6,10 @@ import { useParams } from "react-router-dom";
 import EntityInfo from "components/EntityInfo/EntityInfo";
 import InfoPanel from "components/InfoPanel/InfoPanel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import useCanConfigureModel from "hooks/useCanConfigureModel";
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
-  getActiveUser,
   getModelAccess,
   getModelApplications,
   getModelInfo,
@@ -18,10 +18,7 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-import {
-  canAdministerModelAccess,
-  extractCloudName,
-} from "store/juju/utils/models";
+import { extractCloudName } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 import {
   consumedTableHeaders,
@@ -92,7 +89,7 @@ const Model = () => {
   const relations = useSelector(getModelRelations(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
-  const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
+  const canConfigureModel = useCanConfigureModel();
 
   const machinesTableRows = useMemo(() => {
     return modelName && userName
@@ -132,32 +129,28 @@ const Model = () => {
         */}
         <div className="entity-details__sidebar">
           <InfoPanel />
-          <div className="entity-details__actions">
-            {activeUser &&
-              canAdministerModelAccess(
-                activeUser,
-                modelStatusData?.info?.users
-              ) && (
-                <button
-                  className="entity-details__action-button"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    setQuery({ panel: "share-model" }, { replace: true });
-                  }}
-                >
-                  <i className="p-icon--share"></i>
-                  {Label.ACCESS_BUTTON}
-                </button>
-              )}
-          </div>
+          {canConfigureModel && (
+            <div className="entity-details__actions">
+              <Button
+                className="entity-details__action-button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setQuery({ panel: "share-model" }, { replace: true });
+                }}
+              >
+                <Icon name="share" />
+                {Label.ACCESS_BUTTON}
+              </Button>
+            </div>
+          )}
           {modelInfoData && (
             <EntityInfo
               data={{
                 access: modelAccess ?? "Unknown",
                 controller: modelInfoData.type,
                 "Cloud/Region": generateCloudAndRegion(
-                  modelInfoData["cloud-tag"],
-                  modelInfoData.region
+                  modelInfoData["cloud"],
+                  modelInfoData["cloud-region"]
                 ),
                 version: modelInfoData.version,
                 sla: modelInfoData.sla?.level,

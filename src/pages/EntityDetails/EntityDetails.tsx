@@ -24,6 +24,8 @@ import {
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
+import { ModelTab } from "urls";
+import { getMajorMinorVersion } from "utils";
 
 import "./_entity-details.scss";
 
@@ -92,10 +94,7 @@ const EntityDetails = () => {
   };
 
   useEffect(() => {
-    // Regex to extract the first two numbers:
-    const versionRegex = /^\d+\.\d+/g;
-    const version = Number(versionRegex.exec(modelInfo?.version ?? "")?.[0]);
-    if (version >= 2.9) {
+    if (getMajorMinorVersion(modelInfo?.version) >= 2.9) {
       // The Web CLI is only available in Juju controller versions 2.9 and
       // above. This will allow us to only show the shell on multi-controller
       // setups with different versions where the correct controller version
@@ -112,34 +111,34 @@ const EntityDetails = () => {
     }
     const items = [
       {
-        active: activeView === "apps",
+        active: activeView === ModelTab.APPS,
         label: "Applications",
         onClick: (e: MouseEvent) => handleNavClick(e),
-        to: urls.model.tab({ userName, modelName, tab: "apps" }),
+        to: urls.model.tab({ userName, modelName, tab: ModelTab.APPS }),
         component: Link,
       },
       {
-        active: activeView === "integrations",
+        active: activeView === ModelTab.INTEGRATIONS,
         label: "Integrations",
         onClick: (e: MouseEvent) => handleNavClick(e),
-        to: urls.model.tab({ userName, modelName, tab: "integrations" }),
+        to: urls.model.tab({ userName, modelName, tab: ModelTab.INTEGRATIONS }),
         component: Link,
       },
       {
-        active: activeView === "action-logs",
+        active: activeView === ModelTab.ACTION_LOGS,
         label: "Logs",
         onClick: (e: MouseEvent) => handleNavClick(e),
-        to: urls.model.tab({ userName, modelName, tab: "action-logs" }),
+        to: urls.model.tab({ userName, modelName, tab: ModelTab.ACTION_LOGS }),
         component: Link,
       },
     ];
 
     if (modelInfo?.type !== "kubernetes") {
       items.push({
-        active: activeView === "machines",
+        active: activeView === ModelTab.MACHINES,
         label: "Machines",
         onClick: (e: MouseEvent) => handleNavClick(e),
-        to: urls.model.tab({ userName, modelName, tab: "machines" }),
+        to: urls.model.tab({ userName, modelName, tab: ModelTab.MACHINES }),
         component: Link,
       });
     }

@@ -21,7 +21,7 @@ export function generateModelWatcherBase(): WatcherModelData {
     charms: {},
     machines: {},
     model: {
-      "cloud-tag": "",
+      cloud: "",
       "controller-uuid": "",
       "is-controller": false,
       "model-uuid": "",
@@ -30,7 +30,7 @@ export function generateModelWatcherBase(): WatcherModelData {
       life: "",
       name: "",
       owner: "",
-      region: "",
+      "cloud-region": "",
       sla: {
         level: "",
         owner: "",

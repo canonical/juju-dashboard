@@ -301,7 +301,7 @@ export const extractRelationEndpoints = (relation: {
   return endpoints;
 };
 
-export const canAdministerModelAccess = (
+export const canAdministerModel = (
   userName: string,
   modelUsers?: ModelUserInfo[]
 ) => {

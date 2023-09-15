@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import type { GeneralState } from "./types";
+import type { GeneralState, ControllerFeatures } from "./types";
 
 const slice = createSlice({
   name: "general",
@@ -10,19 +10,31 @@ const slice = createSlice({
     config: null,
     connectionError: null,
     controllerConnections: null,
+    controllerFeatures: null,
     credentials: null,
-    loginError: null,
+    loginErrors: null,
     pingerIntervalIds: null,
     visitURL: null,
   } as GeneralState,
   reducers: {
     cleanupLoginErrors: (state) => {
-      state.loginError = null;
+      state.loginErrors = null;
     },
     updateControllerConnection: (state, action) => {
       const connections = state.controllerConnections ?? {};
       connections[action.payload.wsControllerURL] = action.payload.info;
       state.controllerConnections = connections;
+    },
+    updateControllerFeatures: (
+      state,
+      action: PayloadAction<{
+        wsControllerURL: string;
+        features: ControllerFeatures;
+      }>
+    ) => {
+      const features = state.controllerFeatures ?? {};
+      features[action.payload.wsControllerURL] = action.payload.features;
+      state.controllerFeatures = features;
     },
     storeConfig: (state, action) => {
       state.config = action.payload;
@@ -30,8 +42,14 @@ const slice = createSlice({
     storeConnectionError: (state, action: PayloadAction<string>) => {
       state.connectionError = action.payload;
     },
-    storeLoginError: (state, action) => {
-      state.loginError = action.payload;
+    storeLoginError: (
+      state,
+      action: PayloadAction<{ wsControllerURL: string; error: string }>
+    ) => {
+      if (!state.loginErrors) {
+        state.loginErrors = {};
+      }
+      state.loginErrors[action.payload.wsControllerURL] = action.payload.error;
     },
     storeUserPass: (state, action) => {
       const credentials = state.credentials ?? {};

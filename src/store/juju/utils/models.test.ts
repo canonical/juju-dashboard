@@ -9,7 +9,7 @@ import {
 } from "testing/factories/juju/juju";
 
 import {
-  canAdministerModelAccess,
+  canAdministerModel,
   generateIconPath,
   pluralize,
   getModelStatusGroupData,
@@ -33,7 +33,7 @@ describe("pluralize", () => {
   });
 });
 
-describe("canAdministerModelAccess", () => {
+describe("canAdministerModel", () => {
   it("should return true when user has admin access", () => {
     const userName = "john-smith@external";
     const modelData = {
@@ -49,7 +49,7 @@ describe("canAdministerModelAccess", () => {
         ],
       },
     };
-    expect(canAdministerModelAccess(userName, modelData.info.users)).toBe(true);
+    expect(canAdministerModel(userName, modelData.info.users)).toBe(true);
   });
 
   it("should return false when user has read access", () => {
@@ -67,9 +67,7 @@ describe("canAdministerModelAccess", () => {
         ],
       },
     };
-    expect(canAdministerModelAccess(userName, modelData.info.users)).toBe(
-      false
-    );
+    expect(canAdministerModel(userName, modelData.info.users)).toBe(false);
   });
 });
 

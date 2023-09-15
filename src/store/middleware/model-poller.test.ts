@@ -25,6 +25,7 @@ jest.mock("juju/api", () => ({
   loginWithBakery: jest.fn(),
   fetchAllModelStatuses: jest.fn(),
   setModelSharingPermissions: jest.fn(),
+  crossModelQuery: jest.fn(),
 }));
 
 describe("model poller", () => {
@@ -136,7 +137,10 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.storeLoginError("Uh oh!")
+      generalActions.storeLoginError({
+        wsControllerURL: "wss://example.com",
+        error: "Uh oh!",
+      })
     );
   });
 
@@ -191,6 +195,30 @@ describe("model poller", () => {
     );
   });
 
+  it("updates the controller features if JIMM >= 4", async () => {
+    conn.facades.modelManager.listModels.mockResolvedValue({
+      "user-models": [],
+    });
+    conn.facades.jimM = {
+      version: 4,
+    };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(next).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.updateControllerFeatures({
+        wsControllerURL,
+        features: {
+          crossModelQueries: true,
+        },
+      })
+    );
+  });
+
   it("dispatches an error if the info is not returned", async () => {
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn: { ...conn, info: {} },
@@ -200,7 +228,10 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.storeLoginError(LoginError.NO_INFO)
+      generalActions.storeLoginError({
+        wsControllerURL: "wss://example.com",
+        error: LoginError.NO_INFO,
+      })
     );
   });
 
@@ -384,5 +415,79 @@ describe("model poller", () => {
     expect(jujuModule.setModelSharingPermissions).toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
     return expect(response).resolves.toStrictEqual({ results: [] });
+  });
+
+  it("handles fetching cross model query results", async () => {
+    const crossModelQueryResponse = { results: {}, errors: {} };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "crossModelQuery")
+      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "wss://example.com",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(jujuModule.crossModelQuery).toHaveBeenCalledWith(
+      expect.any(Object),
+      "."
+    );
+    expect(next).toHaveBeenCalledWith(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateCrossModelQuery(crossModelQueryResponse)
+    );
+  });
+
+  it("handles no controller when fetching cross model query results", async () => {
+    const crossModelQueryResponse = { results: {}, errors: {} };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "crossModelQuery")
+      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "nothing",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(jujuModule.crossModelQuery).not.toHaveBeenCalled();
+  });
+
+  it("handles errors when fetching cross model query results", async () => {
+    const consoleError = console.error;
+    console.error = jest.fn();
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "crossModelQuery")
+      .mockImplementation(() => Promise.reject("Uh oh!"));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "wss://example.com",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(console.error).toHaveBeenCalledWith(
+      "Could not perform cross model query:",
+      "Uh oh!"
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateCrossModelQuery(
+        "Unable to perform search. Please try again later."
+      )
+    );
+    console.error = consoleError;
   });
 });

@@ -61,6 +61,9 @@ describe("ModelDetails", () => {
     });
     client = {
       conn: {
+        info: {
+          serverVersion: "3.2.1",
+        },
         facades: {
           client: {
             fullStatus: jest.fn(),
@@ -87,9 +90,20 @@ describe("ModelDetails", () => {
     jest.restoreAllMocks();
   });
 
-  it("should load the model and start the watcher", async () => {
+  it("should start the watcher when displaying the model", async () => {
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(async () => client);
+    renderComponent(<ModelDetails />, { path, url, state });
+    // Wait for the component to be rendered so that async methods have completed.
+    await screen.findByTestId("model");
+    expect(client.conn.facades.client.watchAll).toHaveBeenCalled();
+  });
+
+  it("should load the full status when using pre 3.2 Juju", async () => {
     const status = fullStatusFactory.build();
     client.conn.facades.client.fullStatus.mockReturnValue(status);
+    client.conn.info.serverVersion = "3.1.99";
     jest
       .spyOn(jujuLib, "connectAndLogin")
       .mockImplementation(async () => client);
@@ -103,7 +117,25 @@ describe("ModelDetails", () => {
     expect(
       store.getActions().find((dispatch) => dispatch.type === action.type)
     ).toMatchObject(action);
-    expect(client.conn.facades.client.watchAll).toHaveBeenCalled();
+  });
+
+  it("should not load the full status when using Juju 3.2", async () => {
+    client.conn.info.serverVersion = "3.2.99";
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(async () => client);
+    const { store } = renderComponent(<ModelDetails />, { path, url, state });
+    // Wait for the component to be rendered so that async methods have completed.
+    await screen.findByTestId("model");
+    expect(client.conn.facades.client.fullStatus).not.toHaveBeenCalled();
+    expect(
+      store
+        .getActions()
+        .find(
+          (dispatch) =>
+            dispatch.type === jujuActions.populateMissingAllWatcherData.type
+        )
+    ).toBeUndefined();
   });
 
   it("should stop watching the model on unmount", async () => {

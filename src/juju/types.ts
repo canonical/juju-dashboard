@@ -13,7 +13,7 @@ import type ModelManagerV9 from "@canonical/jujulib/dist/api/facades/model-manag
 import type { ModelSLAInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type PingerV1 from "@canonical/jujulib/dist/api/facades/pinger/PingerV1";
 
-import type JIMMV3 from "./jimm/JIMMV3";
+import type JIMMV4 from "./jimm/JIMMV4";
 // See https://github.com/juju/juju/blob/main/rpc/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
@@ -103,12 +103,17 @@ export interface WatcherModelData {
   units: UnitData;
 }
 
-export interface WatcherModelInfo extends ModelChangeDelta {
-  "cloud-tag": string;
-  region?: string;
+// This type is used for Juju versions before 3.2.
+export interface Pre32AnnotatedWatcherModelInfo extends Pre32ModelChangeDelta {
+  cloud: string;
+  "cloud-region"?: string;
   type: string;
   version: string;
 }
+
+export type WatcherModelInfo =
+  | Post32ModelChangeDelta
+  | Pre32AnnotatedWatcherModelInfo;
 
 export interface AnnotationInfo {
   [annotationName: string]: string;
@@ -135,7 +140,7 @@ type Life = "alive" | "dead" | "dying" | "";
 type ISO8601Date = string;
 type DeprecatedString = string;
 export interface Status {
-  // See https://github.com/juju/juju/blob/develop/core/status/status.go
+  // See https://github.com/juju/juju/blob/main/core/status/status.go
   // For the possible status values for `current`.
   // Possible statuses differ by entity type.
   current: string;
@@ -239,7 +244,7 @@ export interface HardwareCharacteristics {
   "availability-zone": string;
 }
 
-export interface ModelChangeDelta {
+type Pre32ModelChangeDelta = {
   "model-uuid": string;
   name: string;
   life: Life;
@@ -250,7 +255,16 @@ export interface ModelChangeDelta {
   status: ModelAgentStatus;
   constraints: { [key: string]: unknown };
   sla: ModelSLAInfo;
-}
+};
+
+type Post32ModelChangeDelta = Pre32ModelChangeDelta & {
+  cloud: string;
+  "cloud-region": string;
+  type: string;
+  version: string;
+};
+
+export type ModelChangeDelta = Pre32ModelChangeDelta | Post32ModelChangeDelta;
 
 export interface ModelAgentStatus extends Status {
   current: "available" | "busy" | "";
@@ -347,7 +361,7 @@ export type Facades = {
   controller?: ControllerV9;
   modelManager?: ModelManagerV9;
   pinger?: PingerV1;
-  jimM?: InstanceType<typeof JIMMV3>;
+  jimM?: InstanceType<typeof JIMMV4>;
 };
 
 export type ConnectionWithFacades = Connection & {

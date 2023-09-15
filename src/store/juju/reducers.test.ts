@@ -10,6 +10,7 @@ import {
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
+  crossModelQueryStateFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -172,6 +173,70 @@ describe("reducers", () => {
     );
   });
 
+  it("fetchCrossModelQuery", () => {
+    const state = jujuStateFactory.build({
+      crossModelQuery: crossModelQueryStateFactory.build({ loading: false }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.fetchCrossModelQuery({
+          wsControllerURL: "wss://example.com",
+          query: ".",
+        })
+      )
+    ).toStrictEqual({
+      ...state,
+      crossModelQuery: crossModelQueryStateFactory.build({ loading: true }),
+    });
+  });
+
+  it("updateCrossModelQuery", () => {
+    const state = jujuStateFactory.build({
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results: null,
+        errors: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    const results = { mockResultKey: ["mockResultValue"] };
+    const errors = { mockErrorKey: ["mockErrorValue"] };
+    expect(
+      reducer(state, actions.updateCrossModelQuery({ results, errors }))
+    ).toStrictEqual({
+      ...state,
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results,
+        errors,
+        loaded: true,
+        loading: false,
+      }),
+    });
+  });
+
+  it("clearCrossModelQuery", () => {
+    const results = { mockResultKey: ["mockResultValue"] };
+    const errors = { mockErrorKey: ["mockErrorValue"] };
+    const state = jujuStateFactory.build({
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results,
+        errors,
+        loaded: true,
+        loading: true,
+      }),
+    });
+    expect(reducer(state, actions.clearCrossModelQuery())).toStrictEqual({
+      ...state,
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results: null,
+        errors: null,
+        loaded: false,
+        loading: false,
+      }),
+    });
+  });
+
   it("clearControllerData", () => {
     const state = jujuStateFactory.build({
       controllers: {
@@ -222,9 +287,9 @@ describe("reducers", () => {
           ...state.modelWatcherData?.abc123,
           model: modelWatcherModelInfoFactory.build({
             ...state.modelWatcherData?.abc123.model,
-            "cloud-tag": status.model["cloud-tag"],
+            cloud: status.model["cloud-tag"],
             type: status.model.type,
-            region: status.model.region,
+            "cloud-region": status.model.region,
             version: status.model.version,
           }),
         }),

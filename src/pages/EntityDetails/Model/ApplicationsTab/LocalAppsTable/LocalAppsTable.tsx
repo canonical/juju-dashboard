@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import useAnalytics from "hooks/useAnalytics";
+import useCanConfigureModel from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";
 import type { ApplicationData } from "juju/types";
 import {
@@ -28,6 +29,7 @@ import {
 export enum Label {
   NONE = "There are no local applications in this model",
   NONE_SEARCH = "No matching local applications found in this model",
+  RUN_ACTION = "Run action",
 }
 
 type Props = {
@@ -42,6 +44,7 @@ const LocalAppsTable = ({ applications }: Props) => {
     getAllModelApplicationStatus(modelUUID)
   );
   const selectedApplications = useSelector(getSelectedApplications());
+  const canConfigureModel = useCanConfigureModel();
   const [queryParams, setQueryParams] = useQueryParams<{
     entity: string | null;
     panel: string | null;
@@ -56,6 +59,8 @@ const LocalAppsTable = ({ applications }: Props) => {
   const { handleSelect, handleSelectAll, selectAll } = useTableSelect(
     applications ? Object.values(applications) : []
   );
+  const selectable =
+    queryParams.filterQuery && applications && canConfigureModel;
 
   let headers = generateLocalApplicationTableHeaders();
   let rows: MainTableRow[] = useMemo(() => {
@@ -69,7 +74,7 @@ const LocalAppsTable = ({ applications }: Props) => {
       : [];
   }, [applications, applicationStatuses, modelName, userName, queryParams]);
 
-  if (queryParams.filterQuery && applications) {
+  if (selectable) {
     headers = addSelectAllColumn(headers, selectAll, handleSelectAll);
     rows = addSelectColumn(rows, applications, handleSelect);
   }
@@ -85,7 +90,7 @@ const LocalAppsTable = ({ applications }: Props) => {
   return (
     <>
       <div className="applications-search-results__actions-row u-flex">
-        {queryParams.filterQuery && (
+        {selectable && (
           <Button
             appearance="base"
             className="entity-details__action-button"
@@ -94,7 +99,7 @@ const LocalAppsTable = ({ applications }: Props) => {
             disabled={!selectedApplications.length}
           >
             <Icon name="run-action" />
-            <span>Run action</span>
+            <span>{Label.RUN_ACTION}</span>
           </Button>
         )}
         <AppSearchBox />
@@ -103,7 +108,7 @@ const LocalAppsTable = ({ applications }: Props) => {
         headers={headers}
         rows={rows}
         className={classnames("entity-details__apps p-main-table", {
-          selectable: queryParams.filterQuery,
+          selectable,
         })}
         sortable
         emptyStateMsg={queryParams.filterQuery ? Label.NONE_SEARCH : Label.NONE}

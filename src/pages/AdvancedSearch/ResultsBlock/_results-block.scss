@@ -1,0 +1,7 @@
+@import "vanilla-framework/scss/vanilla";
+
+.results-block {
+  .status-icon::before {
+    left: -$sph--small;
+  }
+}
