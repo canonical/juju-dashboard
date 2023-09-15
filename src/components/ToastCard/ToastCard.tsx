@@ -51,6 +51,7 @@ export default function ToastCard({
       data-type={type}
       role="status"
       aria-live="polite"
+      data-testid="toast-card"
     >
       <div className="toast-card__body">
         {iconName && <i className={`p-icon--${iconName}`}>Success</i>}

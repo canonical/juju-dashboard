@@ -53,7 +53,6 @@ function Details() {
   const modelData = useSelector(getModelData);
   const loginErrors = useAppSelector(getLoginErrors);
   const visitURLs = useAppSelector(getVisitURLs);
-  // TODO HOW TO SHOW CONNECTING INSTEAD OF AUTH NEEDED?
 
   const controllerMap: Record<string, AnnotatedController> = {};
   const additionalControllers: string[] = [];

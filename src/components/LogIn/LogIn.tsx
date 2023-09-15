@@ -49,6 +49,8 @@ export default function LogIn({ children }: PropsWithChildren) {
   );
   const visitURLs = useAppSelector(getVisitURLs);
 
+  // This login component wraps all other views, so this useEffect will run each
+  // time we get an authentication request.
   useEffect(() => {
     visitURLs?.forEach((visitURL) => {
       if (!viewedAuthRequests.current.includes(visitURL)) {
@@ -67,12 +69,14 @@ export default function LogIn({ children }: PropsWithChildren) {
                 reactHotToast.remove(t.id);
               }}
             >
-              Log in
+              Authenticate
             </AuthenticationButton>
           </ToastCard>
         ));
         // Append this to the list of auth requests that have been displayed, so
-        // that we don't display the same notifications again if visitURLs is mutated.
+        // that we don't display the same notifications again if visitURLs is
+        // mutated (e.g. if we remove a URL from the array we don't want this
+        // useEffect to run again and display all the notifications again).
         viewedAuthRequests.current = [...viewedAuthRequests.current, visitURL];
       }
     });
@@ -135,6 +139,9 @@ function generateErrorMessage(loginError?: string | null) {
 function IdentityProviderForm({ userIsLoggedIn }: { userIsLoggedIn: boolean }) {
   const visitURL = useSelector((state: RootState) => {
     if (!userIsLoggedIn) {
+      // This form only gets displayed on the main login page, at which point
+      // there can only be one authentication request, so just return the
+      // first one.
       return state?.general?.visitURLs?.[0];
     }
   });

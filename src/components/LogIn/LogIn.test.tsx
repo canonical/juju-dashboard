@@ -1,5 +1,7 @@
-import { screen, within } from "@testing-library/react";
+import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Toaster } from "react-hot-toast";
+import reactHotToast from "react-hot-toast";
 
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -11,6 +13,7 @@ import LogIn, { ErrorResponse, Label } from "./LogIn";
 
 describe("LogIn", () => {
   afterEach(() => {
+    act(() => reactHotToast.remove());
     jest.restoreAllMocks();
   });
 
@@ -200,5 +203,61 @@ describe("LogIn", () => {
     renderComponent(<LogIn>App content</LogIn>, { state });
     const logo = screen.getByAltText(Label.JUJU_LOGO);
     expect(logo).toHaveAttribute("src", "juju-logo-black-on-white.svg");
+  });
+
+  it("displays authentication request notifications", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        config: configFactory.build({
+          identityProviderAvailable: true,
+        }),
+        visitURLs: ["/log-in"],
+      }),
+    });
+    renderComponent(
+      <>
+        <Toaster />
+        <LogIn>App content</LogIn>
+      </>,
+      { state }
+    );
+    const card = await screen.findByTestId("toast-card");
+    expect(
+      await within(card).findByText("Controller authentication required")
+    ).toBeInTheDocument();
+    expect(
+      await within(card).findByRole("link", { name: "Authenticate" })
+    ).toBeInTheDocument();
+  });
+
+  it("should remove the authentication request when clicking the authenticate button", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        config: configFactory.build({
+          isJuju: true,
+          identityProviderAvailable: false,
+        }),
+        visitURLs: ["/log-in"],
+      }),
+    });
+    const { result } = renderComponent(
+      <>
+        <Toaster />
+        <LogIn>App content</LogIn>
+      </>,
+      { state }
+    );
+    const card = await screen.findByTestId("toast-card");
+    expect(card).toBeInTheDocument();
+    await userEvent.click(
+      await within(card).findByRole("link", { name: "Authenticate" })
+    );
+    result.rerender(
+      <>
+        <Toaster />
+        <LogIn>App content</LogIn>
+      </>
+    );
+    expect(screen.queryByTestId("toast-card")).not.toBeInTheDocument();
   });
 });

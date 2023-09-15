@@ -48,6 +48,19 @@ export const controllerFactory = Factory.define<Controller>(() => ({
   version: "1.2.3",
 }));
 
+export const controllerInfoFactory = Factory.define<Controller>(() => ({
+  additionalController: false,
+  "agent-version": "1.2.3",
+  name: "controller1",
+  status: {
+    status: "available",
+    info: "",
+    since: "2021-07-28T22:05:36.877177235Z",
+  },
+  username: "eggman@external",
+  uuid: "def456",
+}));
+
 export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
   name: "test-model",
   ownerTag: "user-eggman@external",

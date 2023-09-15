@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { JAAS_CONTROLLER_UUID } from "store/juju/utils/controllers";
 import type { RootState } from "store/store";
+import { generalStateFactory } from "testing/factories/general";
 import {
   additionalControllerFactory,
   controllerFactory,
@@ -12,6 +13,7 @@ import {
   modelDataInfoFactory,
   modelDataUnitFactory,
   modelDataMachineFactory,
+  controllerInfoFactory,
 } from "testing/factories/juju/juju";
 import { connectionInfoFactory } from "testing/factories/juju/jujulib";
 import { rootStateFactory } from "testing/factories/root";
@@ -70,6 +72,38 @@ describe("Controllers table", () => {
         "0",
         "0",
         "0",
+        "Private",
+      ].join("")
+    );
+  });
+
+  it("displays additional controllers from JIMM", () => {
+    state.general.controllerConnections = {
+      "wss://jimm.jujucharms.com/api": connectionInfoFactory.build(),
+    };
+    state.juju = jujuStateFactory.build({
+      controllers: {
+        "wss://jimm.jujucharms.com/api": [
+          controllerFactory.build(),
+          controllerInfoFactory.build({ additionalController: true }),
+        ],
+      },
+    });
+    renderComponent(<ControllersIndex />, { state });
+    const tables = screen.getAllByRole("grid");
+    expect(tables).toHaveLength(2);
+    const additionalRows = within(tables[1]).getAllByRole("row");
+    expect(additionalRows).toHaveLength(2);
+    expect(additionalRows[1]).toHaveTextContent(
+      [
+        "controller1",
+        "Connected",
+        "unknown/unknown",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1.2.3 ",
         "Private",
       ].join("")
     );
@@ -225,5 +259,29 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(screen.getAllByTestId("update-available")).toHaveLength(2);
+  });
+
+  it("displays notifications if controllers need authentication", () => {
+    state.general = generalStateFactory.withConfig().build({
+      visitURLs: ["/auth"],
+    });
+    state.juju = jujuStateFactory.build({
+      controllers: {
+        "wss://jimm.jujucharms.com/api": [
+          controllerFactory.build({
+            uuid: "123",
+            version: "1.0.0",
+            updateAvailable: true,
+          }),
+        ],
+      },
+    });
+    renderComponent(<ControllersIndex />, { state });
+    expect(
+      screen.getByText(/Controller authentication required/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Authenticate" })
+    ).toBeInTheDocument();
   });
 });

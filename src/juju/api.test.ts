@@ -646,7 +646,11 @@ describe("Juju API", () => {
           jimM: {
             listControllers: jest.fn().mockResolvedValueOnce({
               controllers: [
-                { path: "admin/jaas1", uuid: "abc123" },
+                {
+                  "agent-version": "1.2.3",
+                  name: "jaas1",
+                  uuid: "abc123",
+                },
                 { path: "admin/jaas2", uuid: "def456" },
               ],
             }),
@@ -669,7 +673,8 @@ describe("Juju API", () => {
           wsControllerURL: "wss://example.com/api",
           controllers: [
             {
-              path: "admin/jaas1",
+              "agent-version": "1.2.3",
+              name: "jaas1",
               uuid: "abc123",
               additionalController: true,
               updateAvailable: true,
@@ -728,6 +733,49 @@ describe("Juju API", () => {
               additionalController: true,
               updateAvailable: true,
               version: "1.2.3",
+            },
+          ],
+        })
+      );
+    });
+
+    it("can handle null responses when checking for updates", async () => {
+      const dispatch = jest.fn();
+      const conn = {
+        facades: {
+          jimM: {
+            listControllers: jest.fn().mockResolvedValueOnce({
+              controllers: [
+                {
+                  "agent-version": "1.2.3",
+                  name: "jaas1",
+                  uuid: "abc123",
+                },
+              ],
+            }),
+          },
+        },
+      } as unknown as Connection;
+      jest
+        .spyOn(jujuLibVersions, "jujuUpdateAvailable")
+        .mockImplementationOnce(async () => null);
+      await fetchControllerList(
+        "wss://example.com/api",
+        conn,
+        true,
+        dispatch,
+        () => rootStateFactory.build()
+      );
+      expect(dispatch).toHaveBeenCalledWith(
+        jujuActions.updateControllerList({
+          wsControllerURL: "wss://example.com/api",
+          controllers: [
+            {
+              "agent-version": "1.2.3",
+              name: "jaas1",
+              uuid: "abc123",
+              additionalController: true,
+              updateAvailable: false,
             },
           ],
         })
