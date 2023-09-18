@@ -19,7 +19,7 @@ import {
   getActiveUserControllerAccess,
 } from "store/general/selectors";
 import type { RootState } from "store/store";
-import getUserName from "utils/getUserName";
+import { getUserName } from "utils";
 
 import type {
   Controllers,

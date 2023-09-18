@@ -18,7 +18,7 @@ import {
   getUserDomainsInModel,
 } from "store/juju/selectors";
 import { useAppSelector, usePromiseDispatch } from "store/store";
-import getUserName from "utils/getUserName";
+import { getUserName } from "utils";
 
 import "./share-model.scss";
 

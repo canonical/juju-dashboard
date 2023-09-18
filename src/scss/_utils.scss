@@ -54,6 +54,18 @@
 .p-tooltip--constrain-width .p-tooltip__message {
   max-width: 20rem;
   white-space: pre-wrap;
+
+  @media (max-width: $breakpoint-x-small) {
+    max-width: 80vw;
+  }
+}
+
+.p-tooltip--fixed-width .p-tooltip__message {
+  @media (max-width: $breakpoint-x-small) {
+    white-space: normal;
+    width: 80vw;
+    word-break: break-word;
+  }
 }
 
 .p-tooltip__position-element--inline {

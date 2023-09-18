@@ -21,7 +21,7 @@ import {
   getModelStatusGroupData,
 } from "store/juju/utils/models";
 import urls from "urls";
-import getUserName from "utils/getUserName";
+import { getUserName } from "utils";
 
 import AccessButton from "./AccessButton/AccessButton";
 import CloudCell from "./CloudCell/CloudCell";

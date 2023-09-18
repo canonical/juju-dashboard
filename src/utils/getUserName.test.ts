@@ -1,4 +1,4 @@
-import getUserName from "./getUserName";
+import { getUserName } from "utils";
 
 describe("getUser", () => {
   it("should return user name if no prefix is present", () => {
