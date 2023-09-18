@@ -1,8 +1,6 @@
 import { Tooltip } from "@canonical/react-components";
 
-import { getViewportWidth } from "components/utils";
 import type { ApplicationInfo } from "juju/types";
-import Breakpoint from "layout/breakpoint";
 import { getSelectedApplications } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { breakLines } from "utils";
@@ -18,7 +16,6 @@ const formatApplicationsDetails = (applications: ApplicationInfo[]) =>
     .join(", ");
 
 const CharmApplicationsDetails = ({ charmURL }: Props): JSX.Element => {
-  const isSmallScreen = getViewportWidth() <= Breakpoint.X_SMALL;
   const selectedApplications = useAppSelector(
     getSelectedApplications(charmURL)
   );
@@ -32,12 +29,10 @@ const CharmApplicationsDetails = ({ charmURL }: Props): JSX.Element => {
         <>
           {" + "}
           <Tooltip
-            tooltipClassName="p-tooltip--fixed-x-small-width"
-            message={
-              isSmallScreen
-                ? formatApplicationsDetails(hiddenApplications)
-                : breakLines(formatApplicationsDetails(hiddenApplications))
-            }
+            tooltipClassName="p-tooltip--fixed-width"
+            // Insert line breaks into the tooltip so that the content wraps
+            // instead of appearing as one long line.
+            message={breakLines(formatApplicationsDetails(hiddenApplications))}
             position="btm-center"
           >
             <u>{hiddenApplications.length} more</u>

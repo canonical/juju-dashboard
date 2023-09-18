@@ -60,12 +60,11 @@
   }
 }
 
-// Specifies horizontal width of tooltips with 0 width on small screens.
-// Combine with utils/breakLines for tooltips with 0 width on bigger width screens.
-.p-tooltip--fixed-x-small-width .p-tooltip__message {
+.p-tooltip--fixed-width .p-tooltip__message {
   @media (max-width: $breakpoint-x-small) {
-    white-space: pre-wrap;
+    white-space: normal;
     width: 80vw;
+    word-break: break-word;
   }
 }
 
