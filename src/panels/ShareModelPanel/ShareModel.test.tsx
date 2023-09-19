@@ -161,6 +161,29 @@ describe("Share Model Panel", () => {
     ).toBeInTheDocument();
   });
 
+  it("catches errors when adding a user", async () => {
+    jest
+      .spyOn(storeModule, "usePromiseDispatch")
+      .mockReturnValue(
+        jest.fn().mockImplementation(() => Promise.reject("Uh oh!"))
+      );
+    renderComponent(
+      <>
+        <ShareModel />
+        <Toaster />
+      </>,
+      { state, url, path }
+    );
+    await userEvent.type(
+      screen.getByRole("textbox", { name: "Username" }),
+      "another@external"
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.ADD_BUTTON })
+    );
+    expect(await screen.findByText(/Uh oh!/)).toBeInTheDocument();
+  });
+
   it("handles error responses when adding a user", async () => {
     jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
       jest.fn().mockImplementation(() =>

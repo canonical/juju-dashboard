@@ -30,6 +30,7 @@ import type { AdditionalController, Controller } from "store/juju/types";
 import { isJAASFromUUID } from "store/juju/utils/controllers";
 import { useAppSelector } from "store/store";
 import urls from "urls";
+import { breakLines } from "utils";
 
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 import "./_controllers.scss";
@@ -189,8 +190,9 @@ function Details() {
       {
         content: (
           <Tooltip
-            message={loginError}
+            message={breakLines(loginError)}
             positionElementClassName="controllers__status"
+            tooltipClassName="p-tooltip--fixed-width"
           >
             <Status className="u-truncate controllers__status" status={status}>
               {label}

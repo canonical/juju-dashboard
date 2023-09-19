@@ -159,6 +159,16 @@ describe("reducers", () => {
     });
   });
 
+  it("storeVisitURL creates array if it is null", () => {
+    const state = generalStateFactory.build({
+      visitURLs: null,
+    });
+    expect(reducer(state, actions.storeVisitURL("/welcome"))).toStrictEqual({
+      ...state,
+      visitURLs: ["/welcome"],
+    });
+  });
+
   it("removeVisitURL", () => {
     const state = generalStateFactory.build({
       visitURLs: ["/visit", "/welcome"],
