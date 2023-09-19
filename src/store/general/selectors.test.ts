@@ -17,7 +17,6 @@ import {
   getPingerIntervalIds,
   getUserPass,
   getWSControllerURL,
-  isConnecting,
   isLoggedIn,
   getActiveUserControllerAccess,
   getConnectionError,
@@ -26,6 +25,7 @@ import {
   getControllerFeatureEnabled,
   getLoginErrors,
   isCrossModelQueriesEnabled,
+  getVisitURLs,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -54,6 +54,18 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual(true);
+  });
+
+  it("getVisitURLs", () => {
+    expect(
+      getVisitURLs(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            visitURLs: ["/login", "/auth"],
+          }),
+        })
+      )
+    ).toStrictEqual(["/login", "/auth"]);
   });
 
   it("getUserPass", () => {
@@ -240,18 +252,6 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual(false);
-  });
-
-  it("isConnecting", () => {
-    expect(
-      isConnecting(
-        rootStateFactory.build({
-          general: generalStateFactory.build({
-            visitURL: "/visit",
-          }),
-        })
-      )
-    ).toBe(true);
   });
 
   it("getActiveUserTag", () => {

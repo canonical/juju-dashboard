@@ -1,3 +1,4 @@
+import { JAAS_CONTROLLER_UUID } from "store/juju/utils/controllers";
 import {
   detailedStatusFactory,
   modelStatusInfoFactory,
@@ -9,7 +10,6 @@ import {
 } from "testing/factories/juju/juju";
 
 import {
-  JAAS_CONTROLLER_UUID,
   generateCloudAndRegion,
   getCloudName,
   getControllerName,
@@ -73,6 +73,25 @@ describe("shared", () => {
     });
     expect(getControllerName(modelData, controllers)).toStrictEqual(
       "default-controller"
+    );
+  });
+
+  it("can get a controller name from a controller", () => {
+    const controllers = {
+      "wss://test.com/api": [
+        controllerFactory.build({
+          name: "a controller",
+          uuid: "controller123",
+        }),
+      ],
+    };
+    const modelData = modelDataFactory.build({
+      info: modelDataInfoFactory.build({
+        "controller-uuid": "controller123",
+      }),
+    });
+    expect(getControllerName(modelData, controllers)).toStrictEqual(
+      "a controller"
     );
   });
 

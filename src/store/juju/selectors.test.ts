@@ -171,11 +171,11 @@ describe("selectors", () => {
   it("getControllerData", () => {
     const controllers = {
       "wss://example.com": [
-        {
+        controllerFactory.build({
           path: "/",
           uuid: "abc123",
           version: "1",
-        },
+        }),
       ],
     };
     expect(

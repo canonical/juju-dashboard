@@ -8,6 +8,7 @@ import UserMenu from "components/UserMenu/UserMenu";
 import {
   getAppVersion,
   isCrossModelQueriesEnabled,
+  getVisitURLs,
 } from "store/general/selectors";
 import {
   getControllerData,
@@ -38,6 +39,8 @@ const ModelsLink = () => {
 
 const ControllersLink = () => {
   const controllers: Controllers | null = useSelector(getControllerData);
+  const authenticationRequired =
+    (useAppSelector(getVisitURLs)?.length ?? 0) > 0;
 
   const controllersUpdateCount = useMemo(() => {
     if (!controllers) {
@@ -63,6 +66,11 @@ const ControllersLink = () => {
       iconName="controllers"
       title="Controllers"
     >
+      {authenticationRequired && (
+        <span className="entity-count">
+          <Icon name="lock-locked" light title="Authentication required" />
+        </span>
+      )}
       {controllersUpdateCount > 0 && (
         <span className="entity-count is-caution">
           {controllersUpdateCount}

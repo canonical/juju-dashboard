@@ -1,5 +1,5 @@
 import * as versionsAPI from "@canonical/jujulib/dist/api/versions";
-import { screen, waitFor } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
@@ -97,6 +97,20 @@ describe("Primary Nav", () => {
     });
     renderComponent(<PrimaryNav />, { state });
     expect(screen.getByText("Version 0.4.0")).toHaveClass("version");
+  });
+
+  it("displays an icon if controllers require authentication", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        visitURLs: ["/login"],
+      }),
+    });
+    renderComponent(<PrimaryNav />, { state });
+    expect(
+      within(screen.getByRole("link", { name: "Controllers" })).getByTitle(
+        "Authentication required"
+      )
+    ).toBeInTheDocument();
   });
 
   it("displays the count of the controllers with old versions", () => {

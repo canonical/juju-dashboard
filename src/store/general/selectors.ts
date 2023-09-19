@@ -27,6 +27,11 @@ export const getIsJuju = createSelector(
   (sliceState) => sliceState?.config?.isJuju
 );
 
+export const getVisitURLs = createSelector(
+  [slice],
+  (sliceState) => sliceState?.visitURLs
+);
+
 /**
   Fetches the username and password from state.
   @param state The application state.
@@ -111,11 +116,6 @@ export const getControllerFeatureEnabled = createSelector(
   ],
   (controllerFeatures, { wsControllerURL, feature }) =>
     controllerFeatures?.[wsControllerURL]?.[feature]
-);
-
-export const isConnecting = createSelector(
-  [slice],
-  (sliceState) => !!sliceState?.visitURL
 );
 
 /**

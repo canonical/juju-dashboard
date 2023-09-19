@@ -151,11 +151,41 @@ describe("reducers", () => {
 
   it("storeVisitURL", () => {
     const state = generalStateFactory.build({
-      visitURL: "/visit",
+      visitURLs: ["/visit"],
     });
     expect(reducer(state, actions.storeVisitURL("/welcome"))).toStrictEqual({
       ...state,
-      visitURL: "/welcome",
+      visitURLs: ["/visit", "/welcome"],
+    });
+  });
+
+  it("storeVisitURL creates array if it is null", () => {
+    const state = generalStateFactory.build({
+      visitURLs: null,
+    });
+    expect(reducer(state, actions.storeVisitURL("/welcome"))).toStrictEqual({
+      ...state,
+      visitURLs: ["/welcome"],
+    });
+  });
+
+  it("removeVisitURL", () => {
+    const state = generalStateFactory.build({
+      visitURLs: ["/visit", "/welcome"],
+    });
+    expect(reducer(state, actions.removeVisitURL("/welcome"))).toStrictEqual({
+      ...state,
+      visitURLs: ["/visit"],
+    });
+  });
+
+  it("clearVisitURLs", () => {
+    const state = generalStateFactory.build({
+      visitURLs: ["/visit", "/welcome"],
+    });
+    expect(reducer(state, actions.clearVisitURLs())).toStrictEqual({
+      ...state,
+      visitURLs: null,
     });
   });
 
@@ -164,12 +194,12 @@ describe("reducers", () => {
       controllerConnections: {
         "wss://example.com": { controllerTag: "default-info" },
       },
-      visitURL: "/visit",
+      visitURLs: ["/visit"],
     });
     expect(reducer(state, actions.logOut())).toStrictEqual({
       ...state,
       controllerConnections: null,
-      visitURL: null,
+      visitURLs: null,
     });
   });
 

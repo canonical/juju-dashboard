@@ -1,5 +1,7 @@
 import type { AdditionalController, Controller } from "store/juju/types";
 
-export const isJAASFromPath = (
+export const JAAS_CONTROLLER_UUID = "a030379a-940f-4760-8fcf-3062b41a04e7";
+
+export const isJAASFromUUID = (
   controllerData: Controller | AdditionalController
-) => "path" in controllerData && controllerData?.path === "admin/jaas";
+) => "uuid" in controllerData && controllerData.uuid === JAAS_CONTROLLER_UUID;

@@ -1,4 +1,9 @@
-import { Icon, MainTable, Tooltip } from "@canonical/react-components";
+import {
+  Icon,
+  MainTable,
+  Notification,
+  Tooltip,
+} from "@canonical/react-components";
 import type {
   MainTableCell,
   MainTableHeader,
@@ -8,18 +13,24 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import FadeIn from "animations/FadeIn";
+import AuthenticationButton from "components/AuthenticationButton";
 import Header from "components/Header/Header";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
-import { getLoginErrors } from "store/general/selectors";
+import {
+  getControllerConnections,
+  getLoginErrors,
+  getVisitURLs,
+} from "store/general/selectors";
 import { getControllerData, getModelData } from "store/juju/selectors";
 import type { AdditionalController, Controller } from "store/juju/types";
-import { isJAASFromPath } from "store/juju/utils/controllers";
+import { isJAASFromUUID } from "store/juju/utils/controllers";
 import { useAppSelector } from "store/store";
 import urls from "urls";
+import { breakLines } from "utils";
 
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 import "./_controllers.scss";
@@ -38,9 +49,11 @@ type AnnotatedController = (Controller | AdditionalController) & {
 
 function Details() {
   useWindowTitle("Controllers");
+  const controllerConnections = useAppSelector(getControllerConnections);
   const controllerData = useSelector(getControllerData);
   const modelData = useSelector(getModelData);
   const loginErrors = useAppSelector(getLoginErrors);
+  const visitURLs = useAppSelector(getVisitURLs);
 
   const controllerMap: Record<string, AnnotatedController> = {};
   const additionalControllers: string[] = [];
@@ -48,8 +61,7 @@ function Details() {
     Object.entries(controllerData).forEach(
       ([wsControllerURL, controllers], i) => {
         controllers.forEach((controller) => {
-          const id =
-            "uuid" in controller ? controller.uuid : `${wsControllerURL}-${i}`;
+          const id = "uuid" in controller ? controller.uuid : wsControllerURL;
           if (controller.additionalController) {
             additionalControllers.push(id);
           }
@@ -120,18 +132,34 @@ function Details() {
 
   function generatePathValue(controllerData: AnnotatedController) {
     const column: MainTableCell = { content: "" };
-    if (isJAASFromPath(controllerData)) {
+    // Remove protocol and trailing /api from websocket addresses.
+    const controllerAddress = controllerData.wsControllerURL
+      .replace(/^wss?:\/\//i, "")
+      .replace(/\/api$/i, "");
+    if (isJAASFromUUID(controllerData)) {
       column.content = "JAAS";
+    } else if ("name" in controllerData && controllerData.name) {
+      column.content = (
+        <Tooltip
+          message={controllerAddress}
+          positionElementClassName="truncated-tooltip__position-element"
+        >
+          {controllerData.name}
+        </Tooltip>
+      );
     } else if ("path" in controllerData && controllerData.path) {
       column.content = (
-        <Tooltip message={controllerData.wsControllerURL}>
+        <Tooltip
+          message={controllerAddress}
+          positionElementClassName="truncated-tooltip__position-element"
+        >
           {controllerData.path}
         </Tooltip>
       );
     } else {
       column.content = (
-        <TruncatedTooltip message={controllerData?.wsControllerURL}>
-          {controllerData?.wsControllerURL}
+        <TruncatedTooltip message={controllerAddress}>
+          {controllerAddress}
         </TruncatedTooltip>
       );
       column.className = "u-text--muted";
@@ -139,30 +167,40 @@ function Details() {
     return column;
   }
 
-  function generateRow(c: AnnotatedController) {
+  function generateRow(c: AnnotatedController, authenticated: boolean) {
+    const isJAAS = isJAASFromUUID(c);
     const cloud =
       "location" in c && c?.location?.cloud ? c.location.cloud : "unknown";
     const region =
       "location" in c && c?.location?.region ? c.location.region : "unknown";
     const cloudRegion = `${cloud}/${region}`;
-    const access = "Public" in c && c.Public ? "Public" : "Private";
+    const access = ("Public" in c && c.Public) || isJAAS ? "Public" : "Private";
     const loginError = loginErrors?.[c.wsControllerURL];
+    let status = "Connected";
+    let label = null;
+    if (loginError) {
+      status = "Error";
+      label = "Failed to connect";
+    } else if (!authenticated) {
+      status = "caution";
+      label = "Authentication required";
+    }
     const columns = [
       generatePathValue(c),
       {
         content: (
           <Tooltip
-            message={loginError}
+            message={breakLines(loginError)}
             positionElementClassName="controllers__status"
+            tooltipClassName="p-tooltip--fixed-width"
           >
-            <Status
-              className="u-truncate controllers__status"
-              status={loginError ? "Disconnected" : "Connected"}
-            />
+            <Status className="u-truncate controllers__status" status={status}>
+              {label}
+            </Status>
           </Tooltip>
         ),
       },
-      { content: isJAASFromPath(c) ? "Multiple" : cloudRegion },
+      { content: isJAAS ? "Multiple" : cloudRegion },
       { content: c.models },
       { content: c.machines },
       { content: c.applications },
@@ -170,11 +208,14 @@ function Details() {
       { content: "" },
       { content: access, className: "u-capitalise" },
     ];
-    if ("version" in c && c.version) {
+    const version =
+      ("agent-version" in c && c["agent-version"]) ||
+      ("version" in c && c.version);
+    if (version) {
       columns[columns.length - 2] = {
         content: (
           <>
-            {c.version}{" "}
+            {version}{" "}
             {c.updateAvailable ? (
               <Tooltip
                 message={
@@ -205,12 +246,24 @@ function Details() {
   }
   // XXX this isn't a great way of doing this.
   const additionalRows = additionalControllers.map((uuid) => {
-    const row = generateRow(controllerMap[uuid]);
+    const row = generateRow(
+      controllerMap[uuid],
+      !!controllerConnections &&
+        controllerMap[uuid].wsControllerURL in controllerConnections
+    );
     delete controllerMap[uuid];
     return row;
   });
 
-  const rows = controllerMap && Object.values(controllerMap).map(generateRow);
+  const rows =
+    controllerMap &&
+    Object.values(controllerMap).map((controller) =>
+      generateRow(
+        controller,
+        !!controllerConnections &&
+          controller.wsControllerURL in controllerConnections
+      )
+    );
 
   const [, setPanelQs] = useQueryParams<{ panel: string | null }>({
     panel: null,
@@ -218,6 +271,15 @@ function Details() {
 
   return (
     <>
+      {visitURLs?.map((visitURL) => (
+        <Notification severity="caution" key={visitURL}>
+          Controller authentication required.{" "}
+          <AuthenticationButton appearance="link" visitURL={visitURL}>
+            Authenticate
+          </AuthenticationButton>
+          .
+        </Notification>
+      ))}
       <div className="controllers--header">
         <div className="controllers__heading">
           Model status across controllers

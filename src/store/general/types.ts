@@ -40,5 +40,5 @@ export type GeneralState = {
   credentials: Credentials | null;
   loginErrors: LoginErrors | null;
   pingerIntervalIds: PingerIntervalIds | null;
-  visitURL: string | null;
+  visitURLs: string[] | null;
 };

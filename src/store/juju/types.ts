@@ -1,6 +1,7 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
+import type { ControllerInfo } from "juju/jimm/JIMMV3";
 import type { CrossModelQueryResponse } from "juju/jimm/JIMMV4";
 import type {
   ApplicationInfo,
@@ -13,15 +14,20 @@ export type ControllerLocation = {
   region: string;
 };
 
-export type Controller = {
-  additionalController?: boolean;
+export type ControllerAnnotations = {
+  additionalController: boolean;
   location?: ControllerLocation;
+  updateAvailable?: boolean;
+};
+
+export type LocalController = {
   path: string;
-  Public?: boolean;
   uuid: string;
   version?: string;
-  updateAvailable?: boolean | null;
 };
+
+export type Controller = (ControllerInfo | LocalController) &
+  ControllerAnnotations;
 
 export type AdditionalController = {
   additionalController: true;

@@ -1,4 +1,10 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/functions/z-index";
+
+.toast-container {
+  // These cards need to appear above modals and panels.
+  z-index: z("zelda") + 3 !important;
+}
 
 .toast-card {
   background-color: $color-x-light;
@@ -17,7 +23,6 @@
   }
 
   &__message {
-    margin-bottom: 2rem;
     word-break: break-word;
   }
 
