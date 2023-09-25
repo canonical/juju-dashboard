@@ -1,4 +1,5 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Route } from "react-router-dom";
 
 import * as WebCLIModule from "components/WebCLI/WebCLI";
@@ -86,33 +87,53 @@ describe("Entity Details Container", () => {
   });
 
   it("should display the correct window title", () => {
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     expect(document.title).toEqual("Model: enterprise | Juju Dashboard");
   });
 
   it("should show a spinner if waiting on model list data", () => {
     state.juju.modelsLoaded = false;
     state.juju.modelWatcherData = {};
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("should show a spinner if waiting on model data", () => {
     state.juju.modelWatcherData = {};
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("should show a not found message if the model does not exist", () => {
     state.juju.models = {};
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     expect(
       screen.getByRole("heading", { name: Label.NOT_FOUND })
     ).toBeInTheDocument();
   });
 
   it("lists the correct tabs", () => {
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsLogsMachines$/
     );
@@ -131,14 +152,22 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsLogs$/
     );
   });
 
-  it("clicking the tabs changes the visible section", () => {
-    renderComponent(<EntityDetails />, { path, url, state });
+  it("clicking the tabs changes the visible section", async () => {
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     const viewSelector = screen.getByTestId("view-selector");
     const sections = [
       {
@@ -178,7 +207,7 @@ describe("Entity Details Container", () => {
 
   it("shows the supplied child", async () => {
     const children = "Hello I am a child!";
-    renderComponent(<EntityDetails />, {
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
       path,
       url,
       routeChildren: <Route path="" element={children} />,
@@ -188,7 +217,11 @@ describe("Entity Details Container", () => {
   });
 
   it("shows the CLI in juju 2.9", async () => {
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).toBeInTheDocument();
     });
@@ -208,7 +241,11 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).toBeInTheDocument();
     });
@@ -227,14 +264,22 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
     });
   });
 
   it("gives the content a class when the webCLI is shown", async () => {
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     await waitFor(() => {
       expect(document.querySelector(".l-content")).toHaveClass(
         "l-content--has-webcli"
@@ -242,11 +287,15 @@ describe("Entity Details Container", () => {
     });
   });
 
-  it("passes the controller details to the webCLI", async () => {
+  it("passes the controller details to the webCLI", () => {
     const cliComponent = jest
       .spyOn(WebCLIModule, "default")
       .mockImplementation(jest.fn());
-    renderComponent(<EntityDetails />, { path, url, state });
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     expect(cliComponent.mock.calls[0][0]).toMatchObject({
       controllerWSHost: "example.com:17070",
       credentials: {
@@ -260,7 +309,7 @@ describe("Entity Details Container", () => {
   });
 
   it("gives the header a class when the header should be a single column", async () => {
-    renderComponent(<EntityDetails />, {
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
       path: "/models/:userName/:modelName/app/:appName",
       url: "/models/eggman@external/group-test/app/etcd",
       state,
@@ -272,15 +321,19 @@ describe("Entity Details Container", () => {
     });
   });
 
-  it("gives the content the correct class for the model", async () => {
-    renderComponent(<EntityDetails />, { path, url, state });
+  it("gives the content the correct class for the model", () => {
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
+      path,
+      url,
+      state,
+    });
     expect(
       document.querySelector(".entity-details__model")
     ).toBeInTheDocument();
   });
 
-  it("gives the content the correct class for an app", async () => {
-    renderComponent(<EntityDetails />, {
+  it("gives the content the correct class for an app", () => {
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
       path: urls.model.app.index(null),
       url: urls.model.app.index({
         userName: "kirk@external",
@@ -292,8 +345,8 @@ describe("Entity Details Container", () => {
     expect(document.querySelector(".entity-details__app")).toBeInTheDocument();
   });
 
-  it("gives the content the correct class for a machine", async () => {
-    renderComponent(<EntityDetails />, {
+  it("gives the content the correct class for a machine", () => {
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
       path: urls.model.machine(null),
       url: urls.model.machine({
         userName: "kirk@external",
@@ -307,8 +360,8 @@ describe("Entity Details Container", () => {
     ).toBeInTheDocument();
   });
 
-  it("gives the content the correct class for a unit", async () => {
-    renderComponent(<EntityDetails />, {
+  it("gives the content the correct class for a unit", () => {
+    renderComponent(<EntityDetails modelWatcherError={null} />, {
       path: urls.model.unit(null),
       url: urls.model.unit({
         userName: "kirk@external",
@@ -319,5 +372,49 @@ describe("Entity Details Container", () => {
       state,
     });
     expect(document.querySelector(".entity-details__unit")).toBeInTheDocument();
+  });
+
+  it("should show watcher model data timeout error", () => {
+    renderComponent(<EntityDetails modelWatcherError="timeout" />, {
+      path,
+      url,
+      state,
+    });
+    expect(
+      document.querySelector(".p-notification--negative")
+    ).toHaveTextContent(Label.MODEL_WATCHER_TIMEOUT);
+  });
+
+  it("should show watcher model custom error", () => {
+    renderComponent(<EntityDetails modelWatcherError="custom error" />, {
+      path,
+      url,
+      state,
+    });
+    expect(
+      document.querySelector(".p-notification--negative")
+    ).toHaveTextContent(`${Label.MODEL_WATCHER_ERROR} custom error`);
+  });
+
+  it("should refresh page when pressing pressing Refresh button within error notification", async () => {
+    // Copy of window.location is required in order to mock only its "reload"
+    // method and set window.location back to default value at the end.
+    const location: Location = window.location;
+    // @ts-ignore
+    delete window.location;
+    window.location = {
+      ...location,
+      reload: jest.fn(),
+    };
+
+    renderComponent(<EntityDetails modelWatcherError="timeout" />, {
+      path,
+      url,
+      state,
+    });
+    await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
+    expect(window.location.reload).toHaveBeenCalledTimes(1);
+
+    window.location = location;
   });
 });

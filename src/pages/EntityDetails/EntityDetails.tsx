@@ -1,4 +1,10 @@
-import { Spinner, Tabs } from "@canonical/react-components";
+import {
+  Button,
+  Notification,
+  Spinner,
+  Strip,
+  Tabs,
+} from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode, MouseEvent } from "react";
 import { useEffect, useState } from "react";
@@ -31,7 +37,13 @@ import "./_entity-details.scss";
 
 export enum Label {
   NOT_FOUND = "Model not found",
+  MODEL_WATCHER_TIMEOUT = "Fetching model watcher data timed out.",
+  MODEL_WATCHER_ERROR = "Error occured while fetching model watcher data.",
 }
+
+type Props = {
+  modelWatcherError: unknown;
+};
 
 const getEntityType = (params: Partial<EntityDetailsRoute>) => {
   if (!!params.unitId) {
@@ -44,7 +56,7 @@ const getEntityType = (params: Partial<EntityDetailsRoute>) => {
   return "model";
 };
 
-const EntityDetails = () => {
+const EntityDetails = ({ modelWatcherError }: Props) => {
   const routeParams = useParams<EntityDetailsRoute>();
   const { userName, modelName } = routeParams;
   const modelsLoaded = useAppSelector(getModelListLoaded);
@@ -212,6 +224,29 @@ const EntityDetails = () => {
           </div>
         </div>
       </Header>
+      {modelWatcherError ? (
+        <Strip className="u-no-padding--bottom" shallow>
+          <Notification
+            className="u-no-margin--bottom"
+            severity="negative"
+            title="Error"
+          >
+            {modelWatcherError === "timeout" ? (
+              <span>{Label.MODEL_WATCHER_TIMEOUT}</span>
+            ) : (
+              <span>{Label.MODEL_WATCHER_ERROR}</span>
+            )}{" "}
+            {typeof modelWatcherError === "string" &&
+            modelWatcherError !== "timeout" ? (
+              <span>{modelWatcherError}</span>
+            ) : null}{" "}
+            <Button appearance="link" onClick={() => window.location.reload()}>
+              Refresh
+            </Button>
+            {"."}
+          </Notification>
+        </Strip>
+      ) : null}
       {content}
       {showWebCLI && controllerWSHost && (
         <WebCLI
