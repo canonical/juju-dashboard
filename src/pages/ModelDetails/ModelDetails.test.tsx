@@ -194,9 +194,7 @@ describe("ModelDetails", () => {
   });
 
   it("should display error if model data couldn't be loaded", async () => {
-    jest
-      .spyOn(juju, "startModelWatcher")
-      .mockImplementation(() => Promise.reject("timeout"));
+    jest.spyOn(juju, "startModelWatcher").mockRejectedValue("timeout");
     renderComponent(<ModelDetails />, { path, url, state });
     await waitFor(() => {
       expect(document.querySelector(".p-notification--negative")).toBeVisible();
