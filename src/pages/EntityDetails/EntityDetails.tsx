@@ -235,10 +235,10 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
               <span>{Label.MODEL_WATCHER_TIMEOUT}</span>
             ) : (
               <span>{Label.MODEL_WATCHER_ERROR}</span>
-            )}{" "}
+            )}
             {typeof modelWatcherError === "string" &&
             modelWatcherError !== "timeout" ? (
-              <span>{modelWatcherError}</span>
+              <span>{` ${modelWatcherError}`}</span>
             ) : null}{" "}
             <Button appearance="link" onClick={() => window.location.reload()}>
               Refresh
