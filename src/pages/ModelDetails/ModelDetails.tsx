@@ -22,7 +22,9 @@ export default function ModelDetails() {
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const [modelWatcherError, setModelWatcherError] = useState<unknown>(null);
+  const [modelWatcherError, setModelWatcherError] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     let conn: ConnectionWithFacades | null = null;
@@ -51,7 +53,8 @@ export default function ModelDetails() {
         }
         setModelWatcherError(null);
       } catch (error) {
-        setModelWatcherError(error);
+        const errorMessage = error instanceof Error ? error.message : error;
+        setModelWatcherError(errorMessage as string);
       }
     }
     if (modelUUID) {

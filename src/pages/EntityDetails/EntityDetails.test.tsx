@@ -87,7 +87,7 @@ describe("Entity Details Container", () => {
   });
 
   it("should display the correct window title", () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -98,7 +98,7 @@ describe("Entity Details Container", () => {
   it("should show a spinner if waiting on model list data", () => {
     state.juju.modelsLoaded = false;
     state.juju.modelWatcherData = {};
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -108,7 +108,7 @@ describe("Entity Details Container", () => {
 
   it("should show a spinner if waiting on model data", () => {
     state.juju.modelWatcherData = {};
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -118,7 +118,7 @@ describe("Entity Details Container", () => {
 
   it("should show a not found message if the model does not exist", () => {
     state.juju.models = {};
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -129,7 +129,7 @@ describe("Entity Details Container", () => {
   });
 
   it("lists the correct tabs", () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -152,7 +152,7 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -163,7 +163,7 @@ describe("Entity Details Container", () => {
   });
 
   it("clicking the tabs changes the visible section", async () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -207,7 +207,7 @@ describe("Entity Details Container", () => {
 
   it("shows the supplied child", async () => {
     const children = "Hello I am a child!";
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       routeChildren: <Route path="" element={children} />,
@@ -217,7 +217,7 @@ describe("Entity Details Container", () => {
   });
 
   it("shows the CLI in juju 2.9", async () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -241,7 +241,7 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -264,7 +264,7 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -275,7 +275,7 @@ describe("Entity Details Container", () => {
   });
 
   it("gives the content a class when the webCLI is shown", async () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -291,7 +291,7 @@ describe("Entity Details Container", () => {
     const cliComponent = jest
       .spyOn(WebCLIModule, "default")
       .mockImplementation(jest.fn());
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -309,7 +309,7 @@ describe("Entity Details Container", () => {
   });
 
   it("gives the header a class when the header should be a single column", async () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path: "/models/:userName/:modelName/app/:appName",
       url: "/models/eggman@external/group-test/app/etcd",
       state,
@@ -322,7 +322,7 @@ describe("Entity Details Container", () => {
   });
 
   it("gives the content the correct class for the model", () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path,
       url,
       state,
@@ -333,7 +333,7 @@ describe("Entity Details Container", () => {
   });
 
   it("gives the content the correct class for an app", () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path: urls.model.app.index(null),
       url: urls.model.app.index({
         userName: "kirk@external",
@@ -346,7 +346,7 @@ describe("Entity Details Container", () => {
   });
 
   it("gives the content the correct class for a machine", () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path: urls.model.machine(null),
       url: urls.model.machine({
         userName: "kirk@external",
@@ -361,7 +361,7 @@ describe("Entity Details Container", () => {
   });
 
   it("gives the content the correct class for a unit", () => {
-    renderComponent(<EntityDetails modelWatcherError={null} />, {
+    renderComponent(<EntityDetails />, {
       path: urls.model.unit(null),
       url: urls.model.unit({
         userName: "kirk@external",

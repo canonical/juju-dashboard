@@ -42,7 +42,7 @@ export enum Label {
 }
 
 type Props = {
-  modelWatcherError: unknown;
+  modelWatcherError?: string | null;
 };
 
 const getEntityType = (params: Partial<EntityDetailsRoute>) => {
@@ -236,8 +236,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
             ) : (
               <span>{Label.MODEL_WATCHER_ERROR}</span>
             )}
-            {typeof modelWatcherError === "string" &&
-            modelWatcherError !== "timeout" ? (
+            {modelWatcherError && modelWatcherError !== "timeout" ? (
               <span>{` ${modelWatcherError}`}</span>
             ) : null}{" "}
             <Button appearance="link" onClick={() => window.location.reload()}>
