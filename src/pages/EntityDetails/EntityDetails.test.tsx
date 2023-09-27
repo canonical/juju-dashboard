@@ -87,53 +87,33 @@ describe("Entity Details Container", () => {
   });
 
   it("should display the correct window title", () => {
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(document.title).toEqual("Model: enterprise | Juju Dashboard");
   });
 
   it("should show a spinner if waiting on model list data", () => {
     state.juju.modelsLoaded = false;
     state.juju.modelWatcherData = {};
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("should show a spinner if waiting on model data", () => {
     state.juju.modelWatcherData = {};
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("should show a not found message if the model does not exist", () => {
     state.juju.models = {};
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(
       screen.getByRole("heading", { name: Label.NOT_FOUND })
     ).toBeInTheDocument();
   });
 
   it("lists the correct tabs", () => {
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsLogsMachines$/
     );
@@ -152,22 +132,14 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
       /^ApplicationsIntegrationsLogs$/
     );
   });
 
   it("clicking the tabs changes the visible section", async () => {
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     const viewSelector = screen.getByTestId("view-selector");
     const sections = [
       {
@@ -217,11 +189,7 @@ describe("Entity Details Container", () => {
   });
 
   it("shows the CLI in juju 2.9", async () => {
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).toBeInTheDocument();
     });
@@ -241,11 +209,7 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).toBeInTheDocument();
     });
@@ -264,22 +228,14 @@ describe("Entity Details Container", () => {
         }),
       }),
     };
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
     });
   });
 
   it("gives the content a class when the webCLI is shown", async () => {
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     await waitFor(() => {
       expect(document.querySelector(".l-content")).toHaveClass(
         "l-content--has-webcli"
@@ -291,11 +247,7 @@ describe("Entity Details Container", () => {
     const cliComponent = jest
       .spyOn(WebCLIModule, "default")
       .mockImplementation(jest.fn());
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(cliComponent.mock.calls[0][0]).toMatchObject({
       controllerWSHost: "example.com:17070",
       credentials: {
@@ -322,11 +274,7 @@ describe("Entity Details Container", () => {
   });
 
   it("gives the content the correct class for the model", () => {
-    renderComponent(<EntityDetails />, {
-      path,
-      url,
-      state,
-    });
+    renderComponent(<EntityDetails />, { path, url, state });
     expect(
       document.querySelector(".entity-details__model")
     ).toBeInTheDocument();
