@@ -1,4 +1,5 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Route } from "react-router-dom";
 
 import * as WebCLIModule from "components/WebCLI/WebCLI";
@@ -137,7 +138,7 @@ describe("Entity Details Container", () => {
     );
   });
 
-  it("clicking the tabs changes the visible section", () => {
+  it("clicking the tabs changes the visible section", async () => {
     renderComponent(<EntityDetails />, { path, url, state });
     const viewSelector = screen.getByTestId("view-selector");
     const sections = [
@@ -242,7 +243,7 @@ describe("Entity Details Container", () => {
     });
   });
 
-  it("passes the controller details to the webCLI", async () => {
+  it("passes the controller details to the webCLI", () => {
     const cliComponent = jest
       .spyOn(WebCLIModule, "default")
       .mockImplementation(jest.fn());
@@ -272,14 +273,14 @@ describe("Entity Details Container", () => {
     });
   });
 
-  it("gives the content the correct class for the model", async () => {
+  it("gives the content the correct class for the model", () => {
     renderComponent(<EntityDetails />, { path, url, state });
     expect(
       document.querySelector(".entity-details__model")
     ).toBeInTheDocument();
   });
 
-  it("gives the content the correct class for an app", async () => {
+  it("gives the content the correct class for an app", () => {
     renderComponent(<EntityDetails />, {
       path: urls.model.app.index(null),
       url: urls.model.app.index({
@@ -292,7 +293,7 @@ describe("Entity Details Container", () => {
     expect(document.querySelector(".entity-details__app")).toBeInTheDocument();
   });
 
-  it("gives the content the correct class for a machine", async () => {
+  it("gives the content the correct class for a machine", () => {
     renderComponent(<EntityDetails />, {
       path: urls.model.machine(null),
       url: urls.model.machine({
@@ -307,7 +308,7 @@ describe("Entity Details Container", () => {
     ).toBeInTheDocument();
   });
 
-  it("gives the content the correct class for a unit", async () => {
+  it("gives the content the correct class for a unit", () => {
     renderComponent(<EntityDetails />, {
       path: urls.model.unit(null),
       url: urls.model.unit({
@@ -319,5 +320,49 @@ describe("Entity Details Container", () => {
       state,
     });
     expect(document.querySelector(".entity-details__unit")).toBeInTheDocument();
+  });
+
+  it("should show watcher model data timeout error", () => {
+    renderComponent(<EntityDetails modelWatcherError="timeout" />, {
+      path,
+      url,
+      state,
+    });
+    expect(
+      document.querySelector(".p-notification--negative")
+    ).toHaveTextContent(Label.MODEL_WATCHER_TIMEOUT);
+  });
+
+  it("should show watcher model custom error", () => {
+    renderComponent(<EntityDetails modelWatcherError="custom error" />, {
+      path,
+      url,
+      state,
+    });
+    expect(
+      document.querySelector(".p-notification--negative")
+    ).toHaveTextContent(`${Label.MODEL_WATCHER_ERROR} custom error`);
+  });
+
+  it("should refresh page when pressing pressing Refresh button within error notification", async () => {
+    // Copy of window.location is required in order to mock only its "reload"
+    // method and set window.location back to default value at the end.
+    const location: Location = window.location;
+    // @ts-ignore
+    delete window.location;
+    window.location = {
+      ...location,
+      reload: jest.fn(),
+    };
+
+    renderComponent(<EntityDetails modelWatcherError="timeout" />, {
+      path,
+      url,
+      state,
+    });
+    await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
+    expect(window.location.reload).toHaveBeenCalledTimes(1);
+
+    window.location = location;
   });
 });

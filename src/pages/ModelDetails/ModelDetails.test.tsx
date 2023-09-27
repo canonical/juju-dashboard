@@ -1,7 +1,9 @@
 import type { Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 
+import * as juju from "juju/api";
+import { Label as EntityDetailsLabel } from "pages/EntityDetails/EntityDetails";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -189,5 +191,30 @@ describe("ModelDetails", () => {
       }),
     });
     expect(await screen.findByTestId("machine")).toBeInTheDocument();
+  });
+
+  it("should display error if startModelWatcher timed out", async () => {
+    jest.spyOn(juju, "startModelWatcher").mockRejectedValue("timeout");
+    renderComponent(<ModelDetails />, { path, url, state });
+    await waitFor(() => {
+      expect(document.querySelector(".p-notification--negative")).toBeVisible();
+    });
+    expect(
+      document.querySelector(".p-notification--negative")
+    ).toHaveTextContent(EntityDetailsLabel.MODEL_WATCHER_TIMEOUT);
+  });
+
+  it("should display error if fullStatus request fails", async () => {
+    client.conn.info.serverVersion = "3.1.99";
+    client.conn.facades.client.fullStatus.mockRejectedValue(
+      Error("fullStatus failed")
+    );
+    renderComponent(<ModelDetails />, { path, url, state });
+    await waitFor(() => {
+      expect(document.querySelector(".p-notification--negative")).toBeVisible();
+    });
+    expect(
+      document.querySelector(".p-notification--negative")
+    ).toHaveTextContent("fullStatus failed");
   });
 });
