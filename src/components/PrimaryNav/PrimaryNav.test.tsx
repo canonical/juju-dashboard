@@ -171,11 +171,10 @@ describe("Primary Nav", () => {
   it("should have all navigation buttons", () => {
     renderComponent(<PrimaryNav />);
     const navigationButtons = document.querySelectorAll(".p-list__link");
-    expect(navigationButtons).toHaveLength(4);
+    expect(navigationButtons).toHaveLength(3);
     expect(navigationButtons[0]).toHaveTextContent("Models");
     expect(navigationButtons[1]).toHaveTextContent("Controllers");
-    expect(navigationButtons[2]).toHaveTextContent("Logs");
-    expect(navigationButtons[3]).toHaveTextContent("Report a bug");
+    expect(navigationButtons[2]).toHaveTextContent("Report a bug");
   });
 
   it("should not show LogsLink navigation button under Juju", () => {
@@ -192,6 +191,24 @@ describe("Primary Nav", () => {
     expect(navigationButtons[0]).toHaveTextContent("Models");
     expect(navigationButtons[1]).toHaveTextContent("Controllers");
     expect(navigationButtons[2]).toHaveTextContent("Report a bug");
+  });
+
+  it("should show LogsLink navigation button if the controller supports it", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://controller.example.com",
+          isJuju: false,
+        }),
+        controllerFeatures: controllerFeaturesStateFactory.build({
+          "wss://controller.example.com": controllerFeaturesFactory.build({
+            auditLogs: true,
+          }),
+        }),
+      }),
+    });
+    renderComponent(<PrimaryNav />, { state });
+    expect(screen.getByRole("link", { name: Label.LOGS })).toBeInTheDocument();
   });
 
   it("should not show Advanced search navigation button under Juju", () => {

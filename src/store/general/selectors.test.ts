@@ -26,6 +26,7 @@ import {
   getControllerFeatureEnabled,
   getLoginErrors,
   isCrossModelQueriesEnabled,
+  isAuditLogsEnabled,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -234,6 +235,46 @@ describe("selectors", () => {
             controllerFeatures: controllerFeaturesStateFactory.build({
               "wss://controller.example.com": controllerFeaturesFactory.build({
                 crossModelQueries: true,
+              }),
+            }),
+          }),
+        })
+      )
+    ).toStrictEqual(false);
+  });
+
+  it("isAuditLogsEnabled", () => {
+    expect(
+      isAuditLogsEnabled(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            config: configFactory.build({
+              controllerAPIEndpoint: "wss://controller.example.com",
+              isJuju: false,
+            }),
+            controllerFeatures: controllerFeaturesStateFactory.build({
+              "wss://controller.example.com": controllerFeaturesFactory.build({
+                auditLogs: true,
+              }),
+            }),
+          }),
+        })
+      )
+    ).toStrictEqual(true);
+  });
+
+  it("isAuditLogsEnabled is not enabled when using Juju controller", () => {
+    expect(
+      isAuditLogsEnabled(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            config: configFactory.build({
+              controllerAPIEndpoint: "wss://controller.example.com",
+              isJuju: true,
+            }),
+            controllerFeatures: controllerFeaturesStateFactory.build({
+              "wss://controller.example.com": controllerFeaturesFactory.build({
+                auditLogs: true,
               }),
             }),
           }),

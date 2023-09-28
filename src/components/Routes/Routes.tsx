@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import {
   Navigate,
   Route,
@@ -16,7 +15,10 @@ import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import Settings from "pages/Settings/Settings";
-import { getIsJuju, isCrossModelQueriesEnabled } from "store/general/selectors";
+import {
+  isCrossModelQueriesEnabled,
+  isAuditLogsEnabled,
+} from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
 
@@ -32,8 +34,7 @@ export function Routes() {
   const sendAnalytics = useAnalytics();
   const location = useLocation();
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
-
-  const isJuju = useSelector(getIsJuju);
+  const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
 
   useEffect(() => {
     // Send an analytics event when the URL changes.
@@ -78,7 +79,7 @@ export function Routes() {
         }
       />
       <Route path="*" element={<PageNotFound />} />
-      {!isJuju && (
+      {auditLogsEnabled && (
         <Route
           path={urls.logs}
           element={

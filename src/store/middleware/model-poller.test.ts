@@ -87,7 +87,7 @@ describe("model poller", () => {
           "controller-access": "admin",
           "model-access": "admin",
           "display-name": "Eggman",
-          identity: "eggman",
+          identity: "user-eggman",
         },
       },
       transport: {} as Transport,
@@ -202,6 +202,9 @@ describe("model poller", () => {
       "user-models": [],
     });
     conn.facades.jimM = {
+      checkRelation: jest.fn().mockImplementation(async () => ({
+        allowed: true,
+      })),
       version: 4,
     };
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
@@ -215,6 +218,35 @@ describe("model poller", () => {
       generalActions.updateControllerFeatures({
         wsControllerURL,
         features: {
+          auditLogs: true,
+          crossModelQueries: true,
+        },
+      })
+    );
+  });
+
+  it("does not enable audit logs if the user is not an administrator", async () => {
+    conn.facades.modelManager.listModels.mockResolvedValue({
+      "user-models": [],
+    });
+    conn.facades.jimM = {
+      checkRelation: jest.fn().mockImplementation(async () => ({
+        allowed: false,
+      })),
+      version: 4,
+    };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(next).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.updateControllerFeatures({
+        wsControllerURL,
+        features: {
+          auditLogs: false,
           crossModelQueries: true,
         },
       })

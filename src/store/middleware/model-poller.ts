@@ -101,11 +101,28 @@ export const modelPollerMiddleware: Middleware<
             })
           );
           const jimmVersion = conn.facades.jimM?.version ?? 0;
+          const auditLogsAvailable = jimmVersion >= 4;
+          const identity = conn.info.user?.identity;
+          let auditLogsAllowed = false;
+          if (auditLogsAvailable && identity) {
+            try {
+              const response = await conn.facades.jimM?.checkRelation({
+                object: identity,
+                relation: "member",
+                target_object: "group-administrators",
+              });
+              auditLogsAllowed = !!response?.allowed;
+            } catch (error) {
+              // TODO: this should be displayed to the user somehow.
+              console.error("Unable to check user permissions", error);
+            }
+          }
           reduxStore.dispatch(
             generalActions.updateControllerFeatures({
               wsControllerURL,
               features: {
                 crossModelQueries: jimmVersion >= 4,
+                auditLogs: auditLogsAllowed && auditLogsAvailable,
               },
             })
           );

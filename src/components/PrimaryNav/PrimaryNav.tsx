@@ -7,7 +7,7 @@ import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
 import {
   getAppVersion,
-  getIsJuju,
+  isAuditLogsEnabled,
   isCrossModelQueriesEnabled,
 } from "store/general/selectors";
 import {
@@ -24,6 +24,7 @@ import PrimaryNavLink from "./PrimaryNavLink";
 
 export enum Label {
   ADVANCED_SEARCH = "Advanced search",
+  LOGS = "Logs",
 }
 
 const ModelsLink = () => {
@@ -74,7 +75,7 @@ const ControllersLink = () => {
 };
 
 const LogsLink = () => (
-  <PrimaryNavLink to={urls.logs} iconName="topic" title="Logs" />
+  <PrimaryNavLink to={urls.logs} iconName="topic" title={Label.LOGS} />
 );
 
 const AdvancedSearchLink = () => (
@@ -90,8 +91,7 @@ const PrimaryNav = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
-
-  const isJuju = useSelector(getIsJuju);
+  const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
@@ -119,7 +119,7 @@ const PrimaryNav = () => {
         <li className="p-list__item">
           <ControllersLink />
         </li>
-        {!isJuju && (
+        {auditLogsEnabled && (
           <li className="p-list__item">
             <LogsLink />
           </li>

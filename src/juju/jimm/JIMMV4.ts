@@ -21,6 +21,20 @@ export type CrossModelQueryResponse = {
 // sometimes be a string.
 export type CrossModelQueryFullResponse = CrossModelQueryResponse | string;
 
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/c1e1642ac701bcbef2fdd8f4e347de9dcf16ac50/api/params/params.go#L296
+export type RelationshipTuple = {
+  object: string;
+  relation: string;
+  target_object: string;
+};
+
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/c1e1642ac701bcbef2fdd8f4e347de9dcf16ac50/api/params/params.go#L324
+export type CheckRelationResponse = {
+  allowed: boolean;
+};
+
 export const isCrossModelQueryResponse = (
   response: CrossModelQueryFullResponse
 ): response is CrossModelQueryResponse =>
@@ -41,6 +55,18 @@ class JIMMV4 extends JIMMV3 {
 
     // Automatically bind all methods to instances.
     autoBind(this);
+  }
+
+  checkRelation(tuple: RelationshipTuple): Promise<CheckRelationResponse> {
+    return new Promise((resolve, reject) => {
+      const req = {
+        type: "JIMM",
+        request: "CheckRelation",
+        version: 4,
+        params: { tuple },
+      };
+      this._transport.write(req, resolve, reject);
+    });
   }
 
   crossModelQuery(query: string): Promise<CrossModelQueryFullResponse> {
