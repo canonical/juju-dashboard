@@ -201,13 +201,16 @@ export async function connectAndLoginWithTimeout(
     CLIENT_VERSION
   );
   return new Promise((resolve, reject) => {
-    Promise.race([timeout, juju]).then((resp) => {
-      if (typeof resp === "string") {
-        reject("timeout");
+    Promise.race([timeout, juju])
+      .then((resp) => {
+        if (typeof resp === "string") {
+          reject(new Error("timeout"));
+          return;
+        }
+        resolve(resp);
         return;
-      }
-      resolve(resp);
-    });
+      })
+      .catch((error) => console.error("Error during promise race.", error));
   });
 }
 
@@ -277,8 +280,12 @@ export async function fetchModelStatus(
         status.annotations = annotations;
       }
       logout();
-    } catch (e) {
-      console.error("error connecting to model:", modelUUID, e);
+    } catch (error) {
+      console.error(
+        "error connecting to model:",
+        modelUUID,
+        error instanceof Error ? error.message : error
+      );
     }
   }
   return status;
@@ -365,7 +372,14 @@ export async function fetchAllModelStatuses(
         if (modelInfo?.results[0].result?.["is-controller"]) {
           // If this is a controller model then update the
           // controller data with this model data.
-          dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }));
+          dispatch(
+            addControllerCloudRegion({ wsControllerURL, modelInfo })
+          ).catch((error) =>
+            console.error(
+              "Error when trying to add controller cloud and region data.",
+              error
+            )
+          );
         }
       }
       done();
@@ -457,14 +471,12 @@ export async function fetchControllerList(
   @param conn The controller connection instance.
 */
 export function disableControllerUUIDMasking(conn: ConnectionWithFacades) {
-  return new Promise<void>(async (resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     if (conn?.facades?.jimM) {
-      try {
-        await conn.facades.jimM.disableControllerUUIDMasking();
-        resolve();
-      } catch (e) {
-        reject();
-      }
+      conn.facades.jimM
+        .disableControllerUUIDMasking()
+        .then(() => resolve())
+        .catch((e) => reject(new Error()));
     } else {
       resolve();
     }
@@ -737,11 +749,11 @@ export async function setModelSharingPermissions(
       );
   } else {
     response = Promise.reject(
-      `Unable to connect to controller: ${controllerURL}`
+      new Error(`Unable to connect to controller: ${controllerURL}`)
     );
   }
 
-  return response ?? Promise.reject("Incorrect options given.");
+  return response ?? Promise.reject(new Error("Incorrect options given."));
 }
 
 export async function getCharmInfo(
@@ -782,18 +794,14 @@ export async function getCharmsURLFromApplications(
 }
 
 export function crossModelQuery(conn: ConnectionWithFacades, query: string) {
-  return new Promise<CrossModelQueryFullResponse>(async (resolve, reject) => {
+  return new Promise<CrossModelQueryFullResponse>((resolve, reject) => {
     if (conn?.facades?.jimM) {
-      try {
-        const crossModelQueryResponse = await conn.facades.jimM.crossModelQuery(
-          query
-        );
-        resolve(crossModelQueryResponse);
-      } catch (e) {
-        reject(e);
-      }
+      conn.facades.jimM
+        .crossModelQuery(query)
+        .then((crossModelQueryResponse) => resolve(crossModelQueryResponse))
+        .catch((error) => reject(error));
     } else {
-      reject("Not connected to JIMM.");
+      reject(new Error("Not connected to JIMM."));
     }
   });
 }

@@ -198,7 +198,7 @@ describe("renderApp", () => {
       );
     const dispatch = jest
       .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(jest.fn());
+      .mockImplementation(jest.fn().mockResolvedValue({ catch: jest.fn() }));
     const config = configFactory.build({
       controllerAPIEndpoint: "wss://example.com/api",
       identityProviderAvailable: true,

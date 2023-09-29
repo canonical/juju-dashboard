@@ -14,6 +14,10 @@ import {
 } from "store/juju/selectors";
 import { useAppStore } from "store/store";
 
+enum Label {
+  GET_URL_ERROR = "Error while trying to get charms url from applications",
+}
+
 export enum TestId {
   PANEL = "charms-and-actions-panel",
 }
@@ -54,10 +58,13 @@ const CharmsAndActionsPanel = () => {
       modelUUID,
       appState,
       dispatch
-    ).then((charmsURL) => {
-      const isCharmURLUnique = charmsURL.length === 1;
-      setCharmURL(isCharmURLUnique ? charmsURL[0] : null);
-    });
+    )
+      .then((charmsURL) => {
+        const isCharmURLUnique = charmsURL.length === 1;
+        setCharmURL(isCharmURLUnique ? charmsURL[0] : null);
+        return;
+      })
+      .catch((error) => console.error(Label.GET_URL_ERROR, error));
   }, [appState, dispatch, isPanelLoading, modelUUID, selectedApplications]);
 
   return (

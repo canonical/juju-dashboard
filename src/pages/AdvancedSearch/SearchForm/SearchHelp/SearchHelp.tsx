@@ -10,8 +10,8 @@ type Props = {
 const SearchHelp = ({ search }: Props): JSX.Element => {
   const { setFieldValue } = useFormikContext<FormFields>();
 
-  const handleQuery = (query: string) => {
-    setFieldValue("query", query);
+  const handleQuery = async (query: string) => {
+    await setFieldValue("query", query);
     search(query);
   };
 

@@ -143,7 +143,9 @@ describe("LogIn", () => {
     jest
       .spyOn(appThunks, "connectAndStartPolling")
       .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+        jest
+          .fn()
+          .mockReturnValue({ type: "connectAndStartPolling", catch: jest.fn() })
       );
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({

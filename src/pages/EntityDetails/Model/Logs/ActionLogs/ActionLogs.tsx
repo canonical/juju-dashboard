@@ -64,6 +64,7 @@ type ApplicationData = {
 export enum Label {
   OUTPUT = "Output",
   COPY = "Copy to clipboard",
+  FETCH_ERROR = "Error while trying to fetch data.",
 }
 
 export enum Output {
@@ -239,7 +240,7 @@ export default function ActionLogs() {
         setFetchedOperations(true);
       }
     }
-    fetchData();
+    fetchData().catch((error) => console.error(Label.FETCH_ERROR, error));
     // XXX Temporarily disabled.
     // Used to stop it re-requesting every time state changes.
     // appStore and applicationList removed from dependency graph

@@ -57,7 +57,7 @@ describe("Share Card", () => {
 
   it("should call access change function when select value clicked", async () => {
     const removeUserFn = jest.fn();
-    const accessSelectChangeFn = jest.fn();
+    const accessSelectChangeFn = jest.fn(() => Promise.resolve(null));
     render(
       <ShareCard
         userName="janedoe"

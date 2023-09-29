@@ -26,6 +26,8 @@ export enum Label {
   ADD_BUTTON = "Add user",
   BACK_BUTTON = "Back",
   SHOW_ADD_FORM = "Add new user",
+  PERMISSION_ERROR = "Error while trying to update model permissions.",
+  NEW_USER_SUBMIT_ERROR = "Error while trying to submit new user form.",
 }
 
 export enum TestId {
@@ -71,7 +73,9 @@ export default function ShareModel() {
     },
     validate: (values) => handleValidateNewUser(values),
     onSubmit: (values, { resetForm }) => {
-      handleNewUserFormSubmit(values, resetForm);
+      handleNewUserFormSubmit(values, resetForm).catch((error) =>
+        console.error(Label.NEW_USER_SUBMIT_ERROR, error)
+      );
       setShowAddNewUser(false);
     },
   });
@@ -197,8 +201,8 @@ export default function ShareModel() {
     return response ?? null;
   };
 
-  const handleRemoveUser = async (username: string) => {
-    await updateModelPermissions(
+  const handleRemoveUser = (username: string) => {
+    updateModelPermissions(
       "revoke",
       username,
       undefined,
@@ -207,21 +211,21 @@ export default function ShareModel() {
       // remove the user entirely we need to revoke the lowest possible
       // permission (which also revokes all higher permissions).
       "read"
-    );
+    ).catch((error) => console.error(Label.PERMISSION_ERROR, error));
 
     reactHotToast.custom((t) => (
       <ToastCard
         toastInstance={t}
         type="positive"
-        undo={async () => {
+        undo={() => {
           const permissionTo = usersAccess?.[username];
           const permissionFrom = undefined;
-          await updateModelPermissions(
+          updateModelPermissions(
             "grant",
             username,
             permissionTo,
             permissionFrom
-          );
+          ).catch((error) => console.error(Label.PERMISSION_ERROR, error));
         }}
       >
         <strong>{username}</strong> has been successfully removed.
@@ -324,11 +328,11 @@ export default function ShareModel() {
                           <Button
                             appearance="link"
                             className="p-text--small"
-                            onClick={() => {
+                            onClick={async () => {
                               const currentValue =
                                 newUserFormik.values.username;
                               // Replace the user domain (if there is one) with this one.
-                              newUserFormik.setFieldValue(
+                              await newUserFormik.setFieldValue(
                                 "username",
                                 `${currentValue.split("@")[0]}@${domain}`
                               );

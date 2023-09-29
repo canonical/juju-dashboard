@@ -1,9 +1,12 @@
 import type { ValueOf } from "@canonical/react-components";
-import { Form, useFormikContext } from "formik";
+import { Form, type FormikErrors, useFormikContext } from "formik";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 
-export type SetFieldValue<V> = (fieldName: string, value: ValueOf<V>) => void;
+export type SetFieldValue<V> = (
+  fieldName: string,
+  value: ValueOf<V>
+) => Promise<void | FormikErrors<V>>;
 
 type Props<V> = {
   children: ReactNode;

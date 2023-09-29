@@ -335,7 +335,7 @@ describe("CharmActionsPanel", () => {
   it("handles API errors", async () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
-      .mockImplementation(() => Promise.reject());
+      .mockImplementation(() => Promise.reject(new Error()));
     renderComponent(
       <>
         <CharmActionsPanel

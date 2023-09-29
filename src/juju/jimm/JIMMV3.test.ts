@@ -14,7 +14,7 @@ describe("JIMMV3", () => {
 
   it("disableControllerUUIDMasking", async () => {
     const jimm = new JIMMV3(transport, connectionInfo);
-    jimm.disableControllerUUIDMasking();
+    void jimm.disableControllerUUIDMasking();
     expect(transport.write).toHaveBeenCalledWith(
       {
         type: "JIMM",
@@ -29,7 +29,7 @@ describe("JIMMV3", () => {
 
   it("listControllers", async () => {
     const jimm = new JIMMV3(transport, connectionInfo);
-    jimm.listControllers();
+    void jimm.listControllers();
     expect(transport.write).toHaveBeenCalledWith(
       {
         type: "JIMM",

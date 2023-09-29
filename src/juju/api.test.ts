@@ -265,7 +265,7 @@ describe("Juju API", () => {
         false
       );
       jest.advanceTimersByTime(LOGIN_TIMEOUT);
-      await expect(response).rejects.toBe("timeout");
+      await expect(response).rejects.toMatchObject(new Error("timeout"));
     });
   });
 
@@ -600,7 +600,7 @@ describe("Juju API", () => {
     });
 
     it("updates controller cloud and region", async () => {
-      const dispatch = jest.fn();
+      const dispatch = jest.fn().mockReturnValue({ catch: jest.fn() });
       const abc123 = modelInfoResultsFactory.build({
         results: [
           modelInfoResultFactory.build({
@@ -788,7 +788,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: jest.fn(),
+            disableControllerUUIDMasking: jest.fn(() => Promise.resolve()),
           },
         },
       } as unknown as Connection;
@@ -800,7 +800,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: jest.fn(),
+            disableControllerUUIDMasking: jest.fn(() => Promise.resolve()),
           },
         },
       } as unknown as Connection;
@@ -1296,8 +1296,8 @@ describe("Juju API", () => {
         "grant",
         jest.fn()
       );
-      await expect(response).rejects.toBe(
-        "Unable to connect to controller: wss://example.com/api"
+      await expect(response).rejects.toMatchObject(
+        new Error("Unable to connect to controller: wss://example.com/api")
       );
     });
 
@@ -1322,7 +1322,9 @@ describe("Juju API", () => {
         "none",
         jest.fn()
       );
-      await expect(response).rejects.toBe("Incorrect options given.");
+      await expect(response).rejects.toMatchObject(
+        new Error("Incorrect options given.")
+      );
     });
 
     it("can revoke permissions", async () => {
@@ -1544,7 +1546,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            crossModelQuery: jest.fn().mockReturnValue(result),
+            crossModelQuery: jest.fn(() => Promise.resolve(result)),
           },
         },
       } as unknown as Connection;
@@ -1571,8 +1573,8 @@ describe("Juju API", () => {
       const conn = {
         facades: {},
       } as unknown as Connection;
-      await expect(crossModelQuery(conn, ".")).rejects.toBe(
-        "Not connected to JIMM."
+      await expect(crossModelQuery(conn, ".")).rejects.toMatchObject(
+        new Error("Not connected to JIMM.")
       );
     });
   });

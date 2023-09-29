@@ -11,6 +11,7 @@ import "./_share-card.scss";
 export enum Label {
   OWNER = "Owner",
   REMOVE = "Remove user",
+  ACCESS_CHANGE_ERROR = "Error when trying to change access in a share card.",
 }
 
 type Props = {
@@ -110,16 +111,19 @@ export default function ShareCard({
                         e.target.value,
                         userName
                       );
-                      if (accessChange) {
-                        accessChange.then((response) => {
+                      accessChange
+                        .then((response) => {
                           if (!response?.results?.[0]?.error) {
                             setInFocus(false);
                             setUpdateStatus("Updated");
                           } else {
                             setUpdateStatus("Error");
                           }
-                        });
-                      }
+                          return;
+                        })
+                        .catch((error) =>
+                          console.error(Label.ACCESS_CHANGE_ERROR, error)
+                        );
                     }}
                     value={access}
                     className="share__card-access"

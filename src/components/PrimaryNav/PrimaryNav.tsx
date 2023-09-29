@@ -97,12 +97,8 @@ const PrimaryNav = () => {
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
       dashboardUpdateAvailable(appVersion || "")
-        ?.then((updateAvailable) => {
-          setUpdateAvailable(updateAvailable ?? false);
-        })
-        .catch(() => {
-          setUpdateAvailable(false);
-        });
+        .then((updateAvailable) => setUpdateAvailable(updateAvailable ?? false))
+        .catch(() => setUpdateAvailable(false));
       versionRequested.current = true;
     }
   }, [appVersion]);

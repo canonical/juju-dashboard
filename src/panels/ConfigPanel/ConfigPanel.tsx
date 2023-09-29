@@ -42,6 +42,8 @@ export enum Label {
   SAVE_CONFIRM = "Are you sure you wish to apply these changes?",
   SAVE_CONFIRM_CANCEL_BUTTON = "Cancel",
   SAVE_CONFIRM_CONFIRM_BUTTON = "Yes, apply changes",
+  GET_CONFIG_ERROR = "Error while trying to get config.",
+  SUBMIT_TO_JUJU_ERROR = "Error while trying to submit to Juju.",
 }
 
 export enum TestId {
@@ -99,7 +101,7 @@ export default function ConfigPanel(): JSX.Element {
         setIsLoading,
         setConfig,
         checkAllDefaults
-      );
+      ).catch((error) => console.error(Label.GET_CONFIG_ERROR, error));
     }
   }, [appName, modelUUID, reduxStore]);
 
@@ -243,7 +245,9 @@ export default function ConfigPanel(): JSX.Element {
                 setConfirmType(null);
                 // Clear the form errors if there were any from a previous submit.
                 setFormErrors(null);
-                _submitToJuju();
+                _submitToJuju().catch((error) =>
+                  console.error(Label.SUBMIT_TO_JUJU_ERROR, error)
+                );
               }}
               close={() => setConfirmType(null)}
             >
@@ -429,6 +433,7 @@ async function getConfig(
       setIsLoading(false);
       setConfig(config);
       checkAllDefaults(config);
+      return;
     }
   );
 }

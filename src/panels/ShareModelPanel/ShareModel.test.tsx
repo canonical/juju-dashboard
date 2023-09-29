@@ -141,7 +141,9 @@ describe("Share Model Panel", () => {
   it("handles errors when adding a user", async () => {
     jest
       .spyOn(storeModule, "usePromiseDispatch")
-      .mockReturnValue(jest.fn().mockImplementation(() => Promise.reject()));
+      .mockReturnValue(
+        jest.fn().mockImplementation(() => Promise.reject(new Error()))
+      );
     renderComponent(
       <>
         <ShareModel />
@@ -165,7 +167,7 @@ describe("Share Model Panel", () => {
     jest
       .spyOn(storeModule, "usePromiseDispatch")
       .mockReturnValue(
-        jest.fn().mockImplementation(() => Promise.reject("Uh oh!"))
+        jest.fn().mockImplementation(() => Promise.reject(new Error("Uh oh!")))
       );
     renderComponent(
       <>

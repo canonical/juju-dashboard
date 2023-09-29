@@ -16,6 +16,7 @@ import "./register-controller.scss";
 export enum Label {
   SUBMIT = "Add Controller",
   TITLE = "Register a controller",
+  POLLING_ERROR = "Error while trying to connect and start polling.",
 }
 
 export const STORAGE_KEY = "additionalControllers";
@@ -60,7 +61,9 @@ export default function RegisterController() {
       true, // additional controller
     ]);
     setAdditionalControllers(additionalControllers);
-    dispatch(appThunks.connectAndStartPolling());
+    dispatch(appThunks.connectAndStartPolling()).catch((error) =>
+      console.error(Label.POLLING_ERROR, error)
+    );
     // Close the panel
     navigate(urls.controllers);
   };
