@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { thunks as appThunks } from "store/app";
+import * as dashboardStore from "store/store";
 import { renderComponent } from "testing/utils";
 
 import RegisterController, { Label, STORAGE_KEY } from "./RegisterController";
@@ -21,6 +22,12 @@ describe("RegisterController", () => {
       .mockImplementation(
         jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
       );
+    jest.spyOn(dashboardStore, "useAppDispatch").mockImplementation(
+      jest.fn().mockReturnValue(() => {
+        store.dispatch(appThunks.connectAndStartPolling() as any);
+        return { catch: jest.fn() };
+      })
+    );
     const { store } = renderComponent(<RegisterController />);
     await userEvent.type(
       screen.getByRole("textbox", {
