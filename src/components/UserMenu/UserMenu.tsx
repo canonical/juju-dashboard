@@ -14,7 +14,7 @@ import urls from "urls";
 
 import "./_user-menu.scss";
 
-enum Label {
+export enum Label {
   LOGOUT_ERROR = "Error when trying to logout.",
 }
 
@@ -80,7 +80,7 @@ const UserMenu = () => {
                 className="user-menu__link"
                 to={urls.index}
                 onClick={() => {
-                  // TODO: Potentially show the error in some cases
+                  // TODO: Consider displaying an error alert.
                   dispatch(appThunks.logOut()).catch((error) =>
                     console.error(Label.LOGOUT_ERROR, error)
                   );

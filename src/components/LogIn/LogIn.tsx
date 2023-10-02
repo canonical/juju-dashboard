@@ -175,7 +175,7 @@ function UserPassForm() {
       })
     );
     if (bakery) {
-      // TODO: Potentially show the error in some cases
+      // TODO: Consider displaying an error alert.
       dispatch(appThunks.connectAndStartPolling()).catch((error) =>
         console.error(Label.POLLING_ERROR, error)
       );
