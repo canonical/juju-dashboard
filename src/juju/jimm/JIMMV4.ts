@@ -31,9 +31,11 @@ export type RelationshipTuple = {
 
 // As typed in JIMM:
 // https://github.com/canonical/jimm/blob/c1e1642ac701bcbef2fdd8f4e347de9dcf16ac50/api/params/params.go#L324
-export type CheckRelationResponse = {
-  allowed: boolean;
-};
+export type CheckRelationResponse =
+  | {
+      allowed: boolean;
+    }
+  | string;
 
 export const isCrossModelQueryResponse = (
   response: CrossModelQueryFullResponse

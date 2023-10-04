@@ -27,6 +27,22 @@ export enum LoginError {
 
 type ControllerOptions = [string, Credential, boolean, boolean | undefined];
 
+const checkJIMMRelation = async (
+  conn: ConnectionWithFacades,
+  identity: string,
+  relation: string
+) => {
+  const response = await conn.facades.jimM?.checkRelation({
+    object: identity,
+    relation: relation,
+    target_object: "controller-jimm",
+  });
+  if (typeof response === "string") {
+    throw new Error(response);
+  }
+  return !!response?.allowed;
+};
+
 export const modelPollerMiddleware: Middleware<
   void,
   RootState,
@@ -106,12 +122,18 @@ export const modelPollerMiddleware: Middleware<
           let auditLogsAllowed = false;
           if (auditLogsAvailable && identity) {
             try {
-              const response = await conn.facades.jimM?.checkRelation({
-                object: identity,
-                relation: "member",
-                target_object: "group-administrators",
-              });
-              auditLogsAllowed = !!response?.allowed;
+              auditLogsAllowed = await checkJIMMRelation(
+                conn,
+                identity,
+                "audit_log_viewer"
+              );
+              if (!auditLogsAllowed) {
+                auditLogsAllowed = await checkJIMMRelation(
+                  conn,
+                  identity,
+                  "administrator"
+                );
+              }
             } catch (error) {
               // TODO: this should be displayed to the user somehow.
               console.error("Unable to check user permissions", error);
