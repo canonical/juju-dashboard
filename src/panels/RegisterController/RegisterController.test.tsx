@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { thunks as appThunks } from "store/app";
@@ -8,8 +8,15 @@ import { renderComponent } from "testing/utils";
 import RegisterController, { Label, STORAGE_KEY } from "./RegisterController";
 
 describe("RegisterController", () => {
+  const consoleError = console.error;
+
+  beforeEach(() => {
+    console.error = jest.fn();
+  });
+
   afterEach(() => {
     localStorage.clear();
+    console.error = consoleError;
   });
 
   it("can register a controller", async () => {
@@ -23,9 +30,16 @@ describe("RegisterController", () => {
         jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
       );
     jest.spyOn(dashboardStore, "useAppDispatch").mockImplementation(
-      jest.fn().mockReturnValue(() => {
-        store.dispatch(appThunks.connectAndStartPolling() as any);
-        return { catch: jest.fn() };
+      jest.fn().mockReturnValue((action: unknown) => {
+        if (
+          action instanceof Object &&
+          "type" in action &&
+          action.type === "connectAndStartPolling"
+        ) {
+          store.dispatch(appThunks.connectAndStartPolling() as any);
+          return Promise.resolve({ catch: jest.fn() });
+        }
+        return null;
       })
     );
     const { store } = renderComponent(<RegisterController />);
@@ -106,5 +120,59 @@ describe("RegisterController", () => {
     expect(
       screen.getByRole("button", { name: Label.SUBMIT })
     ).not.toBeDisabled();
+  });
+
+  it("should show console error when dispatching connectAndStartPolling", async () => {
+    jest
+      .spyOn(appThunks, "connectAndStartPolling")
+      .mockImplementation(
+        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+      );
+    jest.spyOn(dashboardStore, "useAppDispatch").mockImplementation(
+      jest.fn().mockReturnValue((action: unknown) => {
+        if (
+          action instanceof Object &&
+          "type" in action &&
+          action.type === "connectAndStartPolling"
+        ) {
+          return Promise.reject(
+            new Error("Error while trying to dispatch connectAndStartPolling!")
+          );
+        }
+        return null;
+      })
+    );
+    renderComponent(<RegisterController />);
+    await userEvent.type(
+      screen.getByRole("textbox", {
+        name: "Name",
+      }),
+      "controller1"
+    );
+    await userEvent.type(
+      screen.getByRole("textbox", {
+        name: "Host",
+      }),
+      "1.2.3.4:567"
+    );
+    await userEvent.type(
+      screen.getByRole("textbox", {
+        name: "Username",
+      }),
+      "eggman@external"
+    );
+    await userEvent.click(
+      screen.getByRole("checkbox", {
+        name: "The SSL certificate, if any, has been accepted. *",
+      })
+    );
+    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    expect(appThunks.connectAndStartPolling).toHaveBeenCalledTimes(1);
+    await waitFor(() =>
+      expect(console.error).toHaveBeenCalledWith(
+        Label.POLLING_ERROR,
+        new Error("Error while trying to dispatch connectAndStartPolling!")
+      )
+    );
   });
 });

@@ -14,7 +14,7 @@ import {
 } from "store/juju/selectors";
 import { useAppStore } from "store/store";
 
-enum Label {
+export enum Label {
   GET_URL_ERROR = "Error while trying to get charms url from applications",
 }
 

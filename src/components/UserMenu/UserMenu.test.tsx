@@ -33,6 +33,10 @@ describe("User Menu", () => {
     });
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it("is inactive by default", () => {
     renderComponent(<UserMenu />, { state });
     expect(document.querySelector(".user-menu")).not.toHaveClass("is-active");
@@ -68,6 +72,7 @@ describe("User Menu", () => {
     const { store } = renderComponent(<UserMenu />, { state });
     const actions = store.getActions();
     await userEvent.click(screen.getByRole("link", { name: "Log out" }));
+    expect(appThunks.logOut).toHaveBeenCalledTimes(1);
     expect(actions.find((action) => action.type === "logOut")).toBeTruthy();
   });
 
@@ -93,6 +98,7 @@ describe("User Menu", () => {
 
     renderComponent(<UserMenu />, { state });
     await userEvent.click(screen.getByRole("link", { name: "Log out" }));
+    expect(appThunks.logOut).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(
       Label.LOGOUT_ERROR,
       new Error("Error while dispatching logOut!")

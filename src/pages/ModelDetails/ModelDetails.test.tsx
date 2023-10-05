@@ -13,7 +13,7 @@ import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watch
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import ModelDetails from "./ModelDetails";
+import ModelDetails, { Label as ModelDetailsLabel } from "./ModelDetails";
 
 jest.mock("pages/EntityDetails/App/App", () => {
   return () => <div data-testid="app"></div>;
@@ -216,5 +216,36 @@ describe("ModelDetails", () => {
     expect(
       document.querySelector(".p-notification--negative")
     ).toHaveTextContent("fullStatus failed");
+  });
+
+  it("should display console error when trying to stop model watcher", async () => {
+    const consoleError = console.error;
+    console.error = jest.fn();
+    jest.spyOn(juju, "startModelWatcher").mockImplementation(
+      jest.fn().mockResolvedValue({
+        conn: client.conn,
+        watcherHandle: { "watcher-id": "1" },
+        pingerIntervalId: 1,
+      })
+    );
+    jest
+      .spyOn(juju, "stopModelWatcher")
+      .mockImplementation(
+        jest.fn().mockRejectedValue(new Error("Failed to stop model watcher!"))
+      );
+
+    const {
+      result: { unmount },
+    } = renderComponent(<ModelDetails />, { path, url, state });
+    await waitFor(() =>
+      expect(juju.startModelWatcher).toHaveBeenCalledTimes(1)
+    );
+    unmount();
+    await waitFor(() => expect(juju.stopModelWatcher).toHaveBeenCalledTimes(1));
+    expect(console.error).toHaveBeenCalledWith(
+      ModelDetailsLabel.MODEL_WATCHER_ERROR,
+      new Error("Failed to stop model watcher!")
+    );
+    console.error = consoleError;
   });
 });

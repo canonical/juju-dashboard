@@ -17,7 +17,7 @@ import { useAppStore } from "store/store";
 import urls from "urls";
 import { getMajorMinorVersion } from "utils";
 
-enum Label {
+export enum Label {
   MODEL_WATCHER_ERROR = "Error while trying to stop model watcher.",
 }
 

@@ -13,7 +13,14 @@ import { renderComponent } from "testing/utils";
 import LogIn, { ErrorResponse, Label } from "./LogIn";
 
 describe("LogIn", () => {
+  const consoleError = console.error;
+
+  beforeEach(() => {
+    console.error = jest.fn();
+  });
+
   afterEach(() => {
+    console.error = consoleError;
     act(() => reactHotToast.remove());
     jest.restoreAllMocks();
   });
@@ -265,8 +272,6 @@ describe("LogIn", () => {
   });
 
   it("should display console error when trying to log in", async () => {
-    const consoleError = console.error;
-    console.error = jest.fn();
     jest
       .spyOn(appThunks, "connectAndStartPolling")
       .mockImplementation(
@@ -290,11 +295,10 @@ describe("LogIn", () => {
 
     renderComponent(<LogIn>App content</LogIn>);
     await userEvent.click(screen.getByRole("button"));
+    expect(appThunks.connectAndStartPolling).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(
       Label.POLLING_ERROR,
       new Error("Error while dispatching connectAndStartPolling!")
     );
-
-    console.error = consoleError;
   });
 });

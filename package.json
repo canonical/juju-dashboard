@@ -43,6 +43,7 @@
     ]
   },
   "jest": {
+    "resetMocks": true,
     "transformIgnorePatterns": [
       "node_modules/(?!(@canonical/react-components)/)"
     ]

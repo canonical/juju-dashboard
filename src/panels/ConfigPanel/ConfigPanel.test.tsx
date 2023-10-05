@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import * as apiModule from "juju/api";
@@ -35,8 +35,10 @@ describe("ConfigPanel", () => {
   const url = `/models/eggman@external/hadoopspark?${params.toString()}`;
   const path = "/models/:userName/:modelName";
   let getApplicationConfigSpy: jest.SpyInstance;
+  const consoleError = console.error;
 
   beforeEach(() => {
+    console.error = jest.fn();
     jest.resetModules();
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -71,6 +73,11 @@ describe("ConfigPanel", () => {
           })
         )
       );
+  });
+
+  afterEach(() => {
+    console.error = consoleError;
+    jest.restoreAllMocks();
   });
 
   it("displays a message if the app has no config", async () => {
@@ -376,5 +383,69 @@ describe("ConfigPanel", () => {
     );
     expect(screen.getByText("That's not a name")).toBeInTheDocument();
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should display console error when trying to get config", async () => {
+    jest
+      .spyOn(apiModule, "getApplicationConfig")
+      .mockImplementation(
+        jest
+          .fn()
+          .mockRejectedValue(
+            new Error("Error while calling getApplicationConfig")
+          )
+      );
+    renderComponent(<ConfigPanel />, { state, path, url });
+    expect(apiModule.getApplicationConfig).toHaveBeenCalledTimes(1);
+    await waitFor(() =>
+      expect(console.error).toHaveBeenCalledWith(
+        Label.GET_CONFIG_ERROR,
+        new Error("Error while calling getApplicationConfig")
+      )
+    );
+  });
+
+  it("should display console error when trying to save", async () => {
+    jest
+      .spyOn(apiModule, "getApplicationConfig")
+      .mockImplementationOnce(
+        jest.fn().mockResolvedValue(
+          applicationGetFactory.build({
+            config: {
+              email: configFactory.build({ default: "" }),
+              name: configFactory.build({ default: "eggman" }),
+            },
+          })
+        )
+      )
+      .mockImplementationOnce(
+        jest.fn().mockRejectedValue(new Error("Error while trying to save"))
+      );
+    jest
+      .spyOn(apiModule, "setApplicationConfig")
+      .mockImplementation(() => Promise.resolve({ results: [] }));
+    renderComponent(<ConfigPanel />, { state, path, url });
+    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
+    await userEvent.type(
+      within(await screen.findByTestId("email")).getByRole("textbox"),
+      "eggman@example.com"
+    );
+    await userEvent.type(
+      within(await screen.findByTestId("name")).getByRole("textbox"),
+      "noteggman"
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SAVE_BUTTON })
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON })
+    );
+    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(2);
+    await waitFor(() =>
+      expect(console.error).toHaveBeenCalledWith(
+        Label.SUBMIT_TO_JUJU_ERROR,
+        new Error("Error while trying to save")
+      )
+    );
   });
 });

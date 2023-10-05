@@ -221,6 +221,16 @@ describe("renderApp", () => {
 });
 
 describe("getControllerAPIEndpointErrors", () => {
+  const consoleError = console.error;
+
+  beforeEach(() => {
+    console.error = jest.fn();
+  });
+
+  afterEach(() => {
+    console.error = consoleError;
+  });
+
   it("should handle secure protocol", () => {
     expect(
       getControllerAPIEndpointErrors("wss://example.com:80/api")
@@ -264,6 +274,38 @@ describe("getControllerAPIEndpointErrors", () => {
   it("should error if it does not contain a protocol", () => {
     expect(getControllerAPIEndpointErrors("example.com:80/api")).toBe(
       "controllerAPIEndpoint (example.com:80/api) must be an absolute path or begin with ws:// or wss://."
+    );
+  });
+
+  it("should show console error when dispatching connectAndStartPolling", async () => {
+    jest
+      .spyOn(appThunks, "connectAndStartPolling")
+      .mockImplementation(
+        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+      );
+    jest
+      .spyOn(storeModule.default, "dispatch")
+      .mockImplementation((action: unknown) =>
+        action instanceof Object &&
+        "type" in action &&
+        action.type === "connectAndStartPolling"
+          ? Promise.reject(
+              new Error("Error while dispatching connectAndStartPolling!")
+            )
+          : null
+      );
+    const config = configFactory.build({
+      baseControllerURL: null,
+      identityProviderAvailable: true,
+    });
+    window.jujuDashboardConfig = config;
+    renderApp();
+    expect(appThunks.connectAndStartPolling).toHaveBeenCalledTimes(1);
+    await waitFor(() =>
+      expect(console.error).toHaveBeenCalledWith(
+        Label.POLLING_ERROR,
+        new Error("Error while dispatching connectAndStartPolling!")
+      )
     );
   });
 });
