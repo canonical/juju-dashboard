@@ -1,6 +1,6 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Toaster } from "react-hot-toast";
+import reactHotToast, { Toaster } from "react-hot-toast";
 
 import { Label as ShareCardLabel } from "components/ShareCard/ShareCard";
 import { actions as appActions } from "store/app";
@@ -22,10 +22,6 @@ describe("Share Model Panel", () => {
   let state: RootState;
   const path = "/models/:userName/:modelName";
   const url = "/models/eggman@external/hadoopspark";
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -50,6 +46,12 @@ describe("Share Model Panel", () => {
         },
       }),
     });
+  });
+
+  afterEach(() => {
+    // Guarantees that Toaster state does not persist throughout renders.
+    act(() => reactHotToast.remove());
+    jest.restoreAllMocks();
   });
 
   it("should show panel", () => {

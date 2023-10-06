@@ -73,9 +73,7 @@ export default function ShareModel() {
     },
     validate: (values) => handleValidateNewUser(values),
     onSubmit: (values, { resetForm }) => {
-      handleNewUserFormSubmit(values, resetForm).catch((error) =>
-        console.error(Label.NEW_USER_SUBMIT_ERROR, error)
-      );
+      void handleNewUserFormSubmit(values, resetForm);
       setShowAddNewUser(false);
     },
   });
@@ -202,7 +200,7 @@ export default function ShareModel() {
   };
 
   const handleRemoveUser = (username: string) => {
-    updateModelPermissions(
+    void updateModelPermissions(
       "revoke",
       username,
       undefined,
@@ -211,7 +209,7 @@ export default function ShareModel() {
       // remove the user entirely we need to revoke the lowest possible
       // permission (which also revokes all higher permissions).
       "read"
-    ).catch((error) => console.error(Label.PERMISSION_ERROR, error));
+    );
 
     reactHotToast.custom((t) => (
       <ToastCard
@@ -220,12 +218,12 @@ export default function ShareModel() {
         undo={() => {
           const permissionTo = usersAccess?.[username];
           const permissionFrom = undefined;
-          updateModelPermissions(
+          void updateModelPermissions(
             "grant",
             username,
             permissionTo,
             permissionFrom
-          ).catch((error) => console.error(Label.PERMISSION_ERROR, error));
+          );
         }}
       >
         <strong>{username}</strong> has been successfully removed.

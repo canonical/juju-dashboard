@@ -210,7 +210,9 @@ export async function connectAndLoginWithTimeout(
         resolve(resp);
         return;
       })
-      .catch((error) => console.error("Error during promise race.", error));
+      .catch((error) => {
+        reject(new Error("Error during promise race.", error));
+      });
   });
 }
 

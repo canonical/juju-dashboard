@@ -1,6 +1,6 @@
 import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import toast, { Toaster } from "react-hot-toast";
+import reactHotToast, { Toaster } from "react-hot-toast";
 
 import * as juju from "juju/api";
 import { executeActionOnUnits } from "juju/api";
@@ -86,7 +86,7 @@ describe("CharmActionsPanel", () => {
 
   afterEach(() => {
     // Guarantees that Toaster state does not persist throughout renders.
-    act(() => toast.remove());
+    act(() => reactHotToast.remove());
     jest.resetModules();
     jest.restoreAllMocks();
   });

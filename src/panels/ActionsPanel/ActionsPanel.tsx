@@ -117,7 +117,6 @@ export default function ActionsPanel(): JSX.Element {
         .then((actions) => {
           if (actions?.results?.[0]?.actions) {
             setActionData(actions.results[0].actions);
-            return;
           }
           setFetchingActionData(false);
           return;
