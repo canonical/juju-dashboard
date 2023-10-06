@@ -371,7 +371,7 @@ describe("Juju API", () => {
       expect(console.error).toHaveBeenCalledWith(
         "error connecting to model:",
         "abc123",
-        "timeout"
+        new Error("timeout")
       );
       console.error = consoleError;
     });

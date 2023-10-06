@@ -283,11 +283,7 @@ export async function fetchModelStatus(
       }
       logout();
     } catch (error) {
-      console.error(
-        "error connecting to model:",
-        modelUUID,
-        error instanceof Error ? error.message : error
-      );
+      console.error("error connecting to model:", modelUUID, error);
     }
   }
   return status;
