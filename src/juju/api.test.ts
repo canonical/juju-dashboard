@@ -893,7 +893,7 @@ describe("Juju API", () => {
         },
       } as unknown as Connection;
       await expect(disableControllerUUIDMasking(conn)).rejects.toMatchObject(
-        new Error()
+        new Error("Unable to disabled controller UUID masking.")
       );
     });
   });
