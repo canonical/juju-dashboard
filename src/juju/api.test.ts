@@ -229,6 +229,16 @@ describe("Juju API", () => {
   });
 
   describe("connectAndLoginWithTimeout", () => {
+    const consoleError = console.error;
+
+    beforeEach(() => {
+      console.error = jest.fn();
+    });
+
+    afterEach(() => {
+      console.error = consoleError;
+    });
+
     it("can connect and log in", async () => {
       const juju = {
         logout: jest.fn(),
@@ -265,7 +275,27 @@ describe("Juju API", () => {
         false
       );
       jest.advanceTimersByTime(LOGIN_TIMEOUT);
-      await expect(response).rejects.toBe("timeout");
+      await expect(response).rejects.toMatchObject(new Error("timeout"));
+    });
+
+    it("should handle exceptions when logging in", async () => {
+      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => {
+        return await new Promise((resolve, reject) => {
+          reject(new Error("Uh oh!"));
+        });
+      });
+      const response = connectAndLoginWithTimeout(
+        "wss://example.com/eggman/test",
+        {
+          user: "eggman",
+          password: "123",
+        },
+        generateConnectionOptions(false),
+        false
+      );
+      await expect(response).rejects.toMatchObject(
+        new Error("Error during promise race.", new Error("Uh oh!"))
+      );
     });
   });
 
@@ -341,7 +371,7 @@ describe("Juju API", () => {
       expect(console.error).toHaveBeenCalledWith(
         "error connecting to model:",
         "abc123",
-        "timeout"
+        new Error("timeout")
       );
       console.error = consoleError;
     });
@@ -516,8 +546,10 @@ describe("Juju API", () => {
 
   describe("fetchAllModelStatuses", () => {
     let state: RootState;
+    const consoleError = console.error;
 
     beforeEach(() => {
+      console.error = jest.fn();
       // Need to use real timers so the promises resolve in the tests.
       jest.useRealTimers();
       state = rootStateFactory.build({
@@ -546,6 +578,11 @@ describe("Juju API", () => {
           },
         },
       });
+    });
+
+    afterEach(() => {
+      console.error = consoleError;
+      jest.restoreAllMocks();
     });
 
     it("fetches model statuses", async () => {
@@ -600,7 +637,7 @@ describe("Juju API", () => {
     });
 
     it("updates controller cloud and region", async () => {
-      const dispatch = jest.fn();
+      const dispatch = jest.fn().mockReturnValue({ catch: jest.fn() });
       const abc123 = modelInfoResultsFactory.build({
         results: [
           modelInfoResultFactory.build({
@@ -635,6 +672,44 @@ describe("Juju API", () => {
         modelInfo: abc123,
         wsControllerURL: "wss://example.com/api",
       });
+    });
+
+    it("should console error when trying to update controller cloud and region", async () => {
+      const dispatch = jest
+        .fn()
+        .mockReturnValueOnce(null)
+        .mockReturnValueOnce(
+          Promise.reject(new Error("Error while trying to dispatch!"))
+        );
+      const abc123 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              "is-controller": true,
+              uuid: "abc123",
+            }),
+          }),
+        ],
+      });
+      const conn = {
+        facades: {
+          modelManager: {
+            modelInfo: jest.fn().mockResolvedValueOnce(abc123),
+          },
+        },
+      } as unknown as Connection;
+      await fetchAllModelStatuses(
+        "wss://example.com/api",
+        ["abc123"],
+        conn,
+        dispatch,
+        () => state
+      );
+      expect(dispatch).toHaveBeenCalledTimes(2);
+      expect(console.error).toHaveBeenCalledWith(
+        "Error when trying to add controller cloud and region data.",
+        new Error("Error while trying to dispatch!")
+      );
     });
   });
 
@@ -788,7 +863,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: jest.fn(),
+            disableControllerUUIDMasking: jest.fn(() => Promise.resolve()),
           },
         },
       } as unknown as Connection;
@@ -800,11 +875,26 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: jest.fn(),
+            disableControllerUUIDMasking: jest.fn(() => Promise.resolve()),
           },
         },
       } as unknown as Connection;
       await expect(disableControllerUUIDMasking(conn)).resolves.toBeUndefined();
+    });
+
+    it("should handle exceptions when trying to disable controller masking", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            disableControllerUUIDMasking: jest.fn(() =>
+              Promise.reject(new Error())
+            ),
+          },
+        },
+      } as unknown as Connection;
+      await expect(disableControllerUUIDMasking(conn)).rejects.toMatchObject(
+        new Error("Unable to disabled controller UUID masking.")
+      );
     });
   });
 
@@ -1296,8 +1386,8 @@ describe("Juju API", () => {
         "grant",
         jest.fn()
       );
-      await expect(response).rejects.toBe(
-        "Unable to connect to controller: wss://example.com/api"
+      await expect(response).rejects.toMatchObject(
+        new Error("Unable to connect to controller: wss://example.com/api")
       );
     });
 
@@ -1322,7 +1412,9 @@ describe("Juju API", () => {
         "none",
         jest.fn()
       );
-      await expect(response).rejects.toBe("Incorrect options given.");
+      await expect(response).rejects.toMatchObject(
+        new Error("Incorrect options given.")
+      );
     });
 
     it("can revoke permissions", async () => {
@@ -1544,7 +1636,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            crossModelQuery: jest.fn().mockReturnValue(result),
+            crossModelQuery: jest.fn(() => Promise.resolve(result)),
           },
         },
       } as unknown as Connection;
@@ -1571,8 +1663,25 @@ describe("Juju API", () => {
       const conn = {
         facades: {},
       } as unknown as Connection;
-      await expect(crossModelQuery(conn, ".")).rejects.toBe(
-        "Not connected to JIMM."
+      await expect(crossModelQuery(conn, ".")).rejects.toMatchObject(
+        new Error("Not connected to JIMM.")
+      );
+    });
+
+    it("should handle exceptions", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            crossModelQuery: jest.fn(() =>
+              Promise.reject(
+                new Error("Error while trying to run cross model query!")
+              )
+            ),
+          },
+        },
+      } as unknown as Connection;
+      await expect(crossModelQuery(conn, ".")).rejects.toMatchObject(
+        new Error("Error while trying to run cross model query!")
       );
     });
   });

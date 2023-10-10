@@ -17,6 +17,10 @@ import { useAppStore } from "store/store";
 import urls from "urls";
 import { getMajorMinorVersion } from "utils";
 
+export enum Label {
+  MODEL_WATCHER_ERROR = "Error while trying to stop model watcher.",
+}
+
 export default function ModelDetails() {
   const appState = useAppStore().getState();
   const dispatch = useDispatch();
@@ -58,11 +62,15 @@ export default function ModelDetails() {
       }
     }
     if (modelUUID) {
-      loadFullData();
+      void loadFullData();
     }
     return () => {
       if (watcherHandle && pingerIntervalId && conn) {
-        stopModelWatcher(conn, watcherHandle["watcher-id"], pingerIntervalId);
+        stopModelWatcher(
+          conn,
+          watcherHandle["watcher-id"],
+          pingerIntervalId
+        ).catch((error) => console.error(Label.MODEL_WATCHER_ERROR, error));
       }
     };
     // Skipped as we need appState due to the call to `connectAndLoginToModel`

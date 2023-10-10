@@ -285,7 +285,7 @@ describe("model poller", () => {
   it("fails silently if the user is not authorised to disable masking", async () => {
     jest
       .spyOn(jujuModule, "disableControllerUUIDMasking")
-      .mockImplementation(() => Promise.reject());
+      .mockImplementation(() => Promise.reject(new Error()));
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });
@@ -478,7 +478,7 @@ describe("model poller", () => {
     }));
     jest
       .spyOn(jujuModule, "crossModelQuery")
-      .mockImplementation(() => Promise.reject("Uh oh!"));
+      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
       wsControllerURL: "wss://example.com",
@@ -487,7 +487,7 @@ describe("model poller", () => {
     await middleware(next)(action);
     expect(console.error).toHaveBeenCalledWith(
       "Could not perform cross model query:",
-      "Uh oh!"
+      new Error("Uh oh!")
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateCrossModelQuery(

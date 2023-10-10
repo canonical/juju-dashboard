@@ -247,11 +247,11 @@ export default function App(): JSX.Element {
         // Only reset them all to unchecked if they were all checked to
         // begin with. This is to fix the issue when you uncheck one unit
         // and it changes the selectAll button.
-        setFieldsValues.current("selectedUnits", []);
+        void setFieldsValues.current("selectedUnits", []);
       }
     } else if (!selectAll.current && formData.selectAll) {
       // The user has switched the selectAll checkbox from unchecked to checked.
-      setFieldsValues.current("selectedUnits", unitList);
+      void setFieldsValues.current("selectedUnits", unitList);
     }
     selectAll.current = formData.selectAll;
 
@@ -261,13 +261,13 @@ export default function App(): JSX.Element {
       formData.selectedUnits.length === unitList.length
     ) {
       // If the user has checked all of the unit checkboxes.
-      setFieldsValues.current("selectAll", true);
+      void setFieldsValues.current("selectAll", true);
     } else if (
       selectedUnits.current.length === unitList.length &&
       formData.selectedUnits.length !== unitList.length
     ) {
       // If the user has unchecked some of the unit checkboxes.
-      setFieldsValues.current("selectAll", false);
+      void setFieldsValues.current("selectAll", false);
     }
     if (selectedUnits.current.length !== formData.selectedUnits.length) {
       // The user has updated the selected list of units so update the

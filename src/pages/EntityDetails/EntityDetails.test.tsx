@@ -159,7 +159,7 @@ describe("Entity Details Container", () => {
         query: "machines",
       },
     ];
-    sections.forEach(async (section) => {
+    sections.forEach((section) => {
       const scrollIntoView = jest.fn();
       fireEvent.click(within(viewSelector).getByText(section.text), {
         target: {

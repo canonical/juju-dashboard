@@ -20,7 +20,7 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 
 export enum LoginError {
-  LOG = "unable to log into controller",
+  LOG = "Unable to log into controller",
   NO_INFO = "Unable to retrieve controller details",
 }
 
@@ -123,7 +123,7 @@ export const modelPollerMiddleware: Middleware<
             );
           }
 
-          fetchControllerList(
+          await fetchControllerList(
             wsControllerURL,
             conn,
             isAdditionalController ?? false,

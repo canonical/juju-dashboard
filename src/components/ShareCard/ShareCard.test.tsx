@@ -57,7 +57,7 @@ describe("Share Card", () => {
 
   it("should call access change function when select value clicked", async () => {
     const removeUserFn = jest.fn();
-    const accessSelectChangeFn = jest.fn();
+    const accessSelectChangeFn = jest.fn(() => Promise.resolve(null));
     render(
       <ShareCard
         userName="janedoe"
@@ -70,5 +70,30 @@ describe("Share Card", () => {
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(accessSelectChangeFn).toHaveBeenCalled();
+  });
+
+  it("should display console error when trying to change access", async () => {
+    const consoleError = console.error;
+    console.error = jest.fn();
+
+    const removeUserFn = jest.fn();
+    const accessSelectChangeFn = jest.fn(() => Promise.reject(new Error()));
+    render(
+      <ShareCard
+        userName="janedoe"
+        lastConnected="2021-06-03T16:03:15Z"
+        access="read"
+        isOwner={false}
+        removeUser={removeUserFn}
+        accessSelectChange={accessSelectChangeFn}
+      />
+    );
+    await userEvent.selectOptions(screen.getByRole("combobox"), "write");
+    expect(console.error).toHaveBeenCalledWith(
+      Label.ACCESS_CHANGE_ERROR,
+      new Error()
+    );
+
+    console.error = consoleError;
   });
 });

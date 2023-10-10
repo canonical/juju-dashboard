@@ -22,6 +22,7 @@ const appVersion = packageJSON.version;
 
 export enum Label {
   NO_CONFIG = "No configuration found.",
+  POLLING_ERROR = "Error while trying to connect and start polling.",
 }
 
 // Webpack 5 no longer makes node variables available at runtime so we need to
@@ -140,7 +141,9 @@ function bootstrap() {
   if (config.identityProviderAvailable) {
     // If an identity provider is available then try and connect automatically
     // If not then wait for the login UI to trigger this
-    reduxStore.dispatch(appThunks.connectAndStartPolling());
+    reduxStore
+      .dispatch(appThunks.connectAndStartPolling())
+      .catch((error) => console.error(Label.POLLING_ERROR, error));
   }
 
   renderRoot(

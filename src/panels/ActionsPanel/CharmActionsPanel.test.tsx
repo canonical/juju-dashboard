@@ -1,6 +1,6 @@
-import { screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Toaster } from "react-hot-toast";
+import reactHotToast, { Toaster } from "react-hot-toast";
 
 import * as juju from "juju/api";
 import { executeActionOnUnits } from "juju/api";
@@ -85,7 +85,10 @@ describe("CharmActionsPanel", () => {
   });
 
   afterEach(() => {
+    // Guarantees that Toaster state does not persist throughout renders.
+    act(() => reactHotToast.remove());
     jest.resetModules();
+    jest.restoreAllMocks();
   });
 
   it("Renders the list of available actions", async () => {
@@ -288,7 +291,6 @@ describe("CharmActionsPanel", () => {
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
     expect(call[1]).toBe("pause");
     expect(call[2]).toEqual({}); // no options
-    executeActionOnUnitsSpy.mockRestore();
     expect(await screen.findByText(Label.ACTION_SUCCESS)).toBeInTheDocument();
   });
 
@@ -329,13 +331,12 @@ describe("CharmActionsPanel", () => {
       bucket: "",
       "osd-devices": "new device",
     });
-    executeActionOnUnitsSpy.mockRestore();
   });
 
   it("handles API errors", async () => {
     const executeActionOnUnitsSpy = jest
       .spyOn(juju, "executeActionOnUnits")
-      .mockImplementation(() => Promise.reject());
+      .mockImplementation(() => Promise.reject(new Error()));
     renderComponent(
       <>
         <CharmActionsPanel
@@ -363,7 +364,6 @@ describe("CharmActionsPanel", () => {
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
     expect(call[1]).toBe("pause");
     expect(call[2]).toEqual({}); // no options
-    executeActionOnUnitsSpy.mockRestore();
     expect(await screen.findByText(Label.ACTION_ERROR)).toBeInTheDocument();
   });
 
@@ -397,5 +397,38 @@ describe("CharmActionsPanel", () => {
     expect(
       screen.queryByRole("dialog", { name: "Run pause?" })
     ).not.toBeInTheDocument();
+  });
+
+  it("should throw error when executing action on unit", async () => {
+    jest.spyOn(juju, "executeActionOnUnits").mockImplementation(
+      jest.fn().mockResolvedValue({
+        actions: [{ error: "Error when executing action on unit!" }],
+      })
+    );
+    renderComponent(
+      <>
+        <CharmActionsPanel
+          charmURL={charmURL}
+          onRemovePanelQueryParams={jest.fn()}
+        />
+        <Toaster />
+      </>,
+      { path, url, state }
+    );
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).toBeDisabled();
+    await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).not.toBeDisabled();
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Run action" })
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.CONFIRM_BUTTON })
+    );
+    expect(juju.executeActionOnUnits).toHaveBeenCalledTimes(1);
+    expect(screen.getByText(Label.ACTION_ERROR)).toBeInTheDocument();
   });
 });

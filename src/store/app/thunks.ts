@@ -38,7 +38,7 @@ export const logOut = createAsyncThunk<
     // To enable users to log back in after logging out we have to re-connect
     // to the controller to get another wait url and start polling on it
     // again.
-    thunkAPI.dispatch(connectAndStartPolling());
+    await thunkAPI.dispatch(connectAndStartPolling());
   }
 });
 
@@ -72,11 +72,11 @@ export const connectAndStartPolling = createAsyncThunk<
         );
       });
     }
+    await thunkAPI.dispatch(connectAndListModels(additionalControllers));
   } catch (e) {
     // XXX Add to Sentry.
     console.log("Error retrieving additional registered controllers", e);
   }
-  thunkAPI.dispatch(connectAndListModels(additionalControllers));
 });
 
 export const connectAndListModels = createAsyncThunk<

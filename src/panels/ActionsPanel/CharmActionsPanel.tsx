@@ -94,12 +94,15 @@ export default function CharmActionsPanel({
     )
       .then((payload) => {
         const error = payload?.actions?.find((e) => e.error);
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
         reactHotToast.custom((t) => (
           <ToastCard toastInstance={t} type="positive">
             {Label.ACTION_SUCCESS}
           </ToastCard>
         ));
+        return;
       })
       .catch(() => {
         reactHotToast.custom((t) => (

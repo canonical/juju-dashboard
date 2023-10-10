@@ -5,6 +5,7 @@ import reactHotToast from "react-hot-toast";
 
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
+import * as dashboardStore from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -12,7 +13,14 @@ import { renderComponent } from "testing/utils";
 import LogIn, { ErrorResponse, Label } from "./LogIn";
 
 describe("LogIn", () => {
+  const consoleError = console.error;
+
+  beforeEach(() => {
+    console.error = jest.fn();
+  });
+
   afterEach(() => {
+    console.error = consoleError;
     act(() => reactHotToast.remove());
     jest.restoreAllMocks();
   });
@@ -143,7 +151,9 @@ describe("LogIn", () => {
     jest
       .spyOn(appThunks, "connectAndStartPolling")
       .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+        jest
+          .fn()
+          .mockReturnValue({ type: "connectAndStartPolling", catch: jest.fn() })
       );
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
@@ -259,5 +269,36 @@ describe("LogIn", () => {
       </>
     );
     expect(screen.queryByTestId("toast-card")).not.toBeInTheDocument();
+  });
+
+  it("should display console error when trying to log in", async () => {
+    jest
+      .spyOn(appThunks, "connectAndStartPolling")
+      .mockImplementation(
+        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+      );
+    jest
+      .spyOn(dashboardStore, "useAppDispatch")
+      .mockImplementation(
+        jest
+          .fn()
+          .mockReturnValue((action: unknown) =>
+            action instanceof Object &&
+            "type" in action &&
+            action.type === "connectAndStartPolling"
+              ? Promise.reject(
+                  new Error("Error while dispatching connectAndStartPolling!")
+                )
+              : null
+          )
+      );
+
+    renderComponent(<LogIn>App content</LogIn>);
+    await userEvent.click(screen.getByRole("button"));
+    expect(appThunks.connectAndStartPolling).toHaveBeenCalledTimes(1);
+    expect(console.error).toHaveBeenCalledWith(
+      Label.POLLING_ERROR,
+      new Error("Error while dispatching connectAndStartPolling!")
+    );
   });
 });

@@ -34,6 +34,7 @@ export enum Label {
   INVALID_FIELD = "Invalid user name or password",
   JAAS_LOGO = "JAAS logo",
   JUJU_LOGO = "Juju logo",
+  POLLING_ERROR = "Error when trying to connect and start polling models.",
 }
 
 export default function LogIn({ children }: PropsWithChildren) {
@@ -174,7 +175,10 @@ function UserPassForm() {
       })
     );
     if (bakery) {
-      dispatch(appThunks.connectAndStartPolling());
+      // TODO: Consider displaying an error alert.
+      dispatch(appThunks.connectAndStartPolling()).catch((error) =>
+        console.error(Label.POLLING_ERROR, error)
+      );
     }
   }
 

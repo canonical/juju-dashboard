@@ -20,9 +20,12 @@ import urls from "urls";
 
 import { Label as CharmsPanelLabel } from "../CharmsPanel/CharmsPanel";
 
-import CharmsAndActionsPanel from "./CharmsAndActionsPanel";
+import CharmsAndActionsPanel, {
+  Label as CharmsAndActionsPanelLabel,
+} from "./CharmsAndActionsPanel";
 
 describe("CharmsAndActionsPanel", () => {
+  const consoleError = console.error;
   let state: RootState;
   const path = urls.model.index(null);
   const url = urls.model.index({
@@ -31,6 +34,7 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   beforeEach(() => {
+    console.error = jest.fn();
     jest.resetAllMocks();
 
     state = rootStateFactory.build({
@@ -53,6 +57,10 @@ describe("CharmsAndActionsPanel", () => {
         ],
       }),
     });
+  });
+
+  afterEach(() => {
+    console.error = consoleError;
   });
 
   it("should display the spinner before loading the panel", async () => {
@@ -138,5 +146,25 @@ describe("CharmsAndActionsPanel", () => {
     expect(charmOptions).toHaveLength(2);
     act(() => charmOptions[1].click());
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
+  });
+
+  it("should show console error when calling getCharmsURLFromApplications", async () => {
+    jest
+      .spyOn(juju, "getCharmsURLFromApplications")
+      .mockImplementation(
+        jest
+          .fn()
+          .mockRejectedValue(
+            new Error("Error while calling getCharmsURLFromApplications")
+          )
+      );
+    renderComponent(<CharmsAndActionsPanel />, { path, url, state });
+    expect(juju.getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
+    await waitFor(() =>
+      expect(console.error).toHaveBeenCalledWith(
+        CharmsAndActionsPanelLabel.GET_URL_ERROR,
+        new Error("Error while calling getCharmsURLFromApplications")
+      )
+    );
   });
 });

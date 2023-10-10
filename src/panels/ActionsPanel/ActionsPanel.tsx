@@ -26,6 +26,8 @@ export enum Label {
   CONFIRM_BUTTON = "Confirm",
   NO_UNITS_SELECTED = "0 units selected",
   NO_ACTIONS_PROVIDED = "This charm has not provided any actions.",
+  GET_ACTIONS_ERROR = "Error while trying to get actions for application.",
+  EXECUTE_ACTION_ERROR = "Error while trying to execute action on units.",
 }
 
 export enum TestId {
@@ -111,14 +113,15 @@ export default function ActionsPanel(): JSX.Element {
   useEffect(() => {
     setFetchingActionData(true);
     if (appName && modelUUID) {
-      getActionsForApplication(appName, modelUUID, appStore.getState()).then(
-        (actions) => {
+      getActionsForApplication(appName, modelUUID, appStore.getState())
+        .then((actions) => {
           if (actions?.results?.[0]?.actions) {
             setActionData(actions.results[0].actions);
           }
           setFetchingActionData(false);
-        }
-      );
+          return;
+        })
+        .catch((error) => console.error(Label.GET_ACTIONS_ERROR, error));
     }
   }, [appName, appStore, modelUUID]);
 
@@ -210,7 +213,9 @@ export default function ActionsPanel(): JSX.Element {
               confirmButtonAppearance="positive"
               onConfirm={() => {
                 setConfirmType(null);
-                executeAction();
+                executeAction().catch((error) =>
+                  console.error(Label.EXECUTE_ACTION_ERROR, error)
+                );
                 handleRemovePanelQueryParams();
               }}
               close={() => setConfirmType(null)}

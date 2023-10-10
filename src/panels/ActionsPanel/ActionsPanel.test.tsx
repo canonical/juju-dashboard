@@ -59,12 +59,14 @@ jest.mock("juju/api", () => {
 });
 
 describe("ActionsPanel", () => {
+  const consoleError = console.error;
   let state: RootState;
   const path = "/models/:userName/:modelName/app/:appName";
   const url =
     "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0,ceph%2F1";
 
   beforeEach(() => {
+    console.error = jest.fn();
     const getActionsForApplicationSpy = jest.spyOn(
       juju,
       "getActionsForApplication"
@@ -84,7 +86,9 @@ describe("ActionsPanel", () => {
   });
 
   afterEach(() => {
+    console.error = consoleError;
     jest.resetModules();
+    jest.restoreAllMocks();
   });
 
   it("Renders the list of available actions", async () => {
@@ -306,5 +310,58 @@ describe("ActionsPanel", () => {
     expect(
       screen.queryByRole("dialog", { name: "Run add-disk?" })
     ).not.toBeInTheDocument();
+  });
+
+  it("should display console error when trying to get actions for application", async () => {
+    jest
+      .spyOn(juju, "getActionsForApplication")
+      .mockImplementation(
+        jest
+          .fn()
+          .mockRejectedValue(
+            new Error("Error while trying to get actions for application!")
+          )
+      );
+    renderComponent(<ActionsPanel />, { path, url, state });
+    await waitFor(() =>
+      expect(juju.getActionsForApplication).toHaveBeenCalledTimes(1)
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      Label.GET_ACTIONS_ERROR,
+      new Error("Error while trying to get actions for application!")
+    );
+  });
+
+  it("should display console error when trying to submit the action request", async () => {
+    jest
+      .spyOn(juju, "executeActionOnUnits")
+      .mockImplementation(
+        jest
+          .fn()
+          .mockRejectedValue(
+            new Error("Error while trying to execute action on units!")
+          )
+      );
+    renderComponent(<ActionsPanel />, { path, url, state });
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).toBeDisabled();
+    await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
+    expect(
+      await screen.findByRole("button", { name: "Run action" })
+    ).not.toBeDisabled();
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Run action" })
+    );
+    await userEvent.click(
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
+    );
+    await waitFor(() =>
+      expect(juju.executeActionOnUnits).toHaveBeenCalledTimes(1)
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      Label.EXECUTE_ACTION_ERROR,
+      new Error("Error while trying to execute action on units!")
+    );
   });
 });

@@ -1,7 +1,7 @@
 import { Button } from "@canonical/react-components";
 
 type Props = {
-  handleQuery: (query: string) => void;
+  handleQuery: (query: string) => Promise<void>;
   query: string;
 };
 
@@ -10,7 +10,7 @@ const QueryLink = ({ handleQuery, query }: Props): JSX.Element => {
     <Button
       appearance="link"
       className="u-no-margin u-no-padding u-align--left p-text--small"
-      onClick={() => handleQuery(query)}
+      onClick={async () => await handleQuery(query)}
       type="button"
     >
       <code>{query}</code>
