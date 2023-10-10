@@ -10,6 +10,10 @@
   // The aside is within the main element so any long content will make the
   // aside scroll up with the page so this needs to be prevented.
   position: fixed;
+  // Fix the panel position in Safari. This is required because
+  // this element has `position: fixed` so that the panel doesn't move when
+  // scrolling the page.
+  right: 0;
 
   // Panel should appear above the side/top menus and other content.
   z-index: z("zelda") + 1 !important;
