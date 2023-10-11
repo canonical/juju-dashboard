@@ -21,11 +21,16 @@ export type CrossModelQueryResponse = {
 // sometimes be a string.
 export type CrossModelQueryFullResponse = CrossModelQueryResponse | string;
 
+export enum JIMMRelation {
+  AUDIT_LOG_VIEWER = "audit_log_viewer",
+  ADMINISTRATOR = "administrator",
+}
+
 // As typed in JIMM:
 // https://github.com/canonical/jimm/blob/c1e1642ac701bcbef2fdd8f4e347de9dcf16ac50/api/params/params.go#L296
 export type RelationshipTuple = {
   object: string;
-  relation: string;
+  relation: JIMMRelation | string;
   target_object: string;
 };
 

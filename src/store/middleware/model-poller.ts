@@ -12,6 +12,7 @@ import {
   setModelSharingPermissions,
 } from "juju/api";
 import type { CrossModelQueryFullResponse } from "juju/jimm/JIMMV4";
+import { JIMMRelation } from "juju/jimm/JIMMV4";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -125,13 +126,13 @@ export const modelPollerMiddleware: Middleware<
               auditLogsAllowed = await checkJIMMRelation(
                 conn,
                 identity,
-                "audit_log_viewer"
+                JIMMRelation.AUDIT_LOG_VIEWER
               );
               if (!auditLogsAllowed) {
                 auditLogsAllowed = await checkJIMMRelation(
                   conn,
                   identity,
-                  "administrator"
+                  JIMMRelation.ADMINISTRATOR
                 );
               }
             } catch (error) {
