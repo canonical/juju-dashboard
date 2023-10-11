@@ -22,7 +22,7 @@ describe("JIMMV4", () => {
       relation: "member",
       target_object: "group-administrators",
     };
-    jimm.checkRelation(params);
+    void jimm.checkRelation(params);
     expect(transport.write).toHaveBeenCalledWith(
       {
         type: "JIMM",

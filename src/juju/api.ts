@@ -803,16 +803,14 @@ export function findAuditEvents(
   conn: ConnectionWithFacades,
   params?: FindAuditEventsRequest
 ) {
-  return new Promise<AuditEvents>(async (resolve, reject) => {
+  return new Promise<AuditEvents>((resolve, reject) => {
     if (conn?.facades?.jimM) {
-      try {
-        const events = await conn.facades.jimM.findAuditEvents(params);
-        resolve(events);
-      } catch (e) {
-        reject(e);
-      }
+      conn.facades.jimM
+        .findAuditEvents(params)
+        .then((events) => resolve(events))
+        .catch((error) => reject(error));
     } else {
-      reject("Not connected to JIMM.");
+      reject(new Error("Not connected to JIMM."));
     }
   });
 }

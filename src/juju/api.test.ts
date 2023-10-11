@@ -1637,7 +1637,9 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            findAuditEvents: jest.fn().mockReturnValue(events),
+            findAuditEvents: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve(events)),
           },
         },
       } as unknown as Connection;
@@ -1651,7 +1653,9 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            findAuditEvents: jest.fn().mockReturnValue(events),
+            findAuditEvents: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve(events)),
           },
         },
       } as unknown as Connection;
@@ -1682,8 +1686,8 @@ describe("Juju API", () => {
       const conn = {
         facades: {},
       } as unknown as Connection;
-      await expect(findAuditEvents(conn)).rejects.toBe(
-        "Not connected to JIMM."
+      await expect(findAuditEvents(conn)).rejects.toEqual(
+        new Error("Not connected to JIMM.")
       );
     });
   });

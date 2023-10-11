@@ -29,7 +29,7 @@ describe("JIMMV3", () => {
 
   it("findAuditEvents", async () => {
     const jimm = new JIMMV3(transport, connectionInfo);
-    jimm.findAuditEvents({ "user-tag": "user-eggman@external" });
+    void jimm.findAuditEvents({ "user-tag": "user-eggman@external" });
     expect(transport.write).toHaveBeenCalledWith(
       {
         type: "JIMM",
