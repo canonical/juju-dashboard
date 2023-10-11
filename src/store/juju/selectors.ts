@@ -6,6 +6,7 @@ import type {
 import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 
+import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type {
   AnnotationData,
   ApplicationData,
@@ -39,6 +40,89 @@ import {
 } from "./utils/models";
 
 const slice = (state: RootState) => state.juju;
+
+/**
+  Fetches the audit event details from state.
+*/
+export const getAuditEventsState = createSelector(
+  [slice],
+  (sliceState) => sliceState.auditEvents
+);
+
+/**
+  Fetches the audit event items from state.
+*/
+export const getAuditEvents = createSelector(
+  [getAuditEventsState],
+  (auditEvents) => auditEvents.items
+);
+
+/**
+  Fetches the audit events loaded state.
+*/
+export const getAuditEventsLoaded = createSelector(
+  [getAuditEventsState],
+  (auditEvents) => auditEvents.loaded
+);
+
+/**
+  Fetches the audit events loading state.
+*/
+export const getAuditEventsLoading = createSelector(
+  [getAuditEventsState],
+  (auditEvents) => auditEvents.loading
+);
+
+export const getAuditEventsLimit = createSelector(
+  [getAuditEventsState],
+  (auditEvents) => auditEvents.limit
+);
+
+const getUniqueAuditEventValues = <K extends keyof AuditEvent>(
+  key: K,
+  auditEvents?: AuditEvent[] | null,
+  modifier?: (value: AuditEvent[K]) => string
+) => {
+  // Use a set to get unique values.
+  const values = new Set();
+  auditEvents?.forEach(({ [key]: value }) =>
+    values.add(modifier ? modifier(value) : value)
+  );
+  return Array.from(values);
+};
+
+/**
+  Fetches the unique usernames from the audit events.
+*/
+export const getAuditEventsUsers = createSelector(
+  [getAuditEvents],
+  (auditEvents) =>
+    getUniqueAuditEventValues("user-tag", auditEvents, getUserName)
+);
+
+/**
+  Fetches the unique model names from the audit events.
+*/
+export const getAuditEventsModels = createSelector(
+  [getAuditEvents],
+  (auditEvents) => getUniqueAuditEventValues("model", auditEvents)
+);
+
+/**
+  Fetches the unique facade names from the audit events.
+*/
+export const getAuditEventsFacades = createSelector(
+  [getAuditEvents],
+  (auditEvents) => getUniqueAuditEventValues("facade-name", auditEvents)
+);
+
+/**
+  Fetches the unique method names from the audit events.
+*/
+export const getAuditEventsMethods = createSelector(
+  [getAuditEvents],
+  (auditEvents) => getUniqueAuditEventValues("facade-method", auditEvents)
+);
 
 /**
   Fetches the cross model query from state.
@@ -111,6 +195,25 @@ export const getModelList = createSelector(
 );
 
 /**
+  Get the names of all models.
+*/
+export const getFullModelNames = createSelector(
+  [getModelList, getControllerData],
+  (modelList, controllers) =>
+    controllers
+      ? Object.values(modelList)?.reduce<string[]>((modelNames, model) => {
+          const controller =
+            model.wsControllerURL in controllers &&
+            controllers[model.wsControllerURL][0];
+          if (controller && "name" in controller) {
+            modelNames.push(`${controller.name}/${model.name}`);
+          }
+          return modelNames;
+        }, [])
+      : []
+);
+
+/**
   Get a model by UUID.
 */
 export const getModelByUUID = createSelector(
@@ -122,6 +225,35 @@ export const getModelDataByUUID = createSelector(
   [getModelData, (_, modelUUID?: string | null) => modelUUID],
   (modelData, modelUUID) => (modelUUID ? modelData[modelUUID] : null)
 );
+
+/**
+  Get the full name of a model.
+*/
+export const getFullModelName = createSelector(
+  [getModelByUUID, getControllerData],
+  (model, controllers) => {
+    const controller =
+      controllers &&
+      model?.wsControllerURL &&
+      model.wsControllerURL in controllers
+        ? controllers[model.wsControllerURL][0]
+        : null;
+    return controller && model && "name" in controller
+      ? `${controller.name}/${model.name}`
+      : null;
+  }
+);
+
+/**
+  Get all unique users.
+*/
+export const getUsers = createSelector([getModelData], (models) => {
+  const users = new Set<string>();
+  Object.values(models).forEach((model) => {
+    model.info?.users.forEach(({ user }) => users.add(user));
+  });
+  return Array.from(users);
+});
 
 /**
   Get the active users for each model.

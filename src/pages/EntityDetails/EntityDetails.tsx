@@ -1,10 +1,4 @@
-import {
-  Button,
-  Notification,
-  Spinner,
-  Strip,
-  Tabs,
-} from "@canonical/react-components";
+import { Button, Notification, Strip, Tabs } from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode, MouseEvent } from "react";
 import { useEffect, useState } from "react";
@@ -14,6 +8,7 @@ import { useParams, Link, Outlet } from "react-router-dom";
 import FadeIn from "animations/FadeIn";
 import Breadcrumb from "components/Breadcrumb/Breadcrumb";
 import Header from "components/Header/Header";
+import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import NotFound from "components/NotFound/NotFound";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import WebCLI from "components/WebCLI/WebCLI";
@@ -21,7 +16,7 @@ import { useEntityDetailsParams } from "components/hooks";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
-import { getUserPass } from "store/general/selectors";
+import { getIsJuju, getUserPass } from "store/general/selectors";
 import {
   getControllerDataByUUID,
   getModelInfo,
@@ -63,6 +58,8 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
   const { isNestedEntityPage } = useEntityDetailsParams();
+
+  const isJuju = useSelector(getIsJuju);
 
   const [query] = useQueryParams({
     panel: null,
@@ -137,10 +134,10 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
         component: Link,
       },
       {
-        active: activeView === ModelTab.ACTION_LOGS,
-        label: "Logs",
+        active: activeView === "logs",
+        label: isJuju ? "Action Logs" : "Logs",
         onClick: (e: MouseEvent) => handleNavClick(e),
-        to: urls.model.tab({ userName, modelName, tab: ModelTab.ACTION_LOGS }),
+        to: urls.model.tab({ userName, modelName, tab: ModelTab.LOGS }),
         component: Link,
       },
     ];
@@ -198,11 +195,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
       </div>
     );
   } else {
-    content = (
-      <div className="entity-details__loading" data-testid="loading-spinner">
-        <Spinner />
-      </div>
-    );
+    content = <LoadingSpinner />;
   }
 
   return (

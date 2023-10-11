@@ -75,6 +75,20 @@ describe("useQueryParams", () => {
     expect(searchParams.panels).toStrictEqual(["config", "actions"]);
   });
 
+  it("should not mutate the initial params", () => {
+    window.history.pushState({}, "", "?panels=config,actions");
+    const initial = { panels: [] };
+    const { result } = renderHook(
+      () => useQueryParams<{ panels: string[] }>(initial),
+      {
+        wrapper: generateContainer,
+      }
+    );
+    const [searchParams] = result.current;
+    expect(searchParams.panels).toStrictEqual(["config", "actions"]);
+    expect(initial).toStrictEqual({ panels: [] });
+  });
+
   it("can set string params", () => {
     const { result } = renderHook(
       () => useQueryParams<{ panel: string | null }>({ panel: null }),

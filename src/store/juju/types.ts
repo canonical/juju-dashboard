@@ -2,6 +2,7 @@ import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6"
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 
 import type { ControllerInfo } from "juju/jimm/JIMMV3";
+import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { CrossModelQueryResponse } from "juju/jimm/JIMMV4";
 import type {
   ApplicationInfo,
@@ -21,6 +22,7 @@ export type ControllerAnnotations = {
 };
 
 export type LocalController = {
+  name?: string;
   path: string;
   uuid: string;
   version?: string;
@@ -60,6 +62,13 @@ export type ModelsList = {
   [uuid: string]: ModelListInfo;
 };
 
+export type AuditEventsState = {
+  items: AuditEvent[] | null;
+  loaded: boolean;
+  loading: boolean;
+  limit: number;
+};
+
 export type CrossModelQueryState = {
   results: CrossModelQueryResponse["results"] | null;
   errors: CrossModelQueryResponse["errors"] | string | null;
@@ -68,6 +77,7 @@ export type CrossModelQueryState = {
 };
 
 export type JujuState = {
+  auditEvents: AuditEventsState;
   crossModelQuery: CrossModelQueryState;
   controllers: Controllers | null;
   models: ModelsList;

@@ -152,7 +152,7 @@ describe("Entity Details Container", () => {
       },
       {
         text: "Logs",
-        query: "action-logs",
+        query: "logs",
       },
       {
         text: "Machines",
@@ -364,5 +364,27 @@ describe("Entity Details Container", () => {
     expect(window.location.reload).toHaveBeenCalledTimes(1);
 
     window.location = location;
+  });
+
+  it("should navigate correctly when pressing Action Logs tab under Juju", () => {
+    state.general.config = configFactory.build({
+      isJuju: true,
+    });
+    renderComponent(<EntityDetails />, { path, url, state });
+    const viewSelector = screen.getByTestId("view-selector");
+    const scrollIntoView = jest.fn();
+    fireEvent.click(within(viewSelector).getByText("Action Logs"), {
+      target: {
+        scrollIntoView,
+      },
+    });
+    expect(scrollIntoView.mock.calls[0]).toEqual([
+      {
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      },
+    ]);
+    expect(window.location.search).toEqual("?activeView=logs");
   });
 });

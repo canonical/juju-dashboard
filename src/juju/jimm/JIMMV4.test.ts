@@ -15,6 +15,28 @@ describe("JIMMV4", () => {
     connectionInfo = connectionInfoFactory.build();
   });
 
+  it("checkRelation", async () => {
+    const jimm = new JIMMV4(transport, connectionInfo);
+    const params = {
+      object: "user-eggman@external",
+      relation: "member",
+      target_object: "group-administrators",
+    };
+    void jimm.checkRelation(params);
+    expect(transport.write).toHaveBeenCalledWith(
+      {
+        type: "JIMM",
+        request: "CheckRelation",
+        version: 4,
+        params: {
+          tuple: params,
+        },
+      },
+      expect.any(Function),
+      expect.any(Function)
+    );
+  });
+
   it("crossModelQuery", async () => {
     const jimm = new JIMMV4(transport, connectionInfo);
     void jimm.crossModelQuery(".");

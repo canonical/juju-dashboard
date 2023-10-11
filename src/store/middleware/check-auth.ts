@@ -14,17 +14,24 @@ import type { RootState, Store } from "store/store";
 import { actions as uiActions } from "store/ui";
 
 function error(name: string, wsControllerURL: string) {
-  console.log(
-    "unable to perform action:",
+  console.error(
+    "Unable to perform action: ",
     name,
-    "user not authenticated for:",
     wsControllerURL
+      ? `. User not authenticated for the controller: ${wsControllerURL}. ` +
+          "This shouldn't be able to happen!"
+      : ". Either 'wsControllerURL' needs to be added to the dispatched " +
+          "action or add the action to the list of actions allowed to be " +
+          "performed while logged out."
   );
 }
 
 export const checkLoggedIn = (state: RootState, wsControllerURL: string) => {
   if (!wsControllerURL) {
-    console.error("Unable to determine logged in status");
+    console.error(
+      "Unable to determine logged in status. " +
+        "'wsControllerURL' was not provided in the action that was dispatched."
+    );
   }
   return isLoggedIn(state, wsControllerURL);
 };
@@ -64,6 +71,12 @@ export const checkAuthMiddleware: Middleware<
       generalActions.updatePingerIntervalId.type,
       jujuActions.populateMissingAllWatcherData.type,
       jujuActions.processAllWatcherDeltas.type,
+      jujuActions.updateAuditEvents.type,
+      jujuActions.updateAuditEventsLimit.type,
+      jujuActions.updateControllerList.type,
+      jujuActions.clearControllerData.type,
+      jujuActions.clearModelData.type,
+      jujuActions.clearAuditEvents.type,
       jujuActions.updateCrossModelQuery.type,
       jujuActions.updateControllerList.type,
       jujuActions.clearControllerData.type,

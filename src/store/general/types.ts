@@ -22,8 +22,9 @@ export type Credential = {
 export type Credentials = Record<string, Credential>;
 
 export type ControllerFeatures = {
-  // TODO: this feature flag can be removed once JIMM facade 4 is available on
+  // TODO: the crossModelQueries and auditLogs feature flags can be removed once JIMM facade 4 is available on
   // production JAAS.
+  auditLogs?: boolean;
   crossModelQueries?: boolean;
 };
 

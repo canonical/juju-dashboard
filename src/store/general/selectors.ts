@@ -160,6 +160,12 @@ export const getWSControllerURL = createSelector(
   (config) => config?.controllerAPIEndpoint
 );
 
+export const isAuditLogsEnabled = createSelector(
+  [getIsJuju, getWSControllerURL, (state) => state],
+  (isJuju, wsControllerURL, state) =>
+    !isJuju && getControllerFeatureEnabled(state, wsControllerURL, "auditLogs")
+);
+
 export const isCrossModelQueriesEnabled = createSelector(
   [getIsJuju, getWSControllerURL, (state) => state],
   (isJuju, wsControllerURL, state) =>

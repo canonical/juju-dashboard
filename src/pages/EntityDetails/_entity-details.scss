@@ -48,14 +48,6 @@
       }
     }
 
-    &__loading {
-      align-items: center;
-      display: flex;
-      justify-content: center;
-      min-height: calc(100vh - 48px);
-      width: 100%;
-    }
-
     &__tables {
       overflow-x: scroll;
       scrollbar-width: none;

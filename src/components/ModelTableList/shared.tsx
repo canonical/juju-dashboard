@@ -33,7 +33,7 @@ export const getControllerName = (
       !!controller[1].some((controller) => {
         if ("uuid" in controller && controllerUUID === controller.uuid) {
           controllerName =
-            "name" in controller ? controller.name : controller.path;
+            "name" in controller ? controller.name ?? null : controller.path;
         }
         return !!controllerName;
       })

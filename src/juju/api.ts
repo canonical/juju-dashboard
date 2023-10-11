@@ -46,6 +46,7 @@ import type { RootState, Store } from "store/store";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
+import type { AuditEvents, FindAuditEventsRequest } from "./jimm/JIMMV3";
 import type { CrossModelQueryFullResponse } from "./jimm/JIMMV4";
 import type {
   AllWatcherDelta,
@@ -793,6 +794,25 @@ export async function getCharmsURLFromApplications(
     })
   );
   return charms.filter((charm) => !!charm).map((charm) => charm?.url);
+}
+
+/**
+  Fetch audit events via the JIMM facade on the given controller connection.
+ */
+export function findAuditEvents(
+  conn: ConnectionWithFacades,
+  params?: FindAuditEventsRequest
+) {
+  return new Promise<AuditEvents>((resolve, reject) => {
+    if (conn?.facades?.jimM) {
+      conn.facades.jimM
+        .findAuditEvents(params)
+        .then((events) => resolve(events))
+        .catch((error) => reject(error));
+    } else {
+      reject(new Error("Not connected to JIMM."));
+    }
+  });
 }
 
 export function crossModelQuery(conn: ConnectionWithFacades, query: string) {

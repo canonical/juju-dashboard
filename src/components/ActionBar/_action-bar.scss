@@ -1,0 +1,12 @@
+@import "vanilla-framework/scss/vanilla";
+
+.action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 $sph--large;
+
+  &__spacer {
+    // Fill the available space to push actions to the right hand side of the bar.
+    flex: 1;
+  }
+}

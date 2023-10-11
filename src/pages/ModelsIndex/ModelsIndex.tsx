@@ -1,4 +1,4 @@
-import { SearchAndFilter, Spinner } from "@canonical/react-components";
+import { SearchAndFilter } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import FadeIn from "animations/FadeIn";
 import ChipGroup from "components/ChipGroup/ChipGroup";
 import Header from "components/Header/Header";
+import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import SegmentedControl from "components/SegmentedControl";
 import useModelAttributes from "hooks/useModelAttributes";
@@ -28,10 +29,6 @@ import "./_models.scss";
 
 export enum Label {
   NOT_FOUND = "No models found",
-}
-
-export enum TestId {
-  LOADING = "loading-spinner",
 }
 
 export default function Models() {
@@ -98,11 +95,7 @@ export default function Models() {
 
   let content: ReactNode;
   if (!modelsLoaded) {
-    return (
-      <div className="entity-details__loading" data-testid={TestId.LOADING}>
-        <Spinner />
-      </div>
-    );
+    return <LoadingSpinner />;
   } else if (!hasSomeModels) {
     content = (
       <div className="l-content">

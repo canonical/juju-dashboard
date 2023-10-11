@@ -34,7 +34,9 @@ $color-navigation-background: $color-brand;
 
 // Include additional icons
 @include vf-p-icon-applications;
+@include vf-p-icon-back-to-top;
 @include vf-p-icon-controllers;
+@include vf-p-icon-filter;
 @include vf-p-icon-fullscreen;
 @include vf-p-icon-models;
 @include vf-p-icon-machines;
@@ -44,6 +46,8 @@ $color-navigation-background: $color-brand;
 @include vf-p-icon-user;
 @include vf-p-icon-video-play;
 @include vf-p-icon-lock-locked;
+@include vf-p-icon-restart;
+@include vf-p-icon-topic;
 
 // Overrides for Vanilla. This needs to be after the Vanilla includes.
 @import "vanilla-overrides";
