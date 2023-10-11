@@ -4,7 +4,7 @@ export enum ModelTab {
   APPS = "apps",
   MACHINES = "machines",
   INTEGRATIONS = "integrations",
-  ACTION_LOGS = "action-logs",
+  LOGS = "logs",
 }
 
 export type AppTab = "machines" | "units";
@@ -52,6 +52,7 @@ const urls = {
     }>("/models?groupedby=:groupedby"),
   },
   settings: "/settings",
+  logs: "/logs",
   search: "/search",
 };
 

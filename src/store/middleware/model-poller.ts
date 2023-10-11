@@ -6,11 +6,13 @@ import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
+  findAuditEvents,
   crossModelQuery,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
 import type { CrossModelQueryFullResponse } from "juju/jimm/JIMMV4";
+import { JIMMRelation } from "juju/jimm/JIMMV4";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -25,6 +27,22 @@ export enum LoginError {
 }
 
 type ControllerOptions = [string, Credential, boolean, boolean | undefined];
+
+const checkJIMMRelation = async (
+  conn: ConnectionWithFacades,
+  identity: string,
+  relation: string
+) => {
+  const response = await conn.facades.jimM?.checkRelation({
+    object: identity,
+    relation: relation,
+    target_object: "controller-jimm",
+  });
+  if (typeof response === "string") {
+    throw new Error(response);
+  }
+  return !!response?.allowed;
+};
 
 export const modelPollerMiddleware: Middleware<
   void,
@@ -103,11 +121,34 @@ export const modelPollerMiddleware: Middleware<
             })
           );
           const jimmVersion = conn.facades.jimM?.version ?? 0;
+          const auditLogsAvailable = jimmVersion >= 4;
+          const identity = conn.info.user?.identity;
+          let auditLogsAllowed = false;
+          if (auditLogsAvailable && identity) {
+            try {
+              auditLogsAllowed = await checkJIMMRelation(
+                conn,
+                identity,
+                JIMMRelation.AUDIT_LOG_VIEWER
+              );
+              if (!auditLogsAllowed) {
+                auditLogsAllowed = await checkJIMMRelation(
+                  conn,
+                  identity,
+                  JIMMRelation.ADMINISTRATOR
+                );
+              }
+            } catch (error) {
+              // TODO: this should be displayed to the user somehow.
+              console.error("Unable to check user permissions", error);
+            }
+          }
           reduxStore.dispatch(
             generalActions.updateControllerFeatures({
               wsControllerURL,
               features: {
                 crossModelQueries: jimmVersion >= 4,
+                auditLogs: auditLogsAllowed && auditLogsAvailable,
               },
             })
           );
@@ -196,6 +237,23 @@ export const modelPollerMiddleware: Middleware<
         reduxStore.dispatch
       );
       return response;
+    } else if (action.type === jujuActions.fetchAuditEvents.type) {
+      // Intercept fetchAuditEvents actions and fetch and store audit events via the
+      // controller connection.
+
+      const { wsControllerURL, ...params } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+      const auditEvents = await findAuditEvents(conn, params);
+      reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
+      // The action has already been passed to the next middleware at the top of
+      // this handler.
+      return;
     } else if (action.type === jujuActions.fetchCrossModelQuery.type) {
       // Intercept fetchCrossModelQuery actions and fetch and store
       // cross model query via the controller connection.

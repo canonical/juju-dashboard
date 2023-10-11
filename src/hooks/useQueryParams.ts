@@ -1,3 +1,4 @@
+import cloneDeep from "clone-deep";
 import * as DOMPurify from "dompurify";
 import { useCallback } from "react";
 import type { NavigateOptions } from "react-router-dom";
@@ -11,8 +12,10 @@ export type SetParams<P> = (
 export type QueryParams = Record<string, null | string | string[]>;
 
 export const useQueryParams = <P extends QueryParams>(
-  params: P
+  initialParams: P
 ): [P, SetParams<P>] => {
+  // Clone the params to prevent updating via reference.
+  const params = cloneDeep(initialParams);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const setParam = useCallback(

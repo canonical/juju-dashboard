@@ -18,6 +18,7 @@ import {
   getVisitURLs,
   getWSControllerURL,
   isLoggedIn,
+  getIsJuju,
 } from "store/general/selectors";
 import type { RootState } from "store/store";
 import { useAppDispatch, useAppSelector } from "store/store";
@@ -40,7 +41,7 @@ export enum Label {
 export default function LogIn({ children }: PropsWithChildren) {
   const viewedAuthRequests = useRef<string[]>([]);
   const config = useSelector(getConfig);
-  const isJuju = useSelector(getConfig)?.isJuju;
+  const isJuju = useSelector(getIsJuju);
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const userIsLoggedIn = useAppSelector((state) =>
     isLoggedIn(state, wsControllerURL)

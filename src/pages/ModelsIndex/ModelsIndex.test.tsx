@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { TestId } from "components/LoadingSpinner/LoadingSpinner";
 import type { RootState } from "store/store";
 import {
   detailedStatusFactory,
@@ -16,7 +17,7 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import ModelsIndex, { Label, TestId } from "./ModelsIndex";
+import ModelsIndex, { Label } from "./ModelsIndex";
 
 describe("Models Index page", () => {
   let state: RootState;

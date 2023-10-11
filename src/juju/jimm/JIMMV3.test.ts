@@ -27,6 +27,21 @@ describe("JIMMV3", () => {
     );
   });
 
+  it("findAuditEvents", async () => {
+    const jimm = new JIMMV3(transport, connectionInfo);
+    jimm.findAuditEvents({ "user-tag": "user-eggman@external" });
+    expect(transport.write).toHaveBeenCalledWith(
+      {
+        type: "JIMM",
+        request: "FindAuditEvents",
+        version: 3,
+        params: { "user-tag": "user-eggman@external" },
+      },
+      expect.any(Function),
+      expect.any(Function)
+    );
+  });
+
   it("listControllers", async () => {
     const jimm = new JIMMV3(transport, connectionInfo);
     void jimm.listControllers();

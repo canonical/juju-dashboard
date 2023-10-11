@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
@@ -18,7 +18,9 @@ import {
   remoteApplicationStatusFactory,
 } from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
+  auditEventsStateFactory,
   modelDataFactory,
   modelDataInfoFactory,
   modelListInfoFactory,
@@ -89,6 +91,9 @@ describe("Model", () => {
         },
       }),
       juju: jujuStateFactory.build({
+        auditEvents: auditEventsStateFactory.build({
+          items: [auditEventFactory.build()],
+        }),
         modelData: {
           abc123: modelDataFactory.build(),
         },
@@ -104,6 +109,10 @@ describe("Model", () => {
         },
       }),
     });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it("renders the info panel data", () => {
@@ -297,7 +306,7 @@ describe("Model", () => {
     };
     renderComponent(<Model />, {
       state,
-      url: "/models/eggman@external/test1?activeView=action-logs",
+      url: "/models/eggman@external/test1?activeView=logs",
       path,
     });
 
@@ -319,6 +328,38 @@ describe("Model", () => {
     expect(
       document.querySelector(".entity-details__action-logs")
     ).toBeInTheDocument();
+  });
+
+  it("can display the audit logs table", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        machines: {
+          "0": machineChangeDeltaFactory.build(),
+        },
+        relations: {
+          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
+        },
+      }),
+    };
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=logs&tableView=audit-logs",
+      path,
+    });
+
+    Element.prototype.scrollIntoView = jest.fn();
+
+    await waitFor(() => {
+      expect(
+        document.querySelector(".entity-details__action-logs")
+      ).not.toBeInTheDocument();
+      expect(
+        document.querySelector(".entity-details__audit-logs")
+      ).toBeInTheDocument();
+    });
   });
 
   it("can display the offers table", async () => {

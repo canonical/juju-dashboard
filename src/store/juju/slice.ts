@@ -7,6 +7,7 @@ import type {
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
 import {
   type CrossModelQueryRequest,
   type CrossModelQueryFullResponse,
@@ -22,6 +23,8 @@ import { extractCloudName } from "store/juju/utils/models";
 
 import type { Controllers, JujuState } from "./types";
 
+export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
+
 type WsControllerURLParam = {
   wsControllerURL: string;
 };
@@ -29,6 +32,12 @@ type WsControllerURLParam = {
 const slice = createSlice({
   name: "juju",
   initialState: {
+    auditEvents: {
+      items: null,
+      loaded: false,
+      loading: false,
+      limit: DEFAULT_AUDIT_EVENTS_LIMIT,
+    },
     crossModelQuery: {
       results: null,
       errors: null,
@@ -46,10 +55,11 @@ const slice = createSlice({
   reducers: {
     updateModelList: (
       state,
-      action: PayloadAction<{
-        models: UserModelList;
-        wsControllerURL: string;
-      }>
+      action: PayloadAction<
+        {
+          models: UserModelList;
+        } & WsControllerURLParam
+      >
     ) => {
       const modelList = state.models;
       let userModels = action.payload.models["user-models"];
@@ -70,11 +80,12 @@ const slice = createSlice({
     },
     updateModelStatus: (
       state,
-      action: PayloadAction<{
-        modelUUID: string;
-        status: FullStatusWithAnnotations;
-        wsControllerURL: string;
-      }>
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          status: FullStatusWithAnnotations;
+        } & WsControllerURLParam
+      >
     ) => {
       const modelUUID = action.payload.modelUUID;
       if (!state.modelData) {
@@ -99,10 +110,11 @@ const slice = createSlice({
     },
     updateModelInfo: (
       state,
-      action: PayloadAction<{
-        modelInfo: ModelInfoResults;
-        wsControllerURL: string;
-      }>
+      action: PayloadAction<
+        {
+          modelInfo: ModelInfoResults;
+        } & WsControllerURLParam
+      >
     ) => {
       const modelInfo = action.payload.modelInfo.results[0].result;
       // There don't appear to be any irrelevant data in the modelInfo so
@@ -123,6 +135,27 @@ const slice = createSlice({
     },
     clearControllerData: (state) => {
       state.controllers = {};
+    },
+    // This action can be dispatched to fetch audit events which is handled in
+    // the model-poller middleware.
+    fetchAuditEvents: (
+      state,
+      action: PayloadAction<FindAuditEventsRequest & WsControllerURLParam>
+    ) => {
+      state.auditEvents.loading = true;
+    },
+    updateAuditEvents: (state, { payload }: PayloadAction<AuditEvent[]>) => {
+      state.auditEvents.items = payload;
+      state.auditEvents.loaded = true;
+      state.auditEvents.loading = false;
+    },
+    clearAuditEvents: (state) => {
+      state.auditEvents.items = null;
+      state.auditEvents.loaded = false;
+      state.auditEvents.loading = false;
+    },
+    updateAuditEventsLimit: (state, { payload }: PayloadAction<number>) => {
+      state.auditEvents.limit = payload;
     },
     fetchCrossModelQuery: (
       state,
@@ -158,10 +191,11 @@ const slice = createSlice({
     },
     updateControllerList: (
       state,
-      action: PayloadAction<{
-        controllers: Controllers[0];
-        wsControllerURL: string;
-      }>
+      action: PayloadAction<
+        {
+          controllers: Controllers[0];
+        } & WsControllerURLParam
+      >
     ) => {
       const controllers = state.controllers ?? {};
       controllers[action.payload.wsControllerURL] = action.payload.controllers;
@@ -198,7 +232,7 @@ const slice = createSlice({
     },
     updateCharms: (
       state,
-      action: PayloadAction<{ charms: Charm[]; wsControllerURL?: string }>
+      action: PayloadAction<{ charms: Charm[] } & Partial<WsControllerURLParam>>
     ) => {
       action.payload.charms = action.payload.charms.filter((charm) => {
         return !state.charms.some((c) => c.url === charm.url);

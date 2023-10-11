@@ -5,6 +5,7 @@ import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import RegisterController from "panels/RegisterController/RegisterController";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 
+import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
 import CharmsAndActionsPanel from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
 
@@ -25,6 +26,8 @@ export default function Panels() {
         return <CharmsAndActionsPanel />;
       case "config":
         return <ConfigPanel />;
+      case "audit-log-filters":
+        return <AuditLogsFilterPanel />;
       default:
         return null;
     }

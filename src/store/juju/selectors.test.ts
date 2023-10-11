@@ -9,6 +9,7 @@ import {
   modelStatusInfoFactory,
 } from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
@@ -18,6 +19,7 @@ import {
   modelListInfoFactory,
   modelDataMachineFactory,
   modelDataUnitFactory,
+  auditEventsStateFactory,
   crossModelQueryStateFactory,
 } from "testing/factories/juju/juju";
 import {
@@ -69,14 +71,143 @@ import {
   getUserDomains,
   getUserDomainsInModel,
   hasModels,
+  getAuditEventsState,
+  getAuditEvents,
+  getAuditEventsLoaded,
+  getAuditEventsLoading,
+  getAuditEventsUsers,
+  getAuditEventsModels,
+  getAuditEventsFacades,
+  getAuditEventsMethods,
   getCrossModelQueryState,
   getCrossModelQueryResults,
   getCrossModelQueryErrors,
   getCrossModelQueryLoaded,
   getCrossModelQueryLoading,
+  getFullModelNames,
+  getUsers,
+  getFullModelName,
 } from "./selectors";
 
 describe("selectors", () => {
+  it("getAuditEventsState", () => {
+    const auditEvents = auditEventsStateFactory.build();
+    expect(
+      getAuditEventsState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents,
+          }),
+        })
+      )
+    ).toStrictEqual(auditEvents);
+  });
+
+  it("getAuditEvents", () => {
+    const items = [auditEventFactory.build()];
+    expect(
+      getAuditEvents(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(items);
+  });
+
+  it("getAuditEventsLoaded", () => {
+    expect(
+      getAuditEventsLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ loaded: true }),
+          }),
+        })
+      )
+    ).toBe(true);
+  });
+
+  it("getAuditEventsLoading", () => {
+    expect(
+      getAuditEventsLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ loading: true }),
+          }),
+        })
+      )
+    ).toBe(true);
+  });
+
+  it("getAuditEventsUsers", () => {
+    const items = [
+      auditEventFactory.build({ "user-tag": "user-eggman" }),
+      auditEventFactory.build({ "user-tag": "user-spaceman" }),
+      auditEventFactory.build({ "user-tag": "user-eggman" }),
+    ];
+    expect(
+      getAuditEventsUsers(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(["eggman", "spaceman"]);
+  });
+
+  it("getAuditEventsModels", () => {
+    const items = [
+      auditEventFactory.build({ model: "model1" }),
+      auditEventFactory.build({ model: "model2" }),
+      auditEventFactory.build({ model: "model2" }),
+    ];
+    expect(
+      getAuditEventsModels(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(["model1", "model2"]);
+  });
+
+  it("getAuditEventsFacades", () => {
+    const items = [
+      auditEventFactory.build({ "facade-name": "Client" }),
+      auditEventFactory.build({ "facade-name": "Client" }),
+      auditEventFactory.build({ "facade-name": "Admin" }),
+    ];
+    expect(
+      getAuditEventsFacades(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(["Client", "Admin"]);
+  });
+
+  it("getAuditEventsMethods", () => {
+    const items = [
+      auditEventFactory.build({ "facade-method": "Login" }),
+      auditEventFactory.build({ "facade-method": "Logout" }),
+      auditEventFactory.build({ "facade-method": "Login" }),
+    ];
+    expect(
+      getAuditEventsMethods(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            auditEvents: auditEventsStateFactory.build({ items }),
+          }),
+        })
+      )
+    ).toStrictEqual(["Login", "Logout"]);
+  });
+
   it("getCrossModelQueryState", () => {
     const crossModelQuery = crossModelQueryStateFactory.build();
     expect(
@@ -791,6 +922,60 @@ describe("selectors", () => {
     ).toStrictEqual(models);
   });
 
+  it("getFullModelName", () => {
+    expect(
+      getFullModelName(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            models: {
+              abc123: modelListInfoFactory.build({
+                name: "model1",
+                uuid: "abc123",
+                wsControllerURL: "wss://example.com/api",
+              }),
+            },
+            controllers: {
+              "wss://example.com/api": [
+                controllerFactory.build({ name: "controller1" }),
+              ],
+            },
+          }),
+        }),
+        "abc123"
+      )
+    ).toStrictEqual("controller1/model1");
+  });
+
+  it("getFullModelNames", () => {
+    const models = {
+      abc123: modelListInfoFactory.build({
+        name: "model1",
+        wsControllerURL: "wss://example.com/api",
+      }),
+      def456: modelListInfoFactory.build({
+        name: "model2",
+        wsControllerURL: "wss://test.com/api",
+      }),
+    };
+    expect(
+      getFullModelNames(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            models,
+            controllers: {
+              "wss://example.com/api": [
+                controllerFactory.build({ name: "controller1" }),
+              ],
+              "wss://test.com/api": [
+                controllerFactory.build({ name: "controller2" }),
+              ],
+            },
+          }),
+        })
+      )
+    ).toStrictEqual(["controller1/model1", "controller2/model2"]);
+  });
+
   it("getModelByUUID", () => {
     const models = {
       abc123: modelListInfoFactory.build({
@@ -1094,6 +1279,33 @@ describe("selectors", () => {
       }),
     });
     expect(getActiveUser(state, "abc123")).toStrictEqual("eggman@external");
+  });
+
+  it("getUsers", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [
+                modelUserInfoFactory.build({ user: "eggman@external" }),
+                modelUserInfoFactory.build({ user: "spaceman@domain" }),
+              ],
+            }),
+          }),
+          def456: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              users: [modelUserInfoFactory.build({ user: "other3" })],
+            }),
+          }),
+        },
+      }),
+    });
+    expect(getUsers(state)).toStrictEqual([
+      "eggman@external",
+      "spaceman@domain",
+      "other3",
+    ]);
   });
 
   it("getActiveUsers", () => {

@@ -22,7 +22,7 @@ type Options = {
   routeChildren?: ReactNode;
 } & (OptionsWithStore | OptionsWithState);
 
-type ComponentProps = {
+export type ComponentProps = {
   path: string;
   routeChildren?: ReactNode;
   store: MockStoreEnhanced<RootState, unknown>;

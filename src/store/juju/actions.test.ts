@@ -3,6 +3,7 @@ import {
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
+import { auditEventFactory } from "testing/factories/juju/jimm";
 
 import { actions } from "./slice";
 
@@ -108,6 +109,43 @@ describe("actions", () => {
     });
   });
 
+  it("fetchAuditEvents", () => {
+    expect(
+      actions.fetchAuditEvents({
+        "user-tag": "user-eggman@external",
+        wsControllerURL: "wss://test.example.com",
+      })
+    ).toStrictEqual({
+      type: "juju/fetchAuditEvents",
+      payload: {
+        "user-tag": "user-eggman@external",
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("updateAuditEvents", () => {
+    const events = [auditEventFactory.build()];
+    expect(actions.updateAuditEvents(events)).toStrictEqual({
+      type: "juju/updateAuditEvents",
+      payload: events,
+    });
+  });
+
+  it("clearAuditEvents", () => {
+    expect(actions.clearAuditEvents()).toStrictEqual({
+      type: "juju/clearAuditEvents",
+      payload: undefined,
+    });
+  });
+
+  it("updateAuditEventsLimit", () => {
+    expect(actions.updateAuditEventsLimit(50)).toStrictEqual({
+      type: "juju/updateAuditEventsLimit",
+      payload: 50,
+    });
+  });
+
   it("fetchCrossModelQuery", () => {
     expect(
       actions.fetchCrossModelQuery({
@@ -137,7 +175,6 @@ describe("actions", () => {
       payload: undefined,
     });
   });
-
   it("updateControllerList", () => {
     expect(
       actions.updateControllerList({

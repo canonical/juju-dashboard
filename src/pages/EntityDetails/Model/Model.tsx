@@ -54,7 +54,7 @@ const shouldShow = (segment: string, activeView: string) => {
       return false;
     case "machines":
     case "integrations":
-    case "action-logs":
+    case "logs":
       if (segment === "relations-title") {
         return true;
       }
@@ -240,7 +240,7 @@ const Model = () => {
             )}
           </>
         )}
-        {shouldShow("action-logs", query.activeView) && <Logs />}
+        {shouldShow("logs", query.activeView) && <Logs />}
       </div>
     </>
   );

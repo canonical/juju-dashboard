@@ -9,10 +9,8 @@ import {
   ContextualMenu,
   Modal,
   ModularTable,
-  Spinner,
   Tooltip,
 } from "@canonical/react-components";
-import classnames from "classnames";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -21,6 +19,7 @@ import type { Column, Row } from "react-table";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon/CharmIcon";
+import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import Status from "components/Status";
 import { copyToClipboard, formatFriendlyDateToNow } from "components/utils";
@@ -425,13 +424,9 @@ export default function ActionLogs() {
   const emptyMsg = `There are no action logs available yet for ${modelName}`;
 
   return (
-    <div
-      className={classnames("entity-details__action-logs", {
-        "action-logs__loading": !fetchedOperations,
-      })}
-    >
+    <div className="entity-details__action-logs">
       {!fetchedOperations ? (
-        <Spinner />
+        <LoadingSpinner />
       ) : (
         <ModularTable
           emptyMsg={emptyMsg}

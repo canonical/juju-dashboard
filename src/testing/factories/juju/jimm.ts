@@ -1,5 +1,7 @@
 import { Factory } from "fishery";
 
+import type { AuditEvent } from "juju/jimm/JIMMV3";
+
 import {
   type CrossModelQueryEndpoint,
   type CrossModelQuery,
@@ -12,6 +14,21 @@ import {
   type CrossModelQueryController,
   type CrossModelQueryOffer,
 } from "./jimm-types";
+
+export const auditEventFactory = Factory.define<AuditEvent>(() => ({
+  time: "2023-07-01T09:04:04.279Z",
+  "conversation-id": "fakeabc123",
+  "message-id": 2,
+  "facade-name": "ModelManager",
+  "facade-method": "AddModel",
+  "facade-version": 3,
+  "object-id": "4",
+  "user-tag": "user-eggman",
+  model: "microk8s",
+  "is-response": false,
+  params: null,
+  errors: null,
+}));
 
 class CrossModelQueryFactory extends Factory<CrossModelQuery> {
   withApplications(count: number = 1) {

@@ -23,6 +23,7 @@ export const credentialFactory = Factory.define<Credential>(() => ({
 
 export const controllerFeaturesFactory = Factory.define<ControllerFeatures>(
   () => ({
+    auditLogs: false,
     crossModelQueries: false,
   })
 );
