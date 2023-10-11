@@ -2,6 +2,7 @@ import type { Client, Connection, Transport } from "@canonical/jujulib";
 import type { AnyAction, MiddlewareAPI } from "redux";
 
 import * as jujuModule from "juju/api";
+import type { RelationshipTuple } from "juju/jimm/JIMMV4";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import type { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
@@ -87,7 +88,7 @@ describe("model poller", () => {
           "controller-access": "admin",
           "model-access": "admin",
           "display-name": "Eggman",
-          identity: "eggman",
+          identity: "user-eggman",
         },
       },
       transport: {} as Transport,
@@ -107,6 +108,9 @@ describe("model poller", () => {
     };
     const middleware = modelPollerMiddleware(fakeStore);
     await middleware(next)(action);
+    // For some reason the async functions don't finish when using fake timers, so
+    // force the test to wait for the next process:
+    await new Promise(jest.requireActual("timers").setImmediate);
     return middleware;
   };
 
@@ -197,11 +201,42 @@ describe("model poller", () => {
     );
   });
 
+  it("disables the controller features if JIMM < 4", async () => {
+    conn.facades.modelManager.listModels.mockResolvedValue({
+      "user-models": [],
+    });
+    conn.facades.jimM = {
+      checkRelation: jest.fn().mockImplementation(async () => ({
+        allowed: true,
+      })),
+      version: 3,
+    };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(next).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.updateControllerFeatures({
+        wsControllerURL,
+        features: {
+          auditLogs: false,
+          crossModelQueries: false,
+        },
+      })
+    );
+  });
+
   it("updates the controller features if JIMM >= 4", async () => {
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });
     conn.facades.jimM = {
+      checkRelation: jest.fn().mockImplementation(async () => ({
+        allowed: true,
+      })),
       version: 4,
     };
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
@@ -215,6 +250,80 @@ describe("model poller", () => {
       generalActions.updateControllerFeatures({
         wsControllerURL,
         features: {
+          auditLogs: true,
+          crossModelQueries: true,
+        },
+      })
+    );
+  });
+
+  it("enables audit logs if the user has audit log permissions", async () => {
+    conn.facades.modelManager.listModels.mockResolvedValue({
+      "user-models": [],
+    });
+    conn.facades.jimM = {
+      checkRelation: jest
+        .fn()
+        .mockImplementation(async (payload: RelationshipTuple) => {
+          if (payload.relation === "audit_log_viewer") {
+            return {
+              allowed: true,
+            };
+          }
+        }),
+      version: 4,
+    };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(next).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.updateControllerFeatures({
+        wsControllerURL,
+        features: {
+          auditLogs: true,
+          crossModelQueries: true,
+        },
+      })
+    );
+  });
+
+  it("enables audit logs if the user is an administrator", async () => {
+    conn.facades.modelManager.listModels.mockResolvedValue({
+      "user-models": [],
+    });
+    conn.facades.jimM = {
+      checkRelation: jest
+        .fn()
+        .mockImplementation(async (payload: RelationshipTuple) => {
+          if (payload.relation === "audit_log_viewer") {
+            return {
+              allowed: false,
+            };
+          }
+          if (payload.relation === "administrator") {
+            return {
+              allowed: true,
+            };
+          }
+        }),
+      version: 4,
+    };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(next).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.updateControllerFeatures({
+        wsControllerURL,
+        features: {
+          auditLogs: true,
           crossModelQueries: true,
         },
       })
@@ -306,9 +415,6 @@ describe("model poller", () => {
       juju,
     }));
     await runMiddleware();
-    // For some reason the listModels call doesn't resolve before the test
-    // finishes so force the test to wait for the next process:
-    await new Promise(jest.requireActual("timers").setImmediate);
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelList({
@@ -337,9 +443,6 @@ describe("model poller", () => {
       juju,
     }));
     await runMiddleware();
-    // For some reason the listModels call doesn't resolve before the test
-    // finishes so force the test to wait for the next process:
-    await new Promise(jest.requireActual("timers").setImmediate);
     jest.advanceTimersByTime(30000);
     // Resolve the async calls again.
     await new Promise(jest.requireActual("timers").setImmediate);
@@ -368,9 +471,6 @@ describe("model poller", () => {
       juju,
     }));
     await runMiddleware();
-    // For some reason the listModels call doesn't resolve before the test
-    // finishes so force the test to wait for the next process:
-    await new Promise(jest.requireActual("timers").setImmediate);
     jest.advanceTimersByTime(30000);
     // Resolve the async calls again.
     await new Promise(jest.requireActual("timers").setImmediate);
