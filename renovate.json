@@ -1,6 +1,6 @@
 {
   "dependencyDashboard": true,
-  "extends": ["github>canonical/renovate-websites", "schedule:monthly"],
+  "extends": ["github>canonical/renovate-apps"],
   "packageRules": [
     {
       "matchDatasources": ["docker"],
