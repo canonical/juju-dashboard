@@ -26,6 +26,7 @@ import PrimaryNavLink from "./PrimaryNavLink";
 export enum Label {
   ADVANCED_SEARCH = "Advanced search",
   LOGS = "Logs",
+  USERS = "Users",
 }
 
 const ModelsLink = () => {
@@ -122,6 +123,9 @@ const PrimaryNav = () => {
         </li>
         <li className="p-list__item">
           <ControllersLink />
+        </li>
+        <li className="p-list__item">
+          <PrimaryNavLink to={urls.users} iconName="user" title={Label.USERS} />
         </li>
         {auditLogsEnabled && (
           <li className="p-list__item">

@@ -54,6 +54,7 @@ const urls = {
   settings: "/settings",
   logs: "/logs",
   search: "/search",
+  users: "/users",
 };
 
 export const externalURLs = {

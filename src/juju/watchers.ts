@@ -64,7 +64,12 @@ function _processDelta<M extends WatcherModelData, E extends keyof M>(
     };
     mergeWith(modelData[entityType], formatted);
   } else if (actionType === DeltaChangeTypes.REMOVE && entityType !== "model") {
-    if (entityId in modelData[entityType]) {
+    const entityData = modelData[entityType];
+    if (
+      entityData &&
+      typeof entityData === "object" &&
+      entityId in entityData
+    ) {
       delete modelData[entityType][entityId as keyof M[E]];
     }
   }

@@ -15,6 +15,7 @@ import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import Settings from "pages/Settings/Settings";
+import Users from "pages/Users";
 import {
   isCrossModelQueriesEnabled,
   isAuditLogsEnabled,
@@ -99,6 +100,14 @@ export function Routes() {
           }
         />
       )}
+      <Route
+        path={urls.users}
+        element={
+          <Login>
+            <Users />
+          </Login>
+        }
+      />
     </ReactRouterRoutes>
   );
 }
