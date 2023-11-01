@@ -1714,9 +1714,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/rebac-admin@git+ssh://git@github.com:huwshimi/rebac-admin.git#prepare-package":
+"@canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git#main":
   version: 0.0.1
-  resolution: "@canonical/rebac-admin@git+ssh://git@github.com:huwshimi/rebac-admin.git#commit=799df93f18a3a3e545de46993f41cb9fe63f74e5"
+  resolution: "@canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git#commit=0cea218ce23f4a86fb1d9805d8a3814a2cdc3d8f"
   dependencies:
     "@tanstack/react-query": 5.4.3
     axios: 1.5.1
@@ -1728,7 +1728,7 @@ __metadata:
     react: ^18.0.0
     react-dom: ^18.0.0
     vanilla-framework: ^4.0.0
-  checksum: 7b151c58710f2720bdefaedcb219322bfcc753d2a27d4ea7750a5c48c19a4b4c1e015388419bc495c9926e97e4b5f4483547010347de71b65cf40be93dec88e9
+  checksum: 465e3dd0cf6a396b257695a6ec75c5f7895952c8d07c2e539e7cb9356ae3acaf0cfa3b209d2e22030daed7ddfd4296e1ef346ad5d16fb9551070f25326eb015d
   languageName: node
   linkType: hard
 
@@ -2538,10 +2538,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.6.3":
-  version: 1.6.3
-  resolution: "@remix-run/router@npm:1.6.3"
-  checksum: f6968b1626af930b42f8cb5a044f05e4fbce05af6c7947beb1704e45c9570944e3be16ee008b185e5e13baac97948299eb55341b2a359c3e2e54b9d6646ae167
+"@remix-run/router@npm:1.11.0":
+  version: 1.11.0
+  resolution: "@remix-run/router@npm:1.11.0"
+  checksum: 1966436ab3ab982862195e4871790644ce21e01511aa3f4350436296224e4dec2e6ee35f1f4cb83db69f7aa0e8ad4a0a01928b05359ae654edc8e2aa82bf754b
   languageName: node
   linkType: hard
 
@@ -10299,7 +10299,7 @@ __metadata:
     "@canonical/jujulib": 4.0.0
     "@canonical/macaroon-bakery": 1.3.2
     "@canonical/react-components": 0.47.1
-    "@canonical/rebac-admin": "git+ssh://git@github.com:huwshimi/rebac-admin.git#prepare-package"
+    "@canonical/rebac-admin": "git+ssh://git@github.com:canonical/rebac-admin.git#main"
     "@reduxjs/toolkit": 1.9.5
     "@sentry/browser": 7.55.0
     "@testing-library/jest-dom": 5.16.5
@@ -10354,7 +10354,7 @@ __metadata:
     react-hot-toast: 2.4.1
     react-json-tree: 0.18.0
     react-redux: 8.1.0
-    react-router-dom: 6.12.1
+    react-router-dom: 6.18.0
     react-scripts: 5.0.1
     react-useportal: 1.0.18
     redux: 4.2.1
@@ -13132,19 +13132,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.12.1":
-  version: 6.12.1
-  resolution: "react-router-dom@npm:6.12.1"
-  dependencies:
-    "@remix-run/router": 1.6.3
-    react-router: 6.12.1
-  peerDependencies:
-    react: ">=16.8"
-    react-dom: ">=16.8"
-  checksum: 885528986b6e32bde0cc6ff1f318186ce6931cf4a2a36511fe12eafb380576b448a991d43fe473dbb9bc97bb7efa0c87ac179a7470345a1d3534a34b65578677
-  languageName: node
-  linkType: hard
-
 "react-router-dom@npm:6.17.0":
   version: 6.17.0
   resolution: "react-router-dom@npm:6.17.0"
@@ -13158,14 +13145,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.12.1":
-  version: 6.12.1
-  resolution: "react-router@npm:6.12.1"
+"react-router-dom@npm:6.18.0":
+  version: 6.18.0
+  resolution: "react-router-dom@npm:6.18.0"
   dependencies:
-    "@remix-run/router": 1.6.3
+    "@remix-run/router": 1.11.0
+    react-router: 6.18.0
   peerDependencies:
     react: ">=16.8"
-  checksum: a23a0f2e6635eba19aec8d50b9126f61663d1e6ee6e69d6b2ca6e5dd678496b54d925f0d86a375270646da11cc12be66ac5e6ebf73962957af91ac828b63d10b
+    react-dom: ">=16.8"
+  checksum: ca5c9a9f748f4ff9677d25762970fc59cb216568aad0ebc668b22398222a940f767680bc9a3e65a92e940d3fe05731eda8a4b352ccbf1054904b3b785a9f5e6f
   languageName: node
   linkType: hard
 
@@ -13177,6 +13166,17 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 99c30d94fbb34657e4c8c3ef1aaae33b143167d3869b442e06c83b4006f35200fde810029180e209654bef2f47f0b27a928f77cc2d859a358a2722cc9d494f03
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.18.0":
+  version: 6.18.0
+  resolution: "react-router@npm:6.18.0"
+  dependencies:
+    "@remix-run/router": 1.11.0
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 03e9a23c5b75d8813720745e2952bb9e62ec310d238cde4f19e0ce73582701fa5e04cf609ff9ced978e9e6c531b5e333b9aee35371e6c4743afc2829e32e926a
   languageName: node
   linkType: hard
 

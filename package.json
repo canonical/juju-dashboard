@@ -75,7 +75,7 @@
     "react-hot-toast": "2.4.1",
     "react-json-tree": "0.18.0",
     "react-redux": "8.1.0",
-    "react-router-dom": "6.12.1",
+    "react-router-dom": "6.18.0",
     "react-scripts": "5.0.1",
     "react-useportal": "1.0.18",
     "redux": "4.2.1",

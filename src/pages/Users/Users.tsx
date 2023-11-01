@@ -4,7 +4,7 @@ import BaseLayout from "layout/BaseLayout/BaseLayout";
 
 const Users = (): JSX.Element => (
   <BaseLayout>
-    <ReBACAdmin />
+    <ReBACAdmin apiURL="http://example.com/api" />
   </BaseLayout>
 );
 

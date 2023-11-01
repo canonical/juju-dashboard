@@ -101,7 +101,7 @@ export function Routes() {
         />
       )}
       <Route
-        path={urls.users}
+        path={`${urls.users}/*`}
         element={
           <Login>
             <Users />
