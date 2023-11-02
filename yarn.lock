@@ -1716,7 +1716,7 @@ __metadata:
 
 "@canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git#main":
   version: 0.0.1
-  resolution: "@canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git#commit=0cea218ce23f4a86fb1d9805d8a3814a2cdc3d8f"
+  resolution: "@canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git#commit=3327c6d0ab513bbc2a3ad69aad7cd488a78f79df"
   dependencies:
     "@tanstack/react-query": 5.4.3
     axios: 1.5.1
@@ -1727,8 +1727,9 @@ __metadata:
     "@types/react-dom": ^18.0.0
     react: ^18.0.0
     react-dom: ^18.0.0
+    react-router-dom: ^6.18.0
     vanilla-framework: ^4.0.0
-  checksum: 465e3dd0cf6a396b257695a6ec75c5f7895952c8d07c2e539e7cb9356ae3acaf0cfa3b209d2e22030daed7ddfd4296e1ef346ad5d16fb9551070f25326eb015d
+  checksum: d616679292531a5a2fe00d5f39a42c93015bfb6a59deaec6fa24e618712261bc27c9d113f3792ae321a875ed349856aa1fc0c9773c3e11489828170805a96675
   languageName: node
   linkType: hard
 
@@ -3667,14 +3668,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:18.2.33":
-  version: 18.2.33
-  resolution: "@types/react@npm:18.2.33"
+"@types/react@npm:*":
+  version: 18.2.34
+  resolution: "@types/react@npm:18.2.34"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 75903c4d53898c69dd23d0b2730eac4676dc5ade15c25c793dec855f0d7c650cb823832bb1dd881efe8895724f15b06d4bf7081ea0b82391aa3059512ad49ccf
+  checksum: 16446542228cba827143caf0ecb4718cbf02ae5befd4a6bc6d67ed144fe1c0cb4b06b20facf3d2b972d86c67a17cc82f5ec8a03fce42d50e12b2dcd0592fc66e
   languageName: node
   linkType: hard
 
@@ -3686,6 +3687,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 81381bedeba83278f4c9febb0b83e0bd3f42a25897a50b9cb36ef53651d34b3d50f87ebf11211ea57ea575131f85d31e93e496ce46478a00b0f9bf7b26b5917a
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:18.2.33":
+  version: 18.2.33
+  resolution: "@types/react@npm:18.2.33"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 75903c4d53898c69dd23d0b2730eac4676dc5ade15c25c793dec855f0d7c650cb823832bb1dd881efe8895724f15b06d4bf7081ea0b82391aa3059512ad49ccf
   languageName: node
   linkType: hard
 

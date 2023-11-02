@@ -2,10 +2,10 @@ import { ReBACAdmin } from "@canonical/rebac-admin";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
-const Users = (): JSX.Element => (
+const Permissions = (): JSX.Element => (
   <BaseLayout>
     <ReBACAdmin apiURL="http://example.com/api" />
   </BaseLayout>
 );
 
-export default Users;
+export default Permissions;

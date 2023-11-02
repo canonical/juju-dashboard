@@ -14,8 +14,8 @@ import Logs from "pages/Logs";
 import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
+import Permissions from "pages/Permissions";
 import Settings from "pages/Settings/Settings";
-import Users from "pages/Users";
 import {
   isCrossModelQueriesEnabled,
   isAuditLogsEnabled,
@@ -101,10 +101,10 @@ export function Routes() {
         />
       )}
       <Route
-        path={`${urls.users}/*`}
+        path={`${urls.permissions}/*`}
         element={
           <Login>
-            <Users />
+            <Permissions />
           </Login>
         }
       />
