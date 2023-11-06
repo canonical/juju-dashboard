@@ -1716,7 +1716,7 @@ __metadata:
 
 "@canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git#main":
   version: 0.0.1
-  resolution: "@canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git#commit=3327c6d0ab513bbc2a3ad69aad7cd488a78f79df"
+  resolution: "@canonical/rebac-admin@git+ssh://git@github.com:canonical/rebac-admin.git#commit=e5d00eeb809d4b13d120128b03c086f88440da20"
   dependencies:
     "@tanstack/react-query": 5.4.3
     axios: 1.5.1
@@ -1729,7 +1729,7 @@ __metadata:
     react-dom: ^18.0.0
     react-router-dom: ^6.18.0
     vanilla-framework: ^4.0.0
-  checksum: d616679292531a5a2fe00d5f39a42c93015bfb6a59deaec6fa24e618712261bc27c9d113f3792ae321a875ed349856aa1fc0c9773c3e11489828170805a96675
+  checksum: 4448322b7a0c25a444e11ba6253d8875ba59eaeb35fca52a87bd2117c039b165d3d8286438c1c049d1cfa08930ce6a5c436311c20a215ec26576cf53c7d623d7
   languageName: node
   linkType: hard
 
