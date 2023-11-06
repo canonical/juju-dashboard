@@ -51,6 +51,7 @@ const urls = {
       groupedby: ModelsGroupedBy;
     }>("/models?groupedby=:groupedby"),
   },
+  permissions: "/permissions",
   settings: "/settings",
   logs: "/logs",
   search: "/search",

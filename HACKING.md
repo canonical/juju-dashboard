@@ -142,7 +142,7 @@ developing Juju Dashboard.
 
 ### React
 
-Juju Dashboard uses [React](https://react.dev/) for it's component based UI.
+Juju Dashboard uses [React](https://react.dev/) for its component based UI.
 
 #### Components
 

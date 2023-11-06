@@ -1,5 +1,6 @@
 import * as versionsAPI from "@canonical/jujulib/dist/api/versions";
 import { screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
@@ -185,10 +186,11 @@ describe("Primary Nav", () => {
   it("should have all navigation buttons", () => {
     renderComponent(<PrimaryNav />);
     const navigationButtons = document.querySelectorAll(".p-list__link");
-    expect(navigationButtons).toHaveLength(3);
+    expect(navigationButtons).toHaveLength(4);
     expect(navigationButtons[0]).toHaveTextContent("Models");
     expect(navigationButtons[1]).toHaveTextContent("Controllers");
-    expect(navigationButtons[2]).toHaveTextContent("Report a bug");
+    expect(navigationButtons[2]).toHaveTextContent("Permissions");
+    expect(navigationButtons[3]).toHaveTextContent("Report a bug");
   });
 
   it("should not show LogsLink navigation button under Juju", () => {
@@ -201,10 +203,11 @@ describe("Primary Nav", () => {
     });
     renderComponent(<PrimaryNav />, { state });
     const navigationButtons = document.querySelectorAll(".p-list__link");
-    expect(navigationButtons).toHaveLength(3);
+    expect(navigationButtons).toHaveLength(4);
     expect(navigationButtons[0]).toHaveTextContent("Models");
     expect(navigationButtons[1]).toHaveTextContent("Controllers");
-    expect(navigationButtons[2]).toHaveTextContent("Report a bug");
+    expect(navigationButtons[2]).toHaveTextContent("Permissions");
+    expect(navigationButtons[3]).toHaveTextContent("Report a bug");
   });
 
   it("should show LogsLink navigation button if the controller supports it", () => {
@@ -262,6 +265,21 @@ describe("Primary Nav", () => {
     renderComponent(<PrimaryNav />, { state });
     expect(
       screen.getByRole("link", { name: Label.ADVANCED_SEARCH })
+    ).toBeInTheDocument();
+  });
+
+  it("does not show the permissions subsections when not viewing permissions", () => {
+    renderComponent(<PrimaryNav />);
+    expect(
+      screen.queryByRole("link", { name: "Access Governance" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows the permissions subsections when viewing permissions", async () => {
+    renderComponent(<PrimaryNav />);
+    await userEvent.click(screen.getByRole("link", { name: "Permissions" }));
+    expect(
+      screen.getByRole("link", { name: "Access Governance" })
     ).toBeInTheDocument();
   });
 });

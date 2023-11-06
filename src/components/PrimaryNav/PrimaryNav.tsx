@@ -1,7 +1,17 @@
 import { dashboardUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import { Icon, StatusLabel, Tooltip } from "@canonical/react-components";
+import {
+  AccessGovernanceLink,
+  AuthenticationLink,
+  EntitlementsLink,
+  GroupsLink,
+  ResourcesLink,
+  RolesLink,
+  UsersLink,
+} from "@canonical/rebac-admin";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { useMatch } from "react-router-dom";
 
 import Logo from "components/Logo/Logo";
 import UserMenu from "components/UserMenu/UserMenu";
@@ -26,6 +36,7 @@ import PrimaryNavLink from "./PrimaryNavLink";
 export enum Label {
   ADVANCED_SEARCH = "Advanced search",
   LOGS = "Logs",
+  PERMISSIONS = "Permissions",
 }
 
 const ModelsLink = () => {
@@ -100,6 +111,7 @@ const PrimaryNav = () => {
   const versionRequested = useRef(false);
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
+  const showingPermissions = useMatch(`${urls.permissions}/*`);
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
@@ -132,6 +144,50 @@ const PrimaryNav = () => {
           <li className="p-list__item">
             <AdvancedSearchLink />
           </li>
+        ) : null}
+        <li className="p-list__item">
+          <PrimaryNavLink
+            to={urls.permissions}
+            iconName="user"
+            title={Label.PERMISSIONS}
+          />
+        </li>
+        {showingPermissions ? (
+          <>
+            <li className="p-list__item">
+              <AccessGovernanceLink
+                className="p-list__link"
+                baseURL={urls.permissions}
+              />
+            </li>
+            <li className="p-list__item">
+              <AuthenticationLink
+                className="p-list__link"
+                baseURL={urls.permissions}
+              />
+            </li>
+            <li className="p-list__item">
+              <EntitlementsLink
+                className="p-list__link"
+                baseURL={urls.permissions}
+              />
+            </li>
+            <li className="p-list__item">
+              <GroupsLink className="p-list__link" baseURL={urls.permissions} />
+            </li>
+            <li className="p-list__item">
+              <ResourcesLink
+                className="p-list__link"
+                baseURL={urls.permissions}
+              />
+            </li>
+            <li className="p-list__item">
+              <RolesLink className="p-list__link" baseURL={urls.permissions} />
+            </li>
+            <li className="p-list__item">
+              <UsersLink className="p-list__link" baseURL={urls.permissions} />
+            </li>
+          </>
         ) : null}
       </ul>
       <hr className="p-primary-nav__divider hide-collapsed" />

@@ -14,6 +14,7 @@ import Logs from "pages/Logs";
 import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
+import Permissions from "pages/Permissions";
 import Settings from "pages/Settings/Settings";
 import {
   isCrossModelQueriesEnabled,
@@ -99,6 +100,14 @@ export function Routes() {
           }
         />
       )}
+      <Route
+        path={`${urls.permissions}/*`}
+        element={
+          <Login>
+            <Permissions />
+          </Login>
+        }
+      />
     </ReactRouterRoutes>
   );
 }
