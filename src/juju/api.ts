@@ -415,7 +415,7 @@ export async function fetchControllerList(
             ...controller,
             additionalController,
           }))
-        : null;
+        : [];
     } catch (error) {
       dispatch(
         generalActions.storeConnectionError(

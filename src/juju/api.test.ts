@@ -766,6 +766,36 @@ describe("Juju API", () => {
       );
     });
 
+    it("can fetch controllers via JIMM with 0 controllers", async () => {
+      const dispatch = jest.fn();
+      const conn = {
+        facades: {
+          jimM: {
+            listControllers: jest.fn().mockResolvedValueOnce({
+              controllers: null,
+            }),
+          },
+        },
+      } as unknown as Connection;
+      jest
+        .spyOn(jujuLibVersions, "jujuUpdateAvailable")
+        .mockImplementationOnce(async () => true)
+        .mockImplementationOnce(async () => false);
+      await fetchControllerList(
+        "wss://example.com/api",
+        conn,
+        true,
+        dispatch,
+        () => rootStateFactory.build()
+      );
+      expect(dispatch).toHaveBeenCalledWith(
+        jujuActions.updateControllerList({
+          wsControllerURL: "wss://example.com/api",
+          controllers: [],
+        })
+      );
+    });
+
     it("can fetch the controller from Juju", async () => {
       const dispatch = jest.fn();
       const conn = {
