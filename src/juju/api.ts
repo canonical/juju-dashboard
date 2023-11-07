@@ -410,10 +410,12 @@ export async function fetchControllerList(
   if (conn.facades.jimM) {
     try {
       const response = await conn.facades.jimM?.listControllers();
-      controllers = response.controllers.map((controller) => ({
-        ...controller,
-        additionalController,
-      }));
+      controllers = response.controllers
+        ? response.controllers.map((controller) => ({
+            ...controller,
+            additionalController,
+          }))
+        : null;
     } catch (error) {
       dispatch(
         generalActions.storeConnectionError(
