@@ -14,25 +14,30 @@ type Option = PropsWithSpread<
   HTMLProps<HTMLOptionElement>
 >;
 
-type Props = PropsWithSpread<
-  {
-    options?: (string | Option)[] | null;
-  },
-  InputProps
->;
+const isOption = (option: any): option is Option =>
+  option instanceof Object &&
+  option?.label &&
+  typeof option?.value === "string";
+
+type Props = PropsWithSpread<{ options: unknown[] }, InputProps>;
 
 const generateOptions = (options: Props["options"]) =>
-  options?.map((option) => {
-    if (typeof option === "string") {
-      return <option value={option} key={option} />;
-    }
-    const { value, label, ...props } = option;
-    return (
-      <option value={value} key={value} {...props}>
-        {label}
-      </option>
-    );
-  });
+  options
+    .filter((option) => typeof option === "string" || isOption(option))
+    .map((option) => {
+      if (typeof option === "string") {
+        return <option value={option} key={option} />;
+      }
+      if (isOption(option)) {
+        const { value, label, ...props } = option;
+        return (
+          <option value={value} key={value} {...props}>
+            {label}
+          </option>
+        );
+      }
+      return null;
+    });
 
 const AutocompleteInput = ({ options, ...props }: Props) => {
   const id = useId();
