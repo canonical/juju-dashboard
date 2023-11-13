@@ -184,6 +184,16 @@ export const getControllerData = createSelector(
   (sliceState) => sliceState.controllers
 );
 
+export const getControllersCount = createSelector([slice], (sliceState) => {
+  const controllerData = sliceState.controllers;
+  return controllerData
+    ? Object.entries(controllerData).reduce(
+        (count, [, controllers]) => count + controllers.length,
+        0
+      )
+    : 0;
+});
+
 const getModelWatcherData = createSelector(
   [slice],
   (sliceState) => sliceState.modelWatcherData
