@@ -5,18 +5,11 @@
 
 // Scope the l-aside within l-application so that it can override the Vanilla styles.
 .l-application .l-aside {
-  // Always fill the screen height.
-  height: 100vh;
-  // The aside is within the main element so any long content will make the
-  // aside scroll up with the page so this needs to be prevented.
-  position: fixed;
-  // Fix the panel position in Safari. This is required because
-  // this element has `position: fixed` so that the panel doesn't move when
-  // scrolling the page.
-  right: 0;
+  overflow-x: hidden;
 
-  // Panel should appear above the side/top menus and other content.
-  z-index: z("zelda") + 1 !important;
+  &--initially-offscreen {
+    transform: translateX(100%);
+  }
 
   .loading {
     align-items: center;
@@ -47,13 +40,10 @@
         flex-direction: column;
 
         @include desktop {
-          &:first-child {
-            border-right: 1px solid #ccc;
-            padding-right: $sph--x-large;
-          }
-
           &:last-child {
+            border-left: 1px solid #ccc;
             margin-left: $sph--x-large;
+            padding-left: $sph--x-large;
           }
         }
       }
@@ -63,6 +53,7 @@
   .p-panel {
     // Panels inside the aside do not need to handle overflow as this is already
     // handled by the aside, and doubling up prevents sticky from working in the children.
+    // overflow-x: hidden;
     overflow: initial;
 
     .p-panel__content {

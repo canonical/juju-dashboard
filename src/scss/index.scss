@@ -4,9 +4,6 @@
 // Vanilla overrides
 $increase-font-size-on-larger-screens: false;
 $color-link-visited: $color-link;
-$application-layout--side-nav-width-collapsed: 3rem;
-// Override Vanilla to always collapse navigation sidebar
-$application-layout--breakpoint-side-nav-expanded: -1;
 
 // Import settings
 @import "settings";

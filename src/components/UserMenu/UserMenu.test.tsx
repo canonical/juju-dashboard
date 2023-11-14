@@ -42,24 +42,15 @@ describe("User Menu", () => {
     expect(document.querySelector(".user-menu")).not.toHaveClass("is-active");
   });
 
-  it("is active when userMenuActive in redux store is true", () => {
-    state.ui.userMenuActive = true;
+  it("can open the menu", async () => {
     renderComponent(<UserMenu />, { state });
-
+    await userEvent.click(screen.getByRole("button", { name: "eggman" }));
     expect(document.querySelector(".user-menu")).toHaveClass("is-active");
   });
 
   it("displays current logged in user", () => {
     renderComponent(<UserMenu />, { state });
-    expect(screen.getByText("eggman")).toHaveClass("user-menu__name");
-  });
-
-  it("Test dispatch function is fired", async () => {
-    const { store } = renderComponent(<UserMenu />, { state });
-    await userEvent.click(screen.getByRole("button"));
-    const actions = store.getActions();
-    const expectedPayload = { payload: true, type: "ui/userMenuActive" };
-    expect(actions).toEqual([expectedPayload]);
+    expect(screen.getByRole("button", { name: "eggman" })).toBeInTheDocument();
   });
 
   it("should logout", async () => {

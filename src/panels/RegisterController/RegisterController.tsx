@@ -249,7 +249,7 @@ export default function RegisterController() {
             </div>
           </div>
         </div>
-        <div className="p-form__group row">
+        <div className="p-form__group row register-controller__warning">
           <div className="col-10 col-start-large-3">
             <i className="p-icon--warning"></i>
             <div className="controller-link-message">

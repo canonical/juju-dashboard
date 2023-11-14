@@ -46,7 +46,6 @@ describe("Logs", () => {
   it("should render the page", async () => {
     renderComponent(<Logs />, { state });
     expect(screen.getByText("Audit logs")).toBeVisible();
-    expect(document.querySelector(".logs")).toBeVisible();
     expect(await screen.findAllByRole("cell")).toHaveLength(6);
   });
 

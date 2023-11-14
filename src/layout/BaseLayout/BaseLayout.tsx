@@ -1,18 +1,21 @@
-import classNames from "classnames";
-import type { PropsWithChildren } from "react";
-import { useEffect, useState } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
+import FadeIn from "animations/FadeIn";
 import Banner from "components/Banner/Banner";
-import Logo from "components/Logo/Logo";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import ApplicationLayout from "components/upstream/ApplicationLayout";
+import type { PanelProps } from "components/upstream/Panel";
+import Panel from "components/upstream/Panel";
+import { DARK_THEME } from "consts";
 import useOffline from "hooks/useOffline";
 import Panels from "panels/Panels";
-import { actions } from "store/ui";
-import { isSideNavCollapsed } from "store/ui/selectors";
+import jaasText from "static/images/logo/jaas-text.svg";
+import jujuText from "static/images/logo/juju-text.svg";
+import logoMark from "static/images/logo/logo-mark.svg";
+import { getIsJuju } from "store/general/selectors";
 
 import "./_base-layout.scss";
 
@@ -26,32 +29,29 @@ export enum Label {
   MOBILE_MENU_CLOSE_BUTTON = "Close menu",
 }
 
-const BaseLayout = ({ children }: PropsWithChildren) => {
-  const [mobileMenuCollapsed, setMobileMenuCollapsed] = useState(true);
+type Props = {
+  status?: ReactNode;
+  title?: ReactNode;
+  titleClassName?: PanelProps["titleClassName"];
+  titleComponent?: PanelProps["titleComponent"];
+} & PropsWithChildren;
+
+const BaseLayout = ({
+  children,
+  status,
+  title,
+  titleClassName,
+  titleComponent,
+}: Props) => {
   const location = useLocation();
-  const dispatch = useDispatch();
-
-  // Check if pathname includes a model name - and then always collapse sidebar
-  const { modelName } = useParams<EntityDetailsRoute>();
-
-  const collapseSidebar = useSelector(isSideNavCollapsed) || false;
-
-  useEffect(() => {
-    dispatch(actions.sideNavCollapsed(!!modelName));
-
-    return () => {
-      dispatch(actions.sideNavCollapsed(false));
-    };
-  }, [modelName, dispatch]);
-
   const isOffline = useOffline();
+  const isJuju = useSelector(getIsJuju);
 
   return (
     <>
-      <a className="skip-main" href="#main-content">
+      <a className="p-link--skip" href="#main-content">
         Skip to main content
       </a>
-
       <Banner
         isActive={isOffline !== null}
         variant={isOffline === false ? "positive" : "caution"}
@@ -65,47 +65,42 @@ const BaseLayout = ({ children }: PropsWithChildren) => {
           </p>
         )}
       </Banner>
-
       <div id="confirmation-modal-container"></div>
-
-      <div className="l-application">
-        <div className="l-navigation-bar">
-          <Logo />
-          <button
-            className="is-dense toggle-menu"
-            onClick={() => {
-              setMobileMenuCollapsed(!mobileMenuCollapsed);
-            }}
+      <ApplicationLayout
+        aside={<Panels />}
+        dark={DARK_THEME}
+        logo={{
+          href: isJuju ? "https://juju.is" : "https://jaas.ai",
+          icon: logoMark,
+          name: isJuju ? jujuText : jaasText,
+          nameAlt: isJuju ? "Juju" : "JAAS",
+        }}
+        navPanelClassName="p-primary-nav"
+        sideNavigation={<PrimaryNav />}
+        status={status}
+      >
+        <div id="main-content">
+          <Panel
+            data-testid={TestId.MAIN}
+            titleClassName={titleClassName}
+            titleComponent={titleComponent}
+            stickyHeader
+            title={title}
           >
-            {mobileMenuCollapsed
-              ? Label.MOBILE_MENU_OPEN_BUTTON
-              : Label.MOBILE_MENU_CLOSE_BUTTON}
-          </button>
+            <div className="l-content">
+              <FadeIn isActive={true}>{children}</FadeIn>
+            </div>
+          </Panel>
         </div>
-        <header
-          className={classNames("l-navigation", {
-            "is-pinned": !collapseSidebar,
-          })}
-          data-collapsed={mobileMenuCollapsed}
-          data-sidenav-initially-collapsed={collapseSidebar}
-        >
-          <div className="l-navigation__drawer">
-            <PrimaryNav />
-          </div>
-        </header>
-        <main className="l-main" id="main-content">
-          <div data-testid={TestId.MAIN}>{children}</div>
-        </main>
-        <Panels />
-        <Toaster
-          position="bottom-right"
-          containerClassName="toast-container"
-          toastOptions={{
-            duration: 5000,
-          }}
-          reverseOrder={true}
-        />
-      </div>
+      </ApplicationLayout>
+      <Toaster
+        position="bottom-right"
+        containerClassName="toast-container"
+        toastOptions={{
+          duration: 5000,
+        }}
+        reverseOrder={true}
+      />
     </>
   );
 };

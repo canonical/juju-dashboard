@@ -23,13 +23,6 @@ describe("Primary Nav", () => {
     jest.restoreAllMocks();
   });
 
-  it("applies is-selected state correctly", () => {
-    renderComponent(<PrimaryNav />, { url: "/controllers" });
-    expect(screen.getByRole("link", { name: "Controllers" })).toHaveClass(
-      "is-selected"
-    );
-  });
-
   it("displays correct number of blocked models", () => {
     const state = rootStateFactory.withGeneralConfig().build({
       juju: jujuStateFactory.build({
@@ -57,35 +50,6 @@ describe("Primary Nav", () => {
     });
     renderComponent(<PrimaryNav />, { state });
     expect(screen.getByText("2")).toHaveClass("entity-count");
-  });
-
-  it("displays the JAAS logo under JAAS", () => {
-    renderComponent(<PrimaryNav />);
-    const logo = screen.getByAltText("Juju logo");
-    expect(logo).toHaveAttribute("src", "jaas-text.svg");
-    expect(logo).toHaveClass("logo__text");
-    expect(document.querySelector(".logo")).toHaveAttribute(
-      "href",
-      "https://jaas.ai"
-    );
-  });
-
-  it("displays the Juju logo under Juju", () => {
-    const state = rootStateFactory.build({
-      general: generalStateFactory.build({
-        config: configFactory.build({
-          isJuju: true,
-        }),
-      }),
-    });
-    renderComponent(<PrimaryNav />, { state });
-    const logo = screen.getByAltText("Juju logo");
-    expect(logo).toHaveAttribute("src", "juju-text.svg");
-    expect(logo).toHaveClass("logo__text");
-    expect(document.querySelector(".logo")).toHaveAttribute(
-      "href",
-      "https://juju.is"
-    );
   });
 
   it("displays the version number", () => {
@@ -182,13 +146,15 @@ describe("Primary Nav", () => {
     expect(notification).not.toBeInTheDocument();
   });
 
-  it("should have all navigation buttons", () => {
+  it("should have all navigation links", () => {
     renderComponent(<PrimaryNav />);
-    const navigationButtons = document.querySelectorAll(".p-list__link");
-    expect(navigationButtons).toHaveLength(3);
-    expect(navigationButtons[0]).toHaveTextContent("Models");
-    expect(navigationButtons[1]).toHaveTextContent("Controllers");
-    expect(navigationButtons[2]).toHaveTextContent("Report a bug");
+    expect(screen.getByRole("link", { name: "Models" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Controllers" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Report a bug" })
+    ).toBeInTheDocument();
   });
 
   it("should not show LogsLink navigation button under Juju", () => {
@@ -200,11 +166,9 @@ describe("Primary Nav", () => {
       }),
     });
     renderComponent(<PrimaryNav />, { state });
-    const navigationButtons = document.querySelectorAll(".p-list__link");
-    expect(navigationButtons).toHaveLength(3);
-    expect(navigationButtons[0]).toHaveTextContent("Models");
-    expect(navigationButtons[1]).toHaveTextContent("Controllers");
-    expect(navigationButtons[2]).toHaveTextContent("Report a bug");
+    expect(
+      screen.queryByRole("link", { name: Label.LOGS })
+    ).not.toBeInTheDocument();
   });
 
   it("should show LogsLink navigation button if the controller supports it", () => {

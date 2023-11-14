@@ -6,17 +6,6 @@
 $canonical-purple: #2c001e;
 
 .webcli {
-  bottom: 0;
-  position: fixed;
-  // https://github.com/canonical-web-and-design/vanilla-framework/blob/main/scss/_layouts_application.scss#L45
-  // These variables aren't made available to the rest of the application so
-  // their values are hardcoded here.
-  width: calc(100vw - 3rem);
-
-  @include mobile {
-    width: 100vw;
-  }
-
   &__input {
     background-color: $color-x-dark;
     display: flex;
@@ -96,6 +85,7 @@ $canonical-purple: #2c001e;
     &-dragarea {
       cursor: row-resize;
       height: $webcli-desktop-drag-height;
+      position: relative;
       user-select: none;
       width: 100%;
     }

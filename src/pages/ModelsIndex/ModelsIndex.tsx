@@ -4,9 +4,7 @@ import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import FadeIn from "animations/FadeIn";
 import ChipGroup from "components/ChipGroup/ChipGroup";
-import Header from "components/Header/Header";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import ModelTableList from "components/ModelTableList/ModelTableList";
 import SegmentedControl from "components/SegmentedControl";
@@ -98,48 +96,39 @@ export default function Models() {
     return <LoadingSpinner />;
   } else if (!hasSomeModels) {
     content = (
-      <div className="l-content">
-        <div className="models">
-          <h3>{Label.NOT_FOUND}</h3>
-          <p>
-            Learn about{" "}
-            <a href="https://juju.is/docs/olm/manage-models#heading--add-a-model">
-              adding models
-            </a>{" "}
-            or{" "}
-            <a href="https://juju.is/docs/olm/manage-users#heading--model-access">
-              granting access
-            </a>{" "}
-            to existing models.
-          </p>
-        </div>
+      <div className="models">
+        <h3>{Label.NOT_FOUND}</h3>
+        <p>
+          Learn about{" "}
+          <a href="https://juju.is/docs/olm/manage-models#heading--add-a-model">
+            adding models
+          </a>{" "}
+          or{" "}
+          <a href="https://juju.is/docs/olm/manage-users#heading--model-access">
+            granting access
+          </a>{" "}
+          to existing models.
+        </p>
       </div>
     );
   } else {
     content = (
-      <FadeIn isActive={modelsLoaded}>
-        <div className="l-content">
-          <div className="models">
-            <ChipGroup chips={{ blocked, alert, running }} />
-            <ModelTableList
-              groupedBy={queryParams.groupedby}
-              filters={filters}
-            />
-          </div>
-        </div>
-      </FadeIn>
+      <div className="models">
+        <ChipGroup chips={{ blocked, alert, running }} />
+        <ModelTableList groupedBy={queryParams.groupedby} filters={filters} />
+      </div>
     );
   }
 
   return (
-    <BaseLayout>
-      <Header>
+    <BaseLayout
+      title={
         <div className="models__header" data-disabled={modelCount === 0}>
-          <strong className="models__count">
+          <span className="u-hide u-show--large">
             {modelCount} {pluralize(modelCount, "model")}
-          </strong>
+          </span>
           <span className="models__header-controls">
-            Group by:{" "}
+            <span className="p-text--default">Group by: </span>
             <SegmentedControl
               className="u-display--inline-block"
               activeButton={queryParams.groupedby}
@@ -203,7 +192,10 @@ export default function Models() {
             }}
           />
         </div>
-      </Header>
+      }
+      titleComponent="div"
+      titleClassName="u-no-max-width u-full-width"
+    >
       {content}
     </BaseLayout>
   );

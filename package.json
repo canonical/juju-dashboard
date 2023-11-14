@@ -61,7 +61,7 @@
     "date-fns": "2.30.0",
     "dompurify": "3.0.5",
     "formik": "2.4.1",
-    "framer-motion": "10.12.16",
+    "framer-motion": "10.16.4",
     "fuse.js": "6.6.2",
     "lodash.isequal": "4.5.0",
     "lodash.mergewith": "4.6.2",

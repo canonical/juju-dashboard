@@ -95,7 +95,7 @@
   }
 
   .aside-split-col--right {
-    @include mobile {
+    @include mobile-and-medium {
       // On mobile the descriptions are shown next to the fields instead of in
       // the split column.
       display: none !important;
@@ -136,7 +136,7 @@
       width: #{map-get($font-sizes, small)}rem;
     }
 
-    @media screen and (max-width: $breakpoint-small) {
+    @include mobile-and-medium {
       display: inline-block;
     }
   }
@@ -152,7 +152,7 @@
     max-height: 0;
     overflow: hidden;
 
-    @media screen and (max-width: $breakpoint-small) {
+    @include mobile-and-medium {
       display: block;
     }
   }
@@ -173,7 +173,7 @@
     }
   }
 
-  @media screen and (min-width: $breakpoint-large) {
+  @include desktop {
     textarea {
       margin-bottom: 1.2rem !important;
     }

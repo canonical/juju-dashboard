@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams, Link, Outlet } from "react-router-dom";
 
-import FadeIn from "animations/FadeIn";
 import Breadcrumb from "components/Breadcrumb/Breadcrumb";
-import Header from "components/Header/Header";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import NotFound from "components/NotFound/NotFound";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -158,17 +156,9 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   let content: ReactNode;
   if (modelInfo) {
     content = (
-      <FadeIn isActive={!!modelInfo}>
-        <div
-          className={classNames("l-content", {
-            "l-content--has-webcli": showWebCLI,
-          })}
-        >
-          <div className={`entity-details entity-details__${entityType}`}>
-            <Outlet />
-          </div>
-        </div>
-      </FadeIn>
+      <div className={`entity-details entity-details__${entityType}`}>
+        <Outlet />
+      </div>
     );
   } else if (modelsLoaded && !modelUUID) {
     content = (
@@ -199,13 +189,20 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   }
 
   return (
-    <BaseLayout>
-      <Header>
-        <div
-          className={classNames("entity-details__header", {
-            "entity-details__header--single-col": isNestedEntityPage,
-          })}
-        >
+    <BaseLayout
+      status={
+        showWebCLI &&
+        controllerWSHost && (
+          <WebCLI
+            controllerWSHost={controllerWSHost}
+            credentials={credentials}
+            modelUUID={modelUUID}
+            protocol={wsProtocol ?? "wss"}
+          />
+        )
+      }
+      title={
+        <>
           <Breadcrumb />
           <div
             className="entity-details__view-selector"
@@ -215,8 +212,13 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
               <Tabs links={generateTabItems()} />
             )}
           </div>
-        </div>
-      </Header>
+        </>
+      }
+      titleClassName={classNames("entity-details__header", {
+        "entity-details__header--single-col": isNestedEntityPage,
+      })}
+      titleComponent="div"
+    >
       {modelWatcherError ? (
         <Strip className="u-no-padding--bottom" shallow>
           <Notification
@@ -240,14 +242,6 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
         </Strip>
       ) : null}
       {content}
-      {showWebCLI && controllerWSHost && (
-        <WebCLI
-          controllerWSHost={controllerWSHost}
-          credentials={credentials}
-          modelUUID={modelUUID}
-          protocol={wsProtocol ?? "wss"}
-        />
-      )}
     </BaseLayout>
   );
 };
