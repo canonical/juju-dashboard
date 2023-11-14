@@ -1,15 +1,16 @@
+import { Icon } from "@canonical/react-components";
 import classNames from "classnames";
-import { useEffect } from "react";
-import { useSelector, useStore } from "react-redux";
+import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
+import SideNavigation from "components/upstream/SideNavigation";
+import { SideNavigationText } from "components/upstream/SideNavigation";
+import { DARK_THEME } from "consts";
 import useAnalytics from "hooks/useAnalytics";
 import { thunks as appThunks } from "store/app";
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import { extractOwnerName } from "store/juju/utils/models";
-import { useAppDispatch } from "store/store";
-import { actions } from "store/ui";
-import { isUserMenuActive } from "store/ui/selectors";
+import { useAppDispatch, useAppSelector } from "store/store";
 import urls from "urls";
 
 import "./_user-menu.scss";
@@ -21,13 +22,11 @@ export enum Label {
 const UserMenu = () => {
   const sendAnalytics = useAnalytics();
   const dispatch = useAppDispatch();
-  const store = useStore();
-  const getState = store.getState;
-  const activeUser = getActiveUserTag(
-    getState(),
-    useSelector(getWSControllerURL)
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  const activeUser = useAppSelector((state) =>
+    getActiveUserTag(state, wsControllerURL)
   );
-  const isActive = useSelector(isUserMenuActive) || false;
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     if (isActive) {
@@ -38,8 +37,7 @@ const UserMenu = () => {
     }
   }, [isActive, sendAnalytics]);
 
-  const toggleUserMenuActive = () =>
-    dispatch(actions.userMenuActive(!isActive));
+  const toggleUserMenuActive = () => setIsActive(!isActive);
 
   return (
     <>
@@ -49,47 +47,39 @@ const UserMenu = () => {
             "is-active": isActive,
           })}
         >
-          <div
-            className="user-menu__header"
-            onClick={toggleUserMenuActive}
-            onKeyPress={toggleUserMenuActive}
-            role="button"
-            tabIndex={0}
-          >
-            <i className="p-icon--user is-light"></i>
-            <span className="user-menu__name">
-              {activeUser ? extractOwnerName(activeUser) : ""}
-            </span>
-            <i className="p-icon--chevron-up is-light"></i>
-          </div>
-          <ul className="p-list user-menu__options">
-            <li className="p-list__item">
-              <NavLink
-                className={({ isActive }) =>
-                  classNames("user-menu__link p-list__link", {
-                    "is-selected": isActive,
-                  })
-                }
-                to={urls.settings}
+          <SideNavigation
+            dark={DARK_THEME}
+            hasIcons
+            items={[
+              <SideNavigationText
+                icon="user"
+                className="user-menu__toggle"
+                onClick={toggleUserMenuActive}
+                onKeyUp={toggleUserMenuActive}
+                role="button"
+                tabIndex={0}
+                status={<Icon name="chevron-up" light />}
               >
-                Settings
-              </NavLink>
-            </li>
-            <li className="p-list__item">
-              <Link
-                className="user-menu__link"
-                to={urls.index}
-                onClick={() => {
+                {activeUser ? extractOwnerName(activeUser) : ""}
+              </SideNavigationText>,
+              {
+                component: NavLink,
+                to: urls.settings,
+                label: "Settings",
+              },
+              {
+                component: Link,
+                to: urls.index,
+                label: "Log out",
+                onClick: () => {
                   // TODO: Consider displaying an error alert.
                   dispatch(appThunks.logOut()).catch((error) =>
                     console.error(Label.LOGOUT_ERROR, error)
                   );
-                }}
-              >
-                Log out
-              </Link>
-            </li>
-          </ul>
+                },
+              },
+            ]}
+          />
         </div>
       )}
     </>

@@ -11,7 +11,6 @@ import { isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState, Store } from "store/store";
-import { actions as uiActions } from "store/ui";
 
 function error(name: string, wsControllerURL: string) {
   console.error(
@@ -83,8 +82,6 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.clearModelData.type,
       jujuActions.clearCrossModelQuery.type,
       jujuActions.updateSelectedApplications.type,
-      uiActions.userMenuActive.type,
-      uiActions.sideNavCollapsed.type,
     ];
 
     const thunkAllowlist = [

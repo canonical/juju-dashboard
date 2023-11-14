@@ -6,9 +6,13 @@
     padding: 0;
   }
 
-  .p-icon--warning {
-    margin-top: 7px;
-    position: absolute;
+  &__warning {
+    position: relative;
+
+    .p-icon--warning {
+      margin-top: 7px;
+      position: absolute;
+    }
   }
 
   .p-form-help-text {

@@ -1,10 +1,12 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import { Spinner } from "@canonical/react-components";
 import classnames from "classnames";
-import type { PropsWithChildren } from "react";
+import { useAnimate, usePresence } from "framer-motion";
+import { useEffect, type PropsWithChildren } from "react";
 
-import SlideInOut from "animations/SlideInOut";
-import type { Props as SlideInOutProps } from "animations/SlideInOut";
+import { AppAside } from "components/upstream/ApplicationLayout";
+import type { AppAsideProps } from "components/upstream/ApplicationLayout/AppAside";
+import type { PanelProps } from "components/upstream/Panel";
 
 import "./_aside.scss";
 
@@ -14,29 +16,57 @@ export type Props = PropsWithSpread<
     width?: "wide" | "narrow";
     pinned?: boolean;
     loading?: boolean;
+    panelProps?: PanelProps;
     isSplit?: boolean;
+    animateMount?: boolean;
   },
-  Partial<SlideInOutProps> & PropsWithChildren
+  AppAsideProps & PropsWithChildren
 >;
 
 export default function Aside({
+  animateMount = true,
   children,
   className,
   width,
-  pinned = false,
   loading = false,
   isSplit = false,
   ...props
 }: Props): JSX.Element {
+  const [scope, animate] = useAnimate<HTMLElement>();
+  const [isPresent, safeToRemove] = usePresence();
+
+  useEffect(() => {
+    if (isPresent) {
+      const enterAnimation = async () => {
+        await animate([[scope.current, { x: 0 }, { type: "tween" }]]);
+      };
+      try {
+        void enterAnimation();
+      } catch (error) {
+        // Don't need to alert the user if the animation fails.
+      }
+    } else {
+      const exitAnimation = async () => {
+        await animate(scope.current, { x: "100%" });
+        safeToRemove();
+      };
+      try {
+        void exitAnimation();
+      } catch (error) {
+        // Don't need to alert the user if the animation fails.
+      }
+    }
+  }, [animate, animateMount, isPresent, safeToRemove, scope]);
+
   return (
-    <SlideInOut
-      isActive={true}
-      className={classnames("l-aside", className, {
+    <AppAside
+      className={classnames(className, {
         "is-narrow": width === "narrow",
         "is-wide": width === "wide",
-        "is-pinned": pinned === true,
-        "is-split": isSplit === true,
+        "is-split": isSplit,
+        "l-aside--initially-offscreen": animateMount,
       })}
+      forwardRef={scope}
       {...props}
     >
       {!loading ? (
@@ -46,6 +76,6 @@ export default function Aside({
           <Spinner />
         </div>
       )}
-    </SlideInOut>
+    </AppAside>
   );
 }

@@ -8,7 +8,6 @@
     gap: $sp-unit;
     grid-template-columns: 1fr;
     opacity: 1;
-    padding: 0.5rem 0.15rem;
     transition: opacity 0.25s;
 
     &-controls {
@@ -24,21 +23,13 @@
       pointer-events: none;
     }
 
-    .models__count {
-      display: none;
-
-      @media (min-width: $breakpoint-large) {
-        display: block;
-      }
-    }
-
     @include desktop {
       grid-template-columns: 1fr 1fr;
     }
 
     @media (min-width: $breakpoint-large) {
       // Account for the 1.5rem padding applied to the header.
-      grid-template-columns: calc(120px - 1.5rem) 1fr calc(280px - 1.5rem);
+      grid-template-columns: calc(150px - 1.5rem) 1fr calc(280px - 1.5rem);
     }
 
     .search-and-filter {

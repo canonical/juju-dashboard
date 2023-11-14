@@ -202,7 +202,7 @@ export default function CharmActionsPanel({
       data-testid={TestId.PANEL}
       title={<CharmActionsPanelTitle charmURL={charmURL} />}
       onRemovePanelQueryParams={onRemovePanelQueryParams}
-      initial={false}
+      animateMount={false}
     >
       <LoadingHandler
         hasData={Object.keys(actionData).length > 0}

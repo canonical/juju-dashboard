@@ -12,11 +12,6 @@
     font-size: #{map-get($font-sizes, small)}rem;
   }
 
-  &__header {
-    align-items: center;
-    display: grid;
-  }
-
   &__toggles {
     margin-top: 1rem;
     max-width: 300px;

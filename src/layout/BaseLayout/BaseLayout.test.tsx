@@ -1,7 +1,7 @@
 import { fireEvent, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
+import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
@@ -35,71 +35,39 @@ describe("Base Layout", () => {
     expect(within(main).getByText("foo")).toBeInTheDocument();
   });
 
-  it("should collapse the sidebar on entity details pages", () => {
-    state.ui.sideNavCollapsed = true;
+  it("displays the Juju logo under Juju", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          isJuju: true,
+        }),
+      }),
+    });
     renderComponent(
       <BaseLayout>
         <p>foo</p>
       </BaseLayout>,
-      {
-        state,
-        url: "/models/pizza@external/hadoopspark?activeView=machines",
-        path: "/models/:userName/:modelName",
-      }
+      { state }
     );
-    expect(document.querySelector(".l-navigation")).toHaveAttribute(
-      "data-sidenav-initially-collapsed",
-      "true"
+    const logo = screen.getAllByAltText("Juju")[0];
+    expect(logo).toHaveAttribute("src", "juju-text.svg");
+    expect(screen.getAllByRole("link", { name: "Juju" })[0]).toHaveAttribute(
+      "href",
+      "https://juju.is"
     );
   });
 
-  it("should not collapse the sidebar when not on entity details pages", () => {
+  it("displays the JAAS logo under JAAS", () => {
     renderComponent(
       <BaseLayout>
         <p>foo</p>
-      </BaseLayout>,
-      { state, path: "/models", url: "/models/" }
+      </BaseLayout>
     );
-    expect(document.querySelector(".l-navigation")).toHaveAttribute(
-      "data-sidenav-initially-collapsed",
-      "false"
-    );
-  });
-
-  it("should include mobile navigation bar", () => {
-    renderComponent(
-      <BaseLayout>
-        <p>foo</p>
-      </BaseLayout>,
-      { state, path: "/models", url: "/models/" }
-    );
-    expect(document.querySelector(".l-navigation-bar")).toBeInTheDocument();
-  });
-
-  it("can toggle the mobile navigation bar", async () => {
-    renderComponent(
-      <BaseLayout>
-        <p>foo</p>
-      </BaseLayout>,
-      { state, path: "/models", url: "/models/" }
-    );
-    expect(document.querySelector(".l-navigation")).toHaveAttribute(
-      "data-collapsed",
-      "true"
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: Label.MOBILE_MENU_OPEN_BUTTON })
-    );
-    expect(document.querySelector(".l-navigation")).toHaveAttribute(
-      "data-collapsed",
-      "false"
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: Label.MOBILE_MENU_CLOSE_BUTTON })
-    );
-    expect(document.querySelector(".l-navigation")).toHaveAttribute(
-      "data-collapsed",
-      "true"
+    const logo = screen.getAllByAltText("JAAS")[0];
+    expect(logo).toHaveAttribute("src", "jaas-text.svg");
+    expect(screen.getAllByRole("link", { name: "JAAS" })[0]).toHaveAttribute(
+      "href",
+      "https://jaas.ai"
     );
   });
 

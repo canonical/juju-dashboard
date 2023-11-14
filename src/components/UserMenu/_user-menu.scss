@@ -5,9 +5,8 @@
   @include vf-animation(all, brisk, ease-in-out);
 
   bottom: 0;
-  color: $color-light;
   max-height: $user-menu-height--inactive;
-  padding: 0;
+  overflow: hidden;
   position: absolute;
   width: 100%;
 
@@ -15,15 +14,8 @@
     max-height: $user-menu-height--active;
   }
 
-  &__header {
+  &__toggle {
     cursor: pointer;
-    display: flex;
-    padding: 0 1rem;
-
-    [class^="p-icon"] {
-      position: relative;
-      top: 0.25rem;
-    }
 
     .p-icon--chevron-up {
       @at-root {
@@ -33,31 +25,6 @@
       }
 
       transform: rotate(180deg);
-    }
-  }
-
-  &__name {
-    display: inline-block;
-    flex-grow: 1;
-    padding: 0 1rem;
-  }
-
-  &__options {
-    margin: 1rem 0;
-    padding: 0;
-  }
-
-  &__link {
-    display: block;
-    padding: 0.25rem 1rem;
-
-    &,
-    &:visited {
-      color: $color-light;
-    }
-
-    &:hover {
-      background-color: $color-navigation-highlight;
     }
   }
 }

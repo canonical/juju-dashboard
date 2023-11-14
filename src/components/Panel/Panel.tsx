@@ -1,12 +1,11 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import { useListener } from "@canonical/react-components";
 import classNames from "classnames";
-import type { PropsWithChildren, ReactNode, MouseEvent } from "react";
+import type { ReactNode, MouseEvent } from "react";
 import { forwardRef, useId } from "react";
 
 import Aside from "components/Aside/Aside";
 import type { Props as AsideProps } from "components/Aside/Aside";
-import PanelHeader from "components/PanelHeader/PanelHeader";
 
 import "./_panel.scss";
 
@@ -18,7 +17,7 @@ type Props = PropsWithSpread<
     splitContent?: ReactNode;
     title: ReactNode;
     onRemovePanelQueryParams: () => void;
-  } & PropsWithChildren,
+  },
   AsideProps
 >;
 
@@ -86,35 +85,28 @@ const Panel = forwardRef<HTMLDivElement, Props>(
       </>
     );
     return (
-      <Aside {...props} aria-labelledby={titleId} role="dialog">
-        <div
-          className={classNames("p-panel side-panel", panelClassName)}
-          ref={ref}
-        >
-          <PanelHeader
-            id={titleId}
-            title={title}
-            onRemovePanelQueryParams={onRemovePanelQueryParams}
-          />
-          <div
-            className={classNames("p-panel__content", {
-              "aside-split-wrapper": props.isSplit,
-            })}
-          >
-            {props.isSplit ? (
-              <div className="aside-split-col aside-split-col--left">
-                {content}
-              </div>
-            ) : (
-              content
-            )}
-            {props.isSplit && splitContent ? (
-              <div className="aside-split-col aside-split-col--right">
-                <div className="side-panel__split-content">{splitContent}</div>
-              </div>
-            ) : null}
+      <Aside
+        {...props}
+        aria-labelledby={titleId}
+        role="dialog"
+        onClose={onRemovePanelQueryParams}
+        panelProps={{
+          className: classNames("side-panel", panelClassName),
+          contentClassName: props.isSplit ? "aside-split-wrapper" : null,
+          forwardRef: ref,
+          title: <span id={titleId}>{title}</span>,
+        }}
+      >
+        {props.isSplit ? (
+          <div className="aside-split-col aside-split-col--left">{content}</div>
+        ) : (
+          content
+        )}
+        {props.isSplit && splitContent ? (
+          <div className="aside-split-col aside-split-col--right">
+            <div className="side-panel__split-content">{splitContent}</div>
           </div>
-        </div>
+        ) : null}
       </Aside>
     );
   }

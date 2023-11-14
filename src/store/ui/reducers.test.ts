@@ -9,28 +9,12 @@ describe("reducers", () => {
     );
   });
 
-  it("userMenuActive", () => {
-    expect(reducer(undefined, actions.userMenuActive(true))).toStrictEqual(
-      uiStateFactory.build({
-        userMenuActive: true,
-      })
-    );
-  });
-
   it("confirmationPanelActive", () => {
     expect(
       reducer(undefined, actions.confirmationModalActive(true))
     ).toStrictEqual(
       uiStateFactory.build({
         confirmationModalActive: true,
-      })
-    );
-  });
-
-  it("sideNavCollapsed", () => {
-    expect(reducer(undefined, actions.sideNavCollapsed(true))).toStrictEqual(
-      uiStateFactory.build({
-        sideNavCollapsed: true,
       })
     );
   });

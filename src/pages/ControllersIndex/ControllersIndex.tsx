@@ -12,9 +12,7 @@ import cloneDeep from "clone-deep";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import FadeIn from "animations/FadeIn";
 import AuthenticationButton from "components/AuthenticationButton";
-import Header from "components/Header/Header";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -318,19 +316,16 @@ export default function ControllersIndex() {
   }
 
   return (
-    <BaseLayout>
-      <Header>
-        <div className="entity-details__header">
-          <strong className="controllers--count">
-            {controllersCount} controllers,{" "}
-            <Link to={urls.models.index}>{modelCount} models</Link>
-          </strong>
-        </div>
-      </Header>
-      <div className="l-content controllers">
-        <FadeIn isActive={true}>
-          <Details />
-        </FadeIn>
+    <BaseLayout
+      title={
+        <>
+          {controllersCount} controllers,{" "}
+          <Link to={urls.models.index}>{modelCount} models</Link>
+        </>
+      }
+    >
+      <div className="controllers">
+        <Details />
       </div>
     </BaseLayout>
   );

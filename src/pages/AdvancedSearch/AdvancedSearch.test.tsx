@@ -32,9 +32,7 @@ describe("AdvancedSearch", () => {
   });
   it("should render the page", () => {
     renderComponent(<AdvancedSearch />, { state });
-    expect(document.querySelector("header")).toHaveTextContent(
-      "Advanced search"
-    );
+    expect(screen.getByRole("heading")).toHaveTextContent("Advanced search");
   });
 
   it("should display the search form", () => {

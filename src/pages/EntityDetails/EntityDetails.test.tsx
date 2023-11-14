@@ -234,15 +234,6 @@ describe("Entity Details Container", () => {
     });
   });
 
-  it("gives the content a class when the webCLI is shown", async () => {
-    renderComponent(<EntityDetails />, { path, url, state });
-    await waitFor(() => {
-      expect(document.querySelector(".l-content")).toHaveClass(
-        "l-content--has-webcli"
-      );
-    });
-  });
-
   it("passes the controller details to the webCLI", () => {
     const cliComponent = jest
       .spyOn(WebCLIModule, "default")

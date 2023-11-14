@@ -85,7 +85,7 @@ describe("Models Index page", () => {
 
   it("renders without crashing", () => {
     renderComponent(<ModelsIndex />, { state });
-    expect(document.querySelector(".header")).toBeInTheDocument();
+    expect(screen.getByText(/3 models/)).toBeInTheDocument();
     expect(screen.getAllByRole("grid")).toHaveLength(3);
     expect(document.querySelector(".chip-group")).toBeInTheDocument();
   });
