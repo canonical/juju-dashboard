@@ -9,7 +9,10 @@ import {
   modelStatusInfoFactory,
 } from "testing/factories/juju/ClientV6";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
-import { auditEventFactory } from "testing/factories/juju/jimm";
+import {
+  auditEventBaseFactory,
+  auditEventFactory,
+} from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
@@ -162,6 +165,7 @@ describe("selectors", () => {
       auditEventFactory.build({ model: "model1" }),
       auditEventFactory.build({ model: "model2" }),
       auditEventFactory.build({ model: "model2" }),
+      auditEventBaseFactory.build(),
     ];
     expect(
       getAuditEventsModels(
@@ -179,6 +183,7 @@ describe("selectors", () => {
       auditEventFactory.build({ "facade-name": "Client" }),
       auditEventFactory.build({ "facade-name": "Client" }),
       auditEventFactory.build({ "facade-name": "Admin" }),
+      auditEventBaseFactory.build(),
     ];
     expect(
       getAuditEventsFacades(
@@ -196,6 +201,7 @@ describe("selectors", () => {
       auditEventFactory.build({ "facade-method": "Login" }),
       auditEventFactory.build({ "facade-method": "Logout" }),
       auditEventFactory.build({ "facade-method": "Login" }),
+      auditEventBaseFactory.build(),
     ];
     expect(
       getAuditEventsMethods(
