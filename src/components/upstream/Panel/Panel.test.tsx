@@ -67,6 +67,16 @@ it("displays a toggle", async () => {
   expect(onClick).toHaveBeenCalled();
 });
 
+it("handles key presses on the toggle", async () => {
+  const onClick = jest.fn();
+  renderComponent(
+    <Panel title="Test panel" toggle={{ label: "Toggle", onClick }} />
+  );
+  const toggle = screen.getByRole("button", { name: "Toggle" });
+  await userEvent.type(toggle, "{Space}");
+  expect(onClick).toHaveBeenCalled();
+});
+
 it("displays a panel with no header", async () => {
   renderComponent(<Panel>Content</Panel>);
   expect(screen.getByText("Content")).toBeInTheDocument();

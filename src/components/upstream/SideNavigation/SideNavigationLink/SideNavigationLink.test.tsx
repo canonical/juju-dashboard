@@ -11,6 +11,14 @@ it("displays a link", () => {
   expect(screen.getByRole("link", { name: label })).toBeInTheDocument();
 });
 
+it("can apply additional classes", () => {
+  const label = "Test content";
+  renderComponent(
+    <SideNavigationLink label={label} href="#" className="extra-class" />
+  );
+  expect(screen.getByRole("link", { name: label })).toHaveClass("extra-class");
+});
+
 it("displays an icon", () => {
   renderComponent(<SideNavigationLink icon="user" label="Test content" />);
   expect(document.querySelector(".p-icon--user")).toBeInTheDocument();
