@@ -87,6 +87,7 @@ import {
   getFullModelNames,
   getUsers,
   getFullModelName,
+  getControllersCount,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -318,6 +319,53 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual(controllers);
+  });
+
+  describe("getControllersCount", () => {
+    it("without controllers", () => {
+      expect(
+        getControllersCount(
+          rootStateFactory.build({
+            juju: jujuStateFactory.build({
+              controllers: null,
+            }),
+          })
+        )
+      ).toStrictEqual(0);
+    });
+
+    it("with controllers", () => {
+      const controllers = {
+        "wss://example.com": [
+          controllerFactory.build({
+            path: "/",
+            uuid: "abc123",
+            version: "1",
+          }),
+          controllerFactory.build({
+            path: "/",
+            uuid: "abc123",
+            version: "2",
+          }),
+        ],
+        "wss://example2.com": [
+          controllerFactory.build({
+            path: "/",
+            uuid: "abc123",
+            version: "3",
+          }),
+        ],
+      };
+      expect(
+        getControllersCount(
+          rootStateFactory.build({
+            juju: jujuStateFactory.build({
+              controllers,
+            }),
+          })
+        )
+      ).toStrictEqual(3);
+    });
   });
 
   it("getModelWatcherDataByUUID", () => {

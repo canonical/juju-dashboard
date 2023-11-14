@@ -25,7 +25,11 @@ import {
   getLoginErrors,
   getVisitURLs,
 } from "store/general/selectors";
-import { getControllerData, getModelData } from "store/juju/selectors";
+import {
+  getControllersCount,
+  getControllerData,
+  getModelData,
+} from "store/juju/selectors";
 import type { AdditionalController, Controller } from "store/juju/types";
 import { isJAASFromUUID } from "store/juju/utils/controllers";
 import { useAppSelector } from "store/store";
@@ -58,24 +62,22 @@ function Details() {
   const controllerMap: Record<string, AnnotatedController> = {};
   const additionalControllers: string[] = [];
   if (controllerData) {
-    Object.entries(controllerData).forEach(
-      ([wsControllerURL, controllers], i) => {
-        controllers.forEach((controller) => {
-          const id = "uuid" in controller ? controller.uuid : wsControllerURL;
-          if (controller.additionalController) {
-            additionalControllers.push(id);
-          }
-          controllerMap[id] = {
-            ...controller,
-            models: 0,
-            machines: 0,
-            applications: 0,
-            units: 0,
-            wsControllerURL,
-          };
-        });
-      }
-    );
+    Object.entries(controllerData).forEach(([wsControllerURL, controllers]) => {
+      controllers.forEach((controller) => {
+        const id = "uuid" in controller ? controller.uuid : wsControllerURL;
+        if (controller.additionalController) {
+          additionalControllers.push(id);
+        }
+        controllerMap[id] = {
+          ...controller,
+          models: 0,
+          machines: 0,
+          applications: 0,
+          units: 0,
+          wsControllerURL,
+        };
+      });
+    });
     if (modelData) {
       for (const modelUUID in modelData) {
         const model = modelData[modelUUID];
@@ -308,11 +310,7 @@ function Details() {
 }
 
 export default function ControllersIndex() {
-  const controllerData = useSelector(getControllerData);
-  let controllerCount = 0;
-  if (controllerData) {
-    controllerCount = Object.keys(controllerData).length;
-  }
+  const controllersCount = useSelector(getControllersCount);
   const modelData = useSelector(getModelData);
   let modelCount = 0;
   if (modelData) {
@@ -324,7 +322,7 @@ export default function ControllersIndex() {
       <Header>
         <div className="entity-details__header">
           <strong className="controllers--count">
-            {controllerCount} controllers,{" "}
+            {controllersCount} controllers,{" "}
             <Link to={urls.models.index}>{modelCount} models</Link>
           </strong>
         </div>

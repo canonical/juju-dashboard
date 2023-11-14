@@ -93,7 +93,7 @@ class JIMMV3 {
     });
   }
 
-  listControllers(): Promise<{ controllers: ControllerInfo[] }> {
+  listControllers(): Promise<{ controllers: ControllerInfo[] | null }> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
