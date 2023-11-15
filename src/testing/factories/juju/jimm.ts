@@ -15,23 +15,12 @@ import {
   type CrossModelQueryOffer,
 } from "./jimm-types";
 
-export const auditEventBaseFactory = Factory.define<AuditEvent>(() => ({
+export const auditEventFactory = Factory.define<AuditEvent>(() => ({
   time: "2023-07-01T09:04:04.279Z",
   "conversation-id": "fakeabc123",
   "message-id": 2,
   "user-tag": "user-eggman",
   "is-response": false,
-}));
-
-export const auditEventFactory = Factory.define<AuditEvent>(() => ({
-  ...auditEventBaseFactory.build(),
-  "facade-name": "ModelManager",
-  "facade-method": "AddModel",
-  "facade-version": 3,
-  "object-id": "4",
-  model: "microk8s",
-  params: null,
-  errors: null,
 }));
 
 class CrossModelQueryFactory extends Factory<CrossModelQuery> {
