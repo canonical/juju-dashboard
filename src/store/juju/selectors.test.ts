@@ -163,6 +163,7 @@ describe("selectors", () => {
       auditEventFactory.build({ model: "model1" }),
       auditEventFactory.build({ model: "model2" }),
       auditEventFactory.build({ model: "model2" }),
+      auditEventFactory.build(),
     ];
     expect(
       getAuditEventsModels(
@@ -180,6 +181,7 @@ describe("selectors", () => {
       auditEventFactory.build({ "facade-name": "Client" }),
       auditEventFactory.build({ "facade-name": "Client" }),
       auditEventFactory.build({ "facade-name": "Admin" }),
+      auditEventFactory.build(),
     ];
     expect(
       getAuditEventsFacades(
@@ -197,6 +199,7 @@ describe("selectors", () => {
       auditEventFactory.build({ "facade-method": "Login" }),
       auditEventFactory.build({ "facade-method": "Logout" }),
       auditEventFactory.build({ "facade-method": "Login" }),
+      auditEventFactory.build(),
     ];
     expect(
       getAuditEventsMethods(

@@ -84,10 +84,12 @@ const getUniqueAuditEventValues = <K extends keyof AuditEvent>(
   modifier?: (value: AuditEvent[K]) => string
 ) => {
   // Use a set to get unique values.
-  const values = new Set();
-  auditEvents?.forEach(({ [key]: value }) =>
-    values.add(modifier ? modifier(value) : value)
-  );
+  const values = new Set<string | AuditEvent[K]>();
+  auditEvents
+    ?.filter(({ [key]: value }) => typeof value !== "undefined")
+    .forEach(({ [key]: value }) =>
+      values.add(modifier ? modifier(value) : value)
+    );
   return Array.from(values);
 };
 

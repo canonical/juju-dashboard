@@ -101,6 +101,15 @@ describe("AuditLogsTable", () => {
   });
 
   it("should display audit logs", async () => {
+    state.juju.auditEvents.items = [
+      auditEventFactory.build({
+        model: "microk8s",
+        time: add(new Date(), { days: -1 }).toISOString(),
+        "facade-name": "ModelManager",
+        "facade-method": "AddModel",
+        "facade-version": 3,
+      }),
+    ];
     renderComponent(<AuditLogsTable />, { state });
     expect(await screen.findByRole("table")).toBeInTheDocument();
     expect(screen.queryByTestId(TestId.LOADING)).not.toBeInTheDocument();
