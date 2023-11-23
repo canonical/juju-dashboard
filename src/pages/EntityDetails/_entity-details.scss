@@ -3,7 +3,6 @@
 @import "../../scss/breakpoints";
 @import "../../scss/custom/icons";
 @import "../../scss/variables";
-@import "../../scss/custom/tables";
 @include vf-b-placeholders;
 
 @mixin entity-details-layout {
@@ -366,12 +365,6 @@
         width: 20%;
       }
     }
-  }
-
-  .entity-details__apps,
-  .entity-details__units,
-  .entity-details__machines {
-    @extend %row-hover;
   }
   /* stylelint-enable no-descending-specificity */
 

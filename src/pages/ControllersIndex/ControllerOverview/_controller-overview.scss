@@ -1,4 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../../scss/breakpoints";
 
 .p-strip.is-shallow.controllers-overview {
   padding-top: 0;
@@ -9,9 +10,18 @@
 
   &__chart {
     margin-right: 2rem;
+
+    @include mobile {
+      margin-bottom: 2rem;
+      margin-right: 0;
+    }
   }
 
   &__container {
     display: flex;
+
+    @include mobile {
+      flex-direction: column;
+    }
   }
 }

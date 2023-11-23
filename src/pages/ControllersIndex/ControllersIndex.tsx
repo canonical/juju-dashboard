@@ -38,6 +38,8 @@ import ControllersOverview from "./ControllerOverview/ControllerOverview";
 import "./_controllers.scss";
 
 export enum Label {
+  DEFAULT = "Default",
+  NAME = "Name",
   REGISTER_BUTTON = "Register a controller",
 }
 
@@ -48,6 +50,15 @@ type AnnotatedController = (Controller | AdditionalController) & {
   units: number;
   wsControllerURL: string;
 };
+
+const generateRegisteredTitle = () => (
+  <span>
+    Registered{" "}
+    <Tooltip message="The controller authentication data is only stored in your browser localStorage.">
+      <Icon name="help" />
+    </Tooltip>
+  </span>
+);
 
 function Details() {
   useWindowTitle("Controllers");
@@ -101,7 +112,11 @@ function Details() {
   }
 
   const headers: MainTableHeader[] = [
-    { content: "default", sortKey: "name" },
+    {
+      content: <>{Label.DEFAULT}</>,
+      heading: Label.NAME,
+      sortKey: "name",
+    },
     {
       className: "p-table__cell--icon-placeholder",
       content: "status",
@@ -120,15 +135,7 @@ function Details() {
   ];
 
   const additionalHeaders = cloneDeep(headers);
-  additionalHeaders[0].content = (
-    <span>
-      Registered
-      <span
-        className="controllers--registered-tooltip p-icon--help"
-        title="The controller authentication data is only stored in your browser localStorage. If you'd like this to persist across browsers try JAAS"
-      ></span>
-    </span>
-  );
+  additionalHeaders[0].content = generateRegisteredTitle();
 
   function generatePathValue(controllerData: AnnotatedController) {
     const column: MainTableCell = { content: "" };
@@ -158,11 +165,13 @@ function Details() {
       );
     } else {
       column.content = (
-        <TruncatedTooltip message={controllerAddress}>
+        <TruncatedTooltip
+          message={controllerAddress}
+          positionElementClassName="u-text--muted"
+        >
           {controllerAddress}
         </TruncatedTooltip>
       );
-      column.className = "u-text--muted";
     }
     return column;
   }
@@ -298,9 +307,21 @@ function Details() {
       </div>
       <ControllersOverview />
       <div className="l-controllers-table u-overflow--auto">
-        {rows.length > 0 && <MainTable headers={headers} rows={rows} />}
+        {rows.length > 0 && (
+          <>
+            <h5 className="u-hide--large">{Label.DEFAULT}</h5>
+            <MainTable headers={headers} responsive rows={rows} />
+          </>
+        )}
         {additionalRows.length > 0 && (
-          <MainTable headers={additionalHeaders} rows={additionalRows} />
+          <>
+            <h5 className="u-hide--large">{generateRegisteredTitle()}</h5>
+            <MainTable
+              headers={additionalHeaders}
+              responsive
+              rows={additionalRows}
+            />
+          </>
         )}
       </div>
     </>
