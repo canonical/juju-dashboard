@@ -1,6 +1,5 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/breakpoints";
-@import "../../scss/custom/tables";
 
 .models .p-main-table caption {
   margin-top: 0.5rem;
@@ -27,8 +26,6 @@
 }
 
 .models {
-  @extend %row-hover;
-
   .model-access {
     display: none;
     font-size: #{map-get($font-sizes, small)}rem;

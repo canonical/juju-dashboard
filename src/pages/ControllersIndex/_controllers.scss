@@ -1,11 +1,23 @@
 @import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
 
 .controllers {
-  td,
-  th {
-    &:first-child {
-      min-width: 25%;
+  th,
+  td {
+    // Name
+    &:nth-child(1) {
       white-space: nowrap;
+      width: 20%;
+    }
+
+    // Status
+    &:nth-child(2) {
+      width: 15%;
+    }
+
+    // Cloud
+    &:nth-child(3) {
+      width: 15%;
     }
   }
 
@@ -21,15 +33,30 @@
     text-transform: uppercase;
     width: 100%;
 
+    @include mobile {
+      gap: $sph--large;
+      grid-template-columns: repeat(1, 100%);
+      padding-top: 0;
+    }
+
     .controllers__heading {
       color: $color-dark;
       padding-top: 0.8rem;
       position: relative;
       top: 0.5rem;
+
+      @include mobile {
+        padding-top: 0;
+        top: 0;
+      }
     }
 
     .controllers--register {
       text-align: right;
+
+      @include mobile {
+        text-align: left;
+      }
     }
 
     button {
@@ -42,11 +69,5 @@
     // Display block so that the status gets truncated if it doesn't fit in the
     // cell.
     display: block !important;
-  }
-
-  .controllers--registered-tooltip {
-    @include vf-icon-help($color-mid-light);
-
-    margin-left: 0.4rem;
   }
 }
