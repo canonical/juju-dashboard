@@ -66,9 +66,7 @@
 
       @include mobile {
         // Summary icons
-        &:nth-child(2) {
-          display: none;
-        }
+        &:nth-child(2),
         // Last updated
         &:nth-child(7) {
           display: none;
@@ -91,9 +89,7 @@
 
       @include mobile {
         // Summary icons
-        &:nth-child(2) {
-          display: none;
-        }
+        &:nth-child(2),
         // Last updated
         &:nth-child(7) {
           display: none;
@@ -116,13 +112,9 @@
 
       @include mobile {
         // Summary icons
-        &:nth-child(2) {
-          display: none;
-        }
+        &:nth-child(2),
         // Status
-        &:nth-child(4) {
-          display: none;
-        }
+        &:nth-child(4),
         // Last updated
         &:nth-child(8) {
           display: none;
