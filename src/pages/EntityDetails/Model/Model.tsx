@@ -18,6 +18,7 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
+import { getModelCredential } from "store/juju/selectors";
 import { extractCloudName } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 import {
@@ -117,6 +118,9 @@ const Model = () => {
   );
 
   const modelInfoData = useSelector(getModelInfo(modelUUID));
+  const credential = useAppSelector((state) =>
+    getModelCredential(state, modelUUID)
+  );
   const modelAccess = useAppSelector((state) =>
     getModelAccess(state, modelUUID)
   );
@@ -148,13 +152,15 @@ const Model = () => {
                 modelInfoData["cloud"],
                 modelInfoData["cloud-region"]
               ),
+              owner: modelInfoData.owner,
+              credential,
               version: modelInfoData.version,
               sla: modelInfoData.sla?.level,
             }}
           />
         )}
       </div>
-      <div className="entity-details__main u-overflow--auto">
+      <div className="entity-details__main">
         {shouldShow("apps", query.activeView) && <ApplicationsTab />}
         {shouldShow("machines", query.activeView) &&
           (machinesTableRows.length > 0 ? (

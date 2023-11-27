@@ -64,12 +64,14 @@ export default function OwnerGroup({ filters }: Props) {
           {
             "data-testid": "column-name",
             content: model.info ? (
-              <ModelDetailsLink
-                modelName={model.info.name}
-                ownerTag={model.info?.["owner-tag"]}
-              >
-                {model.info.name}
-              </ModelDetailsLink>
+              <TruncatedTooltip message={model.info.name}>
+                <ModelDetailsLink
+                  modelName={model.info.name}
+                  ownerTag={model.info?.["owner-tag"]}
+                >
+                  {model.info.name}
+                </ModelDetailsLink>
+              </TruncatedTooltip>
             ) : null,
           },
           {
@@ -97,11 +99,19 @@ export default function OwnerGroup({ filters }: Props) {
           },
           {
             "data-testid": "column-credential",
-            content: credential,
+            content: (
+              <TruncatedTooltip message={credential}>
+                {credential}
+              </TruncatedTooltip>
+            ),
           },
           {
             "data-testid": "column-controller",
-            content: controller,
+            content: (
+              <TruncatedTooltip message={controller}>
+                {controller}
+              </TruncatedTooltip>
+            ),
           },
           {
             "data-testid": "column-updated",
@@ -123,21 +133,6 @@ export default function OwnerGroup({ filters }: Props) {
                 ? "has-permission"
                 : ""
             }`,
-          },
-          {
-            content: (
-              <>
-                {model.info
-                  ? canAdministerModel(activeUser, model?.info?.users) && (
-                      <AccessButton
-                        setPanelQs={setPanelQs}
-                        modelName={model.info.name}
-                      />
-                    )
-                  : null}
-              </>
-            ),
-            className: "sm-screen-access-cell",
           },
         ],
         sortData: {
@@ -166,10 +161,7 @@ export default function OwnerGroup({ filters }: Props) {
     );
   }
   return (
-    <div
-      className="owners-group u-overflow--auto"
-      data-testid={TestId.OWNER_GROUP}
-    >
+    <div className="owners-group" data-testid={TestId.OWNER_GROUP}>
       {ownerTables}
     </div>
   );

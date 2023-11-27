@@ -16,12 +16,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
-    @media (max-width: $breakpoint-large) {
-      display: inline-block;
-      max-width: 200px;
-      padding-right: 1rem;
-    }
   }
 }
 
@@ -34,7 +28,6 @@
     width: 100%;
   }
 
-  .sm-screen-access-cell,
   .lrg-screen-access-cell {
     button {
       margin-left: auto;
@@ -44,19 +37,7 @@
     }
   }
 
-  // model row hover on large screens
-  @include mobile {
-    .sm-screen-access-cell .model-access {
-      display: block;
-    }
-  }
-
   @include desktop {
-    .sm-screen-access-cell,
-    .sm-screen-access-header {
-      display: none;
-    }
-
     tr:hover {
       .model-access {
         display: block;
@@ -67,6 +48,77 @@
 
       .has-permission .model-access-alt {
         display: none;
+      }
+    }
+  }
+
+  .status-group {
+    td,
+    th {
+      @include mobile-and-medium {
+        // Credential
+        &:nth-child(5),
+        // Controller
+        &:nth-child(6) {
+          display: none;
+        }
+      }
+
+      @include mobile {
+        // Summary icons
+        &:nth-child(2),
+        // Last updated
+        &:nth-child(7) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .owners-group {
+    td,
+    th {
+      @include mobile-and-medium {
+        // Credential
+        &:nth-child(5),
+        // Controller
+        &:nth-child(6) {
+          display: none;
+        }
+      }
+
+      @include mobile {
+        // Summary icons
+        &:nth-child(2),
+        // Last updated
+        &:nth-child(7) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .cloud-group {
+    td,
+    th {
+      @include mobile-and-medium {
+        // Credential
+        &:nth-child(6),
+        // Controller
+        &:nth-child(7) {
+          display: none;
+        }
+      }
+
+      @include mobile {
+        // Summary icons
+        &:nth-child(2),
+        // Status
+        &:nth-child(4),
+        // Last updated
+        &:nth-child(8) {
+          display: none;
+        }
       }
     }
   }

@@ -354,6 +354,11 @@ export const getActiveUser = createSelector(
   }
 );
 
+export const getModelCredential = createSelector(
+  [getModelDataByUUID],
+  (model) => extractCredentialName(model?.info?.["cloud-credential-tag"])
+);
+
 export const getModelAccess = createSelector(
   [
     getModelByUUID,

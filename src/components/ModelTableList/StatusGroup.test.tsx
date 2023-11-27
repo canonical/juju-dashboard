@@ -123,7 +123,7 @@ describe("StatusGroup", () => {
     );
   });
 
-  it("model access buttons are present in status group", () => {
+  it("model access button is present in status group", () => {
     state.general = generalStateFactory.build({
       config: configFactory.build({
         controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
@@ -154,13 +154,11 @@ describe("StatusGroup", () => {
     };
     renderComponent(<StatusGroup filters={filters} />, { state });
     const firstContentRow = screen.getAllByRole("row")[1];
-    const modelAccessButton = within(firstContentRow).getAllByRole("button", {
-      name: "Access",
-    });
-    expect(modelAccessButton.length).toBe(2);
-    expect(within(firstContentRow).getAllByRole("gridcell")[7]).toHaveClass(
-      "sm-screen-access-cell"
-    );
+    expect(
+      within(firstContentRow).getByRole("button", {
+        name: "Access",
+      })
+    ).toBeInTheDocument();
     expect(within(firstContentRow).getAllByRole("gridcell")[6]).toHaveClass(
       "lrg-screen-access-cell"
     );

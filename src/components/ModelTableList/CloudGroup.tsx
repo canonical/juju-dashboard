@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
+import TruncatedTooltip from "components/TruncatedTooltip";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getActiveUsers,
@@ -68,12 +69,14 @@ export default function CloudGroup({ filters }: Props) {
           {
             "data-testid": "column-name",
             content: model.info ? (
-              <ModelDetailsLink
-                modelName={model.info.name}
-                ownerTag={model.info?.["owner-tag"]}
-              >
-                {model.info.name}
-              </ModelDetailsLink>
+              <TruncatedTooltip message={model.info.name}>
+                <ModelDetailsLink
+                  modelName={model.info.name}
+                  ownerTag={model.info?.["owner-tag"]}
+                >
+                  {model.info.name}
+                </ModelDetailsLink>
+              </TruncatedTooltip>
             ) : null,
           },
           {
@@ -88,7 +91,9 @@ export default function CloudGroup({ filters }: Props) {
           },
           {
             "data-testid": "column-owner",
-            content: owner,
+            content: (
+              <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>
+            ),
           },
           {
             "data-testid": "column-status",
@@ -97,15 +102,25 @@ export default function CloudGroup({ filters }: Props) {
           },
           {
             "data-testid": "column-region",
-            content: region,
+            content: (
+              <TruncatedTooltip message={region}>{region}</TruncatedTooltip>
+            ),
           },
           {
             "data-testid": "column-credential",
-            content: credential,
+            content: (
+              <TruncatedTooltip message={credential}>
+                {credential}
+              </TruncatedTooltip>
+            ),
           },
           {
             "data-testid": "column-controller",
-            content: controller,
+            content: (
+              <TruncatedTooltip message={controller}>
+                {controller}
+              </TruncatedTooltip>
+            ),
           },
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
@@ -128,21 +143,6 @@ export default function CloudGroup({ filters }: Props) {
                 ? "has-permission"
                 : ""
             }`,
-          },
-          {
-            content: (
-              <>
-                {model?.info
-                  ? canAdministerModel(activeUser, model.info.users) && (
-                      <AccessButton
-                        setPanelQs={setPanelQs}
-                        modelName={model.info.name}
-                      />
-                    )
-                  : null}
-              </>
-            ),
-            className: "sm-screen-access-cell",
           },
         ],
         sortData: {
@@ -171,10 +171,7 @@ export default function CloudGroup({ filters }: Props) {
     );
   }
   return (
-    <div
-      className="cloud-group u-overflow--auto"
-      data-testid={TestId.CLOUD_GROUP}
-    >
+    <div className="cloud-group" data-testid={TestId.CLOUD_GROUP}>
       {cloudTables}
     </div>
   );

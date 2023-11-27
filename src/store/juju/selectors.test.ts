@@ -88,6 +88,7 @@ import {
   getUsers,
   getFullModelName,
   getControllersCount,
+  getModelCredential,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -1136,6 +1137,42 @@ describe("selectors", () => {
         "abc123"
       )
     ).toBe("superuser");
+  });
+
+  it("getModelCredential", () => {
+    expect(
+      getModelCredential(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            controllerConnections: {
+              "wss://example.com/api": {
+                user: {
+                  "display-name": "eggman",
+                  identity: "user-eggman@external",
+                  "controller-access": "superuser",
+                  "model-access": "",
+                },
+              },
+            },
+          }),
+          juju: jujuStateFactory.build({
+            modelData: {
+              abc123: modelDataFactory.build({
+                info: modelDataInfoFactory.build({
+                  "cloud-credential-tag": "cloudcred-google_eggman_juju",
+                }),
+              }),
+            },
+            models: {
+              abc123: modelListInfoFactory.build({
+                wsControllerURL: "wss://example.com/api",
+              }),
+            },
+          }),
+        }),
+        "abc123"
+      )
+    ).toBe("eggman");
   });
 
   it("getModelControllerDataByUUID", () => {
