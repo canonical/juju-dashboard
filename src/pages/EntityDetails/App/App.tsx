@@ -302,7 +302,7 @@ export default function App(): JSX.Element {
         ) : null}
         <EntityInfo data={appEntityData} />
       </div>
-      <div className="entity-details__main u-overflow--auto">
+      <div className="entity-details__main">
         {!hideMachines && (
           <SegmentedControl
             buttons={["Units", "Machines"].map((tab) => ({

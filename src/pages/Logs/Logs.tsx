@@ -8,9 +8,7 @@ const Logs = (): JSX.Element => (
     <ActionBar>
       <AuditLogsTableActions />
     </ActionBar>
-    <div className="u-overflow--auto">
-      <AuditLogsTable />
-    </div>
+    <AuditLogsTable />
   </BaseLayout>
 );
 

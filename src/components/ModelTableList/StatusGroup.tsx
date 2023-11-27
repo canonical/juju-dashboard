@@ -102,14 +102,14 @@ const generateWarningMessage = (model: ModelData) => {
 const generateModelNameCell = (model: ModelData, groupLabel: string) => {
   return (
     <>
-      <div>
+      <TruncatedTooltip message={model.model.name}>
         <ModelDetailsLink
           modelName={model.model.name}
           ownerTag={model.info?.["owner-tag"]}
         >
           {model.model.name}
         </ModelDetailsLink>
-      </div>
+      </TruncatedTooltip>
       {groupLabel === "blocked" ? generateWarningMessage(model) : null}
     </>
   );
@@ -164,7 +164,9 @@ function generateModelTableDataByStatus(
           },
           {
             "data-testid": "column-owner",
-            content: <>{owner}</>,
+            content: (
+              <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>
+            ),
           },
           {
             "data-testid": "column-cloud",
@@ -176,11 +178,19 @@ function generateModelTableDataByStatus(
           },
           {
             "data-testid": "column-credential",
-            content: credential,
+            content: (
+              <TruncatedTooltip message={credential}>
+                {credential}
+              </TruncatedTooltip>
+            ),
           },
           {
             "data-testid": "column-controller",
-            content: controller,
+            content: (
+              <TruncatedTooltip message={controller}>
+                {controller}
+              </TruncatedTooltip>
+            ),
           },
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
@@ -201,19 +211,6 @@ function generateModelTableDataByStatus(
                 ? "has-permission"
                 : ""
             }`,
-          },
-          {
-            content: (
-              <>
-                {canAdministerModel(activeUser, model?.info?.users) && (
-                  <AccessButton
-                    setPanelQs={setPanelQs}
-                    modelName={model.model.name}
-                  />
-                )}
-              </>
-            ),
-            className: "sm-screen-access-cell",
           },
         ],
         sortData: {
@@ -254,15 +251,13 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
   const emptyStateMsg = "There are no models with this status";
 
   return (
-    <div
-      className="status-group u-overflow--auto"
-      data-testid={TestId.STATUS_GROUP}
-    >
+    <div className="status-group" data-testid={TestId.STATUS_GROUP}>
       {blockedRows.length ? (
         <MainTable
           headers={generateTableHeaders("Blocked", blockedRows.length, {
             showCloud: true,
             showOwner: true,
+            showHeaderStatus: true,
           })}
           rows={blockedRows}
           sortable

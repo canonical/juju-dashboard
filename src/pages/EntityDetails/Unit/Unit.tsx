@@ -101,7 +101,7 @@ export default function Unit() {
         <InfoPanel />
         <EntityInfo data={unitEntityData} />
       </div>
-      <div className="entity-details__main u-overflow--auto">
+      <div className="entity-details__main">
         <div className="slide-panel__tables">
           {modelData?.type !== "kubernetes" && (
             <MainTable

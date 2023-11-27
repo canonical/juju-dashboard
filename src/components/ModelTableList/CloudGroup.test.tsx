@@ -84,7 +84,7 @@ describe("CloudGroup", () => {
     expect(within(tables[0]).getAllByRole("row")).toHaveLength(3);
   });
 
-  it("model access buttons are present in cloud group", () => {
+  it("model access button is present in cloud group", () => {
     state.general = generalStateFactory.build({
       config: configFactory.build({
         controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
@@ -115,13 +115,11 @@ describe("CloudGroup", () => {
     };
     renderComponent(<CloudGroup filters={filters} />, { state });
     const firstContentRow = screen.getAllByRole("row")[1];
-    const modelAccessButton = within(firstContentRow).getAllByRole("button", {
-      name: "Access",
-    });
-    expect(modelAccessButton.length).toBe(2);
-    expect(within(firstContentRow).getAllByRole("gridcell")[8]).toHaveClass(
-      "sm-screen-access-cell"
-    );
+    expect(
+      within(firstContentRow).getByRole("button", {
+        name: "Access",
+      })
+    ).toBeInTheDocument();
     expect(within(firstContentRow).getAllByRole("gridcell")[7]).toHaveClass(
       "lrg-screen-access-cell"
     );

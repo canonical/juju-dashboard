@@ -306,7 +306,7 @@ function Details() {
         </div>
       </div>
       <ControllersOverview />
-      <div className="l-controllers-table u-overflow--auto">
+      <div className="l-controllers-table">
         {rows.length > 0 && (
           <>
             <h5 className="u-hide--large">{Label.DEFAULT}</h5>

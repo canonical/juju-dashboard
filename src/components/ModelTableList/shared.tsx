@@ -60,6 +60,7 @@ export type TableHeaderOptions = {
   showCloud?: boolean;
   showOwner?: boolean;
   showStatus?: boolean;
+  showHeaderStatus?: boolean;
 };
 
 /**
@@ -75,7 +76,11 @@ export const generateTableHeaders = (
 ) => {
   const rows = [
     {
-      content: <Status status={label} count={count} />,
+      content: options?.showHeaderStatus ? (
+        <Status status={label} count={count} />
+      ) : (
+        `${label} (${count})`
+      ),
       sortKey: "name",
     },
     { content: "", sortKey: "summary" }, // The unit/machines/apps counts
@@ -90,11 +95,6 @@ export const generateTableHeaders = (
       content: "Last Updated",
       sortKey: "lastUpdated",
       className: "u-align--right",
-    },
-    {
-      content: "",
-      sortKey: "",
-      className: "sm-screen-access-header",
     },
   ];
   // Remove any null headers that aren't being shown.
