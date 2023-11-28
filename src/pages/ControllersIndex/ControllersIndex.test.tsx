@@ -299,8 +299,7 @@ describe("Controllers table", () => {
         "0",
         "0",
         "0",
-        "1.2.3 ",
-        "Private",
+        "1.2.3",
       ].join("")
     );
   });
@@ -332,8 +331,7 @@ describe("Controllers table", () => {
         "0",
         "0",
         "0",
-        "1.2.3 ",
-        "Private",
+        "1.2.3",
       ].join("")
     );
   });
