@@ -77,7 +77,7 @@ describe("Controllers table", () => {
     );
   });
 
-  it("displays additional controllers from JIMM with correct cloud data", () => {
+  it("displays additional controllers from JIMM", () => {
     state.general.controllerConnections = {
       "wss://jimm.jujucharms.com/api": connectionInfoFactory.build(),
     };
@@ -85,11 +85,7 @@ describe("Controllers table", () => {
       controllers: {
         "wss://jimm.jujucharms.com/api": [
           controllerFactory.build(),
-          controllerInfoFactory.build({
-            additionalController: true,
-            "cloud-tag": "US",
-            "cloud-region": "East",
-          }),
+          controllerInfoFactory.build({ additionalController: true }),
         ],
       },
     });
@@ -102,7 +98,7 @@ describe("Controllers table", () => {
       [
         "controller1",
         "Connected",
-        "US/East",
+        "unknown/unknown",
         "0",
         "0",
         "0",
@@ -287,5 +283,70 @@ describe("Controllers table", () => {
     expect(
       screen.getByRole("link", { name: "Authenticate" })
     ).toBeInTheDocument();
+  });
+
+  it("displays correct cloud data for Juju controller", () => {
+    state.general.controllerConnections = {
+      "wss://jimm.jujucharms.com/api": connectionInfoFactory.build(),
+    };
+    state.juju = jujuStateFactory.build({
+      controllers: {
+        "wss://jimm.jujucharms.com/api": [
+          controllerFactory.build({
+            location: { cloud: "cloud-aws", region: "eu-central-1" },
+          }),
+        ],
+      },
+    });
+    renderComponent(<ControllersIndex />, { state });
+    const tables = screen.getAllByRole("grid");
+    const controllerRows = within(tables[0]).getAllByRole("row");
+    expect(controllerRows).toHaveLength(2);
+    expect(controllerRows[1]).toHaveTextContent(
+      [
+        "admin/jaas",
+        "Connected",
+        "cloud-aws/eu-central-1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1.2.3 ",
+        "Private",
+      ].join("")
+    );
+  });
+
+  it("displays correct cloud data for JIMM enabled controller", () => {
+    state.general.controllerConnections = {
+      "wss://jimm.jujucharms.com/api": connectionInfoFactory.build(),
+    };
+    state.juju = jujuStateFactory.build({
+      controllers: {
+        "wss://jimm.jujucharms.com/api": [
+          controllerInfoFactory.build({
+            "cloud-tag": "cloud-aws",
+            "cloud-region": "eu-central-1",
+          }),
+        ],
+      },
+    });
+    renderComponent(<ControllersIndex />, { state });
+    const tables = screen.getAllByRole("grid");
+    const controllerRows = within(tables[0]).getAllByRole("row");
+    expect(controllerRows).toHaveLength(2);
+    expect(controllerRows[1]).toHaveTextContent(
+      [
+        "controller1",
+        "Connected",
+        "cloud-aws/eu-central-1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1.2.3 ",
+        "Private",
+      ].join("")
+    );
   });
 });
