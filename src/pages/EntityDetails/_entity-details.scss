@@ -336,8 +336,31 @@
     }
   }
 
-  .entity-details__machines,
-  .entity-details__relations {
+  .entity-details__integrations {
+    th,
+    td {
+      // Type.
+      &:nth-child(4) {
+        width: 15%;
+      }
+
+      @include mobile-and-medium {
+        // Type.
+        &:nth-child(4) {
+          display: none;
+        }
+      }
+
+      @include mobile {
+        // Requirer.
+        &:nth-child(2) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .entity-details__machines {
     th,
     td {
       &:nth-child(1) {

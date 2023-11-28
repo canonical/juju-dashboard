@@ -4,18 +4,18 @@
 .controllers {
   th,
   td {
-    // Name
+    // Name.
     &:nth-child(1) {
       white-space: nowrap;
       width: 20%;
     }
 
-    // Status
+    // Status.
     &:nth-child(2) {
       width: 15%;
     }
 
-    // Cloud
+    // Cloud.
     &:nth-child(3) {
       width: 15%;
     }

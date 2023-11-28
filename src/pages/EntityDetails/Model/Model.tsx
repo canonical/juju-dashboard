@@ -185,21 +185,21 @@ const Model = () => {
         relationTableRows.length > 0 ? (
           <>
             {shouldShow("relations-title", query.activeView) && (
-              <h5>Relations ({relationTableRows.length})</h5>
+              <h5>Integrations ({relationTableRows.length})</h5>
             )}
             <MainTable
               headers={relationTableHeaders}
               rows={relationTableRows}
-              className="entity-details__relations p-main-table"
+              className="entity-details__integrations p-main-table"
               sortable
-              emptyStateMsg={"There are no relations in this model"}
+              emptyStateMsg="There are no integrations in this model"
             />
             {shouldShow("relations-title", query.activeView) && (
               <>
                 {consumedTableRows.length > 0 ||
                   (offersTableRows.length > 0 && (
                     <h5>
-                      Cross-model relations (
+                      Cross-model integrations (
                       {consumedTableRows.length + offersTableRows.length})
                     </h5>
                   ))}
@@ -210,9 +210,9 @@ const Model = () => {
                 data-testid={TestId.CONSUMED}
                 headers={consumedTableHeaders}
                 rows={consumedTableRows}
-                className="entity-details__relations p-main-table"
+                className="p-main-table"
                 sortable
-                emptyStateMsg={"There are no remote relations in this model"}
+                emptyStateMsg="There are no remote integrations in this model"
               />
             )}
             {offersTableRows.length > 0 && (
@@ -220,9 +220,9 @@ const Model = () => {
                 data-testid={TestId.OFFERS}
                 headers={offersTableHeaders}
                 rows={offersTableRows}
-                className="entity-details__relations p-main-table"
+                className="p-main-table"
                 sortable
-                emptyStateMsg={"There are no connected offers in this model"}
+                emptyStateMsg="There are no connected offers in this model"
               />
             )}
           </>

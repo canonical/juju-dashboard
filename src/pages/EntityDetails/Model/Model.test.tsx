@@ -162,7 +162,7 @@ describe("Model", () => {
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__relations"
+        ".entity-details__main > .entity-details__integrations"
       )
     ).not.toBeInTheDocument();
     expect(
@@ -202,7 +202,7 @@ describe("Model", () => {
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__relations"
+        ".entity-details__main > .entity-details__integrations"
       )
     ).not.toBeInTheDocument();
     expect(
@@ -242,7 +242,7 @@ describe("Model", () => {
     ).toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__relations"
+        ".entity-details__main > .entity-details__integrations"
       )
     ).not.toBeInTheDocument();
     expect(
@@ -282,7 +282,7 @@ describe("Model", () => {
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__relations"
+        ".entity-details__main > .entity-details__integrations"
       )
     ).toBeInTheDocument();
     expect(
@@ -322,7 +322,7 @@ describe("Model", () => {
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__relations"
+        ".entity-details__main > .entity-details__integrations"
       )
     ).not.toBeInTheDocument();
     expect(
