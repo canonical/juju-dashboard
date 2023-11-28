@@ -7,6 +7,7 @@ import {
   CodeSnippet,
   CodeSnippetBlockAppearance,
   ContextualMenu,
+  Icon,
   Modal,
   ModularTable,
   Tooltip,
@@ -39,7 +40,6 @@ type TableRows = TableRow[];
 type RowCells = {
   application: ReactNode;
   completed?: ReactNode;
-  controls?: ReactNode;
   id: string;
   message: ReactNode;
   sortData: {
@@ -49,11 +49,10 @@ type RowCells = {
     status: string;
   };
   status: ReactNode;
-  taskId: string;
 };
 
 type TableRow = RowCells & {
-  subRows: (RowCells & { controls: ReactNode })[];
+  subRows: RowCells[];
 };
 
 type ApplicationData = {
@@ -182,7 +181,6 @@ const generateApplicationRow = (
     },
     status: <Status status={actionData.status} useIcon actionsLogs />,
     subRows: [],
-    taskId: "",
   };
 };
 
@@ -277,15 +275,18 @@ export default function ActionLogs() {
         );
         delete actionFullDetails?.output?.["return-code"];
         if (!actionFullDetails) return;
-        const stdout = (actionFullDetails.log || []).map((m, i) => (
-          <span className="action-logs__stdout" key={i}>
-            {m.message}
-          </span>
-        ));
-        const stderr =
-          actionFullDetails.status === "failed"
-            ? actionFullDetails.message
-            : "";
+        const hasStdout =
+          actionFullDetails.log && actionFullDetails.log.length > 0;
+        const hasSterr =
+          actionFullDetails.status === "failed" && !!actionFullDetails.message;
+        const stdout = hasStdout
+          ? actionFullDetails.log.map((m, i) => (
+              <span className="action-logs__stdout" key={i}>
+                {m.message}
+              </span>
+            ))
+          : [];
+        const stderr = hasSterr ? actionFullDetails.message : "";
         const completedDate = new Date(actionData.completed);
         const name = actionData.action.receiver.replace(
           /unit-(.+)-(\d+)/,
@@ -298,17 +299,72 @@ export default function ActionLogs() {
               <span>{name}</span>
             </>
           ),
-          id: "",
-          status: <Status status={actionData.status} useIcon actionsLogs />,
-          taskId: actionData.action.tag.split("-")[1],
-          message: (
-            <>
-              {outputType !== Output.STDERR ? <span>{stdout}</span> : null}
-              {outputType !== Output.STDOUT ? (
-                <span className="action-logs__stderr">{stderr}</span>
+          id: actionData.action.tag.split("-")[1],
+          status: (
+            <div className="u-flex u-flex--gap-small">
+              <div className="u-flex-shrink u-truncate">
+                <Status status={actionData.status} useIcon actionsLogs inline />
+              </div>
+              {Object.keys(actionFullDetails?.output ?? {}).length > 0 ? (
+                <div>
+                  <Button
+                    onClick={() => setModalDetails(actionFullDetails.output)}
+                    data-testid="show-output"
+                    dense
+                    hasIcon
+                  >
+                    <Icon name="code" />
+                  </Button>
+                </div>
               ) : null}
-            </>
+            </div>
           ),
+          message:
+            hasStdout || hasSterr ? (
+              <div className="u-flex">
+                <div>
+                  {outputType !== Output.STDERR ? <span>{stdout}</span> : null}
+                  {outputType !== Output.STDOUT ? (
+                    <span className="action-logs__stderr">{stderr}</span>
+                  ) : null}
+                </div>
+                <div>
+                  <ContextualMenu
+                    hasToggleIcon
+                    toggleProps={{
+                      dense: true,
+                      appearance: "base",
+                      "aria-label": Label.OUTPUT,
+                    }}
+                    links={[
+                      {
+                        children: Output.ALL,
+                        onClick: () =>
+                          handleOutputSelect(actionData.action.tag, Output.ALL),
+                      },
+                      {
+                        children: Output.STDOUT,
+                        onClick: () =>
+                          handleOutputSelect(
+                            actionData.action.tag,
+                            Output.STDOUT
+                          ),
+                        disabled: !stdout.length,
+                      },
+                      {
+                        children: Output.STDERR,
+                        onClick: () =>
+                          handleOutputSelect(
+                            actionData.action.tag,
+                            Output.STDERR
+                          ),
+                        disabled: !stderr.length,
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            ) : null,
           // Sometimes the log gets returned with a date of "0001-01-01T00:00:00Z".
           completed:
             completedDate.getFullYear() === 1 ? (
@@ -321,45 +377,6 @@ export default function ActionLogs() {
                 {formatFriendlyDateToNow(actionData.completed)}
               </Tooltip>
             ),
-          controls: (
-            <div className="entity-details__action-buttons">
-              <ContextualMenu
-                hasToggleIcon
-                toggleProps={{ dense: true }}
-                toggleLabel={
-                  outputType === Output.ALL ? Label.OUTPUT : outputType
-                }
-                links={[
-                  {
-                    children: Output.ALL,
-                    onClick: () =>
-                      handleOutputSelect(actionData.action.tag, Output.ALL),
-                  },
-                  {
-                    children: Output.STDOUT,
-                    onClick: () =>
-                      handleOutputSelect(actionData.action.tag, Output.STDOUT),
-                    disabled: !stdout.length,
-                  },
-                  {
-                    children: Output.STDERR,
-                    onClick: () =>
-                      handleOutputSelect(actionData.action.tag, Output.STDERR),
-                    disabled: !stderr.length,
-                  },
-                ]}
-              />
-              {Object.keys(actionFullDetails?.output ?? {}).length > 0 && (
-                <Button
-                  onClick={() => setModalDetails(actionFullDetails.output)}
-                  data-testid="show-output"
-                  dense
-                >
-                  Result
-                </Button>
-              )}
-            </div>
-          ),
           sortData: {
             application: name,
             completed: completedDate.getTime(),
@@ -393,14 +410,9 @@ export default function ActionLogs() {
         sortType: "basic",
       },
       {
-        Header: "status",
+        Header: "result",
         accessor: "status",
         sortType: tableSort.bind(null, "status"),
-      },
-      {
-        Header: "task id",
-        accessor: "taskId",
-        sortType: "basic",
       },
       {
         Header: "action message",
@@ -408,14 +420,10 @@ export default function ActionLogs() {
         sortType: tableSort.bind(null, "message"),
       },
       {
-        Header: "completion time",
+        Header: "completed",
         accessor: "completed",
         sortType: tableSort.bind(null, "completed"),
         sortInverted: true,
-      },
-      {
-        accessor: "controls",
-        disableSortBy: true,
       },
     ],
     []

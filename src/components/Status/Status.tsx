@@ -5,6 +5,7 @@ import type { PropsWithChildren } from "react";
 type Props = {
   status?: string;
   count?: number | null;
+  inline?: boolean;
   useIcon?: boolean;
   actionsLogs?: boolean;
   className?: string | null;
@@ -14,6 +15,7 @@ const Status = ({
   status = "unknown",
   children,
   count,
+  inline,
   useIcon = true,
   actionsLogs = false,
   className = null,
@@ -27,6 +29,7 @@ const Status = ({
     <span
       className={classNames(className, {
         "status-icon": useIcon,
+        "status-icon--inline": inline,
         [`is-${status.toLowerCase()}`]: useIcon && status,
       })}
     >

@@ -144,25 +144,14 @@ describe("Action Logs", () => {
   it("requests the action logs data on load", async () => {
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
-      ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
-      [
-        "└easyrsa/0",
-        "",
-        "completed",
-        "2",
-        "log message 1",
-        "over 1 year ago",
-        "Output",
-        "Result",
-      ],
+      ["easyrsa", "1/list-disks", "completed", "", ""],
+      ["└easyrsa/0", "2", "completed", "log message 1", "over 1 year ago"],
       [
         "└easyrsa/1",
-        "",
-        "completed",
         "3",
+        "completed",
         "log message 1log message 2error message",
         "over 1 year ago",
-        "Output",
       ],
     ];
     const rows = await screen.findAllByRole("row");
@@ -175,25 +164,14 @@ describe("Action Logs", () => {
   it("fails gracefully if app does not exist in model data", async () => {
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
-      ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
-      [
-        "└easyrsa/0",
-        "",
-        "completed",
-        "2",
-        "log message 1",
-        "over 1 year ago",
-        "Output",
-        "Result",
-      ],
+      ["easyrsa", "1/list-disks", "completed", "", ""],
+      ["└easyrsa/0", "2", "completed", "log message 1", "over 1 year ago"],
       [
         "└easyrsa/1",
-        "",
-        "completed",
         "3",
+        "completed",
         "log message 1log message 2error message",
         "over 1 year ago",
-        "Output",
       ],
     ];
     const rows = await screen.findAllByRole("row");
@@ -236,23 +214,12 @@ describe("Action Logs", () => {
     const expected = [
       [
         "└easyrsa/1",
-        "",
-        "completed",
         "3",
+        "completed",
         "log message 1log message 2error message",
         "1 day ago",
-        "Output",
       ],
-      [
-        "└easyrsa/0",
-        "",
-        "completed",
-        "2",
-        "log message 1",
-        "over 1 year ago",
-        "Output",
-        "Result",
-      ],
+      ["└easyrsa/0", "2", "completed", "log message 1", "over 1 year ago"],
     ];
     const tableBody = await screen.findAllByRole("rowgroup");
     const rows = await within(tableBody[1]).findAllByRole("row");
@@ -283,15 +250,7 @@ describe("Action Logs", () => {
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
       ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
-      [
-        "└easyrsa/0",
-        "",
-        "completed",
-        "2",
-        "log message 1",
-        "Unknown",
-        "Output",
-      ],
+      ["└easyrsa/0", "2", "completed", "log message 1", "Unknown"],
     ];
     const rows = await screen.findAllByRole("row");
     // Start at row 1 because row 0 is the header row.
@@ -322,6 +281,23 @@ describe("Action Logs", () => {
     await userEvent.click(screen.getByRole("button", { name: Output.ALL }));
     expect(within(rows[2]).getByText("log message 1")).toBeInTheDocument();
     expect(within(rows[2]).getByText("error message")).toBeInTheDocument();
+  });
+
+  it("does not display a toggle when there is neither STOUT or STDERR", async () => {
+    const mockActionResults = actionResultsFactory.build({
+      results: [
+        actionResultFactory.build({
+          log: undefined,
+          status: "completed",
+        }),
+      ],
+    });
+    jest.spyOn(juju, "queryActionsList").mockResolvedValue(mockActionResults);
+    renderComponent(<ActionLogs />, { path, url, state });
+    const rows = await screen.findAllByRole("row");
+    expect(
+      within(rows[2]).queryByRole("button", { name: Label.OUTPUT })
+    ).not.toBeInTheDocument();
   });
 
   it("only shows the action result button when there is a result", async () => {

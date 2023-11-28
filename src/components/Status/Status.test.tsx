@@ -25,6 +25,12 @@ describe("Status", () => {
     expect(status).toHaveClass("is-middle");
   });
 
+  it("can be inline", () => {
+    render(<Status status="middle" inline />);
+    const status = screen.getByText("middle");
+    expect(status).toHaveClass("status-icon--inline");
+  });
+
   it("can display a count", () => {
     render(<Status status="middle" count={23} />);
     expect(screen.getByText(/(23)/)).toBeInTheDocument();

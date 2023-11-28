@@ -11,6 +11,10 @@
     top: -6px;
   }
 
+  &--inline {
+    display: inline;
+  }
+
   &.is-spinner::before {
     content: none;
   }

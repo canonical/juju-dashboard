@@ -35,13 +35,21 @@
     gap: $sp-medium;
   }
 
+  &--gap-small {
+    gap: $sp-small;
+  }
+
   &--block {
     flex: 1 auto;
   }
-}
 
-.u-flex-grow {
-  flex-grow: 1;
+  &-grow {
+    flex-grow: 1;
+  }
+
+  &-shrink {
+    flex-shrink: 1;
+  }
 }
 
 // Extend has-icon to work outside of buttons
