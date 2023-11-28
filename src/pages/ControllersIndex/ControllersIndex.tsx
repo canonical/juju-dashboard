@@ -178,10 +178,18 @@ function Details() {
 
   function generateRow(c: AnnotatedController, authenticated: boolean) {
     const isJAAS = isJAASFromUUID(c);
-    const cloud =
-      "location" in c && c?.location?.cloud ? c.location.cloud : "unknown";
-    const region =
-      "location" in c && c?.location?.region ? c.location.region : "unknown";
+    let cloud = "unknown";
+    if ("cloud-tag" in c && c["cloud-tag"]) {
+      cloud = c["cloud-tag"];
+    } else if ("location" in c && c.location?.cloud) {
+      cloud = c.location.cloud;
+    }
+    let region = "unknown";
+    if ("cloud-region" in c && c["cloud-region"]) {
+      region = c["cloud-region"];
+    } else if ("location" in c && c.location?.region) {
+      region = c.location.region;
+    }
     const cloudRegion = `${cloud}/${region}`;
     const access = ("Public" in c && c.Public) || isJAAS ? "Public" : "Private";
     const loginError = loginErrors?.[c.wsControllerURL];

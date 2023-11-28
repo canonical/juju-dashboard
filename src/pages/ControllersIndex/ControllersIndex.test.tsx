@@ -77,7 +77,7 @@ describe("Controllers table", () => {
     );
   });
 
-  it("displays additional controllers from JIMM", () => {
+  it("displays additional controllers from JIMM with correct cloud data", () => {
     state.general.controllerConnections = {
       "wss://jimm.jujucharms.com/api": connectionInfoFactory.build(),
     };
@@ -85,7 +85,11 @@ describe("Controllers table", () => {
       controllers: {
         "wss://jimm.jujucharms.com/api": [
           controllerFactory.build(),
-          controllerInfoFactory.build({ additionalController: true }),
+          controllerInfoFactory.build({
+            additionalController: true,
+            "cloud-tag": "US",
+            "cloud-region": "East",
+          }),
         ],
       },
     });
@@ -98,7 +102,7 @@ describe("Controllers table", () => {
       [
         "controller1",
         "Connected",
-        "unknown/unknown",
+        "US/East",
         "0",
         "0",
         "0",
