@@ -24,6 +24,8 @@ import AuditLogsTablePagination from "./AuditLogsTablePagination";
 import { DEFAULT_PAGE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";
 
+import "./_audit-logs-table.scss";
+
 const COLUMN_DATA: Column[] = [
   {
     Header: "user",
@@ -126,6 +128,7 @@ const AuditLogsTable = () => {
         <LoadingSpinner />
       ) : (
         <ModularTable
+          className="audit-logs-table"
           columns={columnData}
           // Table will display at most (limit) entries.
           data={hasNextPage ? tableData.slice(0, -1) : tableData}
