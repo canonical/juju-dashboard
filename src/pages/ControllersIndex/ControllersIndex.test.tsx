@@ -72,7 +72,6 @@ describe("Controllers table", () => {
         "0",
         "0",
         "0",
-        "Private",
       ].join("")
     );
   });
@@ -103,8 +102,7 @@ describe("Controllers table", () => {
         "0",
         "0",
         "0",
-        "1.2.3 ",
-        "Private",
+        "1.2.3",
       ].join("")
     );
   });
@@ -160,17 +158,7 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(screen.getAllByRole("row")[1]).toHaveTextContent(
-      [
-        "JAAS",
-        "Connected",
-        "Multiple",
-        "2",
-        "5",
-        "2",
-        "3",
-        "1.2.3 ",
-        "Public",
-      ].join("")
+      ["JAAS", "Connected", "Multiple", "2", "5", "2", "3", "1.2.3"].join("")
     );
   });
 

@@ -131,7 +131,6 @@ function Details() {
     },
     { content: "units", sortKey: "units" },
     { content: "version", sortKey: "version" },
-    { content: "access", sortKey: "public" },
   ];
 
   const additionalHeaders = cloneDeep(headers);
@@ -177,7 +176,6 @@ function Details() {
   }
 
   function generateRow(c: AnnotatedController, authenticated: boolean) {
-    const isJAAS = isJAASFromUUID(c);
     let cloud = "unknown";
     if ("cloud-tag" in c && c["cloud-tag"]) {
       cloud = c["cloud-tag"];
@@ -191,7 +189,6 @@ function Details() {
       region = c.location.region;
     }
     const cloudRegion = `${cloud}/${region}`;
-    const access = ("Public" in c && c.Public) || isJAAS ? "Public" : "Private";
     const loginError = loginErrors?.[c.wsControllerURL];
     let status = "Connected";
     let label = null;
@@ -217,19 +214,18 @@ function Details() {
           </Tooltip>
         ),
       },
-      { content: isJAAS ? "Multiple" : cloudRegion },
+      { content: isJAASFromUUID(c) ? "Multiple" : cloudRegion },
       { content: c.models },
       { content: c.machines },
       { content: c.applications },
       { content: c.units },
       { content: "" },
-      { content: access, className: "u-capitalise" },
     ];
     const version =
       ("agent-version" in c && c["agent-version"]) ||
       ("version" in c && c.version);
     if (version) {
-      columns[columns.length - 2] = {
+      columns[columns.length - 1] = {
         content: (
           <>
             {version}{" "}
