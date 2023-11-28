@@ -6,13 +6,13 @@
   .entity-details__action-logs {
     td,
     th {
-      // Completion time column.
+      // Completion time.
       &:nth-child(5) {
         width: 15%;
       }
 
       @include mobile-and-medium {
-        // Completion time column.
+        // Completion time.
         &:nth-child(5) {
           display: none;
         }
@@ -24,7 +24,7 @@
           width: 25%;
         }
 
-        // log messages column
+        // Log messages.
         &:nth-child(4) {
           display: none;
         }

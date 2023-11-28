@@ -283,6 +283,23 @@ describe("Action Logs", () => {
     expect(within(rows[2]).getByText("error message")).toBeInTheDocument();
   });
 
+  it("does not display a toggle when there is neither STOUT or STDERR", async () => {
+    const mockActionResults = actionResultsFactory.build({
+      results: [
+        actionResultFactory.build({
+          log: undefined,
+          status: "completed",
+        }),
+      ],
+    });
+    jest.spyOn(juju, "queryActionsList").mockResolvedValue(mockActionResults);
+    renderComponent(<ActionLogs />, { path, url, state });
+    const rows = await screen.findAllByRole("row");
+    expect(
+      within(rows[2]).queryByRole("button", { name: Label.OUTPUT })
+    ).not.toBeInTheDocument();
+  });
+
   it("only shows the action result button when there is a result", async () => {
     renderComponent(<ActionLogs />, { path, url, state });
     const showOutputBtns = await screen.findAllByTestId("show-output");
