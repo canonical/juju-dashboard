@@ -1,4 +1,3 @@
-import { JAAS_CONTROLLER_UUID } from "store/juju/utils/controllers";
 import {
   detailedStatusFactory,
   modelStatusInfoFactory,
@@ -93,20 +92,6 @@ describe("shared", () => {
     expect(getControllerName(modelData, controllers)).toStrictEqual(
       "a controller"
     );
-  });
-
-  it("can get the JAAS controller name", () => {
-    const controllers = {
-      "wss://test.com/api": [
-        controllerFactory.build({ uuid: JAAS_CONTROLLER_UUID }),
-      ],
-    };
-    const modelData = modelDataFactory.build({
-      info: modelDataInfoFactory.build({
-        "controller-uuid": JAAS_CONTROLLER_UUID,
-      }),
-    });
-    expect(getControllerName(modelData, controllers)).toStrictEqual("JAAS");
   });
 
   it("handles an unknown controller name", () => {

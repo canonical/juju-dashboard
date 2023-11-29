@@ -29,7 +29,6 @@ import {
   getModelData,
 } from "store/juju/selectors";
 import type { AdditionalController, Controller } from "store/juju/types";
-import { isJAASFromUUID } from "store/juju/utils/controllers";
 import { useAppSelector } from "store/store";
 import urls from "urls";
 import { breakLines } from "utils";
@@ -142,9 +141,7 @@ function Details() {
     const controllerAddress = controllerData.wsControllerURL
       .replace(/^wss?:\/\//i, "")
       .replace(/\/api$/i, "");
-    if (isJAASFromUUID(controllerData)) {
-      column.content = "JAAS";
-    } else if ("name" in controllerData && controllerData.name) {
+    if ("name" in controllerData && controllerData.name) {
       column.content = (
         <Tooltip
           message={controllerAddress}
@@ -214,7 +211,7 @@ function Details() {
           </Tooltip>
         ),
       },
-      { content: isJAASFromUUID(c) ? "Multiple" : cloudRegion },
+      { content: cloudRegion },
       { content: c.models },
       { content: c.machines },
       { content: c.applications },

@@ -2,7 +2,6 @@ import type { MainTableHeader } from "@canonical/react-components/dist/component
 
 import Status from "components/Status";
 import type { Controllers, ModelData } from "store/juju/types";
-import { JAAS_CONTROLLER_UUID } from "store/juju/utils/controllers";
 import {
   extractCloudName,
   extractCredentialName,
@@ -24,9 +23,6 @@ export const getControllerName = (
   controllers?: Controllers | null
 ) => {
   const controllerUUID = getControllerUUID(model);
-  if (controllerUUID === JAAS_CONTROLLER_UUID) {
-    return "JAAS";
-  }
   let controllerName: string | null = null;
   Object.entries(controllers ?? {}).some(
     (controller) =>
