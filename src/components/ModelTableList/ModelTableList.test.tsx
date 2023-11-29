@@ -2,7 +2,6 @@ import type { RenderResult } from "@testing-library/react";
 import { screen, within } from "@testing-library/react";
 
 import * as appSelectors from "store/juju/selectors";
-import { JAAS_CONTROLLER_UUID } from "store/juju/utils/controllers";
 import type { RootState } from "store/store";
 import {
   controllerFactory,
@@ -87,25 +86,6 @@ describe("ModelTableList", () => {
         filters
       );
     });
-  });
-
-  it("renders the controller name as JAAS", () => {
-    state.juju.controllers = {
-      "wss://jimm.jujucharms.com/api": [
-        controllerFactory.build({
-          path: "admins/1-eu-west-1-aws-jaas",
-          uuid: JAAS_CONTROLLER_UUID,
-        }),
-      ],
-    };
-    const modelInfo = state.juju.modelData.abc123.info;
-    if (modelInfo) {
-      modelInfo["controller-uuid"] = JAAS_CONTROLLER_UUID;
-    }
-    renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
-    expect(screen.getAllByTestId("column-controller")[0]).toHaveTextContent(
-      "JAAS"
-    );
   });
 
   it("renders the controller name as UUID if unknown", () => {
