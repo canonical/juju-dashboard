@@ -363,29 +363,29 @@
   .entity-details__machines {
     th,
     td {
+      // Name.
       &:nth-child(1) {
         width: 15%;
       }
 
-      &:nth-child(2) {
-        width: 25%;
+      @include mobile-and-medium {
+        // AZ.
+        &:nth-child(4),
+        // Message.
+        &:nth-child(6) {
+          display: none;
+        }
       }
 
-      &:nth-child(3) {
-        width: 10%;
-      }
-
-      &:nth-child(4) {
-        width: 15%;
-      }
-
-      &:nth-child(5) {
-        width: 15%;
-      }
-
-      &:nth-child(6) {
-        max-width: 150px;
-        width: 20%;
+      @include mobile {
+        // AZ.
+        &:nth-child(4),
+        // Instance ID.
+        &:nth-child(5),
+        // Message.
+        &:nth-child(6) {
+          display: none;
+        }
       }
     }
   }
