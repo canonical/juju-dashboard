@@ -1,0 +1,23 @@
+@import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
+
+.audit-logs-table {
+  td,
+  th {
+    // Facade version.
+    &:nth-child(6) {
+      width: 10%;
+    }
+
+    @include mobile {
+      // Model.
+      &:nth-child(2),
+      // Facade name.
+      &:nth-child(4),
+      // Facade version.
+      &:nth-child(6) {
+        display: none;
+      }
+    }
+  }
+}
