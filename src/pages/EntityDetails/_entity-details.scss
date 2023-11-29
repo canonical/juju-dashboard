@@ -311,17 +311,15 @@
 
           // Machine.
           &:nth-child(4),
-            // Message
-            &:nth-child(7),
-            // Ports.
-            &:nth-child(6) {
+          // Message
+          &:nth-child(7),
+          // Ports.
+          &:nth-child(6) {
             display: none;
           }
         }
 
         @include mobile {
-          // Agent.
-          &:nth-child(4),
           // Public address.
           &:nth-child(5) {
             display: none;

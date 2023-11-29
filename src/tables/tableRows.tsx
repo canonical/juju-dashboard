@@ -57,14 +57,15 @@ const generateAddress = (address?: string | null) =>
         <Button
           appearance="base"
           className="is-small"
-          onClick={(event) => {
+          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             // Prevent navigating to the details page:
             event.stopPropagation();
             copyToClipboard(address);
           }}
+          type="button"
           hasIcon
         >
-          <Icon name="copy" />
+          <Icon name="copy">Copy</Icon>
         </Button>
       </div>
     </div>

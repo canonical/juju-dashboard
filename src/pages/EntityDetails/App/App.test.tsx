@@ -2,6 +2,7 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
+import * as componentUtils from "components/utils";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
@@ -33,6 +34,11 @@ jest.mock("components/WebCLI/WebCLI", () => {
   const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
   return WebCLI;
 });
+
+jest.mock("components/utils", () => ({
+  ...jest.requireActual("components/utils"),
+  copyToClipboard: jest.fn(),
+}));
 
 describe("Entity Details App", () => {
   let state: RootState;
@@ -288,5 +294,13 @@ describe("Entity Details App", () => {
       screen.queryByRole("button", { name: Label.RUN_ACTION })
     ).not.toBeInTheDocument();
     expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+  });
+
+  it("copies the address", async () => {
+    renderComponent(<App />, { path, url, state });
+    await userEvent.click(screen.getAllByRole("button", { name: "Copy" })[0]);
+    expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(
+      "54.162.156.160"
+    );
   });
 });
