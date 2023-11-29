@@ -322,7 +322,7 @@ export default function App(): JSX.Element {
             activeButton={query.tableView}
           />
         )}
-        <div className="entity-details__tables" ref={tablesRef}>
+        <div ref={tablesRef}>
           {query.tableView === "units" && (
             <>
               <ChipGroup chips={unitChipData} descriptor="units" />
@@ -363,7 +363,7 @@ export default function App(): JSX.Element {
                   }
                 >
                   <Icon name="logs" />
-                  <span>View Action Logs</span>
+                  <span>View action logs</span>
                 </Button>
               </div>
               <Formik
@@ -380,7 +380,7 @@ export default function App(): JSX.Element {
                     headers={unitTableHeaders}
                     rows={unitPanelRows}
                     className={classNames(
-                      "entity-details__units p-main-table panel__table",
+                      "entity-details__units p-main-table",
                       {
                         "has-checkbox": canConfigureModel,
                       }
@@ -399,7 +399,7 @@ export default function App(): JSX.Element {
               <MainTable
                 headers={machineTableHeaders}
                 rows={machinesPanelRows}
-                className="entity-details__machines p-main-table panel__table"
+                className="entity-details__machines p-main-table"
                 sortable
                 emptyStateMsg="There are no machines in this model"
                 data-testid={TestId.MACHINES_TABLE}

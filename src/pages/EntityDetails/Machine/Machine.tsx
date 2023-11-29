@@ -101,24 +101,20 @@ export default function Machine() {
         <EntityInfo data={MachineEntityData} />
       </div>
       <div className="entity-details__main">
-        <div>
-          <div className="entity-detail__tables">
-            <MainTable
-              headers={unitTableHeaders}
-              rows={unitRows}
-              className="entity-details__units p-main-table"
-              sortable
-              emptyStateMsg={"There are no units in this machine"}
-            />
-            <MainTable
-              headers={generateLocalApplicationTableHeaders()}
-              rows={applicationRows}
-              className="entity-details__apps p-main-table"
-              sortable
-              emptyStateMsg={"There are no apps in this machine"}
-            />
-          </div>
-        </div>
+        <MainTable
+          headers={unitTableHeaders}
+          rows={unitRows}
+          className="entity-details__units p-main-table"
+          sortable
+          emptyStateMsg={"There are no units in this machine"}
+        />
+        <MainTable
+          headers={generateLocalApplicationTableHeaders()}
+          rows={applicationRows}
+          className="entity-details__apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no apps in this machine"}
+        />
       </div>
     </>
   );
