@@ -46,21 +46,28 @@ export type Query = {
 
 const generateAddress = (address?: string | null) =>
   address ? (
-    <>
-      {address}{" "}
-      <Button
-        appearance="base"
-        className="has-hover__hover-state is-small"
-        onClick={(event) => {
-          // Prevent navigating to the details page:
-          event.stopPropagation();
-          copyToClipboard(address);
-        }}
-        hasIcon
+    <div className="u-flex u-flex--gap-small">
+      <TruncatedTooltip
+        wrapperClassName="u-flex-shrink u-truncate"
+        message={address}
       >
-        <Icon name="copy" />
-      </Button>
-    </>
+        {address}
+      </TruncatedTooltip>
+      <div className="has-hover__hover-state">
+        <Button
+          appearance="base"
+          className="is-small"
+          onClick={(event) => {
+            // Prevent navigating to the details page:
+            event.stopPropagation();
+            copyToClipboard(address);
+          }}
+          hasIcon
+        >
+          <Icon name="copy" />
+        </Button>
+      </div>
+    </div>
   ) : (
     "-"
   );
@@ -312,8 +319,8 @@ export function generateUnitRows(
         ),
       },
       {
-        content: <Status status={workload} />,
-        className: "u-capitalise",
+        content: <Status status={workload} inline />,
+        className: "u-capitalise u-truncate",
       },
       { content: agent },
       {
@@ -323,7 +330,7 @@ export function generateUnitRows(
       },
       {
         content: generateAddress(publicAddress),
-        className: "u-flex has-hover",
+        className: "has-hover",
       },
       {
         content: <TruncatedTooltip message={ports}>{ports}</TruncatedTooltip>,
@@ -401,12 +408,14 @@ export function generateUnitRows(
             className: "u-truncate",
           },
           {
-            content: <Status status={subordinate["workload-status"].current} />,
-            className: "u-capitalise",
+            content: (
+              <Status status={subordinate["workload-status"].current} inline />
+            ),
+            className: "u-capitalise u-truncate",
           },
           { content: subordinate["agent-status"].current },
           { content: subordinate["machine-id"], className: "u-align--right" },
-          { content: generateAddress(address), className: "u-flex has-hover" },
+          { content: generateAddress(address), className: "has-hover" },
           {
             content: subordinate["public-address"].split(":")[-1] || "-",
             className: "u-align--right",

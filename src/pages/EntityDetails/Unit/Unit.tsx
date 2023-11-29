@@ -102,24 +102,22 @@ export default function Unit() {
         <EntityInfo data={unitEntityData} />
       </div>
       <div className="entity-details__main">
-        <div className="slide-panel__tables">
-          {modelData?.type !== "kubernetes" && (
-            <MainTable
-              headers={machineTableHeaders}
-              rows={machineRows}
-              className="entity-details__machines p-main-table"
-              sortable
-              emptyStateMsg={"There are no machines in this model"}
-            />
-          )}
+        {modelData?.type !== "kubernetes" && (
           <MainTable
-            headers={generateLocalApplicationTableHeaders(false)}
-            rows={applicationRows}
-            className="entity-details__apps p-main-table"
+            headers={machineTableHeaders}
+            rows={machineRows}
+            className="entity-details__machines p-main-table"
             sortable
-            emptyStateMsg={"There are no apps in this model"}
+            emptyStateMsg={"There are no machines in this model"}
           />
-        </div>
+        )}
+        <MainTable
+          headers={generateLocalApplicationTableHeaders(false)}
+          rows={applicationRows}
+          className="entity-details__apps p-main-table"
+          sortable
+          emptyStateMsg={"There are no apps in this model"}
+        />
       </div>
     </>
   );

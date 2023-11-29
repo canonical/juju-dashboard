@@ -47,11 +47,6 @@
       }
     }
 
-    &__tables {
-      overflow-x: scroll;
-      scrollbar-width: none;
-    }
-
     &__counts {
       display: flex;
 
@@ -294,45 +289,95 @@
     }
   }
 
-  .entity-details__units.has-checkbox {
-    th,
-    td {
-      &:nth-child(1) {
-        width: 4%;
-      }
+  .entity-details__units {
+    &:not(.has-checkbox) {
+      th,
+      td {
+        // Agent.
+        &:nth-child(3) {
+          width: 10%;
+        }
 
-      &:nth-child(2) {
-        width: 20%;
-      }
+        // Machine.
+        &:nth-child(4) {
+          width: 15%;
+        }
 
-      &:nth-child(3) {
-        width: 15%;
-      }
+        @include mobile-and-medium {
+          // Agent.
+          &:nth-child(3) {
+            width: 15%;
+          }
 
-      &:nth-child(4) {
-        width: 10%;
-      }
+          // Machine.
+          &:nth-child(4),
+            // Message
+            &:nth-child(7),
+            // Ports.
+            &:nth-child(6) {
+            display: none;
+          }
+        }
 
-      &:nth-child(5) {
-        width: 10%;
-      }
-
-      &:nth-child(6) {
-        width: 15%;
-      }
-
-      &:nth-child(7) {
-        width: 10%;
-      }
-
-      &:nth-child(8) {
-        width: 19%;
+        @include mobile {
+          // Agent.
+          &:nth-child(4),
+          // Public address.
+          &:nth-child(5) {
+            display: none;
+          }
+        }
       }
     }
 
-    .p-checkbox {
-      margin: 0;
-      padding: 0;
+    &.has-checkbox {
+      th,
+      td {
+        width: unset;
+
+        // Checkbox.
+        &:nth-child(1) {
+          width: 2rem;
+        }
+
+        // Agent.
+        &:nth-child(4) {
+          width: 10%;
+        }
+
+        // Machine.
+        &:nth-child(5) {
+          width: 15%;
+        }
+
+        @include mobile-and-medium {
+          // Agent.
+          &:nth-child(4) {
+            width: 15%;
+          }
+
+          // Machine.
+          &:nth-child(5),
+          // Message
+          &:nth-child(8),
+          // Ports.
+          &:nth-child(7) {
+            display: none;
+          }
+        }
+
+        @include mobile {
+          // Public address.
+          &:nth-child(6) {
+            display: none;
+          }
+        }
+      }
+
+      .p-checkbox {
+        margin: 0;
+        padding: 0;
+      }
     }
   }
 
