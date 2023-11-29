@@ -528,8 +528,14 @@ export function generateMachineRows(
             ),
             className: "u-capitalise",
           },
-          { content: az },
-          { content: machine["instance-id"] },
+          { content: <TruncatedTooltip message={az}>{az}</TruncatedTooltip> },
+          {
+            content: (
+              <TruncatedTooltip message={machine["instance-id"]}>
+                {machine["instance-id"]}
+              </TruncatedTooltip>
+            ),
+          },
           {
             content: (
               <TruncatedTooltip message={message}>{message}</TruncatedTooltip>
