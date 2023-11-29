@@ -378,12 +378,8 @@
       }
 
       @include mobile {
-        // AZ.
-        &:nth-child(4),
         // Instance ID.
-        &:nth-child(5),
-        // Message.
-        &:nth-child(6) {
+        &:nth-child(5) {
           display: none;
         }
       }
