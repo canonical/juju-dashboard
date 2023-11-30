@@ -99,7 +99,7 @@ export function generateLocalApplicationRows(
       ("workload-version" in app && app["workload-version"]) || "-";
     const status =
       "status" in app && app.status ? (
-        <Status status={applicationStatuses[app.name]} />
+        <Status inline status={applicationStatuses[app.name]} />
       ) : (
         "-"
       );
@@ -133,7 +133,7 @@ export function generateLocalApplicationRows(
           content: (
             <TruncatedTooltip message={status}>{status}</TruncatedTooltip>
           ),
-          className: "u-capitalise",
+          className: "u-capitalise u-truncate",
         },
         {
           "data-test-column": "version",
