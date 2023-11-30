@@ -1,7 +1,7 @@
 import { Icon } from "@canonical/react-components";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import SideNavigation from "components/upstream/SideNavigation";
 import { SideNavigationText } from "components/upstream/SideNavigation";
@@ -62,11 +62,6 @@ const UserMenu = () => {
               >
                 {activeUser ? extractOwnerName(activeUser) : ""}
               </SideNavigationText>,
-              {
-                component: NavLink,
-                to: urls.settings,
-                label: "Settings",
-              },
               {
                 component: Link,
                 to: urls.index,

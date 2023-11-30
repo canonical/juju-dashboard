@@ -27,6 +27,7 @@ import {
   isCrossModelQueriesEnabled,
   getVisitURLs,
   isAuditLogsEnabled,
+  getAnalyticsEnabled,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -55,6 +56,20 @@ describe("selectors", () => {
         })
       )
     ).toStrictEqual(true);
+  });
+
+  it("getAnalyticsEnabled", () => {
+    expect(
+      getAnalyticsEnabled(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            config: configFactory.build({
+              analyticsEnabled: false,
+            }),
+          }),
+        })
+      )
+    ).toStrictEqual(false);
   });
 
   it("getVisitURLs", () => {

@@ -1,6 +1,7 @@
 import { pageview, event } from "react-ga";
 
-import { DISABLE_ANALYTICS_KEY } from "pages/Settings/Settings";
+import { getAnalyticsEnabled } from "store/general/selectors";
+import { useAppSelector } from "store/store";
 
 type AnalyticMessage = {
   path?: string;
@@ -9,13 +10,12 @@ type AnalyticMessage = {
 };
 
 export default function useAnalytics() {
+  const analyticsEnabled = useAppSelector(getAnalyticsEnabled);
   return ({ path, category = "", action = "" }: AnalyticMessage) => {
-    const disableAnalytics = localStorage.getItem(DISABLE_ANALYTICS_KEY);
     const isProduction = process.env.NODE_ENV === "production" ?? true;
-    if (!isProduction || disableAnalytics === "true") {
+    if (!isProduction || !analyticsEnabled) {
       return;
     }
-
     if (path) {
       pageview(path);
     } else {

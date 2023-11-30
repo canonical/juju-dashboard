@@ -14,6 +14,7 @@ export const configFactory = Factory.define<Config>(() => ({
   identityProviderAvailable: false,
   identityProviderURL: "",
   isJuju: false,
+  analyticsEnabled: true,
 }));
 
 export const credentialFactory = Factory.define<Credential>(() => ({

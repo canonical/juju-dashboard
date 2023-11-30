@@ -14,7 +14,6 @@ import Logs from "pages/Logs";
 import ModelDetails from "pages/ModelDetails/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex/ModelsIndex";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
-import Settings from "pages/Settings/Settings";
 import {
   isCrossModelQueriesEnabled,
   isAuditLogsEnabled,
@@ -67,14 +66,6 @@ export function Routes() {
         element={
           <Login>
             <ControllersIndex />
-          </Login>
-        }
-      />
-      <Route
-        path={urls.settings}
-        element={
-          <Login>
-            <Settings />
           </Login>
         }
       />

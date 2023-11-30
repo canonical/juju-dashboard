@@ -10,4 +10,6 @@ var jujuDashboardConfig = {
   // only be used for superficial updates like logos. Use feature detection
   // for other environment features.
   isJuju: {{.isJuju}},
+  // If true, then Google Analytics and Sentry data will be sent.
+  analyticsEnabled: {{.analyticsEnabled}},
 };

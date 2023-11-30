@@ -8,6 +8,7 @@ export type Config = {
   identityProviderAvailable: boolean;
   identityProviderURL: string;
   isJuju: boolean;
+  analyticsEnabled: boolean;
 };
 
 export type ControllerConnections = Record<string, ConnectionInfo>;
