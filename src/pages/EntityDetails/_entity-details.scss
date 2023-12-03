@@ -233,9 +233,9 @@
 
           // Version.
           &:nth-child(3),
-          // Revision.
-          &:nth-child(5),
           // Store.
+          &:nth-child(5),
+          // Revision.
           &:nth-child(6) {
             display: none;
           }
@@ -249,46 +249,46 @@
         }
       }
     }
-  }
 
-  .entity-details__apps.selectable {
-    th,
-    td {
-      // Checkbox.
-      &:nth-child(1) {
-        width: 2rem;
-      }
-
-      // Version.
-      &:nth-child(4) {
-        width: 10%;
-      }
-
-      // Scale.
-      &:nth-child(5) {
-        width: 10%;
-      }
-
-      @include mobile-and-medium {
-        // Scale.
-        &:nth-child(5) {
-          width: 15%;
+    &.selectable {
+      th,
+      td {
+        // Checkbox.
+        &:nth-child(1) {
+          width: 2rem;
         }
 
         // Version.
-        &:nth-child(4),
-        // Revision.
-        &:nth-child(6),
-        // Store.
-        &:nth-child(7) {
-          display: none;
+        &:nth-child(4) {
+          width: 10%;
         }
-      }
 
-      @include mobile {
-        // Message.
-        &:nth-child(8) {
-          display: none;
+        // Scale.
+        &:nth-child(5) {
+          width: 10%;
+        }
+
+        @include mobile-and-medium {
+          // Scale.
+          &:nth-child(5) {
+            width: 15%;
+          }
+
+          // Version.
+          &:nth-child(4),
+          // Store.
+          &:nth-child(6),
+          // Revision.
+          &:nth-child(7) {
+            display: none;
+          }
+        }
+
+        @include mobile {
+          // Message.
+          &:nth-child(8) {
+            display: none;
+          }
         }
       }
     }
