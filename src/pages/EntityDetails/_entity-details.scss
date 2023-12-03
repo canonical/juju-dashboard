@@ -212,79 +212,84 @@
   }
 
   .entity-details__apps {
-    th,
-    td {
-      &:nth-child(1) {
-        width: 20%;
-      }
+    &:not(.selectable) {
+      th,
+      td {
+        // Version.
+        &:nth-child(3) {
+          width: 10%;
+        }
 
-      &:nth-child(2) {
-        width: 15%;
-      }
+        // Scale.
+        &:nth-child(4) {
+          width: 10%;
+        }
 
-      &:nth-child(3) {
-        width: 15%;
-      }
+        @include mobile-and-medium {
+          // Scale.
+          &:nth-child(4) {
+            width: 15%;
+          }
 
-      &:nth-child(4) {
-        width: 10%;
-      }
+          // Version.
+          &:nth-child(3),
+          // Store.
+          &:nth-child(5),
+          // Revision.
+          &:nth-child(6) {
+            display: none;
+          }
+        }
 
-      &:nth-child(5) {
-        width: 15%;
-      }
-
-      &:nth-child(6) {
-        width: 10%;
-      }
-
-      &:nth-child(7) {
-        width: 10%;
-      }
-
-      &:nth-child(8) {
-        width: 25%;
+        @include mobile {
+          // Message.
+          &:nth-child(7) {
+            display: none;
+          }
+        }
       }
     }
-  }
 
-  .entity-details__apps.selectable {
-    th,
-    td {
-      &:nth-child(1) {
-        width: 3%;
-      }
+    &.selectable {
+      th,
+      td {
+        // Checkbox.
+        &:nth-child(1) {
+          width: 2rem;
+        }
 
-      &:nth-child(2) {
-        width: 20%;
-      }
+        // Version.
+        &:nth-child(4) {
+          width: 10%;
+        }
 
-      &:nth-child(3) {
-        width: 12%;
-      }
+        // Scale.
+        &:nth-child(5) {
+          width: 10%;
+        }
 
-      &:nth-child(4) {
-        width: 15%;
-      }
+        @include mobile-and-medium {
+          // Scale.
+          &:nth-child(5) {
+            width: 15%;
+          }
 
-      &:nth-child(5) {
-        width: 10%;
-      }
+          // Version.
+          &:nth-child(4),
+          // Store.
+          &:nth-child(6),
+          // Revision.
+          &:nth-child(7) {
+            display: none;
+          }
+        }
 
-      &:nth-child(6) {
-        width: 15%;
-      }
-
-      &:nth-child(7) {
-        width: 10%;
-      }
-
-      &:nth-child(8) {
-        width: 10%;
-      }
-
-      &:nth-child(9) {
-        width: 25%;
+        @include mobile {
+          // Message.
+          &:nth-child(8) {
+            display: none;
+          }
+        }
       }
     }
   }
