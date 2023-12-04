@@ -12,7 +12,7 @@ RUN yarn config set httpProxy $HTTP_PROXY
 RUN yarn config set httpsProxy $HTTPS_PROXY
 RUN yarn install
 
-cp config.demo.js config.local.js
+COPY config.demo.js config.local.js
 
 # Build stage: Run "yarn run build-js"
 # ===
