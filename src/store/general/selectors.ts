@@ -29,7 +29,7 @@ export const getIsJuju = createSelector(
 
 export const getAnalyticsEnabled = createSelector(
   [slice],
-  (sliceState) => sliceState?.config?.analyticsEnabled ?? true
+  (sliceState) => sliceState?.config?.analyticsEnabled ?? false
 );
 
 export const getVisitURLs = createSelector(

@@ -82,7 +82,7 @@ describe("App", () => {
     Object.defineProperty(process.env, "NODE_ENV", { value: "production" });
     const initializeSpy = jest.spyOn(reactGA, "initialize");
     const pageviewSpy = jest.spyOn(reactGA, "pageview");
-    const state = rootStateFactory.withGeneralConfig();
+    const state = rootStateFactory.withGeneralConfig().build();
     const store = mockStore(state);
     render(
       <Provider store={store}>
