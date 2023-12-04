@@ -19,6 +19,7 @@ ADD . .
 COPY public/config.demo.js public/config.local.js
 RUN yarn run build
 
+
 FROM ubuntu:jammy
 
 RUN apt update && apt install --yes nginx
