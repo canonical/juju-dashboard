@@ -6,7 +6,7 @@ FROM node:20 AS yarn-dependencies
 
 WORKDIR /srv
 
-RUN echo "BUILD_ID: \$BUILD_ID"
+RUN echo "BUILD_ID: $BUILD_ID"
 
 COPY .yar[n] ./.yarn
 COPY package.json yarn.lock .yarnrc.yml ./
