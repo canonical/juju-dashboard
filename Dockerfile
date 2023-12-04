@@ -21,7 +21,7 @@ RUN yarn install
 # ===
 FROM yarn-dependencies AS build-js
 ADD . .
-COPY public/config.demo.js public/config.js
+RUN cp public/config.demo.js public/config.js
 RUN yarn run build
 
 
