@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react";
 import * as reactGA from "react-ga";
 
-import { DISABLE_ANALYTICS_KEY } from "pages/Settings/Settings";
+import * as store from "store/store";
 
 import useAnalytics from "./useAnalytics";
 
@@ -29,6 +29,9 @@ describe("useAnalytics", () => {
   });
 
   it("does not send events in development", () => {
+    jest
+      .spyOn(store, "useAppSelector")
+      .mockImplementation(jest.fn().mockReturnValue(true));
     Object.defineProperty(process.env, "NODE_ENV", { value: "development" });
     const { result } = renderHook(() => useAnalytics());
     result.current({ path: "/some/path" });
@@ -37,7 +40,9 @@ describe("useAnalytics", () => {
   });
 
   it("does not send events if analytics are disabled", () => {
-    localStorage.setItem(DISABLE_ANALYTICS_KEY, JSON.stringify(true));
+    jest
+      .spyOn(store, "useAppSelector")
+      .mockImplementation(jest.fn().mockReturnValue(false));
     const { result } = renderHook(() => useAnalytics());
     result.current({ path: "/some/path" });
     expect(eventSpy).not.toHaveBeenCalled();
@@ -45,12 +50,18 @@ describe("useAnalytics", () => {
   });
 
   it("can send pageview events", () => {
+    jest
+      .spyOn(store, "useAppSelector")
+      .mockImplementation(jest.fn().mockReturnValue(true));
     const { result } = renderHook(() => useAnalytics());
     result.current({ path: "/some/path" });
     expect(pageviewSpy).toHaveBeenCalledWith("/some/path");
   });
 
   it("can send events", () => {
+    jest
+      .spyOn(store, "useAppSelector")
+      .mockImplementation(jest.fn().mockReturnValue(true));
     const { result } = renderHook(() => useAnalytics());
     result.current({ category: "sidebar", action: "toggle" });
     expect(eventSpy).toHaveBeenCalledWith({

@@ -25,9 +25,6 @@ export default function PageNotFound() {
                 <li>
                   <Link to={urls.controllers}>Controllers</Link>
                 </li>
-                <li>
-                  <Link to={urls.settings}>Settings</Link>
-                </li>
               </ul>
             </>
           </NotFound>

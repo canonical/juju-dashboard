@@ -5,7 +5,7 @@ import * as reactRouterDOM from "react-router-dom";
 import configureStore from "redux-mock-store";
 
 import * as Routes from "components/Routes/Routes";
-import { DISABLE_ANALYTICS_KEY } from "pages/Settings/Settings";
+import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 
 import App from "./App";
@@ -82,7 +82,7 @@ describe("App", () => {
     Object.defineProperty(process.env, "NODE_ENV", { value: "production" });
     const initializeSpy = jest.spyOn(reactGA, "initialize");
     const pageviewSpy = jest.spyOn(reactGA, "pageview");
-    const state = rootStateFactory.withGeneralConfig();
+    const state = rootStateFactory.withGeneralConfig().build();
     const store = mockStore(state);
     render(
       <Provider store={store}>
@@ -98,12 +98,17 @@ describe("App", () => {
 
   it("does not send pageview events if analytics is disabled", () => {
     window.history.pushState({}, "", "/models");
-    localStorage.setItem(DISABLE_ANALYTICS_KEY, JSON.stringify(true));
     const node_env = process.env.NODE_ENV;
     Object.defineProperty(process.env, "NODE_ENV", { value: "production" });
     const initializeSpy = jest.spyOn(reactGA, "initialize");
     const pageviewSpy = jest.spyOn(reactGA, "pageview");
-    const state = rootStateFactory.withGeneralConfig();
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          analyticsEnabled: false,
+        }),
+      }),
+    });
     const store = mockStore(state);
     render(
       <Provider store={store}>

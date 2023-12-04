@@ -27,6 +27,17 @@ export const getIsJuju = createSelector(
   (sliceState) => sliceState?.config?.isJuju
 );
 
+/**
+  Determines if analytics is enabled based on config value from state.
+  @param state The application state.
+  @returns true if analytics is enabled, false if analytics isn't enabled,
+    or undefined if config is undefined.
+ */
+export const getAnalyticsEnabled = createSelector(
+  [slice],
+  (sliceState) => sliceState?.config?.analyticsEnabled
+);
+
 export const getVisitURLs = createSelector(
   [slice],
   (sliceState) => sliceState?.visitURLs
