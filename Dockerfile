@@ -20,7 +20,9 @@ RUN yarn install
 # ===
 FROM yarn-dependencies AS build-js
 ADD . .
-COPY public/config.demo.js public/config.local.js
+RUN echo "ENVIRONMENT VARIABLE CI:"
+RUN echo $CI
+COPY public/config.demo.js public/config.js
 RUN yarn run build
 
 
