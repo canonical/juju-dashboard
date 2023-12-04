@@ -6,8 +6,6 @@ FROM node:20 AS yarn-dependencies
 
 WORKDIR /srv
 
-RUN cp public/config.demo.js public/config.js
-
 COPY .yar[n] ./.yarn
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN if [ -n "$HTTP_PROXY" ]; then \
@@ -25,6 +23,7 @@ RUN yarn install
 # ===
 FROM yarn-dependencies AS build-js
 ADD . .
+COPY public/config.demo.js public/config.local.js
 RUN yarn run build
 
 
