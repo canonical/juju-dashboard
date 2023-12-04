@@ -21,7 +21,9 @@ RUN yarn install
 # ===
 FROM yarn-dependencies AS build-js
 ADD . .
-RUN cp public/config.demo.js public/config.js
+RUN if [ -n "$HTTP_PROXY" ] || [ -n "$HTTPS_PROXY" ]; then \
+      cp public/config.demo.js public/config.js; \
+    fi
 RUN yarn run build
 
 
