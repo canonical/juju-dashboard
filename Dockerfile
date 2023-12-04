@@ -16,10 +16,7 @@ RUN if [ -n "$HTTPS_PROXY" ]; then \
       echo "HTTPS_PROXY: $HTTPS_PROXY"; \
       yarn config set httpsProxy $HTTPS_PROXY; \
     fi
-RUN if [ -n "$HTTP_PROXY" ] || [ -n "$HTTPS_PROXY" ]; then \
-      echo "Copied demo file."; \
-      cp public/config.demo.js public/config.js; \
-    fi
+RUN cp public/config.demo.js public/config.js
 RUN yarn install
 
 # Build stage: Run "yarn run build-js"
