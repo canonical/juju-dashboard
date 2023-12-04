@@ -16,9 +16,8 @@ RUN yarn install
 # ===
 FROM yarn-dependencies AS build-js
 ADD . .
-COPY public/config.demo.js public/config.js
+COPY public/config.demo.js public/config.local.js
 RUN yarn run build
-
 
 FROM ubuntu:jammy
 
