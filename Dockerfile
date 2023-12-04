@@ -9,11 +9,9 @@ WORKDIR /srv
 COPY .yar[n] ./.yarn
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN if [ -n "$HTTP_PROXY" ]; then \
-      echo "HTTP_PROXY: $HTTP_PROXY"; \
       yarn config set httpProxy $HTTP_PROXY; \
     fi
 RUN if [ -n "$HTTPS_PROXY" ]; then \
-      echo "HTTPS_PROXY: $HTTPS_PROXY"; \
       yarn config set httpsProxy $HTTPS_PROXY; \
     fi
 
@@ -23,7 +21,7 @@ RUN yarn install
 # ===
 FROM yarn-dependencies AS build-js
 ADD . .
-COPY public/config.demo.js public/config.local.js
+COPY public/config.demo.js public/config.js
 RUN yarn run build
 
 
