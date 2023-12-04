@@ -5,7 +5,7 @@
 var jujuDashboardConfig = {
   // API host to allow app to connect and retrieve models. This address should
   // begin with `ws://` or `wss://` and end with `/api`.
-  controllerAPIEndpoint: "wss://jimm.jujucharms.com/api",
+  controllerAPIEndpoint: "",
   // Configurable base url to allow hosting the dashboard at different paths.
   baseAppURL: "/",
   // If true, then identity will be provided by a third party provider. This
