@@ -10,6 +10,8 @@ COPY .yar[n] ./.yarn
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN yarn config set httpProxy $HTTP_PROXY
 RUN yarn config set httpsProxy $HTTPS_PROXY
+ARG BUILD_ID
+RUN echo $BUILD_ID
 RUN yarn install
 
 # Build stage: Run "yarn run build-js"
