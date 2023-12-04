@@ -6,6 +6,9 @@ FROM node:20 AS yarn-dependencies
 
 WORKDIR /srv
 
+RUN echo "ENVIRONMENT VARIABLE CI:"
+RUN echo $CI
+
 COPY .yar[n] ./.yarn
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN if [[ -n $HTTP_PROXY ]]; then \
@@ -20,8 +23,6 @@ RUN yarn install
 # ===
 FROM yarn-dependencies AS build-js
 ADD . .
-RUN echo "ENVIRONMENT VARIABLE CI:"
-RUN echo $CI
 COPY public/config.demo.js public/config.js
 RUN yarn run build
 
