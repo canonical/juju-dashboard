@@ -408,6 +408,37 @@
     }
   }
 
+  .entity-details__offers {
+    td,
+    th {
+      @include mobile {
+        // Connection.
+        &:nth-child(3) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .entity-details__remote-apps {
+    td,
+    th {
+      @include mobile-and-medium {
+        // Store.
+        &:nth-child(5) {
+          display: none;
+        }
+      }
+
+      @include mobile {
+        // Interface.
+        &:nth-child(3) {
+          display: none;
+        }
+      }
+    }
+  }
+
   .entity-details__machines {
     th,
     td {
