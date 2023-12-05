@@ -32,7 +32,10 @@ if (!window.process) {
   window.process = process;
 }
 
-if (process.env.NODE_ENV === "production") {
+if (
+  process.env.NODE_ENV === "production" &&
+  window.jujuDashboardConfig?.analyticsEnabled
+) {
   Sentry.init({
     dsn: "https://5f679e274f34464194e9592a91ed65d4@sentry.is.canonical.com//29",
   });
@@ -131,7 +134,7 @@ function bootstrap() {
     }
   }
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "production" && config.analyticsEnabled) {
     Sentry.setTag("isJuju", config.isJuju);
   }
 
