@@ -16,7 +16,6 @@ ARG HTTPS_PROXY
 RUN if [ -n "$HTTPS_PROXY" ]; then \
       yarn config set httpsProxy $HTTPS_PROXY; \
     fi
-
 RUN yarn install
 
 # Build stage: Run "yarn run build-js"
