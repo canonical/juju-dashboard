@@ -26,7 +26,7 @@ export enum LoginError {
   NO_INFO = "Unable to retrieve controller details",
 }
 
-type ControllerOptions = [string, Credential, boolean, boolean | undefined];
+type ControllerOptions = [string, Credential, boolean];
 
 const checkJIMMRelation = async (
   conn: ConnectionWithFacades,
@@ -58,12 +58,8 @@ export const modelPollerMiddleware: Middleware<
       reduxStore.dispatch(generalActions.clearVisitURLs());
       action.payload.controllers.forEach(
         async (controllerData: ControllerOptions) => {
-          const [
-            wsControllerURL,
-            credentials,
-            identityProviderAvailable,
-            isAdditionalController,
-          ] = controllerData;
+          const [wsControllerURL, credentials, identityProviderAvailable] =
+            controllerData;
           let conn: ConnectionWithFacades | undefined;
           let juju: Client | undefined;
           let error: unknown;
@@ -170,7 +166,6 @@ export const modelPollerMiddleware: Middleware<
           await fetchControllerList(
             wsControllerURL,
             conn,
-            isAdditionalController ?? false,
             reduxStore.dispatch,
             reduxStore.getState
           );

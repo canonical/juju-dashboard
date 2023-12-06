@@ -10,7 +10,6 @@ import { Factory } from "fishery";
 
 import { DEFAULT_AUDIT_EVENTS_LIMIT } from "store/juju/slice";
 import type {
-  AdditionalController,
   AuditEventsState,
   Controller,
   ControllerLocation,
@@ -31,12 +30,6 @@ function generateUUID() {
   });
 }
 
-export const additionalControllerFactory = Factory.define<AdditionalController>(
-  () => ({
-    additionalController: true,
-  })
-);
-
 export const controllerLocationFactory = Factory.define<ControllerLocation>(
   () => ({
     region: "aws",
@@ -46,12 +39,10 @@ export const controllerLocationFactory = Factory.define<ControllerLocation>(
 export const controllerFactory = Factory.define<Controller>(() => ({
   path: "admin/jaas",
   uuid: "a030379a-940f-4760-8fcf-3062bfake4e7",
-  additionalController: false,
   version: "1.2.3",
 }));
 
 export const controllerInfoFactory = Factory.define<Controller>(() => ({
-  additionalController: false,
   "agent-version": "1.2.3",
   name: "controller1",
   status: {

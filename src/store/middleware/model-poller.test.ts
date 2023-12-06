@@ -198,7 +198,6 @@ describe("model poller", () => {
     expect(fetchControllerList).toHaveBeenCalledWith(
       wsControllerURL,
       conn,
-      false,
       fakeStore.dispatch,
       fakeStore.getState
     );

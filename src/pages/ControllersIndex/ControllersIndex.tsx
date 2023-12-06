@@ -8,14 +8,12 @@ import type {
   MainTableCell,
   MainTableHeader,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import cloneDeep from "clone-deep";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import AuthenticationButton from "components/AuthenticationButton";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import {
@@ -28,7 +26,7 @@ import {
   getControllerData,
   getModelData,
 } from "store/juju/selectors";
-import type { AdditionalController, Controller } from "store/juju/types";
+import type { Controller } from "store/juju/types";
 import { useAppSelector } from "store/store";
 import urls from "urls";
 import { breakLines } from "utils";
@@ -39,25 +37,15 @@ import "./_controllers.scss";
 export enum Label {
   DEFAULT = "Default",
   NAME = "Name",
-  REGISTER_BUTTON = "Register a controller",
 }
 
-type AnnotatedController = (Controller | AdditionalController) & {
+type AnnotatedController = Controller & {
   models: number;
   machines: number;
   applications: number;
   units: number;
   wsControllerURL: string;
 };
-
-const generateRegisteredTitle = () => (
-  <span>
-    Registered{" "}
-    <Tooltip message="The controller authentication data is only stored in your browser localStorage.">
-      <Icon name="help" />
-    </Tooltip>
-  </span>
-);
 
 function Details() {
   useWindowTitle("Controllers");
@@ -68,14 +56,10 @@ function Details() {
   const visitURLs = useAppSelector(getVisitURLs);
 
   const controllerMap: Record<string, AnnotatedController> = {};
-  const additionalControllers: string[] = [];
   if (controllerData) {
     Object.entries(controllerData).forEach(([wsControllerURL, controllers]) => {
       controllers.forEach((controller) => {
         const id = "uuid" in controller ? controller.uuid : wsControllerURL;
-        if (controller.additionalController) {
-          additionalControllers.push(id);
-        }
         controllerMap[id] = {
           ...controller,
           models: 0,
@@ -131,9 +115,6 @@ function Details() {
     { content: "units", sortKey: "units" },
     { content: "version", sortKey: "version" },
   ];
-
-  const additionalHeaders = cloneDeep(headers);
-  additionalHeaders[0].content = generateRegisteredTitle();
 
   function generatePathValue(controllerData: AnnotatedController) {
     const column: MainTableCell = { content: "" };
@@ -254,16 +235,6 @@ function Details() {
       columns,
     };
   }
-  // XXX this isn't a great way of doing this.
-  const additionalRows = additionalControllers.map((uuid) => {
-    const row = generateRow(
-      controllerMap[uuid],
-      !!controllerConnections &&
-        controllerMap[uuid].wsControllerURL in controllerConnections
-    );
-    delete controllerMap[uuid];
-    return row;
-  });
 
   const rows =
     controllerMap &&
@@ -274,10 +245,6 @@ function Details() {
           controller.wsControllerURL in controllerConnections
       )
     );
-
-  const [, setPanelQs] = useQueryParams<{ panel: string | null }>({
-    panel: null,
-  });
 
   return (
     <>
@@ -294,17 +261,6 @@ function Details() {
         <div className="controllers__heading">
           Model status across controllers
         </div>
-        <div className="controllers--register">
-          <button
-            className="p-button--positive"
-            onClick={(event) => {
-              event.stopPropagation();
-              setPanelQs({ panel: "register-controller" }, { replace: true });
-            }}
-          >
-            {Label.REGISTER_BUTTON}
-          </button>
-        </div>
       </div>
       <ControllersOverview />
       <div className="l-controllers-table">
@@ -312,16 +268,6 @@ function Details() {
           <>
             <h5 className="u-hide--large">{Label.DEFAULT}</h5>
             <MainTable headers={headers} responsive rows={rows} />
-          </>
-        )}
-        {additionalRows.length > 0 && (
-          <>
-            <h5 className="u-hide--large">{generateRegisteredTitle()}</h5>
-            <MainTable
-              headers={additionalHeaders}
-              responsive
-              rows={additionalRows}
-            />
           </>
         )}
       </div>

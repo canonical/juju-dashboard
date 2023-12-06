@@ -25,6 +25,7 @@ import {
 } from "testing/factories/juju/ModelManagerV9";
 import {
   controllerFactory,
+  controllerInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { connectionInfoFactory } from "testing/factories/juju/jujulib";
@@ -722,12 +723,8 @@ describe("Juju API", () => {
           jimM: {
             listControllers: jest.fn().mockResolvedValueOnce({
               controllers: [
-                {
-                  "agent-version": "1.2.3",
-                  name: "jaas1",
-                  uuid: "abc123",
-                },
-                { path: "admin/jaas2", uuid: "def456" },
+                controllerInfoFactory.build({ name: "jaas1" }),
+                controllerInfoFactory.build({ name: "jaas2" }),
               ],
             }),
           },
@@ -737,30 +734,21 @@ describe("Juju API", () => {
         .spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => true)
         .mockImplementationOnce(async () => false);
-      await fetchControllerList(
-        "wss://example.com/api",
-        conn,
-        true,
-        dispatch,
-        () => rootStateFactory.build()
+      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
+        rootStateFactory.build()
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
           wsControllerURL: "wss://example.com/api",
           controllers: [
-            {
-              "agent-version": "1.2.3",
+            controllerInfoFactory.build({
               name: "jaas1",
-              uuid: "abc123",
-              additionalController: true,
               updateAvailable: true,
-            },
-            {
-              path: "admin/jaas2",
-              uuid: "def456",
-              additionalController: true,
+            }),
+            controllerInfoFactory.build({
+              name: "jaas2",
               updateAvailable: false,
-            },
+            }),
           ],
         })
       );
@@ -781,12 +769,8 @@ describe("Juju API", () => {
         .spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => true)
         .mockImplementationOnce(async () => false);
-      await fetchControllerList(
-        "wss://example.com/api",
-        conn,
-        true,
-        dispatch,
-        () => rootStateFactory.build()
+      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
+        rootStateFactory.build()
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
@@ -825,7 +809,6 @@ describe("Juju API", () => {
       await fetchControllerList(
         "wss://example.com/api",
         conn,
-        true,
         dispatch,
         () => state
       );
@@ -836,7 +819,6 @@ describe("Juju API", () => {
             {
               path: "admin/juju1",
               uuid: "abc123",
-              additionalController: true,
               updateAvailable: true,
               version: "1.2.3",
             },
@@ -851,13 +833,7 @@ describe("Juju API", () => {
         facades: {
           jimM: {
             listControllers: jest.fn().mockResolvedValueOnce({
-              controllers: [
-                {
-                  "agent-version": "1.2.3",
-                  name: "jaas1",
-                  uuid: "abc123",
-                },
-              ],
+              controllers: [controllerInfoFactory.build({ name: "jaas1" })],
             }),
           },
         },
@@ -865,24 +841,17 @@ describe("Juju API", () => {
       jest
         .spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => null);
-      await fetchControllerList(
-        "wss://example.com/api",
-        conn,
-        true,
-        dispatch,
-        () => rootStateFactory.build()
+      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
+        rootStateFactory.build()
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
           wsControllerURL: "wss://example.com/api",
           controllers: [
-            {
-              "agent-version": "1.2.3",
+            controllerInfoFactory.build({
               name: "jaas1",
-              uuid: "abc123",
-              additionalController: true,
               updateAvailable: false,
-            },
+            }),
           ],
         })
       );

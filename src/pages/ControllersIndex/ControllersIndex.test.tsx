@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import type { RootState } from "store/store";
 import { generalStateFactory } from "testing/factories/general";
 import {
-  additionalControllerFactory,
   controllerFactory,
   jujuStateFactory,
   modelDataApplicationFactory,
@@ -18,7 +17,7 @@ import { connectionInfoFactory } from "testing/factories/juju/jujulib";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import ControllersIndex, { Label } from "./ControllersIndex";
+import ControllersIndex from "./ControllersIndex";
 
 describe("Controllers table", () => {
   let state: RootState;
@@ -43,67 +42,6 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(screen.getAllByRole("row")).toHaveLength(3);
-  });
-
-  it("displays additional controllers", () => {
-    state.general.controllerConnections = {
-      "wss://jimm.jujucharms.com/api": connectionInfoFactory.build({}),
-    };
-    state.juju = jujuStateFactory.build({
-      controllers: {
-        "wss://jimm.jujucharms.com/api": [
-          controllerFactory.build(),
-          additionalControllerFactory.build(),
-        ],
-      },
-    });
-    renderComponent(<ControllersIndex />, { state });
-    const tables = screen.getAllByRole("grid");
-    expect(tables).toHaveLength(2);
-    const additionalRows = within(tables[1]).getAllByRole("row");
-    expect(additionalRows).toHaveLength(2);
-    expect(additionalRows[1]).toHaveTextContent(
-      [
-        "jimm.jujucharms.com",
-        "Connected",
-        "unknown/unknown",
-        "0",
-        "0",
-        "0",
-        "0",
-      ].join("")
-    );
-  });
-
-  it("displays additional controllers from JIMM", () => {
-    state.general.controllerConnections = {
-      "wss://jimm.jujucharms.com/api": connectionInfoFactory.build(),
-    };
-    state.juju = jujuStateFactory.build({
-      controllers: {
-        "wss://jimm.jujucharms.com/api": [
-          controllerFactory.build(),
-          controllerInfoFactory.build({ additionalController: true }),
-        ],
-      },
-    });
-    renderComponent(<ControllersIndex />, { state });
-    const tables = screen.getAllByRole("grid");
-    expect(tables).toHaveLength(2);
-    const additionalRows = within(tables[1]).getAllByRole("row");
-    expect(additionalRows).toHaveLength(2);
-    expect(additionalRows[1]).toHaveTextContent(
-      [
-        "controller1",
-        "Connected",
-        "unknown/unknown",
-        "0",
-        "0",
-        "0",
-        "0",
-        "1.2.3",
-      ].join("")
-    );
   });
 
   it("counts models, machines, apps, and units", () => {
@@ -190,17 +128,6 @@ describe("Controllers table", () => {
     renderComponent(<ControllersIndex />, { state });
     expect(
       screen.getByRole("gridcell", { name: "Authentication required" })
-    ).toBeInTheDocument();
-  });
-
-  it("shows 'Register new controller' panel", async () => {
-    renderComponent(<ControllersIndex />, { url: "/controllers" });
-    await userEvent.click(
-      screen.getByRole("button", { name: Label.REGISTER_BUTTON })
-    );
-    expect(window.location.search).toBe("?panel=register-controller");
-    expect(
-      document.querySelector(".p-panel.register-controller")
     ).toBeInTheDocument();
   });
 
