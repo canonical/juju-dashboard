@@ -8,16 +8,25 @@ WORKDIR /srv
 
 COPY .yar[n] ./.yarn
 COPY package.json yarn.lock .yarnrc.yml ./
-RUN yarn config set httpProxy $HTTP_PROXY
-RUN yarn config set httpsProxy $HTTPS_PROXY
+ARG HTTP_PROXY
+RUN if [ -n "$HTTP_PROXY" ]; then \
+      yarn config set httpProxy $HTTP_PROXY; \
+    fi
+ARG HTTPS_PROXY
+RUN if [ -n "$HTTPS_PROXY" ]; then \
+      yarn config set httpsProxy $HTTPS_PROXY; \
+    fi
 RUN yarn install
 
 # Build stage: Run "yarn run build-js"
 # ===
 FROM yarn-dependencies AS build-js
 ADD . .
+ARG BUILD_ID
+RUN if [ -n "$BUILD_ID" ]; then \
+      cp public/config.demo.js public/config.js; \
+    fi
 RUN yarn run build
-
 
 FROM ubuntu:jammy
 
