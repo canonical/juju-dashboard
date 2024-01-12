@@ -25,7 +25,7 @@ export const configFactory = Factory.define<ApplicationGetResults["config"]>(
     source: "default",
     type: "string",
     value: "",
-  })
+  }),
 );
 
 export const constraintsFactory = Factory.define<Value>(() => ({
@@ -71,7 +71,7 @@ export const applicationGetFactory = Factory.define<ApplicationGetResults>(
     series: "focal",
     channel: "",
     "endpoint-bindings": endpointBindingsFactory.build(),
-  })
+  }),
 );
 
 export const errorResultsFactory = Factory.define<ErrorResults>(() => ({

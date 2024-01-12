@@ -23,7 +23,7 @@ export const argPath =
       ? Object.entries(args).reduce(
           (exactPath, [param, value]) =>
             exactPath.replace(`:${param}`, value.toString()),
-          path
+          path,
         )
       : path;
     // Remove the trailing "/"" if there is one.

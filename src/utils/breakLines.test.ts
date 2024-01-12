@@ -7,63 +7,63 @@ describe("breakLines", () => {
 
   it("handles lines that are the exact expected length", () => {
     expect(
-      breakLines("Lorem ipsum dolor sit amet, consectetur adipiscinges")
+      breakLines("Lorem ipsum dolor sit amet, consectetur adipiscinges"),
     ).toBe("Lorem ipsum dolor sit amet, consectetur adipiscinges");
   });
 
   it("handles lines with trailing whitespace", () => {
     expect(
-      breakLines("Lorem ipsum dolor sit amet, consectetur adipiscinges ")
+      breakLines("Lorem ipsum dolor sit amet, consectetur adipiscinges "),
     ).toBe("Lorem ipsum dolor sit amet, consectetur adipiscinges");
   });
 
   it("breaks words at the desired length", () => {
     expect(
       breakLines(
-        "Lorem ipsum dolor sit amet, consectetur adipiscinges lit. Nam dapibus"
-      )
+        "Lorem ipsum dolor sit amet, consectetur adipiscinges lit. Nam dapibus",
+      ),
     ).toBe(
-      "Lorem ipsum dolor sit amet, consectetur adipiscinges \nlit. Nam dapibus"
+      "Lorem ipsum dolor sit amet, consectetur adipiscinges \nlit. Nam dapibus",
     );
   });
 
   it("handles extra whitespace at the line break", () => {
     expect(
       breakLines(
-        "Lorem ipsum dolor sit amet, consectetur adipiscinges   lit. Nam dapibus"
-      )
+        "Lorem ipsum dolor sit amet, consectetur adipiscinges   lit. Nam dapibus",
+      ),
     ).toBe(
-      "Lorem ipsum dolor sit amet, consectetur adipiscinges \nlit. Nam dapibus"
+      "Lorem ipsum dolor sit amet, consectetur adipiscinges \nlit. Nam dapibus",
     );
   });
 
   it("breaks at the previous word break for longer lines", () => {
     expect(
       breakLines(
-        "Lorem ipsum dolor sit amet, consectetur adipiscingeslit. Nam dapibus"
-      )
+        "Lorem ipsum dolor sit amet, consectetur adipiscingeslit. Nam dapibus",
+      ),
     ).toBe(
-      "Lorem ipsum dolor sit amet, consectetur \nadipiscingeslit. Nam dapibus"
+      "Lorem ipsum dolor sit amet, consectetur \nadipiscingeslit. Nam dapibus",
     );
   });
 
   it("handles no whitespace", () => {
     expect(
       breakLines(
-        "LoremipsumdolorsitametconsecteturadipiscingeslitNamdapibustellusvitaevenenatisfacilesisis"
-      )
+        "LoremipsumdolorsitametconsecteturadipiscingeslitNamdapibustellusvitaevenenatisfacilesisis",
+      ),
     ).toBe(
-      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvitaevenenatisfacilesisis"
+      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvitaevenenatisfacilesisis",
     );
   });
 
   it("handles no whitespace within the line limit", () => {
     expect(
       breakLines(
-        "LoremipsumdolorsitametconsecteturadipiscingeslitNamdapibustellusvita evenenatisfacilesisis"
-      )
+        "LoremipsumdolorsitametconsecteturadipiscingeslitNamdapibustellusvita evenenatisfacilesisis",
+      ),
     ).toBe(
-      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvita evenenatisfacilesisis"
+      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvita evenenatisfacilesisis",
     );
   });
 
@@ -71,10 +71,10 @@ describe("breakLines", () => {
     expect(
       breakLines(
         "LoremipsumdolorsitametconsecteturadipiscingeslitNamdapibustellusvitaevenenatisfacilesisis",
-        false
-      )
+        false,
+      ),
     ).toBe(
-      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvitaevenenatisfacilesisis"
+      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvitaevenenatisfacilesisis",
     );
   });
 
@@ -82,16 +82,16 @@ describe("breakLines", () => {
     expect(
       breakLines(
         "LoremipsumdolorsitametconsecteturadipiscingeslitNamd apibustellusvitaevenenatisfacilesisis",
-        false
-      )
+        false,
+      ),
     ).toBe(
-      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvitaevenenatisfacilesisis"
+      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvitaevenenatisfacilesisis",
     );
   });
 
   it("can break at a provided length", () => {
     expect(breakLines("Lorem ipsum dolor sit amet", true, 15)).toBe(
-      "Lorem ipsum \ndolor sit amet"
+      "Lorem ipsum \ndolor sit amet",
     );
   });
 });

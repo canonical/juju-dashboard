@@ -35,7 +35,7 @@ describe("LogIn", () => {
     });
     renderComponent(<LogIn>App content</LogIn>, { state });
     expect(
-      within(screen.getByRole("button")).getByText("Connecting...")
+      within(screen.getByRole("button")).getByText("Connecting..."),
     ).toBeInTheDocument();
     const content = screen.getByText("App content");
     expect(content).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe("LogIn", () => {
     });
     renderComponent(<LogIn>App content</LogIn>, { state });
     expect(screen.getByRole("link")).toHaveTextContent(
-      "Log in to the dashboard"
+      "Log in to the dashboard",
     );
     const content = screen.getByText("App content");
     expect(content).toBeInTheDocument();
@@ -89,7 +89,7 @@ describe("LogIn", () => {
     });
     renderComponent(<LogIn>App content</LogIn>, { state });
     expect(screen.getByRole("button")).toHaveTextContent(
-      "Log in to the dashboard"
+      "Log in to the dashboard",
     );
     const content = screen.getByText("App content");
     expect(content).toBeInTheDocument();
@@ -153,7 +153,10 @@ describe("LogIn", () => {
       .mockImplementation(
         jest
           .fn()
-          .mockReturnValue({ type: "connectAndStartPolling", catch: jest.fn() })
+          .mockReturnValue({
+            type: "connectAndStartPolling",
+            catch: jest.fn(),
+          }),
       );
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
@@ -165,7 +168,7 @@ describe("LogIn", () => {
     const { store } = renderComponent(<LogIn>App content</LogIn>, { state });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
-      "eggman"
+      "eggman",
     );
     await userEvent.type(screen.getByLabelText("Password"), "verysecure123");
     await userEvent.click(screen.getByRole("button"));
@@ -175,15 +178,15 @@ describe("LogIn", () => {
       credential: { user: "eggman", password: "verysecure123" },
     });
     expect(
-      actions.find((action) => action.type === storeAction.type)
+      actions.find((action) => action.type === storeAction.type),
     ).toStrictEqual(storeAction);
     expect(
       actions.find(
-        (action) => action.type === generalActions.cleanupLoginErrors().type
-      )
+        (action) => action.type === generalActions.cleanupLoginErrors().type,
+      ),
     ).toBeTruthy();
     expect(
-      actions.find((action) => action.type === "connectAndStartPolling")
+      actions.find((action) => action.type === "connectAndStartPolling"),
     ).toBeTruthy();
   });
 
@@ -229,14 +232,14 @@ describe("LogIn", () => {
         <Toaster />
         <LogIn>App content</LogIn>
       </>,
-      { state }
+      { state },
     );
     const card = await screen.findByTestId("toast-card");
     expect(
-      await within(card).findByText("Controller authentication required")
+      await within(card).findByText("Controller authentication required"),
     ).toBeInTheDocument();
     expect(
-      await within(card).findByRole("link", { name: "Authenticate" })
+      await within(card).findByRole("link", { name: "Authenticate" }),
     ).toBeInTheDocument();
   });
 
@@ -255,18 +258,18 @@ describe("LogIn", () => {
         <Toaster />
         <LogIn>App content</LogIn>
       </>,
-      { state }
+      { state },
     );
     const card = await screen.findByTestId("toast-card");
     expect(card).toBeInTheDocument();
     await userEvent.click(
-      await within(card).findByRole("link", { name: "Authenticate" })
+      await within(card).findByRole("link", { name: "Authenticate" }),
     );
     result.rerender(
       <>
         <Toaster />
         <LogIn>App content</LogIn>
-      </>
+      </>,
     );
     expect(screen.queryByTestId("toast-card")).not.toBeInTheDocument();
   });
@@ -275,7 +278,7 @@ describe("LogIn", () => {
     jest
       .spyOn(appThunks, "connectAndStartPolling")
       .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+        jest.fn().mockReturnValue({ type: "connectAndStartPolling" }),
       );
     jest
       .spyOn(dashboardStore, "useAppDispatch")
@@ -287,10 +290,10 @@ describe("LogIn", () => {
             "type" in action &&
             action.type === "connectAndStartPolling"
               ? Promise.reject(
-                  new Error("Error while dispatching connectAndStartPolling!")
+                  new Error("Error while dispatching connectAndStartPolling!"),
                 )
-              : null
-          )
+              : null,
+          ),
       );
 
     renderComponent(<LogIn>App content</LogIn>);
@@ -298,7 +301,7 @@ describe("LogIn", () => {
     expect(appThunks.connectAndStartPolling).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(
       Label.POLLING_ERROR,
-      new Error("Error while dispatching connectAndStartPolling!")
+      new Error("Error while dispatching connectAndStartPolling!"),
     );
   });
 });

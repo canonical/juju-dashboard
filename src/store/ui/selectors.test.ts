@@ -8,8 +8,8 @@ describe("selectors", () => {
       isConfirmationModalActive(
         rootStateFactory.build({
           ui: uiStateFactory.build({ confirmationModalActive: true }),
-        })
-      )
+        }),
+      ),
     ).toBe(true);
   });
 });

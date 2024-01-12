@@ -12,7 +12,7 @@ describe("Panel", () => {
     checkCanClose,
   }: {
     checkCanClose?: (
-      e: KeyboardEvent | React.MouseEvent<Element, MouseEvent>
+      e: KeyboardEvent | React.MouseEvent<Element, MouseEvent>,
     ) => boolean;
   }) => {
     const MockPanelHeader = (): JSX.Element => {
@@ -59,18 +59,18 @@ describe("Panel", () => {
         splitContent={<div className="split-content"></div>}
       >
         Test content
-      </Panel>
+      </Panel>,
     );
     expect(document.querySelector(".p-panel__content")).toHaveClass(
-      "aside-split-wrapper"
+      "aside-split-wrapper",
     );
     // It should wrap the left content in a column:
     expect(
-      document.querySelector(".aside-split-col .side-panel__content-scrolling")
+      document.querySelector(".aside-split-col .side-panel__content-scrolling"),
     ).toBeInTheDocument();
     // It should wrap the right content in a column:
     expect(
-      document.querySelector(".aside-split-col .split-content")
+      document.querySelector(".aside-split-col .split-content"),
     ).toBeInTheDocument();
   });
 
@@ -82,7 +82,7 @@ describe("Panel", () => {
         drawer={<button>Open!</button>}
       >
         Test content
-      </Panel>
+      </Panel>,
     );
     // It should wrap the left content in a column:
     const button = screen.getByRole("button", { name: "Open!" });
@@ -95,7 +95,7 @@ describe("Panel", () => {
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
 
     await userEvent.type(window.document.documentElement, "{Escape}", {
@@ -111,7 +111,7 @@ describe("Panel", () => {
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
 
     await userEvent.type(window.document.documentElement, "{Enter}", {
@@ -120,7 +120,7 @@ describe("Panel", () => {
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
   });
 
@@ -129,7 +129,7 @@ describe("Panel", () => {
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
 
     await userEvent.type(window.document.documentElement, "{Escape}", {
@@ -138,7 +138,7 @@ describe("Panel", () => {
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
   });
 
@@ -147,7 +147,7 @@ describe("Panel", () => {
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
 
     await userEvent.click(window.document.documentElement);
@@ -161,14 +161,14 @@ describe("Panel", () => {
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
 
     await userEvent.click(screen.getByText("Test content"));
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
   });
 
@@ -177,14 +177,14 @@ describe("Panel", () => {
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
 
     await userEvent.click(window.document.documentElement);
 
     expect(window.location.pathname).toBe("/foo");
     expect(window.location.search).toBe(
-      "?panel=share-model&externalParam=externalValue"
+      "?panel=share-model&externalParam=externalValue",
     );
   });
 });

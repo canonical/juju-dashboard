@@ -71,7 +71,7 @@ describe("CharmsAndActionsPanel", () => {
       result: { container },
     } = renderComponent(<CharmsAndActionsPanel />, { path, url, state });
     expect(
-      container.querySelector(".l-aside")?.querySelector(".p-icon--spinner")
+      container.querySelector(".l-aside")?.querySelector(".p-icon--spinner"),
     ).toBeVisible();
     await waitFor(() => {
       expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
@@ -104,13 +104,13 @@ describe("CharmsAndActionsPanel", () => {
       expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     });
     expect(await screen.findByRole("heading")).toHaveTextContent(
-      "1 application (2 units) selected"
+      "1 application (2 units) selected",
     );
     const charmActionsOptions = screen.getAllByRole("radio");
     expect(charmActionsOptions).toHaveLength(2);
     act(() => charmActionsOptions[0].click());
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeEnabled();
   });
 
@@ -140,7 +140,7 @@ describe("CharmsAndActionsPanel", () => {
       expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     });
     expect(container.querySelector(".p-panel__title")).toContainHTML(
-      CharmsPanelLabel.PANEL_TITLE
+      CharmsPanelLabel.PANEL_TITLE,
     );
     const charmOptions = screen.getAllByRole("radio");
     expect(charmOptions).toHaveLength(2);
@@ -155,16 +155,16 @@ describe("CharmsAndActionsPanel", () => {
         jest
           .fn()
           .mockRejectedValue(
-            new Error("Error while calling getCharmsURLFromApplications")
-          )
+            new Error("Error while calling getCharmsURLFromApplications"),
+          ),
       );
     renderComponent(<CharmsAndActionsPanel />, { path, url, state });
     expect(juju.getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
         CharmsAndActionsPanelLabel.GET_URL_ERROR,
-        new Error("Error while calling getCharmsURLFromApplications")
-      )
+        new Error("Error while calling getCharmsURLFromApplications"),
+      ),
     );
   });
 });

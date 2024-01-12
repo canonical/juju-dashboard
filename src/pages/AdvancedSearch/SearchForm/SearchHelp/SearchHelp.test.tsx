@@ -16,7 +16,7 @@ describe("SearchHelp", () => {
           <SearchHelp search={search} />
         </Form>
       </Formik>,
-      { url: "/?q=.applications" }
+      { url: "/?q=.applications" },
     );
     // Open the menu so that the portal gets rendered.
     await userEvent.click(screen.getByRole("button", { name: "." }));

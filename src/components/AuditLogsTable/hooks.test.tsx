@@ -54,7 +54,7 @@ describe("useFetchAuditEvents", () => {
       wsControllerURL: "wss://example.com/api",
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
@@ -86,7 +86,7 @@ describe("useFetchAuditEvents", () => {
       method: "Login",
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
@@ -109,7 +109,7 @@ describe("useFetchAuditEvents", () => {
         userName: "eggman@external",
         modelName: "current-model",
         // The model in the query-param should get ignored
-      })}?model=ignore-this`
+      })}?model=ignore-this`,
     );
     const { result } = renderHook(() => useFetchAuditEvents(), {
       wrapper: (props) => (
@@ -127,7 +127,7 @@ describe("useFetchAuditEvents", () => {
       model: "controller1/current-model",
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
@@ -149,7 +149,7 @@ describe("useFetchAuditEvents", () => {
       offset: 0,
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toBeUndefined();
   });
 
@@ -169,7 +169,7 @@ describe("useFetchAuditEvents", () => {
       offset: 0,
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toBeUndefined();
   });
 });

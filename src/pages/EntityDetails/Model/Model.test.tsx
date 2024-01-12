@@ -130,7 +130,7 @@ describe("Model", () => {
     };
     renderComponent(<Model />, { state, url, path });
     expect(
-      document.querySelector(".entity-details__main table")
+      document.querySelector(".entity-details__main table"),
     ).toBeInTheDocument();
   });
 
@@ -153,20 +153,20 @@ describe("Model", () => {
     Element.prototype.scrollIntoView = jest.fn();
 
     expect(
-      document.querySelector(".entity-details__main > .entity-details__apps")
+      document.querySelector(".entity-details__main > .entity-details__apps"),
     ).toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__machines"
-      )
+        ".entity-details__main > .entity-details__machines",
+      ),
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__integrations"
-      )
+        ".entity-details__main > .entity-details__integrations",
+      ),
     ).not.toBeInTheDocument();
     expect(
-      document.querySelector(".entity-details__action-logs")
+      document.querySelector(".entity-details__action-logs"),
     ).not.toBeInTheDocument();
   });
 
@@ -193,20 +193,20 @@ describe("Model", () => {
     Element.prototype.scrollIntoView = jest.fn();
 
     expect(
-      document.querySelector(".entity-details__main > .entity-details__apps")
+      document.querySelector(".entity-details__main > .entity-details__apps"),
     ).toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__machines"
-      )
+        ".entity-details__main > .entity-details__machines",
+      ),
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__integrations"
-      )
+        ".entity-details__main > .entity-details__integrations",
+      ),
     ).not.toBeInTheDocument();
     expect(
-      document.querySelector(".entity-details__action-logs")
+      document.querySelector(".entity-details__action-logs"),
     ).not.toBeInTheDocument();
   });
 
@@ -233,20 +233,20 @@ describe("Model", () => {
     Element.prototype.scrollIntoView = jest.fn();
 
     expect(
-      document.querySelector(".entity-details__main > .entity-details__apps")
+      document.querySelector(".entity-details__main > .entity-details__apps"),
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__machines"
-      )
+        ".entity-details__main > .entity-details__machines",
+      ),
     ).toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__integrations"
-      )
+        ".entity-details__main > .entity-details__integrations",
+      ),
     ).not.toBeInTheDocument();
     expect(
-      document.querySelector(".entity-details__action-logs")
+      document.querySelector(".entity-details__action-logs"),
     ).not.toBeInTheDocument();
   });
 
@@ -273,20 +273,20 @@ describe("Model", () => {
     Element.prototype.scrollIntoView = jest.fn();
 
     expect(
-      document.querySelector(".entity-details__main > .entity-details__apps")
+      document.querySelector(".entity-details__main > .entity-details__apps"),
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__machines"
-      )
+        ".entity-details__main > .entity-details__machines",
+      ),
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__integrations"
-      )
+        ".entity-details__main > .entity-details__integrations",
+      ),
     ).toBeInTheDocument();
     expect(
-      document.querySelector(".entity-details__action-logs")
+      document.querySelector(".entity-details__action-logs"),
     ).not.toBeInTheDocument();
   });
 
@@ -313,20 +313,20 @@ describe("Model", () => {
     Element.prototype.scrollIntoView = jest.fn();
 
     expect(
-      document.querySelector(".entity-details__main > .entity-details__apps")
+      document.querySelector(".entity-details__main > .entity-details__apps"),
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__machines"
-      )
+        ".entity-details__main > .entity-details__machines",
+      ),
     ).not.toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__main > .entity-details__integrations"
-      )
+        ".entity-details__main > .entity-details__integrations",
+      ),
     ).not.toBeInTheDocument();
     expect(
-      document.querySelector(".entity-details__action-logs")
+      document.querySelector(".entity-details__action-logs"),
     ).toBeInTheDocument();
   });
 
@@ -354,10 +354,10 @@ describe("Model", () => {
 
     await waitFor(() => {
       expect(
-        document.querySelector(".entity-details__action-logs")
+        document.querySelector(".entity-details__action-logs"),
       ).not.toBeInTheDocument();
       expect(
-        document.querySelector(".entity-details__audit-logs")
+        document.querySelector(".entity-details__audit-logs"),
       ).toBeInTheDocument();
     });
   });
@@ -438,7 +438,7 @@ describe("Model", () => {
     };
     renderComponent(<Model />, { state, url, path });
     expect(
-      document.querySelector(".entity-details__main table")
+      document.querySelector(".entity-details__main table"),
     ).toBeInTheDocument(); // does this target correct table?
   });
 
@@ -456,7 +456,7 @@ describe("Model", () => {
       path,
     });
     expect(document.querySelector(".entity-details__main table")).toHaveClass(
-      "entity-details__machines"
+      "entity-details__machines",
     );
   });
 
@@ -472,12 +472,14 @@ describe("Model", () => {
     };
     renderComponent(<Model />, { state, url, path });
     expect(
-      document.querySelector(".entity-details__apps tr[data-app='cockroachdb']")
+      document.querySelector(
+        ".entity-details__apps tr[data-app='cockroachdb']",
+      ),
     ).toBeInTheDocument();
     expect(
       document.querySelector(
-        ".entity-details__apps tr[data-app='cockroachdb'] td[data-test-column='store']"
-      )?.textContent
+        ".entity-details__apps tr[data-app='cockroachdb'] td[data-test-column='store']",
+      )?.textContent,
     ).toBe("Local");
   });
 
@@ -495,7 +497,8 @@ describe("Model", () => {
     renderComponent(<Model />, { state, url, path });
     const applicationRow = document.querySelector(`tr[data-app="${testApp}"]`);
     expect(
-      applicationRow?.querySelector("td[data-test-column='scale']")?.textContent
+      applicationRow?.querySelector("td[data-test-column='scale']")
+        ?.textContent,
     ).toBe("1");
   });
 
@@ -510,7 +513,7 @@ describe("Model", () => {
     });
 
     const noRelationsMsg = document.querySelector(
-      "[data-testid='no-integrations-msg']"
+      "[data-testid='no-integrations-msg']",
     );
     expect(noRelationsMsg).toBeInTheDocument();
   });
@@ -526,7 +529,7 @@ describe("Model", () => {
     });
 
     const noMachinesMsg = document.querySelector(
-      "[data-testid='no-machines-msg']"
+      "[data-testid='no-machines-msg']",
     );
     expect(noMachinesMsg).toBeInTheDocument();
   });
@@ -604,16 +607,16 @@ describe("Model", () => {
     const machineAppIconRows = screen.getAllByRole("row");
 
     expect(
-      within(machineAppIconRows[1]).getByAltText("ceph-mon icon")
+      within(machineAppIconRows[1]).getByAltText("ceph-mon icon"),
     ).toBeInTheDocument();
     expect(
-      within(machineAppIconRows[1]).getByAltText("ceph-mon-0 icon")
+      within(machineAppIconRows[1]).getByAltText("ceph-mon-0 icon"),
     ).toBeInTheDocument();
     expect(
-      within(machineAppIconRows[2]).getByAltText("ceph-mon-1 icon")
+      within(machineAppIconRows[2]).getByAltText("ceph-mon-1 icon"),
     ).toBeInTheDocument();
     expect(
-      within(machineAppIconRows[2]).getByAltText("ceph-mon-2 icon")
+      within(machineAppIconRows[2]).getByAltText("ceph-mon-2 icon"),
     ).toBeInTheDocument();
   });
 
@@ -627,7 +630,7 @@ describe("Model", () => {
     };
     renderComponent(<Model />, { state, url, path });
     expect(
-      document.querySelector(".info-panel__pictogram")
+      document.querySelector(".info-panel__pictogram"),
     ).toBeInTheDocument();
   });
 
@@ -646,7 +649,7 @@ describe("Model", () => {
     renderComponent(<Model />, { state, url, path });
     expect(window.location.search).toEqual("");
     await userEvent.click(
-      screen.getByRole("button", { name: Label.ACCESS_BUTTON })
+      screen.getByRole("button", { name: Label.ACCESS_BUTTON }),
     );
     expect(window.location.search).toEqual("?panel=share-model");
   });

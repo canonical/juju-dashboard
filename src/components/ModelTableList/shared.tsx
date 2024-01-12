@@ -20,7 +20,7 @@ export const getControllerUUID = (model: ModelData) =>
 
 export const getControllerName = (
   model: ModelData,
-  controllers?: Controllers | null
+  controllers?: Controllers | null,
 ) => {
   const controllerUUID = getControllerUUID(model);
   let controllerName: string | null = null;
@@ -32,7 +32,7 @@ export const getControllerName = (
             "name" in controller ? controller.name ?? null : controller.path;
         }
         return !!controllerName;
-      })
+      }),
   );
   return controllerName ?? controllerUUID;
 };
@@ -68,7 +68,7 @@ export type TableHeaderOptions = {
 export const generateTableHeaders = (
   label: string,
   count: number,
-  options?: TableHeaderOptions
+  options?: TableHeaderOptions,
 ) => {
   const rows = [
     {

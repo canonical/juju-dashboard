@@ -7,7 +7,7 @@ describe("NotFound", () => {
     render(
       <NotFound message="Wut?">
         <p>This thing cannot be found</p>
-      </NotFound>
+      </NotFound>,
     );
     expect(screen.getByRole("heading", { name: "Wut?" })).toBeInTheDocument();
     expect(screen.getByText("This thing cannot be found")).toBeInTheDocument();

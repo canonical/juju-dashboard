@@ -62,7 +62,7 @@ export default function RegisterController() {
     ]);
     setAdditionalControllers(additionalControllers);
     dispatch(appThunks.connectAndStartPolling()).catch((error) =>
-      console.error(Label.POLLING_ERROR, error)
+      console.error(Label.POLLING_ERROR, error),
     );
     // Close the panel
     navigate(urls.controllers);

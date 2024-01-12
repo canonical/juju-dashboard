@@ -74,7 +74,7 @@ export const CLIENT_VERSION = "3.0.0";
 */
 export function generateConnectionOptions(
   usePinger = false,
-  onClose: ConnectOptions["closeCallback"] = () => null
+  onClose: ConnectOptions["closeCallback"] = () => null,
 ) {
   // The options used when connecting to a Juju controller or model.
   const facades: ValueOf<Facades>[] = [
@@ -103,7 +103,7 @@ export function generateConnectionOptions(
 
 function determineLoginParams(
   credentials: Credential | null | undefined,
-  identityProviderAvailable: boolean
+  identityProviderAvailable: boolean,
 ) {
   let loginParams: Credentials = {};
   if (credentials && !identityProviderAvailable) {
@@ -146,16 +146,16 @@ function stopPingerLoop(intervalId: number) {
 */
 export async function loginWithBakery(
   wsControllerURL: string,
-  credentials: Credential,
-  identityProviderAvailable: boolean
+  credentials?: Credential,
+  identityProviderAvailable: boolean = false,
 ) {
   const juju: JujuClient = await connect(
     wsControllerURL,
-    generateConnectionOptions(true, (e) => console.log("controller closed", e))
+    generateConnectionOptions(true, (e) => console.log("controller closed", e)),
   );
   const loginParams = determineLoginParams(
     credentials,
-    identityProviderAvailable
+    identityProviderAvailable,
   );
   let conn: ConnectionWithFacades | null | undefined = null;
   try {
@@ -186,20 +186,20 @@ export async function connectAndLoginWithTimeout(
   modelURL: string,
   credentials: Credential | null | undefined,
   options: ConnectOptions,
-  identityProviderAvailable: boolean
+  identityProviderAvailable: boolean,
 ): Promise<LoginResponse> {
   const timeout: Promise<string> = new Promise((resolve) => {
     setTimeout(resolve, LOGIN_TIMEOUT, "timeout");
   });
   const loginParams = determineLoginParams(
     credentials,
-    identityProviderAvailable
+    identityProviderAvailable,
   );
   const juju: Promise<LoginResponse> = connectAndLogin(
     modelURL,
     loginParams,
     options,
-    CLIENT_VERSION
+    CLIENT_VERSION,
   );
   return new Promise((resolve, reject) => {
     Promise.race([timeout, juju])
@@ -228,7 +228,7 @@ export async function connectAndLoginWithTimeout(
 export async function fetchModelStatus(
   modelUUID: string,
   wsControllerURL: string,
-  getState: () => RootState
+  getState: () => RootState,
 ) {
   const appState = getState();
   const baseWSControllerURL = getWSControllerURL(appState);
@@ -249,7 +249,7 @@ export async function fetchModelStatus(
         modelURL,
         controllerCredentials,
         generateConnectionOptions(false),
-        useIdentityProvider
+        useIdentityProvider,
       );
       if (isLoggedIn(getState(), wsControllerURL)) {
         status =
@@ -301,14 +301,14 @@ export async function fetchAndStoreModelStatus(
   modelUUID: string,
   wsControllerURL: string,
   dispatch: Dispatch,
-  getState: () => RootState
+  getState: () => RootState,
 ) {
   const status = await fetchModelStatus(modelUUID, wsControllerURL, getState);
   if (!status) {
     return;
   }
   dispatch(
-    jujuActions.updateModelStatus({ modelUUID, status, wsControllerURL })
+    jujuActions.updateModelStatus({ modelUUID, status, wsControllerURL }),
   );
 }
 
@@ -341,22 +341,20 @@ export async function fetchAllModelStatuses(
   modelUUIDList: string[],
   conn: ConnectionWithFacades,
   dispatch: Store["dispatch"],
-  getState: () => RootState
+  getState: () => RootState,
 ) {
   const queue = new Limiter({ concurrency: 1 });
   modelUUIDList.forEach((modelUUID) => {
     queue.push(async (done) => {
       if (isLoggedIn(getState(), wsControllerURL)) {
-        const modelWsControllerURL = getModelByUUID(
-          getState(),
-          modelUUID
-        )?.wsControllerURL;
+        const modelWsControllerURL = getModelByUUID(getState(), modelUUID)
+          ?.wsControllerURL;
         if (modelWsControllerURL) {
           await fetchAndStoreModelStatus(
             modelUUID,
             modelWsControllerURL,
             dispatch,
-            getState
+            getState,
           );
         }
         const modelInfo = await fetchModelInfo(conn, modelUUID);
@@ -365,19 +363,19 @@ export async function fetchAllModelStatuses(
             jujuActions.updateModelInfo({
               modelInfo,
               wsControllerURL,
-            })
+            }),
           );
         }
         if (modelInfo?.results[0].result?.["is-controller"]) {
           // If this is a controller model then update the
           // controller data with this model data.
           dispatch(
-            addControllerCloudRegion({ wsControllerURL, modelInfo })
+            addControllerCloudRegion({ wsControllerURL, modelInfo }),
           ).catch((error) =>
             console.error(
               "Error when trying to add controller cloud and region data.",
-              error
-            )
+              error,
+            ),
           );
         }
       }
@@ -404,7 +402,7 @@ export async function fetchControllerList(
   conn: ConnectionWithFacades,
   additionalController: boolean,
   dispatch: Store["dispatch"],
-  getState: () => RootState
+  getState: () => RootState,
 ) {
   let controllers: JujuController[] | null = null;
   if (conn.facades.jimM) {
@@ -419,16 +417,15 @@ export async function fetchControllerList(
     } catch (error) {
       dispatch(
         generalActions.storeConnectionError(
-          "Unable to fetch the list of controllers."
-        )
+          "Unable to fetch the list of controllers.",
+        ),
       );
     }
   } else {
     // If we're not connected to a JIMM then call to get the controller config
     // and generate a fake controller list.
-    const controllerConfig = await conn.facades.controller?.controllerConfig(
-      null
-    );
+    const controllerConfig =
+      await conn.facades.controller?.controllerConfig(null);
     if (controllerConfig?.config) {
       controllers = [
         {
@@ -452,16 +449,16 @@ export async function fetchControllerList(
             (await jujuUpdateAvailable(
               "agent-version" in controller
                 ? controller["agent-version"]
-                : controller.version || ""
+                : controller.version || "",
             )) ?? false;
         } catch (error) {
           updateAvailable = false;
         }
         controller.updateAvailable = updateAvailable;
-      })
+      }),
     );
     dispatch(
-      jujuActions.updateControllerList({ wsControllerURL, controllers })
+      jujuActions.updateControllerList({ wsControllerURL, controllers }),
     );
   }
 }
@@ -479,8 +476,8 @@ export function disableControllerUUIDMasking(conn: ConnectionWithFacades) {
         .then(() => resolve())
         .catch((error) =>
           reject(
-            new Error("Unable to disabled controller UUID masking.", error)
-          )
+            new Error("Unable to disabled controller UUID masking.", error),
+          ),
         );
     } else {
       resolve();
@@ -496,7 +493,7 @@ export function disableControllerUUIDMasking(conn: ConnectionWithFacades) {
 */
 export async function connectAndLoginToModel(
   modelUUID: string,
-  appState: RootState
+  appState: RootState,
 ) {
   const wsControllerURL = getModelByUUID(appState, modelUUID)?.wsControllerURL;
   if (!wsControllerURL) {
@@ -509,7 +506,7 @@ export async function connectAndLoginToModel(
     modelURL,
     credentials,
     generateConnectionOptions(true),
-    config?.identityProviderAvailable ?? false
+    config?.identityProviderAvailable ?? false,
   );
   return response.conn;
 }
@@ -524,7 +521,7 @@ export async function connectAndLoginToModel(
 export async function getApplicationConfig(
   modelUUID: string,
   appName: string,
-  appState: RootState
+  appState: RootState,
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const config = await conn?.facades.application?.get({
@@ -567,7 +564,7 @@ export async function setApplicationConfig(
   modelUUID: string,
   appName: string,
   config: Config,
-  appState: RootState
+  appState: RootState,
 ): Promise<ErrorResults | undefined> {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const setValues: Record<string, string> = {};
@@ -593,7 +590,7 @@ export async function setApplicationConfig(
 export async function getActionsForApplication(
   appName: string,
   modelUUID: string,
-  appState: RootState
+  appState: RootState,
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const actionList = await conn?.facades.action?.applicationsCharmsActions({
@@ -607,7 +604,7 @@ export async function executeActionOnUnits(
   actionName: string,
   actionOptions: NonNullable<ActionType["parameters"]>,
   modelUUID: string,
-  appState: RootState
+  appState: RootState,
 ) {
   const generatedActions = unitList.map((unit) => {
     return {
@@ -627,7 +624,7 @@ export async function executeActionOnUnits(
 export async function queryOperationsList(
   queryArgs: Partial<OperationQueryArgs>,
   modelUUID: string,
-  appState: RootState
+  appState: RootState,
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const operationListResult = await conn?.facades.action?.listOperations({
@@ -646,7 +643,7 @@ export async function queryOperationsList(
 export async function queryActionsList(
   queryArgs: Entities,
   modelUUID: string,
-  appState: RootState
+  appState: RootState,
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const actionsListResult = await conn?.facades.action?.actions(queryArgs);
@@ -656,7 +653,7 @@ export async function queryActionsList(
 // A typeguard to narrow the type of the deltas to what we expect. This is
 // needed because currently jujulib doesn't define types for the delta objects.
 const isDeltas = (
-  deltas: AllWatcherNextResults["deltas"]
+  deltas: AllWatcherNextResults["deltas"],
 ): deltas is AllWatcherDelta[] =>
   deltas.length > 0 &&
   Array.isArray(deltas[0]) &&
@@ -668,7 +665,7 @@ const isDeltas = (
 export async function startModelWatcher(
   modelUUID: string,
   appState: RootState,
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   if (!conn) {
@@ -690,7 +687,7 @@ export async function startModelWatcher(
 export async function stopModelWatcher(
   conn: ConnectionWithFacades,
   watcherHandleId: string,
-  pingerIntervalId: number
+  pingerIntervalId: number,
 ) {
   // TODO: use allWatcher.stop(...)
   await conn.facades.allWatcher?.stop({ id: watcherHandleId });
@@ -718,7 +715,7 @@ export async function setModelSharingPermissions(
   permissionTo: string | undefined,
   permissionFrom: string | undefined,
   action: string,
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ) {
   const modifyAccess = async (access: string, action: string) => {
     return await conn?.facades.modelManager?.modifyModelAccess({
@@ -750,11 +747,11 @@ export async function setModelSharingPermissions(
         jujuActions.updateModelInfo({
           modelInfo,
           wsControllerURL: controllerURL,
-        })
+        }),
       );
   } else {
     response = Promise.reject(
-      new Error(`Unable to connect to controller: ${controllerURL}`)
+      new Error(`Unable to connect to controller: ${controllerURL}`),
     );
   }
 
@@ -764,7 +761,7 @@ export async function setModelSharingPermissions(
 export async function getCharmInfo(
   charmURL: string,
   modelUUID: string,
-  appState: RootState
+  appState: RootState,
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const charmDetails = await conn?.facades.charms?.charmInfo({
@@ -777,23 +774,23 @@ export async function getCharmsURLFromApplications(
   applications: ApplicationInfo[],
   modelUUID: string,
   appState: RootState,
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ) {
   const uniqueCharmURLs = new Set<string>();
   applications.forEach(
-    (app) => "charm-url" in app && uniqueCharmURLs.add(app["charm-url"])
+    (app) => "charm-url" in app && uniqueCharmURLs.add(app["charm-url"]),
   );
   const charms = await Promise.all(
     [...uniqueCharmURLs].map((charmURL) =>
-      getCharmInfo(charmURL, modelUUID, appState)
-    )
+      getCharmInfo(charmURL, modelUUID, appState),
+    ),
   );
   const baseWSControllerURL = getWSControllerURL(appState);
   dispatch(
     jujuActions.updateCharms({
       charms: charms.filter((charm): charm is Charm => !!charm),
       wsControllerURL: baseWSControllerURL,
-    })
+    }),
   );
   return charms.filter((charm) => !!charm).map((charm) => charm?.url);
 }
@@ -803,7 +800,7 @@ export async function getCharmsURLFromApplications(
  */
 export function findAuditEvents(
   conn: ConnectionWithFacades,
-  params?: FindAuditEventsRequest
+  params?: FindAuditEventsRequest,
 ) {
   return new Promise<AuditEvents>((resolve, reject) => {
     if (conn?.facades?.jimM) {

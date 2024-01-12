@@ -56,7 +56,7 @@ describe("AuditLogsTable", () => {
       state,
     });
     expect((await screen.findAllByRole("columnheader"))[1]).toHaveTextContent(
-      "model"
+      "model",
     );
   });
 
@@ -96,7 +96,7 @@ describe("AuditLogsTable", () => {
       offset: 0,
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
@@ -129,7 +129,7 @@ describe("AuditLogsTable", () => {
       url: "/?user=eggman",
     });
     expect(document.querySelector(".p-chip__value")).toHaveTextContent(
-      "eggman"
+      "eggman",
     );
   });
 
@@ -139,7 +139,7 @@ describe("AuditLogsTable", () => {
       state,
     });
     expect(
-      screen.queryByRole("navigation", { name: "Pagination" })
+      screen.queryByRole("navigation", { name: "Pagination" }),
     ).not.toBeInTheDocument();
   });
 
@@ -149,7 +149,7 @@ describe("AuditLogsTable", () => {
       state,
     });
     expect(
-      screen.getByRole("navigation", { name: "Pagination" })
+      screen.getByRole("navigation", { name: "Pagination" }),
     ).toBeInTheDocument();
   });
 
@@ -160,7 +160,7 @@ describe("AuditLogsTable", () => {
       url: "/?page=2",
     });
     expect(
-      screen.getByRole("navigation", { name: "Pagination" })
+      screen.getByRole("navigation", { name: "Pagination" }),
     ).toBeInTheDocument();
   });
 });

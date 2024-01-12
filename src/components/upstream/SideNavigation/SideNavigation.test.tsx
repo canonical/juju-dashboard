@@ -22,7 +22,7 @@ it("displays links", () => {
           href: "#",
         },
       ]}
-    />
+    />,
   );
   expect(screen.getByRole("link", { name: "Link one" })).toBeInTheDocument();
   expect(screen.getByRole("link", { name: "Link two" })).toBeInTheDocument();
@@ -38,7 +38,7 @@ it("displays links using a custom component", () => {
         <Link>Link two</Link>,
       ]}
       linkComponent={Link}
-    />
+    />,
   );
   expect(screen.getByRole("button", { name: "Link one" })).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Link two" })).toBeInTheDocument();
@@ -54,7 +54,7 @@ it("displays a mix of links and custom components", () => {
         },
         <Link>Link two</Link>,
       ]}
-    />
+    />,
   );
   expect(screen.getByRole("link", { name: "Link one" })).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Link two" })).toBeInTheDocument();
@@ -73,7 +73,7 @@ it("sets components per link", () => {
           component: "h1",
         },
       ]}
-    />
+    />,
   );
   expect(screen.getByRole("button", { name: "Link one" })).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Link two" })).toBeInTheDocument();
@@ -88,7 +88,7 @@ it("sets icons", () => {
           label: "Link one",
         },
       ]}
-    />
+    />,
   );
   expect(result.container.firstChild).toHaveClass("p-side-navigation--icons");
 });
@@ -103,7 +103,7 @@ it("automatically determines if icon class should be applied", () => {
           icon: "user",
         },
       ]}
-    />
+    />,
   );
   expect(result.container.firstChild).toHaveClass("p-side-navigation--icons");
 });

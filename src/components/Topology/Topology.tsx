@@ -98,7 +98,7 @@ const computeMaxXY = (annotations: AnnotationData | null) => {
 */
 const applyDelta = (
   position?: number | string | null,
-  delta?: number | string | null
+  delta?: number | string | null,
 ) =>
   (typeof position === "number" ? position : parseFloat(position || "0")) +
   -(typeof delta === "number" ? delta : parseFloat(delta || "0"));
@@ -116,7 +116,7 @@ const getRelationPosition = (data: string[]) => {
   const getElement = (index: number) =>
     d3.select<d3.BaseType, Application>(`[data-name="${data[index]}"]`);
   const getRect = (
-    element: d3.Selection<d3.BaseType, Application, HTMLElement, void>
+    element: d3.Selection<d3.BaseType, Application, HTMLElement, void>,
   ) => {
     const node = element?.node();
     if (node && "getAttribute" in node) {
@@ -125,7 +125,7 @@ const getRelationPosition = (data: string[]) => {
     }
   };
   const getData = (
-    element: d3.Selection<d3.BaseType, Application, HTMLElement, void>
+    element: d3.Selection<d3.BaseType, Application, HTMLElement, void>,
   ) => element.data()[0];
 
   const element1 = getElement(0);
@@ -158,7 +158,7 @@ const Topology = memo(
     const { deltaX, deltaY } = computePositionDelta(annotationData);
 
     const applications: Application[] = Object.entries(
-      applicationData ?? {}
+      applicationData ?? {},
     ).map(([appName, application]) => {
       return {
         ...application,
@@ -173,13 +173,13 @@ const Topology = memo(
       if (annotation["gui-x"]) {
         annotation["gui-x"] = applyDelta(
           annotation["gui-x"],
-          deltaX
+          deltaX,
         ).toString();
       }
       if (annotation["gui-y"]) {
         annotation["gui-y"] = applyDelta(
           annotation["gui-y"],
-          deltaY
+          deltaY,
         ).toString();
       }
     }
@@ -207,12 +207,12 @@ const Topology = memo(
         }
         return acc;
       },
-      []
+      [],
     );
 
     // Remove any duplicate endpoints and split into pairs.
     const deDupedRelations = [...new Set(endpoints)].map((pair) =>
-      pair.split(":")
+      pair.split(":"),
     );
     // Remove relations that do not have all applications in the map.
     // The missing application is likely a cross-model-relation which isn't
@@ -223,7 +223,7 @@ const Topology = memo(
     const relations = deDupedRelations.filter(
       (relation) =>
         applicationNames.includes(relation[0]) &&
-        applicationNames.includes(relation[1])
+        applicationNames.includes(relation[1]),
     );
 
     useEffect(() => {
@@ -297,13 +297,13 @@ const Topology = memo(
           if (svgWidth > 0 && svgHeight > 0) {
             const containerScale = Math.min(
               width / parentWidth,
-              height / parentHeight
+              height / parentHeight,
             );
             // Magic number that presents reasonable padding around the viz.
             const padding = 200 / containerScale;
             const scale = Math.min(
               parentWidth / (svgWidth + padding),
-              parentHeight / (svgHeight + padding)
+              parentHeight / (svgHeight + padding),
             );
             const translateX =
               ((parentWidth - svgWidth * scale) / 2) * containerScale;
@@ -311,7 +311,7 @@ const Topology = memo(
               ((parentHeight - svgHeight * scale) / 2) * containerScale;
             topo.attr(
               "transform",
-              `translate(${translateX},${translateY}) scale(${scale},${scale})`
+              `translate(${translateX},${translateY}) scale(${scale},${scale})`,
             );
           }
         });
@@ -319,7 +319,7 @@ const Topology = memo(
       appIcon
         .append("image")
         .attr("xlink:href", (d) =>
-          "charm-url" in d ? generateIconPath(d["charm-url"]) : null
+          "charm-url" in d ? generateIconPath(d["charm-url"]) : null,
         )
         // use a fallback image if the icon is not found
         .on("error", function () {
@@ -328,12 +328,12 @@ const Topology = memo(
         .attr("width", (d) => (isSubordinate(d) ? 96 : 126))
         .attr("height", (d) => (isSubordinate(d) ? 96 : 126))
         .attr("transform", (d) =>
-          isSubordinate(d) ? "translate(13, 13)" : "translate(28, 28)"
+          isSubordinate(d) ? "translate(13, 13)" : "translate(28, 28)",
         )
         .attr("clip-path", (d) =>
           isSubordinate(d)
             ? "circle(43px at 48px 48px)"
-            : "circle(55px at 63px 63px)"
+            : "circle(55px at 63px 63px)",
         );
 
       const relationLines = topo.selectAll(".relation").data(relations);
@@ -357,7 +357,7 @@ const Topology = memo(
       };
     }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
     return <svg ref={ref} />;
-  }
+  },
 );
 
 export default Topology;

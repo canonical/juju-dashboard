@@ -14,7 +14,7 @@ it("displays a link", () => {
 it("can apply additional classes", () => {
   const label = "Test content";
   renderComponent(
-    <SideNavigationLink label={label} href="#" className="extra-class" />
+    <SideNavigationLink label={label} href="#" className="extra-class" />,
   );
   expect(screen.getByRole("link", { name: label })).toHaveClass("extra-class");
 });
@@ -41,6 +41,6 @@ it("can use a custom link component", () => {
   const label = "Test content";
   renderComponent(<SideNavigationLink label={label} component={Link} />);
   expect(screen.getByRole("button", { name: label })).toHaveClass(
-    "p-side-navigation__link"
+    "p-side-navigation__link",
   );
 });

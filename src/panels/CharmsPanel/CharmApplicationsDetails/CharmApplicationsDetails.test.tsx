@@ -50,10 +50,10 @@ describe("CharmApplicationsDetails", () => {
   it("should render correctly", () => {
     renderComponent(
       <CharmApplicationsDetails charmURL="ch:amd64/focal/redis-k8s" />,
-      { state }
+      { state },
     );
     expect(document.querySelector(".p-form-help-text")).toHaveTextContent(
-      "Mock app 1, Mock app 2"
+      "Mock app 1, Mock app 2",
     );
   });
 
@@ -63,21 +63,21 @@ describe("CharmApplicationsDetails", () => {
         charmApplicationFactory.build({
           name: `Mock app ${i}`,
           "charm-url": "ch:amd64/focal/redis-k8s",
-        })
+        }),
       );
     }
     renderComponent(
       <CharmApplicationsDetails charmURL="ch:amd64/focal/redis-k8s" />,
-      { state }
+      { state },
     );
     expect(document.querySelector(".p-form-help-text")).toHaveTextContent(
-      "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5 + 4 more"
+      "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5 + 4 more",
     );
     await userEvent.hover(screen.getByText("4 more"));
     expect(
       screen.getByRole("tooltip", {
         name: "Mock app 6, Mock app 7, Mock app 8, Mock app 9",
-      })
+      }),
     ).toBeVisible();
   });
 });

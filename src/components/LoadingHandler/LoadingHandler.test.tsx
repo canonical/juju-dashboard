@@ -11,7 +11,11 @@ describe("LoadingHandler", () => {
   it("returns a message if no data and not loading", () => {
     const message = "No data provided";
     render(
-      <LoadingHandler hasData={false} loading={false} noDataMessage={message} />
+      <LoadingHandler
+        hasData={false}
+        loading={false}
+        noDataMessage={message}
+      />,
     );
     expect(screen.getByText(message)).toBeInTheDocument();
   });
@@ -21,7 +25,7 @@ describe("LoadingHandler", () => {
     render(
       <LoadingHandler hasData={true} loading={false} noDataMessage="">
         {children}
-      </LoadingHandler>
+      </LoadingHandler>,
     );
     expect(screen.getByText("I am a child, wahhhh")).toBeInTheDocument();
   });

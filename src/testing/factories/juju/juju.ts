@@ -34,13 +34,13 @@ function generateUUID() {
 export const additionalControllerFactory = Factory.define<AdditionalController>(
   () => ({
     additionalController: true,
-  })
+  }),
 );
 
 export const controllerLocationFactory = Factory.define<ControllerLocation>(
   () => ({
     region: "aws",
-  })
+  }),
 );
 
 export const controllerFactory = Factory.define<Controller>(() => ({
@@ -106,7 +106,7 @@ export const modelDataApplicationFactory = Factory.define<ApplicationStatus>(
     "charm-version": "7af705f",
     "endpoint-bindings": {},
     "public-address": "",
-  })
+  }),
 );
 
 export const modelDataMachineNetworkInterfcaceFactory =
@@ -183,7 +183,7 @@ export const crossModelQueryStateFactory = Factory.define<CrossModelQueryState>(
     errors: null,
     loaded: false,
     loading: false,
-  })
+  }),
 );
 
 export const jujuStateFactory = Factory.define<JujuState>(() => ({

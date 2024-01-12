@@ -13,7 +13,7 @@ const slice = (state: RootState) => state.general;
 */
 export const getConfig = createSelector(
   [slice],
-  (sliceState) => sliceState?.config
+  (sliceState) => sliceState?.config,
 );
 
 /**
@@ -24,7 +24,7 @@ export const getConfig = createSelector(
  */
 export const getIsJuju = createSelector(
   [slice],
-  (sliceState) => sliceState?.config?.isJuju
+  (sliceState) => sliceState?.config?.isJuju,
 );
 
 /**
@@ -35,12 +35,12 @@ export const getIsJuju = createSelector(
  */
 export const getAnalyticsEnabled = createSelector(
   [slice],
-  (sliceState) => sliceState?.config?.analyticsEnabled
+  (sliceState) => sliceState?.config?.analyticsEnabled,
 );
 
 export const getVisitURLs = createSelector(
   [slice],
-  (sliceState) => sliceState?.visitURLs
+  (sliceState) => sliceState?.visitURLs,
 );
 
 /**
@@ -52,12 +52,12 @@ export const getVisitURLs = createSelector(
 */
 export const getUserPass = createSelector(
   [slice, (_state, wsControllerURL) => wsControllerURL],
-  (sliceState, wsControllerURL) => sliceState?.credentials?.[wsControllerURL]
+  (sliceState, wsControllerURL) => sliceState?.credentials?.[wsControllerURL],
 );
 
 export const getConnectionError = createSelector(
   [slice],
-  (sliceState) => sliceState?.connectionError
+  (sliceState) => sliceState?.connectionError,
 );
 
 /**
@@ -67,7 +67,7 @@ export const getConnectionError = createSelector(
 */
 export const getLoginErrors = createSelector(
   [slice],
-  (sliceState) => sliceState?.loginErrors
+  (sliceState) => sliceState?.loginErrors,
 );
 
 /**
@@ -78,7 +78,7 @@ export const getLoginErrors = createSelector(
 */
 export const getLoginError = createSelector(
   [getLoginErrors, (_state, wsControllerURL) => wsControllerURL],
-  (loginErrors, wsControllerURL) => loginErrors?.[wsControllerURL]
+  (loginErrors, wsControllerURL) => loginErrors?.[wsControllerURL],
 );
 
 /**
@@ -88,7 +88,7 @@ export const getLoginError = createSelector(
 */
 export const getPingerIntervalIds = createSelector(
   [slice],
-  (sliceState) => sliceState?.pingerIntervalIds
+  (sliceState) => sliceState?.pingerIntervalIds,
 );
 
 /**
@@ -98,23 +98,23 @@ export const getPingerIntervalIds = createSelector(
 */
 export const getAppVersion = createSelector(
   [slice],
-  (sliceState) => sliceState?.appVersion
+  (sliceState) => sliceState?.appVersion,
 );
 
 export const getControllerConnections = createSelector(
   [slice],
-  (sliceState) => sliceState?.controllerConnections
+  (sliceState) => sliceState?.controllerConnections,
 );
 
 export const getControllerConnection = createSelector(
   [getControllerConnections, (_state, wsControllerURL) => wsControllerURL],
   (controllerConnections, wsControllerURL) =>
-    controllerConnections?.[wsControllerURL]
+    controllerConnections?.[wsControllerURL],
 );
 
 export const getControllerFeatures = createSelector(
   [slice],
-  (sliceState) => sliceState?.controllerFeatures
+  (sliceState) => sliceState?.controllerFeatures,
 );
 
 export const getControllerFeatureEnabled = createSelector(
@@ -126,7 +126,7 @@ export const getControllerFeatureEnabled = createSelector(
     }),
   ],
   (controllerFeatures, { wsControllerURL, feature }) =>
-    controllerFeatures?.[wsControllerURL]?.[feature]
+    controllerFeatures?.[wsControllerURL]?.[feature],
 );
 
 /**
@@ -140,7 +140,7 @@ export const getActiveUserTag = createSelector(
     slice,
     (state, wsControllerURL) => getControllerConnection(state, wsControllerURL),
   ],
-  (_sliceState, controllerConnection) => controllerConnection?.user?.identity
+  (_sliceState, controllerConnection) => controllerConnection?.user?.identity,
 );
 
 export const getActiveUserControllerAccess = createSelector(
@@ -149,7 +149,7 @@ export const getActiveUserControllerAccess = createSelector(
     (state, wsControllerURL) => getControllerConnection(state, wsControllerURL),
   ],
   (_sliceState, controllerConnection) =>
-    controllerConnection?.user?.["controller-access"]
+    controllerConnection?.user?.["controller-access"],
 );
 
 /**
@@ -159,7 +159,7 @@ export const getActiveUserControllerAccess = createSelector(
 */
 export const isLoggedIn = createSelector(
   [slice, (state, wsControllerURL) => getActiveUserTag(state, wsControllerURL)],
-  (_sliceState, userTag) => !!userTag
+  (_sliceState, userTag) => !!userTag,
 );
 
 /**
@@ -168,18 +168,18 @@ export const isLoggedIn = createSelector(
 */
 export const getWSControllerURL = createSelector(
   getConfig,
-  (config) => config?.controllerAPIEndpoint
+  (config) => config?.controllerAPIEndpoint,
 );
 
 export const isAuditLogsEnabled = createSelector(
   [getIsJuju, getWSControllerURL, (state) => state],
   (isJuju, wsControllerURL, state) =>
-    !isJuju && getControllerFeatureEnabled(state, wsControllerURL, "auditLogs")
+    !isJuju && getControllerFeatureEnabled(state, wsControllerURL, "auditLogs"),
 );
 
 export const isCrossModelQueriesEnabled = createSelector(
   [getIsJuju, getWSControllerURL, (state) => state],
   (isJuju, wsControllerURL, state) =>
     !isJuju &&
-    getControllerFeatureEnabled(state, wsControllerURL, "crossModelQueries")
+    getControllerFeatureEnabled(state, wsControllerURL, "crossModelQueries"),
 );

@@ -10,7 +10,7 @@ type HeaderRow = {
 };
 
 export const generateLocalApplicationTableHeaders = (
-  multipleApps = true
+  multipleApps = true,
 ): Header => [
   { content: `local app${multipleApps ? "s" : ""}`, sortKey: "local-apps" },
   { content: "status", sortKey: "status" },
@@ -41,7 +41,7 @@ export const unitTableHeaders: Header = [
 
 export const generateSelectableUnitTableHeaders = (
   selectContent: HeaderRow | null,
-  removeMachines: boolean
+  removeMachines: boolean,
 ): Header => {
   let headers = cloneDeep(unitTableHeaders);
   if (removeMachines) {

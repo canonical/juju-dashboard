@@ -20,10 +20,10 @@ describe("Logs", () => {
 
     expect(screen.getByRole("tab", { name: "Action logs" })).toHaveAttribute(
       "aria-selected",
-      "true"
+      "true",
     );
     expect(
-      document.querySelector(".entity-details__action-logs")
+      document.querySelector(".entity-details__action-logs"),
     ).toBeInTheDocument();
   });
 
@@ -35,10 +35,10 @@ describe("Logs", () => {
 
     expect(screen.getByRole("tab", { name: "Audit logs" })).toHaveAttribute(
       "aria-selected",
-      "true"
+      "true",
     );
     expect(
-      document.querySelector(".entity-details__audit-logs")
+      document.querySelector(".entity-details__audit-logs"),
     ).toBeInTheDocument();
   });
 
@@ -57,13 +57,13 @@ describe("Logs", () => {
     });
 
     expect(
-      screen.queryByRole("tab", { name: "Action logs" })
+      screen.queryByRole("tab", { name: "Action logs" }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("tab", { name: "Audit logs" })
+      screen.queryByRole("tab", { name: "Audit logs" }),
     ).not.toBeInTheDocument();
     expect(
-      document.querySelector(".entity-details__audit-logs")
+      document.querySelector(".entity-details__audit-logs"),
     ).not.toBeInTheDocument();
   });
 
@@ -75,7 +75,7 @@ describe("Logs", () => {
     const auditLogsTab = screen.getByRole("tab", { name: "Audit logs" });
     await userEvent.click(auditLogsTab);
     expect(window.location.search).toBe(
-      "?activeView=logs&tableView=audit-logs"
+      "?activeView=logs&tableView=audit-logs",
     );
   });
 
@@ -85,7 +85,7 @@ describe("Logs", () => {
       path,
     });
     expect(
-      screen.queryByRole("button", { name: Label.FILTER })
+      screen.queryByRole("button", { name: Label.FILTER }),
     ).not.toBeInTheDocument();
   });
 
@@ -95,7 +95,7 @@ describe("Logs", () => {
       path,
     });
     expect(
-      screen.getByRole("button", { name: Label.FILTER })
+      screen.getByRole("button", { name: Label.FILTER }),
     ).toBeInTheDocument();
   });
 });

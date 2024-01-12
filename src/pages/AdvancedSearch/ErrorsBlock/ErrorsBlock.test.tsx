@@ -79,10 +79,10 @@ describe("ErrorsBlock", () => {
     const codeSnippetDropdownButton = screen.getByRole("combobox");
     expect(codeSnippetDropdownButton).toBeVisible();
     expect(
-      screen.getByRole("option", { name: "Tree", hidden: true })
+      screen.getByRole("option", { name: "Tree", hidden: true }),
     ).toHaveAttribute("value", "tree");
     expect(
-      screen.getByRole("option", { name: "JSON", hidden: true })
+      screen.getByRole("option", { name: "JSON", hidden: true }),
     ).toHaveAttribute("value", "json");
     await userEvent.selectOptions(codeSnippetDropdownButton, "JSON");
     expect(screen.getByText('"abc123"')).toBeVisible();
@@ -100,7 +100,7 @@ describe("ErrorsBlock", () => {
     const codeSnippetDropdownButton = screen.getByRole("combobox");
     await userEvent.selectOptions(codeSnippetDropdownButton, "Tree");
     expect(document.querySelector(".p-code-snippet__block")).toHaveTextContent(
-      '▶eggman@external/test-model[] 1 item0:"mockError0"▶:[] 1 item0:"mockError1"'
+      '▶eggman@external/test-model[] 1 item0:"mockError0"▶:[] 1 item0:"mockError1"',
     );
   });
 });

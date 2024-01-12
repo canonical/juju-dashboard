@@ -43,7 +43,7 @@ export const charmResourceMetaFactory = Factory.define<CharmResourceMeta>(
     type: "oci-image",
     path: "",
     description: "docker image for PostgreSQL",
-  })
+  }),
 );
 
 export const charmActionsFactory = Factory.define<CharmActions>(() => ({

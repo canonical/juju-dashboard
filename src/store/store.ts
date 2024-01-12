@@ -1,5 +1,5 @@
 import type { AnyAction } from "@reduxjs/toolkit";
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useCallback } from "react";
 import type { TypedUseSelectorHook } from "react-redux";
 import { useDispatch, useSelector, useStore } from "react-redux";
@@ -32,11 +32,11 @@ const store = configureStore({
     return middleware;
   },
   preloadedState,
-  reducer: {
+  reducer: combineReducers({
     general: generalReducer,
     juju: jujuReducer,
     ui: uiReducer,
-  },
+  }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -54,7 +54,7 @@ export const usePromiseDispatch = () => {
   return useCallback(
     <Result>(action: AnyAction) =>
       (dispatch as (action: AnyAction) => Promise<Result>)(action),
-    [dispatch]
+    [dispatch],
   );
 };
 // This hook annotates the selectors using the store state.

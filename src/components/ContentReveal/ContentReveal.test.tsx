@@ -8,7 +8,7 @@ describe("Content Reveal", () => {
     render(
       <ContentReveal title="Foo bar">
         <p>Banner text</p>
-      </ContentReveal>
+      </ContentReveal>,
     );
     expect(screen.getByText("Banner text")).toBeInTheDocument();
   });
@@ -17,7 +17,7 @@ describe("Content Reveal", () => {
     render(
       <ContentReveal title="Foo bar">
         <p>Banner text</p>
-      </ContentReveal>
+      </ContentReveal>,
     );
     expect(screen.getByText("Foo bar")).toHaveClass("content-reveal__title");
   });
@@ -27,7 +27,7 @@ describe("Content Reveal", () => {
     render(
       <ContentReveal title={title}>
         <p>Banner text</p>
-      </ContentReveal>
+      </ContentReveal>,
     );
     expect(screen.getByTestId("jsx-title")).toBeInTheDocument();
   });
@@ -36,21 +36,21 @@ describe("Content Reveal", () => {
     render(
       <ContentReveal title="Foo bar">
         <p>Banner text</p>
-      </ContentReveal>
+      </ContentReveal>,
     );
     expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
       "aria-hidden",
-      "true"
-    );
-    await userEvent.click(screen.getByRole("button"));
-    expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
-      "aria-hidden",
-      "false"
+      "true",
     );
     await userEvent.click(screen.getByRole("button"));
     expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
       "aria-hidden",
-      "true"
+      "false",
+    );
+    await userEvent.click(screen.getByRole("button"));
+    expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
+      "aria-hidden",
+      "true",
     );
   });
 
@@ -58,19 +58,11 @@ describe("Content Reveal", () => {
     render(
       <ContentReveal title="Foo bar">
         <p>Banner text</p>
-      </ContentReveal>
+      </ContentReveal>,
     );
     expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
       "aria-hidden",
-      "true"
-    );
-    fireEvent.keyDown(screen.getByRole("button"), {
-      key: " ",
-      code: "Space",
-    });
-    expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
-      "aria-hidden",
-      "false"
+      "true",
     );
     fireEvent.keyDown(screen.getByRole("button"), {
       key: " ",
@@ -78,7 +70,15 @@ describe("Content Reveal", () => {
     });
     expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
       "aria-hidden",
-      "true"
+      "false",
+    );
+    fireEvent.keyDown(screen.getByRole("button"), {
+      key: " ",
+      code: "Space",
+    });
+    expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
+      "aria-hidden",
+      "true",
     );
   });
 
@@ -86,11 +86,11 @@ describe("Content Reveal", () => {
     render(
       <ContentReveal title="Foo bar" openByDefault={true}>
         <p>Banner text</p>
-      </ContentReveal>
+      </ContentReveal>,
     );
     expect(document.querySelector(".content-reveal__content")).toHaveAttribute(
       "aria-hidden",
-      "false"
+      "false",
     );
   });
 });

@@ -26,7 +26,7 @@ describe("useModelAttributes", () => {
     const { result } = renderHook(() =>
       useModelAttributes({
         abc123: modelDataFactory.build({ info: undefined }),
-      })
+      }),
     );
     expect(result.current).toMatchObject({
       clouds: [],
@@ -55,7 +55,7 @@ describe("useModelAttributes", () => {
             "cloud-credential-tag": "cloudcred-google_spaceman@external_juju",
           }),
         }),
-      })
+      }),
     );
     expect(result.current).toMatchObject({
       clouds: ["aws", "gce"],
@@ -84,7 +84,7 @@ describe("useModelAttributes", () => {
             "cloud-credential-tag": "cloudcred-amazon_eggman@external_juju",
           }),
         }),
-      })
+      }),
     );
     expect(result.current).toMatchObject({
       clouds: ["aws"],

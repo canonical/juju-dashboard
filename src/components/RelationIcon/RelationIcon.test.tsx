@@ -14,11 +14,11 @@ describe("RelationIcon", () => {
             "charm-url": "cs:etcd-charm-1",
           }),
         }}
-      />
+      />,
     );
     expect(screen.getByRole("img")).toHaveAttribute(
       "src",
-      "https://charmhub.io/etcd-charm/icon"
+      "https://charmhub.io/etcd-charm/icon",
     );
   });
 

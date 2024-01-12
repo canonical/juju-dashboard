@@ -27,7 +27,7 @@ export default function ModelDetails() {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const [modelWatcherError, setModelWatcherError] = useState<string | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function ModelDetails() {
               jujuActions.populateMissingAllWatcherData({
                 uuid: modelUUID,
                 status,
-              })
+              }),
             );
           }
         }
@@ -69,7 +69,7 @@ export default function ModelDetails() {
         stopModelWatcher(
           conn,
           watcherHandle["watcher-id"],
-          pingerIntervalId
+          pingerIntervalId,
         ).catch((error) => console.error(Label.MODEL_WATCHER_ERROR, error));
       }
     };

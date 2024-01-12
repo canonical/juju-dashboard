@@ -23,10 +23,10 @@ describe("Toast Card", () => {
     render(
       <ToastCard type="positive" toastInstance={t}>
         I am a toast message
-      </ToastCard>
+      </ToastCard>,
     );
     expect(screen.getByText("I am a toast message")).toHaveClass(
-      "toast-card__message"
+      "toast-card__message",
     );
   });
 
@@ -35,7 +35,7 @@ describe("Toast Card", () => {
     const { container } = render(
       <ToastCard type="positive" toastInstance={t}>
         I am a toast message
-      </ToastCard>
+      </ToastCard>,
     );
     expect(container.firstChild).toHaveAttribute("data-type", "positive");
   });
@@ -45,7 +45,7 @@ describe("Toast Card", () => {
     render(
       <ToastCard type="positive" toastInstance={t}>
         I am a toast message
-      </ToastCard>
+      </ToastCard>,
     );
     expect(document.querySelector(".p-icon--success")).toBeInTheDocument();
   });
@@ -55,7 +55,7 @@ describe("Toast Card", () => {
     render(
       <ToastCard type="negative" toastInstance={t}>
         I am a toast message
-      </ToastCard>
+      </ToastCard>,
     );
     expect(document.querySelector(".p-icon--error")).toBeInTheDocument();
   });
@@ -65,7 +65,7 @@ describe("Toast Card", () => {
     render(
       <ToastCard type="caution" toastInstance={t}>
         I am a toast message
-      </ToastCard>
+      </ToastCard>,
     );
     expect(document.querySelector(".p-icon--warning")).toBeInTheDocument();
   });
@@ -75,10 +75,10 @@ describe("Toast Card", () => {
     render(
       <ToastCard type="negative" toastInstance={t}>
         I am a toast message
-      </ToastCard>
+      </ToastCard>,
     );
     expect(screen.getByRole("button", { name: "Close" })).toHaveClass(
-      "p-icon--close"
+      "p-icon--close",
     );
   });
 
@@ -87,10 +87,10 @@ describe("Toast Card", () => {
     render(
       <ToastCard type="negative" toastInstance={t}>
         I am a toast message
-      </ToastCard>
+      </ToastCard>,
     );
     expect(
-      screen.queryByRole("button", { name: "Undo" })
+      screen.queryByRole("button", { name: "Undo" }),
     ).not.toBeInTheDocument();
   });
 
@@ -100,7 +100,7 @@ describe("Toast Card", () => {
     render(
       <ToastCard type="negative" toastInstance={t} undo={undoFn}>
         I am a toast message
-      </ToastCard>
+      </ToastCard>,
     );
     const undoButton = screen.getByRole("button", { name: "Undo" });
     expect(undoButton).toBeInTheDocument();

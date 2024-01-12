@@ -7,7 +7,7 @@ describe("DescriptionSummary", () => {
     const description =
       "The number of coding chunks, i.e. the number of additional chunks computed by the encoding functions. If there are 2 coding chunks, it means 2 OSDs can be out without losing data. ";
     const { container } = render(
-      <DescriptionSummary description={description} />
+      <DescriptionSummary description={description} />,
     );
     expect(container).toMatchSnapshot();
   });
@@ -17,14 +17,14 @@ describe("DescriptionSummary", () => {
     render(<DescriptionSummary description={description} />);
     expect(screen.getByText(description)).toBeInTheDocument();
     expect(
-      document.querySelector(".radio-input-box__details")
+      document.querySelector(".radio-input-box__details"),
     ).not.toBeInTheDocument();
   });
 
   it("returns null if no description is provided", () => {
     render(<DescriptionSummary description={undefined} />);
     expect(
-      document.querySelector(".radio-input-box__details")
+      document.querySelector(".radio-input-box__details"),
     ).not.toBeInTheDocument();
   });
 });

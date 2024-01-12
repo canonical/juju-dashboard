@@ -57,7 +57,7 @@ describe("Share Model Panel", () => {
   it("should show panel", () => {
     renderComponent(<ShareModel />, { state, url, path });
     expect(
-      screen.getByRole("heading", { name: "Sharing with:" })
+      screen.getByRole("heading", { name: "Sharing with:" }),
     ).toBeInTheDocument();
   });
 
@@ -74,12 +74,12 @@ describe("Share Model Panel", () => {
     });
     renderComponent(<ShareModel />, { state, url, path });
     expect(
-      screen.getByRole("button", { name: "@external" })
+      screen.getByRole("button", { name: "@external" }),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "@domain" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "@model2" })).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "@anothermodel2" })
+      screen.getByRole("button", { name: "@anothermodel2" }),
     ).toBeInTheDocument();
   });
 
@@ -87,11 +87,11 @@ describe("Share Model Panel", () => {
     renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
-      "eggman"
+      "eggman",
     );
     await userEvent.click(screen.getByRole("button", { name: "@external" }));
     expect(screen.getByRole("textbox", { name: "Username" })).toHaveValue(
-      "eggman@external"
+      "eggman@external",
     );
   });
 
@@ -99,11 +99,11 @@ describe("Share Model Panel", () => {
     renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
-      "eggman@otherdomain"
+      "eggman@otherdomain",
     );
     await userEvent.click(screen.getByRole("button", { name: "@external" }));
     expect(screen.getByRole("textbox", { name: "Username" })).toHaveValue(
-      "eggman@external"
+      "eggman@external",
     );
   });
 
@@ -126,17 +126,17 @@ describe("Share Model Panel", () => {
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
-      "eggman@external"
+      "eggman@external",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.ADD_BUTTON })
+      screen.getByRole("button", { name: Label.ADD_BUTTON }),
     );
     expect(
-      await screen.findByText(/already has access to this model/)
+      await screen.findByText(/already has access to this model/),
     ).toBeInTheDocument();
   });
 
@@ -144,24 +144,24 @@ describe("Share Model Panel", () => {
     jest
       .spyOn(storeModule, "usePromiseDispatch")
       .mockReturnValue(
-        jest.fn().mockImplementation(() => Promise.reject(new Error()))
+        jest.fn().mockImplementation(() => Promise.reject(new Error())),
       );
     renderComponent(
       <>
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
-      "another@external"
+      "another@external",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.ADD_BUTTON })
+      screen.getByRole("button", { name: Label.ADD_BUTTON }),
     );
     expect(
-      await screen.findByText(/Unable to update model permissions/)
+      await screen.findByText(/Unable to update model permissions/),
     ).toBeInTheDocument();
   });
 
@@ -174,14 +174,14 @@ describe("Share Model Panel", () => {
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
-      "another@external"
+      "another@external",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.ADD_BUTTON })
+      screen.getByRole("button", { name: Label.ADD_BUTTON }),
     );
     expect(await screen.findByText(/Uh oh!/)).toBeInTheDocument();
   });
@@ -191,22 +191,22 @@ describe("Share Model Panel", () => {
       jest.fn().mockImplementation(() =>
         Promise.resolve({
           results: [{ error: { message: "This is an error" } }],
-        })
-      )
+        }),
+      ),
     );
     renderComponent(
       <>
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
-      "another@external"
+      "another@external",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.ADD_BUTTON })
+      screen.getByRole("button", { name: Label.ADD_BUTTON }),
     );
     expect(await screen.findByText(/This is an error/)).toBeInTheDocument();
   });
@@ -221,14 +221,14 @@ describe("Share Model Panel", () => {
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
-      "another@external"
+      "another@external",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.ADD_BUTTON })
+      screen.getByRole("button", { name: Label.ADD_BUTTON }),
     );
     expect(dispatch).toHaveBeenCalledWith(
       appActions.updatePermissions({
@@ -237,10 +237,10 @@ describe("Share Model Panel", () => {
         permissionTo: "read",
         user: "another@external",
         wsControllerURL: "wss://jimm.jujucharms.com/api",
-      })
+      }),
     );
     expect(
-      await screen.findByText(/now has access to this model/)
+      await screen.findByText(/now has access to this model/),
     ).toBeInTheDocument();
   });
 
@@ -250,7 +250,7 @@ describe("Share Model Panel", () => {
     await userEvent.click(
       screen.getByRole("button", {
         name: ShareCardLabel.REMOVE,
-      })
+      }),
     );
     expect(updatePermissionsSpy).toHaveBeenCalledWith({
       action: "revoke",
@@ -269,17 +269,17 @@ describe("Share Model Panel", () => {
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     await userEvent.click(
       screen.getByRole("button", {
         name: ShareCardLabel.REMOVE,
-      })
+      }),
     );
     await userEvent.click(
       screen.getAllByRole("button", {
         name: "Undo",
-      })[0]
+      })[0],
     );
     expect(updatePermissionsSpy).toHaveBeenCalledWith({
       action: "grant",
@@ -298,7 +298,7 @@ describe("Share Model Panel", () => {
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(updatePermissionsSpy).toHaveBeenCalledWith({
@@ -310,7 +310,7 @@ describe("Share Model Panel", () => {
       wsControllerURL: "wss://jimm.jujucharms.com/api",
     });
     expect(document.querySelector(".toast-card__message")?.textContent).toBe(
-      "Permissions for spaceman@domain have been changed to write."
+      "Permissions for spaceman@domain have been changed to write.",
     );
   });
 
@@ -319,19 +319,19 @@ describe("Share Model Panel", () => {
       jest.fn().mockImplementation(() =>
         Promise.resolve({
           results: [{ error: { message: "No no no no no" } }],
-        })
-      )
+        }),
+      ),
     );
     renderComponent(
       <>
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(document.querySelector(".toast-card__message")?.textContent).toBe(
-      "No no no no no"
+      "No no no no no",
     );
   });
 
@@ -342,19 +342,19 @@ describe("Share Model Panel", () => {
           results: [
             { error: { message: "user already has admin access or greater" } },
           ],
-        })
-      )
+        }),
+      ),
     );
     renderComponent(
       <>
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(document.querySelector(".toast-card__message")?.textContent).toBe(
-      "Permissions for spaceman@domain have been changed to write."
+      "Permissions for spaceman@domain have been changed to write.",
     );
   });
 
@@ -364,37 +364,37 @@ describe("Share Model Panel", () => {
         <ShareModel />
         <Toaster />
       </>,
-      { state, url, path }
+      { state, url, path },
     );
     // Check the initial state.
     expect(document.querySelector(".l-aside")).toHaveAttribute(
       "data-mobile-show-add-user",
-      "false"
+      "false",
     );
     expect(
-      screen.queryByRole("button", { name: Label.BACK_BUTTON })
+      screen.queryByRole("button", { name: Label.BACK_BUTTON }),
     ).not.toBeInTheDocument();
     // Show the form and check it exists
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SHOW_ADD_FORM })
+      screen.getByRole("button", { name: Label.SHOW_ADD_FORM }),
     );
     expect(document.querySelector(".l-aside")).toHaveAttribute(
       "data-mobile-show-add-user",
-      "true"
+      "true",
     );
     // Click 'back' and it should return to the initial state.
     expect(
-      screen.getByRole("button", { name: Label.BACK_BUTTON })
+      screen.getByRole("button", { name: Label.BACK_BUTTON }),
     ).toBeInTheDocument();
     await userEvent.click(
-      screen.getByRole("button", { name: Label.BACK_BUTTON })
+      screen.getByRole("button", { name: Label.BACK_BUTTON }),
     );
     expect(document.querySelector(".l-aside")).toHaveAttribute(
       "data-mobile-show-add-user",
-      "false"
+      "false",
     );
     expect(
-      screen.queryByRole("button", { name: Label.BACK_BUTTON })
+      screen.queryByRole("button", { name: Label.BACK_BUTTON }),
     ).not.toBeInTheDocument();
   });
 });

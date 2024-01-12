@@ -100,8 +100,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             auditEvents,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(auditEvents);
   });
 
@@ -113,8 +113,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             auditEvents: auditEventsStateFactory.build({ items }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(items);
   });
 
@@ -125,8 +125,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             auditEvents: auditEventsStateFactory.build({ loaded: true }),
           }),
-        })
-      )
+        }),
+      ),
     ).toBe(true);
   });
 
@@ -137,8 +137,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             auditEvents: auditEventsStateFactory.build({ loading: true }),
           }),
-        })
-      )
+        }),
+      ),
     ).toBe(true);
   });
 
@@ -154,8 +154,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             auditEvents: auditEventsStateFactory.build({ items }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(["eggman", "spaceman"]);
   });
 
@@ -172,8 +172,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             auditEvents: auditEventsStateFactory.build({ items }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(["model1", "model2"]);
   });
 
@@ -190,8 +190,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             auditEvents: auditEventsStateFactory.build({ items }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(["Client", "Admin"]);
   });
 
@@ -208,8 +208,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             auditEvents: auditEventsStateFactory.build({ items }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(["Login", "Logout"]);
   });
 
@@ -221,8 +221,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             crossModelQuery,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(crossModelQuery);
   });
 
@@ -234,8 +234,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             crossModelQuery: crossModelQueryStateFactory.build({ results }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(results);
   });
 
@@ -247,8 +247,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             crossModelQuery: crossModelQueryStateFactory.build({ errors }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(errors);
   });
 
@@ -261,8 +261,8 @@ describe("selectors", () => {
               loaded: true,
             }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(true);
   });
 
@@ -275,8 +275,8 @@ describe("selectors", () => {
               loading: true,
             }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(true);
   });
 
@@ -299,8 +299,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(modelData);
   });
 
@@ -320,8 +320,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             controllers,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(controllers);
   });
 
@@ -333,8 +333,8 @@ describe("selectors", () => {
             juju: jujuStateFactory.build({
               controllers: null,
             }),
-          })
-        )
+          }),
+        ),
       ).toStrictEqual(0);
     });
 
@@ -366,8 +366,8 @@ describe("selectors", () => {
             juju: jujuStateFactory.build({
               controllers,
             }),
-          })
-        )
+          }),
+        ),
       ).toStrictEqual(3);
     });
   });
@@ -382,8 +382,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(modelWatcherData.abc123);
   });
 
@@ -397,8 +397,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(modelWatcherData.abc123.model);
   });
 
@@ -415,8 +415,8 @@ describe("selectors", () => {
               }),
             },
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual("abc123");
   });
 
@@ -434,8 +434,8 @@ describe("selectors", () => {
               }),
             },
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual("abc123");
   });
 
@@ -453,8 +453,8 @@ describe("selectors", () => {
               }),
             },
           }),
-        })
-      )
+        }),
+      ),
     ).toBeNull();
   });
 
@@ -468,8 +468,8 @@ describe("selectors", () => {
               abc123: model,
             },
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(model);
   });
 
@@ -510,8 +510,8 @@ describe("selectors", () => {
     });
     expect(
       getGroupedByStatusAndFilteredModelData({ cloud: ["aws", "google"] })(
-        state
-      )
+        state,
+      ),
     ).toStrictEqual({
       alert: [modelData.ghi789],
       blocked: [modelData.def456],
@@ -543,7 +543,9 @@ describe("selectors", () => {
       }),
     });
     expect(
-      getGroupedByCloudAndFilteredModelData({ cloud: ["aws", "google"] })(state)
+      getGroupedByCloudAndFilteredModelData({ cloud: ["aws", "google"] })(
+        state,
+      ),
     ).toStrictEqual({
       aws: [modelData.abc123],
       gce: [modelData.def456],
@@ -575,7 +577,9 @@ describe("selectors", () => {
       }),
     });
     expect(
-      getGroupedByOwnerAndFilteredModelData({ cloud: ["aws", "google"] })(state)
+      getGroupedByOwnerAndFilteredModelData({ cloud: ["aws", "google"] })(
+        state,
+      ),
     ).toStrictEqual({
       eggman: [modelData.abc123],
       spaceman: [modelData.def456],
@@ -851,7 +855,7 @@ describe("selectors", () => {
       }),
     });
     expect(getSelectedApplications()(state)).toStrictEqual(
-      state.juju.selectedApplications
+      state.juju.selectedApplications,
     );
   });
 
@@ -867,7 +871,7 @@ describe("selectors", () => {
       }),
     });
     expect(
-      getSelectedApplications("ch:amd64/focal/redis-k8s")(state)
+      getSelectedApplications("ch:amd64/focal/redis-k8s")(state),
     ).toStrictEqual([
       charmApplicationFactory.build({
         "charm-url": "ch:amd64/focal/redis-k8s",
@@ -891,7 +895,7 @@ describe("selectors", () => {
       charmInfoFactory.build({
         meta: { name: "Redis k8s" },
         url: "ch:amd64/focal/redis-k8s",
-      })
+      }),
     );
   });
 
@@ -899,7 +903,7 @@ describe("selectors", () => {
     expect(
       getModelUUIDFromList(
         "a model",
-        "eggman@external"
+        "eggman@external",
       )(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
@@ -911,8 +915,8 @@ describe("selectors", () => {
               }),
             },
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual("abc123");
   });
 
@@ -933,8 +937,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(modelWatcherData.abc123.annotations);
   });
 
@@ -952,8 +956,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(modelWatcherData.abc123.applications);
   });
 
@@ -969,8 +973,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             models,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(models);
   });
 
@@ -993,8 +997,8 @@ describe("selectors", () => {
             },
           }),
         }),
-        "abc123"
-      )
+        "abc123",
+      ),
     ).toStrictEqual("controller1/model1");
   });
 
@@ -1023,8 +1027,8 @@ describe("selectors", () => {
               ],
             },
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(["controller1/model1", "controller2/model2"]);
   });
 
@@ -1041,8 +1045,8 @@ describe("selectors", () => {
             models,
           }),
         }),
-        "abc123"
-      )
+        "abc123",
+      ),
     ).toStrictEqual(models.abc123);
   });
 
@@ -1057,8 +1061,8 @@ describe("selectors", () => {
             modelData,
           }),
         }),
-        "abc123"
-      )
+        "abc123",
+      ),
     ).toStrictEqual(modelData.abc123);
   });
 
@@ -1098,8 +1102,8 @@ describe("selectors", () => {
             },
           }),
         }),
-        "abc123"
-      )
+        "abc123",
+      ),
     ).toBe("read");
   });
 
@@ -1134,8 +1138,8 @@ describe("selectors", () => {
             },
           }),
         }),
-        "abc123"
-      )
+        "abc123",
+      ),
     ).toBe("superuser");
   });
 
@@ -1170,8 +1174,8 @@ describe("selectors", () => {
             },
           }),
         }),
-        "abc123"
-      )
+        "abc123",
+      ),
     ).toBe("eggman");
   });
 
@@ -1186,8 +1190,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             controllers,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...controllerFactory.build({ uuid: "def456" }),
       url: "wss://test.com/api",
@@ -1201,8 +1205,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelsLoaded: true,
           }),
-        })
-      )
+        }),
+      ),
     ).toBe(true);
   });
 
@@ -1220,8 +1224,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(modelWatcherData.abc123.units);
   });
 
@@ -1239,8 +1243,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(modelWatcherData.abc123.relations);
   });
 
@@ -1256,8 +1260,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(modelWatcherData.abc123.machines);
   });
 
@@ -1319,8 +1323,8 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       "ceph-mon": "blocked",
       dashboard: "alert",
@@ -1339,8 +1343,8 @@ describe("selectors", () => {
               abc123: modelListInfoFactory.build(),
             },
           }),
-        })
-      )
+        }),
+      ),
     ).toBe(true);
   });
 
@@ -1579,7 +1583,7 @@ describe("selectors", () => {
         }),
       });
       expect(
-        getFilteredModelData({ cloud: ["aws", "google"] })(state)
+        getFilteredModelData({ cloud: ["aws", "google"] })(state),
       ).toStrictEqual({
         abc123: modelData.abc123,
         def456: modelData.def456,
@@ -1611,8 +1615,8 @@ describe("selectors", () => {
       });
       expect(
         getFilteredModelData({ credential: ["eggman", "eggman@external"] })(
-          state
-        )
+          state,
+        ),
       ).toStrictEqual({
         abc123: modelData.abc123,
         ghi789: modelData.ghi789,
@@ -1643,7 +1647,7 @@ describe("selectors", () => {
         }),
       });
       expect(
-        getFilteredModelData({ region: ["west", "north"] })(state)
+        getFilteredModelData({ region: ["west", "north"] })(state),
       ).toStrictEqual({
         def456: modelData.def456,
         ghi789: modelData.ghi789,
@@ -1674,7 +1678,7 @@ describe("selectors", () => {
         }),
       });
       expect(
-        getFilteredModelData({ owner: ["eggman", "eggman@external"] })(state)
+        getFilteredModelData({ owner: ["eggman", "eggman@external"] })(state),
       ).toStrictEqual({
         abc123: modelData.abc123,
         ghi789: modelData.ghi789,

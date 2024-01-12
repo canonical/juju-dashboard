@@ -117,7 +117,7 @@ describe("ModelDetails", () => {
     // Wait for the component to be rendered so that async methods have completed.
     await screen.findByTestId("model");
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
@@ -135,8 +135,8 @@ describe("ModelDetails", () => {
         .getActions()
         .find(
           (dispatch) =>
-            dispatch.type === jujuActions.populateMissingAllWatcherData.type
-        )
+            dispatch.type === jujuActions.populateMissingAllWatcherData.type,
+        ),
     ).toBeUndefined();
   });
 
@@ -200,21 +200,21 @@ describe("ModelDetails", () => {
       expect(document.querySelector(".p-notification--negative")).toBeVisible();
     });
     expect(
-      document.querySelector(".p-notification--negative")
+      document.querySelector(".p-notification--negative"),
     ).toHaveTextContent(EntityDetailsLabel.MODEL_WATCHER_TIMEOUT);
   });
 
   it("should display error if fullStatus request fails", async () => {
     client.conn.info.serverVersion = "3.1.99";
     client.conn.facades.client.fullStatus.mockRejectedValue(
-      Error("fullStatus failed")
+      Error("fullStatus failed"),
     );
     renderComponent(<ModelDetails />, { path, url, state });
     await waitFor(() => {
       expect(document.querySelector(".p-notification--negative")).toBeVisible();
     });
     expect(
-      document.querySelector(".p-notification--negative")
+      document.querySelector(".p-notification--negative"),
     ).toHaveTextContent("fullStatus failed");
   });
 
@@ -226,25 +226,25 @@ describe("ModelDetails", () => {
         conn: client.conn,
         watcherHandle: { "watcher-id": "1" },
         pingerIntervalId: 1,
-      })
+      }),
     );
     jest
       .spyOn(juju, "stopModelWatcher")
       .mockImplementation(
-        jest.fn().mockRejectedValue(new Error("Failed to stop model watcher!"))
+        jest.fn().mockRejectedValue(new Error("Failed to stop model watcher!")),
       );
 
     const {
       result: { unmount },
     } = renderComponent(<ModelDetails />, { path, url, state });
     await waitFor(() =>
-      expect(juju.startModelWatcher).toHaveBeenCalledTimes(1)
+      expect(juju.startModelWatcher).toHaveBeenCalledTimes(1),
     );
     unmount();
     await waitFor(() => expect(juju.stopModelWatcher).toHaveBeenCalledTimes(1));
     expect(console.error).toHaveBeenCalledWith(
       ModelDetailsLabel.MODEL_WATCHER_ERROR,
-      new Error("Failed to stop model watcher!")
+      new Error("Failed to stop model watcher!"),
     );
     console.error = consoleError;
   });

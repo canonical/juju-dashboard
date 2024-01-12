@@ -31,7 +31,7 @@ describe("ResultsModelLink", () => {
       <button onClick={onClick}>
         <ResultsModelLink uuid="abc123">abc123</ResultsModelLink>
       </button>,
-      { state }
+      { state },
     );
     await userEvent.click(screen.getByRole("link", { name: "abc123:" }));
     expect(onClick).not.toHaveBeenCalled();

@@ -34,7 +34,7 @@ const ResultsBlock = (): JSX.Element | null => {
       // Clear cross-model query results when component is unmounted.
       dispatch(jujuActions.clearCrossModelQuery());
     },
-    [dispatch]
+    [dispatch],
   );
 
   // The loading state needs to be first so that it appears even if the results
@@ -60,7 +60,7 @@ const ResultsBlock = (): JSX.Element | null => {
   if (
     !crossModelQueryResults ||
     Object.values(crossModelQueryResults).every((resultArray) =>
-      resultArray.every((result) => result === null)
+      resultArray.every((result) => result === null),
     )
   ) {
     return (

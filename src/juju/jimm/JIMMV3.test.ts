@@ -23,7 +23,7 @@ describe("JIMMV3", () => {
         params: {},
       },
       expect.any(Function),
-      expect.any(Function)
+      expect.any(Function),
     );
   });
 
@@ -38,7 +38,7 @@ describe("JIMMV3", () => {
         params: { "user-tag": "user-eggman@external" },
       },
       expect.any(Function),
-      expect.any(Function)
+      expect.any(Function),
     );
   });
 
@@ -53,7 +53,7 @@ describe("JIMMV3", () => {
         params: {},
       },
       expect.any(Function),
-      expect.any(Function)
+      expect.any(Function),
     );
   });
 });

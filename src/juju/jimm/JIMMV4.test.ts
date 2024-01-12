@@ -33,7 +33,7 @@ describe("JIMMV4", () => {
         },
       },
       expect.any(Function),
-      expect.any(Function)
+      expect.any(Function),
     );
   });
 
@@ -48,7 +48,7 @@ describe("JIMMV4", () => {
         params: { type: "jq", query: "." },
       },
       expect.any(Function),
-      expect.any(Function)
+      expect.any(Function),
     );
   });
 });

@@ -3,7 +3,7 @@
   has been allowed.
 */
 
-import type { Middleware } from "redux";
+import { isAction, type Middleware } from "redux";
 
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -11,8 +11,9 @@ import { isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState, Store } from "store/store";
+import { isPayloadAction } from "types";
 
-function error(name: string, wsControllerURL: string) {
+function error(name: string, wsControllerURL?: string | null) {
   console.error(
     "Unable to perform action: ",
     name,
@@ -21,7 +22,7 @@ function error(name: string, wsControllerURL: string) {
           "This shouldn't be able to happen!"
       : ". Either 'wsControllerURL' needs to be added to the dispatched " +
           "action or add the action to the list of actions allowed to be " +
-          "performed while logged out."
+          "performed while logged out.",
   );
 }
 
@@ -29,7 +30,7 @@ export const checkLoggedIn = (state: RootState, wsControllerURL: string) => {
   if (!wsControllerURL) {
     console.error(
       "Unable to determine logged in status. " +
-        "'wsControllerURL' was not provided in the action that was dispatched."
+        "'wsControllerURL' was not provided in the action that was dispatched.",
     );
   }
   return isLoggedIn(state, wsControllerURL);
@@ -100,17 +101,22 @@ export const checkAuthMiddleware: Middleware<
     ];
 
     const state = getState();
-    const wsControllerURL = action.payload?.wsControllerURL;
 
     // If the action is a function then it's probably a thunk.
     if (typeof action === "function") {
       // Authentication checks are done by the thunks.
       return await next(action);
-    } else {
+    } else if (isAction(action)) {
+      const wsControllerURL =
+        isPayloadAction(action) &&
+        "wsControllerURL" in action.payload &&
+        typeof action.payload.wsControllerURL === "string"
+          ? action.payload.wsControllerURL
+          : null;
       if (
         actionAllowlist.includes(action.type) ||
         thunkAllowlist.includes(action.type) ||
-        checkLoggedIn(state, wsControllerURL)
+        (wsControllerURL && checkLoggedIn(state, wsControllerURL))
       ) {
         return next(action);
       } else {

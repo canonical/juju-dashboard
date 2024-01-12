@@ -19,7 +19,7 @@ describe("Base Layout", () => {
       <BaseLayout>
         <p>foo</p>
       </BaseLayout>,
-      { state }
+      { state },
     );
     expect(document.querySelector(".l-navigation")).toBeInTheDocument();
   });
@@ -29,7 +29,7 @@ describe("Base Layout", () => {
       <BaseLayout>
         <p>foo</p>
       </BaseLayout>,
-      { state }
+      { state },
     );
     const main = screen.getByTestId("main-children");
     expect(within(main).getByText("foo")).toBeInTheDocument();
@@ -47,13 +47,13 @@ describe("Base Layout", () => {
       <BaseLayout>
         <p>foo</p>
       </BaseLayout>,
-      { state }
+      { state },
     );
     const logo = screen.getAllByAltText("Juju")[0];
     expect(logo).toHaveAttribute("src", "juju-text.svg");
     expect(screen.getAllByRole("link", { name: "Juju" })[0]).toHaveAttribute(
       "href",
-      "https://juju.is"
+      "https://juju.is",
     );
   });
 
@@ -61,13 +61,13 @@ describe("Base Layout", () => {
     renderComponent(
       <BaseLayout>
         <p>foo</p>
-      </BaseLayout>
+      </BaseLayout>,
     );
     const logo = screen.getAllByAltText("JAAS")[0];
     expect(logo).toHaveAttribute("src", "jaas-text.svg");
     expect(screen.getAllByRole("link", { name: "JAAS" })[0]).toHaveAttribute(
       "href",
-      "https://jaas.ai"
+      "https://jaas.ai",
     );
   });
 
@@ -76,7 +76,7 @@ describe("Base Layout", () => {
       <BaseLayout>
         <p>foo</p>
       </BaseLayout>,
-      { state, path: "/models", url: "/models/" }
+      { state, path: "/models", url: "/models/" },
     );
     fireEvent.offline(window);
     expect(screen.getByText(Label.OFFLINE)).toBeInTheDocument();
@@ -87,11 +87,11 @@ describe("Base Layout", () => {
       <BaseLayout>
         <p>foo</p>
       </BaseLayout>,
-      { state, path: "/models", url: "/models/" }
+      { state, path: "/models", url: "/models/" },
     );
     fireEvent.online(window);
     expect(
-      screen.getByText(/Your dashboard is now back online/)
+      screen.getByText(/Your dashboard is now back online/),
     ).toBeInTheDocument();
   });
 });

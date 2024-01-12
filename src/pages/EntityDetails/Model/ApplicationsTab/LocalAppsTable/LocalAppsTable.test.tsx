@@ -121,7 +121,7 @@ describe("LocalAppsTable", () => {
       <LocalAppsTable
         applications={state.juju.modelWatcherData?.test123.applications}
       />,
-      { path, url, state }
+      { path, url, state },
     );
     expect(screen.queryAllByRole("row")).toHaveLength(8);
   });
@@ -131,11 +131,11 @@ describe("LocalAppsTable", () => {
       <LocalAppsTable
         applications={state.juju.modelWatcherData?.test123.applications}
       />,
-      { path, url, state }
+      { path, url, state },
     );
     // first column not to be a checkbox
     expect(
-      screen.queryAllByRole("columnheader")[0].querySelector("input")
+      screen.queryAllByRole("columnheader")[0].querySelector("input"),
     ).not.toBeInTheDocument();
   });
 
@@ -148,11 +148,11 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     // first column to be a checkbox
     expect(
-      screen.queryAllByRole("columnheader")[0].querySelector("input")
+      screen.queryAllByRole("columnheader")[0].querySelector("input"),
     ).toBeInTheDocument();
   });
 
@@ -176,11 +176,11 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     // The first column should not have a checkbox.
     expect(
-      screen.queryAllByRole("columnheader")[0].querySelector("input")
+      screen.queryAllByRole("columnheader")[0].querySelector("input"),
     ).not.toBeInTheDocument();
   });
 
@@ -193,7 +193,7 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     await userEvent.click(screen.getByTestId("select-app-db1"));
     const actions = store.getActions();
@@ -203,7 +203,7 @@ describe("LocalAppsTable", () => {
       selectedApplications: db1 ? [db1] : [],
     });
     expect(
-      actions.find((action) => action.type === expectedAction.type)
+      actions.find((action) => action.type === expectedAction.type),
     ).toMatchObject(expectedAction);
   });
 
@@ -221,7 +221,7 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     expect(screen.getByTestId("select-app-db1")).toBeChecked();
   });
@@ -235,7 +235,7 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     await userEvent.click(screen.getByTestId("select-all-apps"));
     const actions = store.getActions();
@@ -245,13 +245,13 @@ describe("LocalAppsTable", () => {
       selectedApplications: Object.values(apps ?? {}),
     });
     const action = actions.find(
-      (action) => action.type === expectedAction.type
+      (action) => action.type === expectedAction.type,
     );
     expect(action.payload.selectedApplications).toHaveLength(
-      expectedAction.payload.selectedApplications.length
+      expectedAction.payload.selectedApplications.length,
     );
     expect(action.payload.selectedApplications).toEqual(
-      expect.arrayContaining(expectedAction.payload.selectedApplications)
+      expect.arrayContaining(expectedAction.payload.selectedApplications),
     );
   });
 
@@ -268,7 +268,7 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     await userEvent.click(screen.getByTestId("select-all-apps"));
     expect(screen.getByTestId("select-all-apps")).toBeChecked();
@@ -279,13 +279,13 @@ describe("LocalAppsTable", () => {
       selectedApplications: Object.values(apps ?? {}),
     });
     const selectActions = actions.filter(
-      (action) => action.type === expectedAction.type
+      (action) => action.type === expectedAction.type,
     );
     expect(
-      selectActions[selectActions.length - 1].payload.selectedApplications
+      selectActions[selectActions.length - 1].payload.selectedApplications,
     ).toHaveLength(0);
     expect(
-      selectActions[selectActions.length - 1].payload.selectedApplications
+      selectActions[selectActions.length - 1].payload.selectedApplications,
     ).toStrictEqual([]);
   });
 
@@ -302,7 +302,7 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     expect(screen.getByTestId("select-all-apps")).toBeChecked();
   });
@@ -321,7 +321,7 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     expect(screen.getByTestId("select-all-apps")).not.toBeChecked();
   });
@@ -331,10 +331,10 @@ describe("LocalAppsTable", () => {
       <LocalAppsTable
         applications={state.juju.modelWatcherData?.test123.applications}
       />,
-      { path, url, state }
+      { path, url, state },
     );
     expect(
-      screen.queryByRole("button", { name: /run action/i })
+      screen.queryByRole("button", { name: /run action/i }),
     ).not.toBeInTheDocument();
   });
 
@@ -347,10 +347,10 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     expect(
-      screen.queryByRole("button", { name: /run action/i })
+      screen.queryByRole("button", { name: /run action/i }),
     ).toBeInTheDocument();
   });
 
@@ -374,10 +374,10 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     expect(
-      screen.queryByRole("button", { name: /run action/i })
+      screen.queryByRole("button", { name: /run action/i }),
     ).not.toBeInTheDocument();
   });
 
@@ -390,10 +390,10 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     expect(
-      screen.queryByRole("button", { name: /run action/i })
+      screen.queryByRole("button", { name: /run action/i }),
     ).toBeDisabled();
   });
 
@@ -407,10 +407,10 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     expect(
-      screen.queryByRole("button", { name: /run action/i })
+      screen.queryByRole("button", { name: /run action/i }),
     ).not.toBeDisabled();
   });
 
@@ -424,12 +424,12 @@ describe("LocalAppsTable", () => {
         path,
         url: searchURL,
         state,
-      }
+      },
     );
     expect(window.location.search).toEqual("?filterQuery=db");
     await userEvent.click(screen.getByRole("button", { name: /run action/i }));
     expect(window.location.search).toEqual(
-      "?filterQuery=db&panel=select-charms-and-actions"
+      "?filterQuery=db&panel=select-charms-and-actions",
     );
   });
 });

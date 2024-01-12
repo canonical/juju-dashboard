@@ -41,7 +41,7 @@ const LocalAppsTable = ({ applications }: Props) => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const applicationStatuses = useSelector(
-    getAllModelApplicationStatus(modelUUID)
+    getAllModelApplicationStatus(modelUUID),
   );
   const selectedApplications = useSelector(getSelectedApplications());
   const canConfigureModel = useCanConfigureModel();
@@ -57,7 +57,7 @@ const LocalAppsTable = ({ applications }: Props) => {
     filterQuery: null,
   });
   const { handleSelect, handleSelectAll, selectAll } = useTableSelect(
-    applications ? Object.values(applications) : []
+    applications ? Object.values(applications) : [],
   );
   const selectable =
     queryParams.filterQuery && applications && canConfigureModel;
@@ -69,7 +69,7 @@ const LocalAppsTable = ({ applications }: Props) => {
           applications,
           applicationStatuses,
           { modelName, userName },
-          queryParams
+          queryParams,
         )
       : [];
   }, [applications, applicationStatuses, modelName, userName, queryParams]);

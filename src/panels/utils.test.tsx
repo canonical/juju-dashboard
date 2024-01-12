@@ -12,7 +12,7 @@ describe("generatePanelTableRows", () => {
             { th: "th2", td: "td2" },
           ])}
         </tbody>
-      </table>
+      </table>,
     );
     const headers = screen.getAllByRole("columnheader");
     expect(headers).toHaveLength(2);

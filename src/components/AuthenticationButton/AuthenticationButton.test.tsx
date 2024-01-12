@@ -11,11 +11,11 @@ describe("AuthenticationButton", () => {
     renderComponent(
       <AuthenticationButton visitURL="http://example.com">
         Log in
-      </AuthenticationButton>
+      </AuthenticationButton>,
     );
     expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute(
       "href",
-      "http://example.com"
+      "http://example.com",
     );
   });
 
@@ -24,13 +24,13 @@ describe("AuthenticationButton", () => {
     const { store } = renderComponent(
       <AuthenticationButton onClick={onClick} visitURL="http://example.com">
         Log in
-      </AuthenticationButton>
+      </AuthenticationButton>,
     );
     await userEvent.click(screen.getByRole("link", { name: "Log in" }));
     expect(onClick).toHaveBeenCalled();
     const action = generalActions.removeVisitURL("http://example.com");
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 });

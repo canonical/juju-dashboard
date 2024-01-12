@@ -29,7 +29,7 @@ export const logOut = createAsyncThunk<
   bakery.storage.clear();
   localStorage.removeItem("additionalControllers");
   Object.entries(pingerIntervalIds ?? {}).forEach((pingerIntervalId) =>
-    clearInterval(pingerIntervalId[1])
+    clearInterval(pingerIntervalId[1]),
   );
   thunkAPI.dispatch(jujuActions.clearModelData());
   thunkAPI.dispatch(jujuActions.clearControllerData());
@@ -62,13 +62,13 @@ export const connectAndStartPolling = createAsyncThunk<
           generalActions.storeUserPass({
             wsControllerURL: controller[0],
             credential: controller[1],
-          })
+          }),
         );
         thunkAPI.dispatch(
           jujuActions.updateControllerList({
             wsControllerURL: controller[0],
             controllers: [{ additionalController: true }],
-          })
+          }),
         );
       });
     }
@@ -113,7 +113,7 @@ export const connectAndListModels = createAsyncThunk<
       appActions.connectAndPollControllers({
         controllers: controllerList,
         isJuju: config?.isJuju ?? false,
-      })
+      }),
     );
   } catch (error) {
     // XXX Surface error to UI.

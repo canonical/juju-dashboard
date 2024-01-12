@@ -9,7 +9,7 @@ describe("ActionBar", () => {
     renderComponent(
       <ActionBar>
         <button>Action</button>
-      </ActionBar>
+      </ActionBar>,
     );
     expect(screen.getByRole("button", { name: "Action" })).toBeInTheDocument();
   });

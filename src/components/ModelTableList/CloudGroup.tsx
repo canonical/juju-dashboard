@@ -42,7 +42,7 @@ export default function CloudGroup({ filters }: Props) {
   const controllers = useSelector(getControllerData);
 
   const groupedAndFilteredData = useSelector(
-    getGroupedByCloudAndFilteredModelData(filters)
+    getGroupedByCloudAndFilteredModelData(filters),
   );
 
   const [, setPanelQs] = useQueryParams({
@@ -167,7 +167,7 @@ export default function CloudGroup({ filters }: Props) {
         })}
         rows={cloudModels}
         sortable
-      />
+      />,
     );
   }
   return (

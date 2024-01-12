@@ -19,8 +19,8 @@ const RelationIcon = ({ applicationName, applications }: Props) => {
     "charm-url" in application
       ? application["charm-url"]
       : "charm" in application
-      ? application["charm"]
-      : null;
+        ? application["charm"]
+        : null;
   if (!charmId) {
     return null;
   }

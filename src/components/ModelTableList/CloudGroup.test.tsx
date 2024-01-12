@@ -118,10 +118,10 @@ describe("CloudGroup", () => {
     expect(
       within(firstContentRow).getByRole("button", {
         name: "Access",
-      })
+      }),
     ).toBeInTheDocument();
     expect(within(firstContentRow).getAllByRole("gridcell")[7]).toHaveClass(
-      "lrg-screen-access-cell"
+      "lrg-screen-access-cell",
     );
   });
 });

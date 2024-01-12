@@ -64,7 +64,7 @@ const AuditLogsTablePagination = ({
       setQueryParams({ page: null }, { replace: true });
       dispatch(jujuActions.updateAuditEventsLimit(Number(e.target.value)));
     },
-    [dispatch, setQueryParams]
+    [dispatch, setQueryParams],
   );
 
   return (

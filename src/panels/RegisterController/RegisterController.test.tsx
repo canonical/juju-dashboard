@@ -27,7 +27,7 @@ describe("RegisterController", () => {
     jest
       .spyOn(appThunks, "connectAndStartPolling")
       .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+        jest.fn().mockReturnValue({ type: "connectAndStartPolling" }),
       );
     jest.spyOn(dashboardStore, "useAppDispatch").mockImplementation(
       jest.fn().mockReturnValue((action: unknown) => {
@@ -40,31 +40,31 @@ describe("RegisterController", () => {
           return Promise.resolve({ catch: jest.fn() });
         }
         return null;
-      })
+      }),
     );
     const { store } = renderComponent(<RegisterController />);
     await userEvent.type(
       screen.getByRole("textbox", {
         name: "Name",
       }),
-      "controller1"
+      "controller1",
     );
     await userEvent.type(
       screen.getByRole("textbox", {
         name: "Host",
       }),
-      "1.2.3.4:567"
+      "1.2.3.4:567",
     );
     await userEvent.type(
       screen.getByRole("textbox", {
         name: "Username",
       }),
-      "eggman@external"
+      "eggman@external",
     );
     await userEvent.click(
       screen.getByRole("checkbox", {
         name: "The SSL certificate, if any, has been accepted. *",
-      })
+      }),
     );
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "")).toStrictEqual([
@@ -81,7 +81,7 @@ describe("RegisterController", () => {
     expect(
       store
         .getActions()
-        .find((action) => action.type === "connectAndStartPolling")
+        .find((action) => action.type === "connectAndStartPolling"),
     ).toBeTruthy();
   });
 
@@ -91,17 +91,17 @@ describe("RegisterController", () => {
       screen.getByRole("textbox", {
         name: "Username",
       }),
-      "eggman@external"
+      "eggman@external",
     );
     await userEvent.type(screen.getByLabelText("Password"), "verysecure123");
     expect(screen.getByRole("textbox", { name: "Username" })).toHaveValue(
-      "eggman@external"
+      "eggman@external",
     );
     expect(screen.getByLabelText("Password")).toHaveValue("verysecure123");
     await userEvent.click(
       screen.getByRole("checkbox", {
         name: "This controller uses an external identity provider.",
-      })
+      }),
     );
     expect(screen.getByRole("textbox", { name: "Username" })).toHaveValue("");
     expect(screen.getByRole("textbox", { name: "Username" })).toBeDisabled();
@@ -115,10 +115,10 @@ describe("RegisterController", () => {
     await userEvent.click(
       screen.getByRole("checkbox", {
         name: "The SSL certificate, if any, has been accepted. *",
-      })
+      }),
     );
     expect(
-      screen.getByRole("button", { name: Label.SUBMIT })
+      screen.getByRole("button", { name: Label.SUBMIT }),
     ).not.toBeDisabled();
   });
 
@@ -126,7 +126,7 @@ describe("RegisterController", () => {
     jest
       .spyOn(appThunks, "connectAndStartPolling")
       .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+        jest.fn().mockReturnValue({ type: "connectAndStartPolling" }),
       );
     jest.spyOn(dashboardStore, "useAppDispatch").mockImplementation(
       jest.fn().mockReturnValue((action: unknown) => {
@@ -136,43 +136,43 @@ describe("RegisterController", () => {
           action.type === "connectAndStartPolling"
         ) {
           return Promise.reject(
-            new Error("Error while trying to dispatch connectAndStartPolling!")
+            new Error("Error while trying to dispatch connectAndStartPolling!"),
           );
         }
         return null;
-      })
+      }),
     );
     renderComponent(<RegisterController />);
     await userEvent.type(
       screen.getByRole("textbox", {
         name: "Name",
       }),
-      "controller1"
+      "controller1",
     );
     await userEvent.type(
       screen.getByRole("textbox", {
         name: "Host",
       }),
-      "1.2.3.4:567"
+      "1.2.3.4:567",
     );
     await userEvent.type(
       screen.getByRole("textbox", {
         name: "Username",
       }),
-      "eggman@external"
+      "eggman@external",
     );
     await userEvent.click(
       screen.getByRole("checkbox", {
         name: "The SSL certificate, if any, has been accepted. *",
-      })
+      }),
     );
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     expect(appThunks.connectAndStartPolling).toHaveBeenCalledTimes(1);
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
         Label.POLLING_ERROR,
-        new Error("Error while trying to dispatch connectAndStartPolling!")
-      )
+        new Error("Error while trying to dispatch connectAndStartPolling!"),
+      ),
     );
   });
 });

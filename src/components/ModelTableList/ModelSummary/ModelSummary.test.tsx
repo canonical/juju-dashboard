@@ -28,14 +28,14 @@ describe("ModelSummary", () => {
       },
     });
     renderComponent(
-      <ModelSummary modelData={modelData} ownerTag="user-eggman@external" />
+      <ModelSummary modelData={modelData} ownerTag="user-eggman@external" />,
     );
     expect(screen.getByRole("link", { name: Label.APPS })).toHaveTextContent(
-      "1"
+      "1",
     );
     expect(screen.getByLabelText(Label.UNITS)).toHaveTextContent("3");
     expect(
-      screen.getByRole("link", { name: Label.MACHINES })
+      screen.getByRole("link", { name: Label.MACHINES }),
     ).toHaveTextContent("2");
   });
 });

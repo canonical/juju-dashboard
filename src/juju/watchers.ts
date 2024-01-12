@@ -54,7 +54,7 @@ function _processDelta<M extends WatcherModelData, E extends keyof M>(
   delta: DeltaMessageData,
   modelData: M,
   entityType: E,
-  entityId: string
+  entityId: string,
 ): void {
   if (actionType === DeltaChangeTypes.CHANGE) {
     // The 'change' delta is used for adding and modifying entities so no need
@@ -72,7 +72,7 @@ function _processDelta<M extends WatcherModelData, E extends keyof M>(
 
 export function processDeltas(
   modelWatcherData?: ModelWatcherData,
-  deltas?: AllWatcherDelta[]
+  deltas?: AllWatcherDelta[],
 ) {
   if (!modelWatcherData || !deltas) {
     return;
@@ -88,7 +88,7 @@ export function processDeltas(
       null,
       deltaActionType,
       deltaData,
-      modelData
+      modelData,
     );
     if (deltaEntityType === DeltaEntityTypes.ACTION) {
       _process(ReduxDeltaEntityTypes.ACTIONS, deltaData.id);
@@ -142,7 +142,7 @@ export function processDeltas(
           } else {
             modelData.applications[applicationName]["unit-count"] = count;
           }
-        }
+        },
       );
     }
   });

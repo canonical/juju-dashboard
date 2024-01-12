@@ -26,7 +26,7 @@ export const addControllerCloudRegion = createAsyncThunk<
     // the update. Without this the modifications were silently failing,
     // possibly because the data was being made immutable by Immer.
     const controllers = cloneDeep(
-      thunkAPI.getState()?.juju?.controllers?.[wsControllerURL]
+      thunkAPI.getState()?.juju?.controllers?.[wsControllerURL],
     );
     if (!modelInfo.results?.length) {
       // No model info results returned.
@@ -50,12 +50,12 @@ export const addControllerCloudRegion = createAsyncThunk<
         jujuActions.updateControllerList({
           controllers: updatedControllers,
           wsControllerURL,
-        })
+        }),
       );
     } else {
       console.log(
         "attempting to update non-existent controller:",
-        wsControllerURL
+        wsControllerURL,
       );
     }
   },
@@ -63,5 +63,5 @@ export const addControllerCloudRegion = createAsyncThunk<
     condition: ({ wsControllerURL }, thunkAPI) => {
       return checkLoggedIn(thunkAPI.getState(), wsControllerURL);
     },
-  }
+  },
 );

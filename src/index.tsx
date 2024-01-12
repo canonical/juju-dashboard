@@ -44,7 +44,7 @@ if (
 
 const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\//);
 export const getControllerAPIEndpointErrors = (
-  controllerAPIEndpoint?: string
+  controllerAPIEndpoint?: string,
 ) => {
   if (!controllerAPIEndpoint) {
     return "controllerAPIEndpoint is not set.";
@@ -105,7 +105,7 @@ function bootstrap() {
     config.controllerAPIEndpoint = `${protocol}://${window.location.host}/api`;
   }
   const controllerEndpointError = getControllerAPIEndpointErrors(
-    config?.controllerAPIEndpoint
+    config?.controllerAPIEndpoint,
   );
   error = error ?? controllerEndpointError;
   if (error || !config) {
@@ -114,7 +114,7 @@ function bootstrap() {
         <Notification severity="negative" title="Error">
           The dashboard is not configured correctly. {error}
         </Notification>
-      </Strip>
+      </Strip>,
     );
     console.error(error);
     return;
@@ -154,7 +154,7 @@ function bootstrap() {
       <StrictMode>
         <App />
       </StrictMode>
-    </Provider>
+    </Provider>,
   );
 }
 

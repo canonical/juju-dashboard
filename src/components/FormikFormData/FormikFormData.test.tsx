@@ -19,7 +19,7 @@ describe("FormikFormData", () => {
         <FormikFormData onFormChange={changeHandler} onSetup={setupHandler}>
           {children}
         </FormikFormData>
-      </Formik>
+      </Formik>,
     );
     return { changeHandler, setupHandler };
   }

@@ -38,7 +38,7 @@ const ConfigField = <V extends ConfigValue>({
   const [inputFocused, setInputFocused] = useState(false);
   const [inputChanged, setInputChanged] = useState(false);
   const [showUseDefault, setShowUseDefault] = useState(
-    config.value !== config.default
+    config.value !== config.default,
   );
   const [showDescription, setShowDescription] = useState(false);
   const descriptionRef = useRef<HTMLDivElement>(null);
@@ -62,14 +62,14 @@ const ConfigField = <V extends ConfigValue>({
       setMaxDescriptionHeight(
         `${
           (descriptionRef.current.firstChild as HTMLPreElement).clientHeight
-        }px`
+        }px`,
       );
     }
   }, [maxDescriptionHeight]);
 
   const resizeObserver = useMemo(
     () => new ResizeObserver(updateDescriptionHeight),
-    [updateDescriptionHeight]
+    [updateDescriptionHeight],
   );
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import { actions, reducer } from "./slice";
 describe("reducers", () => {
   it("default", () => {
     expect(reducer(undefined, { type: "", payload: true })).toStrictEqual(
-      generalStateFactory.build()
+      generalStateFactory.build(),
     );
   });
 
@@ -25,8 +25,8 @@ describe("reducers", () => {
         actions.updateControllerConnection({
           wsControllerURL: "wss://example.com",
           info: { controllerTag: "new-info" },
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       controllerConnections: {
@@ -47,8 +47,8 @@ describe("reducers", () => {
           features: {
             crossModelQueries: true,
           },
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       controllerFeatures: {
@@ -80,8 +80,8 @@ describe("reducers", () => {
         actions.storeLoginError({
           wsControllerURL: "wss://example.com",
           error: "new error",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       loginErrors: { "wss://example.com": "new error" },
@@ -98,8 +98,8 @@ describe("reducers", () => {
         actions.storeLoginError({
           wsControllerURL: "wss://example.com",
           error: "new error",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       loginErrors: { "wss://example.com": "new error" },
@@ -111,7 +111,7 @@ describe("reducers", () => {
       connectionError: "old error",
     });
     expect(
-      reducer(state, actions.storeConnectionError("new error"))
+      reducer(state, actions.storeConnectionError("new error")),
     ).toStrictEqual({
       ...state,
       connectionError: "new error",
@@ -129,8 +129,8 @@ describe("reducers", () => {
         actions.storeUserPass({
           wsControllerURL: "wss://example.com",
           credential,
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       credentials: {
@@ -225,8 +225,8 @@ describe("reducers", () => {
         actions.updatePingerIntervalId({
           wsControllerURL: "wss://example.com",
           intervalId: 19,
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       pingerIntervalIds: {
