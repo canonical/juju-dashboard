@@ -120,12 +120,10 @@ export const getControllerFeatures = createSelector(
 export const getControllerFeatureEnabled = createSelector(
   [
     getControllerFeatures,
-    (_state, wsControllerURL, feature: keyof ControllerFeatures) => ({
-      wsControllerURL,
-      feature,
-    }),
+    (_state, wsControllerURL) => wsControllerURL,
+    (_state, _wsControllerURL, feature: keyof ControllerFeatures) => feature,
   ],
-  (controllerFeatures, { wsControllerURL, feature }) =>
+  (controllerFeatures, wsControllerURL, feature) =>
     controllerFeatures?.[wsControllerURL]?.[feature],
 );
 

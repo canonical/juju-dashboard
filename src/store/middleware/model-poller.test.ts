@@ -1,5 +1,5 @@
 import type { Client, Connection, Transport } from "@canonical/jujulib";
-import type { AnyAction, MiddlewareAPI } from "redux";
+import type { UnknownAction, MiddlewareAPI } from "redux";
 
 import * as jujuModule from "juju/api";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
@@ -98,11 +98,13 @@ describe("model poller", () => {
     } as unknown as Client;
   });
 
-  const runMiddleware = async (actionOverrides?: Partial<AnyAction>) => {
+  const runMiddleware = async (actionOverrides?: Partial<UnknownAction>) => {
     const action = {
       ...appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
+        // Turn off polling to prevent the middleware running indefinitely.
+        poll: 0,
       }),
       ...(actionOverrides ?? {}),
     };
@@ -132,7 +134,9 @@ describe("model poller", () => {
   });
 
   it("does not pass through matched actions", async () => {
-    await runMiddleware({ payload: { controllers: [], isJuju: true } });
+    await runMiddleware({
+      payload: { controllers: [], isJuju: true, poll: 0 },
+    });
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -387,6 +391,7 @@ describe("model poller", () => {
       payload: {
         controllers,
         isJuju: false,
+        poll: 0,
       },
     });
     expect(next).not.toHaveBeenCalled();
@@ -448,8 +453,11 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    await runMiddleware();
-    jest.advanceTimersByTime(30000);
+    runMiddleware({ payload: { controllers, isJuju: true, poll: 2 } }).catch(
+      console.error,
+    );
+    await new Promise(jest.requireActual("timers").setImmediate);
+    jest.advanceTimersByTime(3000000);
     // Resolve the async calls again.
     await new Promise(jest.requireActual("timers").setImmediate);
     expect(next).not.toHaveBeenCalled();

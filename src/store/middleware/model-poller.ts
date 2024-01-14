@@ -190,6 +190,7 @@ export const modelPollerMiddleware: Middleware<
           }
         }
 
+        let pollCount = 0;
         do {
           const identity = conn?.info?.user?.identity;
           if (identity) {
@@ -216,6 +217,13 @@ export const modelPollerMiddleware: Middleware<
             }
           }
 
+          // Allow the polling to run a certain number of times in tests.
+          if (process.env.NODE_ENV === "test") {
+            if (pollCount === action.payload.poll) {
+              break;
+            }
+            pollCount++;
+          }
           // Wait 30s then start again.
           await new Promise((resolve) => {
             setTimeout(() => {

@@ -1,4 +1,4 @@
-import type { AnyAction } from "@reduxjs/toolkit";
+import type { UnknownAction } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useCallback } from "react";
 import type { TypedUseSelectorHook } from "react-redux";
@@ -52,8 +52,8 @@ export const useAppDispatch: () => AppDispatch = useDispatch;
 export const usePromiseDispatch = () => {
   const dispatch = useAppDispatch();
   return useCallback(
-    <Result>(action: AnyAction) =>
-      (dispatch as (action: AnyAction) => Promise<Result>)(action),
+    <Result>(action: UnknownAction) =>
+      (dispatch as (action: UnknownAction) => Promise<Result>)(action),
     [dispatch],
   );
 };
