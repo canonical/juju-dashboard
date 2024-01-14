@@ -148,16 +148,12 @@ describe("LogIn", () => {
     // for. This is necessary because we don't have a full store set up which
     // can dispatch thunks (and we don't need to handle the thunk, just know it
     // was dispatched).
-    jest
-      .spyOn(appThunks, "connectAndStartPolling")
-      .mockImplementation(
-        jest
-          .fn()
-          .mockReturnValue({
-            type: "connectAndStartPolling",
-            catch: jest.fn(),
-          }),
-      );
+    jest.spyOn(appThunks, "connectAndStartPolling").mockImplementation(
+      jest.fn().mockReturnValue({
+        type: "connectAndStartPolling",
+        catch: jest.fn(),
+      }),
+    );
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
