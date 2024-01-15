@@ -17,7 +17,7 @@ const formatApplicationsDetails = (applications: ApplicationInfo[]) =>
 
 const CharmApplicationsDetails = ({ charmURL }: Props): JSX.Element => {
   const selectedApplications = useAppSelector(
-    getSelectedApplications(charmURL)
+    getSelectedApplications(charmURL),
   );
   const displayedApplications = selectedApplications.slice(0, 5);
   const hiddenApplications = selectedApplications.slice(5);

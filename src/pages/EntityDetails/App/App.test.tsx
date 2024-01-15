@@ -130,7 +130,7 @@ describe("Entity Details App", () => {
     expect(
       within(screen.getByTestId(TestId.UNITS_TABLE)).getByRole("columnheader", {
         name: "machine",
-      })
+      }),
     ).toBeInTheDocument();
   });
 
@@ -145,8 +145,8 @@ describe("Entity Details App", () => {
         "columnheader",
         {
           name: "machine",
-        }
-      )
+        },
+      ),
     ).not.toBeInTheDocument();
   });
 
@@ -250,10 +250,10 @@ describe("Entity Details App", () => {
     renderComponent(<App />, { path, url, state });
     expect(window.location.search).toEqual("");
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CONFIGURE })
+      screen.getByRole("button", { name: Label.CONFIGURE }),
     );
     expect(window.location.search).toEqual(
-      "?panel=config&entity=etcd&charm=cs%3Aceph-mon-55&modelUUID=abc123"
+      "?panel=config&entity=etcd&charm=cs%3Aceph-mon-55&modelUUID=abc123",
     );
   });
 
@@ -272,7 +272,7 @@ describe("Entity Details App", () => {
     renderComponent(<App />, { path, url, state });
     expect(window.location.search).toEqual("");
     expect(
-      screen.queryByRole("button", { name: Label.CONFIGURE })
+      screen.queryByRole("button", { name: Label.CONFIGURE }),
     ).not.toBeInTheDocument();
   });
 
@@ -291,7 +291,7 @@ describe("Entity Details App", () => {
     renderComponent(<App />, { path, url, state });
     expect(window.location.search).toEqual("");
     expect(
-      screen.queryByRole("button", { name: Label.RUN_ACTION })
+      screen.queryByRole("button", { name: Label.RUN_ACTION }),
     ).not.toBeInTheDocument();
     expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
   });
@@ -300,7 +300,7 @@ describe("Entity Details App", () => {
     renderComponent(<App />, { path, url, state });
     await userEvent.click(screen.getAllByRole("button", { name: "Copy" })[0]);
     expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(
-      "54.162.156.160"
+      "54.162.156.160",
     );
   });
 });

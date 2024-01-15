@@ -14,7 +14,7 @@ describe("AuditLogsTableFilters", () => {
   it("displays filters", async () => {
     renderComponent(<AuditLogsTableFilters />, { url: "/?user=eggman" });
     expect(document.querySelector(".p-chip__value")).toHaveTextContent(
-      "eggman"
+      "eggman",
     );
     expect(screen.getByRole("button", { name: "Clear" })).toBeInTheDocument();
   });
@@ -24,7 +24,7 @@ describe("AuditLogsTableFilters", () => {
       url: "/?user=eggman&model=test",
     });
     await userEvent.click(
-      screen.getAllByRole("button", { name: "Dismiss" })[0]
+      screen.getAllByRole("button", { name: "Dismiss" })[0],
     );
     expect(window.location.search).toEqual("?model=test");
   });

@@ -63,11 +63,11 @@ export default function CharmActionsPanel({
   const selectedCharm = useSelector(getSelectedCharm(charmURL));
   const actionData = useMemo(
     () => selectedCharm?.actions?.specs || {},
-    [selectedCharm]
+    [selectedCharm],
   );
   const unitCount = selectedApplications.reduce(
     (total, app) => total + (app["unit-count"] || 0),
-    0
+    0,
   );
 
   const executeAction = () => {
@@ -84,13 +84,13 @@ export default function CharmActionsPanel({
           Array(a["unit-count"])
             .fill("name" in a ? a.name : null)
             .filter(Boolean)
-            .map((unit, i) => `${unit}-${i}`)
+            .map((unit, i) => `${unit}-${i}`),
         )
         .flat(),
       selectedAction,
       actionOptionsValues.current[selectedAction],
       modelUUID,
-      appState
+      appState,
     )
       .then((payload) => {
         const error = payload?.actions?.find((e) => e.error);
@@ -127,10 +127,10 @@ export default function CharmActionsPanel({
           .filter(filterExist),
         actionData,
         actionOptionsValues,
-        setDisableSubmit
+        setDisableSubmit,
       );
     },
-    [selectedAction]
+    [selectedAction],
   );
 
   const selectHandler = useCallback(
@@ -143,10 +143,10 @@ export default function CharmActionsPanel({
           .filter(filterExist),
         actionData,
         actionOptionsValues,
-        setDisableSubmit
+        setDisableSubmit,
       );
     },
-    [actionData]
+    [actionData],
   );
 
   const generateConfirmationModal = () => {
@@ -156,7 +156,7 @@ export default function CharmActionsPanel({
       if (confirmType === "submit") {
         const unitCount = selectedApplications.reduce(
           (total, app) => total + (app["unit-count"] || 0),
-          0
+          0,
         );
         // Render the submit confirmation modal.
         return (

@@ -23,7 +23,7 @@ describe("Panels", () => {
   it("can display the choose charm panel", async () => {
     renderComponent(<Panels />, { url: "/?panel=select-charms-and-actions" });
     expect(
-      screen.getByTestId(CharmsAndActionsPanelTestId.PANEL)
+      screen.getByTestId(CharmsAndActionsPanelTestId.PANEL),
     ).toBeInTheDocument();
   });
 
@@ -32,7 +32,7 @@ describe("Panels", () => {
       url: "/?panel=config&entity=easyrsa&charm=cs:easyrsa&modelUUID=abc123",
     });
     expect(
-      await screen.findByTestId(ConfigPanelTestId.PANEL)
+      await screen.findByTestId(ConfigPanelTestId.PANEL),
     ).toBeInTheDocument();
   });
 
@@ -41,7 +41,7 @@ describe("Panels", () => {
       url: "/?panel=audit-log-filters",
     });
     expect(
-      await screen.findByTestId(AuditLogsFilterPanelTestId.PANEL)
+      await screen.findByTestId(AuditLogsFilterPanelTestId.PANEL),
     ).toBeInTheDocument();
   });
 });

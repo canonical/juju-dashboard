@@ -13,7 +13,7 @@ describe("actions", () => {
       actions.updateControllerConnection({
         wsControllerURL: "wss://example.com",
         info: "info",
-      })
+      }),
     ).toStrictEqual({
       type: "general/updateControllerConnection",
       payload: {
@@ -30,7 +30,7 @@ describe("actions", () => {
         features: {
           crossModelQueries: true,
         },
-      })
+      }),
     ).toStrictEqual({
       type: "general/updateControllerFeatures",
       payload: {
@@ -54,7 +54,7 @@ describe("actions", () => {
       actions.storeLoginError({
         wsControllerURL: "wss://example.com",
         error: "error",
-      })
+      }),
     ).toStrictEqual({
       type: "general/storeLoginError",
       payload: {
@@ -76,7 +76,7 @@ describe("actions", () => {
       actions.storeUserPass({
         wsControllerURL: "wss://example.com",
         credentials: "credentials",
-      })
+      }),
     ).toStrictEqual({
       type: "general/storeUserPass",
       payload: {
@@ -105,7 +105,7 @@ describe("actions", () => {
       actions.updatePingerIntervalId({
         wsControllerURL: "wss://example.com",
         intervalId: "1",
-      })
+      }),
     ).toStrictEqual({
       type: "general/updatePingerIntervalId",
       payload: {

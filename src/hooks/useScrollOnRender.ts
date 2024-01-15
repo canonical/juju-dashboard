@@ -4,7 +4,7 @@ import { useCallback, useRef } from "react";
  * Scroll an element into view on render.
  */
 export const useScrollOnRender = <T extends HTMLElement>(
-  scrollArea?: HTMLElement | null
+  scrollArea?: HTMLElement | null,
 ): ((targetNode: T | null) => void) => {
   const htmlRef = useRef<HTMLElement>(document.querySelector("html"));
   const onRenderRef = useCallback(
@@ -34,7 +34,7 @@ export const useScrollOnRender = <T extends HTMLElement>(
         }
       }
     },
-    [scrollArea]
+    [scrollArea],
   );
   return onRenderRef;
 };

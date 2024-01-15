@@ -11,7 +11,7 @@ describe("QueryLink", () => {
     renderComponent(<QueryLink query=".applications" handleQuery={search} />);
     // Open the menu so that the portal gets rendered.
     await userEvent.click(
-      screen.getByRole("button", { name: ".applications" })
+      screen.getByRole("button", { name: ".applications" }),
     );
     expect(search).toHaveBeenCalledWith(".applications");
   });

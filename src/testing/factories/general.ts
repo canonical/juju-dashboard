@@ -26,7 +26,7 @@ export const controllerFeaturesFactory = Factory.define<ControllerFeatures>(
   () => ({
     auditLogs: false,
     crossModelQueries: false,
-  })
+  }),
 );
 
 export const controllerFeaturesStateFactory =

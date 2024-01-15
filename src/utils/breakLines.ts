@@ -5,7 +5,7 @@
 const breakLines = (
   text?: string | null,
   breakAtSpaces = true,
-  lineLength = 52
+  lineLength = 52,
 ): string => {
   let chunks = [];
 

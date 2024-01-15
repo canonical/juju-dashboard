@@ -7,7 +7,7 @@ import {
 } from "hooks/useQueryParams";
 
 export const usePanelQueryParams = <P extends QueryParams>(
-  defaultQueryParams: P
+  defaultQueryParams: P,
 ): [P, SetParams<P>, () => void] => {
   const [queryParams, setQueryParams] = useQueryParams<P>(defaultQueryParams);
 

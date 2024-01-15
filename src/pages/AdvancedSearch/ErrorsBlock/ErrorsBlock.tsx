@@ -18,7 +18,7 @@ const ErrorsBlock = (): JSX.Element | null => {
     const firstError = Object.values(errors)[0].slice().sort();
     return Object.values(errors).reduce(
       (result, error) => result && isEqual(error.slice().sort(), firstError),
-      true
+      true,
     );
   };
 

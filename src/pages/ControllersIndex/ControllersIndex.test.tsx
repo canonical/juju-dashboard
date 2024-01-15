@@ -96,7 +96,7 @@ describe("Controllers table", () => {
         "2",
         "3",
         "1.2.3",
-      ].join("")
+      ].join(""),
     );
   });
 
@@ -112,7 +112,7 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(
-      screen.getByRole("gridcell", { name: "Failed to connect" })
+      screen.getByRole("gridcell", { name: "Failed to connect" }),
     ).toBeInTheDocument();
     await userEvent.hover(screen.getByText("Failed to connect"));
     expect(screen.getByText("Uh oh!")).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(
-      screen.getByRole("gridcell", { name: "Authentication required" })
+      screen.getByRole("gridcell", { name: "Authentication required" }),
     ).toBeInTheDocument();
   });
 
@@ -174,10 +174,10 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(
-      screen.getByText(/Controller authentication required/)
+      screen.getByText(/Controller authentication required/),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Authenticate" })
+      screen.getByRole("link", { name: "Authenticate" }),
     ).toBeInTheDocument();
   });
 
@@ -208,7 +208,7 @@ describe("Controllers table", () => {
         "0",
         "0",
         "1.2.3",
-      ].join("")
+      ].join(""),
     );
   });
 
@@ -240,7 +240,7 @@ describe("Controllers table", () => {
         "0",
         "0",
         "1.2.3",
-      ].join("")
+      ].join(""),
     );
   });
 });

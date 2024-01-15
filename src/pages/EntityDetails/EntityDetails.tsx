@@ -78,12 +78,12 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   // same as the model controller, however in a JAAS environment, this primary
   // controller will be JAAS and the model controller will be different.
   const primaryControllerData = useSelector(
-    getControllerDataByUUID(controllerUUID)
+    getControllerDataByUUID(controllerUUID),
   );
   const entityType = getEntityType(routeParams);
 
   const credentials = useAppSelector((state) =>
-    getUserPass(state, primaryControllerData?.[0])
+    getUserPass(state, primaryControllerData?.[0]),
   );
   const controllerWSHost =
     primaryControllerData?.[0]

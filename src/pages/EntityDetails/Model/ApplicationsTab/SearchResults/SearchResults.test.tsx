@@ -67,10 +67,10 @@ describe("SearchResults", () => {
     const rows = screen.queryAllByRole("row");
     expect(rows).toHaveLength(3);
     expect(
-      within(rows[1]).getByRole("gridcell", { name: "mysql1 icon mysql1" })
+      within(rows[1]).getByRole("gridcell", { name: "mysql1 icon mysql1" }),
     ).toBeInTheDocument();
     expect(
-      within(rows[2]).getByRole("gridcell", { name: "mysql2 icon mysql2" })
+      within(rows[2]).getByRole("gridcell", { name: "mysql2 icon mysql2" }),
     ).toBeInTheDocument();
   });
 
@@ -103,10 +103,10 @@ describe("SearchResults", () => {
     const rows = screen.queryAllByRole("row");
     expect(rows).toHaveLength(3);
     expect(
-      within(rows[1]).getByRole("gridcell", { name: "ch:mysql" })
+      within(rows[1]).getByRole("gridcell", { name: "ch:mysql" }),
     ).toBeInTheDocument();
     expect(
-      within(rows[2]).getByRole("gridcell", { name: "ch:mysql" })
+      within(rows[2]).getByRole("gridcell", { name: "ch:mysql" }),
     ).toBeInTheDocument();
   });
 
@@ -139,10 +139,10 @@ describe("SearchResults", () => {
     const rows = screen.queryAllByRole("row");
     expect(rows).toHaveLength(3);
     expect(
-      within(rows[1]).getByRole("gridcell", { name: "mysql1 icon mysql1" })
+      within(rows[1]).getByRole("gridcell", { name: "mysql1 icon mysql1" }),
     ).toBeInTheDocument();
     expect(
-      within(rows[2]).getByRole("gridcell", { name: "mysql2 icon mysql2" })
+      within(rows[2]).getByRole("gridcell", { name: "mysql2 icon mysql2" }),
     ).toBeInTheDocument();
   });
 
@@ -177,10 +177,10 @@ describe("SearchResults", () => {
     const rows = screen.queryAllByRole("row");
     expect(rows).toHaveLength(3);
     expect(
-      within(rows[1]).getByRole("gridcell", { name: "mysql1 icon mysql1" })
+      within(rows[1]).getByRole("gridcell", { name: "mysql1 icon mysql1" }),
     ).toBeInTheDocument();
     expect(
-      within(rows[2]).getByRole("gridcell", { name: "mysql2 icon mysql2" })
+      within(rows[2]).getByRole("gridcell", { name: "mysql2 icon mysql2" }),
     ).toBeInTheDocument();
   });
 
@@ -202,11 +202,11 @@ describe("SearchResults", () => {
     expect(
       store
         .getActions()
-        .find((action) => action.type === "juju/updateSelectedApplications")
+        .find((action) => action.type === "juju/updateSelectedApplications"),
     ).toMatchObject(
       jujuActions.updateSelectedApplications({
         selectedApplications: [],
-      })
+      }),
     );
   });
 });

@@ -22,7 +22,7 @@ type Props = {
   removeUser: (userName: string) => void;
   accessSelectChange: (
     permissionTo: string,
-    userName: string
+    userName: string,
   ) => Promise<ErrorResults | null>;
 };
 
@@ -109,7 +109,7 @@ export default function ShareCard({
                       setUpdateStatus("Updating");
                       const accessChange = accessSelectChange(
                         e.target.value,
-                        userName
+                        userName,
                       );
                       accessChange
                         .then((response) => {
@@ -122,7 +122,7 @@ export default function ShareCard({
                           return;
                         })
                         .catch((error) =>
-                          console.error(Label.ACCESS_CHANGE_ERROR, error)
+                          console.error(Label.ACCESS_CHANGE_ERROR, error),
                         );
                     }}
                     value={access}

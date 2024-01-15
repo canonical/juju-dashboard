@@ -12,11 +12,11 @@ describe("SegmentedControl", () => {
           { children: "owner", key: "owner" },
         ]}
         activeButton="cloud"
-      />
+      />,
     );
     expect(screen.getByRole("tab", { name: "cloud" })).toHaveAttribute(
       "aria-selected",
-      "true"
+      "true",
     );
   });
 
@@ -29,19 +29,19 @@ describe("SegmentedControl", () => {
           { children: "owner", key: "owner" },
         ]}
         activeButton=""
-      />
+      />,
     );
     expect(screen.getByRole("tab", { name: "cloud" })).toHaveAttribute(
       "aria-selected",
-      "false"
+      "false",
     );
     expect(screen.getByRole("tab", { name: "status" })).toHaveAttribute(
       "aria-selected",
-      "false"
+      "false",
     );
     expect(screen.getByRole("tab", { name: "owner" })).toHaveAttribute(
       "aria-selected",
-      "false"
+      "false",
     );
   });
 });

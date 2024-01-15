@@ -113,7 +113,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        false
+        false,
       );
       expect(response).toStrictEqual({
         conn,
@@ -126,7 +126,7 @@ describe("Juju API", () => {
           username: "eggman",
           password: "123",
         },
-        CLIENT_VERSION
+        CLIENT_VERSION,
       );
     });
 
@@ -142,7 +142,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        true
+        true,
       );
       expect(juju.login).toHaveBeenCalledWith({}, CLIENT_VERSION);
     });
@@ -160,7 +160,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        false
+        false,
       );
       expect(response).toStrictEqual({
         error: "Could not log into controller",
@@ -187,7 +187,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        false
+        false,
       );
       expect(ping).not.toHaveBeenCalled();
       jest.advanceTimersByTime(PING_TIME);
@@ -219,7 +219,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        false
+        false,
       );
       jest.advanceTimersByTime(PING_TIME);
       await waitFor(() => {
@@ -255,7 +255,7 @@ describe("Juju API", () => {
           password: "123",
         },
         generateConnectionOptions(false),
-        false
+        false,
       );
       expect(response).toStrictEqual(juju);
     });
@@ -265,7 +265,7 @@ describe("Juju API", () => {
         async () =>
           new Promise((resolve) => {
             setTimeout(resolve, LOGIN_TIMEOUT + 10);
-          })
+          }),
       );
       const response = connectAndLoginWithTimeout(
         "wss://example.com/eggman/test",
@@ -274,7 +274,7 @@ describe("Juju API", () => {
           password: "123",
         },
         generateConnectionOptions(false),
-        false
+        false,
       );
       jest.advanceTimersByTime(LOGIN_TIMEOUT);
       await expect(response).rejects.toMatchObject(new Error("timeout"));
@@ -293,10 +293,10 @@ describe("Juju API", () => {
           password: "123",
         },
         generateConnectionOptions(false),
-        false
+        false,
       );
       await expect(response).rejects.toMatchObject(
-        new Error("Error during promise race.", new Error("Uh oh!"))
+        new Error("Error during promise race.", new Error("Uh oh!")),
       );
     });
   });
@@ -322,7 +322,7 @@ describe("Juju API", () => {
       const response = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
-        () => rootStateFactory.build()
+        () => rootStateFactory.build(),
       );
       expect(response).toBeNull();
     });
@@ -350,7 +350,7 @@ describe("Juju API", () => {
         // An empty object is passed when using an external provider.
         {},
         expect.any(Object),
-        CLIENT_VERSION
+        CLIENT_VERSION,
       );
     });
 
@@ -361,19 +361,19 @@ describe("Juju API", () => {
         async () =>
           new Promise((resolve) => {
             setTimeout(resolve, LOGIN_TIMEOUT + 10);
-          })
+          }),
       );
       const response = fetchModelStatus(
         "abc123",
         "wss://example.com/api",
-        () => state
+        () => state,
       );
       jest.advanceTimersByTime(LOGIN_TIMEOUT);
       await expect(response).resolves.toBeNull();
       expect(console.error).toHaveBeenCalledWith(
         "error connecting to model:",
         "abc123",
-        new Error("timeout")
+        new Error("timeout"),
       );
       console.error = consoleError;
     });
@@ -396,7 +396,7 @@ describe("Juju API", () => {
       const response = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
-        () => state
+        () => state,
       );
       expect(response).toStrictEqual(status);
     });
@@ -433,7 +433,7 @@ describe("Juju API", () => {
       const response = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
-        () => state
+        () => state,
       );
       expect(response?.annotations).toStrictEqual({
         etcd: annotations,
@@ -459,12 +459,12 @@ describe("Juju API", () => {
       const response = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
-        () => state
+        () => state,
       );
       expect(response).toBeUndefined();
       expect(console.error).toHaveBeenCalledWith(
         "Unable to fetch the status.",
-        "Uh oh!"
+        "Uh oh!",
       );
       console.error = consoleError;
     });
@@ -507,14 +507,14 @@ describe("Juju API", () => {
         "abc123",
         "wss://example.com/api",
         dispatch,
-        () => state
+        () => state,
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateModelStatus({
           modelUUID: "abc123",
           status,
           wsControllerURL: "wss://example.com/api",
-        })
+        }),
       );
     });
 
@@ -539,7 +539,7 @@ describe("Juju API", () => {
         "abc123",
         "wss://example.com/api",
         dispatch,
-        () => state
+        () => state,
       );
       expect(dispatch).not.toHaveBeenCalled();
       console.error = consoleError;
@@ -622,19 +622,19 @@ describe("Juju API", () => {
         ["abc123", "def456"],
         conn,
         dispatch,
-        () => state
+        () => state,
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateModelInfo({
           modelInfo: abc123,
           wsControllerURL: "wss://example.com/api",
-        })
+        }),
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateModelInfo({
           modelInfo: def456,
           wsControllerURL: "wss://example.com/api",
-        })
+        }),
       );
     });
 
@@ -662,13 +662,13 @@ describe("Juju API", () => {
         ["abc123"],
         conn,
         dispatch,
-        () => state
+        () => state,
       );
       // Call the dispatched thunk so that we can check it was called with the
       // right args.
       const thunkResult = await dispatch.mock.calls[1][0](
         jest.fn(),
-        jest.fn().mockReturnValue(state)
+        jest.fn().mockReturnValue(state),
       );
       expect(thunkResult.meta.arg).toMatchObject({
         modelInfo: abc123,
@@ -681,7 +681,7 @@ describe("Juju API", () => {
         .fn()
         .mockReturnValueOnce(null)
         .mockReturnValueOnce(
-          Promise.reject(new Error("Error while trying to dispatch!"))
+          Promise.reject(new Error("Error while trying to dispatch!")),
         );
       const abc123 = modelInfoResultsFactory.build({
         results: [
@@ -705,12 +705,12 @@ describe("Juju API", () => {
         ["abc123"],
         conn,
         dispatch,
-        () => state
+        () => state,
       );
       expect(dispatch).toHaveBeenCalledTimes(2);
       expect(console.error).toHaveBeenCalledWith(
         "Error when trying to add controller cloud and region data.",
-        new Error("Error while trying to dispatch!")
+        new Error("Error while trying to dispatch!"),
       );
     });
   });
@@ -734,8 +734,12 @@ describe("Juju API", () => {
         .spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => true)
         .mockImplementationOnce(async () => false);
-      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
-        rootStateFactory.build()
+      await fetchControllerList(
+        "wss://example.com/api",
+        conn,
+        true,
+        dispatch,
+        () => rootStateFactory.build(),
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
@@ -750,7 +754,7 @@ describe("Juju API", () => {
               updateAvailable: false,
             }),
           ],
-        })
+        }),
       );
     });
 
@@ -769,14 +773,18 @@ describe("Juju API", () => {
         .spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => true)
         .mockImplementationOnce(async () => false);
-      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
-        rootStateFactory.build()
+      await fetchControllerList(
+        "wss://example.com/api",
+        conn,
+        true,
+        dispatch,
+        () => rootStateFactory.build(),
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
           wsControllerURL: "wss://example.com/api",
           controllers: [],
-        })
+        }),
       );
     });
 
@@ -810,7 +818,7 @@ describe("Juju API", () => {
         "wss://example.com/api",
         conn,
         dispatch,
-        () => state
+        () => state,
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
@@ -823,7 +831,7 @@ describe("Juju API", () => {
               version: "1.2.3",
             },
           ],
-        })
+        }),
       );
     });
 
@@ -841,8 +849,12 @@ describe("Juju API", () => {
       jest
         .spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => null);
-      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
-        rootStateFactory.build()
+      await fetchControllerList(
+        "wss://example.com/api",
+        conn,
+        true,
+        dispatch,
+        () => rootStateFactory.build(),
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
@@ -853,7 +865,7 @@ describe("Juju API", () => {
               updateAvailable: false,
             }),
           ],
-        })
+        }),
       );
     });
   });
@@ -887,13 +899,13 @@ describe("Juju API", () => {
         facades: {
           jimM: {
             disableControllerUUIDMasking: jest.fn(() =>
-              Promise.reject(new Error())
+              Promise.reject(new Error()),
             ),
           },
         },
       } as unknown as Connection;
       await expect(disableControllerUUIDMasking(conn)).rejects.toMatchObject(
-        new Error("Unable to disabled controller UUID masking.")
+        new Error("Unable to disabled controller UUID masking."),
       );
     });
   });
@@ -903,7 +915,7 @@ describe("Juju API", () => {
       const connectAndLogin = jest.spyOn(jujuLib, "connectAndLogin");
       const response = await connectAndLoginToModel(
         "abc12",
-        rootStateFactory.build()
+        rootStateFactory.build(),
       );
       expect(connectAndLogin).not.toHaveBeenCalled();
       expect(response).toBeNull();
@@ -946,7 +958,7 @@ describe("Juju API", () => {
           password: credentials.password,
         },
         expect.any(Object),
-        CLIENT_VERSION
+        CLIENT_VERSION,
       );
       expect(response).toMatchObject(conn);
     });
@@ -1022,7 +1034,7 @@ describe("Juju API", () => {
         "abc123",
         "etcd",
         config,
-        state
+        state,
       );
       expect(conn.facades.application.setConfigs).toHaveBeenCalledWith({
         Args: [
@@ -1123,7 +1135,7 @@ describe("Juju API", () => {
       }));
       const response = await getActionsForApplication("etcd", "abc123", state);
       expect(
-        conn.facades.action.applicationsCharmsActions
+        conn.facades.action.applicationsCharmsActions,
       ).toHaveBeenCalledWith({
         entities: [{ tag: "application-etcd" }],
       });
@@ -1157,7 +1169,7 @@ describe("Juju API", () => {
         "reboot",
         { extra: "options" },
         "abc123",
-        state
+        state,
       );
       expect(conn.facades.action.enqueueOperation).toHaveBeenCalledWith({
         actions: [
@@ -1205,7 +1217,7 @@ describe("Juju API", () => {
           limit: 99,
         },
         "abc123",
-        state
+        state,
       );
       expect(conn.facades.action.listOperations).toHaveBeenCalledWith({
         actions: [],
@@ -1340,7 +1352,7 @@ describe("Juju API", () => {
       const dispatch = jest.fn();
       await startModelWatcher("abc123", state, dispatch);
       expect(dispatch).toHaveBeenCalledWith(
-        jujuActions.processAllWatcherDeltas(deltas)
+        jujuActions.processAllWatcherDeltas(deltas),
       );
     });
   });
@@ -1384,10 +1396,10 @@ describe("Juju API", () => {
         "write",
         "read",
         "grant",
-        jest.fn()
+        jest.fn(),
       );
       await expect(response).rejects.toMatchObject(
-        new Error("Unable to connect to controller: wss://example.com/api")
+        new Error("Unable to connect to controller: wss://example.com/api"),
       );
     });
 
@@ -1410,10 +1422,10 @@ describe("Juju API", () => {
         undefined,
         undefined,
         "none",
-        jest.fn()
+        jest.fn(),
       );
       await expect(response).rejects.toMatchObject(
-        new Error("Incorrect options given.")
+        new Error("Incorrect options given."),
       );
     });
 
@@ -1438,10 +1450,10 @@ describe("Juju API", () => {
         "write",
         "read",
         "revoke",
-        jest.fn()
+        jest.fn(),
       );
       expect(conn.facades.modelManager.modifyModelAccess).toHaveBeenCalledTimes(
-        1
+        1,
       );
       expect(conn.facades.modelManager.modifyModelAccess).toHaveBeenCalledWith({
         changes: [
@@ -1477,7 +1489,7 @@ describe("Juju API", () => {
         "write",
         "read",
         "grant",
-        jest.fn()
+        jest.fn(),
       );
       expect(conn.facades.modelManager.modifyModelAccess).toHaveBeenCalledWith({
         changes: [
@@ -1533,7 +1545,7 @@ describe("Juju API", () => {
         "write",
         "read",
         "grant",
-        dispatch
+        dispatch,
       );
       expect(conn.facades.modelManager.modelInfo).toHaveBeenCalledWith({
         entities: [
@@ -1546,7 +1558,7 @@ describe("Juju API", () => {
         jujuActions.updateModelInfo({
           modelInfo,
           wsControllerURL: "wss://example.com/api",
-        })
+        }),
       );
     });
   });
@@ -1625,7 +1637,7 @@ describe("Juju API", () => {
         jujuActions.updateCharms({
           charms: [etcd, mysql],
           wsControllerURL: "wss://example.com/api",
-        })
+        }),
       );
     });
   });
@@ -1686,7 +1698,7 @@ describe("Juju API", () => {
         facades: {},
       } as unknown as Connection;
       await expect(findAuditEvents(conn)).rejects.toEqual(
-        new Error("Not connected to JIMM.")
+        new Error("Not connected to JIMM."),
       );
     });
   });
@@ -1725,7 +1737,7 @@ describe("Juju API", () => {
         facades: {},
       } as unknown as Connection;
       await expect(crossModelQuery(conn, ".")).rejects.toMatchObject(
-        new Error("Not connected to JIMM.")
+        new Error("Not connected to JIMM."),
       );
     });
 
@@ -1735,14 +1747,14 @@ describe("Juju API", () => {
           jimM: {
             crossModelQuery: jest.fn(() =>
               Promise.reject(
-                new Error("Error while trying to run cross model query!")
-              )
+                new Error("Error while trying to run cross model query!"),
+              ),
             ),
           },
         },
       } as unknown as Connection;
       await expect(crossModelQuery(conn, ".")).rejects.toMatchObject(
-        new Error("Error while trying to run cross model query!")
+        new Error("Error while trying to run cross model query!"),
       );
     });
   });

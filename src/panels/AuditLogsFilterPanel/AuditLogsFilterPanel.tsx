@@ -92,7 +92,7 @@ const AuditLogsFilterPanel = (): JSX.Element => {
                   : null;
                 return filters;
               },
-              { ...values }
+              { ...values },
             );
             // Set the filters and close the panel.
             setQueryParams({

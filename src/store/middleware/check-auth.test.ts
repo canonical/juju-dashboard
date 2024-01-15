@@ -1,4 +1,4 @@
-import type { AnyAction, MiddlewareAPI } from "redux";
+import type { UnknownAction, MiddlewareAPI } from "redux";
 
 import * as jujuModule from "juju/api";
 import { thunks as appThunks } from "store/app";
@@ -51,7 +51,7 @@ describe("model poller", () => {
     }));
   });
 
-  const runMiddleware = async (action: Partial<AnyAction>) => {
+  const runMiddleware = async (action: UnknownAction) => {
     const middleware = checkAuthMiddleware(fakeStore);
     await middleware(next)(action);
     return middleware;
@@ -65,7 +65,7 @@ describe("model poller", () => {
   });
 
   it("ignores function actions", async () => {
-    const action = jest.fn();
+    const action = jest.fn() as unknown as UnknownAction;
     await runMiddleware(action);
     expect(next).toHaveBeenCalledWith(action);
   });

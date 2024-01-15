@@ -42,7 +42,7 @@ class CrossModelQueryFactory extends Factory<CrossModelQuery> {
         .reduce(
           (appEndpoints, appEndpoint) =>
             Object.assign(appEndpoints, appEndpoint),
-          {}
+          {},
         ),
     });
   }
@@ -109,7 +109,7 @@ export const crossModelQueryUnitFactory = Factory.define<CrossModelQueryUnit>(
     "juju-status": crossModelQueryStatusFactory.build(),
     machine: "0/lxd/0",
     "workload-status": crossModelQueryStatusFactory.build(),
-  })
+  }),
 );
 
 export const crossModelQueryMachineFactory =
@@ -136,7 +136,7 @@ export const crossModelQueryModelFactory = Factory.define<CrossModelQueryModel>(
     sla: "unsupported",
     type: "iaas",
     version: "3.2.2.1",
-  })
+  }),
 );
 
 export const crossModelQueryOfferFactory = Factory.define<CrossModelQueryOffer>(
@@ -145,7 +145,7 @@ export const crossModelQueryOfferFactory = Factory.define<CrossModelQueryOffer>(
     charm: "ch:amd64/jammy/mysql-151",
     endpoints: { mysql: crossModelQueryEndpointFactory.build() },
     "total-connected-count": 1,
-  })
+  }),
 );
 
 export const crossModelQueryStatusFactory =

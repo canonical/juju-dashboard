@@ -33,7 +33,7 @@ const SearchResults = () => {
       setFuse(
         new Fuse(Object.values(applications), {
           keys: ["name", "charm-url", "owner-tag", "constraints.arch"],
-        })
+        }),
       );
   }, [applications]);
 
@@ -53,7 +53,7 @@ const SearchResults = () => {
     dispatch(
       jujuActions.updateSelectedApplications({
         selectedApplications: [],
-      })
+      }),
     );
   }, [fuse, filterQuery, applications, dispatch]);
 
@@ -63,10 +63,10 @@ const SearchResults = () => {
       dispatch(
         jujuActions.updateSelectedApplications({
           selectedApplications: [],
-        })
+        }),
       );
     },
-    [dispatch]
+    [dispatch],
   );
 
   return <LocalAppsTable applications={filteredApplications} />;

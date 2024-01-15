@@ -33,13 +33,13 @@ const TruncatedTooltip = ({
       (truncatedNode.current &&
         truncatedNode.current.offsetWidth <
           truncatedNode.current.scrollWidth) ||
-        false
+        false,
     );
   }, [truncatedNode]);
 
   const resizeObserver = useMemo(
     () => new ResizeObserver(checkTruncated),
-    [checkTruncated]
+    [checkTruncated],
   );
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const TruncatedTooltip = ({
         {...tooltipProps}
         positionElementClassName={classNames(
           positionElementClassName,
-          "truncated-tooltip__position-element"
+          "truncated-tooltip__position-element",
         )}
         tooltipClassName={classNames(tooltipClassName, {
           "u-hide": !truncated,

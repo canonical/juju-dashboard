@@ -6,5 +6,5 @@ const slice = (state: RootState) => state.ui;
 
 export const isConfirmationModalActive = createSelector(
   [slice],
-  (sliceState) => sliceState.confirmationModalActive
+  (sliceState) => sliceState.confirmationModalActive,
 );

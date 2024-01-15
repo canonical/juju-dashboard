@@ -78,7 +78,7 @@ function Details() {
           if (controllerMap[controllerUUID]) {
             controllerMap[controllerUUID].models += 1;
             controllerMap[controllerUUID].machines += Object.keys(
-              model?.machines
+              model?.machines,
             ).length;
             const applicationKeys = Object.keys(model.applications);
             controllerMap[controllerUUID].applications +=
@@ -242,8 +242,8 @@ function Details() {
       generateRow(
         controller,
         !!controllerConnections &&
-          controller.wsControllerURL in controllerConnections
-      )
+          controller.wsControllerURL in controllerConnections,
+      ),
     );
 
   return (

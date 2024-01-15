@@ -15,16 +15,16 @@ describe("Controllers chart", () => {
         alert={10}
         running={15}
         totalLabel="machine"
-      />
+      />,
     );
     expect(screen.getByTestId("legend-blocked")).toHaveTextContent(
-      "Blocked: 6%, 5"
+      "Blocked: 6%, 5",
     );
     expect(screen.getByTestId("legend-alert")).toHaveTextContent(
-      "Alerts: 3%, 10"
+      "Alerts: 3%, 10",
     );
     expect(screen.getByTestId("legend-running")).toHaveTextContent(
-      "Running: 2%, 15"
+      "Running: 2%, 15",
     );
   });
 });

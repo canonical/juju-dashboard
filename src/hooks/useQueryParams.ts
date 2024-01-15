@@ -6,13 +6,13 @@ import { useSearchParams } from "react-router-dom";
 
 export type SetParams<P> = (
   params?: Partial<P> | null,
-  options?: NavigateOptions
+  options?: NavigateOptions,
 ) => void;
 
 export type QueryParams = Record<string, null | string | string[]>;
 
 export const useQueryParams = <P extends QueryParams>(
-  initialParams: P
+  initialParams: P,
 ): [P, SetParams<P>] => {
   // Clone the params to prevent updating via reference.
   const params = cloneDeep(initialParams);
@@ -23,7 +23,7 @@ export const useQueryParams = <P extends QueryParams>(
       if (!newParams) {
         // If this is call with no params then clear all.
         Array.from(searchParams.keys()).forEach((key) =>
-          searchParams.delete(key)
+          searchParams.delete(key),
         );
       } else {
         Object.entries(newParams).forEach(([param, value]) => {
@@ -33,7 +33,7 @@ export const useQueryParams = <P extends QueryParams>(
           } else {
             searchParams.set(
               param,
-              Array.isArray(value) ? value.join(",") : value
+              Array.isArray(value) ? value.join(",") : value,
             );
           }
         });
@@ -44,7 +44,7 @@ export const useQueryParams = <P extends QueryParams>(
             searchParams.delete(key);
             console.log(
               `Query param key "${key}" has been changed to "${sanitizedKey}"` +
-                " in order to prevent potential XSS Attacks."
+                " in order to prevent potential XSS Attacks.",
             );
           }
           searchParams.set(sanitizedKey, DOMPurify.sanitize(value));
@@ -52,7 +52,7 @@ export const useQueryParams = <P extends QueryParams>(
       }
       setSearchParams(searchParams, options);
     },
-    [searchParams, setSearchParams]
+    [searchParams, setSearchParams],
   );
 
   searchParams.forEach((value, key) => {

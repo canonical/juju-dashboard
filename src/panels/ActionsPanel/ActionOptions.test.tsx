@@ -46,7 +46,7 @@ describe("ActionOptions", () => {
         name="add-disk"
         data={actionData as ActionData}
         onValuesChange={onValuesChange}
-      />
+      />,
     );
 
     const props = OptionsInputSpy.mock.calls[0][0];

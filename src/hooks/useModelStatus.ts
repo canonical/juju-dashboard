@@ -22,12 +22,12 @@ export default function useModelStatus() {
 
   const getModelUUIDMemo = useMemo(
     () => (modelName ? getModelUUID(modelName) : null),
-    [modelName]
+    [modelName],
   );
   const modelUUID = useAppSelector((state) => getModelUUIDMemo?.(state));
   const getModelStatusMemo = useMemo(
     () => getModelStatus(modelUUID),
-    [modelUUID]
+    [modelUUID],
   );
 
   return useAppSelector((state) => getModelStatusMemo?.(state));

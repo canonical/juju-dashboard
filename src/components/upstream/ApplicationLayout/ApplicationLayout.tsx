@@ -21,7 +21,7 @@ import Application from "./Application";
 
 export type BaseProps<
   NI = SideNavigationLinkDefaultElement,
-  PL = PanelLogoDefaultElement
+  PL = PanelLogoDefaultElement,
 > = PropsWithSpread<
   {
     aside?: ReactNode;
@@ -40,7 +40,7 @@ export type BaseProps<
 
 export type Props<
   NI = SideNavigationLinkDefaultElement,
-  PL = PanelLogoDefaultElement
+  PL = PanelLogoDefaultElement,
 > = BaseProps<NI, PL> &
   ExclusiveProps<
     {
@@ -53,7 +53,7 @@ export type Props<
 
 const ApplicationLayout = <
   NI = SideNavigationLinkDefaultElement,
-  PL = PanelLogoDefaultElement
+  PL = PanelLogoDefaultElement,
 >({
   aside,
   children,

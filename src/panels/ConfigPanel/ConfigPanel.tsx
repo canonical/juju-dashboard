@@ -68,7 +68,7 @@ export default function ConfigPanel(): JSX.Element {
   const reduxStore = useAppStore();
   const [config, setConfig] = useState<Config>({});
   const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
-    undefined
+    undefined,
   );
   const [enableSave, setEnableSave] = useState<boolean>(false);
   const [showResetAll, setShowResetAll] = useState<boolean>(false);
@@ -100,7 +100,7 @@ export default function ConfigPanel(): JSX.Element {
         reduxStore,
         setIsLoading,
         setConfig,
-        checkAllDefaults
+        checkAllDefaults,
       ).catch((error) => console.error(Label.GET_CONFIG_ERROR, error));
     }
   }, [appName, modelUUID, reduxStore]);
@@ -164,7 +164,7 @@ export default function ConfigPanel(): JSX.Element {
     return Object.keys(newConfig).some(
       (key) =>
         isSet(newConfig[key].newValue) &&
-        newConfig[key].newValue !== newConfig[key].value
+        newConfig[key].newValue !== newConfig[key].value,
     );
   }
 
@@ -189,7 +189,7 @@ export default function ConfigPanel(): JSX.Element {
       modelUUID,
       appName,
       config,
-      reduxStore.getState()
+      reduxStore.getState(),
     );
     const errors = response?.results?.reduce<string[]>((collection, result) => {
       if (result.error) {
@@ -210,7 +210,7 @@ export default function ConfigPanel(): JSX.Element {
       reduxStore,
       setIsLoading,
       setConfig,
-      checkAllDefaults
+      checkAllDefaults,
     );
     sendAnalytics({
       category: "User",
@@ -246,7 +246,7 @@ export default function ConfigPanel(): JSX.Element {
                 // Clear the form errors if there were any from a previous submit.
                 setFormErrors(null);
                 _submitToJuju().catch((error) =>
-                  console.error(Label.SUBMIT_TO_JUJU_ERROR, error)
+                  console.error(Label.SUBMIT_TO_JUJU_ERROR, error),
                 );
               }}
               close={() => setConfirmType(null)}
@@ -398,7 +398,7 @@ export default function ConfigPanel(): JSX.Element {
                 config,
                 selectedConfig,
                 setSelectedConfig,
-                setNewValue
+                setNewValue,
               )}
             </div>
             {generateConfirmationDialog()}
@@ -419,7 +419,7 @@ async function getConfig(
   reduxStore: Store,
   setIsLoading: (value: boolean) => void,
   setConfig: (value: Config) => void,
-  checkAllDefaults: (value: Config) => void
+  checkAllDefaults: (value: Config) => void,
 ) {
   return getApplicationConfig(modelUUID, appName, reduxStore.getState()).then(
     (result) => {
@@ -434,7 +434,7 @@ async function getConfig(
       setConfig(config);
       checkAllDefaults(config);
       return;
-    }
+    },
   );
 }
 
@@ -442,7 +442,7 @@ function generateConfigElementList(
   configs: Config,
   selectedConfig: ConfigData | undefined,
   setSelectedConfig: SetSelectedConfig,
-  setNewValue: SetNewValue
+  setNewValue: SetNewValue,
 ) {
   const elements = Object.keys(configs).map((key) => {
     const config = configs[key];
@@ -491,12 +491,12 @@ function generateChangedKeyValues(config: Config) {
           <div key={key}>
             <h5>{key}</h5>
             <pre>{cfg.newValue}</pre>
-          </div>
+          </div>,
         );
       }
       return accumulator;
     },
-    []
+    [],
   );
   return changedValues;
 }

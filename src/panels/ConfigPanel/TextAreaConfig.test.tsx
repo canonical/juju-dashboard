@@ -23,7 +23,7 @@ describe("TextAreaConfig", () => {
         selectedConfig={undefined}
         setSelectedConfig={jest.fn()}
         setNewValue={jest.fn()}
-      />
+      />,
     );
     expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
@@ -36,7 +36,7 @@ describe("TextAreaConfig", () => {
         selectedConfig={undefined}
         setSelectedConfig={jest.fn()}
         setNewValue={setNewValue}
-      />
+      />,
     );
     await userEvent.type(screen.getByRole("textbox"), "!");
     expect(setNewValue).toHaveBeenCalledWith("text option", "word!");

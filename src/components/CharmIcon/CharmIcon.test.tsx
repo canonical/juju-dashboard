@@ -9,7 +9,7 @@ describe("CharmIcon", () => {
     render(<CharmIcon name="etcd" charmId="cs:etcd-charm-1" />);
     expect(screen.getByRole("img")).toHaveAttribute(
       "src",
-      "https://charmhub.io/etcd-charm/icon"
+      "https://charmhub.io/etcd-charm/icon",
     );
   });
 

@@ -49,12 +49,12 @@ export default class ErrorBoundary extends Component<Props, State> {
     const { error, hasError } = this.state;
     const { children } = this.props;
     const body = encodeURIComponent(
-      `\`\`\`\n${error?.stack ?? "No stack track"}\n\`\`\``
+      `\`\`\`\n${error?.stack ?? "No stack track"}\n\`\`\``,
     );
     const url = `${
       externalURLs.newIssue
     }?assignees=&labels=&template=bug_report.md&title=Dashboard error: ${encodeURIComponent(
-      error?.message ?? "No error"
+      error?.message ?? "No error",
     )}&body=${body}`;
     if (hasError) {
       return (

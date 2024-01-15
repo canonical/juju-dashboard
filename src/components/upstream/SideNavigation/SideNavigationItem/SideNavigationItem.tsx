@@ -9,7 +9,7 @@ export type Props<L = SideNavigationLinkDefaultElement> =
   | SideNavigationLinkProps<L>;
 
 const SideNavigationItem = <L = SideNavigationLinkDefaultElement,>(
-  props: Props<L>
+  props: Props<L>,
 ) => {
   return (
     <li className="p-side-navigation__item">

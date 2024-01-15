@@ -14,7 +14,7 @@ describe("CloudCell", () => {
         model={modelDataFactory.build({
           info: undefined,
         })}
-      />
+      />,
     );
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
@@ -27,7 +27,7 @@ describe("CloudCell", () => {
             "provider-type": "ec2",
           }),
         })}
-      />
+      />,
     );
     expect(screen.getByRole("img")).toHaveAttribute("alt", "AWS logo");
   });
@@ -40,11 +40,11 @@ describe("CloudCell", () => {
             "provider-type": "gce",
           }),
         })}
-      />
+      />,
     );
     expect(screen.getByRole("img")).toHaveAttribute(
       "alt",
-      "Google Cloud Platform logo"
+      "Google Cloud Platform logo",
     );
   });
 
@@ -56,7 +56,7 @@ describe("CloudCell", () => {
             "provider-type": "azure",
           }),
         })}
-      />
+      />,
     );
     expect(screen.getByRole("img")).toHaveAttribute("alt", "Azure logo");
   });
@@ -69,7 +69,7 @@ describe("CloudCell", () => {
             "provider-type": "kubernetes",
           }),
         })}
-      />
+      />,
     );
     expect(screen.getByRole("img")).toHaveAttribute("alt", "Kubernetes logo");
   });

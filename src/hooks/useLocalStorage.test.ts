@@ -17,7 +17,7 @@ describe("useLocalStorage", () => {
 
   it("can set an initial value", () => {
     const { result } = renderHook(() =>
-      useLocalStorage("test-key", "init-val")
+      useLocalStorage("test-key", "init-val"),
     );
     const [value] = result.current;
     expect(value).toBe("init-val");
@@ -26,7 +26,7 @@ describe("useLocalStorage", () => {
   it("can restore an existing value", () => {
     localStorage.setItem("test-key", JSON.stringify("restored-val"));
     const { result } = renderHook(() =>
-      useLocalStorage("test-key", "init-val")
+      useLocalStorage("test-key", "init-val"),
     );
     const [value] = result.current;
     expect(value).toBe("restored-val");
@@ -35,11 +35,11 @@ describe("useLocalStorage", () => {
   it("can handle JSON errors when restoring an existing value", () => {
     localStorage.setItem("test-key", "not json");
     const { result } = renderHook(() =>
-      useLocalStorage("test-key", "init-val")
+      useLocalStorage("test-key", "init-val"),
     );
     expect(console.error).toHaveBeenCalledWith(
       "Unable to parse local storage:",
-      expect.any(Error)
+      expect.any(Error),
     );
     const [value] = result.current;
     expect(value).toBe("init-val");
@@ -47,7 +47,7 @@ describe("useLocalStorage", () => {
 
   it("can change the value", () => {
     const { result } = renderHook(() =>
-      useLocalStorage("test-key", "init-val")
+      useLocalStorage("test-key", "init-val"),
     );
     const [, setValue] = result.current;
     act(() => {
@@ -61,7 +61,7 @@ describe("useLocalStorage", () => {
   it("can handle JSON errors when updating the value", () => {
     localStorage.setItem("test-key", JSON.stringify("init-val"));
     const { result } = renderHook(() =>
-      useLocalStorage("test-key", "init-val")
+      useLocalStorage("test-key", "init-val"),
     );
     const [, setValue] = result.current;
     // Create a value that can't be JSON stringified:

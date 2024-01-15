@@ -14,7 +14,7 @@ describe("RadioInputBox", () => {
         onSelect={onSelect}
       >
         {child}
-      </RadioInputBox>
+      </RadioInputBox>,
     );
     const radio = document.querySelector(".radio-input-box");
     expect(radio).toHaveAttribute("aria-expanded", "false");
@@ -34,11 +34,11 @@ describe("RadioInputBox", () => {
         onSelect={onSelect}
       >
         {child}
-      </RadioInputBox>
+      </RadioInputBox>,
     );
     expect(document.querySelector(".radio-input-box")).toHaveAttribute(
       "aria-expanded",
-      "true"
+      "true",
     );
   });
 });

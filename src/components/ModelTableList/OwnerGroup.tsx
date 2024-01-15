@@ -39,7 +39,7 @@ export enum TestId {
 
 export default function OwnerGroup({ filters }: Props) {
   const groupedAndFilteredData = useSelector(
-    getGroupedByOwnerAndFilteredModelData(filters)
+    getGroupedByOwnerAndFilteredModelData(filters),
   );
   const [, setPanelQs] = useQueryParams({
     model: null,
@@ -157,7 +157,7 @@ export default function OwnerGroup({ filters }: Props) {
         rows={ownerModels}
         sortable
         className="p-main-table"
-      />
+      />,
     );
   }
   return (

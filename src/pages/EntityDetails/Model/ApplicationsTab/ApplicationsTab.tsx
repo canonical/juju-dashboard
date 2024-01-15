@@ -70,14 +70,14 @@ export default function ApplicationsTab() {
       ? generateRemoteApplicationRows(
           modelStatusData,
           { modelName, userName },
-          queryParams
+          queryParams,
         )
       : [];
   }, [modelStatusData, modelName, userName, queryParams]);
 
   const appOffersRows = useMemo(
     () => generateAppOffersRows(modelStatusData, queryParams),
-    [modelStatusData, queryParams]
+    [modelStatusData, queryParams],
   );
   const LocalAppChips = renderCounts("localApps", modelStatusData);
   const appOffersChips = renderCounts("offers", modelStatusData);

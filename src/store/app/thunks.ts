@@ -28,7 +28,7 @@ export const logOut = createAsyncThunk<
   const pingerIntervalIds = getPingerIntervalIds(state);
   bakery.storage.clear();
   Object.entries(pingerIntervalIds ?? {}).forEach((pingerIntervalId) =>
-    clearInterval(pingerIntervalId[1])
+    clearInterval(pingerIntervalId[1]),
   );
   thunkAPI.dispatch(jujuActions.clearModelData());
   thunkAPI.dispatch(jujuActions.clearControllerData());
@@ -90,7 +90,7 @@ export const connectAndListModels = createAsyncThunk<
       appActions.connectAndPollControllers({
         controllers: controllerList,
         isJuju: config?.isJuju ?? false,
-      })
+      }),
     );
   } catch (error) {
     // XXX Surface error to UI.

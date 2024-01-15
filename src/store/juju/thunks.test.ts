@@ -62,7 +62,7 @@ describe("thunks", () => {
             ],
           },
         }),
-      })
+      }),
     );
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
@@ -77,7 +77,7 @@ describe("thunks", () => {
           }),
         ],
         wsControllerURL: "wss://example.com",
-      })
+      }),
     );
   });
 
@@ -95,7 +95,7 @@ describe("thunks", () => {
             "wss://example.com": [controllerFactory.build()],
           },
         }),
-      })
+      }),
     );
     await action(dispatch, getState, null);
     expect(dispatch).not.toHaveBeenCalled();

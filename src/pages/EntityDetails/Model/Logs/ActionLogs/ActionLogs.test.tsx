@@ -261,12 +261,12 @@ describe("Action Logs", () => {
     renderComponent(<ActionLogs />, { path, url, state });
     const rows = await screen.findAllByRole("row");
     await userEvent.click(
-      within(rows[3]).getByRole("button", { name: Label.OUTPUT })
+      within(rows[3]).getByRole("button", { name: Label.OUTPUT }),
     );
     await userEvent.click(screen.getByRole("button", { name: Output.STDOUT }));
     expect(within(rows[3]).getByText("log message 1")).toBeInTheDocument();
     await userEvent.click(
-      within(rows[2]).getByRole("button", { name: Label.OUTPUT })
+      within(rows[2]).getByRole("button", { name: Label.OUTPUT }),
     );
     await userEvent.click(screen.getByRole("button", { name: Output.STDERR }));
     expect(within(rows[2]).getByText("error message")).toBeInTheDocument();
@@ -276,7 +276,7 @@ describe("Action Logs", () => {
     renderComponent(<ActionLogs />, { path, url, state });
     const rows = await screen.findAllByRole("row");
     await userEvent.click(
-      within(rows[2]).getByRole("button", { name: Label.OUTPUT })
+      within(rows[2]).getByRole("button", { name: Label.OUTPUT }),
     );
     await userEvent.click(screen.getByRole("button", { name: Output.ALL }));
     expect(within(rows[2]).getByText("log message 1")).toBeInTheDocument();
@@ -296,7 +296,7 @@ describe("Action Logs", () => {
     renderComponent(<ActionLogs />, { path, url, state });
     const rows = await screen.findAllByRole("row");
     expect(
-      within(rows[2]).queryByRole("button", { name: Label.OUTPUT })
+      within(rows[2]).queryByRole("button", { name: Label.OUTPUT }),
     ).not.toBeInTheDocument();
   });
 

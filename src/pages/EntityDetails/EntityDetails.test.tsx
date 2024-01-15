@@ -108,14 +108,14 @@ describe("Entity Details Container", () => {
     state.juju.models = {};
     renderComponent(<EntityDetails />, { path, url, state });
     expect(
-      screen.getByRole("heading", { name: Label.NOT_FOUND })
+      screen.getByRole("heading", { name: Label.NOT_FOUND }),
     ).toBeInTheDocument();
   });
 
   it("lists the correct tabs", () => {
     renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
-      /^ApplicationsIntegrationsLogsMachines$/
+      /^ApplicationsIntegrationsLogsMachines$/,
     );
   });
 
@@ -134,7 +134,7 @@ describe("Entity Details Container", () => {
     };
     renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
-      /^ApplicationsIntegrationsLogs$/
+      /^ApplicationsIntegrationsLogs$/,
     );
   });
 
@@ -259,7 +259,7 @@ describe("Entity Details Container", () => {
     });
     await waitFor(() => {
       expect(document.querySelector(".entity-details__header")).toHaveClass(
-        "entity-details__header--single-col"
+        "entity-details__header--single-col",
       );
     });
   });
@@ -267,7 +267,7 @@ describe("Entity Details Container", () => {
   it("gives the content the correct class for the model", () => {
     renderComponent(<EntityDetails />, { path, url, state });
     expect(
-      document.querySelector(".entity-details__model")
+      document.querySelector(".entity-details__model"),
     ).toBeInTheDocument();
   });
 
@@ -295,7 +295,7 @@ describe("Entity Details Container", () => {
       state,
     });
     expect(
-      document.querySelector(".entity-details__machine")
+      document.querySelector(".entity-details__machine"),
     ).toBeInTheDocument();
   });
 
@@ -320,7 +320,7 @@ describe("Entity Details Container", () => {
       state,
     });
     expect(
-      document.querySelector(".p-notification--negative")
+      document.querySelector(".p-notification--negative"),
     ).toHaveTextContent(Label.MODEL_WATCHER_TIMEOUT);
   });
 
@@ -331,7 +331,7 @@ describe("Entity Details Container", () => {
       state,
     });
     expect(
-      document.querySelector(".p-notification--negative")
+      document.querySelector(".p-notification--negative"),
     ).toHaveTextContent(`${Label.MODEL_WATCHER_ERROR} custom error`);
   });
 

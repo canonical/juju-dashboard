@@ -74,7 +74,7 @@ export enum Output {
 function generateLinkToApp(
   appName: string,
   userName: string,
-  modelName: string
+  modelName: string,
 ) {
   return (
     <Link to={urls.model.app.index({ userName, modelName, appName })}>
@@ -87,7 +87,7 @@ function generateAppIcon(
   application: ApplicationData | undefined,
   appName: string,
   userName?: string,
-  modelName?: string
+  modelName?: string,
 ) {
   // If the user has executed actions with an application and then removed
   // that application it'll no longer be in the model data so in this
@@ -146,7 +146,7 @@ const generateApplicationRow = (
   operationData: OperationResult,
   modelStatusData: ModelData | null,
   userName: string,
-  modelName: string
+  modelName: string,
 ): TableRow | null => {
   // The action name is being defined like this because the action name is
   // only contained in the actions array and not on the operation level.
@@ -162,7 +162,7 @@ const generateApplicationRow = (
   if (!appName) {
     console.error(
       "Unable to parse action receiver",
-      actionData.action.receiver
+      actionData.action.receiver,
     );
     return null;
   }
@@ -171,7 +171,7 @@ const generateApplicationRow = (
       modelStatusData?.applications[appName],
       appName,
       userName,
-      modelName
+      modelName,
     ),
     id: `${operationId}/${actionName}`,
     message: "",
@@ -198,10 +198,10 @@ export default function ActionLogs() {
   const appStore = useAppStore();
   const getModelUUIDMemo = useMemo(
     () => (modelName ? getModelUUID(modelName) : null),
-    [modelName]
+    [modelName],
   );
   const modelUUID = useSelector((state: RootState) =>
-    getModelUUIDMemo?.(state)
+    getModelUUIDMemo?.(state),
   );
   const modelStatusData = useSelector(getModelStatus(modelUUID));
 
@@ -215,20 +215,20 @@ export default function ActionLogs() {
             applications: applicationList,
           },
           modelUUID,
-          appStore.getState()
+          appStore.getState(),
         );
         if (operationList?.results) {
           setOperations(operationList.results);
           const actionsTags = operationList.results
             .flatMap((operation: OperationResult) =>
-              operation.actions?.map((action) => action.action.tag)
+              operation.actions?.map((action) => action.action.tag),
             )
             .filter((actionTag?: string): actionTag is string => !!actionTag)
             .map((actionTag: string) => ({ tag: actionTag }));
           const actionsList = await queryActionsList(
             { entities: actionsTags },
             modelUUID,
-            appStore.getState()
+            appStore.getState(),
           );
           if (actionsList) {
             setActions(actionsList.results);
@@ -263,7 +263,7 @@ export default function ActionLogs() {
         operationData,
         modelStatusData,
         userName,
-        modelName
+        modelName,
       );
       if (!applicationRow) {
         return;
@@ -271,7 +271,7 @@ export default function ActionLogs() {
       operationData.actions?.forEach((actionData) => {
         const outputType = selectedOutput[actionData.action.tag] || Output.ALL;
         const actionFullDetails = actions.find(
-          (action) => action.action.tag === actionData.action.tag
+          (action) => action.action.tag === actionData.action.tag,
         );
         delete actionFullDetails?.output?.["return-code"];
         if (!actionFullDetails) return;
@@ -290,7 +290,7 @@ export default function ActionLogs() {
         const completedDate = new Date(actionData.completed);
         const name = actionData.action.receiver.replace(
           /unit-(.+)-(\d+)/,
-          "$1/$2"
+          "$1/$2",
         );
         applicationRow.subRows.push({
           application: (
@@ -347,7 +347,7 @@ export default function ActionLogs() {
                         onClick: () =>
                           handleOutputSelect(
                             actionData.action.tag,
-                            Output.STDOUT
+                            Output.STDOUT,
                           ),
                         disabled: !stdout.length,
                       },
@@ -356,7 +356,7 @@ export default function ActionLogs() {
                         onClick: () =>
                           handleOutputSelect(
                             actionData.action.tag,
-                            Output.STDERR
+                            Output.STDERR,
                           ),
                         disabled: !stderr.length,
                       },
@@ -426,7 +426,7 @@ export default function ActionLogs() {
         sortInverted: true,
       },
     ],
-    []
+    [],
   );
 
   const emptyMsg = `There are no action logs available yet for ${modelName}`;

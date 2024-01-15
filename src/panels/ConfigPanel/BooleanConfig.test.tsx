@@ -23,7 +23,7 @@ describe("BooleanConfig", () => {
         selectedConfig={undefined}
         setSelectedConfig={jest.fn()}
         setNewValue={jest.fn()}
-      />
+      />,
     );
     expect(screen.getByRole("radio", { name: "true" })).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: "false" })).toBeInTheDocument();
@@ -37,7 +37,7 @@ describe("BooleanConfig", () => {
         selectedConfig={undefined}
         setSelectedConfig={jest.fn()}
         setNewValue={setNewValue}
-      />
+      />,
     );
     await userEvent.click(screen.getByRole("radio", { name: "false" }));
     expect(setNewValue).toHaveBeenCalledWith("bool option", false);

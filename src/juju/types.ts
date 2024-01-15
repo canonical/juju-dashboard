@@ -54,7 +54,7 @@ export type AllWatcherDelta =
   | [
       DeltaEntityTypes.ANNOTATION,
       DeltaChangeTypes.CHANGE,
-      AnnotationChangeDelta
+      AnnotationChangeDelta,
     ]
   | [DeltaEntityTypes.APPLICATION, DeltaChangeTypes, ApplicationChangeDelta]
   | [DeltaEntityTypes.CHARM, DeltaChangeTypes, CharmChangeDelta]

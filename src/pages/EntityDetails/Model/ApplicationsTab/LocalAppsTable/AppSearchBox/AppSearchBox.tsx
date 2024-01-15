@@ -22,7 +22,7 @@ const AppSearchBox = () => {
     dispatch(
       jujuActions.updateSelectedApplications({
         selectedApplications: [],
-      })
+      }),
     );
     setQuery({ filterQuery: query });
   };

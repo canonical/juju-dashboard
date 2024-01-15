@@ -74,7 +74,7 @@ type SetSelectedAction = (actionName: string) => void;
 
 export type OnValuesChange = (
   actionName: string,
-  options: ActionOptionValue
+  options: ActionOptionValue,
 ) => void;
 
 type ActionsQueryParams = {
@@ -88,10 +88,10 @@ export default function ActionsPanel(): JSX.Element {
   const { appName, modelName } = useParams<EntityDetailsRoute>();
   const getModelUUIDMemo = useMemo(
     () => (modelName ? getModelUUID(modelName) : null),
-    [modelName]
+    [modelName],
   );
   const modelUUID = useSelector((state: RootState) =>
-    getModelUUIDMemo?.(state)
+    getModelUUIDMemo?.(state),
   );
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});
@@ -99,7 +99,7 @@ export default function ActionsPanel(): JSX.Element {
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
   const [selectedAction, setSelectedAction]: [
     string | undefined,
-    SetSelectedAction
+    SetSelectedAction,
   ] = useState<string>();
   const { Portal } = usePortal();
 
@@ -159,7 +159,7 @@ export default function ActionsPanel(): JSX.Element {
       selectedAction,
       actionOptionsValues.current[selectedAction],
       modelUUID,
-      appStore.getState()
+      appStore.getState(),
     );
   };
 
@@ -175,10 +175,10 @@ export default function ActionsPanel(): JSX.Element {
         selectedUnits,
         actionData,
         actionOptionsValues,
-        setDisableSubmit
+        setDisableSubmit,
       );
     },
-    [actionData, selectedAction, selectedUnits]
+    [actionData, selectedAction, selectedUnits],
   );
 
   const selectHandler = useCallback(
@@ -189,10 +189,10 @@ export default function ActionsPanel(): JSX.Element {
         selectedUnits,
         actionData,
         actionOptionsValues,
-        setDisableSubmit
+        setDisableSubmit,
       );
     },
-    [actionData, selectedUnits]
+    [actionData, selectedUnits],
   );
 
   const generateConfirmationModal = () => {
@@ -214,7 +214,7 @@ export default function ActionsPanel(): JSX.Element {
               onConfirm={() => {
                 setConfirmType(null);
                 executeAction().catch((error) =>
-                  console.error(Label.EXECUTE_ACTION_ERROR, error)
+                  console.error(Label.EXECUTE_ACTION_ERROR, error),
                 );
                 handleRemovePanelQueryParams();
               }}
@@ -287,7 +287,7 @@ export default function ActionsPanel(): JSX.Element {
 export function onValuesChange(
   actionName: string,
   values: ActionOptionValue,
-  optionValues: MutableRefObject<ActionOptionValues>
+  optionValues: MutableRefObject<ActionOptionValues>,
 ) {
   const updatedValues: ActionOptionValue = {};
   Object.keys(values).forEach((key) => {
@@ -306,7 +306,7 @@ export function enableSubmit(
   selectedUnits: string[],
   actionData: ActionData,
   optionsValues: MutableRefObject<ActionOptionValues>,
-  setDisableSubmit: (disable: boolean) => void
+  setDisableSubmit: (disable: boolean) => void,
 ) {
   if (selectedAction && selectedUnits.length > 0) {
     if (hasNoOptions(selectedAction, optionsValues.current)) {
@@ -326,13 +326,13 @@ export function enableSubmit(
 
 type ValidationFnProps = (
   selectedAction: string,
-  optionValues: ActionOptionValues
+  optionValues: ActionOptionValues,
 ) => boolean;
 
 type RequiredPopulated = (
   selectedAction: string,
   actionData: ActionData,
-  optionValues: ActionOptionValues
+  optionValues: ActionOptionValues,
 ) => boolean;
 
 const hasNoOptions: ValidationFnProps = (selected, optionValues) => {
@@ -346,7 +346,7 @@ const hasNoOptions: ValidationFnProps = (selected, optionValues) => {
 const requiredPopulated: RequiredPopulated = (
   selected,
   actionData,
-  optionsValues
+  optionsValues,
 ) => {
   const required: ActionParams["required"] =
     actionData[selected].params.required;

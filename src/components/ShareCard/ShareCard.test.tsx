@@ -13,10 +13,10 @@ describe("Share Card", () => {
         isOwner={false}
         removeUser={jest.fn()}
         accessSelectChange={jest.fn()}
-      />
+      />,
     );
     expect(screen.getAllByText("janedoe")[0]).toHaveClass(
-      "share-card__username"
+      "share-card__username",
     );
     const remove = screen.getByRole("button", { name: Label.REMOVE });
     expect(remove).toBeInTheDocument();
@@ -31,7 +31,7 @@ describe("Share Card", () => {
         isOwner={true}
         removeUser={jest.fn()}
         accessSelectChange={jest.fn()}
-      />
+      />,
     );
     expect(screen.getByText(Label.OWNER)).toHaveClass("share-card__secondary");
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
@@ -49,7 +49,7 @@ describe("Share Card", () => {
         isOwner={false}
         removeUser={removeUserFn}
         accessSelectChange={accessSelectChangeFn}
-      />
+      />,
     );
     await userEvent.click(screen.getByRole("button", { name: Label.REMOVE }));
     expect(removeUserFn).toHaveBeenCalled();
@@ -66,7 +66,7 @@ describe("Share Card", () => {
         isOwner={false}
         removeUser={removeUserFn}
         accessSelectChange={accessSelectChangeFn}
-      />
+      />,
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(accessSelectChangeFn).toHaveBeenCalled();
@@ -86,12 +86,12 @@ describe("Share Card", () => {
         isOwner={false}
         removeUser={removeUserFn}
         accessSelectChange={accessSelectChangeFn}
-      />
+      />,
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(console.error).toHaveBeenCalledWith(
       Label.ACCESS_CHANGE_ERROR,
-      new Error()
+      new Error(),
     );
 
     console.error = consoleError;

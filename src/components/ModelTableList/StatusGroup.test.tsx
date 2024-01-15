@@ -119,7 +119,7 @@ describe("StatusGroup", () => {
     renderComponent(<StatusGroup filters={{}} />, { state });
     expect(screen.getAllByTestId("provider-logo")[0]).toHaveAttribute(
       "src",
-      "gce.svg"
+      "gce.svg",
     );
   });
 
@@ -157,10 +157,10 @@ describe("StatusGroup", () => {
     expect(
       within(firstContentRow).getByRole("button", {
         name: "Access",
-      })
+      }),
     ).toBeInTheDocument();
     expect(within(firstContentRow).getAllByRole("gridcell")[6]).toHaveClass(
-      "lrg-screen-access-cell"
+      "lrg-screen-access-cell",
     );
   });
 
@@ -196,14 +196,14 @@ describe("StatusGroup", () => {
     });
     expect(appError).toHaveAttribute(
       "href",
-      "/models/eggman@external/sub-test/app/calico"
+      "/models/eggman@external/sub-test/app/calico",
     );
     const unitError = within(tooltip).getByRole("link", {
       name: "unit blocked",
     });
     expect(unitError).toHaveAttribute(
       "href",
-      "/models/eggman@external/sub-test/app/etcd/unit/etcd-0"
+      "/models/eggman@external/sub-test/app/etcd/unit/etcd-0",
     );
   });
 });

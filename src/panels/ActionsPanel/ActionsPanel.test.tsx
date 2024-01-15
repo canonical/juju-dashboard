@@ -69,7 +69,7 @@ describe("ActionsPanel", () => {
     console.error = jest.fn();
     const getActionsForApplicationSpy = jest.spyOn(
       juju,
-      "getActionsForApplication"
+      "getActionsForApplication",
     );
     getActionsForApplicationSpy.mockResolvedValue(mockResponse);
     state = rootStateFactory.build({
@@ -99,7 +99,7 @@ describe("ActionsPanel", () => {
   it("validates that an action is selected before submitting", async () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
   });
 
@@ -107,7 +107,7 @@ describe("ActionsPanel", () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(await screen.findByText("2 units selected")).toBeInTheDocument();
     expect(
-      await screen.findByTestId("actions-panel-unit-list")
+      await screen.findByTestId("actions-panel-unit-list"),
     ).toHaveTextContent("Run action on: ceph/0, 1");
   });
 
@@ -118,10 +118,10 @@ describe("ActionsPanel", () => {
       state,
     });
     expect(await screen.findByRole("heading")).toHaveTextContent(
-      Label.NO_UNITS_SELECTED
+      Label.NO_UNITS_SELECTED,
     );
     expect(
-      await screen.findByTestId("actions-panel-unit-list")
+      await screen.findByTestId("actions-panel-unit-list"),
     ).toHaveTextContent(`Run action on: ${Label.NO_UNITS_SELECTED}`);
   });
 
@@ -132,36 +132,36 @@ describe("ActionsPanel", () => {
       state,
     });
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     expect(
-      document.querySelector(".p-confirmation-modal")
+      document.querySelector(".p-confirmation-modal"),
     ).not.toBeInTheDocument();
   });
 
   it("disables the submit button if a required text field is empty", async () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" })
+      await screen.findByRole("radio", { name: "add-disk" }),
     );
     await userEvent.type(
       await screen.findByRole("textbox", { name: "osd-devices" }),
-      "some content"
+      "some content",
     );
     await waitFor(async () =>
       expect(
-        await screen.findByRole("button", { name: "Run action" })
-      ).not.toBeDisabled()
+        await screen.findByRole("button", { name: "Run action" }),
+      ).not.toBeDisabled(),
     );
   });
 
@@ -192,44 +192,44 @@ describe("ActionsPanel", () => {
     });
     const getActionsForApplicationSpy = jest.spyOn(
       juju,
-      "getActionsForApplication"
+      "getActionsForApplication",
     );
     getActionsForApplicationSpy.mockResolvedValue(mockResponse);
     renderComponent(<ActionsPanel />, { path, url, state });
     await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" })
+      await screen.findByRole("radio", { name: "add-disk" }),
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("checkbox", { name: "osd-devices" })
+      await screen.findByRole("checkbox", { name: "osd-devices" }),
     );
     await waitFor(async () =>
       expect(
-        await screen.findByRole("button", { name: "Run action" })
-      ).not.toBeDisabled()
+        await screen.findByRole("button", { name: "Run action" }),
+      ).not.toBeDisabled(),
     );
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     expect(document.querySelector(".p-modal")).toBeInTheDocument();
     expect(
-      await screen.findByTestId("confirmation-modal-unit-count")
+      await screen.findByTestId("confirmation-modal-unit-count"),
     ).toHaveTextContent("2");
     expect(
-      await screen.findByTestId("confirmation-modal-unit-names")
+      await screen.findByTestId("confirmation-modal-unit-names"),
     ).toHaveTextContent("ceph/0, 1");
     expect(executeActionOnUnits).not.toHaveBeenCalled();
   });
@@ -238,17 +238,17 @@ describe("ActionsPanel", () => {
     const executeActionOnUnitsSpy = jest.spyOn(juju, "executeActionOnUnits");
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
@@ -261,20 +261,20 @@ describe("ActionsPanel", () => {
     const executeActionOnUnitsSpy = jest.spyOn(juju, "executeActionOnUnits");
     renderComponent(<ActionsPanel />, { path, url, state });
     await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" })
+      await screen.findByRole("radio", { name: "add-disk" }),
     );
     await userEvent.type(
       await screen.findByRole("textbox", { name: "osd-devices" }),
-      "new device"
+      "new device",
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
@@ -289,26 +289,26 @@ describe("ActionsPanel", () => {
   it("should cancel the run selected action confirmation modal", async () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" })
+      await screen.findByRole("radio", { name: "add-disk" }),
     );
     await userEvent.type(
       await screen.findByRole("textbox", { name: "osd-devices" }),
-      "new device"
+      "new device",
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     expect(
-      screen.queryByRole("dialog", { name: "Run add-disk?" })
+      screen.queryByRole("dialog", { name: "Run add-disk?" }),
     ).toBeInTheDocument();
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CANCEL_BUTTON })
+      await screen.findByRole("button", { name: Label.CANCEL_BUTTON }),
     );
     expect(
-      screen.queryByRole("dialog", { name: "Run add-disk?" })
+      screen.queryByRole("dialog", { name: "Run add-disk?" }),
     ).not.toBeInTheDocument();
   });
 
@@ -319,16 +319,16 @@ describe("ActionsPanel", () => {
         jest
           .fn()
           .mockRejectedValue(
-            new Error("Error while trying to get actions for application!")
-          )
+            new Error("Error while trying to get actions for application!"),
+          ),
       );
     renderComponent(<ActionsPanel />, { path, url, state });
     await waitFor(() =>
-      expect(juju.getActionsForApplication).toHaveBeenCalledTimes(1)
+      expect(juju.getActionsForApplication).toHaveBeenCalledTimes(1),
     );
     expect(console.error).toHaveBeenCalledWith(
       Label.GET_ACTIONS_ERROR,
-      new Error("Error while trying to get actions for application!")
+      new Error("Error while trying to get actions for application!"),
     );
   });
 
@@ -339,29 +339,29 @@ describe("ActionsPanel", () => {
         jest
           .fn()
           .mockRejectedValue(
-            new Error("Error while trying to execute action on units!")
-          )
+            new Error("Error while trying to execute action on units!"),
+          ),
       );
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
     await waitFor(() =>
-      expect(juju.executeActionOnUnits).toHaveBeenCalledTimes(1)
+      expect(juju.executeActionOnUnits).toHaveBeenCalledTimes(1),
     );
     expect(console.error).toHaveBeenCalledWith(
       Label.EXECUTE_ACTION_ERROR,
-      new Error("Error while trying to execute action on units!")
+      new Error("Error while trying to execute action on units!"),
     );
   });
 });

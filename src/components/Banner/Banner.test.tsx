@@ -8,7 +8,7 @@ describe("Banner", () => {
     render(
       <Banner variant="positive" isActive={true}>
         <p>Banner text</p>
-      </Banner>
+      </Banner>,
     );
     expect(screen.getByText("Banner text")).toBeInTheDocument();
   });
@@ -17,7 +17,7 @@ describe("Banner", () => {
     render(
       <Banner data-testid="banner" variant="positive" isActive={true}>
         <p>Banner text</p>
-      </Banner>
+      </Banner>,
     );
     expect(screen.getByTestId("banner")).toHaveAttribute("data-active", "true");
   });
@@ -26,11 +26,11 @@ describe("Banner", () => {
     render(
       <Banner data-testid="banner" variant="positive" isActive={false}>
         <p>Banner text</p>
-      </Banner>
+      </Banner>,
     );
     expect(screen.getByTestId("banner")).toHaveAttribute(
       "data-active",
-      "false"
+      "false",
     );
   });
 
@@ -38,11 +38,11 @@ describe("Banner", () => {
     render(
       <Banner data-testid="banner" isActive={true} variant="caution">
         <p>Banner text</p>
-      </Banner>
+      </Banner>,
     );
     expect(screen.getByTestId("banner")).toHaveAttribute(
       "data-variant",
-      "caution"
+      "caution",
     );
   });
 
@@ -50,13 +50,13 @@ describe("Banner", () => {
     render(
       <Banner data-testid="banner" isActive={true} variant="caution">
         <p>Banner text</p>
-      </Banner>
+      </Banner>,
     );
     expect(screen.getByTestId("banner")).toHaveAttribute("data-active", "true");
     await userEvent.click(screen.getByRole("button", { name: Label.CLOSE }));
     expect(screen.getByTestId("banner")).toHaveAttribute(
       "data-active",
-      "false"
+      "false",
     );
   });
 
@@ -64,17 +64,17 @@ describe("Banner", () => {
     const { rerender } = render(
       <Banner data-testid="banner" isActive={true} variant="caution">
         <p>Banner text</p>
-      </Banner>
+      </Banner>,
     );
     await userEvent.click(screen.getByRole("button", { name: Label.CLOSE }));
     expect(screen.getByTestId("banner")).toHaveAttribute(
       "data-active",
-      "false"
+      "false",
     );
     rerender(
       <Banner data-testid="banner" isActive={true} variant="positive">
         <p>Banner text</p>
-      </Banner>
+      </Banner>,
     );
     expect(screen.getByTestId("banner")).toHaveAttribute("data-active", "true");
   });

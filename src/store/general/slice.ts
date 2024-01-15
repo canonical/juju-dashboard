@@ -30,7 +30,7 @@ const slice = createSlice({
       action: PayloadAction<{
         wsControllerURL: string;
         features: ControllerFeatures;
-      }>
+      }>,
     ) => {
       const features = state.controllerFeatures ?? {};
       features[action.payload.wsControllerURL] = action.payload.features;
@@ -44,7 +44,7 @@ const slice = createSlice({
     },
     storeLoginError: (
       state,
-      action: PayloadAction<{ wsControllerURL: string; error: string }>
+      action: PayloadAction<{ wsControllerURL: string; error: string }>,
     ) => {
       if (!state.loginErrors) {
         state.loginErrors = {};
@@ -68,7 +68,7 @@ const slice = createSlice({
     removeVisitURL: (state, action: PayloadAction<string>) => {
       if (state.visitURLs) {
         state.visitURLs = state.visitURLs?.filter(
-          (url) => url !== action.payload
+          (url) => url !== action.payload,
         );
       }
     },

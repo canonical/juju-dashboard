@@ -29,7 +29,7 @@ describe("OptionInputs", () => {
           options={options}
           onValuesChange={onValuesChange}
         />
-      </Formik>
+      </Formik>,
     );
     expect(container).toMatchSnapshot();
   });
@@ -43,7 +43,7 @@ describe("OptionInputs", () => {
           options={options}
           onValuesChange={onValuesChange}
         />
-      </Formik>
+      </Formik>,
     );
     expect(screen.getByRole("textbox", { name: "fruit" })).toBeInTheDocument();
   });
@@ -64,7 +64,7 @@ describe("OptionInputs", () => {
           ]}
           onValuesChange={onValuesChange}
         />
-      </Formik>
+      </Formik>,
     );
     expect(screen.getByRole("checkbox", { name: "fruit" })).toBeInTheDocument();
   });
@@ -84,14 +84,14 @@ describe("OptionInputs", () => {
           options={options}
           onValuesChange={onValuesChange}
         />
-      </Formik>
+      </Formik>,
     );
     // Formik fires a change event for the initialValues set.
     expect(onValuesChange).toHaveBeenCalledTimes(1);
     await userEvent.type(screen.getByRole("textbox", { name: "fruit" }), "foo");
     // On change gets called for each letter that is typed into the textbox.
-    expect(onValuesChange).toHaveBeenCalledTimes(5);
-    expect(onValuesChange.mock.calls[4]).toEqual([
+    expect(onValuesChange).toHaveBeenCalledTimes(4);
+    expect(onValuesChange.mock.calls[3]).toEqual([
       "MyAction",
       { "MyAction-fruit": "foo", "MyAction-veg": "" },
     ]);

@@ -20,11 +20,11 @@ describe("AppSearchBox", () => {
     expect(
       store
         .getActions()
-        .find((action) => action.type === "juju/updateSelectedApplications")
+        .find((action) => action.type === "juju/updateSelectedApplications"),
     ).toMatchObject(
       jujuActions.updateSelectedApplications({
         selectedApplications: [],
-      })
+      }),
     );
   });
 });

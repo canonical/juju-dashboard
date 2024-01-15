@@ -79,8 +79,8 @@ describe("ApplicationsTab", () => {
     renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
       screen.queryByText(
-        /There are no applications associated with this model/i
-      )
+        /There are no applications associated with this model/i,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -88,8 +88,8 @@ describe("ApplicationsTab", () => {
     renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
       screen.queryByText(
-        /There are no applications associated with this model/i
-      )
+        /There are no applications associated with this model/i,
+      ),
     ).not.toBeInTheDocument();
     expect(screen.queryAllByText(/db1/i)).toHaveLength(1);
   });
@@ -108,7 +108,7 @@ describe("ApplicationsTab", () => {
     };
     renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
-      document.querySelector(".entity-details__offers")
+      document.querySelector(".entity-details__offers"),
     ).toBeInTheDocument();
   });
 
@@ -126,7 +126,7 @@ describe("ApplicationsTab", () => {
     };
     renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
-      document.querySelector(".entity-details__remote-apps")
+      document.querySelector(".entity-details__remote-apps"),
     ).toBeInTheDocument();
   });
 });

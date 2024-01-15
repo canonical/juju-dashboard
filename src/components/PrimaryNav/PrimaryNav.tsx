@@ -50,9 +50,9 @@ const useControllersLink = () => {
             "version" in controller && controller.updateAvailable
               ? count + 1
               : count,
-          0
+          0,
         ),
-      0
+      0,
     );
   }, [controllers]);
 

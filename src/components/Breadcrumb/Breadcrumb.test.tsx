@@ -11,10 +11,10 @@ describe("Breadcrumb", () => {
       url: "/models/eggman@external/group-test",
     });
     expect(
-      screen.queryByTestId("breadcrumb-application")
+      screen.queryByTestId("breadcrumb-application"),
     ).not.toBeInTheDocument();
     expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
-      "group-test"
+      "group-test",
     );
   });
 
@@ -24,16 +24,16 @@ describe("Breadcrumb", () => {
       url: "/models/eggman@external/group-test/app/easyrsa",
     });
     expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
-      "group-testApplicationseasyrsa"
+      "group-testApplicationseasyrsa",
     );
     expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
-      "group-test"
+      "group-test",
     );
     expect(screen.getByTestId("breadcrumb-section")).toHaveTextContent(
-      "Applications"
+      "Applications",
     );
     expect(screen.getByTestId("breadcrumb-applications")).toHaveTextContent(
-      "easyrsa"
+      "easyrsa",
     );
   });
 
@@ -43,16 +43,16 @@ describe("Breadcrumb", () => {
       url: "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
     });
     expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
-      "group-testApplicationslogstashlogstash-0"
+      "group-testApplicationslogstashlogstash-0",
     );
     expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
-      "group-test"
+      "group-test",
     );
     expect(screen.getByTestId("breadcrumb-section")).toHaveTextContent(
-      "Applications"
+      "Applications",
     );
     expect(screen.getByTestId("breadcrumb-units")).toHaveTextContent(
-      "logstash-0"
+      "logstash-0",
     );
   });
 
@@ -62,13 +62,13 @@ describe("Breadcrumb", () => {
       url: "/models/eggman@external/group-test/machine/0",
     });
     expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
-      "group-testMachines0"
+      "group-testMachines0",
     );
     expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
-      "group-test"
+      "group-test",
     );
     expect(screen.getByTestId("breadcrumb-section")).toHaveTextContent(
-      "Machines"
+      "Machines",
     );
     expect(screen.getByTestId("breadcrumb-machines")).toHaveTextContent("0");
   });

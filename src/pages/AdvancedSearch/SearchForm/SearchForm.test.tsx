@@ -51,7 +51,7 @@ describe("SearchForm", () => {
       wsControllerURL: "wss://controller.example.com",
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
@@ -66,7 +66,7 @@ describe("SearchForm", () => {
     await userEvent.type(screen.getByRole("textbox"), ".applications");
     await userEvent.click(screen.getByRole("button", { name: Label.SEARCH }));
     expect(window.localStorage.getItem(QUERY_HISTORY_KEY)).toBe(
-      JSON.stringify([".applications"])
+      JSON.stringify([".applications"]),
     );
   });
 
@@ -76,12 +76,12 @@ describe("SearchForm", () => {
     await userEvent.clear(screen.getByRole("textbox"));
     await userEvent.type(screen.getByRole("textbox"), ".machines{Enter}");
     expect(window.localStorage.getItem(QUERY_HISTORY_KEY)).toBe(
-      JSON.stringify([".machines", ".applications"])
+      JSON.stringify([".machines", ".applications"]),
     );
     await userEvent.clear(screen.getByRole("textbox"));
     await userEvent.type(screen.getByRole("textbox"), ".applications{Enter}");
     expect(window.localStorage.getItem(QUERY_HISTORY_KEY)).toBe(
-      JSON.stringify([".applications", ".machines"])
+      JSON.stringify([".applications", ".machines"]),
     );
   });
 
@@ -90,7 +90,7 @@ describe("SearchForm", () => {
     expect(
       screen.getByRole("button", {
         name: Label.COPY_JSON,
-      })
+      }),
     ).toBeDisabled();
   });
 
@@ -101,7 +101,7 @@ describe("SearchForm", () => {
     expect(
       screen.getByRole("button", {
         name: Label.COPY_JSON,
-      })
+      }),
     ).toBeDisabled();
   });
 
@@ -113,7 +113,7 @@ describe("SearchForm", () => {
     expect(
       screen.getByRole("button", {
         name: Label.COPY_JSON,
-      })
+      }),
     ).toBeDisabled();
   });
 
@@ -131,7 +131,7 @@ describe("SearchForm", () => {
     expect(copyJSONButton).toBeEnabled();
     await userEvent.click(copyJSONButton);
     expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(
-      JSON.stringify(mockResults, null, 2)
+      JSON.stringify(mockResults, null, 2),
     );
   });
 });

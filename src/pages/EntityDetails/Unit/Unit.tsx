@@ -56,7 +56,7 @@ export default function Unit() {
   }, [applications, units, unitIdentifier]);
 
   const applicationStatuses = useSelector(
-    getAllModelApplicationStatus(modelUUID)
+    getAllModelApplicationStatus(modelUUID),
   );
 
   const machineRows = useMemo(
@@ -67,7 +67,7 @@ export default function Unit() {
             userName,
           })
         : [],
-    [filteredMachineList, units, modelName, userName]
+    [filteredMachineList, units, modelName, userName],
   );
 
   const applicationRows = useMemo(
@@ -76,10 +76,10 @@ export default function Unit() {
         ? generateLocalApplicationRows(
             filteredApplicationList,
             applicationStatuses,
-            { modelName, userName }
+            { modelName, userName },
           )
         : [],
-    [filteredApplicationList, applicationStatuses, modelName, userName]
+    [filteredApplicationList, applicationStatuses, modelName, userName],
   );
 
   const unit = unitIdentifier ? units?.[unitIdentifier] : null;

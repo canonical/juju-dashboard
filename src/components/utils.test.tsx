@@ -32,7 +32,7 @@ describe("getViewportWidth", () => {
       Object.defineProperty(
         document.documentElement,
         "clientWidth",
-        clientWidth
+        clientWidth,
       );
     }
   });

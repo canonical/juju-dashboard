@@ -58,7 +58,7 @@ describe("CodeSnippetBlock", () => {
         title="Mock Title"
         code={{ abc123: [crossModelQueryFactory.withModel().build()] }}
       />,
-      { state }
+      { state },
     );
     expect(screen.getByText("Mock Title")).toBeVisible();
     expect(document.querySelector(".p-code-snippet")).toBeVisible();
@@ -72,15 +72,15 @@ describe("CodeSnippetBlock", () => {
         title="Mock Title"
         code={{ abc123: [crossModelQueryFactory.withModel().build()] }}
       />,
-      { state }
+      { state },
     );
     const codeSnippetDropdownButton = screen.getByRole("combobox");
     expect(codeSnippetDropdownButton).toBeVisible();
     expect(
-      screen.getByRole("option", { name: "Tree", hidden: true })
+      screen.getByRole("option", { name: "Tree", hidden: true }),
     ).toHaveAttribute("value", "tree");
     expect(
-      screen.getByRole("option", { name: "JSON", hidden: true })
+      screen.getByRole("option", { name: "JSON", hidden: true }),
     ).toHaveAttribute("value", "json");
     await userEvent.selectOptions(codeSnippetDropdownButton, "JSON");
     expect(screen.getByText('"abc123"')).toBeVisible();
@@ -93,12 +93,12 @@ describe("CodeSnippetBlock", () => {
         title="Mock Title"
         code={{ abc123: [crossModelQueryFactory.withModel().build()] }}
       />,
-      { state }
+      { state },
     );
     const codeSnippetDropdownButton = screen.getByRole("combobox");
     await userEvent.selectOptions(codeSnippetDropdownButton, "Tree");
     expect(document.querySelector(".p-code-snippet__block")).toHaveTextContent(
-      "▶eggman@external/test-model[] 1 item▶0:{} 1 key▶model:{} 8 keys"
+      "▶eggman@external/test-model[] 1 item▶0:{} 1 key▶model:{} 8 keys",
     );
   });
 
@@ -122,14 +122,14 @@ describe("CodeSnippetBlock", () => {
           ],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
     await clickToggleForLink("calico:");
     expect(screen.getByRole("link", { name: '"cs:~calico"' })).toHaveAttribute(
       "href",
-      "https://charmhub.io/calico"
+      "https://charmhub.io/calico",
     );
   });
 
@@ -153,14 +153,14 @@ describe("CodeSnippetBlock", () => {
           ],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
     await clickToggleForLink("calico:");
     expect(screen.getByRole("link", { name: '"cs:~calico"' })).toHaveAttribute(
       "href",
-      "https://charmhub.io/calico?channel=stable"
+      "https://charmhub.io/calico?channel=stable",
     );
   });
 
@@ -183,13 +183,13 @@ describe("CodeSnippetBlock", () => {
           ],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
     await clickToggleForLink("calico:");
     expect(
-      screen.queryByRole("link", { name: '"cs:~calico"' })
+      screen.queryByRole("link", { name: '"cs:~calico"' }),
     ).not.toBeInTheDocument();
   });
 
@@ -202,7 +202,7 @@ describe("CodeSnippetBlock", () => {
           abc123: [crossModelQueryFactory.withApplications().build()],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
@@ -215,7 +215,7 @@ describe("CodeSnippetBlock", () => {
         modelName: "test-model",
         appName: "easyrsa",
         unitId: "0",
-      })
+      }),
     );
   });
 
@@ -228,7 +228,7 @@ describe("CodeSnippetBlock", () => {
           abc123: [crossModelQueryFactory.withMachines().build()],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("machines:");
@@ -238,7 +238,7 @@ describe("CodeSnippetBlock", () => {
         userName: "eggman@external",
         modelName: "test-model",
         machineId: "machine_0",
-      })
+      }),
     );
   });
 
@@ -251,7 +251,7 @@ describe("CodeSnippetBlock", () => {
           abc123: [crossModelQueryFactory.withOffers().build()],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("offers:");
@@ -261,7 +261,7 @@ describe("CodeSnippetBlock", () => {
         userName: "eggman@external",
         modelName: "test-model",
         appName: "offer_0",
-      })
+      }),
     );
   });
 
@@ -274,19 +274,19 @@ describe("CodeSnippetBlock", () => {
           abc123: [crossModelQueryFactory.withApplications().build()],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
     expect(
-      screen.getByRole("link", { name: "application_0:" })
+      screen.getByRole("link", { name: "application_0:" }),
     ).toHaveAttribute(
       "href",
       urls.model.app.index({
         userName: "eggman@external",
         modelName: "test-model",
         appName: "application_0",
-      })
+      }),
     );
   });
 
@@ -299,7 +299,7 @@ describe("CodeSnippetBlock", () => {
           abc123: [crossModelQueryFactory.withApplications().build()],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
@@ -312,7 +312,7 @@ describe("CodeSnippetBlock", () => {
         userName: "eggman@external",
         modelName: "test-model",
         machineId: "0/lxd/0",
-      })
+      }),
     );
   });
 
@@ -325,7 +325,7 @@ describe("CodeSnippetBlock", () => {
           abc123: [crossModelQueryFactory.withApplicationEndpoints().build()],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await userEvent.click(screen.getByText("application-endpoints:"));
@@ -338,7 +338,7 @@ describe("CodeSnippetBlock", () => {
         userName: "eggman@external",
         modelName: "test-model",
         appName: "slurmdbd",
-      })
+      }),
     );
   });
 
@@ -351,21 +351,21 @@ describe("CodeSnippetBlock", () => {
           abc123: [crossModelQueryFactory.withApplications().build()],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await clickToggleForLink("applications:");
     await clickToggleForLink("application_0:");
     await userEvent.click(screen.getByText("subordinate-to:"));
     expect(
-      screen.getByRole("link", { name: '"kubernetes-control-plane"' })
+      screen.getByRole("link", { name: '"kubernetes-control-plane"' }),
     ).toHaveAttribute(
       "href",
       urls.model.app.index({
         userName: "eggman@external",
         modelName: "test-model",
         appName: "kubernetes-control-plane",
-      })
+      }),
     );
   });
 
@@ -378,7 +378,7 @@ describe("CodeSnippetBlock", () => {
           abc123: [crossModelQueryFactory.withApplicationEndpoints().build()],
         }}
       />,
-      { state }
+      { state },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "Tree");
     await userEvent.click(screen.getByText("application-endpoints:"));
@@ -386,14 +386,14 @@ describe("CodeSnippetBlock", () => {
     expect(
       screen.getByRole("link", {
         name: '"jaas-staging:huwshimi@external/cmi-provider.mysql-cmi"',
-      })
+      }),
     ).toHaveAttribute(
       "href",
       urls.model.app.index({
         userName: "eggman@external",
         modelName: "test-model",
         appName: "appEndpoint_0",
-      })
+      }),
     );
   });
 });

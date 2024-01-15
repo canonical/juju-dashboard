@@ -101,7 +101,7 @@ export default function App(): JSX.Element {
             userName,
           })
         : [],
-    [filteredMachineList, units, modelName, userName]
+    [filteredMachineList, units, modelName, userName],
   );
 
   const hideMachines = modelData?.type === "kubernetes";
@@ -131,7 +131,7 @@ export default function App(): JSX.Element {
             className: "select-unit",
           }
         : null,
-      hideMachines
+      hideMachines,
     );
   }, [canConfigureModel, hideMachines]);
 
@@ -160,10 +160,10 @@ export default function App(): JSX.Element {
             filteredUnitList,
             { modelName, userName },
             canConfigureModel,
-            hideMachines
+            hideMachines,
           )
         : [],
-    [canConfigureModel, filteredUnitList, modelName, userName, hideMachines]
+    [canConfigureModel, filteredUnitList, modelName, userName, hideMachines],
   );
 
   const [query, setQuery] = useQueryParams<{
@@ -195,7 +195,7 @@ export default function App(): JSX.Element {
           charm: application?.["charm-url"],
           modelUUID,
         },
-        { replace: true }
+        { replace: true },
       );
     }
   };
@@ -214,18 +214,18 @@ export default function App(): JSX.Element {
 
   const unitChipData = useMemo(
     () => generateUnitCounts(units, entity),
-    [units, entity]
+    [units, entity],
   );
 
   const machineChipData = useMemo(
     () => generateMachineCounts(machines, units, entity),
-    [machines, units, entity]
+    [machines, units, entity],
   );
 
   const showActions = () => {
     setQuery(
       { panel: "execute-action", units: selectedUnits.current },
-      { replace: true }
+      { replace: true },
     );
   };
 
@@ -237,7 +237,7 @@ export default function App(): JSX.Element {
     let unitList: string[] = [];
     if (units) {
       unitList = Object.keys(units).filter(
-        (unitId) => units[unitId].application === entity
+        (unitId) => units[unitId].application === entity,
       );
     }
 
@@ -383,7 +383,7 @@ export default function App(): JSX.Element {
                       "entity-details__units p-main-table",
                       {
                         "has-checkbox": canConfigureModel,
-                      }
+                      },
                     )}
                     sortable
                     emptyStateMsg={Label.NO_UNITS}

@@ -25,7 +25,7 @@ describe("thunks", () => {
             identityProviderAvailable: true,
           }),
         }),
-      })
+      }),
     );
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
@@ -34,7 +34,7 @@ describe("thunks", () => {
     const dispatchedThunk = await dispatch.mock.calls[4][0](
       dispatch,
       getState,
-      null
+      null,
     );
     expect(dispatchedThunk.type).toBe("app/connectAndStartPolling/fulfilled");
   });
@@ -47,7 +47,7 @@ describe("thunks", () => {
     const dispatchedThunk = await dispatch.mock.calls[1][0](
       dispatch,
       getState,
-      null
+      null,
     );
     expect(dispatchedThunk.type).toBe("app/connectAndListModels/fulfilled");
   });
@@ -85,7 +85,7 @@ describe("thunks", () => {
             ],
           },
         }),
-      })
+      }),
     );
     const action = connectAndListModels();
     await action(dispatch, getState, null);
@@ -93,7 +93,7 @@ describe("thunks", () => {
       appActions.connectAndPollControllers({
         controllers: [["wss://controller.example.com", undefined, false]],
         isJuju: true,
-      })
+      }),
     );
   });
 });

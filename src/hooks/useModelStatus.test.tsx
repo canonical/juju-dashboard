@@ -55,7 +55,7 @@ describe("useModelStatus", () => {
       wrapper: generateContainer(
         state,
         "/model/:modelName",
-        "/model/test-model"
+        "/model/test-model",
       ),
     });
     expect(result.current).toBeNull();
@@ -79,7 +79,7 @@ describe("useModelStatus", () => {
       wrapper: generateContainer(
         state,
         "/model/:modelName",
-        "/model/test-model"
+        "/model/test-model",
       ),
     });
     expect(result.current).toMatchObject(modelData);

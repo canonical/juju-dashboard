@@ -52,7 +52,7 @@ describe("Logs", () => {
   it("should display the actions", async () => {
     renderComponent(<Logs />, { state });
     expect(
-      screen.getByRole("button", { name: Label.FILTER })
+      screen.getByRole("button", { name: Label.FILTER }),
     ).toBeInTheDocument();
   });
 });

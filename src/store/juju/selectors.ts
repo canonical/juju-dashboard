@@ -46,7 +46,7 @@ const slice = (state: RootState) => state.juju;
 */
 export const getAuditEventsState = createSelector(
   [slice],
-  (sliceState) => sliceState.auditEvents
+  (sliceState) => sliceState.auditEvents,
 );
 
 /**
@@ -54,7 +54,7 @@ export const getAuditEventsState = createSelector(
 */
 export const getAuditEvents = createSelector(
   [getAuditEventsState],
-  (auditEvents) => auditEvents.items
+  (auditEvents) => auditEvents.items,
 );
 
 /**
@@ -62,7 +62,7 @@ export const getAuditEvents = createSelector(
 */
 export const getAuditEventsLoaded = createSelector(
   [getAuditEventsState],
-  (auditEvents) => auditEvents.loaded
+  (auditEvents) => auditEvents.loaded,
 );
 
 /**
@@ -70,25 +70,25 @@ export const getAuditEventsLoaded = createSelector(
 */
 export const getAuditEventsLoading = createSelector(
   [getAuditEventsState],
-  (auditEvents) => auditEvents.loading
+  (auditEvents) => auditEvents.loading,
 );
 
 export const getAuditEventsLimit = createSelector(
   [getAuditEventsState],
-  (auditEvents) => auditEvents.limit
+  (auditEvents) => auditEvents.limit,
 );
 
 const getUniqueAuditEventValues = <K extends keyof AuditEvent>(
   key: K,
   auditEvents?: AuditEvent[] | null,
-  modifier?: (value: AuditEvent[K]) => string
+  modifier?: (value: AuditEvent[K]) => string,
 ) => {
   // Use a set to get unique values.
   const values = new Set<string | AuditEvent[K]>();
   auditEvents
     ?.filter(({ [key]: value }) => typeof value !== "undefined")
     .forEach(({ [key]: value }) =>
-      values.add(modifier ? modifier(value) : value)
+      values.add(modifier ? modifier(value) : value),
     );
   return Array.from(values);
 };
@@ -99,7 +99,7 @@ const getUniqueAuditEventValues = <K extends keyof AuditEvent>(
 export const getAuditEventsUsers = createSelector(
   [getAuditEvents],
   (auditEvents) =>
-    getUniqueAuditEventValues("user-tag", auditEvents, getUserName)
+    getUniqueAuditEventValues("user-tag", auditEvents, getUserName),
 );
 
 /**
@@ -107,7 +107,7 @@ export const getAuditEventsUsers = createSelector(
 */
 export const getAuditEventsModels = createSelector(
   [getAuditEvents],
-  (auditEvents) => getUniqueAuditEventValues("model", auditEvents)
+  (auditEvents) => getUniqueAuditEventValues("model", auditEvents),
 );
 
 /**
@@ -115,7 +115,7 @@ export const getAuditEventsModels = createSelector(
 */
 export const getAuditEventsFacades = createSelector(
   [getAuditEvents],
-  (auditEvents) => getUniqueAuditEventValues("facade-name", auditEvents)
+  (auditEvents) => getUniqueAuditEventValues("facade-name", auditEvents),
 );
 
 /**
@@ -123,7 +123,7 @@ export const getAuditEventsFacades = createSelector(
 */
 export const getAuditEventsMethods = createSelector(
   [getAuditEvents],
-  (auditEvents) => getUniqueAuditEventValues("facade-method", auditEvents)
+  (auditEvents) => getUniqueAuditEventValues("facade-method", auditEvents),
 );
 
 /**
@@ -131,7 +131,7 @@ export const getAuditEventsMethods = createSelector(
 */
 export const getCrossModelQueryState = createSelector(
   [slice],
-  (sliceState) => sliceState.crossModelQuery
+  (sliceState) => sliceState.crossModelQuery,
 );
 
 /**
@@ -139,7 +139,7 @@ export const getCrossModelQueryState = createSelector(
 */
 export const getCrossModelQueryResults = createSelector(
   [getCrossModelQueryState],
-  (crossModelQuery) => crossModelQuery.results
+  (crossModelQuery) => crossModelQuery.results,
 );
 
 /**
@@ -147,7 +147,7 @@ export const getCrossModelQueryResults = createSelector(
 */
 export const getCrossModelQueryErrors = createSelector(
   [getCrossModelQueryState],
-  (crossModelQuery) => crossModelQuery.errors
+  (crossModelQuery) => crossModelQuery.errors,
 );
 
 /**
@@ -155,7 +155,7 @@ export const getCrossModelQueryErrors = createSelector(
 */
 export const getCrossModelQueryLoaded = createSelector(
   [getCrossModelQueryState],
-  (crossModelQuery) => crossModelQuery.loaded
+  (crossModelQuery) => crossModelQuery.loaded,
 );
 
 /**
@@ -163,7 +163,7 @@ export const getCrossModelQueryLoaded = createSelector(
 */
 export const getCrossModelQueryLoading = createSelector(
   [getCrossModelQueryState],
-  (crossModelQuery) => crossModelQuery.loading
+  (crossModelQuery) => crossModelQuery.loading,
 );
 
 /**
@@ -173,7 +173,7 @@ export const getCrossModelQueryLoading = createSelector(
 */
 export const getModelData = createSelector(
   [slice],
-  (sliceState) => sliceState.modelData ?? null
+  (sliceState) => sliceState.modelData ?? null,
 );
 
 /**
@@ -183,7 +183,7 @@ export const getModelData = createSelector(
 */
 export const getControllerData = createSelector(
   [slice],
-  (sliceState) => sliceState.controllers
+  (sliceState) => sliceState.controllers,
 );
 
 export const getControllersCount = createSelector([slice], (sliceState) => {
@@ -191,19 +191,19 @@ export const getControllersCount = createSelector([slice], (sliceState) => {
   return controllerData
     ? Object.values(controllerData).reduce(
         (count, controllers) => count + controllers.length,
-        0
+        0,
       )
     : 0;
 });
 
 const getModelWatcherData = createSelector(
   [slice],
-  (sliceState) => sliceState.modelWatcherData
+  (sliceState) => sliceState.modelWatcherData,
 );
 
 export const getModelList = createSelector(
   [slice],
-  (sliceState) => sliceState.models
+  (sliceState) => sliceState.models,
 );
 
 /**
@@ -222,7 +222,7 @@ export const getFullModelNames = createSelector(
           }
           return modelNames;
         }, [])
-      : []
+      : [],
 );
 
 /**
@@ -230,12 +230,12 @@ export const getFullModelNames = createSelector(
 */
 export const getModelByUUID = createSelector(
   [getModelList, (_, uuid?: string) => uuid],
-  (modelList, uuid) => (uuid ? modelList?.[uuid] : null)
+  (modelList, uuid) => (uuid ? modelList?.[uuid] : null),
 );
 
 export const getModelDataByUUID = createSelector(
   [getModelData, (_, modelUUID?: string | null) => modelUUID],
-  (modelData, modelUUID) => (modelUUID ? modelData[modelUUID] : null)
+  (modelData, modelUUID) => (modelUUID ? modelData[modelUUID] : null),
 );
 
 /**
@@ -253,7 +253,7 @@ export const getFullModelName = createSelector(
     return controller && model && "name" in controller
       ? `${controller.name}/${model.name}`
       : null;
-  }
+  },
 );
 
 /**
@@ -277,14 +277,14 @@ export const getActiveUsers = createSelector(
     Object.entries(models).forEach(([modelUUID, model]) => {
       const user = getActiveUserTag(state, model.wsControllerURL)?.replace(
         "user-",
-        ""
+        "",
       );
       if (user) {
         activeUsers[modelUUID] = user;
       }
     });
     return activeUsers;
-  }
+  },
 );
 
 /**
@@ -315,7 +315,7 @@ export const getExternalUsersInModel = createSelector(
       }
     });
     return Array.from(users.values());
-  }
+  },
 );
 
 /**
@@ -340,7 +340,7 @@ export const getUserDomainsInModel = createSelector(
       domains.add(user.split("@")[1]);
     });
     return Array.from(domains.values());
-  }
+  },
 );
 
 /**
@@ -351,12 +351,12 @@ export const getActiveUser = createSelector(
   (model, state) => {
     const activeUserTag = getActiveUserTag(state, model?.wsControllerURL);
     return activeUserTag ? getUserName(activeUserTag) : undefined;
-  }
+  },
 );
 
 export const getModelCredential = createSelector(
   [getModelDataByUUID],
-  (model) => extractCredentialName(model?.info?.["cloud-credential-tag"])
+  (model) => extractCredentialName(model?.info?.["cloud-credential-tag"]),
 );
 
 export const getModelAccess = createSelector(
@@ -369,13 +369,13 @@ export const getModelAccess = createSelector(
   (model, modelData, activeUser, state) => {
     const controllerAccess = getActiveUserControllerAccess(
       state,
-      model?.wsControllerURL
+      model?.wsControllerURL,
     );
     const modelUser = (modelData?.info?.users ?? []).find(
-      ({ user }) => user === activeUser
+      ({ user }) => user === activeUser,
     );
     return modelUser?.access || controllerAccess || null;
-  }
+  },
 );
 
 /**
@@ -384,7 +384,7 @@ export const getModelAccess = createSelector(
 */
 export const getModelListLoaded = createSelector(
   [slice],
-  (sliceState) => sliceState.modelsLoaded
+  (sliceState) => sliceState.modelsLoaded,
 );
 
 /**
@@ -393,7 +393,7 @@ export const getModelListLoaded = createSelector(
 */
 export const hasModels = createSelector(
   [getModelList],
-  (modelList) => Object.keys(modelList).length > 0
+  (modelList) => Object.keys(modelList).length > 0,
 );
 
 export function getModelWatcherDataByUUID(modelUUID: string) {
@@ -413,13 +413,13 @@ export function getModelInfo(modelUUID: string) {
         return modelWatcherData.model;
       }
       return null;
-    }
+    },
   );
 }
 
 export function getModelUUIDFromList(
   modelName?: string | null,
-  ownerName?: string | null
+  ownerName?: string | null,
 ) {
   return createSelector(getModelList, (modelList: ModelsList) => {
     let modelUUID = "";
@@ -445,7 +445,7 @@ export function getModelAnnotations(modelUUID: string) {
         return modelWatcherData.annotations;
       }
       return null;
-    }
+    },
   );
 }
 
@@ -457,7 +457,7 @@ export function getModelApplications(modelUUID: string) {
         return modelWatcherData.applications;
       }
       return null;
-    }
+    },
   );
 }
 
@@ -469,7 +469,7 @@ export function getModelUnits(modelUUID: string) {
         return modelWatcherData.units;
       }
       return null;
-    }
+    },
   );
 }
 
@@ -481,7 +481,7 @@ export function getModelRelations(modelUUID: string) {
         return modelWatcherData.relations;
       }
       return null;
-    }
+    },
   );
 }
 
@@ -493,7 +493,7 @@ export function getModelMachines(modelUUID: string) {
         return modelWatcherData.machines;
       }
       return null;
-    }
+    },
   );
 }
 
@@ -554,7 +554,7 @@ export function getAllModelApplicationStatus(modelUUID: string) {
         const worstStatusIndex = Math.max(
           workloadStatus,
           agentStatus,
-          Statuses.running
+          Statuses.running,
         );
 
         applicationStatuses[unitData.application] = Statuses[
@@ -563,7 +563,7 @@ export function getAllModelApplicationStatus(modelUUID: string) {
       });
 
       return applicationStatuses;
-    }
+    },
   );
 }
 /**
@@ -626,11 +626,11 @@ export const getFilteredModelData = (filters: Filters) =>
               break;
             case "custom":
               return !values.some((value) =>
-                combinedModelAttributes.includes(value)
+                combinedModelAttributes.includes(value),
               );
           }
           return false;
-        }
+        },
       );
       if (remove) {
         delete clonedModelData?.[uuid as keyof ModelData];
@@ -684,7 +684,7 @@ export const getModelUUID = (name: string) => {
   */
 export const getModelStatus = (modelUUID?: string | null) => {
   return createSelector(getModelData, (modelData) =>
-    modelUUID ? modelData?.[modelUUID] ?? null : null
+    modelUUID ? modelData?.[modelUUID] ?? null : null,
   );
 };
 
@@ -750,7 +750,7 @@ export const getGroupedByOwnerAndFilteredModelData = (filters: Filters) =>
   */
 export const getGroupedModelDataByStatus = createSelector(
   getModelData,
-  groupModelsByStatus
+  groupModelsByStatus,
 );
 
 /**
@@ -776,7 +776,7 @@ export const getGroupedMachinesDataByStatus = createSelector(
       }
     }
     return grouped;
-  }
+  },
 );
 
 /**
@@ -805,7 +805,7 @@ export const getGroupedUnitsDataByStatus = createSelector(
       }
     }
     return grouped;
-  }
+  },
 );
 
 /**
@@ -828,12 +828,12 @@ export const getGroupedApplicationsDataByStatus = createSelector(
       for (const applicationID in model.applications) {
         const application = model.applications[applicationID];
         grouped[getApplicationStatusGroup(application).status].push(
-          application
+          application,
         );
       }
     }
     return grouped;
-  }
+  },
 );
 
 /**
@@ -849,7 +849,7 @@ export const getGroupedModelStatusCounts = createSelector(
       running: groupedModelStatuses.running.length,
     };
     return counts;
-  }
+  },
 );
 
 /**
@@ -867,7 +867,7 @@ export const getControllerDataByUUID = (controllerUUID?: string) => {
       // a single sub controller.
       return controller[1].find(
         (subController) =>
-          "uuid" in subController && controllerUUID === subController.uuid
+          "uuid" in subController && controllerUUID === subController.uuid,
       );
     });
     return found;
@@ -889,7 +889,7 @@ export const getModelControllerDataByUUID = (controllerUUID?: string) => {
       // a single sub controller.
       const modelControllerData = controller[1].find(
         (subController) =>
-          "uuid" in subController && controllerUUID === subController.uuid
+          "uuid" in subController && controllerUUID === subController.uuid,
       );
       if (modelControllerData) {
         controllerURL = controller[0];
@@ -914,7 +914,7 @@ export function getCharms() {
     return sliceState.charms.filter((charm) => {
       return sliceState.selectedApplications.some(
         (application) =>
-          "charm-url" in application && application["charm-url"] === charm.url
+          "charm-url" in application && application["charm-url"] === charm.url,
       );
     });
   });
@@ -931,7 +931,7 @@ export function getSelectedApplications(charmURL?: string) {
     }
     return sliceState.selectedApplications.filter(
       (application) =>
-        "charm-url" in application && application["charm-url"] === charmURL
+        "charm-url" in application && application["charm-url"] === charmURL,
     );
   });
 }

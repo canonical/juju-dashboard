@@ -78,7 +78,7 @@ describe("Unit", () => {
   it("can display the machines table", async () => {
     renderComponent(<Unit />, { path, url, state });
     expect(
-      document.querySelector(".entity-details__machines")
+      document.querySelector(".entity-details__machines"),
     ).toBeInTheDocument();
   });
 
@@ -91,7 +91,7 @@ describe("Unit", () => {
     }
     renderComponent(<Unit />, { path, url, state });
     expect(
-      document.querySelector(".entity-details__machines")
+      document.querySelector(".entity-details__machines"),
     ).not.toBeInTheDocument();
   });
 });

@@ -23,20 +23,20 @@ describe("AuditLogsFilterPanel", () => {
     });
     // Have to use querySelector here as RTL doesn't support datetime-local.
     expect(document.querySelector(`input#${FieldLabel.AFTER}`)).toHaveValue(
-      params.after
+      params.after,
     );
     // Have to use querySelector here as RTL doesn't support datetime-local.
     expect(document.querySelector(`input#${FieldLabel.AFTER}`)).toHaveValue(
-      params.before
+      params.before,
     );
     expect(screen.getByRole("combobox", { name: FieldLabel.USER })).toHaveValue(
-      params.user
+      params.user,
     );
     expect(
-      screen.getByRole("combobox", { name: FieldLabel.METHOD })
+      screen.getByRole("combobox", { name: FieldLabel.METHOD }),
     ).toHaveValue(params.method);
     expect(
-      screen.getByRole("combobox", { name: FieldLabel.METHOD })
+      screen.getByRole("combobox", { name: FieldLabel.METHOD }),
     ).toHaveValue(params.method);
   });
 
@@ -76,14 +76,14 @@ describe("AuditLogsFilterPanel", () => {
       url: "/?panel=audit-log-filters&page=4",
     });
     const after = document.querySelector<HTMLInputElement>(
-      `input#${FieldLabel.AFTER}`
+      `input#${FieldLabel.AFTER}`,
     );
     expect(after).toBeTruthy();
     if (after) {
       await userEvent.type(after, params.after);
     }
     const before = document.querySelector<HTMLInputElement>(
-      `input#${FieldLabel.BEFORE}`
+      `input#${FieldLabel.BEFORE}`,
     );
     expect(before).toBeTruthy();
     if (before) {
@@ -91,15 +91,15 @@ describe("AuditLogsFilterPanel", () => {
     }
     await userEvent.type(
       screen.getByRole("combobox", { name: FieldLabel.USER }),
-      params.user
+      params.user,
     );
     await userEvent.type(
       screen.getByRole("combobox", { name: FieldLabel.MODEL }),
-      params.model
+      params.model,
     );
     await userEvent.type(
       screen.getByRole("combobox", { name: FieldLabel.METHOD }),
-      params.method
+      params.method,
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     const queryParams = new URLSearchParams(params);
@@ -112,7 +112,7 @@ describe("AuditLogsFilterPanel", () => {
     });
     await userEvent.type(
       screen.getByRole("combobox", { name: FieldLabel.METHOD }),
-      "Login"
+      "Login",
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     // Only the facade was set, so no other filters should appear in the query string.
@@ -124,7 +124,7 @@ describe("AuditLogsFilterPanel", () => {
       url: "/?panel=audit-log-filters&user-tag=user-eggman@external&method=Login",
     });
     await userEvent.clear(
-      screen.getByRole("combobox", { name: FieldLabel.METHOD })
+      screen.getByRole("combobox", { name: FieldLabel.METHOD }),
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     // The method value was cleared in the input so it should get removed from
