@@ -26,8 +26,6 @@ export enum LoginError {
   NO_INFO = "Unable to retrieve controller details",
 }
 
-type ControllerOptions = [string, Credential, boolean];
-
 const checkJIMMRelation = async (
   conn: ConnectionWithFacades,
   identity: string,
@@ -64,39 +62,38 @@ export const modelPollerMiddleware: Middleware<
       // Each time we try to log in to a controller we get new macaroons, so
       // first clean up any old auth requests:
       reduxStore.dispatch(generalActions.clearVisitURLs());
-      action.payload.controllers.forEach(
-        async (controllerData: ControllerOptions) => {
-          const [wsControllerURL, credentials, identityProviderAvailable] =
-            controllerData;
-          let conn: ConnectionWithFacades | undefined;
-          let juju: Client | undefined;
-          let error: unknown;
-          let intervalId: number | null | undefined;
-          try {
-            ({ conn, error, juju, intervalId } = await loginWithBakery(
-              wsControllerURL,
-              credentials,
-              identityProviderAvailable
-            ));
-            if (conn) {
-              controllers.set(wsControllerURL, conn);
-            }
-            if (error && typeof error === "string") {
-              reduxStore.dispatch(
-                generalActions.storeLoginError({ wsControllerURL, error })
-              );
-              return;
-            }
-          } catch (e) {
-            reduxStore.dispatch(
-              generalActions.storeLoginError({
-                wsControllerURL,
-                error:
-                  "Unable to log into the controller, check that the controller address is correct and that it is online.",
-              })
-            );
-            return console.log(LoginError.LOG, e, controllerData);
+      for (const controllerData of action.payload.controllers) {
+        const [wsControllerURL, credentials, identityProviderAvailable] =
+          controllerData;
+        let conn: ConnectionWithFacades | undefined;
+        let juju: Client | undefined;
+        let error: unknown;
+        let intervalId: number | null | undefined;
+        try {
+          ({ conn, error, juju, intervalId } = await loginWithBakery(
+            wsControllerURL,
+            credentials,
+            identityProviderAvailable,
+          ));
+          if (conn) {
+            controllers.set(wsControllerURL, conn);
           }
+          if (error && typeof error === "string") {
+            reduxStore.dispatch(
+              generalActions.storeLoginError({ wsControllerURL, error }),
+            );
+            return;
+          }
+        } catch (e) {
+          reduxStore.dispatch(
+            generalActions.storeLoginError({
+              wsControllerURL,
+              error:
+                "Unable to log into the controller, check that the controller address is correct and that it is online.",
+            }),
+          );
+          return console.log(LoginError.LOG, e, controllerData);
+        }
 
         if (!conn?.info || !Object.keys(conn.info).length) {
           reduxStore.dispatch(
@@ -171,22 +168,22 @@ export const modelPollerMiddleware: Middleware<
           );
         }
 
-          await fetchControllerList(
-            wsControllerURL,
-            conn,
-            reduxStore.dispatch,
-            reduxStore.getState
-          );
-          if (identityProviderAvailable) {
-            // This call will be a noop if the user isn't an administrator
-            // on the JIMM controller we're connected to.
-            try {
-              await disableControllerUUIDMasking(conn);
-            } catch (e) {
-              // Silently fail, if this doesn't work then the user isn't authorized
-              // to perform the action.
-            }
+        await fetchControllerList(
+          wsControllerURL,
+          conn,
+          reduxStore.dispatch,
+          reduxStore.getState,
+        );
+        if (identityProviderAvailable) {
+          // This call will be a noop if the user isn't an administrator
+          // on the JIMM controller we're connected to.
+          try {
+            await disableControllerUUIDMasking(conn);
+          } catch (e) {
+            // Silently fail, if this doesn't work then the user isn't authorized
+            // to perform the action.
           }
+        }
 
         let pollCount = 0;
         do {

@@ -17,7 +17,7 @@ export type ControllerArgs = [
   // credentials
   Credential | undefined,
   // identityProviderAvailable
-  boolean | undefined
+  boolean | undefined,
 ];
 
 export const connectAndPollControllers = createAction<{

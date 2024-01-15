@@ -734,12 +734,8 @@ describe("Juju API", () => {
         .spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => true)
         .mockImplementationOnce(async () => false);
-      await fetchControllerList(
-        "wss://example.com/api",
-        conn,
-        true,
-        dispatch,
-        () => rootStateFactory.build(),
+      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
+        rootStateFactory.build(),
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
@@ -773,12 +769,8 @@ describe("Juju API", () => {
         .spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => true)
         .mockImplementationOnce(async () => false);
-      await fetchControllerList(
-        "wss://example.com/api",
-        conn,
-        true,
-        dispatch,
-        () => rootStateFactory.build(),
+      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
+        rootStateFactory.build(),
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
@@ -849,12 +841,8 @@ describe("Juju API", () => {
       jest
         .spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => null);
-      await fetchControllerList(
-        "wss://example.com/api",
-        conn,
-        true,
-        dispatch,
-        () => rootStateFactory.build(),
+      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
+        rootStateFactory.build(),
       );
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateControllerList({
