@@ -2,8 +2,8 @@ import process from "process";
 
 import { Notification, Strip } from "@canonical/react-components";
 import * as Sentry from "@sentry/browser";
-import type { ReactNode } from "react";
 import { StrictMode } from "react";
+import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 
@@ -64,11 +64,11 @@ export const getControllerAPIEndpointErrors = (
   return null;
 };
 
-const renderRoot = (content: ReactNode) => {
+const getRoot = (): Root | undefined => {
   const rootElement = document.getElementById(ROOT_ID);
   if (rootElement) {
     const root = createRoot(rootElement);
-    root.render(content);
+    return root;
   }
 };
 
@@ -109,7 +109,7 @@ function bootstrap() {
   );
   error = error ?? controllerEndpointError;
   if (error || !config) {
-    renderRoot(
+    getRoot()?.render(
       <Strip>
         <Notification severity="negative" title="Error">
           The dashboard is not configured correctly. {error}
@@ -149,7 +149,7 @@ function bootstrap() {
       .catch((error) => console.error(Label.POLLING_ERROR, error));
   }
 
-  renderRoot(
+  getRoot()?.render(
     <Provider store={reduxStore}>
       <StrictMode>
         <App />
