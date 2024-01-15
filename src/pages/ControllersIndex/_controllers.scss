@@ -50,19 +50,6 @@
         top: 0;
       }
     }
-
-    .controllers--register {
-      text-align: right;
-
-      @include mobile {
-        text-align: left;
-      }
-    }
-
-    button {
-      margin: 0;
-      max-width: 15rem;
-    }
   }
 
   &__status {

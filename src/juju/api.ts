@@ -397,12 +397,10 @@ export async function fetchAllModelStatuses(
   @param wsControllerURL The URL of the controller.
   @param conn The Juju controller connection.
   @param reduxStore The applications reduxStore.
-  @param additionalController If this is an additional controller.
 */
 export async function fetchControllerList(
   wsControllerURL: string,
   conn: ConnectionWithFacades,
-  additionalController: boolean,
   dispatch: Store["dispatch"],
   getState: () => RootState,
 ) {
@@ -410,12 +408,7 @@ export async function fetchControllerList(
   if (conn.facades.jimM) {
     try {
       const response = await conn.facades.jimM?.listControllers();
-      controllers = response.controllers
-        ? response.controllers.map((controller) => ({
-            ...controller,
-            additionalController,
-          }))
-        : [];
+      controllers = response.controllers ?? [];
     } catch (error) {
       dispatch(
         generalActions.storeConnectionError(
@@ -435,7 +428,6 @@ export async function fetchControllerList(
           uuid: controllerConfig.config["controller-uuid"],
           version: getControllerConnection(getState(), wsControllerURL)
             ?.serverVersion,
-          additionalController,
         },
       ];
     }

@@ -16,7 +16,6 @@ export type ControllerLocation = {
 };
 
 export type ControllerAnnotations = {
-  additionalController: boolean;
   location?: ControllerLocation;
   updateAvailable?: boolean;
 };
@@ -31,11 +30,7 @@ export type LocalController = {
 export type Controller = (ControllerInfo | LocalController) &
   ControllerAnnotations;
 
-export type AdditionalController = {
-  additionalController: true;
-};
-
-export type Controllers = Record<string, (Controller | AdditionalController)[]>;
+export type Controllers = Record<string, Controller[]>;
 
 // There is some model data that we don't want to store from the full status because it changes
 // too often causing needless re-renders and is currently irrelevant

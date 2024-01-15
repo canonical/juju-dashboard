@@ -63,12 +63,8 @@ export const modelPollerMiddleware: Middleware<
       // first clean up any old auth requests:
       reduxStore.dispatch(generalActions.clearVisitURLs());
       for (const controllerData of action.payload.controllers) {
-        const [
-          wsControllerURL,
-          credentials,
-          identityProviderAvailable,
-          isAdditionalController,
-        ] = controllerData;
+        const [wsControllerURL, credentials, identityProviderAvailable] =
+          controllerData;
         let conn: ConnectionWithFacades | undefined;
         let juju: Client | undefined;
         let error: unknown;
@@ -175,7 +171,6 @@ export const modelPollerMiddleware: Middleware<
         await fetchControllerList(
           wsControllerURL,
           conn,
-          isAdditionalController ?? false,
           reduxStore.dispatch,
           reduxStore.getState,
         );

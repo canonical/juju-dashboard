@@ -7,17 +7,9 @@ import { TestId as AuditLogsFilterPanelTestId } from "./AuditLogsFilterPanel/Aud
 import { TestId as CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
 import Panels from "./Panels";
-import { Label as RegisterControllerLabel } from "./RegisterController/RegisterController";
 import { TestId as ShareModelTestId } from "./ShareModelPanel/ShareModel";
 
 describe("Panels", () => {
-  it("can display the register controller panel", () => {
-    renderComponent(<Panels />, { url: "/?panel=register-controller" });
-    expect(
-      screen.getByRole("dialog", { name: RegisterControllerLabel.TITLE }),
-    ).toBeInTheDocument();
-  });
-
   it("can display the actions panel", () => {
     renderComponent(<Panels />, { url: "/?panel=execute-action" });
     expect(screen.getByTestId(ActionsPanelTestId.PANEL)).toBeInTheDocument();

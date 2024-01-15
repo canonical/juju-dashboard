@@ -2,7 +2,6 @@ import { AnimatePresence } from "framer-motion";
 
 import { useQueryParams } from "hooks/useQueryParams";
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
-import RegisterController from "panels/RegisterController/RegisterController";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 
 import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
@@ -16,8 +15,6 @@ export default function Panels() {
 
   const generatePanel = () => {
     switch (panelQs.panel) {
-      case "register-controller":
-        return <RegisterController />;
       case "execute-action":
         return <ActionsPanel />;
       case "share-model":

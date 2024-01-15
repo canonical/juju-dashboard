@@ -8,12 +8,10 @@ import {
   configFactory,
 } from "testing/factories/general";
 import {
-  additionalControllerFactory,
   controllerFactory,
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import type { ControllerArgs } from "./actions";
 import { logOut, connectAndStartPolling, connectAndListModels } from "./thunks";
 
 describe("thunks", () => {
@@ -54,41 +52,7 @@ describe("thunks", () => {
     expect(dispatchedThunk.type).toBe("app/connectAndListModels/fulfilled");
   });
 
-  it("connectAndStartPolling with additional controllers", async () => {
-    const additionalController: ControllerArgs = [
-      "wss://additional.test.com",
-      { user: "additional", password: "additional123" },
-      true,
-    ];
-    localStorage.setItem(
-      "additionalControllers",
-      JSON.stringify([additionalController]),
-    );
-    const action = connectAndStartPolling();
-    const dispatch = jest.fn();
-    const getState = jest.fn(() => rootStateFactory.build());
-    await action(dispatch, getState, null);
-    expect(dispatch).toHaveBeenCalledWith(
-      generalActions.storeUserPass({
-        wsControllerURL: additionalController[0],
-        credential: additionalController[1],
-      }),
-    );
-    expect(dispatch).toHaveBeenCalledWith(
-      jujuActions.updateControllerList({
-        wsControllerURL: additionalController[0],
-        controllers: [additionalControllerFactory.build()],
-      }),
-    );
-    localStorage.removeItem("additionalControllers");
-  });
-
   it("connectAndListModels", async () => {
-    const additionalController: ControllerArgs = [
-      "wss://additional.test.com",
-      { user: "additional", password: "additional123" },
-      true,
-    ];
     const dispatch = jest.fn();
     const getState = jest.fn(() =>
       rootStateFactory.build({
@@ -123,14 +87,11 @@ describe("thunks", () => {
         }),
       }),
     );
-    const action = connectAndListModels([additionalController]);
+    const action = connectAndListModels();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
-        controllers: [
-          ["wss://controller.example.com", undefined, false],
-          additionalController,
-        ],
+        controllers: [["wss://controller.example.com", undefined, false]],
         isJuju: true,
       }),
     );

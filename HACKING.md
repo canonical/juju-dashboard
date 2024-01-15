@@ -40,7 +40,6 @@ contribute and what kinds of contributions are welcome.
   - [Deploying a local app](#deploying-a-local-app)
   - [Setting up cross model integrations](#setting-up-cross-model-integrations)
   - [Getting models into a broken state](#getting-models-into-a-broken-state)
-  - [Adding additional controllers](#adding-additional-controllers)
 
 ## Setting up the dashboard for development
 
@@ -597,27 +596,3 @@ To get the model out of the broken state run:
 ```shell
 juju exec --app nginx "status-set --application=True active"
 ```
-
-### Adding additional controllers
-
-To add additional controllers in the dashboard you'll need more than one controller. You might
-like to [set up two controllers](#juju-controllers-in-multipass), each in their
-own Multipass.
-
-You might also like to add some models and deploy some applications on each controller.
-
-Once you have your controllers set up, [configure your dashboard](#controller-configuration) to point to one
-of the controllers.
-
-At this point you should probably [accept the
-certificates](#self-signed-certificates) for both controllers.
-
-Load the dashboard and go to the controllers list (click Controllers in the
-sidebar).
-
-Now click the 'Register a controller' button. Fill in the form using the details
-of the second controller (you can get the IP address of the controller using
-`multipass list`) and then click 'Add Controller'.
-
-The second controller should now be visible in the controller list and going to
-the model list should display the models from both controllers.

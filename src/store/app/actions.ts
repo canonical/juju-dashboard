@@ -11,25 +11,14 @@ export const updatePermissions = createAction<{
   wsControllerURL: string;
 }>("app/updatePermissions");
 
-export type ControllerArgs =
-  | [
-      // wsControllerURL
-      string,
-      // credentials
-      Credential | undefined,
-      // identityProviderAvailable
-      boolean | undefined,
-    ]
-  | [
-      // wsControllerURL
-      string,
-      // credentials
-      Credential | undefined,
-      // identityProviderAvailable
-      boolean | undefined,
-      // additional controller
-      boolean | undefined,
-    ];
+export type ControllerArgs = [
+  // wsControllerURL
+  string,
+  // credentials
+  Credential | undefined,
+  // identityProviderAvailable
+  boolean | undefined,
+];
 
 export const connectAndPollControllers = createAction<{
   controllers: ControllerArgs[];

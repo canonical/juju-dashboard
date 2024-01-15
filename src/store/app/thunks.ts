@@ -27,7 +27,6 @@ export const logOut = createAsyncThunk<
     state?.general?.config?.identityProviderAvailable;
   const pingerIntervalIds = getPingerIntervalIds(state);
   bakery.storage.clear();
-  localStorage.removeItem("additionalControllers");
   Object.entries(pingerIntervalIds ?? {}).forEach((pingerIntervalId) =>
     clearInterval(pingerIntervalId[1]),
   );
@@ -52,40 +51,21 @@ export const connectAndStartPolling = createAsyncThunk<
     state: RootState;
   }
 >("app/connectAndStartPolling", async (_, thunkAPI) => {
-  let additionalControllers: ControllerArgs[] | null = null;
   try {
-    const data = window.localStorage.getItem("additionalControllers");
-    if (data) {
-      additionalControllers = JSON.parse(data);
-      additionalControllers?.forEach((controller) => {
-        thunkAPI.dispatch(
-          generalActions.storeUserPass({
-            wsControllerURL: controller[0],
-            credential: controller[1],
-          }),
-        );
-        thunkAPI.dispatch(
-          jujuActions.updateControllerList({
-            wsControllerURL: controller[0],
-            controllers: [{ additionalController: true }],
-          }),
-        );
-      });
-    }
-    await thunkAPI.dispatch(connectAndListModels(additionalControllers));
-  } catch (e) {
+    await thunkAPI.dispatch(connectAndListModels());
+  } catch (error) {
     // XXX Add to Sentry.
-    console.log("Error retrieving additional registered controllers", e);
+    console.error("Error while trying to connect and list models.", error);
   }
 });
 
 export const connectAndListModels = createAsyncThunk<
   void,
-  ControllerArgs[] | null,
+  void,
   {
     state: RootState;
   }
->("app/connectAndListModels", async (additionalControllers, thunkAPI) => {
+>("app/connectAndListModels", async (_, thunkAPI) => {
   try {
     const storeState = thunkAPI.getState();
     const config = getConfig(storeState);
@@ -99,9 +79,6 @@ export const connectAndListModels = createAsyncThunk<
         credentials,
         config?.identityProviderAvailable,
       ]);
-    }
-    if (additionalControllers) {
-      controllerList = controllerList.concat(additionalControllers);
     }
     const connectedControllers = Object.keys(controllerConnections);
     controllerList = controllerList.filter((controllerData) => {
