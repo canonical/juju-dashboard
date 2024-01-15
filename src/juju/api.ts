@@ -347,8 +347,10 @@ export async function fetchAllModelStatuses(
   modelUUIDList.forEach((modelUUID) => {
     queue.push(async (done) => {
       if (isLoggedIn(getState(), wsControllerURL)) {
-        const modelWsControllerURL = getModelByUUID(getState(), modelUUID)
-          ?.wsControllerURL;
+        const modelWsControllerURL = getModelByUUID(
+          getState(),
+          modelUUID,
+        )?.wsControllerURL;
         if (modelWsControllerURL) {
           await fetchAndStoreModelStatus(
             modelUUID,

@@ -90,8 +90,8 @@ export default function ActionsPanel(): JSX.Element {
     () => (modelName ? getModelUUID(modelName) : null),
     [modelName],
   );
-  const modelUUID = useSelector(
-    (state: RootState) => getModelUUIDMemo?.(state),
+  const modelUUID = useSelector((state: RootState) =>
+    getModelUUIDMemo?.(state),
   );
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});
