@@ -43,7 +43,7 @@ export type CheckRelationResponse =
   | string;
 
 export const isCrossModelQueryResponse = (
-  response: CrossModelQueryFullResponse
+  response: CrossModelQueryFullResponse,
 ): response is CrossModelQueryResponse =>
   typeof response === "object" && "results" in response && "errors" in response;
 

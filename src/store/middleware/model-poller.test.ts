@@ -1,5 +1,5 @@
 import type { Client, Connection, Transport } from "@canonical/jujulib";
-import type { AnyAction, MiddlewareAPI } from "redux";
+import type { UnknownAction, MiddlewareAPI } from "redux";
 
 import * as jujuModule from "juju/api";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
@@ -98,11 +98,13 @@ describe("model poller", () => {
     } as unknown as Client;
   });
 
-  const runMiddleware = async (actionOverrides?: Partial<AnyAction>) => {
+  const runMiddleware = async (actionOverrides?: Partial<UnknownAction>) => {
     const action = {
       ...appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
+        // Turn off polling to prevent the middleware running indefinitely.
+        poll: 0,
       }),
       ...(actionOverrides ?? {}),
     };
@@ -132,7 +134,9 @@ describe("model poller", () => {
   });
 
   it("does not pass through matched actions", async () => {
-    await runMiddleware({ payload: { controllers: [], isJuju: true } });
+    await runMiddleware({
+      payload: { controllers: [], isJuju: true, poll: 0 },
+    });
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -146,7 +150,7 @@ describe("model poller", () => {
       generalActions.storeLoginError({
         wsControllerURL: "wss://example.com",
         error: "Uh oh!",
-      })
+      }),
     );
   });
 
@@ -167,7 +171,7 @@ describe("model poller", () => {
           user: "eggman@external",
         },
         false,
-      ]
+      ],
     );
   });
 
@@ -184,23 +188,23 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.clearVisitURLs()
+      generalActions.clearVisitURLs(),
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       generalActions.updateControllerConnection({
         wsControllerURL,
         info: conn.info,
-      })
+      }),
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.updatePingerIntervalId({ wsControllerURL, intervalId })
+      generalActions.updatePingerIntervalId({ wsControllerURL, intervalId }),
     );
     expect(fetchControllerList).toHaveBeenCalledWith(
       wsControllerURL,
       conn,
       false,
       fakeStore.dispatch,
-      fakeStore.getState
+      fakeStore.getState,
     );
   });
 
@@ -228,7 +232,7 @@ describe("model poller", () => {
           auditLogs: false,
           crossModelQueries: false,
         },
-      })
+      }),
     );
   });
 
@@ -256,7 +260,7 @@ describe("model poller", () => {
           auditLogs: true,
           crossModelQueries: true,
         },
-      })
+      }),
     );
   });
 
@@ -290,7 +294,7 @@ describe("model poller", () => {
           auditLogs: true,
           crossModelQueries: true,
         },
-      })
+      }),
     );
   });
 
@@ -329,7 +333,7 @@ describe("model poller", () => {
           auditLogs: true,
           crossModelQueries: true,
         },
-      })
+      }),
     );
   });
 
@@ -345,14 +349,14 @@ describe("model poller", () => {
       generalActions.storeLoginError({
         wsControllerURL: "wss://example.com",
         error: LoginError.NO_INFO,
-      })
+      }),
     );
   });
 
   it("does not disable masking when running on Juju", async () => {
     const disableControllerUUIDMasking = jest.spyOn(
       jujuModule,
-      "disableControllerUUIDMasking"
+      "disableControllerUUIDMasking",
     );
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
@@ -373,7 +377,7 @@ describe("model poller", () => {
     ];
     const disableControllerUUIDMasking = jest.spyOn(
       jujuModule,
-      "disableControllerUUIDMasking"
+      "disableControllerUUIDMasking",
     );
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
@@ -387,6 +391,7 @@ describe("model poller", () => {
       payload: {
         controllers,
         isJuju: false,
+        poll: 0,
       },
     });
     expect(next).not.toHaveBeenCalled();
@@ -413,7 +418,7 @@ describe("model poller", () => {
     jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
     const fetchAllModelStatuses = jest.spyOn(
       jujuModule,
-      "fetchAllModelStatuses"
+      "fetchAllModelStatuses",
     );
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -426,14 +431,14 @@ describe("model poller", () => {
       jujuActions.updateModelList({
         models: { "user-models": models },
         wsControllerURL,
-      })
+      }),
     );
     expect(fetchAllModelStatuses).toHaveBeenCalledWith(
       wsControllerURL,
       ["abc123"],
       conn,
       fakeStore.dispatch,
-      fakeStore.getState
+      fakeStore.getState,
     );
   });
 
@@ -441,15 +446,18 @@ describe("model poller", () => {
     jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
     const fetchAllModelStatuses = jest.spyOn(
       jujuModule,
-      "fetchAllModelStatuses"
+      "fetchAllModelStatuses",
     );
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    await runMiddleware();
-    jest.advanceTimersByTime(30000);
+    runMiddleware({ payload: { controllers, isJuju: true, poll: 2 } }).catch(
+      console.error,
+    );
+    await new Promise(jest.requireActual("timers").setImmediate);
+    jest.advanceTimersByTime(3000000);
     // Resolve the async calls again.
     await new Promise(jest.requireActual("timers").setImmediate);
     expect(next).not.toHaveBeenCalled();
@@ -469,7 +477,7 @@ describe("model poller", () => {
     });
     const fetchAllModelStatuses = jest.spyOn(
       jujuModule,
-      "fetchAllModelStatuses"
+      "fetchAllModelStatuses",
     );
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -543,11 +551,11 @@ describe("model poller", () => {
     await middleware(next)(action);
     expect(jujuModule.findAuditEvents).toHaveBeenCalledWith(
       expect.any(Object),
-      { "user-tag": "user-eggman@external" }
+      { "user-tag": "user-eggman@external" },
     );
     expect(next).toHaveBeenCalledWith(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateAuditEvents(events.events)
+      jujuActions.updateAuditEvents(events.events),
     );
   });
 
@@ -588,11 +596,11 @@ describe("model poller", () => {
     await middleware(next)(action);
     expect(jujuModule.crossModelQuery).toHaveBeenCalledWith(
       expect.any(Object),
-      "."
+      ".",
     );
     expect(next).toHaveBeenCalledWith(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateCrossModelQuery(crossModelQueryResponse)
+      jujuActions.updateCrossModelQuery(crossModelQueryResponse),
     );
   });
 
@@ -634,12 +642,12 @@ describe("model poller", () => {
     await middleware(next)(action);
     expect(console.error).toHaveBeenCalledWith(
       "Could not perform cross model query:",
-      new Error("Uh oh!")
+      new Error("Uh oh!"),
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateCrossModelQuery(
-        "Unable to perform search. Please try again later."
-      )
+        "Unable to perform search. Please try again later.",
+      ),
     );
     console.error = consoleError;
   });

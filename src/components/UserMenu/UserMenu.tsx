@@ -24,7 +24,7 @@ const UserMenu = () => {
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const activeUser = useAppSelector((state) =>
-    getActiveUserTag(state, wsControllerURL)
+    getActiveUserTag(state, wsControllerURL),
   );
   const [isActive, setIsActive] = useState(false);
 
@@ -69,7 +69,7 @@ const UserMenu = () => {
                 onClick: () => {
                   // TODO: Consider displaying an error alert.
                   dispatch(appThunks.logOut()).catch((error) =>
-                    console.error(Label.LOGOUT_ERROR, error)
+                    console.error(Label.LOGOUT_ERROR, error),
                   );
                 },
               },

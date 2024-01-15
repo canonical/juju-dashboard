@@ -39,7 +39,7 @@ describe("ModelTableList", () => {
     renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
     expect(screen.getByTestId(StatusTestId.STATUS_GROUP)).toBeInTheDocument();
     expect(
-      screen.queryByTestId(OwnerTestId.OWNER_GROUP)
+      screen.queryByTestId(OwnerTestId.OWNER_GROUP),
     ).not.toBeInTheDocument();
   });
 
@@ -55,7 +55,7 @@ describe("ModelTableList", () => {
         result.rerender(<ModelTableList filters={{}} groupedBy={table[0]} />);
       } else {
         ({ result } = renderComponent(
-          <ModelTableList filters={{}} groupedBy={table[0]} />
+          <ModelTableList filters={{}} groupedBy={table[0]} />,
         ));
       }
       expect(screen.getByTestId(table[1])).toBeInTheDocument();
@@ -70,7 +70,7 @@ describe("ModelTableList", () => {
   it("passes the filters to the group components", () => {
     const getGroupedByStatusAndFilteredModelData = jest.spyOn(
       appSelectors,
-      "getGroupedByStatusAndFilteredModelData"
+      "getGroupedByStatusAndFilteredModelData",
     );
     const tables = [
       { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
@@ -80,10 +80,10 @@ describe("ModelTableList", () => {
     const filters = { cloud: ["aws"] };
     tables.forEach((table) => {
       renderComponent(
-        <ModelTableList groupedBy={table.groupedBy} filters={filters} />
+        <ModelTableList groupedBy={table.groupedBy} filters={filters} />,
       );
       expect(getGroupedByStatusAndFilteredModelData).toHaveBeenCalledWith(
-        filters
+        filters,
       );
     });
   });
@@ -98,7 +98,7 @@ describe("ModelTableList", () => {
     renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
     const row = screen.getByTestId(`model-uuid-${testModelUUID}`);
     expect(within(row).getByTestId("column-controller")).toHaveTextContent(
-      unknownUUID
+      unknownUUID,
     );
   });
 
@@ -121,7 +121,7 @@ describe("ModelTableList", () => {
     renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
     const row = screen.getByTestId(`model-uuid-${testModelUUID}`);
     expect(within(row).getByTestId("column-controller")).toHaveTextContent(
-      "admins/1-eu-west-1-aws-jaas"
+      "admins/1-eu-west-1-aws-jaas",
     );
   });
 });

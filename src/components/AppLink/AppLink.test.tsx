@@ -31,7 +31,7 @@ describe("AppLink", () => {
       <AppLink uuid="abc123" appName="mockApp">
         abc123
       </AppLink>,
-      { state }
+      { state },
     );
     expect(screen.queryByRole("link", { name: "abc123" })).toHaveAttribute(
       "href",
@@ -39,7 +39,7 @@ describe("AppLink", () => {
         userName: "eggman@external",
         modelName: "test-model",
         appName: "mockApp",
-      })
+      }),
     );
   });
 
@@ -48,7 +48,7 @@ describe("AppLink", () => {
       <AppLink uuid="abc123" appName="mockApp" view="units">
         abc123
       </AppLink>,
-      { state }
+      { state },
     );
     expect(screen.queryByRole("link", { name: "abc123" })).toHaveAttribute(
       "href",
@@ -57,7 +57,7 @@ describe("AppLink", () => {
         modelName: "test-model",
         appName: "mockApp",
         tab: "units",
-      })
+      }),
     );
   });
 
@@ -66,7 +66,7 @@ describe("AppLink", () => {
       <AppLink uuid="invalidUUID" appName="mockApp">
         No app link due to invalid UUID
       </AppLink>,
-      { state }
+      { state },
     );
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(screen.getByText("No app link due to invalid UUID")).toBeVisible();
@@ -80,7 +80,7 @@ describe("AppLink", () => {
           abc123
         </AppLink>
       </button>,
-      { state }
+      { state },
     );
     await userEvent.click(screen.getByRole("link", { name: "abc123" }));
     expect(onClick).not.toHaveBeenCalled();

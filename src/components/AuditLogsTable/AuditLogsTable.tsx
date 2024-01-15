@@ -68,7 +68,7 @@ const AuditLogsTable = () => {
     ? "No audit logs found. Try changing the filters."
     : `There are no audit logs available yet${additionalEmptyMsg}!`;
   const columnData = COLUMN_DATA.filter(
-    (column) => showModel || column.accessor !== "model"
+    (column) => showModel || column.accessor !== "model",
   );
   const fetchAuditEvents = useFetchAuditEvents();
   const [queryParams] = useQueryParams<{
@@ -89,7 +89,7 @@ const AuditLogsTable = () => {
       // Clear audit events when the component is unmounted.
       dispatch(jujuActions.clearAuditEvents());
     },
-    [dispatch]
+    [dispatch],
   );
 
   const tableData = useMemo(() => {

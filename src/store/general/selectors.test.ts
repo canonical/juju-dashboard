@@ -39,8 +39,8 @@ describe("selectors", () => {
           general: generalStateFactory.build({
             config,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(config);
   });
 
@@ -53,8 +53,8 @@ describe("selectors", () => {
               isJuju: true,
             }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(true);
   });
 
@@ -67,8 +67,8 @@ describe("selectors", () => {
               analyticsEnabled: false,
             }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(false);
   });
 
@@ -79,8 +79,8 @@ describe("selectors", () => {
           general: generalStateFactory.build({
             visitURLs: ["/login", "/auth"],
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(["/login", "/auth"]);
   });
 
@@ -95,8 +95,8 @@ describe("selectors", () => {
             },
           }),
         }),
-        "wss://example.com"
-      )
+        "wss://example.com",
+      ),
     ).toStrictEqual(credential);
   });
 
@@ -107,8 +107,8 @@ describe("selectors", () => {
           general: generalStateFactory.build({
             connectionError: "error",
           }),
-        })
-      )
+        }),
+      ),
     ).toBe("error");
   });
 
@@ -119,8 +119,8 @@ describe("selectors", () => {
           general: generalStateFactory.build({
             loginErrors: { "wss://example.com": "error" },
           }),
-        })
-      )
+        }),
+      ),
     ).toMatchObject({ "wss://example.com": "error" });
   });
 
@@ -132,8 +132,8 @@ describe("selectors", () => {
             loginErrors: { "wss://example.com": "error" },
           }),
         }),
-        "wss://example.com"
-      )
+        "wss://example.com",
+      ),
     ).toBe("error");
   });
 
@@ -147,8 +147,8 @@ describe("selectors", () => {
           general: generalStateFactory.build({
             pingerIntervalIds,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(pingerIntervalIds);
   });
 
@@ -159,8 +159,8 @@ describe("selectors", () => {
           general: generalStateFactory.build({
             appVersion: "5",
           }),
-        })
-      )
+        }),
+      ),
     ).toBe("5");
   });
 
@@ -174,8 +174,8 @@ describe("selectors", () => {
           general: generalStateFactory.build({
             controllerConnections,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(controllerConnections);
   });
 
@@ -190,8 +190,8 @@ describe("selectors", () => {
             controllerConnections,
           }),
         }),
-        "wss://example.com"
-      )
+        "wss://example.com",
+      ),
     ).toStrictEqual({ controllerTag: "controller" });
   });
 
@@ -207,8 +207,8 @@ describe("selectors", () => {
           general: generalStateFactory.build({
             controllerFeatures,
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(controllerFeatures);
   });
 
@@ -225,8 +225,8 @@ describe("selectors", () => {
           }),
         }),
         "wss://controller.example.com",
-        "crossModelQueries"
-      )
+        "crossModelQueries",
+      ),
     ).toStrictEqual(true);
   });
 
@@ -245,8 +245,8 @@ describe("selectors", () => {
               }),
             }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(true);
   });
 
@@ -265,8 +265,8 @@ describe("selectors", () => {
               }),
             }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(false);
   });
 
@@ -285,8 +285,8 @@ describe("selectors", () => {
               }),
             }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(true);
   });
 
@@ -305,8 +305,8 @@ describe("selectors", () => {
               }),
             }),
           }),
-        })
-      )
+        }),
+      ),
     ).toStrictEqual(false);
   });
 
@@ -324,8 +324,8 @@ describe("selectors", () => {
             },
           }),
         }),
-        "wss://example.com"
-      )
+        "wss://example.com",
+      ),
     ).toBe("user");
   });
 
@@ -343,8 +343,8 @@ describe("selectors", () => {
             },
           }),
         }),
-        "wss://example.com"
-      )
+        "wss://example.com",
+      ),
     ).toBe("superuser");
   });
 
@@ -362,8 +362,8 @@ describe("selectors", () => {
             },
           }),
         }),
-        "wss://example.com"
-      )
+        "wss://example.com",
+      ),
     ).toBe(true);
   });
 
@@ -376,8 +376,8 @@ describe("selectors", () => {
               controllerAPIEndpoint: "wss://controller.example.com",
             }),
           }),
-        })
-      )
+        }),
+      ),
     ).toBe("wss://controller.example.com");
   });
 });

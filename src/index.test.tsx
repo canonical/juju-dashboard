@@ -1,4 +1,5 @@
 import { screen, waitFor } from "@testing-library/dom";
+import type { UnknownAction } from "redux";
 
 import * as storeModule from "store";
 import { thunks as appThunks } from "store/app";
@@ -101,7 +102,7 @@ describe("renderApp", () => {
       generalActions.storeConfig({
         ...config,
         controllerAPIEndpoint: "ws://example.com/api",
-      })
+      }),
     );
   });
 
@@ -119,7 +120,7 @@ describe("renderApp", () => {
       generalActions.storeConfig({
         ...config,
         controllerAPIEndpoint: "wss://example.com/api",
-      })
+      }),
     );
   });
 
@@ -130,7 +131,7 @@ describe("renderApp", () => {
     renderApp();
     await waitFor(() => {
       expect(
-        screen.getByText(/controllerAPIEndpoint is not set/)
+        screen.getByText(/controllerAPIEndpoint is not set/),
       ).toBeInTheDocument();
     });
   });
@@ -149,7 +150,7 @@ describe("renderApp", () => {
       generalActions.storeConfig({
         ...config,
         controllerAPIEndpoint: "ws://example.com/api",
-      })
+      }),
     );
   });
 
@@ -167,7 +168,7 @@ describe("renderApp", () => {
       generalActions.storeConfig({
         ...config,
         controllerAPIEndpoint: "wss://example.com/api",
-      })
+      }),
     );
   });
 
@@ -182,7 +183,7 @@ describe("renderApp", () => {
     renderApp();
     expect(dispatch).toHaveBeenCalledWith(generalActions.storeConfig(config));
     expect(dispatch).toHaveBeenCalledWith(
-      generalActions.storeVersion(appVersion)
+      generalActions.storeVersion(appVersion),
     );
   });
 
@@ -194,7 +195,7 @@ describe("renderApp", () => {
     jest
       .spyOn(appThunks, "connectAndStartPolling")
       .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+        jest.fn().mockReturnValue({ type: "connectAndStartPolling" }),
       );
     const dispatch = jest
       .spyOn(storeModule.default, "dispatch")
@@ -233,13 +234,13 @@ describe("getControllerAPIEndpointErrors", () => {
 
   it("should handle secure protocol", () => {
     expect(
-      getControllerAPIEndpointErrors("wss://example.com:80/api")
+      getControllerAPIEndpointErrors("wss://example.com:80/api"),
     ).toBeNull();
   });
 
   it("should handle non-secure protocol", () => {
     expect(
-      getControllerAPIEndpointErrors("ws://example.com:80/api")
+      getControllerAPIEndpointErrors("ws://example.com:80/api"),
     ).toBeNull();
   });
 
@@ -249,31 +250,31 @@ describe("getControllerAPIEndpointErrors", () => {
 
   it("should error if it is not set", () => {
     expect(getControllerAPIEndpointErrors()).toBe(
-      "controllerAPIEndpoint is not set."
+      "controllerAPIEndpoint is not set.",
     );
   });
 
   it("should error if it does not end with /api", () => {
     expect(getControllerAPIEndpointErrors("wss://example.com:80/notapi")).toBe(
-      "controllerAPIEndpoint (wss://example.com:80/notapi) must end with /api."
+      "controllerAPIEndpoint (wss://example.com:80/notapi) must end with /api.",
     );
   });
 
   it("should error if it does not contain a hostname or IP", () => {
     expect(getControllerAPIEndpointErrors("wss:///api")).toBe(
-      "controllerAPIEndpoint (wss:///api) must be an absolute path or contain a hostname or IP."
+      "controllerAPIEndpoint (wss:///api) must be an absolute path or contain a hostname or IP.",
     );
   });
 
   it("should error if it does not have a websocket protocol", () => {
     expect(getControllerAPIEndpointErrors("http://example.com:80/api")).toBe(
-      "controllerAPIEndpoint (http://example.com:80/api) must be an absolute path or begin with ws:// or wss://."
+      "controllerAPIEndpoint (http://example.com:80/api) must be an absolute path or begin with ws:// or wss://.",
     );
   });
 
   it("should error if it does not contain a protocol", () => {
     expect(getControllerAPIEndpointErrors("example.com:80/api")).toBe(
-      "controllerAPIEndpoint (example.com:80/api) must be an absolute path or begin with ws:// or wss://."
+      "controllerAPIEndpoint (example.com:80/api) must be an absolute path or begin with ws:// or wss://.",
     );
   });
 
@@ -281,18 +282,19 @@ describe("getControllerAPIEndpointErrors", () => {
     jest
       .spyOn(appThunks, "connectAndStartPolling")
       .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" })
+        jest.fn().mockReturnValue({ type: "connectAndStartPolling" }),
       );
     jest
       .spyOn(storeModule.default, "dispatch")
-      .mockImplementation((action: unknown) =>
-        action instanceof Object &&
-        "type" in action &&
-        action.type === "connectAndStartPolling"
-          ? Promise.reject(
-              new Error("Error while dispatching connectAndStartPolling!")
-            )
-          : null
+      .mockImplementation(
+        (action) =>
+          (action instanceof Object &&
+          "type" in action &&
+          action.type === "connectAndStartPolling"
+            ? Promise.reject(
+                new Error("Error while dispatching connectAndStartPolling!"),
+              )
+            : null) as unknown as UnknownAction,
       );
     const config = configFactory.build({
       baseControllerURL: null,
@@ -304,8 +306,8 @@ describe("getControllerAPIEndpointErrors", () => {
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
         Label.POLLING_ERROR,
-        new Error("Error while dispatching connectAndStartPolling!")
-      )
+        new Error("Error while dispatching connectAndStartPolling!"),
+      ),
     );
   });
 });

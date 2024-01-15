@@ -71,7 +71,7 @@ describe("Controllers table", () => {
         "0",
         "0",
         "0",
-      ].join("")
+      ].join(""),
     );
   });
 
@@ -102,7 +102,7 @@ describe("Controllers table", () => {
         "0",
         "0",
         "1.2.3",
-      ].join("")
+      ].join(""),
     );
   });
 
@@ -158,7 +158,7 @@ describe("Controllers table", () => {
         "2",
         "3",
         "1.2.3",
-      ].join("")
+      ].join(""),
     );
   });
 
@@ -174,7 +174,7 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(
-      screen.getByRole("gridcell", { name: "Failed to connect" })
+      screen.getByRole("gridcell", { name: "Failed to connect" }),
     ).toBeInTheDocument();
     await userEvent.hover(screen.getByText("Failed to connect"));
     expect(screen.getByText("Uh oh!")).toBeInTheDocument();
@@ -189,18 +189,18 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(
-      screen.getByRole("gridcell", { name: "Authentication required" })
+      screen.getByRole("gridcell", { name: "Authentication required" }),
     ).toBeInTheDocument();
   });
 
   it("shows 'Register new controller' panel", async () => {
     renderComponent(<ControllersIndex />, { url: "/controllers" });
     await userEvent.click(
-      screen.getByRole("button", { name: Label.REGISTER_BUTTON })
+      screen.getByRole("button", { name: Label.REGISTER_BUTTON }),
     );
     expect(window.location.search).toBe("?panel=register-controller");
     expect(
-      document.querySelector(".p-panel.register-controller")
+      document.querySelector(".p-panel.register-controller"),
     ).toBeInTheDocument();
   });
 
@@ -247,10 +247,10 @@ describe("Controllers table", () => {
     });
     renderComponent(<ControllersIndex />, { state });
     expect(
-      screen.getByText(/Controller authentication required/)
+      screen.getByText(/Controller authentication required/),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Authenticate" })
+      screen.getByRole("link", { name: "Authenticate" }),
     ).toBeInTheDocument();
   });
 
@@ -281,7 +281,7 @@ describe("Controllers table", () => {
         "0",
         "0",
         "1.2.3",
-      ].join("")
+      ].join(""),
     );
   });
 
@@ -313,7 +313,7 @@ describe("Controllers table", () => {
         "0",
         "0",
         "1.2.3",
-      ].join("")
+      ].join(""),
     );
   });
 });

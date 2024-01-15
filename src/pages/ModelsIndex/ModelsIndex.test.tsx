@@ -100,7 +100,7 @@ describe("Models Index page", () => {
     state.juju.models = {};
     renderComponent(<ModelsIndex />, { state });
     expect(
-      screen.getByRole("heading", { name: Label.NOT_FOUND })
+      screen.getByRole("heading", { name: Label.NOT_FOUND }),
     ).toBeInTheDocument();
   });
 
@@ -109,7 +109,7 @@ describe("Models Index page", () => {
 
     expect(screen.getByRole("tab", { name: "Status" })).toHaveAttribute(
       "aria-selected",
-      "true"
+      "true",
     );
     const ownerButton = screen.getByRole("tab", { name: "Owner" });
     await userEvent.click(ownerButton);
@@ -136,10 +136,10 @@ describe("Models Index page", () => {
     expect(screen.getAllByRole("row")).toHaveLength(4);
     expect(screen.getAllByTestId("column-cloud")).toHaveLength(2);
     expect(screen.getAllByTestId("column-cloud")[0]).toHaveTextContent(
-      "aws/us-east1"
+      "aws/us-east1",
     );
     expect(screen.getAllByTestId("column-cloud")[1]).toHaveTextContent(
-      "aws/us-east1"
+      "aws/us-east1",
     );
   });
 
@@ -150,7 +150,7 @@ describe("Models Index page", () => {
     // There will be one extra row for each table header:
     expect(screen.getAllByRole("row")).toHaveLength(6);
     await userEvent.click(
-      screen.getByRole("searchbox", { name: "Search and filter" })
+      screen.getByRole("searchbox", { name: "Search and filter" }),
     );
     await userEvent.click(screen.getByRole("button", { name: "CLOUD aws" }));
     // There should now be two tables, one for each status:
@@ -159,10 +159,10 @@ describe("Models Index page", () => {
     expect(screen.getAllByRole("row")).toHaveLength(4);
     expect(screen.getAllByTestId("column-cloud")).toHaveLength(2);
     expect(screen.getAllByTestId("column-cloud")[0]).toHaveTextContent(
-      "aws/us-east1"
+      "aws/us-east1",
     );
     expect(screen.getAllByTestId("column-cloud")[1]).toHaveTextContent(
-      "aws/us-east1"
+      "aws/us-east1",
     );
     const params = new URLSearchParams({
       cloud: "aws",

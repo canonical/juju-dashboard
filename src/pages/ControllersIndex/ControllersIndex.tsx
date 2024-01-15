@@ -94,7 +94,7 @@ function Details() {
           if (controllerMap[controllerUUID]) {
             controllerMap[controllerUUID].models += 1;
             controllerMap[controllerUUID].machines += Object.keys(
-              model?.machines
+              model?.machines,
             ).length;
             const applicationKeys = Object.keys(model.applications);
             controllerMap[controllerUUID].applications +=
@@ -259,7 +259,7 @@ function Details() {
     const row = generateRow(
       controllerMap[uuid],
       !!controllerConnections &&
-        controllerMap[uuid].wsControllerURL in controllerConnections
+        controllerMap[uuid].wsControllerURL in controllerConnections,
     );
     delete controllerMap[uuid];
     return row;
@@ -271,8 +271,8 @@ function Details() {
       generateRow(
         controller,
         !!controllerConnections &&
-          controller.wsControllerURL in controllerConnections
-      )
+          controller.wsControllerURL in controllerConnections,
+      ),
     );
 
   const [, setPanelQs] = useQueryParams<{ panel: string | null }>({

@@ -63,7 +63,7 @@ describe("AuditLogsTableActions", () => {
       auditLogs.push(
         auditEventFactory.build({
           "user-tag": `user-eggman${i}`,
-        })
+        }),
       );
     }
     state.juju.auditEvents.items = auditLogs;
@@ -80,7 +80,7 @@ describe("AuditLogsTableActions", () => {
       auditLogs.push(
         auditEventFactory.build({
           "user-tag": `user-eggman${i}`,
-        })
+        }),
       );
     }
     state.juju.auditEvents.items = auditLogs;
@@ -88,7 +88,7 @@ describe("AuditLogsTableActions", () => {
     await userEvent.click(screen.getByRole("button", { name: "Next page" }));
     expect(window.location.search).toEqual("?page=2");
     await userEvent.click(
-      screen.getByRole("button", { name: "Previous page" })
+      screen.getByRole("button", { name: "Previous page" }),
     );
     expect(window.location.search).toEqual("?page=1");
   });

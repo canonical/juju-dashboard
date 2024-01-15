@@ -71,7 +71,7 @@ describe("shared", () => {
       }),
     });
     expect(getControllerName(modelData, controllers)).toStrictEqual(
-      "default-controller"
+      "default-controller",
     );
   });
 
@@ -90,7 +90,7 @@ describe("shared", () => {
       }),
     });
     expect(getControllerName(modelData, controllers)).toStrictEqual(
-      "a controller"
+      "a controller",
     );
   });
 
@@ -108,7 +108,7 @@ describe("shared", () => {
       }),
     });
     expect(getControllerName(modelData, controllers)).toStrictEqual(
-      "controller123"
+      "controller123",
     );
   });
 

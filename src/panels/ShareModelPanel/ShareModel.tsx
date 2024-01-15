@@ -89,10 +89,10 @@ export default function ShareModel() {
   const modelControllerData = useSelector(modelControllerDataByUUID);
   const allUserDomains = useAppSelector(getUserDomains);
   const modelUserDomains = useAppSelector((state) =>
-    getUserDomainsInModel(state, modelUUID)
+    getUserDomainsInModel(state, modelUUID),
   );
   const allDomains = allUserDomains.filter(
-    (domain) => !modelUserDomains.includes(domain)
+    (domain) => !modelUserDomains.includes(domain),
   );
   // Display the domains used in this model first.
   const userDomains = [...modelUserDomains, ...allDomains].slice(0, 5);
@@ -124,7 +124,7 @@ export default function ShareModel() {
 
   const handleValidateNewUser = (values: UserAccess) => {
     setNewUserFormSubmitActive(
-      Boolean(values.username) && Boolean(values.access)
+      Boolean(values.username) && Boolean(values.access),
     );
   };
 
@@ -132,7 +132,7 @@ export default function ShareModel() {
     action: string,
     user: string,
     permissionTo: string | undefined,
-    permissionFrom: string | undefined
+    permissionFrom: string | undefined,
   ) => {
     let response: ErrorResults | null;
     if (!modelControllerURL || !modelUUID) {
@@ -147,7 +147,7 @@ export default function ShareModel() {
           permissionTo,
           permissionFrom,
           action,
-        })
+        }),
       );
     } catch (error) {
       reactHotToast.custom((t) => (
@@ -164,7 +164,7 @@ export default function ShareModel() {
 
   const handleAccessSelectChange = async (
     permissionTo: string,
-    username: string
+    username: string,
   ) => {
     const clonedUserAccess = cloneDeep(usersAccess);
     if (clonedUserAccess) {
@@ -177,7 +177,7 @@ export default function ShareModel() {
       "grant",
       username,
       permissionTo,
-      permissionFrom
+      permissionFrom,
     );
     let error: string | null = response?.results?.[0]?.error?.message ?? null;
     // ignore this error as it means that it's a success
@@ -208,7 +208,7 @@ export default function ShareModel() {
       // whatever permission is passed to the revoke command. As we want to
       // remove the user entirely we need to revoke the lowest possible
       // permission (which also revokes all higher permissions).
-      "read"
+      "read",
     );
 
     reactHotToast.custom((t) => (
@@ -222,7 +222,7 @@ export default function ShareModel() {
             "grant",
             username,
             permissionTo,
-            permissionFrom
+            permissionFrom,
           );
         }}
       >
@@ -233,7 +233,7 @@ export default function ShareModel() {
 
   const handleNewUserFormSubmit = async (
     values: UserAccess,
-    resetForm: () => void
+    resetForm: () => void,
   ) => {
     if (userAlreadyHasAccess(values.username, users)) {
       reactHotToast.custom((t) => (
@@ -250,7 +250,7 @@ export default function ShareModel() {
           "grant",
           newUserName,
           newUserPermission,
-          undefined
+          undefined,
         );
       }
 
@@ -276,7 +276,7 @@ export default function ShareModel() {
   const sortedUsers = cloneDeep(users || null);
   sortedUsers?.some(
     (item: User, i: number) =>
-      isOwner(item.user) && sortedUsers.unshift(sortedUsers.splice(i, 1)[0])
+      isOwner(item.user) && sortedUsers.unshift(sortedUsers.splice(i, 1)[0]),
   );
 
   return (
@@ -332,7 +332,7 @@ export default function ShareModel() {
                               // Replace the user domain (if there is one) with this one.
                               await newUserFormik.setFieldValue(
                                 "username",
-                                `${currentValue.split("@")[0]}@${domain}`
+                                `${currentValue.split("@")[0]}@${domain}`,
                               );
                             }}
                             type="button"

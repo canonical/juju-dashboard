@@ -29,7 +29,7 @@ describe("Error Boundary", () => {
     const { container } = render(
       <ErrorBoundary>
         <ChildComponent />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(container).toMatchSnapshot();
   });

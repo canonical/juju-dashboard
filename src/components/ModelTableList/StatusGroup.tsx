@@ -124,7 +124,7 @@ function generateModelTableDataByStatus(
   groupedModels: Record<Status, ModelData[]>,
   setPanelQs: SetParams<Record<string, unknown>>,
   activeUsers: Record<string, string>,
-  controllers: Controllers | null
+  controllers: Controllers | null,
 ) {
   const modelData: Record<string, MainTableRow[]> = {
     blockedRows: [],
@@ -231,7 +231,7 @@ function generateModelTableDataByStatus(
 
 export default function StatusGroup({ filters }: { filters: Filters }) {
   const groupedAndFilteredData = useSelector(
-    getGroupedByStatusAndFilteredModelData(filters)
+    getGroupedByStatusAndFilteredModelData(filters),
   );
   const controllers = useSelector(getControllerData);
   const [, setPanelQs] = useQueryParams({
@@ -245,7 +245,7 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
       groupedAndFilteredData,
       setPanelQs,
       activeUsers,
-      controllers
+      controllers,
     );
 
   const emptyStateMsg = "There are no models with this status";

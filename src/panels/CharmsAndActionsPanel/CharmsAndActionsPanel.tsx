@@ -57,7 +57,7 @@ const CharmsAndActionsPanel = () => {
       selectedApplications,
       modelUUID,
       appState,
-      dispatch
+      dispatch,
     )
       .then((charmsURL) => {
         const isCharmURLUnique = charmsURL.length === 1;

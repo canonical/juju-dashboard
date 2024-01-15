@@ -19,7 +19,7 @@ const AccessButton = ({ modelName, setPanelQs }: Props) => {
             model: modelName,
             panel: "share-model",
           },
-          { replace: true }
+          { replace: true },
         );
       }}
       className="model-access p-button--neutral is-dense"

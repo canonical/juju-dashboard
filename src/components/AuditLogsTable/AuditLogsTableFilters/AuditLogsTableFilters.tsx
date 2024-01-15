@@ -23,7 +23,7 @@ export const DEFAULT_AUDIT_LOG_FILTERS = {
 
 export const generateFilters = (
   filters: AuditLogFilters,
-  setFilters: SetParams<AuditLogFilters>
+  setFilters: SetParams<AuditLogFilters>,
 ) =>
   // Reduce to remove filters that are not set.
   Object.entries(filters).reduce<ReactNode[]>((chips, [filter, value]) => {
@@ -35,7 +35,7 @@ export const generateFilters = (
           lead={filter}
           value={value}
           onDismiss={() => setFilters({ [filter]: null })}
-        />
+        />,
       );
     }
     return chips;

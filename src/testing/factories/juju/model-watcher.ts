@@ -55,7 +55,7 @@ export const modelWatcherModelInfoFactory = Factory.define<WatcherModelInfo>(
     status: modelAgentStatusFactory.build(),
     constraints: {},
     sla: modelSLAFactory.build(),
-  })
+  }),
 );
 
 export const actionChangeDeltaFactory = Factory.define<ActionChangeDelta>(
@@ -70,7 +70,7 @@ export const actionChangeDeltaFactory = Factory.define<ActionChangeDelta>(
     enqueued: "2021-05-31T22:57:26Z",
     started: "2021-05-31T22:57:29Z",
     completed: "2021-05-31T22:57:30Z",
-  })
+  }),
 );
 
 export const applicationInfoFactory = Factory.define<ApplicationInfo>(() => ({
@@ -102,7 +102,7 @@ export const machineAgentStatusFactory = Factory.define<MachineAgentStatus>(
     message: "",
     since: "2021-08-13T19:32:59.800842177Z",
     version: "2.8.7",
-  })
+  }),
 );
 
 export const hardwareCharacteristicsFactory =
@@ -132,7 +132,7 @@ export const machineChangeDeltaFactory = Factory.define<MachineChangeDelta>(
     "supported-containers": null,
     "supported-containers-known": true,
     "wants-vote": false,
-  })
+  }),
 );
 
 export const endpointRelationFactory = Factory.define<EndpointRelation>(() => ({
@@ -179,7 +179,7 @@ export const relationChangeDeltaFactory = Factory.define<RelationChangeDelta>(
         },
       },
     ],
-  })
+  }),
 );
 
 export const unitAgentStatusFactory = Factory.define<UnitAgentStatus>(() => ({
@@ -240,5 +240,5 @@ export const modelWatcherModelDataFactory = Factory.define<WatcherModelData>(
     offers: {},
     relations: {},
     units: {},
-  })
+  }),
 );

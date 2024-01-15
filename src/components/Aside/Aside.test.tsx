@@ -7,7 +7,7 @@ describe("Aside", () => {
     render(
       <Aside>
         <p data-testid="aside-content">Aside content</p>
-      </Aside>
+      </Aside>,
     );
     expect(screen.getByTestId("aside-content")).toBeInTheDocument();
   });
@@ -16,7 +16,7 @@ describe("Aside", () => {
     render(
       <Aside data-testid="aside">
         <p>Aside content</p>
-      </Aside>
+      </Aside>,
     );
     const aside = screen.getByTestId("aside");
     expect(aside).toHaveClass("l-aside");
@@ -29,7 +29,7 @@ describe("Aside", () => {
     render(
       <Aside data-testid="aside" width="narrow">
         <p>Aside content</p>
-      </Aside>
+      </Aside>,
     );
     const aside = screen.getByTestId("aside");
     expect(aside).toHaveClass("is-narrow");
@@ -39,7 +39,7 @@ describe("Aside", () => {
     render(
       <Aside data-testid="aside" width="wide">
         <p>Aside content</p>
-      </Aside>
+      </Aside>,
     );
     const aside = screen.getByTestId("aside");
     expect(aside).toHaveClass("is-wide");
@@ -49,7 +49,7 @@ describe("Aside", () => {
     render(
       <Aside data-testid="aside" pinned={true}>
         <p>Aside content</p>
-      </Aside>
+      </Aside>,
     );
     const aside = screen.getByTestId("aside");
     expect(aside).toHaveClass("is-pinned");

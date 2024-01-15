@@ -24,7 +24,7 @@ const mockRenderHook = () =>
           store={mockStore(rootStateFactory.build())}
         />
       ),
-    }
+    },
   );
 
 describe("usePanelQueryParams", () => {
@@ -68,7 +68,7 @@ describe("usePanelQueryParams", () => {
 
   it("should remove all panel params, while leaving the remaining params untouched", () => {
     changeURL(
-      "?externalParam=externalValue&panel=mockPanelName&mockParam=mockValue"
+      "?externalParam=externalValue&panel=mockPanelName&mockParam=mockValue",
     );
 
     const { result } = mockRenderHook();

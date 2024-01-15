@@ -57,7 +57,7 @@ describe("CharmsPanel", () => {
         path,
         url,
         state,
-      }
+      },
     );
     expect(screen.getAllByRole("radio").length).toBe(2);
   });
@@ -73,7 +73,7 @@ describe("CharmsPanel", () => {
         path,
         url,
         state,
-      }
+      },
     );
     expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
   });
@@ -89,7 +89,7 @@ describe("CharmsPanel", () => {
         path,
         url,
         state,
-      }
+      },
     );
     act(() => screen.getAllByRole("radio")[0].click());
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
@@ -103,7 +103,7 @@ describe("CharmsPanel", () => {
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
       />,
-      { path, url, state }
+      { path, url, state },
     );
     await userEvent.click(screen.getAllByRole("radio")[0]);
     await userEvent.click(screen.getByRole("button", { name: "Next" }));
@@ -117,13 +117,13 @@ describe("CharmsPanel", () => {
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
       />,
-      { path, url, state }
+      { path, url, state },
     );
     const disabledRadioButton = screen.getAllByRole("radio")[1];
     expect(disabledRadioButton).toBeDisabled();
     await userEvent.hover(disabledRadioButton);
     expect(
-      screen.getByRole("tooltip", { name: Label.NO_ACTIONS })
+      screen.getByRole("tooltip", { name: Label.NO_ACTIONS }),
     ).toBeVisible();
   });
 
@@ -134,7 +134,7 @@ describe("CharmsPanel", () => {
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
       />,
-      { path, url, state }
+      { path, url, state },
     );
     const charmHelperMessages = document.querySelectorAll(".p-form-help-text");
     expect(charmHelperMessages).toHaveLength(2);
@@ -147,7 +147,7 @@ describe("CharmsPanel", () => {
       state.juju.selectedApplications.push(
         charmApplicationFactory.build({
           name: `Mock app ${i}`,
-        })
+        }),
       );
     }
     renderComponent(
@@ -156,16 +156,16 @@ describe("CharmsPanel", () => {
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
       />,
-      { path, url, state }
+      { path, url, state },
     );
     expect(document.querySelectorAll(".p-form-help-text")[0]).toHaveTextContent(
-      "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5 + 4 more"
+      "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5 + 4 more",
     );
     await userEvent.hover(screen.getByText("4 more"));
     expect(
       screen.getByRole("tooltip", {
         name: "Mock app 6, Mock app 7, Mock app 8, Mock app 9",
-      })
+      }),
     ).toBeVisible();
   });
 });

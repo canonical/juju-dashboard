@@ -77,7 +77,7 @@ export function generateLocalApplicationRows(
   applications: ApplicationData | null,
   applicationStatuses: StatusData | null,
   modelParams: ModelParams,
-  query?: Query
+  query?: Query,
 ) {
   if (!applications || !applicationStatuses) {
     return [];
@@ -181,7 +181,7 @@ export function generateLocalApplicationRows(
 export function generateRemoteApplicationRows(
   modelStatusData: ModelData | null,
   modelParams: ModelParams,
-  query?: Query
+  query?: Query,
 ) {
   if (!modelStatusData) {
     return [];
@@ -195,7 +195,7 @@ export function generateRemoteApplicationRows(
       const offerUrl = app["offer-url"];
 
       const interfaces = Object.keys(app?.["relations"]).map(
-        (endpointInterface) => endpointInterface
+        (endpointInterface) => endpointInterface,
       );
 
       return {
@@ -260,7 +260,7 @@ export function generateUnitRows(
   units: UnitData | null,
   modelParams: ModelParams,
   showCheckbox?: boolean,
-  hideMachines?: boolean
+  hideMachines?: boolean,
 ) {
   if (!units) {
     return [];
@@ -464,7 +464,7 @@ export function generateMachineRows(
   machines: MachineData | null,
   units: UnitData | null,
   modelParams: ModelParams,
-  selectedEntity?: string | null
+  selectedEntity?: string | null,
 ) {
   if (!machines) {
     return [];
@@ -567,7 +567,7 @@ export function generateMachineRows(
 
 export function generateRelationRows(
   relationData: RelationData | null,
-  applications: ApplicationData | null
+  applications: ApplicationData | null,
 ) {
   if (!relationData) {
     return [];
@@ -666,7 +666,7 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
 
 export function generateAppOffersRows(
   modelStatusData: ModelData | null,
-  query: Query
+  query: Query,
 ) {
   if (!modelStatusData) {
     return [];
@@ -678,7 +678,7 @@ export function generateAppOffersRows(
     const offer = offers[offerId];
 
     const interfaces = Object.keys(offer?.["endpoints"]).map(
-      (endpointInterface) => endpointInterface
+      (endpointInterface) => endpointInterface,
     );
 
     return {

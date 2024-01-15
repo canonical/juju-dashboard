@@ -48,7 +48,7 @@ const ModelDetailsLink = ({
       : ({
           ownerTag,
           modelName,
-        } as NameProps)
+        } as NameProps),
   );
   // Because we get some data at different times based on the multiple API calls
   // we need to check for their existence and supply reasonable fallbacks if it

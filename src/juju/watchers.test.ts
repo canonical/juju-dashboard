@@ -30,7 +30,7 @@ describe("Watchers", () => {
           DeltaChangeTypes.CHANGE,
           actionChangeDeltaFactory.build({ "model-uuid": "abc123" }),
         ],
-      ])
+      ]),
     ).toMatchObject({
       abc123: generateModelWatcherBase(),
     });

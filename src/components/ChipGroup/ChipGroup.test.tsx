@@ -43,7 +43,7 @@ describe("Chip Group", () => {
     };
     render(<ChipGroup chips={fakeChips} descriptor="localApps" />);
     expect(screen.getByText("3 Local applications")).toHaveClass(
-      "chip-group__descriptor"
+      "chip-group__descriptor",
     );
   });
 
@@ -55,7 +55,7 @@ describe("Chip Group", () => {
     };
     render(<ChipGroup chips={fakeChips} descriptor="machines" />);
     expect(screen.getByText("3 Machines")).toHaveClass(
-      "chip-group__descriptor"
+      "chip-group__descriptor",
     );
   });
 
@@ -67,7 +67,7 @@ describe("Chip Group", () => {
     };
     render(<ChipGroup chips={fakeChips} descriptor={null} />);
     expect(
-      document.querySelector(".chip-group__descriptor")
+      document.querySelector(".chip-group__descriptor"),
     ).not.toBeInTheDocument();
   });
 });

@@ -26,7 +26,7 @@ describe("useScrollOnRender", () => {
       html.scrollTop = 10;
     }
     const { result } = renderHook(() => useScrollOnRender());
-    targetNode.getBoundingClientRect = () => ({ y: 10 } as DOMRect);
+    targetNode.getBoundingClientRect = () => ({ y: 10 }) as DOMRect;
     result.current(targetNode);
     expect(scrollToSpy).not.toHaveBeenCalled();
   });
@@ -36,7 +36,7 @@ describe("useScrollOnRender", () => {
       html.scrollTop = 100;
     }
     const { result } = renderHook(() => useScrollOnRender());
-    targetNode.getBoundingClientRect = () => ({ y: 1000 } as DOMRect);
+    targetNode.getBoundingClientRect = () => ({ y: 1000 }) as DOMRect;
     result.current(targetNode);
     expect(scrollToSpy).toHaveBeenCalledWith({
       top: 1000,
@@ -50,7 +50,7 @@ describe("useScrollOnRender", () => {
       html.scrollTop = 1000;
     }
     const { result } = renderHook(() => useScrollOnRender());
-    targetNode.getBoundingClientRect = () => ({ y: 10 } as DOMRect);
+    targetNode.getBoundingClientRect = () => ({ y: 10 }) as DOMRect;
     result.current(targetNode);
     expect(scrollToSpy).toHaveBeenCalledWith({
       top: 10,
@@ -65,7 +65,7 @@ describe("useScrollOnRender", () => {
     }
     const { result } = renderHook(() => useScrollOnRender());
     targetNode.getBoundingClientRect = () =>
-      ({ height: 400, y: 400 } as DOMRect);
+      ({ height: 400, y: 400 }) as DOMRect;
     result.current(targetNode);
     expect(scrollToSpy).toHaveBeenCalledWith({
       top: 400,

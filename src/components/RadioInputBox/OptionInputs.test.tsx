@@ -29,7 +29,7 @@ describe("OptionInputs", () => {
           options={options}
           onValuesChange={onValuesChange}
         />
-      </Formik>
+      </Formik>,
     );
     expect(container).toMatchSnapshot();
   });
@@ -43,7 +43,7 @@ describe("OptionInputs", () => {
           options={options}
           onValuesChange={onValuesChange}
         />
-      </Formik>
+      </Formik>,
     );
     expect(screen.getByRole("textbox", { name: "fruit" })).toBeInTheDocument();
   });
@@ -64,7 +64,7 @@ describe("OptionInputs", () => {
           ]}
           onValuesChange={onValuesChange}
         />
-      </Formik>
+      </Formik>,
     );
     expect(screen.getByRole("checkbox", { name: "fruit" })).toBeInTheDocument();
   });
@@ -84,7 +84,7 @@ describe("OptionInputs", () => {
           options={options}
           onValuesChange={onValuesChange}
         />
-      </Formik>
+      </Formik>,
     );
     // Formik fires a change event for the initialValues set.
     expect(onValuesChange).toHaveBeenCalledTimes(1);

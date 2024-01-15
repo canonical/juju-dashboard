@@ -18,7 +18,7 @@ export type ControllerArgs =
       // credentials
       Credential | undefined,
       // identityProviderAvailable
-      boolean | undefined
+      boolean | undefined,
     ]
   | [
       // wsControllerURL
@@ -28,10 +28,12 @@ export type ControllerArgs =
       // identityProviderAvailable
       boolean | undefined,
       // additional controller
-      boolean | undefined
+      boolean | undefined,
     ];
 
 export const connectAndPollControllers = createAction<{
   controllers: ControllerArgs[];
   isJuju: boolean;
+  // This arg is intended to prevent polling from starting in a testing scenario.
+  poll?: number;
 }>("app/connectAndPollControllers");

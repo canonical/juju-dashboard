@@ -72,8 +72,8 @@ describe("Primary Nav", () => {
     renderComponent(<PrimaryNav />, { state });
     expect(
       within(screen.getByRole("link", { name: "Controllers" })).getByTitle(
-        "Authentication required"
-      )
+        "Authentication required",
+      ),
     ).toBeInTheDocument();
   });
 
@@ -113,7 +113,7 @@ describe("Primary Nav", () => {
 
     renderComponent(<PrimaryNav />, { state });
     const notification = await waitFor(() =>
-      screen.getByTestId("dashboard-update")
+      screen.getByTestId("dashboard-update"),
     );
     expect(notification).toBeInTheDocument();
   });
@@ -127,7 +127,7 @@ describe("Primary Nav", () => {
       .build({ general: { appVersion: "9.9.0" } });
     renderComponent(<PrimaryNav />, { state });
     const notification = await waitFor(() =>
-      screen.queryByTestId("dashboard-update")
+      screen.queryByTestId("dashboard-update"),
     );
     expect(notification).not.toBeInTheDocument();
   });
@@ -141,7 +141,7 @@ describe("Primary Nav", () => {
       .build({ general: { appVersion: "9.9.0" } });
     renderComponent(<PrimaryNav />, { state });
     const notification = await waitFor(() =>
-      screen.queryByTestId("dashboard-update")
+      screen.queryByTestId("dashboard-update"),
     );
     expect(notification).not.toBeInTheDocument();
   });
@@ -150,10 +150,10 @@ describe("Primary Nav", () => {
     renderComponent(<PrimaryNav />);
     expect(screen.getByRole("link", { name: "Models" })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Controllers" })
+      screen.getByRole("link", { name: "Controllers" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Report a bug" })
+      screen.getByRole("link", { name: "Report a bug" }),
     ).toBeInTheDocument();
   });
 
@@ -167,7 +167,7 @@ describe("Primary Nav", () => {
     });
     renderComponent(<PrimaryNav />, { state });
     expect(
-      screen.queryByRole("link", { name: Label.LOGS })
+      screen.queryByRole("link", { name: Label.LOGS }),
     ).not.toBeInTheDocument();
   });
 
@@ -205,7 +205,7 @@ describe("Primary Nav", () => {
     });
     renderComponent(<PrimaryNav />, { state });
     expect(
-      screen.queryByRole("link", { name: Label.ADVANCED_SEARCH })
+      screen.queryByRole("link", { name: Label.ADVANCED_SEARCH }),
     ).not.toBeInTheDocument();
   });
 
@@ -225,7 +225,7 @@ describe("Primary Nav", () => {
     });
     renderComponent(<PrimaryNav />, { state });
     expect(
-      screen.getByRole("link", { name: Label.ADVANCED_SEARCH })
+      screen.getByRole("link", { name: Label.ADVANCED_SEARCH }),
     ).toBeInTheDocument();
   });
 });

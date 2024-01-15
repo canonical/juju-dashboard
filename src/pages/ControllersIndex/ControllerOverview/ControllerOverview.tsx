@@ -12,10 +12,10 @@ import "./_controller-overview.scss";
 
 export default function ControllersOverview() {
   const groupedMachinesDataByStatus = useSelector(
-    getGroupedMachinesDataByStatus
+    getGroupedMachinesDataByStatus,
   );
   const groupedApplicationsDataByStatus = useSelector(
-    getGroupedApplicationsDataByStatus
+    getGroupedApplicationsDataByStatus,
   );
   const groupedUnitsDataByStatus = useSelector(getGroupedUnitsDataByStatus);
 

@@ -44,10 +44,10 @@ export default function LogIn({ children }: PropsWithChildren) {
   const isJuju = useSelector(getIsJuju);
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const userIsLoggedIn = useAppSelector((state) =>
-    isLoggedIn(state, wsControllerURL)
+    isLoggedIn(state, wsControllerURL),
   );
   const loginError = useAppSelector((state) =>
-    getLoginError(state, wsControllerURL)
+    getLoginError(state, wsControllerURL),
   );
   const visitURLs = useAppSelector(getVisitURLs);
 
@@ -162,7 +162,7 @@ function UserPassForm() {
   const wsControllerURL = useAppSelector(getWSControllerURL);
 
   function handleSubmit(
-    e: FormEvent<HTMLFormElement & { elements: LoginElements }>
+    e: FormEvent<HTMLFormElement & { elements: LoginElements }>,
   ) {
     e.preventDefault();
     const elements = e.currentTarget.elements;
@@ -173,12 +173,12 @@ function UserPassForm() {
       generalActions.storeUserPass({
         wsControllerURL,
         credential: { user, password },
-      })
+      }),
     );
     if (bakery) {
       // TODO: Consider displaying an error alert.
       dispatch(appThunks.connectAndStartPolling()).catch((error) =>
-        console.error(Label.POLLING_ERROR, error)
+        console.error(Label.POLLING_ERROR, error),
       );
     }
   }

@@ -6,11 +6,11 @@ import TruncatedTooltip from "./TruncatedTooltip";
 describe("TruncatedTooltip", () => {
   const offsetWidth = Object.getOwnPropertyDescriptor(
     HTMLElement.prototype,
-    "offsetWidth"
+    "offsetWidth",
   );
   const scrollWidth = Object.getOwnPropertyDescriptor(
     HTMLElement.prototype,
-    "scrollWidth"
+    "scrollWidth",
   );
 
   beforeEach(() => {
@@ -36,7 +36,7 @@ describe("TruncatedTooltip", () => {
   it("hides the tooltip if the content fits", async () => {
     const content = "Some content";
     render(
-      <TruncatedTooltip message="Tooltip content">{content}</TruncatedTooltip>
+      <TruncatedTooltip message="Tooltip content">{content}</TruncatedTooltip>,
     );
     await userEvent.hover(screen.getByText(content));
     expect(screen.getByTestId("tooltip-portal")).toHaveClass("u-hide");
@@ -52,7 +52,7 @@ describe("TruncatedTooltip", () => {
       value: 200,
     });
     render(
-      <TruncatedTooltip message="Tooltip content">{content}</TruncatedTooltip>
+      <TruncatedTooltip message="Tooltip content">{content}</TruncatedTooltip>,
     );
     await userEvent.hover(screen.getByText(content));
     expect(screen.getByTestId("tooltip-portal")).not.toHaveClass("u-hide");

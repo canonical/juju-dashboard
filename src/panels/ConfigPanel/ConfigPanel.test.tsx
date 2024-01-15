@@ -70,8 +70,8 @@ describe("ConfigPanel", () => {
               email: configFactory.build({ default: "" }),
               name: configFactory.build({ default: "eggman" }),
             },
-          })
-        )
+          }),
+        ),
       );
   });
 
@@ -101,18 +101,18 @@ describe("ConfigPanel", () => {
               age: configFactory.build({ type: "int" }),
               confirm: configFactory.build({ type: "boolean" }),
             },
-          })
-        )
+          }),
+        ),
       );
     renderComponent(<ConfigPanel />, { state, path, url });
     expect(
-      within(await screen.findByTestId("name")).getByRole("textbox")
+      within(await screen.findByTestId("name")).getByRole("textbox"),
     ).toBeInTheDocument();
     expect(
-      within(await screen.findByTestId("age")).getByRole("spinbutton")
+      within(await screen.findByTestId("age")).getByRole("spinbutton"),
     ).toBeInTheDocument();
     expect(
-      within(await screen.findByTestId("confirm")).getAllByRole("radio")
+      within(await screen.findByTestId("confirm")).getAllByRole("radio"),
     ).toHaveLength(2);
   });
 
@@ -128,7 +128,7 @@ describe("ConfigPanel", () => {
   it("can reset all fields", async () => {
     renderComponent(<ConfigPanel />, { state, path, url });
     const email = within(await screen.findByTestId("email")).getByRole(
-      "textbox"
+      "textbox",
     );
     const name = within(await screen.findByTestId("name")).getByRole("textbox");
     await userEvent.type(email, "eggman@example.com");
@@ -136,7 +136,7 @@ describe("ConfigPanel", () => {
     expect(email).toHaveTextContent("eggman@example.com");
     expect(name).toHaveTextContent("not eggman");
     await userEvent.click(
-      screen.getByRole("button", { name: Label.RESET_BUTTON })
+      screen.getByRole("button", { name: Label.RESET_BUTTON }),
     );
     expect(email).toHaveTextContent("");
     expect(name).toHaveTextContent("eggman");
@@ -146,17 +146,17 @@ describe("ConfigPanel", () => {
     renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com"
+      "eggman@example.com",
     );
     await userEvent.click(document.body);
     expect(
       within(
         screen.getByRole("dialog", {
           name: Label.CANCEL_CONFIRM,
-        })
+        }),
       ).getByRole("heading", {
         name: Label.CANCEL_CONFIRM,
-      })
+      }),
     ).toBeInTheDocument();
     expect(window.location.search).toBe(`?${params.toString()}`);
   });
@@ -167,7 +167,7 @@ describe("ConfigPanel", () => {
     expect(
       within(screen.getByRole("dialog", { name: "" })).queryByRole("heading", {
         name: Label.CANCEL_CONFIRM,
-      })
+      }),
     ).not.toBeInTheDocument();
     expect(window.location.search).toBeFalsy();
   });
@@ -176,19 +176,19 @@ describe("ConfigPanel", () => {
     renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com"
+      "eggman@example.com",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_BUTTON })
+      screen.getByRole("button", { name: Label.CANCEL_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
           name: Label.CANCEL_CONFIRM,
-        })
+        }),
       ).getByRole("heading", {
         name: Label.CANCEL_CONFIRM,
-      })
+      }),
     ).toBeInTheDocument();
     expect(window.location.search).toBe(`?${params.toString()}`);
   });
@@ -197,23 +197,23 @@ describe("ConfigPanel", () => {
     renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com"
+      "eggman@example.com",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_BUTTON })
+      screen.getByRole("button", { name: Label.CANCEL_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
           name: Label.CANCEL_CONFIRM,
-        })
+        }),
       ).getByRole("heading", {
         name: Label.CANCEL_CONFIRM,
-      })
+      }),
     ).toBeInTheDocument();
     expect(window.location.search).toBe(`?${params.toString()}`);
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_CONFIRM_CONFIRM_BUTTON })
+      screen.getByRole("button", { name: Label.CANCEL_CONFIRM_CONFIRM_BUTTON }),
     );
     expect(window.location.search).toBeFalsy();
   });
@@ -222,23 +222,23 @@ describe("ConfigPanel", () => {
     renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com"
+      "eggman@example.com",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_BUTTON })
+      screen.getByRole("button", { name: Label.CANCEL_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
           name: Label.CANCEL_CONFIRM,
-        })
+        }),
       ).getByRole("heading", {
         name: Label.CANCEL_CONFIRM,
-      })
+      }),
     ).toBeInTheDocument();
     expect(window.location.search).toBe(`?${params.toString()}`);
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_CONFIRM_CANCEL_BUTTON })
+      screen.getByRole("button", { name: Label.CANCEL_CONFIRM_CANCEL_BUTTON }),
     );
     expect(window.location.search).toBe(`?${params.toString()}`);
   });
@@ -246,12 +246,12 @@ describe("ConfigPanel", () => {
   it("closes when cancelling and there are no unsaved changes", async () => {
     renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CANCEL_BUTTON })
+      await screen.findByRole("button", { name: Label.CANCEL_BUTTON }),
     );
     expect(
       within(screen.getByRole("dialog", { name: "" })).queryByRole("heading", {
         name: Label.CANCEL_CONFIRM,
-      })
+      }),
     ).not.toBeInTheDocument();
     expect(window.location.search).toBeFalsy();
   });
@@ -260,60 +260,60 @@ describe("ConfigPanel", () => {
     renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com"
+      "eggman@example.com",
     );
     await userEvent.type(
       within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman"
+      "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON })
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
           name: Label.SAVE_CONFIRM,
-        })
+        }),
       ).getByRole("heading", {
         name: Label.SAVE_CONFIRM,
-      })
+      }),
     ).toBeInTheDocument();
   });
 
   it("can cancel the save confirmation", async () => {
     const setApplicationConfigSpy = jest.spyOn(
       apiModule,
-      "setApplicationConfig"
+      "setApplicationConfig",
     );
     renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com"
+      "eggman@example.com",
     );
     await userEvent.type(
       within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman"
+      "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON })
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
           name: Label.SAVE_CONFIRM,
-        })
+        }),
       ).getByRole("heading", {
         name: Label.SAVE_CONFIRM,
-      })
+      }),
     ).toBeInTheDocument();
     await userEvent.click(
       within(
         screen.getByRole("dialog", {
           name: Label.SAVE_CONFIRM,
-        })
+        }),
       ).getByRole("button", {
         name: Label.SAVE_CONFIRM_CANCEL_BUTTON,
-      })
+      }),
     );
     expect(screen.queryByRole("dialog", { name: "" })).not.toBeInTheDocument();
     expect(setApplicationConfigSpy).not.toHaveBeenCalled();
@@ -327,17 +327,17 @@ describe("ConfigPanel", () => {
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com"
+      "eggman@example.com",
     );
     await userEvent.type(
       within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman"
+      "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON })
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON })
+      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
     );
     expect(setApplicationConfigSpy).toHaveBeenCalledWith(
       "abc123",
@@ -354,7 +354,7 @@ describe("ConfigPanel", () => {
           newValue: "noteggman",
         }),
       },
-      state
+      state,
     );
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(2);
   });
@@ -363,23 +363,23 @@ describe("ConfigPanel", () => {
     jest.spyOn(apiModule, "setApplicationConfig").mockImplementation(() =>
       Promise.resolve({
         results: [{ error: { code: "1", message: "That's not a name" } }],
-      })
+      }),
     );
     renderComponent(<ConfigPanel />, { state, path, url });
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com"
+      "eggman@example.com",
     );
     await userEvent.type(
       within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman"
+      "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON })
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON })
+      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
     );
     expect(screen.getByText("That's not a name")).toBeInTheDocument();
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
@@ -392,16 +392,16 @@ describe("ConfigPanel", () => {
         jest
           .fn()
           .mockRejectedValue(
-            new Error("Error while calling getApplicationConfig")
-          )
+            new Error("Error while calling getApplicationConfig"),
+          ),
       );
     renderComponent(<ConfigPanel />, { state, path, url });
     expect(apiModule.getApplicationConfig).toHaveBeenCalledTimes(1);
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
         Label.GET_CONFIG_ERROR,
-        new Error("Error while calling getApplicationConfig")
-      )
+        new Error("Error while calling getApplicationConfig"),
+      ),
     );
   });
 
@@ -415,11 +415,11 @@ describe("ConfigPanel", () => {
               email: configFactory.build({ default: "" }),
               name: configFactory.build({ default: "eggman" }),
             },
-          })
-        )
+          }),
+        ),
       )
       .mockImplementationOnce(
-        jest.fn().mockRejectedValue(new Error("Error while trying to save"))
+        jest.fn().mockRejectedValue(new Error("Error while trying to save")),
       );
     jest
       .spyOn(apiModule, "setApplicationConfig")
@@ -428,24 +428,24 @@ describe("ConfigPanel", () => {
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com"
+      "eggman@example.com",
     );
     await userEvent.type(
       within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman"
+      "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON })
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON })
+      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
     );
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(2);
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
         Label.SUBMIT_TO_JUJU_ERROR,
-        new Error("Error while trying to save")
-      )
+        new Error("Error while trying to save"),
+      ),
     );
   });
 });

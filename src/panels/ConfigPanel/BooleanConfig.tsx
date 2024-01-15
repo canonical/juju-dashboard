@@ -11,7 +11,7 @@ export default function BooleanConfig({
   setNewValue,
 }: ConfigProps): JSX.Element {
   function handleOptionChange(
-    e: FormEvent<HTMLInputElement> | MouseEvent<HTMLInputElement>
+    e: FormEvent<HTMLInputElement> | MouseEvent<HTMLInputElement>,
   ) {
     const target = e.target as HTMLInputElement;
     const bool = target.value === "true" ? true : false;

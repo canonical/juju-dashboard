@@ -77,7 +77,7 @@ export default function Models() {
 
   const isObjectsEqual = (
     obj1: Record<string, unknown>,
-    obj2: Record<string, unknown>
+    obj2: Record<string, unknown>,
   ) => JSON.stringify(obj1) === JSON.stringify(obj2);
 
   const existingSearchData: SearchAndFilterChip[] = [];

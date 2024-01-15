@@ -22,7 +22,7 @@ describe("Entity info", () => {
       {
         path: "/models/:userName/:modelName",
         url: "/models/user-eggman@external/group-test",
-      }
+      },
     );
     expect(screen.getByText("eu1")).toHaveAttribute("data-name", "region");
   });

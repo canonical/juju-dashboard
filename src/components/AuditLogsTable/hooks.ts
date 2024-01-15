@@ -23,12 +23,12 @@ export const useFetchAuditEvents = () => {
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const hasControllerConnection = useAppSelector((state) =>
-    getControllerConnection(state, wsControllerURL)
+    getControllerConnection(state, wsControllerURL),
   );
   const { modelName, userName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector(getModelUUIDFromList(modelName, userName));
   const fullModelName = useAppSelector((state) =>
-    getFullModelName(state, modelUUID)
+    getFullModelName(state, modelUUID),
   );
   const [queryParams] = useQueryParams<
     {
@@ -64,7 +64,7 @@ export const useFetchAuditEvents = () => {
         method: queryParams.method ?? undefined,
         // Sort by most recent first.
         sortTime: true,
-      })
+      }),
     );
   }, [
     dispatch,

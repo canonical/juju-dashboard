@@ -31,7 +31,7 @@ describe("UnitLink", () => {
       <UnitLink uuid="abc123" appName="mockApp" unitId="0">
         unit0
       </UnitLink>,
-      { state }
+      { state },
     );
     expect(screen.queryByRole("link", { name: "unit0" })).toHaveAttribute(
       "href",
@@ -40,7 +40,7 @@ describe("UnitLink", () => {
         modelName: "test-model",
         appName: "mockApp",
         unitId: "0",
-      })
+      }),
     );
   });
 
@@ -49,7 +49,7 @@ describe("UnitLink", () => {
       <UnitLink uuid="invalidUUID" appName="mockApp" unitId="0">
         No unit link due to invalid UUID
       </UnitLink>,
-      { state }
+      { state },
     );
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(screen.getByText("No unit link due to invalid UUID")).toBeVisible();
@@ -63,7 +63,7 @@ describe("UnitLink", () => {
           unit0
         </UnitLink>
       </button>,
-      { state }
+      { state },
     );
     await userEvent.click(screen.getByRole("link", { name: "unit0" }));
     expect(onClick).not.toHaveBeenCalled();

@@ -45,18 +45,18 @@ describe("WebCLI", () => {
     renderComponent(<WebCLI {...props} />);
     await userEvent.click(screen.getByRole("button"));
     expect(
-      document.querySelector(".webcli__output-content code")
+      document.querySelector(".webcli__output-content code"),
     ).toHaveTextContent(
-      `Welcome to the Juju Web CLI - see the full documentation here.`
+      `Welcome to the Juju Web CLI - see the full documentation here.`,
     );
   });
 
   it("shows the help when there is no output", async () => {
     renderComponent(<WebCLI {...props} />);
     expect(
-      document.querySelector(".webcli__output-content code")
+      document.querySelector(".webcli__output-content code"),
     ).toHaveTextContent(
-      `Welcome to the Juju Web CLI - see the full documentation here.`
+      `Welcome to the Juju Web CLI - see the full documentation here.`,
     );
   });
 
@@ -73,7 +73,7 @@ describe("WebCLI", () => {
           user: "spaceman",
           password: "somelongpassword",
         }}
-      />
+      />,
     );
     await server.connected;
     const input = screen.getByRole("textbox");
@@ -89,7 +89,7 @@ describe("WebCLI", () => {
   it("navigate back through the history", async () => {
     localStorage.setItem(
       "cliHistory",
-      JSON.stringify(["status", "help", "whoami"])
+      JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
     const input = screen.getByRole("textbox");
@@ -100,7 +100,7 @@ describe("WebCLI", () => {
   it("navigate forward through the history", async () => {
     localStorage.setItem(
       "cliHistory",
-      JSON.stringify(["status", "help", "whoami"])
+      JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
     const input = screen.getByRole("textbox");
@@ -113,7 +113,7 @@ describe("WebCLI", () => {
   it("can navigate forward to the empty state", async () => {
     localStorage.setItem(
       "cliHistory",
-      JSON.stringify(["status", "help", "whoami"])
+      JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
     const input = screen.getByRole("textbox");
@@ -126,7 +126,7 @@ describe("WebCLI", () => {
   it("prevents navigating past the last history item", async () => {
     localStorage.setItem(
       "cliHistory",
-      JSON.stringify(["status", "help", "whoami"])
+      JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
     const input = screen.getByRole("textbox");
@@ -150,7 +150,7 @@ describe("WebCLI", () => {
           user: "spaceman",
           password: "somelongpassword",
         }}
-      />
+      />,
     );
     const input = screen.getByRole("textbox");
     let history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
@@ -199,7 +199,7 @@ describe("WebCLI", () => {
         modelUUID="abc123"
         credentials={null}
       />,
-      { state }
+      { state },
     );
     await server.connected;
     const input = screen.getByRole("textbox");
@@ -227,7 +227,7 @@ describe("WebCLI", () => {
             user: "eggman@external",
             password: "somelongpassword",
           }}
-        />
+        />,
       );
       await server.connected;
       const input = screen.getByRole("textbox");
@@ -274,7 +274,7 @@ describe("WebCLI", () => {
       await waitFor(() => {
         expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
           "style",
-          "height: 300px;"
+          "height: 300px;",
         );
       });
       WS.clean();
@@ -294,7 +294,7 @@ describe("WebCLI", () => {
             user: "spaceman",
             password: "somelongpassword",
           }}
-        />
+        />,
       );
       await server.connected;
       const input = screen.getByRole("textbox");
@@ -341,7 +341,7 @@ describe("WebCLI", () => {
       await waitFor(() => {
         expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
           "style",
-          "height: 300px;"
+          "height: 300px;",
         );
       });
       WS.clean();
@@ -357,11 +357,11 @@ describe("WebCLI", () => {
             user: "spaceman",
             password: "somelongpassword",
           }}
-        />
+        />,
       );
       expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
         "style",
-        "height: 1px;"
+        "height: 1px;",
       );
       const handle = document.querySelector(".webcli__output-handle");
       expect(handle).toBeTruthy();
@@ -373,7 +373,7 @@ describe("WebCLI", () => {
       }
       expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
         "style",
-        "height: 628px;"
+        "height: 628px;",
       );
       WS.clean();
     });
@@ -388,11 +388,11 @@ describe("WebCLI", () => {
             user: "spaceman",
             password: "somelongpassword",
           }}
-        />
+        />,
       );
       expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
         "style",
-        "height: 1px;"
+        "height: 1px;",
       );
       const handle = document.querySelector(".webcli__output-handle");
       expect(handle).toBeTruthy();
@@ -408,7 +408,7 @@ describe("WebCLI", () => {
       }
       expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
         "style",
-        "height: 628px;"
+        "height: 628px;",
       );
       WS.clean();
     });

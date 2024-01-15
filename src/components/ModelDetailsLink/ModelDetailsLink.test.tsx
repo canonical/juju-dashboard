@@ -19,7 +19,7 @@ describe("ModelDetailsLink", () => {
   it("returns the label if there is no owner", () => {
     renderComponent(
       <ModelDetailsLink modelName="test-model">Test Model</ModelDetailsLink>,
-      { state }
+      { state },
     );
     expect(screen.getByText("Test Model")).toBeInTheDocument();
   });
@@ -36,10 +36,10 @@ describe("ModelDetailsLink", () => {
       <ModelDetailsLink replaceLabel uuid="abc123">
         Test Model
       </ModelDetailsLink>,
-      { state }
+      { state },
     );
     expect(
-      screen.getByRole("link", { name: "eggman@external/test-model" })
+      screen.getByRole("link", { name: "eggman@external/test-model" }),
     ).toBeInTheDocument();
   });
 
@@ -48,14 +48,14 @@ describe("ModelDetailsLink", () => {
       <ModelDetailsLink modelName="test-model" ownerTag="user-eggman">
         Test Model
       </ModelDetailsLink>,
-      { state }
+      { state },
     );
     expect(screen.getByRole("link", { name: "Test Model" })).toHaveAttribute(
       "href",
       urls.model.index({
         userName: "eggman",
         modelName: "test-model",
-      })
+      }),
     );
   });
 
@@ -68,7 +68,7 @@ describe("ModelDetailsLink", () => {
       >
         Test Model
       </ModelDetailsLink>,
-      { state }
+      { state },
     );
     expect(screen.getByRole("link", { name: "Test Model" })).toHaveAttribute(
       "href",
@@ -76,7 +76,7 @@ describe("ModelDetailsLink", () => {
         userName: "eggman",
         modelName: "test-model",
         tab: ModelTab.APPS,
-      })
+      }),
     );
   });
 });

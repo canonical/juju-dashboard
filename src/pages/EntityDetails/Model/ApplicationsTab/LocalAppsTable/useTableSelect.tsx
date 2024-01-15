@@ -27,7 +27,7 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
     dispatch(
       jujuActions.updateSelectedApplications({
         selectedApplications: selectedApplications,
-      })
+      }),
     );
   };
 
@@ -46,7 +46,7 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
     dispatch(
       jujuActions.updateSelectedApplications({
         selectedApplications: apps,
-      })
+      }),
     );
   };
   return {
@@ -58,7 +58,7 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
 export const addSelectAllColumn = (
   header: Header,
   selectAll: boolean,
-  handleSelectAll: (selectAll?: boolean) => void
+  handleSelectAll: (selectAll?: boolean) => void,
 ) => {
   return [
     {
@@ -115,7 +115,7 @@ const Checkbox = ({
 export const addSelectColumn = (
   rows: MainTableRow[],
   applications: ApplicationData,
-  handleSelect: (application: ApplicationInfo) => void
+  handleSelect: (application: ApplicationInfo) => void,
 ) => {
   const apps = Object.values(applications);
   return rows.map((row, i) => {

@@ -37,11 +37,11 @@ describe("Topology", () => {
         height={100}
         relations={relations}
         width={200}
-      />
+      />,
     );
     expect(document.querySelector("svg")).toHaveAttribute(
       "viewBox",
-      "0 0 200 100"
+      "0 0 200 100",
     );
   });
 
@@ -51,7 +51,7 @@ describe("Topology", () => {
       ({
         height: 100,
         width: 100,
-      } as DOMRect);
+      }) as DOMRect;
     render(
       <Topology
         annotations={annotations}
@@ -59,11 +59,11 @@ describe("Topology", () => {
         height={100}
         relations={relations}
         width={50}
-      />
+      />,
     );
     expect(document.querySelector("svg > g")).toHaveAttribute(
       "transform",
-      "translate(20,20) scale(0.2,0.2)"
+      "translate(20,20) scale(0.2,0.2)",
     );
     Element.prototype.getBoundingClientRect = getBoundingClientRect;
   });
@@ -76,7 +76,7 @@ describe("Topology", () => {
         height={100}
         relations={relations}
         width={200}
-      />
+      />,
     );
     const apps = document.querySelectorAll(".application");
     expect(apps[0]).toHaveAttribute("data-name", "landscape");
@@ -85,7 +85,7 @@ describe("Topology", () => {
     expect(apps[0].querySelector("image")).toBeInTheDocument();
     expect(apps[0].querySelector("image")).toHaveAttribute(
       "href",
-      "https://charmhub.io/landscape/icon"
+      "https://charmhub.io/landscape/icon",
     );
     expect(apps[1]).toHaveAttribute("data-name", "postgresql");
     expect(apps[1]).toHaveAttribute("transform", "translate(150, 150)");
@@ -93,7 +93,7 @@ describe("Topology", () => {
     expect(apps[1].querySelector("image")).toBeInTheDocument();
     expect(apps[1].querySelector("image")).toHaveAttribute(
       "href",
-      "https://charmhub.io/postgresql/icon"
+      "https://charmhub.io/postgresql/icon",
     );
   });
 
@@ -113,7 +113,7 @@ describe("Topology", () => {
         height={100}
         relations={relations}
         width={200}
-      />
+      />,
     );
     const apps = document.querySelectorAll(".application");
     // Regular app:
@@ -127,7 +127,7 @@ describe("Topology", () => {
     expect(landscapeImage).toHaveAttribute("transform", "translate(28, 28)");
     expect(landscapeImage).toHaveAttribute(
       "clip-path",
-      "circle(55px at 63px 63px)"
+      "circle(55px at 63px 63px)",
     );
     // Subordinate app:
     const postgresqlCircle = apps[1].querySelector("circle");
@@ -140,7 +140,7 @@ describe("Topology", () => {
     expect(postgresqlImage).toHaveAttribute("transform", "translate(13, 13)");
     expect(postgresqlImage).toHaveAttribute(
       "clip-path",
-      "circle(43px at 48px 48px)"
+      "circle(43px at 48px 48px)",
     );
   });
 
@@ -152,7 +152,7 @@ describe("Topology", () => {
         height={100}
         relations={relations}
         width={200}
-      />
+      />,
     );
     const apps = document.querySelectorAll(".application");
     const landscapeImage = apps[0].querySelector("image");
@@ -171,7 +171,7 @@ describe("Topology", () => {
         height={100}
         relations={relations}
         width={200}
-      />
+      />,
     );
     const apps = document.querySelectorAll(".application");
     expect(apps[0]).toHaveAttribute("transform", "translate(0, 0)");
@@ -186,7 +186,7 @@ describe("Topology", () => {
         height={100}
         relations={relations}
         width={200}
-      />
+      />,
     );
     const relationLine = document
       .querySelector(".relation")

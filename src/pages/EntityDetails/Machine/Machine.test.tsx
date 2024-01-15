@@ -84,7 +84,7 @@ describe("Machine", () => {
   it("displays the units table", async () => {
     renderComponent(<Machine />, { path, url, state });
     expect(
-      document.querySelector(".entity-details__units")
+      document.querySelector(".entity-details__units"),
     ).toBeInTheDocument();
   });
 

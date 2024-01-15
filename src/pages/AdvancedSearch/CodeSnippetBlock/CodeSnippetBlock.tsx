@@ -71,7 +71,7 @@ const getTab = (key: string) => {
 // Use a key path to get the parent object that contains the current item from the results data.
 const getCurrentObject = (
   keyPath: KeyPath,
-  results: CrossModelQueryState["results"]
+  results: CrossModelQueryState["results"],
 ) =>
   keyPath
     // Ignore the first item, as we want to get the parent object.
@@ -164,7 +164,7 @@ const labelRenderer: LabelRenderer = (keyPath) => {
 
 const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
   const [codeSnippetView, setCodeSnippetView] = useState<CodeSnippetView>(
-    CodeSnippetView.TREE
+    CodeSnippetView.TREE,
   );
 
   const valueRenderer = useCallback<ValueRenderer>(
@@ -271,7 +271,7 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
       }
       return <>{valueAsString}</>;
     },
-    [code]
+    [code],
   );
 
   return (
@@ -333,7 +333,7 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
                   onChange: (event) => {
                     setCodeSnippetView(
                       (event.target as HTMLSelectElement)
-                        .value as CodeSnippetView
+                        .value as CodeSnippetView,
                     );
                   },
                 },

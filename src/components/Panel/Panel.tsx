@@ -26,7 +26,7 @@ const close = {
   onEscape: (
     e: KeyboardEvent,
     onRemovePanelQueryParams: () => void,
-    checkCanClose?: Props["checkCanClose"]
+    checkCanClose?: Props["checkCanClose"],
   ) => {
     if (e.code === "Escape") {
       if (checkCanClose && !checkCanClose?.(e)) {
@@ -38,7 +38,7 @@ const close = {
   onClickOutside: (
     e: MouseEvent,
     onRemovePanelQueryParams: () => void,
-    checkCanClose?: Props["checkCanClose"]
+    checkCanClose?: Props["checkCanClose"],
   ) => {
     if (checkCanClose && !checkCanClose?.(e)) {
       return;
@@ -62,19 +62,19 @@ const Panel = forwardRef<HTMLDivElement, Props>(
       onRemovePanelQueryParams,
       ...props
     }: Props,
-    ref
+    ref,
   ) => {
     useListener(
       window,
       (e: KeyboardEvent) =>
         close.onEscape(e, onRemovePanelQueryParams, checkCanClose),
-      "keydown"
+      "keydown",
     );
     useListener(
       window,
       (e: MouseEvent) =>
         close.onClickOutside(e, onRemovePanelQueryParams, checkCanClose),
-      "click"
+      "click",
     );
 
     const titleId = useId();
@@ -109,7 +109,7 @@ const Panel = forwardRef<HTMLDivElement, Props>(
         ) : null}
       </Aside>
     );
-  }
+  },
 );
 
 export default Panel;

@@ -71,19 +71,19 @@ describe("ResultsBlock", () => {
     const codeSnippetDropdownButton = screen.getByRole("combobox");
     expect(codeSnippetDropdownButton).toBeVisible();
     expect(
-      screen.getByRole("option", { name: "Tree", hidden: true })
+      screen.getByRole("option", { name: "Tree", hidden: true }),
     ).toHaveAttribute("value", "tree");
     expect(
-      screen.getByRole("option", { name: "JSON", hidden: true })
+      screen.getByRole("option", { name: "JSON", hidden: true }),
     ).toHaveAttribute("value", "json");
     await userEvent.selectOptions(codeSnippetDropdownButton, "JSON");
     expect(
       JSON.stringify(
         JSON.parse(
           document.querySelector(".p-code-snippet__block--numbered")
-            ?.textContent ?? ""
-        )
-      )
+            ?.textContent ?? "",
+        ),
+      ),
     ).toBe(JSON.stringify(state.juju.crossModelQuery.results));
   });
 
@@ -97,7 +97,7 @@ describe("ResultsBlock", () => {
     const codeSnippetDropdownButton = screen.getByRole("combobox");
     await userEvent.selectOptions(codeSnippetDropdownButton, "Tree");
     expect(document.querySelector(".p-code-snippet__block")).toHaveTextContent(
-      "▶eggman@external/test-model[] 1 item▶0:{} 1 key▶model:{} 8 keys"
+      "▶eggman@external/test-model[] 1 item▶0:{} 1 key▶model:{} 8 keys",
     );
   });
 
@@ -109,7 +109,7 @@ describe("ResultsBlock", () => {
     renderComponent(<ResultsBlock />, { state });
     expect(screen.queryByText("abc123")).not.toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "eggman@external/test-model" })
+      screen.getByRole("link", { name: "eggman@external/test-model" }),
     ).toBeInTheDocument();
   });
 
@@ -175,7 +175,7 @@ describe("ResultsBlock", () => {
         userName: "eggman@external",
         modelName: "test-model",
         tab: ModelTab.APPS,
-      })
+      }),
     );
   });
 
@@ -191,7 +191,7 @@ describe("ResultsBlock", () => {
         userName: "eggman@external",
         modelName: "test-model",
         tab: ModelTab.APPS,
-      })
+      }),
     );
   });
 
@@ -207,7 +207,7 @@ describe("ResultsBlock", () => {
         userName: "eggman@external",
         modelName: "test-model",
         tab: ModelTab.MACHINES,
-      })
+      }),
     );
   });
 
@@ -225,7 +225,7 @@ describe("ResultsBlock", () => {
         userName: "eggman@external",
         modelName: "test-model",
         tab: ModelTab.INTEGRATIONS,
-      })
+      }),
     );
   });
 
@@ -240,7 +240,7 @@ describe("ResultsBlock", () => {
       urls.model.index({
         userName: "eggman@external",
         modelName: "test-model",
-      })
+      }),
     );
   });
 

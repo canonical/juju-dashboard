@@ -31,7 +31,7 @@ describe("MachineLink", () => {
       <MachineLink uuid="abc123" machineId="0">
         machine0
       </MachineLink>,
-      { state }
+      { state },
     );
     expect(screen.queryByRole("link", { name: "machine0" })).toHaveAttribute(
       "href",
@@ -39,7 +39,7 @@ describe("MachineLink", () => {
         userName: "eggman@external",
         modelName: "test-model",
         machineId: "0",
-      })
+      }),
     );
   });
 
@@ -48,11 +48,11 @@ describe("MachineLink", () => {
       <MachineLink uuid="invalidUUID" machineId="mockApp">
         No machine link due to invalid UUID
       </MachineLink>,
-      { state }
+      { state },
     );
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(
-      screen.getByText("No machine link due to invalid UUID")
+      screen.getByText("No machine link due to invalid UUID"),
     ).toBeVisible();
   });
 
@@ -64,7 +64,7 @@ describe("MachineLink", () => {
           machine0
         </MachineLink>
       </button>,
-      { state }
+      { state },
     );
     await userEvent.click(screen.getByRole("link", { name: "machine0" }));
     expect(onClick).not.toHaveBeenCalled();

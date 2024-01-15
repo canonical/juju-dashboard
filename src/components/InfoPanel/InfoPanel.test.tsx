@@ -63,11 +63,11 @@ describe("Info Panel", () => {
   it("can close the topology", async () => {
     renderComponent(<InfoPanel />, { state, url, path });
     await userEvent.click(
-      screen.getByRole("button", { name: Label.EXPAND_BUTTON })
+      screen.getByRole("button", { name: Label.EXPAND_BUTTON }),
     );
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     await userEvent.click(
-      screen.getByRole("button", { name: "Close active modal" })
+      screen.getByRole("button", { name: "Close active modal" }),
     );
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });

@@ -44,7 +44,7 @@ describe("App", () => {
     render(
       <Provider store={store}>
         <App />
-      </Provider>
+      </Provider>,
     );
     expect(BrowserRouterSpy.mock.calls[0][0].basename).toBe("/");
     BrowserRouterSpy.mockRestore();
@@ -58,7 +58,7 @@ describe("App", () => {
     render(
       <Provider store={store}>
         <App />
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByText("This is a thrown error")).toBeInTheDocument();
   });
@@ -71,7 +71,7 @@ describe("App", () => {
     render(
       <Provider store={store}>
         <App />
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByText(/Can't connect/)).toBeInTheDocument();
   });
@@ -87,7 +87,7 @@ describe("App", () => {
     render(
       <Provider store={store}>
         <App />
-      </Provider>
+      </Provider>,
     );
     expect(initializeSpy).toHaveBeenCalled();
     expect(pageviewSpy).toHaveBeenCalledWith("/models");
@@ -113,7 +113,7 @@ describe("App", () => {
     render(
       <Provider store={store}>
         <App />
-      </Provider>
+      </Provider>,
     );
     expect(initializeSpy).not.toHaveBeenCalled();
     expect(pageviewSpy).not.toHaveBeenCalled();

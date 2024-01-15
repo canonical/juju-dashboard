@@ -15,7 +15,7 @@ const urls = {
   controllers: "/controllers",
   model: {
     index: argPath<{ userName: string; modelName: string }>(
-      "/models/:userName/:modelName"
+      "/models/:userName/:modelName",
     ),
     tab: argPath<{
       userName: string;
@@ -24,7 +24,7 @@ const urls = {
     }>("/models/:userName/:modelName?activeView=:tab"),
     app: {
       index: argPath<{ userName: string; modelName: string; appName: string }>(
-        "/models/:userName/:modelName/app/:appName"
+        "/models/:userName/:modelName/app/:appName",
       ),
       tab: argPath<{
         userName: string;

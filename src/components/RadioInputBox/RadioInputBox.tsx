@@ -72,7 +72,7 @@ export default function RadioInputBox({
         // so that it's a consistent animation regardless of the height.
         duration,
         easing: "ease-out",
-      }
+      },
     );
 
     animation.onfinish = () => {

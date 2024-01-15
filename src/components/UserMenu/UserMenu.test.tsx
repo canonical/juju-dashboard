@@ -57,7 +57,7 @@ describe("User Menu", () => {
     jest
       .spyOn(appThunks, "logOut")
       .mockImplementation(
-        jest.fn().mockReturnValue({ type: "logOut", catch: jest.fn() })
+        jest.fn().mockReturnValue({ type: "logOut", catch: jest.fn() }),
       );
 
     const { store } = renderComponent(<UserMenu />, { state });
@@ -83,8 +83,8 @@ describe("User Menu", () => {
             "type" in action &&
             action.type === "logOut"
               ? Promise.reject(new Error("Error while dispatching logOut!"))
-              : null
-          )
+              : null,
+          ),
       );
 
     renderComponent(<UserMenu />, { state });
@@ -92,7 +92,7 @@ describe("User Menu", () => {
     expect(appThunks.logOut).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(
       Label.LOGOUT_ERROR,
-      new Error("Error while dispatching logOut!")
+      new Error("Error while dispatching logOut!"),
     );
 
     console.error = consoleError;

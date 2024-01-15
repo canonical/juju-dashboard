@@ -4,7 +4,7 @@ import type { ModelData } from "store/juju/types";
 
 export const incrementCounts = (
   status: string,
-  counts: { [status: string]: number }
+  counts: { [status: string]: number },
 ) => {
   if (counts[status]) {
     counts[status] = counts[status] += 1;
@@ -28,7 +28,7 @@ const generateOfferCounts = (modelStatusData: ModelData) => {
 const generateSecondaryCounts = <M = ModelData>(
   modelStatusData: M,
   segment: keyof M,
-  selector: string
+  selector: string,
 ) => {
   const data = modelStatusData[segment];
   if (data && typeof data === "object") {
@@ -41,7 +41,7 @@ const generateSecondaryCounts = <M = ModelData>(
 
 export function generateUnitCounts(
   units: UnitData | null,
-  applicationName?: string | null
+  applicationName?: string | null,
 ) {
   const counts = {};
   if (units && applicationName) {
@@ -60,7 +60,7 @@ export function generateUnitCounts(
 export function generateMachineCounts(
   machines: MachineData | null,
   units: UnitData | null,
-  applicationName?: string | null
+  applicationName?: string | null,
 ) {
   const counts = {};
   if (machines && units && applicationName) {
@@ -87,7 +87,7 @@ export function generateMachineCounts(
 */
 export const renderCounts = (
   countType: "localApps" | "relations" | "offers" | "remoteApps",
-  modelStatusData?: ModelData | null
+  modelStatusData?: ModelData | null,
 ) => {
   if (!modelStatusData) return null;
   let chips = null;
@@ -96,7 +96,7 @@ export const renderCounts = (
       chips = generateSecondaryCounts(
         modelStatusData,
         "applications",
-        "status"
+        "status",
       );
       break;
     case "relations":
@@ -109,7 +109,7 @@ export const renderCounts = (
       chips = generateSecondaryCounts(
         modelStatusData,
         "remote-applications",
-        "status"
+        "status",
       );
       break;
   }

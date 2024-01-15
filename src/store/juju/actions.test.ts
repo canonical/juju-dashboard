@@ -50,7 +50,7 @@ describe("actions", () => {
       actions.updateModelList({
         models,
         wsControllerURL: "wss://test.example.com",
-      })
+      }),
     ).toStrictEqual({
       type: "juju/updateModelList",
       payload: {
@@ -66,7 +66,7 @@ describe("actions", () => {
         modelUUID: "abc123",
         status,
         wsControllerURL: "wss://test.example.com",
-      })
+      }),
     ).toStrictEqual({
       type: "juju/updateModelStatus",
       payload: {
@@ -85,7 +85,7 @@ describe("actions", () => {
       actions.updateModelInfo({
         modelInfo,
         wsControllerURL: "wss://test.example.com",
-      })
+      }),
     ).toStrictEqual({
       type: "juju/updateModelInfo",
       payload: {
@@ -114,7 +114,7 @@ describe("actions", () => {
       actions.fetchAuditEvents({
         "user-tag": "user-eggman@external",
         wsControllerURL: "wss://test.example.com",
-      })
+      }),
     ).toStrictEqual({
       type: "juju/fetchAuditEvents",
       payload: {
@@ -151,7 +151,7 @@ describe("actions", () => {
       actions.fetchCrossModelQuery({
         wsControllerURL: "wss://test.example.com",
         query: ".",
-      })
+      }),
     ).toStrictEqual({
       type: "juju/fetchCrossModelQuery",
       payload: {
@@ -180,7 +180,7 @@ describe("actions", () => {
       actions.updateControllerList({
         controllers: [],
         wsControllerURL: "wss://test.example.com",
-      })
+      }),
     ).toStrictEqual({
       type: "juju/updateControllerList",
       payload: {
@@ -195,7 +195,7 @@ describe("actions", () => {
       actions.populateMissingAllWatcherData({
         status,
         uuid: "abc123",
-      })
+      }),
     ).toStrictEqual({
       type: "juju/populateMissingAllWatcherData",
       payload: {
@@ -218,7 +218,7 @@ describe("actions", () => {
       actions.updateCharms({
         charms,
         wsControllerURL: "wss://test.example.com",
-      })
+      }),
     ).toStrictEqual({
       type: "juju/updateCharms",
       payload: {
@@ -233,7 +233,7 @@ describe("actions", () => {
     expect(
       actions.updateSelectedApplications({
         selectedApplications,
-      })
+      }),
     ).toStrictEqual({
       type: "juju/updateSelectedApplications",
       payload: { selectedApplications },

@@ -14,7 +14,7 @@ if (!window.HTMLDivElement.prototype.animate) {
 } else {
   console.error(
     "JSDOM appears to support the web animations api",
-    "you may now remove the mock"
+    "you may now remove the mock",
   );
 }
 

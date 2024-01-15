@@ -51,13 +51,13 @@ export const changeURL = (url: string) => window.history.pushState({}, "", url);
 
 export const renderComponent = (
   component: JSX.Element,
-  options?: Options | null
+  options?: Options | null,
 ) => {
   const store =
     options && "store" in options
       ? options.store
       : configureStore<RootState, unknown>()(
-          options?.state ?? rootStateFactory.build()
+          options?.state ?? rootStateFactory.build(),
         );
   changeURL(options?.url ?? "/");
   const result = render(component, {

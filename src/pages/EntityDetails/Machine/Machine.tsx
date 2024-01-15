@@ -32,7 +32,7 @@ export default function Machine() {
   const machine = machineId ? machines?.[machineId] : null;
 
   const applicationStatuses = useSelector(
-    getAllModelApplicationStatus(modelUUID)
+    getAllModelApplicationStatus(modelUUID),
   );
 
   const filteredApplicationList = useMemo(() => {
@@ -71,10 +71,10 @@ export default function Machine() {
         ? generateLocalApplicationRows(
             filteredApplicationList,
             applicationStatuses,
-            { modelName, userName }
+            { modelName, userName },
           )
         : [],
-    [filteredApplicationList, applicationStatuses, modelName, userName]
+    [filteredApplicationList, applicationStatuses, modelName, userName],
   );
 
   const unitRows = useMemo(
@@ -82,7 +82,7 @@ export default function Machine() {
       modelName && userName
         ? generateUnitRows(filteredUnitList, { modelName, userName })
         : [],
-    [filteredUnitList, modelName, userName]
+    [filteredUnitList, modelName, userName],
   );
 
   const hardware = machine?.["hardware-characteristics"];

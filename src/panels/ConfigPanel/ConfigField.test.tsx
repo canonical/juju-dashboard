@@ -26,7 +26,7 @@ describe("ConfigField", () => {
         )}
         setSelectedConfig={jest.fn()}
         setNewValue={jest.fn()}
-      />
+      />,
     );
     expect(screen.getByRole("textbox")).toHaveValue("eggman2");
   });
@@ -41,10 +41,10 @@ describe("ConfigField", () => {
         )}
         setSelectedConfig={jest.fn()}
         setNewValue={jest.fn()}
-      />
+      />,
     );
     expect(document.querySelector(".config-input")).toHaveClass(
-      "config-input--focused"
+      "config-input--focused",
     );
   });
 
@@ -58,10 +58,10 @@ describe("ConfigField", () => {
         )}
         setSelectedConfig={jest.fn()}
         setNewValue={jest.fn()}
-      />
+      />,
     );
     expect(document.querySelector(".config-input")).toHaveClass(
-      "config-input--changed"
+      "config-input--changed",
     );
   });
 
@@ -85,13 +85,13 @@ describe("ConfigField", () => {
         )}
         setSelectedConfig={jest.fn()}
         setNewValue={jest.fn()}
-      />
+      />,
     );
     expect(document.querySelector(".config-input--description")).toHaveStyle({
       maxHeight: "0px",
     });
     await userEvent.click(
-      screen.getByRole("button", { name: Label.TOGGLE_DESCRIPTION })
+      screen.getByRole("button", { name: Label.TOGGLE_DESCRIPTION }),
     );
     rerender(
       <ConfigField
@@ -102,7 +102,7 @@ describe("ConfigField", () => {
         )}
         setSelectedConfig={jest.fn()}
         setNewValue={jest.fn()}
-      />
+      />,
     );
     expect(document.querySelector(".config-input--description")).toHaveStyle({
       maxHeight: "20px",
@@ -120,10 +120,10 @@ describe("ConfigField", () => {
         )}
         setSelectedConfig={jest.fn()}
         setNewValue={setNewValue}
-      />
+      />,
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.DEFAULT_BUTTON })
+      screen.getByRole("button", { name: Label.DEFAULT_BUTTON }),
     );
     expect(setNewValue).toHaveBeenCalledWith("name", "eggman");
   });

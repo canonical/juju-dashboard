@@ -59,7 +59,7 @@ const slice = createSlice({
         {
           models: UserModelList;
         } & WsControllerURLParam
-      >
+      >,
     ) => {
       const modelList = state.models;
       let userModels = action.payload.models["user-models"];
@@ -85,7 +85,7 @@ const slice = createSlice({
           modelUUID: string;
           status: FullStatusWithAnnotations;
         } & WsControllerURLParam
-      >
+      >,
     ) => {
       const modelUUID = action.payload.modelUUID;
       if (!state.modelData) {
@@ -114,7 +114,7 @@ const slice = createSlice({
         {
           modelInfo: ModelInfoResults;
         } & WsControllerURLParam
-      >
+      >,
     ) => {
       const modelInfo = action.payload.modelInfo.results[0].result;
       // There don't appear to be any irrelevant data in the modelInfo so
@@ -140,7 +140,7 @@ const slice = createSlice({
     // the model-poller middleware.
     fetchAuditEvents: (
       state,
-      action: PayloadAction<FindAuditEventsRequest & WsControllerURLParam>
+      action: PayloadAction<FindAuditEventsRequest & WsControllerURLParam>,
     ) => {
       state.auditEvents.loading = true;
     },
@@ -161,13 +161,13 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         Pick<CrossModelQueryRequest, "query"> & WsControllerURLParam
-      >
+      >,
     ) => {
       state.crossModelQuery.loading = true;
     },
     updateCrossModelQuery: (
       state,
-      { payload }: PayloadAction<CrossModelQueryFullResponse>
+      { payload }: PayloadAction<CrossModelQueryFullResponse>,
     ) => {
       // If "payload" is a string, it represents the error. In this case,
       // "results" gets set to null and "errors" gets set to "payload".
@@ -178,8 +178,8 @@ const slice = createSlice({
         isCrossModelQueryResponse(payload) && Object.keys(payload.errors).length
           ? payload.errors
           : typeof payload === "string"
-          ? payload
-          : null;
+            ? payload
+            : null;
       state.crossModelQuery.loaded = true;
       state.crossModelQuery.loading = false;
     },
@@ -195,7 +195,7 @@ const slice = createSlice({
         {
           controllers: Controllers[0];
         } & WsControllerURLParam
-      >
+      >,
     ) => {
       const controllers = state.controllers ?? {};
       controllers[action.payload.wsControllerURL] = action.payload.controllers;
@@ -204,7 +204,7 @@ const slice = createSlice({
     // This is required for Juju versions before 3.2.
     populateMissingAllWatcherData: (
       state,
-      action: PayloadAction<{ uuid: string; status: FullStatus }>
+      action: PayloadAction<{ uuid: string; status: FullStatus }>,
     ) => {
       if (!state.modelWatcherData) {
         state.modelWatcherData = {};
@@ -223,16 +223,18 @@ const slice = createSlice({
     },
     processAllWatcherDeltas: (
       state,
-      action: PayloadAction<AllWatcherDelta[]>
+      action: PayloadAction<AllWatcherDelta[]>,
     ) => {
       state.modelWatcherData = processDeltas(
         state.modelWatcherData,
-        action.payload
+        action.payload,
       );
     },
     updateCharms: (
       state,
-      action: PayloadAction<{ charms: Charm[] } & Partial<WsControllerURLParam>>
+      action: PayloadAction<
+        { charms: Charm[] } & Partial<WsControllerURLParam>
+      >,
     ) => {
       action.payload.charms = action.payload.charms.filter((charm) => {
         return !state.charms.some((c) => c.url === charm.url);
@@ -241,7 +243,7 @@ const slice = createSlice({
     },
     updateSelectedApplications: (
       state,
-      action: PayloadAction<{ selectedApplications: ApplicationInfo[] }>
+      action: PayloadAction<{ selectedApplications: ApplicationInfo[] }>,
     ) => {
       state.selectedApplications = action.payload.selectedApplications;
     },

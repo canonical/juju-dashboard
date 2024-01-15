@@ -102,7 +102,7 @@ export const getModelStatusGroupData = (model: ModelData) => {
   @returns The status of the application and any relevent messaging.
 */
 export const getApplicationStatusGroup = (
-  application: ModelData["applications"][0]
+  application: ModelData["applications"][0],
 ) => {
   // Possible "blocked" or error states in application statuses.
   const blocked = ["blocked"];
@@ -154,7 +154,7 @@ export const getMachineStatusGroup = (machine: ModelData["machines"][0]) => {
   @returns The status of the unit and any relevent messaging.
 */
 export const getUnitStatusGroup = (
-  unit: ModelData["applications"][0]["units"][0]
+  unit: ModelData["applications"][0]["units"][0],
 ) => {
   // Possible "blocked" or error states in the unit statuses.
   const blocked = ["lost"];
@@ -303,7 +303,7 @@ export const extractRelationEndpoints = (relation: {
 
 export const canAdministerModel = (
   userName: string,
-  modelUsers?: ModelUserInfo[]
+  modelUsers?: ModelUserInfo[],
 ) => {
   let hasPermission = false;
   const sharingAccess = ["admin", "write", "owner"];

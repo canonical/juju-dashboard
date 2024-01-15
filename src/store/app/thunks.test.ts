@@ -27,7 +27,7 @@ describe("thunks", () => {
             identityProviderAvailable: true,
           }),
         }),
-      })
+      }),
     );
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
@@ -36,7 +36,7 @@ describe("thunks", () => {
     const dispatchedThunk = await dispatch.mock.calls[4][0](
       dispatch,
       getState,
-      null
+      null,
     );
     expect(dispatchedThunk.type).toBe("app/connectAndStartPolling/fulfilled");
   });
@@ -49,7 +49,7 @@ describe("thunks", () => {
     const dispatchedThunk = await dispatch.mock.calls[1][0](
       dispatch,
       getState,
-      null
+      null,
     );
     expect(dispatchedThunk.type).toBe("app/connectAndListModels/fulfilled");
   });
@@ -62,7 +62,7 @@ describe("thunks", () => {
     ];
     localStorage.setItem(
       "additionalControllers",
-      JSON.stringify([additionalController])
+      JSON.stringify([additionalController]),
     );
     const action = connectAndStartPolling();
     const dispatch = jest.fn();
@@ -72,13 +72,13 @@ describe("thunks", () => {
       generalActions.storeUserPass({
         wsControllerURL: additionalController[0],
         credential: additionalController[1],
-      })
+      }),
     );
     expect(dispatch).toHaveBeenCalledWith(
       jujuActions.updateControllerList({
         wsControllerURL: additionalController[0],
         controllers: [additionalControllerFactory.build()],
-      })
+      }),
     );
     localStorage.removeItem("additionalControllers");
   });
@@ -121,7 +121,7 @@ describe("thunks", () => {
             ],
           },
         }),
-      })
+      }),
     );
     const action = connectAndListModels([additionalController]);
     await action(dispatch, getState, null);
@@ -132,7 +132,7 @@ describe("thunks", () => {
           additionalController,
         ],
         isJuju: true,
-      })
+      }),
     );
   });
 });

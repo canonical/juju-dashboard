@@ -30,7 +30,7 @@ const DonutChart = ({ alert = 0, blocked = 0, running = 0 }: Props) => {
       .append("g")
       .attr(
         "transform",
-        `translate(${width / 2},${height / 2}) scale(${scale},${scale})`
+        `translate(${width / 2},${height / 2}) scale(${scale},${scale})`,
       );
 
     const data = !isDisabled ? { alert, blocked, running } : { disabled: 1 };
@@ -39,7 +39,9 @@ const DonutChart = ({ alert = 0, blocked = 0, running = 0 }: Props) => {
       .scaleOrdinal<KeyValTuple[0]>()
       .domain(Object.keys(data))
       .range(
-        !isDisabled ? ["is-blocked", "is-alert", "is-running"] : ["is-disabled"]
+        !isDisabled
+          ? ["is-blocked", "is-alert", "is-running"]
+          : ["is-disabled"],
       );
 
     const pie = d3.pie<void, KeyValTuple>().value((d) => d[1]);
@@ -55,7 +57,7 @@ const DonutChart = ({ alert = 0, blocked = 0, running = 0 }: Props) => {
         d3
           .arc<d3.PieArcDatum<KeyValTuple>>()
           .innerRadius(100)
-          .outerRadius(radius)
+          .outerRadius(radius),
       )
       .attr("class", (d) => color(d.data[0]));
 

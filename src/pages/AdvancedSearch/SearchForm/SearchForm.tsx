@@ -38,7 +38,7 @@ const SearchForm = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const hasControllerConnection = useAppSelector((state) =>
-    getControllerConnection(state, wsControllerURL)
+    getControllerConnection(state, wsControllerURL),
   );
   const [queryParams, setQueryParams] = useQueryParams<{ q: string }>({
     q: "",
@@ -46,12 +46,12 @@ const SearchForm = (): JSX.Element => {
   const jqParam = decodeURIComponent(queryParams.q);
   const [queryHistory, setQueryHistory] = useLocalStorage<string[]>(
     QUERY_HISTORY_KEY,
-    []
+    [],
   );
   const crossModelQueryResultsJSON = JSON.stringify(
     useAppSelector(getCrossModelQueryResults),
     null,
-    2
+    2,
   );
   const isCrossModelQueryLoaded = useAppSelector(getCrossModelQueryLoaded);
   const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
@@ -67,7 +67,7 @@ const SearchForm = (): JSX.Element => {
         ...queryHistory.filter((previous) => previous !== query),
       ]);
     },
-    [queryHistory, setQueryHistory, setQueryParams]
+    [queryHistory, setQueryHistory, setQueryParams],
   );
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const SearchForm = (): JSX.Element => {
         jujuActions.fetchCrossModelQuery({
           query: jqParam,
           wsControllerURL,
-        })
+        }),
       );
     }
   }, [dispatch, hasControllerConnection, jqParam, wsControllerURL]);

@@ -88,7 +88,7 @@ describe("generateIconPath", () => {
     const charmId = "cs:~containers/kubernetes-master-1106";
     const iconPath = generateIconPath(charmId);
     expect(iconPath).toBe(
-      "https://charmhub.io/containers-kubernetes-master/icon"
+      "https://charmhub.io/containers-kubernetes-master/icon",
     );
   });
 

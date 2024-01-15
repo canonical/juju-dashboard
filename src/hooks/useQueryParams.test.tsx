@@ -33,7 +33,7 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ panel: string | null }>({ panel: "config" }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     const [searchParams] = result.current;
     expect(searchParams.panel).toBe("config");
@@ -45,7 +45,7 @@ describe("useQueryParams", () => {
         useQueryParams<{ panels: string[] }>({ panels: ["config", "actions"] }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     const [searchParams] = result.current;
     expect(searchParams.panels).toStrictEqual(["config", "actions"]);
@@ -57,7 +57,7 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ panel: string | null }>({ panel: null }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     const [searchParams] = result.current;
     expect(searchParams.panel).toBe("config");
@@ -69,7 +69,7 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ panels: string[] }>({ panels: [] }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     const [searchParams] = result.current;
     expect(searchParams.panels).toStrictEqual(["config", "actions"]);
@@ -82,7 +82,7 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ panels: string[] }>(initial),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     const [searchParams] = result.current;
     expect(searchParams.panels).toStrictEqual(["config", "actions"]);
@@ -94,7 +94,7 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ panel: string | null }>({ panel: null }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     let [searchParams] = result.current;
     const [, setSearchParams] = result.current;
@@ -111,7 +111,7 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ panels: string[] }>({ panels: [] }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     let [searchParams] = result.current;
     const [, setSearchParams] = result.current;
@@ -133,7 +133,7 @@ describe("useQueryParams", () => {
         }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     let [searchParams] = result.current;
     const [, setSearchParams] = result.current;
@@ -150,7 +150,7 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ panel: string | null }>({ panel: null }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     let [searchParams] = result.current;
     const [, setSearchParams] = result.current;
@@ -167,7 +167,7 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ xss: string | null }>({ xss: null }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     let [searchParams] = result.current;
     expect(searchParams.xss).toStrictEqual('<img src="x">');
@@ -179,11 +179,11 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ panel: string | null }>({ panel: null }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     expect(window.location.search).toStrictEqual(
       // Decoded: ?xss=<img src=x onerror=alert(1)//>
-      "?xss=%3Cimg%20src=x%20onerror=alert(1)//%3E"
+      "?xss=%3Cimg%20src=x%20onerror=alert(1)//%3E",
     );
     const [, setSearchParams] = result.current;
     act(() => setSearchParams({ panel: "config" }));
@@ -191,7 +191,7 @@ describe("useQueryParams", () => {
     expect(searchParams.panel).toStrictEqual("config");
     expect(window.location.search).toStrictEqual(
       // Decoded: ?xss=<img src="x">&panel=config
-      "?xss=%3Cimg+src%3D%22x%22%3E&panel=config"
+      "?xss=%3Cimg+src%3D%22x%22%3E&panel=config",
     );
   });
 
@@ -200,7 +200,7 @@ describe("useQueryParams", () => {
       {},
       "",
       // Decoded: ?<svg><g/onload=alert(2)//<p>=something
-      "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something"
+      "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something",
     );
     const { result } = renderHook(
       () =>
@@ -211,17 +211,17 @@ describe("useQueryParams", () => {
         }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     expect(window.location.search).toStrictEqual(
       // Decoded: ?<svg><g/onload=alert(2)//<p>=something
-      "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something"
+      "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something",
     );
     const [, setSearchParams] = result.current;
     act(() => setSearchParams({ panel: "config" }));
     expect(window.location.search).toStrictEqual(
       // Decoded: ?panel=config&$<svg><g></g></svg>=something
-      "?panel=config&%3Csvg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E=something"
+      "?panel=config&%3Csvg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E=something",
     );
   });
 
@@ -230,7 +230,7 @@ describe("useQueryParams", () => {
       () => useQueryParams<{ xss: string | null }>({ xss: null }),
       {
         wrapper: generateContainer,
-      }
+      },
     );
     let [searchParams] = result.current;
     expect(searchParams.xss).toStrictEqual(null);

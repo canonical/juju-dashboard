@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 export type SetFieldValue<V> = (
   fieldName: string,
-  value: ValueOf<V>
+  value: ValueOf<V>,
 ) => Promise<void | FormikErrors<V>>;
 
 type Props<V> = {

@@ -51,7 +51,7 @@ describe("AuditLogsTablePagination", () => {
     await userEvent.click(screen.getByRole("button", { name: "Next page" }));
     expect(window.location.search).toEqual("?page=2");
     await userEvent.click(
-      screen.getByRole("button", { name: "Previous page" })
+      screen.getByRole("button", { name: "Previous page" }),
     );
     expect(window.location.search).toEqual("?page=1");
   });
@@ -68,7 +68,7 @@ describe("AuditLogsTablePagination", () => {
     expect(dropdownMenu).toHaveTextContent("100/page");
     const action = jujuActions.updateAuditEventsLimit(100);
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type)
+      store.getActions().find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
@@ -76,12 +76,12 @@ describe("AuditLogsTablePagination", () => {
     state.juju.auditEvents.items = auditEventFactory.buildList(51);
     renderComponent(<AuditLogsTablePagination />, { state });
     expect(
-      screen.getByRole("button", { name: Label.FIRST_PAGE })
+      screen.getByRole("button", { name: Label.FIRST_PAGE }),
     ).toBeDisabled();
     await userEvent.click(screen.getByRole("button", { name: "Next page" }));
     expect(window.location.search).toEqual("?page=2");
     await userEvent.click(
-      screen.getByRole("button", { name: Label.FIRST_PAGE })
+      screen.getByRole("button", { name: Label.FIRST_PAGE }),
     );
     expect(window.location.search).toEqual("");
   });

@@ -98,31 +98,31 @@ const Model = () => {
           machines,
           units,
           { modelName, userName },
-          query?.entity
+          query?.entity,
         )
       : [];
   }, [machines, units, modelName, userName, query]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(relations, applications),
-    [applications, relations]
+    [applications, relations],
   );
   const consumedTableRows = useMemo(
     () => generateConsumedRows(modelStatusData),
-    [modelStatusData]
+    [modelStatusData],
   );
 
   const offersTableRows = useMemo(
     () => generateOffersRows(modelStatusData),
-    [modelStatusData]
+    [modelStatusData],
   );
 
   const modelInfoData = useSelector(getModelInfo(modelUUID));
   const credential = useAppSelector((state) =>
-    getModelCredential(state, modelUUID)
+    getModelCredential(state, modelUUID),
   );
   const modelAccess = useAppSelector((state) =>
-    getModelAccess(state, modelUUID)
+    getModelAccess(state, modelUUID),
   );
 
   return (
@@ -150,7 +150,7 @@ const Model = () => {
               controller: modelInfoData.type,
               "Cloud/Region": generateCloudAndRegion(
                 modelInfoData["cloud"],
-                modelInfoData["cloud-region"]
+                modelInfoData["cloud-region"],
               ),
               owner: modelInfoData.owner,
               credential,

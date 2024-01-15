@@ -23,7 +23,7 @@ describe("NumberConfig", () => {
         selectedConfig={undefined}
         setSelectedConfig={jest.fn()}
         setNewValue={jest.fn()}
-      />
+      />,
     );
     expect(screen.getByRole("spinbutton")).toBeInTheDocument();
   });
@@ -36,7 +36,7 @@ describe("NumberConfig", () => {
         selectedConfig={undefined}
         setSelectedConfig={jest.fn()}
         setNewValue={setNewValue}
-      />
+      />,
     );
     await userEvent.type(screen.getByRole("spinbutton"), "2");
     expect(setNewValue).toHaveBeenCalledWith("number option", "12");

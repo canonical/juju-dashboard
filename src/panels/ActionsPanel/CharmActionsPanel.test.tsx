@@ -100,7 +100,7 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     expect(await screen.findAllByRole("radio")).toHaveLength(2);
   });
@@ -114,10 +114,10 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
   });
 
@@ -136,20 +136,20 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     expect(
-      document.querySelector(".p-confirmation-modal")
+      document.querySelector(".p-confirmation-modal"),
     ).not.toBeInTheDocument();
   });
 
@@ -162,22 +162,22 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" })
+      await screen.findByRole("radio", { name: "add-disk" }),
     );
     await userEvent.type(
       await screen.findByRole("textbox", { name: "osd-devices" }),
-      "some content"
+      "some content",
     );
     await waitFor(async () =>
       expect(
-        await screen.findByRole("button", { name: "Run action" })
-      ).not.toBeDisabled()
+        await screen.findByRole("button", { name: "Run action" }),
+      ).not.toBeDisabled(),
     );
   });
 
@@ -214,21 +214,21 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" })
+      await screen.findByRole("radio", { name: "add-disk" }),
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("checkbox", { name: "osd-devices" })
+      await screen.findByRole("checkbox", { name: "osd-devices" }),
     );
     await waitFor(async () =>
       expect(
-        await screen.findByRole("button", { name: "Run action" })
-      ).not.toBeDisabled()
+        await screen.findByRole("button", { name: "Run action" }),
+      ).not.toBeDisabled(),
     );
   });
 
@@ -241,21 +241,21 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     expect(document.querySelector(".p-modal")).toBeInTheDocument();
     expect(
-      await screen.findByTestId("confirmation-modal-unit-count")
+      await screen.findByTestId("confirmation-modal-unit-count"),
     ).toHaveTextContent("1 (2)");
     expect(executeActionOnUnits).not.toHaveBeenCalled();
   });
@@ -272,20 +272,20 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -306,23 +306,23 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" })
+      await screen.findByRole("radio", { name: "add-disk" }),
     );
     await userEvent.type(
       await screen.findByRole("textbox", { name: "osd-devices" }),
-      "new device"
+      "new device",
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -345,20 +345,20 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON })
+      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -376,26 +376,26 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     expect(
-      screen.queryByRole("dialog", { name: "Run pause?" })
+      screen.queryByRole("dialog", { name: "Run pause?" }),
     ).toBeInTheDocument();
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CANCEL_BUTTON })
+      await screen.findByRole("button", { name: Label.CANCEL_BUTTON }),
     );
     expect(
-      screen.queryByRole("dialog", { name: "Run pause?" })
+      screen.queryByRole("dialog", { name: "Run pause?" }),
     ).not.toBeInTheDocument();
   });
 
@@ -403,7 +403,7 @@ describe("CharmActionsPanel", () => {
     jest.spyOn(juju, "executeActionOnUnits").mockImplementation(
       jest.fn().mockResolvedValue({
         actions: [{ error: "Error when executing action on unit!" }],
-      })
+      }),
     );
     renderComponent(
       <>
@@ -413,20 +413,20 @@ describe("CharmActionsPanel", () => {
         />
         <Toaster />
       </>,
-      { path, url, state }
+      { path, url, state },
     );
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).toBeDisabled();
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     ).not.toBeDisabled();
     await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" })
+      await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CONFIRM_BUTTON })
+      screen.getByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
     expect(juju.executeActionOnUnits).toHaveBeenCalledTimes(1);
     expect(screen.getByText(Label.ACTION_ERROR)).toBeInTheDocument();

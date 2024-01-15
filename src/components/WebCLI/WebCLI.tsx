@@ -48,7 +48,7 @@ const WebCLI = ({
   const storeState = useStore().getState();
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
     "cliHistory",
-    []
+    [],
   );
 
   const clearMessageBuffer = () => {
@@ -77,7 +77,7 @@ const WebCLI = ({
         }
       }
     },
-    [cliHistory, historyPosition]
+    [cliHistory, historyPosition],
   );
 
   const keyupListener = useCallback((event: KeyboardEvent) => {
@@ -155,7 +155,7 @@ const WebCLI = ({
         const originalWSOrigin = wsAddress ? new URL(wsAddress).origin : null;
         const activeUser = getActiveUserTag(
           storeState,
-          `${originalWSOrigin}/api`
+          `${originalWSOrigin}/api`,
         );
         authentication.user = activeUser ? getUserName(activeUser) : undefined;
         authentication.macaroons = [deserialized];
@@ -182,7 +182,7 @@ const WebCLI = ({
       JSON.stringify({
         ...authentication,
         commands: [command],
-      })
+      }),
     );
     sendAnalytics({
       category: "User",

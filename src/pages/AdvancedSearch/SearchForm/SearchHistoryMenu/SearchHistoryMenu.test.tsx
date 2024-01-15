@@ -19,7 +19,7 @@ describe("SearchHistoryMenu", () => {
           setQueryHistory={jest.fn()}
         />
       </Formik>,
-      { url: "/?q=.applications" }
+      { url: "/?q=.applications" },
     );
     expect(screen.getByRole("button", { name: Label.HISTORY })).toBeDisabled();
   });
@@ -40,12 +40,12 @@ describe("SearchHistoryMenu", () => {
           setQueryHistory={jest.fn()}
         />
       </Formik>,
-      { state, url: "/?q=.applications" }
+      { state, url: "/?q=.applications" },
     );
     // Open the menu so that the portal gets rendered.
     await userEvent.click(screen.getByRole("button", { name: Label.HISTORY }));
     expect(
-      screen.getByRole("button", { name: ".applications" })
+      screen.getByRole("button", { name: ".applications" }),
     ).toBeDisabled();
   });
 
@@ -58,15 +58,15 @@ describe("SearchHistoryMenu", () => {
           setQueryHistory={jest.fn()}
         />
       </Formik>,
-      { url: "/?q=.applications" }
+      { url: "/?q=.applications" },
     );
     // Open the menu so that the portal gets rendered.
     await userEvent.click(screen.getByRole("button", { name: Label.HISTORY }));
     expect(
-      screen.getByRole("button", { name: ".applications" })
+      screen.getByRole("button", { name: ".applications" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: ".machines" })
+      screen.getByRole("button", { name: ".machines" }),
     ).toBeInTheDocument();
   });
 
@@ -83,7 +83,7 @@ describe("SearchHistoryMenu", () => {
           />
         </Form>
       </Formik>,
-      { url: "/?q=.applications" }
+      { url: "/?q=.applications" },
     );
     // Open the menu so that the portal gets rendered.
     await userEvent.click(screen.getByRole("button", { name: Label.HISTORY }));
@@ -102,7 +102,7 @@ describe("SearchHistoryMenu", () => {
           setQueryHistory={setQueryHistory}
         />
       </Formik>,
-      { url: "/?q=.applications" }
+      { url: "/?q=.applications" },
     );
     // Open the menu so that the portal gets rendered.
     await userEvent.click(screen.getByRole("button", { name: Label.HISTORY }));

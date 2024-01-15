@@ -59,7 +59,7 @@ const model = modelDataFactory.build({
 describe("reducers", () => {
   it("default", () => {
     expect(reducer(undefined, { type: "" })).toStrictEqual(
-      jujuStateFactory.build()
+      jujuStateFactory.build(),
     );
   });
 
@@ -83,8 +83,8 @@ describe("reducers", () => {
             ],
           },
           wsControllerURL: "wss://example.com",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       models: {
@@ -114,8 +114,8 @@ describe("reducers", () => {
           modelUUID: "abc123",
           status,
           wsControllerURL: "wss://example.com",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       modelData: {
@@ -147,8 +147,8 @@ describe("reducers", () => {
         actions.updateModelInfo({
           modelInfo,
           wsControllerURL: "wss://example.com",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       modelData: {
@@ -171,7 +171,7 @@ describe("reducers", () => {
       modelsLoaded: true,
     });
     expect(reducer(state, actions.clearModelData())).toStrictEqual(
-      jujuStateFactory.build({ modelsLoaded: false })
+      jujuStateFactory.build({ modelsLoaded: false }),
     );
   });
 
@@ -185,8 +185,8 @@ describe("reducers", () => {
         actions.fetchCrossModelQuery({
           wsControllerURL: "wss://example.com",
           query: ".",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       crossModelQuery: crossModelQueryStateFactory.build({ loading: true }),
@@ -205,7 +205,7 @@ describe("reducers", () => {
     const results = { mockResultKey: ["mockResultValue"] };
     const errors = { mockErrorKey: ["mockErrorValue"] };
     expect(
-      reducer(state, actions.updateCrossModelQuery({ results, errors }))
+      reducer(state, actions.updateCrossModelQuery({ results, errors })),
     ).toStrictEqual({
       ...state,
       crossModelQuery: crossModelQueryStateFactory.build({
@@ -248,8 +248,8 @@ describe("reducers", () => {
         state,
         actions.fetchAuditEvents({
           wsControllerURL: "wss://example.com",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       auditEvents: auditEventsStateFactory.build({ loading: true }),
@@ -328,8 +328,8 @@ describe("reducers", () => {
         actions.updateControllerList({
           controllers,
           wsControllerURL: "wss://example.com",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       controllers: {
@@ -348,8 +348,8 @@ describe("reducers", () => {
         actions.populateMissingAllWatcherData({
           status,
           uuid: "abc123",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       modelWatcherData: {
@@ -398,7 +398,7 @@ describe("reducers", () => {
             annotations: { new: "changed" },
           },
         ],
-      ])
+      ]),
     );
     expect(reducedState.modelWatcherData?.abc123.annotations).toStrictEqual({
       etcd: {
@@ -428,8 +428,8 @@ describe("reducers", () => {
         actions.updateCharms({
           charms,
           wsControllerURL: "wss://test.example.com",
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       charms: [
@@ -454,8 +454,8 @@ describe("reducers", () => {
         state,
         actions.updateSelectedApplications({
           selectedApplications,
-        })
-      )
+        }),
+      ),
     ).toStrictEqual({
       ...state,
       selectedApplications,

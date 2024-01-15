@@ -66,17 +66,17 @@ describe("Fields", () => {
       <Formik initialValues={{}} onSubmit={jest.fn()}>
         <Fields />
       </Formik>,
-      { state }
+      { state },
     );
     expect(
-      document.querySelector("option[value='eggman']")
+      document.querySelector("option[value='eggman']"),
     ).toBeInTheDocument();
     expect(document.querySelectorAll("option[value='eggman']")).toHaveLength(1);
     expect(
-      document.querySelector("option[value='spaceman']")
+      document.querySelector("option[value='spaceman']"),
     ).toBeInTheDocument();
     expect(
-      document.querySelector("option[value='policeman']")
+      document.querySelector("option[value='policeman']"),
     ).toBeInTheDocument();
   });
 
@@ -114,19 +114,19 @@ describe("Fields", () => {
       </Formik>,
       {
         state,
-      }
+      },
     );
     expect(
-      document.querySelector("option[value='controller1/testmodel1']")
+      document.querySelector("option[value='controller1/testmodel1']"),
     ).toBeInTheDocument();
     expect(
-      document.querySelectorAll("option[value='controller1/testmodel1']")
+      document.querySelectorAll("option[value='controller1/testmodel1']"),
     ).toHaveLength(1);
     expect(
-      document.querySelector("option[value='controller2/testmodel2']")
+      document.querySelector("option[value='controller2/testmodel2']"),
     ).toBeInTheDocument();
     expect(
-      document.querySelector("option[value='controller3/testmodel3']")
+      document.querySelector("option[value='controller3/testmodel3']"),
     ).toBeInTheDocument();
   });
 
@@ -137,10 +137,10 @@ describe("Fields", () => {
       </Formik>,
       {
         state,
-      }
+      },
     );
     expect(
-      screen.getByRole("combobox", { name: Label.MODEL })
+      screen.getByRole("combobox", { name: Label.MODEL }),
     ).toBeInTheDocument();
   });
 
@@ -156,10 +156,10 @@ describe("Fields", () => {
           userName: "eggman@external",
           modelName: "test-model",
         }),
-      }
+      },
     );
     expect(
-      screen.queryByRole("combobox", { name: Label.MODEL })
+      screen.queryByRole("combobox", { name: Label.MODEL }),
     ).not.toBeInTheDocument();
   });
 
@@ -179,12 +179,12 @@ describe("Fields", () => {
       <Formik initialValues={{}} onSubmit={jest.fn()}>
         <Fields />
       </Formik>,
-      { state }
+      { state },
     );
     expect(document.querySelector("option[value='Login']")).toBeInTheDocument();
     expect(document.querySelectorAll("option[value='Login']")).toHaveLength(1);
     expect(
-      document.querySelector("option[value='AddModel']")
+      document.querySelector("option[value='AddModel']"),
     ).toBeInTheDocument();
   });
 });
