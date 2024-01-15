@@ -200,8 +200,8 @@ export default function ActionLogs() {
     () => (modelName ? getModelUUID(modelName) : null),
     [modelName],
   );
-  const modelUUID = useSelector(
-    (state: RootState) => getModelUUIDMemo?.(state),
+  const modelUUID = useSelector((state: RootState) =>
+    getModelUUIDMemo?.(state),
   );
   const modelStatusData = useSelector(getModelStatus(modelUUID));
 
@@ -220,9 +220,8 @@ export default function ActionLogs() {
         if (operationList?.results) {
           setOperations(operationList.results);
           const actionsTags = operationList.results
-            .flatMap(
-              (operation: OperationResult) =>
-                operation.actions?.map((action) => action.action.tag),
+            .flatMap((operation: OperationResult) =>
+              operation.actions?.map((action) => action.action.tag),
             )
             .filter((actionTag?: string): actionTag is string => !!actionTag)
             .map((actionTag: string) => ({ tag: actionTag }));
