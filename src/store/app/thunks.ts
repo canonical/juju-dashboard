@@ -52,21 +52,6 @@ export const connectAndStartPolling = createAsyncThunk<
   }
 >("app/connectAndStartPolling", async (_, thunkAPI) => {
   try {
-    await thunkAPI.dispatch(connectAndListModels());
-  } catch (error) {
-    // XXX Add to Sentry.
-    console.error("Error while trying to connect and list models.", error);
-  }
-});
-
-export const connectAndListModels = createAsyncThunk<
-  void,
-  void,
-  {
-    state: RootState;
-  }
->("app/connectAndListModels", async (_, thunkAPI) => {
-  try {
     const storeState = thunkAPI.getState();
     const config = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
@@ -93,10 +78,14 @@ export const connectAndListModels = createAsyncThunk<
       }),
     );
   } catch (error) {
-    // XXX Surface error to UI.
     // XXX Send to sentry if it's an error that's not connection related
     // a common error returned by this is:
     // Something went wrong:  cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
     console.error("Something went wrong: ", error);
+    thunkAPI.dispatch(
+      generalActions.storeConnectionError(
+        "Error while triggering the connection and polling of models.",
+      ),
+    );
   }
 });

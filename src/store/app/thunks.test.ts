@@ -12,7 +12,7 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import { logOut, connectAndStartPolling, connectAndListModels } from "./thunks";
+import { logOut, connectAndStartPolling } from "./thunks";
 
 describe("thunks", () => {
   it("logOut", async () => {
@@ -40,19 +40,6 @@ describe("thunks", () => {
   });
 
   it("connectAndStartPolling", async () => {
-    const action = connectAndStartPolling();
-    const dispatch = jest.fn();
-    const getState = jest.fn(() => rootStateFactory.build());
-    await action(dispatch, getState, null);
-    const dispatchedThunk = await dispatch.mock.calls[1][0](
-      dispatch,
-      getState,
-      null,
-    );
-    expect(dispatchedThunk.type).toBe("app/connectAndListModels/fulfilled");
-  });
-
-  it("connectAndListModels", async () => {
     const dispatch = jest.fn();
     const getState = jest.fn(() =>
       rootStateFactory.build({
@@ -87,7 +74,7 @@ describe("thunks", () => {
         }),
       }),
     );
-    const action = connectAndListModels();
+    const action = connectAndStartPolling();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
