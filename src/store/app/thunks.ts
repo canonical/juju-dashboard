@@ -79,9 +79,12 @@ export const connectAndStartPolling = createAsyncThunk<
     );
   } catch (error) {
     // XXX Send to sentry if it's an error that's not connection related
-    // a common error returned by this is:
-    // Something went wrong:  cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
-    console.error("Something went wrong: ", error);
+    // a common error logged to the console by this is:
+    // Error while triggering the connection and polling of models. cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
+    console.error(
+      "Error while triggering the connection and polling of models.",
+      error,
+    );
     thunkAPI.dispatch(
       generalActions.storeConnectionError(
         "Error while triggering the connection and polling of models.",
