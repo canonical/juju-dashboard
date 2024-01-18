@@ -15,6 +15,10 @@ import type { RootState } from "store/store";
 
 import type { ControllerArgs } from "./actions";
 
+enum Label {
+  CONNECT_AND_START_POLLING_ERROR = "Error while triggering the connection and polling of models.",
+}
+
 export const logOut = createAsyncThunk<
   void,
   void,
@@ -81,13 +85,10 @@ export const connectAndStartPolling = createAsyncThunk<
     // XXX Send to sentry if it's an error that's not connection related
     // a common error logged to the console by this is:
     // Error while triggering the connection and polling of models. cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
-    console.error(
-      "Error while triggering the connection and polling of models.",
-      error,
-    );
+    console.error(Label.CONNECT_AND_START_POLLING_ERROR, error);
     thunkAPI.dispatch(
       generalActions.storeConnectionError(
-        "Error while triggering the connection and polling of models.",
+        Label.CONNECT_AND_START_POLLING_ERROR,
       ),
     );
   }
