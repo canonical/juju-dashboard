@@ -115,7 +115,7 @@ describe("Entity Details Container", () => {
   it("lists the correct tabs", () => {
     renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
-      /^ApplicationsIntegrationsLogsMachines$/,
+      /^ApplicationsIntegrationsLogsSecretsMachines$/,
     );
   });
 
@@ -134,7 +134,7 @@ describe("Entity Details Container", () => {
     };
     renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
-      /^ApplicationsIntegrationsLogs$/,
+      /^ApplicationsIntegrationsLogsSecrets$/,
     );
   });
 

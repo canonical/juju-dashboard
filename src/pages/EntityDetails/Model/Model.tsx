@@ -36,6 +36,7 @@ import {
 
 import ApplicationsTab from "./ApplicationsTab/ApplicationsTab";
 import Logs from "./Logs";
+import Secrets from "./Secrets";
 
 export enum Label {
   ACCESS_BUTTON = "Model access",
@@ -242,6 +243,7 @@ const Model = () => {
           </>
         )}
         {shouldShow("logs", query.activeView) && <Logs />}
+        {shouldShow("secrets", query.activeView) && <Secrets />}
       </div>
     </>
   );

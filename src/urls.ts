@@ -5,6 +5,7 @@ export enum ModelTab {
   MACHINES = "machines",
   INTEGRATIONS = "integrations",
   LOGS = "logs",
+  SECRETS = "secrets",
 }
 
 export type AppTab = "machines" | "units";

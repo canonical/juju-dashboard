@@ -138,6 +138,13 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
         to: urls.model.tab({ userName, modelName, tab: ModelTab.LOGS }),
         component: Link,
       },
+      {
+        active: activeView === "secrets",
+        label: "Secrets",
+        onClick: (e: MouseEvent) => handleNavClick(e),
+        to: urls.model.tab({ userName, modelName, tab: ModelTab.SECRETS }),
+        component: Link,
+      },
     ];
 
     if (modelInfo?.type !== "kubernetes") {
