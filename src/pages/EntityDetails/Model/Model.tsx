@@ -36,6 +36,7 @@ import {
 
 import ApplicationsTab from "./ApplicationsTab/ApplicationsTab";
 import Logs from "./Logs";
+import Secrets from "./Secrets";
 
 export enum Label {
   ACCESS_BUTTON = "Model access",
@@ -43,6 +44,7 @@ export enum Label {
 
 export enum TestId {
   CONSUMED = "consumed",
+  MAIN = "entity-details-main",
   OFFERS = "offers",
 }
 
@@ -56,6 +58,7 @@ const shouldShow = (segment: string, activeView: string) => {
     case "machines":
     case "integrations":
     case "logs":
+    case "secrets":
       if (segment === "relations-title") {
         return true;
       }
@@ -160,7 +163,7 @@ const Model = () => {
           />
         )}
       </div>
-      <div className="entity-details__main">
+      <div className="entity-details__main" data-testid={TestId.MAIN}>
         {shouldShow("apps", query.activeView) && <ApplicationsTab />}
         {shouldShow("machines", query.activeView) &&
           (machinesTableRows.length > 0 ? (
@@ -242,6 +245,7 @@ const Model = () => {
           </>
         )}
         {shouldShow("logs", query.activeView) && <Logs />}
+        {shouldShow("secrets", query.activeView) && <Secrets />}
       </div>
     </>
   );

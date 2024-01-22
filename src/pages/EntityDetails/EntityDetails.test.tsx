@@ -19,6 +19,7 @@ import {
 } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
+import { ModelTab } from "urls";
 
 import EntityDetails, { Label } from "./EntityDetails";
 
@@ -115,7 +116,7 @@ describe("Entity Details Container", () => {
   it("lists the correct tabs", () => {
     renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
-      /^ApplicationsIntegrationsLogsMachines$/,
+      /^ApplicationsIntegrationsLogsSecretsMachines$/,
     );
   });
 
@@ -134,7 +135,7 @@ describe("Entity Details Container", () => {
     };
     renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
-      /^ApplicationsIntegrationsLogs$/,
+      /^ApplicationsIntegrationsLogsSecrets$/,
     );
   });
 
@@ -144,19 +145,23 @@ describe("Entity Details Container", () => {
     const sections = [
       {
         text: "Applications",
-        query: "apps",
+        query: ModelTab.APPS,
       },
       {
         text: "Integrations",
-        query: "integrations",
+        query: ModelTab.INTEGRATIONS,
       },
       {
         text: "Logs",
-        query: "logs",
+        query: ModelTab.LOGS,
       },
       {
         text: "Machines",
-        query: "machines",
+        query: ModelTab.MACHINES,
+      },
+      {
+        text: "Secrets",
+        query: ModelTab.SECRETS,
       },
     ];
     sections.forEach((section) => {
