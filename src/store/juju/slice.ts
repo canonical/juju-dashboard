@@ -46,6 +46,7 @@ const slice = createSlice({
     },
     controllers: null,
     models: {},
+    modelsError: null,
     modelsLoaded: false,
     modelData: {},
     modelWatcherData: {},
@@ -128,9 +129,20 @@ const slice = createSlice({
         state.modelData[modelInfo.uuid].info = modelInfo;
       }
     },
+    updateModelsError: (
+      state,
+      action: PayloadAction<
+        {
+          modelsError: string | null;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.modelsError = action.payload.modelsError;
+    },
     clearModelData: (state) => {
       state.modelData = {};
       state.models = {};
+      state.modelsError = null;
       state.modelsLoaded = false;
     },
     clearControllerData: (state) => {

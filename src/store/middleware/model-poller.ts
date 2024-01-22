@@ -186,6 +186,7 @@ export const modelPollerMiddleware: Middleware<
         }
 
         let pollCount = 0;
+        let isFirstTimePolling = true;
         do {
           const identity = conn?.info?.user?.identity;
           if (identity) {
@@ -207,11 +208,34 @@ export const modelPollerMiddleware: Middleware<
                 reduxStore.dispatch,
                 reduxStore.getState,
               );
+              // If the code execution arrives here, then the model statuses
+              // have been succesfully updated. Models error should be removed.
+              if (reduxStore.getState().juju.modelsError) {
+                reduxStore.dispatch(
+                  jujuActions.updateModelsError({
+                    modelsError: null,
+                    wsControllerURL,
+                  }),
+                );
+              }
             } catch (e) {
-              console.log(e);
+              console.log("something");
+              const errorMessage = isFirstTimePolling
+                ? "Unable to fetch the models."
+                : "Unable to update the models.";
+              console.error(errorMessage, e);
+              reduxStore.dispatch(
+                jujuActions.updateModelsError({
+                  modelsError: errorMessage,
+                  wsControllerURL,
+                }),
+              );
             }
           }
 
+          if (isFirstTimePolling) {
+            isFirstTimePolling = false;
+          }
           // Allow the polling to run a certain number of times in tests.
           if (process.env.NODE_ENV === "test") {
             if (pollCount === action.payload.poll) {

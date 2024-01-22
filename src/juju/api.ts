@@ -260,8 +260,7 @@ export async function fetchModelStatus(
           // a location to notify the user. In the new watcher model that's
           // being implemented we will be able to surface this error in the
           // model details page.
-          console.error("Unable to fetch the status.", status);
-          return;
+          throw new Error(`Unable to fetch the status. ${status}`);
         }
       }
 
@@ -284,7 +283,8 @@ export async function fetchModelStatus(
       }
       logout();
     } catch (error) {
-      console.error("error connecting to model:", modelUUID, error);
+      console.error("Error connecting to model:", modelUUID, error);
+      throw error;
     }
   }
   return status;
@@ -344,49 +344,60 @@ export async function fetchAllModelStatuses(
   getState: () => RootState,
 ) {
   const queue = new Limiter({ concurrency: 1 });
+  let modelErrorCount = 0;
   modelUUIDList.forEach((modelUUID) => {
     queue.push(async (done) => {
       if (isLoggedIn(getState(), wsControllerURL)) {
-        const modelWsControllerURL = getModelByUUID(
-          getState(),
-          modelUUID,
-        )?.wsControllerURL;
-        if (modelWsControllerURL) {
-          await fetchAndStoreModelStatus(
+        try {
+          const modelWsControllerURL = getModelByUUID(
+            getState(),
             modelUUID,
-            modelWsControllerURL,
-            dispatch,
-            getState,
-          );
-        }
-        const modelInfo = await fetchModelInfo(conn, modelUUID);
-        if (modelInfo) {
-          dispatch(
-            jujuActions.updateModelInfo({
-              modelInfo,
-              wsControllerURL,
-            }),
-          );
-        }
-        if (modelInfo?.results[0].result?.["is-controller"]) {
-          // If this is a controller model then update the
-          // controller data with this model data.
-          dispatch(
-            addControllerCloudRegion({ wsControllerURL, modelInfo }),
-          ).catch((error) =>
-            console.error(
-              "Error when trying to add controller cloud and region data.",
-              error,
-            ),
-          );
+          )?.wsControllerURL;
+          if (modelWsControllerURL) {
+            await fetchAndStoreModelStatus(
+              modelUUID,
+              modelWsControllerURL,
+              dispatch,
+              getState,
+            );
+          }
+          const modelInfo = await fetchModelInfo(conn, modelUUID);
+          if (modelInfo) {
+            dispatch(
+              jujuActions.updateModelInfo({
+                modelInfo,
+                wsControllerURL,
+              }),
+            );
+          }
+          if (modelInfo?.results[0].result?.["is-controller"]) {
+            // If this is a controller model then update the
+            // controller data with this model data.
+            dispatch(
+              addControllerCloudRegion({ wsControllerURL, modelInfo }),
+            ).catch((error) =>
+              console.error(
+                "Error when trying to add controller cloud and region data.",
+                error,
+              ),
+            );
+          }
+        } catch (error) {
+          modelErrorCount++;
         }
       }
       done();
     });
   });
-  return new Promise<void>((resolve) => {
+  // If errors appear in more than a certain number of models, a rejected
+  // promise should be returned and further handled in modelPollerMiddleware().
+  const shouldDisplayError =
+    modelErrorCount >= Math.max(5, 0.1 * modelUUIDList.length);
+  return new Promise<void>((resolve, reject) => {
     queue.onDone(() => {
-      resolve();
+      shouldDisplayError
+        ? reject(new Error("Unable to update some model data."))
+        : resolve();
     });
   });
 }
