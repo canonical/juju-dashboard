@@ -130,7 +130,9 @@ jobs:
       - name: Install dotrun
         uses: canonical/install-dotrun@main
       - name: Install dependencies
-        run: dotrun install
+        run: |
+          sudo chmod -R 777 .
+          dotrun install
       - name: Build assets
         run: dotrun --env CI=false build
       - name: Run dotrun
