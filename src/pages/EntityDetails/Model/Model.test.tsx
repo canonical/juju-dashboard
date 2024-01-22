@@ -428,6 +428,17 @@ describe("Model", () => {
     expect(screen.getByTestId(TestId.CONSUMED)).toBeInTheDocument();
   });
 
+  it("can display the secrets tab via the URL", async () => {
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=secrets",
+      path,
+    });
+    expect(
+      within(screen.getByTestId(TestId.MAIN)).getByText("Secrets"),
+    ).toBeInTheDocument();
+  });
+
   it("renders the details pane for models shared-with-me", () => {
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
