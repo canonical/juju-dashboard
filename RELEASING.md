@@ -6,7 +6,6 @@ charms](#release-charms) and also [release to jaas.ai](#release-to-jaasai).
 
 - [QA](#qa)
   - [Deployments](#deployments)
-    - [JAAS](#jaas)
     - [Local machine controller](#local-machine-controller)
     - [Local k8s controller](#local-k8s-controller)
   - [QA steps](#qa-steps)
@@ -23,53 +22,35 @@ charms](#release-charms) and also [release to jaas.ai](#release-to-jaasai).
 Juju dashboard can be deployed in a number of different scenarios. Each one needs
 to be QAed to ensure a successful release.
 
-#### JAAS
-
-To QA the dashboard in JAAS, first get a copy of jaas.ai:
-
-```shell
-git clone git@github.com:canonical/jaas.ai.git
-cd jaas.ai
-```
-
-Update the dashboard to the latest release with:
-
-```shell
-yarn install
-yarn pull-jaas-dashboard
-```
-
-Install [Dotrun](https://github.com/canonical/dotrun) if you don't have it
-already and run:
-
-```shell
-dotrun
-```
-
-Then visit `http://0.0.0.0:8029` or `http://<multipass.ip>:8029`.
-
-Now click 'Your models' in the header and log in. You should now be able to
-continue with the [QA steps](#qa-steps).
-
-This might also be a good time to deploy models to AWS, GCE and Azure clouds to
-confirm these work with the dashboard.
-
 #### Local machine controller
 
 If you don't already have a local controller you will need [to set one up](/HACKING.md#juju-controllers-in-multipass).
 
-Clone the [juju-dashboard-charm
+As we're testing an unreleased version of the dashboard we'll need build the dashboard and
+manually update the charm.
+
+```shell
+git clone git@github.com:canonical/juju-dashboard.git
+cd juju-dashboard
+yarn install
+yarn build
+```
+
+Next clone the [juju-dashboard-charm
 repo](https://github.com/canonical/juju-dashboard-charm).
 
 ```shell
+cd ..
 git clone git@github.com:canonical/juju-dashboard-charm.git
-cd juju-dashboard-charm
+cd juju-dashboard-charm/machine-charm
 ```
 
-Update the dashboard to the latest release:
+Remove the built dashboard files and replace them with the dashboard files that
+were built above.
 
 ```shell
-./scripts/update-machine-charm-dashboard.sh
+rm -rf src/dist/*
+cp -r ../../juju-dashboard/build/* src/dist
 ```
 
 Then follow the instructions to [build and
@@ -107,9 +88,6 @@ The following QA steps should be preformed in each of the
       as through an external provider.
 - [ ] Check that the controllers list displays the available controller(s).
 - [ ] Check that your models appear in the model list.
-- [ ] Check that you can add an external controller and that it appears in the
-      controllers list and that the models for the external controller appear in the
-      model list.
 - [ ] Check that you can search and filter models.
 - [ ] Check that you can modify model access.
 - [ ] Check that you can only see the models you have access to.
@@ -121,6 +99,9 @@ The following QA steps should be preformed in each of the
 - [ ] Check that you can view the action logs for a model.
 - [ ] Check that the dashboard works at various screen sizes, including mobile.
 - [ ] Check that the dashboard works across browsers.
+- [ ] (JAAS only) check that you can perform cross-model searches.
+- [ ] (JAAS only) check that you can view audit logs for a model.
+- [ ] (JAAS only) check that you can view audit logs for a controller.
 
 ## Release the dashboard
 
