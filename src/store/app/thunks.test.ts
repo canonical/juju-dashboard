@@ -15,6 +15,14 @@ import {
 import { logOut, connectAndStartPolling } from "./thunks";
 
 describe("thunks", () => {
+  const consoleError = console.error;
+  beforeEach(() => {
+    console.error = jest.fn();
+  });
+  afterEach(() => {
+    console.error = consoleError;
+  });
+
   it("logOut", async () => {
     const action = logOut();
     const dispatch = jest.fn();
@@ -84,9 +92,69 @@ describe("thunks", () => {
     );
   });
 
-  it("connectAndStartPolling should catch error", async () => {
-    const consoleError = console.error;
-    console.error = jest.fn();
+  it("connectAndStartPolling should catch error instanceof Error", async () => {
+    const dispatch = jest
+      .fn()
+      // Successfuly dispatch connectAndStartPolling/pending.
+      .mockImplementationOnce(() => {})
+      // Throw error when trying to dispatch connectAndPollControllers.
+      .mockImplementationOnce(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw "Error while dispatching connectAndPollControllers!";
+      });
+    const getState = jest.fn(() =>
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            isJuju: true,
+          }),
+          controllerConnections: {
+            "wss://example.com": {
+              user: {
+                "display-name": "eggman",
+                identity: "user-eggman@external",
+                "controller-access": "",
+                "model-access": "",
+              },
+            },
+          },
+          credentials: {
+            "wss://example.com": credentialFactory.build(),
+          },
+        }),
+        juju: jujuStateFactory.build({
+          controllers: {
+            "wss://example.com": [
+              controllerFactory.build({
+                path: "/",
+                uuid: "uuid123",
+                version: "1",
+              }),
+            ],
+          },
+        }),
+      }),
+    );
+    const action = connectAndStartPolling();
+    await action(dispatch, getState, null);
+    expect(dispatch).toHaveBeenCalledWith(
+      appActions.connectAndPollControllers({
+        controllers: [["wss://controller.example.com", undefined, false]],
+        isJuju: true,
+      }),
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      "Error while triggering the connection and polling of models.",
+      "Error while dispatching connectAndPollControllers!",
+    );
+    expect(dispatch).toHaveBeenCalledWith(
+      generalActions.storeConnectionError(
+        "Unable to connect: Error while dispatching connectAndPollControllers!",
+      ),
+    );
+  });
+
+  it("connectAndStartPolling should catch string error", async () => {
     const dispatch = jest
       .fn()
       // Successfuly dispatch connectAndStartPolling/pending.
@@ -145,6 +213,67 @@ describe("thunks", () => {
         "Unable to connect: Error while dispatching connectAndPollControllers!",
       ),
     );
-    console.error = consoleError;
+  });
+
+  it("connectAndStartPolling should catch non-standard type of error", async () => {
+    const dispatch = jest
+      .fn()
+      // Successfuly dispatch connectAndStartPolling/pending.
+      .mockImplementationOnce(() => {})
+      // Throw error when trying to dispatch connectAndPollControllers.
+      .mockImplementationOnce(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw ["Unknown error."];
+      });
+    const getState = jest.fn(() =>
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            isJuju: true,
+          }),
+          controllerConnections: {
+            "wss://example.com": {
+              user: {
+                "display-name": "eggman",
+                identity: "user-eggman@external",
+                "controller-access": "",
+                "model-access": "",
+              },
+            },
+          },
+          credentials: {
+            "wss://example.com": credentialFactory.build(),
+          },
+        }),
+        juju: jujuStateFactory.build({
+          controllers: {
+            "wss://example.com": [
+              controllerFactory.build({
+                path: "/",
+                uuid: "uuid123",
+                version: "1",
+              }),
+            ],
+          },
+        }),
+      }),
+    );
+    const action = connectAndStartPolling();
+    await action(dispatch, getState, null);
+    expect(dispatch).toHaveBeenCalledWith(
+      appActions.connectAndPollControllers({
+        controllers: [["wss://controller.example.com", undefined, false]],
+        isJuju: true,
+      }),
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      "Error while triggering the connection and polling of models.",
+      ["Unknown error."],
+    );
+    expect(dispatch).toHaveBeenCalledWith(
+      generalActions.storeConnectionError(
+        "Unable to connect: Something went wrong. View the console log for more details.",
+      ),
+    );
   });
 });
