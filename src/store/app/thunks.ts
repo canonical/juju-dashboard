@@ -77,7 +77,6 @@ export const connectAndStartPolling = createAsyncThunk<
         isJuju: config?.isJuju ?? false,
       }),
     );
-    throw new Error("dummy error");
   } catch (error) {
     // a common error logged to the console by this is:
     // Error while triggering the connection and polling of models. cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
