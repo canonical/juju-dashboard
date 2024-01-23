@@ -12,7 +12,7 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import { logOut, connectAndStartPolling, Label } from "./thunks";
+import { logOut, connectAndStartPolling } from "./thunks";
 
 describe("thunks", () => {
   it("logOut", async () => {
@@ -137,12 +137,12 @@ describe("thunks", () => {
       }),
     );
     expect(console.error).toHaveBeenCalledWith(
-      Label.CONNECT_AND_START_POLLING_ERROR,
+      "Error while triggering the connection and polling of models.",
       new Error("Error while dispatching connectAndPollControllers!"),
     );
     expect(dispatch).toHaveBeenCalledWith(
       generalActions.storeConnectionError(
-        Label.CONNECT_AND_START_POLLING_ERROR,
+        "Unable to connect: Error while dispatching connectAndPollControllers!",
       ),
     );
     console.error = consoleError;

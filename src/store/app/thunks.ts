@@ -15,10 +15,6 @@ import type { RootState } from "store/store";
 
 import type { ControllerArgs } from "./actions";
 
-export enum Label {
-  CONNECT_AND_START_POLLING_ERROR = "Error while triggering the connection and polling of models.",
-}
-
 export const logOut = createAsyncThunk<
   void,
   void,
@@ -81,14 +77,25 @@ export const connectAndStartPolling = createAsyncThunk<
         isJuju: config?.isJuju ?? false,
       }),
     );
+    throw new Error("dummy error");
   } catch (error) {
     // a common error logged to the console by this is:
     // Error while triggering the connection and polling of models. cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
-    console.error(Label.CONNECT_AND_START_POLLING_ERROR, error);
+    console.error(
+      "Error while triggering the connection and polling of models.",
+      error,
+    );
+    let errorMessage;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === "string") {
+      errorMessage = error;
+    } else {
+      errorMessage =
+        "Something went wrong. View the console log for more details.";
+    }
     thunkAPI.dispatch(
-      generalActions.storeConnectionError(
-        Label.CONNECT_AND_START_POLLING_ERROR,
-      ),
+      generalActions.storeConnectionError(`Unable to connect: ${errorMessage}`),
     );
   }
 });
