@@ -12,7 +12,7 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import { logOut, connectAndStartPolling } from "./thunks";
+import { logOut, connectAndStartPolling, Label } from "./thunks";
 
 describe("thunks", () => {
   it("logOut", async () => {
@@ -82,5 +82,69 @@ describe("thunks", () => {
         isJuju: true,
       }),
     );
+  });
+
+  it("connectAndStartPolling should catch error", async () => {
+    const consoleError = console.error;
+    console.error = jest.fn();
+    const dispatch = jest
+      .fn()
+      // Successfuly dispatch connectAndStartPolling/pending.
+      .mockImplementationOnce(() => {})
+      // Throw error when trying to dispatch connectAndPollControllers.
+      .mockImplementationOnce(() => {
+        throw new Error("Error while dispatching connectAndPollControllers!");
+      });
+    const getState = jest.fn(() =>
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            isJuju: true,
+          }),
+          controllerConnections: {
+            "wss://example.com": {
+              user: {
+                "display-name": "eggman",
+                identity: "user-eggman@external",
+                "controller-access": "",
+                "model-access": "",
+              },
+            },
+          },
+          credentials: {
+            "wss://example.com": credentialFactory.build(),
+          },
+        }),
+        juju: jujuStateFactory.build({
+          controllers: {
+            "wss://example.com": [
+              controllerFactory.build({
+                path: "/",
+                uuid: "uuid123",
+                version: "1",
+              }),
+            ],
+          },
+        }),
+      }),
+    );
+    const action = connectAndStartPolling();
+    await action(dispatch, getState, null);
+    expect(dispatch).toHaveBeenCalledWith(
+      appActions.connectAndPollControllers({
+        controllers: [["wss://controller.example.com", undefined, false]],
+        isJuju: true,
+      }),
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      Label.CONNECT_AND_START_POLLING_ERROR,
+      new Error("Error while dispatching connectAndPollControllers!"),
+    );
+    expect(dispatch).toHaveBeenCalledWith(
+      generalActions.storeConnectionError(
+        Label.CONNECT_AND_START_POLLING_ERROR,
+      ),
+    );
+    console.error = consoleError;
   });
 });
