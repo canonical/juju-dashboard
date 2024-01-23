@@ -74,7 +74,9 @@ describe("model poller", () => {
     jest.useFakeTimers();
     next = jest.fn();
     fakeStore = {
-      getState: jest.fn(() => ({})),
+      getState: jest.fn(() => ({
+        juju: jujuStateFactory.build(),
+      })),
       dispatch: jest.fn(),
     };
     conn = {

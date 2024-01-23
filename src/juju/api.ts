@@ -265,7 +265,7 @@ export async function fetchModelStatus(
           // a location to notify the user. In the new watcher model that's
           // being implemented we will be able to surface this error in the
           // model details page.
-          throw new Error(`Unable to fetch the status. ${status}`);
+          throw new Error(`Unable to fetch the status. ${status ?? ""}`);
         }
       }
 

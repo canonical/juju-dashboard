@@ -369,9 +369,9 @@ describe("Juju API", () => {
         () => state,
       );
       jest.advanceTimersByTime(LOGIN_TIMEOUT);
-      await expect(response).resolves.toBeNull();
+      await expect(response).rejects.toStrictEqual(new Error("timeout"));
       expect(console.error).toHaveBeenCalledWith(
-        "error connecting to model:",
+        "Error connecting to model:",
         "abc123",
         new Error("timeout"),
       );
@@ -456,15 +456,18 @@ describe("Juju API", () => {
       jest
         .spyOn(jujuLib, "connectAndLogin")
         .mockImplementation(async () => loginResponse);
-      const response = await fetchModelStatus(
+      const response = fetchModelStatus(
         "abc123",
         "wss://example.com/api",
         () => state,
       );
-      expect(response).toBeUndefined();
+      await expect(response).rejects.toStrictEqual(
+        new Error("Unable to fetch the status. Uh oh!"),
+      );
       expect(console.error).toHaveBeenCalledWith(
-        "Unable to fetch the status.",
-        "Uh oh!",
+        "Error connecting to model:",
+        "abc123",
+        new Error("Unable to fetch the status. Uh oh!"),
       );
       console.error = consoleError;
     });
@@ -535,11 +538,19 @@ describe("Juju API", () => {
         .spyOn(jujuLib, "connectAndLogin")
         .mockImplementation(async () => loginResponse);
       const dispatch = jest.fn();
-      await fetchAndStoreModelStatus(
+      const response = fetchAndStoreModelStatus(
         "abc123",
         "wss://example.com/api",
         dispatch,
         () => state,
+      );
+      await expect(response).rejects.toStrictEqual(
+        new Error("Unable to fetch the status. "),
+      );
+      expect(console.error).toHaveBeenCalledWith(
+        "Error connecting to model:",
+        "abc123",
+        new Error("Unable to fetch the status. "),
       );
       expect(dispatch).not.toHaveBeenCalled();
       console.error = consoleError;
