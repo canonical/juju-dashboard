@@ -11,6 +11,7 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
+import { Label as JujuAPILabel } from "juju/api";
 import type { CrossModelQueryFullResponse } from "juju/jimm/JIMMV4";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
 import type { ConnectionWithFacades } from "juju/types";
@@ -186,7 +187,6 @@ export const modelPollerMiddleware: Middleware<
         }
 
         let pollCount = 0;
-        let isFirstTimePolling = true;
         do {
           const identity = conn?.info?.user?.identity;
           if (identity) {
@@ -209,7 +209,7 @@ export const modelPollerMiddleware: Middleware<
                 reduxStore.getState,
               );
               // If the code execution arrives here, then the model statuses
-              // have been succesfully updated. Models error should be removed.
+              // have been successfully updated. Models error should be removed.
               if (reduxStore.getState().juju.modelsError) {
                 reduxStore.dispatch(
                   jujuActions.updateModelsError({
@@ -218,12 +218,20 @@ export const modelPollerMiddleware: Middleware<
                   }),
                 );
               }
-            } catch (e) {
-              console.log("something");
-              const errorMessage = isFirstTimePolling
-                ? "Unable to fetch the models."
-                : "Unable to update the models.";
-              console.error(errorMessage, e);
+            } catch (error) {
+              let errorMessage;
+              if (
+                error instanceof Error &&
+                (error.message === JujuAPILabel.ERROR_LOAD_ALL_MODELS ||
+                  error.message === JujuAPILabel.ERROR_LOAD_SOME_MODELS)
+              ) {
+                errorMessage = pollCount
+                  ? "Unable to load latest model data."
+                  : error.message;
+              } else {
+                errorMessage = "Unable to list or update models.";
+              }
+              console.error(errorMessage, error);
               reduxStore.dispatch(
                 jujuActions.updateModelsError({
                   modelsError: errorMessage,
@@ -233,16 +241,13 @@ export const modelPollerMiddleware: Middleware<
             }
           }
 
-          if (isFirstTimePolling) {
-            isFirstTimePolling = false;
-          }
           // Allow the polling to run a certain number of times in tests.
           if (process.env.NODE_ENV === "test") {
             if (pollCount === action.payload.poll) {
               break;
             }
-            pollCount++;
           }
+          pollCount++;
           // Wait 30s then start again.
           await new Promise((resolve) => {
             setTimeout(() => {

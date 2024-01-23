@@ -66,6 +66,11 @@ export const LOGIN_TIMEOUT = 5000;
 // https://github.com/juju/juju/blob/e2c7b4c88e516976666e3d0c9479d0d3c704e643/apiserver/restrict_newer_client.go#L21C1-L29
 export const CLIENT_VERSION = "3.0.0";
 
+export enum Label {
+  ERROR_LOAD_ALL_MODELS = "Unable to load models.",
+  ERROR_LOAD_SOME_MODELS = "Unable to load some models.",
+}
+
 /**
   Return a common connection option config.
   @param usePinger If the connection will be long lived then use the
@@ -389,14 +394,18 @@ export async function fetchAllModelStatuses(
       done();
     });
   });
-  // If errors appear in more than a certain number of models, a rejected
-  // promise should be returned and further handled in modelPollerMiddleware().
-  const shouldDisplayError =
-    modelErrorCount >= Math.max(5, 0.1 * modelUUIDList.length);
   return new Promise<void>((resolve, reject) => {
     queue.onDone(() => {
-      shouldDisplayError
-        ? reject(new Error("Unable to update some model data."))
+      // If errors appear in more than 10% of models, the promise should be
+      // rejected and the error further handled in modelPollerMiddleware().
+      modelErrorCount >= 0.1 * modelUUIDList.length
+        ? reject(
+            new Error(
+              modelErrorCount === modelUUIDList.length
+                ? Label.ERROR_LOAD_ALL_MODELS
+                : Label.ERROR_LOAD_SOME_MODELS,
+            ),
+          )
         : resolve();
     });
   });
