@@ -61,6 +61,7 @@ import {
   stopModelWatcher,
   findAuditEvents,
   crossModelQuery,
+  connectToModel,
 } from "./api";
 import type { AllWatcherDelta } from "./types";
 import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
@@ -939,6 +940,37 @@ describe("Juju API", () => {
           conn,
         }));
       const response = await connectAndLoginToModel("abc123", state);
+      expect(connectAndLogin).toHaveBeenCalledWith(
+        "wss://example.com/model/abc123/api",
+        {
+          username: credentials.user,
+          password: credentials.password,
+        },
+        expect.any(Object),
+        CLIENT_VERSION,
+      );
+      expect(response).toMatchObject(conn);
+    });
+  });
+
+  describe("connectToModel", () => {
+    it("can connect and log in", async () => {
+      const credentials = credentialFactory.build();
+      const conn = {
+        facades: {},
+      } as unknown as Connection;
+      const connectAndLogin = jest
+        .spyOn(jujuLib, "connectAndLogin")
+        .mockImplementation(async () => ({
+          logout: jest.fn(),
+          conn,
+        }));
+      const response = await connectToModel(
+        "abc123",
+        "wss://example.com/api",
+        credentials,
+        false,
+      );
       expect(connectAndLogin).toHaveBeenCalledWith(
         "wss://example.com/model/abc123/api",
         {

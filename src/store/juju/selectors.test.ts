@@ -21,6 +21,9 @@ import {
   modelDataUnitFactory,
   auditEventsStateFactory,
   crossModelQueryStateFactory,
+  secretsStateFactory,
+  listSecretResultFactory,
+  modelSecretsFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -89,6 +92,11 @@ import {
   getFullModelName,
   getControllersCount,
   getModelCredential,
+  getSecretsErrors,
+  getSecretsLoaded,
+  getSecretsLoading,
+  getSecretsState,
+  getModelSecrets,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -276,6 +284,87 @@ describe("selectors", () => {
             }),
           }),
         }),
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getSecretsState", () => {
+    const secrets = secretsStateFactory.build();
+    expect(
+      getSecretsState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets,
+          }),
+        }),
+      ),
+    ).toStrictEqual(secrets);
+  });
+
+  it("getSecretsResults", () => {
+    const items = [listSecretResultFactory.build()];
+    expect(
+      getModelSecrets(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({ items }),
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(items);
+  });
+
+  it("getSecretsErrors", () => {
+    const errors = "Uh oh!";
+    expect(
+      getSecretsErrors(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({
+                errors,
+              }),
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(errors);
+  });
+
+  it("getSecretsLoaded", () => {
+    expect(
+      getSecretsLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({
+                loaded: true,
+              }),
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getSecretsLoading", () => {
+    expect(
+      getSecretsLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({
+                loading: true,
+              }),
+            }),
+          }),
+        }),
+        "abc123",
       ),
     ).toStrictEqual(true);
   });

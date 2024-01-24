@@ -4,6 +4,7 @@ import {
 } from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import { auditEventFactory } from "testing/factories/juju/jimm";
+import { listSecretResultFactory } from "testing/factories/juju/juju";
 
 import { actions } from "./slice";
 
@@ -237,6 +238,71 @@ describe("actions", () => {
     ).toStrictEqual({
       type: "juju/updateSelectedApplications",
       payload: { selectedApplications },
+    });
+  });
+
+  it("secretsLoading", () => {
+    expect(
+      actions.secretsLoading({
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/secretsLoading",
+      payload: {
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("updateSecrets", () => {
+    const secrets = [listSecretResultFactory.build()];
+    expect(
+      actions.updateSecrets({
+        modelUUID: "abc123",
+        secrets,
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/updateSecrets",
+      payload: {
+        modelUUID: "abc123",
+        secrets,
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("setSecretsErrors", () => {
+    expect(
+      actions.setSecretsErrors({
+        errors: "Uh oh!",
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/setSecretsErrors",
+      payload: {
+        errors: "Uh oh!",
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("clearSecrets", () => {
+    expect(
+      actions.clearSecrets({
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/clearSecrets",
+      payload: {
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      },
     });
   });
 });

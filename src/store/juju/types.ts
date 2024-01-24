@@ -1,5 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 
 import type { ControllerInfo } from "juju/jimm/JIMMV3";
 import type { AuditEvent } from "juju/jimm/JIMMV3";
@@ -9,6 +10,7 @@ import type {
   FullStatusWithAnnotations,
   ModelWatcherData,
 } from "juju/types";
+import type { GenericItemsState, GenericState } from "store/types";
 
 export type ControllerLocation = {
   cloud?: string;
@@ -57,19 +59,28 @@ export type ModelsList = {
   [uuid: string]: ModelListInfo;
 };
 
-export type AuditEventsState = {
-  items: AuditEvent[] | null;
-  loaded: boolean;
-  loading: boolean;
+export type AuditEventsState = Omit<
+  GenericItemsState<AuditEvent, void>,
+  "errors"
+> & {
   limit: number;
 };
 
-export type CrossModelQueryState = {
+export type CrossModelQueryState = GenericState<
+  CrossModelQueryResponse["errors"] | string
+> & {
   results: CrossModelQueryResponse["results"] | null;
-  errors: CrossModelQueryResponse["errors"] | string | null;
-  loaded: boolean;
-  loading: boolean;
 };
+
+export type SecretsContent = GenericState<string> & {
+  content: string | null;
+};
+
+export type ModelSecrets = GenericItemsState<ListSecretResult, string> & {
+  content?: SecretsContent;
+};
+
+export type SecretsState = Record<string, ModelSecrets>;
 
 export type JujuState = {
   auditEvents: AuditEventsState;
@@ -80,5 +91,6 @@ export type JujuState = {
   modelData: ModelDataList;
   modelWatcherData?: ModelWatcherData;
   charms: Charm[];
+  secrets: SecretsState;
   selectedApplications: ApplicationInfo[];
 };
