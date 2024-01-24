@@ -86,9 +86,6 @@ export const checkAuthMiddleware: Middleware<
     ];
 
     const thunkAllowlist = [
-      appThunks.connectAndListModels.fulfilled.type,
-      appThunks.connectAndListModels.pending.type,
-      appThunks.connectAndListModels.rejected.type,
       appThunks.connectAndStartPolling.fulfilled.type,
       appThunks.connectAndStartPolling.pending.type,
       appThunks.connectAndStartPolling.rejected.type,
