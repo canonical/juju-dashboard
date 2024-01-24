@@ -1,6 +1,8 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
+import configureStore from "redux-mock-store";
 
 import { TestId as LoadingTestId } from "components/LoadingSpinner/LoadingSpinner";
+import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -17,6 +19,8 @@ import {
 import { renderComponent } from "testing/utils";
 
 import Secrets, { TestId } from "./Secrets";
+
+const mockStore = configureStore<RootState, unknown>([]);
 
 describe("Secrets", () => {
   let state: RootState;
@@ -79,9 +83,36 @@ describe("Secrets", () => {
   });
 
   it("cleans up secrets when unmounted", async () => {
-    const { result } = renderComponent(<Secrets />, { state, path, url });
-    expect(screen.getByTestId(TestId.SECRETS_TABLE)).toBeInTheDocument();
+    const store = mockStore(state);
+    const { result } = renderComponent(<Secrets />, { store, path, url });
     result.unmount();
-    expect(screen.queryByTestId(TestId.SECRETS_TABLE)).not.toBeInTheDocument();
+    const updateAction = jujuActions.clearSecrets({
+      modelUUID: "abc123",
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find((dispatch) => dispatch.type === updateAction.type),
+      ).toMatchObject(updateAction);
+    });
+  });
+
+  it("handles no data when unmounting", async () => {
+    const store = mockStore(rootStateFactory.build());
+    const { result } = renderComponent(<Secrets />, { store, path, url });
+    result.unmount();
+    const updateAction = jujuActions.clearSecrets({
+      modelUUID: "abc123",
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find((dispatch) => dispatch.type === updateAction.type),
+      ).toBeUndefined();
+    });
   });
 });

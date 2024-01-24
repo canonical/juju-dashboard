@@ -87,6 +87,24 @@ describe("useModelConnection", () => {
     });
   });
 
+  it("does not connect until the data is available", async () => {
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const connectAndLoginSpy = jest.spyOn(jujuLib, "connectAndLogin");
+    const callback = jest.fn();
+    renderHook(() => useModelConnection(callback, "abc123"), {
+      wrapper: (props) => (
+        <ComponentProviders
+          {...props}
+          path="/models/:userName/:modelName/app/:appName"
+          store={mockStore(rootStateFactory.build())}
+        />
+      ),
+    });
+    await waitFor(() => {
+      expect(connectAndLoginSpy).not.toHaveBeenCalled();
+    });
+  });
+
   it("returns connection errors", async () => {
     changeURL("/models/eggman@external/group-test/app/etcd");
     jest
@@ -230,7 +248,7 @@ describe("useListSecrets", () => {
     });
   });
 
-  it("returns errors", async () => {
+  it("stores connection errors", async () => {
     const store = mockStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     jest
@@ -248,6 +266,47 @@ describe("useListSecrets", () => {
     const updateAction = jujuActions.setSecretsErrors({
       modelUUID: "abc123",
       errors: "Error during promise race.",
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find((dispatch) => dispatch.type === updateAction.type),
+      ).toMatchObject(updateAction);
+    });
+  });
+
+  it("stores errors from fetching secrets", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const loginResponse = {
+      conn: {
+        facades: {
+          secrets: {
+            listSecrets: jest
+              .fn()
+              .mockImplementation(() => Promise.reject(new Error("Uh oh!"))),
+          },
+        },
+      } as unknown as Connection,
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    renderHook(() => useListSecrets("eggman@external", "test-model"), {
+      wrapper: (props) => (
+        <ComponentProviders
+          {...props}
+          path="/models/:userName/:modelName/app/:appName"
+          store={store}
+        />
+      ),
+    });
+    const updateAction = jujuActions.setSecretsErrors({
+      modelUUID: "abc123",
+      errors: "Uh oh!",
       wsControllerURL: "wss://example.com/api",
     });
     await waitFor(() => {

@@ -44,8 +44,7 @@ export const useModelConnection = (
     )
       .then(response)
       .catch((error) => {
-        const message = error instanceof Error ? error.message : error;
-        response(null, typeof message === "string" ? message : "Unknown error");
+        response(null, error instanceof Error ? error.message : error);
       });
   }, [
     response,
@@ -102,7 +101,7 @@ export const useListSecrets = (
           dispatch(
             jujuActions.setSecretsErrors({
               modelUUID,
-              errors: error,
+              errors: error instanceof Error ? error.message : error,
               wsControllerURL,
             }),
           );

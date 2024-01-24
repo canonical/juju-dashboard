@@ -487,6 +487,26 @@ describe("reducers", () => {
     });
   });
 
+  it("secretsLoading handles no existing model", () => {
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build(),
+    });
+    expect(
+      reducer(
+        state,
+        actions.secretsLoading({
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({ loading: true }),
+      }),
+    });
+  });
+
   it("setSecretsErrors", () => {
     const state = jujuStateFactory.build({
       secrets: secretsStateFactory.build({
@@ -520,6 +540,32 @@ describe("reducers", () => {
     });
   });
 
+  it("setSecretsErrors handles no existing model", () => {
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build(),
+    });
+    expect(
+      reducer(
+        state,
+        actions.setSecretsErrors({
+          errors: "Uh oh!",
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({
+          items: null,
+          errors: "Uh oh!",
+          loaded: true,
+          loading: false,
+        }),
+      }),
+    });
+  });
+
   it("updateSecrets", () => {
     const state = jujuStateFactory.build({
       secrets: secretsStateFactory.build({
@@ -530,6 +576,33 @@ describe("reducers", () => {
           loading: true,
         }),
       }),
+    });
+    const items = [listSecretResultFactory.build()];
+    expect(
+      reducer(
+        state,
+        actions.updateSecrets({
+          secrets: items,
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({
+          items,
+          errors: null,
+          loaded: true,
+          loading: false,
+        }),
+      }),
+    });
+  });
+
+  it("updateSecrets handles no existing model", () => {
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build(),
     });
     const items = [listSecretResultFactory.build()];
     expect(
