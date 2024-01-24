@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TestId } from "components/LoadingSpinner/LoadingSpinner";
+import { Label as JujuAPILabel } from "juju/api";
 import type { RootState } from "store/store";
 import {
   detailedStatusFactory,
@@ -172,5 +173,29 @@ describe("Models Index page", () => {
       custom: "",
     });
     expect(window.location.search).toBe(`?${params.toString()}`);
+  });
+
+  it("should display the error notification", async () => {
+    state.juju.modelsError = JujuAPILabel.ERROR_LOAD_ALL_MODELS;
+    renderComponent(<ModelsIndex />, { state });
+    expect(
+      screen.getByText(new RegExp(JujuAPILabel.ERROR_LOAD_ALL_MODELS)),
+    ).toBeInTheDocument();
+  });
+
+  it("should refresh the window when pressing the button in error notification", async () => {
+    const location = window.location;
+    Object.defineProperty(window, "location", {
+      value: { ...location, reload: jest.fn() },
+    });
+
+    state.juju.modelsError = JujuAPILabel.ERROR_LOAD_ALL_MODELS;
+    renderComponent(<ModelsIndex />, { state });
+    await userEvent.click(screen.getByRole("button", { name: "refreshing" }));
+    expect(window.location.reload).toHaveBeenCalled();
+
+    Object.defineProperty(window, "location", {
+      value: location,
+    });
   });
 });

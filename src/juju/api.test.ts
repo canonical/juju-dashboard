@@ -61,6 +61,7 @@ import {
   stopModelWatcher,
   findAuditEvents,
   crossModelQuery,
+  Label as JujuAPILabel,
 } from "./api";
 import type { AllWatcherDelta } from "./types";
 import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
@@ -722,6 +723,97 @@ describe("Juju API", () => {
       expect(console.error).toHaveBeenCalledWith(
         "Error when trying to add controller cloud and region data.",
         new Error("Error while trying to dispatch!"),
+      );
+    });
+
+    it("should return a rejected promise when retrieving data for some models fails", async () => {
+      // The dispatch of updateModelInfo fails only for the first model.
+      // This would make 50% (1/2) of all models error out.
+      const dispatch = jest.fn().mockImplementationOnce(() => {
+        throw new Error("Error while dispatching updateModelInfo!");
+      });
+      const abc123 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              uuid: "abc123",
+            }),
+          }),
+        ],
+      });
+      const def456 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              uuid: "def456",
+            }),
+          }),
+        ],
+      });
+      const conn = {
+        facades: {
+          modelManager: {
+            modelInfo: jest
+              .fn()
+              .mockResolvedValueOnce(abc123)
+              .mockResolvedValueOnce(def456),
+          },
+        },
+      } as unknown as Connection;
+      const response = fetchAllModelStatuses(
+        "wss://example.com/api",
+        ["abc123", "def456"],
+        conn,
+        dispatch,
+        () => state,
+      );
+      await expect(response).rejects.toStrictEqual(
+        new Error(JujuAPILabel.ERROR_LOAD_SOME_MODELS),
+      );
+    });
+
+    it("should return a rejected promise when retrieving data for all models", async () => {
+      // The dispatch of updateModelInfo fails for all models.
+      const dispatch = jest.fn().mockImplementation(() => {
+        throw new Error("Error while dispatching updateModelInfo!");
+      });
+      const abc123 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              uuid: "abc123",
+            }),
+          }),
+        ],
+      });
+      const def456 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              uuid: "def456",
+            }),
+          }),
+        ],
+      });
+      const conn = {
+        facades: {
+          modelManager: {
+            modelInfo: jest
+              .fn()
+              .mockResolvedValueOnce(abc123)
+              .mockResolvedValueOnce(def456),
+          },
+        },
+      } as unknown as Connection;
+      const response = fetchAllModelStatuses(
+        "wss://example.com/api",
+        ["abc123", "def456"],
+        conn,
+        dispatch,
+        () => state,
+      );
+      await expect(response).rejects.toStrictEqual(
+        new Error(JujuAPILabel.ERROR_LOAD_ALL_MODELS),
       );
     });
   });
