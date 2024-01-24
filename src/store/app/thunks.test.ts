@@ -1,6 +1,7 @@
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
   credentialFactory,
@@ -16,9 +17,43 @@ import { logOut, connectAndStartPolling } from "./thunks";
 
 describe("thunks", () => {
   const consoleError = console.error;
+  let state: RootState;
+
   beforeEach(() => {
     console.error = jest.fn();
+    state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          isJuju: true,
+        }),
+        controllerConnections: {
+          "wss://example.com": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
+        credentials: {
+          "wss://example.com": credentialFactory.build(),
+        },
+      }),
+      juju: jujuStateFactory.build({
+        controllers: {
+          "wss://example.com": [
+            controllerFactory.build({
+              path: "/",
+              uuid: "uuid123",
+              version: "1",
+            }),
+          ],
+        },
+      }),
+    });
   });
+
   afterEach(() => {
     console.error = consoleError;
   });
@@ -49,39 +84,7 @@ describe("thunks", () => {
 
   it("connectAndStartPolling", async () => {
     const dispatch = jest.fn();
-    const getState = jest.fn(() =>
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            isJuju: true,
-          }),
-          controllerConnections: {
-            "wss://example.com": {
-              user: {
-                "display-name": "eggman",
-                identity: "user-eggman@external",
-                "controller-access": "",
-                "model-access": "",
-              },
-            },
-          },
-          credentials: {
-            "wss://example.com": credentialFactory.build(),
-          },
-        }),
-        juju: jujuStateFactory.build({
-          controllers: {
-            "wss://example.com": [
-              controllerFactory.build({
-                path: "/",
-                uuid: "uuid123",
-                version: "1",
-              }),
-            ],
-          },
-        }),
-      }),
-    );
+    const getState = jest.fn(() => state);
     const action = connectAndStartPolling();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
@@ -102,39 +105,7 @@ describe("thunks", () => {
         // eslint-disable-next-line no-throw-literal
         throw "Error while dispatching connectAndPollControllers!";
       });
-    const getState = jest.fn(() =>
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            isJuju: true,
-          }),
-          controllerConnections: {
-            "wss://example.com": {
-              user: {
-                "display-name": "eggman",
-                identity: "user-eggman@external",
-                "controller-access": "",
-                "model-access": "",
-              },
-            },
-          },
-          credentials: {
-            "wss://example.com": credentialFactory.build(),
-          },
-        }),
-        juju: jujuStateFactory.build({
-          controllers: {
-            "wss://example.com": [
-              controllerFactory.build({
-                path: "/",
-                uuid: "uuid123",
-                version: "1",
-              }),
-            ],
-          },
-        }),
-      }),
-    );
+    const getState = jest.fn(() => state);
     const action = connectAndStartPolling();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
@@ -163,39 +134,7 @@ describe("thunks", () => {
       .mockImplementationOnce(() => {
         throw new Error("Error while dispatching connectAndPollControllers!");
       });
-    const getState = jest.fn(() =>
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            isJuju: true,
-          }),
-          controllerConnections: {
-            "wss://example.com": {
-              user: {
-                "display-name": "eggman",
-                identity: "user-eggman@external",
-                "controller-access": "",
-                "model-access": "",
-              },
-            },
-          },
-          credentials: {
-            "wss://example.com": credentialFactory.build(),
-          },
-        }),
-        juju: jujuStateFactory.build({
-          controllers: {
-            "wss://example.com": [
-              controllerFactory.build({
-                path: "/",
-                uuid: "uuid123",
-                version: "1",
-              }),
-            ],
-          },
-        }),
-      }),
-    );
+    const getState = jest.fn(() => state);
     const action = connectAndStartPolling();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
@@ -225,39 +164,7 @@ describe("thunks", () => {
         // eslint-disable-next-line no-throw-literal
         throw ["Unknown error."];
       });
-    const getState = jest.fn(() =>
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            isJuju: true,
-          }),
-          controllerConnections: {
-            "wss://example.com": {
-              user: {
-                "display-name": "eggman",
-                identity: "user-eggman@external",
-                "controller-access": "",
-                "model-access": "",
-              },
-            },
-          },
-          credentials: {
-            "wss://example.com": credentialFactory.build(),
-          },
-        }),
-        juju: jujuStateFactory.build({
-          controllers: {
-            "wss://example.com": [
-              controllerFactory.build({
-                path: "/",
-                uuid: "uuid123",
-                version: "1",
-              }),
-            ],
-          },
-        }),
-      }),
-    );
+    const getState = jest.fn(() => state);
     const action = connectAndStartPolling();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
