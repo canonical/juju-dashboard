@@ -61,7 +61,6 @@ import {
   stopModelWatcher,
   findAuditEvents,
   crossModelQuery,
-  Label as JujuAPILabel,
 } from "./api";
 import type { AllWatcherDelta } from "./types";
 import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
@@ -768,7 +767,7 @@ describe("Juju API", () => {
         () => state,
       );
       await expect(response).rejects.toStrictEqual(
-        new Error(JujuAPILabel.ERROR_LOAD_SOME_MODELS),
+        new Error("Unable to load some models."),
       );
     });
 
@@ -813,7 +812,7 @@ describe("Juju API", () => {
         () => state,
       );
       await expect(response).rejects.toStrictEqual(
-        new Error(JujuAPILabel.ERROR_LOAD_ALL_MODELS),
+        new Error("Unable to load models."),
       );
     });
   });

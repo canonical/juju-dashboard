@@ -42,6 +42,7 @@ import type { Credential } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { Controller as JujuController } from "store/juju/types";
+import { ModelsError } from "store/middleware/model-poller";
 import type { RootState, Store } from "store/store";
 
 import { getModelByUUID } from "../store/juju/selectors";
@@ -65,11 +66,6 @@ export const LOGIN_TIMEOUT = 5000;
 // See the API server code for more details:
 // https://github.com/juju/juju/blob/e2c7b4c88e516976666e3d0c9479d0d3c704e643/apiserver/restrict_newer_client.go#L21C1-L29
 export const CLIENT_VERSION = "3.0.0";
-
-export enum Label {
-  ERROR_LOAD_ALL_MODELS = "Unable to load models.",
-  ERROR_LOAD_SOME_MODELS = "Unable to load some models.",
-}
 
 /**
   Return a common connection option config.
@@ -402,8 +398,8 @@ export async function fetchAllModelStatuses(
         ? reject(
             new Error(
               modelErrorCount === modelUUIDList.length
-                ? Label.ERROR_LOAD_ALL_MODELS
-                : Label.ERROR_LOAD_SOME_MODELS,
+                ? ModelsError.LOAD_ALL_MODELS
+                : ModelsError.LOAD_SOME_MODELS,
             ),
           )
         : resolve();

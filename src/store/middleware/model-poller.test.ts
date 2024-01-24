@@ -15,7 +15,7 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import { LoginError, modelPollerMiddleware } from "./model-poller";
+import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
 
 jest.mock("juju/api", () => ({
   disableControllerUUIDMasking: jest
@@ -69,6 +69,7 @@ describe("model poller", () => {
       },
     },
   });
+  const consoleError = console.error;
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -98,6 +99,11 @@ describe("model poller", () => {
     juju = {
       logout: jest.fn(),
     } as unknown as Client;
+    console.error = jest.fn();
+  });
+
+  afterEach(() => {
+    console.error = consoleError;
   });
 
   const runMiddleware = async (actionOverrides?: Partial<UnknownAction>) => {
@@ -443,6 +449,138 @@ describe("model poller", () => {
     );
   });
 
+  it("should remove models error from state if no error occurs", async () => {
+    jest.spyOn(fakeStore, "getState").mockReturnValue({
+      ...storeState,
+      juju: jujuStateFactory.build({
+        controllers: {
+          [wsControllerURL]: [controllerFactory.build()],
+        },
+        modelsError: "Oops!",
+      }),
+    });
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateModelsError({
+        modelsError: null,
+        wsControllerURL,
+      }),
+    );
+  });
+
+  it("should display error when unable to load all models", async () => {
+    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "fetchAllModelStatuses")
+      .mockRejectedValue(new Error(ModelsError.LOAD_ALL_MODELS));
+    await runMiddleware();
+    expect(console.error).toHaveBeenCalledWith(
+      ModelsError.LOAD_ALL_MODELS,
+      new Error(ModelsError.LOAD_ALL_MODELS),
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateModelsError({
+        modelsError: ModelsError.LOAD_ALL_MODELS,
+        wsControllerURL,
+      }),
+    );
+  });
+
+  it("should display error when unable to load some models", async () => {
+    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "fetchAllModelStatuses")
+      .mockRejectedValue(new Error(ModelsError.LOAD_SOME_MODELS));
+    await runMiddleware();
+    expect(console.error).toHaveBeenCalledWith(
+      ModelsError.LOAD_SOME_MODELS,
+      new Error(ModelsError.LOAD_SOME_MODELS),
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateModelsError({
+        modelsError: ModelsError.LOAD_SOME_MODELS,
+        wsControllerURL,
+      }),
+    );
+  });
+
+  it("should display error when unable to load latest models", async () => {
+    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "fetchAllModelStatuses")
+      .mockImplementationOnce(
+        async () => new Promise<void>((resolve) => resolve()),
+      )
+      .mockImplementationOnce(
+        async () =>
+          new Promise<void>((resolve, reject) =>
+            reject(new Error(ModelsError.LOAD_SOME_MODELS)),
+          ),
+      );
+    runMiddleware({
+      payload: { controllers, isJuju: true, poll: 1 },
+    }).catch(console.error);
+    await new Promise(jest.requireActual("timers").setImmediate);
+    jest.advanceTimersByTime(30000);
+    // Resolve the async calls again.
+    await new Promise(jest.requireActual("timers").setImmediate);
+    expect(console.error).toHaveBeenCalledWith(
+      ModelsError.LOAD_LATEST_MODELS,
+      new Error(ModelsError.LOAD_SOME_MODELS),
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateModelsError({
+        modelsError: ModelsError.LOAD_LATEST_MODELS,
+        wsControllerURL,
+      }),
+    );
+  });
+
+  it("should display error when unable to update model list", async () => {
+    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest.spyOn(jujuActions, "updateModelList").mockImplementation(
+      jest.fn(() => {
+        throw new Error(ModelsError.LIST_OR_UPDATE_MODELS);
+      }),
+    );
+    await runMiddleware();
+    expect(console.error).toHaveBeenCalledWith(
+      ModelsError.LIST_OR_UPDATE_MODELS,
+      new Error(ModelsError.LIST_OR_UPDATE_MODELS),
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateModelsError({
+        modelsError: ModelsError.LIST_OR_UPDATE_MODELS,
+        wsControllerURL,
+      }),
+    );
+  });
+
   it("updates models every 30 seconds", async () => {
     jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
     const fetchAllModelStatuses = jest.spyOn(
@@ -454,11 +592,11 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    runMiddleware({ payload: { controllers, isJuju: true, poll: 2 } }).catch(
+    runMiddleware({ payload: { controllers, isJuju: true, poll: 1 } }).catch(
       console.error,
     );
     await new Promise(jest.requireActual("timers").setImmediate);
-    jest.advanceTimersByTime(3000000);
+    jest.advanceTimersByTime(30000);
     // Resolve the async calls again.
     await new Promise(jest.requireActual("timers").setImmediate);
     expect(next).not.toHaveBeenCalled();

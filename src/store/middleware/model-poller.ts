@@ -11,7 +11,6 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
-import { Label as JujuAPILabel } from "juju/api";
 import type { CrossModelQueryFullResponse } from "juju/jimm/JIMMV4";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
 import type { ConnectionWithFacades } from "juju/types";
@@ -25,6 +24,13 @@ import { isSpecificAction } from "types";
 export enum LoginError {
   LOG = "Unable to log into controller",
   NO_INFO = "Unable to retrieve controller details",
+}
+
+export enum ModelsError {
+  LOAD_ALL_MODELS = "Unable to load models.",
+  LOAD_SOME_MODELS = "Unable to load some models.",
+  LOAD_LATEST_MODELS = "Unable to load latest model data.",
+  LIST_OR_UPDATE_MODELS = "Unable to list or update models.",
 }
 
 const checkJIMMRelation = async (
@@ -222,14 +228,14 @@ export const modelPollerMiddleware: Middleware<
               let errorMessage;
               if (
                 error instanceof Error &&
-                (error.message === JujuAPILabel.ERROR_LOAD_ALL_MODELS ||
-                  error.message === JujuAPILabel.ERROR_LOAD_SOME_MODELS)
+                (error.message === ModelsError.LOAD_ALL_MODELS ||
+                  error.message === ModelsError.LOAD_SOME_MODELS)
               ) {
                 errorMessage = pollCount
-                  ? "Unable to load latest model data."
+                  ? ModelsError.LOAD_LATEST_MODELS
                   : error.message;
               } else {
-                errorMessage = "Unable to list or update models.";
+                errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
               }
               console.error(errorMessage, error);
               reduxStore.dispatch(

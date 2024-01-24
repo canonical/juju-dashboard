@@ -2,7 +2,6 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TestId } from "components/LoadingSpinner/LoadingSpinner";
-import { Label as JujuAPILabel } from "juju/api";
 import type { RootState } from "store/store";
 import {
   detailedStatusFactory,
@@ -176,11 +175,9 @@ describe("Models Index page", () => {
   });
 
   it("should display the error notification", async () => {
-    state.juju.modelsError = JujuAPILabel.ERROR_LOAD_ALL_MODELS;
+    state.juju.modelsError = "Oops!";
     renderComponent(<ModelsIndex />, { state });
-    expect(
-      screen.getByText(new RegExp(JujuAPILabel.ERROR_LOAD_ALL_MODELS)),
-    ).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(/Oops!/))).toBeInTheDocument();
   });
 
   it("should refresh the window when pressing the button in error notification", async () => {
@@ -189,7 +186,7 @@ describe("Models Index page", () => {
       value: { ...location, reload: jest.fn() },
     });
 
-    state.juju.modelsError = JujuAPILabel.ERROR_LOAD_ALL_MODELS;
+    state.juju.modelsError = "Oops!";
     renderComponent(<ModelsIndex />, { state });
     await userEvent.click(screen.getByRole("button", { name: "refreshing" }));
     expect(window.location.reload).toHaveBeenCalled();
