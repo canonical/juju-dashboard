@@ -369,9 +369,9 @@ describe("Juju API", () => {
         () => state,
       );
       jest.advanceTimersByTime(LOGIN_TIMEOUT);
-      await expect(response).resolves.toBeNull();
+      await expect(response).rejects.toStrictEqual(new Error("timeout"));
       expect(console.error).toHaveBeenCalledWith(
-        "error connecting to model:",
+        "Error connecting to model:",
         "abc123",
         new Error("timeout"),
       );
@@ -456,15 +456,18 @@ describe("Juju API", () => {
       jest
         .spyOn(jujuLib, "connectAndLogin")
         .mockImplementation(async () => loginResponse);
-      const response = await fetchModelStatus(
+      const response = fetchModelStatus(
         "abc123",
         "wss://example.com/api",
         () => state,
       );
-      expect(response).toBeUndefined();
+      await expect(response).rejects.toStrictEqual(
+        new Error("Unable to fetch the status. Uh oh!"),
+      );
       expect(console.error).toHaveBeenCalledWith(
-        "Unable to fetch the status.",
-        "Uh oh!",
+        "Error connecting to model:",
+        "abc123",
+        new Error("Unable to fetch the status. Uh oh!"),
       );
       console.error = consoleError;
     });
@@ -535,11 +538,19 @@ describe("Juju API", () => {
         .spyOn(jujuLib, "connectAndLogin")
         .mockImplementation(async () => loginResponse);
       const dispatch = jest.fn();
-      await fetchAndStoreModelStatus(
+      const response = fetchAndStoreModelStatus(
         "abc123",
         "wss://example.com/api",
         dispatch,
         () => state,
+      );
+      await expect(response).rejects.toStrictEqual(
+        new Error("Unable to fetch the status. "),
+      );
+      expect(console.error).toHaveBeenCalledWith(
+        "Error connecting to model:",
+        "abc123",
+        new Error("Unable to fetch the status. "),
       );
       expect(dispatch).not.toHaveBeenCalled();
       console.error = consoleError;
@@ -711,6 +722,97 @@ describe("Juju API", () => {
       expect(console.error).toHaveBeenCalledWith(
         "Error when trying to add controller cloud and region data.",
         new Error("Error while trying to dispatch!"),
+      );
+    });
+
+    it("should return a rejected promise when retrieving data for some models fails", async () => {
+      // The dispatch of updateModelInfo fails only for the first model.
+      // This would make 50% (1/2) of all models error out.
+      const dispatch = jest.fn().mockImplementationOnce(() => {
+        throw new Error("Error while dispatching updateModelInfo!");
+      });
+      const abc123 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              uuid: "abc123",
+            }),
+          }),
+        ],
+      });
+      const def456 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              uuid: "def456",
+            }),
+          }),
+        ],
+      });
+      const conn = {
+        facades: {
+          modelManager: {
+            modelInfo: jest
+              .fn()
+              .mockResolvedValueOnce(abc123)
+              .mockResolvedValueOnce(def456),
+          },
+        },
+      } as unknown as Connection;
+      const response = fetchAllModelStatuses(
+        "wss://example.com/api",
+        ["abc123", "def456"],
+        conn,
+        dispatch,
+        () => state,
+      );
+      await expect(response).rejects.toStrictEqual(
+        new Error("Unable to load some models."),
+      );
+    });
+
+    it("should return a rejected promise when retrieving data for all models", async () => {
+      // The dispatch of updateModelInfo fails for all models.
+      const dispatch = jest.fn().mockImplementation(() => {
+        throw new Error("Error while dispatching updateModelInfo!");
+      });
+      const abc123 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              uuid: "abc123",
+            }),
+          }),
+        ],
+      });
+      const def456 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              uuid: "def456",
+            }),
+          }),
+        ],
+      });
+      const conn = {
+        facades: {
+          modelManager: {
+            modelInfo: jest
+              .fn()
+              .mockResolvedValueOnce(abc123)
+              .mockResolvedValueOnce(def456),
+          },
+        },
+      } as unknown as Connection;
+      const response = fetchAllModelStatuses(
+        "wss://example.com/api",
+        ["abc123", "def456"],
+        conn,
+        dispatch,
+        () => state,
+      );
+      await expect(response).rejects.toStrictEqual(
+        new Error("Unable to load models."),
       );
     });
   });

@@ -26,6 +26,13 @@ export enum LoginError {
   NO_INFO = "Unable to retrieve controller details",
 }
 
+export enum ModelsError {
+  LOAD_ALL_MODELS = "Unable to load models.",
+  LOAD_SOME_MODELS = "Unable to load some models.",
+  LOAD_LATEST_MODELS = "Unable to load latest model data.",
+  LIST_OR_UPDATE_MODELS = "Unable to list or update models.",
+}
+
 const checkJIMMRelation = async (
   conn: ConnectionWithFacades,
   identity: string,
@@ -207,8 +214,36 @@ export const modelPollerMiddleware: Middleware<
                 reduxStore.dispatch,
                 reduxStore.getState,
               );
-            } catch (e) {
-              console.log(e);
+              // If the code execution arrives here, then the model statuses
+              // have been successfully updated. Models error should be removed.
+              if (reduxStore.getState().juju.modelsError) {
+                reduxStore.dispatch(
+                  jujuActions.updateModelsError({
+                    modelsError: null,
+                    wsControllerURL,
+                  }),
+                );
+              }
+            } catch (error) {
+              let errorMessage;
+              if (
+                error instanceof Error &&
+                (error.message === ModelsError.LOAD_ALL_MODELS ||
+                  error.message === ModelsError.LOAD_SOME_MODELS)
+              ) {
+                errorMessage = pollCount
+                  ? ModelsError.LOAD_LATEST_MODELS
+                  : error.message;
+              } else {
+                errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
+              }
+              console.error(errorMessage, error);
+              reduxStore.dispatch(
+                jujuActions.updateModelsError({
+                  modelsError: errorMessage,
+                  wsControllerURL,
+                }),
+              );
             }
           }
 
@@ -217,8 +252,8 @@ export const modelPollerMiddleware: Middleware<
             if (pollCount === action.payload.poll) {
               break;
             }
-            pollCount++;
           }
+          pollCount++;
           // Wait 30s then start again.
           await new Promise((resolve) => {
             setTimeout(() => {

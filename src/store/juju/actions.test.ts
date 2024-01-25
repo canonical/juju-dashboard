@@ -95,6 +95,21 @@ describe("actions", () => {
     });
   });
 
+  it("updateModelsError", () => {
+    expect(
+      actions.updateModelsError({
+        modelsError: null,
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/updateModelsError",
+      payload: {
+        modelsError: null,
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
   it("clearModelData", () => {
     expect(actions.clearModelData()).toStrictEqual({
       type: "juju/clearModelData",

@@ -76,6 +76,7 @@ export type JujuState = {
   crossModelQuery: CrossModelQueryState;
   controllers: Controllers | null;
   models: ModelsList;
+  modelsError: string | null;
   modelsLoaded: boolean;
   modelData: ModelDataList;
   modelWatcherData?: ModelWatcherData;

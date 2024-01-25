@@ -1,4 +1,8 @@
-import { SearchAndFilter } from "@canonical/react-components";
+import {
+  Button,
+  Notification,
+  SearchAndFilter,
+} from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
@@ -16,6 +20,7 @@ import {
   getGroupedModelStatusCounts,
   getModelData,
   getModelListLoaded,
+  getModelsError,
   hasModels,
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
@@ -55,6 +60,7 @@ export default function Models() {
     custom: queryParams.custom,
   };
 
+  const modelsError = useAppSelector(getModelsError);
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const hasSomeModels = useSelector(hasModels);
   // loop model data and pull out filter panel data
@@ -196,6 +202,15 @@ export default function Models() {
       titleComponent="div"
       titleClassName="u-no-max-width u-full-width"
     >
+      {modelsError ? (
+        <Notification severity="negative" title="Error">
+          {modelsError} Try{" "}
+          <Button appearance="link" onClick={() => window.location.reload()}>
+            refreshing
+          </Button>{" "}
+          the page.
+        </Notification>
+      ) : null}
       {content}
     </BaseLayout>
   );

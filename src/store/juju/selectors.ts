@@ -176,6 +176,11 @@ export const getModelData = createSelector(
   (sliceState) => sliceState.modelData ?? null,
 );
 
+export const getModelsError = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelsError,
+);
+
 /**
   Fetches the controller data from state.
   @param state The application state.

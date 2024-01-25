@@ -183,6 +183,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   controllers: null,
   models: {},
   modelsLoaded: false,
+  modelsError: null,
   modelData: {},
   modelWatcherData: {},
   charms: [],
