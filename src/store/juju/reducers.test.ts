@@ -160,6 +160,26 @@ describe("reducers", () => {
     });
   });
 
+  it("updateModelsError", () => {
+    const state = jujuStateFactory.build({
+      modelData: {
+        abc123: model,
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.updateModelsError({
+          modelsError: null,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelsError: null,
+    });
+  });
+
   it("clearModelData", () => {
     const state = jujuStateFactory.build({
       modelData: {
