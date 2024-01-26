@@ -70,7 +70,11 @@ export default function ModelDetails() {
           conn,
           watcherHandle["watcher-id"],
           pingerIntervalId,
-        ).catch((error) => console.error(Label.MODEL_WATCHER_ERROR, error));
+        ).catch((error) =>
+          // Error doesn’t interfere with the user’s interaction with the
+          // dashboard. Not shown in UI. Logged for debugging purposses.
+          console.error(Label.MODEL_WATCHER_ERROR, error),
+        );
       }
     };
     // Skipped as we need appState due to the call to `connectAndLoginToModel`

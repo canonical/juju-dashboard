@@ -15,6 +15,8 @@ if (process.env.NODE_ENV !== "production" && process.env.REACT_APP_MOCK_STORE) {
   try {
     preloadedState = JSON.parse(process.env.REACT_APP_MOCK_STORE);
   } catch (error) {
+    // Error is related to tests and is not accessible in production.
+    // Not shown in UI. Logged for debugging purposses.
     console.error("REACT_APP_MOCK_STORE could not be parsed");
   }
 }
