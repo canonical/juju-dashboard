@@ -11,7 +11,7 @@ function useLocalStorage<V>(
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      // Not shown in UI. Logged for debugging purposses.
+      // Not shown in UI. Logged for debugging purposes.
       console.error("Unable to parse local storage:", error);
       return initialValue;
     }
@@ -25,7 +25,7 @@ function useLocalStorage<V>(
       setStoredValue(value);
       window.localStorage.setItem(key, stringified);
     } catch (error) {
-      // Not shown in UI. Logged for debugging purposses.
+      // Not shown in UI. Logged for debugging purposes.
       console.error(error);
     }
   };
