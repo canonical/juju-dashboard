@@ -104,4 +104,22 @@ describe("SecretsTable", () => {
     renderComponent(<SecretsTable />, { state, path, url });
     expect(screen.getByRole("cell", { name: "Model" })).toBeInTheDocument();
   });
+
+  it("does not change application owners", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({ "owner-tag": "application-def456" }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(<SecretsTable />, { state, path, url });
+    expect(
+      screen.queryByRole("cell", { name: "Model" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("cell", { name: "application-def456" }),
+    ).toBeInTheDocument();
+  });
 });
