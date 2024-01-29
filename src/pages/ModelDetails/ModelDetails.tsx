@@ -72,7 +72,7 @@ export default function ModelDetails() {
           pingerIntervalId,
         ).catch((error) =>
           // Error doesn’t interfere with the user’s interaction with the
-          // dashboard. Not shown in UI. Logged for debugging purposses.
+          // dashboard. Not shown in UI. Logged for debugging purposes.
           console.error(Label.MODEL_WATCHER_ERROR, error),
         );
       }

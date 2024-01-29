@@ -121,7 +121,7 @@ function startPingerLoop(conn: ConnectionWithFacades) {
   const intervalId = window.setInterval(() => {
     conn.facades.pinger?.ping(null).catch((e) => {
       // If the pinger fails for whatever reason then cancel the ping.
-      // Not shown in UI. Logged for debugging purposses.
+      // Not shown in UI. Logged for debugging purposes.
       console.error("pinger stopped,", e);
       stopPingerLoop(intervalId);
     });
@@ -378,7 +378,7 @@ export async function fetchAllModelStatuses(
             dispatch(
               addControllerCloudRegion({ wsControllerURL, modelInfo }),
             ).catch((error) =>
-              // Not shown in UI. Logged for debugging purposses.
+              // Not shown in UI. Logged for debugging purposes.
               console.error(
                 "Error when trying to add controller cloud and region data.",
                 error,

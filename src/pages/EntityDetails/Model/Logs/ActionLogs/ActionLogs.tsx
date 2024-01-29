@@ -160,7 +160,7 @@ const generateApplicationRow = (
   const parts = actionData.action.receiver.match(/unit-(.+)-\d+/);
   const appName = parts && parts[1];
   if (!appName) {
-    // Not shown in UI. Logged for debugging purposses.
+    // Not shown in UI. Logged for debugging purposes.
     console.error(
       "Unable to parse action receiver",
       actionData.action.receiver,
