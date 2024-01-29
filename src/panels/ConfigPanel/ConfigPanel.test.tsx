@@ -360,6 +360,9 @@ describe("ConfigPanel", () => {
   });
 
   it("displays save errors", async () => {
+    const scrollIntoView = window.HTMLElement.prototype.scrollIntoView;
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
     jest.spyOn(apiModule, "setApplicationConfig").mockImplementation(() =>
       Promise.resolve({
         results: [{ error: { code: "1", message: "That's not a name" } }],
@@ -383,6 +386,8 @@ describe("ConfigPanel", () => {
     );
     expect(screen.getByText("That's not a name")).toBeInTheDocument();
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
+
+    window.HTMLElement.prototype.scrollIntoView = scrollIntoView;
   });
 
   it("should display console error when trying to get config", async () => {
