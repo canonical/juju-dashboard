@@ -2,6 +2,7 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
+import { TestId as SecretsTestId } from "pages/EntityDetails/Model/Secrets/Secrets";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
@@ -60,6 +61,11 @@ jest.mock("juju/api", () => {
     queryActionsList: () => {
       return new Promise((resolve) => {
         resolve(mockActionResults);
+      });
+    },
+    connectToModel: () => {
+      return new Promise((resolve) => {
+        resolve({});
       });
     },
   };
@@ -435,7 +441,9 @@ describe("Model", () => {
       path,
     });
     expect(
-      within(screen.getByTestId(TestId.MAIN)).getByText("Secrets"),
+      within(screen.getByTestId(TestId.MAIN)).getByTestId(
+        SecretsTestId.SECRETS_TAB,
+      ),
     ).toBeInTheDocument();
   });
 

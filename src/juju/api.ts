@@ -22,6 +22,7 @@ import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
+import Secrets from "@canonical/jujulib/dist/api/facades/secrets";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import type { ValueOf } from "@canonical/react-components";
 import Limiter from "async-limiter";
@@ -89,6 +90,7 @@ export function generateConnectionOptions(
     Controller,
     ModelManager,
     JIMM,
+    Secrets,
   ];
   if (usePinger) {
     facades.push(Pinger);
@@ -501,6 +503,28 @@ export function disableControllerUUIDMasking(conn: ConnectionWithFacades) {
   @param appState
   @returns conn The connection.
 */
+export async function connectToModel(
+  modelUUID: string,
+  wsControllerURL: string,
+  credentials?: Credential,
+  identityProviderAvailable = false,
+) {
+  const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
+  const response = await connectAndLoginWithTimeout(
+    modelURL,
+    credentials,
+    generateConnectionOptions(true),
+    identityProviderAvailable,
+  );
+  return response.conn;
+}
+
+/**
+  Connect to the model representing the supplied modelUUID.
+  @param modelUUID
+  @param appState
+  @returns conn The connection.
+*/
 export async function connectAndLoginToModel(
   modelUUID: string,
   appState: RootState,
@@ -511,14 +535,12 @@ export async function connectAndLoginToModel(
   }
   const config = getConfig(appState);
   const credentials = getUserPass(appState, wsControllerURL);
-  const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
-  const response = await connectAndLoginWithTimeout(
-    modelURL,
+  return connectToModel(
+    modelUUID,
+    wsControllerURL,
     credentials,
-    generateConnectionOptions(true),
-    config?.identityProviderAvailable ?? false,
+    config?.identityProviderAvailable,
   );
-  return response.conn;
 }
 
 /**

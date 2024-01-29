@@ -13,6 +13,9 @@ import {
   modelListInfoFactory,
   auditEventsStateFactory,
   crossModelQueryStateFactory,
+  secretsStateFactory,
+  listSecretResultFactory,
+  modelSecretsFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -479,6 +482,194 @@ describe("reducers", () => {
     ).toStrictEqual({
       ...state,
       selectedApplications,
+    });
+  });
+
+  it("secretsLoading", () => {
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({ loading: false }),
+      }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.secretsLoading({
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({ loading: true }),
+      }),
+    });
+  });
+
+  it("secretsLoading handles no existing model", () => {
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build(),
+    });
+    expect(
+      reducer(
+        state,
+        actions.secretsLoading({
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({ loading: true }),
+      }),
+    });
+  });
+
+  it("setSecretsErrors", () => {
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({
+          items: null,
+          errors: null,
+          loaded: false,
+          loading: true,
+        }),
+      }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.setSecretsErrors({
+          errors: "Uh oh!",
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({
+          items: null,
+          errors: "Uh oh!",
+          loaded: true,
+          loading: false,
+        }),
+      }),
+    });
+  });
+
+  it("setSecretsErrors handles no existing model", () => {
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build(),
+    });
+    expect(
+      reducer(
+        state,
+        actions.setSecretsErrors({
+          errors: "Uh oh!",
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({
+          items: null,
+          errors: "Uh oh!",
+          loaded: true,
+          loading: false,
+        }),
+      }),
+    });
+  });
+
+  it("updateSecrets", () => {
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({
+          items: null,
+          errors: null,
+          loaded: false,
+          loading: true,
+        }),
+      }),
+    });
+    const items = [listSecretResultFactory.build()];
+    expect(
+      reducer(
+        state,
+        actions.updateSecrets({
+          secrets: items,
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({
+          items,
+          errors: null,
+          loaded: true,
+          loading: false,
+        }),
+      }),
+    });
+  });
+
+  it("updateSecrets handles no existing model", () => {
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build(),
+    });
+    const items = [listSecretResultFactory.build()];
+    expect(
+      reducer(
+        state,
+        actions.updateSecrets({
+          secrets: items,
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({
+          items,
+          errors: null,
+          loaded: true,
+          loading: false,
+        }),
+      }),
+    });
+  });
+
+  it("clearSecrets", () => {
+    const items = [listSecretResultFactory.build()];
+    const state = jujuStateFactory.build({
+      secrets: secretsStateFactory.build({
+        abc123: modelSecretsFactory.build({
+          items,
+          errors: "Uh oh!",
+          loaded: true,
+          loading: true,
+        }),
+      }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.clearSecrets({
+          modelUUID: "abc123",
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      secrets: secretsStateFactory.build(),
     });
   });
 });

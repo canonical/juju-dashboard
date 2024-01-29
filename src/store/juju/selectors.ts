@@ -166,6 +166,36 @@ export const getCrossModelQueryLoading = createSelector(
   (crossModelQuery) => crossModelQuery.loading,
 );
 
+export const getSecretsState = createSelector(
+  [slice],
+  (sliceState) => sliceState.secrets,
+);
+
+export const getModelSecretsState = createSelector(
+  [getSecretsState, (_state: RootState, modelUUID: string) => modelUUID],
+  (secrets, modelUUID) => secrets[modelUUID],
+);
+
+export const getModelSecrets = createSelector(
+  [getModelSecretsState],
+  (secrets) => secrets?.items,
+);
+
+export const getSecretsErrors = createSelector(
+  [getModelSecretsState],
+  (secrets) => secrets?.errors,
+);
+
+export const getSecretsLoaded = createSelector(
+  [getModelSecretsState],
+  (secrets) => secrets?.loaded,
+);
+
+export const getSecretsLoading = createSelector(
+  [getModelSecretsState],
+  (secrets) => secrets?.loading,
+);
+
 /**
   Fetches the model data from state.
   @param state The application state.

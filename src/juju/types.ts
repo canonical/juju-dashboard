@@ -12,6 +12,7 @@ import type ControllerV9 from "@canonical/jujulib/dist/api/facades/controller/Co
 import type ModelManagerV9 from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type { ModelSLAInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type PingerV1 from "@canonical/jujulib/dist/api/facades/pinger/PingerV1";
+import type SecretsV2 from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 
 import type JIMMV4 from "./jimm/JIMMV4";
 // See https://github.com/juju/juju/blob/main/rpc/params/multiwatcher.go
@@ -361,6 +362,7 @@ export type Facades = {
   controller?: ControllerV9;
   modelManager?: ModelManagerV9;
   pinger?: PingerV1;
+  secrets?: SecretsV2;
   jimM?: InstanceType<typeof JIMMV4>;
 };
 

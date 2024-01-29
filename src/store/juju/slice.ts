@@ -4,6 +4,7 @@ import type {
   ModelInfoResults,
   UserModelList,
 } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -29,6 +30,13 @@ type WsControllerURLParam = {
   wsControllerURL: string;
 };
 
+const DEFAULT_MODEL_SECRETS = {
+  items: null,
+  errors: null,
+  loading: false,
+  loaded: false,
+};
+
 const slice = createSlice({
   name: "juju",
   initialState: {
@@ -51,6 +59,7 @@ const slice = createSlice({
     modelData: {},
     modelWatcherData: {},
     charms: [],
+    secrets: {},
     selectedApplications: [],
   } as JujuState,
   reducers: {
@@ -258,6 +267,61 @@ const slice = createSlice({
       action: PayloadAction<{ selectedApplications: ApplicationInfo[] }>,
     ) => {
       state.selectedApplications = action.payload.selectedApplications;
+    },
+    secretsLoading: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      if (!state.secrets[action.payload.modelUUID]) {
+        state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
+      }
+      state.secrets[action.payload.modelUUID].loading = true;
+    },
+    updateSecrets: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          secrets: ListSecretResult[];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      if (!state.secrets[action.payload.modelUUID]) {
+        state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
+      }
+      state.secrets[action.payload.modelUUID].items = action.payload.secrets;
+      state.secrets[action.payload.modelUUID].loading = false;
+      state.secrets[action.payload.modelUUID].loaded = true;
+    },
+    setSecretsErrors: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          errors: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      if (!state.secrets[action.payload.modelUUID]) {
+        state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
+      }
+      state.secrets[action.payload.modelUUID].errors = action.payload.errors;
+      state.secrets[action.payload.modelUUID].loading = false;
+      state.secrets[action.payload.modelUUID].loaded = true;
+    },
+    clearSecrets: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      delete state.secrets[action.payload.modelUUID];
     },
   },
 });
