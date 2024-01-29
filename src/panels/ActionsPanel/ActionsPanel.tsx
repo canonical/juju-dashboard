@@ -1,7 +1,12 @@
 import type { ActionSpec } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
-import { Button, ConfirmationModal } from "@canonical/react-components";
+import {
+  Button,
+  ConfirmationModal,
+  Notification,
+} from "@canonical/react-components";
 import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
@@ -11,6 +16,7 @@ import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import ToastCard from "components/ToastCard/ToastCard";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
 import { usePanelQueryParams } from "panels/hooks";
 import type { ConfirmTypes } from "panels/types";
@@ -26,7 +32,7 @@ export enum Label {
   CONFIRM_BUTTON = "Confirm",
   NO_UNITS_SELECTED = "0 units selected",
   NO_ACTIONS_PROVIDED = "This charm has not provided any actions.",
-  GET_ACTIONS_ERROR = "Error while trying to get actions for application.",
+  GET_ACTIONS_ERROR = "Unable to get actions for application.",
   EXECUTE_ACTION_ERROR = "Error while trying to execute action on units.",
 }
 
@@ -101,6 +107,7 @@ export default function ActionsPanel(): JSX.Element {
     string | undefined,
     SetSelectedAction,
   ] = useState<string>();
+  const [inlineError, setInlineError] = useState<string | null>(null);
   const { Portal } = usePortal();
 
   const actionOptionsValues = useRef<ActionOptionValues>({});
@@ -119,9 +126,13 @@ export default function ActionsPanel(): JSX.Element {
             setActionData(actions.results[0].actions);
           }
           setFetchingActionData(false);
+          setInlineError(null);
           return;
         })
-        .catch((error) => console.error(Label.GET_ACTIONS_ERROR, error));
+        .catch((error) => {
+          setInlineError(Label.GET_ACTIONS_ERROR);
+          console.error(Label.GET_ACTIONS_ERROR, error);
+        });
     }
   }, [appName, appStore, modelUUID]);
 
@@ -130,14 +141,14 @@ export default function ActionsPanel(): JSX.Element {
       ? appState.juju?.modelData?.[modelUUID]?.applications?.[appName]?.charm
       : null;
 
-  const generateSelectedUnitList = () => {
+  const generateSelectedUnitList = useCallback(() => {
     if (!selectedUnits.length) {
       return Label.NO_UNITS_SELECTED;
     }
     return selectedUnits.reduce((acc, unitName) => {
       return `${acc}, ${unitName.split("/")[1]}`;
     });
-  };
+  }, [selectedUnits]);
 
   const generateTitle = () => {
     const unitLength = selectedUnits.length;
@@ -213,9 +224,15 @@ export default function ActionsPanel(): JSX.Element {
               confirmButtonAppearance="positive"
               onConfirm={() => {
                 setConfirmType(null);
-                executeAction().catch((error) =>
-                  console.error(Label.EXECUTE_ACTION_ERROR, error),
-                );
+                executeAction().catch((error) => {
+                  const errorMessage = `Unable to execute ${selectedAction} action on units: ${generateSelectedUnitList()}.`;
+                  reactHotToast.custom((t) => (
+                    <ToastCard toastInstance={t} type="negative">
+                      {errorMessage}
+                    </ToastCard>
+                  ));
+                  console.error(errorMessage, error);
+                });
                 handleRemovePanelQueryParams();
               }}
               close={() => setConfirmType(null)}
@@ -256,6 +273,9 @@ export default function ActionsPanel(): JSX.Element {
       onRemovePanelQueryParams={handleRemovePanelQueryParams}
     >
       <p data-testid="actions-panel-unit-list">
+        {inlineError ? (
+          <Notification severity="negative">{inlineError}</Notification>
+        ) : null}
         Run action on: {generateSelectedUnitList()}
       </p>
       <LoadingHandler
