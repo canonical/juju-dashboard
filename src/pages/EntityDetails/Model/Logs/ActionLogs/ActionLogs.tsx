@@ -10,7 +10,6 @@ import {
   Icon,
   Modal,
   ModularTable,
-  Tooltip,
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -21,9 +20,10 @@ import type { Column, Row } from "react-table";
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon/CharmIcon";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
+import RelativeDate from "components/RelativeDate";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import Status from "components/Status";
-import { copyToClipboard, formatFriendlyDateToNow } from "components/utils";
+import { copyToClipboard } from "components/utils";
 import { queryActionsList, queryOperationsList } from "juju/api";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
@@ -370,12 +370,7 @@ export default function ActionLogs() {
             completedDate.getFullYear() === 1 ? (
               "Unknown"
             ) : (
-              <Tooltip
-                message={completedDate.toLocaleString()}
-                position="top-center"
-              >
-                {formatFriendlyDateToNow(actionData.completed)}
-              </Tooltip>
+              <RelativeDate datetime={actionData.completed} />
             ),
           sortData: {
             application: name,
