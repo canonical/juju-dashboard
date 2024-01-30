@@ -7,10 +7,9 @@ type Props = {
 const ScrollOnRender = ({ children, scrollArea }: Props) => {
   useEffect(() => {
     if (scrollArea) {
-      scrollArea.scrollIntoView();
+      scrollArea.scrollIntoView({ behavior: "smooth" });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [scrollArea]);
   return <div>{children}</div>;
 };
 

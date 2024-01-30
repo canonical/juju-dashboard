@@ -3,16 +3,6 @@ import { render, screen } from "@testing-library/react";
 import ScrollOnRender from "./ScrollOnRender";
 
 describe("ScrollOnRender", () => {
-  const scrollIntoView = window.HTMLElement.prototype.scrollIntoView;
-
-  beforeEach(() => {
-    window.HTMLElement.prototype.scrollIntoView = jest.fn();
-  });
-
-  afterEach(() => {
-    window.HTMLElement.prototype.scrollIntoView = scrollIntoView;
-  });
-
   it("renders the provided children", () => {
     render(<ScrollOnRender>kids</ScrollOnRender>);
     expect(screen.getByText("kids")).toBeInTheDocument();
@@ -34,8 +24,8 @@ describe("ScrollOnRender", () => {
         kids
       </ScrollOnRender>,
     );
-    expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledTimes(
-      1,
-    );
+    expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
+      behavior: "smooth",
+    });
   });
 });
