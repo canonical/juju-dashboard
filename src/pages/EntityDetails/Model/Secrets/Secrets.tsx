@@ -1,9 +1,10 @@
-import { Notification } from "@canonical/react-components";
+import { Notification, Button } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import { useQueryParams } from "hooks/useQueryParams";
 import { useListSecrets } from "juju/apiHooks";
 import { actions as jujuActions } from "store/juju";
 import {
@@ -14,6 +15,10 @@ import {
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import SecretsTable from "./SecretsTable";
+
+export enum Label {
+  ADD = "Add secret",
+}
 
 export enum TestId {
   SECRETS_TAB = "secrets-tab",
@@ -29,6 +34,12 @@ const Secrets = () => {
   const secretsErrors = useAppSelector((state) =>
     getSecretsErrors(state, modelUUID),
   );
+
+  const [, setQuery] = useQueryParams<{
+    panel: string | null;
+  }>({
+    panel: null,
+  });
 
   useListSecrets(userName, modelName);
 
@@ -50,7 +61,16 @@ const Secrets = () => {
       </Notification>
     );
   } else {
-    content = <SecretsTable />;
+    content = (
+      <>
+        <Button
+          onClick={() => setQuery({ panel: "add-secret" }, { replace: true })}
+        >
+          {Label.ADD}
+        </Button>
+        <SecretsTable />
+      </>
+    );
   }
 
   return <div data-testid={TestId.SECRETS_TAB}>{content}</div>;

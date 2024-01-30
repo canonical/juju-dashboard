@@ -3,6 +3,7 @@ import { screen } from "@testing-library/react";
 import { renderComponent } from "testing/utils";
 
 import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
+import { TestId as AddSecretPanelTestId } from "./AddSecretPanel/AddSecretPanel";
 import { TestId as AuditLogsFilterPanelTestId } from "./AuditLogsFilterPanel/AuditLogsFilterPanel";
 import { TestId as CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
@@ -42,6 +43,15 @@ describe("Panels", () => {
     });
     expect(
       await screen.findByTestId(AuditLogsFilterPanelTestId.PANEL),
+    ).toBeInTheDocument();
+  });
+
+  it("can display the add secret panel", async () => {
+    renderComponent(<Panels />, {
+      url: "/?panel=add-secret",
+    });
+    expect(
+      await screen.findByTestId(AddSecretPanelTestId.PANEL),
     ).toBeInTheDocument();
   });
 });

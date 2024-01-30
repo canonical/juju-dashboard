@@ -2,6 +2,7 @@ import { AnimatePresence } from "framer-motion";
 
 import { useQueryParams } from "hooks/useQueryParams";
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
+import AddSecret from "panels/AddSecretPanel";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 
 import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
@@ -25,6 +26,8 @@ export default function Panels() {
         return <ConfigPanel />;
       case "audit-log-filters":
         return <AuditLogsFilterPanel />;
+      case "add-secret":
+        return <AddSecret />;
       default:
         return null;
     }
