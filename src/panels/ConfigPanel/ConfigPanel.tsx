@@ -57,12 +57,15 @@ type ConfigQueryParams = {
   modelUUID: string | null;
 };
 
-const generateErrors = (errors: string[], scrollArea?: HTMLElement | null) =>
-  errors.map((error) => (
-    <ScrollOnRender key={error} scrollArea={scrollArea}>
-      <Notification severity="negative">{error}</Notification>
-    </ScrollOnRender>
-  ));
+const generateErrors = (errors: string[], scrollArea: HTMLElement | null) => (
+  <ScrollOnRender scrollArea={scrollArea}>
+    {errors.map((error) => (
+      <Notification key={error} severity="negative">
+        {error}
+      </Notification>
+    ))}
+  </ScrollOnRender>
+);
 
 export default function ConfigPanel(): JSX.Element {
   const reduxStore = useAppStore();
@@ -392,7 +395,7 @@ export default function ConfigPanel(): JSX.Element {
 
             <div className="config-panel__list">
               {formErrors
-                ? generateErrors(formErrors, scrollArea?.current)
+                ? generateErrors(formErrors, scrollArea.current)
                 : null}
               {generateConfigElementList(
                 config,
