@@ -332,7 +332,7 @@ describe("ActionsPanel", () => {
     );
     await waitFor(() =>
       expect(
-        screen.getByText(/Unable to get actions for application./),
+        screen.getByText(new RegExp(Label.GET_ACTIONS_ERROR)),
       ).toBeInTheDocument(),
     );
   });
@@ -370,7 +370,7 @@ describe("ActionsPanel", () => {
     );
     await waitFor(() =>
       expect(
-        screen.getByText(/Couldn't start the action./),
+        screen.getByText(new RegExp(Label.EXECUTE_ACTION_ERROR)),
       ).toBeInTheDocument(),
     );
   });
