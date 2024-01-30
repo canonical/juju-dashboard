@@ -1,14 +1,16 @@
-import type { PropsWithChildren } from "react";
-
-import { useScrollOnRender } from "hooks/useScrollOnRender";
+import { useEffect, type PropsWithChildren } from "react";
 
 type Props = {
   scrollArea?: HTMLElement | null;
 } & PropsWithChildren;
 
 const ScrollOnRender = ({ children, scrollArea }: Props) => {
-  const onRenderRef = useScrollOnRender(scrollArea);
-  return <div ref={onRenderRef}>{children}</div>;
+  useEffect(() => {
+    if (scrollArea) {
+      scrollArea.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [scrollArea]);
+  return <div>{children}</div>;
 };
 
 export default ScrollOnRender;

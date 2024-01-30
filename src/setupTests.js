@@ -18,6 +18,15 @@ if (!window.HTMLDivElement.prototype.animate) {
   );
 }
 
+if (!window.HTMLElement.prototype.scrollIntoView) {
+  window.HTMLElement.prototype.scrollIntoView = jest.fn();
+} else {
+  console.error(
+    "JSDOM appears to support scroll into view",
+    "you may now remove the mock",
+  );
+}
+
 class ResizeObserver {
   observe = jest.fn();
   unobserve = jest.fn();
