@@ -312,7 +312,7 @@ describe("ActionsPanel", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("should display console error when trying to get actions for application", async () => {
+  it("should display error when trying to get actions for application", async () => {
     jest
       .spyOn(juju, "getActionsForApplication")
       .mockImplementation(
@@ -330,9 +330,14 @@ describe("ActionsPanel", () => {
       Label.GET_ACTIONS_ERROR,
       new Error("Error while trying to get actions for application!"),
     );
+    await waitFor(() =>
+      expect(
+        screen.getByText(/Unable to get actions for application./),
+      ).toBeInTheDocument(),
+    );
   });
 
-  it("should display console error when trying to submit the action request", async () => {
+  it("should display error when trying to submit the action request", async () => {
     jest
       .spyOn(juju, "executeActionOnUnits")
       .mockImplementation(
@@ -362,6 +367,11 @@ describe("ActionsPanel", () => {
     expect(console.error).toHaveBeenCalledWith(
       Label.EXECUTE_ACTION_ERROR,
       new Error("Error while trying to execute action on units!"),
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByText(/Couldn't start the action./),
+      ).toBeInTheDocument(),
     );
   });
 });
