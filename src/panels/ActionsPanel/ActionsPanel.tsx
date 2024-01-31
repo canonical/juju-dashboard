@@ -1,9 +1,5 @@
 import type { ActionSpec } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
-import {
-  Button,
-  ConfirmationModal,
-  Notification,
-} from "@canonical/react-components";
+import { ActionButton, ConfirmationModal } from "@canonical/react-components";
 import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -15,8 +11,8 @@ import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import ScrollOnRender from "components/ScrollOnRender";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
+import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import type { ConfirmTypes } from "panels/types";
 import { getModelUUID } from "store/juju/selectors";
@@ -87,21 +83,6 @@ type ActionsQueryParams = {
   units: string[];
 };
 
-const generateInlineErrors = (
-  inlineErrors: (string | null)[],
-  scrollArea: HTMLElement | null,
-) => (
-  <ScrollOnRender scrollArea={scrollArea}>
-    {inlineErrors.map((error) =>
-      error ? (
-        <Notification key={error} severity="negative">
-          {error}
-        </Notification>
-      ) : null,
-    )}
-  </ScrollOnRender>
-);
-
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
@@ -122,10 +103,12 @@ export default function ActionsPanel(): JSX.Element {
     SetSelectedAction,
   ] = useState<string>();
   // First element in inLineErrors array corresponds to the get actions for
-  // applications error. The second element corresponds to execute action error.
-  const [inlineErrors, setInlineErrors] = useState<
-    [string | null, string | null]
-  >([null, null]);
+  // applications error. Second element corresponds to execute action error.
+  const [inlineErrors, setInlineErrors] = useState<(string | null)[]>([
+    null,
+    null,
+  ]);
+  const [isExecutingAction, setIsExecutingAction] = useState<boolean>(false);
   const scrollArea = useRef<HTMLDivElement>(null);
   const { Portal } = usePortal();
 
@@ -145,14 +128,19 @@ export default function ActionsPanel(): JSX.Element {
             setActionData(actions.results[0].actions);
           }
           setFetchingActionData(false);
-          setInlineErrors((prevInlineErrors) => [null, prevInlineErrors[1]]);
+          setInlineErrors((prevInlineErrors) => {
+            const newInlineErrors = [...prevInlineErrors];
+            newInlineErrors[0] = null;
+            return newInlineErrors;
+          });
           return;
         })
         .catch((error) => {
-          setInlineErrors((prevInlineErrors) => [
-            Label.GET_ACTIONS_ERROR,
-            prevInlineErrors[1],
-          ]);
+          setInlineErrors((prevInlineErrors) => {
+            const newInlineErrors = [...prevInlineErrors];
+            newInlineErrors[0] = Label.GET_ACTIONS_ERROR;
+            return newInlineErrors;
+          });
           console.error(Label.GET_ACTIONS_ERROR, error);
         });
     }
@@ -245,18 +233,25 @@ export default function ActionsPanel(): JSX.Element {
               confirmButtonLabel={Label.CONFIRM_BUTTON}
               confirmButtonAppearance="positive"
               onConfirm={(event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+                // Stop propagation of the click event in order for the Panel
+                // to remain open after an error occurs in executeAction().
+                // Remove this manual fix once this issue gets resolved:
+                // https://github.com/canonical/react-components/issues/1032
                 event.nativeEvent.stopImmediatePropagation();
                 setConfirmType(null);
+                setIsExecutingAction(true);
                 executeAction()
                   .then(() => {
                     handleRemovePanelQueryParams();
                     return;
                   })
                   .catch((error) => {
-                    setInlineErrors((prevInlineError) => [
-                      prevInlineError[0],
-                      Label.EXECUTE_ACTION_ERROR,
-                    ]);
+                    setInlineErrors((prevInlineError) => {
+                      const newInlineErrors = [...prevInlineError];
+                      newInlineErrors[1] = Label.EXECUTE_ACTION_ERROR;
+                      return newInlineErrors;
+                    });
+                    setIsExecutingAction(false);
                     console.error(Label.EXECUTE_ACTION_ERROR, error);
                   });
               }}
@@ -284,13 +279,14 @@ export default function ActionsPanel(): JSX.Element {
   return (
     <Panel
       drawer={
-        <Button
+        <ActionButton
           appearance="positive"
-          disabled={disableSubmit}
+          loading={isExecutingAction}
+          disabled={disableSubmit || isExecutingAction}
           onClick={handleSubmit}
         >
           Run action
-        </Button>
+        </ActionButton>
       }
       width="narrow"
       data-testid={TestId.PANEL}
@@ -298,10 +294,11 @@ export default function ActionsPanel(): JSX.Element {
       onRemovePanelQueryParams={handleRemovePanelQueryParams}
       ref={scrollArea}
     >
+      <PanelInlineErrors
+        inlineErrors={inlineErrors}
+        scrollArea={scrollArea.current}
+      />
       <p data-testid="actions-panel-unit-list">
-        {inlineErrors.some((error) => error)
-          ? generateInlineErrors(inlineErrors, scrollArea.current)
-          : null}
         Run action on: {generateSelectedUnitList()}
       </p>
       <LoadingHandler
