@@ -338,7 +338,7 @@ describe("ActionsPanel", () => {
     );
     await userEvent.click(
       screen.getByRole("button", {
-        name: "refreshing",
+        name: "refetching",
       }),
     );
     expect(juju.getActionsForApplication).toHaveBeenCalledTimes(2);

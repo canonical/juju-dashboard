@@ -316,7 +316,7 @@ export default function ActionsPanel(): JSX.Element {
                       appearance="link"
                       onClick={() => getActionsForApplicationCallback()}
                     >
-                      refreshing
+                      refetching
                     </Button>{" "}
                     the actions data.
                   </>
