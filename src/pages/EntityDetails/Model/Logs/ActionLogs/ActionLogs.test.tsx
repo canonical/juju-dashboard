@@ -258,23 +258,25 @@ describe("Action Logs", () => {
   });
 
   it("handles no completed date", async () => {
-    const mockActionResults = actionResultsFactory.build({
+    const mockOperationResults = operationResultsFactory.build({
       results: [
-        actionResultFactory.build({
-          action: actionFactory.build({
-            tag: "action-2",
-            receiver: "unit-easyrsa-0",
-            name: "list-disks",
-          }),
-          log: [
-            actionMessageFactory.build({
-              message: "log message 1",
+        operationResultFactory.build({
+          actions: [
+            actionResultFactory.build({
+              action: actionFactory.build({
+                tag: "action-2",
+                receiver: "unit-easyrsa-0",
+                name: "list-disks",
+              }),
+              completed: undefined,
             }),
           ],
         }),
       ],
     });
-    jest.spyOn(juju, "queryActionsList").mockResolvedValue(mockActionResults);
+    jest
+      .spyOn(juju, "queryOperationsList")
+      .mockResolvedValue(mockOperationResults);
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
       ["easyrsa", "1/list-disks", "completed", "", "", "", ""],

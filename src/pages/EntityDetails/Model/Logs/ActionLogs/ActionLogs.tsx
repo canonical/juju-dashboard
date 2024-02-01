@@ -376,11 +376,11 @@ export default function ActionLogs() {
             ) : null,
           // Sometimes the log gets returned with a date of "0001-01-01T00:00:00Z".
           completed:
-            completedDate?.getFullYear() === 1
-              ? "Unknown"
-              : actionData.completed && (
-                  <RelativeDate datetime={actionData.completed} />
-                ),
+            completedDate?.getFullYear() === 1 || !actionData.completed ? (
+              "Unknown"
+            ) : (
+              <RelativeDate datetime={actionData.completed} />
+            ),
           sortData: {
             application: name ?? "",
             completed: completedDate?.getTime(),
