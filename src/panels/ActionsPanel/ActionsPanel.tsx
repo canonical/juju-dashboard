@@ -1,5 +1,9 @@
 import type { ActionSpec } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
-import { ActionButton, ConfirmationModal } from "@canonical/react-components";
+import {
+  ActionButton,
+  Button,
+  ConfirmationModal,
+} from "@canonical/react-components";
 import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -119,15 +123,15 @@ export default function ActionsPanel(): JSX.Element {
     usePanelQueryParams<ActionsQueryParams>(defaultQueryParams);
   const selectedUnits = queryParams.units;
 
-  useEffect(() => {
+  const getActionsForApplicationCallback = useCallback(() => {
     setFetchingActionData(true);
     if (appName && modelUUID) {
+      // eslint-disable-next-line promise/catch-or-return
       getActionsForApplication(appName, modelUUID, appStore.getState())
         .then((actions) => {
           if (actions?.results?.[0]?.actions) {
             setActionData(actions.results[0].actions);
           }
-          setFetchingActionData(false);
           setInlineErrors((prevInlineErrors) => {
             const newInlineErrors = [...prevInlineErrors];
             newInlineErrors[0] = null;
@@ -142,9 +146,16 @@ export default function ActionsPanel(): JSX.Element {
             return newInlineErrors;
           });
           console.error(Label.GET_ACTIONS_ERROR, error);
+        })
+        .finally(() => {
+          setFetchingActionData(false);
         });
     }
   }, [appName, appStore, modelUUID]);
+
+  useEffect(() => {
+    getActionsForApplicationCallback();
+  }, [getActionsForApplicationCallback]);
 
   const namespace =
     appName && modelUUID
@@ -295,16 +306,35 @@ export default function ActionsPanel(): JSX.Element {
       ref={scrollArea}
     >
       <PanelInlineErrors
-        inlineErrors={inlineErrors}
+        inlineErrors={
+          inlineErrors[0]
+            ? inlineErrors.map((error, index) =>
+                index === 0 ? (
+                  <>
+                    {error} Try{" "}
+                    <Button
+                      appearance="link"
+                      onClick={() => getActionsForApplicationCallback()}
+                    >
+                      refreshing
+                    </Button>{" "}
+                    the actions data.
+                  </>
+                ) : (
+                  error
+                ),
+              )
+            : inlineErrors
+        }
         scrollArea={scrollArea.current}
       />
       <p data-testid="actions-panel-unit-list">
         Run action on: {generateSelectedUnitList()}
       </p>
       <LoadingHandler
-        hasData={data ? true : false}
+        hasData={!!data}
         loading={fetchingActionData}
-        noDataMessage={Label.NO_ACTIONS_PROVIDED}
+        noDataMessage={inlineErrors[0] ? "" : Label.NO_ACTIONS_PROVIDED}
       >
         {Object.keys(actionData).map((actionName) => (
           <RadioInputBox
