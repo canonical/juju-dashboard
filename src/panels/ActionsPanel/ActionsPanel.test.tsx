@@ -323,6 +323,7 @@ describe("ActionsPanel", () => {
           ),
       );
     renderComponent(<ActionsPanel />, { path, url, state });
+    expect(juju.getActionsForApplication).toHaveBeenCalledTimes(1);
     await waitFor(() =>
       expect(juju.getActionsForApplication).toHaveBeenCalledTimes(1),
     );
@@ -335,6 +336,12 @@ describe("ActionsPanel", () => {
         screen.getByText(new RegExp(Label.GET_ACTIONS_ERROR)),
       ).toBeInTheDocument(),
     );
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: "refreshing",
+      }),
+    );
+    expect(juju.getActionsForApplication).toHaveBeenCalledTimes(2);
   });
 
   it("should display error when trying to submit the action request", async () => {
