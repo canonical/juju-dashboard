@@ -1,24 +1,26 @@
-import { Notification } from "@canonical/react-components";
+import { Notification, Button } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import LoadingSpinner from "components/LoadingSpinner";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import { useQueryParams } from "hooks/useQueryParams";
 import { useListSecrets } from "juju/apiHooks";
 import { actions as jujuActions } from "store/juju";
 import {
-  getSecretsLoaded,
-  getSecretsLoading,
-  getModelSecrets,
   getModelByUUID,
   getModelUUIDFromList,
   getSecretsErrors,
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
+import SecretsTable from "./SecretsTable";
+
+export enum Label {
+  ADD = "Add secret",
+}
+
 export enum TestId {
-  SECRETS_TABLE = "secrets-table",
   SECRETS_TAB = "secrets-tab",
 }
 
@@ -29,16 +31,15 @@ const Secrets = () => {
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
   )?.wsControllerURL;
-  const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));
   const secretsErrors = useAppSelector((state) =>
     getSecretsErrors(state, modelUUID),
   );
-  const secretsLoaded = useAppSelector((state) =>
-    getSecretsLoaded(state, modelUUID),
-  );
-  const secretsLoading = useAppSelector((state) =>
-    getSecretsLoading(state, modelUUID),
-  );
+
+  const [, setQuery] = useQueryParams<{
+    panel: string | null;
+  }>({
+    panel: null,
+  });
 
   useListSecrets(userName, modelName);
 
@@ -53,9 +54,7 @@ const Secrets = () => {
   );
 
   let content: ReactNode;
-  if (secretsLoading || !secretsLoaded) {
-    content = <LoadingSpinner />;
-  } else if (secretsErrors) {
+  if (secretsErrors) {
     content = (
       <Notification severity="negative" title="Error">
         {secretsErrors}
@@ -63,11 +62,14 @@ const Secrets = () => {
     );
   } else {
     content = (
-      <ul data-testid={TestId.SECRETS_TABLE}>
-        {secrets?.map((secret) => (
-          <li key={secret.uri}>{secret.label || secret.uri}</li>
-        ))}
-      </ul>
+      <>
+        <Button
+          onClick={() => setQuery({ panel: "add-secret" }, { replace: true })}
+        >
+          {Label.ADD}
+        </Button>
+        <SecretsTable />
+      </>
     );
   }
 

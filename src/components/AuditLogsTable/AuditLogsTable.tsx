@@ -1,11 +1,11 @@
-import { ModularTable, Tooltip } from "@canonical/react-components";
+import { ModularTable } from "@canonical/react-components";
 import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import type { Column } from "react-table";
 
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
+import RelativeDate from "components/RelativeDate";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import { formatFriendlyDateToNow } from "components/utils";
 import { useQueryParams } from "hooks/useQueryParams";
 import { actions as jujuActions } from "store/juju";
 import {
@@ -97,14 +97,7 @@ const AuditLogsTable = () => {
       return [];
     }
     const tableData = auditLogs.map((auditLogsEntry) => {
-      const time = (
-        <Tooltip
-          message={new Date(auditLogsEntry.time).toLocaleString()}
-          position="top-center"
-        >
-          {formatFriendlyDateToNow(auditLogsEntry.time)}
-        </Tooltip>
-      );
+      const time = <RelativeDate datetime={auditLogsEntry.time} />;
       const user = getUserName(auditLogsEntry["user-tag"]);
       const facadeName = auditLogsEntry["facade-name"];
       const facadeMethod = auditLogsEntry["facade-method"];
