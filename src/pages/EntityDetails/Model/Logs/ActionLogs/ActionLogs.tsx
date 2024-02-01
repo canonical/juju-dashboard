@@ -154,16 +154,16 @@ const generateApplicationRow = (
   // performed across multiple units of the same application. I expect
   // that the CLI may gain this functionality in the future and we'll have
   // to update this code to display the correct action name.
-  const actionName = actionData.action.name;
+  const actionName = actionData.action?.name;
   const operationId = operationData.operation.split("-")[1];
   // The receiver is in the format "unit-ceph-mon-0" to "ceph-mon"
-  const parts = actionData.action.receiver.match(/unit-(.+)-\d+/);
+  const parts = actionData.action?.receiver.match(/unit-(.+)-\d+/);
   const appName = parts && parts[1];
   if (!appName) {
     // Not shown in UI. Logged for debugging purposes.
     console.error(
       "Unable to parse action receiver",
-      actionData.action.receiver,
+      actionData.action?.receiver,
     );
     return null;
   }
@@ -178,7 +178,7 @@ const generateApplicationRow = (
     message: "",
     sortData: {
       application: appName,
-      status: actionData.status,
+      status: actionData?.status ?? "",
     },
     status: <Status status={actionData.status} useIcon actionsLogs />,
     subRows: [],
@@ -222,7 +222,7 @@ export default function ActionLogs() {
           setOperations(operationList.results);
           const actionsTags = operationList.results
             .flatMap((operation: OperationResult) =>
-              operation.actions?.map((action) => action.action.tag),
+              operation.actions?.map((action) => action.action?.tag),
             )
             .filter((actionTag?: string): actionTag is string => !!actionTag)
             .map((actionTag: string) => ({ tag: actionTag }));
@@ -231,7 +231,7 @@ export default function ActionLogs() {
             modelUUID,
             appStore.getState(),
           );
-          if (actionsList) {
+          if (actionsList?.results) {
             setActions(actionsList.results);
           }
         }
@@ -270,9 +270,12 @@ export default function ActionLogs() {
         return;
       }
       operationData.actions?.forEach((actionData) => {
-        const outputType = selectedOutput[actionData.action.tag] || Output.ALL;
+        const outputType =
+          (actionData.action && selectedOutput[actionData.action.tag]) ||
+          Output.ALL;
         const actionFullDetails = actions.find(
-          (action) => action.action.tag === actionData.action.tag,
+          (action) =>
+            action.action && action.action.tag === actionData.action?.tag,
         );
         delete actionFullDetails?.output?.["return-code"];
         if (!actionFullDetails) return;
@@ -281,15 +284,17 @@ export default function ActionLogs() {
         const hasSterr =
           actionFullDetails.status === "failed" && !!actionFullDetails.message;
         const stdout = hasStdout
-          ? actionFullDetails.log.map((m, i) => (
+          ? actionFullDetails.log?.map((m, i) => (
               <span className="action-logs__stdout" key={i}>
                 {m.message}
               </span>
             ))
           : [];
         const stderr = hasSterr ? actionFullDetails.message : "";
-        const completedDate = new Date(actionData.completed);
-        const name = actionData.action.receiver.replace(
+        const completedDate = actionData.completed
+          ? new Date(actionData.completed)
+          : null;
+        const name = actionData.action?.receiver.replace(
           /unit-(.+)-(\d+)/,
           "$1/$2",
         );
@@ -300,7 +305,7 @@ export default function ActionLogs() {
               <span>{name}</span>
             </>
           ),
-          id: actionData.action.tag.split("-")[1],
+          id: actionData.action?.tag.split("-")[1] ?? "",
           status: (
             <div className="u-flex u-flex--gap-small">
               <div className="u-flex-shrink u-truncate">
@@ -341,25 +346,28 @@ export default function ActionLogs() {
                       {
                         children: Output.ALL,
                         onClick: () =>
+                          actionData.action &&
                           handleOutputSelect(actionData.action.tag, Output.ALL),
                       },
                       {
                         children: Output.STDOUT,
                         onClick: () =>
+                          actionData.action &&
                           handleOutputSelect(
                             actionData.action.tag,
                             Output.STDOUT,
                           ),
-                        disabled: !stdout.length,
+                        disabled: !stdout?.length,
                       },
                       {
                         children: Output.STDERR,
                         onClick: () =>
+                          actionData.action &&
                           handleOutputSelect(
                             actionData.action.tag,
                             Output.STDERR,
                           ),
-                        disabled: !stderr.length,
+                        disabled: !stderr?.length,
                       },
                     ]}
                   />
@@ -368,16 +376,16 @@ export default function ActionLogs() {
             ) : null,
           // Sometimes the log gets returned with a date of "0001-01-01T00:00:00Z".
           completed:
-            completedDate.getFullYear() === 1 ? (
-              "Unknown"
-            ) : (
-              <RelativeDate datetime={actionData.completed} />
-            ),
+            completedDate?.getFullYear() === 1
+              ? "Unknown"
+              : actionData.completed && (
+                  <RelativeDate datetime={actionData.completed} />
+                ),
           sortData: {
-            application: name,
-            completed: completedDate.getTime(),
-            message: stdout + stderr,
-            status: actionData.status,
+            application: name ?? "",
+            completed: completedDate?.getTime(),
+            message: stdout && stderr ? stdout + stderr : "",
+            status: actionData.status ?? "",
           },
         });
       });
