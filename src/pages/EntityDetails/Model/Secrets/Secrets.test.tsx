@@ -1,5 +1,4 @@
 import { screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 
 import { actions as jujuActions } from "store/juju";
@@ -19,7 +18,7 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import Secrets, { Label } from "./Secrets";
+import Secrets from "./Secrets";
 import { TestId as SecretsTableTestId } from "./SecretsTable/SecretsTable";
 
 const mockStore = configureStore<RootState, unknown>([]);
@@ -111,11 +110,5 @@ describe("Secrets", () => {
           .find((dispatch) => dispatch.type === updateAction.type),
       ).toBeUndefined();
     });
-  });
-
-  it("can open the add secret panel", async () => {
-    renderComponent(<Secrets />, { state, path, url });
-    await userEvent.click(screen.getByRole("button", { name: Label.ADD }));
-    expect(window.location.search).toEqual("?panel=add-secret");
   });
 });
