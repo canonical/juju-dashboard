@@ -17,6 +17,11 @@ import Connection from "./connection";
 
 import "./_webcli.scss";
 
+enum Label {
+  CONNECTION_ERROR = "Unable to connect to the model.",
+  AUTHENTICATION_ERROR = "Unable to authenticate.",
+}
+
 type Props = {
   controllerWSHost: string;
   credentials?: Credential | null;
@@ -41,6 +46,13 @@ const WebCLI = ({
   const [connection, setConnection] = useState<Connection | null>(null);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
   const [historyPosition, setHistoryPosition] = useState(0);
+  // First element in inLineErrors array corresponds to the error when no
+  // websocket address is provided. Second element corresponds to the error
+  // when no authentication information is available for Web CLI.
+  const [inlineErrors, setInlineErrors] = useState<(string | null)[]>([
+    null,
+    null,
+  ]);
   const inputRef = useRef<HTMLInputElement>(null);
   const wsMessageStore = useRef<string>("");
   const [output, setOutput] = useState("");
@@ -109,9 +121,18 @@ const WebCLI = ({
 
   useEffect(() => {
     if (!wsAddress) {
-      console.error("no websocket address provided");
+      setInlineErrors((prevInlineErrors) => {
+        const newInlineErrors = [...prevInlineErrors];
+        newInlineErrors[0] = Label.CONNECTION_ERROR;
+        return newInlineErrors;
+      });
       return;
     }
+    setInlineErrors((prevInlineErrors) => {
+      const newInlineErrors = [...prevInlineErrors];
+      newInlineErrors[0] = null;
+      return newInlineErrors;
+    });
     const conn = new Connection({
       address: wsAddress,
       onopen: () => {
@@ -142,6 +163,11 @@ const WebCLI = ({
     if (credentials && credentials.user && credentials.password) {
       authentication.user = credentials.user;
       authentication.credentials = credentials.password;
+      setInlineErrors((prevInlineErrors) => {
+        const newInlineErrors = [...prevInlineErrors];
+        newInlineErrors[1] = null;
+        return newInlineErrors;
+      });
     } else {
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
@@ -159,10 +185,12 @@ const WebCLI = ({
         );
         authentication.user = activeUser ? getUserName(activeUser) : undefined;
         authentication.macaroons = [deserialized];
-      } else {
-        // XXX Surface error to the user.
-        console.error("No authentication information available");
       }
+      setInlineErrors((prevInlineErrors) => {
+        const newInlineErrors = [...prevInlineErrors];
+        newInlineErrors[1] = macaroons ? null : Label.CONNECTION_ERROR;
+        return newInlineErrors;
+      });
     }
 
     let command;
@@ -205,7 +233,17 @@ const WebCLI = ({
   return (
     <div className="webcli">
       <WebCLIOutput
-        content={output}
+        content={
+          // If inline errors exist, display the errors instead of the output.
+          inlineErrors.some((error) => error)
+            ? (inlineErrors.reduce(
+                (errorsOutput, error) =>
+                  errorsOutput + (error ? `ERROR: ${error}\n` : ""),
+                // Use red color for displaying the errors.
+                "[31m",
+              ) as string)
+            : output
+        }
         showHelp={shouldShowHelp}
         setShouldShowHelp={setShouldShowHelp}
         helpMessage={
