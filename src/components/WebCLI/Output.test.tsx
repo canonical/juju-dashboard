@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 
 import { renderComponent } from "testing/utils";
 
-import Output from "./Output";
+import Output, { ansiColors } from "./Output";
 
 describe("Output", () => {
   it("should display content and not display help message", () => {
@@ -42,10 +42,10 @@ describe("Output", () => {
     );
     expect(screen.getByText("Regular output")).toBeInTheDocument();
     expect(screen.getByText("Red output")).toHaveStyle({
-      color: "rgb(205,49,49)",
+      color: `rgb(${ansiColors[31]})`,
     });
     expect(screen.getByText("Blue output")).toHaveStyle({
-      color: "rgb(26,114,200)",
+      color: `rgb(${ansiColors[34]})`,
     });
     expect(screen.queryByText("Help message")).not.toBeInTheDocument();
   });

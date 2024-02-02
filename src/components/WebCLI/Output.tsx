@@ -16,7 +16,7 @@ type Props = {
 
 // Colors taken from the VSCode section of
 // https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
-const ansiColors = {
+export const ansiColors = {
   0: null, // reset
   30: "0,0,0", // Black
   31: "205,49,49", // Red
