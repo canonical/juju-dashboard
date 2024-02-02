@@ -11,7 +11,11 @@ import {
   configFactory,
 } from "testing/factories/general";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
-import { controllerFactory } from "testing/factories/juju/juju";
+import {
+  controllerFactory,
+  modelFeaturesStateFactory,
+  modelFeaturesFactory,
+} from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
   modelWatcherModelDataFactory,
@@ -116,7 +120,7 @@ describe("Entity Details Container", () => {
   it("lists the correct tabs", () => {
     renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
-      /^ApplicationsIntegrationsLogsSecretsMachines$/,
+      /^ApplicationsIntegrationsLogsMachines$/,
     );
   });
 
@@ -135,11 +139,28 @@ describe("Entity Details Container", () => {
     };
     renderComponent(<EntityDetails />, { path, url, state });
     expect(screen.getByTestId("view-selector")).toHaveTextContent(
-      /^ApplicationsIntegrationsLogsSecrets$/,
+      /^ApplicationsIntegrationsLogs$/,
+    );
+  });
+
+  it("lists the secrets tab", () => {
+    state.juju.modelFeatures = modelFeaturesStateFactory.build({
+      abc123: modelFeaturesFactory.build({
+        listSecrets: true,
+      }),
+    });
+    renderComponent(<EntityDetails />, { path, url, state });
+    expect(screen.getByTestId("view-selector")).toHaveTextContent(
+      /^ApplicationsIntegrationsLogsSecretsMachines$/,
     );
   });
 
   it("clicking the tabs changes the visible section", async () => {
+    state.juju.modelFeatures = modelFeaturesStateFactory.build({
+      abc123: modelFeaturesFactory.build({
+        listSecrets: true,
+      }),
+    });
     renderComponent(<EntityDetails />, { path, url, state });
     const viewSelector = screen.getByTestId("view-selector");
     const sections = [

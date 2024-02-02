@@ -16,6 +16,7 @@ import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import { getIsJuju, getUserPass } from "store/general/selectors";
 import {
+  getCanListSecrets,
   getControllerDataByUUID,
   getModelInfo,
   getModelListLoaded,
@@ -81,7 +82,9 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
     getControllerDataByUUID(controllerUUID),
   );
   const entityType = getEntityType(routeParams);
-
+  const canListSecrets = useAppSelector((state) =>
+    getCanListSecrets(state, modelUUID),
+  );
   const credentials = useAppSelector((state) =>
     getUserPass(state, primaryControllerData?.[0]),
   );
@@ -138,14 +141,17 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
         to: urls.model.tab({ userName, modelName, tab: ModelTab.LOGS }),
         component: Link,
       },
-      {
+    ];
+
+    if (canListSecrets) {
+      items.push({
         active: activeView === "secrets",
         label: "Secrets",
         onClick: (e: MouseEvent) => handleNavClick(e),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.SECRETS }),
         component: Link,
-      },
-    ];
+      });
+    }
 
     if (modelInfo?.type !== "kubernetes") {
       items.push({

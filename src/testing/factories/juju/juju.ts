@@ -17,6 +17,8 @@ import type {
   CrossModelQueryState,
   JujuState,
   ModelData,
+  ModelFeatures,
+  ModelFeaturesState,
   ModelListInfo,
   ModelSecrets,
   SecretsState,
@@ -199,6 +201,12 @@ export const modelSecretsFactory = Factory.define<ModelSecrets>(() => ({
 
 export const secretsStateFactory = Factory.define<SecretsState>(() => ({}));
 
+export const modelFeaturesFactory = Factory.define<ModelFeatures>(() => ({}));
+
+export const modelFeaturesStateFactory = Factory.define<ModelFeaturesState>(
+  () => ({}),
+);
+
 export const jujuStateFactory = Factory.define<JujuState>(() => ({
   auditEvents: auditEventsStateFactory.build(),
   crossModelQuery: crossModelQueryStateFactory.build(),
@@ -207,6 +215,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   modelsLoaded: false,
   modelsError: null,
   modelData: {},
+  modelFeatures: {},
   modelWatcherData: {},
   charms: [],
   secrets: {},

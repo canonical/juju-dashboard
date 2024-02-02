@@ -24,6 +24,8 @@ import {
   secretsStateFactory,
   listSecretResultFactory,
   modelSecretsFactory,
+  modelFeaturesFactory,
+  modelFeaturesStateFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -97,6 +99,10 @@ import {
   getSecretsLoading,
   getSecretsState,
   getModelSecrets,
+  getModelFeaturesState,
+  getCanListSecrets,
+  getModelFeatures,
+  getCanManageSecrets,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -361,6 +367,74 @@ describe("selectors", () => {
               abc123: modelSecretsFactory.build({
                 loading: true,
               }),
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getModelFeaturesState", () => {
+    const modelFeatures = modelFeaturesStateFactory.build();
+    expect(
+      getModelFeaturesState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelFeatures,
+          }),
+        }),
+      ),
+    ).toStrictEqual(modelFeatures);
+  });
+
+  it("getModelFeatures", () => {
+    const modelFeatures = modelFeaturesFactory.build({
+      listSecrets: true,
+      manageSecrets: true,
+    });
+    expect(
+      getModelFeatures(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelFeatures: modelFeaturesStateFactory.build({
+              abc123: modelFeatures,
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(modelFeatures);
+  });
+
+  it("getCanListSecrets", () => {
+    const modelFeatures = modelFeaturesFactory.build({
+      listSecrets: true,
+    });
+    expect(
+      getCanListSecrets(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelFeatures: modelFeaturesStateFactory.build({
+              abc123: modelFeatures,
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getCanManageSecrets", () => {
+    const modelFeatures = modelFeaturesFactory.build({
+      manageSecrets: true,
+    });
+    expect(
+      getCanManageSecrets(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelFeatures: modelFeaturesStateFactory.build({
+              abc123: modelFeatures,
             }),
           }),
         }),

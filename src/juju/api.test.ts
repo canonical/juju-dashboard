@@ -320,12 +320,12 @@ describe("Juju API", () => {
     });
 
     it("handles a logged out user", async () => {
-      const response = await fetchModelStatus(
+      const { status } = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
         () => rootStateFactory.build(),
       );
-      expect(response).toBeNull();
+      expect(status).toBeNull();
     });
 
     it("can log in with an external provider", async () => {
@@ -394,7 +394,7 @@ describe("Juju API", () => {
       jest
         .spyOn(jujuLib, "connectAndLogin")
         .mockImplementation(async () => loginResponse);
-      const response = await fetchModelStatus(
+      const { status: response } = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
         () => state,
@@ -431,13 +431,97 @@ describe("Juju API", () => {
       jest
         .spyOn(jujuLib, "connectAndLogin")
         .mockImplementation(async () => loginResponse);
-      const response = await fetchModelStatus(
+      const { status: response } = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
         () => state,
       );
       expect(response?.annotations).toStrictEqual({
         etcd: annotations,
+      });
+    });
+
+    it("handles features when no secrets facade", async () => {
+      const status = fullStatusFactory.build();
+      const loginResponse = {
+        conn: {
+          facades: {
+            client: {
+              fullStatus: jest.fn().mockReturnValue(status),
+            },
+          },
+        } as unknown as Connection,
+        logout: jest.fn(),
+      };
+      jest
+        .spyOn(jujuLib, "connectAndLogin")
+        .mockImplementation(async () => loginResponse);
+      const { features } = await fetchModelStatus(
+        "abc123",
+        "wss://example.com/api",
+        () => state,
+      );
+      expect(features).toStrictEqual({
+        listSecrets: false,
+        manageSecrets: false,
+      });
+    });
+
+    it("handles features when secrets facade is v1", async () => {
+      const status = fullStatusFactory.build();
+      const loginResponse = {
+        conn: {
+          facades: {
+            client: {
+              fullStatus: jest.fn().mockReturnValue(status),
+            },
+            secrets: {
+              VERSION: 1,
+            },
+          },
+        } as unknown as Connection,
+        logout: jest.fn(),
+      };
+      jest
+        .spyOn(jujuLib, "connectAndLogin")
+        .mockImplementation(async () => loginResponse);
+      const { features } = await fetchModelStatus(
+        "abc123",
+        "wss://example.com/api",
+        () => state,
+      );
+      expect(features).toStrictEqual({
+        listSecrets: true,
+        manageSecrets: false,
+      });
+    });
+
+    it("handles features when secrets facade is v2", async () => {
+      const status = fullStatusFactory.build();
+      const loginResponse = {
+        conn: {
+          facades: {
+            client: {
+              fullStatus: jest.fn().mockReturnValue(status),
+            },
+            secrets: {
+              VERSION: 2,
+            },
+          },
+        } as unknown as Connection,
+        logout: jest.fn(),
+      };
+      jest
+        .spyOn(jujuLib, "connectAndLogin")
+        .mockImplementation(async () => loginResponse);
+      const { features } = await fetchModelStatus(
+        "abc123",
+        "wss://example.com/api",
+        () => state,
+      );
+      expect(features).toStrictEqual({
+        listSecrets: true,
+        manageSecrets: true,
       });
     });
 
@@ -491,13 +575,16 @@ describe("Juju API", () => {
       });
     });
 
-    it("can fetch and store model status", async () => {
+    it("can fetch and store model status and features", async () => {
       const status = fullStatusFactory.build();
       const loginResponse = {
         conn: {
           facades: {
             client: {
               fullStatus: jest.fn().mockReturnValue(status),
+            },
+            secrets: {
+              VERSION: 1,
             },
           },
         } as unknown as Connection,
@@ -517,6 +604,16 @@ describe("Juju API", () => {
         jujuActions.updateModelStatus({
           modelUUID: "abc123",
           status,
+          wsControllerURL: "wss://example.com/api",
+        }),
+      );
+      expect(dispatch).toHaveBeenCalledWith(
+        jujuActions.updateModelFeatures({
+          modelUUID: "abc123",
+          features: {
+            listSecrets: true,
+            manageSecrets: false,
+          },
           wsControllerURL: "wss://example.com/api",
         }),
       );

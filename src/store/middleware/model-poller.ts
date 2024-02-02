@@ -134,6 +134,7 @@ export const modelPollerMiddleware: Middleware<
         const jimmVersion = conn.facades.jimM?.version ?? 0;
         const auditLogsAvailable = jimmVersion >= 4;
         const identity = conn.info.user?.identity;
+        console.log(conn.facades);
         let auditLogsAllowed = false;
         if (auditLogsAvailable && identity) {
           try {
@@ -200,6 +201,7 @@ export const modelPollerMiddleware: Middleware<
               const models = await conn.facades.modelManager?.listModels({
                 tag: identity,
               });
+              console.log("models", models);
               if (models) {
                 reduxStore.dispatch(
                   jujuActions.updateModelList({ models, wsControllerURL }),

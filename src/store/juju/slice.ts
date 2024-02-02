@@ -22,7 +22,7 @@ import type {
 import { processDeltas } from "juju/watchers";
 import { extractCloudName } from "store/juju/utils/models";
 
-import type { Controllers, JujuState } from "./types";
+import type { Controllers, JujuState, ModelFeatures } from "./types";
 
 export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
 
@@ -57,6 +57,7 @@ const slice = createSlice({
     modelsError: null,
     modelsLoaded: false,
     modelData: {},
+    modelFeatures: {},
     modelWatcherData: {},
     charms: [],
     secrets: {},
@@ -138,6 +139,17 @@ const slice = createSlice({
         state.modelData[modelInfo.uuid].info = modelInfo;
       }
     },
+    updateModelFeatures: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          features: ModelFeatures;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.modelFeatures[action.payload.modelUUID] = action.payload.features;
+    },
     updateModelsError: (
       state,
       action: PayloadAction<
@@ -151,6 +163,7 @@ const slice = createSlice({
     clearModelData: (state) => {
       state.modelData = {};
       state.models = {};
+      state.modelFeatures = {};
       state.modelsError = null;
       state.modelsLoaded = false;
     },
