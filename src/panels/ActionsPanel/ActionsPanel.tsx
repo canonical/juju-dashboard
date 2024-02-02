@@ -107,7 +107,7 @@ export default function ActionsPanel(): JSX.Element {
     SetSelectedAction,
   ] = useState<string>();
   // First element in inLineErrors array corresponds to the get actions for
-  // applications error. Second element corresponds to execute action error.
+  // application error. Second element corresponds to execute action error.
   const [inlineErrors, setInlineErrors] = useState<(string | null)[]>([
     null,
     null,
@@ -310,6 +310,8 @@ export default function ActionsPanel(): JSX.Element {
           inlineErrors[0]
             ? inlineErrors.map((error, index) =>
                 index === 0 ? (
+                  // If get actions for application fails, we add a button for
+                  // refetching the actions data to the error notification.
                   <>
                     {error} Try{" "}
                     <Button
