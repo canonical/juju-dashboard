@@ -57,16 +57,13 @@ const colorize = (content: string) => {
   }
 
   let colorizedContent = "";
-  let previousIndex = 0;
   colors.forEach((color, index) => {
     const ansiCode = color[0];
     const ansiCodeNumber = ansiCode.replace("[", "").replace("m", "");
 
-    if (color.index !== 0 && previousIndex === 0) {
+    if (color.index !== 0 && index === 0) {
       // Add the content up until the first colour without wrapping it.
-      colorizedContent =
-        colorizedContent + content.substring(previousIndex, color.index);
-      previousIndex = color.index ?? 0;
+      colorizedContent += content.substring(0, color.index);
     }
     const endIndex = colors[index + 1]?.index || content.length;
     let part = content
@@ -77,14 +74,13 @@ const colorize = (content: string) => {
       part = `<span style="${style}">${part}</span>`;
     }
     colorizedContent = colorizedContent + part;
-    previousIndex = color.index ?? 0;
   });
   return colorizedContent;
 };
 
 const DEFAULT_HEIGHT = 300;
 // 20 is a magic number, sometimes the browser stops firing the drag at
-// an inoportune time and the element isn't left completely closed.
+// an inopportune time and the element isn't left completely closed.
 const CONSIDER_CLOSED = 20;
 const HELP_HEIGHT = 50;
 const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
