@@ -1,5 +1,9 @@
 import type { ActionSpec } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
-import { Button, ConfirmationModal } from "@canonical/react-components";
+import {
+  ActionButton,
+  Button,
+  ConfirmationModal,
+} from "@canonical/react-components";
 import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -12,6 +16,7 @@ import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
+import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import type { ConfirmTypes } from "panels/types";
 import { getModelUUID } from "store/juju/selectors";
@@ -26,8 +31,8 @@ export enum Label {
   CONFIRM_BUTTON = "Confirm",
   NO_UNITS_SELECTED = "0 units selected",
   NO_ACTIONS_PROVIDED = "This charm has not provided any actions.",
-  GET_ACTIONS_ERROR = "Error while trying to get actions for application.",
-  EXECUTE_ACTION_ERROR = "Error while trying to execute action on units.",
+  GET_ACTIONS_ERROR = "Unable to get actions for application.",
+  EXECUTE_ACTION_ERROR = "Couldn't start the action.",
 }
 
 export enum TestId {
@@ -101,6 +106,14 @@ export default function ActionsPanel(): JSX.Element {
     string | undefined,
     SetSelectedAction,
   ] = useState<string>();
+  // First element in inLineErrors array corresponds to the get actions for
+  // application error. Second element corresponds to execute action error.
+  const [inlineErrors, setInlineErrors] = useState<(string | null)[]>([
+    null,
+    null,
+  ]);
+  const [isExecutingAction, setIsExecutingAction] = useState<boolean>(false);
+  const scrollArea = useRef<HTMLDivElement>(null);
   const { Portal } = usePortal();
 
   const actionOptionsValues = useRef<ActionOptionValues>({});
@@ -110,34 +123,53 @@ export default function ActionsPanel(): JSX.Element {
     usePanelQueryParams<ActionsQueryParams>(defaultQueryParams);
   const selectedUnits = queryParams.units;
 
-  useEffect(() => {
+  const getActionsForApplicationCallback = useCallback(() => {
     setFetchingActionData(true);
     if (appName && modelUUID) {
+      // eslint-disable-next-line promise/catch-or-return
       getActionsForApplication(appName, modelUUID, appStore.getState())
         .then((actions) => {
           if (actions?.results?.[0]?.actions) {
             setActionData(actions.results[0].actions);
           }
-          setFetchingActionData(false);
+          setInlineErrors((prevInlineErrors) => {
+            const newInlineErrors = [...prevInlineErrors];
+            newInlineErrors[0] = null;
+            return newInlineErrors;
+          });
           return;
         })
-        .catch((error) => console.error(Label.GET_ACTIONS_ERROR, error));
+        .catch((error) => {
+          setInlineErrors((prevInlineErrors) => {
+            const newInlineErrors = [...prevInlineErrors];
+            newInlineErrors[0] = Label.GET_ACTIONS_ERROR;
+            return newInlineErrors;
+          });
+          console.error(Label.GET_ACTIONS_ERROR, error);
+        })
+        .finally(() => {
+          setFetchingActionData(false);
+        });
     }
   }, [appName, appStore, modelUUID]);
+
+  useEffect(() => {
+    getActionsForApplicationCallback();
+  }, [getActionsForApplicationCallback]);
 
   const namespace =
     appName && modelUUID
       ? appState.juju?.modelData?.[modelUUID]?.applications?.[appName]?.charm
       : null;
 
-  const generateSelectedUnitList = () => {
+  const generateSelectedUnitList = useCallback(() => {
     if (!selectedUnits.length) {
       return Label.NO_UNITS_SELECTED;
     }
     return selectedUnits.reduce((acc, unitName) => {
       return `${acc}, ${unitName.split("/")[1]}`;
     });
-  };
+  }, [selectedUnits]);
 
   const generateTitle = () => {
     const unitLength = selectedUnits.length;
@@ -211,12 +243,28 @@ export default function ActionsPanel(): JSX.Element {
               cancelButtonLabel={Label.CANCEL_BUTTON}
               confirmButtonLabel={Label.CONFIRM_BUTTON}
               confirmButtonAppearance="positive"
-              onConfirm={() => {
+              onConfirm={(event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+                // Stop propagation of the click event in order for the Panel
+                // to remain open after an error occurs in executeAction().
+                // Remove this manual fix once this issue gets resolved:
+                // https://github.com/canonical/react-components/issues/1032
+                event.nativeEvent.stopImmediatePropagation();
                 setConfirmType(null);
-                executeAction().catch((error) =>
-                  console.error(Label.EXECUTE_ACTION_ERROR, error),
-                );
-                handleRemovePanelQueryParams();
+                setIsExecutingAction(true);
+                executeAction()
+                  .then(() => {
+                    handleRemovePanelQueryParams();
+                    return;
+                  })
+                  .catch((error) => {
+                    setInlineErrors((prevInlineError) => {
+                      const newInlineErrors = [...prevInlineError];
+                      newInlineErrors[1] = Label.EXECUTE_ACTION_ERROR;
+                      return newInlineErrors;
+                    });
+                    setIsExecutingAction(false);
+                    console.error(Label.EXECUTE_ACTION_ERROR, error);
+                  });
               }}
               close={() => setConfirmType(null)}
             >
@@ -242,26 +290,53 @@ export default function ActionsPanel(): JSX.Element {
   return (
     <Panel
       drawer={
-        <Button
+        <ActionButton
           appearance="positive"
-          disabled={disableSubmit}
+          loading={isExecutingAction}
+          disabled={disableSubmit || isExecutingAction}
           onClick={handleSubmit}
         >
           Run action
-        </Button>
+        </ActionButton>
       }
       width="narrow"
       data-testid={TestId.PANEL}
       title={generateTitle()}
       onRemovePanelQueryParams={handleRemovePanelQueryParams}
+      ref={scrollArea}
     >
+      <PanelInlineErrors
+        inlineErrors={
+          inlineErrors[0]
+            ? inlineErrors.map((error, index) =>
+                index === 0 ? (
+                  // If get actions for application fails, we add a button for
+                  // refetching the actions data to the first inline error.
+                  <>
+                    {error} Try{" "}
+                    <Button
+                      appearance="link"
+                      onClick={() => getActionsForApplicationCallback()}
+                    >
+                      refetching
+                    </Button>{" "}
+                    the actions data.
+                  </>
+                ) : (
+                  error
+                ),
+              )
+            : inlineErrors
+        }
+        scrollArea={scrollArea.current}
+      />
       <p data-testid="actions-panel-unit-list">
         Run action on: {generateSelectedUnitList()}
       </p>
       <LoadingHandler
-        hasData={data ? true : false}
+        hasData={!!data}
         loading={fetchingActionData}
-        noDataMessage={Label.NO_ACTIONS_PROVIDED}
+        noDataMessage={inlineErrors[0] ? "" : Label.NO_ACTIONS_PROVIDED}
       >
         {Object.keys(actionData).map((actionName) => (
           <RadioInputBox

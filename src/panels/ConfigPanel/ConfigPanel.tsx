@@ -1,7 +1,6 @@
 import {
   Button,
   ConfirmationModal,
-  Notification,
   Spinner,
 } from "@canonical/react-components";
 import classnames from "classnames";
@@ -14,11 +13,11 @@ import type { Store } from "redux";
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
-import ScrollOnRender from "components/ScrollOnRender";
 import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import type { Config, ConfigData, ConfigValue } from "juju/api";
 import { getApplicationConfig, setApplicationConfig } from "juju/api";
+import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import type { ConfirmTypes } from "panels/types";
 import bulbImage from "static/images/bulb.svg";
@@ -29,6 +28,7 @@ import BooleanConfig from "./BooleanConfig";
 import type { SetNewValue, SetSelectedConfig } from "./ConfigField";
 import NumberConfig from "./NumberConfig";
 import TextAreaConfig from "./TextAreaConfig";
+
 import "./_config-panel.scss";
 
 export enum Label {
@@ -56,13 +56,6 @@ type ConfigQueryParams = {
   entity: string | null;
   modelUUID: string | null;
 };
-
-const generateErrors = (errors: string[], scrollArea?: HTMLElement | null) =>
-  errors.map((error) => (
-    <ScrollOnRender key={error} scrollArea={scrollArea}>
-      <Notification severity="negative">{error}</Notification>
-    </ScrollOnRender>
-  ));
 
 export default function ConfigPanel(): JSX.Element {
   const reduxStore = useAppStore();
@@ -391,9 +384,10 @@ export default function ConfigPanel(): JSX.Element {
             </div>
 
             <div className="config-panel__list">
-              {formErrors
-                ? generateErrors(formErrors, scrollArea?.current)
-                : null}
+              <PanelInlineErrors
+                inlineErrors={formErrors}
+                scrollArea={scrollArea.current}
+              />
               {generateConfigElementList(
                 config,
                 selectedConfig,
