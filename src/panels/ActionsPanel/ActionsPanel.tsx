@@ -311,7 +311,7 @@ export default function ActionsPanel(): JSX.Element {
             ? inlineErrors.map((error, index) =>
                 index === 0 ? (
                   // If get actions for application fails, we add a button for
-                  // refetching the actions data to the respective inline error.
+                  // refetching the actions data to the first inline error.
                   <>
                     {error} Try{" "}
                     <Button
