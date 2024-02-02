@@ -25,6 +25,8 @@ import {
   modelDataFactory,
   modelDataInfoFactory,
   modelListInfoFactory,
+  modelFeaturesStateFactory,
+  modelFeaturesFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -435,6 +437,11 @@ describe("Model", () => {
   });
 
   it("can display the secrets tab via the URL", async () => {
+    state.juju.modelFeatures = modelFeaturesStateFactory.build({
+      abc123: modelFeaturesFactory.build({
+        listSecrets: true,
+      }),
+    });
     renderComponent(<Model />, {
       state,
       url: "/models/eggman@external/test1?activeView=secrets",
@@ -445,6 +452,24 @@ describe("Model", () => {
         SecretsTestId.SECRETS_TAB,
       ),
     ).toBeInTheDocument();
+  });
+
+  it("does not display the secrets tab if the feature is not available", async () => {
+    state.juju.modelFeatures = modelFeaturesStateFactory.build({
+      abc123: modelFeaturesFactory.build({
+        listSecrets: false,
+      }),
+    });
+    renderComponent(<Model />, {
+      state,
+      url: "/models/eggman@external/test1?activeView=secrets",
+      path,
+    });
+    expect(
+      within(screen.getByTestId(TestId.MAIN)).queryByTestId(
+        SecretsTestId.SECRETS_TAB,
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it("renders the details pane for models shared-with-me", () => {

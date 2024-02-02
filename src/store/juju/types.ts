@@ -82,6 +82,13 @@ export type ModelSecrets = GenericItemsState<ListSecretResult, string> & {
 
 export type SecretsState = Record<string, ModelSecrets>;
 
+export type ModelFeatures = {
+  listSecrets?: boolean;
+  manageSecrets?: boolean;
+};
+
+export type ModelFeaturesState = Record<string, ModelFeatures>;
+
 export type JujuState = {
   auditEvents: AuditEventsState;
   crossModelQuery: CrossModelQueryState;
@@ -90,6 +97,7 @@ export type JujuState = {
   modelsError: string | null;
   modelsLoaded: boolean;
   modelData: ModelDataList;
+  modelFeatures: ModelFeaturesState;
   modelWatcherData?: ModelWatcherData;
   charms: Charm[];
   secrets: SecretsState;

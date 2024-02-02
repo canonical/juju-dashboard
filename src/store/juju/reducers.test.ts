@@ -16,6 +16,7 @@ import {
   secretsStateFactory,
   listSecretResultFactory,
   modelSecretsFactory,
+  modelFeaturesStateFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -461,6 +462,30 @@ describe("reducers", () => {
         charmInfoFactory.build({ url: "ch:postgres" }),
       ],
     });
+  });
+
+  it("updateModelFeatures", () => {
+    const state = jujuStateFactory.build();
+    expect(
+      reducer(
+        state,
+        actions.updateModelFeatures({
+          modelUUID: "abc123",
+          features: {
+            listSecrets: true,
+          },
+          wsControllerURL: "wss://test.example.com",
+        }),
+      ),
+    ).toStrictEqual(
+      jujuStateFactory.build({
+        modelFeatures: modelFeaturesStateFactory.build({
+          abc123: {
+            listSecrets: true,
+          },
+        }),
+      }),
+    );
   });
 
   it("updateSelectedApplications", () => {

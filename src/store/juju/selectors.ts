@@ -196,6 +196,26 @@ export const getSecretsLoading = createSelector(
   (secrets) => secrets?.loading,
 );
 
+export const getModelFeaturesState = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelFeatures,
+);
+
+export const getModelFeatures = createSelector(
+  [getModelFeaturesState, (_state: RootState, modelUUID: string) => modelUUID],
+  (modelFeatures, modelUUID) => modelFeatures[modelUUID],
+);
+
+export const getCanListSecrets = createSelector(
+  [getModelFeatures],
+  (modelFeatures) => modelFeatures?.listSecrets,
+);
+
+export const getCanManageSecrets = createSelector(
+  [getModelFeatures],
+  (modelFeatures) => modelFeatures?.manageSecrets,
+);
+
 /**
   Fetches the model data from state.
   @param state The application state.

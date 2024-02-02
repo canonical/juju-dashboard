@@ -42,7 +42,10 @@ import {
 import type { Credential } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
-import type { Controller as JujuController } from "store/juju/types";
+import type {
+  Controller as JujuController,
+  ModelFeatures,
+} from "store/juju/types";
 import { ModelsError } from "store/middleware/model-poller";
 import type { RootState, Store } from "store/store";
 
@@ -244,6 +247,7 @@ export async function fetchModelStatus(
   }
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status: FullStatusWithAnnotations | string | null = null;
+  let features: ModelFeatures | null = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
   if (isLoggedIn(getState(), wsControllerURL)) {
@@ -284,6 +288,11 @@ export async function fetchModelStatus(
           }
         });
         status.annotations = annotations;
+        const secretsFacade = conn?.facades.secrets?.VERSION ?? 0;
+        features = {
+          listSecrets: secretsFacade >= 1,
+          manageSecrets: secretsFacade >= 2,
+        };
       }
       logout();
     } catch (error) {
@@ -291,7 +300,7 @@ export async function fetchModelStatus(
       throw error;
     }
   }
-  return status;
+  return { status, features };
 }
 
 /**
@@ -307,13 +316,21 @@ export async function fetchAndStoreModelStatus(
   dispatch: Dispatch,
   getState: () => RootState,
 ) {
-  const status = await fetchModelStatus(modelUUID, wsControllerURL, getState);
-  if (!status) {
-    return;
-  }
-  dispatch(
-    jujuActions.updateModelStatus({ modelUUID, status, wsControllerURL }),
+  const { status, features } = await fetchModelStatus(
+    modelUUID,
+    wsControllerURL,
+    getState,
   );
+  if (status) {
+    dispatch(
+      jujuActions.updateModelStatus({ modelUUID, status, wsControllerURL }),
+    );
+  }
+  if (features) {
+    dispatch(
+      jujuActions.updateModelFeatures({ modelUUID, features, wsControllerURL }),
+    );
+  }
 }
 
 /**
