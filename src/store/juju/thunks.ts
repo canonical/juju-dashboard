@@ -33,7 +33,7 @@ export const addControllerCloudRegion = createAsyncThunk<
       return;
     }
     const model = modelInfo.results[0].result;
-    if (controllers) {
+    if (model && controllers) {
       const updatedControllers = controllers.map((controller) => {
         if (
           "uuid" in controller &&

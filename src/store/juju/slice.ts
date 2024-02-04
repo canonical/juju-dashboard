@@ -131,7 +131,7 @@ const slice = createSlice({
       // There don't appear to be any irrelevant data in the modelInfo so
       // we overwrite the whole object every time it changes even though
       // mostly that'll just be status timestamps.
-      const modelData = state.modelData?.[modelInfo?.uuid];
+      const modelData = modelInfo && state.modelData?.[modelInfo?.uuid];
       // If any of the status requests timeout then it's possible the data
       // won't be available. Just abandon saving any data in that case.
       // This will go away with the new API.
