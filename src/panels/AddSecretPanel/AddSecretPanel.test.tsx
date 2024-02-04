@@ -7,6 +7,8 @@ import { renderComponent } from "testing/utils";
 import AddSecretPanel, { Label } from "./AddSecretPanel";
 import { Label as FieldsLabel } from "./Fields/Fields";
 import { RotatePolicy } from "./types";
+import { format } from "date-fns";
+import { DATETIME_LOCAL } from "../AuditLogsFilterPanel/Fields/Fields";
 
 jest.mock("juju/apiHooks", () => {
   return {
@@ -33,8 +35,9 @@ describe("AddSecretPanel", () => {
     );
     const expiryField = document.querySelector('input[name="expiryTime"]');
     expect(expiryField).toBeInTheDocument();
+    const expiry = "2024-02-17T13:14";
     if (expiryField) {
-      await userEvent.type(expiryField, "2024-02-17T13:14");
+      await userEvent.type(expiryField, expiry);
     }
     await userEvent.selectOptions(
       screen.getByRole("combobox", { name: FieldsLabel.ROTATE_POLICY }),
@@ -57,7 +60,7 @@ describe("AddSecretPanel", () => {
           },
         },
         description: "a description",
-        "expire-time": "2024-02-17T02:14:00.000Z",
+        "expire-time": new Date(expiry).toISOString(),
         label: "a label",
         "rotate-policy": "monthly",
       },

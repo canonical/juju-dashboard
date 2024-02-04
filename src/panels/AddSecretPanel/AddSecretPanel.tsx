@@ -2,11 +2,7 @@ import type {
   CreateSecretArg,
   StringResults,
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
-import {
-  ActionButton,
-  Button,
-  Notification,
-} from "@canonical/react-components";
+import { ActionButton, Button } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useId, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
@@ -14,8 +10,8 @@ import * as Yup from "yup";
 
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import ScrollOnRender from "components/ScrollOnRender";
 import { useCreateSecrets } from "juju/apiHooks";
+import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 
 import Fields from "./Fields";
@@ -86,11 +82,10 @@ const AddSecretPanel = () => {
         width="narrow"
       >
         <>
-          {inlineError ? (
-            <ScrollOnRender scrollArea={scrollArea?.current}>
-              <Notification severity="negative">{inlineError}</Notification>
-            </ScrollOnRender>
-          ) : null}
+          <PanelInlineErrors
+            inlineErrors={[inlineError]}
+            scrollArea={scrollArea.current}
+          />
           <Formik<FormFields>
             initialValues={{
               description: "",
