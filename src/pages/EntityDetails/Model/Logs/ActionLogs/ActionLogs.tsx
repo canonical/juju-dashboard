@@ -279,12 +279,12 @@ export default function ActionLogs() {
         );
         delete actionFullDetails?.output?.["return-code"];
         if (!actionFullDetails) return;
-        const hasStdout =
-          actionFullDetails.log && actionFullDetails.log.length > 0;
+        const log = actionFullDetails.log;
+        const hasStdout = log && log.length > 0;
         const hasSterr =
           actionFullDetails.status === "failed" && !!actionFullDetails.message;
         const stdout = hasStdout
-          ? actionFullDetails.log?.map((m, i) => (
+          ? log.map((m, i) => (
               <span className="action-logs__stdout" key={i}>
                 {m.message}
               </span>
