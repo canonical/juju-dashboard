@@ -7,8 +7,6 @@ import { renderComponent } from "testing/utils";
 import AddSecretPanel, { Label } from "./AddSecretPanel";
 import { Label as FieldsLabel } from "./Fields/Fields";
 import { RotatePolicy } from "./types";
-import { format } from "date-fns";
-import { DATETIME_LOCAL } from "../AuditLogsFilterPanel/Fields/Fields";
 
 jest.mock("juju/apiHooks", () => {
   return {
