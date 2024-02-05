@@ -17,7 +17,7 @@ import Connection from "./connection";
 
 import "./_webcli.scss";
 
-enum Label {
+export enum Label {
   CONNECTION_ERROR = "Unable to connect to the model.",
   AUTHENTICATION_ERROR = "Unable to authenticate.",
 }
@@ -188,7 +188,7 @@ const WebCLI = ({
       }
       setInlineErrors((prevInlineErrors) => {
         const newInlineErrors = [...prevInlineErrors];
-        newInlineErrors[1] = macaroons ? null : Label.CONNECTION_ERROR;
+        newInlineErrors[1] = macaroons ? null : Label.AUTHENTICATION_ERROR;
         return newInlineErrors;
       });
     }
@@ -225,40 +225,34 @@ const WebCLI = ({
     setShouldShowHelp(!shouldShowHelp);
   };
 
-  // If we do not have an address then do not try and render the UI.
-  if (!wsAddress) {
-    return null;
-  }
-
   return (
     <div className="webcli">
       <WebCLIOutput
-        content={
-          // If inline errors exist, display the errors instead of the output.
-          inlineErrors.some((error) => error)
-            ? (inlineErrors.reduce(
-                (errorsOutput, error) =>
-                  errorsOutput + (error ? `ERROR: ${error}\n` : ""),
-                // Use red color for displaying the errors.
-                "[31m",
-              ) as string)
-            : output
-        }
+        content={output}
         showHelp={shouldShowHelp}
         setShouldShowHelp={setShouldShowHelp}
         helpMessage={
-          <>
-            Welcome to the Juju Web CLI - see the{" "}
-            <a
-              href={externalURLs.cliHelp}
-              className="p-link--inverted"
-              rel="noreferrer"
-              target="_blank"
-            >
-              full documentation here
-            </a>
-            .
-          </>
+          // If errors exist, display them instead of the default help message.
+          inlineErrors.some((error) => error) ? (
+            <>
+              {inlineErrors.map((error) =>
+                error ? <div key={error}>ERROR: {error}</div> : null,
+              )}
+            </>
+          ) : (
+            <>
+              Welcome to the Juju Web CLI - see the{" "}
+              <a
+                href={externalURLs.cliHelp}
+                className="p-link--inverted"
+                rel="noreferrer"
+                target="_blank"
+              >
+                full documentation here
+              </a>
+              .
+            </>
+          )
         }
       />
       <div className="webcli__input">
@@ -274,6 +268,8 @@ const WebCLI = ({
             name="command"
             ref={inputRef}
             placeholder="enter command"
+            // Disable input if there is a connection error.
+            disabled={!!inlineErrors[0]}
           />
         </form>
         <div className="webcli__input-help">

@@ -8,7 +8,7 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import { TestId } from "./Output";
-import WebCLI, { MAX_HISTORY } from "./WebCLI";
+import WebCLI, { MAX_HISTORY, Label } from "./WebCLI";
 
 jest.mock("juju/bakery", () => ({
   __esModule: true,
@@ -411,6 +411,13 @@ describe("WebCLI", () => {
         "height: 628px;",
       );
       WS.clean();
+    });
+
+    it("should display connection errror when no websocket address is present", () => {
+      renderComponent(<WebCLI {...props} modelUUID="" />);
+      expect(
+        document.querySelector(".webcli__output-content code"),
+      ).toHaveTextContent(`ERROR: ${Label.CONNECTION_ERROR}`);
     });
   });
 });
