@@ -35,7 +35,7 @@ function useInlineErrors(
     },
     [],
   );
-  const hasError = useCallback(
+  const hasInlineError = useCallback(
     (key: InlineError["key"]) =>
       !!inlineErrors.find(
         (inlineError) => inlineError.key === key && !!inlineError.error,
@@ -48,7 +48,7 @@ function useInlineErrors(
     }
     return nodes;
   }, []);
-  return [errors, setError, hasError];
+  return [errors, setError, hasInlineError];
 }
 
 export default useInlineErrors;
