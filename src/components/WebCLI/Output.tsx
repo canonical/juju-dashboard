@@ -1,5 +1,6 @@
+import Convert from "ansi-to-html";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export enum TestId {
   CODE = "output-code",
@@ -12,70 +13,6 @@ type Props = {
   helpMessage: ReactNode;
   showHelp: boolean;
   setShouldShowHelp: (showHelp: boolean) => void;
-};
-
-// Colors taken from the VSCode section of
-// https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
-export const ansiColors = {
-  0: null, // reset
-  30: "0,0,0", // Black
-  31: "205,49,49", // Red
-  32: "13,188,121", // Green
-  33: "229,229,16", // Yellow
-  34: "26,114,200", //  Blue
-  35: "188,63,188", // Magenta
-  36: "17,168,205", // Cyan
-  37: "229,229,229", // White
-  90: "102,102,102", // Bright Black (Gray)
-  91: "241,76,76", // Bright Red
-  92: "35,209,139", // Bright Green
-  93: "245,245,67", // Bright Yellow
-  94: "59,142,234", // Bright Blue
-  95: "214,112,214", // Bright Magenta
-  96: "41,184,219", // Bright Cyan
-  97: "229,229,229", // Bright White
-};
-
-const findANSICode = /\[\d{1,3}m/g;
-
-const getStyle = (ansiCode: number) => {
-  const fgColor = ansiColors[ansiCode as keyof typeof ansiColors];
-  if (fgColor) {
-    return `color: rgb(${fgColor})`;
-  }
-  // We may have been provided a background color.
-  const bgColor = ansiColors[(ansiCode - 10) as keyof typeof ansiColors];
-  if (bgColor) {
-    return `color: rgb(${bgColor})`;
-  }
-};
-
-const colorize = (content: string) => {
-  const colors = Array.from(content.matchAll(findANSICode));
-  if (colors.length === 0) {
-    return content;
-  }
-
-  let colorizedContent = "";
-  colors.forEach((color, index) => {
-    const ansiCode = color[0];
-    const ansiCodeNumber = ansiCode.replace("[", "").replace("m", "");
-
-    if (color.index !== 0 && index === 0) {
-      // Add the content up until the first colour without wrapping it.
-      colorizedContent += content.substring(0, color.index);
-    }
-    const endIndex = colors[index + 1]?.index || content.length;
-    let part = content
-      .substring(color.index ?? 0, endIndex)
-      .replace(ansiCode, "");
-    const style = getStyle(Number(ansiCodeNumber));
-    if (style) {
-      part = `<span style="${style}">${part}</span>`;
-    }
-    colorizedContent = colorizedContent + part;
-  });
-  return colorizedContent;
 };
 
 const DEFAULT_HEIGHT = 300;
@@ -91,6 +28,8 @@ const WebCLIOutput = ({
   showHelp,
   setShouldShowHelp,
 }: Props) => {
+  const convert = new Convert();
+
   const resizeDeltaY = useRef(0);
   const [height, setHeight] = useState(1);
 
@@ -182,10 +121,6 @@ const WebCLIOutput = ({
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [content]);
 
-  // Strip any color escape codes from the content.
-  content = content.replace(/\\u001b/gi, "");
-  const colorizedContent = useMemo(() => colorize(content), [content]);
-
   return (
     <div className="webcli__output" style={{ height: `${height}px` }}>
       <div className="webcli__output-dragarea" aria-hidden={true}>
@@ -201,7 +136,7 @@ const WebCLIOutput = ({
         ) : (
           <code
             data-testid={TestId.CODE}
-            dangerouslySetInnerHTML={{ __html: colorizedContent }}
+            dangerouslySetInnerHTML={{ __html: convert.toHtml(content) }}
           ></code>
         )}
       </pre>

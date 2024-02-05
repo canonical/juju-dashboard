@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 
 import { renderComponent } from "testing/utils";
 
-import Output, { ansiColors } from "./Output";
+import Output from "./Output";
 
 describe("Output", () => {
   it("should display content and not display help message", () => {
@@ -31,22 +31,26 @@ describe("Output", () => {
     expect(screen.getByText("Help message")).toBeInTheDocument();
   });
 
-  it("should display the content with correct color", () => {
+  it("should display the content with correct formatting", () => {
+    const content = `\u001b[1;39mApp\n\u001b[0m\u001b[33munknown`;
     renderComponent(
       <Output
-        content="Regular output[31mRed output[34mBlue output"
+        content={content}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={jest.fn()}
       />,
     );
-    expect(screen.getByText("Regular output")).toBeInTheDocument();
-    expect(screen.getByText("Red output")).toHaveStyle({
-      color: `rgb(${ansiColors[31]})`,
+    const boldElements = screen.getAllByText(/.*/, { selector: "b" });
+    expect(boldElements).toHaveLength(1);
+    expect(boldElements[0].childNodes).toHaveLength(1);
+    const appSpanElement = boldElements[0].childNodes[0];
+    expect(appSpanElement).toHaveTextContent("App");
+    expect(appSpanElement).toHaveStyle({
+      color: "#FFF",
     });
-    expect(screen.getByText("Blue output")).toHaveStyle({
-      color: `rgb(${ansiColors[34]})`,
+    expect(screen.getByText("unknown")).toHaveStyle({
+      color: "#A50",
     });
-    expect(screen.queryByText("Help message")).not.toBeInTheDocument();
   });
 });
