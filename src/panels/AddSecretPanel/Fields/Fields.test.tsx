@@ -73,5 +73,7 @@ describe("Fields", () => {
     const removeButtons = screen.getAllByRole("button", { name: Label.REMOVE });
     expect(removeButtons[0]).not.toBeDisabled();
     expect(removeButtons[1]).not.toBeDisabled();
+    await userEvent.click(removeButtons[1]);
+    expect(removeButtons[0]).toBeDisabled();
   });
 });

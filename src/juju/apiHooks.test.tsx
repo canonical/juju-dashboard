@@ -87,7 +87,7 @@ describe("useModelConnectionCallback", () => {
         />
       ),
     });
-    await result.current(callback);
+    result.current(callback);
     await waitFor(() => {
       expect(callback).toHaveBeenCalledWith(loginResponse.conn);
     });
@@ -106,7 +106,7 @@ describe("useModelConnectionCallback", () => {
         />
       ),
     });
-    await result.current(callback);
+    result.current(callback);
     await waitFor(() => {
       expect(connectAndLoginSpy).not.toHaveBeenCalled();
     });
@@ -127,7 +127,7 @@ describe("useModelConnectionCallback", () => {
         />
       ),
     });
-    await result.current(callback);
+    result.current(callback);
     await waitFor(() => {
       expect(callback).toHaveBeenCalledWith(null, "Error during promise race.");
     });
@@ -151,7 +151,7 @@ describe("useModelConnectionCallback", () => {
         />
       ),
     });
-    result.current(callback).catch(() => {});
+    result.current(callback);
     jest.advanceTimersByTime(LOGIN_TIMEOUT);
     await waitFor(() => {
       expect(callback).toHaveBeenCalledWith(null, "timeout");

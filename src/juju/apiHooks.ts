@@ -34,11 +34,11 @@ export const useModelConnectionCallback = (modelUUID?: string) => {
   );
 
   return useCallback(
-    async (response: ModelConnectionCallback) => {
+    (response: ModelConnectionCallback) => {
       if (!wsControllerURL || !modelUUID) {
         return;
       }
-      await connectToModel(
+      connectToModel(
         modelUUID,
         wsControllerURL,
         credentials,
@@ -63,9 +63,7 @@ export const useModelConnection = (
     if (!modelUUID) {
       return;
     }
-    modelConnectionCallback(response).catch((error) => {
-      response(null, error instanceof Error ? error.message : error);
-    });
+    modelConnectionCallback(response);
   }, [modelConnectionCallback, modelUUID, response]);
 };
 
@@ -154,7 +152,7 @@ export const useCreateSecrets = (userName?: string, modelName?: string) => {
               })
               .catch((error) => reject(error));
           },
-        ).catch((error) => reject(error));
+        );
       });
     },
     [modelConnectionCallback],
