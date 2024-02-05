@@ -413,11 +413,35 @@ describe("WebCLI", () => {
       WS.clean();
     });
 
-    it("should display connection errror when no websocket address is present", () => {
+    it("should display connection error when no websocket address is present", () => {
       renderComponent(<WebCLI {...props} modelUUID="" />);
       expect(
         document.querySelector(".webcli__output-content code"),
       ).toHaveTextContent(`ERROR: ${Label.CONNECTION_ERROR}`);
+    });
+
+    it("should display authentication error when no credentials and macaroons are available", async () => {
+      bakerySpy.mockImplementation(() => null);
+
+      const server = new WS("ws://localhost:1234/model/abc123/commands", {
+        jsonProtocol: true,
+      });
+      renderComponent(
+        <WebCLI
+          protocol="ws"
+          controllerWSHost="localhost:1234"
+          modelUUID="abc123"
+          credentials={null}
+        />,
+      );
+      await server.connected;
+      const input = screen.getByRole("textbox");
+      await userEvent.type(input, "status{enter}");
+      await expect(server).toReceiveMessage({ commands: ["status"] });
+      expect(
+        document.querySelector(".webcli__output-content code"),
+      ).toHaveTextContent(`ERROR: ${Label.AUTHENTICATION_ERROR}`);
+      WS.clean();
     });
   });
 });
