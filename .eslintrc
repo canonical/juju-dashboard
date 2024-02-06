@@ -52,7 +52,8 @@
     "default-case": 0,
     "no-param-reassign": 0,
     "no-case-declarations": 0,
-    "prefer-destructuring": 0
+    "prefer-destructuring": 0,
+    "promise/catch-or-return": ["error", { "allowFinally": true }]
   },
   "settings": {
     "import/resolver": {

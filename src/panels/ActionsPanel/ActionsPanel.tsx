@@ -142,7 +142,6 @@ export default function ActionsPanel(): JSX.Element {
   const getActionsForApplicationCallback = useCallback(() => {
     setFetchingActionData(true);
     if (appName && modelUUID) {
-      // eslint-disable-next-line promise/catch-or-return
       getActionsForApplication(appName, modelUUID, appStore.getState())
         .then((actions) => {
           if (actions?.results?.[0]?.actions) {

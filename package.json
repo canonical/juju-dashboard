@@ -54,6 +54,7 @@
     "@canonical/react-components": "0.47.1",
     "@reduxjs/toolkit": "2.0.1",
     "@sentry/browser": "7.93.0",
+    "ansi-to-html": "0.7.2",
     "async-limiter": "2.0.0",
     "classnames": "2.5.1",
     "clone-deep": "4.0.1",
