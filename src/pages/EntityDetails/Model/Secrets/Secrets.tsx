@@ -41,17 +41,17 @@ const Secrets = () => {
     panel: null,
   });
 
-  useListSecrets(userName, modelName);
+  const listSecrets = useListSecrets(userName, modelName);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    listSecrets();
+    return () => {
       if (!modelUUID || !wsControllerURL) {
         return;
       }
       dispatch(jujuActions.clearSecrets({ modelUUID, wsControllerURL }));
-    },
-    [dispatch, modelUUID, wsControllerURL],
-  );
+    };
+  }, [dispatch, listSecrets, modelUUID, wsControllerURL]);
 
   let content: ReactNode;
   if (secretsErrors) {
