@@ -21,7 +21,8 @@ function useInlineErrors(
   const [inlineErrors, setInlineErrors] = useState<InlineError[]>([]);
   const setError = useCallback(
     (key: InlineError["key"], error: InlineError["error"]) => {
-      setInlineErrors((inlineErrors) => {
+      setInlineErrors((prevInlineErrors) => {
+        const inlineErrors = [...prevInlineErrors];
         const existing = inlineErrors.find(
           (inlineError) => inlineError.key === key,
         );

@@ -3,14 +3,14 @@ import type { FormEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "react-redux";
 
+import useAnalytics from "hooks/useAnalytics";
+import useInlineErrors from "hooks/useInlineErrors";
 import useLocalStorage from "hooks/useLocalStorage";
 import bakery from "juju/bakery";
 import { getActiveUserTag } from "store/general/selectors";
 import type { Credential } from "store/general/types";
 import { externalURLs } from "urls";
 import { getUserName } from "utils";
-
-import useAnalytics from "../../hooks/useAnalytics";
 
 import WebCLIOutput from "./Output";
 import Connection from "./connection";
@@ -20,6 +20,11 @@ import "./_webcli.scss";
 export enum Label {
   CONNECTION_ERROR = "Unable to connect to the model.",
   AUTHENTICATION_ERROR = "Unable to authenticate.",
+}
+
+enum InlineErrors {
+  CONNECTION = "connection",
+  AUTHENTICATION = "authentication",
 }
 
 type Props = {
@@ -46,13 +51,7 @@ const WebCLI = ({
   const [connection, setConnection] = useState<Connection | null>(null);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
   const [historyPosition, setHistoryPosition] = useState(0);
-  // First element in inLineErrors array corresponds to the error when no
-  // websocket address is provided. Second element corresponds to the error
-  // when no authentication information is available for Web CLI.
-  const [inlineErrors, setInlineErrors] = useState<(string | null)[]>([
-    null,
-    null,
-  ]);
+  const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
   const inputRef = useRef<HTMLInputElement>(null);
   const wsMessageStore = useRef<string>("");
   const [output, setOutput] = useState("");
@@ -121,18 +120,10 @@ const WebCLI = ({
 
   useEffect(() => {
     if (!wsAddress) {
-      setInlineErrors((prevInlineErrors) => {
-        const newInlineErrors = [...prevInlineErrors];
-        newInlineErrors[0] = Label.CONNECTION_ERROR;
-        return newInlineErrors;
-      });
+      setInlineError(InlineErrors.CONNECTION, Label.CONNECTION_ERROR);
       return;
     }
-    setInlineErrors((prevInlineErrors) => {
-      const newInlineErrors = [...prevInlineErrors];
-      newInlineErrors[0] = null;
-      return newInlineErrors;
-    });
+    setInlineError(InlineErrors.CONNECTION, null);
     const conn = new Connection({
       address: wsAddress,
       onopen: () => {
@@ -150,7 +141,7 @@ const WebCLI = ({
     return () => {
       conn.disconnect();
     };
-  }, [wsAddress]);
+  }, [setInlineError, wsAddress]);
 
   const handleCommandSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -163,11 +154,7 @@ const WebCLI = ({
     if (credentials && credentials.user && credentials.password) {
       authentication.user = credentials.user;
       authentication.credentials = credentials.password;
-      setInlineErrors((prevInlineErrors) => {
-        const newInlineErrors = [...prevInlineErrors];
-        newInlineErrors[1] = null;
-        return newInlineErrors;
-      });
+      setInlineError(InlineErrors.AUTHENTICATION, null);
     } else {
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
@@ -186,11 +173,10 @@ const WebCLI = ({
         authentication.user = activeUser ? getUserName(activeUser) : undefined;
         authentication.macaroons = [deserialized];
       }
-      setInlineErrors((prevInlineErrors) => {
-        const newInlineErrors = [...prevInlineErrors];
-        newInlineErrors[1] = macaroons ? null : Label.AUTHENTICATION_ERROR;
-        return newInlineErrors;
-      });
+      setInlineError(
+        InlineErrors.AUTHENTICATION,
+        macaroons ? null : Label.AUTHENTICATION_ERROR,
+      );
     }
 
     let command;
@@ -233,10 +219,10 @@ const WebCLI = ({
         setShouldShowHelp={setShouldShowHelp}
         helpMessage={
           // If errors exist, display them instead of the default help message.
-          inlineErrors.some((error) => error) ? (
+          Object.values(InlineErrors).some((error) => hasInlineError(error)) ? (
             <>
               {inlineErrors.map((error) =>
-                error ? <div key={error}>ERROR: {error}</div> : null,
+                error ? <div key={error as string}>ERROR: {error}</div> : null,
               )}
             </>
           ) : (
@@ -268,8 +254,7 @@ const WebCLI = ({
             name="command"
             ref={inputRef}
             placeholder="enter command"
-            // Disable input if there is a connection error.
-            disabled={!!inlineErrors[0]}
+            disabled={hasInlineError(InlineErrors.CONNECTION)}
           />
         </form>
         <div className="webcli__input-help">
