@@ -94,7 +94,7 @@ describe("SecretsTable", () => {
     expect(screen.getByRole("cell", { name: "aabbccdd" })).toBeInTheDocument();
   });
 
-  it("displays 'Model' instead of UUID", async () => {
+  it("displays 'Model' instead of the UUID", async () => {
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({
         items: [listSecretResultFactory.build({ "owner-tag": "model-abc123" })],
@@ -105,21 +105,23 @@ describe("SecretsTable", () => {
     expect(screen.getByRole("cell", { name: "Model" })).toBeInTheDocument();
   });
 
-  it("does not change application owners", async () => {
+  it("links to applications", async () => {
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({
         items: [
-          listSecretResultFactory.build({ "owner-tag": "application-def456" }),
+          listSecretResultFactory.build({ "owner-tag": "application-lxd" }),
         ],
         loaded: true,
       }),
     });
     renderComponent(<SecretsTable />, { state, path, url });
-    expect(
-      screen.queryByRole("cell", { name: "Model" }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("cell", { name: "application-def456" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "lxd" })).toHaveAttribute(
+      "href",
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "lxd",
+      }),
+    );
   });
 });
