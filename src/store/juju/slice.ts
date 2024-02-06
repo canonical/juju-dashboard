@@ -22,7 +22,7 @@ import type {
 import { processDeltas } from "juju/watchers";
 import { extractCloudName } from "store/juju/utils/models";
 
-import type { Controllers, JujuState } from "./types";
+import type { Controllers, JujuState, ModelFeatures } from "./types";
 
 export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
 
@@ -57,6 +57,7 @@ const slice = createSlice({
     modelsError: null,
     modelsLoaded: false,
     modelData: {},
+    modelFeatures: {},
     modelWatcherData: {},
     charms: [],
     secrets: {},
@@ -130,13 +131,24 @@ const slice = createSlice({
       // There don't appear to be any irrelevant data in the modelInfo so
       // we overwrite the whole object every time it changes even though
       // mostly that'll just be status timestamps.
-      const modelData = state.modelData?.[modelInfo?.uuid];
+      const modelData = modelInfo && state.modelData?.[modelInfo?.uuid];
       // If any of the status requests timeout then it's possible the data
       // won't be available. Just abandon saving any data in that case.
       // This will go away with the new API.
       if (state.modelData && modelData) {
         state.modelData[modelInfo.uuid].info = modelInfo;
       }
+    },
+    updateModelFeatures: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          features: ModelFeatures;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.modelFeatures[action.payload.modelUUID] = action.payload.features;
     },
     updateModelsError: (
       state,
@@ -151,6 +163,7 @@ const slice = createSlice({
     clearModelData: (state) => {
       state.modelData = {};
       state.models = {};
+      state.modelFeatures = {};
       state.modelsError = null;
       state.modelsLoaded = false;
     },

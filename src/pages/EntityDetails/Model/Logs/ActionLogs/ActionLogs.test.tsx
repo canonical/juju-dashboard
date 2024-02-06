@@ -257,6 +257,36 @@ describe("Action Logs", () => {
     expect(rows[1].textContent).toEqual(expected[0].join(""));
   });
 
+  it("handles no completed date", async () => {
+    const mockOperationResults = operationResultsFactory.build({
+      results: [
+        operationResultFactory.build({
+          actions: [
+            actionResultFactory.build({
+              action: actionFactory.build({
+                tag: "action-2",
+                receiver: "unit-easyrsa-0",
+                name: "list-disks",
+              }),
+              completed: undefined,
+            }),
+          ],
+        }),
+      ],
+    });
+    jest
+      .spyOn(juju, "queryOperationsList")
+      .mockResolvedValue(mockOperationResults);
+    renderComponent(<ActionLogs />, { path, url, state });
+    const expected = [
+      ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
+      ["└easyrsa/0", "2", "completed", "log message 1", "Unknown"],
+    ];
+    const rows = await screen.findAllByRole("row");
+    // Start at row 1 because row 0 is the header row.
+    expect(rows[1].textContent).toEqual(expected[0].join(""));
+  });
+
   it("Only shows messages of selected type", async () => {
     renderComponent(<ActionLogs />, { path, url, state });
     const rows = await screen.findAllByRole("row");

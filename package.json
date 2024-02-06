@@ -49,11 +49,12 @@
     ]
   },
   "dependencies": {
-    "@canonical/jujulib": "4.1.0",
+    "@canonical/jujulib": "5.0.0",
     "@canonical/macaroon-bakery": "1.3.2",
     "@canonical/react-components": "0.47.1",
     "@reduxjs/toolkit": "2.0.1",
     "@sentry/browser": "7.93.0",
+    "ansi-to-html": "0.7.2",
     "async-limiter": "2.0.0",
     "classnames": "2.5.1",
     "clone-deep": "4.0.1",
@@ -78,7 +79,8 @@
     "react-scripts": "5.0.1",
     "react-useportal": "1.0.19",
     "redux": "5.0.1",
-    "vanilla-framework": "4.5.1"
+    "vanilla-framework": "4.5.1",
+    "yup": "1.3.3"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",

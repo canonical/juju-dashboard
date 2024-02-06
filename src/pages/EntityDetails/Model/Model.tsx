@@ -18,7 +18,7 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-import { getModelCredential } from "store/juju/selectors";
+import { getModelCredential, getCanListSecrets } from "store/juju/selectors";
 import { extractCloudName } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 import {
@@ -93,6 +93,9 @@ const Model = () => {
   const relations = useSelector(getModelRelations(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
+  const canListSecrets = useAppSelector((state) =>
+    getCanListSecrets(state, modelUUID),
+  );
   const canConfigureModel = useCanConfigureModel();
 
   const machinesTableRows = useMemo(() => {
@@ -245,7 +248,9 @@ const Model = () => {
           </>
         )}
         {shouldShow("logs", query.activeView) && <Logs />}
-        {shouldShow("secrets", query.activeView) && <Secrets />}
+        {shouldShow("secrets", query.activeView) && canListSecrets ? (
+          <Secrets />
+        ) : null}
       </div>
     </>
   );

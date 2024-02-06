@@ -1,4 +1,4 @@
-import { Notification, Button } from "@canonical/react-components";
+import { Notification, Button, Icon } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -64,9 +64,11 @@ const Secrets = () => {
     content = (
       <>
         <Button
+          hasIcon
           onClick={() => setQuery({ panel: "add-secret" }, { replace: true })}
         >
-          {Label.ADD}
+          <Icon name="plus" />
+          <span>{Label.ADD}</span>
         </Button>
         <SecretsTable />
       </>

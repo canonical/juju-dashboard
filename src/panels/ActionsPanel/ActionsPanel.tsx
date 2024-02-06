@@ -15,6 +15,7 @@ import LoadingHandler from "components/LoadingHandler/LoadingHandler";
 import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import useInlineErrors from "hooks/useInlineErrors";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
@@ -87,6 +88,11 @@ type ActionsQueryParams = {
   units: string[];
 };
 
+enum InlineErrors {
+  GET_ACTION = "get-action",
+  EXECUTE_ACTION = "execute-action",
+}
+
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
@@ -106,12 +112,22 @@ export default function ActionsPanel(): JSX.Element {
     string | undefined,
     SetSelectedAction,
   ] = useState<string>();
-  // First element in inLineErrors array corresponds to the get actions for
-  // application error. Second element corresponds to execute action error.
-  const [inlineErrors, setInlineErrors] = useState<(string | null)[]>([
-    null,
-    null,
-  ]);
+  const [inlineErrors, setInlineErrors, hasError] = useInlineErrors({
+    [InlineErrors.GET_ACTION]: (error) => (
+      // If get actions for application fails, we add a button for
+      // refetching the actions data to the first inline error.
+      <>
+        {error} Try{" "}
+        <Button
+          appearance="link"
+          onClick={() => getActionsForApplicationCallback()}
+        >
+          refetching
+        </Button>{" "}
+        the actions data.
+      </>
+    ),
+  });
   const [isExecutingAction, setIsExecutingAction] = useState<boolean>(false);
   const scrollArea = useRef<HTMLDivElement>(null);
   const { Portal } = usePortal();
@@ -126,32 +142,23 @@ export default function ActionsPanel(): JSX.Element {
   const getActionsForApplicationCallback = useCallback(() => {
     setFetchingActionData(true);
     if (appName && modelUUID) {
-      // eslint-disable-next-line promise/catch-or-return
       getActionsForApplication(appName, modelUUID, appStore.getState())
         .then((actions) => {
           if (actions?.results?.[0]?.actions) {
             setActionData(actions.results[0].actions);
           }
-          setInlineErrors((prevInlineErrors) => {
-            const newInlineErrors = [...prevInlineErrors];
-            newInlineErrors[0] = null;
-            return newInlineErrors;
-          });
+          setInlineErrors(InlineErrors.GET_ACTION, null);
           return;
         })
         .catch((error) => {
-          setInlineErrors((prevInlineErrors) => {
-            const newInlineErrors = [...prevInlineErrors];
-            newInlineErrors[0] = Label.GET_ACTIONS_ERROR;
-            return newInlineErrors;
-          });
+          setInlineErrors(InlineErrors.GET_ACTION, Label.GET_ACTIONS_ERROR);
           console.error(Label.GET_ACTIONS_ERROR, error);
         })
         .finally(() => {
           setFetchingActionData(false);
         });
     }
-  }, [appName, appStore, modelUUID]);
+  }, [appName, appStore, modelUUID, setInlineErrors]);
 
   useEffect(() => {
     getActionsForApplicationCallback();
@@ -257,11 +264,10 @@ export default function ActionsPanel(): JSX.Element {
                     return;
                   })
                   .catch((error) => {
-                    setInlineErrors((prevInlineError) => {
-                      const newInlineErrors = [...prevInlineError];
-                      newInlineErrors[1] = Label.EXECUTE_ACTION_ERROR;
-                      return newInlineErrors;
-                    });
+                    setInlineErrors(
+                      InlineErrors.EXECUTE_ACTION,
+                      Label.EXECUTE_ACTION_ERROR,
+                    );
                     setIsExecutingAction(false);
                     console.error(Label.EXECUTE_ACTION_ERROR, error);
                   });
@@ -306,28 +312,7 @@ export default function ActionsPanel(): JSX.Element {
       ref={scrollArea}
     >
       <PanelInlineErrors
-        inlineErrors={
-          inlineErrors[0]
-            ? inlineErrors.map((error, index) =>
-                index === 0 ? (
-                  // If get actions for application fails, we add a button for
-                  // refetching the actions data to the first inline error.
-                  <>
-                    {error} Try{" "}
-                    <Button
-                      appearance="link"
-                      onClick={() => getActionsForApplicationCallback()}
-                    >
-                      refetching
-                    </Button>{" "}
-                    the actions data.
-                  </>
-                ) : (
-                  error
-                ),
-              )
-            : inlineErrors
-        }
+        inlineErrors={inlineErrors}
         scrollArea={scrollArea.current}
       />
       <p data-testid="actions-panel-unit-list">
@@ -336,7 +321,9 @@ export default function ActionsPanel(): JSX.Element {
       <LoadingHandler
         hasData={!!data}
         loading={fetchingActionData}
-        noDataMessage={inlineErrors[0] ? "" : Label.NO_ACTIONS_PROVIDED}
+        noDataMessage={
+          hasError(InlineErrors.GET_ACTION) ? "" : Label.NO_ACTIONS_PROVIDED
+        }
       >
         {Object.keys(actionData).map((actionName) => (
           <RadioInputBox

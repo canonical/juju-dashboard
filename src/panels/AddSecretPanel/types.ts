@@ -8,11 +8,16 @@ export enum RotatePolicy {
   YEARLY = "yearly",
 }
 
+export type SecretPairs = {
+  isBase64: boolean;
+  key: string;
+  value: string;
+};
+
 export type FormFields = {
-  content: string;
   description: string;
   expiryTime: string;
-  isBase64: boolean;
   label: string;
+  pairs: SecretPairs[];
   rotatePolicy: RotatePolicy;
 };

@@ -1,74 +1,102 @@
-import { Input, Select, Textarea } from "@canonical/react-components";
-import { Field } from "formik";
+import { Button, Icon, Select, Textarea } from "@canonical/react-components";
+import { FieldArray, useFormikContext } from "formik";
 
+import FormikField from "components/FormikField/FormikField";
+
+import type { FormFields } from "../types";
 import { RotatePolicy } from "../types";
 
 export enum Label {
-  CONTENT = "Content",
+  ADD = "Add key/value pair",
   DESCRIPTION = "Description",
   EXPIRY_TIME = "Expiry time",
-  IS_BASE_64 = "Is base64 encoded",
+  IS_BASE_64 = "Value is base64 encoded",
+  KEY = "Key",
   LABEL = "Label",
+  REMOVE = "Remove",
   ROTATE_POLICY = "Rotate policy",
+  VALUE = "Value",
 }
 
 const Fields = (): JSX.Element => {
+  const { values } = useFormikContext<FormFields>();
+
   return (
     <>
-      <Field
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.LABEL}
-        label={Label.LABEL}
-        name="label"
-        as={Input}
-        type="text"
-      />
-      <Field
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.DESCRIPTION}
+      <FormikField label={Label.LABEL} name="label" type="text" />
+      <FormikField
         label={Label.DESCRIPTION}
         name="description"
-        as={Textarea}
+        component={Textarea}
       />
-      <Field
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.CONTENT}
-        label={Label.CONTENT}
-        name="content"
-        as={Textarea}
-      />
-      <Field
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.IS_BASE_64}
-        label={Label.IS_BASE_64}
-        name="isBase64"
-        as={Input}
-        type="checkbox"
-      />
-      <Field
+      <FormikField
         type="datetime-local"
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.EXPIRY_TIME}
         label={Label.EXPIRY_TIME}
-        name="expire-time"
-        as={Input}
+        name="expiryTime"
       />
-      <Field
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.ROTATE_POLICY}
+      <FormikField
         label={Label.ROTATE_POLICY}
-        name="rotate-policy"
-        as={Select}
+        name="rotatePolicy"
+        component={Select}
         options={Object.values(RotatePolicy).map((option) => ({
           label: option,
           value: option,
         }))}
+      />
+      <h5>Secret key/value pairs</h5>
+      <FieldArray
+        name="pairs"
+        render={(arrayHelpers) => (
+          <>
+            {values.pairs.map((pair, index) => (
+              <fieldset key={index}>
+                <FormikField
+                  label={`${Label.KEY} ${index + 1}`}
+                  name={`pairs.${index}.key`}
+                  type="text"
+                  required
+                />
+                <FormikField
+                  label={`${Label.VALUE} ${index + 1}`}
+                  name={`pairs.${index}.value`}
+                  component={Textarea}
+                  required
+                />
+                <FormikField
+                  id={Label.IS_BASE_64}
+                  label={Label.IS_BASE_64}
+                  name={`pairs.${index}.isBase64`}
+                  type="checkbox"
+                />
+
+                <Button
+                  className="u-no-margin--bottom"
+                  disabled={values.pairs.length <= 1}
+                  type="button"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    arrayHelpers.remove(index);
+                  }}
+                  hasIcon
+                >
+                  <Icon name="minus" />
+                  <span>{Label.REMOVE}</span>
+                </Button>
+              </fieldset>
+            ))}
+            <Button
+              type="button"
+              onClick={(event) => {
+                event.preventDefault();
+                arrayHelpers.push({ key: "", value: "", isBase64: false });
+              }}
+              hasIcon
+            >
+              <Icon name="plus" />
+              <span>{Label.ADD}</span>
+            </Button>
+          </>
+        )}
       />
     </>
   );

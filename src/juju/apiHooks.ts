@@ -1,6 +1,8 @@
 import type {
   SecretsFilter,
   ListSecretsArgs,
+  CreateSecretArgs,
+  StringResults,
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
@@ -16,13 +18,12 @@ import { actions as jujuActions } from "store/juju";
 import { getModelByUUID, getModelUUIDFromList } from "store/juju/selectors";
 import { useAppSelector, useAppDispatch } from "store/store";
 
-export const useModelConnection = (
-  response: (
-    conn?: ConnectionWithFacades | null,
-    error?: string | null,
-  ) => void,
-  modelUUID?: string,
-) => {
+type ModelConnectionCallback = (
+  conn?: ConnectionWithFacades | null,
+  error?: string | null,
+) => void;
+
+export const useModelConnectionCallback = (modelUUID?: string) => {
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
   )?.wsControllerURL;
@@ -32,27 +33,38 @@ export const useModelConnection = (
     getUserPass(state, wsControllerURL),
   );
 
+  return useCallback(
+    (response: ModelConnectionCallback) => {
+      if (!wsControllerURL || !modelUUID) {
+        return;
+      }
+      connectToModel(
+        modelUUID,
+        wsControllerURL,
+        credentials,
+        identityProviderAvailable,
+      )
+        .then(response)
+        .catch((error) => {
+          response(null, error instanceof Error ? error.message : error);
+        });
+    },
+    [credentials, identityProviderAvailable, modelUUID, wsControllerURL],
+  );
+};
+
+export const useModelConnection = (
+  response: ModelConnectionCallback,
+  modelUUID?: string,
+) => {
+  const modelConnectionCallback = useModelConnectionCallback(modelUUID);
+
   useEffect(() => {
-    if (!wsControllerURL || !modelUUID) {
+    if (!modelUUID) {
       return;
     }
-    connectToModel(
-      modelUUID,
-      wsControllerURL,
-      credentials,
-      identityProviderAvailable,
-    )
-      .then(response)
-      .catch((error) => {
-        response(null, error instanceof Error ? error.message : error);
-      });
-  }, [
-    response,
-    credentials,
-    identityProviderAvailable,
-    modelUUID,
-    wsControllerURL,
-  ]);
+    modelConnectionCallback(response);
+  }, [modelConnectionCallback, modelUUID, response]);
 };
 
 export const useListSecrets = (
@@ -111,4 +123,38 @@ export const useListSecrets = (
   );
 
   useModelConnection(fetchSecrets, modelUUID);
+};
+
+export const useCreateSecrets = (userName?: string, modelName?: string) => {
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelConnectionCallback = useModelConnectionCallback(modelUUID);
+  return useCallback(
+    (secrets: CreateSecretArgs["args"]) => {
+      return new Promise<StringResults>((resolve, reject) => {
+        modelConnectionCallback(
+          (
+            connection?: ConnectionWithFacades | null,
+            error?: string | null,
+          ) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            if (!connection) {
+              reject(new Error("Unable to connect to model"));
+              return;
+            }
+            connection.facades.secrets
+              ?.createSecrets({ args: secrets })
+              .then((response) => {
+                resolve(response);
+                return;
+              })
+              .catch((error) => reject(error));
+          },
+        );
+      });
+    },
+    [modelConnectionCallback],
+  );
 };

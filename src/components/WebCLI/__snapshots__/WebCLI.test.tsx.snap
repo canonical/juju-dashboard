@@ -6,7 +6,7 @@ Model       Controller       Cloud/Region     Version    SLA          Timestamp
 controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z
 
 Machine  State    DNS             Inst id        Series  AZ          Message
-0        started  35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING
+0        started  35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING
 "
 `;
 

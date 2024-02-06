@@ -255,6 +255,26 @@ describe("actions", () => {
       payload: { selectedApplications },
     });
   });
+  it("updateModelFeatures", () => {
+    expect(
+      actions.updateModelFeatures({
+        modelUUID: "abc123",
+        features: {
+          listSecrets: true,
+        },
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/updateModelFeatures",
+      payload: {
+        modelUUID: "abc123",
+        features: {
+          listSecrets: true,
+        },
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
 
   it("secretsLoading", () => {
     expect(
