@@ -6,7 +6,7 @@ import {
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
 import type { ReactNode, MouseEvent } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import usePortal from "react-useportal";
 import type { Store } from "redux";
 
@@ -15,6 +15,7 @@ import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
 import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
+import useInlineErrors, { type SetError } from "hooks/useInlineErrors";
 import type { Config, ConfigData, ConfigValue } from "juju/api";
 import { getApplicationConfig, setApplicationConfig } from "juju/api";
 import PanelInlineErrors from "panels/PanelInlineErrors";
@@ -42,12 +43,17 @@ export enum Label {
   SAVE_CONFIRM = "Are you sure you wish to apply these changes?",
   SAVE_CONFIRM_CANCEL_BUTTON = "Cancel",
   SAVE_CONFIRM_CONFIRM_BUTTON = "Yes, apply changes",
-  GET_CONFIG_ERROR = "Error while trying to get config.",
-  SUBMIT_TO_JUJU_ERROR = "Error while trying to submit to Juju.",
+  GET_CONFIG_ERROR = "Unable to get application config.",
+  SUBMIT_TO_JUJU_ERROR = "Unable to submit config changes to Juju.",
 }
 
 export enum TestId {
   PANEL = "config-panel",
+}
+
+enum InlineErrors {
+  GET_CONFIG = "get-config",
+  SUBMIT_TO_JUJU = "submit-to-juju",
 }
 
 type ConfigQueryParams = {
@@ -69,6 +75,23 @@ export default function ConfigPanel(): JSX.Element {
   const [savingConfig, setSavingConfig] = useState<boolean>(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
   const [formErrors, setFormErrors] = useState<string[] | null>(null);
+  const [inlineErrors, setInlineError] = useInlineErrors({
+    [InlineErrors.GET_CONFIG]: (error) => (
+      <>
+        {error} Try{" "}
+        <Button
+          appearance="link"
+          onClick={(event) => {
+            event.stopPropagation();
+            getConfigCallback();
+          }}
+        >
+          refetching
+        </Button>{" "}
+        the config data.
+      </>
+    ),
+  });
   const scrollArea = useRef<HTMLDivElement>(null);
   const sendAnalytics = useAnalytics();
   const { Portal } = usePortal();
@@ -84,19 +107,24 @@ export default function ConfigPanel(): JSX.Element {
   const { entity: appName, charm, modelUUID } = queryParams;
   const hasConfig = !isLoading && !!config && Object.keys(config).length > 0;
 
-  useEffect(() => {
+  const getConfigCallback = useCallback(() => {
     if (modelUUID && appName) {
       setIsLoading(true);
-      getConfig(
+      void getConfig(
         modelUUID,
         appName,
         reduxStore,
         setIsLoading,
         setConfig,
         checkAllDefaults,
-      ).catch((error) => console.error(Label.GET_CONFIG_ERROR, error));
+        setInlineError,
+      );
     }
-  }, [appName, modelUUID, reduxStore]);
+  }, [appName, modelUUID, reduxStore, setInlineError]);
+
+  useEffect(() => {
+    getConfigCallback();
+  }, [getConfigCallback]);
 
   useEffect(() => {
     sendAnalytics({
@@ -204,6 +232,7 @@ export default function ConfigPanel(): JSX.Element {
       setIsLoading,
       setConfig,
       checkAllDefaults,
+      setInlineError,
     );
     sendAnalytics({
       category: "User",
@@ -238,9 +267,18 @@ export default function ConfigPanel(): JSX.Element {
                 setConfirmType(null);
                 // Clear the form errors if there were any from a previous submit.
                 setFormErrors(null);
-                _submitToJuju().catch((error) =>
-                  console.error(Label.SUBMIT_TO_JUJU_ERROR, error),
-                );
+                _submitToJuju()
+                  .then(() => {
+                    setInlineError(InlineErrors.SUBMIT_TO_JUJU, null);
+                    return;
+                  })
+                  .catch((error) => {
+                    setInlineError(
+                      InlineErrors.SUBMIT_TO_JUJU,
+                      Label.SUBMIT_TO_JUJU_ERROR,
+                    );
+                    console.error(Label.SUBMIT_TO_JUJU_ERROR, error);
+                  });
               }}
               close={() => setConfirmType(null)}
             >
@@ -385,7 +423,9 @@ export default function ConfigPanel(): JSX.Element {
 
             <div className="config-panel__list">
               <PanelInlineErrors
-                inlineErrors={formErrors}
+                inlineErrors={
+                  formErrors ? [...inlineErrors, ...formErrors] : inlineErrors
+                }
                 scrollArea={scrollArea.current}
               />
               {generateConfigElementList(
@@ -399,6 +439,10 @@ export default function ConfigPanel(): JSX.Element {
           </>
         ) : (
           <FadeIn isActive={true} className="u-align--center">
+            <PanelInlineErrors
+              inlineErrors={inlineErrors}
+              scrollArea={scrollArea.current}
+            />
             <NoConfigMessage />
           </FadeIn>
         )}
@@ -414,9 +458,10 @@ async function getConfig(
   setIsLoading: (value: boolean) => void,
   setConfig: (value: Config) => void,
   checkAllDefaults: (value: Config) => void,
+  setInlineError: SetError,
 ) {
-  return getApplicationConfig(modelUUID, appName, reduxStore.getState()).then(
-    (result) => {
+  return getApplicationConfig(modelUUID, appName, reduxStore.getState())
+    .then((result) => {
       // Add the key to the config object to make for easier use later.
       const config: Config = {};
       // The config param can be null.
@@ -424,12 +469,16 @@ async function getConfig(
         config[key] = result?.config[key];
         config[key].name = key;
       });
-      setIsLoading(false);
       setConfig(config);
       checkAllDefaults(config);
+      setInlineError(InlineErrors.GET_CONFIG, null);
       return;
-    },
-  );
+    })
+    .catch((error) => {
+      setInlineError(InlineErrors.GET_CONFIG, Label.GET_CONFIG_ERROR);
+      console.error(Label.GET_CONFIG_ERROR, error);
+    })
+    .finally(() => setIsLoading(false));
 }
 
 function generateConfigElementList(

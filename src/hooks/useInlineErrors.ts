@@ -11,7 +11,10 @@ type ErrorMapping = Record<
   (error: InlineError["error"]) => ReactNode
 >;
 
-type SetError = (key: InlineError["key"], error: InlineError["error"]) => void;
+export type SetError = (
+  key: InlineError["key"],
+  error: InlineError["error"],
+) => void;
 
 type HasError = (key: InlineError["key"]) => boolean;
 
