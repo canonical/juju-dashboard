@@ -1,8 +1,10 @@
 import { ModularTable } from "@canonical/react-components";
+import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import type { Column } from "react-table";
 
+import AppLink from "components/AppLink";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import RelativeDate from "components/RelativeDate";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
@@ -68,19 +70,30 @@ const SecretsTable = () => {
     if (!secrets) {
       return [];
     }
-    return secrets.map((secret) => ({
-      name: secret.label,
-      id: secret.uri.replace(/^secret:/, ""),
-      revision: secret.revisions[0]?.revision,
-      description: secret.description,
-      owner: secret["owner-tag"]?.startsWith("model-")
-        ? "Model"
-        : secret["owner-tag"],
-      created: <RelativeDate datetime={secret["create-time"]} />,
-      updated: <RelativeDate datetime={secret["update-time"]} />,
-      actions: "",
-    }));
-  }, [secrets]);
+    return secrets.map((secret) => {
+      let owner: ReactNode = secret["owner-tag"];
+      if (secret["owner-tag"]?.startsWith("model-")) {
+        owner = "Model";
+      } else if (secret["owner-tag"]?.startsWith("application-")) {
+        const name = secret["owner-tag"].replace(/^application-/, "");
+        owner = (
+          <AppLink uuid={modelUUID} appName={name}>
+            {name}
+          </AppLink>
+        );
+      }
+      return {
+        name: secret.label,
+        id: secret.uri.replace(/^secret:/, ""),
+        revision: secret.revisions[0]?.revision,
+        description: secret.description,
+        owner,
+        created: <RelativeDate datetime={secret["create-time"]} />,
+        updated: <RelativeDate datetime={secret["update-time"]} />,
+        actions: "",
+      };
+    });
+  }, [modelUUID, secrets]);
 
   return (
     <>
