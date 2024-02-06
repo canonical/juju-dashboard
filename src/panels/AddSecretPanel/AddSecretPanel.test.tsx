@@ -11,10 +11,15 @@ import { RotatePolicy } from "./types";
 jest.mock("juju/apiHooks", () => {
   return {
     useCreateSecrets: jest.fn().mockReturnValue(jest.fn()),
+    useListSecrets: jest.fn().mockReturnValue(jest.fn()),
   };
 });
 
 describe("AddSecretPanel", () => {
+  beforeEach(() => {
+    jest.spyOn(apiHooks, "useListSecrets").mockImplementation(() => jest.fn());
+  });
+
   it("can create a secret", async () => {
     const createSecrets = jest
       .fn()
@@ -220,5 +225,30 @@ describe("AddSecretPanel", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     expect(window.location.search).toEqual("");
+  });
+
+  it("refetches the secrets if successful", async () => {
+    const createSecrets = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({ results: [] }));
+    jest
+      .spyOn(apiHooks, "useCreateSecrets")
+      .mockImplementation(() => createSecrets);
+    const listSecrets = jest.fn();
+    jest
+      .spyOn(apiHooks, "useListSecrets")
+      .mockImplementation(() => listSecrets);
+    renderComponent(<AddSecretPanel />, { url: "?panel=add-secret" });
+    await userEvent.type(
+      screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
+      "a key",
+    );
+    await userEvent.type(
+      screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
+      "a value",
+    );
+    expect(listSecrets).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    expect(listSecrets).toHaveBeenCalled();
   });
 });

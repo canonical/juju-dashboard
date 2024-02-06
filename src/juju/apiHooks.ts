@@ -76,53 +76,59 @@ export const useListSecrets = (
   const dispatch = useAppDispatch();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const wsControllerURL = useAppSelector(getWSControllerURL);
-
-  const fetchSecrets = useCallback(
-    (connection?: ConnectionWithFacades | null, error?: string | null) => {
-      if (error && wsControllerURL) {
-        dispatch(
-          jujuActions.setSecretsErrors({
-            modelUUID,
-            errors: error,
-            wsControllerURL,
-          }),
-        );
-        return;
-      }
-      if (!connection || !wsControllerURL) {
-        return;
-      }
-      dispatch(jujuActions.secretsLoading({ modelUUID, wsControllerURL }));
-      connection?.facades.secrets
-        ?.listSecrets({
-          ...(filter ? { filter } : {}),
-          "show-secrets": showSecrets,
-          // The type provided by Juju's schema.json has the filter as required.
-        } as ListSecretsArgs)
-        .then((secrets) => {
+  const modelConnectionCallback = useModelConnectionCallback(modelUUID);
+  return useCallback(() => {
+    modelConnectionCallback(
+      (connection?: ConnectionWithFacades | null, error?: string | null) => {
+        if (error && wsControllerURL) {
           dispatch(
-            jujuActions.updateSecrets({
+            jujuActions.setSecretsErrors({
               modelUUID,
-              secrets: secrets?.results ?? [],
+              errors: error,
               wsControllerURL,
             }),
           );
           return;
-        })
-        .catch((error) => {
-          dispatch(
-            jujuActions.setSecretsErrors({
-              modelUUID,
-              errors: error instanceof Error ? error.message : error,
-              wsControllerURL,
-            }),
-          );
-        });
-    },
-    [dispatch, filter, modelUUID, showSecrets, wsControllerURL],
-  );
-
-  useModelConnection(fetchSecrets, modelUUID);
+        }
+        if (!connection || !wsControllerURL) {
+          return;
+        }
+        dispatch(jujuActions.secretsLoading({ modelUUID, wsControllerURL }));
+        connection?.facades.secrets
+          ?.listSecrets({
+            ...(filter ? { filter } : {}),
+            "show-secrets": showSecrets,
+            // The type provided by Juju's schema.json has the filter as required.
+          } as ListSecretsArgs)
+          .then((secrets) => {
+            dispatch(
+              jujuActions.updateSecrets({
+                modelUUID,
+                secrets: secrets?.results ?? [],
+                wsControllerURL,
+              }),
+            );
+            return;
+          })
+          .catch((error) => {
+            dispatch(
+              jujuActions.setSecretsErrors({
+                modelUUID,
+                errors: error instanceof Error ? error.message : error,
+                wsControllerURL,
+              }),
+            );
+          });
+      },
+    );
+  }, [
+    dispatch,
+    filter,
+    modelConnectionCallback,
+    modelUUID,
+    showSecrets,
+    wsControllerURL,
+  ]);
 };
 
 export const useCreateSecrets = (userName?: string, modelName?: string) => {
