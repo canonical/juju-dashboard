@@ -31,41 +31,6 @@ export enum TestId {
   SECRETS_TABLE = "secrets-table",
 }
 
-const COLUMN_DATA: Column[] = [
-  {
-    Header: "Name",
-    accessor: "name",
-  },
-  {
-    Header: "ID",
-    accessor: "id",
-  },
-  {
-    Header: "Revision",
-    accessor: "revision",
-  },
-  {
-    Header: "Description",
-    accessor: "description",
-  },
-  {
-    Header: "Owner",
-    accessor: "owner",
-  },
-  {
-    Header: "Created",
-    accessor: "created",
-  },
-  {
-    Header: "Updated",
-    accessor: "updated",
-  },
-  {
-    Header: "Actions",
-    accessor: "actions",
-  },
-];
-
 const SecretsTable = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector(getModelUUIDFromList(modelName, userName));
@@ -131,6 +96,45 @@ const SecretsTable = () => {
     });
   }, [modelUUID, secrets]);
 
+  const columnData: Column[] = useMemo(
+    () => [
+      {
+        Header: "Name",
+        accessor: "name",
+      },
+      {
+        Header: "ID",
+        accessor: "id",
+        className: "has-hover",
+      },
+      {
+        Header: "Revision",
+        accessor: "revision",
+      },
+      {
+        Header: "Description",
+        accessor: "description",
+      },
+      {
+        Header: "Owner",
+        accessor: "owner",
+      },
+      {
+        Header: "Created",
+        accessor: "created",
+      },
+      {
+        Header: "Updated",
+        accessor: "updated",
+      },
+      {
+        Header: "Actions",
+        accessor: "actions",
+      },
+    ],
+    [],
+  );
+
   return (
     <>
       {secretsLoading || !secretsLoaded ? (
@@ -139,7 +143,7 @@ const SecretsTable = () => {
         <ModularTable
           data-testid={TestId.SECRETS_TABLE}
           className="audit-logs-table"
-          columns={COLUMN_DATA}
+          columns={columnData}
           data={tableData}
           emptyMsg="There are no secrets for this model."
         />
