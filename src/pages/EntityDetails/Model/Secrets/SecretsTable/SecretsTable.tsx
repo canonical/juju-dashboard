@@ -1,4 +1,9 @@
-import { ModularTable } from "@canonical/react-components";
+import {
+  ModularTable,
+  Button,
+  Icon,
+  Tooltip,
+} from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -8,6 +13,8 @@ import AppLink from "components/AppLink";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import RelativeDate from "components/RelativeDate";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import TruncatedTooltip from "components/TruncatedTooltip";
+import { copyToClipboard } from "components/utils";
 import {
   getSecretsLoading,
   getSecretsLoaded,
@@ -15,6 +22,10 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+
+export enum Label {
+  COPY = "Copy",
+}
 
 export enum TestId {
   SECRETS_TABLE = "secrets-table",
@@ -71,6 +82,7 @@ const SecretsTable = () => {
       return [];
     }
     return secrets.map((secret) => {
+      const id = secret.uri.replace(/^secret:/, "");
       let owner: ReactNode = secret["owner-tag"];
       if (secret["owner-tag"]?.startsWith("model-")) {
         owner = "Model";
@@ -84,7 +96,31 @@ const SecretsTable = () => {
       }
       return {
         name: secret.label,
-        id: secret.uri.replace(/^secret:/, ""),
+        id: (
+          <div className="u-flex u-flex--gap-small">
+            <TruncatedTooltip
+              wrapperClassName="u-flex-shrink u-truncate"
+              message={id}
+            >
+              {id}
+            </TruncatedTooltip>
+            <div className="has-hover__hover-state">
+              <Tooltip message="Copy secret URI">
+                <Button
+                  appearance="base"
+                  className="is-small"
+                  onClick={() => {
+                    copyToClipboard(secret.uri);
+                  }}
+                  type="button"
+                  hasIcon
+                >
+                  <Icon name="copy">{Label.COPY}</Icon>
+                </Button>
+              </Tooltip>
+            </div>
+          </div>
+        ),
         revision: secret.revisions[0]?.revision,
         description: secret.description,
         owner,

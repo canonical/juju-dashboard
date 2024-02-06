@@ -1,6 +1,8 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { TestId as LoadingTestId } from "components/LoadingSpinner/LoadingSpinner";
+import * as componentUtils from "components/utils";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -17,7 +19,12 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import SecretsTable, { TestId } from "./SecretsTable";
+import SecretsTable, { Label, TestId } from "./SecretsTable";
+
+jest.mock("components/utils", () => ({
+  ...jest.requireActual("components/utils"),
+  copyToClipboard: jest.fn(),
+}));
 
 describe("SecretsTable", () => {
   let state: RootState;
@@ -91,7 +98,23 @@ describe("SecretsTable", () => {
       }),
     });
     renderComponent(<SecretsTable />, { state, path, url });
-    expect(screen.getByRole("cell", { name: "aabbccdd" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("cell", { name: "aabbccdd Copy" }),
+    ).toBeInTheDocument();
+  });
+
+  it("can copy the URI", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [listSecretResultFactory.build({ uri: "secret:aabbccdd" })],
+        loaded: true,
+      }),
+    });
+    renderComponent(<SecretsTable />, { state, path, url });
+    await userEvent.click(screen.getByRole("button", { name: Label.COPY }));
+    expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(
+      "secret:aabbccdd",
+    );
   });
 
   it("displays 'Model' instead of the UUID", async () => {
