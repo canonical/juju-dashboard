@@ -406,24 +406,21 @@ describe("ConfigPanel", () => {
   });
 
   it("should display console error when trying to save", async () => {
-    jest
-      .spyOn(apiModule, "getApplicationConfig")
-      .mockImplementationOnce(
-        jest.fn().mockResolvedValue(
-          applicationGetFactory.build({
-            config: {
-              email: configFactory.build({ default: "" }),
-              name: configFactory.build({ default: "eggman" }),
-            },
-          }),
-        ),
-      )
-      .mockImplementationOnce(
-        jest.fn().mockRejectedValue(new Error("Error while trying to save")),
-      );
-    jest
+    jest.spyOn(apiModule, "getApplicationConfig").mockImplementationOnce(
+      jest.fn().mockResolvedValue(
+        applicationGetFactory.build({
+          config: {
+            email: configFactory.build({ default: "" }),
+            name: configFactory.build({ default: "eggman" }),
+          },
+        }),
+      ),
+    );
+    const setApplicationConfigSpy = jest
       .spyOn(apiModule, "setApplicationConfig")
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(() =>
+        Promise.reject(new Error("Error while trying to save")),
+      );
     renderComponent(<ConfigPanel />, { state, path, url });
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
     await userEvent.type(
@@ -440,7 +437,23 @@ describe("ConfigPanel", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
     );
-    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(2);
+    expect(setApplicationConfigSpy).toHaveBeenCalledWith(
+      "abc123",
+      "easyrsa",
+      {
+        email: configFactory.build({
+          name: "email",
+          default: "",
+          newValue: "eggman@example.com",
+        }),
+        name: configFactory.build({
+          name: "name",
+          default: "eggman",
+          newValue: "noteggman",
+        }),
+      },
+      state,
+    );
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
         Label.SUBMIT_TO_JUJU_ERROR,
