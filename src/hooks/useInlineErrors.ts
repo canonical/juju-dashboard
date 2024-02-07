@@ -41,15 +41,20 @@ function useInlineErrors(
   const hasInlineError = useCallback(
     (key: InlineError["key"]) =>
       !!inlineErrors.find(
-        (inlineError) => inlineError.key === key && !!inlineError.error,
+        (inlineError) =>
+          inlineError.key === key &&
+          (Array.isArray(inlineError.error)
+            ? inlineError.error.some(Boolean)
+            : !!inlineError.error),
       ),
     [inlineErrors],
   );
   const errors = inlineErrors.reduce<ReactNode[]>((nodes, { key, error }) => {
-    if (error) {
-      nodes.push(mapping && key in mapping ? mapping[key](error) : error);
-    }
-    return nodes;
+    const errorItems = mapping && key in mapping ? mapping[key](error) : error;
+    const filteredErrorItems = (
+      Array.isArray(errorItems) ? errorItems : [errorItems]
+    ).filter(Boolean);
+    return nodes.concat(filteredErrorItems);
   }, []);
   return [errors, setError, hasInlineError];
 }

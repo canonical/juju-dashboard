@@ -52,6 +52,7 @@ export enum TestId {
 }
 
 enum InlineErrors {
+  FORM = "form",
   GET_CONFIG = "get-config",
   SUBMIT_TO_JUJU = "submit-to-juju",
 }
@@ -74,7 +75,6 @@ export default function ConfigPanel(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [savingConfig, setSavingConfig] = useState<boolean>(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
-  const [formErrors, setFormErrors] = useState<string[] | null>(null);
   const [inlineErrors, setInlineError] = useInlineErrors({
     [InlineErrors.GET_CONFIG]: (error) => (
       <>
@@ -222,7 +222,7 @@ export default function ConfigPanel(): JSX.Element {
     setEnableSave(false);
     setConfirmType(null);
     if (errors?.length) {
-      setFormErrors(errors);
+      setInlineError(InlineErrors.FORM, errors);
       return;
     }
     await getConfig(
@@ -266,19 +266,14 @@ export default function ConfigPanel(): JSX.Element {
               onConfirm={() => {
                 setConfirmType(null);
                 // Clear the form errors if there were any from a previous submit.
-                setFormErrors(null);
-                _submitToJuju()
-                  .then(() => {
-                    setInlineError(InlineErrors.SUBMIT_TO_JUJU, null);
-                    return;
-                  })
-                  .catch((error) => {
-                    setInlineError(
-                      InlineErrors.SUBMIT_TO_JUJU,
-                      Label.SUBMIT_TO_JUJU_ERROR,
-                    );
-                    console.error(Label.SUBMIT_TO_JUJU_ERROR, error);
-                  });
+                setInlineError(InlineErrors.FORM, null);
+                _submitToJuju().catch((error) => {
+                  setInlineError(
+                    InlineErrors.SUBMIT_TO_JUJU,
+                    Label.SUBMIT_TO_JUJU_ERROR,
+                  );
+                  console.error(Label.SUBMIT_TO_JUJU_ERROR, error);
+                });
               }}
               close={() => setConfirmType(null)}
             >
@@ -423,9 +418,7 @@ export default function ConfigPanel(): JSX.Element {
 
             <div className="config-panel__list">
               <PanelInlineErrors
-                inlineErrors={
-                  formErrors ? [...inlineErrors, ...formErrors] : inlineErrors
-                }
+                inlineErrors={inlineErrors}
                 scrollArea={scrollArea.current}
               />
               {generateConfigElementList(
