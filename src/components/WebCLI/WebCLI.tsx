@@ -215,15 +215,15 @@ const WebCLI = ({
     <div className="webcli">
       <WebCLIOutput
         content={output}
-        showHelp={shouldShowHelp}
+        showHelp={shouldShowHelp || hasInlineError(InlineErrors.AUTHENTICATION)}
         setShouldShowHelp={setShouldShowHelp}
         helpMessage={
           // If errors exist, display them instead of the default help message.
-          Object.values(InlineErrors).some((error) => hasInlineError(error)) ? (
+          hasInlineError() ? (
             <>
-              {inlineErrors.map((error) =>
-                error ? <div key={error as string}>ERROR: {error}</div> : null,
-              )}
+              {inlineErrors.map((error) => (
+                <div key={error as string}>ERROR: {error}</div>
+              ))}
             </>
           ) : (
             <>
