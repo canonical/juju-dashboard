@@ -111,7 +111,7 @@ const RemoveSecretPanel = () => {
         }
         onRemovePanelQueryParams={handleRemovePanelQueryParams}
         ref={scrollArea}
-        title="Add a secret"
+        title="Remove secret"
         width="narrow"
       >
         <>

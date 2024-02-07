@@ -47,6 +47,7 @@ const Fields = ({
         label={Label.REMOVE_ALL}
         name="removeAll"
         type="checkbox"
+        disabled={secret?.revisions.length === 1}
       />
       <FormikField
         label={Label.REVISION}

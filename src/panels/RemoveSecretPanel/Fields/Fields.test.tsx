@@ -136,6 +136,37 @@ describe("Fields", () => {
     ).toBeDisabled();
   });
 
+  it("disables the remove all checkbox if there is only one revision", async () => {
+    state.juju.secrets.abc123 = modelSecretsFactory.build({
+      items: [
+        listSecretResultFactory.build({
+          uri: "secret:aabbccdd",
+          "latest-revision": 1,
+          revisions: [secretRevisionFactory.build({ revision: 1 })],
+        }),
+      ],
+      loaded: true,
+    });
+    const handleRemoveSecret = jest.fn();
+    renderComponent(
+      <Formik<FormFields>
+        initialValues={{ removeAll: false, revision: "" }}
+        onSubmit={jest.fn()}
+      >
+        <Fields
+          secretURI="secret:aabbccdd"
+          hideConfirm={jest.fn()}
+          handleRemoveSecret={handleRemoveSecret}
+          showConfirm={true}
+        />
+      </Formik>,
+      { state, path, url },
+    );
+    expect(
+      screen.getByRole("checkbox", { name: Label.REMOVE_ALL }),
+    ).toBeDisabled();
+  });
+
   it("can cancel the confirmation", async () => {
     const hideConfirm = jest.fn();
     renderComponent(
