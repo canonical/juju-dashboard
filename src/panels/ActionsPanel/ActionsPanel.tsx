@@ -112,7 +112,7 @@ export default function ActionsPanel(): JSX.Element {
     string | undefined,
     SetSelectedAction,
   ] = useState<string>();
-  const [inlineErrors, setInlineErrors, hasError] = useInlineErrors({
+  const [inlineErrors, setInlineErrors, hasInlineError] = useInlineErrors({
     [InlineErrors.GET_ACTION]: (error) => (
       // If get actions for application fails, we add a button for
       // refetching the actions data to the first inline error.
@@ -322,7 +322,9 @@ export default function ActionsPanel(): JSX.Element {
         hasData={!!data}
         loading={fetchingActionData}
         noDataMessage={
-          hasError(InlineErrors.GET_ACTION) ? "" : Label.NO_ACTIONS_PROVIDED
+          hasInlineError(InlineErrors.GET_ACTION)
+            ? ""
+            : Label.NO_ACTIONS_PROVIDED
         }
       >
         {Object.keys(actionData).map((actionName) => (

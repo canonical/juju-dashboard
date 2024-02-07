@@ -1,76 +1,66 @@
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 
 import useInlineErrors from "./useInlineErrors";
 
 describe("useInlineErrors", () => {
   it("can add an error", () => {
-    const { result, rerender } = renderHook(() => useInlineErrors());
+    const { result } = renderHook(() => useInlineErrors());
     let [errors, setError] = result.current;
-    setError("Error1", "Uh oh!");
-    rerender();
-    [errors] = result.current;
-    rerender();
+    act(() => setError("Error1", "Uh oh!"));
     [errors] = result.current;
     expect(errors).toStrictEqual(["Uh oh!"]);
   });
 
   it("can update an error", () => {
-    const { result, rerender } = renderHook(() => useInlineErrors());
+    const { result } = renderHook(() => useInlineErrors());
     let [errors, setError] = result.current;
-    setError("Error1", "Uh oh!");
-    rerender();
+    act(() => setError("Error1", "Uh oh!"));
     [errors] = result.current;
     expect(errors).toStrictEqual(["Uh oh!"]);
-    setError("Error1", ["It just got worse"]);
-    rerender();
+    act(() => setError("Error1", ["It just got worse"]));
     [errors] = result.current;
     expect(errors).toStrictEqual(["It just got worse"]);
   });
 
   it("can clear an error", () => {
-    const { result, rerender } = renderHook(() => useInlineErrors());
+    const { result } = renderHook(() => useInlineErrors());
     let [errors, setError] = result.current;
-    setError("Error1", "Uh oh!");
-    rerender();
+    act(() => setError("Error1", "Uh oh!"));
     [errors] = result.current;
     expect(errors).toStrictEqual(["Uh oh!"]);
-    setError("Error1", null);
-    rerender();
+    act(() => setError("Error1", null));
     [errors] = result.current;
     expect(errors).toStrictEqual([]);
   });
 
   it("returns errors", () => {
-    const { result, rerender } = renderHook(() => useInlineErrors());
+    const { result } = renderHook(() => useInlineErrors());
     let [errors, setError] = result.current;
-    setError("Error1", "Uh oh!");
-    setError("Error2", ["Bad!", "Wrong!"]);
-    rerender();
+    act(() => setError("Error1", "Uh oh!"));
+    act(() => setError("Error2", ["Bad!", "Wrong!"]));
     [errors] = result.current;
     expect(errors).toStrictEqual(["Uh oh!", "Bad!", "Wrong!"]);
   });
 
   it("does not return null errors", () => {
-    const { result, rerender } = renderHook(() => useInlineErrors());
+    const { result } = renderHook(() => useInlineErrors());
     let [errors, setError] = result.current;
-    setError("Error1", null);
-    setError("Error2", [null, "Uh, oh!"]);
-    rerender();
+    act(() => setError("Error1", null));
+    act(() => setError("Error2", [null, "Uh, oh!"]));
     [errors] = result.current;
     expect(errors).toStrictEqual(["Uh, oh!"]);
   });
 
   it("can map errors", () => {
-    const { result, rerender } = renderHook(() =>
+    const { result } = renderHook(() =>
       useInlineErrors({
         Error1: (error) => `Mapped! ${error}`,
         Error2: (error) => [`Mapped to array! ${error}`],
       }),
     );
     let [errors, setError] = result.current;
-    setError("Error1", "Uh oh!");
-    setError("Error2", "Something went wrong!");
-    rerender();
+    act(() => setError("Error1", "Uh oh!"));
+    act(() => setError("Error2", "Something went wrong!"));
     [errors] = result.current;
     expect(errors).toStrictEqual([
       "Mapped! Uh oh!",
@@ -79,19 +69,16 @@ describe("useInlineErrors", () => {
   });
 
   it("can check if an error exists", () => {
-    const { result, rerender } = renderHook(() => useInlineErrors());
+    const { result } = renderHook(() => useInlineErrors());
     let [, setError, hasError] = result.current;
     expect(hasError("Error1")).toStrictEqual(false);
-    setError("Error1", "Uh oh!");
-    rerender();
+    act(() => setError("Error1", "Uh oh!"));
     [, , hasError] = result.current;
     expect(hasError("Error1")).toStrictEqual(true);
-    setError("Error1", ["Uh oh!"]);
-    rerender();
+    act(() => setError("Error1", ["Uh oh!"]));
     [, , hasError] = result.current;
     expect(hasError("Error1")).toStrictEqual(true);
-    setError("Error1", [null]);
-    rerender();
+    act(() => setError("Error1", [null]));
     [, , hasError] = result.current;
     expect(hasError("Error1")).toStrictEqual(false);
   });

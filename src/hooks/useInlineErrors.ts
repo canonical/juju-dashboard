@@ -1,3 +1,4 @@
+import cloneDeep from "clone-deep";
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 
@@ -24,7 +25,8 @@ function useInlineErrors(
   const [inlineErrors, setInlineErrors] = useState<InlineError[]>([]);
   const setError = useCallback(
     (key: InlineError["key"], error: InlineError["error"]) => {
-      setInlineErrors((inlineErrors) => {
+      setInlineErrors((prevInlineErrors) => {
+        const inlineErrors = cloneDeep(prevInlineErrors);
         const existing = inlineErrors.find(
           (inlineError) => inlineError.key === key,
         );
@@ -38,7 +40,7 @@ function useInlineErrors(
     },
     [],
   );
-  const hasInlineError = useCallback(
+  const hasError = useCallback(
     (key: InlineError["key"]) =>
       !!inlineErrors.find(
         (inlineError) =>
@@ -56,7 +58,7 @@ function useInlineErrors(
     ).filter(Boolean);
     return nodes.concat(filteredErrorItems);
   }, []);
-  return [errors, setError, hasInlineError];
+  return [errors, setError, hasError];
 }
 
 export default useInlineErrors;

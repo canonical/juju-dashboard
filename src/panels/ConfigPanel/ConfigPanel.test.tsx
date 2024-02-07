@@ -385,7 +385,7 @@ describe("ConfigPanel", () => {
     expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("should display console error when trying to get config", async () => {
+  it("should display error when trying to get config and refetch config data", async () => {
     jest
       .spyOn(apiModule, "getApplicationConfig")
       .mockImplementation(
@@ -397,15 +397,24 @@ describe("ConfigPanel", () => {
       );
     renderComponent(<ConfigPanel />, { state, path, url });
     expect(apiModule.getApplicationConfig).toHaveBeenCalledTimes(1);
-    await waitFor(() =>
+    await waitFor(() => {
       expect(console.error).toHaveBeenCalledWith(
         Label.GET_CONFIG_ERROR,
         new Error("Error while calling getApplicationConfig"),
-      ),
+      );
+    });
+    const configErrorNotification = screen.getByText(
+      new RegExp(Label.GET_CONFIG_ERROR),
     );
+    expect(configErrorNotification).toBeInTheDocument();
+    expect(configErrorNotification.childElementCount).toBe(1);
+    const refetchButton = configErrorNotification.children[0];
+    expect(refetchButton).toHaveTextContent("refetch");
+    await userEvent.click(refetchButton);
+    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(2);
   });
 
-  it("should display console error when trying to save", async () => {
+  it("should display error when trying to save", async () => {
     jest.spyOn(apiModule, "getApplicationConfig").mockImplementationOnce(
       jest.fn().mockResolvedValue(
         applicationGetFactory.build({
@@ -460,5 +469,8 @@ describe("ConfigPanel", () => {
         new Error("Error while trying to save"),
       ),
     );
+    expect(
+      screen.getByText(new RegExp(Label.SUBMIT_TO_JUJU_ERROR)),
+    ).toBeInTheDocument();
   });
 });
