@@ -1,10 +1,23 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 
 import RelativeDate from "./RelativeDate";
 
 describe("RelativeDate", () => {
   const yesterday = new Date(Date.now() - 60 * 1000 * 60 * 24);
+  let userEventWithTimers: UserEvent;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    userEventWithTimers = userEvent.setup({
+      advanceTimers: jest.advanceTimersByTime,
+    });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
 
   it("displays a relative date", async () => {
     render(<RelativeDate datetime={yesterday.toISOString()} />);
@@ -15,7 +28,10 @@ describe("RelativeDate", () => {
     render(<RelativeDate datetime={yesterday.toISOString()} />);
     const fullDate = yesterday.toLocaleString();
     expect(screen.queryByText(fullDate)).not.toBeInTheDocument();
-    await userEvent.hover(screen.getByText("1 day ago"));
+    await act(async () => {
+      await userEventWithTimers.hover(screen.getByText("1 day ago"));
+      jest.runAllTimers();
+    });
     expect(screen.getByText(fullDate)).toBeInTheDocument();
   });
 });

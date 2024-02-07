@@ -1,5 +1,6 @@
-import { screen, within } from "@testing-library/react";
+import { screen, within, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
 import { generalStateFactory } from "testing/factories/general";
@@ -21,9 +22,18 @@ import ControllersIndex from "./ControllersIndex";
 
 describe("Controllers table", () => {
   let state: RootState;
+  let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
     state = rootStateFactory.withGeneralConfig().build();
+    jest.useFakeTimers();
+    userEventWithTimers = userEvent.setup({
+      advanceTimers: jest.advanceTimersByTime,
+    });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it("renders a blank page if no data", () => {
@@ -114,7 +124,10 @@ describe("Controllers table", () => {
     expect(
       screen.getByRole("gridcell", { name: "Failed to connect" }),
     ).toBeInTheDocument();
-    await userEvent.hover(screen.getByText("Failed to connect"));
+    await act(async () => {
+      await userEventWithTimers.hover(screen.getByText("Failed to connect"));
+      jest.runAllTimers();
+    });
     expect(screen.getByText("Uh oh!")).toBeInTheDocument();
   });
 
