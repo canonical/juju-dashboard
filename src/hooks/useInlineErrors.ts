@@ -52,7 +52,8 @@ function useInlineErrors(
     [inlineErrors],
   );
   const errors = inlineErrors.reduce<ReactNode[]>((nodes, { key, error }) => {
-    const errorItems = mapping && key in mapping ? mapping[key](error) : error;
+    const errorItems =
+      error && mapping && key in mapping ? mapping[key](error) : error;
     const filteredErrorItems = (
       Array.isArray(errorItems) ? errorItems : [errorItems]
     ).filter(Boolean);

@@ -43,7 +43,9 @@ describe("useInlineErrors", () => {
   });
 
   it("does not return null errors", () => {
-    const { result } = renderHook(() => useInlineErrors());
+    const { result } = renderHook(() =>
+      useInlineErrors({ Error1: (error) => `Mapped! ${error}` }),
+    );
     let [errors, setError] = result.current;
     act(() => setError("Error1", null));
     act(() => setError("Error2", [null, "Uh, oh!"]));
