@@ -1,5 +1,6 @@
 import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -18,8 +19,13 @@ describe("CharmsPanel", () => {
   let state: RootState;
   const path = "*";
   const url = "/models/admin/tests?panel=charm-actions";
+  let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
+    jest.useFakeTimers();
+    userEventWithTimers = userEvent.setup({
+      advanceTimers: jest.advanceTimersByTime,
+    });
     state = rootStateFactory.build({
       general: generalStateFactory.build({}),
       juju: jujuStateFactory.build({
@@ -44,6 +50,10 @@ describe("CharmsPanel", () => {
         ],
       }),
     });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it("renders the correct number of charms", () => {
@@ -105,8 +115,10 @@ describe("CharmsPanel", () => {
       />,
       { path, url, state },
     );
-    await userEvent.click(screen.getAllByRole("radio")[0]);
-    await userEvent.click(screen.getByRole("button", { name: "Next" }));
+    await userEventWithTimers.click(screen.getAllByRole("radio")[0]);
+    await userEventWithTimers.click(
+      screen.getByRole("button", { name: "Next" }),
+    );
     expect(mockHandleCharmURLChange).toHaveBeenCalledTimes(1);
   });
 
@@ -121,7 +133,10 @@ describe("CharmsPanel", () => {
     );
     const disabledRadioButton = screen.getAllByRole("radio")[1];
     expect(disabledRadioButton).toBeDisabled();
-    await userEvent.hover(disabledRadioButton);
+    await act(async () => {
+      await userEventWithTimers.hover(disabledRadioButton);
+      jest.runAllTimers();
+    });
     expect(
       screen.getByRole("tooltip", { name: Label.NO_ACTIONS }),
     ).toBeVisible();
@@ -161,7 +176,10 @@ describe("CharmsPanel", () => {
     expect(document.querySelectorAll(".p-form-help-text")[0]).toHaveTextContent(
       "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5 + 4 more",
     );
-    await userEvent.hover(screen.getByText("4 more"));
+    await act(async () => {
+      await userEventWithTimers.hover(screen.getByText("4 more"));
+      jest.runAllTimers();
+    });
     expect(
       screen.getByRole("tooltip", {
         name: "Mock app 6, Mock app 7, Mock app 8, Mock app 9",

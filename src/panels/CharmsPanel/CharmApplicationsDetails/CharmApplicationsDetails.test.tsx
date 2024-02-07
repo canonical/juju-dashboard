@@ -1,5 +1,6 @@
-import { screen } from "@testing-library/react";
+import { screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -16,8 +17,13 @@ import CharmApplicationsDetails from "./CharmApplicationsDetails";
 
 describe("CharmApplicationsDetails", () => {
   let state: RootState;
+  let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
+    jest.useFakeTimers();
+    userEventWithTimers = userEvent.setup({
+      advanceTimers: jest.advanceTimersByTime,
+    });
     state = rootStateFactory.build({
       general: generalStateFactory.build({}),
       juju: jujuStateFactory.build({
@@ -47,6 +53,10 @@ describe("CharmApplicationsDetails", () => {
     });
   });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it("should render correctly", () => {
     renderComponent(
       <CharmApplicationsDetails charmURL="ch:amd64/focal/redis-k8s" />,
@@ -73,7 +83,10 @@ describe("CharmApplicationsDetails", () => {
     expect(document.querySelector(".p-form-help-text")).toHaveTextContent(
       "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5 + 4 more",
     );
-    await userEvent.hover(screen.getByText("4 more"));
+    await act(async () => {
+      await userEventWithTimers.hover(screen.getByText("4 more"));
+      jest.runAllTimers();
+    });
     expect(
       screen.getByRole("tooltip", {
         name: "Mock app 6, Mock app 7, Mock app 8, Mock app 9",
