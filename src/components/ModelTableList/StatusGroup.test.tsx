@@ -1,5 +1,6 @@
 import { act, screen, within } from "@testing-library/react";
-import userEvent, { UserEvent } from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";

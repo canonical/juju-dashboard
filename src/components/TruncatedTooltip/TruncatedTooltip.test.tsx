@@ -1,8 +1,8 @@
 import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 
 import TruncatedTooltip from "./TruncatedTooltip";
-import { UserEvent } from "@testing-library/user-event";
 
 describe("TruncatedTooltip", () => {
   const offsetWidth = Object.getOwnPropertyDescriptor(
