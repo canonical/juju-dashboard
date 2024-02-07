@@ -3,6 +3,7 @@ import {
   Button,
   Icon,
   Tooltip,
+  ContextualMenu,
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
@@ -15,6 +16,7 @@ import RelativeDate from "components/RelativeDate";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { copyToClipboard } from "components/utils";
+import { useQueryParams } from "hooks/useQueryParams";
 import {
   getSecretsLoading,
   getSecretsLoaded,
@@ -26,7 +28,9 @@ import { useAppSelector } from "store/store";
 import SecretContent from "../SecretContent";
 
 export enum Label {
+  ACTION_MENU = "Action menu",
   COPY = "Copy",
+  REMOVE_BUTTON = "Remove secret",
 }
 
 export enum TestId {
@@ -43,6 +47,13 @@ const SecretsTable = () => {
   const secretsLoading = useAppSelector((state) =>
     getSecretsLoading(state, modelUUID),
   );
+  const [, setQuery] = useQueryParams<{
+    panel: string | null;
+    secret: string | null;
+  }>({
+    panel: null,
+    secret: null,
+  });
 
   const tableData = useMemo(() => {
     if (!secrets) {
@@ -97,10 +108,25 @@ const SecretsTable = () => {
         owner,
         created: <RelativeDate datetime={secret["create-time"]} />,
         updated: <RelativeDate datetime={secret["update-time"]} />,
-        actions: "",
+        actions: (
+          <ContextualMenu
+            links={[
+              {
+                children: Label.REMOVE_BUTTON,
+                onClick: () =>
+                  setQuery({ panel: "remove-secret", secret: secret.uri }),
+              },
+            ]}
+            position="right"
+            scrollOverflow
+            toggleAppearance="base"
+            toggleClassName="has-icon u-no-margin--bottom is-small"
+            toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
+          />
+        ),
       };
     });
-  }, [modelUUID, secrets]);
+  }, [modelUUID, secrets, setQuery]);
 
   const columnData: Column[] = useMemo(
     () => [
@@ -136,6 +162,7 @@ const SecretsTable = () => {
       {
         Header: "Actions",
         accessor: "actions",
+        className: "u-align--right",
       },
     ],
     [],

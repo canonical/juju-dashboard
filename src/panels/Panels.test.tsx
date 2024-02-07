@@ -8,6 +8,7 @@ import { TestId as AuditLogsFilterPanelTestId } from "./AuditLogsFilterPanel/Aud
 import { TestId as CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
 import Panels from "./Panels";
+import { TestId as RemoveSecretPanelTestId } from "./RemoveSecretPanel/RemoveSecretPanel";
 import { TestId as ShareModelTestId } from "./ShareModelPanel/ShareModel";
 
 describe("Panels", () => {
@@ -52,6 +53,15 @@ describe("Panels", () => {
     });
     expect(
       await screen.findByTestId(AddSecretPanelTestId.PANEL),
+    ).toBeInTheDocument();
+  });
+
+  it("can display the remove secret panel", async () => {
+    renderComponent(<Panels />, {
+      url: "/?panel=remove-secret",
+    });
+    expect(
+      await screen.findByTestId(RemoveSecretPanelTestId.PANEL),
     ).toBeInTheDocument();
   });
 });
