@@ -10,7 +10,7 @@ import * as Yup from "yup";
 
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
-import { useCreateSecrets } from "juju/apiHooks";
+import { useCreateSecrets, useListSecrets } from "juju/apiHooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 
@@ -56,6 +56,7 @@ const AddSecretPanel = () => {
   const [inlineError, setInlineError] = useState<string | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
   const createSecrets = useCreateSecrets(userName, modelName);
+  const listSecrets = useListSecrets(userName, modelName);
   return (
     <>
       <Panel
@@ -136,6 +137,7 @@ const AddSecretPanel = () => {
                     setInlineError(error);
                     return;
                   }
+                  listSecrets();
                   handleRemovePanelQueryParams();
                   return;
                 })

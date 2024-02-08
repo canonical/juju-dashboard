@@ -8,7 +8,7 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import { TestId } from "./Output";
-import WebCLI, { MAX_HISTORY } from "./WebCLI";
+import WebCLI, { MAX_HISTORY, Label } from "./WebCLI";
 
 jest.mock("juju/bakery", () => ({
   __esModule: true,
@@ -410,6 +410,37 @@ describe("WebCLI", () => {
         "style",
         "height: 628px;",
       );
+      WS.clean();
+    });
+
+    it("should display connection error when no websocket address is present", () => {
+      renderComponent(<WebCLI {...props} modelUUID="" />);
+      expect(
+        document.querySelector(".webcli__output-content code"),
+      ).toHaveTextContent(`ERROR: ${Label.CONNECTION_ERROR}`);
+    });
+
+    it("should display authentication error when no credentials and macaroons are available", async () => {
+      bakerySpy.mockImplementation(() => null);
+
+      const server = new WS("ws://localhost:1234/model/abc123/commands", {
+        jsonProtocol: true,
+      });
+      renderComponent(
+        <WebCLI
+          protocol="ws"
+          controllerWSHost="localhost:1234"
+          modelUUID="abc123"
+          credentials={null}
+        />,
+      );
+      await server.connected;
+      const input = screen.getByRole("textbox");
+      await userEvent.type(input, "status{enter}");
+      await expect(server).toReceiveMessage({ commands: ["status"] });
+      expect(
+        document.querySelector(".webcli__output-content code"),
+      ).toHaveTextContent(`ERROR: ${Label.AUTHENTICATION_ERROR}`);
       WS.clean();
     });
   });

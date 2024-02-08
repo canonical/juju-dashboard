@@ -17,7 +17,7 @@ export type SetError = (
   error: InlineError["error"],
 ) => void;
 
-type HasError = (key: InlineError["key"]) => boolean;
+type HasError = (key?: InlineError["key"]) => boolean;
 
 function useInlineErrors(
   mapping?: ErrorMapping,
@@ -41,14 +41,20 @@ function useInlineErrors(
     [],
   );
   const hasError = useCallback(
-    (key: InlineError["key"]) =>
-      !!inlineErrors.find(
-        (inlineError) =>
-          inlineError.key === key &&
-          (Array.isArray(inlineError.error)
-            ? inlineError.error.some(Boolean)
-            : !!inlineError.error),
-      ),
+    (key?: InlineError["key"]) =>
+      key
+        ? !!inlineErrors.find(
+            (inlineError) =>
+              inlineError.key === key &&
+              (Array.isArray(inlineError.error)
+                ? inlineError.error.some(Boolean)
+                : !!inlineError.error),
+          )
+        : inlineErrors.some((inlineError) =>
+            Array.isArray(inlineError.error)
+              ? inlineError.error.some(Boolean)
+              : !!inlineError.error,
+          ),
     [inlineErrors],
   );
   const errors = inlineErrors.reduce<ReactNode[]>((nodes, { key, error }) => {

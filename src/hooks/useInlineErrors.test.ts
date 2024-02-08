@@ -84,4 +84,13 @@ describe("useInlineErrors", () => {
     [, , hasError] = result.current;
     expect(hasError("Error1")).toStrictEqual(false);
   });
+
+  it("can check if errors exist", () => {
+    const { result } = renderHook(() => useInlineErrors());
+    let [, setError, hasError] = result.current;
+    expect(hasError()).toStrictEqual(false);
+    act(() => setError("Error1", "Uh oh!"));
+    [, , hasError] = result.current;
+    expect(hasError()).toStrictEqual(true);
+  });
 });

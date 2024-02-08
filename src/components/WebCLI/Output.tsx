@@ -137,7 +137,7 @@ const WebCLIOutput = ({
           <code
             data-testid={TestId.CODE}
             dangerouslySetInnerHTML={{ __html: convert.toHtml(content) }}
-          ></code>
+          />
         )}
       </pre>
     </div>

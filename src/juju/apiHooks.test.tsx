@@ -326,15 +326,19 @@ describe("useListSecrets", () => {
     jest
       .spyOn(jujuLib, "connectAndLogin")
       .mockImplementation(() => Promise.resolve(loginResponse));
-    renderHook(() => useListSecrets("eggman@external", "test-model"), {
-      wrapper: (props) => (
-        <ComponentProviders
-          {...props}
-          path="/models/:userName/:modelName/app/:appName"
-          store={store}
-        />
-      ),
-    });
+    const { result } = renderHook(
+      () => useListSecrets("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current();
     const updateAction = jujuActions.updateSecrets({
       modelUUID: "abc123",
       secrets: secrets,
@@ -367,15 +371,19 @@ describe("useListSecrets", () => {
     jest
       .spyOn(jujuLib, "connectAndLogin")
       .mockImplementation(() => Promise.resolve(loginResponse));
-    renderHook(() => useListSecrets("eggman@external", "test-model"), {
-      wrapper: (props) => (
-        <ComponentProviders
-          {...props}
-          path="/models/:userName/:modelName/app/:appName"
-          store={store}
-        />
-      ),
-    });
+    const { result } = renderHook(
+      () => useListSecrets("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current();
     await waitFor(() => {
       expect(store.getActions()).toHaveLength(0);
     });
@@ -387,15 +395,19 @@ describe("useListSecrets", () => {
     jest
       .spyOn(jujuLib, "connectAndLogin")
       .mockImplementation(() => Promise.reject(new Error()));
-    renderHook(() => useListSecrets("eggman@external", "test-model"), {
-      wrapper: (props) => (
-        <ComponentProviders
-          {...props}
-          path="/models/:userName/:modelName/app/:appName"
-          store={store}
-        />
-      ),
-    });
+    const { result } = renderHook(
+      () => useListSecrets("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current();
     const updateAction = jujuActions.setSecretsErrors({
       modelUUID: "abc123",
       errors: "Error during promise race.",
@@ -428,15 +440,19 @@ describe("useListSecrets", () => {
     jest
       .spyOn(jujuLib, "connectAndLogin")
       .mockImplementation(() => Promise.resolve(loginResponse));
-    renderHook(() => useListSecrets("eggman@external", "test-model"), {
-      wrapper: (props) => (
-        <ComponentProviders
-          {...props}
-          path="/models/:userName/:modelName/app/:appName"
-          store={store}
-        />
-      ),
-    });
+    const { result } = renderHook(
+      () => useListSecrets("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current();
     const updateAction = jujuActions.setSecretsErrors({
       modelUUID: "abc123",
       errors: "Uh oh!",

@@ -1,6 +1,7 @@
 import { screen, waitFor } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 
+import * as apiHooks from "juju/apiHooks";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -23,6 +24,12 @@ import { TestId as SecretsTableTestId } from "./SecretsTable/SecretsTable";
 
 const mockStore = configureStore<RootState, unknown>([]);
 
+jest.mock("juju/apiHooks", () => {
+  return {
+    useListSecrets: jest.fn().mockReturnValue(jest.fn()),
+  };
+});
+
 describe("Secrets", () => {
   let state: RootState;
   const path = urls.model.index(null);
@@ -32,6 +39,7 @@ describe("Secrets", () => {
   });
 
   beforeEach(() => {
+    jest.spyOn(apiHooks, "useListSecrets").mockImplementation(() => jest.fn());
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         credentials: {
@@ -76,6 +84,15 @@ describe("Secrets", () => {
     expect(
       screen.getByTestId(SecretsTableTestId.SECRETS_TABLE),
     ).toBeInTheDocument();
+  });
+
+  it("fetches secrets", async () => {
+    const listSecrets = jest.fn();
+    jest
+      .spyOn(apiHooks, "useListSecrets")
+      .mockImplementation(() => listSecrets);
+    renderComponent(<Secrets />, { state, path, url });
+    expect(listSecrets).toHaveBeenCalled();
   });
 
   it("cleans up secrets when unmounted", async () => {

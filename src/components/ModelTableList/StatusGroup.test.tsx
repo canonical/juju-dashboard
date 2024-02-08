@@ -1,4 +1,5 @@
-import { screen, within } from "@testing-library/react";
+import { act, screen, within } from "@testing-library/react";
+import type { UserEvent } from "@testing-library/user-event";
 import userEvent from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
@@ -23,8 +24,13 @@ import StatusGroup from "./StatusGroup";
 
 describe("StatusGroup", () => {
   let state: RootState;
+  let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
+    jest.useFakeTimers();
+    userEventWithTimers = userEvent.setup({
+      advanceTimers: jest.advanceTimersByTime,
+    });
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         modelData: {
@@ -90,6 +96,10 @@ describe("StatusGroup", () => {
         },
       }),
     });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it("by default, renders no tables when there is no data", () => {
@@ -165,6 +175,7 @@ describe("StatusGroup", () => {
   });
 
   it("displays links to blocked apps and units", async () => {
+    jest.useFakeTimers();
     state.juju.modelData.abc123.applications = {
       calico: modelDataApplicationFactory.build({
         status: detailedStatusFactory.build({
@@ -188,7 +199,10 @@ describe("StatusGroup", () => {
     const row = within(tables[0]).getAllByRole("row")[1];
     const error = within(row).getByRole("link", { name: "app blocked" });
     expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
-    await userEvent.hover(error);
+    await act(async () => {
+      await userEventWithTimers.hover(error);
+      jest.runAllTimers();
+    });
     const tooltip = screen.getAllByRole("tooltip")[0];
     expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
     const appError = within(tooltip).getByRole("link", {

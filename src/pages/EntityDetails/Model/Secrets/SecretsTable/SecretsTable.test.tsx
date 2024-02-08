@@ -1,6 +1,8 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { TestId as LoadingTestId } from "components/LoadingSpinner/LoadingSpinner";
+import * as componentUtils from "components/utils";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -17,7 +19,12 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import SecretsTable, { TestId } from "./SecretsTable";
+import SecretsTable, { Label, TestId } from "./SecretsTable";
+
+jest.mock("components/utils", () => ({
+  ...jest.requireActual("components/utils"),
+  copyToClipboard: jest.fn(),
+}));
 
 describe("SecretsTable", () => {
   let state: RootState;
@@ -91,10 +98,26 @@ describe("SecretsTable", () => {
       }),
     });
     renderComponent(<SecretsTable />, { state, path, url });
-    expect(screen.getByRole("cell", { name: "aabbccdd" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("cell", { name: "aabbccdd Copy" }),
+    ).toBeInTheDocument();
   });
 
-  it("displays 'Model' instead of UUID", async () => {
+  it("can copy the URI", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [listSecretResultFactory.build({ uri: "secret:aabbccdd" })],
+        loaded: true,
+      }),
+    });
+    renderComponent(<SecretsTable />, { state, path, url });
+    await userEvent.click(screen.getByRole("button", { name: Label.COPY }));
+    expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(
+      "secret:aabbccdd",
+    );
+  });
+
+  it("displays 'Model' instead of the UUID", async () => {
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({
         items: [listSecretResultFactory.build({ "owner-tag": "model-abc123" })],
@@ -105,21 +128,23 @@ describe("SecretsTable", () => {
     expect(screen.getByRole("cell", { name: "Model" })).toBeInTheDocument();
   });
 
-  it("does not change application owners", async () => {
+  it("links to applications", async () => {
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({
         items: [
-          listSecretResultFactory.build({ "owner-tag": "application-def456" }),
+          listSecretResultFactory.build({ "owner-tag": "application-lxd" }),
         ],
         loaded: true,
       }),
     });
     renderComponent(<SecretsTable />, { state, path, url });
-    expect(
-      screen.queryByRole("cell", { name: "Model" }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("cell", { name: "application-def456" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "lxd" })).toHaveAttribute(
+      "href",
+      urls.model.app.index({
+        userName: "eggman@external",
+        modelName: "test-model",
+        appName: "lxd",
+      }),
+    );
   });
 });
