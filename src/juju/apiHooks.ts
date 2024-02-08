@@ -131,6 +131,76 @@ export const useListSecrets = (
   ]);
 };
 
+export const useGetSecretContent = (userName?: string, modelName?: string) => {
+  const dispatch = useAppDispatch();
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  const modelConnectionCallback = useModelConnectionCallback(modelUUID);
+  return useCallback(
+    (secretURI: string, revision: number) => {
+      modelConnectionCallback(
+        (connection?: ConnectionWithFacades | null, error?: string | null) => {
+          if (error && wsControllerURL) {
+            dispatch(
+              jujuActions.setSecretsContentErrors({
+                modelUUID,
+                errors: error,
+                wsControllerURL,
+              }),
+            );
+            return;
+          }
+          if (!connection || !wsControllerURL) {
+            return;
+          }
+          dispatch(
+            jujuActions.secretsContentLoading({ modelUUID, wsControllerURL }),
+          );
+          connection?.facades.secrets
+            ?.listSecrets({
+              filter: {
+                revision,
+                uri: secretURI,
+              },
+              "show-secrets": true,
+            })
+            .then((secrets) => {
+              const content = secrets?.results[0]?.value;
+              if (content?.error || !content?.data) {
+                dispatch(
+                  jujuActions.setSecretsContentErrors({
+                    modelUUID,
+                    errors: content?.error?.message ?? "No secret data",
+                    wsControllerURL,
+                  }),
+                );
+                return;
+              }
+              dispatch(
+                jujuActions.updateSecretsContent({
+                  modelUUID,
+                  content: content.data,
+                  wsControllerURL,
+                }),
+              );
+              return;
+            })
+            .catch((error) => {
+              dispatch(
+                jujuActions.setSecretsContentErrors({
+                  modelUUID,
+                  errors: error instanceof Error ? error.message : error,
+                  wsControllerURL,
+                }),
+              );
+            });
+        },
+      );
+    },
+    [dispatch, modelConnectionCallback, modelUUID, wsControllerURL],
+  );
+};
+
 export const useCreateSecrets = (userName?: string, modelName?: string) => {
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const modelConnectionCallback = useModelConnectionCallback(modelUUID);

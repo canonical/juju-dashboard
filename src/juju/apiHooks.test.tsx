@@ -23,6 +23,7 @@ import {
   useListSecrets,
   useCreateSecrets,
   useModelConnectionCallback,
+  useGetSecretContent,
 } from "./apiHooks";
 
 const mockStore = configureStore<RootState, unknown>([]);
@@ -464,6 +465,296 @@ describe("useListSecrets", () => {
           .getActions()
           .find((dispatch) => dispatch.type === updateAction.type),
       ).toMatchObject(updateAction);
+    });
+  });
+});
+
+describe("useGetSecretContent", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        credentials: {
+          "wss://example.com/api": credentialFactory.build(),
+        },
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://example.com/api",
+        }),
+      }),
+      juju: {
+        models: {
+          abc123: modelListInfoFactory.build({
+            wsControllerURL: "wss://example.com/api",
+            uuid: "abc123",
+          }),
+        },
+      },
+    });
+  });
+
+  it("fetches secrets", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const data = { key: "val" };
+    const secrets = [
+      listSecretResultFactory.build({
+        value: { data },
+      }),
+    ];
+    const loginResponse = {
+      conn: {
+        facades: {
+          secrets: {
+            listSecrets: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve({ results: secrets })),
+          },
+        },
+      } as unknown as Connection,
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useGetSecretContent("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current("sacret:aabbccdd", 2);
+    const updateAction = jujuActions.updateSecretsContent({
+      modelUUID: "abc123",
+      content: data,
+      wsControllerURL: "wss://example.com/api",
+    });
+    const loadingAction = jujuActions.secretsContentLoading({
+      modelUUID: "abc123",
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find((dispatch) => dispatch.type === updateAction.type),
+      ).toMatchObject(updateAction);
+      expect(
+        store
+          .getActions()
+          .find((dispatch) => dispatch.type === loadingAction.type),
+      ).toMatchObject(loadingAction);
+    });
+  });
+
+  it("handles value errors", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const secrets = [
+      listSecretResultFactory.build({
+        value: { error: new Error("Uh oh!") },
+      }),
+    ];
+    const loginResponse = {
+      conn: {
+        facades: {
+          secrets: {
+            listSecrets: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve({ results: secrets })),
+          },
+        },
+      } as unknown as Connection,
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useGetSecretContent("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current("sacret:aabbccdd", 2);
+    const errorAction = jujuActions.setSecretsContentErrors({
+      modelUUID: "abc123",
+      errors: "Uh oh!",
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find((dispatch) => dispatch.type === errorAction.type),
+      ).toMatchObject(errorAction);
+    });
+  });
+
+  it("handles no data", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const secrets = [
+      listSecretResultFactory.build({
+        value: {},
+      }),
+    ];
+    const loginResponse = {
+      conn: {
+        facades: {
+          secrets: {
+            listSecrets: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve({ results: secrets })),
+          },
+        },
+      } as unknown as Connection,
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useGetSecretContent("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current("sacret:aabbccdd", 2);
+    const errorAction = jujuActions.setSecretsContentErrors({
+      modelUUID: "abc123",
+      errors: "No secret data",
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find((dispatch) => dispatch.type === errorAction.type),
+      ).toMatchObject(errorAction);
+    });
+  });
+
+  it("handles no connection", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const loginResponse = {
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useGetSecretContent("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current("sacret:aabbccdd", 2);
+    await waitFor(() => {
+      expect(store.getActions()).toHaveLength(0);
+    });
+  });
+
+  it("stores connection errors", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.reject(new Error()));
+    const { result } = renderHook(
+      () => useGetSecretContent("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current("sacret:aabbccdd", 2);
+    const errorAction = jujuActions.setSecretsContentErrors({
+      modelUUID: "abc123",
+      errors: "Error during promise race.",
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find((dispatch) => dispatch.type === errorAction.type),
+      ).toMatchObject(errorAction);
+    });
+  });
+
+  it("stores errors from fetching secrets", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const loginResponse = {
+      conn: {
+        facades: {
+          secrets: {
+            listSecrets: jest
+              .fn()
+              .mockImplementation(() => Promise.reject(new Error("Uh oh!"))),
+          },
+        },
+      } as unknown as Connection,
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useGetSecretContent("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    result.current("sacret:aabbccdd", 2);
+    const errorAction = jujuActions.setSecretsContentErrors({
+      modelUUID: "abc123",
+      errors: "Uh oh!",
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find((dispatch) => dispatch.type === errorAction.type),
+      ).toMatchObject(errorAction);
     });
   });
 });

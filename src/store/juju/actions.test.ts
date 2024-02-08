@@ -340,4 +340,69 @@ describe("actions", () => {
       },
     });
   });
+
+  it("secretsContentLoading", () => {
+    expect(
+      actions.secretsContentLoading({
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/secretsContentLoading",
+      payload: {
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("updateSecretsContent", () => {
+    const content = { key: "val" };
+    expect(
+      actions.updateSecretsContent({
+        modelUUID: "abc123",
+        content,
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/updateSecretsContent",
+      payload: {
+        modelUUID: "abc123",
+        content,
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("setSecretsContentErrors", () => {
+    expect(
+      actions.setSecretsContentErrors({
+        errors: "Uh oh!",
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/setSecretsContentErrors",
+      payload: {
+        errors: "Uh oh!",
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("clearSecretsContent", () => {
+    expect(
+      actions.clearSecretsContent({
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/clearSecretsContent",
+      payload: {
+        modelUUID: "abc123",
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
 });

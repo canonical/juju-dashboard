@@ -6,7 +6,10 @@ import type {
   UnitStatus,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
+import type {
+  ListSecretResult,
+  SecretRevision,
+} from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { Factory } from "fishery";
 
 import { DEFAULT_AUDIT_EVENTS_LIMIT } from "store/juju/slice";
@@ -23,6 +26,7 @@ import type {
   ModelSecrets,
   SecretsState,
 } from "store/juju/types";
+import type { SecretsContent } from "store/juju/types";
 
 import { modelStatusInfoFactory, detailedStatusFactory } from "./ClientV6";
 import { modelSLAInfoFactory } from "./ModelManagerV9";
@@ -166,6 +170,10 @@ export const modelDataFactory = Factory.define<ModelData>(() => ({
   "remote-applications": {},
 }));
 
+export const secretRevisionFactory = Factory.define<SecretRevision>(() => ({
+  revision: 1,
+}));
+
 export const listSecretResultFactory = Factory.define<ListSecretResult>(() => ({
   "create-time": "2024-01-05T05:10:17Z",
   "latest-revision": 1,
@@ -186,6 +194,15 @@ export const auditEventsStateFactory = Factory.define<AuditEventsState>(() => ({
 export const crossModelQueryStateFactory = Factory.define<CrossModelQueryState>(
   () => ({
     results: null,
+    errors: null,
+    loaded: false,
+    loading: false,
+  }),
+);
+
+export const modelSecretsContentFactory = Factory.define<SecretsContent>(
+  () => ({
+    content: null,
     errors: null,
     loaded: false,
     loading: false,

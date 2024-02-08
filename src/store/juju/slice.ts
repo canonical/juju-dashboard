@@ -4,7 +4,10 @@ import type {
   ModelInfoResults,
   UserModelList,
 } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
+import type {
+  ListSecretResult,
+  SecretValueResult,
+} from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -22,7 +25,13 @@ import type {
 import { processDeltas } from "juju/watchers";
 import { extractCloudName } from "store/juju/utils/models";
 
-import type { Controllers, JujuState, ModelFeatures } from "./types";
+import type {
+  Controllers,
+  JujuState,
+  ModelFeatures,
+  ModelSecrets,
+  SecretsContent,
+} from "./types";
 
 export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
 
@@ -30,11 +39,35 @@ type WsControllerURLParam = {
   wsControllerURL: string;
 };
 
-const DEFAULT_MODEL_SECRETS = {
+const DEFAULT_MODEL_SECRETS: ModelSecrets = {
   items: null,
   errors: null,
   loading: false,
   loaded: false,
+};
+
+const DEFAULT_MODEL_SECRETS_CONTENT: SecretsContent = {
+  content: null,
+  errors: null,
+  loading: false,
+  loaded: false,
+};
+
+const getOrSetContentState = (state: JujuState, modelUUID: string) => {
+  let modelSecrets = state.secrets[modelUUID];
+  if (!modelSecrets) {
+    modelSecrets = state.secrets[modelUUID] = {
+      ...DEFAULT_MODEL_SECRETS,
+    };
+  }
+
+  let content = modelSecrets.content;
+  if (!content) {
+    content = modelSecrets.content = {
+      ...DEFAULT_MODEL_SECRETS_CONTENT,
+    };
+  }
+  return content;
 };
 
 const slice = createSlice({
@@ -335,6 +368,57 @@ const slice = createSlice({
       >,
     ) => {
       delete state.secrets[action.payload.modelUUID];
+    },
+    secretsContentLoading: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      const content = getOrSetContentState(state, action.payload.modelUUID);
+      content.loading = true;
+    },
+    updateSecretsContent: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          content: SecretValueResult["data"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      const content = getOrSetContentState(state, action.payload.modelUUID);
+      content.content = action.payload.content;
+      content.errors = null;
+      content.loading = false;
+      content.loaded = true;
+    },
+    setSecretsContentErrors: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          errors: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      const content = getOrSetContentState(state, action.payload.modelUUID);
+      content.content = null;
+      content.errors = action.payload.errors;
+      content.loading = false;
+      content.loaded = true;
+    },
+    clearSecretsContent: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      delete state.secrets[action.payload.modelUUID].content;
     },
   },
 });

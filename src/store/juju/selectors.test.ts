@@ -37,6 +37,8 @@ import {
   workloadStatusFactory,
 } from "testing/factories/juju/model-watcher";
 
+import { modelSecretsContentFactory } from "../../testing/factories/juju/juju";
+
 import {
   getActiveUser,
   getActiveUsers,
@@ -103,6 +105,12 @@ import {
   getCanListSecrets,
   getModelFeatures,
   getCanManageSecrets,
+  getSecretByURI,
+  getSecretsContentState,
+  getSecretsContent,
+  getSecretsContentErrors,
+  getSecretsContentLoaded,
+  getSecretsContentLoading,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -307,7 +315,7 @@ describe("selectors", () => {
     ).toStrictEqual(secrets);
   });
 
-  it("getSecretsResults", () => {
+  it("getModelSecrets", () => {
     const items = [listSecretResultFactory.build()];
     expect(
       getModelSecrets(
@@ -321,6 +329,34 @@ describe("selectors", () => {
         "abc123",
       ),
     ).toStrictEqual(items);
+  });
+
+  it("getSecretByURI", () => {
+    const items = [
+      listSecretResultFactory.build({ uri: "secret:aabbccdd" }),
+      listSecretResultFactory.build({ uri: "secret:eeffgghh" }),
+    ];
+    expect(
+      getSecretByURI(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({ items }),
+              def456: modelSecretsFactory.build({
+                items: [
+                  listSecretResultFactory.build({
+                    uri: "secret:aabbccdd",
+                    label: "other-model",
+                  }),
+                ],
+              }),
+            }),
+          }),
+        }),
+        "abc123",
+        "secret:aabbccdd",
+      ),
+    ).toStrictEqual(items[0]);
   });
 
   it("getSecretsErrors", () => {
@@ -366,6 +402,106 @@ describe("selectors", () => {
             secrets: secretsStateFactory.build({
               abc123: modelSecretsFactory.build({
                 loading: true,
+              }),
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getSecretsContentState", () => {
+    const content = modelSecretsContentFactory.build({
+      loaded: true,
+    });
+    expect(
+      getSecretsContentState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({
+                content,
+              }),
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(content);
+  });
+
+  it("getSecretsContent", () => {
+    const content = {
+      key: "val",
+    };
+    expect(
+      getSecretsContent(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({
+                content: modelSecretsContentFactory.build({
+                  content,
+                }),
+              }),
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(content);
+  });
+
+  it("getSecretsContentErrors", () => {
+    const errors = "Uh oh!";
+    expect(
+      getSecretsContentErrors(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({
+                content: modelSecretsContentFactory.build({
+                  errors,
+                }),
+              }),
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(errors);
+  });
+
+  it("getSecretsContentLoading", () => {
+    expect(
+      getSecretsContentLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({
+                content: modelSecretsContentFactory.build({
+                  loading: true,
+                }),
+              }),
+            }),
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getSecretsContentLoaded", () => {
+    expect(
+      getSecretsContentLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({
+                content: modelSecretsContentFactory.build({
+                  loaded: true,
+                }),
               }),
             }),
           }),
