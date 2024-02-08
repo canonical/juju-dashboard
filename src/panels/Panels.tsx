@@ -8,6 +8,7 @@ import ShareModel from "panels/ShareModelPanel/ShareModel";
 import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
 import CharmsAndActionsPanel from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
+import RemoveSecretPanel from "./RemoveSecretPanel";
 
 export default function Panels() {
   const [panelQs] = useQueryParams<{ panel: string | null }>({
@@ -28,6 +29,8 @@ export default function Panels() {
         return <AuditLogsFilterPanel />;
       case "add-secret":
         return <AddSecretPanel />;
+      case "remove-secret":
+        return <RemoveSecretPanel />;
       default:
         return null;
     }
