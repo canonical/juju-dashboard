@@ -1,6 +1,7 @@
 import process from "process";
 
 import { Notification, Strip } from "@canonical/react-components";
+import { unwrapResult } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/browser";
 import { StrictMode } from "react";
 import type { Root } from "react-dom/client";
@@ -146,6 +147,7 @@ function bootstrap() {
     // If not then wait for the login UI to trigger this
     reduxStore
       .dispatch(appThunks.connectAndStartPolling())
+      .then(unwrapResult)
       .catch((error) => console.error(Label.POLLING_ERROR, error));
   }
 

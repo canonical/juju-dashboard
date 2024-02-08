@@ -1,8 +1,11 @@
 import { Icon } from "@canonical/react-components";
+import { unwrapResult } from "@reduxjs/toolkit";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
+import reactHotToast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
+import ToastCard from "components/ToastCard/ToastCard";
 import SideNavigation from "components/upstream/SideNavigation";
 import { SideNavigationText } from "components/upstream/SideNavigation";
 import { DARK_THEME } from "consts";
@@ -67,10 +70,16 @@ const UserMenu = () => {
                 to: urls.index,
                 label: "Log out",
                 onClick: () => {
-                  // TODO: Consider displaying an error alert.
-                  dispatch(appThunks.logOut()).catch((error) =>
-                    console.error(Label.LOGOUT_ERROR, error),
-                  );
+                  dispatch(appThunks.logOut())
+                    .then(unwrapResult)
+                    .catch((error) => {
+                      reactHotToast.custom((t) => (
+                        <ToastCard toastInstance={t} type="negative">
+                          {Label.LOGOUT_ERROR}
+                        </ToastCard>
+                      ));
+                      console.error(Label.LOGOUT_ERROR, error);
+                    });
                 },
               },
             ]}

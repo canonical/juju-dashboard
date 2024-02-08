@@ -1,4 +1,5 @@
 import { Spinner } from "@canonical/react-components";
+import { unwrapResult } from "@reduxjs/toolkit";
 import type { FormEvent, PropsWithChildren } from "react";
 import { useEffect, useRef } from "react";
 import reactHotToast from "react-hot-toast";
@@ -177,9 +178,9 @@ function UserPassForm() {
     );
     if (bakery) {
       // TODO: Consider displaying an error alert.
-      dispatch(appThunks.connectAndStartPolling()).catch((error) =>
-        console.error(Label.POLLING_ERROR, error),
-      );
+      dispatch(appThunks.connectAndStartPolling())
+        .then(unwrapResult)
+        .catch((error) => console.error(Label.POLLING_ERROR, error));
     }
   }
 
