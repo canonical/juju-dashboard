@@ -41,20 +41,18 @@ function useInlineErrors(
     [],
   );
   const hasError = useCallback(
-    (key?: InlineError["key"]) =>
-      key
+    (key?: InlineError["key"]) => {
+      const hasIndividualError = (inlineError: InlineError): boolean =>
+        Array.isArray(inlineError.error)
+          ? inlineError.error.some(Boolean)
+          : !!inlineError.error;
+      return key
         ? !!inlineErrors.find(
             (inlineError) =>
-              inlineError.key === key &&
-              (Array.isArray(inlineError.error)
-                ? inlineError.error.some(Boolean)
-                : !!inlineError.error),
+              inlineError.key === key && hasIndividualError(inlineError),
           )
-        : inlineErrors.some((inlineError) =>
-            Array.isArray(inlineError.error)
-              ? inlineError.error.some(Boolean)
-              : !!inlineError.error,
-          ),
+        : inlineErrors.some(hasIndividualError);
+    },
     [inlineErrors],
   );
   const errors = inlineErrors.reduce<ReactNode[]>((nodes, { key, error }) => {
