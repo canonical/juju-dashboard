@@ -12,7 +12,10 @@ type ErrorMapping = Record<
   (error: InlineError["error"]) => ReactNode
 >;
 
-type SetError = (key: InlineError["key"], error: InlineError["error"]) => void;
+export type SetError = (
+  key: InlineError["key"],
+  error: InlineError["error"],
+) => void;
 
 type HasError = (key?: InlineError["key"]) => boolean;
 
@@ -38,19 +41,27 @@ function useInlineErrors(
     [],
   );
   const hasError = useCallback(
-    (key?: InlineError["key"]) =>
-      key
+    (key?: InlineError["key"]) => {
+      const hasIndividualError = (inlineError: InlineError): boolean =>
+        Array.isArray(inlineError.error)
+          ? inlineError.error.some(Boolean)
+          : !!inlineError.error;
+      return key
         ? !!inlineErrors.find(
-            (inlineError) => inlineError.key === key && !!inlineError.error,
+            (inlineError) =>
+              inlineError.key === key && hasIndividualError(inlineError),
           )
-        : inlineErrors.some((inlineError) => inlineError.error),
+        : inlineErrors.some(hasIndividualError);
+    },
     [inlineErrors],
   );
   const errors = inlineErrors.reduce<ReactNode[]>((nodes, { key, error }) => {
-    if (error) {
-      nodes.push(mapping && key in mapping ? mapping[key](error) : error);
-    }
-    return nodes;
+    const errorItems =
+      error && mapping && key in mapping ? mapping[key](error) : error;
+    const filteredErrorItems = (
+      Array.isArray(errorItems) ? errorItems : [errorItems]
+    ).filter(Boolean);
+    return nodes.concat(filteredErrorItems);
   }, []);
   return [errors, setError, hasError];
 }
