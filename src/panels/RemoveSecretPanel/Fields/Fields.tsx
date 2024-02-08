@@ -42,25 +42,34 @@ const Fields = ({
 
   return (
     <>
-      <FormikField
-        id={Label.REMOVE_ALL}
-        label={Label.REMOVE_ALL}
-        name="removeAll"
-        type="checkbox"
-        disabled={secret?.revisions.length === 1}
-      />
-      <FormikField
-        label={Label.REVISION}
-        name="revision"
-        component={Select}
-        disabled={values.removeAll}
-        options={
-          [...(secret?.revisions ?? [])].reverse().map(({ revision }) => ({
-            label: `${revision}${revision === secret?.["latest-revision"] ? " (latest)" : ""}`,
-            value: revision.toString(),
-          })) ?? []
-        }
-      />
+      {(secret?.revisions.length ?? 0) > 1 ? (
+        <>
+          <FormikField
+            id={Label.REMOVE_ALL}
+            label={Label.REMOVE_ALL}
+            name="removeAll"
+            type="checkbox"
+            disabled={secret?.revisions.length === 1}
+          />
+          <FormikField
+            label={Label.REVISION}
+            name="revision"
+            component={Select}
+            disabled={values.removeAll}
+            options={
+              [...(secret?.revisions ?? [])].reverse().map(({ revision }) => ({
+                label: `${revision}${revision === secret?.["latest-revision"] ? " (latest)" : ""}`,
+                value: revision.toString(),
+              })) ?? []
+            }
+          />
+        </>
+      ) : (
+        <p>
+          This secret has one revision ({secret?.["latest-revision"]}) and will
+          be completely removed.
+        </p>
+      )}
       {showConfirm ? (
         <Portal>
           <ConfirmationModal

@@ -136,13 +136,13 @@ describe("Fields", () => {
     ).toBeDisabled();
   });
 
-  it("disables the remove all checkbox if there is only one revision", async () => {
+  it("displays a message if there is only one revision", async () => {
     state.juju.secrets.abc123 = modelSecretsFactory.build({
       items: [
         listSecretResultFactory.build({
           uri: "secret:aabbccdd",
-          "latest-revision": 1,
-          revisions: [secretRevisionFactory.build({ revision: 1 })],
+          "latest-revision": 5,
+          revisions: [secretRevisionFactory.build({ revision: 5 })],
         }),
       ],
       loaded: true,
@@ -163,8 +163,16 @@ describe("Fields", () => {
       { state, path, url },
     );
     expect(
-      screen.getByRole("checkbox", { name: Label.REMOVE_ALL }),
-    ).toBeDisabled();
+      screen.queryByRole("checkbox", { name: Label.REMOVE_ALL }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("combobox", { name: Label.REVISION }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /This secret has one revision \(5\) and will be completely removed./,
+      ),
+    ).toBeInTheDocument();
   });
 
   it("can cancel the confirmation", async () => {
