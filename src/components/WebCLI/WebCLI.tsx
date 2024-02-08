@@ -3,6 +3,8 @@ import type { FormEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "react-redux";
 
+import useAnalytics from "hooks/useAnalytics";
+import useInlineErrors from "hooks/useInlineErrors";
 import useLocalStorage from "hooks/useLocalStorage";
 import bakery from "juju/bakery";
 import { getActiveUserTag } from "store/general/selectors";
@@ -10,12 +12,20 @@ import type { Credential } from "store/general/types";
 import { externalURLs } from "urls";
 import { getUserName } from "utils";
 
-import useAnalytics from "../../hooks/useAnalytics";
-
 import WebCLIOutput from "./Output";
 import Connection from "./connection";
 
 import "./_webcli.scss";
+
+export enum Label {
+  CONNECTION_ERROR = "Unable to connect to the model.",
+  AUTHENTICATION_ERROR = "Unable to authenticate.",
+}
+
+enum InlineErrors {
+  CONNECTION = "connection",
+  AUTHENTICATION = "authentication",
+}
 
 type Props = {
   controllerWSHost: string;
@@ -41,6 +51,7 @@ const WebCLI = ({
   const [connection, setConnection] = useState<Connection | null>(null);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
   const [historyPosition, setHistoryPosition] = useState(0);
+  const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
   const inputRef = useRef<HTMLInputElement>(null);
   const wsMessageStore = useRef<string>("");
   const [output, setOutput] = useState("");
@@ -109,9 +120,10 @@ const WebCLI = ({
 
   useEffect(() => {
     if (!wsAddress) {
-      console.error("no websocket address provided");
+      setInlineError(InlineErrors.CONNECTION, Label.CONNECTION_ERROR);
       return;
     }
+    setInlineError(InlineErrors.CONNECTION, null);
     const conn = new Connection({
       address: wsAddress,
       onopen: () => {
@@ -129,7 +141,7 @@ const WebCLI = ({
     return () => {
       conn.disconnect();
     };
-  }, [wsAddress]);
+  }, [setInlineError, wsAddress]);
 
   const handleCommandSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -142,6 +154,7 @@ const WebCLI = ({
     if (credentials && credentials.user && credentials.password) {
       authentication.user = credentials.user;
       authentication.credentials = credentials.password;
+      setInlineError(InlineErrors.AUTHENTICATION, null);
     } else {
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
@@ -159,10 +172,11 @@ const WebCLI = ({
         );
         authentication.user = activeUser ? getUserName(activeUser) : undefined;
         authentication.macaroons = [deserialized];
-      } else {
-        // XXX Surface error to the user.
-        console.error("No authentication information available");
       }
+      setInlineError(
+        InlineErrors.AUTHENTICATION,
+        macaroons ? null : Label.AUTHENTICATION_ERROR,
+      );
     }
 
     let command;
@@ -197,30 +211,34 @@ const WebCLI = ({
     setShouldShowHelp(!shouldShowHelp);
   };
 
-  // If we do not have an address then do not try and render the UI.
-  if (!wsAddress) {
-    return null;
-  }
-
   return (
     <div className="webcli">
       <WebCLIOutput
         content={output}
-        showHelp={shouldShowHelp}
+        showHelp={shouldShowHelp || hasInlineError(InlineErrors.AUTHENTICATION)}
         setShouldShowHelp={setShouldShowHelp}
         helpMessage={
-          <>
-            Welcome to the Juju Web CLI - see the{" "}
-            <a
-              href={externalURLs.cliHelp}
-              className="p-link--inverted"
-              rel="noreferrer"
-              target="_blank"
-            >
-              full documentation here
-            </a>
-            .
-          </>
+          // If errors exist, display them instead of the default help message.
+          hasInlineError() ? (
+            <>
+              {inlineErrors.map((error) => (
+                <div key={error as string}>ERROR: {error}</div>
+              ))}
+            </>
+          ) : (
+            <>
+              Welcome to the Juju Web CLI - see the{" "}
+              <a
+                href={externalURLs.cliHelp}
+                className="p-link--inverted"
+                rel="noreferrer"
+                target="_blank"
+              >
+                full documentation here
+              </a>
+              .
+            </>
+          )
         }
       />
       <div className="webcli__input">
@@ -236,6 +254,7 @@ const WebCLI = ({
             name="command"
             ref={inputRef}
             placeholder="enter command"
+            disabled={hasInlineError(InlineErrors.CONNECTION)}
           />
         </form>
         <div className="webcli__input-help">

@@ -1,3 +1,4 @@
+import cloneDeep from "clone-deep";
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 
@@ -13,7 +14,7 @@ type ErrorMapping = Record<
 
 type SetError = (key: InlineError["key"], error: InlineError["error"]) => void;
 
-type HasError = (key: InlineError["key"]) => boolean;
+type HasError = (key?: InlineError["key"]) => boolean;
 
 function useInlineErrors(
   mapping?: ErrorMapping,
@@ -21,7 +22,8 @@ function useInlineErrors(
   const [inlineErrors, setInlineErrors] = useState<InlineError[]>([]);
   const setError = useCallback(
     (key: InlineError["key"], error: InlineError["error"]) => {
-      setInlineErrors((inlineErrors) => {
+      setInlineErrors((prevInlineErrors) => {
+        const inlineErrors = cloneDeep(prevInlineErrors);
         const existing = inlineErrors.find(
           (inlineError) => inlineError.key === key,
         );
@@ -35,11 +37,13 @@ function useInlineErrors(
     },
     [],
   );
-  const hasInlineError = useCallback(
-    (key: InlineError["key"]) =>
-      !!inlineErrors.find(
-        (inlineError) => inlineError.key === key && !!inlineError.error,
-      ),
+  const hasError = useCallback(
+    (key?: InlineError["key"]) =>
+      key
+        ? !!inlineErrors.find(
+            (inlineError) => inlineError.key === key && !!inlineError.error,
+          )
+        : inlineErrors.some((inlineError) => inlineError.error),
     [inlineErrors],
   );
   const errors = inlineErrors.reduce<ReactNode[]>((nodes, { key, error }) => {
@@ -48,7 +52,7 @@ function useInlineErrors(
     }
     return nodes;
   }, []);
-  return [errors, setError, hasInlineError];
+  return [errors, setError, hasError];
 }
 
 export default useInlineErrors;
