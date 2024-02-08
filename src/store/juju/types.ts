@@ -1,6 +1,9 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
+import type {
+  ListSecretResult,
+  SecretValueResult,
+} from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 
 import type { ControllerInfo } from "juju/jimm/JIMMV3";
 import type { AuditEvent } from "juju/jimm/JIMMV3";
@@ -73,7 +76,7 @@ export type CrossModelQueryState = GenericState<
 };
 
 export type SecretsContent = GenericState<string> & {
-  content: string | null;
+  content?: SecretValueResult["data"] | null;
 };
 
 export type ModelSecrets = GenericItemsState<ListSecretResult, string> & {

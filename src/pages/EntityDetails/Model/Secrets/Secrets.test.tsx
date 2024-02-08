@@ -26,6 +26,7 @@ const mockStore = configureStore<RootState, unknown>([]);
 
 jest.mock("juju/apiHooks", () => {
   return {
+    useGetSecretContent: jest.fn().mockReturnValue(jest.fn()),
     useListSecrets: jest.fn().mockReturnValue(jest.fn()),
   };
 });

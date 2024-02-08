@@ -196,6 +196,40 @@ export const getSecretsLoading = createSelector(
   (secrets) => secrets?.loading,
 );
 
+export const getSecretByURI = createSelector(
+  [
+    getModelSecrets,
+    (_state, _modelUUID: string, secretURI?: string | null) => secretURI,
+  ],
+  (secrets, secretURI) =>
+    secretURI ? secrets?.find(({ uri }) => uri === secretURI) : null,
+);
+
+export const getSecretsContentState = createSelector(
+  [getModelSecretsState],
+  (secrets) => secrets?.content,
+);
+
+export const getSecretsContent = createSelector(
+  [getSecretsContentState],
+  (content) => content?.content,
+);
+
+export const getSecretsContentErrors = createSelector(
+  [getSecretsContentState],
+  (content) => content?.errors,
+);
+
+export const getSecretsContentLoaded = createSelector(
+  [getSecretsContentState],
+  (content) => content?.loaded,
+);
+
+export const getSecretsContentLoading = createSelector(
+  [getSecretsContentState],
+  (content) => content?.loading,
+);
+
 export const getModelFeaturesState = createSelector(
   [slice],
   (sliceState) => sliceState.modelFeatures,

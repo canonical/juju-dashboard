@@ -23,6 +23,8 @@ import {
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
+import SecretContent from "../SecretContent";
+
 export enum Label {
   COPY = "Copy",
 }
@@ -60,7 +62,7 @@ const SecretsTable = () => {
         );
       }
       return {
-        name: secret.label,
+        name: <SecretContent label={secret.label} secretURI={secret.uri} />,
         id: (
           <div className="u-flex u-flex--gap-small">
             <TruncatedTooltip
@@ -86,7 +88,7 @@ const SecretsTable = () => {
             </div>
           </div>
         ),
-        revision: secret.revisions[0]?.revision,
+        revision: secret["latest-revision"],
         description: secret.description,
         owner,
         created: <RelativeDate datetime={secret["create-time"]} />,

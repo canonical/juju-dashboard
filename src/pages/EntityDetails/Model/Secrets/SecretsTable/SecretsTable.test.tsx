@@ -86,8 +86,12 @@ describe("SecretsTable", () => {
 
   it("should display secrets", async () => {
     renderComponent(<SecretsTable />, { state, path, url });
-    expect(screen.getByRole("cell", { name: "secret1" })).toBeInTheDocument();
-    expect(screen.getByRole("cell", { name: "secret2" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("cell", { name: "Show content secret1" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("cell", { name: "Show content secret2" }),
+    ).toBeInTheDocument();
   });
 
   it("should remove the prefix from the id", async () => {
