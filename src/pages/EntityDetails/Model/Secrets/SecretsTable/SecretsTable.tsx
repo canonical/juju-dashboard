@@ -62,7 +62,11 @@ const SecretsTable = () => {
         );
       }
       return {
-        name: <SecretContent label={secret.label} secretURI={secret.uri} />,
+        name: (
+          <>
+            <SecretContent secretURI={secret.uri} /> {secret.label}
+          </>
+        ),
         id: (
           <div className="u-flex u-flex--gap-small">
             <TruncatedTooltip

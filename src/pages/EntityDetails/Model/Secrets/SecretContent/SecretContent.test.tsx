@@ -85,12 +85,13 @@ describe("SecretContent", () => {
 
   it("initially hides the modal", async () => {
     const store = mockStore(state);
-    renderComponent(
-      <SecretContent label="A secret" secretURI="secret:aabbccdd" />,
-      { store, path, url },
-    );
+    renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
+      store,
+      path,
+      url,
+    });
     expect(
-      screen.getByRole("button", { name: "Show content A secret" }),
+      screen.getByRole("button", { name: Label.SHOW }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("dialog", { name: Label.MODAL_TITLE }),
@@ -99,13 +100,12 @@ describe("SecretContent", () => {
 
   it("can open the modal", async () => {
     const store = mockStore(state);
-    renderComponent(
-      <SecretContent label="A secret" secretURI="secret:aabbccdd" />,
-      { store, path, url },
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: "Show content A secret" }),
-    );
+    renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
+      store,
+      path,
+      url,
+    });
+    await userEvent.click(screen.getByRole("button", { name: Label.SHOW }));
     expect(
       screen.getByRole("dialog", { name: Label.MODAL_TITLE }),
     ).toBeInTheDocument();
@@ -113,17 +113,16 @@ describe("SecretContent", () => {
 
   it("cleans up secrets when closing the modal", async () => {
     const store = mockStore(state);
-    renderComponent(
-      <SecretContent label="A secret" secretURI="secret:aabbccdd" />,
-      { store, path, url },
-    );
+    renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
+      store,
+      path,
+      url,
+    });
     const clearAction = jujuActions.clearSecretsContent({
       modelUUID: "abc123",
       wsControllerURL: "wss://example.com/api",
     });
-    await userEvent.click(
-      screen.getByRole("button", { name: "Show content A secret" }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: Label.SHOW }));
     await userEvent.click(
       screen.getByRole("button", { name: "Close active modal" }),
     );
@@ -141,13 +140,12 @@ describe("SecretContent", () => {
     jest
       .spyOn(apiHooks, "useGetSecretContent")
       .mockImplementation(() => getSecretContent);
-    renderComponent(
-      <SecretContent label="A secret" secretURI="secret:aabbccdd" />,
-      { state, path, url },
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: "Show content A secret" }),
-    );
+    renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
+      state,
+      path,
+      url,
+    });
+    await userEvent.click(screen.getByRole("button", { name: Label.SHOW }));
     await userEvent.selectOptions(
       screen.getByRole("combobox", { name: RevisionFieldLabel.REVISION }),
       "3 (latest)",
@@ -160,13 +158,12 @@ describe("SecretContent", () => {
     state.juju.secrets.abc123.content = modelSecretsContentFactory.build({
       loading: true,
     });
-    renderComponent(
-      <SecretContent label="A secret" secretURI="secret:aabbccdd" />,
-      { state, path, url },
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: "Show content A secret" }),
-    );
+    renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
+      state,
+      path,
+      url,
+    });
+    await userEvent.click(screen.getByRole("button", { name: Label.SHOW }));
     expect(
       screen.getByLabelText(ActionButtonLabel.WAITING),
     ).toBeInTheDocument();
@@ -177,13 +174,12 @@ describe("SecretContent", () => {
       loaded: true,
       content: { "a key": "a value" },
     });
-    renderComponent(
-      <SecretContent label="A secret" secretURI="secret:aabbccdd" />,
-      { state, path, url },
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: "Show content A secret" }),
-    );
+    renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
+      state,
+      path,
+      url,
+    });
+    await userEvent.click(screen.getByRole("button", { name: Label.SHOW }));
     expect(screen.getByRole("heading", { name: "a key" })).toBeInTheDocument();
     expect(screen.getByText("a value")).toBeInTheDocument();
   });
@@ -193,13 +189,12 @@ describe("SecretContent", () => {
       loaded: true,
       errors: "Uh oh!",
     });
-    renderComponent(
-      <SecretContent label="A secret" secretURI="secret:aabbccdd" />,
-      { state, path, url },
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: "Show content A secret" }),
-    );
+    renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
+      state,
+      path,
+      url,
+    });
+    await userEvent.click(screen.getByRole("button", { name: Label.SHOW }));
     expect(screen.getByText("Uh oh!")).toBeInTheDocument();
   });
 });

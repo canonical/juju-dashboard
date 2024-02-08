@@ -33,11 +33,10 @@ export enum Label {
 }
 
 type Props = {
-  label?: string;
   secretURI: string;
 };
 
-const SecretContent = ({ label, secretURI }: Props) => {
+const SecretContent = ({ secretURI }: Props) => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector(getModelUUIDFromList(modelName, userName));
@@ -73,7 +72,6 @@ const SecretContent = ({ label, secretURI }: Props) => {
           hasIcon
         >
           <Icon name="show">{Label.SHOW}</Icon>
-          {label ? <span>{label}</span> : null}
         </Button>
       </Tooltip>
       {isOpen && (
