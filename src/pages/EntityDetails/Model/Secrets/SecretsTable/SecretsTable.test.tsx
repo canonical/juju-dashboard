@@ -171,4 +171,24 @@ describe("SecretsTable", () => {
       "?panel=remove-secret&secret=secret%3Aaabbccdd",
     );
   });
+
+  it("can display the update secret panel", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [listSecretResultFactory.build({ uri: "secret:aabbccdd" })],
+        loaded: true,
+      }),
+    });
+    renderComponent(<SecretsTable />, { state, path, url });
+    expect(window.location.search).toEqual("");
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.ACTION_MENU }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.UPDATE_BUTTON }),
+    );
+    expect(window.location.search).toEqual(
+      "?panel=update-secret&secret=secret%3Aaabbccdd",
+    );
+  });
 });

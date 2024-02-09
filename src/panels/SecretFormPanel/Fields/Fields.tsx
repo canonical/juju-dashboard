@@ -1,24 +1,26 @@
-import { Button, Icon, Select, Textarea } from "@canonical/react-components";
+import { Button, Icon, Textarea } from "@canonical/react-components";
 import { FieldArray, useFormikContext } from "formik";
 
 import FormikField from "components/FormikField/FormikField";
 
 import type { FormFields } from "../types";
-import { RotatePolicy } from "../types";
 
 export enum Label {
   ADD = "Add key/value pair",
+  AUTO_PRUNE = "Auto prune revisions",
   DESCRIPTION = "Description",
-  EXPIRY_TIME = "Expiry time",
   IS_BASE_64 = "Value is base64 encoded",
   KEY = "Key",
   LABEL = "Label",
   REMOVE = "Remove",
-  ROTATE_POLICY = "Rotate policy",
   VALUE = "Value",
 }
 
-const Fields = (): JSX.Element => {
+type Props = {
+  update?: boolean;
+};
+
+const Fields = ({ update }: Props): JSX.Element => {
   const { values } = useFormikContext<FormFields>();
 
   return (
@@ -28,20 +30,6 @@ const Fields = (): JSX.Element => {
         label={Label.DESCRIPTION}
         name="description"
         component={Textarea}
-      />
-      <FormikField
-        type="datetime-local"
-        label={Label.EXPIRY_TIME}
-        name="expiryTime"
-      />
-      <FormikField
-        label={Label.ROTATE_POLICY}
-        name="rotatePolicy"
-        component={Select}
-        options={Object.values(RotatePolicy).map((option) => ({
-          label: option,
-          value: option,
-        }))}
       />
       <h5>Secret key/value pairs</h5>
       <FieldArray
@@ -68,7 +56,6 @@ const Fields = (): JSX.Element => {
                   name={`pairs.${index}.isBase64`}
                   type="checkbox"
                 />
-
                 <Button
                   className="u-no-margin--bottom"
                   disabled={values.pairs.length <= 1}
@@ -98,6 +85,15 @@ const Fields = (): JSX.Element => {
           </>
         )}
       />
+      {update ? (
+        <FormikField
+          id={Label.AUTO_PRUNE}
+          label={Label.AUTO_PRUNE}
+          name="autoPrune"
+          type="checkbox"
+          help="Automatically remove unused revisions."
+        />
+      ) : null}
     </>
   );
 };

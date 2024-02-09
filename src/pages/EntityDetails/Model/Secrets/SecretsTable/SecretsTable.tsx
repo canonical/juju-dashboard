@@ -30,7 +30,8 @@ import SecretContent from "../SecretContent";
 export enum Label {
   ACTION_MENU = "Action menu",
   COPY = "Copy",
-  REMOVE_BUTTON = "Remove secret",
+  REMOVE_BUTTON = "Remove",
+  UPDATE_BUTTON = "Update",
 }
 
 export enum TestId {
@@ -111,6 +112,11 @@ const SecretsTable = () => {
         actions: (
           <ContextualMenu
             links={[
+              {
+                children: Label.UPDATE_BUTTON,
+                onClick: () =>
+                  setQuery({ panel: "update-secret", secret: secret.uri }),
+              },
               {
                 children: Label.REMOVE_BUTTON,
                 onClick: () =>

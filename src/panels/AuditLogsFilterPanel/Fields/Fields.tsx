@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 
 import AutocompleteInput from "components/AutocompleteInput";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import { DATETIME_LOCAL } from "consts";
 import {
   getAuditEventsMethods,
   getAuditEventsUsers,
@@ -23,8 +24,6 @@ export enum Label {
   MODEL = "Model",
   USER = "User",
 }
-
-export const DATETIME_LOCAL = "yyyy-MM-dd'T'HH:mm";
 
 const Fields = (): JSX.Element => {
   const { modelName } = useParams<EntityDetailsRoute>();

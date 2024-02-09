@@ -172,7 +172,7 @@ describe("SecretContent", () => {
   it("can display content", async () => {
     state.juju.secrets.abc123.content = modelSecretsContentFactory.build({
       loaded: true,
-      content: { "a key": "a value" },
+      content: { "a key": btoa("a value") },
     });
     renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
       state,

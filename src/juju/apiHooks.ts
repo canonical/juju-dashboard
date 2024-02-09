@@ -5,6 +5,7 @@ import type {
   StringResults,
   ErrorResults,
   DeleteSecretArg,
+  UpdateUserSecretArgs,
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
@@ -139,7 +140,7 @@ export const useGetSecretContent = (userName?: string, modelName?: string) => {
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const modelConnectionCallback = useModelConnectionCallback(modelUUID);
   return useCallback(
-    (secretURI: string, revision: number) => {
+    (secretURI: string, revision?: number) => {
       modelConnectionCallback(
         (connection?: ConnectionWithFacades | null, error?: string | null) => {
           if (error && wsControllerURL) {
@@ -224,6 +225,40 @@ export const useCreateSecrets = (userName?: string, modelName?: string) => {
             }
             connection.facades.secrets
               ?.createSecrets({ args: secrets })
+              .then((response) => {
+                resolve(response);
+                return;
+              })
+              .catch((error) => reject(error));
+          },
+        );
+      });
+    },
+    [modelConnectionCallback],
+  );
+};
+
+export const useUpdateSecrets = (userName?: string, modelName?: string) => {
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelConnectionCallback = useModelConnectionCallback(modelUUID);
+  return useCallback(
+    (secrets: UpdateUserSecretArgs["args"]) => {
+      return new Promise<ErrorResults>((resolve, reject) => {
+        modelConnectionCallback(
+          (
+            connection?: ConnectionWithFacades | null,
+            error?: string | null,
+          ) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            if (!connection) {
+              reject(new Error("Unable to connect to model"));
+              return;
+            }
+            connection.facades.secrets
+              ?.updateSecrets({ args: secrets })
               .then((response) => {
                 resolve(response);
                 return;
