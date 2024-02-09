@@ -125,7 +125,7 @@ const SecretContent = ({ secretURI }: Props) => {
                   blocks={Object.entries(content ?? {})?.map(
                     ([key, value]) => ({
                       title: key,
-                      code: value,
+                      code: atob(value),
                     }),
                   )}
                 />

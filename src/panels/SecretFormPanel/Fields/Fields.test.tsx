@@ -76,4 +76,32 @@ describe("Fields", () => {
     await userEvent.click(removeButtons[1]);
     expect(removeButtons[0]).toBeDisabled();
   });
+
+  it("displays an auto-prune option when editing", async () => {
+    renderComponent(
+      <Formik
+        initialValues={{ pairs: [{ key: "", value: "", isBase64: false }] }}
+        onSubmit={jest.fn()}
+      >
+        <Fields update />
+      </Formik>,
+    );
+    expect(
+      screen.getByRole("checkbox", { name: Label.AUTO_PRUNE }),
+    ).toBeInTheDocument();
+  });
+
+  it("does not display an auto-prune option when adding", async () => {
+    renderComponent(
+      <Formik
+        initialValues={{ pairs: [{ key: "", value: "", isBase64: false }] }}
+        onSubmit={jest.fn()}
+      >
+        <Fields update={false} />
+      </Formik>,
+    );
+    expect(
+      screen.queryByRole("checkbox", { name: Label.AUTO_PRUNE }),
+    ).not.toBeInTheDocument();
+  });
 });

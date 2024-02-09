@@ -2,10 +2,11 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { format } from "date-fns";
 
+import { DATETIME_LOCAL } from "consts";
 import { renderComponent } from "testing/utils";
 
 import AuditLogsFilterPanel, { Label } from "./AuditLogsFilterPanel";
-import { DATETIME_LOCAL, Label as FieldLabel } from "./Fields/Fields";
+import { Label as FieldLabel } from "./Fields/Fields";
 
 describe("AuditLogsFilterPanel", () => {
   it("restores the filter values from the URL", async () => {

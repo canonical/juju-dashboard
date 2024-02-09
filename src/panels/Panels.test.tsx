@@ -3,12 +3,12 @@ import { screen } from "@testing-library/react";
 import { renderComponent } from "testing/utils";
 
 import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
-import { TestId as AddSecretPanelTestId } from "./AddSecretPanel/AddSecretPanel";
 import { TestId as AuditLogsFilterPanelTestId } from "./AuditLogsFilterPanel/AuditLogsFilterPanel";
 import { TestId as CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
 import Panels from "./Panels";
 import { TestId as RemoveSecretPanelTestId } from "./RemoveSecretPanel/RemoveSecretPanel";
+import { TestId as SecretFormPanelTestId } from "./SecretFormPanel/SecretFormPanel";
 import { TestId as ShareModelTestId } from "./ShareModelPanel/ShareModel";
 
 describe("Panels", () => {
@@ -52,7 +52,16 @@ describe("Panels", () => {
       url: "/?panel=add-secret",
     });
     expect(
-      await screen.findByTestId(AddSecretPanelTestId.PANEL),
+      await screen.findByTestId(SecretFormPanelTestId.PANEL),
+    ).toBeInTheDocument();
+  });
+
+  it("can display the update secret panel", async () => {
+    renderComponent(<Panels />, {
+      url: "/?panel=update-secret",
+    });
+    expect(
+      await screen.findByTestId(SecretFormPanelTestId.PANEL),
     ).toBeInTheDocument();
   });
 

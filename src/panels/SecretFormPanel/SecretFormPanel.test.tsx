@@ -2,22 +2,84 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import * as apiHooks from "juju/apiHooks";
+import type { RootState } from "store/store";
+import { rootStateFactory } from "testing/factories";
+import {
+  configFactory,
+  generalStateFactory,
+  credentialFactory,
+} from "testing/factories/general";
+import {
+  modelListInfoFactory,
+  secretsStateFactory,
+  listSecretResultFactory,
+  modelSecretsFactory,
+  modelSecretsContentFactory,
+} from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
-import AddSecretPanel, { Label } from "./AddSecretPanel";
 import { Label as FieldsLabel } from "./Fields/Fields";
-import { RotatePolicy } from "./types";
+import SecretFormPanel, { Label } from "./SecretFormPanel";
 
 jest.mock("juju/apiHooks", () => {
   return {
     useCreateSecrets: jest.fn().mockReturnValue(jest.fn()),
+    useUpdateSecrets: jest.fn().mockReturnValue(jest.fn()),
     useListSecrets: jest.fn().mockReturnValue(jest.fn()),
+    useGetSecretContent: jest.fn().mockReturnValue(jest.fn()),
   };
 });
 
-describe("AddSecretPanel", () => {
+describe("SecretFormPanel", () => {
+  let state: RootState;
+  const path = urls.model.index(null);
+  const url = urls.model.index({
+    userName: "eggman@external",
+    modelName: "test-model",
+  });
+  const updateURL = `${url}?panel=remove-secret&secret=secret:aabbccdd`;
+
   beforeEach(() => {
     jest.spyOn(apiHooks, "useListSecrets").mockImplementation(() => jest.fn());
+    jest
+      .spyOn(apiHooks, "useGetSecretContent")
+      .mockImplementation(() => jest.fn());
+
+    state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        credentials: {
+          "wss://example.com/api": credentialFactory.build(),
+        },
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://example.com/api",
+        }),
+      }),
+      juju: {
+        models: {
+          abc123: modelListInfoFactory.build({
+            wsControllerURL: "wss://example.com/api",
+            uuid: "abc123",
+          }),
+        },
+        secrets: secretsStateFactory.build({
+          abc123: modelSecretsFactory.build({
+            items: [
+              listSecretResultFactory.build({
+                uri: "secret:aabbccdd",
+                label: "secret1",
+                description: "a description",
+              }),
+            ],
+            loaded: true,
+            content: modelSecretsContentFactory.build({
+              loaded: true,
+              content: { key1: btoa("val1"), key2: btoa("val2") },
+            }),
+          }),
+        }),
+      },
+    });
   });
 
   it("can create a secret", async () => {
@@ -27,7 +89,7 @@ describe("AddSecretPanel", () => {
     jest
       .spyOn(apiHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
-    renderComponent(<AddSecretPanel />);
+    renderComponent(<SecretFormPanel />);
     await userEvent.type(
       screen.getByRole("textbox", { name: FieldsLabel.LABEL }),
       "a label",
@@ -35,16 +97,6 @@ describe("AddSecretPanel", () => {
     await userEvent.type(
       screen.getByRole("textbox", { name: FieldsLabel.DESCRIPTION }),
       "a description",
-    );
-    const expiryField = document.querySelector('input[name="expiryTime"]');
-    expect(expiryField).toBeInTheDocument();
-    const expiry = "2024-02-17T13:14";
-    if (expiryField) {
-      await userEvent.type(expiryField, expiry);
-    }
-    await userEvent.selectOptions(
-      screen.getByRole("combobox", { name: FieldsLabel.ROTATE_POLICY }),
-      RotatePolicy.MONTHLY,
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
@@ -54,7 +106,9 @@ describe("AddSecretPanel", () => {
       screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
       "a value",
     );
-    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SUBMIT_ADD }),
+    );
     expect(createSecrets).toHaveBeenCalledWith([
       {
         content: {
@@ -63,9 +117,83 @@ describe("AddSecretPanel", () => {
           },
         },
         description: "a description",
-        "expire-time": new Date(expiry).toISOString(),
         label: "a label",
-        "rotate-policy": "monthly",
+      },
+    ]);
+  });
+
+  it("prefills form when updating secret", async () => {
+    renderComponent(<SecretFormPanel update />, {
+      path,
+      state,
+      url: updateURL,
+    });
+    expect(
+      screen.getByRole("textbox", { name: FieldsLabel.LABEL }),
+    ).toHaveValue("secret1");
+    expect(
+      screen.getByRole("textbox", { name: FieldsLabel.DESCRIPTION }),
+    ).toHaveValue("a description");
+    expect(
+      screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
+    ).toHaveValue("key1");
+    expect(
+      screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
+    ).toHaveValue("val1");
+    expect(
+      screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 2` }),
+    ).toHaveValue("key2");
+    expect(
+      screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 2` }),
+    ).toHaveValue("val2");
+  });
+
+  it("can update a secret", async () => {
+    const updateSecrets = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({ results: [] }));
+    jest
+      .spyOn(apiHooks, "useUpdateSecrets")
+      .mockImplementation(() => updateSecrets);
+    renderComponent(<SecretFormPanel update />, {
+      path,
+      state,
+      url: updateURL,
+    });
+    await userEvent.type(
+      screen.getByRole("textbox", { name: FieldsLabel.LABEL }),
+      "mod",
+    );
+    await userEvent.type(
+      screen.getByRole("textbox", { name: FieldsLabel.DESCRIPTION }),
+      "mod",
+    );
+    await userEvent.type(
+      screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
+      "mod",
+    );
+    await userEvent.type(
+      screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
+      "mod",
+    );
+    await userEvent.click(
+      screen.getByRole("checkbox", { name: FieldsLabel.AUTO_PRUNE }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SUBMIT_UPDATE }),
+    );
+    expect(updateSecrets).toHaveBeenCalledWith([
+      {
+        "auto-prune": true,
+        content: {
+          data: {
+            key1mod: btoa("val1mod"),
+            key2: "dmFsMg==",
+          },
+        },
+        description: "a descriptionmod",
+        label: "secret1mod",
+        uri: "secret:aabbccdd",
       },
     ]);
   });
@@ -77,7 +205,7 @@ describe("AddSecretPanel", () => {
     jest
       .spyOn(apiHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
-    renderComponent(<AddSecretPanel />);
+    renderComponent(<SecretFormPanel />);
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
       "a key",
@@ -86,7 +214,9 @@ describe("AddSecretPanel", () => {
       screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
       "a value",
     );
-    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SUBMIT_ADD }),
+    );
     expect(createSecrets).toHaveBeenCalledWith([
       {
         content: {
@@ -95,9 +225,7 @@ describe("AddSecretPanel", () => {
           },
         },
         description: "",
-        "expire-time": undefined,
         label: undefined,
-        "rotate-policy": "never",
       },
     ]);
   });
@@ -110,7 +238,7 @@ describe("AddSecretPanel", () => {
     jest
       .spyOn(apiHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
-    renderComponent(<AddSecretPanel />);
+    renderComponent(<SecretFormPanel />);
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
       "a key",
@@ -122,7 +250,9 @@ describe("AddSecretPanel", () => {
     await userEvent.click(
       screen.getByRole("checkbox", { name: FieldsLabel.IS_BASE_64 }),
     );
-    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SUBMIT_ADD }),
+    );
     expect(createSecrets).toHaveBeenCalledWith([
       {
         content: {
@@ -131,9 +261,7 @@ describe("AddSecretPanel", () => {
           },
         },
         description: "",
-        "expire-time": undefined,
         label: undefined,
-        "rotate-policy": "never",
       },
     ]);
   });
@@ -145,7 +273,7 @@ describe("AddSecretPanel", () => {
     jest
       .spyOn(apiHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
-    renderComponent(<AddSecretPanel />);
+    renderComponent(<SecretFormPanel />);
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
       "a key",
@@ -154,7 +282,9 @@ describe("AddSecretPanel", () => {
       screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
       "a value",
     );
-    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SUBMIT_ADD }),
+    );
     expect(
       document.querySelector(".p-notification--negative"),
     ).toHaveTextContent("Caught error");
@@ -167,7 +297,7 @@ describe("AddSecretPanel", () => {
     jest
       .spyOn(apiHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
-    renderComponent(<AddSecretPanel />);
+    renderComponent(<SecretFormPanel />);
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
       "a key",
@@ -176,7 +306,9 @@ describe("AddSecretPanel", () => {
       screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
       "a value",
     );
-    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SUBMIT_ADD }),
+    );
     expect(
       document.querySelector(".p-notification--negative"),
     ).toHaveTextContent("String error");
@@ -191,7 +323,7 @@ describe("AddSecretPanel", () => {
     jest
       .spyOn(apiHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
-    renderComponent(<AddSecretPanel />);
+    renderComponent(<SecretFormPanel />);
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
       "a key",
@@ -200,7 +332,9 @@ describe("AddSecretPanel", () => {
       screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
       "a value",
     );
-    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SUBMIT_ADD }),
+    );
     expect(
       document.querySelector(".p-notification--negative"),
     ).toHaveTextContent("Error result");
@@ -213,7 +347,7 @@ describe("AddSecretPanel", () => {
     jest
       .spyOn(apiHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
-    renderComponent(<AddSecretPanel />, { url: "?panel=add-secret" });
+    renderComponent(<SecretFormPanel />, { url: "?panel=add-secret" });
     expect(window.location.search).toEqual("?panel=add-secret");
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
@@ -223,7 +357,9 @@ describe("AddSecretPanel", () => {
       screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
       "a value",
     );
-    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SUBMIT_ADD }),
+    );
     expect(window.location.search).toEqual("");
   });
 
@@ -238,7 +374,7 @@ describe("AddSecretPanel", () => {
     jest
       .spyOn(apiHooks, "useListSecrets")
       .mockImplementation(() => listSecrets);
-    renderComponent(<AddSecretPanel />, { url: "?panel=add-secret" });
+    renderComponent(<SecretFormPanel />, { url: "?panel=add-secret" });
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
       "a key",
@@ -248,7 +384,9 @@ describe("AddSecretPanel", () => {
       "a value",
     );
     expect(listSecrets).not.toHaveBeenCalled();
-    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SUBMIT_ADD }),
+    );
     expect(listSecrets).toHaveBeenCalled();
   });
 });
