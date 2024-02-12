@@ -110,7 +110,7 @@ export default function ConfigPanel(): JSX.Element {
   const getConfigCallback = useCallback(() => {
     if (modelUUID && appName) {
       setIsLoading(true);
-      void getConfig(
+      getConfig(
         modelUUID,
         appName,
         reduxStore,
@@ -225,15 +225,6 @@ export default function ConfigPanel(): JSX.Element {
       setInlineError(InlineErrors.FORM, errors);
       return;
     }
-    await getConfig(
-      modelUUID,
-      appName,
-      reduxStore,
-      setIsLoading,
-      setConfig,
-      checkAllDefaults,
-      setInlineError,
-    );
     sendAnalytics({
       category: "User",
       action: "Config values updated",
@@ -444,7 +435,7 @@ export default function ConfigPanel(): JSX.Element {
   );
 }
 
-async function getConfig(
+function getConfig(
   modelUUID: string,
   appName: string,
   reduxStore: Store,
@@ -453,7 +444,7 @@ async function getConfig(
   checkAllDefaults: (value: Config) => void,
   setInlineError: SetError,
 ) {
-  return getApplicationConfig(modelUUID, appName, reduxStore.getState())
+  getApplicationConfig(modelUUID, appName, reduxStore.getState())
     .then((result) => {
       // Add the key to the config object to make for easier use later.
       const config: Config = {};
