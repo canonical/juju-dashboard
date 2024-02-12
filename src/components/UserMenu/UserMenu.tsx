@@ -1,4 +1,4 @@
-import { Icon } from "@canonical/react-components";
+import { Button, Icon } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
@@ -75,7 +75,16 @@ const UserMenu = () => {
                     .catch((error) => {
                       reactHotToast.custom((t) => (
                         <ToastCard toastInstance={t} type="negative">
-                          {Label.LOGOUT_ERROR}
+                          <>
+                            {Label.LOGOUT_ERROR} Try{" "}
+                            <Button
+                              appearance="link"
+                              onClick={() => window.location.reload()}
+                            >
+                              refreshing
+                            </Button>{" "}
+                            the page.
+                          </>
                         </ToastCard>
                       ));
                       console.error(Label.LOGOUT_ERROR, error);

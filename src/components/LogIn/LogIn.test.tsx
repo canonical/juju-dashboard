@@ -154,6 +154,12 @@ describe("LogIn", () => {
         catch: jest.fn(),
       }),
     );
+    const mockUseAppDispatch = jest.fn().mockReturnValue({
+      then: jest.fn().mockReturnValue({ catch: jest.fn() }),
+    });
+    jest
+      .spyOn(dashboardStore, "useAppDispatch")
+      .mockReturnValue(mockUseAppDispatch);
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
@@ -161,29 +167,24 @@ describe("LogIn", () => {
         }),
       }),
     });
-    const { store } = renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn>App content</LogIn>, { state });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
       "eggman",
     );
     await userEvent.type(screen.getByLabelText("Password"), "verysecure123");
     await userEvent.click(screen.getByRole("button"));
-    const actions = store.getActions();
     const storeAction = generalActions.storeUserPass({
       wsControllerURL: "wss://controller.example.com",
       credential: { user: "eggman", password: "verysecure123" },
     });
-    expect(
-      actions.find((action) => action.type === storeAction.type),
-    ).toStrictEqual(storeAction);
-    expect(
-      actions.find(
-        (action) => action.type === generalActions.cleanupLoginErrors().type,
-      ),
-    ).toBeTruthy();
-    expect(
-      actions.find((action) => action.type === "connectAndStartPolling"),
-    ).toBeTruthy();
+    expect(mockUseAppDispatch.mock.calls[0][0]).toMatchObject({
+      type: "general/cleanupLoginErrors",
+    });
+    expect(mockUseAppDispatch.mock.calls[1][0]).toMatchObject(storeAction);
+    expect(mockUseAppDispatch.mock.calls[2][0]).toMatchObject({
+      type: "connectAndStartPolling",
+    });
   });
 
   it("displays the JAAS logo under JAAS", () => {

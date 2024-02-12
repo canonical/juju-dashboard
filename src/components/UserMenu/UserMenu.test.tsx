@@ -12,6 +12,7 @@ import UserMenu, { Label } from "./UserMenu";
 
 describe("User Menu", () => {
   let state: RootState;
+  const consoleError = console.error;
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -31,10 +32,12 @@ describe("User Menu", () => {
         },
       }),
     });
+    console.error = jest.fn();
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
+    console.error = consoleError;
   });
 
   it("is inactive by default", () => {
@@ -59,17 +62,22 @@ describe("User Menu", () => {
       .mockImplementation(
         jest.fn().mockReturnValue({ type: "logOut", catch: jest.fn() }),
       );
+    const mockUseAppDispatch = jest.fn().mockReturnValue({
+      then: jest.fn().mockReturnValue({ catch: jest.fn() }),
+    });
+    jest
+      .spyOn(dashboardStore, "useAppDispatch")
+      .mockReturnValue(mockUseAppDispatch);
 
-    const { store } = renderComponent(<UserMenu />, { state });
-    const actions = store.getActions();
+    renderComponent(<UserMenu />, { state });
     await userEvent.click(screen.getByRole("link", { name: "Log out" }));
     expect(appThunks.logOut).toHaveBeenCalledTimes(1);
-    expect(actions.find((action) => action.type === "logOut")).toBeTruthy();
+    expect(mockUseAppDispatch.mock.calls[0][0]).toMatchObject({
+      type: "logOut",
+    });
   });
 
   it("should show console error when trying to logout", async () => {
-    const consoleError = console.error;
-    console.error = jest.fn();
     jest
       .spyOn(appThunks, "logOut")
       .mockImplementation(jest.fn().mockReturnValue({ type: "logOut" }));
@@ -94,7 +102,5 @@ describe("User Menu", () => {
       Label.LOGOUT_ERROR,
       new Error("Error while dispatching logOut!"),
     );
-
-    console.error = consoleError;
   });
 });

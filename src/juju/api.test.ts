@@ -748,7 +748,9 @@ describe("Juju API", () => {
     });
 
     it("updates controller cloud and region", async () => {
-      const dispatch = jest.fn().mockReturnValue({ catch: jest.fn() });
+      const dispatch = jest.fn().mockReturnValue({
+        then: jest.fn().mockReturnValue({ catch: jest.fn() }),
+      });
       const abc123 = modelInfoResultsFactory.build({
         results: [
           modelInfoResultFactory.build({
