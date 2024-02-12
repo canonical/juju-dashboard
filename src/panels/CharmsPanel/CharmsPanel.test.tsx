@@ -62,6 +62,7 @@ describe("CharmsPanel", () => {
         onCharmURLChange={jest.fn()}
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
+        inlineErrors={[]}
       />,
       {
         path,
@@ -78,6 +79,7 @@ describe("CharmsPanel", () => {
         onCharmURLChange={jest.fn()}
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
+        inlineErrors={[]}
       />,
       {
         path,
@@ -94,6 +96,7 @@ describe("CharmsPanel", () => {
         onCharmURLChange={jest.fn()}
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
+        inlineErrors={[]}
       />,
       {
         path,
@@ -112,6 +115,7 @@ describe("CharmsPanel", () => {
         onCharmURLChange={mockHandleCharmURLChange}
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
+        inlineErrors={[]}
       />,
       { path, url, state },
     );
@@ -128,6 +132,7 @@ describe("CharmsPanel", () => {
         onCharmURLChange={jest.fn()}
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
+        inlineErrors={[]}
       />,
       { path, url, state },
     );
@@ -148,6 +153,7 @@ describe("CharmsPanel", () => {
         onCharmURLChange={jest.fn()}
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
+        inlineErrors={[]}
       />,
       { path, url, state },
     );
@@ -170,6 +176,7 @@ describe("CharmsPanel", () => {
         onCharmURLChange={jest.fn()}
         onRemovePanelQueryParams={jest.fn()}
         isLoading={false}
+        inlineErrors={[]}
       />,
       { path, url, state },
     );
