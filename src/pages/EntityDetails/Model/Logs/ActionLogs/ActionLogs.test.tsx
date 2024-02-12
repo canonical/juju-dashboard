@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { add } from "date-fns";
 
@@ -362,5 +362,30 @@ describe("Action Logs", () => {
   "key1": "value1",
   "test": 123
 }`);
+  });
+
+  it("should show error when fetching action logs and refetch action logs", async () => {
+    const consoleError = console.error;
+    console.error = jest.fn();
+
+    const queryOperationsListSpy = jest
+      .spyOn(juju, "queryOperationsList")
+      .mockRejectedValue(new Error("Error while querying operations list."));
+    renderComponent(<ActionLogs />, { path, url, state });
+    expect(queryOperationsListSpy).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalled();
+    });
+    const fetchErrorNotification = screen.getByText(
+      new RegExp(Label.FETCH_ERROR),
+    );
+    expect(fetchErrorNotification).toBeInTheDocument();
+    expect(fetchErrorNotification.childElementCount).toBe(1);
+    const refetchButton = fetchErrorNotification.children[0];
+    expect(refetchButton).toHaveTextContent("refetch");
+    await userEvent.click(refetchButton);
+    expect(queryOperationsListSpy).toHaveBeenCalledTimes(2);
+
+    console.error = consoleError;
   });
 });

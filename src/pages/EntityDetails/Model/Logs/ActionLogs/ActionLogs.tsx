@@ -12,7 +12,7 @@ import {
   ModularTable,
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import type { Column, Row } from "react-table";
@@ -24,7 +24,9 @@ import RelativeDate from "components/RelativeDate";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import Status from "components/Status";
 import { copyToClipboard } from "components/utils";
+import useInlineErrors from "hooks/useInlineErrors";
 import { queryActionsList, queryOperationsList } from "juju/api";
+import PanelInlineErrors from "panels/PanelInlineErrors";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import type { RootState } from "store/store";
@@ -69,6 +71,10 @@ export enum Output {
   ALL = "STDOUT/STDERR",
   STDERR = "STDERR",
   STDOUT = "STDOUT",
+}
+
+enum InlineErrors {
+  FETCH = "fetch",
 }
 
 function generateLinkToApp(
@@ -192,6 +198,17 @@ export default function ActionLogs() {
   const [modalDetails, setModalDetails] = useState<
     ActionResult["output"] | null
   >(null);
+  const [inlineErrors, setInlineErrors] = useInlineErrors({
+    [InlineErrors.FETCH]: (error) => (
+      <>
+        {error} Try{" "}
+        <Button appearance="link" onClick={() => fetchData()}>
+          refetching
+        </Button>{" "}
+        the action logs data.
+      </>
+    ),
+  });
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const [selectedOutput, setSelectedOutput] = useState<{
     [key: string]: Output;
@@ -208,8 +225,8 @@ export default function ActionLogs() {
 
   const applicationList = Object.keys(modelStatusData?.applications ?? {});
 
-  useEffect(() => {
-    async function fetchData() {
+  const fetchData = useCallback(async () => {
+    try {
       if (modelUUID) {
         const operationList = await queryOperationsList(
           {
@@ -235,10 +252,18 @@ export default function ActionLogs() {
             setActions(actionsList.results);
           }
         }
-        setFetchedOperations(true);
       }
+      setInlineErrors(InlineErrors.FETCH, null);
+    } catch (error) {
+      setInlineErrors(InlineErrors.FETCH, Label.FETCH_ERROR);
+      console.error(Label.FETCH_ERROR, error);
+    } finally {
+      setFetchedOperations(true);
     }
-    fetchData().catch((error) => console.error(Label.FETCH_ERROR, error));
+  }, [appStore, applicationList, modelUUID, setInlineErrors]);
+
+  useEffect(() => {
+    void fetchData();
     // XXX Temporarily disabled.
     // Used to stop it re-requesting every time state changes.
     // appStore and applicationList removed from dependency graph
@@ -437,6 +462,7 @@ export default function ActionLogs() {
 
   return (
     <div className="entity-details__action-logs">
+      <PanelInlineErrors inlineErrors={inlineErrors} />
       {!fetchedOperations ? (
         <LoadingSpinner />
       ) : (
