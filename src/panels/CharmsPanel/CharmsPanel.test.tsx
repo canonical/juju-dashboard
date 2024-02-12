@@ -193,4 +193,18 @@ describe("CharmsPanel", () => {
       }),
     ).toBeVisible();
   });
+
+  it("should show errors", () => {
+    state.juju.charms = [];
+    renderComponent(
+      <CharmsPanel
+        onCharmURLChange={jest.fn()}
+        onRemovePanelQueryParams={jest.fn()}
+        isLoading={false}
+        inlineErrors={["Oops, there is an error!"]}
+      />,
+      { path, url, state },
+    );
+    expect(screen.getByText("Oops, there is an error!")).toBeInTheDocument();
+  });
 });

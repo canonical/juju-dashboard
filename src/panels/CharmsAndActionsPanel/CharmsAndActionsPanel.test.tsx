@@ -1,4 +1,5 @@
 import { act, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import * as juju from "juju/api";
 import { getCharmsURLFromApplications } from "juju/api";
@@ -148,7 +149,8 @@ describe("CharmsAndActionsPanel", () => {
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
   });
 
-  it("should show console error when calling getCharmsURLFromApplications", async () => {
+  it("should show should show error in CharmsPanel", async () => {
+    state.juju.charms = [];
     jest
       .spyOn(juju, "getCharmsURLFromApplications")
       .mockImplementation(
@@ -158,7 +160,9 @@ describe("CharmsAndActionsPanel", () => {
             new Error("Error while calling getCharmsURLFromApplications"),
           ),
       );
-    renderComponent(<CharmsAndActionsPanel />, { path, url, state });
+    const {
+      result: { container },
+    } = renderComponent(<CharmsAndActionsPanel />, { path, url, state });
     expect(juju.getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
@@ -166,5 +170,22 @@ describe("CharmsAndActionsPanel", () => {
         new Error("Error while calling getCharmsURLFromApplications"),
       ),
     );
+    expect(container.querySelector(".p-panel__title")).toContainHTML(
+      CharmsPanelLabel.PANEL_TITLE,
+    );
+    const getCharmsURLErrorNotification = screen.getByText(
+      new RegExp(
+        CharmsAndActionsPanelLabel.GET_URL_ERROR.replace(
+          /[.*+?^${}()|[\]\\]/g,
+          "\\$&",
+        ),
+      ),
+    );
+    expect(getCharmsURLErrorNotification).toBeInTheDocument();
+    expect(getCharmsURLErrorNotification.childElementCount).toBe(1);
+    const refetchButton = getCharmsURLErrorNotification.children[0];
+    expect(refetchButton).toHaveTextContent("refetch");
+    await userEvent.click(refetchButton);
+    expect(juju.getCharmsURLFromApplications).toHaveBeenCalledTimes(2);
   });
 });
