@@ -102,16 +102,12 @@ const GrantSecretPanel = () => {
             inlineErrors={[inlineError]}
             scrollArea={scrollArea.current}
           />
-          {secret ? (
+          {secretURI && secret ? (
             <Formik<FormFields>
               initialValues={{
                 applications: currentApplications,
               }}
               onSubmit={async (values) => {
-                if (!secretURI) {
-                  // The form isn't shown if the secretURI doesn't exist so it's not possible to get to this point.
-                  return;
-                }
                 setSaving(true);
                 setInlineError(null);
                 const grantApps = values.applications.filter(

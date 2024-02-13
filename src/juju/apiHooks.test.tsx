@@ -1312,11 +1312,6 @@ describe("useGrantSecret", () => {
   it("can grant apps", async () => {
     const store = mockStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
-    const secrets = [
-      {
-        uri: "secret:aabbccdd",
-      },
-    ];
     const results = { results: [{ result: "secret:def456" }] };
     const grantSecret = jest
       .fn()
@@ -1468,11 +1463,6 @@ describe("useRevokeSecret", () => {
   it("can revoke apps", async () => {
     const store = mockStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
-    const secrets = [
-      {
-        uri: "secret:aabbccdd",
-      },
-    ];
     const results = { results: [{ result: "secret:def456" }] };
     const revokeSecret = jest
       .fn()

@@ -6,6 +6,7 @@ import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
 import { TestId as AuditLogsFilterPanelTestId } from "./AuditLogsFilterPanel/AuditLogsFilterPanel";
 import { TestId as CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
+import { TestId as GrantSecretPanelTestId } from "./GrantSecretPanel/GrantSecretPanel";
 import Panels from "./Panels";
 import { TestId as RemoveSecretPanelTestId } from "./RemoveSecretPanel/RemoveSecretPanel";
 import { TestId as SecretFormPanelTestId } from "./SecretFormPanel/SecretFormPanel";
@@ -71,6 +72,15 @@ describe("Panels", () => {
     });
     expect(
       await screen.findByTestId(RemoveSecretPanelTestId.PANEL),
+    ).toBeInTheDocument();
+  });
+
+  it("can display the grant secret panel", async () => {
+    renderComponent(<Panels />, {
+      url: "/?panel=grant-secret",
+    });
+    expect(
+      await screen.findByTestId(GrantSecretPanelTestId.PANEL),
     ).toBeInTheDocument();
   });
 });
