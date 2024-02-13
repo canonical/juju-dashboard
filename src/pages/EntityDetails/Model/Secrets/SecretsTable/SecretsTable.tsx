@@ -30,6 +30,7 @@ import SecretContent from "../SecretContent";
 export enum Label {
   ACTION_MENU = "Action menu",
   COPY = "Copy",
+  GRANT_BUTTON = "Grant",
   REMOVE_BUTTON = "Remove",
   UPDATE_BUTTON = "Update",
 }
@@ -106,6 +107,7 @@ const SecretsTable = () => {
         ),
         revision: secret["latest-revision"],
         description: secret.description,
+        granted: secret.access?.length ?? 0,
         owner,
         created: <RelativeDate datetime={secret["create-time"]} />,
         updated: <RelativeDate datetime={secret["update-time"]} />,
@@ -116,6 +118,11 @@ const SecretsTable = () => {
                 children: Label.UPDATE_BUTTON,
                 onClick: () =>
                   setQuery({ panel: "update-secret", secret: secret.uri }),
+              },
+              {
+                children: Label.GRANT_BUTTON,
+                onClick: () =>
+                  setQuery({ panel: "grant-secret", secret: secret.uri }),
               },
               {
                 children: Label.REMOVE_BUTTON,
@@ -156,6 +163,10 @@ const SecretsTable = () => {
       {
         Header: "Owner",
         accessor: "owner",
+      },
+      {
+        Header: "Granted to #",
+        accessor: "granted",
       },
       {
         Header: "Created",

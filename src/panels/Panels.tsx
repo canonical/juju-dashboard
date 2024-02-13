@@ -8,6 +8,7 @@ import ShareModel from "panels/ShareModelPanel/ShareModel";
 import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
 import CharmsAndActionsPanel from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
+import GrantSecretPanel from "./GrantSecretPanel";
 import RemoveSecretPanel from "./RemoveSecretPanel";
 
 export default function Panels() {
@@ -31,6 +32,8 @@ export default function Panels() {
         return <SecretFormPanel />;
       case "update-secret":
         return <SecretFormPanel update />;
+      case "grant-secret":
+        return <GrantSecretPanel />;
       case "remove-secret":
         return <RemoveSecretPanel />;
       default:

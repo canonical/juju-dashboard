@@ -6,6 +6,7 @@ import type {
   ErrorResults,
   DeleteSecretArg,
   UpdateUserSecretArgs,
+  GrantRevokeUserSecretArg,
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
@@ -295,6 +296,84 @@ export const useRemoveSecrets = (userName?: string, modelName?: string) => {
               // Cast to `DeleteSecretArg` as the API requires either label or
               // URI, but the type declares both as required.
               ?.removeSecrets({ args: secrets as DeleteSecretArg[] })
+              .then((response) => {
+                resolve(response);
+                return;
+              })
+              .catch((error) => reject(error));
+          },
+        );
+      });
+    },
+    [modelConnectionCallback],
+  );
+};
+
+export const useGrantSecret = (userName?: string, modelName?: string) => {
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelConnectionCallback = useModelConnectionCallback(modelUUID);
+  return useCallback(
+    (secretURI: string, applications: string[]) => {
+      return new Promise<ErrorResults | string>((resolve, reject) => {
+        modelConnectionCallback(
+          (
+            connection?: ConnectionWithFacades | null,
+            error?: string | null,
+          ) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            if (!connection) {
+              reject(new Error("Unable to connect to model"));
+              return;
+            }
+            connection.facades.secrets
+              // Cast to `GrantRevokeUserSecretArg` as the API requires either label or
+              // URI, but the type declares both as required.
+              ?.grantSecret({
+                uri: secretURI,
+                applications,
+              } as GrantRevokeUserSecretArg)
+              .then((response) => {
+                resolve(response);
+                return;
+              })
+              .catch((error) => reject(error));
+          },
+        );
+      });
+    },
+    [modelConnectionCallback],
+  );
+};
+
+export const useRevokeSecret = (userName?: string, modelName?: string) => {
+  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelConnectionCallback = useModelConnectionCallback(modelUUID);
+  return useCallback(
+    (secretURI: string, applications: string[]) => {
+      return new Promise<ErrorResults | string>((resolve, reject) => {
+        modelConnectionCallback(
+          (
+            connection?: ConnectionWithFacades | null,
+            error?: string | null,
+          ) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            if (!connection) {
+              reject(new Error("Unable to connect to model"));
+              return;
+            }
+            connection.facades.secrets
+              // Cast to `GrantRevokeUserSecretArg` as the API requires either label or
+              // URI, but the type declares both as required.
+              ?.revokeSecret({
+                uri: secretURI,
+                applications,
+              } as GrantRevokeUserSecretArg)
               .then((response) => {
                 resolve(response);
                 return;

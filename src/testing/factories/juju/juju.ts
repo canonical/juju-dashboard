@@ -7,6 +7,7 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type {
+  AccessInfo,
   ListSecretResult,
   SecretRevision,
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
@@ -172,6 +173,12 @@ export const modelDataFactory = Factory.define<ModelData>(() => ({
 
 export const secretRevisionFactory = Factory.define<SecretRevision>(() => ({
   revision: 1,
+}));
+
+export const secretAccessInfoFactory = Factory.define<AccessInfo>(() => ({
+  role: "view",
+  "scope-tag": "model-abc123",
+  "target-tag": "application-lxd",
 }));
 
 export const listSecretResultFactory = Factory.define<ListSecretResult>(() => ({
