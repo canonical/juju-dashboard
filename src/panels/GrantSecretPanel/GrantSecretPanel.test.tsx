@@ -87,6 +87,16 @@ describe("GrantSecretPanel", () => {
     expect(screen.getByRole("alert", { name: "Loading" })).toBeVisible();
   });
 
+  it("displays a message if there are no applications", async () => {
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {},
+      }),
+    };
+    renderComponent(<GrantSecretPanel />, { state, path, url });
+    expect(screen.getByText(Label.NO_APPS)).toBeInTheDocument();
+  });
+
   it("displays checkboxes for applications", async () => {
     renderComponent(<GrantSecretPanel />, { state, path, url });
     expect(screen.getByRole("checkbox", { name: "etcd" })).toBeInTheDocument();

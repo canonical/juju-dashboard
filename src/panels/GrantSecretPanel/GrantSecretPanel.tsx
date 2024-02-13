@@ -25,6 +25,7 @@ export enum TestId {
 export enum Label {
   CANCEL = "Cancel",
   SUBMIT = "Grant",
+  NO_APPS = "There are no applications in this model.",
 }
 
 export type FormFields = {
@@ -69,6 +70,7 @@ const GrantSecretPanel = () => {
     secret?.access?.map((access) =>
       access["target-tag"].replace(/^application-/, ""),
     ) ?? [];
+  const modelApps = Object.keys(applications ?? {});
 
   return (
     <>
@@ -81,7 +83,7 @@ const GrantSecretPanel = () => {
             </Button>
             <ActionButton
               appearance="positive"
-              disabled={saving}
+              disabled={saving || modelApps.length === 0}
               form={formId}
               loading={saving}
               type="submit"
@@ -100,10 +102,6 @@ const GrantSecretPanel = () => {
             inlineErrors={[inlineError]}
             scrollArea={scrollArea.current}
           />
-          <p>
-            Grant applications access to view the value of this secret.
-            Deselected applications will have their access revoked.
-          </p>
           {secret ? (
             <Formik<FormFields>
               initialValues={{
@@ -147,19 +145,30 @@ const GrantSecretPanel = () => {
               }}
             >
               <Form id={formId}>
-                <div id={groupId}>Applications</div>
-                <div role="group" aria-labelledby={groupId}>
-                  {Object.keys(applications ?? {}).map((app) => (
-                    <FormikField
-                      id={app}
-                      key={app}
-                      label={app}
-                      name="applications"
-                      type="checkbox"
-                      value={app}
-                    />
-                  ))}
-                </div>
+                {modelApps.length > 0 ? (
+                  <>
+                    <p>
+                      Grant applications access to view the value of this
+                      secret. Deselected applications will have their access
+                      revoked.
+                    </p>
+                    <div id={groupId}>Applications</div>
+                    <div role="group" aria-labelledby={groupId}>
+                      {modelApps.map((app) => (
+                        <FormikField
+                          id={app}
+                          key={app}
+                          label={app}
+                          name="applications"
+                          type="checkbox"
+                          value={app}
+                        />
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <p>{Label.NO_APPS}</p>
+                )}
               </Form>
             </Formik>
           ) : (
