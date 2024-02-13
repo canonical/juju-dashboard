@@ -33,6 +33,10 @@ export enum ModelsError {
   LIST_OR_UPDATE_MODELS = "Unable to list or update models.",
 }
 
+export enum AuditLogsError {
+  CHECK_PERMISSIONS = "Unable to check Audit Logs user permissions.",
+}
+
 const checkJIMMRelation = async (
   conn: ConnectionWithFacades,
   identity: string,
@@ -149,9 +153,14 @@ export const modelPollerMiddleware: Middleware<
                 JIMMRelation.ADMINISTRATOR,
               );
             }
+            reduxStore.dispatch(jujuActions.updateAuditEventsErrors(null));
           } catch (error) {
-            // TODO: this should be displayed to the user somehow.
-            console.error("Unable to check user permissions", error);
+            reduxStore.dispatch(
+              jujuActions.updateAuditEventsErrors(
+                AuditLogsError.CHECK_PERMISSIONS,
+              ),
+            );
+            console.error(AuditLogsError.CHECK_PERMISSIONS, error);
           }
         }
         reduxStore.dispatch(

@@ -75,6 +75,7 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.processAllWatcherDeltas.type,
       jujuActions.updateAuditEvents.type,
       jujuActions.updateAuditEventsLimit.type,
+      jujuActions.updateAuditEventsErrors.type,
       jujuActions.updateControllerList.type,
       jujuActions.clearControllerData.type,
       jujuActions.clearModelData.type,

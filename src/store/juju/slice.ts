@@ -75,6 +75,7 @@ const slice = createSlice({
   initialState: {
     auditEvents: {
       items: null,
+      errors: null,
       loaded: false,
       loading: false,
       limit: DEFAULT_AUDIT_EVENTS_LIMIT,
@@ -213,16 +214,24 @@ const slice = createSlice({
     },
     updateAuditEvents: (state, { payload }: PayloadAction<AuditEvent[]>) => {
       state.auditEvents.items = payload;
+      state.auditEvents.errors = null;
       state.auditEvents.loaded = true;
       state.auditEvents.loading = false;
     },
     clearAuditEvents: (state) => {
       state.auditEvents.items = null;
+      state.auditEvents.errors = null;
       state.auditEvents.loaded = false;
       state.auditEvents.loading = false;
     },
     updateAuditEventsLimit: (state, { payload }: PayloadAction<number>) => {
       state.auditEvents.limit = payload;
+    },
+    updateAuditEventsErrors: (
+      state,
+      { payload }: PayloadAction<string | null>,
+    ) => {
+      state.auditEvents.errors = payload;
     },
     fetchCrossModelQuery: (
       state,
