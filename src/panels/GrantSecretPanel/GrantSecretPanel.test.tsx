@@ -63,6 +63,7 @@ describe("GrantSecretPanel", () => {
             applications: {
               lxd: applicationInfoFactory.build(),
               etcd: applicationInfoFactory.build(),
+              nginx: applicationInfoFactory.build(),
             },
           }),
         },
@@ -101,6 +102,19 @@ describe("GrantSecretPanel", () => {
     renderComponent(<GrantSecretPanel />, { state, path, url });
     expect(screen.getByRole("checkbox", { name: "etcd" })).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "lxd" })).toBeInTheDocument();
+  });
+
+  it("displays a disabled checkbox for the owner", async () => {
+    state.juju.secrets.abc123.items = [
+      listSecretResultFactory.build({
+        "owner-tag": "application-lxd",
+        uri: "secret:aabbccdd",
+      }),
+    ];
+    renderComponent(<GrantSecretPanel />, { state, path, url });
+    expect(
+      screen.getByRole("checkbox", { name: "lxd (secret owner)" }),
+    ).toBeDisabled();
   });
 
   it("ticks applications that have already been granted", async () => {
@@ -143,6 +157,36 @@ describe("GrantSecretPanel", () => {
     await userEvent.click(screen.getByRole("checkbox", { name: "lxd" }));
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     expect(grantSecret).toHaveBeenCalledWith("secret:aabbccdd", ["lxd"]);
+    expect(revokeSecret).toHaveBeenCalledWith("secret:aabbccdd", ["etcd"]);
+  });
+
+  it("does not include owner when granting/revoking", async () => {
+    state.juju.secrets.abc123.items = [
+      listSecretResultFactory.build({
+        uri: "secret:aabbccdd",
+        "owner-tag": "application-lxd",
+        access: [
+          secretAccessInfoFactory.build({ "target-tag": "application-etcd" }),
+        ],
+      }),
+    ];
+    const grantSecret = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({ results: [] }));
+    jest
+      .spyOn(apiHooks, "useGrantSecret")
+      .mockImplementation(() => grantSecret);
+    const revokeSecret = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({ results: [] }));
+    jest
+      .spyOn(apiHooks, "useRevokeSecret")
+      .mockImplementation(() => revokeSecret);
+    renderComponent(<GrantSecretPanel />, { state, path, url });
+    await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
+    await userEvent.click(screen.getByRole("checkbox", { name: "nginx" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    expect(grantSecret).toHaveBeenCalledWith("secret:aabbccdd", ["nginx"]);
     expect(revokeSecret).toHaveBeenCalledWith("secret:aabbccdd", ["etcd"]);
   });
 

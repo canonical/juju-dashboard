@@ -150,16 +150,32 @@ const GrantSecretPanel = () => {
                     </p>
                     <div id={groupId}>Applications</div>
                     <div role="group" aria-labelledby={groupId}>
-                      {modelApps.map((app) => (
-                        <FormikField
-                          id={app}
-                          key={app}
-                          label={app}
-                          name="applications"
-                          type="checkbox"
-                          value={app}
-                        />
-                      ))}
+                      {modelApps.map((app) => {
+                        const isOwner =
+                          app ===
+                          secret["owner-tag"].replace(/^application-/, "");
+                        return isOwner ? (
+                          // The owner field is not managed by Formik, it is for
+                          // display purposes only.
+                          <FormikField
+                            checked
+                            disabled
+                            key={app}
+                            label={`${app} (secret owner)`}
+                            name="owner"
+                            type="checkbox"
+                          />
+                        ) : (
+                          <FormikField
+                            id={app}
+                            key={app}
+                            label={app}
+                            name="applications"
+                            type="checkbox"
+                            value={app}
+                          />
+                        );
+                      })}
                     </div>
                   </>
                 ) : (
