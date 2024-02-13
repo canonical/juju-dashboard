@@ -41,7 +41,7 @@ const CharmsAndActionsPanel = () => {
     usePanelQueryParams<CharmsAndActionsQueryParams>(defaultQueryParams);
 
   const selectedApplications = useSelector(getSelectedApplications());
-  const appState = useAppStore().getState();
+  const getState = useAppStore().getState;
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
@@ -71,7 +71,7 @@ const CharmsAndActionsPanel = () => {
     getCharmsURLFromApplications(
       selectedApplications,
       modelUUID,
-      appState,
+      getState(),
       dispatch,
     )
       .then((charmsURL) => {
@@ -84,7 +84,7 @@ const CharmsAndActionsPanel = () => {
         setInlineErrors(InlineErrors.GET_URL, Label.GET_URL_ERROR);
         console.error(Label.GET_URL_ERROR, error);
       });
-  }, [appState, dispatch, modelUUID, selectedApplications, setInlineErrors]);
+  }, [dispatch, getState, modelUUID, selectedApplications, setInlineErrors]);
 
   useEffect(() => {
     // getCharmsURLFromApplications should be resolved only once after
