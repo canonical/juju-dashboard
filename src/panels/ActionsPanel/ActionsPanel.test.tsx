@@ -333,7 +333,7 @@ describe("ActionsPanel", () => {
     );
     await waitFor(() =>
       expect(
-        screen.getByText(new RegExp(Label.GET_ACTIONS_ERROR)),
+        screen.getByText(Label.GET_ACTIONS_ERROR, { exact: false }),
       ).toBeInTheDocument(),
     );
     await userEvent.click(
@@ -377,7 +377,7 @@ describe("ActionsPanel", () => {
     );
     await waitFor(() =>
       expect(
-        screen.getByText(new RegExp(Label.EXECUTE_ACTION_ERROR)),
+        screen.getByText(Label.EXECUTE_ACTION_ERROR, { exact: false }),
       ).toBeInTheDocument(),
     );
   });

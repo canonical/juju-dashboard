@@ -174,12 +174,8 @@ describe("CharmsAndActionsPanel", () => {
       CharmsPanelLabel.PANEL_TITLE,
     );
     const getCharmsURLErrorNotification = screen.getByText(
-      new RegExp(
-        CharmsAndActionsPanelLabel.GET_URL_ERROR.replace(
-          /[.*+?^${}()|[\]\\]/g,
-          "\\$&",
-        ),
-      ),
+      CharmsAndActionsPanelLabel.GET_URL_ERROR,
+      { exact: false },
     );
     expect(getCharmsURLErrorNotification).toBeInTheDocument();
     expect(getCharmsURLErrorNotification.childElementCount).toBe(1);

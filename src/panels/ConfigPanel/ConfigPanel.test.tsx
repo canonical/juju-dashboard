@@ -403,9 +403,9 @@ describe("ConfigPanel", () => {
         new Error("Error while calling getApplicationConfig"),
       );
     });
-    const configErrorNotification = screen.getByText(
-      new RegExp(Label.GET_CONFIG_ERROR),
-    );
+    const configErrorNotification = screen.getByText(Label.GET_CONFIG_ERROR, {
+      exact: false,
+    });
     expect(configErrorNotification).toBeInTheDocument();
     expect(configErrorNotification.childElementCount).toBe(1);
     const refetchButton = configErrorNotification.children[0];
@@ -470,7 +470,7 @@ describe("ConfigPanel", () => {
       ),
     );
     expect(
-      screen.getByText(new RegExp(Label.SUBMIT_TO_JUJU_ERROR)),
+      screen.getByText(Label.SUBMIT_TO_JUJU_ERROR, { exact: false }),
     ).toBeInTheDocument();
   });
 });
