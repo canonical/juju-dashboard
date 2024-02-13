@@ -34,7 +34,7 @@ export enum ModelsError {
 }
 
 export enum AuditLogsError {
-  CHECK_PERMISSIONS = "Unable to check Audit Logs user permissions.",
+  CHECK_PERMISSIONS = "Unable to check Audit Logs user permission.",
 }
 
 const checkJIMMRelation = async (
