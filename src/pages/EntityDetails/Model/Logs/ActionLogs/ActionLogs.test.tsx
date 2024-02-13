@@ -374,7 +374,10 @@ describe("Action Logs", () => {
     renderComponent(<ActionLogs />, { path, url, state });
     expect(queryOperationsListSpy).toHaveBeenCalledTimes(1);
     await waitFor(() => {
-      expect(console.error).toHaveBeenCalled();
+      expect(console.error).toHaveBeenCalledWith(
+        Label.FETCH_ERROR,
+        new Error("Error while querying operations list."),
+      );
     });
     const fetchErrorNotification = screen.getByText(
       new RegExp(Label.FETCH_ERROR),
