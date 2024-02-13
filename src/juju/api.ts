@@ -25,6 +25,7 @@ import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 import Secrets from "@canonical/jujulib/dist/api/facades/secrets";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import type { ValueOf } from "@canonical/react-components";
+import { unwrapResult } from "@reduxjs/toolkit";
 import Limiter from "async-limiter";
 import type { Dispatch } from "redux";
 
@@ -394,15 +395,15 @@ export async function fetchAllModelStatuses(
           if (modelInfo?.results[0].result?.["is-controller"]) {
             // If this is a controller model then update the
             // controller data with this model data.
-            dispatch(
-              addControllerCloudRegion({ wsControllerURL, modelInfo }),
-            ).catch((error) =>
-              // Not shown in UI. Logged for debugging purposes.
-              console.error(
-                "Error when trying to add controller cloud and region data.",
-                error,
-              ),
-            );
+            dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }))
+              .then(unwrapResult)
+              .catch((error) =>
+                // Not shown in UI. Logged for debugging purposes.
+                console.error(
+                  "Error when trying to add controller cloud and region data.",
+                  error,
+                ),
+              );
           }
         } catch (error) {
           modelErrorCount++;

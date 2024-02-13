@@ -1,5 +1,6 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import reactHotToast, { Toaster } from "react-hot-toast";
 
 import { thunks as appThunks } from "store/app";
 import type { RootState } from "store/store";
@@ -12,6 +13,7 @@ import UserMenu, { Label } from "./UserMenu";
 
 describe("User Menu", () => {
   let state: RootState;
+  const consoleError = console.error;
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -31,10 +33,13 @@ describe("User Menu", () => {
         },
       }),
     });
+    console.error = jest.fn();
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
+    console.error = consoleError;
+    act(() => reactHotToast.remove());
   });
 
   it("is inactive by default", () => {
@@ -59,17 +64,27 @@ describe("User Menu", () => {
       .mockImplementation(
         jest.fn().mockReturnValue({ type: "logOut", catch: jest.fn() }),
       );
+    const mockUseAppDispatch = jest.fn().mockReturnValue({
+      then: jest.fn().mockReturnValue({ catch: jest.fn() }),
+    });
+    jest
+      .spyOn(dashboardStore, "useAppDispatch")
+      .mockReturnValue(mockUseAppDispatch);
 
-    const { store } = renderComponent(<UserMenu />, { state });
-    const actions = store.getActions();
+    renderComponent(<UserMenu />, { state });
     await userEvent.click(screen.getByRole("link", { name: "Log out" }));
     expect(appThunks.logOut).toHaveBeenCalledTimes(1);
-    expect(actions.find((action) => action.type === "logOut")).toBeTruthy();
+    expect(mockUseAppDispatch.mock.calls[0][0]).toMatchObject({
+      type: "logOut",
+    });
   });
 
-  it("should show console error when trying to logout", async () => {
-    const consoleError = console.error;
-    console.error = jest.fn();
+  it("should show error when trying to logout and refresh page", async () => {
+    const location = window.location;
+    Object.defineProperty(window, "location", {
+      value: { ...location, reload: jest.fn() },
+    });
+
     jest
       .spyOn(appThunks, "logOut")
       .mockImplementation(jest.fn().mockReturnValue({ type: "logOut" }));
@@ -87,14 +102,31 @@ describe("User Menu", () => {
           ),
       );
 
-    renderComponent(<UserMenu />, { state });
+    renderComponent(
+      <>
+        <UserMenu />
+        <Toaster />
+      </>,
+      { state },
+    );
     await userEvent.click(screen.getByRole("link", { name: "Log out" }));
     expect(appThunks.logOut).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(
       Label.LOGOUT_ERROR,
       new Error("Error while dispatching logOut!"),
     );
+    const logoutErrorNotification = screen.getByText(
+      new RegExp(Label.LOGOUT_ERROR),
+    );
+    expect(logoutErrorNotification).toBeInTheDocument();
+    expect(logoutErrorNotification.childElementCount).toBe(1);
+    const refreshButton = logoutErrorNotification.children[0];
+    expect(refreshButton).toHaveTextContent("refreshing");
+    await userEvent.click(refreshButton);
+    expect(window.location.reload).toHaveBeenCalledTimes(1);
 
-    console.error = consoleError;
+    Object.defineProperty(window, "location", {
+      value: location,
+    });
   });
 });

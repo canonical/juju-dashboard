@@ -356,7 +356,7 @@ describe("ConfigPanel", () => {
       },
       state,
     );
-    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(2);
+    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
   });
 
   it("displays save errors", async () => {
