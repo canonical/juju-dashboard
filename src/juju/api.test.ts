@@ -62,6 +62,7 @@ import {
   findAuditEvents,
   crossModelQuery,
   connectToModel,
+  Label,
 } from "./api";
 import type { AllWatcherDelta } from "./types";
 import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
@@ -1495,8 +1496,67 @@ describe("Juju API", () => {
       jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
         logout: jest.fn(),
       }));
-      const response = await startModelWatcher("abc123", state, jest.fn());
-      expect(response).toBeNull();
+      await expect(
+        startModelWatcher("abc123", state, jest.fn()),
+      ).rejects.toThrow(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
+    });
+
+    it("handles no response", async () => {
+      const state = rootStateFactory.build({
+        juju: {
+          models: {
+            abc123: modelListInfoFactory.build(),
+          },
+        },
+      });
+      const conn = {
+        facades: {
+          client: {
+            watchAll: jest.fn().mockReturnValue(null),
+          },
+          allWatcher: {
+            next: jest.fn().mockReturnValue(null),
+          },
+          pinger: {
+            ping: jest.fn().mockResolvedValue(null),
+          },
+        },
+      } as unknown as Connection;
+      jest
+        .spyOn(jujuLib, "connectAndLogin")
+        .mockImplementation(async () => ({ logout: jest.fn(), conn }));
+      await expect(
+        startModelWatcher("abc123", state, jest.fn()),
+      ).rejects.toThrow(Label.START_MODEL_WATCHER_NO_ID_ERROR);
+    });
+
+    it("handles error response", async () => {
+      const state = rootStateFactory.build({
+        juju: {
+          models: {
+            abc123: modelListInfoFactory.build(),
+          },
+        },
+      });
+      const conn = {
+        facades: {
+          client: {
+            watchAll: jest.fn().mockReturnValue("Uh oh!"),
+          },
+          allWatcher: {
+            next: jest.fn().mockReturnValue(null),
+          },
+          pinger: {
+            ping: jest.fn().mockResolvedValue(null),
+          },
+        },
+      } as unknown as Connection;
+      jest
+        .spyOn(jujuLib, "connectAndLogin")
+        .mockImplementation(async () => ({ logout: jest.fn(), conn }));
+      await expect(
+        startModelWatcher("abc123", state, jest.fn()),
+      ).rejects.toThrow("Uh oh!");
     });
 
     it("starts the model watcher", async () => {

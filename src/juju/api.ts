@@ -63,6 +63,11 @@ import type {
   FullStatusWithAnnotations,
 } from "./types";
 
+export enum Label {
+  START_MODEL_WATCHER_NO_CONNECTION_ERROR = "Could not connect to model",
+  START_MODEL_WATCHER_NO_ID_ERROR = "Could not watch model for changes",
+}
+
 export const PING_TIME = 20000;
 export const LOGIN_TIMEOUT = 5000;
 // Juju supports a client one major version away from the controller's version,
@@ -721,13 +726,17 @@ export async function startModelWatcher(
 ) {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   if (!conn) {
-    return null;
+    throw new Error(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
   }
   const watcherHandle = await conn?.facades.client?.watchAll(null);
+  // If watchAll returns a string then it had an error.
+  if (typeof watcherHandle === "string") {
+    throw new Error(watcherHandle);
+  }
   const pingerIntervalId = startPingerLoop(conn);
   const id = watcherHandle?.["watcher-id"];
   if (!id) {
-    return;
+    throw new Error(Label.START_MODEL_WATCHER_NO_ID_ERROR);
   }
   const data = await conn?.facades.allWatcher?.next({ id });
   if (data?.deltas && isDeltas(data?.deltas)) {

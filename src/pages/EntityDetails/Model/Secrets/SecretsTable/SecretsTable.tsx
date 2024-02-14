@@ -16,6 +16,7 @@ import RelativeDate from "components/RelativeDate";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { copyToClipboard } from "components/utils";
+import useCanManageSecrets from "hooks/useCanManageSecrets";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getSecretsLoading,
@@ -56,6 +57,7 @@ const SecretsTable = () => {
     panel: null,
     secret: null,
   });
+  const canManageSecrets = useCanManageSecrets();
 
   const tableData = useMemo(() => {
     if (!secrets) {
@@ -111,7 +113,7 @@ const SecretsTable = () => {
         owner,
         created: <RelativeDate datetime={secret["create-time"]} />,
         updated: <RelativeDate datetime={secret["update-time"]} />,
-        actions: (
+        actions: canManageSecrets ? (
           <ContextualMenu
             links={[
               {
@@ -136,13 +138,13 @@ const SecretsTable = () => {
             toggleClassName="has-icon u-no-margin--bottom is-small"
             toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
           />
-        ),
+        ) : null,
       };
     });
-  }, [modelUUID, secrets, setQuery]);
+  }, [canManageSecrets, modelUUID, secrets, setQuery]);
 
-  const columnData: Column[] = useMemo(
-    () => [
+  const columnData: Column[] = useMemo(() => {
+    const headers = [
       {
         Header: "Name",
         accessor: "name",
@@ -176,14 +178,16 @@ const SecretsTable = () => {
         Header: "Updated",
         accessor: "updated",
       },
-      {
+    ];
+    if (canManageSecrets) {
+      headers.push({
         Header: "Actions",
         accessor: "actions",
         className: "u-align--right",
-      },
-    ],
-    [],
-  );
+      });
+    }
+    return headers;
+  }, [canManageSecrets]);
 
   return (
     <>

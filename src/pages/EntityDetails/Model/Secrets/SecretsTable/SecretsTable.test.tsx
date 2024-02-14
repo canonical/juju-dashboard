@@ -10,12 +10,18 @@ import {
   generalStateFactory,
   credentialFactory,
 } from "testing/factories/general";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   modelListInfoFactory,
   secretsStateFactory,
   listSecretResultFactory,
   modelSecretsFactory,
+  modelFeaturesStateFactory,
+  modelFeaturesFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
 } from "testing/factories/juju/juju";
+import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -37,12 +43,22 @@ describe("SecretsTable", () => {
   beforeEach(() => {
     state = rootStateFactory.build({
       general: generalStateFactory.build({
-        credentials: {
-          "wss://example.com/api": credentialFactory.build(),
-        },
         config: configFactory.build({
           controllerAPIEndpoint: "wss://example.com/api",
         }),
+        controllerConnections: {
+          "wss://example.com/api": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
+        credentials: {
+          "wss://example.com/api": credentialFactory.build(),
+        },
       }),
       juju: {
         models: {
@@ -50,6 +66,29 @@ describe("SecretsTable", () => {
             wsControllerURL: "wss://example.com/api",
             uuid: "abc123",
           }),
+        },
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              uuid: "abc123",
+              name: "test-model",
+              "controller-uuid": "controller123",
+              users: [
+                modelUserInfoFactory.build({
+                  user: "eggman@external",
+                  access: "admin",
+                }),
+              ],
+            }),
+          }),
+        },
+        modelFeatures: modelFeaturesStateFactory.build({
+          abc123: modelFeaturesFactory.build({
+            manageSecrets: true,
+          }),
+        }),
+        modelWatcherData: {
+          abc123: modelWatcherModelDataFactory.build(),
         },
         secrets: secretsStateFactory.build({
           abc123: modelSecretsFactory.build({
@@ -150,6 +189,22 @@ describe("SecretsTable", () => {
         appName: "lxd",
       }),
     );
+  });
+
+  it("does not display the action menu if secrets can't be managed", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [listSecretResultFactory.build({ uri: "secret:aabbccdd" })],
+        loaded: true,
+      }),
+    });
+    state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
+      manageSecrets: false,
+    });
+    renderComponent(<SecretsTable />, { state, path, url });
+    expect(
+      screen.queryByRole("button", { name: Label.ACTION_MENU }),
+    ).not.toBeInTheDocument();
   });
 
   it("can display the remove secret panel", async () => {
