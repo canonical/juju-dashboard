@@ -26,6 +26,8 @@ import {
   useGetSecretContent,
   useRemoveSecrets,
   useUpdateSecrets,
+  useGrantSecret,
+  useRevokeSecret,
 } from "./apiHooks";
 
 const mockStore = configureStore<RootState, unknown>([]);
@@ -1280,5 +1282,307 @@ describe("useRemoveSecrets", () => {
     await expect(result.current(secrets)).rejects.toStrictEqual(
       new Error("Uh oh!"),
     );
+  });
+});
+
+describe("useGrantSecret", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        credentials: {
+          "wss://example.com/api": credentialFactory.build(),
+        },
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://example.com/api",
+        }),
+      }),
+      juju: {
+        models: {
+          abc123: modelListInfoFactory.build({
+            wsControllerURL: "wss://example.com/api",
+            uuid: "abc123",
+          }),
+        },
+      },
+    });
+  });
+
+  it("can grant apps", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const results = { results: [{ result: "secret:def456" }] };
+    const grantSecret = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(results));
+    const loginResponse = {
+      conn: {
+        facades: {
+          secrets: {
+            grantSecret,
+          },
+        },
+      } as unknown as Connection,
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useGrantSecret("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    await expect(
+      result.current("secret:aabbccdd", ["lxd", "etcd"]),
+    ).resolves.toBe(results);
+    expect(grantSecret).toHaveBeenCalledWith({
+      applications: ["lxd", "etcd"],
+      uri: "secret:aabbccdd",
+    });
+  });
+
+  it("handles no connection", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const loginResponse = {
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useGrantSecret("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    await expect(
+      result.current("secret:aabbccdd", ["lxd", "etcd"]),
+    ).rejects.toStrictEqual(new Error("Unable to connect to model"));
+  });
+
+  it("handles connection errors", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.reject(new Error()));
+    const { result } = renderHook(
+      () => useGrantSecret("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    await expect(
+      result.current("secret:aabbccdd", ["lxd", "etcd"]),
+    ).rejects.toBe("Error during promise race.");
+  });
+
+  it("handles errors from granting secrets", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const grantSecret = jest
+      .fn()
+      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
+    const loginResponse = {
+      conn: {
+        facades: {
+          secrets: {
+            grantSecret,
+          },
+        },
+      } as unknown as Connection,
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useGrantSecret("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    await expect(
+      result.current("secret:aabbccdd", ["lxd", "etcd"]),
+    ).rejects.toStrictEqual(new Error("Uh oh!"));
+  });
+});
+
+describe("useRevokeSecret", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        credentials: {
+          "wss://example.com/api": credentialFactory.build(),
+        },
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://example.com/api",
+        }),
+      }),
+      juju: {
+        models: {
+          abc123: modelListInfoFactory.build({
+            wsControllerURL: "wss://example.com/api",
+            uuid: "abc123",
+          }),
+        },
+      },
+    });
+  });
+
+  it("can revoke apps", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const results = { results: [{ result: "secret:def456" }] };
+    const revokeSecret = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(results));
+    const loginResponse = {
+      conn: {
+        facades: {
+          secrets: {
+            revokeSecret,
+          },
+        },
+      } as unknown as Connection,
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useRevokeSecret("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    await expect(
+      result.current("secret:aabbccdd", ["lxd", "etcd"]),
+    ).resolves.toBe(results);
+    expect(revokeSecret).toHaveBeenCalledWith({
+      applications: ["lxd", "etcd"],
+      uri: "secret:aabbccdd",
+    });
+  });
+
+  it("handles no connection", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const loginResponse = {
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useRevokeSecret("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    await expect(
+      result.current("secret:aabbccdd", ["lxd", "etcd"]),
+    ).rejects.toStrictEqual(new Error("Unable to connect to model"));
+  });
+
+  it("handles connection errors", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.reject(new Error()));
+    const { result } = renderHook(
+      () => useRevokeSecret("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    await expect(
+      result.current("secret:aabbccdd", ["lxd", "etcd"]),
+    ).rejects.toBe("Error during promise race.");
+  });
+
+  it("handles errors from revoking secrets", async () => {
+    const store = mockStore(state);
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const revokeSecret = jest
+      .fn()
+      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
+    const loginResponse = {
+      conn: {
+        facades: {
+          secrets: {
+            revokeSecret,
+          },
+        },
+      } as unknown as Connection,
+      logout: jest.fn(),
+    };
+    jest
+      .spyOn(jujuLib, "connectAndLogin")
+      .mockImplementation(() => Promise.resolve(loginResponse));
+    const { result } = renderHook(
+      () => useRevokeSecret("eggman@external", "test-model"),
+      {
+        wrapper: (props) => (
+          <ComponentProviders
+            {...props}
+            path="/models/:userName/:modelName/app/:appName"
+            store={store}
+          />
+        ),
+      },
+    );
+    await expect(
+      result.current("secret:aabbccdd", ["lxd", "etcd"]),
+    ).rejects.toStrictEqual(new Error("Uh oh!"));
   });
 });
