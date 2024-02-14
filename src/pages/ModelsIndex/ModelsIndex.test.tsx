@@ -177,7 +177,7 @@ describe("Models Index page", () => {
   it("should display the error notification", async () => {
     state.juju.modelsError = "Oops!";
     renderComponent(<ModelsIndex />, { state });
-    expect(screen.getByText(new RegExp(/Oops!/))).toBeInTheDocument();
+    expect(screen.getByText(/Oops!/)).toBeInTheDocument();
   });
 
   it("should refresh the window when pressing the button in error notification", async () => {

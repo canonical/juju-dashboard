@@ -76,7 +76,9 @@ describe("renderApp", () => {
     }
     jest.useRealTimers();
     await waitFor(() => {
-      expect(screen.getByText(new RegExp(Label.NO_CONFIG))).toBeInTheDocument();
+      expect(
+        screen.getByText(Label.NO_CONFIG, { exact: false }),
+      ).toBeInTheDocument();
     });
   });
 

@@ -1,8 +1,9 @@
 import { Button, RadioInput, Tooltip } from "@canonical/react-components";
-import { useState, type FormEventHandler } from "react";
+import { useState, type FormEventHandler, type ReactNode } from "react";
 
 import Panel from "components/Panel";
 import { TestId } from "panels/CharmsAndActionsPanel/CharmsAndActionsPanel";
+import PanelInlineErrors from "panels/PanelInlineErrors";
 import { getCharms } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
@@ -17,12 +18,14 @@ type Props = {
   onCharmURLChange: (charmURL: string | null) => void;
   onRemovePanelQueryParams: () => void;
   isLoading: boolean;
+  inlineErrors: ReactNode[];
 };
 
 export default function CharmsPanel({
   onCharmURLChange,
   isLoading,
   onRemovePanelQueryParams,
+  inlineErrors,
 }: Props): JSX.Element {
   const [selectedCharm, setSelectedCharm] = useState<string | null>(null);
   const charms = useAppSelector(getCharms());
@@ -48,6 +51,7 @@ export default function CharmsPanel({
       onRemovePanelQueryParams={onRemovePanelQueryParams}
       loading={isLoading}
     >
+      <PanelInlineErrors inlineErrors={inlineErrors} />
       <form onSubmit={handleSubmit}>
         {charms.map((charm) => {
           const hasActionData =
