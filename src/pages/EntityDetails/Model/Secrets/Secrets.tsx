@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import useCanManageSecrets from "hooks/useCanManageSecrets";
 import { useQueryParams } from "hooks/useQueryParams";
 import { useListSecrets } from "juju/apiHooks";
 import { actions as jujuActions } from "store/juju";
@@ -34,6 +35,7 @@ const Secrets = () => {
   const secretsErrors = useAppSelector((state) =>
     getSecretsErrors(state, modelUUID),
   );
+  const canManageSecrets = useCanManageSecrets();
 
   const [, setQuery] = useQueryParams<{
     panel: string | null;
@@ -63,13 +65,15 @@ const Secrets = () => {
   } else {
     content = (
       <>
-        <Button
-          hasIcon
-          onClick={() => setQuery({ panel: "add-secret" }, { replace: true })}
-        >
-          <Icon name="plus" />
-          <span>{Label.ADD}</span>
-        </Button>
+        {canManageSecrets ? (
+          <Button
+            hasIcon
+            onClick={() => setQuery({ panel: "add-secret" }, { replace: true })}
+          >
+            <Icon name="plus" />
+            <span>{Label.ADD}</span>
+          </Button>
+        ) : null}
         <SecretsTable />
       </>
     );

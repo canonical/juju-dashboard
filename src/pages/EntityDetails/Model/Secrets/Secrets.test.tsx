@@ -1,4 +1,5 @@
 import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 
 import * as apiHooks from "juju/apiHooks";
@@ -10,16 +11,21 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   modelListInfoFactory,
   secretsStateFactory,
   listSecretResultFactory,
   modelSecretsFactory,
+  modelDataInfoFactory,
+  modelFeaturesFactory,
+  modelDataFactory,
+  modelFeaturesStateFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import Secrets from "./Secrets";
+import Secrets, { Label } from "./Secrets";
 import { TestId as SecretsTableTestId } from "./SecretsTable/SecretsTable";
 
 const mockStore = configureStore<RootState, unknown>([]);
@@ -49,6 +55,16 @@ describe("Secrets", () => {
         config: configFactory.build({
           controllerAPIEndpoint: "wss://example.com/api",
         }),
+        controllerConnections: {
+          "wss://example.com/api": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
       }),
       juju: {
         models: {
@@ -128,5 +144,44 @@ describe("Secrets", () => {
           .find((dispatch) => dispatch.type === updateAction.type),
       ).toBeUndefined();
     });
+  });
+
+  it("can open a panel to add a secret", async () => {
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          uuid: "abc123",
+          name: "test-model",
+          "controller-uuid": "controller123",
+          users: [
+            modelUserInfoFactory.build({
+              user: "eggman@external",
+              access: "admin",
+            }),
+          ],
+        }),
+      }),
+    };
+    state.juju.modelFeatures = modelFeaturesStateFactory.build({
+      abc123: modelFeaturesFactory.build({
+        manageSecrets: true,
+      }),
+    });
+    renderComponent(<Secrets />, { state, path, url });
+    expect(window.location.search).toEqual("");
+    await userEvent.click(screen.getByRole("button", { name: Label.ADD }));
+    expect(window.location.search).toEqual("?panel=add-secret");
+  });
+
+  it("does not display an add secret button if secrets can't be managed", async () => {
+    state.juju.modelFeatures = modelFeaturesStateFactory.build({
+      abc123: modelFeaturesFactory.build({
+        manageSecrets: false,
+      }),
+    });
+    renderComponent(<Secrets />, { state, path, url });
+    expect(
+      screen.queryByRole("button", { name: Label.ADD }),
+    ).not.toBeInTheDocument();
   });
 });
