@@ -21,9 +21,13 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 
+export enum AuditLogsError {
+  CHECK_PERMISSIONS = "Unable to check Audit Logs user permission.",
+}
+
 export enum LoginError {
-  LOG = "Unable to log into controller",
-  NO_INFO = "Unable to retrieve controller details",
+  LOG = "Unable to log into controller.",
+  NO_INFO = "Unable to retrieve controller details.",
 }
 
 export enum ModelsError {
@@ -31,10 +35,6 @@ export enum ModelsError {
   LOAD_SOME_MODELS = "Unable to load some models.",
   LOAD_LATEST_MODELS = "Unable to load latest model data.",
   LIST_OR_UPDATE_MODELS = "Unable to list or update models.",
-}
-
-export enum AuditLogsError {
-  CHECK_PERMISSIONS = "Unable to check Audit Logs user permission.",
 }
 
 const checkJIMMRelation = async (
