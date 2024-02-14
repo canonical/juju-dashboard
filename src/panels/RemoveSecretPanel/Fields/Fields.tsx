@@ -1,4 +1,4 @@
-import { Select, ConfirmationModal } from "@canonical/react-components";
+import { ConfirmationModal } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import usePortal from "react-useportal";
 
 import FormikField from "components/FormikField/FormikField";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import RevisionField from "components/secrets/RevisionField";
 import { getSecretByURI, getModelUUIDFromList } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
@@ -42,7 +43,7 @@ const Fields = ({
 
   return (
     <>
-      {(secret?.revisions.length ?? 0) > 1 ? (
+      {(secret?.revisions.length ?? 0) > 1 && secretURI ? (
         <>
           <FormikField
             id={Label.REMOVE_ALL}
@@ -51,17 +52,10 @@ const Fields = ({
             type="checkbox"
             disabled={secret?.revisions.length === 1}
           />
-          <FormikField
-            label={Label.REVISION}
-            name="revision"
-            component={Select}
+          <RevisionField
             disabled={values.removeAll}
-            options={
-              [...(secret?.revisions ?? [])].reverse().map(({ revision }) => ({
-                label: `${revision}${revision === secret?.["latest-revision"] ? " (latest)" : ""}`,
-                value: revision.toString(),
-              })) ?? []
-            }
+            secretURI={secretURI}
+            modelUUID={modelUUID}
           />
         </>
       ) : (
