@@ -38,6 +38,7 @@ export enum Label {
 
 export enum TestId {
   SECRETS_TABLE = "secrets-table",
+  GRANTED_TO = "granted-to",
 }
 
 const SecretsTable = () => {
@@ -76,6 +77,12 @@ const SecretsTable = () => {
           </AppLink>
         );
       }
+      let granted = secret.access?.length ?? 0;
+      if (secret["owner-tag"]?.startsWith("application-")) {
+        // If the secret is owned by an application then include it in the
+        // count of apps with access to the secret.
+        granted += 1;
+      }
       return {
         name: (
           <>
@@ -109,7 +116,7 @@ const SecretsTable = () => {
         ),
         revision: secret["latest-revision"],
         description: secret.description,
-        granted: secret.access?.length ?? 0,
+        granted: <span data-testid={TestId.GRANTED_TO}>{granted}</span>,
         owner,
         created: <RelativeDate datetime={secret["create-time"]} />,
         updated: <RelativeDate datetime={secret["update-time"]} />,
