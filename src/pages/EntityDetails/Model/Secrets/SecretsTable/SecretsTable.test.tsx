@@ -20,6 +20,7 @@ import {
   modelFeaturesFactory,
   modelDataFactory,
   modelDataInfoFactory,
+  secretAccessInfoFactory,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
@@ -131,6 +132,32 @@ describe("SecretsTable", () => {
     expect(
       screen.getByRole("cell", { name: "Show content secret2" }),
     ).toBeInTheDocument();
+  });
+
+  it("displays the number of apps with access to the secret", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({
+            access: [
+              secretAccessInfoFactory.build(),
+              secretAccessInfoFactory.build(),
+            ],
+            label: "secret1",
+          }),
+          listSecretResultFactory.build({
+            access: [],
+            label: "secret2",
+            "owner-tag": "application-etcd",
+          }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(<SecretsTable />, { state, path, url });
+    const grantedTo = screen.getAllByTestId(TestId.GRANTED_TO);
+    expect(grantedTo[0]).toHaveTextContent("2");
+    expect(grantedTo[1]).toHaveTextContent("1");
   });
 
   it("should remove the prefix from the id", async () => {
