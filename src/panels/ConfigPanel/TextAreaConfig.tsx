@@ -2,6 +2,7 @@ import { useRef } from "react";
 
 import type { ConfigProps } from "./ConfigField";
 import ConfigField from "./ConfigField";
+import SecretsPicker from "./SecretsPicker";
 
 export default function TextAreaConfig({
   config,
@@ -18,14 +19,19 @@ export default function TextAreaConfig({
       setSelectedConfig={setSelectedConfig}
       setNewValue={setNewValue}
       input={(value) => (
-        <textarea
-          ref={inputRef}
-          value={value ?? ""}
-          onFocus={() => setSelectedConfig(config)}
-          onChange={(e) => {
-            setNewValue(config.name, e.target.value);
-          }}
-        ></textarea>
+        <div className="u-flex">
+          <textarea
+            ref={inputRef}
+            value={value ?? ""}
+            onFocus={() => setSelectedConfig(config)}
+            onChange={(e) => {
+              setNewValue(config.name, e.target.value);
+            }}
+          ></textarea>
+          <SecretsPicker
+            setValue={(secret) => setNewValue(config.name, secret)}
+          />
+        </div>
       )}
     />
   );
