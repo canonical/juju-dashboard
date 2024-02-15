@@ -45,10 +45,13 @@ describe("ConnectionError", () => {
     const state = rootStateFactory.withGeneralConfig().build({
       juju: { auditEvents: { errors: "Oops!" } },
     });
-    const {
-      result: { rerender },
-    } = renderComponent(<ConnectionError />, { state });
-    rerender(<Toaster />);
+    renderComponent(
+      <>
+        <Toaster />
+        <ConnectionError />
+      </>,
+      { state },
+    );
     const auditLogsErrorNotification = screen.getByText(/Oops!/);
     expect(auditLogsErrorNotification.childElementCount).toBe(1);
     const refreshButton = auditLogsErrorNotification.children[0];
