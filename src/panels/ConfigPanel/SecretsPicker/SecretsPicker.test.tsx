@@ -1,7 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { ConfigData } from "juju/api";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -18,19 +17,9 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import { Label } from "./SecretsPicker/SecretsPicker";
-import TextAreaConfig from "./TextAreaConfig";
+import SecretsPicker, { Label } from "./SecretsPicker";
 
-describe("TextAreaConfig", () => {
-  const config: ConfigData = {
-    name: "text option",
-    default: "word",
-    description: "a text option",
-    source: "default",
-    type: "string",
-    value: "word",
-    newValue: "word",
-  };
+describe("SecretsPicker", () => {
   let state: RootState;
   const path = urls.model.index(null);
   const url = urls.model.index({
@@ -71,51 +60,62 @@ describe("TextAreaConfig", () => {
     });
   });
 
-  it("displays a text input", async () => {
-    renderComponent(
-      <TextAreaConfig
-        config={config}
-        selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
-      />,
-      { state, url, path },
-    );
-    expect(screen.getByRole("textbox")).toBeInTheDocument();
-  });
-
-  it("can change the value", async () => {
-    const setNewValue = jest.fn();
-    renderComponent(
-      <TextAreaConfig
-        config={config}
-        selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
-        setNewValue={setNewValue}
-      />,
-      { state, url, path },
-    );
-    await userEvent.type(screen.getByRole("textbox"), "!");
-    expect(setNewValue).toHaveBeenCalledWith("text option", "word!");
-  });
-
-  it("can set a secret", async () => {
-    const setNewValue = jest.fn();
-    renderComponent(
-      <TextAreaConfig
-        config={config}
-        selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
-        setNewValue={setNewValue}
-      />,
-      { state, url, path },
-    );
+  it("displays a spinner while loading secrets", async () => {
+    state.juju.secrets.abc123.loading = true;
+    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+      state,
+      url,
+      path,
+    });
     await userEvent.click(
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
+    expect(
+      screen.getByRole("alert", { name: Label.LOADING }),
+    ).toBeInTheDocument();
+  });
+
+  it("displays secret errors", async () => {
+    state.juju.secrets.abc123.errors = "Uh oh!";
+    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+      state,
+      url,
+      path,
+    });
     await userEvent.click(
-      screen.getByRole("button", { name: "secret1 (aabbccdd)" }),
+      screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
-    expect(setNewValue).toHaveBeenCalledWith("text option", "secret:aabbccdd");
+    expect(screen.getByText("Uh oh!")).toBeInTheDocument();
+  });
+
+  it("lists the secrets", async () => {
+    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+      state,
+      url,
+      path,
+    });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
+    );
+    expect(
+      screen.getByRole("button", { name: "secret1 (aabbccdd)" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "eeffgghh" }),
+    ).toBeInTheDocument();
+  });
+
+  it("can set the secret value", async () => {
+    const setValue = jest.fn();
+    renderComponent(<SecretsPicker setValue={setValue} />, {
+      state,
+      url,
+      path,
+    });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
+    );
+    await userEvent.click(screen.getByRole("button", { name: "eeffgghh" }));
+    expect(setValue).toHaveBeenCalledWith("secret:eeffgghh");
   });
 });

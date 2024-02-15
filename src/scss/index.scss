@@ -44,6 +44,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-icon-video-play;
 @include vf-p-icon-lock-locked;
 @include vf-p-icon-restart;
+@include vf-p-icon-security;
 @include vf-p-icon-topic;
 
 // Overrides for Vanilla. This needs to be after the Vanilla includes.
