@@ -193,6 +193,7 @@ export const listSecretResultFactory = Factory.define<ListSecretResult>(() => ({
 
 export const auditEventsStateFactory = Factory.define<AuditEventsState>(() => ({
   items: null,
+  errors: null,
   loaded: false,
   loading: false,
   limit: DEFAULT_AUDIT_EVENTS_LIMIT,

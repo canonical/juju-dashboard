@@ -21,9 +21,13 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 
+export enum AuditLogsError {
+  CHECK_PERMISSIONS = "Unable to check Audit Logs user permission.",
+}
+
 export enum LoginError {
-  LOG = "Unable to log into controller",
-  NO_INFO = "Unable to retrieve controller details",
+  LOG = "Unable to log into controller.",
+  NO_INFO = "Unable to retrieve controller details.",
 }
 
 export enum ModelsError {
@@ -149,9 +153,14 @@ export const modelPollerMiddleware: Middleware<
                 JIMMRelation.ADMINISTRATOR,
               );
             }
+            reduxStore.dispatch(jujuActions.updateAuditEventsErrors(null));
           } catch (error) {
-            // TODO: this should be displayed to the user somehow.
-            console.error("Unable to check user permissions", error);
+            reduxStore.dispatch(
+              jujuActions.updateAuditEventsErrors(
+                AuditLogsError.CHECK_PERMISSIONS,
+              ),
+            );
+            console.error(AuditLogsError.CHECK_PERMISSIONS, error);
           }
         }
         reduxStore.dispatch(

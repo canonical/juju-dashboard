@@ -62,10 +62,7 @@ export type ModelsList = {
   [uuid: string]: ModelListInfo;
 };
 
-export type AuditEventsState = Omit<
-  GenericItemsState<AuditEvent, void>,
-  "errors"
-> & {
+export type AuditEventsState = GenericItemsState<AuditEvent, string | null> & {
   limit: number;
 };
 

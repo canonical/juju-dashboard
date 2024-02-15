@@ -15,7 +15,12 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
+import {
+  AuditLogsError,
+  LoginError,
+  ModelsError,
+  modelPollerMiddleware,
+} from "./model-poller";
 
 jest.mock("juju/api", () => ({
   disableControllerUUIDMasking: jest
@@ -717,6 +722,26 @@ describe("model poller", () => {
     expect(jujuModule.findAuditEvents).not.toHaveBeenCalled();
   });
 
+  it("should handle Audit Logs user permission error", async () => {
+    conn.facades.jimM = {
+      checkRelation: jest.fn().mockImplementation(async () => "Oops!"),
+      version: 4,
+    };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateAuditEventsErrors(AuditLogsError.CHECK_PERMISSIONS),
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      AuditLogsError.CHECK_PERMISSIONS,
+      new Error("Oops!"),
+    );
+  });
+
   it("handles fetching cross model query results", async () => {
     const crossModelQueryResponse = { results: {}, errors: {} };
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
@@ -763,8 +788,6 @@ describe("model poller", () => {
   });
 
   it("handles errors when fetching cross model query results", async () => {
-    const consoleError = console.error;
-    console.error = jest.fn();
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
@@ -788,6 +811,5 @@ describe("model poller", () => {
         "Unable to perform search. Please try again later.",
       ),
     );
-    console.error = consoleError;
   });
 });

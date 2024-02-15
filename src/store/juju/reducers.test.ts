@@ -332,6 +332,18 @@ describe("reducers", () => {
     });
   });
 
+  it("updateAuditEventsErrors", () => {
+    const state = jujuStateFactory.build();
+    expect(
+      reducer(state, actions.updateAuditEventsErrors("Oops!")),
+    ).toStrictEqual({
+      ...state,
+      auditEvents: auditEventsStateFactory.build({
+        errors: "Oops!",
+      }),
+    });
+  });
+
   it("clearControllerData", () => {
     const state = jujuStateFactory.build({
       controllers: {

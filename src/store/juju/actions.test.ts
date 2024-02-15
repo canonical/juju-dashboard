@@ -162,6 +162,13 @@ describe("actions", () => {
     });
   });
 
+  it("updateAuditEventsErrors", () => {
+    expect(actions.updateAuditEventsErrors("Oops!")).toStrictEqual({
+      type: "juju/updateAuditEventsErrors",
+      payload: "Oops!",
+    });
+  });
+
   it("fetchCrossModelQuery", () => {
     expect(
       actions.fetchCrossModelQuery({

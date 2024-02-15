@@ -58,6 +58,14 @@ export const getAuditEvents = createSelector(
 );
 
 /**
+  Fetches the audit event errors from state.
+*/
+export const getAuditEventsErrors = createSelector(
+  [getAuditEventsState],
+  (auditEvents) => auditEvents.errors,
+);
+
+/**
   Fetches the audit events loaded state.
 */
 export const getAuditEventsLoaded = createSelector(
