@@ -32,6 +32,7 @@ import {
 import { useAppDispatch, useAppSelector } from "store/store";
 
 export enum Label {
+  BUTTON_ADD = "Add a secret...",
   BUTTON_CANCEL = "Cancel",
   BUTTON_SUBMIT = "Add secret",
   CHOOSE_SECRET = "Choose a secret",
@@ -109,7 +110,7 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
       });
     if (canManageSecrets) {
       const addButton: MenuLink<ButtonProps> = {
-        children: "Add a secret...",
+        children: Label.BUTTON_ADD,
         onClick: openPortal,
       };
       if (secretLinks?.length) {
