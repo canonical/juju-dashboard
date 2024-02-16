@@ -31,9 +31,9 @@ import SecretContent from "../SecretContent";
 export enum Label {
   ACTION_MENU = "Action menu",
   COPY = "Copy",
-  GRANT_BUTTON = "Grant",
-  REMOVE_BUTTON = "Remove",
-  UPDATE_BUTTON = "Update",
+  GRANT_BUTTON = "Grant...",
+  REMOVE_BUTTON = "Remove...",
+  UPDATE_BUTTON = "Update...",
 }
 
 export enum TestId {
