@@ -198,6 +198,12 @@ describe("SecretsPicker", () => {
   });
 
   it("displays an 'add secret' button if secrets can be managed", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [],
+        loaded: true,
+      }),
+    });
     state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
       manageSecrets: true,
     });
@@ -233,6 +239,32 @@ describe("SecretsPicker", () => {
     expect(
       screen.getByRole("dialog", { name: Label.MODAL_TITLE }),
     ).toBeInTheDocument();
+  });
+
+  it("can close the add secret form", async () => {
+    state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
+      manageSecrets: true,
+    });
+    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+      state,
+      url,
+      path,
+    });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.BUTTON_ADD }),
+    );
+    expect(
+      screen.getByRole("dialog", { name: Label.MODAL_TITLE }),
+    ).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole("button", { name: "Close active modal" }),
+    );
+    expect(
+      screen.queryByRole("dialog", { name: Label.MODAL_TITLE }),
+    ).not.toBeInTheDocument();
   });
 
   it("can create and set the secret value", async () => {
