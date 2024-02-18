@@ -28,6 +28,7 @@ import {
   getSecretsErrors,
   getSecretsLoading,
   getModelSecrets,
+  getSecretsLoaded,
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
@@ -61,25 +62,28 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
   const secretsLoading = useAppSelector((state) =>
     getSecretsLoading(state, modelUUID),
   );
+  const secretsLoaded = useAppSelector((state) =>
+    getSecretsLoaded(state, modelUUID),
+  );
   const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));
   const canManageSecrets = useCanManageSecrets();
   const { openPortal, closePortal, isOpen, Portal } = usePortal({
     programmaticallyOpen: true,
   });
 
-  useEffect(() => {
-    listSecrets();
-    return () => {
+  useEffect(
+    () => () => {
       if (!modelUUID || !wsControllerURL) {
         return;
       }
       dispatch(jujuActions.clearSecrets({ modelUUID, wsControllerURL }));
-    };
-  }, [dispatch, listSecrets, modelUUID, wsControllerURL]);
+    },
+    [dispatch, modelUUID, wsControllerURL],
+  );
 
   let links: ContextualMenuProps<unknown>["links"] = null;
   let dropdownContent: ReactNode = null;
-  if (secretsLoading) {
+  if (secretsLoading && !secretsLoaded) {
     dropdownContent = (
       <div className="u-align--center">
         <Spinner aria-label={Label.LOADING} />
@@ -128,6 +132,9 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
       <ContextualMenu
         dropdownClassName="p-contextual-menu__dropdown--over-panel prevent-panel-close"
         links={links ?? []}
+        onToggleMenu={(open) => {
+          open && listSecrets();
+        }}
         position="right"
         scrollOverflow
         toggleAppearance="base"

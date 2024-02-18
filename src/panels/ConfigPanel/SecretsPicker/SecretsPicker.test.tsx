@@ -97,8 +97,9 @@ describe("SecretsPicker", () => {
     });
   });
 
-  it("displays a spinner while loading secrets", async () => {
+  it("displays a spinner while loading secrets the first time", async () => {
     state.juju.secrets.abc123.loading = true;
+    state.juju.secrets.abc123.loaded = false;
     renderComponent(<SecretsPicker setValue={jest.fn()} />, {
       state,
       url,
@@ -110,6 +111,28 @@ describe("SecretsPicker", () => {
     expect(
       screen.getByRole("alert", { name: Label.LOADING }),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "secret1 (aabbccdd)" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("displays secrets while reloading secrets", async () => {
+    state.juju.secrets.abc123.loading = true;
+    state.juju.secrets.abc123.loaded = true;
+    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+      state,
+      url,
+      path,
+    });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
+    );
+    expect(
+      screen.getByRole("button", { name: "secret1 (aabbccdd)" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("alert", { name: Label.LOADING }),
+    ).not.toBeInTheDocument();
   });
 
   it("displays secret errors", async () => {
