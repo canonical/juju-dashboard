@@ -49,6 +49,9 @@ const WebCLI = ({
   protocol = "wss",
 }: Props) => {
   const [connection, setConnection] = useState<Connection | null>(null);
+  const [pendingConnections, setPendingConnections] = useState<Connection[]>(
+    [],
+  );
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
   const [historyPosition, setHistoryPosition] = useState(0);
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
@@ -132,16 +135,38 @@ const WebCLI = ({
       onclose: () => {
         // Unused handler.
       },
+      onerror: (error) => {
+        setInlineError(
+          InlineErrors.CONNECTION,
+          typeof error === "string" ? error : "Unknown error.",
+        );
+      },
       messageCallback: (message: string) => {
         wsMessageStore.current = wsMessageStore.current + message;
         setOutput(wsMessageStore.current);
       },
     }).connect();
-    setConnection(conn);
-    return () => {
-      conn.disconnect();
-    };
+    setConnection((prevConnection) => {
+      if (!prevConnection || prevConnection.isOpen()) {
+        prevConnection?.disconnect();
+      } else {
+        setPendingConnections((prevPendingConnections) => [
+          ...prevPendingConnections,
+          prevConnection,
+        ]);
+      }
+      return conn;
+    });
   }, [setInlineError, wsAddress]);
+
+  useEffect(() => {
+    return () => {
+      pendingConnections.forEach((connection) => {
+        connection?.disconnect();
+      });
+      connection?.disconnect();
+    };
+  }, [connection, pendingConnections]);
 
   const handleCommandSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -159,8 +184,8 @@ const WebCLI = ({
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
       // the model for the model status.
-      const origin = connection?.address
-        ? new URL(connection?.address)?.origin
+      const origin = connection?.getAddress()
+        ? new URL(connection?.getAddress())?.origin
         : null;
       const macaroons = origin ? bakery.storage.get(origin) : null;
       if (macaroons) {
