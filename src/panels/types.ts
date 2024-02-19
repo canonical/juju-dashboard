@@ -1,1 +1,6 @@
-export type ConfirmTypes = "submit" | "cancel" | null;
+export enum ConfirmType {
+  CANCEL = "cancel",
+  SUBMIT = "submit",
+}
+
+export type ConfirmTypes = ConfirmType | null;

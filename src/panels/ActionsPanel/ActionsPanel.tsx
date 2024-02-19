@@ -19,7 +19,7 @@ import useInlineErrors from "hooks/useInlineErrors";
 import { executeActionOnUnits, getActionsForApplication } from "juju/api";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
-import type { ConfirmTypes } from "panels/types";
+import { ConfirmType, type ConfirmTypes } from "panels/types";
 import { getModelUUID } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import type { RootState } from "store/store";
@@ -203,7 +203,7 @@ export default function ActionsPanel(): JSX.Element {
   };
 
   const handleSubmit = () => {
-    setConfirmType("submit");
+    setConfirmType(ConfirmType.SUBMIT);
   };
 
   const changeHandler = useCallback(
@@ -238,7 +238,7 @@ export default function ActionsPanel(): JSX.Element {
     if (confirmType && selectedAction) {
       // Allow for adding more confirmation types, like for cancel
       // if inputs have been changed.
-      if (confirmType === "submit") {
+      if (confirmType === ConfirmType.SUBMIT) {
         const unitNames = selectedUnits.reduce((acc, unitName) => {
           return `${acc}, ${unitName.split("/")[1]}`;
         });
