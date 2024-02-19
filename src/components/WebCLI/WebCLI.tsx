@@ -48,10 +48,7 @@ const WebCLI = ({
   modelUUID,
   protocol = "wss",
 }: Props) => {
-  const [connection, setConnection] = useState<Connection | null>(null);
-  const [pendingConnections, setPendingConnections] = useState<Connection[]>(
-    [],
-  );
+  const connection = useRef<Connection | null>(null);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
   const [historyPosition, setHistoryPosition] = useState(0);
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
@@ -130,7 +127,11 @@ const WebCLI = ({
     const conn = new Connection({
       address: wsAddress,
       onopen: () => {
-        // Unused handler.
+        // Close this websocket connection if it was in CONNECTING state
+        // while a new websocket connection was established.
+        if (conn.websocket !== connection.current?.websocket) {
+          conn.disconnect();
+        }
       },
       onclose: () => {
         // Unused handler.
@@ -146,27 +147,30 @@ const WebCLI = ({
         setOutput(wsMessageStore.current);
       },
     }).connect();
-    setConnection((prevConnection) => {
-      if (!prevConnection || prevConnection.isOpen()) {
-        prevConnection?.disconnect();
-      } else {
-        setPendingConnections((prevPendingConnections) => [
-          ...prevPendingConnections,
-          prevConnection,
-        ]);
-      }
-      return conn;
-    });
+    if (connection.current?.isOpen()) {
+      connection.current?.disconnect();
+    }
+    connection.current = conn;
   }, [setInlineError, wsAddress]);
 
-  useEffect(() => {
-    return () => {
-      pendingConnections.forEach((connection) => {
-        connection?.disconnect();
-      });
-      connection?.disconnect();
-    };
-  }, [connection, pendingConnections]);
+  useEffect(
+    () => () => {
+      // Cleanup gets triggered twice in development due to React.StrictMode.
+      // As it gets triggered in rapid successions, it closes the previous
+      // websocket connection while it is in CONNECTING state. This triggers
+      // an error in the closed websocket connection, which subsequently
+      // displays an error in the WebCLI. To fix this issue, in development, we
+      // only close websocket connections in OPEN state here. In production, as
+      // the cleanup runs only once, we close the last connection here.
+      if (
+        process.env.NODE_ENV !== "development" ||
+        connection.current?.isOpen()
+      ) {
+        connection.current?.disconnect();
+      }
+    },
+    [],
+  );
 
   const handleCommandSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -184,8 +188,8 @@ const WebCLI = ({
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
       // the model for the model status.
-      const origin = connection?.getAddress()
-        ? new URL(connection?.getAddress())?.origin
+      const origin = connection.current?.address
+        ? new URL(connection.current?.address)?.origin
         : null;
       const macaroons = origin ? bakery.storage.get(origin) : null;
       if (macaroons) {
@@ -217,7 +221,7 @@ const WebCLI = ({
       setHistoryPosition(0);
     }
 
-    connection?.send(
+    connection.current?.send(
       JSON.stringify({
         ...authentication,
         commands: [command],

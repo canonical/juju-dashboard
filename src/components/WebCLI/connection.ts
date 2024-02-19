@@ -24,8 +24,12 @@ class Connection {
     this.#wsOnError = options.onerror;
   }
 
-  getAddress() {
+  get address() {
     return this.#address;
+  }
+
+  get websocket() {
+    return this.#ws;
   }
 
   connect() {
