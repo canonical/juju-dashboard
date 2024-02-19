@@ -427,7 +427,10 @@ const slice = createSlice({
         } & WsControllerURLParam
       >,
     ) => {
-      delete state.secrets[action.payload.modelUUID].content;
+      const secrets = state.secrets[action.payload.modelUUID];
+      if (secrets) {
+        delete secrets.content;
+      }
     },
   },
 });
