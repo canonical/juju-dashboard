@@ -19,6 +19,7 @@ import usePortal from "react-useportal";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import SecretForm from "components/secrets/SecretForm";
+import SecretLabel from "components/secrets/SecretLabel";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
 import { useListSecrets } from "juju/apiHooks";
 import { actions as jujuActions } from "store/juju";
@@ -96,19 +97,8 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
   } else {
     const secretLinks: MenuLink<ButtonProps> | undefined =
       secrets?.map<ButtonProps>((secret) => {
-        const id = secret.uri.replace(/^secret:/, "");
         return {
-          children: (
-            <>
-              {secret.label ? (
-                <>
-                  {secret.label} <span className="u-text--muted">({id})</span>
-                </>
-              ) : (
-                id
-              )}
-            </>
-          ),
+          children: <SecretLabel secret={secret} />,
           onClick: () => setValue(secret.uri),
         };
       });
