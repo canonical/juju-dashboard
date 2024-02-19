@@ -221,12 +221,19 @@ const WebCLI = ({
       setHistoryPosition(0);
     }
 
-    connection.current?.send(
-      JSON.stringify({
-        ...authentication,
-        commands: [command],
-      }),
-    );
+    if (connection.current?.isOpen()) {
+      connection.current?.send(
+        JSON.stringify({
+          ...authentication,
+          commands: [command],
+        }),
+      );
+    } else {
+      setInlineError(
+        InlineErrors.CONNECTION,
+        "Websocket connection is not open.",
+      );
+    }
     sendAnalytics({
       category: "User",
       action: "WebCLI command sent",
