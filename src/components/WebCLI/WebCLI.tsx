@@ -155,13 +155,15 @@ const WebCLI = ({
 
   useEffect(
     () => () => {
-      // Cleanup gets triggered twice in development due to React.StrictMode.
-      // As it gets triggered in rapid successions, it closes the previous
-      // websocket connection while it is in CONNECTING state. This triggers
-      // an error in the closed websocket connection, which subsequently
-      // displays an error in the WebCLI. To fix this issue, in development, we
-      // only close websocket connections in OPEN state here. In production, as
-      // the cleanup runs only once, we close the last connection here.
+      // Cleanup gets triggered twice in development environment due to
+      // React's StrictMode. As it gets triggered in rapid successions, it
+      // closes the previous WebSocket connection while it is in CONNECTING
+      // state. This triggers an error in the closed WebSocket connection, which
+      // subsequently displays an error message in the WebCLI. To fix this
+      // issue, in development environment we only close the WebSocket
+      // connection if it is in OPEN state. In production environment, as the
+      // cleanup runs only once, we just close the last connection, even if it
+      // is in OPEN state.
       if (
         process.env.NODE_ENV !== "development" ||
         connection.current?.isOpen()
