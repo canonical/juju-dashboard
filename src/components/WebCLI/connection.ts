@@ -47,7 +47,12 @@ class Connection {
   }
 
   disconnect() {
-    this.#ws?.close();
+    if (
+      this.#ws?.readyState === WebSocket.CONNECTING ||
+      this.#ws?.readyState === WebSocket.OPEN
+    ) {
+      this.#ws.close();
+    }
     if (this.#timeout) {
       clearTimeout(this.#timeout);
     }
