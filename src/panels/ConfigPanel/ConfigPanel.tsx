@@ -367,14 +367,13 @@ export default function ConfigPanel(): JSX.Element {
                 setConfirmType(null);
                 // Clear the form errors if there were any from a previous submit.
                 setInlineError(InlineErrors.FORM, null);
-                if (!appName) {
+                if (!appName || !requiredGrants) {
+                  // It is not possible to get to this point if these
+                  // variables aren't set.
                   return;
                 }
                 void (async () => {
                   try {
-                    if (!requiredGrants) {
-                      return;
-                    }
                     for (const secretURI of requiredGrants) {
                       await grantSecret(secretURI, [appName]);
                     }
