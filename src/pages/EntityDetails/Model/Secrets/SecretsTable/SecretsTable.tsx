@@ -28,6 +28,8 @@ import { useAppSelector } from "store/store";
 
 import SecretContent from "../SecretContent";
 
+import "./_secrets-table.scss";
+
 export enum Label {
   ACTION_MENU = "Action menu",
   COPY = "Copy",
@@ -92,12 +94,12 @@ const SecretsTable = () => {
         id: (
           <div className="u-flex u-flex--gap-small">
             <TruncatedTooltip
-              wrapperClassName="u-flex-shrink u-truncate"
+              wrapperClassName="u-flex-shrink u-truncate u-hide--small"
               message={id}
             >
               {id}
             </TruncatedTooltip>
-            <div className="has-hover__hover-state">
+            <div className="has-hover__hover-state u-show--small">
               <Tooltip message="Copy secret URI">
                 <Button
                   appearance="base"
@@ -203,7 +205,7 @@ const SecretsTable = () => {
       ) : (
         <ModularTable
           data-testid={TestId.SECRETS_TABLE}
-          className="audit-logs-table"
+          className="secrets-table"
           columns={columnData}
           data={tableData}
           emptyMsg="There are no secrets for this model."
