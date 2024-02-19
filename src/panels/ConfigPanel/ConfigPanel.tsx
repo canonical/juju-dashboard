@@ -89,12 +89,14 @@ const getRequiredGrants = (
   secrets?: ListSecretResult[] | null,
 ) => {
   const secretURIs = Object.values(config).reduce<string[]>((uris, entry) => {
-    const value = entry.newValue ?? entry.value;
+    const value = entry.newValue;
     if (
       value &&
       typeof value === "string" &&
       (entry.type === "secret" ||
-        (entry.type === "string" && value.startsWith("secret:")))
+        (entry.type === "string" && value.startsWith("secret:"))) &&
+      // The same secret could be used in multiple fields so only include it once:
+      !uris.includes(value)
     ) {
       uris.push(value);
     }
@@ -102,11 +104,15 @@ const getRequiredGrants = (
   }, []);
   return secrets
     ? secretURIs?.filter((secretURI) => {
-        const secret = secrets.find(({ uri }) => uri === secretURI);
+        const secret = secrets.find(
+          ({ uri, "owner-tag": ownerTag }) =>
+            // Can't grant application owned secrets so ignore them.
+            uri === secretURI && !ownerTag.startsWith("application-"),
+        );
         const access = secret?.access?.find(
           (accessInfo) => accessInfo["target-tag"] === `application-${appName}`,
         );
-        return !access;
+        return !!secret && !access;
       })
     : null;
 };

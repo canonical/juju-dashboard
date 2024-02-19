@@ -755,6 +755,100 @@ describe("ConfigPanel", () => {
     expect(window.location.search).toBe("");
   });
 
+  it("does not grant the same secret more than once", async () => {
+    const grantSecret = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({ results: [] }));
+    jest
+      .spyOn(apiHooks, "useGrantSecret")
+      .mockImplementation(() => grantSecret);
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({ access: [], uri: "secret:aabbccdd" }),
+          listSecretResultFactory.build({ access: [], uri: "secret:eeffgghh" }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(<ConfigPanel />, { state, path, url });
+    expect(window.location.search).toBe(`?${params.toString()}`);
+    await userEvent.type(
+      within(await screen.findByTestId("email")).getByRole("textbox"),
+      "secret:aabbccdd",
+    );
+    await userEvent.type(
+      within(await screen.findByTestId("name")).getByRole("textbox"),
+      "secret:aabbccdd",
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.GRANT_CONFIRM_BUTTON }),
+    );
+    expect(
+      screen.queryByRole("dialog", {
+        name: Label.GRANT_CONFIRM,
+      }),
+    ).not.toBeInTheDocument();
+    expect(grantSecret).toHaveBeenCalledTimes(1);
+    expect(grantSecret).toHaveBeenCalledWith("secret:aabbccdd", ["easyrsa"]);
+    expect(window.location.search).toBe("");
+  });
+
+  it("does not grant app-owned secrets", async () => {
+    const grantSecret = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve({ results: [] }));
+    jest
+      .spyOn(apiHooks, "useGrantSecret")
+      .mockImplementation(() => grantSecret);
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({
+            access: [],
+            uri: "secret:aabbccdd",
+            "owner-tag": "application-etcd",
+          }),
+          listSecretResultFactory.build({ access: [], uri: "secret:eeffgghh" }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(<ConfigPanel />, { state, path, url });
+    expect(window.location.search).toBe(`?${params.toString()}`);
+    await userEvent.type(
+      within(await screen.findByTestId("email")).getByRole("textbox"),
+      "secret:aabbccdd",
+    );
+    await userEvent.type(
+      within(await screen.findByTestId("name")).getByRole("textbox"),
+      "secret:eeffgghh",
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.GRANT_CONFIRM_BUTTON }),
+    );
+    expect(
+      screen.queryByRole("dialog", {
+        name: Label.GRANT_CONFIRM,
+      }),
+    ).not.toBeInTheDocument();
+    expect(grantSecret).toHaveBeenCalledTimes(1);
+    expect(grantSecret).toHaveBeenCalledWith("secret:eeffgghh", ["easyrsa"]);
+    expect(window.location.search).toBe("");
+  });
+
   it("can handle errors when granting secrets", async () => {
     const grantSecret = jest
       .fn()
