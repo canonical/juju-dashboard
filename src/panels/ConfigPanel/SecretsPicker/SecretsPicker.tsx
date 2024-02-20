@@ -32,6 +32,7 @@ import {
   getSecretsLoaded,
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { secretIsAppOwned } from "utils";
 
 export enum Label {
   BUTTON_ADD = "Add a secret...",
@@ -95,13 +96,17 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
   } else if (!canManageSecrets && !secrets?.length) {
     dropdownContent = Label.NONE;
   } else {
-    const secretLinks: MenuLink<ButtonProps> | undefined =
-      secrets?.map<ButtonProps>((secret) => {
-        return {
+    const secretLinks: MenuLink<ButtonProps> | undefined = secrets?.reduce<
+      ButtonProps[]
+    >((links, secret) => {
+      if (!secretIsAppOwned(secret)) {
+        links.push({
           children: <SecretLabel secret={secret} />,
           onClick: () => setValue(secret.uri),
-        };
-      });
+        });
+      }
+      return links;
+    }, []);
     if (canManageSecrets) {
       const addButton: MenuLink<ButtonProps> = {
         children: Label.BUTTON_ADD,
