@@ -28,10 +28,6 @@ class Connection {
     return this.#address;
   }
 
-  get websocket() {
-    return this.#ws;
-  }
-
   connect() {
     const ws = new WebSocket(this.#address);
     ws.onopen = this.#wsOnOpen;
@@ -47,11 +43,8 @@ class Connection {
   }
 
   disconnect() {
-    if (
-      this.#ws?.readyState === WebSocket.CONNECTING ||
-      this.#ws?.readyState === WebSocket.OPEN
-    ) {
-      this.#ws.close();
+    if (this.isActive()) {
+      this.#ws?.close();
     }
     if (this.#timeout) {
       clearTimeout(this.#timeout);
@@ -60,6 +53,17 @@ class Connection {
 
   isOpen() {
     return this.#ws?.readyState === WebSocket.OPEN;
+  }
+
+  isActive() {
+    return (
+      this.#ws?.readyState === WebSocket.CONNECTING ||
+      this.#ws?.readyState === WebSocket.OPEN
+    );
+  }
+
+  isWebSocketEqual(newConnection: Connection) {
+    return this.#ws === newConnection.#ws;
   }
 
   #handleMessage(messageEvent: MessageEvent) {

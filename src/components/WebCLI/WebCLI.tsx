@@ -124,52 +124,40 @@ const WebCLI = ({
       return;
     }
     setInlineError(InlineErrors.CONNECTION, null);
+    // If we have an active WebSocket connection then don't create a new one.
+    if (connection.current?.isActive()) {
+      return;
+    }
     const conn = new Connection({
       address: wsAddress,
       onopen: () => {
-        // Close this websocket connection if it was in CONNECTING state
-        // while a new websocket connection was established.
-        if (conn.websocket !== connection.current?.websocket) {
-          conn.disconnect();
-        }
+        // Unused handler.
       },
       onclose: () => {
         // Unused handler.
       },
       onerror: (error) => {
-        setInlineError(
-          InlineErrors.CONNECTION,
-          typeof error === "string" ? error : "Unknown error.",
-        );
+        // Only display errors if they're related to the current WebSocket
+        // connection.
+        if (connection.current?.isWebSocketEqual(conn)) {
+          setInlineError(
+            InlineErrors.CONNECTION,
+            typeof error === "string" ? error : "Unknown error.",
+          );
+        }
       },
       messageCallback: (message: string) => {
         wsMessageStore.current = wsMessageStore.current + message;
         setOutput(wsMessageStore.current);
       },
     }).connect();
-    if (connection.current?.isOpen()) {
-      connection.current?.disconnect();
-    }
+    connection.current?.disconnect();
     connection.current = conn;
   }, [setInlineError, wsAddress]);
 
   useEffect(
     () => () => {
-      // Cleanup gets triggered twice in development environment due to
-      // React's StrictMode. As it gets triggered in rapid successions, it
-      // closes the previous WebSocket connection while it is in CONNECTING
-      // state. This triggers an error in the closed WebSocket connection, which
-      // subsequently displays an error message in the WebCLI. To fix this
-      // issue, in development environment we only close the WebSocket
-      // connection if it is in OPEN state. In production environment, as the
-      // cleanup runs only once, we just close the last connection, even if it
-      // is in OPEN state.
-      if (
-        process.env.NODE_ENV !== "development" ||
-        connection.current?.isOpen()
-      ) {
-        connection.current?.disconnect();
-      }
+      connection.current?.disconnect();
     },
     [],
   );
@@ -233,7 +221,7 @@ const WebCLI = ({
     } else {
       setInlineError(
         InlineErrors.CONNECTION,
-        "Websocket connection is not open.",
+        "WebSocket connection is not open.",
       );
     }
     sendAnalytics({
