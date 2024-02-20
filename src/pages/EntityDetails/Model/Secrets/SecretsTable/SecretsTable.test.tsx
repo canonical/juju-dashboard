@@ -234,6 +234,29 @@ describe("SecretsTable", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("does not display the action menu if secrets are owned by apps", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({
+            uri: "secret:aabbccdd",
+            "owner-tag": "application-etcd",
+          }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(<SecretsTable />, { state, path, url });
+    expect(
+      screen.queryByRole("button", { name: Label.ACTION_MENU }),
+    ).not.toBeInTheDocument();
+    expect(
+      document.querySelector(
+        "tr:last-child td:last-child .p-icon--information",
+      ),
+    ).toBeInTheDocument();
+  });
+
   it("can display the remove secret panel", async () => {
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({

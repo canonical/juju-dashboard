@@ -165,6 +165,38 @@ describe("SecretsPicker", () => {
     ).toBeInTheDocument();
   });
 
+  it("does not include app-owned secrets in the list", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({
+            label: "secret1",
+            uri: "secret:aabbccdd",
+          }),
+          listSecretResultFactory.build({
+            uri: "secret:eeffgghh",
+            "owner-tag": "application-etcd",
+          }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+      state,
+      url,
+      path,
+    });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
+    );
+    expect(
+      screen.getByRole("button", { name: "secret1 (aabbccdd)" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "eeffgghh" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("can set the secret value", async () => {
     const setValue = jest.fn();
     renderComponent(<SecretsPicker setValue={setValue} />, {

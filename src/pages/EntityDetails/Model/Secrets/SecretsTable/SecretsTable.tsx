@@ -25,6 +25,7 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { secretIsAppOwned } from "utils";
 
 import SecretContent from "../SecretContent";
 
@@ -80,10 +81,45 @@ const SecretsTable = () => {
         );
       }
       let granted = secret.access?.length ?? 0;
-      if (secret["owner-tag"]?.startsWith("application-")) {
+      if (secretIsAppOwned(secret)) {
         // If the secret is owned by an application then include it in the
         // count of apps with access to the secret.
         granted += 1;
+      }
+      let actions = null;
+      if (secretIsAppOwned(secret)) {
+        actions = (
+          <Tooltip message="This secret can only be modified by the application.">
+            <Icon name="information" />
+          </Tooltip>
+        );
+      } else if (canManageSecrets) {
+        actions = (
+          <ContextualMenu
+            links={[
+              {
+                children: Label.UPDATE_BUTTON,
+                onClick: () =>
+                  setQuery({ panel: "update-secret", secret: secret.uri }),
+              },
+              {
+                children: Label.GRANT_BUTTON,
+                onClick: () =>
+                  setQuery({ panel: "grant-secret", secret: secret.uri }),
+              },
+              {
+                children: Label.REMOVE_BUTTON,
+                onClick: () =>
+                  setQuery({ panel: "remove-secret", secret: secret.uri }),
+              },
+            ]}
+            position="right"
+            scrollOverflow
+            toggleAppearance="base"
+            toggleClassName="has-icon u-no-margin--bottom is-small"
+            toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
+          />
+        );
       }
       return {
         name: (
@@ -122,32 +158,7 @@ const SecretsTable = () => {
         owner,
         created: <RelativeDate datetime={secret["create-time"]} />,
         updated: <RelativeDate datetime={secret["update-time"]} />,
-        actions: canManageSecrets ? (
-          <ContextualMenu
-            links={[
-              {
-                children: Label.UPDATE_BUTTON,
-                onClick: () =>
-                  setQuery({ panel: "update-secret", secret: secret.uri }),
-              },
-              {
-                children: Label.GRANT_BUTTON,
-                onClick: () =>
-                  setQuery({ panel: "grant-secret", secret: secret.uri }),
-              },
-              {
-                children: Label.REMOVE_BUTTON,
-                onClick: () =>
-                  setQuery({ panel: "remove-secret", secret: secret.uri }),
-              },
-            ]}
-            position="right"
-            scrollOverflow
-            toggleAppearance="base"
-            toggleClassName="has-icon u-no-margin--bottom is-small"
-            toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
-          />
-        ) : null,
+        actions,
       };
     });
   }, [canManageSecrets, modelUUID, secrets, setQuery]);

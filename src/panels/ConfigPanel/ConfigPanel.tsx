@@ -33,6 +33,7 @@ import boxImage from "static/images/no-config-params.svg";
 import { actions as jujuActions } from "store/juju";
 import { getModelSecrets, getModelByUUID } from "store/juju/selectors";
 import { useAppStore, useAppSelector, useAppDispatch } from "store/store";
+import { secretIsAppOwned } from "utils";
 
 import BooleanConfig from "./BooleanConfig";
 import type { SetNewValue, SetSelectedConfig } from "./ConfigField";
@@ -105,9 +106,9 @@ const getRequiredGrants = (
   return secrets
     ? secretURIs?.filter((secretURI) => {
         const secret = secrets.find(
-          ({ uri, "owner-tag": ownerTag }) =>
+          (secretItem) =>
             // Can't grant application owned secrets so ignore them.
-            uri === secretURI && !ownerTag.startsWith("application-"),
+            secretItem.uri === secretURI && !secretIsAppOwned(secretItem),
         );
         const access = secret?.access?.find(
           (accessInfo) => accessInfo["target-tag"] === `application-${appName}`,
