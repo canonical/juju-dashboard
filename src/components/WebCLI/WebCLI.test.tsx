@@ -21,28 +21,38 @@ jest.mock("juju/bakery", () => ({
 
 describe("WebCLI", () => {
   let bakerySpy: jest.SpyInstance;
+  let server: WS;
   const props = {
-    controllerWSHost: "jimm.jujucharms.com:443",
+    controllerWSHost: "localhost:1234",
     modelUUID: "abc123",
-    credentials: null,
+    credentials: {
+      user: "eggman@external",
+      password: "somelongpassword",
+    },
   };
 
   beforeEach(() => {
     bakerySpy = jest.spyOn(bakery.storage, "get");
+    server = new WS("wss://localhost:1234/model/abc123/commands", {
+      jsonProtocol: true,
+    });
   });
 
   afterEach(() => {
     bakerySpy.mockClear();
     localStorage.clear();
+    WS.clean();
   });
 
   it("renders correctly", async () => {
     const { result } = renderComponent(<WebCLI {...props} />);
+    await server.connected;
     expect(result.container).toMatchSnapshot();
   });
 
   it("shows the help in the output when the ? is clicked", async () => {
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     await userEvent.click(screen.getByRole("button"));
     expect(
       document.querySelector(".webcli__output-content code"),
@@ -53,6 +63,7 @@ describe("WebCLI", () => {
 
   it("shows the help when there is no output", async () => {
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     expect(
       document.querySelector(".webcli__output-content code"),
     ).toHaveTextContent(
@@ -61,29 +72,15 @@ describe("WebCLI", () => {
   });
 
   it("trims the command being submitted", async () => {
-    const server = new WS("ws://localhost:1234/model/abc123/commands", {
-      jsonProtocol: true,
-    });
-    renderComponent(
-      <WebCLI
-        protocol="ws"
-        controllerWSHost="localhost:1234"
-        modelUUID="abc123"
-        credentials={{
-          user: "spaceman",
-          password: "somelongpassword",
-        }}
-      />,
-    );
+    renderComponent(<WebCLI {...props} />);
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "      status       {enter}");
     await expect(server).toReceiveMessage({
-      user: "spaceman",
+      user: "eggman@external",
       credentials: "somelongpassword",
       commands: ["status"],
     });
-    WS.clean();
   });
 
   it("navigate back through the history", async () => {
@@ -92,6 +89,7 @@ describe("WebCLI", () => {
       JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}");
     expect(input).toHaveValue("help");
@@ -103,6 +101,7 @@ describe("WebCLI", () => {
       JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}{arrowup}");
     expect(input).toHaveValue("status");
@@ -116,6 +115,7 @@ describe("WebCLI", () => {
       JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}");
     expect(input).toHaveValue("help");
@@ -129,6 +129,7 @@ describe("WebCLI", () => {
       JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}{arrowup}{arrowup}");
     expect(input).toHaveValue("status");
@@ -138,20 +139,8 @@ describe("WebCLI", () => {
     const items = [...Array(MAX_HISTORY).keys()].map((_, i) => `command-${i}`);
     localStorage.setItem("cliHistory", JSON.stringify(items));
     // ..until it receives a 'done' message.
-    new WS("ws://localhost:1234/model/abc123/commands", {
-      jsonProtocol: true,
-    });
-    renderComponent(
-      <WebCLI
-        protocol="ws"
-        controllerWSHost="localhost:1234"
-        modelUUID="abc123"
-        credentials={{
-          user: "spaceman",
-          password: "somelongpassword",
-        }}
-      />,
-    );
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     let history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
     expect(history).toHaveLength(MAX_HISTORY);
@@ -161,7 +150,6 @@ describe("WebCLI", () => {
     expect(history).toHaveLength(MAX_HISTORY);
     // The first item should be now be the old second item.
     expect(history[0]).toBe("command-1");
-    WS.clean();
   });
 
   it("supports macaroon based authentication", async () => {
@@ -171,7 +159,7 @@ describe("WebCLI", () => {
           controllerAPIEndpoint: "ws://localhost:1234/api",
         }),
         controllerConnections: {
-          "ws://localhost:1234/api": {
+          "wss://localhost:1234/api": {
             user: {
               "display-name": "eggman",
               identity: "user-eggman@external",
@@ -184,23 +172,12 @@ describe("WebCLI", () => {
     });
     bakerySpy.mockImplementation((key) => {
       const macaroons: Record<string, string> = {
-        "ws://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=",
+        "wss://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=",
       };
       return macaroons[key];
     });
 
-    const server = new WS("ws://localhost:1234/model/abc123/commands", {
-      jsonProtocol: true,
-    });
-    renderComponent(
-      <WebCLI
-        protocol="ws"
-        controllerWSHost="localhost:1234"
-        modelUUID="abc123"
-        credentials={null}
-      />,
-      { state },
-    );
+    renderComponent(<WebCLI {...props} credentials={null} />, { state });
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "      status       {enter}");
@@ -209,239 +186,177 @@ describe("WebCLI", () => {
       macaroons: [["mac", "aroon"]],
       commands: ["status"],
     });
-    WS.clean();
   });
 
-  describe("WebCLI Output", () => {
-    it("displays messages received over the websocket", async () => {
-      // ..until it receives a 'done' message.
-      const server = new WS("ws://localhost:1234/model/abc123/commands", {
-        jsonProtocol: true,
-      });
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={{
-            user: "eggman@external",
-            password: "somelongpassword",
-          }}
-        />,
-      );
-      await server.connected;
-      const input = screen.getByRole("textbox");
-      await userEvent.type(input, "status --color{enter}");
-      await expect(server).toReceiveMessage({
-        user: "eggman@external",
-        credentials: "somelongpassword",
-        commands: ["status --color"],
-      });
-
-      const messages = [
-        {
-          output: [
-            "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
-          ],
-        },
-        {
-          output: [
-            "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
-          ],
-        },
-        { output: [""] },
-        {
-          output: [
-            "Machine  State    DNS             Inst id        Series  AZ          Message",
-          ],
-        },
-        {
-          output: [
-            "0        started  35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
-          ],
-        },
-        { output: [""] },
-        { done: true },
-      ];
-
-      messages.forEach((message) => {
-        server.send(message);
-      });
-
-      const code = await screen.findByTestId(TestId.CODE);
-      expect(code?.textContent).toMatchSnapshot();
-      // Wait for the setTimeout that buffers the message updates in connection.js.
-      await waitFor(() => {
-        expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
-          "style",
-          "height: 300px;",
-        );
-      });
-      WS.clean();
+  it("displays messages received over the websocket", async () => {
+    // ..until it receives a 'done' message.
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage({
+      user: "eggman@external",
+      credentials: "somelongpassword",
+      commands: ["status --color"],
     });
 
-    it("displays ansi colored content colored", async () => {
-      // ..until it receives a 'done' message.
-      const server = new WS("ws://localhost:1234/model/abc123/commands", {
-        jsonProtocol: true,
-      });
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={{
-            user: "spaceman",
-            password: "somelongpassword",
-          }}
-        />,
-      );
-      await server.connected;
-      const input = screen.getByRole("textbox");
-      await userEvent.type(input, "status --color{enter}");
-      await expect(server).toReceiveMessage({
-        user: "spaceman",
-        credentials: "somelongpassword",
-        commands: ["status --color"],
-      });
+    const messages = [
+      {
+        output: [
+          "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
+        ],
+      },
+      {
+        output: [
+          "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
+        ],
+      },
+      { output: [""] },
+      {
+        output: [
+          "Machine  State    DNS             Inst id        Series  AZ          Message",
+        ],
+      },
+      {
+        output: [
+          "0        started  35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
+        ],
+      },
+      { output: [""] },
+      { done: true },
+    ];
 
-      const messages = [
-        {
-          output: [
-            "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
-          ],
-        },
-        {
-          output: [
-            "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
-          ],
-        },
-        { output: [""] },
-        {
-          output: [
-            "Machine  State    DNS             Inst id        Series  AZ          Message",
-          ],
-        },
-        {
-          output: [
-            "0        \u001b[32mstarted  \u001b[0m35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
-          ],
-        },
-        { output: [""] },
-        { done: true },
-      ];
-
-      messages.forEach((message) => {
-        server.send(message);
-      });
-
-      const code = await screen.findByTestId(TestId.CODE);
-      expect(code?.textContent).toMatchSnapshot();
-      // Wait for the setTimeout that buffers the message updates in connection.js.
-      await waitFor(() => {
-        expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
-          "style",
-          "height: 300px;",
-        );
-      });
-      WS.clean();
+    messages.forEach((message) => {
+      server.send(message);
     });
 
-    it("can be resized with a mouse", async () => {
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={{
-            user: "spaceman",
-            password: "somelongpassword",
-          }}
-        />,
-      );
-      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+    const code = await screen.findByTestId(TestId.CODE);
+    expect(code?.textContent).toMatchSnapshot();
+    // Wait for the setTimeout that buffers the message updates in connection.js.
+    await waitFor(() => {
+      expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
         "style",
-        "height: 1px;",
+        "height: 300px;",
       );
-      const handle = document.querySelector(".webcli__output-handle");
-      expect(handle).toBeTruthy();
-      if (handle) {
-        fireEvent.mouseDown(handle);
-        fireEvent.mouseMove(handle, {
-          clientY: 100,
-        });
-      }
-      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
-        "style",
-        "height: 628px;",
-      );
-      WS.clean();
+    });
+  });
+
+  it("displays ansi colored content colored", async () => {
+    // ..until it receives a 'done' message.
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage({
+      user: "eggman@external",
+      credentials: "somelongpassword",
+      commands: ["status --color"],
     });
 
-    it("can be resized on mobile", async () => {
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={{
-            user: "spaceman",
-            password: "somelongpassword",
-          }}
-        />,
-      );
-      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
-        "style",
-        "height: 1px;",
-      );
-      const handle = document.querySelector(".webcli__output-handle");
-      expect(handle).toBeTruthy();
-      if (handle) {
-        fireEvent.touchStart(handle);
-        fireEvent.touchMove(handle, {
-          touches: [
-            {
-              clientY: 100,
-            },
-          ],
-        });
-      }
-      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
-        "style",
-        "height: 628px;",
-      );
-      WS.clean();
+    const messages = [
+      {
+        output: [
+          "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
+        ],
+      },
+      {
+        output: [
+          "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
+        ],
+      },
+      { output: [""] },
+      {
+        output: [
+          "Machine  State    DNS             Inst id        Series  AZ          Message",
+        ],
+      },
+      {
+        output: [
+          "0        \u001b[32mstarted  \u001b[0m35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
+        ],
+      },
+      { output: [""] },
+      { done: true },
+    ];
+
+    messages.forEach((message) => {
+      server.send(message);
     });
 
-    it("should display connection error when no websocket address is present", () => {
-      renderComponent(<WebCLI {...props} modelUUID="" />);
-      expect(
-        document.querySelector(".webcli__output-content code"),
-      ).toHaveTextContent(`ERROR: ${Label.CONNECTION_ERROR}`);
+    const code = await screen.findByTestId(TestId.CODE);
+    expect(code?.textContent).toMatchSnapshot();
+    // Wait for the setTimeout that buffers the message updates in connection.js.
+    await waitFor(() => {
+      expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+        "style",
+        "height: 300px;",
+      );
     });
+  });
 
-    it("should display authentication error when no credentials and macaroons are available", async () => {
-      bakerySpy.mockImplementation(() => null);
-
-      const server = new WS("ws://localhost:1234/model/abc123/commands", {
-        jsonProtocol: true,
+  it("can be resized with a mouse", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      "height: 1px;",
+    );
+    const handle = document.querySelector(".webcli__output-handle");
+    expect(handle).toBeTruthy();
+    if (handle) {
+      fireEvent.mouseDown(handle);
+      fireEvent.mouseMove(handle, {
+        clientY: 100,
       });
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={null}
-        />,
-      );
-      await server.connected;
-      const input = screen.getByRole("textbox");
-      await userEvent.type(input, "status{enter}");
-      await expect(server).toReceiveMessage({ commands: ["status"] });
-      expect(
-        document.querySelector(".webcli__output-content code"),
-      ).toHaveTextContent(`ERROR: ${Label.AUTHENTICATION_ERROR}`);
-      WS.clean();
-    });
+    }
+    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      "height: 628px;",
+    );
+  });
+
+  it("can be resized on mobile", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      "height: 1px;",
+    );
+    const handle = document.querySelector(".webcli__output-handle");
+    expect(handle).toBeTruthy();
+    if (handle) {
+      fireEvent.touchStart(handle);
+      fireEvent.touchMove(handle, {
+        touches: [
+          {
+            clientY: 100,
+          },
+        ],
+      });
+    }
+    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      "height: 628px;",
+    );
+  });
+
+  it("should display connection error when no websocket address is present", () => {
+    renderComponent(<WebCLI {...props} modelUUID="" />);
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${Label.CONNECTION_ERROR}`);
+  });
+
+  it("should display authentication error when no credentials and macaroons are available", async () => {
+    bakerySpy.mockImplementation(() => null);
+
+    renderComponent(<WebCLI {...props} credentials={null} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status{enter}");
+    await expect(server).toReceiveMessage({ commands: ["status"] });
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${Label.AUTHENTICATION_ERROR}`);
   });
 });
