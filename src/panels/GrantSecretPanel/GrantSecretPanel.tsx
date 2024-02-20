@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import FormikField from "components/FormikField";
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import SecretLabel from "components/secrets/SecretLabel";
 import { useListSecrets, useGrantSecret, useRevokeSecret } from "juju/apiHooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
@@ -143,6 +144,9 @@ const GrantSecretPanel = () => {
               <Form id={formId}>
                 {modelApps.length > 0 ? (
                   <>
+                    <h5>
+                      Secret: <SecretLabel secret={secret} />
+                    </h5>
                     <p>
                       Grant applications access to view the value of this
                       secret. Deselected applications will have their access

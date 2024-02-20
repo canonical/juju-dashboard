@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
+import SecretLabel from "components/secrets/SecretLabel";
 import { useRemoveSecrets, useListSecrets } from "juju/apiHooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
@@ -130,6 +131,9 @@ const RemoveSecretPanel = () => {
               }}
             >
               <Form id={formId}>
+                <h5>
+                  Secret: <SecretLabel secret={secret} />
+                </h5>
                 <Fields
                   handleRemoveSecret={handleRemoveSecret}
                   hideConfirm={() => setShowConfirm(false)}
