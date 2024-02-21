@@ -21,6 +21,7 @@ export enum Label {
   CONNECTION_ERROR = "Unable to connect to the model.",
   AUTHENTICATION_ERROR = "Unable to authenticate.",
   NOT_OPEN_ERROR = "WebSocket connection is not open.",
+  UNKNOWN_ERROR = "Unknown error.",
 }
 
 enum InlineErrors {
@@ -143,7 +144,7 @@ const WebCLI = ({
         if (connection.current?.isWebSocketEqual(conn)) {
           setInlineError(
             InlineErrors.CONNECTION,
-            typeof error === "string" ? error : "Unknown error.",
+            typeof error === "string" ? error : Label.UNKNOWN_ERROR,
           );
         }
       },

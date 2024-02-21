@@ -424,7 +424,6 @@ describe("WebCLI", () => {
   });
 
   it("should display error when connecting to sub controller of JAAS", async () => {
-    const clearTimeoutSpy = jest.spyOn(window, "clearTimeout");
     renderComponent(<WebCLI {...props} />);
     await server.connected;
     const input = screen.getByRole("textbox");
@@ -436,12 +435,12 @@ describe("WebCLI", () => {
         commands: ["status --color"],
       }),
     );
-    server.send(JSON.stringify({ "redirect-to": "jaas-sub-controller" }));
-    // Check that previous websocket was disconnected.
-    expect(clearTimeoutSpy).toHaveBeenCalled();
-    WS.clean();
-    server = new WS("url-for-jaas-sub-controller");
-    server.error();
+    new WS("invalid-url-for-jaas-sub-controller");
+    server.send(
+      JSON.stringify({ "redirect-to": "invalid-url-for-jaas-sub-controller" }),
+    );
+    await server.closed;
+    // Trying to connect to WebSocket with invalid URL spits up error.
     expect(
       document.querySelector(".webcli__output-content code"),
     ).toHaveTextContent(`ERROR: ${ConnectionLabel.JAAS_CONNECTION_ERROR}`);
@@ -464,11 +463,17 @@ describe("WebCLI", () => {
         output: "not-an-array",
       }),
     );
-    WS.clean();
-    server = new WS("url-for-jaas-sub-controller");
-    server.error();
     expect(
       document.querySelector(".webcli__output-content code"),
     ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
+  });
+
+  it("should display unknown errors", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    server.error();
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${WebCLILabel.UNKNOWN_ERROR}`);
   });
 });
