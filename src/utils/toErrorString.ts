@@ -1,3 +1,7 @@
+export enum Label {
+  UNKNOWN_ERROR = "Unknown error",
+}
+
 const toErrorString = (error: unknown) => {
   if (error instanceof Error) {
     return error.message;
@@ -5,7 +9,7 @@ const toErrorString = (error: unknown) => {
   if (typeof error === "string") {
     return error;
   }
-  return "Unknown error";
+  return Label.UNKNOWN_ERROR;
 };
 
 export default toErrorString;
