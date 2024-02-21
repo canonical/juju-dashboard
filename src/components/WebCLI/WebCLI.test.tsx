@@ -476,4 +476,15 @@ describe("WebCLI", () => {
       document.querySelector(".webcli__output-content code"),
     ).toHaveTextContent(`ERROR: ${WebCLILabel.UNKNOWN_ERROR}`);
   });
+
+  it("should display error when trying to send message over an unopened connection", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    server.close();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${WebCLILabel.NOT_OPEN_ERROR}`);
+  });
 });
