@@ -20,6 +20,7 @@ import "./_webcli.scss";
 export enum Label {
   CONNECTION_ERROR = "Unable to connect to the model.",
   AUTHENTICATION_ERROR = "Unable to authenticate.",
+  NOT_OPEN_ERROR = "WebSocket connection is not open.",
 }
 
 enum InlineErrors {
@@ -219,10 +220,7 @@ const WebCLI = ({
         }),
       );
     } else {
-      setInlineError(
-        InlineErrors.CONNECTION,
-        "WebSocket connection is not open.",
-      );
+      setInlineError(InlineErrors.CONNECTION, Label.NOT_OPEN_ERROR);
     }
     sendAnalytics({
       category: "User",

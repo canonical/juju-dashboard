@@ -424,6 +424,7 @@ describe("WebCLI", () => {
   });
 
   it("should display error when connecting to sub controller of JAAS", async () => {
+    const clearTimeoutSpy = jest.spyOn(window, "clearTimeout");
     renderComponent(<WebCLI {...props} />);
     await server.connected;
     const input = screen.getByRole("textbox");
@@ -436,6 +437,8 @@ describe("WebCLI", () => {
       }),
     );
     server.send(JSON.stringify({ "redirect-to": "jaas-sub-controller" }));
+    // Check that previous websocket was disconnected.
+    expect(clearTimeoutSpy).toHaveBeenCalled();
     WS.clean();
     server = new WS("url-for-jaas-sub-controller");
     server.error();
