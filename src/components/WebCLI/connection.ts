@@ -1,3 +1,8 @@
+export enum Label {
+  INCORRECT_DATA_ERROR = "Invalid response from the server.",
+  JAAS_CONNECTION_ERROR = "Unable to connect to JAAS controller.",
+}
+
 type Options = {
   address: string;
   messageCallback: (message: string) => void;
@@ -56,10 +61,7 @@ class Connection {
   }
 
   isActive() {
-    return (
-      this.#ws?.readyState === WebSocket.CONNECTING ||
-      this.#ws?.readyState === WebSocket.OPEN
-    );
+    return this.#ws?.readyState === WebSocket.CONNECTING || this.isOpen();
   }
 
   isWebSocketEqual(newConnection: Connection) {
@@ -72,10 +74,10 @@ class Connection {
       try {
         data = JSON.parse(messageEvent.data);
       } catch (e) {
-        throw new Error("Incorrect data.");
+        throw new Error(Label.INCORRECT_DATA_ERROR);
       }
       if (!data || typeof data !== "object") {
-        throw new Error("Incorrect data.");
+        throw new Error(Label.INCORRECT_DATA_ERROR);
       }
       if (
         "redirect-to" in data &&
@@ -89,7 +91,7 @@ class Connection {
           this.#address = data["redirect-to"];
           this.connect();
         } catch (e) {
-          throw new Error("Unable to connect to JAAS controller.");
+          throw new Error(Label.JAAS_CONNECTION_ERROR);
         }
       }
       if ("done" in data && data.done) {
@@ -101,7 +103,7 @@ class Connection {
         return;
       }
       if (!Array.isArray(data.output)) {
-        throw new Error("Incorrect data.");
+        throw new Error(Label.INCORRECT_DATA_ERROR);
       }
       this.#pushToMessageBuffer(`\n${data.output[0]}`);
     } catch (error) {
