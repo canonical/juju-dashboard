@@ -73,7 +73,7 @@ class Connection {
       let data: unknown;
       try {
         data = JSON.parse(messageEvent.data);
-      } catch (e) {
+      } catch (error) {
         throw new Error(Label.INCORRECT_DATA_ERROR);
       }
       if (!data || typeof data !== "object") {
@@ -90,7 +90,7 @@ class Connection {
           this.disconnect();
           this.#address = data["redirect-to"];
           this.connect();
-        } catch (e) {
+        } catch (error) {
           throw new Error(Label.JAAS_CONNECTION_ERROR);
         }
       }

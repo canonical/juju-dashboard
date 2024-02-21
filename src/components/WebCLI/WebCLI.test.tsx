@@ -8,7 +8,8 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import { TestId } from "./Output";
-import WebCLI, { MAX_HISTORY, Label } from "./WebCLI";
+import WebCLI, { MAX_HISTORY, Label as WebCLILabel } from "./WebCLI";
+import { Label as ConnectionLabel } from "./connection";
 
 jest.mock("juju/bakery", () => ({
   __esModule: true,
@@ -33,9 +34,7 @@ describe("WebCLI", () => {
 
   beforeEach(() => {
     bakerySpy = jest.spyOn(bakery.storage, "get");
-    server = new WS("wss://localhost:1234/model/abc123/commands", {
-      jsonProtocol: true,
-    });
+    server = new WS("wss://localhost:1234/model/abc123/commands");
   });
 
   afterEach(() => {
@@ -76,11 +75,13 @@ describe("WebCLI", () => {
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "      status       {enter}");
-    await expect(server).toReceiveMessage({
-      user: "eggman@external",
-      credentials: "somelongpassword",
-      commands: ["status"],
-    });
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status"],
+      }),
+    );
   });
 
   it("navigate back through the history", async () => {
@@ -181,11 +182,13 @@ describe("WebCLI", () => {
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "      status       {enter}");
-    await expect(server).toReceiveMessage({
-      user: "eggman@external",
-      macaroons: [["mac", "aroon"]],
-      commands: ["status"],
-    });
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        macaroons: [["mac", "aroon"]],
+        commands: ["status"],
+      }),
+    );
   });
 
   it("displays messages received over the websocket", async () => {
@@ -194,11 +197,13 @@ describe("WebCLI", () => {
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "status --color{enter}");
-    await expect(server).toReceiveMessage({
-      user: "eggman@external",
-      credentials: "somelongpassword",
-      commands: ["status --color"],
-    });
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
 
     const messages = [
       {
@@ -227,7 +232,7 @@ describe("WebCLI", () => {
     ];
 
     messages.forEach((message) => {
-      server.send(message);
+      server.send(JSON.stringify(message));
     });
 
     const code = await screen.findByTestId(TestId.CODE);
@@ -247,11 +252,13 @@ describe("WebCLI", () => {
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "status --color{enter}");
-    await expect(server).toReceiveMessage({
-      user: "eggman@external",
-      credentials: "somelongpassword",
-      commands: ["status --color"],
-    });
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
 
     const messages = [
       {
@@ -280,7 +287,7 @@ describe("WebCLI", () => {
     ];
 
     messages.forEach((message) => {
-      server.send(message);
+      server.send(JSON.stringify(message));
     });
 
     const code = await screen.findByTestId(TestId.CODE);
@@ -344,7 +351,7 @@ describe("WebCLI", () => {
     renderComponent(<WebCLI {...props} modelUUID="" />);
     expect(
       document.querySelector(".webcli__output-content code"),
-    ).toHaveTextContent(`ERROR: ${Label.CONNECTION_ERROR}`);
+    ).toHaveTextContent(`ERROR: ${WebCLILabel.CONNECTION_ERROR}`);
   });
 
   it("should display authentication error when no credentials and macaroons are available", async () => {
@@ -354,9 +361,111 @@ describe("WebCLI", () => {
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "status{enter}");
-    await expect(server).toReceiveMessage({ commands: ["status"] });
+    await expect(server).toReceiveMessage(
+      JSON.stringify({ commands: ["status"] }),
+    );
     expect(
       document.querySelector(".webcli__output-content code"),
-    ).toHaveTextContent(`ERROR: ${Label.AUTHENTICATION_ERROR}`);
+    ).toHaveTextContent(`ERROR: ${WebCLILabel.AUTHENTICATION_ERROR}`);
+  });
+
+  it("should display error when JSON can't be parsed", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    server.send("[1, 2, 3, 4}");
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
+  });
+
+  it("should display error when received message is falsy", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    server.send(JSON.stringify(null));
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
+  });
+
+  it("should display error when received message is not an object", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    server.send(JSON.stringify("not an object"));
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
+  });
+
+  it("should display error when connecting to sub controller of JAAS", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    server.send(JSON.stringify({ "redirect-to": "jaas-sub-controller" }));
+    WS.clean();
+    server = new WS("url-for-jaas-sub-controller");
+    server.error();
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.JAAS_CONNECTION_ERROR}`);
+  });
+
+  it("should display error when received message output is not an array", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    server.send(
+      JSON.stringify({
+        output: "not-an-array",
+      }),
+    );
+    WS.clean();
+    server = new WS("url-for-jaas-sub-controller");
+    server.error();
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
   });
 });
