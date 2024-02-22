@@ -347,6 +347,29 @@ describe("WebCLI", () => {
     );
   });
 
+  it("clears the buffer timeout if there are pending updates when unmounting", async () => {
+    jest.useFakeTimers();
+    const clearTimeoutSpy = jest.spyOn(global, "clearTimeout");
+    const { result } = renderComponent(<WebCLI {...props} />);
+    const messages = [
+      {
+        output: [
+          "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
+        ],
+      },
+      { output: [""] },
+      { done: true },
+    ];
+    messages.forEach((message) => {
+      server.send(JSON.stringify(message));
+    });
+    expect(clearTimeoutSpy).not.toHaveBeenCalled();
+    result.unmount();
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    clearTimeoutSpy.mockRestore();
+    jest.useRealTimers();
+  });
+
   it("should display connection error when no websocket address is present", () => {
     renderComponent(<WebCLI {...props} modelUUID="" />);
     expect(
