@@ -17,7 +17,7 @@ import {
 } from "testing/factories/juju/juju";
 import { ComponentProviders, changeURL } from "testing/utils";
 
-import { LOGIN_TIMEOUT } from "./api";
+import { LOGIN_TIMEOUT, Label as APILabel } from "./api";
 import {
   useListSecrets,
   useCreateSecrets,
@@ -123,7 +123,7 @@ describe("useModelConnectionCallback", () => {
     changeURL("/models/eggman@external/group-test/app/etcd");
     jest
       .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.reject(new Error()));
+      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
     const callback = jest.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
@@ -137,7 +137,7 @@ describe("useModelConnectionCallback", () => {
     result.current(callback);
     await waitFor(() => {
       expect(callback).toHaveBeenCalledWith({
-        error: "Error during promise race.",
+        error: "Uh oh!",
       });
     });
   });
@@ -163,7 +163,9 @@ describe("useModelConnectionCallback", () => {
     result.current(callback);
     jest.advanceTimersByTime(LOGIN_TIMEOUT);
     await waitFor(() => {
-      expect(callback).toHaveBeenCalledWith({ error: "timeout" });
+      expect(callback).toHaveBeenCalledWith({
+        error: APILabel.LOGIN_TIMEOUT_ERROR,
+      });
     });
   });
 

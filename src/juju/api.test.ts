@@ -279,12 +279,14 @@ describe("Juju API", () => {
         false,
       );
       jest.advanceTimersByTime(LOGIN_TIMEOUT);
-      await expect(response).rejects.toMatchObject(new Error("timeout"));
+      await expect(response).rejects.toMatchObject(
+        new Error(Label.LOGIN_TIMEOUT_ERROR),
+      );
     });
 
     it("should handle exceptions when logging in", async () => {
       jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => {
-        return await new Promise((resolve, reject) => {
+        return await new Promise((_resolve, reject) => {
           reject(new Error("Uh oh!"));
         });
       });
@@ -297,9 +299,7 @@ describe("Juju API", () => {
         generateConnectionOptions(false),
         false,
       );
-      await expect(response).rejects.toMatchObject(
-        new Error("Error during promise race.", new Error("Uh oh!")),
-      );
+      await expect(response).rejects.toMatchObject(new Error("Uh oh!"));
     });
   });
 
@@ -371,11 +371,13 @@ describe("Juju API", () => {
         () => state,
       );
       jest.advanceTimersByTime(LOGIN_TIMEOUT);
-      await expect(response).rejects.toStrictEqual(new Error("timeout"));
+      await expect(response).rejects.toStrictEqual(
+        new Error(Label.LOGIN_TIMEOUT_ERROR),
+      );
       expect(console.error).toHaveBeenCalledWith(
         "Error connecting to model:",
         "abc123",
-        new Error("timeout"),
+        new Error(Label.LOGIN_TIMEOUT_ERROR),
       );
       console.error = consoleError;
     });
