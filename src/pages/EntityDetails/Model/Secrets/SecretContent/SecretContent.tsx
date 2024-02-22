@@ -13,6 +13,7 @@ import usePortal from "react-useportal";
 
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import RevisionField from "components/secrets/RevisionField";
+import SecretLabel from "components/secrets/SecretLabel";
 import { useGetSecretContent } from "juju/apiHooks";
 import { actions as jujuActions } from "store/juju";
 import {
@@ -100,17 +101,25 @@ const SecretContent = ({ secretURI }: Props) => {
                   getSecretContent(secretURI, Number(values.revision));
                 }}
               >
-                <Form className="p-form--inline">
-                  <RevisionField secretURI={secretURI} modelUUID={modelUUID} />
-                  <ActionButton
-                    appearance="positive"
-                    disabled={contentLoading}
-                    loading={contentLoading}
-                    type="submit"
-                  >
-                    {Label.SUBMIT}
-                  </ActionButton>
-                </Form>
+                <>
+                  <h5>
+                    Secret: <SecretLabel secret={secret} />
+                  </h5>
+                  <Form className="p-form--inline">
+                    <RevisionField
+                      secretURI={secretURI}
+                      modelUUID={modelUUID}
+                    />
+                    <ActionButton
+                      appearance="positive"
+                      disabled={contentLoading}
+                      loading={contentLoading}
+                      type="submit"
+                    >
+                      {Label.SUBMIT}
+                    </ActionButton>
+                  </Form>
+                </>
               </Formik>
             ) : null}
             {contentLoaded && !contentLoading ? (

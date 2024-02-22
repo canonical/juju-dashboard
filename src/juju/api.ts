@@ -601,7 +601,7 @@ export type ConfigOption<V, T> = {
 };
 
 export type ConfigData =
-  | ConfigOption<string, "string">
+  | ConfigOption<string, "string" | "secret">
   | ConfigOption<number, "int" | "float">
   | ConfigOption<boolean, "boolean">;
 

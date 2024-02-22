@@ -180,8 +180,8 @@ export const getSecretsState = createSelector(
 );
 
 export const getModelSecretsState = createSelector(
-  [getSecretsState, (_state: RootState, modelUUID: string) => modelUUID],
-  (secrets, modelUUID) => secrets[modelUUID],
+  [getSecretsState, (_state: RootState, modelUUID: string | null) => modelUUID],
+  (secrets, modelUUID) => (modelUUID ? secrets[modelUUID] : null),
 );
 
 export const getModelSecrets = createSelector(
@@ -326,7 +326,7 @@ export const getFullModelNames = createSelector(
   Get a model by UUID.
 */
 export const getModelByUUID = createSelector(
-  [getModelList, (_, uuid?: string) => uuid],
+  [getModelList, (_, uuid?: string | null) => uuid],
   (modelList, uuid) => (uuid ? modelList?.[uuid] : null),
 );
 

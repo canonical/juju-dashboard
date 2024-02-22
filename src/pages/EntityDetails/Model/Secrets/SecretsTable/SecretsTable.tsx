@@ -25,19 +25,23 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { secretIsAppOwned } from "utils";
 
 import SecretContent from "../SecretContent";
+
+import "./_secrets-table.scss";
 
 export enum Label {
   ACTION_MENU = "Action menu",
   COPY = "Copy",
-  GRANT_BUTTON = "Grant",
-  REMOVE_BUTTON = "Remove",
-  UPDATE_BUTTON = "Update",
+  GRANT_BUTTON = "Grant...",
+  REMOVE_BUTTON = "Remove...",
+  UPDATE_BUTTON = "Update...",
 }
 
 export enum TestId {
   SECRETS_TABLE = "secrets-table",
+  GRANTED_TO = "granted-to",
 }
 
 const SecretsTable = () => {
@@ -76,44 +80,21 @@ const SecretsTable = () => {
           </AppLink>
         );
       }
-      return {
-        name: (
-          <>
-            <SecretContent secretURI={secret.uri} /> {secret.label}
-          </>
-        ),
-        id: (
-          <div className="u-flex u-flex--gap-small">
-            <TruncatedTooltip
-              wrapperClassName="u-flex-shrink u-truncate"
-              message={id}
-            >
-              {id}
-            </TruncatedTooltip>
-            <div className="has-hover__hover-state">
-              <Tooltip message="Copy secret URI">
-                <Button
-                  appearance="base"
-                  className="is-small"
-                  onClick={() => {
-                    copyToClipboard(secret.uri);
-                  }}
-                  type="button"
-                  hasIcon
-                >
-                  <Icon name="copy">{Label.COPY}</Icon>
-                </Button>
-              </Tooltip>
-            </div>
-          </div>
-        ),
-        revision: secret["latest-revision"],
-        description: secret.description,
-        granted: secret.access?.length ?? 0,
-        owner,
-        created: <RelativeDate datetime={secret["create-time"]} />,
-        updated: <RelativeDate datetime={secret["update-time"]} />,
-        actions: canManageSecrets ? (
+      let granted = secret.access?.length ?? 0;
+      if (secretIsAppOwned(secret)) {
+        // If the secret is owned by an application then include it in the
+        // count of apps with access to the secret.
+        granted += 1;
+      }
+      let actions = null;
+      if (secretIsAppOwned(secret)) {
+        actions = (
+          <Tooltip message="This secret can only be modified by the application.">
+            <Icon name="information" />
+          </Tooltip>
+        );
+      } else if (canManageSecrets) {
+        actions = (
           <ContextualMenu
             links={[
               {
@@ -138,7 +119,46 @@ const SecretsTable = () => {
             toggleClassName="has-icon u-no-margin--bottom is-small"
             toggleLabel={<Icon name="menu">{Label.ACTION_MENU}</Icon>}
           />
-        ) : null,
+        );
+      }
+      return {
+        name: (
+          <>
+            <SecretContent secretURI={secret.uri} /> {secret.label}
+          </>
+        ),
+        id: (
+          <div className="u-flex u-flex--gap-small">
+            <TruncatedTooltip
+              wrapperClassName="u-flex-shrink u-truncate u-hide--small"
+              message={id}
+            >
+              {id}
+            </TruncatedTooltip>
+            <div className="has-hover__hover-state u-show--small">
+              <Tooltip message="Copy secret URI">
+                <Button
+                  appearance="base"
+                  className="is-small"
+                  onClick={() => {
+                    copyToClipboard(secret.uri);
+                  }}
+                  type="button"
+                  hasIcon
+                >
+                  <Icon name="copy">{Label.COPY}</Icon>
+                </Button>
+              </Tooltip>
+            </div>
+          </div>
+        ),
+        revision: secret["latest-revision"],
+        description: secret.description,
+        granted: <span data-testid={TestId.GRANTED_TO}>{granted}</span>,
+        owner,
+        created: <RelativeDate datetime={secret["create-time"]} />,
+        updated: <RelativeDate datetime={secret["update-time"]} />,
+        actions,
       };
     });
   }, [canManageSecrets, modelUUID, secrets, setQuery]);
@@ -196,7 +216,7 @@ const SecretsTable = () => {
       ) : (
         <ModularTable
           data-testid={TestId.SECRETS_TABLE}
-          className="audit-logs-table"
+          className="secrets-table"
           columns={columnData}
           data={tableData}
           emptyMsg="There are no secrets for this model."

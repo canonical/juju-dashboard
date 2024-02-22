@@ -20,7 +20,7 @@ import type {
 import { enableSubmit, onValuesChange } from "panels/ActionsPanel/ActionsPanel";
 import CharmActionsPanelTitle from "panels/CharmsAndActionsPanel/CharmActionsPanelTitle";
 import { TestId } from "panels/CharmsAndActionsPanel/CharmsAndActionsPanel";
-import type { ConfirmTypes } from "panels/types";
+import { ConfirmType, type ConfirmTypes } from "panels/types";
 import {
   getModelUUIDFromList,
   getSelectedApplications,
@@ -114,7 +114,7 @@ export default function CharmActionsPanel({
   };
 
   const handleSubmit = () => {
-    setConfirmType("submit");
+    setConfirmType(ConfirmType.SUBMIT);
   };
 
   const changeHandler = useCallback(

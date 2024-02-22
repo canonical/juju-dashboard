@@ -1,3 +1,4 @@
+import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import {
   Button,
   ConfirmationModal,
@@ -7,23 +8,32 @@ import classnames from "classnames";
 import cloneDeep from "clone-deep";
 import type { ReactNode, MouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 import type { Store } from "redux";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
+import type { EntityDetailsRoute } from "components/Routes/Routes";
+import SecretLabel from "components/secrets/SecretLabel";
 import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
+import useCanManageSecrets from "hooks/useCanManageSecrets";
 import useInlineErrors, { type SetError } from "hooks/useInlineErrors";
 import type { Config, ConfigData, ConfigValue } from "juju/api";
 import { getApplicationConfig, setApplicationConfig } from "juju/api";
+import { useListSecrets, useGrantSecret } from "juju/apiHooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
-import type { ConfirmTypes } from "panels/types";
+import type { ConfirmTypes as DefaultConfirmTypes } from "panels/types";
+import { ConfirmType as DefaultConfirmType } from "panels/types";
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
-import { useAppStore } from "store/store";
+import { actions as jujuActions } from "store/juju";
+import { getModelSecrets, getModelByUUID } from "store/juju/selectors";
+import { useAppStore, useAppSelector, useAppDispatch } from "store/store";
+import { secretIsAppOwned } from "utils";
 
 import BooleanConfig from "./BooleanConfig";
 import type { SetNewValue, SetSelectedConfig } from "./ConfigField";
@@ -37,6 +47,10 @@ export enum Label {
   CANCEL_CONFIRM = "Are you sure you wish to cancel?",
   CANCEL_CONFIRM_CANCEL_BUTTON = "Continue editing",
   CANCEL_CONFIRM_CONFIRM_BUTTON = "Yes, I'm sure",
+  GRANT_CANCEL_BUTTON = "No",
+  GRANT_CONFIRM = "Grant secrets?",
+  GRANT_CONFIRM_BUTTON = "Yes",
+  GRANT_ERROR = "Unable to grant application access to secrets.",
   NONE = "This application doesn't have any configuration parameters",
   RESET_BUTTON = "Reset all values",
   SAVE_BUTTON = "Save and apply",
@@ -57,6 +71,12 @@ enum InlineErrors {
   SUBMIT_TO_JUJU = "submit-to-juju",
 }
 
+enum ConfigConfirmType {
+  GRANT = "grant",
+}
+
+type ConfirmTypes = DefaultConfirmTypes | ConfigConfirmType;
+
 type ConfigQueryParams = {
   panel: string | null;
   charm: string | null;
@@ -64,7 +84,42 @@ type ConfigQueryParams = {
   modelUUID: string | null;
 };
 
+const getRequiredGrants = (
+  appName: string,
+  config: Config,
+  secrets?: ListSecretResult[] | null,
+) => {
+  const secretURIs = Object.values(config).reduce<string[]>((uris, entry) => {
+    const value = entry.newValue;
+    if (
+      value &&
+      typeof value === "string" &&
+      (entry.type === "secret" ||
+        (entry.type === "string" && value.startsWith("secret:"))) &&
+      // The same secret could be used in multiple fields so only include it once:
+      !uris.includes(value)
+    ) {
+      uris.push(value);
+    }
+    return uris;
+  }, []);
+  return secrets
+    ? secretURIs?.filter((secretURI) => {
+        const secret = secrets.find(
+          (secretItem) =>
+            // Can't grant application owned secrets so ignore them.
+            secretItem.uri === secretURI && !secretIsAppOwned(secretItem),
+        );
+        const access = secret?.access?.find(
+          (accessInfo) => accessInfo["target-tag"] === `application-${appName}`,
+        );
+        return !!secret && !access;
+      })
+    : null;
+};
+
 export default function ConfigPanel(): JSX.Element {
+  const dispatch = useAppDispatch();
   const reduxStore = useAppStore();
   const [config, setConfig] = useState<Config>({});
   const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
@@ -102,10 +157,28 @@ export default function ConfigPanel(): JSX.Element {
     entity: null,
     modelUUID: null,
   };
+  const { userName, modelName } = useParams<EntityDetailsRoute>();
   const [queryParams, , handleRemovePanelQueryParams] =
     usePanelQueryParams<ConfigQueryParams>(defaultQueryParams);
   const { entity: appName, charm, modelUUID } = queryParams;
   const hasConfig = !isLoading && !!config && Object.keys(config).length > 0;
+  const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));
+  const wsControllerURL = useAppSelector((state) =>
+    getModelByUUID(state, modelUUID),
+  )?.wsControllerURL;
+  const canManageSecrets = useCanManageSecrets();
+  const grantSecret = useGrantSecret(userName, modelName);
+  const listSecrets = useListSecrets(userName, modelName);
+
+  useEffect(() => {
+    listSecrets();
+    return () => {
+      if (!modelUUID || !wsControllerURL) {
+        return;
+      }
+      dispatch(jujuActions.clearSecrets({ modelUUID, wsControllerURL }));
+    };
+  }, [dispatch, listSecrets, modelUUID, wsControllerURL]);
 
   const getConfigCallback = useCallback(() => {
     if (modelUUID && appName) {
@@ -190,12 +263,12 @@ export default function ConfigPanel(): JSX.Element {
   }
 
   function handleSubmit() {
-    setConfirmType("submit");
+    setConfirmType(DefaultConfirmType.SUBMIT);
   }
 
   function handleCancel() {
     if (hasChangedFields(config)) {
-      setConfirmType("cancel");
+      setConfirmType(DefaultConfirmType.CANCEL);
     } else {
       handleRemovePanelQueryParams();
     }
@@ -229,13 +302,20 @@ export default function ConfigPanel(): JSX.Element {
       category: "User",
       action: "Config values updated",
     });
-    handleRemovePanelQueryParams();
+    if (
+      canManageSecrets &&
+      getRequiredGrants(appName, config, secrets)?.length
+    ) {
+      setConfirmType(ConfigConfirmType.GRANT);
+    } else {
+      handleRemovePanelQueryParams();
+    }
   }
 
   function generateConfirmationDialog(): JSX.Element | null {
     if (confirmType && appName) {
       const changedConfigList = generateChangedKeyValues(config);
-      if (confirmType === "submit") {
+      if (confirmType === DefaultConfirmType.SUBMIT) {
         // Render the submit confirmation modal.
         return (
           <Portal>
@@ -273,6 +353,67 @@ export default function ConfigPanel(): JSX.Element {
                 configuration:
               </p>
               {changedConfigList}
+            </ConfirmationModal>
+          </Portal>
+        );
+      }
+      if (confirmType === ConfigConfirmType.GRANT) {
+        // Render the grant confirmation modal.
+        const requiredGrants = getRequiredGrants(appName, config, secrets);
+        return (
+          <Portal>
+            <ConfirmationModal
+              // Prevent clicks inside this panel from closing the parent panel.
+              // This is handled in `checkCanClose`.
+              className="prevent-panel-close"
+              title={Label.GRANT_CONFIRM}
+              cancelButtonLabel={Label.GRANT_CANCEL_BUTTON}
+              confirmButtonLabel={Label.GRANT_CONFIRM_BUTTON}
+              confirmButtonAppearance="positive"
+              onConfirm={() => {
+                setConfirmType(null);
+                // Clear the form errors if there were any from a previous submit.
+                setInlineError(InlineErrors.FORM, null);
+                if (!appName || !requiredGrants) {
+                  // It is not possible to get to this point if these
+                  // variables aren't set.
+                  return;
+                }
+                void (async () => {
+                  try {
+                    for (const secretURI of requiredGrants) {
+                      await grantSecret(secretURI, [appName]);
+                    }
+                    setConfirmType(null);
+                    handleRemovePanelQueryParams();
+                  } catch (error) {
+                    setInlineError(
+                      InlineErrors.SUBMIT_TO_JUJU,
+                      Label.GRANT_ERROR,
+                    );
+                    console.error(Label.GRANT_ERROR, error);
+                  }
+                })();
+              }}
+              close={() => {
+                setConfirmType(null);
+                handleRemovePanelQueryParams();
+              }}
+            >
+              <p>
+                Would you like to grant access to this application for the
+                following secrets?
+              </p>
+              <ul>
+                {requiredGrants?.map((secretURI) => {
+                  const secret = secrets?.find(({ uri }) => uri === secretURI);
+                  return (
+                    <li key={secretURI}>
+                      {secret ? <SecretLabel secret={secret} /> : secretURI}
+                    </li>
+                  );
+                })}
+              </ul>
             </ConfirmationModal>
           </Portal>
         );
@@ -320,7 +461,7 @@ export default function ConfigPanel(): JSX.Element {
     if (hasChangedFields(config)) {
       // They are trying to close the panel but the user has
       // unchanged values so show the confirmation dialog.
-      setConfirmType("cancel");
+      setConfirmType(DefaultConfirmType.CANCEL);
       return false;
     }
     return true;
