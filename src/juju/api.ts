@@ -64,6 +64,7 @@ import type {
 } from "./types";
 
 export enum Label {
+  LOGIN_TIMEOUT_ERROR = "Timed out when connecting to model.",
   START_MODEL_WATCHER_NO_CONNECTION_ERROR = "Could not connect to model",
   START_MODEL_WATCHER_NO_ID_ERROR = "Could not watch model for changes",
 }
@@ -201,8 +202,8 @@ export async function connectAndLoginWithTimeout(
   options: ConnectOptions,
   identityProviderAvailable: boolean,
 ): Promise<LoginResponse> {
-  const timeout: Promise<string> = new Promise((resolve) => {
-    setTimeout(resolve, LOGIN_TIMEOUT, "timeout");
+  const timeout: Promise<never> = new Promise((_resolve, reject) => {
+    setTimeout(reject, LOGIN_TIMEOUT, new Error(Label.LOGIN_TIMEOUT_ERROR));
   });
   const loginParams = determineLoginParams(
     credentials,
@@ -214,20 +215,7 @@ export async function connectAndLoginWithTimeout(
     options,
     CLIENT_VERSION,
   );
-  return new Promise((resolve, reject) => {
-    Promise.race([timeout, juju])
-      .then((resp) => {
-        if (typeof resp === "string") {
-          reject(new Error("timeout"));
-          return;
-        }
-        resolve(resp);
-        return;
-      })
-      .catch((error) => {
-        reject(new Error("Error during promise race.", error));
-      });
-  });
+  return Promise.race([timeout, juju]);
 }
 
 /**
