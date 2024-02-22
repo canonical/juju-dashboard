@@ -1,3 +1,5 @@
+import { toErrorString } from "utils";
+
 export enum Label {
   INCORRECT_DATA_ERROR = "Invalid response from the server.",
   JAAS_CONNECTION_ERROR = "Unable to connect to JAAS controller.",
@@ -109,13 +111,7 @@ class Connection {
       }
       this.#pushToMessageBuffer(`\n${data.output[0]}`);
     } catch (error) {
-      this.#wsOnError(
-        error instanceof Error
-          ? error.message
-          : typeof error === "string"
-            ? error
-            : "Unknown error.",
-      );
+      this.#wsOnError(toErrorString(error));
     }
   }
 
