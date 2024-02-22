@@ -53,6 +53,8 @@ class Connection {
     }
     if (this.#timeout) {
       clearTimeout(this.#timeout);
+      this.#messageBuffer = "";
+      this.#timeout = null;
     }
   }
 
