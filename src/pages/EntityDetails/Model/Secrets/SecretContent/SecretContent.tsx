@@ -14,7 +14,7 @@ import usePortal from "react-useportal";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import RevisionField from "components/secrets/RevisionField";
 import SecretLabel from "components/secrets/SecretLabel";
-import { useGetSecretContent } from "juju/apiHooks";
+import { useGetSecretContent } from "juju/api-hooks";
 import { actions as jujuActions } from "store/juju";
 import {
   getSecretByURI,

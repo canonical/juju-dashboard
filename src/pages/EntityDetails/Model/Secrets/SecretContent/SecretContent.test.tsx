@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
 
 import { RevisionFieldLabel } from "components/secrets/RevisionField";
-import * as apiHooks from "juju/apiHooks";
+import * as secretHooks from "juju/api-hooks/secrets";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -28,7 +28,7 @@ import SecretContent, { Label } from "./SecretContent";
 
 const mockStore = configureStore<RootState, unknown>([]);
 
-jest.mock("juju/apiHooks", () => {
+jest.mock("juju/api-hooks/secrets", () => {
   return {
     useGetSecretContent: jest.fn().mockReturnValue(jest.fn()),
   };
@@ -44,7 +44,7 @@ describe("SecretContent", () => {
 
   beforeEach(() => {
     jest
-      .spyOn(apiHooks, "useGetSecretContent")
+      .spyOn(secretHooks, "useGetSecretContent")
       .mockImplementation(() => jest.fn());
     state = rootStateFactory.build({
       general: generalStateFactory.build({
@@ -138,7 +138,7 @@ describe("SecretContent", () => {
   it("can fetch the content for the chosen revision", async () => {
     const getSecretContent = jest.fn();
     jest
-      .spyOn(apiHooks, "useGetSecretContent")
+      .spyOn(secretHooks, "useGetSecretContent")
       .mockImplementation(() => getSecretContent);
     renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
       state,

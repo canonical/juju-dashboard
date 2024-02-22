@@ -2,12 +2,12 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Label as FieldsLabel } from "components/secrets/SecretForm/Fields/Fields";
-import * as apiHooks from "juju/apiHooks";
+import * as secretHooks from "juju/api-hooks/secrets";
 import { renderComponent } from "testing/utils";
 
 import SecretFormPanel, { Label } from "./SecretFormPanel";
 
-jest.mock("juju/apiHooks", () => {
+jest.mock("juju/api-hooks/secrets", () => {
   return {
     useCreateSecrets: jest.fn().mockReturnValue(jest.fn()),
     useUpdateSecrets: jest.fn().mockReturnValue(jest.fn()),
@@ -18,7 +18,9 @@ jest.mock("juju/apiHooks", () => {
 
 describe("SecretFormPanel", () => {
   beforeEach(() => {
-    jest.spyOn(apiHooks, "useListSecrets").mockImplementation(() => jest.fn());
+    jest
+      .spyOn(secretHooks, "useListSecrets")
+      .mockImplementation(() => jest.fn());
   });
 
   it("displays correctly when creating a secret", async () => {
@@ -50,7 +52,7 @@ describe("SecretFormPanel", () => {
         Promise.resolve({ results: [{ result: "secret:aabbccdd" }] }),
       );
     jest
-      .spyOn(apiHooks, "useCreateSecrets")
+      .spyOn(secretHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
     renderComponent(<SecretFormPanel />, { url: "?panel=add-secret" });
     expect(window.location.search).toEqual("?panel=add-secret");

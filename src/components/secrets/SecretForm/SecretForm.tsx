@@ -17,7 +17,7 @@ import {
   useListSecrets,
   useUpdateSecrets,
   useGetSecretContent,
-} from "juju/apiHooks";
+} from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { actions as jujuActions } from "store/juju";
 import {

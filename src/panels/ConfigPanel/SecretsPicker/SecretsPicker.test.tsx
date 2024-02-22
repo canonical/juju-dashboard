@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Label as FieldsLabel } from "components/secrets/SecretForm/Fields/Fields";
-import * as apiHooks from "juju/apiHooks";
+import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -332,7 +332,7 @@ describe("SecretsPicker", () => {
         Promise.resolve({ results: [{ result: "secret:newlycreated" }] }),
       );
     jest
-      .spyOn(apiHooks, "useCreateSecrets")
+      .spyOn(secretHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
     const setValue = jest.fn();
     renderComponent(<SecretsPicker setValue={setValue} />, {
