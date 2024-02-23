@@ -14,7 +14,6 @@ import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
 import type { AllWatcherNextResults } from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
 import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
 import Application from "@canonical/jujulib/dist/api/facades/application";
-import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/application/ApplicationV18";
 import Charms from "@canonical/jujulib/dist/api/facades/charms";
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import Client from "@canonical/jujulib/dist/api/facades/client";
@@ -29,7 +28,6 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import Limiter from "async-limiter";
 import type { Dispatch } from "redux";
 
-import { isSet } from "components/utils";
 import bakery from "juju/bakery";
 import JIMM from "juju/jimm";
 import { actions as generalActions } from "store/general";
@@ -556,26 +554,6 @@ export async function connectAndLoginToModel(
   );
 }
 
-/**
-  Call the API to fetch the application config data.
-  @param modelUUID
-  @param appName
-  @param appState
-  @returns The application config.
-*/
-export async function getApplicationConfig(
-  modelUUID: string,
-  appName: string,
-  appState: RootState,
-) {
-  const conn = await connectAndLoginToModel(modelUUID, appState);
-  const config = await conn?.facades.application?.get({
-    application: appName,
-    branch: "",
-  });
-  return config;
-}
-
 export type ConfigValue = string | number | boolean | undefined;
 
 export type ConfigOption<V, T> = {
@@ -596,41 +574,6 @@ export type ConfigData =
 export type Config = {
   [key: string]: ConfigData;
 };
-
-/**
-  Call the API to set the application config data.
-  @param modelUUID
-  @param appName
-  @param config
-  @param appState
-  @returns The application set config response
-*/
-export async function setApplicationConfig(
-  modelUUID: string,
-  appName: string,
-  config: Config,
-  appState: RootState,
-): Promise<ErrorResults | undefined> {
-  const conn = await connectAndLoginToModel(modelUUID, appState);
-  const setValues: Record<string, string> = {};
-  Object.keys(config).forEach((key) => {
-    if (isSet(config[key].newValue)) {
-      // Juju requires that the value be a string, even if the field is a bool.
-      setValues[key] = `${config[key].newValue}`;
-    }
-  });
-  const resp = await conn?.facades.application?.setConfigs({
-    Args: [
-      {
-        application: appName,
-        config: setValues,
-        "config-yaml": "",
-        generation: "",
-      },
-    ],
-  });
-  return resp;
-}
 
 export async function getActionsForApplication(
   appName: string,

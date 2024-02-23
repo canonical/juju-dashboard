@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import * as apiModule from "juju/api";
+import * as applicationHooks from "juju/api-hooks/application";
 import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
 import {
@@ -33,9 +33,9 @@ import { renderComponent } from "testing/utils";
 
 import ConfigPanel, { Label } from "./ConfigPanel";
 
-jest.mock("juju/api", () => ({
-  getApplicationConfig: jest.fn(),
-  setApplicationConfig: jest.fn(),
+jest.mock("juju/api-hooks/application", () => ({
+  useGetApplicationConfig: jest.fn(),
+  useSetApplicationConfig: jest.fn(),
 }));
 
 jest.mock("juju/api-hooks/secrets", () => {
@@ -56,7 +56,7 @@ describe("ConfigPanel", () => {
   });
   const url = `/models/eggman@external/hadoopspark?${params.toString()}`;
   const path = "/models/:userName/:modelName";
-  let getApplicationConfigSpy: jest.SpyInstance;
+  let getApplicationConfig: jest.Mock;
   const consoleError = console.error;
 
   beforeEach(() => {
@@ -116,18 +116,25 @@ describe("ConfigPanel", () => {
         }),
       }),
     });
-    getApplicationConfigSpy = jest
-      .spyOn(apiModule, "getApplicationConfig")
-      .mockImplementation(() =>
-        Promise.resolve(
-          applicationGetFactory.build({
-            config: {
-              email: configFactory.build({ default: "" }),
-              name: configFactory.build({ default: "eggman" }),
-            },
-          }),
-        ),
-      );
+    getApplicationConfig = jest.fn().mockImplementation(() =>
+      Promise.resolve(
+        applicationGetFactory.build({
+          config: {
+            email: configFactory.build({ default: "" }),
+            name: configFactory.build({ default: "eggman" }),
+          },
+        }),
+      ),
+    );
+    jest
+      .spyOn(applicationHooks, "useGetApplicationConfig")
+      .mockImplementation(() => getApplicationConfig);
+    const setApplicationConfig = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(applicationHooks, "useSetApplicationConfig")
+      .mockImplementation(() => setApplicationConfig);
   });
 
   afterEach(() => {
@@ -136,9 +143,14 @@ describe("ConfigPanel", () => {
   });
 
   it("displays a message if the app has no config", async () => {
-    jest.spyOn(apiModule, "getApplicationConfig").mockImplementation(() => {
-      return Promise.resolve(applicationGetFactory.build({ config: {} }));
-    });
+    getApplicationConfig = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve(applicationGetFactory.build({ config: {} })),
+      );
+    jest
+      .spyOn(applicationHooks, "useGetApplicationConfig")
+      .mockImplementation(() => getApplicationConfig);
     renderComponent(<ConfigPanel />, { state, path, url });
     // Use findBy to wait for the async events to finish
     await screen.findByText(Label.NONE);
@@ -146,19 +158,20 @@ describe("ConfigPanel", () => {
   });
 
   it("can display boolean, number and text fields", async () => {
-    getApplicationConfigSpy = jest
-      .spyOn(apiModule, "getApplicationConfig")
-      .mockImplementation(() =>
-        Promise.resolve(
-          applicationGetFactory.build({
-            config: {
-              name: configFactory.build({ type: "string" }),
-              age: configFactory.build({ type: "int" }),
-              confirm: configFactory.build({ type: "boolean" }),
-            },
-          }),
-        ),
-      );
+    getApplicationConfig = jest.fn().mockImplementation(() =>
+      Promise.resolve(
+        applicationGetFactory.build({
+          config: {
+            name: configFactory.build({ type: "string" }),
+            age: configFactory.build({ type: "int" }),
+            confirm: configFactory.build({ type: "boolean" }),
+          },
+        }),
+      ),
+    );
+    jest
+      .spyOn(applicationHooks, "useGetApplicationConfig")
+      .mockImplementation(() => getApplicationConfig);
     renderComponent(<ConfigPanel />, { state, path, url });
     expect(
       within(await screen.findByTestId("name")).getByRole("textbox"),
@@ -336,10 +349,12 @@ describe("ConfigPanel", () => {
   });
 
   it("can cancel the save confirmation", async () => {
-    const setApplicationConfigSpy = jest.spyOn(
-      apiModule,
-      "setApplicationConfig",
-    );
+    const setApplicationConfig = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(applicationHooks, "useSetApplicationConfig")
+      .mockImplementation(() => setApplicationConfig);
     renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
@@ -371,15 +386,18 @@ describe("ConfigPanel", () => {
       }),
     );
     expect(screen.queryByRole("dialog", { name: "" })).not.toBeInTheDocument();
-    expect(setApplicationConfigSpy).not.toHaveBeenCalled();
+    expect(setApplicationConfig).not.toHaveBeenCalled();
   });
 
   it("can save changes", async () => {
-    const setApplicationConfigSpy = jest
-      .spyOn(apiModule, "setApplicationConfig")
+    const setApplicationConfig = jest
+      .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
+    jest
+      .spyOn(applicationHooks, "useSetApplicationConfig")
+      .mockImplementation(() => setApplicationConfig);
     renderComponent(<ConfigPanel />, { state, path, url });
-    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
+    expect(getApplicationConfig).toHaveBeenCalledTimes(1);
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com",
@@ -394,34 +412,32 @@ describe("ConfigPanel", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
     );
-    expect(setApplicationConfigSpy).toHaveBeenCalledWith(
-      "abc123",
-      "easyrsa",
-      {
-        email: configFactory.build({
-          name: "email",
-          default: "",
-          newValue: "eggman@example.com",
-        }),
-        name: configFactory.build({
-          name: "name",
-          default: "eggman",
-          newValue: "noteggman",
-        }),
-      },
-      state,
-    );
-    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
+    expect(setApplicationConfig).toHaveBeenCalledWith("easyrsa", {
+      email: configFactory.build({
+        name: "email",
+        default: "",
+        newValue: "eggman@example.com",
+      }),
+      name: configFactory.build({
+        name: "name",
+        default: "eggman",
+        newValue: "noteggman",
+      }),
+    });
+    expect(getApplicationConfig).toHaveBeenCalledTimes(1);
   });
 
   it("displays save errors", async () => {
-    jest.spyOn(apiModule, "setApplicationConfig").mockImplementation(() =>
+    const setApplicationConfig = jest.fn().mockImplementation(() =>
       Promise.resolve({
         results: [{ error: { code: "1", message: "That's not a name" } }],
       }),
     );
+    jest
+      .spyOn(applicationHooks, "useSetApplicationConfig")
+      .mockImplementation(() => setApplicationConfig);
     renderComponent(<ConfigPanel />, { state, path, url });
-    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
+    expect(getApplicationConfig).toHaveBeenCalledTimes(1);
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com",
@@ -437,21 +453,20 @@ describe("ConfigPanel", () => {
       screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
     );
     expect(screen.getByText("That's not a name")).toBeInTheDocument();
-    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
+    expect(getApplicationConfig).toHaveBeenCalledTimes(1);
   });
 
   it("should display error when trying to get config and refetch config data", async () => {
-    jest
-      .spyOn(apiModule, "getApplicationConfig")
-      .mockImplementation(
-        jest
-          .fn()
-          .mockRejectedValue(
-            new Error("Error while calling getApplicationConfig"),
-          ),
+    getApplicationConfig = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.reject(new Error("Error while calling getApplicationConfig")),
       );
+    jest
+      .spyOn(applicationHooks, "useGetApplicationConfig")
+      .mockImplementation(() => getApplicationConfig);
     renderComponent(<ConfigPanel />, { state, path, url });
-    expect(apiModule.getApplicationConfig).toHaveBeenCalledTimes(1);
+    expect(getApplicationConfig).toHaveBeenCalledTimes(1);
     await waitFor(() => {
       expect(console.error).toHaveBeenCalledWith(
         Label.GET_CONFIG_ERROR,
@@ -466,12 +481,12 @@ describe("ConfigPanel", () => {
     const refetchButton = configErrorNotification.children[0];
     expect(refetchButton).toHaveTextContent("refetch");
     await userEvent.click(refetchButton);
-    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(2);
+    expect(getApplicationConfig).toHaveBeenCalledTimes(2);
   });
 
   it("should display error when trying to save", async () => {
-    jest.spyOn(apiModule, "getApplicationConfig").mockImplementationOnce(
-      jest.fn().mockResolvedValue(
+    getApplicationConfig = jest.fn().mockImplementationOnce(() =>
+      Promise.resolve(
         applicationGetFactory.build({
           config: {
             email: configFactory.build({ default: "" }),
@@ -480,13 +495,19 @@ describe("ConfigPanel", () => {
         }),
       ),
     );
-    const setApplicationConfigSpy = jest
-      .spyOn(apiModule, "setApplicationConfig")
+    jest
+      .spyOn(applicationHooks, "useGetApplicationConfig")
+      .mockImplementation(() => getApplicationConfig);
+    const setApplicationConfig = jest
+      .fn()
       .mockImplementation(() =>
         Promise.reject(new Error("Error while trying to save")),
       );
+    jest
+      .spyOn(applicationHooks, "useSetApplicationConfig")
+      .mockImplementation(() => setApplicationConfig);
     renderComponent(<ConfigPanel />, { state, path, url });
-    expect(getApplicationConfigSpy).toHaveBeenCalledTimes(1);
+    expect(getApplicationConfig).toHaveBeenCalledTimes(1);
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com",
@@ -501,23 +522,18 @@ describe("ConfigPanel", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
     );
-    expect(setApplicationConfigSpy).toHaveBeenCalledWith(
-      "abc123",
-      "easyrsa",
-      {
-        email: configFactory.build({
-          name: "email",
-          default: "",
-          newValue: "eggman@example.com",
-        }),
-        name: configFactory.build({
-          name: "name",
-          default: "eggman",
-          newValue: "noteggman",
-        }),
-      },
-      state,
-    );
+    expect(setApplicationConfig).toHaveBeenCalledWith("easyrsa", {
+      email: configFactory.build({
+        name: "email",
+        default: "",
+        newValue: "eggman@example.com",
+      }),
+      name: configFactory.build({
+        name: "name",
+        default: "eggman",
+        newValue: "noteggman",
+      }),
+    });
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
         Label.SUBMIT_TO_JUJU_ERROR,
@@ -557,18 +573,19 @@ describe("ConfigPanel", () => {
   });
 
   it("displays a confirmation if there are ungranted secrets in secret fields", async () => {
-    getApplicationConfigSpy = jest
-      .spyOn(apiModule, "getApplicationConfig")
-      .mockImplementation(() =>
-        Promise.resolve(
-          applicationGetFactory.build({
-            config: {
-              email: configFactory.build({ default: "", type: "secret" }),
-              name: configFactory.build({ default: "eggman" }),
-            },
-          }),
-        ),
-      );
+    getApplicationConfig = jest.fn().mockImplementation(() =>
+      Promise.resolve(
+        applicationGetFactory.build({
+          config: {
+            email: configFactory.build({ default: "", type: "secret" }),
+            name: configFactory.build({ default: "eggman" }),
+          },
+        }),
+      ),
+    );
+    jest
+      .spyOn(applicationHooks, "useGetApplicationConfig")
+      .mockImplementation(() => getApplicationConfig);
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({
         items: [

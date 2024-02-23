@@ -12,10 +12,7 @@ import {
   generalStateFactory,
 } from "testing/factories/general";
 import { applicationsCharmActionsResultsFactory } from "testing/factories/juju/ActionV7";
-import {
-  applicationGetFactory,
-  errorResultsFactory,
-} from "testing/factories/juju/Application";
+import { errorResultsFactory } from "testing/factories/juju/Application";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import {
@@ -34,7 +31,6 @@ import {
   machineChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
 
-import type { Config } from "./api";
 import {
   CLIENT_VERSION,
   LOGIN_TIMEOUT,
@@ -49,13 +45,11 @@ import {
   fetchModelStatus,
   generateConnectionOptions,
   getActionsForApplication,
-  getApplicationConfig,
   getCharmInfo,
   getCharmsURLFromApplications,
   loginWithBakery,
   queryActionsList,
   queryOperationsList,
-  setApplicationConfig,
   setModelSharingPermissions,
   startModelWatcher,
   stopModelWatcher,
@@ -1185,154 +1179,6 @@ describe("Juju API", () => {
         CLIENT_VERSION,
       );
       expect(response).toMatchObject(conn);
-    });
-  });
-
-  describe("getApplicationConfig", () => {
-    it("can get app config", async () => {
-      const config = applicationGetFactory.build();
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
-      const conn = {
-        facades: {
-          application: {
-            get: jest.fn().mockReturnValue(config),
-          },
-        },
-      } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
-        conn,
-      }));
-      const response = await getApplicationConfig("abc123", "etcd", state);
-      expect(conn.facades.application.get).toHaveBeenCalledWith({
-        application: "etcd",
-        branch: "",
-      });
-      expect(response).toMatchObject(config);
-    });
-  });
-
-  describe("setApplicationConfig", () => {
-    it("can set app config", async () => {
-      const config: Config = {
-        ignore: {
-          name: "this should be ignored because it doesn't have a new value",
-          description: "",
-          source: "default",
-          type: "boolean",
-        },
-        updateThis: {
-          name: "changed config",
-          description: "desc",
-          source: "default",
-          type: "string",
-          newValue: "new val",
-        },
-      };
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
-      const configResponse = errorResultsFactory.build();
-      const conn = {
-        facades: {
-          application: {
-            setConfigs: jest.fn().mockReturnValue(configResponse),
-          },
-        },
-      } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
-        conn,
-      }));
-      const response = await setApplicationConfig(
-        "abc123",
-        "etcd",
-        config,
-        state,
-      );
-      expect(conn.facades.application.setConfigs).toHaveBeenCalledWith({
-        Args: [
-          {
-            application: "etcd",
-            config: {
-              updateThis: "new val",
-            },
-            "config-yaml": "",
-            generation: "",
-          },
-        ],
-      });
-      expect(response).toMatchObject(configResponse);
-    });
-
-    it("converts all values to strings", async () => {
-      const config: Config = {
-        bool: {
-          name: "bool",
-          description: "",
-          source: "default",
-          type: "boolean",
-          newValue: false,
-        },
-        int: {
-          name: "int",
-          description: "desc",
-          source: "default",
-          type: "int",
-          newValue: 0,
-        },
-        float: {
-          name: "float",
-          description: "desc",
-          source: "default",
-          type: "float",
-          newValue: 0.0,
-        },
-      };
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
-      const configResponse = errorResultsFactory.build();
-      const conn = {
-        facades: {
-          application: {
-            setConfigs: jest.fn().mockReturnValue(configResponse),
-          },
-        },
-      } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
-        conn,
-      }));
-      await setApplicationConfig("abc123", "etcd", config, state);
-      expect(conn.facades.application.setConfigs).toHaveBeenCalledWith({
-        Args: [
-          {
-            application: "etcd",
-            config: {
-              bool: "false",
-              int: "0",
-              float: "0",
-            },
-            "config-yaml": "",
-            generation: "",
-          },
-        ],
-      });
     });
   });
 
