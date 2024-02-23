@@ -25,12 +25,14 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 import Status from "components/Status";
 import { copyToClipboard } from "components/utils";
 import useInlineErrors from "hooks/useInlineErrors";
-import { queryActionsList, queryOperationsList } from "juju/api";
+import {
+  useQueryActionsList,
+  useQueryOperationsList,
+} from "juju/api-hooks/actions";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import type { RootState } from "store/store";
-import { useAppStore } from "store/store";
 import urls from "urls";
 import "./_action-logs.scss";
 
@@ -213,7 +215,8 @@ export default function ActionLogs() {
   const [selectedOutput, setSelectedOutput] = useState<{
     [key: string]: Output;
   }>({});
-  const appStore = useAppStore();
+  const queryOperationsList = useQueryOperationsList(userName, modelName);
+  const queryActionsList = useQueryActionsList(userName, modelName);
   const getModelUUIDMemo = useMemo(
     () => (modelName ? getModelUUID(modelName) : null),
     [modelName],
@@ -228,13 +231,9 @@ export default function ActionLogs() {
   const fetchData = useCallback(async () => {
     try {
       if (modelUUID) {
-        const operationList = await queryOperationsList(
-          {
-            applications: applicationList,
-          },
-          modelUUID,
-          appStore.getState(),
-        );
+        const operationList = await queryOperationsList({
+          applications: applicationList,
+        });
         if (operationList?.results) {
           setOperations(operationList.results);
           const actionsTags = operationList.results
@@ -243,11 +242,7 @@ export default function ActionLogs() {
             )
             .filter((actionTag?: string): actionTag is string => !!actionTag)
             .map((actionTag: string) => ({ tag: actionTag }));
-          const actionsList = await queryActionsList(
-            { entities: actionsTags },
-            modelUUID,
-            appStore.getState(),
-          );
+          const actionsList = await queryActionsList({ entities: actionsTags });
           if (actionsList?.results) {
             setActions(actionsList.results);
           }
@@ -260,7 +255,13 @@ export default function ActionLogs() {
     } finally {
       setFetchedOperations(true);
     }
-  }, [appStore, applicationList, modelUUID, setInlineErrors]);
+  }, [
+    applicationList,
+    modelUUID,
+    queryActionsList,
+    queryOperationsList,
+    setInlineErrors,
+  ]);
 
   useEffect(() => {
     void fetchData();

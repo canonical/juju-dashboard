@@ -11,7 +11,6 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import { applicationsCharmActionsResultsFactory } from "testing/factories/juju/ActionV7";
 import { errorResultsFactory } from "testing/factories/juju/Application";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
@@ -38,18 +37,14 @@ import {
   connectAndLoginToModel,
   connectAndLoginWithTimeout,
   disableControllerUUIDMasking,
-  executeActionOnUnits,
   fetchAllModelStatuses,
   fetchAndStoreModelStatus,
   fetchControllerList,
   fetchModelStatus,
   generateConnectionOptions,
-  getActionsForApplication,
   getCharmInfo,
   getCharmsURLFromApplications,
   loginWithBakery,
-  queryActionsList,
-  queryOperationsList,
   setModelSharingPermissions,
   startModelWatcher,
   stopModelWatcher,
@@ -1179,156 +1174,6 @@ describe("Juju API", () => {
         CLIENT_VERSION,
       );
       expect(response).toMatchObject(conn);
-    });
-  });
-
-  describe("getActionsForApplication", () => {
-    it("gets actions for an application", async () => {
-      const actionList = applicationsCharmActionsResultsFactory.build();
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
-      const conn = {
-        facades: {
-          action: {
-            applicationsCharmsActions: jest.fn().mockReturnValue(actionList),
-          },
-        },
-      } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
-        conn,
-      }));
-      const response = await getActionsForApplication("etcd", "abc123", state);
-      expect(
-        conn.facades.action.applicationsCharmsActions,
-      ).toHaveBeenCalledWith({
-        entities: [{ tag: "application-etcd" }],
-      });
-      expect(response).toMatchObject(actionList);
-    });
-  });
-
-  describe("executeActionOnUnits", () => {
-    it("can execute actions on units", async () => {
-      const result = { operation: "rebooting" };
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
-      const conn = {
-        facades: {
-          action: {
-            enqueueOperation: jest.fn().mockReturnValue(result),
-          },
-        },
-      } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
-        conn,
-      }));
-      const response = await executeActionOnUnits(
-        ["etcd/0", "mysql/2"],
-        "reboot",
-        { extra: "options" },
-        "abc123",
-        state,
-      );
-      expect(conn.facades.action.enqueueOperation).toHaveBeenCalledWith({
-        actions: [
-          {
-            name: "reboot",
-            receiver: "unit-etcd-0",
-            parameters: { extra: "options" },
-            tag: "",
-          },
-          {
-            name: "reboot",
-            receiver: "unit-mysql-2",
-            parameters: { extra: "options" },
-            tag: "",
-          },
-        ],
-      });
-      expect(response).toMatchObject(result);
-    });
-  });
-
-  describe("queryOperationsList", () => {
-    it("get the operations list", async () => {
-      const result = { results: [], truncated: true };
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
-      const conn = {
-        facades: {
-          action: {
-            listOperations: jest.fn().mockReturnValue(result),
-          },
-        },
-      } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
-        conn,
-      }));
-      const response = await queryOperationsList(
-        {
-          limit: 99,
-        },
-        "abc123",
-        state,
-      );
-      expect(conn.facades.action.listOperations).toHaveBeenCalledWith({
-        actions: [],
-        applications: [],
-        limit: 99,
-        machines: [],
-        offset: 0,
-        status: [],
-        units: [],
-      });
-      expect(response).toMatchObject(result);
-    });
-  });
-
-  describe("queryActionsList", () => {
-    it("can get the actions list", async () => {
-      const result = { results: [] };
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
-      const conn = {
-        facades: {
-          action: {
-            actions: jest.fn().mockReturnValue(result),
-          },
-        },
-      } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
-        conn,
-      }));
-      const args = {
-        entities: [{ tag: "one" }],
-      };
-      const response = await queryActionsList(args, "abc123", state);
-      expect(conn.facades.action.actions).toHaveBeenCalledWith(args);
-      expect(response).toMatchObject(result);
     });
   });
 

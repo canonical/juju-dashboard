@@ -16,7 +16,10 @@ import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import useInlineErrors from "hooks/useInlineErrors";
-import { executeActionOnUnits, getActionsForApplication } from "juju/api";
+import {
+  useExecuteActionOnUnits,
+  useGetActionsForApplication,
+} from "juju/api-hooks/actions";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
@@ -84,8 +87,8 @@ export type OnValuesChange = (
 ) => void;
 
 type ActionsQueryParams = {
-  panel: string | null;
-  units: string[];
+  panel?: string | null;
+  units?: string[];
 };
 
 enum InlineErrors {
@@ -96,7 +99,7 @@ enum InlineErrors {
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
-  const { appName, modelName } = useParams<EntityDetailsRoute>();
+  const { appName, modelName, userName } = useParams<EntityDetailsRoute>();
   const getModelUUIDMemo = useMemo(
     () => (modelName ? getModelUUID(modelName) : null),
     [modelName],
@@ -108,6 +111,11 @@ export default function ActionsPanel(): JSX.Element {
   const [actionData, setActionData] = useState<ActionData>({});
   const [fetchingActionData, setFetchingActionData] = useState(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
+  const getActionsForApplication = useGetActionsForApplication(
+    userName,
+    modelName,
+  );
+  const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
   const [selectedAction, setSelectedAction]: [
     string | undefined,
     SetSelectedAction,
@@ -137,12 +145,15 @@ export default function ActionsPanel(): JSX.Element {
   const defaultQueryParams: ActionsQueryParams = { panel: null, units: [] };
   const [queryParams, , handleRemovePanelQueryParams] =
     usePanelQueryParams<ActionsQueryParams>(defaultQueryParams);
-  const selectedUnits = queryParams.units;
+  const selectedUnits = useMemo(
+    () => queryParams.units ?? [],
+    [queryParams.units],
+  );
 
   const getActionsForApplicationCallback = useCallback(() => {
     setFetchingActionData(true);
     if (appName && modelUUID) {
-      getActionsForApplication(appName, modelUUID, appStore.getState())
+      getActionsForApplication(appName)
         .then((actions) => {
           if (actions?.results?.[0]?.actions) {
             setActionData(actions.results[0].actions);
@@ -158,7 +169,7 @@ export default function ActionsPanel(): JSX.Element {
           setFetchingActionData(false);
         });
     }
-  }, [appName, appStore, modelUUID, setInlineErrors]);
+  }, [appName, getActionsForApplication, modelUUID, setInlineErrors]);
 
   useEffect(() => {
     getActionsForApplicationCallback();
@@ -197,8 +208,6 @@ export default function ActionsPanel(): JSX.Element {
       selectedUnits,
       selectedAction,
       actionOptionsValues.current[selectedAction],
-      modelUUID,
-      appStore.getState(),
     );
   };
 

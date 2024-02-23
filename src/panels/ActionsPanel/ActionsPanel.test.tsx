@@ -1,8 +1,7 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import * as juju from "juju/api";
-import { executeActionOnUnits } from "juju/api";
+import * as actionsHooks from "juju/api-hooks/actions";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -51,10 +50,10 @@ const mockResponse = applicationsCharmActionsResultsFactory.build({
   ],
 });
 
-jest.mock("juju/api", () => {
+jest.mock("juju/api-hooks/actions", () => {
   return {
-    executeActionOnUnits: jest.fn(),
-    getActionsForApplication: jest.fn(),
+    useExecuteActionOnUnits: jest.fn().mockReturnValue(jest.fn()),
+    useGetActionsForApplication: jest.fn().mockReturnValue(jest.fn()),
   };
 });
 
@@ -67,11 +66,12 @@ describe("ActionsPanel", () => {
 
   beforeEach(() => {
     console.error = jest.fn();
-    const getActionsForApplicationSpy = jest.spyOn(
-      juju,
-      "getActionsForApplication",
-    );
-    getActionsForApplicationSpy.mockResolvedValue(mockResponse);
+    const getActionsForApplicationSpy = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockResponse));
+    jest
+      .spyOn(actionsHooks, "useGetActionsForApplication")
+      .mockImplementation(() => getActionsForApplicationSpy);
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         modelData: {
@@ -190,11 +190,12 @@ describe("ActionsPanel", () => {
         }),
       ],
     });
-    const getActionsForApplicationSpy = jest.spyOn(
-      juju,
-      "getActionsForApplication",
-    );
-    getActionsForApplicationSpy.mockResolvedValue(mockResponse);
+    const getActionsForApplicationSpy = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockResponse));
+    jest
+      .spyOn(actionsHooks, "useGetActionsForApplication")
+      .mockImplementation(() => getActionsForApplicationSpy);
     renderComponent(<ActionsPanel />, { path, url, state });
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" }),
@@ -213,6 +214,12 @@ describe("ActionsPanel", () => {
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {
+    const executeActionOnUnitsSpy = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(actionsHooks, "useExecuteActionOnUnits")
+      .mockImplementation(() => executeActionOnUnitsSpy);
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
@@ -231,11 +238,16 @@ describe("ActionsPanel", () => {
     expect(
       await screen.findByTestId("confirmation-modal-unit-names"),
     ).toHaveTextContent("ceph/0, 1");
-    expect(executeActionOnUnits).not.toHaveBeenCalled();
+    expect(executeActionOnUnitsSpy).not.toHaveBeenCalled();
   });
 
   it("submits the action request to the api without options", async () => {
-    const executeActionOnUnitsSpy = jest.spyOn(juju, "executeActionOnUnits");
+    const executeActionOnUnitsSpy = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(actionsHooks, "useExecuteActionOnUnits")
+      .mockImplementation(() => executeActionOnUnitsSpy);
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
@@ -258,7 +270,12 @@ describe("ActionsPanel", () => {
   });
 
   it("submits the action request to the api with options that are required", async () => {
-    const executeActionOnUnitsSpy = jest.spyOn(juju, "executeActionOnUnits");
+    const executeActionOnUnitsSpy = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(actionsHooks, "useExecuteActionOnUnits")
+      .mockImplementation(() => executeActionOnUnitsSpy);
     renderComponent(<ActionsPanel />, { path, url, state });
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" }),
@@ -313,19 +330,20 @@ describe("ActionsPanel", () => {
   });
 
   it("should display error when trying to get actions for application", async () => {
-    jest
-      .spyOn(juju, "getActionsForApplication")
-      .mockImplementation(
-        jest
-          .fn()
-          .mockRejectedValue(
-            new Error("Error while trying to get actions for application!"),
-          ),
+    const getActionsForApplicationSpy = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.reject(
+          new Error("Error while trying to get actions for application!"),
+        ),
       );
+    jest
+      .spyOn(actionsHooks, "useGetActionsForApplication")
+      .mockImplementation(() => getActionsForApplicationSpy);
     renderComponent(<ActionsPanel />, { path, url, state });
-    expect(juju.getActionsForApplication).toHaveBeenCalledTimes(1);
+    expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(1);
     await waitFor(() =>
-      expect(juju.getActionsForApplication).toHaveBeenCalledTimes(1),
+      expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(1),
     );
     expect(console.error).toHaveBeenCalledWith(
       Label.GET_ACTIONS_ERROR,
@@ -341,19 +359,20 @@ describe("ActionsPanel", () => {
         name: "refetching",
       }),
     );
-    expect(juju.getActionsForApplication).toHaveBeenCalledTimes(2);
+    expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(2);
   });
 
   it("should display error when trying to submit the action request", async () => {
-    jest
-      .spyOn(juju, "executeActionOnUnits")
-      .mockImplementation(
-        jest
-          .fn()
-          .mockRejectedValue(
-            new Error("Error while trying to execute action on units!"),
-          ),
+    const executeActionOnUnitsSpy = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.reject(
+          new Error("Error while trying to execute action on units!"),
+        ),
       );
+    jest
+      .spyOn(actionsHooks, "useExecuteActionOnUnits")
+      .mockImplementation(() => executeActionOnUnitsSpy);
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
@@ -369,7 +388,7 @@ describe("ActionsPanel", () => {
       await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
     await waitFor(() =>
-      expect(juju.executeActionOnUnits).toHaveBeenCalledTimes(1),
+      expect(executeActionOnUnitsSpy).toHaveBeenCalledTimes(1),
     );
     expect(console.error).toHaveBeenCalledWith(
       Label.EXECUTE_ACTION_ERROR,
