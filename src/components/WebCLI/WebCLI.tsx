@@ -20,6 +20,8 @@ import "./_webcli.scss";
 export enum Label {
   CONNECTION_ERROR = "Unable to connect to the model.",
   AUTHENTICATION_ERROR = "Unable to authenticate.",
+  NOT_OPEN_ERROR = "WebSocket connection is not open.",
+  UNKNOWN_ERROR = "Unknown error.",
 }
 
 enum InlineErrors {
@@ -48,7 +50,7 @@ const WebCLI = ({
   modelUUID,
   protocol = "wss",
 }: Props) => {
-  const [connection, setConnection] = useState<Connection | null>(null);
+  const connection = useRef<Connection | null>(null);
   const [shouldShowHelp, setShouldShowHelp] = useState(false);
   const [historyPosition, setHistoryPosition] = useState(0);
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
@@ -124,6 +126,10 @@ const WebCLI = ({
       return;
     }
     setInlineError(InlineErrors.CONNECTION, null);
+    // If we have an active WebSocket connection then don't create a new one.
+    if (connection.current?.isActive()) {
+      return;
+    }
     const conn = new Connection({
       address: wsAddress,
       onopen: () => {
@@ -132,16 +138,30 @@ const WebCLI = ({
       onclose: () => {
         // Unused handler.
       },
+      onerror: (error) => {
+        // Only display errors if they're related to the current WebSocket
+        // connection.
+        if (connection.current?.isWebSocketEqual(conn)) {
+          setInlineError(
+            InlineErrors.CONNECTION,
+            typeof error === "string" ? error : Label.UNKNOWN_ERROR,
+          );
+        }
+      },
       messageCallback: (message: string) => {
         wsMessageStore.current = wsMessageStore.current + message;
         setOutput(wsMessageStore.current);
       },
     }).connect();
-    setConnection(conn);
-    return () => {
-      conn.disconnect();
-    };
+    connection.current = conn;
   }, [setInlineError, wsAddress]);
+
+  useEffect(
+    () => () => {
+      connection.current?.disconnect();
+    },
+    [],
+  );
 
   const handleCommandSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -159,8 +179,8 @@ const WebCLI = ({
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
       // the model for the model status.
-      const origin = connection?.address
-        ? new URL(connection?.address)?.origin
+      const origin = connection.current?.address
+        ? new URL(connection.current?.address)?.origin
         : null;
       const macaroons = origin ? bakery.storage.get(origin) : null;
       if (macaroons) {
@@ -192,16 +212,20 @@ const WebCLI = ({
       setHistoryPosition(0);
     }
 
-    connection?.send(
-      JSON.stringify({
-        ...authentication,
-        commands: [command],
-      }),
-    );
-    sendAnalytics({
-      category: "User",
-      action: "WebCLI command sent",
-    });
+    if (connection.current?.isOpen()) {
+      connection.current?.send(
+        JSON.stringify({
+          ...authentication,
+          commands: [command],
+        }),
+      );
+      sendAnalytics({
+        category: "User",
+        action: "WebCLI command sent",
+      });
+    } else {
+      setInlineError(InlineErrors.CONNECTION, Label.NOT_OPEN_ERROR);
+    }
     if (inputRef.current) {
       inputRef.current.value = ""; // Clear the input after sending the message.
     }

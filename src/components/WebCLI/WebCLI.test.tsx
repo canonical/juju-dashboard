@@ -8,7 +8,8 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import { TestId } from "./Output";
-import WebCLI, { MAX_HISTORY, Label } from "./WebCLI";
+import WebCLI, { MAX_HISTORY, Label as WebCLILabel } from "./WebCLI";
+import { Label as ConnectionLabel } from "./connection";
 
 jest.mock("juju/bakery", () => ({
   __esModule: true,
@@ -21,28 +22,36 @@ jest.mock("juju/bakery", () => ({
 
 describe("WebCLI", () => {
   let bakerySpy: jest.SpyInstance;
+  let server: WS;
   const props = {
-    controllerWSHost: "jimm.jujucharms.com:443",
+    controllerWSHost: "localhost:1234",
     modelUUID: "abc123",
-    credentials: null,
+    credentials: {
+      user: "eggman@external",
+      password: "somelongpassword",
+    },
   };
 
   beforeEach(() => {
     bakerySpy = jest.spyOn(bakery.storage, "get");
+    server = new WS("wss://localhost:1234/model/abc123/commands");
   });
 
   afterEach(() => {
     bakerySpy.mockClear();
     localStorage.clear();
+    WS.clean();
   });
 
   it("renders correctly", async () => {
     const { result } = renderComponent(<WebCLI {...props} />);
+    await server.connected;
     expect(result.container).toMatchSnapshot();
   });
 
   it("shows the help in the output when the ? is clicked", async () => {
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     await userEvent.click(screen.getByRole("button"));
     expect(
       document.querySelector(".webcli__output-content code"),
@@ -53,6 +62,7 @@ describe("WebCLI", () => {
 
   it("shows the help when there is no output", async () => {
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     expect(
       document.querySelector(".webcli__output-content code"),
     ).toHaveTextContent(
@@ -61,29 +71,17 @@ describe("WebCLI", () => {
   });
 
   it("trims the command being submitted", async () => {
-    const server = new WS("ws://localhost:1234/model/abc123/commands", {
-      jsonProtocol: true,
-    });
-    renderComponent(
-      <WebCLI
-        protocol="ws"
-        controllerWSHost="localhost:1234"
-        modelUUID="abc123"
-        credentials={{
-          user: "spaceman",
-          password: "somelongpassword",
-        }}
-      />,
-    );
+    renderComponent(<WebCLI {...props} />);
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "      status       {enter}");
-    await expect(server).toReceiveMessage({
-      user: "spaceman",
-      credentials: "somelongpassword",
-      commands: ["status"],
-    });
-    WS.clean();
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status"],
+      }),
+    );
   });
 
   it("navigate back through the history", async () => {
@@ -92,6 +90,7 @@ describe("WebCLI", () => {
       JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}");
     expect(input).toHaveValue("help");
@@ -103,6 +102,7 @@ describe("WebCLI", () => {
       JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}{arrowup}");
     expect(input).toHaveValue("status");
@@ -116,6 +116,7 @@ describe("WebCLI", () => {
       JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}");
     expect(input).toHaveValue("help");
@@ -129,6 +130,7 @@ describe("WebCLI", () => {
       JSON.stringify(["status", "help", "whoami"]),
     );
     renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{arrowup}{arrowup}{arrowup}{arrowup}");
     expect(input).toHaveValue("status");
@@ -138,20 +140,8 @@ describe("WebCLI", () => {
     const items = [...Array(MAX_HISTORY).keys()].map((_, i) => `command-${i}`);
     localStorage.setItem("cliHistory", JSON.stringify(items));
     // ..until it receives a 'done' message.
-    new WS("ws://localhost:1234/model/abc123/commands", {
-      jsonProtocol: true,
-    });
-    renderComponent(
-      <WebCLI
-        protocol="ws"
-        controllerWSHost="localhost:1234"
-        modelUUID="abc123"
-        credentials={{
-          user: "spaceman",
-          password: "somelongpassword",
-        }}
-      />,
-    );
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
     const input = screen.getByRole("textbox");
     let history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
     expect(history).toHaveLength(MAX_HISTORY);
@@ -161,7 +151,6 @@ describe("WebCLI", () => {
     expect(history).toHaveLength(MAX_HISTORY);
     // The first item should be now be the old second item.
     expect(history[0]).toBe("command-1");
-    WS.clean();
   });
 
   it("supports macaroon based authentication", async () => {
@@ -171,7 +160,7 @@ describe("WebCLI", () => {
           controllerAPIEndpoint: "ws://localhost:1234/api",
         }),
         controllerConnections: {
-          "ws://localhost:1234/api": {
+          "wss://localhost:1234/api": {
             user: {
               "display-name": "eggman",
               identity: "user-eggman@external",
@@ -184,264 +173,341 @@ describe("WebCLI", () => {
     });
     bakerySpy.mockImplementation((key) => {
       const macaroons: Record<string, string> = {
-        "ws://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=",
+        "wss://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=",
       };
       return macaroons[key];
     });
 
-    const server = new WS("ws://localhost:1234/model/abc123/commands", {
-      jsonProtocol: true,
-    });
-    renderComponent(
-      <WebCLI
-        protocol="ws"
-        controllerWSHost="localhost:1234"
-        modelUUID="abc123"
-        credentials={null}
-      />,
-      { state },
-    );
+    renderComponent(<WebCLI {...props} credentials={null} />, { state });
     await server.connected;
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "      status       {enter}");
-    await expect(server).toReceiveMessage({
-      user: "eggman@external",
-      macaroons: [["mac", "aroon"]],
-      commands: ["status"],
-    });
-    WS.clean();
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        macaroons: [["mac", "aroon"]],
+        commands: ["status"],
+      }),
+    );
   });
 
-  describe("WebCLI Output", () => {
-    it("displays messages received over the websocket", async () => {
-      // ..until it receives a 'done' message.
-      const server = new WS("ws://localhost:1234/model/abc123/commands", {
-        jsonProtocol: true,
-      });
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={{
-            user: "eggman@external",
-            password: "somelongpassword",
-          }}
-        />,
-      );
-      await server.connected;
-      const input = screen.getByRole("textbox");
-      await userEvent.type(input, "status --color{enter}");
-      await expect(server).toReceiveMessage({
+  it("displays messages received over the websocket", async () => {
+    // ..until it receives a 'done' message.
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
         user: "eggman@external",
         credentials: "somelongpassword",
         commands: ["status --color"],
-      });
+      }),
+    );
 
-      const messages = [
-        {
-          output: [
-            "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
-          ],
-        },
-        {
-          output: [
-            "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
-          ],
-        },
-        { output: [""] },
-        {
-          output: [
-            "Machine  State    DNS             Inst id        Series  AZ          Message",
-          ],
-        },
-        {
-          output: [
-            "0        started  35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
-          ],
-        },
-        { output: [""] },
-        { done: true },
-      ];
+    const messages = [
+      {
+        output: [
+          "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
+        ],
+      },
+      {
+        output: [
+          "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
+        ],
+      },
+      { output: [""] },
+      {
+        output: [
+          "Machine  State    DNS             Inst id        Series  AZ          Message",
+        ],
+      },
+      {
+        output: [
+          "0        started  35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
+        ],
+      },
+      { output: [""] },
+      { done: true },
+    ];
 
-      messages.forEach((message) => {
-        server.send(message);
-      });
-
-      const code = await screen.findByTestId(TestId.CODE);
-      expect(code?.textContent).toMatchSnapshot();
-      // Wait for the setTimeout that buffers the message updates in connection.js.
-      await waitFor(() => {
-        expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
-          "style",
-          "height: 300px;",
-        );
-      });
-      WS.clean();
+    messages.forEach((message) => {
+      server.send(JSON.stringify(message));
     });
 
-    it("displays ansi colored content colored", async () => {
-      // ..until it receives a 'done' message.
-      const server = new WS("ws://localhost:1234/model/abc123/commands", {
-        jsonProtocol: true,
-      });
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={{
-            user: "spaceman",
-            password: "somelongpassword",
-          }}
-        />,
+    const code = await screen.findByTestId(TestId.CODE);
+    expect(code?.textContent).toMatchSnapshot();
+    // Wait for the setTimeout that buffers the message updates in connection.js.
+    await waitFor(() => {
+      expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+        "style",
+        "height: 300px;",
       );
-      await server.connected;
-      const input = screen.getByRole("textbox");
-      await userEvent.type(input, "status --color{enter}");
-      await expect(server).toReceiveMessage({
-        user: "spaceman",
+    });
+  });
+
+  it("displays ansi colored content colored", async () => {
+    // ..until it receives a 'done' message.
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
         credentials: "somelongpassword",
         commands: ["status --color"],
-      });
+      }),
+    );
 
-      const messages = [
-        {
-          output: [
-            "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
-          ],
-        },
-        {
-          output: [
-            "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
-          ],
-        },
-        { output: [""] },
-        {
-          output: [
-            "Machine  State    DNS             Inst id        Series  AZ          Message",
-          ],
-        },
-        {
-          output: [
-            "0        \u001b[32mstarted  \u001b[0m35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
-          ],
-        },
-        { output: [""] },
-        { done: true },
-      ];
+    const messages = [
+      {
+        output: [
+          "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
+        ],
+      },
+      {
+        output: [
+          "controller  google-us-east1  google/us-east1  2.9-beta1  unsupported  17:44:14Z",
+        ],
+      },
+      { output: [""] },
+      {
+        output: [
+          "Machine  State    DNS             Inst id        Series  AZ          Message",
+        ],
+      },
+      {
+        output: [
+          "0        \u001b[32mstarted  \u001b[0m35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
+        ],
+      },
+      { output: [""] },
+      { done: true },
+    ];
 
-      messages.forEach((message) => {
-        server.send(message);
-      });
-
-      const code = await screen.findByTestId(TestId.CODE);
-      expect(code?.textContent).toMatchSnapshot();
-      // Wait for the setTimeout that buffers the message updates in connection.js.
-      await waitFor(() => {
-        expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
-          "style",
-          "height: 300px;",
-        );
-      });
-      WS.clean();
+    messages.forEach((message) => {
+      server.send(JSON.stringify(message));
     });
 
-    it("can be resized with a mouse", async () => {
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={{
-            user: "spaceman",
-            password: "somelongpassword",
-          }}
-        />,
-      );
-      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+    const code = await screen.findByTestId(TestId.CODE);
+    expect(code?.textContent).toMatchSnapshot();
+    // Wait for the setTimeout that buffers the message updates in connection.js.
+    await waitFor(() => {
+      expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
         "style",
-        "height: 1px;",
+        "height: 300px;",
       );
-      const handle = document.querySelector(".webcli__output-handle");
-      expect(handle).toBeTruthy();
-      if (handle) {
-        fireEvent.mouseDown(handle);
-        fireEvent.mouseMove(handle, {
-          clientY: 100,
-        });
-      }
-      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
-        "style",
-        "height: 628px;",
-      );
-      WS.clean();
     });
+  });
 
-    it("can be resized on mobile", async () => {
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={{
-            user: "spaceman",
-            password: "somelongpassword",
-          }}
-        />,
-      );
-      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
-        "style",
-        "height: 1px;",
-      );
-      const handle = document.querySelector(".webcli__output-handle");
-      expect(handle).toBeTruthy();
-      if (handle) {
-        fireEvent.touchStart(handle);
-        fireEvent.touchMove(handle, {
-          touches: [
-            {
-              clientY: 100,
-            },
-          ],
-        });
-      }
-      expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
-        "style",
-        "height: 628px;",
-      );
-      WS.clean();
-    });
-
-    it("should display connection error when no websocket address is present", () => {
-      renderComponent(<WebCLI {...props} modelUUID="" />);
-      expect(
-        document.querySelector(".webcli__output-content code"),
-      ).toHaveTextContent(`ERROR: ${Label.CONNECTION_ERROR}`);
-    });
-
-    it("should display authentication error when no credentials and macaroons are available", async () => {
-      bakerySpy.mockImplementation(() => null);
-
-      const server = new WS("ws://localhost:1234/model/abc123/commands", {
-        jsonProtocol: true,
+  it("can be resized with a mouse", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      "height: 1px;",
+    );
+    const handle = document.querySelector(".webcli__output-handle");
+    expect(handle).toBeTruthy();
+    if (handle) {
+      fireEvent.mouseDown(handle);
+      fireEvent.mouseMove(handle, {
+        clientY: 100,
       });
-      renderComponent(
-        <WebCLI
-          protocol="ws"
-          controllerWSHost="localhost:1234"
-          modelUUID="abc123"
-          credentials={null}
-        />,
-      );
-      await server.connected;
-      const input = screen.getByRole("textbox");
-      await userEvent.type(input, "status{enter}");
-      await expect(server).toReceiveMessage({ commands: ["status"] });
-      expect(
-        document.querySelector(".webcli__output-content code"),
-      ).toHaveTextContent(`ERROR: ${Label.AUTHENTICATION_ERROR}`);
-      WS.clean();
+    }
+    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      "height: 628px;",
+    );
+  });
+
+  it("can be resized on mobile", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      "height: 1px;",
+    );
+    const handle = document.querySelector(".webcli__output-handle");
+    expect(handle).toBeTruthy();
+    if (handle) {
+      fireEvent.touchStart(handle);
+      fireEvent.touchMove(handle, {
+        touches: [
+          {
+            clientY: 100,
+          },
+        ],
+      });
+    }
+    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      "height: 628px;",
+    );
+  });
+
+  it("clears the buffer timeout if there are pending updates when unmounting", async () => {
+    jest.useFakeTimers();
+    const clearTimeoutSpy = jest.spyOn(global, "clearTimeout");
+    const { result } = renderComponent(<WebCLI {...props} />);
+    const messages = [
+      {
+        output: [
+          "Model       Controller       Cloud/Region     Version    SLA          Timestamp",
+        ],
+      },
+      { output: [""] },
+      { done: true },
+    ];
+    messages.forEach((message) => {
+      server.send(JSON.stringify(message));
     });
+    expect(clearTimeoutSpy).not.toHaveBeenCalled();
+    result.unmount();
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    clearTimeoutSpy.mockRestore();
+    jest.useRealTimers();
+  });
+
+  it("should display connection error when no websocket address is present", () => {
+    renderComponent(<WebCLI {...props} modelUUID="" />);
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${WebCLILabel.CONNECTION_ERROR}`);
+  });
+
+  it("should display authentication error when no credentials and macaroons are available", async () => {
+    bakerySpy.mockImplementation(() => null);
+
+    renderComponent(<WebCLI {...props} credentials={null} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({ commands: ["status"] }),
+    );
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${WebCLILabel.AUTHENTICATION_ERROR}`);
+  });
+
+  it("should display error when JSON can't be parsed", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    server.send("[1, 2, 3, 4}");
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
+  });
+
+  it("should display error when received message is falsy", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    server.send(JSON.stringify(null));
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
+  });
+
+  it("should display error when received message is not an object", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    server.send(JSON.stringify("not an object"));
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
+  });
+
+  it("should display error when connecting to sub controller of JAAS", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    new WS("invalid-url-for-jaas-sub-controller");
+    server.send(
+      JSON.stringify({ "redirect-to": "invalid-url-for-jaas-sub-controller" }),
+    );
+    await server.closed;
+    // Trying to connect to WebSocket with invalid URL spits up error.
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.JAAS_CONNECTION_ERROR}`);
+  });
+
+  it("should display error when received message output is not an array", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status --color"],
+      }),
+    );
+    server.send(
+      JSON.stringify({
+        output: "not-an-array",
+      }),
+    );
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
+  });
+
+  it("should display unknown errors", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    server.error();
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${WebCLILabel.UNKNOWN_ERROR}`);
+  });
+
+  it("should display error when trying to send message over an unopened connection", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    server.close();
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status --color{enter}");
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(`ERROR: ${WebCLILabel.NOT_OPEN_ERROR}`);
   });
 });

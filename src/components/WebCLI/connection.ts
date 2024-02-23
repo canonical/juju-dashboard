@@ -1,86 +1,134 @@
+import { toErrorString } from "utils";
+
+export enum Label {
+  INCORRECT_DATA_ERROR = "Invalid response from the server.",
+  JAAS_CONNECTION_ERROR = "Unable to connect to JAAS controller.",
+}
+
 type Options = {
   address: string;
   messageCallback: (message: string) => void;
   onclose: () => void;
   onopen: () => void;
+  onerror: (error: Event | string) => void;
 };
 
 class Connection {
-  address: string;
-  _messageBuffer = "";
-  _timeout: number | null = null;
-  _messageCallback: (message: string) => void;
-  _wsOnOpen: () => void;
-  _wsOnClose: () => void;
-  _ws: WebSocket | null = null;
+  #address: string;
+  #messageBuffer = "";
+  #timeout: number | null = null;
+  #messageCallback: (message: string) => void;
+  #wsOnOpen: () => void;
+  #wsOnClose: () => void;
+  #wsOnError: (error: Event | string) => void;
+  #ws: WebSocket | null = null;
 
   constructor(options: Options) {
-    this._messageCallback = options.messageCallback;
-    this.address = options.address;
-    this._wsOnOpen = options.onopen;
-    this._wsOnClose = options.onclose;
+    this.#messageCallback = options.messageCallback;
+    this.#address = options.address;
+    this.#wsOnOpen = options.onopen;
+    this.#wsOnClose = options.onclose;
+    this.#wsOnError = options.onerror;
+  }
+
+  get address() {
+    return this.#address;
   }
 
   connect() {
-    const ws = new WebSocket(this.address);
-    ws.onopen = this._wsOnOpen;
-    ws.onclose = this._wsOnClose;
-    ws.onmessage = this._handleMessage.bind(this);
-    this._ws = ws;
+    const ws = new WebSocket(this.#address);
+    ws.onopen = this.#wsOnOpen;
+    ws.onclose = this.#wsOnClose;
+    ws.onmessage = this.#handleMessage.bind(this);
+    ws.onerror = this.#wsOnError;
+    this.#ws = ws;
     return this;
   }
 
   send(message: string) {
-    this._ws?.send(message);
+    this.#ws?.send(message);
   }
 
   disconnect() {
-    this._ws?.close();
-    if (this._timeout) {
-      clearTimeout(this._timeout);
+    if (this.isActive()) {
+      this.#ws?.close();
+    }
+    if (this.#timeout) {
+      clearTimeout(this.#timeout);
+      this.#messageBuffer = "";
+      this.#timeout = null;
     }
   }
 
-  _handleMessage(e: MessageEvent) {
-    try {
-      const data = JSON.parse(e.data);
-      if (data["redirect-to"]) {
-        // This is a JAAS controller and we need to instead
-        // connect to the sub controller.
-        this._ws?.close();
-        this.address = data["redirect-to"];
-        this.connect();
-      }
+  isOpen() {
+    return this.#ws?.readyState === WebSocket.OPEN;
+  }
 
-      if (data.done) {
+  isActive() {
+    return this.#ws?.readyState === WebSocket.CONNECTING || this.isOpen();
+  }
+
+  isWebSocketEqual(newConnection: Connection) {
+    return this.#ws === newConnection.#ws;
+  }
+
+  #handleMessage(messageEvent: MessageEvent) {
+    try {
+      let data: unknown;
+      try {
+        data = JSON.parse(messageEvent.data);
+      } catch (error) {
+        throw new Error(Label.INCORRECT_DATA_ERROR);
+      }
+      if (!data || typeof data !== "object") {
+        throw new Error(Label.INCORRECT_DATA_ERROR);
+      }
+      if (
+        "redirect-to" in data &&
+        data["redirect-to"] &&
+        typeof data["redirect-to"] === "string"
+      ) {
+        try {
+          // This is a JAAS controller and we need to instead
+          // connect to the sub controller.
+          this.disconnect();
+          this.#address = data["redirect-to"];
+          this.connect();
+        } catch (error) {
+          throw new Error(Label.JAAS_CONNECTION_ERROR);
+        }
+      }
+      if ("done" in data && data.done) {
         // This is the last message.
         return;
       }
-      if (!data.output) {
+      if (!("output" in data) || !data.output) {
         // This is the first message, an empty object and a newline.
         return;
       }
-      this._pushToMessageBuffer(`\n${data?.output[0]}`);
-    } catch (e) {
-      console.log(e);
-      // XXX handle the invalid data response
+      if (!Array.isArray(data.output)) {
+        throw new Error(Label.INCORRECT_DATA_ERROR);
+      }
+      this.#pushToMessageBuffer(`\n${data.output[0]}`);
+    } catch (error) {
+      this.#wsOnError(toErrorString(error));
     }
   }
 
-  _pushToMessageBuffer(message: string) {
-    const bufferEmpty = !!this._messageBuffer;
-    this._messageBuffer = this._messageBuffer + message;
+  #pushToMessageBuffer(message: string) {
+    const bufferEmpty = !!this.#messageBuffer;
+    this.#messageBuffer = this.#messageBuffer + message;
     if (bufferEmpty) {
-      this._timeout = window.setTimeout(() => {
+      this.#timeout = window.setTimeout(() => {
         /*
         The messageBuffer is required because the websocket returns messages
         much faster than React wants to update the component. Doing this allows
         us to store the messages in a buffer and then set the output every
         cycle.
       */
-        this._messageCallback(this._messageBuffer);
-        this._messageBuffer = "";
-        this._timeout = null;
+        this.#messageCallback(this.#messageBuffer);
+        this.#messageBuffer = "";
+        this.#timeout = null;
       });
     }
   }
