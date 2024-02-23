@@ -113,7 +113,7 @@ describe("useModelConnectionCallback", () => {
     changeURL("/models/eggman@external/group-test/app/etcd");
     jest
       .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.reject(new Error()));
+      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
     const callback = jest.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
@@ -127,7 +127,7 @@ describe("useModelConnectionCallback", () => {
     result.current(callback);
     await waitFor(() => {
       expect(callback).toHaveBeenCalledWith({
-        error: "Error during promise race.",
+        error: "Uh oh!",
       });
     });
   });
