@@ -23,7 +23,7 @@ import useCanManageSecrets from "hooks/useCanManageSecrets";
 import useInlineErrors, { type SetError } from "hooks/useInlineErrors";
 import type { Config, ConfigData, ConfigValue } from "juju/api";
 import { getApplicationConfig, setApplicationConfig } from "juju/api";
-import { useListSecrets, useGrantSecret } from "juju/apiHooks";
+import { useListSecrets, useGrantSecret } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import type { ConfirmTypes as DefaultConfirmTypes } from "panels/types";

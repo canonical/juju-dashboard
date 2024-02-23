@@ -2,7 +2,7 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import * as apiModule from "juju/api";
-import * as apiHooks from "juju/apiHooks";
+import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
 import {
   generalStateFactory,
@@ -38,7 +38,7 @@ jest.mock("juju/api", () => ({
   setApplicationConfig: jest.fn(),
 }));
 
-jest.mock("juju/apiHooks", () => {
+jest.mock("juju/api-hooks/secrets", () => {
   return {
     useGrantSecret: jest.fn().mockReturnValue(jest.fn()),
     useListSecrets: jest.fn().mockReturnValue(jest.fn()),
@@ -62,7 +62,9 @@ describe("ConfigPanel", () => {
   beforeEach(() => {
     console.error = jest.fn();
     jest.resetModules();
-    jest.spyOn(apiHooks, "useListSecrets").mockImplementation(() => jest.fn());
+    jest
+      .spyOn(secretHooks, "useListSecrets")
+      .mockImplementation(() => jest.fn());
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -715,7 +717,7 @@ describe("ConfigPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({
@@ -760,7 +762,7 @@ describe("ConfigPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({
@@ -805,7 +807,7 @@ describe("ConfigPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({
@@ -854,7 +856,7 @@ describe("ConfigPanel", () => {
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Caught error")));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({

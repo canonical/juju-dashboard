@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import SecretLabel from "components/secrets/SecretLabel";
-import { useRemoveSecrets, useListSecrets } from "juju/apiHooks";
+import { useRemoveSecrets, useListSecrets } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import { getSecretByURI, getModelUUIDFromList } from "store/juju/selectors";

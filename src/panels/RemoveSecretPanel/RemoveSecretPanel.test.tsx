@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import * as apiHooks from "juju/apiHooks";
+import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -22,7 +22,7 @@ import urls from "urls";
 import { Label as FieldsLabel } from "./Fields/Fields";
 import RemoveSecretPanel, { Label } from "./RemoveSecretPanel";
 
-jest.mock("juju/apiHooks", () => {
+jest.mock("juju/api-hooks/secrets", () => {
   return {
     useRemoveSecrets: jest.fn().mockReturnValue(jest.fn()),
     useListSecrets: jest.fn().mockReturnValue(jest.fn()),
@@ -72,7 +72,9 @@ describe("RemoveSecretPanel", () => {
         }),
       },
     });
-    jest.spyOn(apiHooks, "useListSecrets").mockImplementation(() => jest.fn());
+    jest
+      .spyOn(secretHooks, "useListSecrets")
+      .mockImplementation(() => jest.fn());
   });
 
   it("shows a confirmation when the form is submitted", async () => {
@@ -80,7 +82,7 @@ describe("RemoveSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useRemoveSecrets")
+      .spyOn(secretHooks, "useRemoveSecrets")
       .mockImplementation(() => removeSecrets);
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
@@ -95,7 +97,7 @@ describe("RemoveSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useRemoveSecrets")
+      .spyOn(secretHooks, "useRemoveSecrets")
       .mockImplementation(() => removeSecrets);
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
@@ -115,7 +117,7 @@ describe("RemoveSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Caught error")));
     jest
-      .spyOn(apiHooks, "useRemoveSecrets")
+      .spyOn(secretHooks, "useRemoveSecrets")
       .mockImplementation(() => removeSecrets);
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
@@ -132,7 +134,7 @@ describe("RemoveSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve("String error"));
     jest
-      .spyOn(apiHooks, "useRemoveSecrets")
+      .spyOn(secretHooks, "useRemoveSecrets")
       .mockImplementation(() => removeSecrets);
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
@@ -151,7 +153,7 @@ describe("RemoveSecretPanel", () => {
         Promise.resolve({ results: [{ error: { message: "Error result" } }] }),
       );
     jest
-      .spyOn(apiHooks, "useRemoveSecrets")
+      .spyOn(secretHooks, "useRemoveSecrets")
       .mockImplementation(() => removeSecrets);
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
@@ -168,7 +170,7 @@ describe("RemoveSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useRemoveSecrets")
+      .spyOn(secretHooks, "useRemoveSecrets")
       .mockImplementation(() => removeSecrets);
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     expect(window.location.search).toEqual(
@@ -186,11 +188,11 @@ describe("RemoveSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useRemoveSecrets")
+      .spyOn(secretHooks, "useRemoveSecrets")
       .mockImplementation(() => removeSecrets);
     const listSecrets = jest.fn();
     jest
-      .spyOn(apiHooks, "useListSecrets")
+      .spyOn(secretHooks, "useListSecrets")
       .mockImplementation(() => listSecrets);
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     expect(listSecrets).not.toHaveBeenCalled();

@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import * as apiHooks from "juju/apiHooks";
+import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -22,7 +22,7 @@ import urls from "urls";
 import { Label as FieldsLabel } from "./Fields/Fields";
 import SecretForm, { TestId } from "./SecretForm";
 
-jest.mock("juju/apiHooks", () => {
+jest.mock("juju/api-hooks/secrets", () => {
   return {
     useCreateSecrets: jest.fn().mockReturnValue(jest.fn()),
     useUpdateSecrets: jest.fn().mockReturnValue(jest.fn()),
@@ -41,9 +41,11 @@ describe("SecretForm", () => {
   const updateURL = `${url}?panel=remove-secret&secret=secret:aabbccdd`;
 
   beforeEach(() => {
-    jest.spyOn(apiHooks, "useListSecrets").mockImplementation(() => jest.fn());
     jest
-      .spyOn(apiHooks, "useGetSecretContent")
+      .spyOn(secretHooks, "useListSecrets")
+      .mockImplementation(() => jest.fn());
+    jest
+      .spyOn(secretHooks, "useGetSecretContent")
       .mockImplementation(() => jest.fn());
 
     state = rootStateFactory.build({
@@ -89,7 +91,7 @@ describe("SecretForm", () => {
         Promise.resolve({ results: [{ result: "secret:aabbccdd" }] }),
       );
     jest
-      .spyOn(apiHooks, "useCreateSecrets")
+      .spyOn(secretHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
     const onSuccess = jest.fn();
     renderComponent(
@@ -168,7 +170,7 @@ describe("SecretForm", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useUpdateSecrets")
+      .spyOn(secretHooks, "useUpdateSecrets")
       .mockImplementation(() => updateSecrets);
     renderComponent(
       <SecretForm
@@ -227,7 +229,7 @@ describe("SecretForm", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useCreateSecrets")
+      .spyOn(secretHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
     renderComponent(
       <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
@@ -262,7 +264,7 @@ describe("SecretForm", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useCreateSecrets")
+      .spyOn(secretHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
     renderComponent(
       <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
@@ -299,7 +301,7 @@ describe("SecretForm", () => {
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Caught error")));
     jest
-      .spyOn(apiHooks, "useCreateSecrets")
+      .spyOn(secretHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
     renderComponent(
       <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
@@ -327,7 +329,7 @@ describe("SecretForm", () => {
       .fn()
       .mockImplementation(() => Promise.resolve("String error"));
     jest
-      .spyOn(apiHooks, "useCreateSecrets")
+      .spyOn(secretHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
     renderComponent(
       <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
@@ -357,7 +359,7 @@ describe("SecretForm", () => {
         Promise.resolve({ results: [{ error: { message: "Error result" } }] }),
       );
     jest
-      .spyOn(apiHooks, "useCreateSecrets")
+      .spyOn(secretHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
     renderComponent(
       <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
@@ -385,11 +387,11 @@ describe("SecretForm", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useCreateSecrets")
+      .spyOn(secretHooks, "useCreateSecrets")
       .mockImplementation(() => createSecrets);
     const listSecrets = jest.fn();
     jest
-      .spyOn(apiHooks, "useListSecrets")
+      .spyOn(secretHooks, "useListSecrets")
       .mockImplementation(() => listSecrets);
     renderComponent(
       <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,

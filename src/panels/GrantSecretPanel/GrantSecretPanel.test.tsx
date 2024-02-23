@@ -1,7 +1,7 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import * as apiHooks from "juju/apiHooks";
+import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -25,7 +25,7 @@ import urls from "urls";
 
 import GrantSecretPanel, { Label } from "./GrantSecretPanel";
 
-jest.mock("juju/apiHooks", () => {
+jest.mock("juju/api-hooks/secrets", () => {
   return {
     useGrantSecret: jest.fn().mockReturnValue(jest.fn()),
     useListSecrets: jest.fn().mockReturnValue(jest.fn()),
@@ -79,7 +79,9 @@ describe("GrantSecretPanel", () => {
         }),
       },
     });
-    jest.spyOn(apiHooks, "useListSecrets").mockImplementation(() => jest.fn());
+    jest
+      .spyOn(secretHooks, "useListSecrets")
+      .mockImplementation(() => jest.fn());
   });
 
   it("displays a spinner while loading", async () => {
@@ -144,13 +146,13 @@ describe("GrantSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     const revokeSecret = jest
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useRevokeSecret")
+      .spyOn(secretHooks, "useRevokeSecret")
       .mockImplementation(() => revokeSecret);
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
@@ -174,13 +176,13 @@ describe("GrantSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     const revokeSecret = jest
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useRevokeSecret")
+      .spyOn(secretHooks, "useRevokeSecret")
       .mockImplementation(() => revokeSecret);
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
@@ -195,7 +197,7 @@ describe("GrantSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Caught error")));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
@@ -212,7 +214,7 @@ describe("GrantSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve("String error"));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
@@ -229,7 +231,7 @@ describe("GrantSecretPanel", () => {
         Promise.resolve({ results: [{ error: { message: "Error result" } }] }),
       );
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
@@ -244,7 +246,7 @@ describe("GrantSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     renderComponent(<GrantSecretPanel />, { state, path, url });
     expect(window.location.search).toEqual(
@@ -260,11 +262,11 @@ describe("GrantSecretPanel", () => {
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
     jest
-      .spyOn(apiHooks, "useGrantSecret")
+      .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
     const listSecrets = jest.fn();
     jest
-      .spyOn(apiHooks, "useListSecrets")
+      .spyOn(secretHooks, "useListSecrets")
       .mockImplementation(() => listSecrets);
     renderComponent(<GrantSecretPanel />, { state, path, url });
     expect(listSecrets).not.toHaveBeenCalled();
