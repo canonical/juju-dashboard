@@ -19,7 +19,7 @@ import useInlineErrors from "hooks/useInlineErrors";
 import {
   useExecuteActionOnUnits,
   useGetActionsForApplication,
-} from "juju/api-hooks/actions";
+} from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import { ConfirmType, type ConfirmTypes } from "panels/types";

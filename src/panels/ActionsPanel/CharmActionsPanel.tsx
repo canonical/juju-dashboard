@@ -11,7 +11,7 @@ import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import ToastCard from "components/ToastCard/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
-import { useExecuteActionOnUnits } from "juju/api-hooks/actions";
+import { useExecuteActionOnUnits } from "juju/api-hooks";
 import ActionOptions from "panels/ActionsPanel/ActionOptions";
 import type {
   ActionOptionValue,

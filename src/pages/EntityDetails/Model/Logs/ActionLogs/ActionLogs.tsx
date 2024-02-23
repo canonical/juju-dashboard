@@ -25,10 +25,7 @@ import type { EntityDetailsRoute } from "components/Routes/Routes";
 import Status from "components/Status";
 import { copyToClipboard } from "components/utils";
 import useInlineErrors from "hooks/useInlineErrors";
-import {
-  useQueryActionsList,
-  useQueryOperationsList,
-} from "juju/api-hooks/actions";
+import { useQueryActionsList, useQueryOperationsList } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
