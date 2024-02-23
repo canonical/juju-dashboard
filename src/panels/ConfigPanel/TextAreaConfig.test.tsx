@@ -1,7 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { ConfigData } from "juju/api";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -20,6 +19,7 @@ import urls from "urls";
 
 import { Label } from "./SecretsPicker/SecretsPicker";
 import TextAreaConfig from "./TextAreaConfig";
+import type { ConfigData } from "./types";
 
 describe("TextAreaConfig", () => {
   const config: ConfigData = {

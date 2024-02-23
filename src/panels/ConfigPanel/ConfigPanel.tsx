@@ -20,7 +20,6 @@ import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
 import useInlineErrors, { type SetError } from "hooks/useInlineErrors";
-import type { Config, ConfigData, ConfigValue } from "juju/api";
 import {
   useListSecrets,
   useGrantSecret,
@@ -42,6 +41,7 @@ import BooleanConfig from "./BooleanConfig";
 import type { SetNewValue, SetSelectedConfig } from "./ConfigField";
 import NumberConfig from "./NumberConfig";
 import TextAreaConfig from "./TextAreaConfig";
+import type { Config, ConfigData, ConfigValue } from "./types";
 
 import "./_config-panel.scss";
 
@@ -54,6 +54,8 @@ export enum Label {
   GRANT_CONFIRM = "Grant secrets?",
   GRANT_CONFIRM_BUTTON = "Yes",
   GRANT_ERROR = "Unable to grant application access to secrets.",
+  INVALID_SECRET_ERROR = "This is an invalid secret URI.",
+  SECRET_PREFIX_ERROR = "A secret URI must begin with the 'secret:' prefix.",
   NONE = "This application doesn't have any configuration parameters",
   RESET_BUTTON = "Reset all values",
   SAVE_BUTTON = "Save and apply",
@@ -120,6 +122,9 @@ const getRequiredGrants = (
       })
     : null;
 };
+
+const hasErrors = (config: Config) =>
+  Object.values(config).some((field) => field.error);
 
 export default function ConfigPanel(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -218,6 +223,12 @@ export default function ConfigPanel(): JSX.Element {
     setConfig(newConfig);
     checkEnableSave(newConfig);
     checkAllDefaults(newConfig);
+  }
+
+  function setError(name: string, error?: string | null) {
+    const newConfig = cloneDeep(config);
+    newConfig[name].error = error;
+    setConfig(newConfig);
   }
 
   function checkAllDefaults(config: Config) {
@@ -479,7 +490,7 @@ export default function ConfigPanel(): JSX.Element {
                 "is-active": savingConfig,
               })}
               onClick={handleSubmit}
-              disabled={!enableSave || savingConfig}
+              disabled={!enableSave || savingConfig || hasErrors(config)}
             >
               {!savingConfig ? (
                 Label.SAVE_BUTTON
@@ -556,6 +567,8 @@ export default function ConfigPanel(): JSX.Element {
                 selectedConfig,
                 setSelectedConfig,
                 setNewValue,
+                setError,
+                secrets,
               )}
             </div>
             {generateConfirmationDialog()}
@@ -608,6 +621,8 @@ function generateConfigElementList(
   selectedConfig: ConfigData | undefined,
   setSelectedConfig: SetSelectedConfig,
   setNewValue: SetNewValue,
+  setError: (name: string, error?: string | null) => void,
+  secrets?: ListSecretResult[] | null,
 ) {
   const elements = Object.keys(configs).map((key) => {
     const config = configs[key];
@@ -639,6 +654,55 @@ function generateConfigElementList(
           selectedConfig={selectedConfig}
           setSelectedConfig={setSelectedConfig}
           setNewValue={setNewValue}
+          validate={(validateConfig) => {
+            if (
+              validateConfig.type !== "secret" &&
+              validateConfig.type !== "string"
+            ) {
+              // This field is only used for string and secret fields so narrow
+              // the config types.
+              return;
+            }
+            if (!validateConfig.newValue) {
+              // Clear previous errors
+              if (validateConfig.error) {
+                setError(validateConfig.name, null);
+              }
+              // Don't validate unchanged fields.
+              return;
+            }
+            if (
+              validateConfig.type === "secret" &&
+              !validateConfig.newValue.startsWith("secret:")
+            ) {
+              setError(validateConfig.name, Label.SECRET_PREFIX_ERROR);
+              return;
+            }
+            if (
+              ((validateConfig.type === "string" &&
+                validateConfig.newValue.startsWith("secret:")) ||
+                validateConfig.type === "secret") &&
+              secrets
+            ) {
+              const validSecrets = secrets.reduce<string[]>(
+                (validURIs, secret) => {
+                  if (!secretIsAppOwned(secret)) {
+                    validURIs.push(secret.uri);
+                  }
+                  return validURIs;
+                },
+                [],
+              );
+              if (!validSecrets.includes(validateConfig.newValue)) {
+                setError(validateConfig.name, Label.INVALID_SECRET_ERROR);
+                return;
+              }
+            }
+            // Clear previous errors.
+            if (validateConfig.error) {
+              setError(validateConfig.name, null);
+            }
+          }}
         />
       );
     }

@@ -554,27 +554,6 @@ export async function connectAndLoginToModel(
   );
 }
 
-export type ConfigValue = string | number | boolean | undefined;
-
-export type ConfigOption<V, T> = {
-  name: string;
-  default?: V;
-  description: string;
-  source: "default" | "user";
-  type: T;
-  value?: V;
-  newValue?: V;
-};
-
-export type ConfigData =
-  | ConfigOption<string, "string" | "secret">
-  | ConfigOption<number, "int" | "float">
-  | ConfigOption<boolean, "boolean">;
-
-export type Config = {
-  [key: string]: ConfigData;
-};
-
 export async function getActionsForApplication(
   appName: string,
   modelUUID: string,

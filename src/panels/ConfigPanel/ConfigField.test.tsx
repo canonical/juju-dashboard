@@ -1,9 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { ConfigData } from "juju/api";
-
 import ConfigField, { Label } from "./ConfigField";
+import type { ConfigData } from "./types";
 
 describe("ConfigField", () => {
   const config: ConfigData = {
@@ -126,5 +125,106 @@ describe("ConfigField", () => {
       screen.getByRole("button", { name: Label.DEFAULT_BUTTON }),
     );
     expect(setNewValue).toHaveBeenCalledWith("name", "eggman");
+  });
+
+  it("displays errors", async () => {
+    render(
+      <ConfigField
+        config={{ ...config, error: "Uh oh!" }}
+        selectedConfig={undefined}
+        input={(value: string) => (
+          <input type="text" value={value} onChange={jest.fn()} />
+        )}
+        setSelectedConfig={jest.fn()}
+        setNewValue={jest.fn()}
+        validate={jest.fn()}
+      />,
+    );
+    expect(document.querySelector(".p-form-validation")).toHaveClass(
+      "is-error",
+    );
+    expect(screen.getByText("Uh oh!")).toHaveClass(
+      "p-form-validation__message",
+    );
+  });
+
+  it("calls the validate function when first displayed", async () => {
+    const validate = jest.fn();
+    render(
+      <ConfigField
+        config={config}
+        selectedConfig={undefined}
+        input={(value: string) => (
+          <input type="text" value={value} onChange={jest.fn()} />
+        )}
+        setSelectedConfig={jest.fn()}
+        setNewValue={jest.fn()}
+        validate={validate}
+      />,
+    );
+    expect(validate).toHaveBeenCalledWith(config);
+  });
+
+  it("calls the validate function when the value changes", async () => {
+    const validate = jest.fn();
+    const { rerender } = render(
+      <ConfigField
+        config={config}
+        selectedConfig={undefined}
+        input={(value: string) => (
+          <input type="text" value={value} onChange={jest.fn()} />
+        )}
+        setSelectedConfig={jest.fn()}
+        setNewValue={jest.fn()}
+        validate={validate}
+      />,
+    );
+    const newConfig = { ...config, newValue: "hi" };
+    rerender(
+      <ConfigField
+        config={newConfig}
+        selectedConfig={undefined}
+        input={(value: string) => (
+          <input type="text" value={value} onChange={jest.fn()} />
+        )}
+        setSelectedConfig={jest.fn()}
+        setNewValue={jest.fn()}
+        validate={validate}
+      />,
+    );
+    expect(validate).toHaveBeenCalledWith(newConfig);
+  });
+
+  it("does not call the validate function if the value hasn't changed", async () => {
+    const validate = jest.fn();
+    const { rerender } = render(
+      <ConfigField
+        config={config}
+        selectedConfig={undefined}
+        input={(value: string) => (
+          <input type="text" value={value} onChange={jest.fn()} />
+        )}
+        setSelectedConfig={jest.fn()}
+        setNewValue={jest.fn()}
+        validate={validate}
+      />,
+    );
+    expect(validate).toHaveBeenCalledTimes(1);
+    rerender(
+      <ConfigField
+        config={
+          // Pass a new reference
+          { ...config }
+        }
+        selectedConfig={undefined}
+        input={(value: string) => (
+          <input type="text" value={value} onChange={jest.fn()} />
+        )}
+        setSelectedConfig={jest.fn()}
+        setNewValue={jest.fn()}
+        validate={validate}
+      />,
+    );
+    expect(validate).toHaveBeenCalledTimes(1);
   });
 });

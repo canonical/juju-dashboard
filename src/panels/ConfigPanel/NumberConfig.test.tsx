@@ -1,9 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { ConfigData } from "juju/api";
-
 import NumberConfig from "./NumberConfig";
+import type { ConfigData } from "./types";
 
 describe("NumberConfig", () => {
   const config: ConfigData = {
