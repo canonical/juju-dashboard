@@ -153,7 +153,6 @@ const WebCLI = ({
         setOutput(wsMessageStore.current);
       },
     }).connect();
-    connection.current?.disconnect();
     connection.current = conn;
   }, [setInlineError, wsAddress]);
 
@@ -220,13 +219,13 @@ const WebCLI = ({
           commands: [command],
         }),
       );
+      sendAnalytics({
+        category: "User",
+        action: "WebCLI command sent",
+      });
     } else {
       setInlineError(InlineErrors.CONNECTION, Label.NOT_OPEN_ERROR);
     }
-    sendAnalytics({
-      category: "User",
-      action: "WebCLI command sent",
-    });
     if (inputRef.current) {
       inputRef.current.value = ""; // Clear the input after sending the message.
     }
