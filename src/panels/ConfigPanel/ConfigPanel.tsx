@@ -10,7 +10,6 @@ import type { ReactNode, MouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
-import type { Store } from "redux";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";
@@ -22,8 +21,12 @@ import useAnalytics from "hooks/useAnalytics";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
 import useInlineErrors, { type SetError } from "hooks/useInlineErrors";
 import type { Config, ConfigData, ConfigValue } from "juju/api";
-import { getApplicationConfig, setApplicationConfig } from "juju/api";
-import { useListSecrets, useGrantSecret } from "juju/api-hooks";
+import {
+  useListSecrets,
+  useGrantSecret,
+  useSetApplicationConfig,
+  useGetApplicationConfig,
+} from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import type { ConfirmTypes as DefaultConfirmTypes } from "panels/types";
@@ -32,7 +35,7 @@ import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
 import { actions as jujuActions } from "store/juju";
 import { getModelSecrets, getModelByUUID } from "store/juju/selectors";
-import { useAppStore, useAppSelector, useAppDispatch } from "store/store";
+import { useAppSelector, useAppDispatch } from "store/store";
 import { secretIsAppOwned } from "utils";
 
 import BooleanConfig from "./BooleanConfig";
@@ -120,7 +123,6 @@ const getRequiredGrants = (
 
 export default function ConfigPanel(): JSX.Element {
   const dispatch = useAppDispatch();
-  const reduxStore = useAppStore();
   const [config, setConfig] = useState<Config>({});
   const [selectedConfig, setSelectedConfig] = useState<ConfigData | undefined>(
     undefined,
@@ -169,6 +171,8 @@ export default function ConfigPanel(): JSX.Element {
   const canManageSecrets = useCanManageSecrets();
   const grantSecret = useGrantSecret(userName, modelName);
   const listSecrets = useListSecrets(userName, modelName);
+  const getApplicationConfig = useGetApplicationConfig(userName, modelName);
+  const setApplicationConfig = useSetApplicationConfig(userName, modelName);
 
   useEffect(() => {
     listSecrets();
@@ -184,16 +188,15 @@ export default function ConfigPanel(): JSX.Element {
     if (modelUUID && appName) {
       setIsLoading(true);
       getConfig(
-        modelUUID,
         appName,
-        reduxStore,
         setIsLoading,
         setConfig,
         checkAllDefaults,
         setInlineError,
+        getApplicationConfig,
       );
     }
-  }, [appName, modelUUID, reduxStore, setInlineError]);
+  }, [appName, getApplicationConfig, modelUUID, setInlineError]);
 
   useEffect(() => {
     getConfigCallback();
@@ -279,12 +282,7 @@ export default function ConfigPanel(): JSX.Element {
       return;
     }
     setSavingConfig(true);
-    const response = await setApplicationConfig(
-      modelUUID,
-      appName,
-      config,
-      reduxStore.getState(),
-    );
+    const response = await setApplicationConfig(appName, config);
     const errors = response?.results?.reduce<string[]>((collection, result) => {
       if (result.error) {
         collection.push(result.error.message);
@@ -577,15 +575,14 @@ export default function ConfigPanel(): JSX.Element {
 }
 
 function getConfig(
-  modelUUID: string,
   appName: string,
-  reduxStore: Store,
   setIsLoading: (value: boolean) => void,
   setConfig: (value: Config) => void,
   checkAllDefaults: (value: Config) => void,
   setInlineError: SetError,
+  getApplicationConfig: ReturnType<typeof useGetApplicationConfig>,
 ) {
-  getApplicationConfig(modelUUID, appName, reduxStore.getState())
+  getApplicationConfig(appName)
     .then((result) => {
       // Add the key to the config object to make for easier use later.
       const config: Config = {};

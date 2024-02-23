@@ -1,4 +1,9 @@
 export {
+  useGetApplicationConfig,
+  useSetApplicationConfig,
+  type Label as ApplicationLabel,
+} from "./application";
+export {
   useListSecrets,
   useGetSecretContent,
   useCreateSecrets,
