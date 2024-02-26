@@ -5,11 +5,6 @@ import type {
 } from "@canonical/jujulib";
 import { connect, connectAndLogin } from "@canonical/jujulib";
 import Action from "@canonical/jujulib/dist/api/facades/action";
-import type {
-  Action as ActionType,
-  Entities,
-  OperationQueryArgs,
-} from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
 import type { AllWatcherNextResults } from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
 import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
@@ -574,69 +569,6 @@ export type ConfigData =
 export type Config = {
   [key: string]: ConfigData;
 };
-
-export async function getActionsForApplication(
-  appName: string,
-  modelUUID: string,
-  appState: RootState,
-) {
-  const conn = await connectAndLoginToModel(modelUUID, appState);
-  const actionList = await conn?.facades.action?.applicationsCharmsActions({
-    entities: [{ tag: `application-${appName}` }],
-  });
-  return actionList;
-}
-
-export async function executeActionOnUnits(
-  unitList: string[] = [],
-  actionName: string,
-  actionOptions: NonNullable<ActionType["parameters"]>,
-  modelUUID: string,
-  appState: RootState,
-) {
-  const generatedActions = unitList.map((unit) => {
-    return {
-      name: actionName,
-      receiver: `unit-${unit.replace("/", "-")}`, // Juju unit tag in the format "unit-mysql-1"
-      parameters: actionOptions,
-      tag: "",
-    };
-  });
-  const conn = await connectAndLoginToModel(modelUUID, appState);
-  const actionResult = await conn?.facades.action?.enqueueOperation({
-    actions: generatedActions,
-  });
-  return actionResult;
-}
-
-export async function queryOperationsList(
-  queryArgs: Partial<OperationQueryArgs>,
-  modelUUID: string,
-  appState: RootState,
-) {
-  const conn = await connectAndLoginToModel(modelUUID, appState);
-  const operationListResult = await conn?.facades.action?.listOperations({
-    actions: [],
-    applications: [],
-    limit: 0,
-    machines: [],
-    offset: 0,
-    status: [],
-    units: [],
-    ...queryArgs,
-  });
-  return operationListResult;
-}
-
-export async function queryActionsList(
-  queryArgs: Entities,
-  modelUUID: string,
-  appState: RootState,
-) {
-  const conn = await connectAndLoginToModel(modelUUID, appState);
-  const actionsListResult = await conn?.facades.action?.actions(queryArgs);
-  return actionsListResult;
-}
 
 // A typeguard to narrow the type of the deltas to what we expect. This is
 // needed because currently jujulib doesn't define types for the delta objects.

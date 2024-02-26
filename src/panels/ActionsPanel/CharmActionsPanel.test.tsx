@@ -2,8 +2,7 @@ import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import reactHotToast, { Toaster } from "react-hot-toast";
 
-import * as juju from "juju/api";
-import { executeActionOnUnits } from "juju/api";
+import * as actionsHooks from "juju/api-hooks/actions";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { applicationCharmActionParamsFactory } from "testing/factories/juju/ActionV7";
@@ -21,9 +20,9 @@ import { renderComponent } from "testing/utils";
 
 import CharmActionsPanel, { Label } from "./CharmActionsPanel";
 
-jest.mock("juju/api", () => {
+jest.mock("juju/api-hooks/actions", () => {
   return {
-    executeActionOnUnits: jest.fn(),
+    useExecuteActionOnUnits: jest.fn().mockReturnValue(jest.fn()),
   };
 });
 
@@ -233,6 +232,12 @@ describe("CharmActionsPanel", () => {
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {
+    const executeActionOnUnitsSpy = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(actionsHooks, "useExecuteActionOnUnits")
+      .mockImplementation(() => executeActionOnUnitsSpy);
     renderComponent(
       <>
         <CharmActionsPanel
@@ -257,13 +262,16 @@ describe("CharmActionsPanel", () => {
     expect(
       await screen.findByTestId("confirmation-modal-unit-count"),
     ).toHaveTextContent("1 (2)");
-    expect(executeActionOnUnits).not.toHaveBeenCalled();
+    expect(executeActionOnUnitsSpy).not.toHaveBeenCalled();
   });
 
   it("submits the action request to the api without options", async () => {
     const executeActionOnUnitsSpy = jest
-      .spyOn(juju, "executeActionOnUnits")
-      .mockImplementation(() => Promise.resolve(undefined));
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(actionsHooks, "useExecuteActionOnUnits")
+      .mockImplementation(() => executeActionOnUnitsSpy);
     renderComponent(
       <>
         <CharmActionsPanel
@@ -296,8 +304,11 @@ describe("CharmActionsPanel", () => {
 
   it("submits the action request to the api with options that are required", async () => {
     const executeActionOnUnitsSpy = jest
-      .spyOn(juju, "executeActionOnUnits")
-      .mockImplementation(() => Promise.resolve(undefined));
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(actionsHooks, "useExecuteActionOnUnits")
+      .mockImplementation(() => executeActionOnUnitsSpy);
     renderComponent(
       <>
         <CharmActionsPanel
@@ -335,8 +346,11 @@ describe("CharmActionsPanel", () => {
 
   it("handles API errors", async () => {
     const executeActionOnUnitsSpy = jest
-      .spyOn(juju, "executeActionOnUnits")
+      .fn()
       .mockImplementation(() => Promise.reject(new Error()));
+    jest
+      .spyOn(actionsHooks, "useExecuteActionOnUnits")
+      .mockImplementation(() => executeActionOnUnitsSpy);
     renderComponent(
       <>
         <CharmActionsPanel
@@ -400,11 +414,14 @@ describe("CharmActionsPanel", () => {
   });
 
   it("should throw error when executing action on unit", async () => {
-    jest.spyOn(juju, "executeActionOnUnits").mockImplementation(
-      jest.fn().mockResolvedValue({
+    const executeActionOnUnitsSpy = jest.fn().mockImplementation(() =>
+      Promise.resolve({
         actions: [{ error: "Error when executing action on unit!" }],
       }),
     );
+    jest
+      .spyOn(actionsHooks, "useExecuteActionOnUnits")
+      .mockImplementation(() => executeActionOnUnitsSpy);
     renderComponent(
       <>
         <CharmActionsPanel
@@ -428,7 +445,7 @@ describe("CharmActionsPanel", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
-    expect(juju.executeActionOnUnits).toHaveBeenCalledTimes(1);
+    expect(executeActionOnUnitsSpy).toHaveBeenCalledTimes(1);
     expect(screen.getByText(Label.ACTION_ERROR)).toBeInTheDocument();
   });
 });
