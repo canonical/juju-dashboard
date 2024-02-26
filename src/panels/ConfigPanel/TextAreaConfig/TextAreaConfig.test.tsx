@@ -1,7 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { ConfigData } from "juju/api";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -19,6 +18,7 @@ import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import { Label } from "../SecretsPicker/SecretsPicker";
+import type { ConfigData } from "../types";
 
 import TextAreaConfig from "./TextAreaConfig";
 

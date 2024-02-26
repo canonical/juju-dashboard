@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { ConfigData } from "juju/api";
+import type { ConfigData } from "../types";
 
 import BooleanConfig from "./BooleanConfig";
 

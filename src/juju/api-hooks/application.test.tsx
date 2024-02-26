@@ -3,7 +3,7 @@ import * as jujuLib from "@canonical/jujulib";
 import { renderHook } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 
-import type { Config } from "juju/api";
+import type { Config } from "panels/ConfigPanel/types";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {

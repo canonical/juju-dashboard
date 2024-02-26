@@ -185,10 +185,11 @@ describe("useModelConnectionCallback", () => {
     });
   });
 
-  it("handles no model", async () => {
+  it("handles no model or websocket URL", async () => {
     state.juju.models = {};
     changeURL("/models/eggman@external/group-test/app/etcd");
     const callback = jest.fn();
+    const connectAndLogin = jest.spyOn(jujuLib, "connectAndLogin");
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
         <ComponentProviders
@@ -200,9 +201,7 @@ describe("useModelConnectionCallback", () => {
     });
     result.current(callback);
     await waitFor(() => {
-      expect(callback).toHaveBeenCalledWith({
-        error: Label.NO_CONNECTION_ERROR,
-      });
+      expect(connectAndLogin).not.toHaveBeenCalled();
     });
   });
 

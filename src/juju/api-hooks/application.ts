@@ -2,8 +2,7 @@ import { useCallback } from "react";
 
 import { isSet } from "components/utils";
 import type { ConnectionWithFacades } from "juju/types";
-
-import type { Config } from "../api";
+import type { Config } from "panels/ConfigPanel/types";
 
 import { useCallWithConnectionPromise } from "./common";
 

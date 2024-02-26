@@ -6,6 +6,7 @@ const NumberConfig = ({
   selectedConfig,
   setSelectedConfig,
   setNewValue,
+  validate,
 }: ConfigProps): JSX.Element => {
   return (
     <ConfigField<number>
@@ -13,6 +14,7 @@ const NumberConfig = ({
       selectedConfig={selectedConfig}
       setSelectedConfig={setSelectedConfig}
       setNewValue={setNewValue}
+      validate={validate}
       input={(value) => (
         <input
           type="number"

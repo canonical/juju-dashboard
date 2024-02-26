@@ -13,7 +13,7 @@ import {
   Button,
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
-import { useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
@@ -22,16 +22,14 @@ import SecretForm from "components/secrets/SecretForm";
 import SecretLabel from "components/secrets/SecretLabel";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
 import { useListSecrets } from "juju/api-hooks";
-import { actions as jujuActions } from "store/juju";
 import {
-  getModelByUUID,
   getModelUUIDFromList,
   getSecretsErrors,
   getSecretsLoading,
   getModelSecrets,
   getSecretsLoaded,
 } from "store/juju/selectors";
-import { useAppDispatch, useAppSelector } from "store/store";
+import { useAppSelector } from "store/store";
 import { secretIsAppOwned } from "utils";
 
 export enum Label {
@@ -50,13 +48,9 @@ type Props = {
 
 export default function SecretsPicker({ setValue }: Props): JSX.Element {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const dispatch = useAppDispatch();
   const [saving, setSaving] = useState<boolean>(false);
   const formId = useId();
   const modelUUID = useAppSelector(getModelUUIDFromList(modelName, userName));
-  const wsControllerURL = useAppSelector((state) =>
-    getModelByUUID(state, modelUUID),
-  )?.wsControllerURL;
   const secretsErrors = useAppSelector((state) =>
     getSecretsErrors(state, modelUUID),
   );
@@ -72,16 +66,6 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
   const { openPortal, closePortal, isOpen, Portal } = usePortal({
     programmaticallyOpen: true,
   });
-
-  useEffect(
-    () => () => {
-      if (!modelUUID || !wsControllerURL) {
-        return;
-      }
-      dispatch(jujuActions.clearSecrets({ modelUUID, wsControllerURL }));
-    },
-    [dispatch, modelUUID, wsControllerURL],
-  );
 
   let links: ContextualMenuProps<unknown>["links"] = null;
   let dropdownContent: ReactNode = null;

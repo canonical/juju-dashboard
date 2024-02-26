@@ -9,6 +9,7 @@ export default function TextAreaConfig({
   selectedConfig,
   setSelectedConfig,
   setNewValue,
+  validate,
 }: ConfigProps): JSX.Element {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -18,6 +19,7 @@ export default function TextAreaConfig({
       selectedConfig={selectedConfig}
       setSelectedConfig={setSelectedConfig}
       setNewValue={setNewValue}
+      validate={validate}
       input={(value) => (
         <div className="u-flex">
           <textarea

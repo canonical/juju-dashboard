@@ -1,12 +1,14 @@
 import { Button, Icon } from "@canonical/react-components";
 import classnames from "classnames";
+import classNames from "classnames";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import DivButton from "components/DivButton";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { isSet } from "components/utils";
-import type { ConfigData, ConfigValue } from "juju/api";
+
+import type { ConfigData, ConfigValue } from "../types";
 
 export enum Label {
   DEFAULT_BUTTON = "use default",
@@ -22,6 +24,7 @@ export type ConfigProps = {
   selectedConfig: ConfigData | undefined;
   setSelectedConfig: SetSelectedConfig;
   setNewValue: SetNewValue;
+  validate?: (config: ConfigData) => void;
 };
 
 type Props<V extends ConfigValue> = ConfigProps & {
@@ -34,6 +37,7 @@ const ConfigField = <V extends ConfigValue>({
   selectedConfig,
   setSelectedConfig,
   setNewValue,
+  validate,
 }: Props<V>): JSX.Element => {
   const [inputFocused, setInputFocused] = useState(false);
   const [inputChanged, setInputChanged] = useState(false);
@@ -43,6 +47,8 @@ const ConfigField = <V extends ConfigValue>({
   const [showDescription, setShowDescription] = useState(false);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const [maxDescriptionHeight, setMaxDescriptionHeight] = useState<string>();
+  const previousValue = useRef<Props<V>["config"]["newValue"]>();
+  const valueChanged = config.newValue !== previousValue.current;
 
   let inputValue = config.default;
   if (isSet(config.newValue)) {
@@ -130,6 +136,13 @@ const ConfigField = <V extends ConfigValue>({
     }
   }, [config]);
 
+  useEffect(() => {
+    if (validate && valueChanged) {
+      validate(config);
+    }
+    previousValue.current = config.newValue;
+  }, [config, validate, valueChanged]);
+
   function resetToDefault() {
     setNewValue(config.name, config.default);
   }
@@ -184,7 +197,16 @@ const ConfigField = <V extends ConfigValue>({
           {config.description}
         </pre>
       </div>
-      {input(inputValue as V)}
+      <div
+        className={classNames("p-form-validation", {
+          "is-error": !!config.error,
+        })}
+      >
+        {input(inputValue as V)}
+        {config.error ? (
+          <p className="p-form-validation__message">{config.error}</p>
+        ) : null}
+      </div>
     </DivButton>
   );
 };

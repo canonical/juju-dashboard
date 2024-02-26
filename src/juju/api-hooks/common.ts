@@ -39,7 +39,8 @@ export const useModelConnectionCallback = (modelUUID?: string) => {
   return useCallback(
     (response: ModelConnectionCallback) => {
       if (!wsControllerURL || !modelUUID) {
-        response({ error: Label.NO_CONNECTION_ERROR });
+        // Don't attempt to make the call until the model and controller details
+        // are available.
         return;
       }
       connectToModel(

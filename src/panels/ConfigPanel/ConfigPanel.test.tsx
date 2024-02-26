@@ -819,55 +819,6 @@ describe("ConfigPanel", () => {
     expect(window.location.search).toBe("");
   });
 
-  it("does not grant app-owned secrets", async () => {
-    const grantSecret = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useGrantSecret")
-      .mockImplementation(() => grantSecret);
-    state.juju.secrets = secretsStateFactory.build({
-      abc123: modelSecretsFactory.build({
-        items: [
-          listSecretResultFactory.build({
-            access: [],
-            uri: "secret:aabbccdd",
-            "owner-tag": "application-etcd",
-          }),
-          listSecretResultFactory.build({ access: [], uri: "secret:eeffgghh" }),
-        ],
-        loaded: true,
-      }),
-    });
-    renderComponent(<ConfigPanel />, { state, path, url });
-    expect(window.location.search).toBe(`?${params.toString()}`);
-    await userEvent.type(
-      within(await screen.findByTestId("email")).getByRole("textbox"),
-      "secret:aabbccdd",
-    );
-    await userEvent.type(
-      within(await screen.findByTestId("name")).getByRole("textbox"),
-      "secret:eeffgghh",
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: Label.GRANT_CONFIRM_BUTTON }),
-    );
-    expect(
-      screen.queryByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
-      }),
-    ).not.toBeInTheDocument();
-    expect(grantSecret).toHaveBeenCalledTimes(1);
-    expect(grantSecret).toHaveBeenCalledWith("secret:eeffgghh", ["easyrsa"]);
-    expect(window.location.search).toBe("");
-  });
-
   it("can handle errors when granting secrets", async () => {
     const grantSecret = jest
       .fn()
@@ -908,5 +859,98 @@ describe("ConfigPanel", () => {
         document.querySelector(".p-notification--negative"),
       ).toHaveTextContent(Label.GRANT_ERROR);
     });
+  });
+
+  it("validates secret field URI format", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({ access: [], uri: "secret:aabbccdd" }),
+        ],
+        loaded: true,
+      }),
+    });
+    getApplicationConfig = jest.fn().mockImplementation(() =>
+      Promise.resolve(
+        applicationGetFactory.build({
+          config: {
+            email: configFactory.build({ default: "", type: "secret" }),
+            name: configFactory.build({ default: "eggman" }),
+          },
+        }),
+      ),
+    );
+    jest
+      .spyOn(applicationHooks, "useGetApplicationConfig")
+      .mockImplementation(() => getApplicationConfig);
+    renderComponent(<ConfigPanel />, { state, path, url });
+    const input = within(await screen.findByTestId("email")).getByRole(
+      "textbox",
+    );
+    await userEvent.type(input, "notasecret:aabbccdd");
+    expect(screen.getByText(Label.SECRET_PREFIX_ERROR)).toHaveClass(
+      "p-form-validation__message",
+    );
+    expect(
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+    ).toBeDisabled();
+    await userEvent.clear(input);
+    await userEvent.type(input, "secret:aabbccdd");
+    expect(
+      screen.queryByText(Label.SECRET_PREFIX_ERROR),
+    ).not.toBeInTheDocument();
+  });
+
+  it("validates secret URIs exist", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({ access: [], uri: "secret:aabbccdd" }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(<ConfigPanel />, { state, path, url });
+    const input = within(await screen.findByTestId("email")).getByRole(
+      "textbox",
+    );
+    await userEvent.type(input, "secret:nothing");
+    expect(screen.getByText(Label.INVALID_SECRET_ERROR)).toHaveClass(
+      "p-form-validation__message",
+    );
+    expect(
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+    ).toBeDisabled();
+    await userEvent.clear(input);
+    await userEvent.type(input, "secret:aabbccdd");
+    expect(
+      screen.queryByText(Label.INVALID_SECRET_ERROR),
+    ).not.toBeInTheDocument();
+  });
+
+  it("validates secret URIs are not app-owned", async () => {
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({
+            access: [],
+            uri: "secret:aabbccdd",
+            "owner-tag": "application-etcd",
+          }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(<ConfigPanel />, { state, path, url });
+    await userEvent.type(
+      within(await screen.findByTestId("email")).getByRole("textbox"),
+      "secret:aabbccdd",
+    );
+    expect(screen.getByText(Label.INVALID_SECRET_ERROR)).toHaveClass(
+      "p-form-validation__message",
+    );
+    expect(
+      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+    ).toBeDisabled();
   });
 });

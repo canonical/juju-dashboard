@@ -9,6 +9,7 @@ export default function BooleanConfig({
   selectedConfig,
   setSelectedConfig,
   setNewValue,
+  validate,
 }: ConfigProps): JSX.Element {
   function handleOptionChange(
     e: FormEvent<HTMLInputElement> | MouseEvent<HTMLInputElement>,
@@ -24,6 +25,7 @@ export default function BooleanConfig({
       selectedConfig={selectedConfig}
       setSelectedConfig={setSelectedConfig}
       setNewValue={setNewValue}
+      validate={validate}
       input={(value) => (
         <div className="u-flex u-flex--gap">
           <div>
