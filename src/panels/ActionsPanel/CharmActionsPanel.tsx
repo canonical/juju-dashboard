@@ -11,7 +11,7 @@ import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox/RadioInputBox";
 import ToastCard from "components/ToastCard/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
-import { executeActionOnUnits } from "juju/api";
+import { useExecuteActionOnUnits } from "juju/api-hooks";
 import ActionOptions from "panels/ActionsPanel/ActionOptions";
 import type {
   ActionOptionValue,
@@ -22,11 +22,9 @@ import CharmActionsPanelTitle from "panels/CharmsAndActionsPanel/CharmActionsPan
 import { TestId } from "panels/CharmsAndActionsPanel/CharmsAndActionsPanel";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
 import {
-  getModelUUIDFromList,
   getSelectedApplications,
   getSelectedCharm,
 } from "store/juju/selectors";
-import { useAppStore } from "store/store";
 
 export enum Label {
   NONE_SELECTED = "You need to select a charm and applications to continue.",
@@ -50,10 +48,6 @@ export default function CharmActionsPanel({
   const sendAnalytics = useAnalytics();
   const { userName, modelName } = useParams();
   const { Portal } = usePortal();
-
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const appState = useAppStore().getState();
-
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
   const [selectedAction, setSelectedAction] = useState<string>();
@@ -61,6 +55,7 @@ export default function CharmActionsPanel({
 
   const selectedApplications = useSelector(getSelectedApplications(charmURL));
   const selectedCharm = useSelector(getSelectedCharm(charmURL));
+  const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
   const actionData = useMemo(
     () => selectedCharm?.actions?.specs || {},
     [selectedCharm],
@@ -89,8 +84,6 @@ export default function CharmActionsPanel({
         .flat(),
       selectedAction,
       actionOptionsValues.current[selectedAction],
-      modelUUID,
-      appState,
     )
       .then((payload) => {
         const error = payload?.actions?.find((e) => e.error);

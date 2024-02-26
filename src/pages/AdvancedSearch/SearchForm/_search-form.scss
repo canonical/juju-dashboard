@@ -10,7 +10,7 @@
       "controls help"
       / 1fr 1fr;
 
-    @media screen and (max-width: $breakpoint-large - 1px) {
+    @media screen and (width < $breakpoint-large) {
       gap: 0;
       grid-template:
         "field"

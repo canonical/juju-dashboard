@@ -1,12 +1,12 @@
 import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import {
+  ActionButton,
   Button,
   ConfirmationModal,
-  Spinner,
 } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
-import type { ReactNode, MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
@@ -38,10 +38,12 @@ import { useAppSelector, useAppDispatch } from "store/store";
 import { secretIsAppOwned } from "utils";
 
 import BooleanConfig from "./BooleanConfig";
+import ChangedKeyValues from "./ChangedKeyValues";
 import type { SetNewValue, SetSelectedConfig } from "./ConfigField";
 import NumberConfig from "./NumberConfig";
 import TextAreaConfig from "./TextAreaConfig";
 import type { Config, ConfigData, ConfigValue } from "./types";
+import { getRequiredGrants } from "./utils";
 
 import "./_config-panel.scss";
 
@@ -89,38 +91,12 @@ type ConfigQueryParams = {
   modelUUID: string | null;
 };
 
-const getRequiredGrants = (
-  appName: string,
-  config: Config,
-  secrets?: ListSecretResult[] | null,
-) => {
-  const secretURIs = Object.values(config).reduce<string[]>((uris, entry) => {
-    const value = entry.newValue;
-    if (
-      value &&
-      typeof value === "string" &&
-      (entry.type === "secret" ||
-        (entry.type === "string" && value.startsWith("secret:"))) &&
-      // The same secret could be used in multiple fields so only include it once:
-      !uris.includes(value)
-    ) {
-      uris.push(value);
-    }
-    return uris;
-  }, []);
-  return secrets
-    ? secretURIs?.filter((secretURI) => {
-        const secret = secrets.find(
-          (secretItem) =>
-            // Can't grant application owned secrets so ignore them.
-            secretItem.uri === secretURI && !secretIsAppOwned(secretItem),
-        );
-        const access = secret?.access?.find(
-          (accessInfo) => accessInfo["target-tag"] === `application-${appName}`,
-        );
-        return !!secret && !access;
-      })
-    : null;
+const hasChangedFields = (newConfig: Config): boolean => {
+  return Object.keys(newConfig).some(
+    (key) =>
+      isSet(newConfig[key].newValue) &&
+      newConfig[key].newValue !== newConfig[key].value,
+  );
 };
 
 const hasErrors = (config: Config) =>
@@ -157,6 +133,11 @@ export default function ConfigPanel(): JSX.Element {
   const scrollArea = useRef<HTMLDivElement>(null);
   const sendAnalytics = useAnalytics();
   const { Portal } = usePortal();
+  const updateConfig = useCallback((newConfig: Config) => {
+    setConfig(newConfig);
+    checkAllDefaults(newConfig);
+    checkEnableSave(newConfig);
+  }, []);
 
   const defaultQueryParams: ConfigQueryParams = {
     panel: null,
@@ -191,17 +172,15 @@ export default function ConfigPanel(): JSX.Element {
 
   const getConfigCallback = useCallback(() => {
     if (modelUUID && appName) {
-      setIsLoading(true);
       getConfig(
         appName,
         setIsLoading,
-        setConfig,
-        checkAllDefaults,
+        updateConfig,
         setInlineError,
         getApplicationConfig,
       );
     }
-  }, [appName, getApplicationConfig, modelUUID, setInlineError]);
+  }, [appName, getApplicationConfig, modelUUID, setInlineError, updateConfig]);
 
   useEffect(() => {
     getConfigCallback();
@@ -220,9 +199,7 @@ export default function ConfigPanel(): JSX.Element {
     if (newConfig[name].newValue === newConfig[name].value) {
       delete newConfig[name].newValue;
     }
-    setConfig(newConfig);
-    checkEnableSave(newConfig);
-    checkAllDefaults(newConfig);
+    updateConfig(newConfig);
   }
 
   function setError(name: string, error?: string | null) {
@@ -258,34 +235,12 @@ export default function ConfigPanel(): JSX.Element {
         cfg.newValue = cfg.default;
       }
     });
-    setConfig(newConfig);
-    checkAllDefaults(newConfig);
-    checkEnableSave(newConfig);
+    updateConfig(newConfig);
   }
 
   function checkEnableSave(newConfig: Config) {
     const fieldChanged = hasChangedFields(newConfig);
     setEnableSave(fieldChanged);
-  }
-
-  function hasChangedFields(newConfig: Config): boolean {
-    return Object.keys(newConfig).some(
-      (key) =>
-        isSet(newConfig[key].newValue) &&
-        newConfig[key].newValue !== newConfig[key].value,
-    );
-  }
-
-  function handleSubmit() {
-    setConfirmType(DefaultConfirmType.SUBMIT);
-  }
-
-  function handleCancel() {
-    if (hasChangedFields(config)) {
-      setConfirmType(DefaultConfirmType.CANCEL);
-    } else {
-      handleRemovePanelQueryParams();
-    }
   }
 
   async function _submitToJuju() {
@@ -323,7 +278,6 @@ export default function ConfigPanel(): JSX.Element {
 
   function generateConfirmationDialog(): JSX.Element | null {
     if (confirmType && appName) {
-      const changedConfigList = generateChangedKeyValues(config);
       if (confirmType === DefaultConfirmType.SUBMIT) {
         // Render the submit confirmation modal.
         return (
@@ -357,11 +311,7 @@ export default function ConfigPanel(): JSX.Element {
               }}
               close={() => setConfirmType(null)}
             >
-              <p>
-                You have edited the following values to the {appName}{" "}
-                configuration:
-              </p>
-              {changedConfigList}
+              <ChangedKeyValues appName={appName} config={config} />
             </ConfirmationModal>
           </Portal>
         );
@@ -442,11 +392,7 @@ export default function ConfigPanel(): JSX.Element {
               }}
               close={() => setConfirmType(null)}
             >
-              <p>
-                You have edited the following values to the {appName}{" "}
-                configuration:
-              </p>
-              {changedConfigList}
+              <ChangedKeyValues appName={appName} config={config} />
             </ConfirmationModal>
           </Portal>
         );
@@ -483,24 +429,23 @@ export default function ConfigPanel(): JSX.Element {
       drawer={
         hasConfig ? (
           <>
-            <Button onClick={handleCancel}>{Label.CANCEL_BUTTON}</Button>
             <Button
-              appearance="positive"
-              className={classnames("config-panel__save-button", {
-                "is-active": savingConfig,
-              })}
-              onClick={handleSubmit}
-              disabled={!enableSave || savingConfig || hasErrors(config)}
+              onClick={() =>
+                hasChangedFields(config)
+                  ? setConfirmType(DefaultConfirmType.CANCEL)
+                  : handleRemovePanelQueryParams()
+              }
             >
-              {!savingConfig ? (
-                Label.SAVE_BUTTON
-              ) : (
-                <>
-                  <Spinner isLight />
-                  <span>Saving&hellip;</span>
-                </>
-              )}
+              {Label.CANCEL_BUTTON}
             </Button>
+            <ActionButton
+              appearance="positive"
+              onClick={() => setConfirmType(DefaultConfirmType.SUBMIT)}
+              disabled={!enableSave || savingConfig || hasErrors(config)}
+              loading={savingConfig}
+            >
+              {Label.SAVE_BUTTON}
+            </ActionButton>
           </>
         ) : null
       }
@@ -530,7 +475,13 @@ export default function ConfigPanel(): JSX.Element {
               </FadeIn>
             ) : (
               <div className="u-align--center">
-                <NoDescriptionMessage />
+                <div className="config-panel__message">
+                  <img src={bulbImage} alt="" />
+                  <h4>
+                    Click on a configuration row to view its related description
+                    and parameters
+                  </h4>
+                </div>
               </div>
             )}
           </div>
@@ -579,7 +530,10 @@ export default function ConfigPanel(): JSX.Element {
               inlineErrors={inlineErrors}
               scrollArea={scrollArea.current}
             />
-            <NoConfigMessage />
+            <div className="config-panel__message">
+              <img src={boxImage} alt="" />
+              <h4>{Label.NONE}</h4>
+            </div>
           </FadeIn>
         )}
       </>
@@ -590,11 +544,11 @@ export default function ConfigPanel(): JSX.Element {
 function getConfig(
   appName: string,
   setIsLoading: (value: boolean) => void,
-  setConfig: (value: Config) => void,
-  checkAllDefaults: (value: Config) => void,
+  updateConfig: (value: Config) => void,
   setInlineError: SetError,
   getApplicationConfig: ReturnType<typeof useGetApplicationConfig>,
 ) {
+  setIsLoading(true);
   getApplicationConfig(appName)
     .then((result) => {
       // Add the key to the config object to make for easier use later.
@@ -604,8 +558,7 @@ function getConfig(
         config[key] = result?.config[key];
         config[key].name = key;
       });
-      setConfig(config);
-      checkAllDefaults(config);
+      updateConfig(config);
       setInlineError(InlineErrors.GET_CONFIG, null);
       return;
     })
@@ -709,44 +662,4 @@ function generateConfigElementList(
   });
 
   return elements;
-}
-
-function generateChangedKeyValues(config: Config) {
-  const changedValues = Object.keys(config).reduce(
-    (accumulator: ReactNode[], key: string) => {
-      const cfg = config[key];
-      if (isSet(cfg.newValue) && cfg.newValue !== cfg.value) {
-        accumulator.push(
-          <div key={key}>
-            <h5>{key}</h5>
-            <pre>{cfg.newValue}</pre>
-          </div>,
-        );
-      }
-      return accumulator;
-    },
-    [],
-  );
-  return changedValues;
-}
-
-function NoConfigMessage() {
-  return (
-    <div className="config-panel__message">
-      <img src={boxImage} alt="" />
-      <h4>{Label.NONE}</h4>
-    </div>
-  );
-}
-
-function NoDescriptionMessage() {
-  return (
-    <div className="config-panel__message">
-      <img src={bulbImage} alt="" />
-      <h4>
-        Click on a configuration row to view its related description and
-        parameters
-      </h4>
-    </div>
-  );
 }
