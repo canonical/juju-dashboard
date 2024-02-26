@@ -8,7 +8,7 @@ import DivButton from "components/DivButton";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { isSet } from "components/utils";
 
-import type { ConfigData, ConfigValue } from "./types";
+import type { ConfigData, ConfigValue } from "../types";
 
 export enum Label {
   DEFAULT_BUTTON = "use default",

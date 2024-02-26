@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import type { ConfigData } from "../types";
+
 import ConfigField, { Label } from "./ConfigField";
-import type { ConfigData } from "./types";
 
 describe("ConfigField", () => {
   const config: ConfigData = {

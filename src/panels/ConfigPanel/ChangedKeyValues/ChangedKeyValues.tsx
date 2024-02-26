@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
 import { isSet } from "components/utils";
-import type { Config, ConfigData } from "juju/api";
+
+import type { Config, ConfigData } from "../types";
 
 type Props = {
   appName: string;

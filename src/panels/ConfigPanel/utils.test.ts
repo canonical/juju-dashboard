@@ -1,9 +1,9 @@
-import type { Config } from "juju/api";
 import {
   listSecretResultFactory,
   secretAccessInfoFactory,
 } from "testing/factories/juju/juju";
 
+import type { Config } from "./types";
 import { getRequiredGrants } from "./utils";
 
 describe("getRequiredGrants", () => {

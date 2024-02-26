@@ -18,9 +18,9 @@ import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import { Label } from "../SecretsPicker/SecretsPicker";
+import type { ConfigData } from "../types";
 
 import TextAreaConfig from "./TextAreaConfig";
-import type { ConfigData } from "./types";
 
 describe("TextAreaConfig", () => {
   const config: ConfigData = {

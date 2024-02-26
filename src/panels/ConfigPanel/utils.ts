@@ -1,7 +1,8 @@
 import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 
-import type { Config } from "juju/api";
 import { secretIsAppOwned } from "utils";
+
+import type { Config } from "./types";
 
 export const getRequiredGrants = (
   appName: string,
