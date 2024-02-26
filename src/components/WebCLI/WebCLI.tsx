@@ -42,6 +42,7 @@ type Authentication = {
   macaroons?: Macaroon[];
 };
 
+export const CLI_HISTORY_KEY = "cliHistory";
 export const MAX_HISTORY = 200;
 
 const WebCLI = ({
@@ -60,7 +61,7 @@ const WebCLI = ({
   const sendAnalytics = useAnalytics();
   const storeState = useStore().getState();
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
-    "cliHistory",
+    CLI_HISTORY_KEY,
     [],
   );
 
