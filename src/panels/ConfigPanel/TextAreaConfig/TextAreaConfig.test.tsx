@@ -18,7 +18,8 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import { Label } from "./SecretsPicker/SecretsPicker";
+import { Label } from "../SecretsPicker/SecretsPicker";
+
 import TextAreaConfig from "./TextAreaConfig";
 
 describe("TextAreaConfig", () => {
