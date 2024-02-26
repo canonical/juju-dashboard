@@ -2,7 +2,7 @@
 
 // 0px -> mobile
 @mixin mobile {
-  @media screen and (max-width: $breakpoint-small - 1px) {
+  @media screen and (width < $breakpoint-small) {
     @content;
   }
 }
@@ -16,14 +16,14 @@
 
 // mobile -> large
 @mixin medium {
-  @media screen and (min-width: $breakpoint-small) and (max-width: $breakpoint-large - 1px) {
+  @media screen and ($breakpoint-small < width < $breakpoint-large) {
     @content;
   }
 }
 
 // 0px -> medium
 @mixin mobile-and-medium {
-  @media screen and (max-width: $breakpoint-large - 1px) {
+  @media screen and (width < $breakpoint-large) {
     @content;
   }
 }
