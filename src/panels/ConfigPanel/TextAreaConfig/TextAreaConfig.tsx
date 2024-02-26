@@ -1,8 +1,8 @@
 import { useRef } from "react";
 
-import type { ConfigProps } from "./ConfigField";
-import ConfigField from "./ConfigField";
-import SecretsPicker from "./SecretsPicker";
+import type { ConfigProps } from "../ConfigField";
+import ConfigField from "../ConfigField";
+import SecretsPicker from "../SecretsPicker";
 
 export default function TextAreaConfig({
   config,

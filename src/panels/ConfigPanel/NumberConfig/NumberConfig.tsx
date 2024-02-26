@@ -1,5 +1,5 @@
-import type { ConfigProps } from "./ConfigField";
-import ConfigField from "./ConfigField";
+import type { ConfigProps } from "../ConfigField";
+import ConfigField from "../ConfigField";
 
 const NumberConfig = ({
   config,
