@@ -126,6 +126,11 @@ export default function ConfigPanel(): JSX.Element {
   const scrollArea = useRef<HTMLDivElement>(null);
   const sendAnalytics = useAnalytics();
   const { Portal } = usePortal();
+  const updateConfig = useCallback((newConfig: Config) => {
+    setConfig(newConfig);
+    checkAllDefaults(newConfig);
+    checkEnableSave(newConfig);
+  }, []);
 
   const defaultQueryParams: ConfigQueryParams = {
     panel: null,
@@ -163,13 +168,12 @@ export default function ConfigPanel(): JSX.Element {
       getConfig(
         appName,
         setIsLoading,
-        setConfig,
-        checkAllDefaults,
+        updateConfig,
         setInlineError,
         getApplicationConfig,
       );
     }
-  }, [appName, getApplicationConfig, modelUUID, setInlineError]);
+  }, [appName, getApplicationConfig, modelUUID, setInlineError, updateConfig]);
 
   useEffect(() => {
     getConfigCallback();
@@ -188,9 +192,7 @@ export default function ConfigPanel(): JSX.Element {
     if (newConfig[name].newValue === newConfig[name].value) {
       delete newConfig[name].newValue;
     }
-    setConfig(newConfig);
-    checkEnableSave(newConfig);
-    checkAllDefaults(newConfig);
+    updateConfig(newConfig);
   }
 
   function checkAllDefaults(config: Config) {
@@ -220,9 +222,7 @@ export default function ConfigPanel(): JSX.Element {
         cfg.newValue = cfg.default;
       }
     });
-    setConfig(newConfig);
-    checkAllDefaults(newConfig);
-    checkEnableSave(newConfig);
+    updateConfig(newConfig);
   }
 
   function checkEnableSave(newConfig: Config) {
@@ -529,8 +529,7 @@ export default function ConfigPanel(): JSX.Element {
 function getConfig(
   appName: string,
   setIsLoading: (value: boolean) => void,
-  setConfig: (value: Config) => void,
-  checkAllDefaults: (value: Config) => void,
+  updateConfig: (value: Config) => void,
   setInlineError: SetError,
   getApplicationConfig: ReturnType<typeof useGetApplicationConfig>,
 ) {
@@ -544,8 +543,7 @@ function getConfig(
         config[key] = result?.config[key];
         config[key].name = key;
       });
-      setConfig(config);
-      checkAllDefaults(config);
+      updateConfig(config);
       setInlineError(InlineErrors.GET_CONFIG, null);
       return;
     })
