@@ -308,6 +308,11 @@ export async function fetchAndStoreModelStatus(
     wsControllerURL,
     getState,
   );
+  if (!isLoggedIn(getState(), wsControllerURL)) {
+    // The user may have logged out while fetching the model status so don't
+    // store anything if they did.
+    return;
+  }
   if (status) {
     dispatch(
       jujuActions.updateModelStatus({ modelUUID, status, wsControllerURL }),

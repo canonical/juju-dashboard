@@ -611,6 +611,50 @@ describe("Juju API", () => {
       );
     });
 
+    it("handles the user not being authenticated after fetching the status", async () => {
+      const status = fullStatusFactory.build();
+      const loginResponse = {
+        conn: {
+          facades: {
+            client: {
+              fullStatus: jest.fn().mockReturnValue(status),
+            },
+            secrets: {
+              VERSION: 1,
+            },
+          },
+        } as unknown as Connection,
+        logout: jest.fn(),
+      };
+      jest
+        .spyOn(jujuLib, "connectAndLogin")
+        .mockImplementation(async () => loginResponse);
+      const dispatch = jest.fn();
+      const getState = jest
+        .fn()
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => ({
+          ...state,
+          general: generalStateFactory.build({
+            controllerConnections: undefined,
+          }),
+        }));
+      await fetchAndStoreModelStatus(
+        "abc123",
+        "wss://example.com/api",
+        dispatch,
+        getState,
+      );
+      // This number needs to match the number of times getState is called and
+      // `mockImplementationOnce` needs to return the logged out state the last time.
+      expect(getState).toHaveBeenCalledTimes(6);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
     it("handles no model status returned", async () => {
       const consoleError = console.error;
       console.error = jest.fn();
