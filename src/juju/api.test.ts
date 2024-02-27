@@ -4,7 +4,6 @@ import * as jujuLibVersions from "@canonical/jujulib/dist/api/versions";
 import { waitFor } from "@testing-library/react";
 
 import { actions as jujuActions } from "store/juju";
-import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -1040,14 +1039,9 @@ describe("Juju API", () => {
       // We need to return the logged out state on the last call, so check that
       // the number of calls is what we expect:
       expect(getState).toHaveBeenCalledTimes(7);
-      expect(dispatch).toHaveBeenCalledWith(
+      // The `updateModelInfo` should be the last dispatch before exiting.
+      expect(dispatch).toHaveBeenLastCalledWith(
         jujuActions.updateModelInfo({
-          modelInfo: abc123,
-          wsControllerURL: "wss://example.com/api",
-        }),
-      );
-      expect(dispatch).not.toHaveBeenCalledWith(
-        addControllerCloudRegion({
           modelInfo: abc123,
           wsControllerURL: "wss://example.com/api",
         }),
