@@ -611,6 +611,50 @@ describe("Juju API", () => {
       );
     });
 
+    it("handles the user not being authenticated after fetching the status", async () => {
+      const status = fullStatusFactory.build();
+      const loginResponse = {
+        conn: {
+          facades: {
+            client: {
+              fullStatus: jest.fn().mockReturnValue(status),
+            },
+            secrets: {
+              VERSION: 1,
+            },
+          },
+        } as unknown as Connection,
+        logout: jest.fn(),
+      };
+      jest
+        .spyOn(jujuLib, "connectAndLogin")
+        .mockImplementation(async () => loginResponse);
+      const dispatch = jest.fn();
+      const getState = jest
+        .fn()
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => state)
+        .mockImplementationOnce(() => ({
+          ...state,
+          general: generalStateFactory.build({
+            controllerConnections: undefined,
+          }),
+        }));
+      await fetchAndStoreModelStatus(
+        "abc123",
+        "wss://example.com/api",
+        dispatch,
+        getState,
+      );
+      // This number needs to match the number of times getState is called and
+      // `mockImplementationOnce` needs to return the logged out state the last time.
+      expect(getState).toHaveBeenCalledTimes(6);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
     it("handles no model status returned", async () => {
       const consoleError = console.error;
       console.error = jest.fn();
@@ -905,6 +949,102 @@ describe("Juju API", () => {
       );
       await expect(response).rejects.toStrictEqual(
         new Error("Unable to load models."),
+      );
+    });
+
+    it("handles logout while fetching model status", async () => {
+      const dispatch = jest.fn();
+      const getState = jest
+        .fn()
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce({
+          ...state,
+          general: generalStateFactory.build({
+            controllerConnections: {},
+          }),
+        });
+      const abc123 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              uuid: "abc123",
+            }),
+          }),
+        ],
+      });
+      const conn = {
+        facades: {
+          modelManager: {
+            modelInfo: jest.fn().mockResolvedValueOnce(abc123),
+          },
+        },
+      } as unknown as Connection;
+      await fetchAllModelStatuses(
+        "wss://example.com/api",
+        ["abc123"],
+        conn,
+        dispatch,
+        getState,
+      );
+      // We need to return the logged out state on the last call, so check that
+      // the number of calls is what we expect:
+      expect(getState).toHaveBeenCalledTimes(6);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
+    it("handles logout while fetching model info", async () => {
+      const dispatch = jest.fn();
+      const getState = jest
+        .fn()
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce(state)
+        .mockReturnValueOnce({
+          ...state,
+          general: generalStateFactory.build({
+            controllerConnections: {},
+          }),
+        });
+      const abc123 = modelInfoResultsFactory.build({
+        results: [
+          modelInfoResultFactory.build({
+            result: modelInfoFactory.build({
+              "is-controller": true,
+              uuid: "abc123",
+            }),
+          }),
+        ],
+      });
+      const conn = {
+        facades: {
+          modelManager: {
+            modelInfo: jest.fn().mockResolvedValueOnce(abc123),
+          },
+        },
+      } as unknown as Connection;
+      await fetchAllModelStatuses(
+        "wss://example.com/api",
+        ["abc123"],
+        conn,
+        dispatch,
+        getState,
+      );
+      // We need to return the logged out state on the last call, so check that
+      // the number of calls is what we expect:
+      expect(getState).toHaveBeenCalledTimes(7);
+      // The `updateModelInfo` should be the last dispatch before exiting.
+      expect(dispatch).toHaveBeenLastCalledWith(
+        jujuActions.updateModelInfo({
+          modelInfo: abc123,
+          wsControllerURL: "wss://example.com/api",
+        }),
       );
     });
   });
