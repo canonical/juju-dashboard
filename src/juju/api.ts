@@ -374,6 +374,12 @@ export async function fetchAllModelStatuses(
               getState,
             );
           }
+          if (!isLoggedIn(getState(), wsControllerURL)) {
+            // The user may have logged out while the previous call was in
+            // progress.
+            done();
+            return;
+          }
           const modelInfo = await fetchModelInfo(conn, modelUUID);
           if (modelInfo) {
             dispatch(
@@ -382,6 +388,12 @@ export async function fetchAllModelStatuses(
                 wsControllerURL,
               }),
             );
+          }
+          if (!isLoggedIn(getState(), wsControllerURL)) {
+            // The user may have logged out while the previous call was in
+            // progress.
+            done();
+            return;
           }
           if (modelInfo?.results[0].result?.["is-controller"]) {
             // If this is a controller model then update the

@@ -20,7 +20,7 @@ function error(name: string, wsControllerURL?: string | null) {
     name,
     wsControllerURL
       ? `. User not authenticated for the controller: ${wsControllerURL}. ` +
-          "This shouldn't be able to happen!"
+          "Did the user log out before this was dispatched?"
       : ". Either 'wsControllerURL' needs to be added to the dispatched " +
           "action or add the action to the list of actions allowed to be " +
           "performed while logged out.",
