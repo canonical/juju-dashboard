@@ -30,6 +30,7 @@ import {
   getModelByUUID,
 } from "store/juju/selectors";
 import { useAppSelector, useAppDispatch } from "store/store";
+import { toErrorString } from "utils";
 
 import Fields from "./Fields";
 import { type FormFields } from "./types";
@@ -183,10 +184,7 @@ const SecretForm = ({
                   } as CreateSecretArg,
                 ])
             )
-              .then((response: StringResults | ErrorResults | string) => {
-                if (typeof response === "string") {
-                  throw new Error(response);
-                }
+              .then((response: StringResults | ErrorResults) => {
                 const result = response.results?.[0];
                 if (result?.error) {
                   throw new Error(result.error.message);
@@ -197,11 +195,7 @@ const SecretForm = ({
               })
               .catch((error) => {
                 setSaving(false);
-                if (typeof error === "string" || error instanceof Error) {
-                  setInlineError(
-                    error instanceof Error ? error.message : error,
-                  );
-                }
+                setInlineError(toErrorString(error));
               });
           }}
           validationSchema={schema}

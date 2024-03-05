@@ -13,6 +13,7 @@ import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import { getSecretByURI, getModelUUIDFromList } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { toErrorString } from "utils";
 
 import Fields from "./Fields";
 import { type FormFields } from "./types";
@@ -64,13 +65,8 @@ const RemoveSecretPanel = () => {
           uri: secretURI,
         },
       ])
-        .then((response: ErrorResults | string) => {
-          let error;
-          if (typeof response === "string") {
-            error = response;
-          } else if (Array.isArray(response.results)) {
-            error = response.results[0]?.error?.message;
-          }
+        .then((response: ErrorResults) => {
+          const error = response.results[0]?.error?.message;
           if (error) {
             setSaving(false);
             setInlineError(error);
@@ -82,9 +78,7 @@ const RemoveSecretPanel = () => {
         })
         .catch((error) => {
           setSaving(false);
-          if (typeof error === "string" || error instanceof Error) {
-            setInlineError(error instanceof Error ? error.message : error);
-          }
+          setInlineError(toErrorString(error));
         });
     },
     [handleRemovePanelQueryParams, listSecrets, removeSecrets, secretURI],

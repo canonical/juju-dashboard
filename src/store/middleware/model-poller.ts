@@ -11,7 +11,7 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
-import type { CrossModelQueryFullResponse } from "juju/jimm/JIMMV4";
+import type { CrossModelQueryResponse } from "juju/jimm/JIMMV4";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
@@ -20,6 +20,7 @@ import { isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
+import { toErrorString } from "utils";
 
 export enum AuditLogsError {
   CHECK_PERMISSIONS = "Unable to check Audit Logs user permission.",
@@ -47,9 +48,6 @@ const checkJIMMRelation = async (
     relation: relation,
     target_object: "controller-jimm",
   });
-  if (typeof response === "string") {
-    throw new Error(response);
-  }
   return !!response?.allowed;
 };
 
@@ -89,9 +87,12 @@ export const modelPollerMiddleware: Middleware<
           if (conn) {
             controllers.set(wsControllerURL, conn);
           }
-          if (error && typeof error === "string") {
+          if (error) {
             reduxStore.dispatch(
-              generalActions.storeLoginError({ wsControllerURL, error }),
+              generalActions.storeLoginError({
+                wsControllerURL,
+                error: toErrorString(error),
+              }),
             );
             return;
           }
@@ -335,13 +336,15 @@ export const modelPollerMiddleware: Middleware<
       if (!conn) {
         return;
       }
-      let crossModelQueryResponse: CrossModelQueryFullResponse;
+      let crossModelQueryResponse: CrossModelQueryResponse | Error;
       try {
         crossModelQueryResponse = await crossModelQuery(conn, query);
       } catch (error) {
         console.error("Could not perform cross model query:", error);
         crossModelQueryResponse =
-          "Unable to perform search. Please try again later.";
+          error instanceof Error
+            ? error
+            : new Error("Unable to perform search. Please try again later.");
       }
       reduxStore.dispatch(
         jujuActions.updateCrossModelQuery(crossModelQueryResponse),

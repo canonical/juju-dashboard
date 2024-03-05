@@ -14,7 +14,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
 import {
   type CrossModelQueryRequest,
-  type CrossModelQueryFullResponse,
+  type CrossModelQueryResponse,
   isCrossModelQueryResponse,
 } from "juju/jimm/JIMMV4";
 import type {
@@ -243,7 +243,7 @@ const slice = createSlice({
     },
     updateCrossModelQuery: (
       state,
-      { payload }: PayloadAction<CrossModelQueryFullResponse>,
+      { payload }: PayloadAction<CrossModelQueryResponse | Error>,
     ) => {
       // If "payload" is a string, it represents the error. In this case,
       // "results" gets set to null and "errors" gets set to "payload".
@@ -253,8 +253,8 @@ const slice = createSlice({
       state.crossModelQuery.errors =
         isCrossModelQueryResponse(payload) && Object.keys(payload.errors).length
           ? payload.errors
-          : typeof payload === "string"
-            ? payload
+          : payload instanceof Error
+            ? payload.message
             : null;
       state.crossModelQuery.loaded = true;
       state.crossModelQuery.loading = false;
