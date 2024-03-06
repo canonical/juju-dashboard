@@ -1818,18 +1818,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:0.50.0":
-  version: 0.50.0
-  resolution: "@canonical/react-components@npm:0.50.0"
+"@canonical/react-components@npm:0.50.5":
+  version: 0.50.5
+  resolution: "@canonical/react-components@npm:0.50.5"
   dependencies:
     "@types/jest": "npm:29.5.11"
-    "@types/node": "npm:18.19.4"
+    "@types/node": "npm:20.8.5"
     "@types/react": "npm:18.2.46"
     "@types/react-dom": "npm:18.2.18"
     "@types/react-table": "npm:7.7.19"
     classnames: "npm:2.5.1"
     jest-environment-jsdom: "npm:29.7.0"
-    nanoid: "npm:5.0.4"
+    lodash.isequal: "npm:4.5.0"
     prop-types: "npm:15.8.1"
     react-table: "npm:7.8.0"
     react-useportal: "npm:1.0.19"
@@ -1839,7 +1839,7 @@ __metadata:
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: e2b9daee8c92952cb168671b3618af7d75924de26368a943634b0c336a6769cea35ef62752651041350ff0ca951e22910f9003b10d7215d6b00a201b036b6ae1
+  checksum: fba425fd06731a982666e889e0adf85d7fd28b8c408e1713e179d3cb267706e434dec7ef406977803dc95d5bac3d079c0e88e756a279669517fc689885531e6d
   languageName: node
   linkType: hard
 
@@ -3803,21 +3803,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.19.4":
-  version: 18.19.4
-  resolution: "@types/node@npm:18.19.4"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: e395bf591e79bd91c0819e7bee39c56e881399da2ca37fba5a59194ff28941fb8ed663c3fb4fba89465842720d916110dee9b774a3e4aecbe08b9e1ada4ab4fe
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:18.19.6":
   version: 18.19.6
   resolution: "@types/node@npm:18.19.6"
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: 6cfffb738124d43bc240d21f3196270c15b9a4137644eee35a7e75460fda8df881630e350d00fcfd66caa37bf1ed80771f2da0d4c7cd0016c9f616934a2377c5
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:20.8.5":
+  version: 20.8.5
+  resolution: "@types/node@npm:20.8.5"
+  dependencies:
+    undici-types: "npm:~5.25.1"
+  checksum: 43f23241c8c0bbeda9d7913fcb702e3b4f98bd37f568d961fe738c3d4bc15e0d875febd4647c524641e18d64b3edc4a6b7cb812633d198883b90354ec003e8b8
   languageName: node
   linkType: hard
 
@@ -11270,7 +11270,7 @@ __metadata:
     "@babel/plugin-proposal-private-property-in-object": "npm:7.21.11"
     "@canonical/jujulib": "npm:5.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
-    "@canonical/react-components": "npm:0.50.0"
+    "@canonical/react-components": "npm:0.50.5"
     "@reduxjs/toolkit": "npm:2.0.1"
     "@sentry/browser": "npm:7.93.0"
     "@testing-library/jest-dom": "npm:6.2.0"
@@ -11339,7 +11339,7 @@ __metadata:
     stylelint-order: "npm:6.0.4"
     ts-jest: "npm:29.1.1"
     typescript: "npm:5.3.3"
-    vanilla-framework: "npm:4.7.0"
+    vanilla-framework: "npm:4.8.0"
     yup: "npm:1.3.3"
   languageName: unknown
   linkType: soft
@@ -12111,15 +12111,6 @@ __metadata:
     object-assign: "npm:^4.0.1"
     thenify-all: "npm:^1.0.0"
   checksum: 103114e93f87362f0b56ab5b2e7245051ad0276b646e3902c98397d18bb8f4a77f2ea4a2c9d3ad516034ea3a56553b60d3f5f78220001ca4c404bd711bd0af39
-  languageName: node
-  linkType: hard
-
-"nanoid@npm:5.0.4":
-  version: 5.0.4
-  resolution: "nanoid@npm:5.0.4"
-  bin:
-    nanoid: bin/nanoid.js
-  checksum: 28c22d3ff96ea9e6abc059813b8483890c1f52de0f185d8347b0ea205c5966530205c374f1f77492bb53dc5d649de5d36d6eade16645055eb9220dc62080c1b1
   languageName: node
   linkType: hard
 
@@ -16718,6 +16709,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:~5.25.1":
+  version: 5.25.3
+  resolution: "undici-types@npm:5.25.3"
+  checksum: 60a47c6db451c00d27186d86a41fbd9677fa1f6d1a5350bff342c3985bd79fc3f5a638ebf56bbce21df46c701a687db43b3fbd588e1726e58047cea14d182fef
+  languageName: node
+  linkType: hard
+
 "undici-types@npm:~5.26.4":
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
@@ -16952,10 +16950,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.7.0":
-  version: 4.7.0
-  resolution: "vanilla-framework@npm:4.7.0"
-  checksum: 85a221467c588cfe0b040f03bff3e9c1c61bce6c0274d8767cff70782c1d5a8764a8d4e1cd3337e4cdcde92cd1da66e2a9b485b530c7292cb3c65c2f6d6f73c9
+"vanilla-framework@npm:4.8.0":
+  version: 4.8.0
+  resolution: "vanilla-framework@npm:4.8.0"
+  checksum: b3f9515eb438021ef489d8c1c79e76edeffd16ef5db68af9c27fec6cb1efe0db20b191d1b2d2dbf9a19c613f329a2933b389e0489ebcaddbe12ec6e0cfced95f
   languageName: node
   linkType: hard
 
