@@ -132,7 +132,7 @@ describe("RemoveSecretPanel", () => {
   it("displays error string results", async () => {
     const removeSecrets = jest
       .fn()
-      .mockImplementation(() => Promise.resolve("String error"));
+      .mockImplementation(() => Promise.reject(new Error("String error")));
     jest
       .spyOn(secretHooks, "useRemoveSecrets")
       .mockImplementation(() => removeSecrets);

@@ -517,14 +517,14 @@ describe("Juju API", () => {
       });
     });
 
-    it("handles string error responses", async () => {
+    it("handles status error response", async () => {
       const consoleError = console.error;
       console.error = jest.fn();
       const loginResponse = {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue("Uh oh!"),
+              fullStatus: jest.fn().mockRejectedValue(new Error("Uh oh!")),
             },
           },
         } as unknown as Connection,
@@ -679,12 +679,12 @@ describe("Juju API", () => {
         () => state,
       );
       await expect(response).rejects.toStrictEqual(
-        new Error("Unable to fetch the status. "),
+        new Error("Unable to fetch the status. Status not returned."),
       );
       expect(console.error).toHaveBeenCalledWith(
         "Error connecting to model:",
         "abc123",
-        new Error("Unable to fetch the status. "),
+        new Error("Unable to fetch the status. Status not returned."),
       );
       expect(dispatch).not.toHaveBeenCalled();
       console.error = consoleError;
@@ -1374,7 +1374,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           client: {
-            watchAll: jest.fn().mockReturnValue("Uh oh!"),
+            watchAll: jest.fn().mockRejectedValue(new Error("Uh oh!")),
           },
           allWatcher: {
             next: jest.fn().mockReturnValue(null),

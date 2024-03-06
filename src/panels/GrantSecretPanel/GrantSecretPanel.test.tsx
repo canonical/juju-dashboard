@@ -212,7 +212,7 @@ describe("GrantSecretPanel", () => {
   it("displays error string results", async () => {
     const grantSecret = jest
       .fn()
-      .mockImplementation(() => Promise.resolve("String error"));
+      .mockImplementation(() => Promise.reject(new Error("String error")));
     jest
       .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);

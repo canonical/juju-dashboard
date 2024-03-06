@@ -252,8 +252,7 @@ export async function fetchModelStatus(
           status =
             (await conn?.facades.client?.fullStatus({ patterns: [] })) ?? null;
           if (!status) {
-            // Placeholder error to be caught in the subsequent catch.
-            throw new Error();
+            throw new Error("Status not returned.");
           }
         } catch (error) {
           // XXX If there is an error fetching the full status it's likely that
