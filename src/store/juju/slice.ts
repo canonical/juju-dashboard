@@ -245,8 +245,6 @@ const slice = createSlice({
       state,
       { payload }: PayloadAction<CrossModelQueryResponse | Error>,
     ) => {
-      // If "payload" is a string, it represents the error. In this case,
-      // "results" gets set to null and "errors" gets set to "payload".
       state.crossModelQuery.results = isCrossModelQueryResponse(payload)
         ? payload.results
         : null;
