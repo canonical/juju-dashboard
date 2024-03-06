@@ -286,17 +286,30 @@ export const modelPollerMiddleware: Middleware<
     ) {
       const { payload } = action;
       const conn = controllers.get(payload.wsControllerURL);
-      const response = await setModelSharingPermissions(
-        payload.wsControllerURL,
-        payload.modelUUID,
-        conn,
-        payload.user,
-        payload.permissionTo,
-        payload.permissionFrom,
-        payload.action,
-        reduxStore.dispatch,
-      );
-      return response;
+      try {
+        const response = await setModelSharingPermissions(
+          payload.wsControllerURL,
+          payload.modelUUID,
+          conn,
+          payload.user,
+          payload.permissionTo,
+          payload.permissionFrom,
+          payload.action,
+          reduxStore.dispatch,
+        );
+        return response;
+      } catch (error) {
+        console.error(
+          `Could not grant sharing permissions to model ${payload.modelUUID}`,
+          error,
+        );
+        reduxStore.dispatch(
+          jujuActions.updateModelsError({
+            modelsError: toErrorString(error),
+            wsControllerURL: payload.wsControllerURL,
+          }),
+        );
+      }
     } else if (
       isSpecificAction<ReturnType<typeof jujuActions.fetchAuditEvents>>(
         action,
@@ -314,8 +327,15 @@ export const modelPollerMiddleware: Middleware<
       if (!conn) {
         return;
       }
-      const auditEvents = await findAuditEvents(conn, params);
-      reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
+      try {
+        const auditEvents = await findAuditEvents(conn, params);
+        reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
+      } catch (error) {
+        console.error("Could not fetch audit events:", error);
+        reduxStore.dispatch(
+          jujuActions.updateAuditEventsErrors(toErrorString(error)),
+        );
+      }
       // The action has already been passed to the next middleware at the top of
       // this handler.
       return;

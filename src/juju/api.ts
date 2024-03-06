@@ -453,55 +453,63 @@ export async function fetchControllerList(
   getState: () => RootState,
 ) {
   let controllers: JujuController[] | null = null;
-  if (conn.facades.jimM) {
-    try {
+  try {
+    if (conn.facades.jimM) {
       const response = await conn.facades.jimM?.listControllers();
       controllers = response.controllers ?? [];
-    } catch (error) {
-      dispatch(
-        generalActions.storeConnectionError(
-          "Unable to fetch the list of controllers.",
-        ),
-      );
+    } else {
+      // If we're not connected to a JIMM then call to get the controller config
+      // and generate a fake controller list.
+      const controllerConfig =
+        await conn.facades.controller?.controllerConfig(null);
+      if (controllerConfig?.config) {
+        controllers = [
+          {
+            path: controllerConfig.config["controller-name"],
+            uuid: controllerConfig.config["controller-uuid"],
+            version: getControllerConnection(getState(), wsControllerURL)
+              ?.serverVersion,
+          },
+        ];
+      }
     }
-  } else {
-    // If we're not connected to a JIMM then call to get the controller config
-    // and generate a fake controller list.
-    const controllerConfig =
-      await conn.facades.controller?.controllerConfig(null);
-    if (controllerConfig?.config) {
-      controllers = [
-        {
-          path: controllerConfig.config["controller-name"],
-          uuid: controllerConfig.config["controller-uuid"],
-          version: getControllerConnection(getState(), wsControllerURL)
-            ?.serverVersion,
-        },
-      ];
-    }
+  } catch (error) {
+    dispatch(
+      generalActions.storeConnectionError(
+        "Unable to fetch the list of controllers.",
+      ),
+    );
   }
 
   if (controllers) {
-    // check for updates
-    await Promise.all(
-      controllers.map(async (controller) => {
-        let updateAvailable = false;
-        try {
-          updateAvailable =
-            (await jujuUpdateAvailable(
-              "agent-version" in controller
-                ? controller["agent-version"]
-                : controller.version || "",
-            )) ?? false;
-        } catch (error) {
-          updateAvailable = false;
-        }
-        controller.updateAvailable = updateAvailable;
-      }),
-    );
-    dispatch(
-      jujuActions.updateControllerList({ wsControllerURL, controllers }),
-    );
+    try {
+      // check for updates
+      await Promise.all(
+        controllers.map(async (controller) => {
+          let updateAvailable = false;
+          try {
+            updateAvailable =
+              (await jujuUpdateAvailable(
+                "agent-version" in controller
+                  ? controller["agent-version"]
+                  : controller.version || "",
+              )) ?? false;
+          } catch (error) {
+            updateAvailable = false;
+          }
+          controller.updateAvailable = updateAvailable;
+        }),
+      );
+      dispatch(
+        jujuActions.updateControllerList({ wsControllerURL, controllers }),
+      );
+    } catch (error) {
+      dispatch(
+        generalActions.storeConnectionError(
+          "Unable to update the list of controllers.",
+        ),
+      );
+    }
   }
 }
 

@@ -15,7 +15,7 @@ import { actions as jujuActions } from "store/juju";
 import { getModelUUIDFromList } from "store/juju/selectors";
 import { useAppStore } from "store/store";
 import urls from "urls";
-import { getMajorMinorVersion } from "utils";
+import { getMajorMinorVersion, toErrorString } from "utils";
 
 export enum Label {
   MODEL_WATCHER_ERROR = "Error while trying to stop model watcher.",
@@ -57,8 +57,7 @@ export default function ModelDetails() {
         }
         setModelWatcherError(null);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : error;
-        setModelWatcherError(errorMessage as string);
+        setModelWatcherError(toErrorString(error));
       }
     }
     if (modelUUID) {
