@@ -1,7 +1,7 @@
 import type { PropsWithChildren, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import FadeIn from "animations/FadeIn";
 import Banner from "components/Banner/Banner";
@@ -16,6 +16,7 @@ import jaasText from "static/images/logo/jaas-text.svg";
 import jujuText from "static/images/logo/juju-text.svg";
 import logoMark from "static/images/logo/logo-mark.svg";
 import { getIsJuju } from "store/general/selectors";
+import urls from "urls";
 
 import "./_base-layout.scss";
 
@@ -70,10 +71,11 @@ const BaseLayout = ({
         aside={<Panels />}
         dark={DARK_THEME}
         logo={{
-          href: isJuju ? "https://juju.is" : "https://jaas.ai",
           icon: logoMark,
           name: isJuju ? jujuText : jaasText,
           nameAlt: isJuju ? "Juju" : "JAAS",
+          component: Link,
+          to: isJuju ? "https://juju.is" : urls.index,
         }}
         navPanelClassName="p-primary-nav"
         sideNavigation={<PrimaryNav />}

@@ -9,7 +9,6 @@ can make and how to get started.
   - [File bugs](#file-bugs)
   - [QA](#qa)
   - [Write docs](#write-docs)
-  - [Provide feedback](#provide-feedback)
   - [Propose features](#propose-features)
   - [Contribute code](#contribute-code)
     - [Setting up for development](#setting-up-for-development)
@@ -47,15 +46,6 @@ The dashboard docs are hosted on
 [juju.is](https://juju.is/docs/olm/the-juju-dashboard). Each page has a link to
 improve the doc on the forum. We'd love any improvements, suggestions, comments
 or new guides.
-
-### Provide feedback
-
-If you're using Juju dashboard and have feedback about your usage you can
-provide feedback on the jaas.ai website. We'd particularly like to hear if you
-have large deployments or teams using the dashboard.
-
-To provide feedback go to [jaas.ai](https://jaas.ai/) and click the "Site feedback" button
-on the right side of the window.
 
 ### Propose features
 
