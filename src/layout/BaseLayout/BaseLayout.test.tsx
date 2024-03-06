@@ -67,7 +67,7 @@ describe("Base Layout", () => {
     expect(logo).toHaveAttribute("src", "jaas-text.svg");
     expect(screen.getAllByRole("link", { name: "JAAS" })[0]).toHaveAttribute(
       "href",
-      "https://jaas.ai",
+      "/",
     );
   });
 
