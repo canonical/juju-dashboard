@@ -612,8 +612,8 @@ function generateConfigElementList(
               validateConfig.type !== "secret" &&
               validateConfig.type !== "string"
             ) {
-              // This field is only used for string and secret fields so narrow
-              // the config types.
+              // This field is only displayed for string and secret fields so we
+              // need to narrow the config to only have the valid types.
               return;
             }
             if (!validateConfig.newValue) {
