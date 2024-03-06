@@ -264,6 +264,8 @@ The easiest way to set up a juju controller is inside a
 remove controllers as necessary and provides a way to have multiple controllers
 running at once (with different Juju versions if needed).
 
+If a Kubernetes controller is required you can follow the [Multipass and Kubernetes](./docs/multipass-microk8s.md) instructions.
+
 If this controller is being created on an M1 mac then you will need to [set the
 arch](#juju-on-m1-macs) when running some of the commands.
 
@@ -454,6 +456,9 @@ repo.
 
 The Dockerfile is also used by the PR demo service which builds a Docker image
 and deploys it to display a running version of a branch.
+
+If this image needs to be tested in a Kubernetes environment then you can follow
+the [Multipass and Kubernetes](./docs/multipass-microk8s.md) instructions.
 
 To build the charm you first need to install [Docker Engine](https://docs.docker.com/engine/install/ubuntu/).
 
