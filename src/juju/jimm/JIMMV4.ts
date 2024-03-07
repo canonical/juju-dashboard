@@ -36,11 +36,6 @@ export type CheckRelationResponse = {
   allowed: boolean;
 };
 
-export const isCrossModelQueryResponse = (
-  response: any,
-): response is CrossModelQueryResponse =>
-  typeof response === "object" && "results" in response && "errors" in response;
-
 class JIMMV4 extends JIMMV3 {
   static NAME: string;
   static VERSION: number;

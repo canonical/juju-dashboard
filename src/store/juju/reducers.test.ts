@@ -218,7 +218,36 @@ describe("reducers", () => {
     });
   });
 
-  it("updateCrossModelQuery with instance of CrossModelQueryResponse", () => {
+  it("updateCrossModelQuery with errors", () => {
+    const state = jujuStateFactory.build({
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results: null,
+        errors: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    const errors = { mockErrorKey: ["mockErrorValue"] };
+    expect(
+      reducer(
+        state,
+        actions.updateCrossModelQuery({
+          results: { mockResultKey: ["mockResultValue"] },
+          errors,
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      crossModelQuery: crossModelQueryStateFactory.build({
+        results: null,
+        errors,
+        loaded: true,
+        loading: false,
+      }),
+    });
+  });
+
+  it("updateCrossModelQuery without errors", () => {
     const state = jujuStateFactory.build({
       crossModelQuery: crossModelQueryStateFactory.build({
         results: null,
@@ -228,21 +257,20 @@ describe("reducers", () => {
       }),
     });
     const results = { mockResultKey: ["mockResultValue"] };
-    const errors = { mockErrorKey: ["mockErrorValue"] };
     expect(
-      reducer(state, actions.updateCrossModelQuery({ results, errors })),
+      reducer(state, actions.updateCrossModelQuery({ results, errors: {} })),
     ).toStrictEqual({
       ...state,
       crossModelQuery: crossModelQueryStateFactory.build({
         results,
-        errors,
+        errors: null,
         loaded: true,
         loading: false,
       }),
     });
   });
 
-  it("updateCrossModelQuery with instance of Error", () => {
+  it("updateCrossModelQueryErrors", () => {
     const state = jujuStateFactory.build({
       crossModelQuery: crossModelQueryStateFactory.build({
         results: null,
@@ -252,7 +280,7 @@ describe("reducers", () => {
       }),
     });
     expect(
-      reducer(state, actions.updateCrossModelQuery(new Error("Uh oh!"))),
+      reducer(state, actions.updateCrossModelQueryErrors("Uh oh!")),
     ).toStrictEqual({
       ...state,
       crossModelQuery: crossModelQueryStateFactory.build({

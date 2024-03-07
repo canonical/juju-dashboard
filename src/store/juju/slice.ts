@@ -15,7 +15,6 @@ import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
 import {
   type CrossModelQueryRequest,
   type CrossModelQueryResponse,
-  isCrossModelQueryResponse,
 } from "juju/jimm/JIMMV4";
 import type {
   AllWatcherDelta,
@@ -243,17 +242,20 @@ const slice = createSlice({
     },
     updateCrossModelQuery: (
       state,
-      { payload }: PayloadAction<CrossModelQueryResponse | Error>,
+      { payload }: PayloadAction<CrossModelQueryResponse>,
     ) => {
-      state.crossModelQuery.results = isCrossModelQueryResponse(payload)
-        ? payload.results
-        : null;
-      state.crossModelQuery.errors =
-        isCrossModelQueryResponse(payload) && Object.keys(payload.errors).length
-          ? payload.errors
-          : payload instanceof Error
-            ? payload.message
-            : null;
+      const hasErrors = !!Object.keys(payload.errors).length;
+      state.crossModelQuery.results = hasErrors ? null : payload.results;
+      state.crossModelQuery.errors = hasErrors ? payload.errors : null;
+      state.crossModelQuery.loaded = true;
+      state.crossModelQuery.loading = false;
+    },
+    updateCrossModelQueryErrors: (
+      state,
+      { payload }: PayloadAction<CrossModelQueryResponse["errors"] | string>,
+    ) => {
+      state.crossModelQuery.results = null;
+      state.crossModelQuery.errors = payload;
       state.crossModelQuery.loaded = true;
       state.crossModelQuery.loading = false;
     },

@@ -39,9 +39,14 @@ export type FormFields = {
 };
 
 const handleErrors = (response: ErrorResults) => {
-  const error = response.results.find(({ error }) => !!error);
-  if (error?.error?.message) {
-    throw new Error(error.error?.message);
+  const errors = response.results.reduce((errorString, { error }) => {
+    if (error?.message) {
+      errorString = [errorString, error.message].filter(Boolean).join(". ");
+    }
+    return errorString;
+  }, "");
+  if (errors) {
+    throw new Error(errors);
   }
 };
 

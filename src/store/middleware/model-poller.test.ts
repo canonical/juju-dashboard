@@ -803,11 +803,11 @@ describe("model poller", () => {
     });
     await middleware(next)(action);
     expect(console.error).toHaveBeenCalledWith(
-      "Could not perform cross model query:",
+      "Could not perform cross model query.",
       new Error("Uh oh!"),
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateCrossModelQuery(new Error("Uh oh!")),
+      jujuActions.updateCrossModelQueryErrors("Uh oh!"),
     );
   });
 
@@ -828,12 +828,12 @@ describe("model poller", () => {
     });
     await middleware(next)(action);
     expect(console.error).toHaveBeenCalledWith(
-      "Could not perform cross model query:",
+      "Could not perform cross model query.",
       "Uh oh!",
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateCrossModelQuery(
-        new Error("Unable to perform search. Please try again later."),
+      jujuActions.updateCrossModelQueryErrors(
+        "Unable to perform search. Please try again later.",
       ),
     );
   });

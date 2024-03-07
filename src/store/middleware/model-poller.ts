@@ -11,7 +11,6 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
-import type { CrossModelQueryResponse } from "juju/jimm/JIMMV4";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
@@ -286,30 +285,17 @@ export const modelPollerMiddleware: Middleware<
     ) {
       const { payload } = action;
       const conn = controllers.get(payload.wsControllerURL);
-      try {
-        const response = await setModelSharingPermissions(
-          payload.wsControllerURL,
-          payload.modelUUID,
-          conn,
-          payload.user,
-          payload.permissionTo,
-          payload.permissionFrom,
-          payload.action,
-          reduxStore.dispatch,
-        );
-        return response;
-      } catch (error) {
-        console.error(
-          `Could not grant sharing permissions to model ${payload.modelUUID}`,
-          error,
-        );
-        reduxStore.dispatch(
-          jujuActions.updateModelsError({
-            modelsError: toErrorString(error),
-            wsControllerURL: payload.wsControllerURL,
-          }),
-        );
-      }
+      const response = await setModelSharingPermissions(
+        payload.wsControllerURL,
+        payload.modelUUID,
+        conn,
+        payload.user,
+        payload.permissionTo,
+        payload.permissionFrom,
+        payload.action,
+        reduxStore.dispatch,
+      );
+      return response;
     } else if (
       isSpecificAction<ReturnType<typeof jujuActions.fetchAuditEvents>>(
         action,
@@ -331,7 +317,7 @@ export const modelPollerMiddleware: Middleware<
         const auditEvents = await findAuditEvents(conn, params);
         reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
       } catch (error) {
-        console.error("Could not fetch audit events:", error);
+        console.error("Could not fetch audit events.", error);
         reduxStore.dispatch(
           jujuActions.updateAuditEventsErrors(toErrorString(error)),
         );
@@ -356,19 +342,21 @@ export const modelPollerMiddleware: Middleware<
       if (!conn) {
         return;
       }
-      let crossModelQueryResponse: CrossModelQueryResponse | Error;
       try {
-        crossModelQueryResponse = await crossModelQuery(conn, query);
+        const crossModelQueryResponse = await crossModelQuery(conn, query);
+        reduxStore.dispatch(
+          jujuActions.updateCrossModelQuery(crossModelQueryResponse),
+        );
       } catch (error) {
-        console.error("Could not perform cross model query:", error);
-        crossModelQueryResponse =
+        console.error("Could not perform cross model query.", error);
+        const errorMessage =
           error instanceof Error
-            ? error
-            : new Error("Unable to perform search. Please try again later.");
+            ? error.message
+            : "Unable to perform search. Please try again later.";
+        reduxStore.dispatch(
+          jujuActions.updateCrossModelQueryErrors(errorMessage),
+        );
       }
-      reduxStore.dispatch(
-        jujuActions.updateCrossModelQuery(crossModelQueryResponse),
-      );
       // The action has already been passed to the next middleware
       // at the top of this handler.
       return;
