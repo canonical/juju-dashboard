@@ -81,6 +81,7 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.clearModelData.type,
       jujuActions.clearAuditEvents.type,
       jujuActions.updateCrossModelQuery.type,
+      jujuActions.updateCrossModelQueryErrors.type,
       jujuActions.updateControllerList.type,
       jujuActions.clearControllerData.type,
       jujuActions.clearModelData.type,

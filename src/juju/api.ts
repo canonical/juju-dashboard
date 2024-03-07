@@ -477,34 +477,26 @@ export async function fetchControllerList(
   }
 
   if (controllers) {
-    try {
-      // check for updates
-      await Promise.all(
-        controllers.map(async (controller) => {
-          let updateAvailable = false;
-          try {
-            updateAvailable =
-              (await jujuUpdateAvailable(
-                "agent-version" in controller
-                  ? controller["agent-version"]
-                  : controller.version || "",
-              )) ?? false;
-          } catch (error) {
-            updateAvailable = false;
-          }
-          controller.updateAvailable = updateAvailable;
-        }),
-      );
-      dispatch(
-        jujuActions.updateControllerList({ wsControllerURL, controllers }),
-      );
-    } catch (error) {
-      dispatch(
-        generalActions.storeConnectionError(
-          "Unable to update the list of controllers.",
-        ),
-      );
-    }
+    // check for updates
+    await Promise.all(
+      controllers.map(async (controller) => {
+        let updateAvailable = false;
+        try {
+          updateAvailable =
+            (await jujuUpdateAvailable(
+              "agent-version" in controller
+                ? controller["agent-version"]
+                : controller.version || "",
+            )) ?? false;
+        } catch (error) {
+          updateAvailable = false;
+        }
+        controller.updateAvailable = updateAvailable;
+      }),
+    );
+    dispatch(
+      jujuActions.updateControllerList({ wsControllerURL, controllers }),
+    );
   }
 }
 

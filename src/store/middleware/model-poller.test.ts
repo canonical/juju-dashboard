@@ -742,6 +742,30 @@ describe("model poller", () => {
     );
   });
 
+  it("should handle Audit Logs error", async () => {
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "findAuditEvents")
+      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchAuditEvents({
+      "user-tag": "user-eggman@external",
+      wsControllerURL: "wss://example.com",
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateAuditEventsErrors("Uh oh!"),
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      "Could not fetch audit events.",
+      new Error("Uh oh!"),
+    );
+  });
+
   it("handles fetching cross model query results", async () => {
     const crossModelQueryResponse = { results: {}, errors: {} };
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({

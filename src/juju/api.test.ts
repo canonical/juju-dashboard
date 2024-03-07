@@ -3,6 +3,7 @@ import * as jujuLib from "@canonical/jujulib";
 import * as jujuLibVersions from "@canonical/jujulib/dist/api/versions";
 import { waitFor } from "@testing-library/react";
 
+import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -1188,6 +1189,31 @@ describe("Juju API", () => {
             }),
           ],
         }),
+      );
+    });
+
+    it("should handle error when unable to fetch the list of controllers", async () => {
+      const dispatch = jest.fn();
+      console.error = jest.fn();
+      const conn = {
+        facades: {
+          jimM: {
+            listControllers: jest
+              .fn()
+              .mockRejectedValueOnce(new Error("Uh oh!")),
+          },
+        },
+      } as unknown as Connection;
+      jest
+        .spyOn(jujuLibVersions, "jujuUpdateAvailable")
+        .mockImplementationOnce(async () => null);
+      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
+        rootStateFactory.build(),
+      );
+      expect(dispatch).toHaveBeenCalledWith(
+        generalActions.storeConnectionError(
+          "Unable to fetch the list of controllers.",
+        ),
       );
     });
   });
