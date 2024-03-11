@@ -244,9 +244,8 @@ const slice = createSlice({
       state,
       { payload }: PayloadAction<CrossModelQueryResponse>,
     ) => {
-      const hasErrors = !!Object.keys(payload.errors).length;
-      state.crossModelQuery.results = hasErrors ? null : payload.results;
-      state.crossModelQuery.errors = hasErrors ? payload.errors : null;
+      state.crossModelQuery.results = payload.results;
+      state.crossModelQuery.errors = null;
       state.crossModelQuery.loaded = true;
       state.crossModelQuery.loading = false;
     },

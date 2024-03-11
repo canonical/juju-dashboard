@@ -218,35 +218,6 @@ describe("reducers", () => {
     });
   });
 
-  it("updateCrossModelQuery with errors", () => {
-    const state = jujuStateFactory.build({
-      crossModelQuery: crossModelQueryStateFactory.build({
-        results: null,
-        errors: null,
-        loaded: false,
-        loading: true,
-      }),
-    });
-    const errors = { mockErrorKey: ["mockErrorValue"] };
-    expect(
-      reducer(
-        state,
-        actions.updateCrossModelQuery({
-          results: { mockResultKey: ["mockResultValue"] },
-          errors,
-        }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      crossModelQuery: crossModelQueryStateFactory.build({
-        results: null,
-        errors,
-        loaded: true,
-        loading: false,
-      }),
-    });
-  });
-
   it("updateCrossModelQuery without errors", () => {
     const state = jujuStateFactory.build({
       crossModelQuery: crossModelQueryStateFactory.build({

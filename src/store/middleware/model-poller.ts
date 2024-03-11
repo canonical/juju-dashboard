@@ -345,7 +345,11 @@ export const modelPollerMiddleware: Middleware<
       try {
         const crossModelQueryResponse = await crossModelQuery(conn, query);
         reduxStore.dispatch(
-          jujuActions.updateCrossModelQuery(crossModelQueryResponse),
+          Object.keys(crossModelQueryResponse.errors).length
+            ? jujuActions.updateCrossModelQueryErrors(
+                crossModelQueryResponse.errors,
+              )
+            : jujuActions.updateCrossModelQuery(crossModelQueryResponse),
         );
       } catch (error) {
         console.error("Could not perform cross model query.", error);

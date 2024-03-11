@@ -811,6 +811,30 @@ describe("model poller", () => {
     expect(jujuModule.crossModelQuery).not.toHaveBeenCalled();
   });
 
+  it("handles errors object from response when fetching cross model query results", async () => {
+    const crossModelQueryResponse = {
+      results: {},
+      errors: { error1: ["Uh oh!"] },
+    };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "crossModelQuery")
+      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "wss://example.com",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateCrossModelQueryErrors(crossModelQueryResponse.errors),
+    );
+  });
+
   it("handles errors when fetching cross model query results", async () => {
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
