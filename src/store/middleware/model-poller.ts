@@ -349,7 +349,9 @@ export const modelPollerMiddleware: Middleware<
             ? jujuActions.updateCrossModelQueryErrors(
                 crossModelQueryResponse.errors,
               )
-            : jujuActions.updateCrossModelQuery(crossModelQueryResponse),
+            : jujuActions.updateCrossModelQueryResults(
+                crossModelQueryResponse.results,
+              ),
         );
       } catch (error) {
         console.error("Could not perform cross model query.", error);

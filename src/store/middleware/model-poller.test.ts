@@ -788,7 +788,7 @@ describe("model poller", () => {
     );
     expect(next).toHaveBeenCalledWith(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateCrossModelQuery(crossModelQueryResponse),
+      jujuActions.updateCrossModelQueryResults(crossModelQueryResponse.results),
     );
   });
 

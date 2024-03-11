@@ -240,11 +240,11 @@ const slice = createSlice({
     ) => {
       state.crossModelQuery.loading = true;
     },
-    updateCrossModelQuery: (
+    updateCrossModelQueryResults: (
       state,
-      { payload }: PayloadAction<CrossModelQueryResponse>,
+      { payload }: PayloadAction<CrossModelQueryResponse["results"]>,
     ) => {
-      state.crossModelQuery.results = payload.results;
+      state.crossModelQuery.results = payload;
       state.crossModelQuery.errors = null;
       state.crossModelQuery.loaded = true;
       state.crossModelQuery.loading = false;

@@ -218,7 +218,7 @@ describe("reducers", () => {
     });
   });
 
-  it("updateCrossModelQuery without errors", () => {
+  it("updateCrossModelQueryResults", () => {
     const state = jujuStateFactory.build({
       crossModelQuery: crossModelQueryStateFactory.build({
         results: null,
@@ -229,7 +229,7 @@ describe("reducers", () => {
     });
     const results = { mockResultKey: ["mockResultValue"] };
     expect(
-      reducer(state, actions.updateCrossModelQuery({ results, errors: {} })),
+      reducer(state, actions.updateCrossModelQueryResults(results)),
     ).toStrictEqual({
       ...state,
       crossModelQuery: crossModelQueryStateFactory.build({
